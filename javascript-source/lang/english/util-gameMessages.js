@@ -1,0 +1,30 @@
+$.lang.register('gamemessages.win.1', 'Congratulations!');
+$.lang.register('gamemessages.win.2', 'YATZEE!');
+$.lang.register('gamemessages.win.3', 'Fabulous!');
+$.lang.register('gamemessages.win.4', 'You got lucky.');
+$.lang.register('gamemessages.win.5', 'GOOOOOOOOOOOOAAAAAAAAAAAAAAL!');
+$.lang.register('gamemessages.win.6', 'Oh my, you did it! HNNG!');
+$.lang.register('gamemessages.win.7', 'Baby, now you think you\'re number one, shining bright for everyone!');
+$.lang.register('gamemessages.win.8', 'X GON GIVE IT TO YA!');
+$.lang.register('gamemessages.win.9', 'If there were more clumsy, perverted and fun people like $1, the world would be a better place.');
+
+$.lang.register('gamemessages.lost.1', 'Better luck next time!');
+$.lang.register('gamemessages.lost.2', 'I understand, slot machines are hard for you.');
+$.lang.register('gamemessages.lost.3', 'Dreamin\', don\'t give it up $1');
+$.lang.register('gamemessages.lost.4', 'You have ignited a nuclear war! And no, there is no animated display of a mushroom cloud with parts of bodies flying through the air. We do not reward failure.');
+$.lang.register('gamemessages.lost.5', 'Can you like.. win? please?');
+$.lang.register('gamemessages.lost.6', 'Game Over.');
+$.lang.register('gamemessages.lost.7', 'Don\'t looooose your waaaaaaay!');
+$.lang.register('gamemessages.lost.8', 'You just weren\'t good enough.');
+$.lang.register('gamemessages.lost.9', 'Will $1 finally win? Find out on the next episode of DragonBall Z!');
+$.lang.register('gamemessages.lost.10', '$1 has lost something great today!');
+$.lang.register('gamemessages.lost.11', 'Perhaps if you trained in the mountains in solitude, you could learn the art to winning.');
+$.lang.register('gamemessages.lost.12', 'Believe in the heart of the cards!');
+$.lang.register('gamemessages.lost.13', 'Believe in me who believes in you!');
+$.lang.register('gamemessages.lost.14', '404 Win Not Found.');
+$.lang.register('gamemessages.lost.15', 'The gods have forsaken you!');
+$.lang.register('gamemessages.lost.16', 'To win you must gain sight beyond sight!');
+$.lang.register('gamemessages.lost.17', 'You\'re great at losing! Don\'t let anyone tell you otherwise.');
+$.lang.register('gamemessages.lost.18', 'So tell me, what?s it like living in a constant haze of losses?');
+
+$.lang.register('gamemessages.console.loaded', 'Found general game messages: $1 wins, $2 losts.');
