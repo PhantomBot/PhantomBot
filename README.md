@@ -1,2 +1,25 @@
 # PhantomBot
-PhantomBot is a multi-purpose, cross-platform, user-hosted chat bot for twitch.tv
+PhantomBot is a multi-purpose, cross-platform, user-hosted chat bot for Twitch.tv  
+Dowload your copy over on the [Releases](https://github.com/PhantomBot/PhantomBot/releases) tab!
+
+*We're currently moving over from our old team to a new paradigm, hence there aren't any releases yet.*
+
+##Prerequisites
+- [Java 8](https://www.java.com/en/download/)
+
+##Support:
+Get live support via our [Discord Server](https://discord.gg/0bN1J1JWPFIu4KOD)!
+
+###Who does what?
+We all know different things about things, so here a nice list for you on who to talk to when having trouble.
+- **@Phantom Index**: JavaScript modules & General bot use 
+- **@Kojitsari**: JavaScript modules & General bot use 
+- **@Scania**: JavaScript modules & General bot use
+- **@Zelakto**: Website, General bot use
+- **@Juraji**: Bot core, Javascript modules, General bot use, [Webpanel](https://github.com/PhantomBot/PhantomBot-WebPanel) & [PHP Connector](https://github.com/PhantomBot/PhantomBot-PHP-Connector)
+
+##TravisCI
+The Java sources are tested against:
+- OracleJDK 8
+
+[![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot)
