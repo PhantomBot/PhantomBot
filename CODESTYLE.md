@@ -1,4 +1,10 @@
 #Code Style
+#General
+When implementing new code or making changes to the current create a branch with the following name: `YOURUSERNAME_WHAT_YOU_ARE_DOING`.
+That way there'll be no pollution on the master branch and everyone can see what is being done already and by who.  
+Whenever you wish to have your code pushed to the master branch just merge it (do notify others, courtesy and such)
+or create a pull request for others to merge, if you don't feel comfortable with resolving conflicts.
+
 #JavaScript
 
 ##Files and folders
