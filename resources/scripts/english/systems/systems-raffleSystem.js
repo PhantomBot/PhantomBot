@@ -1,0 +1,14 @@
+$.lang.register('rafflesystem.close.error.notrunning', 'You can not close a raffle while no raffle is active.');
+$.lang.register('rafflesystem.close.success', '/me The raffle is now closed. The winner is $1, congratulations!');
+$.lang.register('rafflesystem.close.success.noentries', '/me [Raffle Ended] The raffle is now closed. Nobody entered, thus there is no winner.');
+$.lang.register('rafflesystem.enter.error.alreadyentered', 'You have already entered the raffle.');
+$.lang.register('rafflesystem.enter.error.iscaster', 'The channel broadcaster can\'t enter the raffle.');
+$.lang.register('rafflesystem.enter.error.needpoints', 'You do not have enough $1 to enter the raffle.');
+$.lang.register('rafflesystem.enter.error.notfollows', 'You are not following. For this raffle, you need to be following.');
+$.lang.register('rafflesystem.enter.error.notrunning', 'There are no raffles active at the moment.');
+$.lang.register('rafflesystem.enter.notkeyword', 'A raffle is now running! Enter the raffle for a chance to win by typing "!$1".');
+$.lang.register('rafflesystem.enter.success', 'You have entered the raffle.');
+$.lang.register('rafflesystem.redraw.error.noentries', 'Nobody entered, thus there is no winner.');
+$.lang.register('rafflesystem.redraw.success', '/me [Raffle Redraw] The new winner is $1, congratulations!');
+$.lang.register('rafflesystem.start.error.alreadyrunning', 'You can not start a new raffle while another raffle is active.');
+$.lang.register('rafflesystem.start.usage', 'Usage: !raffle start -key [keyword] [-follow] [-t [seconds]] [-c [cost]].');
