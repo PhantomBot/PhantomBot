@@ -16,6 +16,7 @@ We all know different things about things, so here a nice list for you on who to
 - **@Kojitsari**: JavaScript modules & General bot use 
 - **@Scania**: JavaScript modules & General bot use
 - **@Zelakto**: Website, General bot use
+- **@SimeonF**: Bot core, Javascript modules, General bot use
 - **@Juraji**: Bot core, Javascript modules, General bot use, [Webpanel](https://github.com/PhantomBot/PhantomBot-WebPanel) & [PHP Connector](https://github.com/PhantomBot/PhantomBot-PHP-Connector)
 
 ##TravisCI
