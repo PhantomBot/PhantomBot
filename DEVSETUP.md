@@ -17,7 +17,8 @@ It's very global, so you might need to take some extra steps to get it to work f
 DONE! Happy coding <3
 
 ##JetBrains IntelliJ
-This section also applies to JetBrains PHPStorm, wich is great for JavaScript, but lacks Java support.
+This section also applies to JetBrains PHPStorm, wich is great for JavaScript, but lacks Java support.  
+You can get JetBrains IntelliJ [here](https://www.jetbrains.com/idea/).
 
 1. Fork the [PhantomBot repository](https://github.com/PhantomBot/PhantomBot).
 2. Open up IntelliJ, so you have the start screen.  
@@ -28,5 +29,17 @@ This section also applies to JetBrains PHPStorm, wich is great for JavaScript, b
 5. Install the "File Watchers" plugin if you haven't already.
 6. Import `./development-resources/watchers.xml` into your File Watchers.  
   *The File Watchers are located in "Settings" under "Tools"*
+7. Import `build.xml` into the ANT task manager.  
+  *IntelliJ might have already asked this of you and you were right in accepting it*
 
 DONE! Happy coding <3
+
+##Netbeans
+You can get Netbeans [here](https://netbeans.org/downloads/).
+
+Yet to be written.
+
+##Eclipse
+You can get Eclipse [here](https://www.eclipse.org/downloads/).
+
+Yet to be written.
