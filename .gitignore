@@ -20,13 +20,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
-
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -49,7 +42,7 @@ dist/
 build/
 /bin/
 
-# Files created by the bot inside res folder
+# Files created by the bot inside resources folder
 resources/bannedUsers.bin
 resources/botlogin.txt
 resources/phantombot.db
@@ -60,3 +53,8 @@ resources/web/default.txt
 
 # IntelliJ Project files
 .idea
+
+# Netbeans Project files
+nbproject
+
+# Eclipse Project files
