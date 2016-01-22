@@ -199,7 +199,7 @@
           return;
         }
 
-        intervalSec = commandArg;
+        requiredMsgs = commandArg;
         $.inidb.set('commandTimerSettings', 'requiredMsgs', commandArg);
         $.say($.whisperPrefix(sender) + $.lang.get('commandtimer.setreqmsgs.success', commandArg));
       }
@@ -212,6 +212,7 @@
   $.bind('initReady', function () {
     if ($.bot.isModuleEnabled('./systems/commandTimer.js')) {
       load();
+
       $.registerChatCommand('./systems/commandTimer.js', 'addcommandtimer', 1);
       $.registerChatCommand('./systems/commandTimer.js', 'delcommandtimer', 1);
       $.registerChatCommand('./systems/commandTimer.js', 'commandtimer', 1);
