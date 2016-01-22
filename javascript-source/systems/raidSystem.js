@@ -51,7 +51,7 @@
      */
     if (command.equalsIgnoreCase('setraidmsg')) {
       if (!args || args.length == 0) {
-        $.say($.whisperPrefix(sender) + $.lang.get('LANGKEY'));
+        $.say($.whisperPrefix(sender) + $.lang.get('raidsystem.message.usage'));
         return;
       }
 
