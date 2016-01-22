@@ -4,6 +4,8 @@
  * Register and announce incomming/outgoing raids
  */
 (function () {
+  var raidMessage = ($.inidb.exists('settings', 'raidMessage') ? $.inidb.get('settings', 'raidMessage') : $.lang.get('raidsystem.message.nomessageset', $.ownerName));
+
   /**
    * @event command
    */
@@ -27,7 +29,7 @@
         $.commandPause.pause(300);
       }
       $.inidb.incr('outgoingRaids', username, 1);
-      $.say($.lang.get('raidsystem.raid', $.username.resolve(username)));
+      $.say($.lang.get('raidsystem.raid', $.username.resolve(username), raidMessage));
     }
 
     /**
@@ -43,6 +45,20 @@
       $.inidb.incr('incommingRaids', username, 1);
       $.say($.lang.get('raidsystem.raided', $.username.resolve(username), $.getOrdinal(count)));
     }
+
+    /**
+     * @commandpath setraidmsg [message...] - Set a message for users to copy/paste into the target's chat
+     */
+    if (command.equalsIgnoreCase('setraidmsg')) {
+      if (!args || args.length == 0) {
+        $.say($.whisperPrefix(sender) + $.lang.get('LANGKEY'));
+        return;
+      }
+
+      raidMessage = args.join(' ');
+      $.inidb.set('settings', 'raidMessage', raidMessage);
+      $.say($.whisperPrefix(sender) + $.lang.get('raidsystem.message.setsuccess', raidMessage));
+    }
   });
 
   /**
@@ -50,8 +66,11 @@
    */
   $.bind('initReady', function () {
     if ($.bot.isModuleEnabled('./systems/raidSystem.js')) {
+      $.consoleLn($.lang.get('raidsystem.console.announceraidmsg', raidMessage));
+
       $.registerChatCommand('./systems/raidSystem.js', 'raid', 2);
       $.registerChatCommand('./systems/raidSystem.js', 'raider', 2);
+      $.registerChatCommand('./systems/raidSystem.js', 'setradimsg', 1);
     }
   });
 })();
