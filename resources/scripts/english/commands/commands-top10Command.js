@@ -1,1 +1,0 @@
-$.lang.register('top5.default', 'Top 5 $1: $2');
