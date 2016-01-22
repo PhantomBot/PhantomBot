@@ -19,6 +19,11 @@
     if (curLang != 'english') {
       $.bot.loadScriptRecursive('./lang/' + curLang, true);
     }
+
+    // Set "response_@chat" to true if it hasn't been set yet, so the bot isn't muted when using a fresh install
+    if (!$.inidb.exists('settings', 'response_@chat')) {
+      $.setIniDbBoolean('settings', 'response_@chat', true);
+    }
   };
 
   /**
