@@ -4,7 +4,7 @@ Dowload your copy over on the [Releases](https://github.com/PhantomBot/PhantomBo
 
 *We're currently in the process of a complete overhaul of the original PhantomBot code, that was put together by Mast3rplan, and then continued by GMT2001 and GloriousEggroll, and PhantomIndex. The original code can be found at: https://github.com/GloriousEggroll/PhantomBot*
 
-*Credits for v1.6.6.2 and older go to everyone who contributed in various ways to the repo of GloriousEggroll. Notably GMT2001, and GloriousEggroll himself. From v2.0 and onward it will be purely the efforts of the team outlined below.
+*Credits for v1.6.6.2 and older go to everyone who contributed in various ways to the repo of GloriousEggroll. Notably GMT2001, and GloriousEggroll himself. From v2.0 and onward it will be purely the efforts of the team outlined below.*
 
 ##Prerequisites
 - [Java 8](https://www.java.com/en/download/)
