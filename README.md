@@ -2,7 +2,7 @@
 PhantomBot is a multi-purpose, cross-platform, user-hosted chat bot for Twitch.tv  
 Dowload your copy over on the [Releases](https://github.com/PhantomBot/PhantomBot/releases) tab!
 
-*We're currently moving over from our old team to a new paradigm, hence there aren't any releases yet.*
+*We're currently in the process of a re-write of the original code put together by Mast3rplan, and continued by GMT2001 and GloriousEggroll, and PhantomIndex. The original code can be found at: https://github.com/GloriousEggroll/PhantomBot*
 
 ##Prerequisites
 - [Java 8](https://www.java.com/en/download/)
