@@ -33,6 +33,8 @@ This file should give you enough insight on the general layout of the modules co
 - 2 space indents.
 - 4 space indents on line continuation (spliting a single line of code into two).
 - Encapsulate all code in `(function(){ /* Your code */ })();` and export globally needed code to $ by function assignment.
+- Do not assign variables and functions to the `$` global.
+- If a function or variable needs to be global, assign it at the end of your module like `$.functionName = functionName;`.
 - Camel case for variable and function names. (thisIsCamelCase)
 - Word capitalisation on class names. (ThisIsWordCapitalisation)
 - Use [JSDoc](http://usejsdoc.org/) comments for classes and functions.
