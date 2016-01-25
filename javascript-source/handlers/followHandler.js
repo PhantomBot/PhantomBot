@@ -56,7 +56,7 @@
    * @event twitchFollow
    */
   $.bind('twitchFollow', function (event) {
-    var follower = event.getFollows().toLowerCase();
+    var follower = event.getFollower().toLowerCase();
 
     if ($.inidb.exists('followed', follower)) {
       return;

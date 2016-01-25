@@ -373,5 +373,7 @@ Object.prototype.setCommand = function () {
 };
 Object.prototype.getFollows = function () {
 };
+Object.prototype.getFollower = function () {
+};
 Object.prototype.getHoster = function () {
 };
