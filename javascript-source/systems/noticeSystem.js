@@ -224,10 +224,10 @@
    * @event initReady
    */
   $.bind('initReady', function () {
-    if ($.bot.isModuleEnabled('./handlers/noticeSystem.js')) {
+    if ($.bot.isModuleEnabled('./systems/noticeSystem.js')) {
       // Set the interval to announce
       setInterval(function () {
-        if ($.bot.isModuleEnabled('./handlers/noticeSystem.js') && numberOfNotices > 0 && noticeToggle) {
+        if ($.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0 && noticeToggle) {
           if (messageCount >= noticeReqMessages) {
             sendNotice();
             messageCount = 0;
@@ -235,7 +235,7 @@
         }
       }, noticeInterval * 60 * 1000);
 
-      $.registerChatCommand('./handlers/noticeSystem.js', 'notice');
+      $.registerChatCommand('./systems/noticeSystem.js', 'notice');
     }
   });
 })();
