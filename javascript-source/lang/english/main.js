@@ -180,3 +180,18 @@ $.lang.register('timesystem.take.success', 'Taken $1 from $2. New balance is $3.
 $.lang.register('timesystem.take.usage', 'Usage: "!time take [name] [amount]"');
 $.lang.register('whisper.whispers.disabled', '[Whisper Mode] has been disabled.');
 $.lang.register('whisper.whispers.enabled', '[Whisper Mode] has been enabled.');
+$.lang.register('subscribehandler.new.sub.toggle.off', 'New Subscribers will no longer be welcomed upon subscribing.');
+$.lang.register('subscribehandler.new.sub.toggle.on', 'New Subscribers will now be welcomed upon subscribing.');
+$.lang.register('subscribehandler.resub.toggle.off', 'Resubscribers will no longer be welcomed upon resubscribing.');
+$.lang.register('subscribehandler.resub.toggle.on', 'Resubscribers will now be welcomed upon resubscribing.');
+$.lang.register('subscribehandler.sub.msg.usage', 'Usage: !submessage (message) - Tags: (name) and (reward)');
+$.lang.register('subscribehandler.sub.msg.set', 'New subscriber welcome message set!');
+$.lang.register('subscribehandler.resub.msg.usage', 'Usage: !resubmessage (message) - Tags: (name), (months) and (reward)');
+$.lang.register('subscribehandler.resub.msg.set', 'Resubscriber welcome message set!');
+$.lang.register('subscribehandler.reward.usage', 'Usage: !subscribereward (amount)');
+$.lang.register('subscribehandler.reward.set', 'Reward for subscribing set!');
+$.lang.register('subscribehandler.sub.count', 'There are currently $1 subscribers!');
+$.lang.register('subscribehandler.auto.submode.timer.usage', 'Usage: !autosubmodetimer (interval) - set the interval to 0 to disable.');
+$.lang.register('subscribehandler.auto.submode.timer.off', 'Automated subs only mode enabled!');
+$.lang.register('subscribehandler.auto.submode.timer.404', 'The minimum auto submode interval allowed is 30 minutes.');
+$.lang.register('subscribehandler.auto.sub.mode.imterval.set', 'Auto submode interval set! This will only work while the stream is online.');
