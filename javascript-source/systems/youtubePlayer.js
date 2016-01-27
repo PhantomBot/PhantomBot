@@ -397,7 +397,7 @@
       if (action.equalsIgnoreCase('shuffle')) {
         shuffleDefaultPlaylist = !shuffleDefaultPlaylist;
         $.setIniDbBoolean('youtubePlayer', 'shuffleDefaultPlaylist', shuffleDefaultPlaylist);
-        $.say($.whisperPrefix(sender) + $.lang.get('youtubeplayer.toggle.songShuffle.success',
+        $.say($.whisperPrefix(sender) + $.lang.get('youtubeplayer.toggle.songshuffle.success',
                 (shuffleDefaultPlaylist ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
       }
 
