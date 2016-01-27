@@ -31,13 +31,13 @@
         return;
       }
 
-      if ($.whisperMode) {
+      if (whisperMode) {
         $.inidb.set('settings', 'whisperMode', 'false');
-        $.whisperMode = false;
+        whisperMode = false;
         $.say($.whisperPrefix(sender) + $.lang.get('whisper.whispers.disabled'));
       } else {
         $.inidb.set('settings', 'whisperMode', 'true');
-        $.whisperMode = true;
+        whisperMode = true;
         $.say($.whisperPrefix(sender) + $.lang.get('whisper.whispers.enabled'));
       }
     }
