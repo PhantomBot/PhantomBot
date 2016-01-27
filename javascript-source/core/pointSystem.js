@@ -250,8 +250,8 @@
         }
 
         /**
-         * @commandpath points - setname single [name] - Set the points handle for single points
-         * @commandpath points - setname multiple [name] - Set the points handle for plural points
+         * @commandpath points setname single [name] - Set the points handle for single points
+         * @commandpath points setname multiple [name] - Set the points handle for plural points
          */
         if (action.equalsIgnoreCase('setname')) {
           (actionArg1 + '').toLowerCase();
