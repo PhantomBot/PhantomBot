@@ -13,23 +13,6 @@
       regularsGroupId = 6;
 
   /**
-   * @function validateTimeZone
-   * @param {string} timeZoneCode
-   * @returns {boolean}
-   */
-  function validateTimeZone(timeZoneCode) {
-    var validTZ = java.util.TimeZone.getAvailableIDs(),
-        i;
-
-    for (i in validTZ) {
-      if (validTZ[i] != null && validTZ[i].toLowerCase() == timeZoneCode.toLowerCase()) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  /**
    * @function hasPerm
    * @param {Object} event
    * @returns {boolean}
