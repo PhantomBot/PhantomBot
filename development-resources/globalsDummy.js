@@ -377,3 +377,5 @@ Object.prototype.getFollower = function () {
 };
 Object.prototype.getHoster = function () {
 };
+Object.prototype.getSubscriber = function () {
+};

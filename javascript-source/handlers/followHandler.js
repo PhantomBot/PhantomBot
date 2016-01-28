@@ -48,6 +48,10 @@
    * @event twitchFollowsInitialized
    */
   $.bind('twitchFollowsInitialized', function () {
+    if (!$.bot.isModuleEnabled('./handlers/followHandler.js')) {
+      return;
+    }
+
     $.consoleLn($.lang.get('followhandler.anouncements.enabled'));
     announceFollows = true;
   });
@@ -56,6 +60,10 @@
    * @event twitchFollow
    */
   $.bind('twitchFollow', function (event) {
+    if (!$.bot.isModuleEnabled('./handlers/followHandler.js')) {
+      return;
+    }
+
     var follower = event.getFollower().toLowerCase();
 
     // If the followed list is empty, then it's probably the first run of PhantomBot.
@@ -95,6 +103,10 @@
   });
 
   $.bind('twitchUnfollow', function (event) {
+    if (!$.bot.isModuleEnabled('./handlers/followHandler.js')) {
+      return;
+    }
+
     var follower = event.getFollows().toLowerCase(),
         followed = $.getIniDbBoolean('followed', follower);
 

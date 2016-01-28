@@ -10,39 +10,7 @@
       keepTimeWhenOffline = ($.inidb.exists('timeSettings', 'keepTimeWhenOffline') ? $.getIniDbBoolean('timeSettings', 'keepTimeWhenOffline') : false),
       modTimePermToggle = ($.inidb.exists('timeSettings', 'modTimePermToggle') ? $.getIniDbBoolean('timeSettings', 'modTimePermToggle') : false),
       hoursForLevelUp = ($.inidb.exists('timeSettings', 'timePromoteHours') ? parseInt($.inidb.get('timeSettings', 'timePromoteHours')) : 50),
-      timeZone = ($.inidb.exists('timeSettings', 'timeZone') ? $.inidb.get('timeSettings', 'timeZone') : 'Europe/Amsterdam'),
       regularsGroupId = 6;
-
-  /**
-   * @function validateTimeZone
-   * @param {string} timeZoneCode
-   * @returns {boolean}
-   */
-  function validateTimeZone(timeZoneCode) {
-    var validTZ = java.util.TimeZone.getAvailableIDs(),
-        i;
-
-    for (i in validTZ) {
-      if (validTZ[i] != null && validTZ[i].toLowerCase() == timeZoneCode.toLowerCase()) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  /**
-   * @function setTimeZone
-   * @param {string} timeZoneCode
-   * @returns {boolean}
-   */
-  function setTimeZone(timeZoneCode) {
-    if (validateTimeZone(timeZoneCode)) {
-      timeZone = timeZoneCode;
-      $.inidb.set('timeSettings', 'timeZone');
-      return true;
-    }
-    return false;
-  };
 
   /**
    * @function hasPerm
@@ -280,12 +248,19 @@
      * @commandpath streamertime - Announce the caster's local time
      */
     if (command.equalsIgnoreCase('streamertime')) {
-      var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone(timeZone)),
-          now = cal.getTime(),
-          datefmt = new java.text.SimpleDateFormat("EEEE MMMM d, yyyy @ h:mm a z");
-      datefmt.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
-
-      $.say($.whisperPrefix(sender) + $.lang.get('timesystem.streamertime', datefmt.format(now), $.username.resolve($.ownerName)));
+      $.say($.whisperPrefix(sender) + $.lang.get(
+              'timesystem.streamertime',
+              (new Date()).toLocaleString('en-GB', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true,
+              }),
+              $.username.resolve($.ownerName)
+          ));
     }
   });
 
