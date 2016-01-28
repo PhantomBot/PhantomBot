@@ -542,6 +542,7 @@
     });
 
     $.logEvent('init.js', 534, 'Bot locked & loaded!');
+    $.consoleLn('Bot locked & loaded!');
 
     addHook('initReady', function () {
       $.registerChatCommand('./init.js', 'reconnect', 2);
