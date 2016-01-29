@@ -66,16 +66,6 @@
 
     var follower = event.getFollower().toLowerCase();
 
-    // If the followed list is empty, then it's probably the first run of PhantomBot.
-    // This IF silences the follow announcements for 5 minutes to let the bot register all current follows
-    if ($.inidb.GetKeyList('followed', '').length == 0) {
-      announceFollows = false;
-      var t = setTimeout(function () {
-        announceFollows = true;
-        clearTimeout(t);
-      }, 3e5);
-    }
-
     if ($.inidb.exists('followed', follower)) {
       return;
     }
