@@ -663,6 +663,9 @@
         }
       }
 
+      /**
+       * @event command
+       */
       if (command.equalsIgnoreCase('chat')) {
         if (!$.isAdmin(sender)) {
           $.say($.whisperPrefix(sender) + $.adminMsg);
@@ -673,6 +676,9 @@
       }
     });
 
+    /**
+     * @event initReady
+     */
     addHook('initReady', function () {
       $.registerChatCommand('./init.js', 'chat', 1);
       $.registerChatCommand('./init.js', 'module', 1);
