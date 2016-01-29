@@ -1,545 +1,723 @@
 (function () {
-  var ircPrefix = '.',
-      permitList = [],
-      linkWhiteList = [],
+    var permitList = [],
+        timeoutList = [],
+        messageCooldown = [],
+        whiteList = [],
+        blackList = [],
 
-      linksAllowed = ($.inidb.exists('chatModerator', 'linksAllowed') ? $.getIniDbBoolean('chatModerator', 'linksAllowed') : true),
-      youtubeLinksAllowed = ($.inidb.exists('chatModerator', 'youtubeLinksAllowed') ? $.getIniDbBoolean('chatModerator', 'youtubeLinksAllowed') : true),
-      regsLinksAllowed = ($.inidb.exists('chatModerator', 'regsLinksAllowed') ? $.getIniDbBoolean('chatModerator', 'regsLinksAllowed') : true),
-      linksAgressive = ($.inidb.exists('chatModerator', 'linksAgressive') ? $.getIniDbBoolean('chatModerator', 'linksAgressive') : false),
-      linkPurgeMessage = ($.inidb.exists('chatModerator', 'linkPurgeMessage') ? $.inidb.get('chatModerator', 'linkPurgeMessage') : ''),
-      linkPermitTime = ($.inidb.exists('chatModerator', 'linkPermitTime') ? parseInt($.inidb.get('chatModerator', 'linkPermitTime')) : 60),
+        linksToggle = ($.inidb.exists('chatModerator', 'linksToggle') ? $.getIniDbBoolean('chatModerator', 'linksToggle') : true),
+        linksMessage = ($.inidb.exists('chatModerator', 'linksMessage') ? $.inidb.get('chatModerator', 'linksMessage') : 'you were timed out for linking'),
+        linkPermitTime = (parseInt($.inidb.exists('chatModerator', 'linkPermitTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'linkPermitTime')) : 120),
 
-      capsAllowed = ($.inidb.exists('chatModerator', 'capsAllowed') ? $.getIniDbBoolean('chatModerator', 'capsAllowed') : true),
-      capsTriggerRatio = ($.inidb.exists('chatModerator', 'capsTriggerRatio') ? parseFloat($.inidb.get('chatModerator', 'capsTriggerRatio')) : 0),
-      capsTriggerLength = ($.inidb.exists('chatModerator', 'capsTriggerLength') ? parseInt($.inidb.get('chatModerator', 'capsTriggerLength')) : 10),
-      capsPurgeMessage = ($.inidb.exists('chatModerator', 'capsPurgeMessage') ? $.inidb.get('chatModerator', 'capsPurgeMessage') : ''),
+        capsToggle = ($.inidb.exists('chatModerator', 'capsToggle') ? $.getIniDbBoolean('chatModerator', 'capsToggle') : true),
+        capsMessage = ($.inidb.exists('chatModerator', 'capsMessage') ? $.inidb.get('chatModerator', 'capsMessage') : 'you were timed out for overusing caps'),
+        capsLimit = (parseInt($.inidb.exists('chatModerator', 'capsLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'capsLimit')) : 30),
+        capsTriggerLength = (parseInt($.inidb.exists('chatModerator', 'capsTriggerLength')) ? parseInt($.getIniDbBoolean('chatModerator', 'capsTriggerLength')) : 0),
 
-      symbolsAllowed = ($.inidb.exists('chatModerator', 'symbolsAllowed') ? $.getIniDbBoolean('chatModerator', 'symbolsAllowed') : true),
-      symbolsTriggerCount = ($.inidb.exists('chatModerator', 'symbolsTriggerCount') ? parseInt($.inidb.get('chatModerator', 'symbolsTriggerCount')) : 0),
-      symbolsPurgeMessage = ($.inidb.exists('chatModerator', 'symbolsPurgeMessage') ? $.inidb.get('chatModerator', 'symbolsPurgeMessage') : ''),
+        spamToggle = ($.inidb.exists('chatModerator', 'spamToggle') ? $.getIniDbBoolean('chatModerator', 'spamToggle') : true),
+        spamMessage = ($.inidb.exists('chatModerator', 'spamMessage') ? $.inidb.get('chatModerator', 'spamMessage') : 'you were timed out for spamming'),
+        spamLimit = (parseInt($.inidb.exists('chatModerator', 'spamLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'spamLimit')) : 10),
 
-      repeatCharAllowed = ($.inidb.exists('chatModerator', 'repeatCharAllowed') ? $.getIniDbBoolean('chatModerator', 'repeatCharAllowed') : true),
-      repeatCharTriggerLength = ($.inidb.exists('chatModerator', 'repeatCharTriggerLength') ? parseInt($.inidb.get('chatModerator', 'repeatCharTriggerLength')) : 0),
-      repeatCharPurgeMessage = ($.inidb.exists('chatModerator', 'repeatCharPurgeMessage') ? $.inidb.get('chatModerator', 'repeatCharPurgeMessage') : '');
+        symbolsToggle = ($.inidb.exists('chatModerator', 'symbolsToggle') ? $.getIniDbBoolean('chatModerator', 'symbolsToggle') : true),
+        symbolsMessage = ($.inidb.exists('chatModerator', 'symbolsMessage') ? $.inidb.get('chatModerator', 'symbolsMessage') : 'you were timed out for overusing symbols'),
+        symbolsLimit = (parseInt($.inidb.exists('chatModerator', 'symbolsLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'symbolsLimit')) : 10),
+        symbolsTriggerLength = (parseInt($.inidb.exists('chatModerator', 'symbolsTriggerLength')) ? parseInt($.getIniDbBoolean('chatModerator', 'symbolsTriggerLength')) : 0),
 
-  /**
-   * @function loadWhitelist
-   */
-  function loadWhitelist() {
-    var keys = $.inidb.GetKeyList('linkWhitelist', ''),
-        i;
+        regularsToggle = ($.inidb.exists('chatModerator', 'regularsToggle') ? $.getIniDbBoolean('chatModerator', 'regularsToggle') : false),
+        subscribersToggle = ($.inidb.exists('chatModerator', 'subscribersToggle') ? $.getIniDbBoolean('chatModerator', 'subscribersToggle') : true),
 
-    for (i in keys) {
-      linkWhiteList.push($.inidb.get('linkWhitelist', keys[i]));
-    }
-  };
+        blacklistMessage = ($.inidb.exists('chatModerator', 'blacklistMessage') ? $.inidb.get('chatModerator', 'blacklistMessage') : 'you were timed out using a blacklisted phrase'),
+        warningTime = (parseInt($.inidb.exists('chatModerator', 'warningTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'warningTime')) : 10),
+        timeoutTime = (parseInt($.inidb.exists('chatModerator', 'timeoutTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'timeoutTime')) : 600);
+    
+    /**
+    * @function loadBlackList
+    */
+    function loadBlackList () {
+        var keys = $.inidb.GetKeyList('blacklist', '');
 
-  /**
-   * @function clearChat
-   * @export $
-   */
-  function clearChat() {
-    $.say($.ircPrefix + 'clear');
-  };
-
-  /**
-   * @function timeoutUSer
-   * @export $
-   */
-  function timeoutUser(username, seconds) {
-    var i = 1,
-        iv = setInterval(function () {
-          if (seconds) {
-            $.say($.ircPrefix + 'timeout ' + username + ' ' + seconds);
-          } else {
-            $.say($.ircPrefix + 'timeout ' + username);
-          }
-          if (i == 3) {
-            clearInterval(iv);
-          }
-          ++i;
-        }, 1e3);
-  };
-
-  /**
-   * @function banUser
-   * @export $
-   */
-  function banUser(username) {
-    $.say($.ircPrefix + 'ban ' + username);
-  };
-  /**
-   * @function unBanUser
-   * @export $
-   */
-  function unBanUser(username) {
-    $.say($.ircPrefix + 'unban ' + username);
-  };
-  /**
-   * @function purgeUser
-   * @export $
-   */
-  function purgeUser(username) {
-    $.timeoutUser(username, 1);
-  };
-  /**
-   * @function permitUserLink
-   * @export $
-   */
-  function permitUserLink(username) {
-    var t;
-    permitList.push(username);
-    t = setTimeout(function () {
-      var i;
-      for (i in permitList) {
-        if (permitList[i].equalsIgnoreCase(username)) {
-          permitList.splice(i, 1);
-          break;
+        for (var i in keys) {
+            blackList.push($.inidb.get('blacklist', keys[i]));
         }
-      }
-      clearTimeout(t);
-    }, linkPermitTime * 1e3);
-  };
-
-  /**
-   * @event ircChannelMessage
-   */
-  $.bind('ircChannelMessage', function (event) {
-    var sender = event.getSender().toLowerCase(),
-        username = $.username.resolve(sender, event.getTags()),
-        message = event.getMessage(),
-        lowerCaseMessage = (message + '').toLowerCase();
-
-    if ($.isModv3(sender, event.getTags())) {
-      if (!linksAllowed) {
-        $.patternDetector.hasLinks(event);
-      }
-      return;
-    }
-
-    if (!linksAllowed && $.patternDetector.hasLinks(event)) {
-      var i;
-
-      for (i in permitList) {
-        if (permitList[i].equalsIgnoreCase(sender)) {
-          return;
+    };
+    
+    /**
+    * @function loadWhiteList
+    */
+    function loadWhiteList () {
+        var keys = $.inidb.GetKeyList('whitelist', '');
+        
+        for (var i in keys) {
+            whiteList.push($.inidb.get('whitelist', keys[i]));
         }
-      }
-
-      if (regsLinksAllowed && $.getUserGroupId(sender) <= 6) {
-        return;
-      }
-
-      for (i in linkWhiteList) {
-        if (lowerCaseMessage.contains(linkWhiteList[i])) {
-          return;
-        }
-      }
-
-      if (youtubeLinksAllowed && (lowerCaseMessage.indexOf('youtube.com') > -1 || lowerCaseMessage.indexOf('youtube.be') > -1)) {
-        return;
-      }
-
-      $.purgeUser(sender);
-      $.log('chatMod', 'Purged ' + username + ' for posting link in "' + message + '"', sender);
-      $.say($.whisperPrefix(sender) + linkPurgeMessage);
-      return;
-    }
-
-    if (!capsAllowed && lowerCaseMessage.length > capsTriggerLength) {
-      var capsCount = event.getCapsCount(),
-          capsRatio = capsCount / lowerCaseMessage.length;
-
-      if (capsRatio > capsTriggerRatio) {
-        $.purgeUser(sender);
-        $.log('chatMod', 'Purged ' + username + ' for exceeding the caps ratio (ratio:' + capsRatio + ', trigger:' + capsTriggerRatio + ') in "' + message + '"', sender);
-        $.say($.whisperPrefix(sender) + capsPurgeMessage);
-        return;
-      }
-    }
-
-    if (!symbolsAllowed) {
-      var symbolCount = $.patternDetector.getNumberOfNonLetters(event),
-          graphemeCluster = $.patternDetector.getLongestGraphemeCluster(event);
-
-      if (symbolCount > symbolsTriggerCount || graphemeCluster > symbolsTriggerCount) {
-        $.purgeUser(sender);
-        $.log('chatMod', 'Purged ' + username + ' for exceeding the symbol limit (symbol Count: ' + Math.max(symbolCount, graphemeCluster) + ') in "' + message + '"', sender);
-        $.say($.whisperPrefix(sender) + symbolsPurgeMessage);
-        return;
-      }
-    }
-
-    if (!repeatCharAllowed) {
-      var longestSequence = $.patternDetector.getLongestRepeatedSequence(event);
-
-      if (longestSequence > repeatCharTriggerLength) {
-        $.purgeUser(sender);
-        $.log('chatMod', 'Purged ' + username + ' for exceeding the repeating character limit (longest chain: ' + longestSequence + ') in "' + message + '"', sender);
-        $.say($.whisperPrefix(sender) + repeatCharPurgeMessage);
-      }
-    }
-  });
-
-  /**
-   * @event command
-   */
-  $.bind('command', function (event) {
-    var sender = event.getSender().toLowerCase(),
-        command = event.getCommand(),
-        args = event.getArgs(),
-        argString = event.getArguments(),
-        action = args[0],
-        actionArg = args[1];
+    };
 
     /**
-     * @commandpath chat [message] - Have the bot say something in the chat
-     */
-    if (command.equalsIgnoreCase('chat') && sender.equalsIgnoreCase($.botName)) {
-      $.say(argString);
-    }
+    * @function timeoutUser
+    * @export $
+    */
+    function timeoutUser (user, time) {
+        $.say('.timeout ' + user + ' ' + time);
+        setTimeout(function () {
+            $.say('.timeout ' + user + ' ' + time);
+        }, 1000);
+    };
 
     /**
-     * @commandpath permit [username] - Permit a user to post a link for the set amount of time
-     */
-    if (command.equalsIgnoreCase('permit')) {
-      if (!action || !$.user.isKnown((action + '').toLowerCase())) {
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.permit.usage'));
+    * @function deleteMessage
+    * @export $
+    */
+    function deleteMessage (user) {
+        for (var i in timeoutList) {
+            if (timeoutList[i].equalsIgnoreCase(user)) {
+                timeoutUser(user, timeoutTime);
+                setTimeoutAndCooldown(user);
+                warning = '(timeout)'
+                return;
+            }
+        }
+        timeoutUser(user, warningTime);
+        setTimeoutAndCooldown(user);
+        warning = '(warning)';
         return;
-      }
-
-      $.permitUserLink(action.toLowerCase());
-      $.say($.lang.get('chatmoderator.permit.success', $.username.resolve(sender), $.username.resolve(action), linkPermitTime / 1e3));
-      return;
-    }
+    };
 
     /**
-     * @commandpath whitelist [url] - Add a url/domain to the link whitelist
-     */
-    if (command.equalsIgnoreCase('whitelist')) {
-      if (!action) {
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.usage'));
-        return;
-      }
-
-      $.inidb.set('linkWhitelist', linkWhiteList.length, action);
-      $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.success', action));
-      return;
-    }
+    * @function sendMessage
+    * @export $
+    */
+    function sendMessage (user, message) {
+        if (messageCooldown.length <= 1) {
+            $.say('@' + $.username.resolve(user) + ', ' + message + ' ' + warning);
+            return;
+        }
+    };
 
     /**
-     * @commandpath purge [username] - Purge all messages from a user
-     */
-    if (command.equalsIgnoreCase('purge')) {
-      if (!action && !$.user.isKnown((action + '').toLowerCase())) {
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.purge.usage'));
-        return;
-      }
-
-      $.purgeUser((action + '').toLowerCase());
-      $.say($.lang.get('chatmoderator.purge.success', $.username.resolve(action)));
-      return;
-    }
+    * @function setTimeoutAndCooldown
+    * @export $
+    */
+    function setTimeoutAndCooldown (user) {
+        timeoutList.push(user);
+        messageCooldown.push($.systemTime());
+        clearTimeouts(user);
+    };
 
     /**
-     * @commandpath timeout [username] [minutes] - Time a user out for the given amount of minutes, ommit the minutes parameter to use the Twitch default
-     */
-    if (command.equalsIgnoreCase('timeout')) {
-      if (!action && !$.user.isKnown((action + '').toLowerCase())) {
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeout.usage'));
-        return;
-      }
-
-      actionArg = parseInt(actionArg);
-
-      if (actionArg && !isNaN(actionArg)) {
-        $.timeoutUser((action + '').toLowerCase(), actionArg);
-        $.say($.lang.get('chatmoderator.timeout.success.fortime', $.username.resolve(action), (actionArg / 60)));
-        return;
-      } else {
-        $.timeoutUser((action + '').toLowerCase());
-        $.say($.lang.get('chatmoderator.timeout.success', $.username.resolve(action)));
-        return;
-      }
-    }
-
-    /**
-     * @commandpath ban [username] - Ban a user from the channel
-     */
-    if (command.equalsIgnoreCase('ban')) {
-      actionArg = parseInt(actionArg);
-      if (!action && isNaN(actionArg) && !$.user.isKnown((action + '').toLowerCase())) {
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.ban.usage'));
-        return;
-      }
-
-      $.banUser((action + '').toLowerCase(), actionArg);
-      $.say($.lang.get('chatmoderator.ban.success', $.username.resolve(action), actionArg));
-      return;
-    }
+    * @function cleartimeouts
+    * @export $
+    */
+    function clearTimeouts (user) {
+        var a = setTimeout(function () {
+            for (var i in messageCooldown) {
+                messageCooldown.splice(0);
+                break;
+            }
+            clearTimeout(a);
+        }, (30 * 1000));
+        var b = setTimeout(function () {
+            for (i in timeoutList) {
+                if (timeoutList[i].equalsIgnoreCase(user)) {
+                    timeoutList.splice(i, 0);
+                    break;
+                }
+            }
+            clearTimeout(b);
+        }, (60 * 60 * 1000));
+    };
 
     /**
-     * @commandpath unban [username] - Unban a user from the channel
-     */
-    if (command.equalsIgnoreCase('unban')) {
-      if (!action && !$.user.isKnown((action + '').toLowerCase())) {
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.unban.usage'));
-        return;
-      }
-
-      $.unBanUser((action + '').toLowerCase());
-      $.say($.lang.get('chatmoderator.unban.success', $.username.resolve(action)));
-      return;
-    }
+    * @function permitUser
+    * @export $
+    */
+    function permitUser (user) {
+        permitList.push(user);
+        var c = setTimeout(function () {
+            for (var i in permitList) {
+                if (permitList[i].equalsIgnoreCase(user)) {
+                    permitList.splice(i, 1);
+                    break;
+                }
+            }
+        clearTimeout(c);
+        }, (linkPermitTime * 1000));
+    };
 
     /**
-     * @commandpath clear - Clear the chat (Bttv cancels this!)
-     */
-    if (command.equalsIgnoreCase('clear')) {
-      $.clearChat();
-    }
+    * @function getModerationFilterStatus
+    * @export $
+    */
+    function getModerationFilterStatus (filter) {
+        return (filter ? 'enabled' : 'disabled');
+    };
 
-    if (command.equalsIgnoreCase('chatmod')) {
-      if (!action) {
-        return;
-      }
+    /**
+    * @event ircChannelMessage
+    */
+    $.bind('ircChannelMessage', function (event) {
+        var sender = event.getSender(),
+            message = event.getMessage();
 
-      /**
-       * @commandpath chatmod linksallowed - Toggle allowing users to post links
-       */
-      if (action.equalsIgnoreCase('linksallowed')) {
-        linksAllowed = !linksAllowed;
-        $.setIniDbBoolean('chatModerator', 'linksAllowed', linksAllowed);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.toggle.linksallowed',
-                (linksAllowed ? $.lang.get('chatmoderator.toggle.common.allowed') : $.lang.get('chatmoderator.toggle.common.moderated'))));
-      }
+        if (!$.isModv3(sender, event.getTags()) && (subscribersToggle || !$.isSubv3(sender, event.getTags()))) {
+            for (var i in blackList) {
+                if (message.contains(blackList[i])) {
+                    $.timeoutUser(sender, timeoutTime);
+                    $.sendMessage(sender, blacklistMessage);
+                    return;
+                }
+            }
 
+            if (linksToggle && $.patternDetector.hasLinks(event)) {
+                for (i in permitList) {
+                    if (permitList[i].equalsIgnoreCase(sender) && $.patternDetector.hasLinks(event)) {
+                        permitList.splice(i, 1);
+                        return;
+                    }
+                }
 
-      /**
-       * @commandpath chatmod youtubelinksallowed - Toggle allowing youtube links (Regardless of linksallowed setting, useful when using songrequests!)
-       */
-      if (action.equalsIgnoreCase('youtubelinksallowed')) {
-        youtubeLinksAllowed = !youtubeLinksAllowed;
-        $.setIniDbBoolean('chatModerator', 'youtubeLinksAllowed', youtubeLinksAllowed);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.toggle.youtubelinksallowed',
-                (youtubeLinksAllowed ? $.lang.get('chatmoderator.toggle.common.allowed') : $.lang.get('chatmoderator.toggle.common.moderated'))));
-      }
+                for (i in whiteList) {
+                    if (message.contains(whiteList[i])) {
+                        return;
+                    }
+                }
 
-      /**
-       * @commandpath chatmod reglinksallowed - Toggle allowing regulars to post links (Regardless of linksallowed setting)
-       */
-      if (action.equalsIgnoreCase('regslinksallowed')) {
-        regsLinksAllowed = !regsLinksAllowed;
-        $.setIniDbBoolean('chatModerator', 'regsLinksAllowed', regsLinksAllowed);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.toggle.Regularslinksallowed',
-                (regsLinksAllowed ? $.lang.get('chatmoderator.toggle.common.allowed') : $.lang.get('chatmoderator.toggle.common.moderated'))));
-      }
+                if (regularsToggle && $.getUserGroupId(sender) <= 6) {
+                    return;
+                }
 
+                $.deleteMessage(sender);
+                $.sendMessage(sender, linksMessage);
+                return;
+            }
 
-      /**
-       * @commandpath chatmod linksaggressive - Toggle scanning aggressively for links (like: virus(dot)unsafesite(dot)com or user(at)email(dot)com)
-       */
-      if (action.equalsIgnoreCase('linksagressive')) {
-        linksAgressive = !linksAgressive;
-        $.setIniDbBoolean('chatModerator', 'linksAgressive', linksAgressive);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.toggle.linksagressive',
-                (linksAgressive ? $.lang.get('.common.enabled') : $.lang.get('common.disabled'))));
-      }
+            if (capsToggle && message.length() > capsTriggerLength) {
+                if (event.getCapsCount() > capsLimit) {
+                    $.deleteMessage(sender);
+                    $.sendMessage(sender, capsMessage);
+                    return;
+                }
+            }
 
+            if (symbolsToggle && message.length() > symbolsTriggerLength) {
+                if ($.patternDetector.getNumberOfNonLetters(event) > symbolsLimit) {
+                    $.deleteMessage(sender);
+                    $.sendMessage(sender, symbolsMessage);
+                    return;
+                }
+            }
 
-      /**
-       * @commandpath chatmod setlinkpurgemessage [message] - Set the message sent to the sender when purging links
-       */
-      if (action.equalsIgnoreCase('setlinkpurgemessage')) {
-        if (!actionArg) {
-          $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.common.message.usage', 'setlinkpurgemessage'));
-          return;
+            if (spamToggle) {
+                if ($.patternDetector.getLongestRepeatedSequence(event) > spamLimit) {
+                    $.deleteMessage(sender);
+                    $.sendMessage(sender, spamMessage);
+                    return;
+                }
+            }
+        }
+    });
+    
+    /**
+    * @event command
+    */
+    $.bind('command', function (event) {
+        var sender = event.getSender(),
+            command = event.getCommand(),
+            argString = event.getArguments(),
+            args = event.getArgs(),
+            action = args[0],
+            subAction = args[1];
+
+        /**
+        * @commandpath permit [user] - Permit someone to post a link
+        */    
+        if (command.equalsIgnoreCase('permit')) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.whisperPrefix(sender) + $.modMsg);
+                return;
+            } else if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.permit.usage'));
+                return;
+            }
+            $.permitUser(action);
+            $.say($.username.resolve(action) + $.lang.get('chatModerator.permited', linkPermitTime));
+            return;
         }
 
-        linkPurgeMessage = argString.replace(action, '').trim();
-        $.inidb.set('chatModerator', 'linkPurgeMessage', linkPurgeMessage);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.common.message.success', 'links', linkPurgeMessage));
-      }
+        /**
+        * @commandpath blacklist [option] - Add a word to the blacklist
+        */
+        if (command.equalsIgnoreCase('blacklist')) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.whisperPrefix(sender) + $.modMsg);
+                return;
+            }
 
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.usage'));
+                return;
+            }
 
-      /**
-       * @commandpath chatmod setlinkpermittime [seconds] - Set the amount of time a permitted user had to post a link
-       */
-      if (action.equalsIgnoreCase('setlinkpermittime')) {
-        actionArg = parseInt(actionArg);
-        if (isNaN(actionArg)) {
-          $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.linkpermittime.usage'));
-          return;
+            /**
+            * @commandpath blacklist add [word] - Adds a word to the blacklist
+            */
+            if (action.equalsIgnoreCase('add')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.add.usage'));
+                    return;
+                }
+                var word = argString.replace(action, '').trim();
+                $.inidb.set('blackList', 'phrase_' + blackList.length, word);
+                blackList.push(word);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.added'));
+                return;
+            }
+
+            /**
+            * @commandpath blacklist remove [id] - removes a word to the blacklist
+            */
+            if (action.equalsIgnoreCase('remove')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.remove.usage'));
+                    return;
+                } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.err'));
+                    return;
+                }
+                $.inidb.del('blackList', 'phrase_' + parseInt(subAction));
+                loadBlackList();
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.removed'));
+            }
+
+            /**
+            * @commandpath blacklist show [id] - Shows that blacklist
+            */
+            if (action.equalsIgnoreCase('show')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.show.usage'));
+                    return;
+                } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.err'));
+                    return;
+                }
+                $.say($.whisperPrefix(sender) + $.inidb.get('blackList', 'phrase_' + parseInt(subAction)));
+                return;
+            }
         }
 
-        linkPermitTime = actionArg;
-        $.inidb.set('chatModerator', 'linkPermitTime', linkPermitTime);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.linkpermittime.success', linkPermitTime));
-      }
+        /**
+        * @commandpath whitelist [option] - Adds a link to the whitelist
+        */
+        if (command.equalsIgnoreCase('whiteList')) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.whisperPrefix(sender) + $.modMsg);
+                return;
+            }
 
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.usage'));
+                return;
+            }
 
-      /**
-       * @commandpath chatmod capsallowed - Toggle allowing excessive caps use
-       */
-      if (action.equalsIgnoreCase('capsallowed')) {
-        capsAllowed = !capsAllowed;
-        $.setIniDbBoolean('chatModerator', 'capsAllowed', capsAllowed);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.toggle.capsallowed',
-                (capsAllowed ? $.lang.get('chatmoderator.toggle.common.allowed') : $.lang.get('chatmoderator.toggle.common.moderated'))));
-      }
+            /**
+            * @commandpath whitelist add [link] - Adds a link to the whitelist
+            */
+            if (action.equalsIgnoreCase('add')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.add.usage'));
+                    return;
+                }
+                var link = argString.replace(action, '').trim();
+                $.inidb.set('whiteList', 'link_' + whiteList.length, link);
+                whiteList.push(link);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.link.added'));
+                return;
+            }
 
+            /**
+            * @commandpath whitelist remove [id] - Removes a link to the whitelist
+            */
+            if (action.equalsIgnoreCase('remove')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.remove.usage'));
+                    return;
+                } else if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.err'));
+                    return;
+                }
+                $.inidb.del('whiteList', 'link_' + parseInt(subAction));
+                loadWhiteList();
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.removed'));
+                return;
+            }
 
-      /**
-       * @commandpath chatmod setcapstriggerration [0-1] - Set the ratio (percentage) of lowercase to uppercase, before the moderator triggers
-       */
-      if (action.equalsIgnoreCase('setcapstriggerratio')) {
-        actionArg = parseFloat(actionArg);
-        if (isNaN(actionArg)) {
-          $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.capstriggerratio.usage'));
-          return;
+            /**
+            * @commandpath whitelist show [id] - Shows a link in the whitelist
+            */
+            if (action.equalsIgnoreCase('show')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.show.usage'));
+                    return;
+                } 
+                if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.err'));
+                    return;
+                }
+                $.say($.whisperPrefix(sender) + $.inidb.get('whiteList', 'link_' + parseInt(subAction)));
+                return;
+            }
         }
 
-        capsTriggerRatio = actionArg;
-        $.inidb.set('chatModerator', 'capsTriggerRatio', capsTriggerRatio);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.capstriggerratio.success', capsTriggerRatio))
-      }
+        /**
+        * @commandpath moderation [option] - Set the moderation filter for your chat 
+        */
+        if (command.equalsIgnoreCase('moderation')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
 
-      /**
-       * @commandpath chatmod setcapstriggerlength [amount] - Set the amount of consecutive caps for the moderator to trigger on
-       */
-      if (action.equalsIgnoreCase('setcapstriggerlength')) {
-        actionArg = parseInt(actionArg);
-        if (isNaN(actionArg)) {
-          $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.capstriggerlength.usage'));
-          return;
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.usage.toggles'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.usage.messages'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.options'));
+                return;
+            }
+
+            /**
+            * @commandpath moderation links [on / off] - Enable/Disable the link filter
+            */
+            if (action.equalsIgnoreCase('links')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.usage', $.getModerationFilterStatus(linksToggle)));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('on')) {
+                    linksToggle = true;
+                    $.inidb.set('chatModerator', 'linksToggle', linksToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.filter.enabled'));
+                    return;
+                } else if (subAction.equalsIgnoreCase('off')) {
+                    linksToggle = false;
+                    $.inidb.set('chatModerator', 'linksToggle', linksToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.filter.disabled'));
+                    return;
+                }
+            }
+
+            /**
+            * @commandpath moderation caps [on / off] - Enable/Disable the caps filter
+            */
+            if (action.equalsIgnoreCase('caps')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.usage', $.getModerationFilterStatus(capsToggle)));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('on')) {
+                    capsToggle = true;
+                    $.inidb.set('chatModerator', 'capsToggle', capsToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.filter.enabled'));
+                    return;
+                } else if (subAction.equalsIgnoreCase('off')) {
+                    capsToggle = false;
+                    $.inidb.set('chatModerator', 'capsToggle', capsToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.filter.disabled'));
+                    return;
+                }
+            }
+
+            /**
+            * @commandpath moderation links [on / off] - Enable/Disable the spam filter
+            */
+            if (action.equalsIgnoreCase('spam')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.usage', $.getModerationFilterStatus(spamToggle)));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('on')) {
+                    spamToggle = true;
+                    $.inidb.set('chatModerator', 'spamToggle', spamToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.filter.enabled'));
+                    return;
+                } else if (subAction.equalsIgnoreCase('off')) {
+                    spamToggle = false;
+                    $.inidb.set('chatModerator', 'spamToggle', spamToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.filter.disabled'));
+                    return;
+                }
+            }
+
+            /**
+            * @commandpath moderation links [on / off] - Enable/Disable the symbol filter
+            */
+            if (action.equalsIgnoreCase('symbols')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.usage', $.getModerationFilterStatus(symbolsToggle)));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('on')) {
+                    symbolsToggle = true;
+                    $.inidb.set('chatModerator', 'symbolsToggle', symbolsToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.filter.enabled'));
+                    return;
+                } else if (subAction.equalsIgnoreCase('off')) {
+                    symbolsToggle = false;
+                    $.inidb.set('chatModerator', 'symbolsToggle', symbolsToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.filter.disabled'));
+                    return;
+                }
+            }
+
+            /**
+            * @commandpath moderation regulars [true / false] - Allow regulars to post links
+            */
+            if (action.equalsIgnoreCase('regulars')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.regulars.usage'));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('true')) {
+                    regularsToggle = true;
+                    $.inidb.set('chatModerator', 'regularsToggle', regularsToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.regulars.enabled'));
+                    return;
+                } else if (subAction.equalsIgnoreCase('false')) {
+                    regularsToggle = false;
+                    $.inidb.set('chatModerator', 'regularsToggle', regularsToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.regulars.disabled'));
+                    return;
+                }
+            }
+
+            /**
+            * @commandpath moderation subscribers [true / false] - Allows subscribers to avoid all spam filters
+            */
+            if (action.equalsIgnoreCase('subscribers')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.subscribers.usage'));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('true')) {
+                    subscribersToggle = true;
+                    $.inidb.set('chatModerator', 'subscribersToggle', subscribersToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.subscribers.enabled'));
+                    return;
+                } else if (subAction.equalsIgnoreCase('false')) {
+                    subscribersToggle = false;
+                    $.inidb.set('chatModerator', 'subscribersToggle', subscribersToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.subscribers.disabled'));
+                    return;
+                }
+            }
+
+            /**
+            * @commandpath moderation linksmessage [message] - Sets the link warning message
+            */
+            if (action.equalsIgnoreCase('linksmessage')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.message.usage'));
+                    return;
+                }
+                linksMessage = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'linksMessage', linksMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.message.set', linksMessage));
+                return;
+            }
+
+            /**
+            * @commandpath moderation capsmessage [message] - Sets the cap warning message
+            */
+            if (action.equalsIgnoreCase('capsmessage')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.message.usage'));
+                    return;
+                }
+                capsMessage = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'capsMessage', capsMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.message.set', capsMessage));
+                return;
+            }
+
+            /**
+            * @commandpath moderation symbolsmessage [message] - Sets the symbols warning message
+            */
+            if (action.equalsIgnoreCase('symbolsmessage')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.message.usage'));
+                    return;
+                }
+                symbolsMessage = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'symbolsMessage', symbolsMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.message.set', symbolsMessage));
+                return;
+            }
+
+            /**
+            * @commandpath moderation spammessage [message] - Sets the spam warning message
+            */
+            if (action.equalsIgnoreCase('spammessage')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.message.usage'));
+                    return;
+                }
+                spamMessage = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'spamMessage', spamMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.message.set', spamMessage));
+                return;
+            }
+
+            /**
+            * @commandpath moderation blacklistmessage [message] - Sets the blacklist warning message
+            */
+            if (action.equalsIgnoreCase('blacklistmessage')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.message.usage'));
+                    return;
+                }
+                blacklistMessage = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'blacklistMessage', blacklistMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.message.set', blacklistMessage));
+                return;
+            }
+
+            /**
+            * @commandpath moderation permittime [amount] - Sets the permit time
+            */
+            if (action.equalsIgnoreCase('permittime')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.permit.time.usage'));
+                    return;
+                }
+                linkPermitTime = parseInt(subAction);
+                $.inidb.set('chatModerator', 'linkPermitTime', linkPermitTime);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.permit.time.set', linkPermitTime));
+                return;
+            }
+
+            /**
+            * @commandpath moderation capslimimt [amount] - Sets the caps limit
+            */
+            if (action.equalsIgnoreCase('capslimit')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.limit.usage'));
+                    return;
+                }
+                capsLimit = parseInt(subAction);
+                $.inidb.set('chatModerator', 'capsLimit', capsLimit);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.limit.set', capsLimit));
+                return;
+            }
+
+            /**
+            * @commandpath moderation capstriggerlength [amount] - Sets the minimum amount of charaters before checking for caps
+            */
+            if (action.equalsIgnoreCase('capstriggerlength')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.trigger.length.usage'));
+                    return;
+                }
+                capsTriggerLength = parseInt(subAction);
+                $.inidb.set('chatModerator', 'capsTriggerLength', capsTriggerLength);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.trigger.length.set', capsLimit));
+                return;
+            }
+
+            /**
+            * @commandpath moderation spamlimit [amount] - Sets the amount of repeating charaters allowed in a message
+            */
+            if (action.equalsIgnoreCase('spamlimit')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.limit.usage'));
+                    return;
+                }
+                spamLimit = parseInt(subAction);
+                $.inidb.set('chatModerator', 'spamLimit', spamLimit);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.limit.set', spamLimit));
+                return;
+            }
+
+            /**
+            * @commandpath moderation symbolslimit [amount] - Sets the amount of symbols allowed in a message
+            */
+            if (action.equalsIgnoreCase('symbolslimit')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.limit.usage'));
+                    return;
+                }
+                symbolsLimit = parseInt(subAction);
+                $.inidb.set('chatModerator', 'symbolsLimit', symbolsLimit);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.limit.set', symbolsLimit));
+                return;
+            }
+
+            /**
+            * @commandpath moderation symbolstriggerlength [amount] - Sets the minimum amount of charaters before checking for symbols
+            */
+            if (action.equalsIgnoreCase('symbolsTriggerLength')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.trigger.length.usage'));
+                    return;
+                }
+                symbolsTriggerLength = parseInt(subAction);
+                $.inidb.set('chatModerator', 'symbolsTriggerLength', symbolsTriggerLength);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.trigger.length.set', symbolsTriggerLength));
+                return;
+            }
+
+            /**
+            * @commandpath moderation timeouttime [amount] - Sets the time in seconds for how a long a user gets timed out
+            */
+            if (action.equalsIgnoreCase('timeoutime')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.timeout.time.usage'));
+                    return;
+                }
+                timeoutTime = parseInt(subAction);
+                $.inidb.set('chatModerator', 'timeoutTime', timeoutTime);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.timeout.time.set', timeoutTime));
+                return;
+            }
+
+            /**
+            * @commandpath moderation warningtime [amount] - Sets the time in seconds for how a long a user gets purged for
+            */
+            if (action.equalsIgnoreCase('warningtime')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.warning.time.usage'));
+                    return;
+                }
+                warningTime = parseInt(subAction);
+                $.inidb.set('chatModerator', 'warningTime', warningTime);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.warning.time.set', warningTime));
+                return;
+            }
         }
-
-        capsTriggerLength = actionArg;
-        $.inidb.set('chatModerator', 'capsTriggerLength', capsTriggerLength);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.capstriggerlength.success', capsTriggerLength))
-      }
-
-      /**
-       * @commandpath chatmod setcapspurgemessage [message] - Set the message sent to the sender when purging caps use
-       */
-      if (action.equalsIgnoreCase('setcapspurgemessage')) {
-        if (!actionArg) {
-          $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.common.message.usage', 'setcapspurgemessage'));
-          return;
+    });
+    
+    /**
+    * @event initReady
+    */
+    $.bind('initReady', function () {
+        if ($.bot.isModuleEnabled('./core/chatModerator.js')) {
+            $.registerChatCommand('./core/chatModerator.js', 'permit', 1);
+            $.registerChatCommand('./core/chatModerator.js', 'moderation', 1);
+            $.registerChatCommand('./core/chatModerator.js', 'blacklist', 1);
+            $.registerChatCommand('./core/chatModerator.js', 'whitelist', 1);
+            loadWhiteList();
+            loadBlackList();
         }
+    });
 
-        capsPurgeMessage = argString.replace(action, '').trim();
-        $.inidb.set('chatModerator', 'capsPurgeMessage', capsPurgeMessage);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.common.message.success', 'caps spam', capsPurgeMessage));
-      }
-
-      /**
-       * @commandpath chatmod symbolsallowed - Toggle allowing excessive symbol/grahpeme cluster use
-       */
-      if (action.equalsIgnoreCase('symbolsallowed')) {
-        symbolsAllowed = !symbolsAllowed;
-        $.setIniDbBoolean('chatModerator', 'symbolsAllowed', symbolsAllowed);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.toggle.symbolsallowed',
-                (symbolsAllowed ? $.lang.get('chatmoderator.toggle.common.allowed') : $.lang.get('chatmoderator.toggle.common.moderated'))));
-      }
-
-      /**
-       * @commandpath chatmod setsymboltriggercount [amount] - Set the amount of maximum symbols in a single message
-       */
-      if (action.equalsIgnoreCase('setsymbolstriggercount')) {
-        actionArg = parseInt(actionArg);
-        if (isNaN(actionArg)) {
-          $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.symbolstriggercount.usage'));
-          return;
-        }
-
-        symbolsTriggerCount = actionArg;
-        $.inidb.set('chatModerator', 'symbolsTriggerCount', symbolsTriggerCount);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.symbolstriggercount.success', symbolsTriggerCount))
-      }
-
-
-      /**
-       * @commandpath chatmod setsymbolspurgemessage [message] - Set the message sent to the user when purging symbol use
-       */
-      if (action.equalsIgnoreCase('setsymbolspurgemessage')) {
-        if (!actionArg) {
-          $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.common.message.usage', 'setsymbolspurgemessage'));
-          return;
-        }
-
-        symbolsPurgeMessage = argString.replace(action, '').trim();
-        $.inidb.set('chatModerator', 'symbolsPurgeMessage', symbolsPurgeMessage);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.common.message.success', 'symbol spam', symbolsPurgeMessage));
-      }
-
-      /**
-       * @commandpath chatmod repeatchatallowed - Toggle allowing excessivee character repitition
-       */
-      if (action.equalsIgnoreCase('repeatcharallowed')) {
-        repeatCharAllowed = !repeatCharAllowed;
-        $.setIniDbBoolean('chatModerator', 'repeatCharAllowed', repeatCharAllowed);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.toggle.repeatcharallowed',
-                (repeatCharAllowed ? $.lang.get('chatmoderator.toggle.common.allowed') : $.lang.get('chatmoderator.toggle.common.moderated'))));
-      }
-
-      /**
-       * @commandpath chatmod setrepeatchartriggerlength [amount] - Set the mount of chained identical characters before the moderator acts
-       */
-      if (action.equalsIgnoreCase('setrepeatchartriggerlength')) {
-        actionArg = parseInt(actionArg);
-        if (isNaN(actionArg)) {
-          $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.repeatchartriggerlength.usage'));
-          return;
-        }
-
-        repeatCharTriggerLength = actionArg;
-        $.inidb.set('chatModerator', 'repeatCharTriggerLength', repeatCharTriggerLength);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.repeatchartriggerlength.success', repeatCharTriggerLength))
-      }
-
-      /**
-       * @commandpath chatmod setrepeatcharpurgemessage [message] - Set the message sent to the sender when purging character repition
-       */
-      if (action.equalsIgnoreCase('setrepeatcharpurgemessage')) {
-        if (!actionArg) {
-          $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.common.message.usage', 'setrepeatcharpurgemessage'));
-          return;
-        }
-
-        repeatCharPurgeMessage = argString.replace(action, '').trim();
-        $.inidb.set('chatModerator', 'repeatCharPurgeMessage', repeatCharPurgeMessage);
-        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.set.common.message.success', 'repeated character spam', repeatCharPurgeMessage));
-      }
-    }
-  });
-
-  /**
-   * @event initReady
-   */
-  $.bind('initReady', function () {
-    if ($.bot.isModuleEnabled('./core/chatModerator.js')) {
-      $.registerChatCommand('./core/chatModerator.js', 'chat', 1);
-      $.registerChatCommand('./core/chatModerator.js', 'whitelist', 1);
-      $.registerChatCommand('./core/chatModerator.js', 'clear', 1);
-      $.registerChatCommand('./core/chatModerator.js', 'chatmod', 1);
-      $.registerChatCommand('./core/chatModerator.js', 'permit', 2);
-      $.registerChatCommand('./core/chatModerator.js', 'purge', 2);
-      $.registerChatCommand('./core/chatModerator.js', 'timeout', 2);
-      $.registerChatCommand('./core/chatModerator.js', 'ban', 2);
-      $.registerChatCommand('./core/chatModerator.js', 'unban', 2);
-
-      loadWhitelist();
-    }
-  });
-
-  /** Export functions to API */
-  $.ircPrefix = ircPrefix;
-  $.clearChat = clearChat;
-  $.timeoutUser = timeoutUser;
-  $.banUser = banUser;
-  $.unBanUser = unBanUser;
-  $.purgeUser = purgeUser;
-  $.permitUserLink = permitUserLink;
+    $.timeoutUser = timeoutUser;
+    $.deleteMessage = deleteMessage;
+    $.sendMessage = sendMessage;
+    $.setTimeoutAndCooldown = setTimeoutAndCooldown;
+    $.clearTimeouts = clearTimeouts;
+    $.permitUser = permitUser;
+    $.getModerationFilterStatus = getModerationFilterStatus;
 })();
