@@ -31,5 +31,5 @@ $.lang.register('youtubeplayer.set.requestlimit.success', 'Song request limit ha
 $.lang.register('youtubeplayer.set.requestlimit.usage', 'Current song request limit is: $1. Usage: !musicplayer limit [request amount]');
 $.lang.register('youtubeplayer.stealsong.success', '[\u266B] $1 -- requested by @$2 has been stolen and added to the default playlist!');
 $.lang.register('youtubeplayer.toggle.chatnotifications.success', '[\u266B] Chat notifications are now $1!');
-$.lang.register('youtubeplayer.toggle.songShuffle.success', 'Default playlist shuffling has been $1.');
+$.lang.register('youtubeplayer.toggle.songshuffle.success', 'Default playlist shuffling has been $1.');
 $.lang.register('youtubeplayer.volume.current', '[\u266B] Music volume: $1%.');

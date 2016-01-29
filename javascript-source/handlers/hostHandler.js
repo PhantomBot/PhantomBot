@@ -15,6 +15,10 @@
    * @event twitchHostsInitialized
    */
   $.bind('twitchHostsInitialized', function () {
+    if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
+      return;
+    }
+
     $.consoleLn(">> Enabling new hoster announcements");
     announceHosts = true;
   });
@@ -23,6 +27,10 @@
    * @event twitchHosted
    */
   $.bind('twitchHosted', function (event) {
+    if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
+      return;
+    }
+
     var hoster = event.getHoster(),
         username = $.username.resolve(hoster),
         now = $.systemTime();
@@ -51,6 +59,10 @@
    * @event twitchUnhosted
    */
   $.bind('twitchUnhosted', function (event) {
+    if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
+      return;
+    }
+
     var hoster = event.getHoster(),
         i;
     for (i in hostList) {
