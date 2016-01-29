@@ -62,7 +62,6 @@ $.lang.register('chatModerator.whitelist.removed', 'Link removed from the whitel
 $.lang.register('chatModerator.whitelist.show.usage', 'Usage: !whiteList show (id)');
 $.lang.register('chatModerator.warning', '(warning)');
 $.lang.register('chatModerator.timeout', '(timeout)');
-$.lang.register('cmd.404', 'command !$1 does not exist or is not registered.');
 $.lang.register('cmd.adminonly', 'Only an Administrator has access to that command!');
 $.lang.register('cmd.casteronly', 'Only a Caster has access to that command!');
 $.lang.register('cmd.modonly', 'Only a Moderator has access to that command!');

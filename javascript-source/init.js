@@ -358,8 +358,7 @@
       }
 
       command = event.getCommand().toLowerCase();
-      if (command.indexOf('!!') > -1 && !$.commandExists(command)) {
-        $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', command));
+      if (!$.commandExists(command)) {
         return;
       }
 
