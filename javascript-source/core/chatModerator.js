@@ -72,13 +72,13 @@
             if (timeoutList[i].equalsIgnoreCase(user)) {
                 timeoutUser(user, timeoutTime);
                 setTimeoutAndCooldown(user);
-                warning = $.lang.get('chatModerator.timeout');
+                warning = '(timeout)'
                 return;
             }
         }
         timeoutUser(user, warningTime);
         setTimeoutAndCooldown(user);
-        warning = $.lang.get('chatModerator.warning');
+        warning = '(warning)';
         return;
     };
 
