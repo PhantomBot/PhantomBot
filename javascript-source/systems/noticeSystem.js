@@ -5,9 +5,9 @@
  */
 
 (function () {
-  var noticeReqMessages = (parseInt($.inidb.exists('settings', 'reqmessages')) ? parseInt($.inidb.get('settings', 'reqmessages')) : 25),
-      noticeInterval = (parseInt($.inidb.exists('settings', 'interval')) ? parseInt($.inidb.get('settings', 'interval')) : 10),
-      noticeToggle = ($.inidb.exists('settings', 'noticetoggle') ? $.inidb.get('settings', 'noticetoggle') : false),
+  var noticeReqMessages = (parseInt($.inidb.exists('noticeSettings', 'reqmessages')) ? parseInt($.inidb.get('noticeSettings', 'reqmessages')) : 25),
+      noticeInterval = (parseInt($.inidb.exists('noticeSettings', 'interval')) ? parseInt($.inidb.get('noticeSettings', 'interval')) : 10),
+      noticeToggle = ($.inidb.exists('noticeSettings', 'noticetoggle') ? $.inidb.get('noticeSettings', 'noticetoggle') : false),
       numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
       messageCount = 0;
 
