@@ -4,11 +4,11 @@
  * Register new subscribers and unsubscribers in the channel
  */
 (function () {
-  var subMessage = ($.inidb.exists('subscribeHandler', 'subscribeMessage') ? $.getIniDbBoolean('subscribeHandler', 'subscribeMessage') : '(name) just subscribed!'),
-      reSubMessage = ($.inidb.exists('subscribeHandler', 'reSubscribeMessage') ? $.getIniDbBoolean('subscribeHandler', 'reSubscribeMessage') : '(name) just subscribed for (months) months in a row!'),
+  var subMessage = ($.inidb.exists('subscribeHandler', 'subscribeMessage') ? $.inidb.get('subscribeHandler', 'subscribeMessage') : '(name) just subscribed!'),
+      reSubMessage = ($.inidb.exists('subscribeHandler', 'reSubscribeMessage') ? $.inidb.get('subscribeHandler', 'reSubscribeMessage') : '(name) just subscribed for (months) months in a row!'),
       subWelcomeToggle = ($.inidb.exists('subscribeHandler', 'subscriberWelcomeToggle') ? $.getIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle') : true),
       reSubWelcomeToggle = ($.inidb.exists('subscribeHandler', 'reSubscriberWelcomeToggle') ? $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle') : true),
-      subReward = (parseInt($.inidb.exists('subscribeHandler', 'subscribeReward')) ? parseInt($.getIniDbBoolean('subscribeHandler', 'subscribeReward')) : 0);
+      subReward = (parseInt($.inidb.exists('subscribeHandler', 'subscribeReward')) ? parseInt($.inidb.get('subscribeHandler', 'subscribeReward')) : 0);
 
   /**
    * @event twitchSubscribeInitialized
