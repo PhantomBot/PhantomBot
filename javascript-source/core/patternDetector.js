@@ -46,8 +46,8 @@
             + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?'
             + '(?:\\b|$)'
             + '|(magnet:|mailto:|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:|ymsgr:|xfire:|steam:|aim:|spotify:)', 'i'),
-        repeatedSeq: new RegExp('(.)(\1+)', 'g'),
-        nonAlphaSeq: new RegExp('([^a-z])(\1+)', 'g'),
+        repeatedSeq: /(.)(\1+)/g,
+        nonAlphaCount: /([^a-z])/g,
       },
       lastFoundLink = '';
 
@@ -139,8 +139,7 @@
   function getLongestRepeatedSequence(event) {
     try {
       var message = (event.getMessage() + ''),
-          pattern = patterns.repeatedSeq,
-          sequences = message.match(pattern);
+          sequences = message.match(patterns.repeatedSeq);
 
       sequences.sort(function (a, b) {
         return (a.length < b.length ? 1 : -1);
@@ -161,8 +160,7 @@
   function getLongestNonLetterSequence(event) {
     try {
       var message = (event.getMessage() + ''),
-          pattern = patterns.nonAlphaSeq,
-          sequences = message.match(pattern);
+          sequences = message.match(patterns.nonAlphaSeq);
 
       sequences.sort(function (a, b) {
         return (a.length < b.length ? 1 : -1);
@@ -182,8 +180,7 @@
    */
   function getNumberOfNonLetters(event) {
     var message = (event.getMessage() + ''),
-        pattern = patterns.nonAlphaSeq,
-        sequences = message.match(pattern);
+        sequences = message.match(patterns.nonAlphaCount);
 
     try {
       sequences.sort(function (a, b) {
@@ -194,7 +191,7 @@
     } catch (e) {
       return 0;
     }
-  }
+  };
 
   /** Export functions to API */
   $.patternDetector = {
