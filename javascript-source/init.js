@@ -303,6 +303,12 @@
      */
     $api.on($script, 'ircChannelMessage', function (event) {
       consoleLn($.username.resolve(event.getSender().toLowerCase(), event.getTags()) + ': ' + event.getMessage());
+
+      if (event.getSender().equalsIgnoreCase('jtv') || event.getSender().equalsIgnoreCase('twitchnotify')) {
+        callHook('ircPrivateMessage', event, false);
+      } else {
+        callHook('ircChannelMessage', event, false);
+      }
     });
 
     /**
@@ -426,7 +432,7 @@
     });
 
     /**
-     * @event twitchHostsInitialized
+     * @event api-twitchHostsInitialized
      */
     $api.on($script, 'twitchHostsInitialized', function (event) {
       callHook('twitchHostsInitialized', event, true);
@@ -493,17 +499,6 @@
      */
     $api.on($script, 'ircPrivateMessage', function (event) {
       callHook('ircPrivateMessage', event, false);
-    });
-
-    /**
-     * @event api-ircChannelMessage
-     */
-    $api.on($script, 'ircChannelMessage', function (event) {
-      if (event.getSender().equalsIgnoreCase('jtv') || event.getSender().equalsIgnoreCase('twitchnotify')) {
-        callHook('ircPrivateMessage', event, false);
-      } else {
-        callHook('ircChannelMessage', event, false);
-      }
     });
 
     /**
