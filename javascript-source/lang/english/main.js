@@ -93,7 +93,6 @@ $.lang.register('console.received.slowmode.end', 'Received an end slow mode noti
 $.lang.register('console.received.slowmode.start', 'Received a start slow mode ($1) notification from jtv');
 $.lang.register('console.received.subscriberonly.end', 'Received an end subscribers-only mode notification from jtv');
 $.lang.register('console.received.subscriberonly.start', 'Received a start subscribers-only mode notification from jtv');
-$.lang.register('cooldown.active', 'The cool down for "!$1" has not expired yet! $2 until cool down is over!');
 $.lang.register('cooldown.clear.success', 'Cleared all cooldowns for !$1');
 $.lang.register('cooldown.clear.usage', 'Usage: "!clearcooldown [command]"');
 $.lang.register('cooldown.set.success', 'Cool down for "!$1" is now $2');

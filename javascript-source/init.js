@@ -371,7 +371,6 @@
       if (!$.isAdmin(sender)) {
         cooldown = $.coolDown.get(command, sender);
         if (cooldown > 0) {
-          $.say($.whisperPrefix(sender) + $.lang.get('cooldown.active', command, $.getTimeString(cooldown / 1e3)));
           return;
         }
       }
