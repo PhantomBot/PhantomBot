@@ -11,7 +11,7 @@
  * PhantomBot v2.0
  */
 (function () {
-  if (!$.inidb.exists('updates', 'installedv2') || $.inidb.get('settings', 'installedv2') != 'true') {
+  if (!$.inidb.exists('updates', 'installedv2') || $.inidb.get('updates', 'installedv2') != 'true') {
     Packages.com.gmt2001.Console.out.println('');
     Packages.com.gmt2001.Console.out.println('Starting PhantomBot version 2.0 updates...');
     Packages.com.gmt2001.Console.out.println('This can take several minutes...');
