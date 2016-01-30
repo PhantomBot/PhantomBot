@@ -11,7 +11,7 @@
  * PhantomBot v2.0
  */
 (function () {
-  if (!$.inidb.exists('settings', 'installedv2') || $.inidb.get('settings', 'installedv2') != 'true') {
+  if (!$.inidb.exists('updates', 'installedv2') || $.inidb.get('settings', 'installedv2') != 'true') {
     Packages.com.gmt2001.Console.out.println('');
     Packages.com.gmt2001.Console.out.println('Starting PhantomBot version 2.0 updates...');
     Packages.com.gmt2001.Console.out.println('This can take several minutes...');
@@ -71,10 +71,9 @@
       $.inidb.set('modules', defaultDisabledModules[i], 'false');
     }
 
-    $.inidb.set('settings', 'installedv2', 'true');
+    $.inidb.set('updates', 'installedv2', 'true');
     Packages.com.gmt2001.Console.out.println('PhantomBot version 2.0 updates completed...');
     Packages.com.gmt2001.Console.out.println('Now proceeding with normal start up...');
-    return;
   }
 
   /**
