@@ -79,7 +79,6 @@ $.bind('ircChannelMessage', function (event) {
                 }
                 $.inidb.del('keywords', keyword);
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', keyword));
-                return;
             }
         }
     });
