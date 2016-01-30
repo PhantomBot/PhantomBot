@@ -6,17 +6,13 @@
 $.bind('ircChannelMessage', function (event) { 
     var message = event.getMessage(),
         sender = event.getSender(),
-        regex,
-        keyword,
-        key,
+        regex = '',
+        keyword = '',
         keys = $.inidb.GetKeyList('keywords', '');
-​
         for (var i = 0; i < keys.length; i++) {
-            key = keys[i].toLowerCase();
-            regex = new RegExp('\\b' + key + '\\b', 'i');
-​
+            regex = new RegExp('\\b' + keys[i].toLowerCase() + '\\b', 'i');
             if (regex.exec(message)) {
-                keyword = $.inidb.get('keywords', key);
+                keyword = $.inidb.get('keywords', regex);
                 keyword = keyword.replace('(sender)', sender);
                 $.say(keyword);
                 return;
@@ -79,7 +75,6 @@ $.bind('ircChannelMessage', function (event) {
                 }
                 $.inidb.del('keywords', keyword);
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', keyword));
-                return;
             }
         }
     });
