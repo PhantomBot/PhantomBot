@@ -536,6 +536,9 @@
     $.logEvent('init.js', 534, 'Bot locked & loaded!');
     $.consoleLn('Bot locked & loaded!');
 
+    /**
+     * @event command
+     */
     addHook('command', function (event) {
       var sender = event.getSender().toLowerCase(),
           username = $.username.resolve(sender, event.getTags()),
@@ -664,7 +667,7 @@
       }
 
       /**
-       * @event command
+       * @commandpath chat [message] - Used by the webpanel to announce messages in the chat in name of the bot
        */
       if (command.equalsIgnoreCase('chat')) {
         if (!$.isAdmin(sender)) {
