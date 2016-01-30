@@ -275,9 +275,9 @@
     generateJavaTrampolines();
 
     // Load core scripts
-    loadScript('./core/updates.js');
     loadScript('./core/misc.js');
     loadScript('./core/jsTimers.js');
+    loadScript('./core/updates.js');
     loadScript('./core/fileSystem.js');
     loadScript('./core/lang.js');
     loadScript('./core/logging.js');
@@ -557,6 +557,7 @@
         username = $.username.resolve(sender, event.getTags()),
         command = event.getCommand(),
         args = event.getArgs(),
+        argString = event.getArguments(),
         action = args[0],
         temp,
         index;
@@ -573,6 +574,10 @@
       $.logEvent('init.js', 354, username + ' requested a reconnect!');
       $.connmgr.reconnectSession($.hostname);
       $.say($.lang.get('init.reconnect'));
+    }
+
+    if (command.equalsIgnoreCase('chat') && sender.equalsIgnoreCase($.botName)) {
+        $.say(argString);
     }
 
     if (command.equalsIgnoreCase('module')) {
