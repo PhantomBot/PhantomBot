@@ -84,10 +84,34 @@
   function getTableContents(tableName) {
     var contents = [],
         keyList = $.inidb.GetKeyList(tableName, ''),
+        temp,
         i;
 
     for (i in keyList) {
-      contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
+
+      // Handle Exceptions per table
+      switch (tableName) {
+        // Ignore rows with less than 600 seconds (10 minutes)
+        case 'time':
+          temp = parseInt($.inidb.get(tableName, keyList[i]));
+          if (temp >= 600) {
+            contents[keyList[i]] = $.inidb.get(tableName, temp);
+          }
+          break;
+
+        // Ignore rows with less than 10 points
+        case 'points':
+          temp = parseInt($.inidb.get(tableName, keyList[i]));
+          if (temp >= 10) {
+            contents[keyList[i]] = $.inidb.get(tableName, temp);
+          }
+          break;
+
+        // Put the rows in by default
+        default:
+          contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
+          break;
+      }
     }
 
     return contents;
