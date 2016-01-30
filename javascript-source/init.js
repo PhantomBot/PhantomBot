@@ -275,6 +275,7 @@
     generateJavaTrampolines();
 
     // Load core scripts
+    loadScript('./core/updates.js');
     loadScript('./core/misc.js');
     loadScript('./core/jsTimers.js');
     loadScript('./core/fileSystem.js');
