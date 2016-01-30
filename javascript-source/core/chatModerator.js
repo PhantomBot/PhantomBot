@@ -28,7 +28,8 @@
 
         blacklistMessage = ($.inidb.exists('chatModerator', 'blacklistMessage') ? $.inidb.get('chatModerator', 'blacklistMessage') : 'you were timed out using a blacklisted phrase'),
         warningTime = (parseInt($.inidb.exists('chatModerator', 'warningTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'warningTime')) : 10),
-        timeoutTime = (parseInt($.inidb.exists('chatModerator', 'timeoutTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'timeoutTime')) : 600);
+        timeoutTime = (parseInt($.inidb.exists('chatModerator', 'timeoutTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'timeoutTime')) : 600),
+        warning = '';
     
     /**
     * @function loadBlackList
@@ -79,7 +80,6 @@
         timeoutUser(user, warningTime);
         setTimeoutAndCooldown(user);
         warning = '(warning)';
-        return;
     };
 
     /**
@@ -89,7 +89,6 @@
     function sendMessage (user, message) {
         if (messageCooldown.length <= 1) {
             $.say('@' + $.username.resolve(user) + ', ' + message + ' ' + warning);
-            return;
         }
     };
 
@@ -111,7 +110,7 @@
         var a = setTimeout(function () {
             for (var i in messageCooldown) {
                 messageCooldown.splice(0);
-                break;
+                return;
             }
             clearTimeout(a);
         }, (30 * 1000));
@@ -148,7 +147,7 @@
     * @export $
     */
     function getModerationFilterStatus (filter) {
-        return (filter ? 'enabled' : 'disabled');
+        return (filter ? $.lang.get('common.enabled') : $.lang.get('common.disabled'));
     };
 
     /**
@@ -161,8 +160,8 @@
         if (!$.isModv3(sender, event.getTags()) && (subscribersToggle || !$.isSubv3(sender, event.getTags()))) {
             for (var i in blackList) {
                 if (message.contains(blackList[i])) {
-                    $.timeoutUser(sender, timeoutTime);
-                    $.sendMessage(sender, blacklistMessage);
+                    timeoutUser(sender, timeoutTime);
+                    sendMessage(sender, blacklistMessage);
                     return;
                 }
             }
@@ -185,31 +184,31 @@
                     return;
                 }
 
-                $.deleteMessage(sender);
-                $.sendMessage(sender, linksMessage);
+                deleteMessage(sender);
+                sendMessage(sender, linksMessage);
                 return;
             }
 
             if (capsToggle && message.length() > capsTriggerLength) {
                 if (event.getCapsCount() > capsLimit) {
-                    $.deleteMessage(sender);
-                    $.sendMessage(sender, capsMessage);
+                    deleteMessage(sender);
+                    sendMessage(sender, capsMessage);
                     return;
                 }
             }
 
             if (symbolsToggle && message.length() > symbolsTriggerLength) {
                 if ($.patternDetector.getNumberOfNonLetters(event) > symbolsLimit) {
-                    $.deleteMessage(sender);
-                    $.sendMessage(sender, symbolsMessage);
+                    deleteMessage(sender);
+                    sendMessage(sender, symbolsMessage);
                     return;
                 }
             }
 
             if (spamToggle) {
                 if ($.patternDetector.getLongestRepeatedSequence(event) > spamLimit) {
-                    $.deleteMessage(sender);
-                    $.sendMessage(sender, spamMessage);
+                    deleteMessage(sender);
+                    sendMessage(sender, spamMessage);
                     return;
                 }
             }
@@ -388,7 +387,7 @@
             */
             if (action.equalsIgnoreCase('links')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.usage', $.getModerationFilterStatus(linksToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.usage', getModerationFilterStatus(linksToggle)));
                     return;
                 }
 
@@ -410,7 +409,7 @@
             */
             if (action.equalsIgnoreCase('caps')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.usage', $.getModerationFilterStatus(capsToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.usage', getModerationFilterStatus(capsToggle)));
                     return;
                 }
 
@@ -432,7 +431,7 @@
             */
             if (action.equalsIgnoreCase('spam')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.usage', $.getModerationFilterStatus(spamToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.usage', getModerationFilterStatus(spamToggle)));
                     return;
                 }
 
@@ -454,7 +453,7 @@
             */
             if (action.equalsIgnoreCase('symbols')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.usage', $.getModerationFilterStatus(symbolsToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.usage', getModerationFilterStatus(symbolsToggle)));
                     return;
                 }
 
@@ -712,12 +711,4 @@
             loadBlackList();
         }
     });
-
-    $.timeoutUser = timeoutUser;
-    $.deleteMessage = deleteMessage;
-    $.sendMessage = sendMessage;
-    $.setTimeoutAndCooldown = setTimeoutAndCooldown;
-    $.clearTimeouts = clearTimeouts;
-    $.permitUser = permitUser;
-    $.getModerationFilterStatus = getModerationFilterStatus;
 })();

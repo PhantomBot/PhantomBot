@@ -276,6 +276,7 @@
     // Load core scripts
     loadScript('./core/misc.js');
     loadScript('./core/jsTimers.js');
+    loadScript('./core/updates.js');
     loadScript('./core/fileSystem.js');
     loadScript('./core/lang.js');
     loadScript('./core/logging.js');
@@ -329,7 +330,7 @@
         if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
           if (event.getAdd()) {
             if (!modeO) {
-              consoleLn('Bot ready!');
+              $.consoleLn('Bot ready!');
             }
             modeO = true;
           }
@@ -348,7 +349,7 @@
           command;
 
       if (!$.isModv3(sender, tags) && $.commandPause.isPaused()) {
-        $.say($.whisperPrefix(sender) + $.lang.get('commandpause.isactive'));
+        //$.say($.whisperPrefix(sender) + $.lang.get('commandpause.isactive'));
         return;
       }
 
@@ -357,18 +358,20 @@
       }
 
       command = event.getCommand().toLowerCase();
-      if (!$.commandExists(command)) {
+      if (command.indexOf('!!') > -1 && !$.commandExists(command)) {
+        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.404', command));
         return;
       }
 
       if (!$.permCom(sender, command)) {
-        $.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', $.getUserGroupName(sender), command));
+        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', $.getUserGroupName(sender), command));
         return;
       }
 
       if (!$.isAdmin(sender)) {
         cooldown = $.coolDown.get(command, sender);
         if (cooldown > 0) {
+          //$.say($.whisperPrefix(sender) + $.lang.get('cooldown.active', command, $.getTimeString(cooldown / 1e3)));
           return;
         }
       }
@@ -536,17 +539,27 @@
     $.logEvent('init.js', 534, 'Bot locked & loaded!');
     $.consoleLn('Bot locked & loaded!');
 
-    /**
-     * @event command
-     */
-    addHook('command', function (event) {
-      var sender = event.getSender().toLowerCase(),
-          username = $.username.resolve(sender, event.getTags()),
-          command = event.getCommand(),
-          args = event.getArgs(),
-          action = args[0],
-          temp,
-          index;
+    addHook('initReady', function () {
+      $.registerChatCommand('./init.js', 'reconnect', 2);
+      $.registerChatCommand('./init.js', 'module', 1);
+    });
+
+    // Send out initReady event
+    callHook('initReady', null, true);
+  }
+
+  /**
+   * @event api-command
+   */
+  $api.on(initScript, 'command', function (event) {
+    var sender = event.getSender().toLowerCase(),
+        username = $.username.resolve(sender, event.getTags()),
+        command = event.getCommand(),
+        args = event.getArgs(),
+        argString = event.getArguments(),
+        action = args[0],
+        temp,
+        index;
 
       /**
        * @commandpath reconnect - Tell the bot to reconnect to the twitch chat and API
@@ -567,6 +580,15 @@
           $.say($.whisperPrefix(sender) + $.adminMsg);
           return;
         }
+    if (command.equalsIgnoreCase('chat') && sender.equalsIgnoreCase($.botName)) {
+        $.say(argString);
+    }
+
+    if (command.equalsIgnoreCase('module')) {
+      if (!$.isAdmin(sender)) {
+        $.say($.whisperPrefix(sender) + $.adminMsg);
+        return;
+      }
 
         if (!action) {
           $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
