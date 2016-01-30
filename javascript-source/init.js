@@ -330,7 +330,7 @@
         if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
           if (event.getAdd()) {
             if (!modeO) {
-              $.consoleLn($.username.resolve($.botName) + ' ready!');
+              $.consoleLn($.username.resolve($.botName) + ' is ready to receive commands!');
             }
             modeO = true;
           }
