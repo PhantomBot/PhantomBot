@@ -275,6 +275,7 @@
     generateJavaTrampolines();
 
     // Load core scripts
+    loadScript('./core/updates.js');
     loadScript('./core/misc.js');
     loadScript('./core/jsTimers.js');
     loadScript('./core/fileSystem.js');
@@ -330,7 +331,7 @@
         if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
           if (event.getAdd()) {
             if (!modeO) {
-              consoleLn('Bot ready!');
+              $.consoleLn('Bot ready!');
             }
             modeO = true;
           }
@@ -349,7 +350,7 @@
           command;
 
       if (!$.isModv3(sender, tags) && $.commandPause.isPaused()) {
-        $.say($.whisperPrefix(sender) + $.lang.get('commandpause.isactive'));
+        //$.say($.whisperPrefix(sender) + $.lang.get('commandpause.isactive'));
         return;
       }
 
@@ -359,19 +360,19 @@
 
       command = event.getCommand().toLowerCase();
       if (command.indexOf('!!') > -1 && !$.commandExists(command)) {
-        $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', command));
+        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.404', command));
         return;
       }
 
       if (!$.permCom(sender, command)) {
-        $.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', $.getUserGroupName(sender), command));
+        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', $.getUserGroupName(sender), command));
         return;
       }
 
       if (!$.isAdmin(sender)) {
         cooldown = $.coolDown.get(command, sender);
         if (cooldown > 0) {
-          $.say($.whisperPrefix(sender) + $.lang.get('cooldown.active', command, $.getTimeString(cooldown / 1e3)));
+          //$.say($.whisperPrefix(sender) + $.lang.get('cooldown.active', command, $.getTimeString(cooldown / 1e3)));
           return;
         }
       }

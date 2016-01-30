@@ -8,16 +8,17 @@
   var lastFollowTime = 0,
       followTrain = 0,
       announceFollows = false,
+      check = false,
       followReward = ($.inidb.exists('settings', 'followReward') ? parseInt($.inidb.get('settings', 'followReward')) : 100);
+      followMessage = ($.inidb.exists('settings', 'followMessage') ? $.inidb.get('settings', 'followMessage') : $.lang.get('followhandler.follow.message'));
 
-  /**
+    /**
    * @function checkFollowTrain
    */
   function checkFollowTrain() {
     if (followReward > 0) {
-      if (($.systemTime() - lastFollowTime) < 36e5) {
-        followTrain += 1;
-
+      if (($.systemTime() - lastFollowTime) > 65e3) {
+      	check = false;
         if (followTrain == 3) {
           $.say($.lang.get('followhandler.followtrain.triple'));
         }
@@ -44,6 +45,7 @@
     lastFollowTime = $.systemTime();
   };
 
+
   /**
    * @event twitchFollowsInitialized
    */
@@ -59,48 +61,33 @@
   /**
    * @event twitchFollow
    */
-  $.bind('twitchFollow', function (event) {
-    if (!$.bot.isModuleEnabled('./handlers/followHandler.js')) {
-      return;
-    }
-
-    var follower = event.getFollower().toLowerCase();
-
-    // If the followed list is empty, then it's probably the first run of PhantomBot.
-    // This IF silences the follow announcements for 5 minutes to let the bot register all current follows
-    if ($.inidb.GetKeyList('followed', '').length == 0) {
-      announceFollows = false;
-      var t = setTimeout(function () {
-        announceFollows = true;
-        clearTimeout(t);
-      }, 3e5);
-    }
-
-    if ($.inidb.exists('followed', follower)) {
-      return;
-    }
-
-    if ($.bot.isModuleEnabled('./commands/lastseenCommand.js')) {
-      $.inidb.set('lastseen', follower, $.systemTime());
-    }
-
-    if (followReward > 0) {
-      $.inidb.incr('points', follower, followReward);
-    }
-
-    if (announceFollows) {
-      if (followReward > 0) {
-        $.say($.lang.get('followhandler.new.follow',
-            $.username.resolve(follower), $.getPointsString(followReward)));
-      } else {
-        $.say($.lang.get('followhandler.new.follow.noreward', $.username.resolve(follower)));
-      }
-    }
-
-    $.setIniDbBoolean('followed', follower, true);
-    $.writeToFile($.username.resolve(follower), "./addons/followHandler/latestFollower.txt", false);
-    checkFollowTrain();
-  });
+    $.bind('twitchFollow', function (event) {
+    	var follower = event.getFollower();
+    	    follower = $.username.resolve(follower),
+    	    followmsg = followMessage;
+    
+    	   if (!$.inidb.exists('followed', follower) && $.bot.isModuleEnabled('./handlers/followHandler.js')) {
+    	   	   if (followReward > 0) {
+    	   	   	   $.inidb.incr('points', follower.toLowerCase(), followReward);
+    	   	   }
+    
+    	   	   if (announceFollows && followToggle) {
+                   followmsg = followmsg.replace('(name)', follower);
+                   followmsg = followmsg.replace('(reward)', followReward);
+    	   	   	   $.say(followmsg);
+    	   	   }
+    
+    	   	   $.inidb.set('followed', follower, true);
+    	   	   $.writeToFile($.username.resolve(follower), "./addons/followHandler/latestFollower.txt", false);
+    	   	   followTrain += 1;
+    	   	   if (!check) {
+    	   	      var i = setTimeout(function () {
+    	   	       	checkFollowTrain();
+    	   	    }, 15e3);
+    	   	    check = true;
+    	   	}
+    	}
+    });
 
   $.bind('twitchUnfollow', function (event) {
     if (!$.bot.isModuleEnabled('./handlers/followHandler.js')) {
@@ -122,6 +109,7 @@
     var sender = event.getSender().toLowerCase(),
         command = event.getCommand(),
         args = event.getArgs(),
+        argString = event.getArguments();
         comArg = args[0];
 
     /**
@@ -136,6 +124,19 @@
       followReward = comArg;
       $.inidb.set('settings', 'followReward', followReward);
       $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followreward.success', $.getPointsString(followReward)));
+    }
+
+    /**
+     * @commandpath followmessage [message] - Set the follow message
+     */
+    if (command.equalsIgnoreCase('followmessage')) {
+        if (!comArg || isNaN(comArg)) {
+          $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessage.usage'));
+        }
+
+      followMessage = argString;
+      $.inidb.set('settings', 'followMessage', followMessage);
+      $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessage.success'));
     }
 
     /**
@@ -169,6 +170,7 @@
   $.bind('initReady', function () {
     if ($.bot.isModuleEnabled('./handlers/followHandler.js')) {
       $.registerChatCommand('./handlers/followHandler.js', 'followreward', 1);
+      $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
       $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
       $.registerChatCommand('./handlers/followHandler.js', 'followers', 7);
     }
