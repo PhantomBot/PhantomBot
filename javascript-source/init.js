@@ -539,6 +539,9 @@
     $.logEvent('init.js', 534, 'Bot locked & loaded!');
     $.consoleLn('Bot locked & loaded!');
 
+    /**
+     * @event command
+     */
     addHook('command', function (event) {
       var sender = event.getSender().toLowerCase(),
           username = $.username.resolve(sender, event.getTags()),
