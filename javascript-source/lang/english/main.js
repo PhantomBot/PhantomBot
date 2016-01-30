@@ -123,6 +123,9 @@ $.lang.register('hosthandler.hostlist', 'This channel is currently being hosted 
 $.lang.register('hosthandler.newhost', 'Thanks for the host $1!');
 $.lang.register('hosthandler.newhost.reward', 'Thanks for the host $1! You\'re rewarded $2 for being awesome!!');
 $.lang.register('hosthandler.set.hostreward.success', 'New hoster reward set to: $1.');
+$.lang.register('hosthandler.set.hostmessage.success', 'New hoster message set!');
+$.lang.register('hosthandler.host.message', '(name) just hosted!');
+$.lang.register('hosthandler.set.hostmessage.usage', 'Usage: !hostmessage (message) - Tags: (name) (reward)');
 $.lang.register('hosthandler.set.hostreward.usage', 'Usage: !hostreward [$1]');
 $.lang.register('init.cmsgset', 'Connected message set!');
 $.lang.register('init.module.404', 'That module does not exist or is not loaded!');

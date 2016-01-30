@@ -71,7 +71,7 @@
     	   	   	   $.inidb.incr('points', follower.toLowerCase(), followReward);
     	   	   }
     
-    	   	   if (announceFollows && followToggle) {
+    	   	   if (announceFollows) {
                    followmsg = followmsg.replace('(name)', follower);
                    followmsg = followmsg.replace('(reward)', followReward);
     	   	   	   $.say(followmsg);
