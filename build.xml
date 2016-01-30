@@ -4,7 +4,7 @@
     <property environment="env" />
     <property name="project.base.dir" value="." />
     <property name="name" value="PhantomBot" />
-    <property name="version" value="1.6.6.1" />
+    <property name="version" value="2.0" />
     <property name="java.class.path" value="" />
     <property name="src" value="${project.base.dir}/source" />
     <property name="reference" value="${project.base.dir}/libraries" />
@@ -68,7 +68,7 @@
     </target>
 
     <target depends="pre.compile" name="compile.src">
-        <javac target="1.8" source="1.8" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />
@@ -82,7 +82,7 @@
     </target>
     
     <target depends="clean.build.test" name="compile.src.test">
-        <javac target="1.8" source="1.8" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:all" />
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />

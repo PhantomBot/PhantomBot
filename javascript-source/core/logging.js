@@ -71,6 +71,10 @@
       $.mkDir('./logs/event');
     }
 
+    if (!$.fileExists('./logs/event/' + getLogDateString() + '.txt')) {
+      $.touchFile('./logs/event/' + getLogDateString() + '.txt');
+    }
+
     var now = new Date();
     $.writeToFile(now.toDateString() + ' ' + now.toTimeString() + '[' + sourceFile + '#' + lineNumber + '] ' + message,
         './logs/event/' + getLogDateString() + '.txt', true);

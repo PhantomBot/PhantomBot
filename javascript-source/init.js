@@ -8,8 +8,7 @@
  * use "$.bind('initReady', FUNCTION);" to execute code after loading all scripts (like registering commands)
  */
 (function () {
-  var initScript = $script,
-      connected = false,
+  var connected = false,
       modeO = false,
       modules = [],
       hooks = [];
@@ -275,9 +274,9 @@
     generateJavaTrampolines();
 
     // Load core scripts
-    loadScript('./core/updates.js');
     loadScript('./core/misc.js');
     loadScript('./core/jsTimers.js');
+    loadScript('./core/updates.js');
     loadScript('./core/fileSystem.js');
     loadScript('./core/lang.js');
     loadScript('./core/logging.js');
@@ -359,7 +358,7 @@
       }
 
       command = event.getCommand().toLowerCase();
-      if (command.indexOf('!!') > -1 && !$.commandExists(command)) {
+      if (!$.commandExists(command)) {
         //$.say($.whisperPrefix(sender) + $.lang.get('cmd.404', command));
         return;
       }
@@ -540,145 +539,155 @@
     $.logEvent('init.js', 534, 'Bot locked & loaded!');
     $.consoleLn('Bot locked & loaded!');
 
-    addHook('initReady', function () {
-      $.registerChatCommand('./init.js', 'reconnect', 2);
-      $.registerChatCommand('./init.js', 'module', 1);
+    addHook('command', function (event) {
+      var sender = event.getSender().toLowerCase(),
+          username = $.username.resolve(sender, event.getTags()),
+          command = event.getCommand(),
+          args = event.getArgs(),
+          argString = event.getArguments(),
+          action = args[0],
+          temp,
+          index;
+
+      /**
+       * @commandpath reconnect - Tell the bot to reconnect to the twitch chat and API
+       */
+      if (command.equalsIgnoreCase('reconnect')) {
+        $.logEvent('init.js', 354, username + ' requested a reconnect!');
+        $.connmgr.reconnectSession($.hostname);
+        $.say($.lang.get('init.reconnect'));
+      }
+
+      if (command.equalsIgnoreCase('module')) {
+        if (command.equalsIgnoreCase('chat') && sender.equalsIgnoreCase($.botName)) {
+          $.say(argString);
+        }
+
+        if (command.equalsIgnoreCase('module')) {
+          if (!action) {
+            $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+            return;
+          }
+
+          /**
+           * @commandpath module list - List all known modules
+           */
+          if (action.equalsIgnoreCase('list')) {
+            temp = [];
+            for (index in modules) {
+              if (modules[index].enabled) {
+                temp.push(modules[index].getModuleName());
+              }
+            }
+
+            $.say($.whisperPrefix(sender) + $.lang.get('init.module.list', temp.length, temp.join(', ')));
+          }
+
+          /**
+           * @commandpath module enable [script file path] - Enable a module
+           */
+          if (action.equalsIgnoreCase('enable')) {
+            temp = args[1];
+
+            if (!temp) {
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+              return;
+            }
+
+            if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
+              return;
+            }
+
+            index = getModuleIndex(temp);
+
+            if (index > -1) {
+              $.logEvent('init.js', 393, username + ' enabled module "' + modules[index].scriptFile + '"');
+              modules[index].enabled = true;
+              $.setIniDbBoolean('modules', modules[index].scriptFile, true);
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
+            } else {
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
+            }
+          }
+
+          /**
+           * @commandpath module disable [script file path] - Disable a module
+           */
+          if (action.equalsIgnoreCase('disable')) {
+            temp = args[1];
+
+            if (!temp) {
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+              return;
+            }
+
+            if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
+              return;
+            }
+
+            index = getModuleIndex(temp);
+
+            if (index > -1) {
+              $.logEvent('init.js', 393, username + ' disabled module "' + modules[index].scriptFile + '"');
+              modules[index].enabled = false;
+              $.setIniDbBoolean('modules', modules[index].scriptFile, false);
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', modules[index].getModuleName()));
+            } else {
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
+            }
+          }
+
+          /**
+           * @commandpath module status [script file path] - Get the current status of a module
+           */
+          if (action.equalsIgnoreCase('status')) {
+            temp = args[1];
+
+            if (!temp) {
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+              return;
+            }
+
+            index = getModuleIndex(temp);
+
+            if (index > 1) {
+              if (modules[index].enabled) {
+                $.say($.whisperPrefix(sender) + $.lang.get('init.module.check.enabled', modules[index].getModuleName()))
+              } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('init.module.check.disabled', modules[index].getModuleName()))
+              }
+            } else {
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
+            }
+          }
+        }
+
+        /**
+         * @commandpath chat [message] - Used by the webpanel to announce messages in the chat in name of the bot
+         */
+        if (command.equalsIgnoreCase('chat')) {
+          if (!$.isAdmin(sender)) {
+            $.say($.whisperPrefix(sender) + $.adminMsg);
+            return;
+          }
+
+          $.say(event.getArguments());
+        }
+      }
     });
 
-    // Send out initReady event
+    /**
+     * @event initReady
+     */
+    addHook('initReady', function () {
+      $.registerChatCommand('./init.js', 'chat', 1);
+      $.registerChatCommand('./init.js', 'module', 1);
+      $.registerChatCommand('./init.js', 'reconnect', 2);
+    });
+
+    // emit initReady event
     callHook('initReady', null, true);
   }
-
-  /**
-   * @event api-command
-   */
-  $api.on(initScript, 'command', function (event) {
-    var sender = event.getSender().toLowerCase(),
-        username = $.username.resolve(sender, event.getTags()),
-        command = event.getCommand(),
-        args = event.getArgs(),
-        action = args[0],
-        temp,
-        index;
-
-    /**
-     * @commandpath reconnect - Tell the bot to reconnect to the twitch chat and API
-     */
-    if (command.equalsIgnoreCase('reconnect')) {
-      if (!$.isModv3(sender, event.getTags())) {
-        $.say($.whisperPrefix(sender) + $.modMsg);
-        return;
-      }
-
-      $.logEvent('init.js', 354, username + ' requested a reconnect!');
-      $.connmgr.reconnectSession($.hostname);
-      $.say($.lang.get('init.reconnect'));
-    }
-
-    if (command.equalsIgnoreCase('module')) {
-      if (!$.isAdmin(sender)) {
-        $.say($.whisperPrefix(sender) + $.adminMsg);
-        return;
-      }
-
-      if (!action) {
-        $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-        return;
-      }
-
-      /**
-       * @commandpath module list - List all known modules
-       */
-      if (action.equalsIgnoreCase('list')) {
-        temp = [];
-        for (index in modules) {
-          if (modules[index].enabled) {
-            temp.push(modules[index].getModuleName());
-          }
-        }
-
-        $.say($.whisperPrefix(sender) + $.lang.get('init.module.list', temp.length, temp.join(', ')));
-      }
-
-      /**
-       * @commandpath module enable [script file path] - Enable a module
-       */
-      if (action.equalsIgnoreCase('enable')) {
-        temp = args[1];
-
-        if (!temp) {
-          $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-          return;
-        }
-
-        if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
-          return;
-        }
-
-        index = getModuleIndex(temp);
-
-        if (index > -1) {
-          $.logEvent('init.js', 393, username + ' enabled module "' + modules[index].scriptFile + '"');
-          modules[index].enabled = true;
-          $.setIniDbBoolean('modules', modules[index].scriptFile, true);
-          $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
-        } else {
-          $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
-        }
-      }
-
-      /**
-       * @commandpath module disable [script file path] - Disable a module
-       */
-      if (action.equalsIgnoreCase('disable')) {
-        temp = args[1];
-
-        if (!temp) {
-          $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-          return;
-        }
-
-        if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
-          return;
-        }
-
-        index = getModuleIndex(temp);
-
-        if (index > -1) {
-          $.logEvent('init.js', 393, username + ' disabled module "' + modules[index].scriptFile + '"');
-          modules[index].enabled = false;
-          $.setIniDbBoolean('modules', modules[index].scriptFile, false);
-          $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', modules[index].getModuleName()));
-        } else {
-          $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
-        }
-      }
-
-      /**
-       * @commandpath module status [script file path] - Get the current status of a module
-       */
-      if (action.equalsIgnoreCase('status')) {
-        temp = args[1];
-
-        if (!temp) {
-          $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-          return;
-        }
-
-        index = getModuleIndex(temp);
-
-        if (index > 1) {
-          if (modules[index].enabled) {
-            $.say($.whisperPrefix(sender) + $.lang.get('init.module.check.enabled', modules[index].getModuleName()))
-          } else {
-            $.say($.whisperPrefix(sender) + $.lang.get('init.module.check.disabled', modules[index].getModuleName()))
-          }
-        } else {
-          $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
-        }
-      }
-    }
-  });
 
   /** Export functions to API */
   $.consoleLn = consoleLn;
