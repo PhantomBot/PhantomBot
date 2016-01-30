@@ -7,7 +7,7 @@ Dowload your copy over on the [Releases](https://github.com/PhantomBot/PhantomBo
 *Credits for v1.6.6.2 and older go to everyone who contributed in various ways to the repo of GloriousEggroll. Notably GMT2001, and GloriousEggroll himself. From v2.0 and onward it will be purely the efforts of the team outlined below.*
 
 ##Prerequisites
-- [Java 8](https://www.java.com/en/download/)
+- [Java 7/8](https://www.java.com/en/download/)
 
 ##Support:
 Get support via our [forums](https://community.phantombot.net/)!
@@ -24,5 +24,7 @@ These are the people who will provide help for specific things related to the bo
 ##TravisCI
 The Java sources are tested against:
 - OracleJDK 8
+- OracleJDK 7
+- OpenJDK 7
 
 [![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot)
