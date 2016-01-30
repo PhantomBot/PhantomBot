@@ -103,6 +103,8 @@ var $ = {
         },
         ReloadFile: function () {
         },
+        GetFileList: function () {
+        },
         exists: function (fileName, key) {
         },
         get: function (fileName, key) {
@@ -218,16 +220,6 @@ var $ = {
           };
         }
       },
-      text: {
-        SimpleDateFormat: function () {
-          return {
-            setTimeZone: function () {
-            },
-            format: function () {
-            },
-          };
-        },
-      }
     },
     org = {
       json: {
@@ -309,16 +301,6 @@ var $ = {
             }
           },
         },
-      },
-    },
-    Pattern = {
-      compile: function () {
-        return {
-          matcher: function () {
-          },
-        };
-      },
-      find: function () {
       },
     },
     JavaAdapter = {};

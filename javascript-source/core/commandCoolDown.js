@@ -7,7 +7,8 @@
  * To use the cooldown in other scipts use the $.coolDown API
  */
 (function () {
-  var curentCooldowns = [];
+  var curentCooldowns = [],
+      moderatorCooldown = $.getIniDbBoolean('settings', 'moderatorCooldown', false);
 
   /**
    * @function set
@@ -42,8 +43,12 @@
    * @returns {Number}
    */
   function get(command, sender) {
-    var i,
-        cooldown;
+    if ($.isMod(sender) && !moderatorCooldown) {
+      return 0
+    }
+
+    var cooldown,
+        i;
 
     for (i in curentCooldowns) {
       if (!curentCooldowns[i].command.equalsIgnoreCase(command)) {
@@ -127,6 +132,19 @@
       clear(argCommand);
       $.say($.whisperPrefix(sender) + $.lang.get('cooldown.clear.success', argCommand));
     }
+
+    /**
+     * @commandpath togglemodcooldown - Toggle command cooldown for mods
+     */
+    if (command.equalsIgnoreCase('togglemodcooldown')) {
+      moderatorCooldown = !moderatorCooldown;
+      $.setIniDbBoolean('settings', 'moderatorCooldown', moderatorCooldown);
+
+      $.say($.whisperPrefix(sender) + $.lang.get(
+              'cooldown.set.togglemodcooldown',
+              (moderatorCooldown ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))
+          ));
+    }
   });
 
   /**
@@ -136,6 +154,7 @@
     if ($.bot.isModuleEnabled('./core/commandCoolDown.js')) {
       $.registerChatCommand('./core/commandCoolDown.js', 'cooldown', 1);
       $.registerChatCommand('./core/commandCoolDown.js', 'clearcooldown', 1);
+      $.registerChatCommand('./core/commandCoolDown.js', 'togglemodcooldown', 1);
     }
   });
 
