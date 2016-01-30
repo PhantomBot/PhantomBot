@@ -229,3 +229,9 @@ $.lang.register('subscribehandler.auto.submode.timer.usage', 'Usage: !autosubmod
 $.lang.register('subscribehandler.auto.submode.timer.off', 'Automated subs only mode enabled!');
 $.lang.register('subscribehandler.auto.submode.timer.404', 'The minimum auto submode interval allowed is 30 minutes.');
 $.lang.register('subscribehandler.auto.sub.mode.imterval.set', 'Auto submode interval set! This will only work while the stream is online.');
+$.lang.register('keywordhandler.add.usage', 'Usage: !keyword add (keyword) (response)');
+$.lang.register('keywordhandler.keyword.usage', 'Usage: !keyword [add / remove]');
+$.lang.register('keywordhandler.keyword.added', 'keyword "$1" added!');
+$.lang.register('keywordhandler.remove.usage', 'Usage: !keyword remove (keyword)');
+$.lang.register('keywordhandler.keyword.404', 'That keyword does not exists.');
+$.lang.register('keywordhandler.keyword.removed', 'keyword "$1" has been removed!');
