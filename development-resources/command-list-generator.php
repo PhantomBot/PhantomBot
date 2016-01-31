@@ -27,6 +27,12 @@ class CommandPathTagParser
         case 'csv':
           $this->downloadCSV();
           break;
+        case 'txt':
+          $this->downloadTXT();
+          break;
+        case 'htmltable':
+          $this->downloadHTMLTable();
+          break;
         default:
           $this->generatePage();
           break;
@@ -58,6 +64,67 @@ class CommandPathTagParser
     fclose($outputBuffer);
   }
 
+  public function downloadTXT()
+  {
+    header('Content-type: text/csv');
+    header('Content-Disposition: attachment; filename=botcommands.txt');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+
+    $outputBuffer = fopen("php://output", 'w');
+
+    fwrite($outputBuffer, 'Command Count: ' . count($this->parsedCommands));
+    fwrite($outputBuffer, PHP_EOL . PHP_EOL);
+
+    foreach ($this->parsedCommands as $command) {
+      foreach ($command as $desc => $value) {
+        fwrite($outputBuffer, $desc . ': ' . $value);
+        fwrite($outputBuffer, PHP_EOL);
+      }
+      fwrite($outputBuffer, PHP_EOL);
+    }
+
+    fclose($outputBuffer);
+  }
+
+  public function downloadHTMLTable()
+  {
+    header('Content-type: text/csv');
+    header('Content-Disposition: attachment; filename=botcommands.html');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+
+    $outputBuffer = fopen("php://output", 'w');
+
+    fwrite($outputBuffer, '<table class="pb-command-list">');
+    fwrite($outputBuffer, PHP_EOL);
+
+    foreach ($this->parsedCommands as $command) {
+      fwrite($outputBuffer, '  <tr>');
+      fwrite($outputBuffer, PHP_EOL);
+      fwrite($outputBuffer, '    <table class="pb-command">');
+      fwrite($outputBuffer, PHP_EOL);
+      foreach ($command as $desc => $value) {
+        fwrite($outputBuffer, '      <tr class="pb-command-attribute ' . strtolower($desc) . '">');
+        fwrite($outputBuffer, PHP_EOL);
+        fwrite($outputBuffer, '        <td class="pb-attribute-description">' . $desc . '</td>');
+        fwrite($outputBuffer, PHP_EOL);
+        fwrite($outputBuffer, '        <td class="pb-attribute-value">' . $value . '</td>');
+        fwrite($outputBuffer, PHP_EOL);
+        fwrite($outputBuffer, '      </tr>');
+        fwrite($outputBuffer, PHP_EOL);
+      }
+      fwrite($outputBuffer, '    </table>');
+      fwrite($outputBuffer, PHP_EOL);
+      fwrite($outputBuffer, '  </tr>');
+      fwrite($outputBuffer, PHP_EOL);
+    }
+
+    fwrite($outputBuffer, '</table>');
+
+    fclose($outputBuffer);
+  }
+
   private function generatePage()
   {
     echo '<div style="font-family:Monospace,serif;font-size:16px;">
@@ -67,10 +134,22 @@ class CommandPathTagParser
             <input type="submit" value="Generate">
           </form>';
     if (count($this->parsedCommands) > 0) {
-      echo '<form action="command-list-generator.php" method="get">
+      echo '<form action="command-list-generator.php" method="get" style="display: inline-block">
             <input type="hidden" name="source" value="' . $this->sourcePath . '">
             <input type="hidden" name="export" value="csv">
             <input type="submit" value="Download CSV">
+          </form>';
+
+      echo '<form action="command-list-generator.php" method="get" style="display: inline-block">
+            <input type="hidden" name="source" value="' . $this->sourcePath . '">
+            <input type="hidden" name="export" value="txt">
+            <input type="submit" value="Download TXT">
+          </form>';
+
+      echo '<form action="command-list-generator.php" method="get" style="display: inline-block">
+            <input type="hidden" name="source" value="' . $this->sourcePath . '">
+            <input type="hidden" name="export" value="htmltable">
+            <input type="submit" value="Download HTML Table">
           </form>';
 
       echo '<h2>Found ' . count($this->parsedCommands) . ' command paths</h2><table style="border-collapse:collapse;">';
@@ -132,12 +211,14 @@ class CommandPathTagParser
     // Seperate command and description (These should ALWAYS be seperated by " - ")
     $parts = explode(' - ', trim($line));
     $command = trim(substr($parts[0], 0, (strpos($parts[0], '[') ? strpos($parts[0], '[') - 1 : strlen($parts[0]))));
+    $permGroup = (array_key_exists($permGroup = explode(' ', $command)[0], $this->knownCommandGroups) ? $this->knownCommandGroups[$permGroup] : 'UNKNOWN');
 
     $commandInfo = [
         'command' => $command,
         'arguments' => (strpos($parts[0], '[') ? substr($parts[0], strpos($parts[0], '[')) : ''),
         'description' => (array_key_exists(1, $parts) ? $parts[1] : ''),
-        'permGroup' => (array_key_exists($permGroup = explode(' ', $command)[0], $this->knownCommandGroups) ? $this->knownCommandGroups[$permGroup] : 'UNKNOWN'),
+        'permGroup' => $permGroup,
+        'permGroupName' => $this->translateCommandGroupId($permGroup),
         'script' => $scriptFileInfo->getBasename(),
         'lineNumber' => $lineNo,
     ];
@@ -151,6 +232,34 @@ class CommandPathTagParser
 
     if ($valid) {
       $this->knownCommandGroups[$matches[1]] = $matches[2];
+    }
+  }
+
+  /**
+   * @param $gId
+   * @return string
+   */
+  private function translateCommandGroupId($gId)
+  {
+    switch ($gId) {
+      case '0':
+        return 'Caster';
+      case '1':
+        return 'Administrator';
+      case '2':
+        return 'Moderator';
+      case '3':
+        return 'Subscriber';
+      case '4':
+        return 'Donator';
+      case '5':
+        return 'Hoster';
+      case '6':
+        return 'Regular';
+      case '7':
+        return 'Viewer';
+      default:
+        return $gId;
     }
   }
 }
@@ -189,3 +298,5 @@ class SortedDirectoryIterator extends SplHeap
     return strcasecmp($value2->getRealpath(), $value1->getRealpath());
   }
 }
+
+;
