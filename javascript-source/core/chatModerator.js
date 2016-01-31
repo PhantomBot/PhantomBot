@@ -150,6 +150,15 @@
         return (filter ? $.lang.get('common.enabled') : $.lang.get('common.disabled'));
     };
 
+    function checkUserPermited (user) {
+        for (i in permitList) {
+            if (permitList[i].equalsIgnoreCase(sender)) {
+                permitList.splice(i, 1);
+                return;
+            }
+        }
+    };
+
     /**
     * @event ircChannelMessage
     */
@@ -166,14 +175,11 @@
                 }
             }
 
-            if (linksToggle && $.patternDetector.hasLinks(event)) {
-                for (i in permitList) {
-                    if (permitList[i].equalsIgnoreCase(sender) && $.patternDetector.hasLinks(event)) {
-                        permitList.splice(i, 1);
-                        return;
-                    }
-                }
+            if (checkUserPermited(sender)) {
+                return;
+            }
 
+            if (linksToggle && $.patternDetector.hasLinks(event)) {
                 for (i in whiteList) {
                     if (message.contains(whiteList[i])) {
                         return;
@@ -234,11 +240,11 @@
                 $.say($.whisperPrefix(sender) + $.modMsg);
                 return;
             } else if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.permit.usage'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.permit.usage'));
                 return;
             }
-            $.permitUser(action);
-            $.say($.username.resolve(action) + $.lang.get('chatModerator.permited', linkPermitTime));
+            permitUser(action);
+            $.say($.username.resolve(action) + $.lang.get('chatmoderator.permited', linkPermitTime));
             return;
         }
 
@@ -252,7 +258,7 @@
             }
 
             if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.usage'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.usage'));
                 return;
             }
 
@@ -261,13 +267,13 @@
             */
             if (action.equalsIgnoreCase('add')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.add.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.add.usage'));
                     return;
                 }
                 var word = argString.replace(action, '').trim();
                 $.inidb.set('blackList', 'phrase_' + blackList.length, word);
                 blackList.push(word);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.added'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.added'));
                 return;
             }
 
@@ -276,15 +282,15 @@
             */
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.remove.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.remove.usage'));
                     return;
                 } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.err'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
                 $.inidb.del('blackList', 'phrase_' + parseInt(subAction));
                 loadBlackList();
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.removed'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.removed'));
             }
 
             /**
@@ -292,10 +298,10 @@
             */
             if (action.equalsIgnoreCase('show')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.show.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.show.usage'));
                     return;
                 } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.err'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
                 $.say($.whisperPrefix(sender) + $.inidb.get('blackList', 'phrase_' + parseInt(subAction)));
@@ -313,7 +319,7 @@
             }
 
             if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.usage'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.usage'));
                 return;
             }
 
@@ -322,13 +328,13 @@
             */
             if (action.equalsIgnoreCase('add')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.add.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.add.usage'));
                     return;
                 }
                 var link = argString.replace(action, '').trim();
                 $.inidb.set('whiteList', 'link_' + whiteList.length, link);
                 whiteList.push(link);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.link.added'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));
                 return;
             }
 
@@ -337,15 +343,15 @@
             */
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.remove.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.remove.usage'));
                     return;
                 } else if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.err'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
                 $.inidb.del('whiteList', 'link_' + parseInt(subAction));
                 loadWhiteList();
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.removed'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.removed'));
                 return;
             }
 
@@ -354,11 +360,11 @@
             */
             if (action.equalsIgnoreCase('show')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.whitelist.show.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.show.usage'));
                     return;
                 } 
                 if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.err'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
                 $.say($.whisperPrefix(sender) + $.inidb.get('whiteList', 'link_' + parseInt(subAction)));
@@ -376,9 +382,9 @@
             }
 
             if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.usage.toggles'));
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.usage.messages'));
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.options'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.usage.toggles'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.usage.messages'));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.options'));
                 return;
             }
 
@@ -387,19 +393,19 @@
             */
             if (action.equalsIgnoreCase('links')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.usage', getModerationFilterStatus(linksToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.link.usage', getModerationFilterStatus(linksToggle)));
                     return;
                 }
 
                 if (subAction.equalsIgnoreCase('on')) {
                     linksToggle = true;
                     $.inidb.set('chatModerator', 'linksToggle', linksToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.filter.enabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.link.filter.enabled'));
                     return;
                 } else if (subAction.equalsIgnoreCase('off')) {
                     linksToggle = false;
                     $.inidb.set('chatModerator', 'linksToggle', linksToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.filter.disabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.link.filter.disabled'));
                     return;
                 }
             }
@@ -409,19 +415,19 @@
             */
             if (action.equalsIgnoreCase('caps')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.usage', getModerationFilterStatus(capsToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.usage', getModerationFilterStatus(capsToggle)));
                     return;
                 }
 
                 if (subAction.equalsIgnoreCase('on')) {
                     capsToggle = true;
                     $.inidb.set('chatModerator', 'capsToggle', capsToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.filter.enabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.filter.enabled'));
                     return;
                 } else if (subAction.equalsIgnoreCase('off')) {
                     capsToggle = false;
                     $.inidb.set('chatModerator', 'capsToggle', capsToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.filter.disabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.filter.disabled'));
                     return;
                 }
             }
@@ -431,19 +437,19 @@
             */
             if (action.equalsIgnoreCase('spam')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.usage', getModerationFilterStatus(spamToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spam.usage', getModerationFilterStatus(spamToggle)));
                     return;
                 }
 
                 if (subAction.equalsIgnoreCase('on')) {
                     spamToggle = true;
                     $.inidb.set('chatModerator', 'spamToggle', spamToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.filter.enabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spam.filter.enabled'));
                     return;
                 } else if (subAction.equalsIgnoreCase('off')) {
                     spamToggle = false;
                     $.inidb.set('chatModerator', 'spamToggle', spamToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.filter.disabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spam.filter.disabled'));
                     return;
                 }
             }
@@ -453,19 +459,19 @@
             */
             if (action.equalsIgnoreCase('symbols')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.usage', getModerationFilterStatus(symbolsToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.usage', getModerationFilterStatus(symbolsToggle)));
                     return;
                 }
 
                 if (subAction.equalsIgnoreCase('on')) {
                     symbolsToggle = true;
                     $.inidb.set('chatModerator', 'symbolsToggle', symbolsToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.filter.enabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.filter.enabled'));
                     return;
                 } else if (subAction.equalsIgnoreCase('off')) {
                     symbolsToggle = false;
                     $.inidb.set('chatModerator', 'symbolsToggle', symbolsToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.filter.disabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.filter.disabled'));
                     return;
                 }
             }
@@ -475,19 +481,19 @@
             */
             if (action.equalsIgnoreCase('regulars')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.regulars.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.usage'));
                     return;
                 }
 
                 if (subAction.equalsIgnoreCase('true')) {
                     regularsToggle = true;
                     $.inidb.set('chatModerator', 'regularsToggle', regularsToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.regulars.enabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.enabled'));
                     return;
                 } else if (subAction.equalsIgnoreCase('false')) {
                     regularsToggle = false;
                     $.inidb.set('chatModerator', 'regularsToggle', regularsToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.regulars.disabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.disabled'));
                     return;
                 }
             }
@@ -497,19 +503,19 @@
             */
             if (action.equalsIgnoreCase('subscribers')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.subscribers.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.usage'));
                     return;
                 }
 
                 if (subAction.equalsIgnoreCase('true')) {
                     subscribersToggle = true;
                     $.inidb.set('chatModerator', 'subscribersToggle', subscribersToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.subscribers.enabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.enabled'));
                     return;
                 } else if (subAction.equalsIgnoreCase('false')) {
                     subscribersToggle = false;
                     $.inidb.set('chatModerator', 'subscribersToggle', subscribersToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.subscribers.disabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.disabled'));
                     return;
                 }
             }
@@ -519,12 +525,12 @@
             */
             if (action.equalsIgnoreCase('linksmessage')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.message.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.link.message.usage'));
                     return;
                 }
                 linksMessage = argString.replace(action, '').trim();
                 $.inidb.set('chatModerator', 'linksMessage', linksMessage);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.link.message.set', linksMessage));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.link.message.set', linksMessage));
                 return;
             }
 
@@ -533,12 +539,12 @@
             */
             if (action.equalsIgnoreCase('capsmessage')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.message.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.message.usage'));
                     return;
                 }
                 capsMessage = argString.replace(action, '').trim();
                 $.inidb.set('chatModerator', 'capsMessage', capsMessage);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.message.set', capsMessage));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.message.set', capsMessage));
                 return;
             }
 
@@ -547,12 +553,12 @@
             */
             if (action.equalsIgnoreCase('symbolsmessage')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.message.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.message.usage'));
                     return;
                 }
                 symbolsMessage = argString.replace(action, '').trim();
                 $.inidb.set('chatModerator', 'symbolsMessage', symbolsMessage);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.message.set', symbolsMessage));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.message.set', symbolsMessage));
                 return;
             }
 
@@ -561,12 +567,12 @@
             */
             if (action.equalsIgnoreCase('spammessage')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.message.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spam.message.usage'));
                     return;
                 }
                 spamMessage = argString.replace(action, '').trim();
                 $.inidb.set('chatModerator', 'spamMessage', spamMessage);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.message.set', spamMessage));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spam.message.set', spamMessage));
                 return;
             }
 
@@ -575,12 +581,12 @@
             */
             if (action.equalsIgnoreCase('blacklistmessage')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.message.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.message.usage'));
                     return;
                 }
                 blacklistMessage = argString.replace(action, '').trim();
                 $.inidb.set('chatModerator', 'blacklistMessage', blacklistMessage);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.blacklist.message.set', blacklistMessage));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.message.set', blacklistMessage));
                 return;
             }
 
@@ -589,12 +595,12 @@
             */
             if (action.equalsIgnoreCase('permittime')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.permit.time.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.permit.time.usage'));
                     return;
                 }
                 linkPermitTime = parseInt(subAction);
                 $.inidb.set('chatModerator', 'linkPermitTime', linkPermitTime);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.permit.time.set', linkPermitTime));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.permit.time.set', linkPermitTime));
                 return;
             }
 
@@ -603,12 +609,12 @@
             */
             if (action.equalsIgnoreCase('capslimit')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.limit.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.limit.usage'));
                     return;
                 }
                 capsLimit = parseInt(subAction);
                 $.inidb.set('chatModerator', 'capsLimit', capsLimit);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.limit.set', capsLimit));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.limit.set', capsLimit));
                 return;
             }
 
@@ -617,12 +623,12 @@
             */
             if (action.equalsIgnoreCase('capstriggerlength')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.trigger.length.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.trigger.length.usage'));
                     return;
                 }
                 capsTriggerLength = parseInt(subAction);
                 $.inidb.set('chatModerator', 'capsTriggerLength', capsTriggerLength);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.caps.trigger.length.set', capsLimit));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.trigger.length.set', capsLimit));
                 return;
             }
 
@@ -631,12 +637,12 @@
             */
             if (action.equalsIgnoreCase('spamlimit')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.limit.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spam.limit.usage'));
                     return;
                 }
                 spamLimit = parseInt(subAction);
                 $.inidb.set('chatModerator', 'spamLimit', spamLimit);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.spam.limit.set', spamLimit));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spam.limit.set', spamLimit));
                 return;
             }
 
@@ -645,12 +651,12 @@
             */
             if (action.equalsIgnoreCase('symbolslimit')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.limit.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.limit.usage'));
                     return;
                 }
                 symbolsLimit = parseInt(subAction);
                 $.inidb.set('chatModerator', 'symbolsLimit', symbolsLimit);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.limit.set', symbolsLimit));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.limit.set', symbolsLimit));
                 return;
             }
 
@@ -659,12 +665,12 @@
             */
             if (action.equalsIgnoreCase('symbolsTriggerLength')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.trigger.length.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.trigger.length.usage'));
                     return;
                 }
                 symbolsTriggerLength = parseInt(subAction);
                 $.inidb.set('chatModerator', 'symbolsTriggerLength', symbolsTriggerLength);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.symbols.trigger.length.set', symbolsTriggerLength));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.trigger.length.set', symbolsTriggerLength));
                 return;
             }
 
@@ -673,12 +679,12 @@
             */
             if (action.equalsIgnoreCase('timeoutime')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.timeout.time.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeout.time.usage'));
                     return;
                 }
                 timeoutTime = parseInt(subAction);
                 $.inidb.set('chatModerator', 'timeoutTime', timeoutTime);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.timeout.time.set', timeoutTime));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeout.time.set', timeoutTime));
                 return;
             }
 
@@ -687,12 +693,12 @@
             */
             if (action.equalsIgnoreCase('warningtime')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.warning.time.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warning.time.usage'));
                     return;
                 }
                 warningTime = parseInt(subAction);
                 $.inidb.set('chatModerator', 'warningTime', warningTime);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatModerator.warning.time.set', warningTime));
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warning.time.set', warningTime));
                 return;
             }
         }
@@ -702,11 +708,11 @@
     * @event initReady
     */
     $.bind('initReady', function () {
-        if ($.bot.isModuleEnabled('./core/chatModerator.js')) {
-            $.registerChatCommand('./core/chatModerator.js', 'permit', 1);
-            $.registerChatCommand('./core/chatModerator.js', 'moderation', 1);
-            $.registerChatCommand('./core/chatModerator.js', 'blacklist', 1);
-            $.registerChatCommand('./core/chatModerator.js', 'whitelist', 1);
+        if ($.bot.isModuleEnabled('./core/chatmoderator.js')) {
+            $.registerChatCommand('./core/chatmoderator.js', 'permit', 1);
+            $.registerChatCommand('./core/chatmoderator.js', 'moderation', 1);
+            $.registerChatCommand('./core/chatmoderator.js', 'blacklist', 1);
+            $.registerChatCommand('./core/chatmoderator.js', 'whitelist', 1);
             loadWhiteList();
             loadBlackList();
         }
