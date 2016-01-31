@@ -542,7 +542,7 @@
     /**
      * @event command
      */
-    addHook('command', function (event) {
+    $api.on($script, 'command', function (event) {
       var sender = event.getSender().toLowerCase(),
           username = $.username.resolve(sender, event.getTags()),
           command = event.getCommand(),
