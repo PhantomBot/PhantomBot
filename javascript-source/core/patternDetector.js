@@ -47,7 +47,7 @@
             + '(?:\\b|$)'
             + '|(magnet:|mailto:|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:|ymsgr:|xfire:|steam:|aim:|spotify:)', 'i'),
         repeatedSeq: /(.)(\1+)/g,
-        nonAlphaSeq: /([^a-z ])(\1+)/ig,
+        nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
         nonAlphaCount: /([^a-z0-9 ])/ig,
       },
       lastFoundLink = '';
