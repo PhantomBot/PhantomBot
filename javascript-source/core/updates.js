@@ -95,7 +95,7 @@
         case 'time':
           temp = parseInt($.inidb.get(tableName, keyList[i]));
           if (temp >= 600) {
-            contents[keyList[i]] = $.inidb.get(tableName, temp);
+            contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
           }
           break;
 
@@ -103,7 +103,7 @@
         case 'points':
           temp = parseInt($.inidb.get(tableName, keyList[i]));
           if (temp >= 10) {
-            contents[keyList[i]] = $.inidb.get(tableName, temp);
+            contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
           }
           break;
 
