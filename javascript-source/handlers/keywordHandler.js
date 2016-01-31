@@ -55,7 +55,7 @@ $.bind('ircChannelMessage', function (event) {
                 }
 
                 var keyword = subAction.toLowerCase(),
-                    response = argString.substring(argString.indexOf(keyword) + keyword.length() + 1);
+                    response = argString.substring(argString.indexOf(keyword) + keyword.length + 1);
 
                 $.inidb.set('keywords', keyword, response);
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', keyword));
