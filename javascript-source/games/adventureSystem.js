@@ -156,9 +156,12 @@
    */
   function inviteTamagotchi(username, bet) {
     if ($.bot.isModuleEnabled('./games/tamagotchi.js')) {
+      //noinspection JSUnresolvedVariable,JSUnresolvedFunction
       var userTG = $.tamagotchi.getByOwner(username);
       if (userTG) {
+        //noinspection JSUnresolvedFunction
         if (userTG.isHappy()) {
+          //noinspection JSUnresolvedFunction
           userTG
               .incrFunLevel(tgFunIncr)
               .incrExpLevel(tgExpIncr)
@@ -172,6 +175,7 @@
             bet: (bet / 2),
           });
         } else {
+          //noinspection JSUnresolvedFunction
           userTG.sayFunLevel();
         }
       }
