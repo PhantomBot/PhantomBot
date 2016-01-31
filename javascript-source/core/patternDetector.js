@@ -48,7 +48,7 @@
             + '|(magnet:|mailto:|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:|ymsgr:|xfire:|steam:|aim:|spotify:)', 'i'),
         repeatedSeq: /(.)(\1+)/g,
         nonAlphaSeq: /([^a-z ])(\1+)/g,
-        nonAlphaCount: /([^a-z ])/g,
+        nonAlphaCount: /([^a-zA-Z0-9 ])/g,
       },
       lastFoundLink = '';
 
