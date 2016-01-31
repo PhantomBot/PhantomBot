@@ -16,6 +16,15 @@
   };
 
   /**
+   * @function getBotWhisperMode
+   * @export $
+   * @returns {boolean}
+   */
+  function getBotWhisperMode() {
+    return whisperMode;
+  }
+
+  /**
    * @event command
    */
   $.bind('command', function (event) {
@@ -52,4 +61,5 @@
 
   /** Export functions to API */
   $.whisperPrefix = whisperPrefix;
+  $.getBotWhisperMode = getBotWhisperMode;
 })();

@@ -143,8 +143,8 @@
     var sender = event.getSender().toLowerCase(),
         command = event.getCommand(),
         args = event.getArgs(),
-        argString = event.getArguments();
-    comArg = args[0];
+        argString = event.getArguments(),
+        comArg = args[0];
 
     /**
      * @commandpath followreward [amount] - Set the points reward for following
