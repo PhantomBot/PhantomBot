@@ -94,7 +94,6 @@ public class PhantomBot implements Listener {
   private SecureRandom rng;
   private TreeMap<String, Integer> pollResults;
   private TreeSet<String> voters;
-  private Profile profile;
   private ConnectionManager connectionManager;
   private final Session session;
   public static Session tgcSession;
@@ -107,14 +106,12 @@ public class PhantomBot implements Listener {
   private MusicWebSocketServer musicsocketserver;
   private HTTPServer httpserver;
   private EventWebSocketServer eventsocketserver;
-  private ConsoleInputListener cil;
   private static final boolean debugD = false;
   public static boolean enableDebugging = false;
   public static boolean interactive;
   public static boolean webenabled = false;
   public static boolean musicenabled = false;
   private boolean exiting = false;
-  private Thread t;
   private static PhantomBot instance;
 
   public static PhantomBot instance() {
@@ -130,7 +127,7 @@ public class PhantomBot implements Listener {
     com.gmt2001.Console.out.println("PhantomBot Core 2.0");
     com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
     com.gmt2001.Console.out.println("Creator: mast3rplan");
-    com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, Zelakto, SimeonF & Juraji");
+    com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, Scania, Zelakto, SimeonF & Juraji");
     com.gmt2001.Console.out.println("https://phantombot.net");
     com.gmt2001.Console.out.println();
 
@@ -156,7 +153,7 @@ public class PhantomBot implements Listener {
     this.keystorepassword = keystorepassword;
     this.keypassword = keypassword;
 
-    this.profile = new Profile(username.toLowerCase());
+    Profile profile = new Profile(username.toLowerCase());
     this.connectionManager = new ConnectionManager(profile);
 
     rng = new SecureRandom();
@@ -322,7 +319,7 @@ public class PhantomBot implements Listener {
     com.gmt2001.Console.out.println();
 
     if (interactive) {
-      cil = new ConsoleInputListener();
+      ConsoleInputListener cil = new ConsoleInputListener();
       cil.start();
     }
 
@@ -352,7 +349,7 @@ public class PhantomBot implements Listener {
     Script.global.defineProperty("connmgr", connectionManager, 0);
     Script.global.defineProperty("hostname", hostname, 0);
 
-    t = new Thread(new Runnable() {
+    Thread t = new Thread(new Runnable() {
       @Override
       public void run() {
         onExit();
@@ -590,11 +587,7 @@ public class PhantomBot implements Listener {
       String newwebenable = System.console().readLine().trim();
       changed = true;
 
-      if (newwebenable.equalsIgnoreCase("1") || newwebenable.equalsIgnoreCase("true")) {
-        webenable = true;
-      } else {
-        webenable = false;
-      }
+      webenable = newwebenable.equalsIgnoreCase("1") || newwebenable.equalsIgnoreCase("true");
     }
 
     if (message.equals("musicenable")) {
@@ -605,11 +598,7 @@ public class PhantomBot implements Listener {
         String newmusicenable = System.console().readLine().trim();
         changed = true;
 
-        if (newmusicenable.equalsIgnoreCase("1") || newmusicenable.equalsIgnoreCase("true")) {
-          musicenable = true;
-        } else {
-          musicenable = false;
-        }
+        musicenable = newmusicenable.equalsIgnoreCase("1") || newmusicenable.equalsIgnoreCase("true");
       }
     }
 
@@ -802,8 +791,9 @@ public class PhantomBot implements Listener {
       }
 
       File f = new File("./inistore");
-      f.delete();
-      com.gmt2001.Console.out.println("done");
+      if (f.delete()) {
+        com.gmt2001.Console.out.println("done");
+      }
     }
   }
 
