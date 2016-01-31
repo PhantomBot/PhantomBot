@@ -551,16 +551,28 @@
           temp,
           index;
 
+
+
       /**
        * @commandpath reconnect - Tell the bot to reconnect to the twitch chat and API
        */
       if (command.equalsIgnoreCase('reconnect')) {
+        if (!$.isModv3(sender, event.getTags())) {
+          $.say($.whisperPrefix(sender) + $.modMsg);
+          return;
+        }
+
         $.logEvent('init.js', 354, username + ' requested a reconnect!');
         $.connmgr.reconnectSession($.hostname);
         $.say($.lang.get('init.reconnect'));
       }
 
       if (command.equalsIgnoreCase('module')) {
+        if (!$.isAdmin(sender)) {
+          $.say($.whisperPrefix(sender) + $.adminMsg);
+          return;
+        }
+
         if (!action) {
           $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
           return;
