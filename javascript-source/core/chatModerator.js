@@ -11,23 +11,23 @@
 
       capsToggle = ($.inidb.exists('chatModerator', 'capsToggle') ? $.getIniDbBoolean('chatModerator', 'capsToggle') : true),
       capsMessage = ($.inidb.exists('chatModerator', 'capsMessage') ? $.inidb.get('chatModerator', 'capsMessage') : 'you were timed out for overusing caps'),
-      capsLimit = (parseInt($.inidb.exists('chatModerator', 'capsLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'capsLimit')) : 30),
-      capsTriggerLength = (parseInt($.inidb.exists('chatModerator', 'capsTriggerLength')) ? parseInt($.getIniDbBoolean('chatModerator', 'capsTriggerLength')) : 0),
+      capsLimit = (parseInt($.inidb.exists('chatModerator', 'capsLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'capsLimit')) : 50),
+      capsTriggerLength = (parseInt($.inidb.exists('chatModerator', 'capsTriggerLength')) ? parseInt($.getIniDbBoolean('chatModerator', 'capsTriggerLength')) : 5),
 
       spamToggle = ($.inidb.exists('chatModerator', 'spamToggle') ? $.getIniDbBoolean('chatModerator', 'spamToggle') : true),
       spamMessage = ($.inidb.exists('chatModerator', 'spamMessage') ? $.inidb.get('chatModerator', 'spamMessage') : 'you were timed out for spamming'),
-      spamLimit = (parseInt($.inidb.exists('chatModerator', 'spamLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'spamLimit')) : 10),
+      spamLimit = (parseInt($.inidb.exists('chatModerator', 'spamLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'spamLimit')) : 25),
 
       symbolsToggle = ($.inidb.exists('chatModerator', 'symbolsToggle') ? $.getIniDbBoolean('chatModerator', 'symbolsToggle') : true),
       symbolsMessage = ($.inidb.exists('chatModerator', 'symbolsMessage') ? $.inidb.get('chatModerator', 'symbolsMessage') : 'you were timed out for overusing symbols'),
-      symbolsLimit = (parseInt($.inidb.exists('chatModerator', 'symbolsLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'symbolsLimit')) : 10),
-      symbolsTriggerLength = (parseInt($.inidb.exists('chatModerator', 'symbolsTriggerLength')) ? parseInt($.getIniDbBoolean('chatModerator', 'symbolsTriggerLength')) : 0),
+      symbolsLimit = (parseInt($.inidb.exists('chatModerator', 'symbolsLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'symbolsLimit')) : 25),
+      symbolsTriggerLength = (parseInt($.inidb.exists('chatModerator', 'symbolsTriggerLength')) ? parseInt($.getIniDbBoolean('chatModerator', 'symbolsTriggerLength')) : 5),
 
       regularsToggle = ($.inidb.exists('chatModerator', 'regularsToggle') ? $.getIniDbBoolean('chatModerator', 'regularsToggle') : false),
       subscribersToggle = ($.inidb.exists('chatModerator', 'subscribersToggle') ? $.getIniDbBoolean('chatModerator', 'subscribersToggle') : true),
 
       blacklistMessage = ($.inidb.exists('chatModerator', 'blacklistMessage') ? $.inidb.get('chatModerator', 'blacklistMessage') : 'you were timed out using a blacklisted phrase'),
-      warningTime = (parseInt($.inidb.exists('chatModerator', 'warningTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'warningTime')) : 10),
+      warningTime = (parseInt($.inidb.exists('chatModerator', 'warningTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'warningTime')) : 5),
       timeoutTime = (parseInt($.inidb.exists('chatModerator', 'timeoutTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'timeoutTime')) : 600),
       warning = '';
 
@@ -113,7 +113,7 @@
     var a = setTimeout(function () {
       messageCooldown.splice(0);
       clearTimeout(a);
-    }, (30 * 1000));
+    }, (15 * 1000));
     var b = setTimeout(function () {
       for (var i in timeoutList) {
         if (timeoutList[i].equalsIgnoreCase(user)) {
@@ -257,8 +257,8 @@
      * @commandpath blacklist [option] - Add a word to the blacklist
      */
     if (command.equalsIgnoreCase('blacklist')) {
-      if (!$.isModv3(sender, event.getTags())) {
-        $.say($.whisperPrefix(sender) + $.modMsg);
+      if (!$.isAdmin(sender)) {
+        $.say($.whisperPrefix(sender) + $.adminMsg);
         return;
       }
 
@@ -318,8 +318,8 @@
      * @commandpath whitelist [option] - Adds a link to the whitelist
      */
     if (command.equalsIgnoreCase('whiteList')) {
-      if (!$.isModv3(sender, event.getTags())) {
-        $.say($.whisperPrefix(sender) + $.modMsg);
+      if (!$.isAdmin(sender)) {
+        $.say($.whisperPrefix(sender) + $.adminMsg);
         return;
       }
 
@@ -380,7 +380,7 @@
     /**
      * @commandpath moderation [option] - Set the moderation filter for your chat
      */
-    if (command.equalsIgnoreCase('moderation')) {
+    if (command.equalsIgnoreCase('moderation') || command.equalsIgnoreCase('mod')) {
       if (!$.isAdmin(sender)) {
         $.say($.whisperPrefix(sender) + $.adminMsg);
         return;
