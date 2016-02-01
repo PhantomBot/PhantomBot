@@ -715,6 +715,7 @@
     if ($.bot.isModuleEnabled('./core/chatmoderator.js')) {
       $.registerChatCommand('./core/chatmoderator.js', 'permit', 1);
       $.registerChatCommand('./core/chatmoderator.js', 'moderation', 1);
+      $.registerChatCommand('./core/chatmoderator.js', 'mod', 1);
       $.registerChatCommand('./core/chatmoderator.js', 'blacklist', 1);
       $.registerChatCommand('./core/chatmoderator.js', 'whitelist', 1);
       loadWhiteList();
