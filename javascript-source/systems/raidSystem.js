@@ -70,7 +70,7 @@
 
       $.registerChatCommand('./systems/raidSystem.js', 'raid', 2);
       $.registerChatCommand('./systems/raidSystem.js', 'raider', 2);
-      $.registerChatCommand('./systems/raidSystem.js', 'setradimsg', 1);
+      $.registerChatCommand('./systems/raidSystem.js', 'setraidmsg', 1);
     }
   });
 })();
