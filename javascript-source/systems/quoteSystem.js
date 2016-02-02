@@ -98,7 +98,7 @@
 
       var newCount;
 
-      if (newCount = deleteQuote(args[0]) < 0) {
+      if ((newCount = deleteQuote(args[0])) >= 0) {
         $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.success', args[0], newCount));
       } else {
         $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.404', args[0]));
