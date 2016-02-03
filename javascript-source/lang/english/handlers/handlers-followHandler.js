@@ -10,7 +10,7 @@ $.lang.register('followhandler.followtrain.quad', 'Quadra follow!!');
 $.lang.register('followhandler.followtrain.triple', 'Triple follow!!');
 $.lang.register('followhandler.followtrain.ultra', 'Ultra follow train!! ($1)');
 $.lang.register('followhandler.followtrain.unbelievable', 'Unbelievable follow train!! ($1)');
-$.lang.register('followhandler.set.followmessage.success', 'Follow message set!.');
+$.lang.register('followhandler.set.followmessage.success', 'Follow message set.');
 $.lang.register('followhandler.set.followmessage.usage', 'Usage: !followmessage [message] - Tags: (reward) (name)');
 $.lang.register('followhandler.set.followreward.success', 'Follow reward set to $1.');
 $.lang.register('followhandler.set.followreward.usage', 'Usage: !followreward [$1]');
