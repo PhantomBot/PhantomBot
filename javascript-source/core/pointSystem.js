@@ -141,7 +141,7 @@
         if ($.getUserPoints(sender) == 0) {
           $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.nopoints', $.pointNameMultiple));
         } else {
-          $.say($.lang.get('pointsystem.get.self.withtime', $.resolveRank(sender), $.getPointsString($.getUserPoints(sender)), $.getUserTimeString(sender)));
+          $.say(($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.withtime', $.resolveRank(sender), $.getPointsString($.getUserPoints(sender)), $.getUserTimeString(sender)));
         }
       } else {
         if (!hasPerm(event)) {
