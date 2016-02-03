@@ -376,7 +376,7 @@
         }
       }
 
-      if (isModuleEnabled('./core/pointsSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
+      if (isModuleEnabled('./core/pointSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
         if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
           $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
           return;
