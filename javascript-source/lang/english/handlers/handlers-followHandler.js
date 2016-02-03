@@ -2,7 +2,7 @@ $.lang.register('followhandler.anouncements.enabled', '>> Enabling new follower 
 $.lang.register('followhandler.check.follows', '$1 is following the channel.');
 $.lang.register('followhandler.check.notfollows', '$1 is not followeing the channel.');
 $.lang.register('followhandler.check.usage', 'Usage: !follows [username]');
-$.lang.register('followhandler.new.follow', '(name) just followed! Here\'s (reward) points!');
+$.lang.register('followhandler.follow.message', '(name) just follow! Here\'s (reward) points!');
 $.lang.register('followhandler.followers', '$1 users are following this channel!');
 $.lang.register('followhandler.followtrain.mega', 'Mega follow train!! ($1)');
 $.lang.register('followhandler.followtrain.penta', 'Penta follow!!');
