@@ -111,10 +111,10 @@
 
     if (announceFollows) {
       if (followReward > 0) {
-        $.say($.lang.get('followhandler.new.follow',
+        $.say($.lang.get('followhandler.follow.message',
             $.username.resolve(follower), $.getPointsString(followReward)));
       } else {
-        $.say($.lang.get('followhandler.new.follow.noreward', $.username.resolve(follower)));
+        $.say($.lang.get('followhandler.follow.message.noreward', $.username.resolve(follower)));
       }
     }
 
