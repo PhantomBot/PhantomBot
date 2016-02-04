@@ -166,6 +166,7 @@
     if (command.equalsIgnoreCase('followmessage')) {
       if (!comArg || isNaN(comArg)) {
         $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessage.usage'));
+        return;
       }
 
       followMessage = argString;
