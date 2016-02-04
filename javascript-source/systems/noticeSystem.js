@@ -144,7 +144,7 @@
           $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-usage'));
           return;
         } else {
-          message = argsString.substring(argsString.indexOf(action) + action.length + 1);
+          message = argsString.substring(argsString.indexOf(action) + 3);
           $.inidb.set('notices', 'message_' + numberOfNotices, message);
           numberOfNotices++;
           $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-success'));
