@@ -200,7 +200,7 @@
         $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
       }
 
-      if (!$.commandExists(commandArgument)) {
+      if (!$.commandExists(commandKey)) {
         $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404', username));
         return
       }
