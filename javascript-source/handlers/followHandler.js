@@ -65,32 +65,6 @@
    * @event twitchFollow
    */
   $.bind('twitchFollow', function (event) {
-    var follower = $.username.resolve(event.getFollower()),
-        followmsg = followMessage;
-
-    if (!$.inidb.exists('followed', follower) && $.bot.isModuleEnabled('./handlers/followHandler.js')) {
-      if (followReward > 0) {
-        $.inidb.incr('points', follower.toLowerCase(), followReward);
-      }
-
-      if (announceFollows) {
-        followmsg = followmsg
-            .replace('(name)', follower)
-            .replace('(reward)', followReward);
-
-        $.say(followmsg);
-      }
-
-      checkFollowTrain();
-      $.inidb.set('followed', follower, true);
-      $.writeToFile($.username.resolve(follower), "./addons/followHandler/latestFollower.txt", false);
-    }
-  });
-
-  /**
-   * @event twitchFollow
-   */
-  $.bind('twitchFollow', function (event) {
     if (!$.bot.isModuleEnabled('./handlers/followHandler.js')) {
       return;
     }
@@ -110,11 +84,13 @@
     }
 
     if (announceFollows) {
+		followmsg = followMessage.replace('(name)',$.username.resolve(follower)); 
       if (followReward > 0) {
-        $.say($.lang.get('followhandler.follow.message',
-            $.username.resolve(follower), $.getPointsString(followReward)));
+		  followmsg = followmsg.replace('(reward)', $.getPointsString(followReward));
+			$.say(followmsg);
+
       } else {
-        $.say($.lang.get('followhandler.follow.message.noreward', $.username.resolve(follower)));
+        $.say(followmsg.replace('(name)',$.username.resolve(follower)));
       }
     }
 
