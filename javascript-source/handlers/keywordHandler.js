@@ -1,241 +1,87 @@
-/**
- * noticeSystem.js
- *
- * Will say a message or a command every x amount of minutes.
- */
-
 (function () {
-  var noticeReqMessages = (parseInt($.inidb.exists('noticeSettings', 'reqmessages')) ? parseInt($.inidb.get('noticeSettings', 'reqmessages')) : 25),
-      noticeInterval = (parseInt($.inidb.exists('noticeSettings', 'interval')) ? parseInt($.inidb.get('noticeSettings', 'interval')) : 10),
-      noticeToggle = ($.inidb.exists('noticeSettings', 'noticetoggle') ? $.inidb.get('noticeSettings', 'noticetoggle') : false),
-      numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
-      messageCount = 0;
-
-  /**
-   /* @function reloadNotices
-   */
-  function reloadNotices() {
-    var keys = $.inidb.GetKeyList('notices', ''),
-        count = 0,
-        i;
-
-    for (i = 0; i < keys.length; i++) {
-      $.inidb.set('tempnotices', keys[i], $.inidb.get('notices', keys[i]));
-    }
-
-    $.inidb.RemoveFile('notices');
-    keys = $.inidb.GetKeyList('tempnotices', '');
-
-    for (i = 0; i < keys.length; i++) {
-      $.inidb.set('notices', 'message_' + count, $.inidb.get('tempnotices', keys[i]));
-      count++;
-    }
-
-    $.inidb.RemoveFile('tempnotices');
-  };
-
-  /**
-   * @function sendNotice
-   */
-  function sendNotice() {
-    var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
-    var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
-    var RandomNotice = $.randRange(0, numberOfNotices);
-    var notice = $.inidb.get('notices', 'message_' + RandomNotice);
-
-    if (notice.substr(0, 8).equalsIgnoreCase('command:')) {
-      notice = notice.substring(8);
-      EventBus.instance().post(new CommandEvent($.botName, notice, ' '));
-    } else {
-      $.say(notice);
-    }
-  };
-
-  /**
-   * @event ircChannelMessage
-   */
-  $.bind('ircChannelMessage', function () {
-    messageCount++;
-  });
-
-  /**
-   * @event command
-   */
-  $.bind('command', function (event) {
-    var sender = event.getSender(),
-        command = event.getCommand(),
-        argsString = event.getArguments().trim(),
-        args = event.getArgs(),
-        action = args[0],
-        message = '';
+    
+/**
+* @event ircChannelMessage
+*/
+$.bind('ircChannelMessage', function (event) { 
+    var message = event.getMessage(),
+        sender = event.getSender(),
+        regex = '',
+        keyword = '',
+        keys = $.inidb.GetKeyList('keywords', '');
+        for (var i = 0; i < keys.length; i++) {
+            regex = new RegExp('\\b' + keys[i].toLowerCase() + '\\b', 'i');
+            if (regex.exec(message)) {
+                keyword = $.inidb.get('keywords', message);
+				keyword = keyword.replace('(sender)', sender);
+                $.say(String(keyword));
+                return;
+            }
+        }
+    });
 
     /**
-     * @commandpath notice - gives you usage.
-     */
-    if (command.equalsIgnoreCase('notice')) {
-      if (!$.isAdmin(sender)) {
-        $.say($.whisperPrefix(sender) + $.adminMsg);
-        return;
-      }
+    * @event command
+    */
+    $.bind('command', function (event) {
+        var sender = event.getSender(),
+            command = event.getCommand(),
+            argString = event.getArguments().trim(),
+            args = event.getArgs(),
+            action = args[0],
+            subAction = args[1];
 
-      if (args.length == 0) {
-        $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-usage'));
-        return;
-      }
+        /**
+        * @commandpath keyword [option] - Tells you keyword usage
+        */  
+        if (command.equalsIgnoreCase('keyword')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
 
-      /**
-       * @commandpath notice get [id] - gets the notice un that id
-       */
-      if (action.equalsIgnoreCase('get')) {
-        if (args.length < 2) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-get-usage', numberOfNotices));
-          return;
-        } else if (!$.inidb.exists('notices', 'message_' + args[1])) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
-          return;
-        } else {
-          $.say($.inidb.get('notices', 'message_' + args[1]));
-          return;
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.usage'));
+                return;
+            }
+
+            /**
+            * @commandpath keyword add [keyword] [response] - Adds a keyword
+            */  
+            if (action.equalsIgnoreCase('add')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.add.usage'));
+                    return;
+                }
+
+                var keyword = subAction,
+                    response = argString.substring(argString.indexOf(keyword) + keyword.length() + 1);
+
+                $.inidb.set('keywords', keyword, response);
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', keyword));
+                return;
+            }
+
+            /**
+            * @commandpath keyword remove [keyword] - Removes that keyword
+            */ 
+            if (action.equalsIgnoreCase('remove')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.remove.usage'));
+                    return;
+                } else if (!$.inidb.exists('keywords', keyword)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.404'));
+                    return;
+                }
+                $.inidb.del('keywords', keyword);
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', keyword));
+            }
         }
-      }
-
-      /**
-       * @commandpath notice edit [id] [new message] - allows you to edit a notice with that id
-       */
-      if (action.equalsIgnoreCase('edit')) {
-        if (args.length < 3) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-usage', numberOfNotices));
-          return;
-        } else if (!$.inidb.exists('notices', 'message_' + args[1])) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
-          return;
-        } else {
-          message = argsString.substring(argsString.indexOf(action) + action.length() + 1);
-          $.inidb.set('notices', 'message_' + args[1], message);
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-success'));
-          return;
+    });
+    
+    $.bind('initReady', function () {
+        if ($.bot.isModuleEnabled('./handlers/keywordHandler.js')) {
+            $.registerChatCommand('./handlers/keywordHandler.js', 'keyword', 1);
         }
-      }
-
-      /**
-       * @commandpath notice remove [id] - removes that notice under that id
-       */
-      if (action.equalsIgnoreCase('remove')) {
-        if (args.length < 2) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-remove-usage', numberOfNotices));
-          return;
-        } else if (!$.inidb.exists('notices', 'message_' + args[1])) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
-          return;
-        } else {
-          $.inidb.del('notices', 'message_' + args[1]);
-          numberOfNotices--;
-          reloadNotices();
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-remove-success'));
-          return;
-        }
-      }
-
-      /**
-       * @commandpath notice add [message or command] - adds a notice, with a custom message, or a command
-       */
-      if (action.equalsIgnoreCase('add')) {
-        if (args.length < 2) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-usage'));
-          return;
-        } else {
-          message = argsString.substring(argsString.indexOf(action) + 3);
-          $.inidb.set('notices', 'message_' + numberOfNotices, message);
-          numberOfNotices++;
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-success'));
-          return;
-        }
-      }
-
-      /**
-       * @commandpath notice interval [seconds] - sets the notice interval
-       */
-      if (action.equalsIgnoreCase('interval')) {
-        if (args.length < 2) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-interval-usage'));
-          return;
-        } else if (parseInt(args[1]) < 2) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-interval-404'));
-          return;
-        } else {
-          $.inidb.set('settings', 'interval', parseInt(args[1]));
-          noticeInterval = parseInt(args[1]);
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-inteval-success'));
-          return;
-        }
-      }
-
-      /**
-       * @commandpath notice req [amount of messages] - set the amount of messages needed to trigger a notice
-       */
-      if (action.equalsIgnoreCase('req')) {
-        if (args.length < 2) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-usage'));
-          return;
-        } else if (parseInt(args[1]) < 1) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-404'));
-          return;
-        } else {
-          $.inidb.set('settings', 'reqmessages', parseInt(args[1]));
-          noticeReqMessages = parseInt(args[1]);
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-success'));
-          return;
-        }
-      }
-
-      /**
-       * @commandpath notice config - shows the notice settings
-       */
-      if (action.equalsIgnoreCase('config')) {
-        $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-config', noticeToggle, noticeInterval, noticeReqMessages, numberOfNotices));
-        return;
-      }
-
-      /**
-       * @commandpath notice toggle - toggles notices on and off
-       */
-      if (action.equalsIgnoreCase('toggle')) {
-        noticeToggle = !noticeToggle;
-
-        $.inidb.set('settings', 'noticetoggle', noticeToggle);
-
-        if (noticeToggle) {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-disabled'));
-        } else {
-          $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-enabled'));
-        }
-      }
-
-      /**
-       * @commandpath notice reload - reloads all notices
-       */
-      if (action.equalsIgnoreCase('reload')) {
-        reloadNotices();
-      }
-    }
-  });
-
-  /**
-   * @event initReady
-   */
-  $.bind('initReady', function () {
-    if ($.bot.isModuleEnabled('./systems/noticeSystem.js')) {
-      // Set the interval to announce
-      setInterval(function () {
-        if ($.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0 && noticeToggle) {
-          if (messageCount >= noticeReqMessages) {
-            sendNotice();
-            messageCount = 0;
-          }
-        }
-      }, noticeInterval * 60 * 1000);
-
-      $.registerChatCommand('./systems/noticeSystem.js', 'notice');
-    }
-  });
+    });
 })();
