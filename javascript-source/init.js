@@ -679,15 +679,10 @@
       }
     });
 
-    /**
-     * @event initReady
-     */
-    addHook('initReady', function () {
-      $.registerChatCommand('./init.js', 'chat', 1);
-      $.registerChatCommand('./init.js', 'module', 1);
-      $.registerChatCommand('./init.js', 'reconnect', 2);
-    });
-
+    $.registerChatCommand('./init.js', 'chat', 1);
+    $.registerChatCommand('./init.js', 'module', 1);
+    $.registerChatCommand('./init.js', 'reconnect', 2);
+ 
     // emit initReady event
     callHook('initReady', null, true);
   }
