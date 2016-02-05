@@ -45,7 +45,7 @@
       temp = getTop5('points');
 
       for (i in temp) {
-        top5.push(c + '. ' + $.resolveRank(temp[i].username + ' ' + $.getPointsString(temp[i].value)));
+        top5.push(c + '. ' + $.resolveRank(temp[i].username) + ' ' + $.getPointsString(temp[i].value));
         c++;
       }
 
@@ -59,7 +59,7 @@
       temp = getTop5('time');
 
       for (i in temp) {
-        top5.push(c + '. ' + $.resolveRank(temp[i].username + ' ' + $.getTimeString(temp[i].value, true)));
+        top5.push(c + '. ' + $.resolveRank(temp[i].username) + ' ' + $.getTimeString(temp[i].value, true));
         c++;
       }
 
