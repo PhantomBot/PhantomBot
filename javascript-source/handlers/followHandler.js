@@ -84,13 +84,12 @@
     }
 
     if (announceFollows) {
-		followmsg = followMessage.replace('(name)',$.username.resolve(follower)); 
+			followmsg = followMessage.replace('(name)',$.username.resolve(follower)); 
       if (followReward > 0) {
-		  followmsg = followmsg.replace('(reward)', $.getPointsString(followReward));
-		$.say(followmsg + " ");
-
+			followmsg = followmsg.replace('(reward)', $.getPointsString(followReward));
+			$.say(followmsg);
       } else {
-        $.say(followmsg.replace('(name)',$.username.resolve(follower)));
+			$.say(followmsg.replace('(name)',$.username.resolve(follower)));
       }
     }
 

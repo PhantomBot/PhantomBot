@@ -110,7 +110,7 @@
           $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
           return;
         } else {
-          message = argsString.substring(argsString.indexOf(action) + action.length + 3);
+          message = argsString.substring(argsString.indexOf(action) + action.length() + 1);
           $.inidb.set('notices', 'message_' + args[1], message);
           $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-success'));
           return;

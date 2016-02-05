@@ -53,7 +53,7 @@
    */
   function getQuote(quoteId) {
     if (!quoteId || isNaN(quoteId)) {
-      quoteId = $.rand($.inidb.GetKeyList('quotes', '').length - 1);
+      quoteId = $.rand($.inidb.GetKeyList('quotes', '').length);
     }
 
     if ($.inidb.exists('quotes', quoteId)) {
