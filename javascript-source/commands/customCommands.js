@@ -193,19 +193,20 @@
         return;
       }
 
+      if (!args[0] || !args[1]) {
+        $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
+        return;
+      }
+
       commandKey = args[0].replace('!', '').toLowerCase();
       commandArgument = args[1].replace('!', '').toLowerCase();
-
-      if (!commandKey || !commandArgument) {
-        $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
-      }
 
       if (!$.commandExists(commandKey)) {
         $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404', username));
         return
       }
 
-      if ($.inidb.exists('aliases', commandKey)) {
+      if ($.inidb.exists('aliases', commandArgument)) {
         $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error', username));
         return;
       }
