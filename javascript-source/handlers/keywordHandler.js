@@ -14,7 +14,7 @@ $.bind('ircChannelMessage', function (event) {
             if (regex.exec(message)) {
                 keyword = $.inidb.get('keywords', message);
 				keyword = keyword.replace('(sender)', sender);
-                $.say(String(keyword));
+                $.say(keyword);
                 return;
             }
         }
