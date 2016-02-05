@@ -87,7 +87,7 @@
 		followmsg = followMessage.replace('(name)',$.username.resolve(follower)); 
       if (followReward > 0) {
 		  followmsg = followmsg.replace('(reward)', $.getPointsString(followReward));
-			$.say(followmsg);
+		$.say(followmsg + " ");
 
       } else {
         $.say(followmsg.replace('(name)',$.username.resolve(follower)));
