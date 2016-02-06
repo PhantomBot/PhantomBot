@@ -127,7 +127,8 @@ public class PhantomBot implements Listener {
     com.gmt2001.Console.out.println("PhantomBot Core 2.0.2");
     com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
     com.gmt2001.Console.out.println("Creator: mast3rplan");
-    com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, Scania, Zelakto, SimeonF & Juraji");
+    com.gmt2001.Console.out.println("Current Developers: PhantomIndex, Kojitsari, Scania, Zelakto, SimeonF");
+    com.gmt2001.Console.out.println("Past Developers: Juraji, GloriousEggroll, GMT2001");
     com.gmt2001.Console.out.println("https://phantombot.net");
     com.gmt2001.Console.out.println();
 
