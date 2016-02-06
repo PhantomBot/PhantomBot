@@ -193,19 +193,20 @@
         return;
       }
 
+      if (!args[0] || !args[1]) {
+        $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
+        return;
+      }
+
       commandKey = args[0].replace('!', '').toLowerCase();
       commandArgument = args[1].replace('!', '').toLowerCase();
-
-      if (!commandKey || !commandArgument) {
-        $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
-      }
 
       if (!$.commandExists(commandKey)) {
         $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404', username));
         return
       }
 
-      if ($.inidb.exists('aliases', commandKey)) {
+      if ($.inidb.exists('aliases', commandArgument)) {
         $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error', username));
         return;
       }
@@ -214,6 +215,25 @@
       $.registerChatCommand('./commands/customCommands.js', commandArgument);
       $.logEvent('customCommands.js', 59, username + ' added alias "!' + commandArgument + '" for "!' + commandKey + '"');
       $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.success', username, commandKey, commandArgument));
+    }
+
+    /**
+     * @commandpath commands - Give's you a list of all your commands
+     */
+    if (command.equalsIgnoreCase('commands')) {
+        var cmds = $.inidb.GetKeyList('command', ''),
+            cmd = '',
+            i;
+        for (i in cmds) {
+            cmd += '!';
+            cmd += cmds[i];
+            cmd += ', ';
+        }
+
+        if (cmd.length != 0) {
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.cmds',cmd));
+            return;
+        }
     }
 
     /**
@@ -332,6 +352,7 @@
       $.registerChatCommand('./commands/customCommands.js', 'delalias', 2);
       $.registerChatCommand('./commands/customCommands.js', 'delcom', 2);
       $.registerChatCommand('./commands/customCommands.js', 'permcom', 1);
+      $.registerChatCommand('./commands/customCommands.js', 'commands', 7);
     }
   });
 
