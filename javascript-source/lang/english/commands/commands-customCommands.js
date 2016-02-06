@@ -18,3 +18,4 @@ $.lang.register('customcommands.set.price.error.404', 'Please select a command t
 $.lang.register('customcommands.set.price.error.invalid', 'Please enter a valid price, 0 or greater.');
 $.lang.register('customcommands.set.price.success', 'The price for !$1 has been set to $2 $3.');
 $.lang.register('customcommands.set.price.usage', 'Usage: "!pricecom [command] [price]"');
+$.lang.register('customcommands.cmds', 'commands: $1');
