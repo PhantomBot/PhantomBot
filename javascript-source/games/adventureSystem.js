@@ -23,7 +23,7 @@
       tgFunIncr = 1,
       tgExpIncr = 0.5,
       tgFoodDecr = 0.25,
-      currentAdventure = null,
+      currentAdventure = 1,
       stories = [];
 
   /**
@@ -204,34 +204,29 @@
    * @returns {boolean}
    */
   function joinHeist(username, bet) {
-    if ($.coolDown.get('adventure') > 0) {
-      $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.adventure.cooldown', $.getTimeString($.coolDown.get('adventure'))));
-      return false;
-    }
-
-    if (currentAdventure.gameState > 1) {
+   if (currentAdventure.gameState > 1) {
       $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.notpossible'));
-      return false;
+      return;
     }
 
     if (checkUserAlreadyJoined(username)) {
       $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.alreadyjoined'));
-      return false;
+      return;
     }
 
     if (bet > $.getUserPoints(username)) {
       $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.needpoints', $.getPointsString(bet), $.getPointsString($.getUserPoints(username))));
-      return false;
+      return;
     }
 
     if (bet < minBet) {
       $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.bettoolow', $.getPointsString(bet), $.getPointsString(minBet)));
-      return false;
+      return;
     }
 
     if (bet > maxBet) {
       $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.bettoohigh', $.getPointsString(bet), $.getPointsString(maxBet)));
-      return false;
+      return;
     }
 
     currentAdventure.users.push({
