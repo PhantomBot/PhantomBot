@@ -610,6 +610,8 @@
             $.logEvent('init.js', 393, username + ' enabled module "' + modules[index].scriptFile + '"');
             modules[index].enabled = true;
             $.setIniDbBoolean('modules', modules[index].scriptFile, true);
+            loadScript(modules[index].scriptFile, true);
+            callHook('initReady', null, true);
             $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
           } else {
             $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
