@@ -40,6 +40,10 @@
         .replace('(baresender)', $.username.resolve(event.getSender().toLowerCase()))
         .replace('(random)', $.username.resolve($.randElement($.users)[0]))
         .replace('(pointname)', $.pointNameMultiple)
+        .replace('(uptime)', $.getStreamUptime($.channelName))
+        .replace('(game)', $.getGame($.channelName))
+        .replace('(status)', $.getStatus($.channelName))
+        .replace('(follows)', $.getFollows($.channelName))
         ;
     };
 
