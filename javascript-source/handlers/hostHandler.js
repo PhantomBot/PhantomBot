@@ -124,6 +124,15 @@
       $.say('.unhost');
     }
 
+    if (command.equalsIgnoreCase('host')) {
+      if (!$.isAdmin(sender)) {
+        $.say($.whisperPrefix(sender) + $.adminMsg);
+        return;
+      }
+
+      $.say('.host ' + args[0]);
+    }
+
     /**
      * @commandpath hostcount - Announce the current number of other channels hosting this channel
      */
@@ -150,6 +159,7 @@
       $.registerChatCommand('./handlers/hostHandler.js', 'hostmessage', 1);
       $.registerChatCommand('./handlers/hostHandler.js', 'hostreward', 1);
       $.registerChatCommand('./handlers/hostHandler.js', 'unhost', 1);
+      $.registerChatCommand('./handlers/hostHandler.js', 'host', 1);
       $.registerChatCommand('./handlers/hostHandler.js', 'hostcount');
       $.registerChatCommand('./handlers/hostHandler.js', 'hostlist');
     }
