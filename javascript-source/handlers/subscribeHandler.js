@@ -87,7 +87,7 @@
     /**
      * @commandpath resubwelcometoggle - enable or disable resub alerts
      */
-    if (command.equalsIgnoreCase('reSubwelcometoggle')) {
+    if (command.equalsIgnoreCase('resubwelcometoggle')) {
       if (!$.isAdmin(sender)) {
         $.say($.whisperPrefix(sender) + $.adminMsg);
         return;
@@ -174,6 +174,28 @@
       }
       $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.count', subs));
     }
+    
+    /**
+     * @commandpath subscribers - puts chat in sub mode
+     */
+    if (command.equalsIgnoreCase('subscribers')) {
+        if (!$.isModv3(sender, event.getTags())) {
+            $.say($.whisperPrefix(sender) + $.modMsg);
+            return;
+        }
+        $.say('.subscribers');
+    }
+    
+    /**
+     * @commandpath subscribersoff - removes chat from sub mode
+     */
+    if (command.equalsIgnoreCase('subscribersoff')) {
+        if (!$.isModv3(sender, event.getTags())) {
+            $.say($.whisperPrefix(sender) + $.modMsg);
+            return;
+        }
+        $.say('.subscribersoff');
+    }
   });
 
   /**
@@ -210,11 +232,13 @@
   $.bind('initReady', function () {
     if ($.bot.isModuleEnabled('./handlers/subscribehandler.js')) {
       $.registerChatCommand('./handlers/subscribehandler.js', 'subwelcometoggle', 2);
-      $.registerChatCommand('./handlers/subscribehandler.js', 'reSubwelcometoggle', 2);
+      $.registerChatCommand('./handlers/subscribehandler.js', 'resubwelcometoggle', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'subscribecount', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 2);
+      $.registerChatCommand('./handlers/subscribehandler.js', 'subscribers', 2);
+      $.registerChatCommand('./handlers/subscribehandler.js', 'subscribersoff', 2);
     }
   });
 })();

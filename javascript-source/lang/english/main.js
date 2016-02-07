@@ -67,7 +67,7 @@ $.lang.register('cmd.adminonly', 'Only an Administrator has access to that comma
 $.lang.register('cmd.casteronly', 'Only a Caster has access to that command!');
 $.lang.register('cmd.modonly', 'Only a Moderator has access to that command!');
 $.lang.register('cmd.needpoints', 'That command costs $1, which you don\'t have.');
-$.lang.register('cmd.noperm', 'Your user group, $1, does not have permission to use the command $2.');
+$.lang.register('cmd.noperm', 'you don\'t have permission to use command !$1.');
 $.lang.register('commandlist.commands', 'Commands (page $1 of $2): $3');
 $.lang.register('commandlist.more', ' >> Type "!commands $1" for more');
 $.lang.register('commandlist.nocommands', 'There are currently no commands available to you');

@@ -32,8 +32,10 @@
    * @function timeoutUser
    * @param {string} username
    */
-  function timeoutUser(username) {
-    $.timeoutUser(username, timeoutTime);
+  function timeoutUserR(username) {
+    setTimeout(function () {
+      $.say('.timeout ' + username + ' ' + timeoutTime);
+    }, 2500);
   };
 
   /**
@@ -68,7 +70,7 @@
           if ($.getBotWhisperMode()) {
             $.say($.whisperPrefix(sender) + $.lang.get('roulette.timeout.notifyuser', timeoutTime));
           }
-          timeoutUser(sender);
+          timeoutUserR(sender);
         }
       }
     }
