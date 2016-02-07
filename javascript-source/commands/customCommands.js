@@ -26,24 +26,41 @@
    * @param {Array} [tagReplacements]
    * @returns {string}
    */
-    function replaceCommandTags(message, event, tagList, tagReplacements) {
+    function replaceCommandTags(message, event, command, tagList, tagReplacements) {
         var i;
-            message = message + '';
+            message = message + '',
+            args = event.getArgs();
+
+        if (message.indexOf('(count)') != -1) {
+            $.inidb.incr('commandCount', command, 1);
+        }
+
+        if (message.indexOf('(touser)') != -1) {
+            if (args.length != 0) {
+                return message.replace('(touser)', $.username.resolve(args[0]));
+            } else {
+                return message.replace('(touser)', $.username.resolve(event.getSender()));
+            }
+        }
+
         if (tagList) {
             for (i in tagList) {
                 var regex = new RegExp('/' + tagList[i].replace(/([\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|])/g, '\\$&') + '/', 'ig');
                 message = message.replace(regex, tagReplacements[i]);
             }
         }
+
     return message
-        .replace('(sender)', $.resolveRank(event.getSender().toLowerCase()))
-        .replace('(baresender)', $.username.resolve(event.getSender().toLowerCase()))
+        .replace('(sender)', $.username.resolve(event.getSender()))
+        .replace('(@sender)', '@' + $.username.resolve(event.getSender()))
+        .replace('(baresender)', event.getSender())
         .replace('(random)', $.username.resolve($.randElement($.users)[0]))
         .replace('(pointname)', $.pointNameMultiple)
         .replace('(uptime)', $.getStreamUptime($.channelName))
         .replace('(game)', $.getGame($.channelName))
         .replace('(status)', $.getStatus($.channelName))
         .replace('(follows)', $.getFollows($.channelName))
+        .replace('(count)', $.inidb.get('commandCount', command))
         ;
     };
 
@@ -303,6 +320,14 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action, subAction, $.pointNameMultiple));
         }
 
+        if (command.equalsIgnoreCase('listtags')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
+            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (pointname), (uptime), (game), (status), (follows), (count), (touser)');
+        }
+
         /**
          * @commandpath commands - Give's you a list of all your commands
          */
@@ -325,10 +350,8 @@
 
         if ($.inidb.exists('command', command.toLowerCase())) {
             subAction = $.inidb.get('command', command.toLowerCase());
-            $.say(replaceCommandTags(subAction, event));
+            $.say(replaceCommandTags(subAction, event, command.toLowerCase()));
         }
-
-        addComRegisterAliases();
     });
 
   /**
@@ -346,6 +369,7 @@
             $.registerChatCommand('./commands/customCommands.js', 'delcom', 2);
             $.registerChatCommand('./commands/customCommands.js', 'editcom', 2);
             $.registerChatCommand('./commands/customCommands.js', 'permcom', 1);
+            $.registerChatCommand('./commands/customCommands.js', 'listtags', 2);
             $.registerChatCommand('./commands/customCommands.js', 'commands', 7);
         }
     });
