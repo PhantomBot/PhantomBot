@@ -70,11 +70,11 @@
     if (oldName && $.commandExists(oldName)) {
       $.unregisterChatCommand(oldName);
     }
-    if (!$.commandExists(pointNameSingle)) {
-      $.registerChatCommand('./core/pointSystem.js', pointNameSingle, 7);
+    if (!$.commandExists(pointNameSingle) && !oldName) {
+      $.registerChatCommand('./core/pointSystem.js', $.pointNameSingle, 7);
     }
-    if (!$.commandExists(pointNameMultiple)) {
-      $.registerChatCommand('./core/pointSystem.js', pointNameMultiple, 7);
+    if (!$.commandExists(pointNameMultiple) && !oldName) {
+      $.registerChatCommand('./core/pointSystem.js', $.pointNameMultiple, 7);
     }
   };
 
@@ -262,6 +262,7 @@
             $.pointNameSingle = actionArg2;
             $.inidb.set('pointSettings', 'pointNameSingle', $.pointNameSingle);
             registerPointCommands(temp);
+            registerPointCommands();
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.single.success', temp, $.pointNameSingle));
             return;
           }
@@ -270,6 +271,7 @@
             $.pointNameMultiple = actionArg2;
             $.inidb.set('pointSettings', 'pointNameMultiple', $.pointNameMultiple);
             registerPointCommands(temp);
+            registerPointCommands();
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.multiple.success', temp, $.pointNameMultiple));
             return;
           }
