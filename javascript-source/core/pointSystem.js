@@ -259,7 +259,7 @@
 
           if (actionArg1 == 'single' && actionArg2) {
             temp = $.pointNameSingle;
-            $.pointNameSingle = actionArg2;
+            pointNameSingle = actionArg2;
             $.inidb.set('pointSettings', 'pointNameSingle', $.pointNameSingle);
             registerPointCommands(temp);
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.single.success', temp, $.pointNameSingle));
@@ -267,7 +267,7 @@
           }
           if (actionArg1 == 'multiple' && actionArg2) {
             temp = $.pointNameMultiple;
-            $.pointNameMultiple = actionArg2;
+            pointNameMultiple = actionArg2;
             $.inidb.set('pointSettings', 'pointNameMultiple', $.pointNameMultiple);
             registerPointCommands(temp);
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.multiple.success', temp, $.pointNameMultiple));
