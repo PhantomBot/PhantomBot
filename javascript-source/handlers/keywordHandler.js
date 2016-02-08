@@ -4,15 +4,17 @@
 * @event ircChannelMessage
 */
 $.bind('ircChannelMessage', function (event) { 
-    var message = event.getMessage(),
+    var message = event.getMessage().toLowerCase(),
         sender = event.getSender(),
         regex = '',
         keyword = '',
+        key = '',
         keys = $.inidb.GetKeyList('keywords', '');
         for (var i = 0; i < keys.length; i++) {
-            regex = new RegExp('\\b' + keys[i].toLowerCase() + '\\b', 'i');
+            key = keys[i].toLowerCase();
+            regex = new RegExp('\\b' + key + '\\b', 'i');
             if (regex.exec(message)) {
-                keyword = $.inidb.get('keywords', message);
+                keyword = $.inidb.get('keywords', key);
 				keyword = keyword.replace('(sender)', sender);
                 $.say(keyword);
                 return;
