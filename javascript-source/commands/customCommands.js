@@ -31,16 +31,14 @@
             message = message + '',
             args = event.getArgs();
 
+        if (message.indexOf('(touser)') != -1) {
+             if (args.length < 1) { 
+			 touser = $.username.resolve(event.getSender());
+			 }
+        }
+		
         if (message.indexOf('(count)') != -1) {
             $.inidb.incr('commandCount', command, 1);
-        }
-
-        if (message.indexOf('(touser)') != -1) {
-            if (args.length != 0) {
-                return message.replace('(touser)', $.username.resolve(args[0]));
-            } else {
-                return message.replace('(touser)', $.username.resolve(event.getSender()));
-            }
         }
 
         if (tagList) {
@@ -52,6 +50,7 @@
 
     return message
         .replace('(sender)', $.username.resolve(event.getSender()))
+		.replace('(touser)', $.username.resolve(touser))
         .replace('(@sender)', '@' + $.username.resolve(event.getSender()))
         .replace('(baresender)', event.getSender())
         .replace('(random)', $.username.resolve($.randElement($.users)[0]))
