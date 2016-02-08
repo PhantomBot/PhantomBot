@@ -58,7 +58,7 @@
 
     return message
         .replace('(sender)', $.username.resolve(event.getSender()))
-	.replace('(touser)', $.username.resolve(touser))
+		.replace('(touser)', $.username.resolve(touser))
         .replace('(@sender)', '@' + $.username.resolve(event.getSender()))
         .replace('(baresender)', event.getSender())
         .replace('(random)', $.username.resolve($.randElement($.users)[0]))
@@ -333,7 +333,7 @@
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
             }
-            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (pointname), (uptime), (game), (status), (follows), (count), (touser)');
+            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (uptime), (game), (status), (follows), (count), (touser), (price), (pointname)');
         }
 
         /**
