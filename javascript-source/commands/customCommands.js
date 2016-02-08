@@ -37,6 +37,14 @@
 			 }
         }
 		
+		if (message.indexOf('(price)') != -1) {
+			if ($.inidb.get('pricecom', command) == null) {
+				price = 0;
+			} else {
+				price = $.inidb.get('pricecom', command);
+			}
+        }
+		
         if (message.indexOf('(count)') != -1) {
             $.inidb.incr('commandCount', command, 1);
         }
@@ -60,6 +68,7 @@
         .replace('(status)', $.getStatus($.channelName))
         .replace('(follows)', $.getFollows($.channelName))
         .replace('(count)', $.inidb.get('commandCount', command))
+		.replace('(price)', price)
         ;
     };
 
