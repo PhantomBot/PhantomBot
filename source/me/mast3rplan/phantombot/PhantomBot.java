@@ -26,6 +26,7 @@ import com.google.common.eventbus.Subscribe;
 import de.simeonf.EventWebSocketSecureServer;
 import de.simeonf.EventWebSocketServer;
 import de.simeonf.MusicWebSocketSecureServer;
+import com.illusionaryone.TwitchAlertsAPIv1;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,6 +47,7 @@ import me.mast3rplan.phantombot.cache.ChannelUsersCache;
 import me.mast3rplan.phantombot.cache.FollowersCache;
 import me.mast3rplan.phantombot.cache.SubscribersCache;
 import me.mast3rplan.phantombot.cache.UsernameCache;
+import me.mast3rplan.phantombot.cache.DonationsCache;
 import me.mast3rplan.phantombot.console.ConsoleInputListener;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.Listener;
@@ -70,6 +72,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 public class PhantomBot implements Listener {
 
+  private String twitchalertskey = null;
   public final String username;
   private final String oauth;
   private String apioauth;
@@ -103,6 +106,7 @@ public class PhantomBot implements Listener {
   private ChannelHostCache hostCache;
   private SubscribersCache subscribersCache;
   private ChannelUsersCache channelUsersCache;
+  private DonationsCache donationsCache;
   private MusicWebSocketServer musicsocketserver;
   private HTTPServer httpserver;
   private EventWebSocketServer eventsocketserver;
@@ -120,15 +124,14 @@ public class PhantomBot implements Listener {
 
   public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner, int baseport,
                     String hostname, int port, double msglimit30, String datastore, String datastoreconfig, String youtubekey, boolean webenable,
-                    boolean musicenable, boolean usehttps, String keystorepath, String keystorepassword, String keypassword) {
+                    boolean musicenable, boolean usehttps, String keystorepath, String keystorepassword, String keypassword, String twitchalertskey) {
     Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
     com.gmt2001.Console.out.println();
-    com.gmt2001.Console.out.println("PhantomBot Core 2.0.3");
+    com.gmt2001.Console.out.println("PhantomBot Core 2.0.1");
     com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
     com.gmt2001.Console.out.println("Creator: mast3rplan");
-    com.gmt2001.Console.out.println("Current Developers: PhantomIndex, Kojitsari, scania_the_best, Zelakto, SimeonF");
-    com.gmt2001.Console.out.println("Past Developers: Juraji, GloriousEggroll, gmt2001");
+    com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, Scania, Zelakto, SimeonF & Juraji");
     com.gmt2001.Console.out.println("https://phantombot.net");
     com.gmt2001.Console.out.println();
 
@@ -153,6 +156,8 @@ public class PhantomBot implements Listener {
     this.keystorepath = keystorepath;
     this.keystorepassword = keystorepassword;
     this.keypassword = keypassword;
+
+    this.twitchalertskey = twitchalertskey;
 
     Profile profile = new Profile(username.toLowerCase());
     this.connectionManager = new ConnectionManager(profile);
@@ -240,6 +245,8 @@ public class PhantomBot implements Listener {
 
     TwitchAPIv3.instance().SetClientID(this.clientid);
     TwitchAPIv3.instance().SetOAuth(apioauth);
+
+    TwitchAlertsAPIv1.instance().SetAccessToken(twitchalertskey);
 
     this.session.addIRCEventListener(new IrcEventHandler());
   }
@@ -349,6 +356,7 @@ public class PhantomBot implements Listener {
     Script.global.defineProperty("pollVoters", voters, 0);
     Script.global.defineProperty("connmgr", connectionManager, 0);
     Script.global.defineProperty("hostname", hostname, 0);
+    Script.global.defineProperty("donations", donationsCache, 0);
 
     Thread t = new Thread(new Runnable() {
       @Override
@@ -458,6 +466,9 @@ public class PhantomBot implements Listener {
     this.followersCache = FollowersCache.instance(this.channel.getName().toLowerCase());
     this.hostCache = ChannelHostCache.instance(this.channel.getName().toLowerCase());
     this.subscribersCache = SubscribersCache.instance(this.channel.getName().toLowerCase());
+    if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
+      this.donationsCache = DonationsCache.instance(this.channel.getName().toLowerCase());
+    }
     //this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
   }
 
@@ -603,6 +614,16 @@ public class PhantomBot implements Listener {
       }
     }
 
+    if (message.equals("twitchalerts")) {
+      com.gmt2001.Console.out.print("Please enter Twitch Alerts key: ");
+      String newtwitchalertskey = System.console().readLine().trim();
+
+      TwitchAlertsAPIv1.instance().SetAccessToken(newtwitchalertskey);
+      twitchalertskey = newtwitchalertskey;
+
+      changed = true;
+    }
+
     if (changed) {
       try {
         String data = "";
@@ -623,7 +644,9 @@ public class PhantomBot implements Listener {
         data += "usehttps=" + usehttps + "\r\n";
         data += "keystorepath=" + keystorepath + "\r\n";
         data += "keystorepassword=" + keystorepassword + "\r\n";
-        data += "keypassword=" + keypassword;
+        data += "keypassword=" + keypassword + "\r\n";
+        data += "twitchalertsauth=" + twitchalertskey;
+
 
         Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
             StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -801,6 +824,7 @@ public class PhantomBot implements Listener {
   public static void main(String[] args) throws IOException {
     String user = "";
     String oauth = "";
+    String twitchalertskey = "";
     String apioauth = "";
     String clientid = "";
     String channel = "";
@@ -883,6 +907,9 @@ public class PhantomBot implements Listener {
           if (line.startsWith("keypassword=") && line.length() > 13) {
             keypassword = line.substring(12);
           }
+          if (line.startsWith("twitchalertskey=") && line.length() > 17) {
+            twitchalertskey = line.substring(16);
+          }
         }
       }
     } catch (IOException ex) {
@@ -937,6 +964,7 @@ public class PhantomBot implements Listener {
           com.gmt2001.Console.out.println("keystorepath='" + keystorepath + "'");
           com.gmt2001.Console.out.println("keystorepassword='" + keystorepassword + "'");
           com.gmt2001.Console.out.println("keypassword='" + keypassword + "'");
+          com.gmt2001.Console.out.println("twitchalertskey'" + twitchalertskey + "'");
         }
         if (arg.equalsIgnoreCase("debugon")) {
           PhantomBot.enableDebugging = true;
@@ -1059,6 +1087,12 @@ public class PhantomBot implements Listener {
             changed = true;
           }
         }
+        if (arg.toLowerCase().startsWith("twitchalertskey=") && arg.length() > 17) {
+          if (!twitchalertskey.equals(arg.substring(16))) {
+            twitchalertskey = arg.substring(16);
+            changed = true;
+          }
+        }
         if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
           com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
               + "[oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
@@ -1066,7 +1100,8 @@ public class PhantomBot implements Listener {
               + "[port=<custom irc port>] [msglimit30=<message limit per 30 seconds>] "
               + "[datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>] "
               + "[datastoreconfig=<Optional DataStore config option, different for each DataStore type>] "
-              + "[youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]");
+              + "[youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]"
+              + "[twitchalertskey=<twitch alerts key>]");
           return;
         }
         if (arg.equalsIgnoreCase("storetypes")) {
@@ -1097,12 +1132,13 @@ public class PhantomBot implements Listener {
       data += "usehttps=" + usehttps + "\r\n";
       data += "keystorepath=" + keystorepath + "\r\n";
       data += "keystorepassword=" + keystorepassword + "\r\n";
-      data += "keypassword=" + keypassword;
+      data += "keypassword=" + keypassword + "\r\n";
+      data += "twitchalertskey=" + twitchalertskey;
 
       Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
           StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword);
+    PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey);
   }
 }

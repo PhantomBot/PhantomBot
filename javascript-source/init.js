@@ -364,7 +364,7 @@
       }
 
       if (!$.permCom(sender, command)) {
-        $.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', command));
+        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', $.getUserGroupName(sender), command));
         return;
       }
 
@@ -535,8 +535,24 @@
     $api.on($script, 'musicPlayerState', function (event) {
       callHook('musicPlayerState', event, false);
     });
-    $.logEvent('init.js', 534, 'Bot locked & loaded!');
+
+    /**
+     * @event api-twitchAlertsDonation
+     */
+    $api.on($script, 'twitchAlertsDonation', function (event) {
+      callHook('twitchAlertsDonation', event, true);
+    });
+
+    /**
+     * @event api-twitchAlertsDonationInitialized
+     */
+    $api.on($script, 'twitchAlertsDonationInitialized', function (event) {
+      callHook('twitchAlertsDonationInitialized', event, true);
+    });
+
+    $.logEvent('init.js', 553, 'Bot locked & loaded!');
     $.consoleLn('Bot locked & loaded!');
+
 
     /**
      * @event command
@@ -549,6 +565,8 @@
           action = args[0],
           temp,
           index;
+
+
 
       /**
        * @commandpath reconnect - Tell the bot to reconnect to the twitch chat and API
@@ -610,8 +628,6 @@
             $.logEvent('init.js', 393, username + ' enabled module "' + modules[index].scriptFile + '"');
             modules[index].enabled = true;
             $.setIniDbBoolean('modules', modules[index].scriptFile, true);
-            loadScript(modules[index].scriptFile, true);
-            callHook('initReady', null, true);
             $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
           } else {
             $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
@@ -678,10 +694,13 @@
       }
     });
 
+    /**
+     * @event initReady
+     */
     $.registerChatCommand('./init.js', 'chat', 1);
     $.registerChatCommand('./init.js', 'module', 1);
     $.registerChatCommand('./init.js', 'reconnect', 2);
- 
+
     // emit initReady event
     callHook('initReady', null, true);
   }
