@@ -68,7 +68,7 @@
         .replace('(status)', $.getStatus($.channelName))
         .replace('(follows)', $.getFollows($.channelName))
         .replace('(count)', $.inidb.get('commandCount', command))
-		.replace('(price)', price)
+	.replace('(price)', price)
         ;
     };
 
