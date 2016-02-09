@@ -4,7 +4,8 @@
  * Detect and report donations.
  */
 (function () {
-  var announceDonations = false;
+  var announceDonations = false,
+      donationAddonDir = "./addons/donationHandler";
 
   /**
    * @event twitchAlertsDonationsInitialized
@@ -12,6 +13,11 @@
   $.bind('twitchAlertsDonationInitialized', function () {
     if (!$.bot.isModuleEnabled('./handlers/donationHandler.js')) {
       return;
+    }
+
+    if (!$.isDirectory(donationAddonDir)) {
+      $.consoleLn(">> Creating Donation Handler Directory: " + donationAddonDir);
+      $.mkDir(donationAddonDir);
     }
 
     $.consoleLn(">> Enabling Twitch Alerts donation announcements");
@@ -48,7 +54,7 @@
     $.inidb.set('donations', donationID, donationJson);
     $.inidb.set('donations', 'last_donation', donationID);
 
-    $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), "./addons/donationchecker/latestDonation.txt", false);
+    $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), donationAddonDir + "/latestDonation.txt", false);
 
     if ($.lang.exists('donationhandler.donation.new')) {
       var donationSay = $.lang.get('donationhandler.donation.new');
