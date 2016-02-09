@@ -6,7 +6,7 @@
  * The amount of points; corresponding to the output, will be added to the user's balance.
  */
 (function () {
-  var emotes = ['Kappa', 'KappaPride', 'BloodTrail', 'jurajiOhNo', 'deIlluminati'],
+  var emotes = ['Kappa', 'KappaPride', 'BloodTrail', 'ResidentSleeper', 'deIlluminati'],
       prices = [75, 150, 300, 450, 1000];
 
   /**
