@@ -73,6 +73,7 @@ import org.apache.commons.lang3.SystemUtils;
 public class PhantomBot implements Listener {
 
   private String twitchalertskey = null;
+  private int twitchalertslimit;
   public final String username;
   private final String oauth;
   private String apioauth;
@@ -124,7 +125,7 @@ public class PhantomBot implements Listener {
 
   public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner, int baseport,
                     String hostname, int port, double msglimit30, String datastore, String datastoreconfig, String youtubekey, boolean webenable,
-                    boolean musicenable, boolean usehttps, String keystorepath, String keystorepassword, String keypassword, String twitchalertskey) {
+                    boolean musicenable, boolean usehttps, String keystorepath, String keystorepassword, String keypassword, String twitchalertskey, int twitchalertslimit) {
     Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
     com.gmt2001.Console.out.println();
@@ -158,6 +159,7 @@ public class PhantomBot implements Listener {
     this.keypassword = keypassword;
 
     this.twitchalertskey = twitchalertskey;
+    this.twitchalertslimit = twitchalertslimit;
 
     Profile profile = new Profile(username.toLowerCase());
     this.connectionManager = new ConnectionManager(profile);
@@ -247,6 +249,7 @@ public class PhantomBot implements Listener {
     TwitchAPIv3.instance().SetOAuth(apioauth);
 
     TwitchAlertsAPIv1.instance().SetAccessToken(twitchalertskey);
+    TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchalertslimit);
 
     this.session.addIRCEventListener(new IrcEventHandler());
   }
@@ -614,12 +617,27 @@ public class PhantomBot implements Listener {
       }
     }
 
-    if (message.equals("twitchalerts")) {
+    if (message.equals("twitchalertskey")) {
       com.gmt2001.Console.out.print("Please enter Twitch Alerts key: ");
       String newtwitchalertskey = System.console().readLine().trim();
 
       TwitchAlertsAPIv1.instance().SetAccessToken(newtwitchalertskey);
       twitchalertskey = newtwitchalertskey;
+
+      changed = true;
+    }
+
+    if (message.equals("twitchalertslimit")) {
+      com.gmt2001.Console.out.print("Please enter Twitch Alerts pull limit: ");
+      int newtwitchalertslimit;
+      try {
+        newtwitchalertslimit = Integer.parseInt(System.console().readLine().trim());
+      }
+      catch (NumberFormatException nfe) {
+        com.gmt2001.Console.out.println("Bad integer, defaulting to 5.");
+        newtwitchalertslimit = 5;
+      }
+      TwitchAlertsAPIv1.instance().SetDonationPullLimit(newtwitchalertslimit);
 
       changed = true;
     }
@@ -645,8 +663,8 @@ public class PhantomBot implements Listener {
         data += "keystorepath=" + keystorepath + "\r\n";
         data += "keystorepassword=" + keystorepassword + "\r\n";
         data += "keypassword=" + keypassword + "\r\n";
-        data += "twitchalertsauth=" + twitchalertskey;
-
+        data += "twitchalertsauth=" + twitchalertskey + "\r\n";
+        data += "twitchalertslimit=" + twitchalertslimit;
 
         Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
             StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -825,6 +843,7 @@ public class PhantomBot implements Listener {
     String user = "";
     String oauth = "";
     String twitchalertskey = "";
+    int twitchalertslimit = 5;
     String apioauth = "";
     String clientid = "";
     String channel = "";
@@ -910,6 +929,14 @@ public class PhantomBot implements Listener {
           if (line.startsWith("twitchalertskey=") && line.length() > 17) {
             twitchalertskey = line.substring(16);
           }
+          if (line.startsWith("twitchalertslimit=") && line.length() > 18) {
+            try {
+              twitchalertslimit = Integer.parseInt(line.substring(18));
+            }
+            catch (NumberFormatException nfe) {
+              twitchalertslimit = 5;
+            }
+          }
         }
       }
     } catch (IOException ex) {
@@ -964,7 +991,8 @@ public class PhantomBot implements Listener {
           com.gmt2001.Console.out.println("keystorepath='" + keystorepath + "'");
           com.gmt2001.Console.out.println("keystorepassword='" + keystorepassword + "'");
           com.gmt2001.Console.out.println("keypassword='" + keypassword + "'");
-          com.gmt2001.Console.out.println("twitchalertskey'" + twitchalertskey + "'");
+          com.gmt2001.Console.out.println("twitchalertskey='" + twitchalertskey + "'");
+          com.gmt2001.Console.out.println("twitchalertslimit='" + twitchalertslimit + "'");
         }
         if (arg.equalsIgnoreCase("debugon")) {
           PhantomBot.enableDebugging = true;
@@ -1093,6 +1121,17 @@ public class PhantomBot implements Listener {
             changed = true;
           }
         }
+        if (arg.toLowerCase().startsWith("twitchalertslimit=") && arg.length() > 19) {
+          if (twitchalertslimit != Integer.parseInt(arg.substring(18))) {
+            try {
+              twitchalertslimit = Integer.parseInt(arg.substring(18));
+              changed = true;
+            }
+            catch (NumberFormatException nfe) {
+              twitchalertslimit = 5;
+            }
+          }
+        }
         if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
           com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
               + "[oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
@@ -1101,7 +1140,7 @@ public class PhantomBot implements Listener {
               + "[datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>] "
               + "[datastoreconfig=<Optional DataStore config option, different for each DataStore type>] "
               + "[youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]"
-              + "[twitchalertskey=<twitch alerts key>]");
+              + "[twitchalertskey=<twitch alerts key>] [twitchalertslimit=<limit>");
           return;
         }
         if (arg.equalsIgnoreCase("storetypes")) {
@@ -1133,12 +1172,13 @@ public class PhantomBot implements Listener {
       data += "keystorepath=" + keystorepath + "\r\n";
       data += "keystorepassword=" + keystorepassword + "\r\n";
       data += "keypassword=" + keypassword + "\r\n";
-      data += "twitchalertskey=" + twitchalertskey;
+      data += "twitchalertskey=" + twitchalertskey + "\r\n";
+      data += "twitchalertslimit=" + twitchalertslimit;
 
       Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
           StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey);
+    PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit);
   }
 }

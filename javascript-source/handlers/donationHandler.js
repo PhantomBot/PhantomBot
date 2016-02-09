@@ -4,14 +4,20 @@
  * Detect and report donations.
  */
 (function () {
-  var announceDonations = false;
+  var announceDonations = false,
+      donationAddonDir = "./addons/donationHandler";
 
   /**
    * @event twitchAlertsDonationsInitialized
    */
   $.bind('twitchAlertsDonationInitialized', function () {
-    if (!$.bot.isModuleEnabled('./handlers/donationsHandler.js')) {
+    if (!$.bot.isModuleEnabled('./handlers/donationHandler.js')) {
       return;
+    }
+
+    if (!$.isDirectory(donationAddonDir)) {
+      $.consoleLn(">> Creating Donation Handler Directory: " + donationAddonDir);
+      $.mkDir(donationAddonDir);
     }
 
     $.consoleLn(">> Enabling Twitch Alerts donation announcements");
@@ -26,14 +32,16 @@
       return;
     }
 
-    var donationJson = event.getJsonString();
-    var donationInfo = JSON.parse(donationJson);
-    var donationID = donationInfo[0],
-        donationCreatedAt = donationInfo[1],
-        donationCurrency = donationInfo[2],
-        donationAmount = donationInfo[3],
-        donationUsername = donationInfo[4],
-        donationMessage = donationInfo[5];
+    var donationJsonStr = event.getJsonString(),
+        JSONObject = Packages.org.json.JSONObject,
+        donationJson = new JSONObject(donationJsonStr);
+
+    var donationID = donationJson.getString("donation_id"),
+        donationCreatedAt = donationJson.getString("created_at"),
+        donationCurrency = donationJson.getString("currency"),
+        donationAmount = parseFloat(donationJson.getString("amount")),
+        donationUsername = donationJson.getString("name"),
+        donationMessage = donationJson.getString("message");
 
     if (!announceDonations) {
       return;
@@ -46,12 +54,12 @@
     $.inidb.set('donations', donationID, donationJson);
     $.inidb.set('donations', 'last_donation', donationID);
 
-    $.writeToFile(donationUsername + ": " + donationAmount, "./addons/donationHandler/latestDonation.txt", false);
+    $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), donationAddonDir + "/latestDonation.txt", false);
 
     if ($.lang.exists('donationhandler.donation.new')) {
       var donationSay = $.lang.get('donationhandler.donation.new');
       donationSay = donationSay.replace('(name)', donationUsername);
-      donationSay = donationSay.replace('(amount)', donationAmount);
+      donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
       $.say(donationSay);
     }
 
@@ -83,17 +91,20 @@
         return;
       }
 
-      var donationInfo = JSON.parse($.inidb.get('donations', donationID));
-      var donationID = donationInfo[0],
-          donationCreatedAt = donationInfo[1],
-          donationCurrency = donationInfo[2],
-          donationAmount = donationInfo[3],
-          donationUsername = donationInfo[4],
-          donationMessage = donationInfo[5];
+      var donationJsonStr = $.inidb.get('donations', donationID),
+          JSONObject = Packages.org.json.JSONObject,
+          donationJson = new JSONObject(donationJsonStr);
+
+      var donationID = donationJson.getString("donation_id"),
+          donationCreatedAt = donationJson.getString("created_at"),
+          donationCurrency = donationJson.getString("currency"),
+          donationAmount = parseFloat(donationJson.getString("amount")),
+          donationUsername = donationJson.getString("name"),
+          donationMessage = donationJson.getString("message");
 
       var donationSay = $.lang.get('donationhandler.lastdonation.success');
       donationSay = donationSay.replace('(name)', donationUsername);
-      donationSay = donationSay.replace('(amount)', donationAmount);
+      donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
       $.say(donationSay);
     }
   });

@@ -54,6 +54,7 @@ public class TwitchAlertsAPIv1 {
     private static final String sAPIURL = "https://www.twitchalerts.com/api/v1.0";
     private static final int iHTTPTimeout = 2 * 1000;
     private String sAccessToken = "";
+    private int iDonationPullLimit = 5;
 
     public static TwitchAlertsAPIv1 instance() {
         return instance;
@@ -160,11 +161,20 @@ public class TwitchAlertsAPIv1 {
     }
 
     /*
+     * Sets a new limit to how many donation records to return.
+     *
+     * @param iDonationPullLimit
+     */
+    public void SetDonationPullLimit(int iDonationPullLimit) {
+        this.iDonationPullLimit = iDonationPullLimit;
+    }
+
+    /*
      * Pulls donation information.
      *
      * @return
      */
     public JSONObject GetDonations() {
-        return readJsonFromUrl(sAPIURL + "/donations?access_token=" + this.sAccessToken);
+        return readJsonFromUrl(sAPIURL + "/donations?access_token=" + this.sAccessToken + "&limit=" + this.iDonationPullLimit);
     }
 }
