@@ -551,7 +551,7 @@
       }
 
       $.inidb.set('group', username.toLowerCase(), groupId);
-      $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success'));
+      $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.username.resolve(username), getGroupNameById(groupId) + " (" + groupId + ")"));
     }
   });
 
