@@ -162,6 +162,11 @@ public class DonationsCache implements Runnable {
             }
         }
 
+        if (firstUpdate) {
+            firstUpdate = false;
+            EventBus.instance().post(new TwitchAlertsDonationInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+        }
+
         if (donations != null) {
             for (int i = 0; i < donations.length(); i++) {
                 if (cache == null || !cache.containsKey(donations.getJSONObject(i).getString("donation_id"))) {
@@ -169,11 +174,7 @@ public class DonationsCache implements Runnable {
                 }
             }
         }
-
-        if (firstUpdate) {
-            firstUpdate = false;
-            EventBus.instance().post(new TwitchAlertsDonationInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
-        }
+        this.cache = newCache;
     }
 
     public void setCache(Map<String, String> cache) {
