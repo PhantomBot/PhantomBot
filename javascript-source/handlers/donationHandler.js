@@ -4,8 +4,7 @@
  * Detect and report donations.
  */
 (function () {
-  var donationReward = ($.inidb.exists('settings', 'hostReward') ? $.inidb.get('settings', 'hostReward') : 200),
-      announceDonations = false;
+  var announceDonations = false;
 
   /**
    * @event twitchAlertsDonationsInitialized
