@@ -104,7 +104,7 @@
             i;
         for (i in commands) {
             if (!$.commandExists(commands[i])) {
-                $.registerChatCommand('./commands/customCommands.js', commands[i], ($.inidb.exists('permcom', commands[i]) ? parseInt($.inidb.get('permcom', commands[i])) : 7));
+                $.registerChatCommand('./commands/customCommands.js', commands[i], 7);
             }
         }
     };
@@ -291,6 +291,7 @@
 
             $.inidb.set('permcom', action, group);
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action, $.getGroupNameById(group)));
+            $.updateCommandGroup(action, group);
         }
 
         /**
