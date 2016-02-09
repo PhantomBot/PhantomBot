@@ -330,6 +330,7 @@ public class HTTPServer extends Thread
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
+        com.gmt2001.Console.out.println("HTTP server NOT accepting connections on port " + port);
     }
 
     public void dispose()
