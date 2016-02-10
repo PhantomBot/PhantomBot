@@ -27,7 +27,9 @@
    * @returns {string}
    */
     function replaceCommandTags(message, event, command, tagList, tagReplacements) {
-        var i;
+        var i,
+            touser,
+            price,
             message = message + '',
             args = event.getArgs();
 
