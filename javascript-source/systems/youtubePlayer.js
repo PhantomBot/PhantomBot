@@ -614,5 +614,10 @@
       $.registerChatCommand('./systems/youtubePlayer.js', 'addsong', 6);
       $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong', 7);
     }
-  })
+  });
+  
+  //*Export to API
+  
+  $.youtubePlayerConnected = playerConnected;
+  $.youtubePlayerRequestsEnabled = requestsEnabled;
 })();
