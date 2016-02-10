@@ -119,7 +119,11 @@
         command = event.getCommand(),
         args = event.getArgs(),
         argString = event.getArguments(),
-        comArg = args[0];
+        comArg = args[0],
+        streamer,
+        streamerGame,
+        streamerURL,
+        shoutout;
 
     /**
      * @commandpath followreward [amount] - Set the points reward for following
@@ -157,7 +161,7 @@
     }
 
     /**
-     * @commandpath checkfollow [usename] - Check if a user is following the channel
+     * @commandpath checkfollow [username] - Check if a user is following the channel
      */
     if (command.equalsIgnoreCase('checkfollow')) {
       comArg = comArg.toLowerCase();
@@ -172,6 +176,34 @@
         $.say($.lang.get('followhandler.check.notfollows', $.username.resolve(comArg)));
       }
     }
+
+    /**
+     * @commandpath follow [streamer] - Give a shout out to a streamer.
+     * @commandpath shoutout [streamer] - Give a shout out to a streamer.
+     * @commandpath caster [streamer] - Give a shout out to a streamer.
+     */
+    if (command.equalsIgnoreCase('follow') || command.equalsIgnoreCase('shoutout') || command.equalsIgnoreCase('caster')) {
+      if (!comArg || comArg == '') {
+        $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.usage', command.toLowerCase()));
+        return;
+      }
+      streamer = $.username.resolve(args[0]);
+      streamerGame = $.getGame(streamer);
+      streamerURL = "http://twitch.tv/" + streamer;
+
+      if (streamerGame == null || streamerGame == '') {
+        $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.404', args[0]));
+        return;
+      }
+
+      if (!$.isOnline(streamer)) {
+        shoutout = $.lang.get('followhandler.shoutout.offline', streamer, streamerURL, streamerGame);
+      } else {
+        shoutout = $.lang.get('followhandler.shoutout.online', streamer, streamerURL, streamerGame);
+      }
+      $.say(shoutout);
+      return;
+    }
   });
 
   /**
@@ -183,6 +215,9 @@
       $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
       $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
       $.registerChatCommand('./handlers/followHandler.js', 'followers', 7);
+      $.registerChatCommand('./handlers/followHandler.js', 'follow', 2);
+      $.registerChatCommand('./handlers/followHandler.js', 'shoutout', 2);
+      $.registerChatCommand('./handlers/followHandler.js', 'caster', 2);
     }
   });
 })();
