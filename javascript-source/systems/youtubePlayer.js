@@ -306,6 +306,7 @@
    */
   $.bind('musicPlayerConnect', function () {
     playerConnected = true;
+    $.youtubePlayerConnected = playerConnected;
     if (defaultPlaylist.length == 0) {
       reloadDefaultPlaylist();
     }
@@ -319,6 +320,7 @@
    */
   $.bind('musicPlayerDisconnect', function () {
     playerConnected = false;
+    $.youtubePlayerConnected = playerConnected;
     updateRequestFile(true);
     if (updatesInChat && requestsEnabled) {
       $.say("[\u266B] Song requests have been disabled.");
