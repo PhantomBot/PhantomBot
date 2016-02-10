@@ -29,6 +29,11 @@
       return;
     }
 
+    if ($.inidb.exists('permcom', command)) {
+      var newGroupId = parseInt($.inidb.get('permcom', command));
+      groupId = newGroupId;
+    }
+
     commands.push({
       command: command,
       groupId: groupId,
@@ -87,9 +92,25 @@
     return 7;
   };
 
+  /**
+   * @function updateCommandGroup
+   * @export $
+   * @param command
+   * @param groupId
+   */
+  function updateCommandGroup(command, groupId) {
+    var i;
+    for (i = 0; i < commands.length; i++) {
+      if (commands[i].command.equalsIgnoreCase(command)) {
+        commands[i].groupId = groupId;
+      }
+    }
+  }
+
   /** Export functions to API */
   $.registerChatCommand = registerChatCommand;
   $.unregisterChatCommand = unregisterChatCommand;
   $.commandExists = commandExists;
   $.getCommandGroup = getCommandGroup;
+  $.updateCommandGroup = updateCommandGroup;
 })();
