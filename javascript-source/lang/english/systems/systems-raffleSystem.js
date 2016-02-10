@@ -11,4 +11,4 @@ $.lang.register('rafflesystem.enter.success', 'You have entered the raffle.');
 $.lang.register('rafflesystem.redraw.error.noentries', 'Nobody entered, thus there is no winner.');
 $.lang.register('rafflesystem.redraw.success', '/me [Raffle Redraw] The new winner is $1, congratulations!');
 $.lang.register('rafflesystem.start.error.alreadyrunning', 'You can not start a new raffle while another raffle is active.');
-$.lang.register('rafflesystem.start.usage', 'Usage: !raffle start -key [keyword] [-follow] [-t [seconds]] [-c [cost]].');
+$.lang.register('rafflesystem.start.usage', 'Usage: !raffle start [-follow] [-k keyword] [-t time in seconds] [-c cost] - Start a new raffle, follow, time and cost are optional');
