@@ -44,7 +44,7 @@
    * @param {string} raffleMaster
    */
   function startRaffle(keyWord, forFollowers, time, cost, raffleMaster) {
-    if (raffleActive) {
+    if (currentRaffle.raffleActive) {
       $.say($.whisperPrefix(raffleMaster) + $.lang.get('rafflesystem.start.error.alreadyrunning'));
       return;
     }
