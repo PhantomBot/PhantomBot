@@ -172,10 +172,11 @@
     var sender = event.getSender(),
         message = event.getMessage();
 
-    if (!$.isModv3(sender, event.getTags()) && (subscribersToggle || !$.isSubv3(sender, event.getTags()))) {
+    if (!$.isModv3(sender, event.getTags())) {
       for (var i in blackList) {
         if (message.contains(blackList[i])) {
           timeoutUser(sender, timeoutTime);
+          warning = '(timeout)';
           sendMessage(sender, blacklistMessage);
           return;
         }
@@ -193,6 +194,14 @@
         }
 
         if (regularsToggle && $.getUserGroupId(sender) <= 6) {
+          return;
+        }
+        
+        if (subscribersToggle && $.isSubv3(sender, event.getTags())) {
+          return;
+        }
+        
+        if (($.youtubePlayerConnected && $.youtubePlayerRequestsEnabled) && (message.contains('youtube.com') || message.contains('youtu.be'))) {
           return;
         }
 
