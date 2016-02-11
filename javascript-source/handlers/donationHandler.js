@@ -4,7 +4,8 @@
  * Detect and report donations.
  */
 (function () {
-  var announceDonations = false,
+  var announceDonations = ($.inidb.exists('donations', 'announce') ? $.getIniDbBoolean('donations', 'announce') : true),
+      donationReward = parseFloat($.inidb.exists('donations', 'reward') ? $.inidb.get('donations', 'reward') : 0),
       donationAddonDir = "./addons/donationHandler";
 
   /**
@@ -43,10 +44,6 @@
         donationUsername = donationJson.getString("name"),
         donationMessage = donationJson.getString("message");
 
-    if (!announceDonations) {
-      return;
-    }
-
     if ($.inidb.exists('donations', donationID)) {
       return;
     }
@@ -56,11 +53,25 @@
 
     $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), donationAddonDir + "/latestDonation.txt", false);
 
-    if ($.lang.exists('donationhandler.donation.new')) {
-      var donationSay = $.lang.get('donationhandler.donation.new');
-      donationSay = donationSay.replace('(name)', donationUsername);
-      donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
-      $.say(donationSay);
+    if (announceDonations) {
+      if (donationReward > 0) {
+        var rewardPoints = Math.round(donationAmount * donationReward);
+        var donationSay = $.lang.get('donationhandler.donation.newreward');
+        donationSay = donationSay.replace('(name)', donationUsername);
+        donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
+        donationSay = donationSay.replace('(points)', rewardPoints);
+        donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
+        $.say(donationSay);
+
+        if ($.inidb.exists('points', donationUsername.toLowerCase())) {
+          $.inidb.incr('points', donationUsername.toLowerCase(), rewardPoints);
+        }
+      } else {
+        var donationSay = $.lang.get('donationhandler.donation.new');
+        donationSay = donationSay.replace('(name)', donationUsername);
+        donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
+        $.say(donationSay);
+      }
     }
 
   });
@@ -71,23 +82,20 @@
   $.bind('command', function (event) {
     var sender = event.getSender().toLowerCase(),
         command = event.getCommand(),
-        args = event.getArgs(),
-        commandArg = parseInt(args[0]),
-        temp = [],
-        i;
+        args = event.getArgs();
 
     /**
      * @commandpath lastdonation - Display the last donation.
      */
     if (command.equalsIgnoreCase('lastdonation')) {
       if (!$.inidb.exists('donations', 'last_donation')) {
-        $.say($.lang.get('donationhandler.lastdonation.no-donations'));
+        $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.lastdonation.no-donations'));
         return;
       }
 
       var donationID = $.inidb.get('donations', 'last_donation');
       if (!$.inidb.exists('donations', donationID)) {
-        $.say($.lang.get('donationhandler.lastdonation.404'));
+        $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.lastdonation.404'));
         return;
       }
 
@@ -107,6 +115,45 @@
       donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
       $.say(donationSay);
     }
+
+    /**
+     * @commandpath donations [announce | reward n.n]
+     */
+    if (command.equalsIgnoreCase('donations')) {
+      if (!args[0]) {
+        $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.usage'));
+        return;
+      }
+
+      if (args[0].equalsIgnoreCase('announce')) {
+        if (announceDonations) {
+          $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.announce.disable'));
+          announceDonations = false;
+          $.inidb.set('donations', 'announce', 'false');
+        } else {
+          $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.announce.enable'));
+          announceDonations = true;
+          $.inidb.set('donations', 'announce', 'true');
+        }
+        return;
+      }
+
+      if (args[0].equalsIgnoreCase('reward')) {
+        if (!args[1]) {
+          $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.reward.usage'));
+          return;
+        }
+        if (isNaN(args[1])) {
+          $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.reward.usage'));
+          return;
+        }
+
+        $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.reward.success', args[1], (args[1] == "1" ? $.pointNameSingle : $.pointNameMultiple).toLowerCase()));
+        $.inidb.set('donations', 'reward', args[1]);
+        donationReward = parseFloat(args[1]);
+        return;
+      }
+    }
   });
 
   /**
@@ -115,6 +162,7 @@
   $.bind('initReady', function () {
     if ($.bot.isModuleEnabled('./handlers/donationHandler.js')) {
       $.registerChatCommand('./handlers/donationHandler.js', 'lastdonation', 7);
+      $.registerChatCommand('./handlers/donationHandler.js', 'donations', 1);
     }
   });
 })();
