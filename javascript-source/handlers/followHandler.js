@@ -143,7 +143,7 @@
      * @commandpath followmessage [message] - Set the follow message
      */
     if (command.equalsIgnoreCase('followmessage')) {
-      if (!comArg) {
+      if (!comArg || comArg =< 0) {
         $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessage.usage'));
         return;
       }
