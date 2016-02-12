@@ -464,6 +464,7 @@
         message = event.getMessage().toLowerCase().trim(),
         modMessageStart = 'the moderators of this room are: ',
         spl,
+        subsTxtList = [],
         i;
 
     if (sender.equalsIgnoreCase('jtv')) {
@@ -485,7 +486,10 @@
             }
           }
           subUsers.push([spl[1], $.systemTime() + 1e4]);
-          $.saveArray(subUsers, 'addons/subs.txt', false);
+          for (i in subUsers) {
+            subsTxtList.push(subUsers[i][0]);
+          }
+          $.saveArray(subsTxtList, 'addons/subs.txt', false);
         }
       }
     }
