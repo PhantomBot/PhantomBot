@@ -10,7 +10,8 @@
   $.bind('command', function (event) {
     var sender = event.getSender().toLowerCase(),
         command = event.getCommand(),
-        argsString = event.getArguments().trim();
+        argsString = event.getArguments().trim(),
+        args = event.getArgs();
 
     /**
      * @commandpath online - Tell if the stream is online or not
@@ -35,7 +36,7 @@
      * @commandpath game [game title] - Set the game
      */
     if (command.equalsIgnoreCase('game')) {
-      if ($.strlen(argsString) == 0) {
+      if (args.length == 0) {
         $.say('Current Game: ' + $.getGame($.channelName));
       } else {
         if (!$.isAdmin(sender)) {
@@ -52,7 +53,7 @@
      * @commandpath title [title] - Set the stream title
      */
     if (command.equalsIgnoreCase('title')) {
-      if ($.strlen(argsString) == 0) {
+      if (args.length == 0) {
         $.say('Current Status: ' + $.getStatus($.channelName));
       } else {
         if (!$.isAdmin(sender)) {
