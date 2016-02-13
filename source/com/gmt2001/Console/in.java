@@ -49,7 +49,7 @@ public class in
 
         if (PhantomBot.enableDebugging)
         {
-            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
             datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
             String timestamp = datefmt.format(new Date());

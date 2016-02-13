@@ -254,12 +254,25 @@
    */
   function callHook(hook, event, alwaysRun) {
     var i;
-    for (i in hooks) {
-      if (hooks[i].hook.equalsIgnoreCase(hook) && (isModuleEnabled(hooks[i].scriptFile) || alwaysRun)) {
+
+    // Lookup the JS file that contains the command, this removes the need to cycle through all files.
+    if (hook == 'command') {
+      var i = getHookIndex(getCommandScript(event.getCommand()), hook);
+      if (isModuleEnabled(hooks[i].scriptFile) || alwaysRun) {
         try {
           hooks[i].handler(event);
         } catch (e) {
-          $.logError('init.js', 173, '(hook.call, ' + hook + ', ' + hooks[i].scriptFile + ') ' + e);
+          $.logError('init.js', 265, '(hook.call, ' + hook + ', ' + hooks[i].scriptFile + ') ' + e);
+        }
+      }
+    } else {
+      for (i in hooks) {
+        if (hooks[i].hook.equalsIgnoreCase(hook) && (isModuleEnabled(hooks[i].scriptFile) || alwaysRun)) {
+          try {
+            hooks[i].handler(event);
+          } catch (e) {
+            $.logError('init.js', 274, '(hook.call, ' + hook + ', ' + hooks[i].scriptFile + ') ' + e);
+          }
         }
       }
     }
