@@ -15,7 +15,8 @@
       followTrain = 0,
       announceFollows = false,
       followReward = ($.inidb.exists('settings', 'followReward') ? parseInt($.inidb.get('settings', 'followReward')) : 100),
-      followMessage = ($.inidb.exists('settings', 'followMessage') ? $.inidb.get('settings', 'followMessage') : $.lang.get('followhandler.follow.message'));
+      followMessage = ($.inidb.exists('settings', 'followMessage') ? $.inidb.get('settings', 'followMessage') : $.lang.get('followhandler.follow.message')),
+      followToggle = ($.inidb.exists('settings', 'followToggle') ? $.inidb.get('settings', 'followToggle') : false);
 
   /**
    * @function checkFollowTrain
@@ -66,13 +67,17 @@
    */
   $.bind('twitchFollow', function (event) {
     if (!$.bot.isModuleEnabled('./handlers/followHandler.js')) {
-      return;
+       return;
+    }
+
+    if (!followToggle) {
+        return;
     }
 
     var follower = event.getFollower().toLowerCase();
 
     if ($.inidb.exists('followed', follower)) {
-      return;
+       return;
     }
 
     if ($.bot.isModuleEnabled('./commands/lastseenCommand.js')) {
@@ -154,6 +159,21 @@
     }
 
     /**
+     * @commandpath followtoggle - Enable or disabled the anouncements for new follows.
+     */
+    if (command.equalsIgnoreCase('followtoggle')) {
+        if (followToggle) {
+            followToggle = false;
+            $.inidb.set('settings', 'followToggle', followToggle);
+            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.toggle.off'));
+        } else if (!followToggle) {
+            followToggle = true;
+            $.inidb.set('settings', 'followToggle', followToggle);
+            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.toggle.on'));
+        }
+    }
+
+    /**
      * @commandpath followers - Announce the current amount of followers
      */
     if (command.equalsIgnoreCase('followers')) {
@@ -212,6 +232,7 @@
   $.bind('initReady', function () {
     if ($.bot.isModuleEnabled('./handlers/followHandler.js')) {
       $.registerChatCommand('./handlers/followHandler.js', 'followreward', 1);
+      $.registerChatCommand('./handlers/followHandler.js', 'followtoggle', 1);
       $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
       $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
       $.registerChatCommand('./handlers/followHandler.js', 'followers', 7);
