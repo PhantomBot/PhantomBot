@@ -8,7 +8,17 @@
  * The commandEvent will not get fired to your module if the registry does not know about it!
  */
 (function () {
-  var commands = [];
+  var commands = [],
+      commandScriptTable = {};
+
+  /**
+   * @function getCommandScript
+   * @export $
+   * @param {string} command
+   */
+  function getCommandScript(command) {
+    return commandScriptTable[command];
+  }
 
   /**
    * @function registerChatCommand
@@ -39,6 +49,8 @@
       groupId: groupId,
       script: script,
     });
+
+    commandScriptTable[command] = script;
   };
 
   /**
@@ -107,10 +119,26 @@
     }
   }
 
+  /**
+   * @function updateCommandGroup
+   * @export $
+   * @param command
+   * @param groupId
+   */
+  function updateCommandGroup(command, groupId) {
+    var i;
+    for (i = 0; i < commands.length; i++) {
+      if (commands[i].command.equalsIgnoreCase(command)) {
+        commands[i].groupId = groupId;
+      }
+    }
+  }
+
   /** Export functions to API */
   $.registerChatCommand = registerChatCommand;
   $.unregisterChatCommand = unregisterChatCommand;
   $.commandExists = commandExists;
   $.getCommandGroup = getCommandGroup;
   $.updateCommandGroup = updateCommandGroup;
+  $.getCommandScript = getCommandScript;
 })();
