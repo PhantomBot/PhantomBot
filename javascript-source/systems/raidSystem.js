@@ -41,9 +41,9 @@
         return;
       }
 
-      count = parseInt($.inidb.get('incommingRaids', username)) + 1;
       $.inidb.incr('incommingRaids', username, 1);
-      $.say($.lang.get('raidsystem.raided', $.username.resolve(username), $.getOrdinal(count)));
+      count = parseInt($.inidb.get('incommingRaids', username));
+      $.say($.lang.get('raidsystem.raided', $.username.resolve(username), count));
     }
 
     /**
