@@ -29,6 +29,7 @@
         blacklistMessage = ($.inidb.exists('chatModerator', 'blacklistMessage') ? $.inidb.get('chatModerator', 'blacklistMessage') : 'you were timed out using a blacklisted phrase'),
         warningTime = (parseInt($.inidb.exists('chatModerator', 'warningTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'warningTime')) : 5),
         timeoutTime = (parseInt($.inidb.exists('chatModerator', 'timeoutTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'timeoutTime')) : 600),
+        msgCooldownSec = (parseInt($.inidb.exists('chatModerator', 'msgCooldownSec')) ? parseInt($.getIniDbBoolean('chatModerator', 'msgCooldownSec')) : 20),
         warning = '';
 
     /**
@@ -106,7 +107,10 @@
     function setTimeoutAndCooldown(user) {
         timeoutList.push(user);
         clearTimeouts(user);
-        messageCooldown.push($.systemTime());
+        if (msgCooldownSec > 0) {
+            $.consoleLn('push')
+            messageCooldown.push($.systemTime());
+        }
     };
   
     /**
@@ -114,10 +118,12 @@
      * @param {string} user
      */
     function clearTimeouts(user) {
-        var a = setTimeout(function () {
-            messageCooldown.splice(0);
-            clearTimeout(a);
-        }, (20 * 1000));
+        if (msgCooldownSec > 0) {
+            var a = setTimeout(function () {
+                messageCooldown.splice(0);
+                clearTimeout(a);
+            }, (msgCooldownSec * 1000));
+        }
         var b = setTimeout(function () {
             for (var i in timeoutList) {
                 if (timeoutList[i].equalsIgnoreCase(user)) {
@@ -708,6 +714,19 @@
                 warningTime = parseInt(subAction);
                 $.inidb.set('chatModerator', 'warningTime', warningTime);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warning.time.set', warningTime));
+                return;
+            }
+
+            if (action.equalsIgnoreCase('messagecooldown')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.mesgcooldown.usage'));
+                    return;
+                }
+
+                msgCooldownSec = parseInt(subAction);
+                $.inidb.set('chatModerator', 'msgCooldownSec', msgCooldownSec);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.mesgcooldown.set', msgCooldownSec));
+                return;
             }
         }
     });
@@ -717,7 +736,9 @@
    */
     $.bind('initReady', function () {
         if ($.bot.isModuleEnabled('./core/chatmoderator.js')) {
+            $.consoleLn('loading the link whitelist...');
             loadWhiteList(true);
+            $.consoleLn('loading the blacklist...');
             loadBlackList(true);
     
             $.registerChatCommand('./core/chatmoderator.js', 'permit', 2);
