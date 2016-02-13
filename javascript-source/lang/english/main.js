@@ -16,9 +16,9 @@ $.lang.register('chatmoderator.symbols.filter.disabled', 'symbol filter has been
 $.lang.register('chatmoderator.regulars.usage', 'Usage: !moderation regulars [true / false] - Allows regulars to post links.');
 $.lang.register('chatmoderator.regulars.enabled', 'regulars are now allowed to post links.');
 $.lang.register('chatmoderator.regulars.disabled', 'regulars are no longet allowed to post links.');
-$.lang.register('chatmoderator.subscribers.usage', 'Usage: !moderation subscribers [true / false] - Allows subscribers to avoid the moderation filters');
-$.lang.register('chatmoderator.subscribers.enabled', 'subscribers will now avoid all spam filters.');
-$.lang.register('chatmoderator.subscribers.disabled', 'subscribers will no longer avoid all spam filters.');
+$.lang.register('chatmoderator.subscribers.usage', 'Usage: !moderation subscribers [true / false]');
+$.lang.register('chatmoderator.subscribers.enabled', 'subscribers are now allowed to post links.');
+$.lang.register('chatmoderator.subscribers.disabled', 'subscribers are no longer allowed to post links.');
 $.lang.register('chatmoderator.link.message.usage', 'Usage: !moderation linksmessage [message]');
 $.lang.register('chatmoderator.link.message.set', 'link warning message set to: $1');
 $.lang.register('chatmoderator.caps.message.usage', 'Usage: !moderation capsmessage [message]');
@@ -62,6 +62,8 @@ $.lang.register('chatmoderator.whitelist.removed', 'Link removed from the whitel
 $.lang.register('chatmoderator.whitelist.show.usage', 'Usage: !whiteList show (id)');
 $.lang.register('chatmoderator.warning', '(warning)');
 $.lang.register('chatmoderator.timeout', '(timeout)');
+$.lang.register('chatmoderator.mesgcooldown.usage', 'Usage: !moderation messagecooldown [amount] - set a cooldown for the chat moderator warning and timeout messages.');
+$.lang.register('chatmoderator.mesgcooldown.set', 'chat moderator message cooldown set to $1 seconds.');
 $.lang.register('cmd.404', 'command !$1 does not exist or is not registered.');
 $.lang.register('cmd.adminonly', 'Only an Administrator has access to that command!');
 $.lang.register('cmd.casteronly', 'Only a Caster has access to that command!');
