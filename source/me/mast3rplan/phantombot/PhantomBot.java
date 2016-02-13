@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -132,8 +132,8 @@ public class PhantomBot implements Listener {
     com.gmt2001.Console.out.println("PhantomBot Core 2.0.3");
     com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
     com.gmt2001.Console.out.println("Creator: mast3rplan");
-    com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, Scania, Zelakto, SimeonF & Juraji");
-    com.gmt2001.Console.out.println("https://phantombot.net");
+    com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, Scania, Zelakto, IllusionaryOne, SimeonF, & Juraji");
+    com.gmt2001.Console.out.println("https://phantombot.net/");
     com.gmt2001.Console.out.println();
 
     interactive = System.getProperty("interactive") != null;
@@ -752,7 +752,7 @@ public class PhantomBot implements Listener {
     }
 
     //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
-    EventBus.instance().post(new CommandEvent(sender, command, arguments));
+    EventBus.instance().postCommand(new CommandEvent(sender, command, arguments));
   }
 
   private static void ini2sqlite(boolean delete) {

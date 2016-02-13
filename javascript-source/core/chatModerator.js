@@ -686,7 +686,7 @@
             /**
              * @commandpath moderation timeouttime [amount] - Sets the time in seconds for how a long a user gets timed out
              */
-            if (action.equalsIgnoreCase('timeoutime')) {
+            if (action.equalsIgnoreCase('timeouttime')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeout.time.usage'));
                     return;

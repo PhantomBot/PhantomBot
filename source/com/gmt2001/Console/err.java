@@ -46,7 +46,7 @@ public class err
     {
         System.err.print(o);
 
-        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
         datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         String timestamp = datefmt.format(new Date());
@@ -63,7 +63,7 @@ public class err
     {
         System.err.println(o);
 
-        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
         datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         String timestamp = datefmt.format(new Date());
@@ -86,7 +86,7 @@ public class err
 
         e.printStackTrace(ptrace);
 
-        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
         datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         String timestamp = datefmt.format(new Date());

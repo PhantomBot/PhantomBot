@@ -45,7 +45,7 @@
 
     if (notice.substr(0, 8).equalsIgnoreCase('command:')) {
       notice = notice.substring(8);
-      EventBus.instance().post(new CommandEvent($.botName, notice, ' '));
+      EventBus.instance().postCommand(new CommandEvent($.botName, notice, ' '));
     } else {
       $.say(notice);
     }
