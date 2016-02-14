@@ -5,8 +5,7 @@ package jcurses.system;
  * by an user. An instance of the class contains einther a ascii character or
  * one of in the class declared constants for function keys and control keys.
  */
-public class InputChar
-{
+public class InputChar {
 
     public static final int KEY_DOWN = Toolkit.getSpecialKeyCode(0402);            /*
      * Down-arrow
@@ -115,11 +114,9 @@ public class InputChar
      *
      * @param code the code of input char
      */
-    public InputChar(int code)
-    {
+    public InputChar(int code) {
         _code = code;
-        if (_code <= 0xff)
-        {
+        if (_code <= 0xff) {
             _string = convertByteToString(_code);
         }
     }
@@ -129,8 +126,7 @@ public class InputChar
      *
      * @param character an input ascii character
      */
-    public InputChar(char character)
-    {
+    public InputChar(char character) {
         _string = "" + character;
         _code = _string.getBytes()[0];
 
@@ -143,27 +139,21 @@ public class InputChar
      * @return <code>true</code>, if a control code is contained,
      * <code>false</code> otherwise.
      */
-    public boolean isSpecialCode()
-    {
+    public boolean isSpecialCode() {
         return (_code > 0xff);
     }
 
-    private static synchronized String convertByteToString(int code)
-    {
+    private static synchronized String convertByteToString(int code) {
         __bytes[0] = (byte) code;
         @SuppressWarnings("UnusedAssignment")
         String result = null;
         String encoding = Toolkit.getEncoding();
-        if (encoding == null)
-        {
+        if (encoding == null) {
             result = new String(__bytes);
-        } else
-        {
-            try
-            {
+        } else {
+            try {
                 result = new String(__bytes, encoding);
-            } catch (java.io.UnsupportedEncodingException e)
-            {
+            } catch (java.io.UnsupportedEncodingException e) {
                 result = new String(__bytes);
                 Toolkit.setEncoding(null);
             }
@@ -178,10 +168,8 @@ public class InputChar
      * @throws java.lang.RuntimeException, if the instance doesn't contain a
      * character, but a control code
      */
-    public char getCharacter()
-    {
-        if (isSpecialCode())
-        {
+    public char getCharacter() {
+        if (isSpecialCode()) {
             throw new RuntimeException("this is a special key");
         }
         return _string.charAt(0);
@@ -191,16 +179,14 @@ public class InputChar
      * @return the string representation of the object
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return _string;
     }
 
     /**
      * @return the code ( ascii or control), contained in this instance
      */
-    public int getCode()
-    {
+    public int getCode() {
         return _code;
     }
 
@@ -212,10 +198,8 @@ public class InputChar
      * false otherwise
      */
     @Override
-    public boolean equals(Object obj)
-    {
-        if (!(obj instanceof InputChar))
-        {
+    public boolean equals(Object obj) {
+        if (!(obj instanceof InputChar)) {
             return false;
         }
 
@@ -232,8 +216,7 @@ public class InputChar
      * @return the code contained in the instance
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return _code;
     }
 

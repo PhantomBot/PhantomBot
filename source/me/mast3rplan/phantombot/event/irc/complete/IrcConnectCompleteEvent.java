@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,9 @@ package me.mast3rplan.phantombot.event.irc.complete;
 
 import me.mast3rplan.phantombot.jerklib.Session;
 
-public class IrcConnectCompleteEvent extends IrcCompleteEvent
-{
+public class IrcConnectCompleteEvent extends IrcCompleteEvent {
 
-    public IrcConnectCompleteEvent(Session session)
-    {
+    public IrcConnectCompleteEvent(Session session) {
         super(session);
     }
 }

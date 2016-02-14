@@ -24,8 +24,8 @@ import java.util.HashSet;
  * name are to use as second argument in <code>log</code> calls, to write
  * messages to the channel.
  */
-public class Protocol
-{
+@SuppressWarnings("unchecked")
+public class Protocol {
 
     public static final String SYSTEM_PROPERTY_NAME = "jcurses.protocol.filename";
 
@@ -42,32 +42,25 @@ public class Protocol
     private static final HashSet __activatedChannels = new HashSet();
     private static PrintStream __logStream = null;
 
-    static
-    {
+    static {
         initLogStreamIfPossible();
         initLogging();
     }
 
-    private static void initLogStreamIfPossible()
-    {
-        try
-        {
+    private static void initLogStreamIfPossible() {
+        try {
             String fileName = System.getProperty(SYSTEM_PROPERTY_NAME);
-            if (fileName != null)
-            {
+            if (fileName != null) {
                 __logStream = new PrintStream(new FileOutputStream(fileName, true));
                 System.setErr(__logStream);
-            } else
-            {
+            } else {
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             //Etwas nicht geklappt. Also kein Logging
         }
     }
 
-    private static void initLogging()
-    {
+    private static void initLogging() {
         activateChannel(SYSTEM);
     }
 
@@ -76,8 +69,7 @@ public class Protocol
      *
      * @param channel the name of the channel to activate
      */
-    public static void activateChannel(String channel)
-    {
+    public static void activateChannel(String channel) {
         __activatedChannels.add(channel);
     }
 
@@ -87,10 +79,8 @@ public class Protocol
      * @param message the messsage's text
      * @param channel name of the channel to write on.
      */
-    public static void log(String message, String channel)
-    {
-        if (isLoggingActivated() && isChannelActivated(channel))
-        {
+    public static void log(String message, String channel) {
+        if (isLoggingActivated() && isChannelActivated(channel)) {
             String outputMessage = getPrefix(channel) + " " + message;
             __logStream.println(outputMessage);
             __logStream.flush();
@@ -99,26 +89,22 @@ public class Protocol
 
     }
 
-    private static String getPrefix(String channel)
-    {
+    private static String getPrefix(String channel) {
         Calendar cal = Calendar.getInstance();
         String prefix = "[" + cal.get(Calendar.DATE) + "." + (cal.get(Calendar.MONTH) + 1) + "."
-                + cal.get(Calendar.YEAR) + "  " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE)
-                + ":" + cal.get(Calendar.SECOND) + "  channel=" + channel + "]";
+                        + cal.get(Calendar.YEAR) + "  " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE)
+                        + ":" + cal.get(Calendar.SECOND) + "  channel=" + channel + "]";
         return prefix;
     }
 
-    private static boolean isLoggingActivated()
-    {
-        if (__logStream == null)
-        {
+    private static boolean isLoggingActivated() {
+        if (__logStream == null) {
             initLogStreamIfPossible();
         }
         return __logStream != null;
     }
 
-    private static boolean isChannelActivated(String channel)
-    {
+    private static boolean isChannelActivated(String channel) {
         return true;
     }
 
@@ -127,8 +113,7 @@ public class Protocol
      *
      * @param message
      */
-    public static void system(String message)
-    {
+    public static void system(String message) {
         log(message, SYSTEM);
     }
 
@@ -137,8 +122,7 @@ public class Protocol
      *
      * @param message
      */
-    public static void debug(String message)
-    {
+    public static void debug(String message) {
         log(message, DEBUG);
     }
 

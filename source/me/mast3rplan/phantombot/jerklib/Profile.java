@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,8 +26,7 @@ package me.mast3rplan.phantombot.jerklib;
  * @see ConnectionManager#requestConnection(String, int,
  * me.mast3rplan.phantombot.jerklib.Profile)
  */
-public class Profile
-{
+public class Profile {
 
     private String name, realName, actualNick, firstNick, secondNick, thirdNick;
 
@@ -40,8 +39,7 @@ public class Profile
      * @param secondNick Alt nick 1
      * @param thirdNick Alt nick 2
      */
-    public Profile(String name, String realName, String nick, String secondNick, String thirdNick)
-    {
+    public Profile(String name, String realName, String nick, String secondNick, String thirdNick) {
         this.realName = realName == null ? name : realName;
         this.name = name == null ? "" : name;
         this.firstNick = nick == null ? "" : nick;
@@ -58,8 +56,7 @@ public class Profile
      * @param secondNick Alt nick 1
      * @param thirdNick Alt nick 2
      */
-    public Profile(String name, String nick, String secondNick, String thirdNick)
-    {
+    public Profile(String name, String nick, String secondNick, String thirdNick) {
         this.realName = name;
         this.name = name == null ? "" : name;
         this.firstNick = nick == null ? "" : nick;
@@ -76,8 +73,7 @@ public class Profile
      * @param realName
      * @param nick
      */
-    public Profile(String name, String realName, String nick)
-    {
+    public Profile(String name, String realName, String nick) {
         this(name, realName, nick, nick + "1", nick + "2");
     }
 
@@ -87,8 +83,7 @@ public class Profile
      *
      * @param nick
      */
-    public Profile(String nick)
-    {
+    public Profile(String nick) {
         this(nick, nick, nick, nick + "1", nick + "2");
     }
 
@@ -97,8 +92,7 @@ public class Profile
      *
      * @return name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -107,8 +101,7 @@ public class Profile
      *
      * @return first nick
      */
-    public String getFirstNick()
-    {
+    public String getFirstNick() {
         return firstNick;
     }
 
@@ -117,8 +110,7 @@ public class Profile
      *
      * @return second nick
      */
-    public String getSecondNick()
-    {
+    public String getSecondNick() {
         return secondNick;
     }
 
@@ -127,8 +119,7 @@ public class Profile
      *
      * @return third nick
      */
-    public String getThirdNick()
-    {
+    public String getThirdNick() {
         return thirdNick;
     }
 
@@ -137,8 +128,7 @@ public class Profile
      *
      * @return current actual nick
      */
-    public String getActualNick()
-    {
+    public String getActualNick() {
         return actualNick;
     }
 
@@ -147,8 +137,7 @@ public class Profile
      *
      * @param aNick
      */
-    void setActualNick(String aNick)
-    {
+    void setActualNick(String aNick) {
         actualNick = aNick;
     }
 
@@ -157,8 +146,7 @@ public class Profile
      *
      * @param nick
      */
-    void setFirstNick(String nick)
-    {
+    void setFirstNick(String nick) {
         firstNick = nick;
     }
 
@@ -167,8 +155,7 @@ public class Profile
      *
      * @return real name
      */
-    public String getRealName()
-    {
+    public String getRealName() {
         return realName;
     }
 
@@ -177,8 +164,7 @@ public class Profile
      *
      * @param realName
      */
-    public void setRealName(String realName)
-    {
+    public void setRealName(String realName) {
         this.realName = realName;
     }/*
      * (non-Javadoc) @see java.lang.Object#equals(java.lang.Object)
@@ -186,21 +172,17 @@ public class Profile
 
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-        {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass())
-        {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         Profile profile = (Profile) o;
 
-        if (actualNick != null ? !actualNick.equals(profile.getActualNick()) : profile.getActualNick() != null)
-        {
+        if (actualNick != null ? !actualNick.equals(profile.getActualNick()) : profile.getActualNick() != null) {
             return false;
         }
         return !(name != null ? !name.equals(profile.getName()) : profile.getName() != null);
@@ -210,8 +192,7 @@ public class Profile
      * (non-Javadoc) @see java.lang.Object#hashCode()
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int result;
         result = (name != null ? name.hashCode() : 0);
         result = 31 * result + (actualNick != null ? actualNick.hashCode() : 0);
@@ -222,12 +203,10 @@ public class Profile
      * (non-Javadoc) @see java.lang.Object#clone()
      */
     @Override
-    @SuppressWarnings(
-            {
-                "CloneDoesntCallSuperClone", "CloneDeclaresCloneNotSupported"
-            })
-    public Profile clone()
-    {
+    @SuppressWarnings( {
+        "CloneDoesntCallSuperClone", "CloneDeclaresCloneNotSupported"
+    })
+    public Profile clone() {
         Profile impl = new Profile(name, realName, firstNick, secondNick, thirdNick);
         impl.setActualNick(actualNick);
         return impl;

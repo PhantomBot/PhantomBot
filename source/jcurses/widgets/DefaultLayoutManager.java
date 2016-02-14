@@ -8,32 +8,26 @@ import jcurses.util.Rectangle;
  * the alignment of the widget, if its preferred size is smaller as the
  * rectangle's size-
  */
-public class DefaultLayoutManager implements LayoutManager, WidgetsConstants
-{
+public class DefaultLayoutManager implements LayoutManager, WidgetsConstants {
 
     private WidgetContainer _father = null;
 
     @Override
-    public void bindToContainer(WidgetContainer container)
-    {
-        if (_father != null)
-        {
+    public void bindToContainer(WidgetContainer container) {
+        if (_father != null) {
             throw new RuntimeException("Already bound!!!");
         }
         _father = container;
     }
 
     @Override
-    public void unbindFromContainer()
-    {
+    public void unbindFromContainer() {
         _father = null;
     }
 
     @Override
-    public void layout(Widget widget, Object constraint)
-    {
-        if (!(constraint instanceof DefaultLayoutConstraint))
-        {
+    public void layout(Widget widget, Object constraint) {
+        if (!(constraint instanceof DefaultLayoutConstraint)) {
             throw new RuntimeException("unknown constraint: " + constraint.getClass().getName());
         }
 
@@ -46,13 +40,11 @@ public class DefaultLayoutManager implements LayoutManager, WidgetsConstants
         /**
          * Negativ oder 0 bedeutet, daß keine bevorzugte Grösse angegeben wurde
          */
-        if (prefWidth <= 0)
-        {
+        if (prefWidth <= 0) {
             prefWidth = cstr.width;
         }
 
-        if (prefHeight <= 0)
-        {
+        if (prefHeight <= 0) {
             prefHeight = cstr.height;
         }
 
@@ -61,22 +53,18 @@ public class DefaultLayoutManager implements LayoutManager, WidgetsConstants
         @SuppressWarnings("UnusedAssignment")
         int height = 0;
 
-        if (prefWidth < cstr.width)
-        {
+        if (prefWidth < cstr.width) {
             widget.setX(getAlignedCoordinate(prefWidth, cstr.width, cstr.x, cstr.horizontalConstraint));
             width = prefWidth;
-        } else
-        {
+        } else {
             widget.setX(cstr.x);
             width = cstr.width;
         }
 
-        if (prefHeight < cstr.height)
-        {
+        if (prefHeight < cstr.height) {
             widget.setY(getAlignedCoordinate(prefHeight, cstr.height, cstr.y, cstr.verticalConstraint));
             height = prefHeight;
-        } else
-        {
+        } else {
             widget.setY(cstr.y);
             height = cstr.height;
         }
@@ -84,30 +72,23 @@ public class DefaultLayoutManager implements LayoutManager, WidgetsConstants
         widget.setSize(new Rectangle(width, height));
     }
 
-    private int getAlignedCoordinate(int prefG, int contG, int contC, int alignment)
-    {
+    private int getAlignedCoordinate(int prefG, int contG, int contC, int alignment) {
 
-        if (alignment == ALIGNMENT_CENTER)
-        {
+        if (alignment == ALIGNMENT_CENTER) {
             alignment = 0;
-        } else if ((alignment == ALIGNMENT_BOTTOM) || (alignment == ALIGNMENT_RIGHT))
-        {
+        } else if ((alignment == ALIGNMENT_BOTTOM) || (alignment == ALIGNMENT_RIGHT)) {
             alignment = 1;
-        } else
-        {
+        } else {
             alignment = 2;
         }
 
         @SuppressWarnings("UnusedAssignment")
         int result = 0;
-        if (alignment == 2)
-        {
+        if (alignment == 2) {
             result = contC;
-        } else if (alignment == 1)
-        {
+        } else if (alignment == 1) {
             result = contC + contG - prefG;
-        } else
-        {
+        } else {
             result = contC + (contG - prefG) / 2;
         }
         return result;
@@ -131,8 +112,7 @@ public class DefaultLayoutManager implements LayoutManager, WidgetsConstants
      * values are possible: *
      * <code>WidgetConstraints.ALIGNMENT_CENTER</code>,<code>WidgetConstraints.ALIGNMENT_LEFT</code>,<code>WidgetConstraints.ALIGNMENT_RIGHT</code>
      */
-    public void addWidget(Widget widget, int x, int y, int width, int height, int verticalConstraint, int horizontalConstraint)
-    {
+    public void addWidget(Widget widget, int x, int y, int width, int height, int verticalConstraint, int horizontalConstraint) {
         _father.addWidget(widget, new DefaultLayoutConstraint(x, y, width, height, horizontalConstraint, verticalConstraint));
 
     }
@@ -142,15 +122,13 @@ public class DefaultLayoutManager implements LayoutManager, WidgetsConstants
      *
      * @param widget widget to be removed
      */
-    public void removeWidget(Widget widget)
-    {
+    public void removeWidget(Widget widget) {
         _father.removeWidget(widget);
 
     }
 }
 
-class DefaultLayoutConstraint
-{
+class DefaultLayoutConstraint {
 
     int x = 0;
     int y = 0;
@@ -159,8 +137,7 @@ class DefaultLayoutConstraint
     int horizontalConstraint = 0;
     int verticalConstraint = 0;
 
-    DefaultLayoutConstraint(int x, int y, int width, int height, int horizontalConstraint, int verticalConstraint)
-    {
+    DefaultLayoutConstraint(int x, int y, int width, int height, int horizontalConstraint, int verticalConstraint) {
         this.x = x;
         this.y = y;
         this.width = width;

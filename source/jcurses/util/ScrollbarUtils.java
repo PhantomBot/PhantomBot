@@ -8,8 +8,7 @@ import jcurses.system.CharColor;
  * widget in the library, instead of this, instead of this widget's that has
  * scrollbars as part, use this class for painting.
  */
-public class ScrollbarUtils
-{
+public class ScrollbarUtils {
 
     public static final int HORIZONTAL = 0;
     public static final int VERTICAL = 1;
@@ -30,11 +29,9 @@ public class ScrollbarUtils
      * <code>VERTICAL</code>
      */
     public static void drawScrollBar(int start, int end, int cst, float firstPart,
-            float lastPart,
-            int alignment)
-    {
-        if ((firstPart == 0) && (lastPart == 0))
-        {
+                                     float lastPart,
+                                     int alignment) {
+        if ((firstPart == 0) && (lastPart == 0)) {
             //kein scrollbar, wenn alles sichtbar
             return;
         }
@@ -46,21 +43,17 @@ public class ScrollbarUtils
 
         int firstIntervall = Math.round((firstPart * ((float) length)));
 
-        while ((barLength + firstIntervall) > (length))
-        {
+        while ((barLength + firstIntervall) > (length)) {
             firstIntervall--;
         }
 
-        if (lastPart == 0)
-        {
+        if (lastPart == 0) {
             firstIntervall = (length - barLength);
         }
 
-        if (alignment == HORIZONTAL)
-        {
+        if (alignment == HORIZONTAL) {
             Toolkit.drawHorizontalThickLine(start + firstIntervall, cst, start + firstIntervall + barLength - 1, __color);
-        } else
-        {
+        } else {
             Toolkit.drawVerticalThickLine(cst, start + firstIntervall, start + firstIntervall + barLength - 1, __color);
         }
 

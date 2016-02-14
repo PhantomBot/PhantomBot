@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,8 +21,7 @@ package me.mast3rplan.phantombot.jerklib.listeners;
  *
  * @author mohadib
  */
-public interface TaskCompletionListener
-{
+public interface TaskCompletionListener {
 
     /**
      * Called when a task wishes to notify

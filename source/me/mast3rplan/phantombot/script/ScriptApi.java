@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,29 +23,23 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class ScriptApi
-{
+public class ScriptApi {
 
     private static final ScriptApi instance = new ScriptApi();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(8);
 
-    public static ScriptApi instance()
-    {
+    public static ScriptApi instance() {
         return instance;
     }
 
-    private ScriptApi()
-    {
+    private ScriptApi() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    public void on(Script script, String eventName, ScriptEventHandler handler)
-    {
-        script.destroyables().add(new ScriptDestroyable<ScriptEventHandler>(handler)
-        {
+    public void on(Script script, String eventName, ScriptEventHandler handler) {
+        script.destroyables().add(new ScriptDestroyable<ScriptEventHandler>(handler) {
             @Override
-            public void destroy(ScriptEventHandler handler)
-            {
+            public void destroy(ScriptEventHandler handler) {
                 ScriptEventManager.instance().unregister(handler);
             }
         });
@@ -53,14 +47,11 @@ public class ScriptApi
     }
 
     @SuppressWarnings("rawtypes")
-    public ScheduledFuture<?> setTimeout(Script script, Runnable task, int milliseconds)
-    {
+    public ScheduledFuture<?> setTimeout(Script script, Runnable task, int milliseconds) {
         ScheduledFuture future = scheduler.schedule(task, milliseconds, TimeUnit.MILLISECONDS);
-        script.destroyables().add(new ScriptDestroyable<ScheduledFuture>(future)
-        {
+        script.destroyables().add(new ScriptDestroyable<ScheduledFuture>(future) {
             @Override
-            public void destroy(ScheduledFuture future)
-            {
+            public void destroy(ScheduledFuture future) {
                 future.cancel(false);
             }
         });
@@ -68,47 +59,38 @@ public class ScriptApi
     }
 
     @SuppressWarnings("rawtypes")
-    public ScheduledFuture<?> setInterval(Script script, Runnable task, int milliseconds)
-    {
+    public ScheduledFuture<?> setInterval(Script script, Runnable task, int milliseconds) {
         ScheduledFuture future = scheduler.scheduleAtFixedRate(task, milliseconds, milliseconds, TimeUnit.MILLISECONDS);
-        script.destroyables().add(new ScriptDestroyable<ScheduledFuture>(future)
-        {
+        script.destroyables().add(new ScriptDestroyable<ScheduledFuture>(future) {
             @Override
-            public void destroy(ScheduledFuture future)
-            {
+            public void destroy(ScheduledFuture future) {
                 future.cancel(false);
             }
         });
         return future;
     }
 
-    public boolean clearTimeout(ScheduledFuture<?> future)
-    {
+    public boolean clearTimeout(ScheduledFuture<?> future) {
         return future.cancel(false);
     }
 
-    public boolean clearInterval(ScheduledFuture<?> future)
-    {
+    public boolean clearInterval(ScheduledFuture<?> future) {
         return future.cancel(false);
     }
 
-    public void loadScript(Script script, String fileName) throws IOException
-    {
+    public void loadScript(Script script, String fileName) throws IOException {
         ScriptManager.loadScript(new File(new File("./scripts/"), fileName));
     }
 
-    public Script loadScriptR(Script script, String fileName) throws IOException
-    {
+    public Script loadScriptR(Script script, String fileName) throws IOException {
         return ScriptManager.loadScriptR(new File(new File("./scripts/"), fileName));
     }
 
-    public Script getScript(Script script, String fileName) throws IOException
-    {
+    public Script getScript(Script script, String fileName) throws IOException {
         return ScriptManager.getScript(new File(new File("./scripts/"), fileName));
     }
 
-    public void kill()
-    {
+    public void kill() {
         scheduler.shutdownNow();
     }
 }

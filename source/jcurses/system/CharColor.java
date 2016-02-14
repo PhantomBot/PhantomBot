@@ -23,8 +23,7 @@ package jcurses.system;
  * <br><code>NORMAL</code>
  * <br><code>REVERSE</code>
  */
-public class CharColor
-{
+public class CharColor {
 
     //color constants
     public static final short BLACK = 0;
@@ -56,8 +55,7 @@ public class CharColor
      * @param blackWhiteAttribute mode attribute
      * @param colorAttribute mode attribute
      */
-    public CharColor(short background, short foreground, short blackWhiteAttribute, short colorAttribute)
-    {
+    public CharColor(short background, short foreground, short blackWhiteAttribute, short colorAttribute) {
         verifyColor(background);
         verifyColor(foreground);
         verifyAttribute(colorAttribute);
@@ -77,8 +75,7 @@ public class CharColor
      * @param blackWhiteAttribute mode attribute color mode attribute will be
      * set to <code>NORMAL</code>
      */
-    public CharColor(short background, short foreground, short blackWhiteAttribute)
-    {
+    public CharColor(short background, short foreground, short blackWhiteAttribute) {
         this(background, foreground, NORMAL, NORMAL);
     }
 
@@ -90,8 +87,7 @@ public class CharColor
      * @param foreground foreground color
      *
      */
-    public CharColor(short background, short foreground)
-    {
+    public CharColor(short background, short foreground) {
         this(background, foreground, NORMAL);
     }
 
@@ -100,8 +96,7 @@ public class CharColor
      *
      * @param background value to be set
      */
-    public void setBackground(short background)
-    {
+    public void setBackground(short background) {
         verifyColor(background);
         _background = background;
         initChtype();
@@ -112,8 +107,7 @@ public class CharColor
      *
      * @param foreground value to be set
      */
-    public void setForeground(short foreground)
-    {
+    public void setForeground(short foreground) {
         verifyColor(foreground);
         _foreground = foreground;
         initChtype();
@@ -122,24 +116,21 @@ public class CharColor
     /**
      * @return the background color
      */
-    public short getBackground()
-    {
+    public short getBackground() {
         return _background;
     }
 
     /**
      * @return the foreground color
      */
-    public short getForeground()
-    {
+    public short getForeground() {
         return _foreground;
     }
 
     /**
      * @return the black-white mode attribute
      */
-    public short getBlackWhiteAttribute()
-    {
+    public short getBlackWhiteAttribute() {
         return _blackWhiteAttribute;
     }
 
@@ -148,16 +139,14 @@ public class CharColor
      *
      * @param blackWhiteAttribute new black-white mode attribute
      */
-    public void setBlackWhiteAttribute(short blackWhiteAttribute)
-    {
+    public void setBlackWhiteAttribute(short blackWhiteAttribute) {
         _blackWhiteAttribute = blackWhiteAttribute;
     }
 
     /**
      * @return the color mode attribute
      */
-    public short getColorAttribute()
-    {
+    public short getColorAttribute() {
         return _colorAttribute;
     }
 
@@ -166,13 +155,11 @@ public class CharColor
      *
      * @param colorAttribute new color mode attribute
      */
-    public void setColorAttribute(short colorAttribute)
-    {
+    public void setColorAttribute(short colorAttribute) {
         _colorAttribute = colorAttribute;
     }
 
-    private void verifyColor(short color)
-    {
+    private void verifyColor(short color) {
         if ((color != BLACK)
                 && (color != RED)
                 && (color != GREEN)
@@ -180,55 +167,42 @@ public class CharColor
                 && (color != BLUE)
                 && (color != MAGENTA)
                 && (color != CYAN)
-                && (color != WHITE))
-        {
+                && (color != WHITE)) {
             throw new IllegalArgumentException("Unknown color:" + color);
         }
     }
 
-    private void verifyAttribute(short attribute)
-    {
+    private void verifyAttribute(short attribute) {
         if ((attribute != NORMAL)
                 && (attribute != REVERSE)
-                && (attribute != BOLD))
-        {
+                && (attribute != BOLD)) {
             throw new IllegalArgumentException("Unknown color attribute:" + attribute);
         }
     }
 
-    private void initChtype()
-    {
+    private void initChtype() {
         Toolkit.computeChtype(this);
     }
 
-    private String getColorName(short index)
-    {
+    private String getColorName(short index) {
         @SuppressWarnings("UnusedAssignment")
         String result = "";
 
-        if (index == BLACK)
-        {
+        if (index == BLACK) {
             result = "BLACK";
-        } else if (index == WHITE)
-        {
+        } else if (index == WHITE) {
             result = "WHITE";
-        } else if (index == GREEN)
-        {
+        } else if (index == GREEN) {
             result = "GREEN";
-        } else if (index == YELLOW)
-        {
+        } else if (index == YELLOW) {
             result = "YELLOW";
-        } else if (index == MAGENTA)
-        {
+        } else if (index == MAGENTA) {
             result = "MAGENTA";
-        } else if (index == CYAN)
-        {
+        } else if (index == CYAN) {
             result = "CYAN";
-        } else if (index == BLUE)
-        {
+        } else if (index == BLUE) {
             result = "BLUE";
-        } else
-        {
+        } else {
             result = "UNKNOWN COLOR";
         }
 
@@ -236,23 +210,21 @@ public class CharColor
 
     }
 
-    private String getModusName(short index)
-    {
+    private String getModusName(short index) {
         @SuppressWarnings("UnusedAssignment")
         String result = "";
-        switch (index)
-        {
-            case NORMAL:
-                result = "NORMAL";
-                break;
-            case REVERSE:
-                result = "REVERSE";
-                break;
-            case BOLD:
-                result = "BOLD";
-                break;
-            default:
-                result = "UNKNOWN MODUS";
+        switch (index) {
+        case NORMAL:
+            result = "NORMAL";
+            break;
+        case REVERSE:
+            result = "REVERSE";
+            break;
+        case BOLD:
+            result = "BOLD";
+            break;
+        default:
+            result = "UNKNOWN MODUS";
 
         }
 
@@ -260,13 +232,10 @@ public class CharColor
     }
 
     @Override
-    public String toString()
-    {
-        if (Toolkit.hasColors())
-        {
+    public String toString() {
+        if (Toolkit.hasColors()) {
             return "[background=" + getColorName(_background) + ", foreground=" + getColorName(_foreground) + "]";
-        } else
-        {
+        } else {
             return "[modi=" + getModusName(_blackWhiteAttribute) + "]";
         }
     }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,8 +26,7 @@ import java.util.List;
  *
  * @author mohadib
  */
-public class WhoisEvent extends IRCEvent
-{
+public class WhoisEvent extends IRCEvent {
 
     private final String host, user, realName, nick;
     private String whoisServer, whoisServerInfo;
@@ -36,8 +35,7 @@ public class WhoisEvent extends IRCEvent
     private long secondsIdle;
     private int signOnTime;
 
-    public WhoisEvent(String nick, String realName, String user, String host, String rawEventData, Session session)
-    {
+    public WhoisEvent(String nick, String realName, String user, String host, String rawEventData, Session session) {
         super(rawEventData, session, Type.WHOIS_EVENT);
         this.nick = nick;
         this.realName = realName;
@@ -50,16 +48,14 @@ public class WhoisEvent extends IRCEvent
      *
      * @return List of Channel names
      */
-    public List<String> getChannelNames()
-    {
+    public List<String> getChannelNames() {
         return channelNames;
     }
 
     /**
      * @param chanNames
      */
-    public void setChannelNamesList(List<String> chanNames)
-    {
+    public void setChannelNamesList(List<String> chanNames) {
         channelNames = chanNames;
     }
 
@@ -68,8 +64,7 @@ public class WhoisEvent extends IRCEvent
      *
      * @return hostname
      */
-    public String getHost()
-    {
+    public String getHost() {
         return host;
     }
 
@@ -78,8 +73,7 @@ public class WhoisEvent extends IRCEvent
      *
      * @return Username
      */
-    public String getUser()
-    {
+    public String getUser() {
         return user;
     }
 
@@ -88,8 +82,7 @@ public class WhoisEvent extends IRCEvent
      *
      * @return real name
      */
-    public String getRealName()
-    {
+    public String getRealName() {
         return realName;
     }
 
@@ -99,8 +92,7 @@ public class WhoisEvent extends IRCEvent
      * @return nick
      */
     @Override
-    public String getNick()
-    {
+    public String getNick() {
         return nick;
     }
 
@@ -109,8 +101,7 @@ public class WhoisEvent extends IRCEvent
      *
      * @return not impled
      */
-    public boolean isAnOperator()
-    {
+    public boolean isAnOperator() {
         return isOp;
     }
 
@@ -119,8 +110,7 @@ public class WhoisEvent extends IRCEvent
      *
      * @return true if person is idle , else false
      */
-    public boolean isIdle()
-    {
+    public boolean isIdle() {
         return secondsIdle > 0;
     }
 
@@ -129,16 +119,14 @@ public class WhoisEvent extends IRCEvent
      *
      * @return amount in seconds person has been idle
      */
-    public long secondsIdle()
-    {
+    public long secondsIdle() {
         return secondsIdle;
     }
 
     /**
      * @param secondsIdle
      */
-    public void setSecondsIdle(int secondsIdle)
-    {
+    public void setSecondsIdle(int secondsIdle) {
         this.secondsIdle = secondsIdle();
     }
 
@@ -147,16 +135,14 @@ public class WhoisEvent extends IRCEvent
      *
      * @return sign on time
      */
-    public Date signOnTime()
-    {
+    public Date signOnTime() {
         return new Date(1000L * signOnTime);
     }
 
     /**
      * @param signOnTime
      */
-    public void setSignOnTime(int signOnTime)
-    {
+    public void setSignOnTime(int signOnTime) {
         this.signOnTime = signOnTime;
     }
 
@@ -165,16 +151,14 @@ public class WhoisEvent extends IRCEvent
      *
      * @return hostname
      */
-    public String whoisServer()
-    {
+    public String whoisServer() {
         return whoisServer;
     }
 
     /**
      * @param whoisServer
      */
-    public void setWhoisServer(String whoisServer)
-    {
+    public void setWhoisServer(String whoisServer) {
         this.whoisServer = whoisServer;
     }
 
@@ -183,21 +167,18 @@ public class WhoisEvent extends IRCEvent
      *
      * @return server information
      */
-    public String whoisServerInfo()
-    {
+    public String whoisServerInfo() {
         return whoisServerInfo;
     }
 
     /**
      * @param whoisServerInfo
      */
-    public void setWhoisServerInfo(String whoisServerInfo)
-    {
+    public void setWhoisServerInfo(String whoisServerInfo) {
         this.whoisServerInfo = whoisServerInfo;
     }
 
-    public void appendRawEventData(String rawEventData)
-    {
+    public void appendRawEventData(String rawEventData) {
         //this.rawEventData += "\r\n" + rawEventData;
     }
 }

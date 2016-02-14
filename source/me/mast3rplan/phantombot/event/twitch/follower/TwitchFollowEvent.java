@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,16 +18,13 @@ package me.mast3rplan.phantombot.event.twitch.follower;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
 
-public class TwitchFollowEvent extends TwitchFollowerEvent
-{
+public class TwitchFollowEvent extends TwitchFollowerEvent {
 
-    public TwitchFollowEvent(String follower)
-    {
+    public TwitchFollowEvent(String follower) {
         super(follower, Type.FOLLOW);
     }
 
-    public TwitchFollowEvent(String follower, Channel channel)
-    {
+    public TwitchFollowEvent(String follower, Channel channel) {
         super(follower, Type.FOLLOW, channel);
     }
 }

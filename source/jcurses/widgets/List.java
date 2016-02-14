@@ -19,21 +19,19 @@ import jcurses.util.Rectangle;
 
 import jcurses.util.Paging;
 
-public class List extends Widget implements IScrollable
-{
+@SuppressWarnings("unchecked")
+public class List extends Widget implements IScrollable {
 
     private int _visibleSize = -1;
     private boolean _multiple = false;
 
-    @SuppressWarnings(
-            {
-                "FieldMayBeFinal", "UseOfObsoleteCollectionType"
-            })
+    @SuppressWarnings( {
+        "FieldMayBeFinal", "UseOfObsoleteCollectionType"
+    })
     private Vector _items = new Vector();
-    @SuppressWarnings(
-            {
-                "UseOfObsoleteCollectionType", "FieldMayBeFinal"
-            })
+    @SuppressWarnings( {
+        "UseOfObsoleteCollectionType", "FieldMayBeFinal"
+    })
     private Vector _selected = new Vector();
 
     private int _startIndex = 0;
@@ -62,8 +60,7 @@ public class List extends Widget implements IScrollable
      * if only one item can be selected at a time, in this case selecting of an
      * item causes deselecting of the previous selected item.
      */
-    public List(int visibleSize, boolean multiple)
-    {
+    public List(int visibleSize, boolean multiple) {
         _visibleSize = visibleSize;
         _multiple = multiple;
         _scrollbars = new ScrollbarPainter(this);
@@ -78,38 +75,33 @@ public class List extends Widget implements IScrollable
      * has no preferred y size.
      *
      */
-    public List(int visibleSize)
-    {
+    public List(int visibleSize) {
         this(visibleSize, false);
     }
 
     /**
      * The constructor
      */
-    public List()
-    {
+    public List() {
         this(-1, false);
     }
 
     @Override
-    public CharColor getDefaultColors()
-    {
+    public CharColor getDefaultColors() {
         return __listDefaultColors;
     }
 
     private static CharColor __selectedItemDefaultColors = new CharColor(CharColor.BLUE, CharColor.WHITE, CharColor.REVERSE);
     private CharColor _selectedItemColors = getSelectedItemDefaultColors();
 
-    private CharColor getSelectedItemDefaultColors()
-    {
+    private CharColor getSelectedItemDefaultColors() {
         return __selectedItemDefaultColors;
     }
 
     /**
      * @return colors used painting selected items.
      */
-    public CharColor getSelectedItemColors()
-    {
+    public CharColor getSelectedItemColors() {
         return _selectedItemColors;
     }
 
@@ -118,24 +110,21 @@ public class List extends Widget implements IScrollable
      *
      * @param colors colors used painting selected items
      */
-    public void setSelectedItemColors(CharColor colors)
-    {
+    public void setSelectedItemColors(CharColor colors) {
         _selectedItemColors = colors;
     }
 
     private static CharColor __titleDefaultColors = new CharColor(CharColor.WHITE, CharColor.RED, CharColor.BOLD);
     private CharColor _titleColors = getTitleDefaultColors();
 
-    private CharColor getTitleDefaultColors()
-    {
+    private CharColor getTitleDefaultColors() {
         return __titleDefaultColors;
     }
 
     /**
      * @return colors used painting the title
      */
-    public CharColor getTitleColors()
-    {
+    public CharColor getTitleColors() {
         return _titleColors;
     }
 
@@ -144,16 +133,14 @@ public class List extends Widget implements IScrollable
      *
      * @param colors colors used painting the title
      */
-    public void setTitleColors(CharColor colors)
-    {
+    public void setTitleColors(CharColor colors) {
         _titleColors = colors;
     }
 
     /**
      * @return list's title
      */
-    public String getTitle()
-    {
+    public String getTitle() {
         return _title;
     }
 
@@ -162,17 +149,14 @@ public class List extends Widget implements IScrollable
      *
      * @param title the title of the list
      */
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         _title = title;
     }
 
-    private void drawTitle()
-    {
+    private void drawTitle() {
         @SuppressWarnings("UnusedAssignment")
         String text = null;
-        if (_title != null)
-        {
+        if (_title != null) {
             text = (_title.length() > (getSize().getWidth() - 2)) ? _title.substring(0, (getSize().getWidth() - 2)) : _title;
             Toolkit.printString(text, getAbsoluteX() + (getSize().getWidth() - text.length()) / 2, getAbsoluteY(), getTitleColors());
         }
@@ -184,12 +168,10 @@ public class List extends Widget implements IScrollable
      * @param pos the position to insert the item
      * @param item item to add
      */
-    @SuppressWarnings(
-            {
-                "UnnecessaryBoxing", "BooleanConstructorCall"
-            })
-    public void add(int pos, String item)
-    {
+    @SuppressWarnings( {
+        "UnnecessaryBoxing", "BooleanConstructorCall"
+    })
+    public void add(int pos, String item) {
         _items.add(pos, item);
         _selected.add(pos, new Boolean(false));
         reset();
@@ -200,16 +182,14 @@ public class List extends Widget implements IScrollable
      *
      * @param item item to add
      */
-    public void add(String item)
-    {
+    public void add(String item) {
         add(_items.size(), item);
     }
 
     /**
      * @return number of items
      */
-    public int getItemsCount()
-    {
+    public int getItemsCount() {
         return _items.size();
     }
 
@@ -217,8 +197,7 @@ public class List extends Widget implements IScrollable
      * @param index specified position
      * @return item at the specified position
      */
-    public String getItem(int index)
-    {
+    public String getItem(int index) {
         return (String) _items.elementAt(index);
     }
 
@@ -227,8 +206,7 @@ public class List extends Widget implements IScrollable
      *
      * @param pos position
      */
-    public void remove(int pos)
-    {
+    public void remove(int pos) {
         _items.remove(pos);
         _selected.remove(pos);
         reset();
@@ -239,39 +217,31 @@ public class List extends Widget implements IScrollable
      *
      * @param item string, whose first occurence is to remove from the list.
      */
-    public void remove(String item)
-    {
+    public void remove(String item) {
         int index = _items.indexOf(item);
-        if (index != -1)
-        {
+        if (index != -1) {
             _items.remove(index);
             _selected.remove(index);
         }
 
     }
 
-    private void dispatchEvent(int index, boolean value)
-    {
+    private void dispatchEvent(int index, boolean value) {
         ItemEvent event = new ItemEvent(this, index, _items.elementAt(index),
-                value ? ItemEvent.SELECTED : ItemEvent.DESELECTED);
+                                        value ? ItemEvent.SELECTED : ItemEvent.DESELECTED);
         _listenerManager.handleEvent(event);
     }
 
-    @SuppressWarnings(
-            {
-                "UnnecessaryBoxing", "BooleanConstructorCall"
-            })
-    private void select(int index, boolean value)
-    {
+    @SuppressWarnings( {
+        "UnnecessaryBoxing", "BooleanConstructorCall"
+    })
+    private void select(int index, boolean value) {
 
-        if (!(isSelected(index) == value))
-        {
+        if (!(isSelected(index) == value)) {
             int selected = getSelectedIndex();
             _selected.set(index, new Boolean(value));
-            if ((!_multiple) && value)
-            {
-                if (selected != -1)
-                {
+            if ((!_multiple) && value) {
+                if (selected != -1) {
                     deselect(selected);
                 }
             }
@@ -279,10 +249,8 @@ public class List extends Widget implements IScrollable
 
     }
 
-    private void redrawItemBySelecting(int index)
-    {
-        if (!((index == _trackedIndex) && hasFocus()))
-        {
+    private void redrawItemBySelecting(int index) {
+        if (!((index == _trackedIndex) && hasFocus())) {
             redrawItem(index, getRectangle());
         }
     }
@@ -292,11 +260,9 @@ public class List extends Widget implements IScrollable
      *
      * @param index position
      */
-    public void select(int index)
-    {
+    public void select(int index) {
         select(index, true);
-        if (isVisible())
-        {
+        if (isVisible()) {
             redrawItemBySelecting(index);
         }
         dispatchEvent(index, true);
@@ -307,11 +273,9 @@ public class List extends Widget implements IScrollable
      *
      * @param index position
      */
-    public void deselect(int index)
-    {
+    public void deselect(int index) {
         select(index, false);
-        if (isVisible())
-        {
+        if (isVisible()) {
             redrawItemBySelecting(index);
         }
         dispatchEvent(index, false);
@@ -325,8 +289,7 @@ public class List extends Widget implements IScrollable
      *
      */
     @SuppressWarnings("UnnecessaryUnboxing")
-    public boolean isSelected(int pos)
-    {
+    public boolean isSelected(int pos) {
         return ((Boolean) _selected.elementAt(pos)).booleanValue();
     }
 
@@ -334,8 +297,7 @@ public class List extends Widget implements IScrollable
      * @return items, contained in the list
      */
     @SuppressWarnings("UseOfObsoleteCollectionType")
-    public Vector getItems()
-    {
+    public Vector getItems() {
         return (Vector) _items.clone();
     }
 
@@ -343,14 +305,11 @@ public class List extends Widget implements IScrollable
      * @return all selected items, contained in the list
      */
     @SuppressWarnings("UseOfObsoleteCollectionType")
-    public Vector getSelectedItems()
-    {
+    public Vector getSelectedItems() {
         Vector result = new Vector();
-        for (int i = 0; i < _items.size(); i++)
-        {
+        for (int i = 0; i < _items.size(); i++) {
             boolean selected = isSelected(i);
-            if (selected)
-            {
+            if (selected) {
                 result.add(_items.elementAt(i));
             }
         }
@@ -361,25 +320,20 @@ public class List extends Widget implements IScrollable
     /**
      * @return indexes of all selected items, contained in the list
      */
-    public int[] getSelectedIndexes()
-    {
+    public int[] getSelectedIndexes() {
         int size = 0;
-        for (int i = 0; i < _items.size(); i++)
-        {
+        for (int i = 0; i < _items.size(); i++) {
             boolean selected = isSelected(i);
-            if (selected)
-            {
+            if (selected) {
                 size++;
             }
         }
 
         int[] result = new int[size];
         int currentIndex = 0;
-        for (int i = 0; i < _items.size(); i++)
-        {
+        for (int i = 0; i < _items.size(); i++) {
             boolean selected = isSelected(i);
-            if (selected)
-            {
+            if (selected) {
                 result[currentIndex] = i;
                 currentIndex++;
             }
@@ -392,13 +346,11 @@ public class List extends Widget implements IScrollable
      * @return the selected item, if only one item is selected,
      * <code>null</code> otherwise.
      */
-    public String getSelectedItem()
-    {
+    public String getSelectedItem() {
         @SuppressWarnings("UseOfObsoleteCollectionType")
         Vector results = getSelectedItems();
         String result = null;
-        if (results.size() == 1)
-        {
+        if (results.size() == 1) {
             result = (String) results.elementAt(0);
         }
 
@@ -409,12 +361,10 @@ public class List extends Widget implements IScrollable
      * @return index of the selected item, if only one item is selected,
      * <code>null</code> otherwise.
      */
-    public int getSelectedIndex()
-    {
+    public int getSelectedIndex() {
         int[] results = getSelectedIndexes();
         int result = -1;
-        if (results.length == 1)
-        {
+        if (results.length == 1) {
             result = results[0];
         }
 
@@ -424,67 +374,53 @@ public class List extends Widget implements IScrollable
     /**
      * Removes all items from the list
      */
-    public void clear()
-    {
+    public void clear() {
         _items.clear();
         _selected.clear();
         reset();
     }
 
     @Override
-    protected Rectangle getPreferredSize()
-    {
+    protected Rectangle getPreferredSize() {
         return new Rectangle(-1, (_visibleSize < 0) ? -1 : _visibleSize + 2);
     }
 
-    private int getVisibleSize()
-    {
+    private int getVisibleSize() {
         return getSize().getHeight() - 2;
     }
 
-    private int getMaximumStartIndex()
-    {
+    private int getMaximumStartIndex() {
         return (_items.size() < getVisibleSize()) ? 0 : (_items.size() - getVisibleSize());
     }
 
     @SuppressWarnings("SizeReplaceableByIsEmpty")
-    private boolean isVisible(int index)
-    {
-        if (_items.size() == 0)
-        {
+    private boolean isVisible(int index) {
+        if (_items.size() == 0) {
             return false;
-        } else
-        {
+        } else {
             return ((index >= _startIndex) && (index < _startIndex + getVisibleSize()));
         }
     }
 
-    private boolean findNextSelectableItem(int pos, int searchDirection, boolean onlySearchDirection, int stepping)
-    {
-        if (getItemsCount() == 0)
-        {
+    private boolean findNextSelectableItem(int pos, int searchDirection, boolean onlySearchDirection, int stepping) {
+        if (getItemsCount() == 0) {
             return false;
         }
         int page = getPageNumber(pos);
         int start = getPageStartIndex(page);
         int end = getPageEndIndex(page);
         boolean found = false;
-        if (isSelectable(pos))
-        {
+        if (isSelectable(pos)) {
             found = true;
-        } else
-        {
+        } else {
             int searchPos = pos;
-            while ((searchPos <= end) && (searchPos >= start) && (!found))
-            {
+            while ((searchPos <= end) && (searchPos >= start) && (!found)) {
                 searchPos += searchDirection;
                 found = isSelectable(searchPos);
             }
-            if (!found && !onlySearchDirection)
-            {
+            if (!found && !onlySearchDirection) {
                 searchPos = pos;
-                while ((searchPos <= end) && (searchPos >= start) && (!found))
-                {
+                while ((searchPos <= end) && (searchPos >= start) && (!found)) {
                     searchPos -= searchDirection;
                     found = isSelectable(searchPos);
                 }
@@ -492,21 +428,15 @@ public class List extends Widget implements IScrollable
             pos = searchPos;
         }
 
-        if (found)
-        {
-            if (stepping == 0)
-            {
+        if (found) {
+            if (stepping == 0) {
                 _startIndex = start;
-            } else if (stepping == -1)
-            {
-                if (!isVisible(pos))
-                {
+            } else if (stepping == -1) {
+                if (!isVisible(pos)) {
                     _startIndex = pos;
                 }
-            } else
-            {
-                if (!isVisible(pos))
-                {
+            } else {
+                if (!isVisible(pos)) {
                     _startIndex = Math.max(0, pos - getVisibleSize() + 1);
                 }
             }
@@ -517,60 +447,48 @@ public class List extends Widget implements IScrollable
 
     }
 
-    private boolean incrementTrack()
-    {
+    private boolean incrementTrack() {
         boolean found = false;
-        if (_trackedIndex < (getItemsCount() - 1))
-        {
+        if (_trackedIndex < (getItemsCount() - 1)) {
             found = findNextSelectableItem(_trackedIndex + 1, 1, true, 1);
         }
         return found;
     }
 
-    private Paging getPaging()
-    {
+    private Paging getPaging() {
         return new Paging(getVisibleSize(), getItemsCount());
     }
 
-    private int getPageNumber(int index)
-    {
+    private int getPageNumber(int index) {
         return getPaging().getPageNumber(index);
     }
 
-    private int getPageSize()
-    {
+    private int getPageSize() {
         return getPaging().getPageSize();
     }
 
-    private int getCurrentPageNumber()
-    {
+    private int getCurrentPageNumber() {
         return getPageNumber(_trackedIndex);
     }
 
-    int getPageStartIndex(int pageNumber)
-    {
+    int getPageStartIndex(int pageNumber) {
         return getPaging().getPageStartIndex(pageNumber);
     }
 
-    int getPageEndIndex(int pageNumber)
-    {
+    int getPageEndIndex(int pageNumber) {
         return getPaging().getPageEndIndex(pageNumber);
     }
 
-    int getCurrentPageOffset()
-    {
+    int getCurrentPageOffset() {
         return getPaging().getPageOffset(_trackedIndex);
     }
 
-    private boolean incrementPage()
-    {
+    private boolean incrementPage() {
         @SuppressWarnings("UnusedAssignment")
         int nextPos = 0;
-        if (getCurrentPageNumber() < (getPageSize() - 1))
-        {
+        if (getCurrentPageNumber() < (getPageSize() - 1)) {
             nextPos = getPaging().getIndexByPageOffset(getCurrentPageNumber() + 1, getCurrentPageOffset());
-        } else
-        {
+        } else {
             nextPos = getItemsCount() - 1;
         }
 
@@ -578,15 +496,12 @@ public class List extends Widget implements IScrollable
 
     }
 
-    private boolean decrementPage()
-    {
+    private boolean decrementPage() {
         @SuppressWarnings("UnusedAssignment")
         int nextPos = 0;
-        if (getCurrentPageNumber() > 0)
-        {
+        if (getCurrentPageNumber() > 0) {
             nextPos = getPaging().getIndexByPageOffset(getCurrentPageNumber() - 1, getCurrentPageOffset());
-        } else
-        {
+        } else {
             nextPos = 0;
         }
 
@@ -599,8 +514,7 @@ public class List extends Widget implements IScrollable
      *
      * @return the index of the current tracked item.
      */
-    public int getTrackedItem()
-    {
+    public int getTrackedItem() {
         return _trackedIndex;
     }
 
@@ -611,51 +525,41 @@ public class List extends Widget implements IScrollable
      * @param pos the index of the current tracked item.
      * @exception IllegalArgumentException if pos is out of range.
      */
-    public void setTrackedItem(int pos)
-    {
-        if (pos < 0 || pos >= getItemsCount())
-        {
+    public void setTrackedItem(int pos) {
+        if (pos < 0 || pos >= getItemsCount()) {
             throw new IllegalArgumentException("pos must be in the range: 0," + (getItemsCount() - 1));
         }
         int backupStartIndex = _startIndex;
         int backupTrackedIndex = _trackedIndex;
-        if (setTrack(pos))
-        {
+        if (setTrack(pos)) {
             redraw((backupStartIndex == _startIndex), _trackedIndex, backupTrackedIndex);
         }
     }
 
-    protected boolean setTrack(int pos)
-    {
+    protected boolean setTrack(int pos) {
         return findNextSelectableItem(pos, 1, false, 0);
     }
 
-    private boolean decrementTrack()
-    {
+    private boolean decrementTrack() {
 
         boolean found = false;
-        if (_trackedIndex > 0)
-        {
+        if (_trackedIndex > 0) {
             found = findNextSelectableItem(_trackedIndex - 1, -1, true, -1);
         }
         return found;
     }
 
-    private void reset()
-    {
+    private void reset() {
         _startIndex = 0;
         _trackedIndex = 0;
         _startPos = 0;
     }
 
-    private int getMaxLength()
-    {
+    private int getMaxLength() {
         int result = 0;
-        for (int i = 0; i < _items.size(); i++)
-        {
+        for (int i = 0; i < _items.size(); i++) {
             String item = (String) _items.elementAt(i);
-            if (item.length() > result)
-            {
+            if (item.length() > result) {
                 result = item.length();
             }
         }
@@ -663,8 +567,7 @@ public class List extends Widget implements IScrollable
         return result;
     }
 
-    private int getMaxStartPos()
-    {
+    private int getMaxStartPos() {
         Rectangle rect = (Rectangle) getSize().clone();
         int width = rect.getWidth() - 2;
         int result = getMaxLength() - width;
@@ -674,10 +577,8 @@ public class List extends Widget implements IScrollable
 
     }
 
-    private boolean incrementStartPos()
-    {
-        if (_startPos < getMaxStartPos())
-        {
+    private boolean incrementStartPos() {
+        if (_startPos < getMaxStartPos()) {
             _startPos++;
             return true;
         }
@@ -685,10 +586,8 @@ public class List extends Widget implements IScrollable
         return false;
     }
 
-    private boolean decrementStartPos()
-    {
-        if (_startPos > 0)
-        {
+    private boolean decrementStartPos() {
+        if (_startPos > 0) {
             _startPos--;
             return true;
         }
@@ -702,8 +601,7 @@ public class List extends Widget implements IScrollable
      * @param value true, if items can be selected, false otherwise ( in this
      * case items can only be 'invoked')
      */
-    public void setSelectable(boolean value)
-    {
+    public void setSelectable(boolean value) {
         _selectable = value;
     }
 
@@ -713,8 +611,7 @@ public class List extends Widget implements IScrollable
      * @return true, if items can be selected, false otherwise ( in this case
      * items can only be 'invoked')
      */
-    public boolean getSelectable()
-    {
+    public boolean getSelectable() {
         return _selectable;
     }
 
@@ -728,13 +625,11 @@ public class List extends Widget implements IScrollable
      * @return true if the item at the specified position can be selected and
      * invoked, false otherwise
      */
-    protected boolean isSelectable(int i)
-    {
+    protected boolean isSelectable(int i) {
         return true;
     }
 
-    private void drawRectangle()
-    {
+    private void drawRectangle() {
         Rectangle rect = (Rectangle) getSize().clone();
         rect.setWidth(rect.getWidth() - 2);
         rect.setHeight(rect.getHeight() - 2);
@@ -743,30 +638,24 @@ public class List extends Widget implements IScrollable
     }
 
     @SuppressWarnings("SizeReplaceableByIsEmpty")
-    private void drawItems()
-    {
+    private void drawItems() {
         Rectangle rect = (Rectangle) getSize().clone();
         rect.setLocation(getAbsoluteX(), getAbsoluteY());
-        for (int i = 0; i < getVisibleSize(); i++)
-        {
+        for (int i = 0; i < getVisibleSize(); i++) {
             int index = _startIndex + i;
-            if (index < _items.size())
-            {
+            if (index < _items.size()) {
                 printItem(index, rect);
-            } else
-            {
+            } else {
                 Toolkit.drawRectangle(new Rectangle(rect.getX() + 1, rect.getY() + i + 1, rect.getWidth() - 2, 1), getColors());
             }
         }
-        if (_items.size() == 0)
-        {
+        if (_items.size() == 0) {
             drawFirstRowSelected();
         }
     }
 
     @Override
-    protected void doPaint()
-    {
+    protected void doPaint() {
         Rectangle rect = (Rectangle) getSize().clone();
         rect.setLocation(getAbsoluteX(), getAbsoluteY());
         Toolkit.drawBorder(rect, getColors());
@@ -776,46 +665,38 @@ public class List extends Widget implements IScrollable
         drawItems();
     }
 
-    private void refresh()
-    {
+    private void refresh() {
         _scrollbars.refresh();
         drawRectangle();
         drawItems();
 
     }
 
-    private void drawFirstRowSelected()
-    {
-        if (hasFocus())
-        {
+    private void drawFirstRowSelected() {
+        if (hasFocus()) {
             Toolkit.drawRectangle(getAbsoluteX() + 1, getAbsoluteY() + 1, getSize().getWidth() - 2, 1, getSelectedItemColors());
         }
     }
 
-    private void redrawItem(int index, Rectangle rect)
-    {
+    private void redrawItem(int index, Rectangle rect) {
         int x = rect.getX() + 1;
         int y = rect.getY() + 1 + index - _startIndex;
         int width = rect.getWidth() - 2;
         Rectangle itemRect = new Rectangle(x, y, width, 1);
         boolean toSelect = (((index == _trackedIndex) && hasFocus())
-                || (isSelected(index)));
+                            || (isSelected(index)));
         CharColor colors = toSelect ? getSelectedItemColors() : getColors();
         Toolkit.changeColors(itemRect, colors);
 
     }
 
-    private void redrawSelectedItems()
-    {
-        for (int i = 0; i < getVisibleSize(); i++)
-        {
+    private void redrawSelectedItems() {
+        for (int i = 0; i < getVisibleSize(); i++) {
             int index = _startIndex + i;
-            if (index < _items.size())
-            {
+            if (index < _items.size()) {
                 boolean toSelect = ((index == _trackedIndex)
-                        || (isSelected(index)));
-                if (toSelect)
-                {
+                                    || (isSelected(index)));
+                if (toSelect) {
                     redrawItem(index, getRectangle());
                 }
 
@@ -823,35 +704,29 @@ public class List extends Widget implements IScrollable
         }
     }
 
-    private void printItem(int index, Rectangle rect)
-    {
+    private void printItem(int index, Rectangle rect) {
         int x = rect.getX() + 1;
         int y = rect.getY() + 1 + index - _startIndex;
         int width = rect.getWidth() - 2;
         boolean toSelect = (((index == _trackedIndex) && hasFocus())
-                || (isSelected(index)));
+                            || (isSelected(index)));
 
         CharColor colors = toSelect ? getSelectedItemColors() : getColors();
 
         String item = getItemRepresentation((String) _items.elementAt(index));
-        if (item.length() < (_startPos + 1))
-        {
+        if (item.length() < (_startPos + 1)) {
             item = "";
-        } else
-        {
-            if (_startPos != 0)
-            {
+        } else {
+            if (_startPos != 0) {
                 item = item.substring(_startPos, item.length());
             }
         }
 
-        if ((item.length() < width) && (toSelect))
-        {
+        if ((item.length() < width) && (toSelect)) {
             @SuppressWarnings("StringBufferMayBeStringBuilder")
             StringBuffer itemBuffer = new StringBuffer();
             itemBuffer.append(item);
-            for (int i = 0; i < (width - item.length()); i++)
-            {
+            for (int i = 0; i < (width - item.length()); i++) {
                 itemBuffer.append(' ');
             }
             item = itemBuffer.toString();
@@ -869,130 +744,100 @@ public class List extends Widget implements IScrollable
      * @param item string to give display representation
      * @return display representation of the string
      */
-    protected String getItemRepresentation(String item)
-    {
+    protected String getItemRepresentation(String item) {
         return item;
     }
 
     @Override
-    protected boolean isFocusable()
-    {
+    protected boolean isFocusable() {
         return true;
     }
 
     @Override
-    protected void doRepaint()
-    {
+    protected void doRepaint() {
         doPaint();
     }
 
     private static InputChar __changeStatusChar = new InputChar(' ');
     private static InputChar __callItemChar = new InputChar('\n');
 
-    protected InputChar getChangeStatusChar()
-    {
+    protected InputChar getChangeStatusChar() {
         return __changeStatusChar;
     }
 
-    private void callItem(int index)
-    {
+    private void callItem(int index) {
         ItemEvent event = new ItemEvent(this, index, _items.elementAt(index), ItemEvent.CALLED);
         _listenerManager.handleEvent(event);
     }
 
-    private void redraw(boolean flag, int trackedIndex, int backupTrackedIndex)
-    {
-        if (flag)
-        {
+    private void redraw(boolean flag, int trackedIndex, int backupTrackedIndex) {
+        if (flag) {
             redrawItem(trackedIndex, getRectangle());
             redrawItem(backupTrackedIndex, getRectangle());
-        } else
-        {
+        } else {
             paint();
         }
     }
 
     @Override
     @SuppressWarnings("SizeReplaceableByIsEmpty")
-    protected boolean handleInput(InputChar ch)
-    {
+    protected boolean handleInput(InputChar ch) {
 
         int backupStartIndex = _startIndex;
         int backupTrackedIndex = _trackedIndex;
         // Keine Items - keine Eingabe
-        if (_items.size() == 0)
-        {
+        if (_items.size() == 0) {
             return false;
         }
 
-        if (ch.getCode() == InputChar.KEY_RIGHT)
-        {
-            if (incrementStartPos())
-            {
+        if (ch.getCode() == InputChar.KEY_RIGHT) {
+            if (incrementStartPos()) {
                 refresh();
             }
             return true;
-        } else if (ch.getCode() == InputChar.KEY_LEFT)
-        {
-            if (decrementStartPos())
-            {
+        } else if (ch.getCode() == InputChar.KEY_LEFT) {
+            if (decrementStartPos()) {
                 refresh();
             }
             return true;
-        } else if (ch.getCode() == InputChar.KEY_UP)
-        {
-            if (decrementTrack())
-            {
+        } else if (ch.getCode() == InputChar.KEY_UP) {
+            if (decrementTrack()) {
                 redraw((backupStartIndex == _startIndex), _trackedIndex, backupTrackedIndex);
             }
             return true;
-        } else if (ch.getCode() == InputChar.KEY_DOWN)
-        {
-            if (incrementTrack())
-            {
+        } else if (ch.getCode() == InputChar.KEY_DOWN) {
+            if (incrementTrack()) {
                 redraw((backupStartIndex == _startIndex), _trackedIndex, backupTrackedIndex);
             }
             return true;
-        } else if (ch.getCode() == InputChar.KEY_HOME)
-        {
-            if (setTrack(0))
-            {
+        } else if (ch.getCode() == InputChar.KEY_HOME) {
+            if (setTrack(0)) {
                 redraw((backupStartIndex == _startIndex), _trackedIndex, backupTrackedIndex);
             }
             return true;
-        } else if (ch.getCode() == InputChar.KEY_END)
-        {
-            if (setTrack(getItemsCount() - 1))
-            {
+        } else if (ch.getCode() == InputChar.KEY_END) {
+            if (setTrack(getItemsCount() - 1)) {
                 redraw((backupStartIndex == _startIndex), _trackedIndex, backupTrackedIndex);
             }
             return true;
-        } else if (ch.getCode() == InputChar.KEY_NPAGE)
-        {
-            if (incrementPage())
-            {
+        } else if (ch.getCode() == InputChar.KEY_NPAGE) {
+            if (incrementPage()) {
                 redraw((backupStartIndex == _startIndex), _trackedIndex, backupTrackedIndex);
             }
             return true;
-        } else if (ch.getCode() == InputChar.KEY_PPAGE)
-        {
-            if (decrementPage())
-            {
+        } else if (ch.getCode() == InputChar.KEY_PPAGE) {
+            if (decrementPage()) {
                 redraw((backupStartIndex == _startIndex), _trackedIndex, backupTrackedIndex);
             }
             return true;
-        } else if (ch.equals(__changeStatusChar) && getSelectable())
-        {
-            if (isSelected(_trackedIndex))
-            {
+        } else if (ch.equals(__changeStatusChar) && getSelectable()) {
+            if (isSelected(_trackedIndex)) {
                 deselect(_trackedIndex);
-            } else
-            {
+            } else {
                 select(_trackedIndex);
             }
             return true;
-        } else if (ch.equals(__callItemChar))
-        {
+        } else if (ch.equals(__callItemChar)) {
             callItem(_trackedIndex);
             return true;
         }
@@ -1001,14 +846,12 @@ public class List extends Widget implements IScrollable
     }
 
     @Override
-    protected void focus()
-    {
+    protected void focus() {
         redrawSelectedItems();
     }
 
     @Override
-    protected void unfocus()
-    {
+    protected void unfocus() {
         redrawSelectedItems();
     }
 
@@ -1017,8 +860,7 @@ public class List extends Widget implements IScrollable
      *
      * @param listener listener to add
      */
-    public void addListener(ItemListener listener)
-    {
+    public void addListener(ItemListener listener) {
         _listenerManager.addListener(listener);
     }
 
@@ -1027,120 +869,97 @@ public class List extends Widget implements IScrollable
      *
      * @param listener listener to remove
      */
-    public void removeListener(ItemListener listener)
-    {
+    public void removeListener(ItemListener listener) {
         _listenerManager.removeListener(listener);
     }
 
     //Scrollbars
     @Override
-    public boolean hasHorizontalScrollbar()
-    {
+    public boolean hasHorizontalScrollbar() {
         return true;
     }
 
     @Override
-    public boolean hasVerticalScrollbar()
-    {
+    public boolean hasVerticalScrollbar() {
         return true;
     }
 
     @Override
-    public Rectangle getBorderRectangle()
-    {
+    public Rectangle getBorderRectangle() {
         Rectangle rect = (Rectangle) getSize().clone();
         rect.setLocation(getAbsoluteX(), getAbsoluteY());
         return rect;
     }
 
-    private int getWidth()
-    {
+    private int getWidth() {
         return (getSize().getWidth() - 2);
     }
 
     @Override
     @SuppressWarnings("SizeReplaceableByIsEmpty")
-    public float getHorizontalScrollbarOffset()
-    {
-        if ((_items.size() == 0) || (getMaxLength() <= getWidth()))
-        {
+    public float getHorizontalScrollbarOffset() {
+        if ((_items.size() == 0) || (getMaxLength() <= getWidth())) {
             // Keine Items - kein scrollbar
             return 0;
         }
-        if (getMaxLength() > getWidth())
-        {
+        if (getMaxLength() > getWidth()) {
             return ((float) _startPos) / ((float) getMaxLength());
-        } else
-        {
+        } else {
             return 0;
         }
     }
 
     @Override
     @SuppressWarnings("SizeReplaceableByIsEmpty")
-    public float getHorizontalScrollbarLength()
-    {
-        if ((_items.size() == 0) || (getMaxLength() <= getWidth()))
-        {
+    public float getHorizontalScrollbarLength() {
+        if ((_items.size() == 0) || (getMaxLength() <= getWidth())) {
             // Keine Items - kein scrollbar
             return 0;
         }
-        if (getMaxLength() > getWidth())
-        {
+        if (getMaxLength() > getWidth()) {
             return ((float) getWidth()) / ((float) getMaxLength());
-        } else
-        {
+        } else {
             return 0;
         }
     }
 
     @Override
     @SuppressWarnings("SizeReplaceableByIsEmpty")
-    public float getVerticalScrollbarOffset()
-    {
-        if (_items.size() == 0)
-        {
+    public float getVerticalScrollbarOffset() {
+        if (_items.size() == 0) {
             // Keine Items - kein scrollbar
             return 0;
         }
 
-        if (_items.size() > getVisibleSize())
-        {
+        if (_items.size() > getVisibleSize()) {
             return ((float) _startIndex) / ((float) _items.size());
-        } else
-        {
+        } else {
             return 0;
         }
     }
 
     @Override
     @SuppressWarnings("SizeReplaceableByIsEmpty")
-    public float getVerticalScrollbarLength()
-    {
-        if (_items.size() == 0)
-        {
+    public float getVerticalScrollbarLength() {
+        if (_items.size() == 0) {
             // Keine Items - kein scrollbar
             return 0;
         }
 
-        if (_items.size() > getVisibleSize())
-        {
+        if (_items.size() > getVisibleSize()) {
             return ((float) getVisibleSize()) / ((float) _items.size());
-        } else
-        {
+        } else {
             return 0;
         }
     }
 
     @Override
-    public CharColor getBorderColors()
-    {
+    public CharColor getBorderColors() {
         return getColors();
     }
 
     @Override
-    public CharColor getScrollbarColors()
-    {
+    public CharColor getScrollbarColors() {
         CharColor colors = new CharColor(getColors().getForeground(), getColors().getBackground());
         colors.setBlackWhiteAttribute((colors.getBlackWhiteAttribute() == CharColor.REVERSE) ? CharColor.NORMAL : CharColor.REVERSE);
         return colors;

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,30 +24,25 @@ import me.mast3rplan.phantombot.jerklib.events.NickListEvent;
 /**
  * @author mohadib
  */
-public class NamesParser implements CommandParser
-{
+public class NamesParser implements CommandParser {
 
     @Override
-    public IRCEvent createEvent(IRCEvent event)
-    {
+    public IRCEvent createEvent(IRCEvent event) {
 
-        if (event.command().matches("366"))
-        {
+        if (event.command().matches("366")) {
             Session session = event.getSession();
             return new NickListEvent(
-                    event.getRawEventData(),
-                    session,
-                    session.getChannel(event.arg(1)),
-                    session.getChannel(event.arg(1)).getNicks());
+                       event.getRawEventData(),
+                       session,
+                       session.getChannel(event.arg(1)),
+                       session.getChannel(event.arg(1)).getNicks());
         }
 
         Channel chan = event.getSession().getChannel(event.arg(2));
         String[] names = event.arg(3).split("\\s+");
 
-        for (String name : names)
-        {
-            if (name != null && name.length() > 0)
-            {
+        for (String name : names) {
+            if (name != null && name.length() > 0) {
                 chan.addNick(name);
             }
         }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,14 +24,12 @@ import java.net.UnknownHostException;
  *
  * @author Andres N. Kievsky
  */
-public class InetAddressUtils
-{
+public class InetAddressUtils {
     /*
      * Do not allow instantiation
      */
 
-    private InetAddressUtils()
-    {
+    private InetAddressUtils() {
     }
 
     /**
@@ -41,8 +39,7 @@ public class InetAddressUtils
      * @return the InetAddress object (such as the object representing
      * 192.168.1.4)
      */
-    public static InetAddress parseNumericIp(String ip)
-    {
+    public static InetAddress parseNumericIp(String ip) {
         return parseNumericIp(Long.parseLong(ip));
     }
 
@@ -53,13 +50,10 @@ public class InetAddressUtils
      * @return the InetAddress object (such as the object representing
      * 192.168.1.4)
      */
-    public static InetAddress parseNumericIp(long ip)
-    {
-        try
-        {
+    public static InetAddress parseNumericIp(long ip) {
+        try {
             return InetAddress.getByAddress(numericIpToByteArray(ip));
-        } catch (UnknownHostException e)
-        {
+        } catch (UnknownHostException e) {
             com.gmt2001.Console.err.printStackTrace(e);
             return null;
         }
@@ -72,8 +66,7 @@ public class InetAddressUtils
      * @param ip the ip address in long (such as 3232235780)
      * @return the byte array.
      */
-    public static byte[] numericIpToByteArray(long ip)
-    {
+    public static byte[] numericIpToByteArray(long ip) {
         byte[] ipArray = new byte[4];
         ipArray[3] = (byte) (ip & 0xff);
         ipArray[2] = (byte) ((ip >> 8) & 0xff);

@@ -4,11 +4,10 @@ package jcurses.util;
  * A utility class to handle paging in components. The class get the 'page size'
  * and the size as constructor argument and calculates page numbers, start and
  * end indexes etc...
- * 
+ *
 *
  */
-public class Paging
-{
+public class Paging {
 
     private int _pageSize = 0;
     private int _size = 0;
@@ -20,8 +19,7 @@ public class Paging
      * @param size the size
      *
      */
-    public Paging(int pageSize, int size)
-    {
+    public Paging(int pageSize, int size) {
         _pageSize = pageSize;
         _size = size;
     }
@@ -33,21 +31,16 @@ public class Paging
      * @return the page number for the index
      *
      */
-    public int getPageNumber(int index)
-    {
+    public int getPageNumber(int index) {
         @SuppressWarnings("UnusedAssignment")
         int result = 0;
 
-        if (index <= 0)
-        {
+        if (index <= 0) {
             result = 0;
-        } else if (_pageSize == 1)
-        {
+        } else if (_pageSize == 1) {
             result = index;
-        } else
-        {
-            if ((_size - index - 1) < _pageSize)
-            {
+        } else {
+            if ((_size - index - 1) < _pageSize) {
                 index = _size - 1;
             }
             result = (index + 1) / _pageSize + (((index + 1) % _pageSize > 0) ? 1 : 0) - 1;
@@ -63,8 +56,7 @@ public class Paging
      * @return the number of pages
      *
      */
-    public int getPageSize()
-    {
+    public int getPageSize() {
         return getPageNumber(_size) + 1;
     }
 
@@ -75,8 +67,7 @@ public class Paging
      * @return start index
      *
      */
-    public int getPageStartIndex(int pageNumber)
-    {
+    public int getPageStartIndex(int pageNumber) {
         int result = Math.max(0, getPageEndIndex(pageNumber) - _pageSize + 1);
         return result;
     }
@@ -88,8 +79,7 @@ public class Paging
      * @return start index
      *
      */
-    public int getPageEndIndex(int pageNumber)
-    {
+    public int getPageEndIndex(int pageNumber) {
         int result = Math.min(_size - 1, (pageNumber + 1) * _pageSize - 1);
         return result;
     }
@@ -101,8 +91,7 @@ public class Paging
      * @return start index
      *
      */
-    public int getPageOffset(int index)
-    {
+    public int getPageOffset(int index) {
         return index - getPageStartIndex(getPageNumber(index));
     }
 
@@ -115,12 +104,10 @@ public class Paging
      * @return index
      *
      */
-    public int getIndexByPageOffset(int pageNumber, int pageOffset)
-    {
+    public int getIndexByPageOffset(int pageNumber, int pageOffset) {
         int startIndex = getPageStartIndex(pageNumber);
         int index = Math.min(_size, startIndex + pageOffset);
-        if (getPageNumber(index) != pageNumber)
-        {
+        if (getPageNumber(index) != pageNumber) {
             index = startIndex;
         }
 

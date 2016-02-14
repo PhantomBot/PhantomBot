@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,8 +21,7 @@ package me.mast3rplan.phantombot.jerklib;
  *
  * @author mohadib
  */
-public class ModeAdjustment
-{
+public class ModeAdjustment {
 
     private final Action action;
     private final char mode;
@@ -31,15 +30,13 @@ public class ModeAdjustment
     /**
      * Enum of mode action types. Modes can only be applied or removed.
      */
-    public enum Action
-    {
+    public enum Action {
 
         PLUS,
         MINUS
     }
 
-    public ModeAdjustment(Action action, char mode, String argument)
-    {
+    public ModeAdjustment(Action action, char mode, String argument) {
         this.action = action;
         this.mode = mode;
         this.argument = argument;
@@ -50,8 +47,7 @@ public class ModeAdjustment
      *
      * @return PLUS if applying MINUS if removing
      */
-    public Action getAction()
-    {
+    public Action getAction() {
         return action;
     }
 
@@ -60,8 +56,7 @@ public class ModeAdjustment
      *
      * @return the mode
      */
-    public char getMode()
-    {
+    public char getMode() {
         return mode;
     }
 
@@ -70,8 +65,7 @@ public class ModeAdjustment
      *
      * @return the argument for the mode or an empty string is no argument
      */
-    public String getArgument()
-    {
+    public String getArgument() {
         return argument;
     }
 
@@ -79,8 +73,7 @@ public class ModeAdjustment
      * (non-Javadoc) @see java.lang.Object#toString()
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return (action == Action.PLUS ? "+" : "-") + mode + " " + argument;
     }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,8 +23,7 @@ import java.util.HashMap;
  *
  * @author gmt2001
  */
-public class HttpResponse
-{
+public class HttpResponse {
 
     public RequestType type;
     public String url;

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,16 +20,13 @@ import java.util.Map;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
 
-public class IrcChannelMessageEvent extends IrcMessageEvent
-{
+public class IrcChannelMessageEvent extends IrcMessageEvent {
 
-    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel)
-    {
+    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel) {
         super(session, sender, message, null, channel);
     }
 
-    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel, Map<String, String> tags)
-    {
+    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel, Map<String, String> tags) {
         super(session, sender, message, tags, channel);
     }
 }

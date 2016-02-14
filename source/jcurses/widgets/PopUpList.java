@@ -16,10 +16,10 @@ import java.util.Vector;
  * This class implements a popup list. Such list has always one of the items
  * selected and gives the possibility to change this selection ( througth an
  * popup menu that is shown, if the user typed 'enter')
- * 
+ *
 */
-public class PopUpList extends Widget
-{
+@SuppressWarnings("unchecked")
+public class PopUpList extends Widget {
 
     private int _selectedIndex = -1;
     @SuppressWarnings("UseOfObsoleteCollectionType")
@@ -30,16 +30,14 @@ public class PopUpList extends Widget
     private static final CharColor __popUpDefaultColors = new CharColor(CharColor.WHITE, CharColor.BLACK);
 
     @Override
-    public CharColor getDefaultColors()
-    {
+    public CharColor getDefaultColors() {
         return __popUpDefaultColors;
     }
 
     private static final CharColor __focusedPopUpDefaultColors = new CharColor(CharColor.BLUE, CharColor.WHITE, CharColor.REVERSE);
     private CharColor _focusedPopUpColors = getFocusedPopUpDefaultColors();
 
-    private CharColor getFocusedPopUpDefaultColors()
-    {
+    private CharColor getFocusedPopUpDefaultColors() {
         return __focusedPopUpDefaultColors;
     }
 
@@ -47,8 +45,7 @@ public class PopUpList extends Widget
      * @return colors used to paint the widget, if it has focus
      *
      */
-    public CharColor getFocusedPopUpColors()
-    {
+    public CharColor getFocusedPopUpColors() {
         return _focusedPopUpColors;
     }
 
@@ -57,13 +54,11 @@ public class PopUpList extends Widget
      *
      * @param colors colors used to paint the widget, if it has focus
      */
-    public void setFocusedPopUpColors(CharColor colors)
-    {
+    public void setFocusedPopUpColors(CharColor colors) {
         _focusedPopUpColors = colors;
     }
 
-    public PopUpList()
-    {
+    public PopUpList() {
     }
 
     /**
@@ -71,8 +66,7 @@ public class PopUpList extends Widget
      *
      * @param item the item to add
      */
-    public void add(String item)
-    {
+    public void add(String item) {
         _items.add(item);
     }
 
@@ -82,8 +76,7 @@ public class PopUpList extends Widget
      * @param item the item to add
      * @param pos position
      */
-    public void add(int pos, String item)
-    {
+    public void add(int pos, String item) {
         _items.add(pos, item);
     }
 
@@ -93,8 +86,7 @@ public class PopUpList extends Widget
      * @param item item to be removed
      *
      */
-    public void remove(String item)
-    {
+    public void remove(String item) {
         _items.remove(item);
     }
 
@@ -103,16 +95,14 @@ public class PopUpList extends Widget
      *
      * @param pos position
      */
-    public void remove(int pos)
-    {
+    public void remove(int pos) {
         _items.remove(pos);
     }
 
     /**
      * Clears the item list
      */
-    public void clear()
-    {
+    public void clear() {
         _items.clear();
     }
 
@@ -121,18 +111,13 @@ public class PopUpList extends Widget
      *
      * @return currently selected index
      */
-    public int getSelectedIndex()
-    {
-        if (_selectedIndex != -1)
-        {
+    public int getSelectedIndex() {
+        if (_selectedIndex != -1) {
             return _selectedIndex;
-        } else
-        {
-            if (_items.size() > 0)
-            {
+        } else {
+            if (_items.size() > 0) {
                 return 0;
-            } else
-            {
+            } else {
                 return -1;
             }
         }
@@ -143,31 +128,24 @@ public class PopUpList extends Widget
      *
      * @return currently selected item
      */
-    public String getSelectedItem()
-    {
-        if (getSelectedIndex() >= 0)
-        {
+    public String getSelectedItem() {
+        if (getSelectedIndex() >= 0) {
             return (String) _items.elementAt(getSelectedIndex());
-        } else
-        {
+        } else {
             return null;
         }
     }
 
     @Override
-    protected Rectangle getPreferredSize()
-    {
+    protected Rectangle getPreferredSize() {
         return new Rectangle(2 + getMaxLength(), 1);
     }
 
-    private int getMaxLength()
-    {
+    private int getMaxLength() {
         int result = 0;
-        for (int i = 0; i < _items.size(); i++)
-        {
+        for (int i = 0; i < _items.size(); i++) {
             String item = (String) _items.elementAt(i);
-            if (item.length() > result)
-            {
+            if (item.length() > result) {
                 result = item.length();
             }
         }
@@ -175,22 +153,18 @@ public class PopUpList extends Widget
         return result;
     }
 
-    private String getText()
-    {
+    private String getText() {
         @SuppressWarnings("UnusedAssignment")
         String result = null;
         int length = getSize().getWidth() - 2;
         String item = (getSelectedItem() == null) ? "" : getSelectedItem();
-        if (item.length() > length)
-        {
+        if (item.length() > length) {
             result = item.substring(0, length);
-        } else
-        {
+        } else {
             @SuppressWarnings("StringBufferMayBeStringBuilder")
             StringBuffer buf = new StringBuffer();
             buf.append(item);
-            for (int i = 0; i < (length - item.length()); i++)
-            {
+            for (int i = 0; i < (length - item.length()); i++) {
                 buf.append(' ');
             }
             result = buf.toString();
@@ -200,8 +174,7 @@ public class PopUpList extends Widget
     }
 
     @Override
-    protected void doPaint()
-    {
+    protected void doPaint() {
         Rectangle rect = (Rectangle) getSize().clone();
         rect.setLocation(getAbsoluteX(), getAbsoluteY());
         String text = "[" + getText() + "]";
@@ -210,34 +183,27 @@ public class PopUpList extends Widget
     }
 
     @Override
-    protected boolean isFocusable()
-    {
+    protected boolean isFocusable() {
         return true;
     }
 
     @Override
-    protected void doRepaint()
-    {
+    protected void doRepaint() {
         doPaint();
     }
 
     private static final InputChar __changeValueChar = new InputChar('\n');
 
     @Override
-    protected boolean handleInput(InputChar ch)
-    {
-        if (ch.equals(__changeValueChar))
-        {
-            if (_items.size() > 2)
-            {
+    protected boolean handleInput(InputChar ch) {
+        if (ch.equals(__changeValueChar)) {
+            if (_items.size() > 2) {
                 PopUpMenu menu = new PopUpMenu(getAbsoluteX(), getAbsoluteY(), null);
-                for (int i = 0; i < _items.size(); i++)
-                {
+                for (int i = 0; i < _items.size(); i++) {
                     menu.add((String) _items.elementAt(i));
                 }
                 menu.show();
-                if ((menu.getSelectedIndex() != -1) && (menu.getSelectedIndex() != getSelectedIndex()))
-                {
+                if ((menu.getSelectedIndex() != -1) && (menu.getSelectedIndex() != getSelectedIndex())) {
                     _selectedIndex = menu.getSelectedIndex();
                     paint();
                     _listenerManager.handleEvent(new ValueChangedEvent(this));
@@ -252,14 +218,12 @@ public class PopUpList extends Widget
     }
 
     @Override
-    protected void focus()
-    {
+    protected void focus() {
         paint();
     }
 
     @Override
-    protected void unfocus()
-    {
+    protected void unfocus() {
         paint();
     }
 
@@ -268,8 +232,7 @@ public class PopUpList extends Widget
      *
      * @param listener
      */
-    public void addListener(ValueChangedListener listener)
-    {
+    public void addListener(ValueChangedListener listener) {
         _listenerManager.addListener(listener);
     }
 
@@ -278,8 +241,7 @@ public class PopUpList extends Widget
      *
      * @param listener
      */
-    public void removeListener(ValueChangedListener listener)
-    {
+    public void removeListener(ValueChangedListener listener) {
         _listenerManager.removeListener(listener);
     }
 

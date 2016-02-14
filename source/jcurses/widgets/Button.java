@@ -18,16 +18,15 @@ import java.util.Vector;
  * 'clicked', it generates an <code>ActionEvent</code>, that is delegetated to
  * registered listeners.
  */
-public class Button extends Widget
-{
+@SuppressWarnings("unchecked")
+public class Button extends Widget {
 
     private final ActionListenerManager _listenerManager = new ActionListenerManager();
 
     private static final CharColor __buttonDefaultColors = new CharColor(CharColor.WHITE, CharColor.BLACK);
 
     @Override
-    public CharColor getDefaultColors()
-    {
+    public CharColor getDefaultColors() {
         return __buttonDefaultColors;
     }
 
@@ -38,8 +37,7 @@ public class Button extends Widget
      *
      * @param label buttton's label
      */
-    public void setLabel(String label)
-    {
+    public void setLabel(String label) {
         _label = label;
 
     }
@@ -47,24 +45,21 @@ public class Button extends Widget
     /**
      * @return button's label
      */
-    public String getLabel()
-    {
+    public String getLabel() {
         return _label;
     }
 
     private static final CharColor __focusedButtonDefaultColors = new CharColor(CharColor.BLUE, CharColor.WHITE, CharColor.REVERSE);
     private CharColor _focusedButtonColors = getFocusedButtonDefaultColors();
 
-    private CharColor getFocusedButtonDefaultColors()
-    {
+    private CharColor getFocusedButtonDefaultColors() {
         return __focusedButtonDefaultColors;
     }
 
     /**
      * @return button's colors, if it is focused
      */
-    public CharColor getFocusedButtonColors()
-    {
+    public CharColor getFocusedButtonColors() {
         return _focusedButtonColors;
     }
 
@@ -73,24 +68,21 @@ public class Button extends Widget
      *
      * @param colors button's colors, if it is focused
      */
-    public void setFocusedButtonColors(CharColor colors)
-    {
+    public void setFocusedButtonColors(CharColor colors) {
         _focusedButtonColors = colors;
     }
 
     private static final CharColor __shortCutDefaultColors = new CharColor(CharColor.WHITE, CharColor.RED);
     private CharColor _shortCutColors = getShortCutDefaultColors();
 
-    private CharColor getShortCutDefaultColors()
-    {
+    private CharColor getShortCutDefaultColors() {
         return __shortCutDefaultColors;
     }
 
     /**
      * @return colors button's shortcut char's colors
      */
-    public CharColor getShortCutColors()
-    {
+    public CharColor getShortCutColors() {
         return _shortCutColors;
     }
 
@@ -101,8 +93,7 @@ public class Button extends Widget
      *
      * @param colors button's shortcut char's colors
      */
-    public void setShortCutColors(CharColor colors)
-    {
+    public void setShortCutColors(CharColor colors) {
         _shortCutColors = colors;
     }
 
@@ -111,41 +102,33 @@ public class Button extends Widget
      *
      * @param label
      */
-    public Button(String label)
-    {
+    public Button(String label) {
         _label = label;
     }
 
     @Override
-    protected Rectangle getPreferredSize()
-    {
+    protected Rectangle getPreferredSize() {
         return new Rectangle(_label.length() + 4, 1);
     }
 
     @Override
-    protected void doPaint()
-    {
+    protected void doPaint() {
         Rectangle rect = getRectangle();
         String text = "< " + _label + " >";
         CharColor colors = hasFocus() ? getFocusedButtonColors() : getColors();
         Toolkit.printString(text, rect, colors);
-        if (!hasFocus())
-        {
+        if (!hasFocus()) {
             drawShortCutIfNeeded();
         }
     }
 
-    private void drawShortCutIfNeeded()
-    {
+    private void drawShortCutIfNeeded() {
         InputChar shortCut = getShortCut();
-        if (shortCut != null)
-        {
+        if (shortCut != null) {
             String c = shortCut.toString();
-            if (_label != null)
-            {
+            if (_label != null) {
                 int index = _label.toLowerCase().indexOf(c.toLowerCase());
-                if (index != -1)
-                {
+                if (index != -1) {
                     String c1 = _label.substring(index, index + 1);
                     Toolkit.printString(c1, getAbsoluteX() + index + 2, getAbsoluteY(), getShortCutColors());
                 }
@@ -155,10 +138,8 @@ public class Button extends Widget
 
     @Override
     @SuppressWarnings("UseOfObsoleteCollectionType")
-    protected Vector getShortCutsList()
-    {
-        if (getShortCut() == null)
-        {
+    protected Vector getShortCutsList() {
+        if (getShortCut() == null) {
             return null;
         }
         Vector result = new Vector();
@@ -167,25 +148,21 @@ public class Button extends Widget
     }
 
     @Override
-    protected boolean isFocusable()
-    {
+    protected boolean isFocusable() {
         return true;
     }
 
     @Override
-    protected void doRepaint()
-    {
+    protected void doRepaint() {
         doPaint();
     }
 
     private static final InputChar __actionChar = new InputChar('\n');
 
     @Override
-    protected boolean handleInput(InputChar ch)
-    {
+    protected boolean handleInput(InputChar ch) {
         if ((ch.equals(__actionChar))
-                || ((getShortCut() != null) && (getShortCut().equals(ch))))
-        {
+                || ((getShortCut() != null) && (getShortCut().equals(ch)))) {
             doAction();
             return true;
         }
@@ -193,21 +170,18 @@ public class Button extends Widget
         return false;
     }
 
-    private void changeColors()
-    {
+    private void changeColors() {
         CharColor colors = hasFocus() ? getFocusedButtonColors() : getColors();
         Toolkit.changeColors(getRectangle(), colors);
     }
 
     @Override
-    protected void focus()
-    {
+    protected void focus() {
         changeColors();
     }
 
     @Override
-    protected void unfocus()
-    {
+    protected void unfocus() {
         changeColors();
     }
 
@@ -216,8 +190,7 @@ public class Button extends Widget
      *
      * @param listener listener to add
      */
-    public void addListener(ActionListener listener)
-    {
+    public void addListener(ActionListener listener) {
         _listenerManager.addListener(listener);
     }
 
@@ -226,13 +199,11 @@ public class Button extends Widget
      *
      * @param listener listener to remove
      */
-    public void removeListener(ActionListener listener)
-    {
+    public void removeListener(ActionListener listener) {
         _listenerManager.removeListener(listener);
     }
 
-    private void doAction()
-    {
+    private void doAction() {
         _listenerManager.handleEvent(new ActionEvent(this));
     }
 
@@ -246,13 +217,11 @@ public class Button extends Widget
      *
      * @param c
      */
-    public void setShortCut(char c)
-    {
+    public void setShortCut(char c) {
         _shortCut = new InputChar(c);
     }
 
-    private InputChar getShortCut()
-    {
+    private InputChar getShortCut() {
         return _shortCut;
     }
 

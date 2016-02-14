@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,19 +23,17 @@ import me.mast3rplan.phantombot.jerklib.events.QuitEvent;
 
 import java.util.List;
 
-public class QuitParser implements CommandParser
-{
+public class QuitParser implements CommandParser {
 
     @Override
-    public QuitEvent createEvent(IRCEvent event)
-    {
+    public QuitEvent createEvent(IRCEvent event) {
         Session session = event.getSession();
         String nick = event.getNick();
         List<Channel> chanList = event.getSession().removeNickFromAllChannels(nick);
         return new QuitEvent(
-                event.getRawEventData(),
-                session,
-                event.arg(0), // message
-                chanList);
+                   event.getRawEventData(),
+                   session,
+                   event.arg(0), // message
+                   chanList);
     }
 }

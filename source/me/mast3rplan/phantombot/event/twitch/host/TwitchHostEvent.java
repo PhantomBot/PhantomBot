@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,44 +19,37 @@ package me.mast3rplan.phantombot.event.twitch.host;
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 
-public abstract class TwitchHostEvent extends TwitchEvent
-{
+public abstract class TwitchHostEvent extends TwitchEvent {
 
     private final String hoster;
     private final Type type;
 
-    public enum Type
-    {
+    public enum Type {
 
         HOST,
         UNHOST;
     }
 
-    protected TwitchHostEvent(String hoster, Type type)
-    {
+    protected TwitchHostEvent(String hoster, Type type) {
         this.hoster = hoster;
         this.type = type;
     }
 
-    protected TwitchHostEvent(String hoster, Type type, Channel channel)
-    {
+    protected TwitchHostEvent(String hoster, Type type, Channel channel) {
         super(channel);
         this.hoster = hoster;
         this.type = type;
     }
 
-    public String getHoster()
-    {
+    public String getHoster() {
         return hoster;
     }
 
-    public Type getType()
-    {
+    public Type getType() {
         return type;
     }
 
-    public String toEventSocket()
-    {
-    	return this.getHoster() + "|" + this.getType();
+    public String toEventSocket() {
+        return this.getHoster() + "|" + this.getType();
     }
 }

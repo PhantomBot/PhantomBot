@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,17 +23,15 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class NickChangeEvent extends IRCEvent
-{
+public class NickChangeEvent extends IRCEvent {
 
     private final String oldNick, newNick;
 
     public NickChangeEvent(
-            String rawEventData,
-            Session session,
-            String oldNick,
-            String newNick)
-    {
+        String rawEventData,
+        Session session,
+        String oldNick,
+        String newNick) {
         super(rawEventData, session, Type.NICK_CHANGE);
         this.oldNick = oldNick;
         this.newNick = newNick;
@@ -44,8 +42,7 @@ public class NickChangeEvent extends IRCEvent
      *
      * @return Old nick for user.
      */
-    public final String getOldNick()
-    {
+    public final String getOldNick() {
         return oldNick;
     }
 
@@ -54,8 +51,7 @@ public class NickChangeEvent extends IRCEvent
      *
      * @return New nick for user
      */
-    public final String getNewNick()
-    {
+    public final String getNewNick() {
         return newNick;
     }
 }

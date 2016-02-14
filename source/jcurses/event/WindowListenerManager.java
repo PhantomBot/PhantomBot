@@ -7,29 +7,23 @@ package jcurses.event;
  * <code>jcurses.event.ValueChangedEvent</code>, of managed listeners id
  * <code>jcurses.event.ValueChangedListener</code>
  */
-public class WindowListenerManager extends ListenerManager
-{
+public class WindowListenerManager extends ListenerManager {
 
     @Override
-    protected void doHandleEvent(Event event, Object listener)
-    {
+    protected void doHandleEvent(Event event, Object listener) {
         ((WindowListener) listener).windowChanged((WindowEvent) event);
     }
 
     @Override
-    protected void verifyListener(Object listener)
-    {
-        if (!(listener instanceof WindowListener))
-        {
+    protected void verifyListener(Object listener) {
+        if (!(listener instanceof WindowListener)) {
             throw new RuntimeException("illegal listener type");
         }
     }
 
     @Override
-    protected void verifyEvent(Event event)
-    {
-        if (!(event instanceof WindowEvent))
-        {
+    protected void verifyEvent(Event event) {
+        if (!(event instanceof WindowEvent)) {
             throw new RuntimeException("illegal event type");
         }
     }

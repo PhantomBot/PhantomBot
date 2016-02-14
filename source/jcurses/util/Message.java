@@ -15,8 +15,7 @@ import java.util.StringTokenizer;
  * dialog with an user defined title, containing an user defined text and a
  * button to close the window with an user defined label.
  */
-public class Message extends Dialog implements ActionListener
-{
+public class Message extends Dialog implements ActionListener {
 
     String _title = null;
     String _text = null;
@@ -33,8 +32,7 @@ public class Message extends Dialog implements ActionListener
      *
      */
     @SuppressWarnings("LeakingThisInConstructor")
-    public Message(String title, String text, String buttonLabel)
-    {
+    public Message(String title, String text, String buttonLabel) {
         super(getWidth(text, title) + 4, getHeight(text) + 7, true, title);
 
         DefaultLayoutManager manager = (DefaultLayoutManager) getRootPanel().getLayoutManager();
@@ -46,47 +44,40 @@ public class Message extends Dialog implements ActionListener
         _button.addListener(this);
 
         manager.addWidget(_label, 0, 0, getWidth(text, _title) + 2, getHeight(text) + 2, WidgetsConstants.ALIGNMENT_CENTER,
-                WidgetsConstants.ALIGNMENT_CENTER);
+                          WidgetsConstants.ALIGNMENT_CENTER);
 
         manager.addWidget(_button, 0, getHeight(text) + 2, getWidth(text, _title) + 2, 5, WidgetsConstants.ALIGNMENT_CENTER,
-                WidgetsConstants.ALIGNMENT_CENTER);
+                          WidgetsConstants.ALIGNMENT_CENTER);
 
     }
 
-    private static int getWidth(String label, String title)
-    {
+    private static int getWidth(String label, String title) {
 
         StringTokenizer tokenizer = new StringTokenizer(label, "\n");
         int result = 0;
-        while (tokenizer.hasMoreElements())
-        {
+        while (tokenizer.hasMoreElements()) {
             String token = tokenizer.nextToken();
-            if (result < token.length())
-            {
+            if (result < token.length()) {
                 result = token.length();
             }
         }
-        if (title.length() > result)
-        {
+        if (title.length() > result) {
             result = title.length();
         }
         //message nust fit on the schreen
 
-        if (result > jcurses.system.Toolkit.getScreenWidth() - 3)
-        {
+        if (result > jcurses.system.Toolkit.getScreenWidth() - 3) {
             result = jcurses.system.Toolkit.getScreenWidth() - 3;
         }
 
         return result;
     }
 
-    private static int getHeight(String label)
-    {
+    private static int getHeight(String label) {
 
         StringTokenizer tokenizer = new StringTokenizer(label, "\n");
         int result = 0;
-        while (tokenizer.hasMoreElements())
-        {
+        while (tokenizer.hasMoreElements()) {
             tokenizer.nextElement();
             result++;
         }
@@ -97,8 +88,7 @@ public class Message extends Dialog implements ActionListener
      * Required for implementing <code>jcurses.event.ActionListener</code>
      */
     @Override
-    public void actionPerformed(ActionEvent event)
-    {
+    public void actionPerformed(ActionEvent event) {
         close();
     }
 

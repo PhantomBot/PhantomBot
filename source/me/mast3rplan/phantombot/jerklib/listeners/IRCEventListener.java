@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,8 +23,7 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
  *
  * @author mohadib
  */
-public interface IRCEventListener
-{
+public interface IRCEventListener {
 
     /**
      * recieveEvent() - receive IRCEvents

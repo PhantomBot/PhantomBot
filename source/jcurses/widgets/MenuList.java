@@ -9,8 +9,7 @@ package jcurses.widgets;
 import jcurses.system.InputChar;
 import jcurses.util.Rectangle;
 
-public class MenuList extends List
-{
+public class MenuList extends List {
 
     private static final String SEPARATOR = "\u0000\u0000\u0000\u0000";
     private static final String SEPARATOR_STRING = "";
@@ -21,8 +20,7 @@ public class MenuList extends List
      * @param index position to add a separator
      *
      */
-    public void addSeparator(int index)
-    {
+    public void addSeparator(int index) {
         add(index, SEPARATOR);
     }
 
@@ -31,17 +29,14 @@ public class MenuList extends List
      *
      *
      */
-    public void addSeparator()
-    {
+    public void addSeparator() {
         addSeparator(getItemsCount());
     }
 
     @Override
-    protected boolean handleInput(InputChar ch)
-    {
+    protected boolean handleInput(InputChar ch) {
 
-        if (!ch.equals(getChangeStatusChar()))
-        {
+        if (!ch.equals(getChangeStatusChar())) {
             return super.handleInput(ch);
         }
         return false;
@@ -49,20 +44,16 @@ public class MenuList extends List
 
     @Override
     @SuppressWarnings("StringEquality")
-    protected boolean isSelectable(int index)
-    {
+    protected boolean isSelectable(int index) {
         return (!(getItem(index) == SEPARATOR));
     }
 
     @Override
     @SuppressWarnings("StringEquality")
-    protected String getItemRepresentation(String item)
-    {
-        if (item == SEPARATOR)
-        {
+    protected String getItemRepresentation(String item) {
+        if (item == SEPARATOR) {
             return getSeparatorString();
-        } else
-        {
+        } else {
             return item;
         }
     }
@@ -75,8 +66,7 @@ public class MenuList extends List
      * @return separator string
      *
      */
-    public String getSeparatorString()
-    {
+    public String getSeparatorString() {
         return _separatorString;
     }
 
@@ -86,22 +76,18 @@ public class MenuList extends List
      * @param value separator string
      *
      */
-    public void setSeparatorString(String value)
-    {
+    public void setSeparatorString(String value) {
         _separatorString = value;
     }
 
     @Override
-    protected Rectangle getPreferredSize()
-    {
+    protected Rectangle getPreferredSize() {
         return new Rectangle(getMaxItemLength() + 2, getItemsCount() + 2);
     }
 
-    private int getMaxItemLength()
-    {
+    private int getMaxItemLength() {
         int result = 0;
-        for (int i = 0; i < getItemsCount(); i++)
-        {
+        for (int i = 0; i < getItemsCount(); i++) {
             int length = getItemRepresentation((getItem(i))).length();
             result = (length > result) ? length : result;
         }

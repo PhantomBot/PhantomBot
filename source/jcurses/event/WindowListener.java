@@ -4,8 +4,7 @@ package jcurses.event;
  * The interface has to be impelemented to listen on instances of
  * <code>WindowEvent</code>
  */
-public interface WindowListener
-{
+public interface WindowListener {
 
     /**
      * The method will be called by an widget, generating

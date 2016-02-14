@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,7 @@ package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 
-public interface CommandParser
-{
+public interface CommandParser {
 
     public IRCEvent createEvent(IRCEvent event);
 }

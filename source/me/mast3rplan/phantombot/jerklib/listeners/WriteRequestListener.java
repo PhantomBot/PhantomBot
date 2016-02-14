@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,8 +23,7 @@ import me.mast3rplan.phantombot.jerklib.WriteRequest;
  *
  * @author mohadib
  */
-public interface WriteRequestListener
-{
+public interface WriteRequestListener {
 
     /**
      * receiveEvent() - method will be called anytime a write is requestd.

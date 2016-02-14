@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,16 +18,13 @@ package me.mast3rplan.phantombot.event.twitch.host;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
 
-public class TwitchHostedEvent extends TwitchHostEvent
-{
+public class TwitchHostedEvent extends TwitchHostEvent {
 
-    public TwitchHostedEvent(String hoster)
-    {
+    public TwitchHostedEvent(String hoster) {
         super(hoster, Type.HOST);
     }
 
-    public TwitchHostedEvent(String hoster, Channel channel)
-    {
+    public TwitchHostedEvent(String hoster, Channel channel) {
         super(hoster, Type.HOST, channel);
     }
 }

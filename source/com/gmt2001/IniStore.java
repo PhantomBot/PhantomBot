@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,8 +36,7 @@ import org.apache.commons.io.FileUtils;
  *
  * @author gmt2001
  */
-public class IniStore extends DataStore implements ActionListener
-{
+public class IniStore extends DataStore implements ActionListener {
 
     private final HashMap<String, IniFile> files = new HashMap<>();
     private final HashMap<String, Date> changed = new HashMap<>();
@@ -48,13 +47,11 @@ public class IniStore extends DataStore implements ActionListener
     private static final IniStore instance = new IniStore();
     private String inifolder = "";
 
-    public static IniStore instance()
-    {
+    public static IniStore instance() {
         return instance;
     }
 
-    private IniStore()
-    {
+    private IniStore() {
         inifolder = LoadConfigReal("");
 
         t = new Timer((int) saveInterval, this);
@@ -65,40 +62,33 @@ public class IniStore extends DataStore implements ActionListener
         t.start();
     }
 
-    private String validatefName(String fName)
-    {
+    private String validatefName(String fName) {
         fName = fName.replaceAll("([^a-zA-Z0-9_-])", "_");
 
         return fName;
     }
 
-    private String validateSection(String section)
-    {
+    private String validateSection(String section) {
         section = section.replaceAll("([^a-zA-Z0-9_-])", "_");
 
         return section;
     }
 
-    private String validateKey(String key)
-    {
+    private String validateKey(String key) {
         key = key.replaceAll("=", "_eq_");
 
-        if (key.startsWith(";") || key.startsWith("["))
-        {
+        if (key.startsWith(";") || key.startsWith("[")) {
             key = "_" + key;
         }
 
         return key;
     }
 
-    private boolean LoadFile(String fName, boolean force)
-    {
+    private boolean LoadFile(String fName, boolean force) {
         fName = validatefName(fName);
 
-        if (!files.containsKey(fName) || force)
-        {
-            try
-            {
+        if (!files.containsKey(fName) || force) {
+            try {
                 String data = FileUtils.readFileToString(new File("./" + inifolder + "/" + fName + ".ini"));
                 String[] lines = data.replaceAll("\\r", "").split("\\n");
 
@@ -108,16 +98,12 @@ public class IniStore extends DataStore implements ActionListener
 
                 f.data.put(section, new HashMap<String, String>());
 
-                for (String line : lines)
-                {
-                    if (!line.trim().startsWith(";"))
-                    {
-                        if (line.trim().startsWith("[") && line.trim().endsWith("]"))
-                        {
+                for (String line : lines) {
+                    if (!line.trim().startsWith(";")) {
+                        if (line.trim().startsWith("[") && line.trim().endsWith("]")) {
                             section = line.trim().substring(1, line.trim().length() - 1);
                             f.data.put(section, new HashMap<String, String>());
-                        } else if (!line.trim().isEmpty())
-                        {
+                        } else if (!line.trim().isEmpty()) {
                             String[] spl = line.split("=", 2);
                             f.data.get(section).put(spl[0], spl[1]);
                         }
@@ -125,8 +111,7 @@ public class IniStore extends DataStore implements ActionListener
                 }
 
                 files.put(fName, f);
-            } catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 AddFile(fName);
                 return false;
             }
@@ -135,68 +120,56 @@ public class IniStore extends DataStore implements ActionListener
         return true;
     }
 
-    private void SaveFile(String fName, IniFile data)
-    {
-        try
-        {
+    private void SaveFile(String fName, IniFile data) {
+        try {
             String wdata = "";
             Object[] adata = data.data.keySet().toArray();
             Object[] akdata;
             Object[] avdata;
 
-            for (int i = 0; i < adata.length; i++)
-            {
-                if (i > 0)
-                {
+            for (int i = 0; i < adata.length; i++) {
+                if (i > 0) {
                     wdata += "\r\n";
                 }
 
-                if (!((String) adata[i]).equals(""))
-                {
+                if (!((String) adata[i]).equals("")) {
                     wdata += "[" + ((String) adata[i]) + "]\r\n";
                 }
 
                 akdata = data.data.get(((String) adata[i])).keySet().toArray();
                 avdata = data.data.get(((String) adata[i])).values().toArray();
 
-                for (int b = 0; b < akdata.length; b++)
-                {
+                for (int b = 0; b < akdata.length; b++) {
                     wdata += ((String) akdata[b]) + "=" + ((String) avdata[b]) + "\r\n";
                 }
             }
-            if (!Files.isDirectory(Paths.get("./" + inifolder + "/")))
-            {
+            if (!Files.isDirectory(Paths.get("./" + inifolder + "/"))) {
                 Files.createDirectory(Paths.get("./" + inifolder + "/"));
             }
 
             Files.write(Paths.get("./" + inifolder + "/" + fName + ".ini"), wdata.getBytes(StandardCharsets.UTF_8),
-                    StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+                        StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
             changed.remove(fName);
-        } catch (IOException ex)
-        {
+        } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
         t2.stop();
         SaveAll(false);
     }
 
-    private static class IniFile
-    {
+    private static class IniFile {
 
         protected HashMap<String, HashMap<String, String>> data = new HashMap<>();
     }
 
     @Override
-    public void AddFile(String fName)
-    {
-        if (!new File("./" + inifolder + "/").exists())
-        {
+    public void AddFile(String fName) {
+        if (!new File("./" + inifolder + "/").exists()) {
             new File("./" + inifolder + "/").mkdirs();
         }
 
@@ -207,24 +180,19 @@ public class IniStore extends DataStore implements ActionListener
     }
 
     @Override
-    public void SaveChangedNow()
-    {
+    public void SaveChangedNow() {
         nextSave.setTime(new Date().getTime() - 1);
 
         SaveAll(false);
     }
 
     @Override
-    public void SaveAll(boolean force)
-    {
-        if (!nextSave.after(new Date()) || force)
-        {
+    public void SaveAll(boolean force) {
+        if (!nextSave.after(new Date()) || force) {
             Object[] n = changed.keySet().toArray();
-            if (n != null)
-            {
+            if (n != null) {
 
-                if (force)
-                {
+                if (force) {
                     n = files.keySet().toArray();
                 }
 
@@ -232,21 +200,15 @@ public class IniStore extends DataStore implements ActionListener
                     com.gmt2001.Console.out.println(">>>Saving " + n.length + " files");
                 }
 
-                for (Object n1 : n)
-                {
-                    try
-                    {
-                        if (force || changed.get((String) n1).after(nextSave) || changed.get((String) n1).equals(nextSave))
-                        {
+                for (Object n1 : n) {
+                    try {
+                        if (force || changed.get((String) n1).after(nextSave) || changed.get((String) n1).equals(nextSave)) {
                             SaveFile((String) n1, files.get((String) n1));
                         }
-                    } catch (java.lang.NullPointerException e)
-                    {
-                        try
-                        {
+                    } catch (java.lang.NullPointerException e) {
+                        try {
                             SaveFile((String) n1, files.get((String) n1));
-                        } catch (java.lang.NullPointerException e2)
-                        {
+                        } catch (java.lang.NullPointerException e2) {
                             com.gmt2001.Console.err.printStackTrace(e2);
                         }
                     }
@@ -257,43 +219,35 @@ public class IniStore extends DataStore implements ActionListener
                 if (n.length > 0) {
                     com.gmt2001.Console.out.println(">>>Save complete");
                 }
-            } else
-            {
+            } else {
                 com.gmt2001.Console.out.println(">>>Object null, nothing to save.");
             }
         }
     }
 
     @Override
-    public void ReloadFile(String fName)
-    {
+    public void ReloadFile(String fName) {
         fName = validatefName(fName);
 
         LoadFile(fName, true);
     }
 
     @Override
-    public void LoadConfig(String configStr)
-    {
+    public void LoadConfig(String configStr) {
         inifolder = LoadConfigReal(configStr);
     }
 
-    private static String LoadConfigReal(String configStr)
-    {
-        if (configStr.isEmpty())
-        {
+    private static String LoadConfigReal(String configStr) {
+        if (configStr.isEmpty()) {
             return "inistore";
-        } else
-        {
+        } else {
             return configStr;
         }
     }
 
     @Override
-    public String[] GetFileList()
-    {
-        if (new File("./" + inifolder + "/").exists())
-        {
+    public String[] GetFileList() {
+        if (new File("./" + inifolder + "/").exists()) {
 
             Collection<File> f = FileUtils.listFiles(new File("./" + inifolder + "/"), null, false);
 
@@ -302,8 +256,7 @@ public class IniStore extends DataStore implements ActionListener
             Iterator<File> it = f.iterator();
             int i = 0;
 
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 String name = it.next().getName();
 
                 name = name.substring(0, name.lastIndexOf(".ini"));
@@ -314,21 +267,17 @@ public class IniStore extends DataStore implements ActionListener
             return s;
         }
 
-        return new String[]
-        {
-        };
+        return new String[] {
+               };
     }
 
     @Override
-    public String[] GetCategoryList(String fName)
-    {
+    public String[] GetCategoryList(String fName) {
         fName = validatefName(fName);
 
-        if (!LoadFile(fName, false))
-        {
-            return new String[]
-            {
-            };
+        if (!LoadFile(fName, false)) {
+            return new String[] {
+                   };
         }
 
         Set<String> o = files.get(fName).data.keySet();
@@ -338,8 +287,7 @@ public class IniStore extends DataStore implements ActionListener
         Iterator<String> it = o.iterator();
         int i = 0;
 
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             s[i++] = it.next();
         }
 
@@ -347,15 +295,12 @@ public class IniStore extends DataStore implements ActionListener
     }
 
     @Override
-    public String[] GetKeyList(String fName, String section)
-    {
+    public String[] GetKeyList(String fName, String section) {
         fName = validatefName(fName);
 
-        if (!LoadFile(fName, false))
-        {
-            return new String[]
-            {
-            };
+        if (!LoadFile(fName, false)) {
+            return new String[] {
+                   };
         }
 
         section = validateSection(section);
@@ -367,8 +312,7 @@ public class IniStore extends DataStore implements ActionListener
         Iterator<String> it = o.iterator();
         int i = 0;
 
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             s[i++] = it.next();
         }
 
@@ -376,12 +320,10 @@ public class IniStore extends DataStore implements ActionListener
     }
 
     @Override
-    public String GetString(String fName, String section, String key)
-    {
+    public String GetString(String fName, String section, String key) {
         fName = validatefName(fName);
 
-        if (!LoadFile(fName, false))
-        {
+        if (!LoadFile(fName, false)) {
             return null;
         }
 
@@ -389,8 +331,7 @@ public class IniStore extends DataStore implements ActionListener
         key = validateKey(key);
 
         if (!files.containsKey(fName) || !files.get(fName).data.containsKey(section)
-                || !files.get(fName).data.get(section).containsKey(key))
-        {
+                || !files.get(fName).data.get(section).containsKey(key)) {
             return null;
         }
 
@@ -398,8 +339,7 @@ public class IniStore extends DataStore implements ActionListener
     }
 
     @Override
-    public void SetString(String fName, String section, String key, String value)
-    {
+    public void SetString(String fName, String section, String key, String value) {
         fName = validatefName(fName);
 
         LoadFile(fName, false);
@@ -407,8 +347,7 @@ public class IniStore extends DataStore implements ActionListener
         section = validateSection(section);
         key = validateKey(key);
 
-        if (!files.get(fName).data.containsKey(section))
-        {
+        if (!files.get(fName).data.containsKey(section)) {
             files.get(fName).data.put(section, new HashMap<String, String>());
         }
 
@@ -420,8 +359,7 @@ public class IniStore extends DataStore implements ActionListener
     }
 
     @Override
-    public void RemoveKey(String fName, String section, String key)
-    {
+    public void RemoveKey(String fName, String section, String key) {
         fName = validatefName(fName);
 
         LoadFile(fName, false);
@@ -435,8 +373,7 @@ public class IniStore extends DataStore implements ActionListener
     }
 
     @Override
-    public void RemoveSection(String fName, String section)
-    {
+    public void RemoveSection(String fName, String section) {
         fName = validatefName(fName);
 
         LoadFile(fName, false);
@@ -449,8 +386,7 @@ public class IniStore extends DataStore implements ActionListener
     }
 
     @Override
-    public void RemoveFile(String fName)
-    {
+    public void RemoveFile(String fName) {
         fName = validatefName(fName);
 
         File f = new File("./" + inifolder + "/" + fName + ".ini");
@@ -461,8 +397,7 @@ public class IniStore extends DataStore implements ActionListener
     }
 
     @Override
-    public boolean FileExists(String fName)
-    {
+    public boolean FileExists(String fName) {
         fName = validatefName(fName);
 
         File f = new File("./" + inifolder + "/" + fName + ".ini");

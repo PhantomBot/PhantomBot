@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,16 +19,14 @@ package me.mast3rplan.phantombot.jerklib.parsers;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.MotdEvent;
 
-public class MotdParser implements CommandParser
-{
+public class MotdParser implements CommandParser {
 
     @Override
-    public IRCEvent createEvent(IRCEvent event)
-    {
+    public IRCEvent createEvent(IRCEvent event) {
         return new MotdEvent(
-                event.getRawEventData(),
-                event.getSession(),
-                event.arg(1),
-                event.prefix());
+                   event.getRawEventData(),
+                   event.getSession(),
+                   event.arg(1),
+                   event.prefix());
     }
 }

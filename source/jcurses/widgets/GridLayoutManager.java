@@ -9,8 +9,7 @@ import jcurses.util.Rectangle;
  * is shared in many grid cells and the constraints are stated not in real
  * coodinates on the painting rectangle, but in 'grid-coordinates'
  */
-public class GridLayoutManager implements LayoutManager, WidgetsConstants
-{
+public class GridLayoutManager implements LayoutManager, WidgetsConstants {
 
     private final DefaultLayoutManager _defLayout = new DefaultLayoutManager();
     private WidgetContainer _father = null;
@@ -21,18 +20,15 @@ public class GridLayoutManager implements LayoutManager, WidgetsConstants
     private Grid _grid = null;
 
     @Override
-    public void bindToContainer(WidgetContainer container)
-    {
-        if (_father != null)
-        {
+    public void bindToContainer(WidgetContainer container) {
+        if (_father != null) {
             throw new RuntimeException("Already bound!!!");
         }
         _father = container;
     }
 
     @Override
-    public void unbindFromContainer()
-    {
+    public void unbindFromContainer() {
         _father = null;
     }
 
@@ -43,17 +39,14 @@ public class GridLayoutManager implements LayoutManager, WidgetsConstants
      * @param height the height of the grid ( in cells )
      *
      */
-    public GridLayoutManager(int width, int height)
-    {
+    public GridLayoutManager(int width, int height) {
         _width = width;
         _height = height;
     }
 
     @Override
-    public void layout(Widget widget, Object constraint)
-    {
-        if (!(constraint instanceof GridLayoutConstraint))
-        {
+    public void layout(Widget widget, Object constraint) {
+        if (!(constraint instanceof GridLayoutConstraint)) {
             throw new RuntimeException("unknown constraint: " + constraint.getClass().getName());
         }
 
@@ -81,8 +74,7 @@ public class GridLayoutManager implements LayoutManager, WidgetsConstants
      * values are possible: *
      * <code>WidgetConstraints.ALIGNMENT_CENTER</code>,<code>WidgetConstraints.ALIGNMENT_LEFT</code>,<code>WidgetConstraints.ALIGNMENT_RIGHT</code>
      */
-    public void addWidget(Widget widget, int x, int y, int width, int height, int verticalConstraint, int horizontalConstraint)
-    {
+    public void addWidget(Widget widget, int x, int y, int width, int height, int verticalConstraint, int horizontalConstraint) {
         _father.addWidget(widget, new GridLayoutConstraint(x, y, width, height, horizontalConstraint, verticalConstraint));
 
     }
@@ -92,15 +84,13 @@ public class GridLayoutManager implements LayoutManager, WidgetsConstants
      *
      * @param widget widget to remove
      */
-    public void removeWidget(Widget widget)
-    {
+    public void removeWidget(Widget widget) {
         _father.removeWidget(widget);
 
     }
 }
 
-class GridLayoutConstraint
-{
+class GridLayoutConstraint {
 
     int x = 0;
     int y = 0;
@@ -109,8 +99,7 @@ class GridLayoutConstraint
     int horizontalConstraint = 0;
     int verticalConstraint = 0;
 
-    GridLayoutConstraint(int x, int y, int width, int height, int horizontalConstraint, int verticalConstraint)
-    {
+    GridLayoutConstraint(int x, int y, int width, int height, int horizontalConstraint, int verticalConstraint) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -119,27 +108,23 @@ class GridLayoutConstraint
         this.verticalConstraint = verticalConstraint;
     }
 
-    DefaultLayoutConstraint getDefaultLayoutConstraint(Grid grid)
-    {
+    DefaultLayoutConstraint getDefaultLayoutConstraint(Grid grid) {
 
         Rectangle rect = grid.getRectangle(x, y, width, height);
         return new DefaultLayoutConstraint(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(),
-                horizontalConstraint, verticalConstraint);
+                                           horizontalConstraint, verticalConstraint);
 
     }
 
 }
 
-class Grid
-{
+class Grid {
 
     int[] _widths;
     int[] _heights;
 
-    Grid(Rectangle rect, int width, int height)
-    {
-        if (((rect.getWidth() / width) < 1) || ((rect.getHeight() / height) < 1))
-        {
+    Grid(Rectangle rect, int width, int height) {
+        if (((rect.getWidth() / width) < 1) || ((rect.getHeight() / height) < 1)) {
             throw new RuntimeException(" the grid is to fine: " + rect.getWidth() + ":" + rect.getHeight() + ":" + width + ":" + height);
         }
 
@@ -151,37 +136,30 @@ class Grid
 
     }
 
-    private void fillArray(int[] array, int rectWidth, int width)
-    {
+    private void fillArray(int[] array, int rectWidth, int width) {
         int mod = rectWidth % width;
         int cellWidth = rectWidth / width;
 
-        for (int i = 0; i < width; i++)
-        {
-            if (mod > 0)
-            {
+        for (int i = 0; i < width; i++) {
+            if (mod > 0) {
                 array[i] = cellWidth + 1;
                 mod--;
-            } else
-            {
+            } else {
                 array[i] = cellWidth;
             }
         }
 
     }
 
-    Rectangle getRectangle(int x, int y, int width, int height)
-    {
+    Rectangle getRectangle(int x, int y, int width, int height) {
         return new Rectangle(getWidth(_widths, 0, x), getWidth(_heights, 0, y), getWidth(_widths, x, x + width),
-                getWidth(_heights, y, y + height));
+                             getWidth(_heights, y, y + height));
 
     }
 
-    private int getWidth(int[] array, int begin, int end)
-    {
+    private int getWidth(int[] array, int begin, int end) {
         int width = 0;
-        for (int i = begin; i < end; i++)
-        {
+        for (int i = begin; i < end; i++) {
             width += array[i];
         }
 

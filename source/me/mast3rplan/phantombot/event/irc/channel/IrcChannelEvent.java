@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,19 +20,16 @@ import me.mast3rplan.phantombot.event.irc.IrcEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
 
-public class IrcChannelEvent extends IrcEvent
-{
+public class IrcChannelEvent extends IrcEvent {
 
     private final Channel channel;
 
-    protected IrcChannelEvent(Session session, Channel channel)
-    {
+    protected IrcChannelEvent(Session session, Channel channel) {
         super(session);
         this.channel = channel;
     }
 
-    public Channel getChannel()
-    {
+    public Channel getChannel() {
         return channel;
     }
 }

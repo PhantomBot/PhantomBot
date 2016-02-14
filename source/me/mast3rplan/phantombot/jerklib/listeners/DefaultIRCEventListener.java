@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,290 +22,234 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
 
 import java.util.logging.Logger;
 
-public abstract class DefaultIRCEventListener implements IRCEventListener
-{
+public abstract class DefaultIRCEventListener implements IRCEventListener {
 
     @SuppressWarnings("NonConstantLogger")
     protected final Logger log = Logger.getLogger(this.getClass().getName());
 
     @Override
-    public void receiveEvent(IRCEvent e)
-    {
+    public void receiveEvent(IRCEvent e) {
         Type t = e.getType();
         boolean handled = handleChannelEvents(t, e);
         handled |= handleServerEvents(t, e);
         handled |= handleOnChannelEvents(t, e);
-        if (!handled)
-        {
+        if (!handled) {
             log.log(Level.INFO, "Unhandled event: {0}", e.getRawEventData());
         }
     }
 
-    protected boolean handleChannelEvents(Type t, IRCEvent e)
-    {
+    protected boolean handleChannelEvents(Type t, IRCEvent e) {
         // things that happen ON a channel
-        if (Type.TOPIC.equals(t))
-        {
+        if (Type.TOPIC.equals(t)) {
             handleTopicEvent((TopicEvent) e);
             return true;
         }
-        if (Type.AWAY_EVENT.equals(t))
-        {
+        if (Type.AWAY_EVENT.equals(t)) {
             handleAwayEvent((AwayEvent) e);
             return true;
         }
-        if (Type.CHANNEL_LIST_EVENT.equals(t))
-        {
+        if (Type.CHANNEL_LIST_EVENT.equals(t)) {
             handleChannelListEvent((ChannelListEvent) e);
             return true;
         }
-        if (Type.CHANNEL_MESSAGE.equals(t))
-        {
+        if (Type.CHANNEL_MESSAGE.equals(t)) {
             handleChannelMessage((MessageEvent) e);
             return true;
         }
-        if (Type.NICK_CHANGE.equals(t))
-        {
+        if (Type.NICK_CHANGE.equals(t)) {
             handleNickChangeEvent((NickChangeEvent) e);
             return true;
         }
-        if (Type.NICK_IN_USE.equals(t))
-        {
+        if (Type.NICK_IN_USE.equals(t)) {
             handleNickInUseEvent((NickInUseEvent) e);
             return true;
         }
-        if (Type.PRIVATE_MESSAGE.equals(t))
-        {
+        if (Type.PRIVATE_MESSAGE.equals(t)) {
             handlePrivateMessage((MessageEvent) e);
             return true;
         }
         return false;
     }
 
-    protected boolean handleServerEvents(Type t, IRCEvent e)
-    {
+    protected boolean handleServerEvents(Type t, IRCEvent e) {
         // things that happen on a server
-        if (Type.CONNECT_COMPLETE.equals(t))
-        {
+        if (Type.CONNECT_COMPLETE.equals(t)) {
             handleConnectComplete((ConnectionCompleteEvent) e);
             return true;
         }
-        if (Type.CTCP_EVENT.equals(t))
-        {
+        if (Type.CTCP_EVENT.equals(t)) {
             handleCtcpEvent((CtcpEvent) e);
             return true;
         }
-        if (Type.ERROR.equals(t))
-        {
+        if (Type.ERROR.equals(t)) {
             handleErrorEvent((ErrorEvent) e);
             return true;
         }
-        if (Type.INVITE_EVENT.equals(t))
-        {
+        if (Type.INVITE_EVENT.equals(t)) {
             handleInviteEvent((InviteEvent) e);
             return true;
         }
-        if (Type.JOIN.equals(t))
-        {
+        if (Type.JOIN.equals(t)) {
             handleJoinEvent((JoinEvent) e);
             return true;
         }
-        if (Type.JOIN_COMPLETE.equals(t))
-        {
+        if (Type.JOIN_COMPLETE.equals(t)) {
             handleJoinCompleteEvent((JoinCompleteEvent) e);
             return true;
         }
-        if (Type.MOTD.equals(t))
-        {
+        if (Type.MOTD.equals(t)) {
             handleMotdEvent((MotdEvent) e);
             return true;
         }
-        if (Type.NOTICE.equals(t))
-        {
+        if (Type.NOTICE.equals(t)) {
             handleNoticeEvent((NoticeEvent) e);
             return true;
         }
-        if (Type.SERVER_INFORMATION.equals(t))
-        {
+        if (Type.SERVER_INFORMATION.equals(t)) {
             handleServerInformationEvent((ServerInformationEvent) e);
             return true;
         }
-        if (Type.SERVER_VERSION_EVENT.equals(t))
-        {
+        if (Type.SERVER_VERSION_EVENT.equals(t)) {
             handleServerVersionEvent((ServerVersionEvent) e);
             return true;
         }
         return false;
     }
 
-    protected boolean handleOnChannelEvents(Type t, IRCEvent e)
-    {
+    protected boolean handleOnChannelEvents(Type t, IRCEvent e) {
         // things that happen TO a channel
-        if (Type.KICK_EVENT.equals(t))
-        {
+        if (Type.KICK_EVENT.equals(t)) {
             handleKickEvent((KickEvent) e);
             return true;
         }
-        if (Type.MODE_EVENT.equals(t))
-        {
+        if (Type.MODE_EVENT.equals(t)) {
             handleModeEvent((ModeEvent) e);
             return true;
         }
-        if (Type.NICK_LIST_EVENT.equals(t))
-        {
+        if (Type.NICK_LIST_EVENT.equals(t)) {
             handleNickListEvent((NickListEvent) e);
             return true;
         }
-        if (Type.PART.equals(t))
-        {
+        if (Type.PART.equals(t)) {
             handlePartEvent((PartEvent) e);
             return true;
         }
-        if (Type.QUIT.equals(t))
-        {
+        if (Type.QUIT.equals(t)) {
             handleQuitEvent((QuitEvent) e);
             return true;
         }
-        if (Type.WHO_EVENT.equals(t))
-        {
+        if (Type.WHO_EVENT.equals(t)) {
             handleWhoEvent((WhoEvent) e);
             return true;
         }
-        if (Type.WHOIS_EVENT.equals(t))
-        {
+        if (Type.WHOIS_EVENT.equals(t)) {
             handleWhoisEvent((WhoisEvent) e);
             return true;
         }
-        if (Type.WHOWAS_EVENT.equals(t))
-        {
+        if (Type.WHOWAS_EVENT.equals(t)) {
             handleWhowasEvent((WhowasEvent) e);
             return true;
         }
         return false;
     }
 
-    protected void handleWhowasEvent(WhowasEvent event)
-    {
+    protected void handleWhowasEvent(WhowasEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleWhoisEvent(WhoisEvent event)
-    {
+    protected void handleWhoisEvent(WhoisEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleWhoEvent(WhoEvent event)
-    {
+    protected void handleWhoEvent(WhoEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleTopicEvent(TopicEvent event)
-    {
+    protected void handleTopicEvent(TopicEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleServerVersionEvent(ServerVersionEvent event)
-    {
+    protected void handleServerVersionEvent(ServerVersionEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handlePrivateMessage(MessageEvent event)
-    {
+    protected void handlePrivateMessage(MessageEvent event) {
         handleChannelMessage(event);
     }
 
-    protected void handleServerInformationEvent(ServerInformationEvent event)
-    {
+    protected void handleServerInformationEvent(ServerInformationEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleQuitEvent(QuitEvent event)
-    {
+    protected void handleQuitEvent(QuitEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handlePartEvent(PartEvent event)
-    {
+    protected void handlePartEvent(PartEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleNoticeEvent(NoticeEvent event)
-    {
+    protected void handleNoticeEvent(NoticeEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleNickListEvent(NickListEvent event)
-    {
+    protected void handleNickListEvent(NickListEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleNickInUseEvent(NickInUseEvent event)
-    {
+    protected void handleNickInUseEvent(NickInUseEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleNickChangeEvent(NickChangeEvent event)
-    {
+    protected void handleNickChangeEvent(NickChangeEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleMotdEvent(MotdEvent event)
-    {
+    protected void handleMotdEvent(MotdEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleModeEvent(ModeEvent event)
-    {
+    protected void handleModeEvent(ModeEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleKickEvent(KickEvent event)
-    {
+    protected void handleKickEvent(KickEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleJoinCompleteEvent(JoinCompleteEvent event)
-    {
+    protected void handleJoinCompleteEvent(JoinCompleteEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleJoinEvent(JoinEvent event)
-    {
+    protected void handleJoinEvent(JoinEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleInviteEvent(InviteEvent event)
-    {
+    protected void handleInviteEvent(InviteEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleErrorEvent(ErrorEvent event)
-    {
+    protected void handleErrorEvent(ErrorEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleCtcpEvent(CtcpEvent event)
-    {
+    protected void handleCtcpEvent(CtcpEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleConnectComplete(ConnectionCompleteEvent event)
-    {
+    protected void handleConnectComplete(ConnectionCompleteEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleChannelMessage(MessageEvent event)
-    {
+    protected void handleChannelMessage(MessageEvent event) {
         log.finest(event.getRawEventData());
     }
 
-    protected void handleChannelListEvent(ChannelListEvent e)
-    {
+    protected void handleChannelListEvent(ChannelListEvent e) {
         log.finest(e.getRawEventData());
     }
 
-    protected void handleAwayEvent(AwayEvent e)
-    {
+    protected void handleAwayEvent(AwayEvent e) {
         log.finest(e.getRawEventData());
     }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,41 +24,34 @@ import java.util.Set;
  *
  * @author gmt2001
  */
-public class TempStore extends DataStore
-{
+public class TempStore extends DataStore {
 
     private final HashMap<String, TempFile> files = new HashMap<>();
     private static final TempStore instance = new TempStore();
 
-    public static TempStore instance()
-    {
+    public static TempStore instance() {
         return instance;
     }
 
-    private TempStore()
-    {
+    private TempStore() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    private static class TempFile
-    {
+    private static class TempFile {
 
         protected HashMap<String, HashMap<String, Object>> data = new HashMap<>();
     }
 
     @Override
-    public void AddFile(String fName)
-    {
-        if (!files.containsKey(fName))
-        {
+    public void AddFile(String fName) {
+        if (!files.containsKey(fName)) {
             TempFile f = new TempFile();
             files.put(fName, f);
         }
     }
 
     @Override
-    public String[] GetFileList()
-    {
+    public String[] GetFileList() {
         Set<String> o = files.keySet();
 
         String[] s = new String[o.size()];
@@ -66,8 +59,7 @@ public class TempStore extends DataStore
         Iterator<String> it = o.iterator();
         int i = 0;
 
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             s[i++] = it.next();
         }
 
@@ -75,8 +67,7 @@ public class TempStore extends DataStore
     }
 
     @Override
-    public String[] GetCategoryList(String fName)
-    {
+    public String[] GetCategoryList(String fName) {
         AddFile(fName);
 
         Set<String> o = files.get(fName).data.keySet();
@@ -86,8 +77,7 @@ public class TempStore extends DataStore
         Iterator<String> it = o.iterator();
         int i = 0;
 
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             s[i++] = it.next();
         }
 
@@ -95,8 +85,7 @@ public class TempStore extends DataStore
     }
 
     @Override
-    public String[] GetKeyList(String fName, String section)
-    {
+    public String[] GetKeyList(String fName, String section) {
         AddFile(fName);
 
         Set<String> o = files.get(fName).data.get(section).keySet();
@@ -106,8 +95,7 @@ public class TempStore extends DataStore
         Iterator<String> it = o.iterator();
         int i = 0;
 
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             s[i++] = it.next();
         }
 
@@ -115,13 +103,11 @@ public class TempStore extends DataStore
     }
 
     @Override
-    public Object GetObject(String fName, String section, String key)
-    {
+    public Object GetObject(String fName, String section, String key) {
         AddFile(fName);
 
         if (!files.containsKey(fName) || !files.get(fName).data.containsKey(section)
-                || !files.get(fName).data.get(section).containsKey(key))
-        {
+                || !files.get(fName).data.get(section).containsKey(key)) {
             return null;
         }
 
@@ -129,12 +115,10 @@ public class TempStore extends DataStore
     }
 
     @Override
-    public void SetObject(String fName, String section, String key, Object value)
-    {
+    public void SetObject(String fName, String section, String key, Object value) {
         AddFile(fName);
 
-        if (!files.get(fName).data.containsKey(section))
-        {
+        if (!files.get(fName).data.containsKey(section)) {
             files.get(fName).data.put(section, new HashMap<String, Object>());
         }
 
@@ -142,96 +126,81 @@ public class TempStore extends DataStore
     }
 
     @Override
-    public String GetString(String fName, String section, String key)
-    {
+    public String GetString(String fName, String section, String key) {
         return (String) GetObject(fName, section, key);
     }
 
     @Override
-    public void SetString(String fName, String section, String key, String value)
-    {
+    public void SetString(String fName, String section, String key, String value) {
         SetObject(fName, section, key, value);
     }
 
     @Override
-    public int GetInteger(String fName, String section, String key)
-    {
+    public int GetInteger(String fName, String section, String key) {
         return (Integer) GetObject(fName, section, key);
     }
 
     @Override
-    public void SetInteger(String fName, String section, String key, int value)
-    {
+    public void SetInteger(String fName, String section, String key, int value) {
         SetObject(fName, section, key, value);
     }
 
     @Override
-    public float GetFloat(String fName, String section, String key)
-    {
+    public float GetFloat(String fName, String section, String key) {
         return (Float) GetObject(fName, section, key);
     }
 
     @Override
-    public void SetFloat(String fName, String section, String key, float value)
-    {
+    public void SetFloat(String fName, String section, String key, float value) {
         SetObject(fName, section, key, value);
     }
 
     @Override
-    public double GetDouble(String fName, String section, String key)
-    {
+    public double GetDouble(String fName, String section, String key) {
         return (Double) GetObject(fName, section, key);
     }
 
     @Override
-    public void SetDouble(String fName, String section, String key, double value)
-    {
+    public void SetDouble(String fName, String section, String key, double value) {
         SetObject(fName, section, key, value);
     }
 
     @Override
-    public Boolean GetBoolean(String fName, String section, String key)
-    {
+    public Boolean GetBoolean(String fName, String section, String key) {
         return (Boolean) GetObject(fName, section, key);
     }
 
     @Override
-    public void SetBoolean(String fName, String section, String key, Boolean value)
-    {
+    public void SetBoolean(String fName, String section, String key, Boolean value) {
         SetObject(fName, section, key, value);
     }
 
     @Override
-    public void RemoveKey(String fName, String section, String key)
-    {
+    public void RemoveKey(String fName, String section, String key) {
         AddFile(fName);
 
         files.get(fName).data.get(section).remove(key);
     }
 
     @Override
-    public void RemoveSection(String fName, String section)
-    {
+    public void RemoveSection(String fName, String section) {
         AddFile(fName);
 
         files.get(fName).data.remove(section);
     }
 
     @Override
-    public void RemoveFile(String fName)
-    {
+    public void RemoveFile(String fName) {
         files.remove(fName);
     }
 
     @Override
-    public boolean FileExists(String fName)
-    {
+    public boolean FileExists(String fName) {
         return files.containsKey(fName);
     }
 
     @Override
-    public boolean HasKey(String fName, String section, String key)
-    {
+    public boolean HasKey(String fName, String section, String key) {
         return GetObject(fName, section, key) != null;
     }
 }

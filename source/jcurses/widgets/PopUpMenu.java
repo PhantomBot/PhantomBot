@@ -10,8 +10,7 @@ import jcurses.event.ItemListener;
  * from a list and is than closed. Separator items can be used as by
  * <code>MenuList</code> described.
  */
-public class PopUpMenu implements WidgetsConstants, ItemListener
-{
+public class PopUpMenu implements WidgetsConstants, ItemListener {
 
     private final MenuList _menuList = new MenuList();
     Dialog _peer = null;
@@ -30,8 +29,7 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      * @param y the y coordinate of the dialog window's top left corner
      * @param title window's title
      */
-    public PopUpMenu(int x, int y, String title)
-    {
+    public PopUpMenu(int x, int y, String title) {
         _title = title;
         _x = x;
         _y = y;
@@ -42,14 +40,13 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      * Makes the window visible. Blocks, until the window is closed.
      *
      */
-    public void show()
-    {
+    public void show() {
         int width = _menuList.getPreferredSize().getWidth();
         int height = _menuList.getPreferredSize().getHeight();
 
         _peer = new Dialog(_x, _y, width,
-                height,
-                false, null);
+                           height,
+                           false, null);
         GridLayoutManager manager1 = new GridLayoutManager(1, 1);
         _peer.getRootPanel().setLayoutManager(manager1);
         manager1.addWidget(_menuList, 0, 0, 1, 1, ALIGNMENT_CENTER, ALIGNMENT_CENTER);
@@ -62,16 +59,14 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      *
      * @param index position
      */
-    public void addSeparator(int index)
-    {
+    public void addSeparator(int index) {
         _menuList.addSeparator(index);
     }
 
     /**
      * Adds a separator at the end of the list.
      */
-    public void addSeparator()
-    {
+    public void addSeparator() {
         _menuList.addSeparator();
     }
 
@@ -81,8 +76,7 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      * @param item item to add
      * @param pos position
      */
-    public void add(int pos, String item)
-    {
+    public void add(int pos, String item) {
         _menuList.add(pos, item);
     }
 
@@ -91,16 +85,14 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      *
      * @param item
      */
-    public void add(String item)
-    {
+    public void add(String item) {
         _menuList.add(item);
     }
 
     /**
      * @return the number of items
      */
-    public int getItemsCount()
-    {
+    public int getItemsCount() {
         return _menuList.getItemsCount();
     }
 
@@ -108,8 +100,7 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      * @param index
      * @return the item at the specified position
      */
-    public String getItem(int index)
-    {
+    public String getItem(int index) {
         return (String) _menuList.getItem(index);
     }
 
@@ -118,8 +109,7 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      *
      * @param pos position
      */
-    public void remove(int pos)
-    {
+    public void remove(int pos) {
         _menuList.remove(pos);
     }
 
@@ -129,14 +119,12 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      * @param item item to be removed
      *
      */
-    public void remove(String item)
-    {
+    public void remove(String item) {
         _menuList.remove(item);
     }
 
     @Override
-    public void stateChanged(ItemEvent e)
-    {
+    public void stateChanged(ItemEvent e) {
         _selectedIndex = e.getId();
         _selectedItem = (String) e.getItem();
         _menuList.removeListener(this);
@@ -150,8 +138,7 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      *
      * @return last selected index
      */
-    public int getSelectedIndex()
-    {
+    public int getSelectedIndex() {
         return _selectedIndex;
     }
 
@@ -161,8 +148,7 @@ public class PopUpMenu implements WidgetsConstants, ItemListener
      *
      * @return last selected index
      */
-    public String getSelectedItem()
-    {
+    public String getSelectedItem() {
         return _selectedItem;
     }
 

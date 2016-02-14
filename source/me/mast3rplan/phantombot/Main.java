@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,23 +23,17 @@ import java.io.IOException;
  *
  * @author gmt2001
  */
-public class Main
-{
+public class Main {
 
-    public static void main(String[] args) throws IOException
-    {
-        for (String arg : args)
-        {
-            if (arg.startsWith("main="))
-            {
-                if (arg.substring(5).equalsIgnoreCase("controlpanel"))
-                {
+    public static void main(String[] args) throws IOException {
+        for (String arg : args) {
+            if (arg.startsWith("main=")) {
+                if (arg.substring(5).equalsIgnoreCase("controlpanel")) {
                     ControlPanel.main(args);
                     return;
                 }
 
-                if (arg.substring(5).equalsIgnoreCase("exit"))
-                {
+                if (arg.substring(5).equalsIgnoreCase("exit")) {
                     return;
                 }
             }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,27 +24,24 @@ import me.mast3rplan.phantombot.jerklib.events.KickEvent;
 /**
  * @author mohadib
  */
-public class KickParser implements CommandParser
-{
+public class KickParser implements CommandParser {
 
     @Override
-    public IRCEvent createEvent(IRCEvent event)
-    {
+    public IRCEvent createEvent(IRCEvent event) {
         Session session = event.getSession();
         Channel channel = session.getChannel(event.arg(0));
 
         String msg = "";
-        if (event.args().size() == 3)
-        {
+        if (event.args().size() == 3) {
             msg = event.arg(2);
         }
 
         return new KickEvent(
-                event.getRawEventData(),
-                session,
-                event.getNick(), // byWho
-                event.arg(1), // victim
-                msg, // message
-                channel);
+                   event.getRawEventData(),
+                   session,
+                   event.getNick(), // byWho
+                   event.arg(1), // victim
+                   msg, // message
+                   channel);
     }
 }

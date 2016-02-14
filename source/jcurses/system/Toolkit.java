@@ -13,9 +13,8 @@ import java.awt.Point;
  * dependend libraries. An developer must not usually call methods of this
  * class, these are used implementing widgets and in jcurses core.
  */
-@SuppressWarnings("StaticNonFinalUsedInInitialization")
-public class Toolkit
-{
+@SuppressWarnings({ "StaticNonFinalUsedInInitialization", "unchecked" })
+public class Toolkit {
 
     public static final short CORNER_UNDER_LINE = 0;
     public static final short CORNER_OVER_LINE = 1;
@@ -28,18 +27,15 @@ public class Toolkit
     static final int VERTICAL = 0;
     static final int HORIZONTAL = 1;
 
-    private static long[] __attributes =
-    {
+    private static long[] __attributes = {
         0, 0, 0
     };
-    private static short[] __basicColors =
-    {
+    private static short[] __basicColors = {
         0, 0, 0, 0, 0, 0, 0, 0
     };
     private static short[][] __colorpairs = new short[8][8];
 
-    static
-    {
+    static {
         System.load(getLibraryPath());
         fillBasicColors(__basicColors);
         fillAttributes(__attributes);
@@ -60,11 +56,9 @@ public class Toolkit
      *
      * @param clipRect clip rectangle to be set
      */
-    public static void setClipRectangle(Rectangle clipRect)
-    {
+    public static void setClipRectangle(Rectangle clipRect) {
         ArrayList clips = (ArrayList) __clips.get(Thread.currentThread());
-        if (clips == null)
-        {
+        if (clips == null) {
             clips = new ArrayList();
             __clips.put(Thread.currentThread(), clips);
         }
@@ -75,57 +69,45 @@ public class Toolkit
      * Removes the evtl. before set clip rectangle
      */
     @SuppressWarnings("SizeReplaceableByIsEmpty")
-    public static void unsetClipRectangle()
-    {
+    public static void unsetClipRectangle() {
         ArrayList clips = (ArrayList) __clips.get(Thread.currentThread());
-        if (clips == null)
-        {
+        if (clips == null) {
             return;
         }
-        if (clips.size() > 0)
-        {
+        if (clips.size() > 0) {
             clips.remove(clips.size() - 1);
         }
-        if (clips.size() == 0)
-        {
+        if (clips.size() == 0) {
             __clips.remove(Thread.currentThread());
         }
     }
 
     @SuppressWarnings("SizeReplaceableByIsEmpty")
-    private static Rectangle getCurrentClipRectangle()
-    {
+    private static Rectangle getCurrentClipRectangle() {
         ArrayList clips = (ArrayList) __clips.get(Thread.currentThread());
-        if ((clips == null) || (clips.size() == 0))
-        {
+        if ((clips == null) || (clips.size() == 0)) {
             return null;
         }
         Rectangle result = (Rectangle) clips.get(0);
-        for (int i = 1; i < clips.size(); i++)
-        {
+        for (int i = 1; i < clips.size(); i++) {
             Rectangle temp = (Rectangle) clips.get(i);
             result = result.intersection(temp);
-            if (result.isEmpty())
-            {
+            if (result.isEmpty()) {
                 return result;
             }
         }
         return result;
     }
 
-    private static String tryLibraryPath(String url)
-    {
+    private static String tryLibraryPath(String url) {
         String[] fileNames = new File(url).list();
 
-        if (fileNames == null)
-        {
+        if (fileNames == null) {
             return null;
         }
 
-        for (String name : fileNames)
-        {
-            if (name.trim().startsWith("libjcurses"))
-            {
+        for (String name : fileNames) {
+            if (name.trim().startsWith("libjcurses")) {
                 return new File(url, name).getAbsolutePath();
             }
         }
@@ -133,49 +115,38 @@ public class Toolkit
         return null;
     }
 
-    private static String getLibraryPath()
-    {
+    private static String getLibraryPath() {
         String url = ClassLoader.getSystemClassLoader().getResource("jcurses/system/Toolkit.class").toString();
         url = url.trim();
-        if (url.startsWith("jar:file:"))
-        {
+        if (url.startsWith("jar:file:")) {
             url = url.substring("jar:file:".length(), url.length());
             url = url.substring(0, url.length() - "/PhantomBot.jar!/jcurses/system/Toolkit.class".length());
-        } else if (url.startsWith("file:"))
-        {
+        } else if (url.startsWith("file:")) {
             url = url.substring("file:".length(), url.length());
             url = url.substring(0, url.length() - "/classes/jcurses/system/Toolkit.class".length());
             url = new File(url, "lib").getAbsolutePath();
-        } else
-        {
+        } else {
             throw new RuntimeException("couldn't find jcurses library");
         }
         String furl = tryLibraryPath(url);
-        if (furl == null)
-        {
+        if (furl == null) {
             furl = tryLibraryPath(url.replaceAll("%20", " "));
         }
-        if (furl == null)
-        {
+        if (furl == null) {
             furl = tryLibraryPath(url + "/lib");
         }
-        if (furl == null)
-        {
+        if (furl == null) {
             furl = tryLibraryPath(url.replaceAll("%20", " ") + "/lib");
         }
-        if (furl == null)
-        {
+        if (furl == null) {
             throw new RuntimeException("couldn't find jcurses library");
         }
         return furl;
     }
 
-    private static void fillColorPairs()
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
+    private static void fillColorPairs() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 __colorpairs[i][j] = -1;
             }
         }
@@ -185,8 +156,7 @@ public class Toolkit
 
     private static native void fillBasicColors(short[] basicColors);
 
-    static short[] getBasicColors()
-    {
+    static short[] getBasicColors() {
         return __basicColors;
     }
 
@@ -194,11 +164,9 @@ public class Toolkit
 
     private static native int computeChtype(short number);
 
-    static int computeChtype(CharColor ch)
-    {
+    static int computeChtype(CharColor ch) {
         short number = getColorPairNumber(ch);
-        if (number == -1)
-        {
+        if (number == -1) {
             number = addColorPairNumber(ch);
         }
         return computeChtype(number);
@@ -206,21 +174,17 @@ public class Toolkit
 
     private static short __maxColorPairNumber = -1;
 
-    private static short getColorPairNumber(CharColor ch)
-    {
-        if (!hasColors())
-        {
+    private static short getColorPairNumber(CharColor ch) {
+        if (!hasColors()) {
             return ch.getBlackWhiteAttribute();
-        } else
-        {
+        } else {
         }
         short background = ch.getBackground();
         short foreground = ch.getForeground();
         return __colorpairs[background][foreground];
     }
 
-    private static short addColorPairNumber(CharColor ch)
-    {
+    private static short addColorPairNumber(CharColor ch) {
         short background = __basicColors[ch.getBackground()];
         short foreground = __basicColors[ch.getForeground()];
         __maxColorPairNumber++;
@@ -262,8 +226,7 @@ public class Toolkit
      * @return <code>true</code> if the terminal can color painting,
      * <code>false</code>otherwise.
      */
-    public static boolean hasColors()
-    {
+    public static boolean hasColors() {
         return (hasColorsAsInteger() != 0);
     }
 
@@ -281,17 +244,16 @@ public class Toolkit
      */
     public static native void shutdown();
 
-    //Painting methods 
+    //Painting methods
     /**
      * The method clears the screen and fills it with the backround color of
      * <code>color</code>
      *
      * @param color the color to fill the screen, only backround part is used.
      */
-    public static void clearScreen(CharColor color)
-    {
+    public static void clearScreen(CharColor color) {
         clearScreen(getColorPairNumber(color),
-                __attributes[color.getColorAttribute()]);
+                    __attributes[color.getColorAttribute()]);
     }
 
     private static native void clearScreen(short colorPairNumber, long attributes);
@@ -303,18 +265,15 @@ public class Toolkit
      * @param rect rectangle ( that is, bounds of rectangle) to be painted
      * @param color color to fill the rectangle, only background part is used
      */
-    public static void drawRectangle(Rectangle rect, CharColor color)
-    {
+    public static void drawRectangle(Rectangle rect, CharColor color) {
         Rectangle clipRect = getCurrentClipRectangle();
-        if (clipRect != null)
-        {
+        if (clipRect != null) {
             rect = rect.intersection(clipRect);
         }
-        if (!rect.isEmpty())
-        {
+        if (!rect.isEmpty()) {
             drawRectangle(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(),
-                    getColorPairNumber(color),
-                    __attributes[color.getColorAttribute()]);
+                          getColorPairNumber(color),
+                          __attributes[color.getColorAttribute()]);
         }
     }
 
@@ -330,8 +289,7 @@ public class Toolkit
      * @param height the height of the rectangle to be painted
      * @param color color to fill the rectangle, only background part is used
      */
-    public static void drawRectangle(int x, int y, int width, int height, CharColor color)
-    {
+    public static void drawRectangle(int x, int y, int width, int height, CharColor color) {
         Rectangle rect = new Rectangle(x, y, width, height);
         drawRectangle(rect, color);
 
@@ -339,39 +297,29 @@ public class Toolkit
 
     private static native void drawRectangle(int x, int y, int width, int height, short colorPairNumber, long attribute);
 
-    private static boolean between(int begin, int end, int pos)
-    {
+    private static boolean between(int begin, int end, int pos) {
         return ((begin <= pos) && (end >= pos));
     }
 
-    private static LinePart getLinePart(int begin, int end, int alignment, int position, Rectangle clipRect)
-    {
+    private static LinePart getLinePart(int begin, int end, int alignment, int position, Rectangle clipRect) {
         @SuppressWarnings("UnusedAssignment")
         LinePart result = null;
-        if (begin > end)
-        {
+        if (begin > end) {
             int tmp = end;
             end = begin;
             begin = tmp;
         }
-        if (clipRect == null)
-        {
+        if (clipRect == null) {
             result = new LinePart(begin, end, alignment);
-        } else
-        {
-            if ((alignment == VERTICAL) && (!between(clipRect.getX(), clipRect.getX() + clipRect.getWidth() - 1, position)))
-            {
+        } else {
+            if ((alignment == VERTICAL) && (!between(clipRect.getX(), clipRect.getX() + clipRect.getWidth() - 1, position))) {
                 result = new LinePart();
-            } else if ((alignment == HORIZONTAL) && (!between(clipRect.getY(), clipRect.getY() + clipRect.getHeight() - 1, position)))
-            {
+            } else if ((alignment == HORIZONTAL) && (!between(clipRect.getY(), clipRect.getY() + clipRect.getHeight() - 1, position))) {
                 result = new LinePart();
-            } else
-            {
-                if (alignment == VERTICAL)
-                {
+            } else {
+                if (alignment == VERTICAL) {
                     result = new LinePart(Math.max(clipRect.getY(), begin), Math.min(clipRect.getY() + clipRect.getHeight() - 1, end), alignment);
-                } else
-                {
+                } else {
                     result = new LinePart(Math.max(clipRect.getX(), begin), Math.min(clipRect.getX() + clipRect.getWidth() - 1, end), alignment);
                 }
             }
@@ -387,13 +335,11 @@ public class Toolkit
      * @param endX the x coordinate of the end point
      * @param color
      */
-    public static void drawHorizontalThickLine(int startX, int startY, int endX, CharColor color)
-    {
+    public static void drawHorizontalThickLine(int startX, int startY, int endX, CharColor color) {
         LinePart part = getLinePart(startX, endX, HORIZONTAL, startY, getCurrentClipRectangle());
-        if (!part.isEmpty())
-        {
+        if (!part.isEmpty()) {
             drawHorizontalThickLine(part._begin, startY, part._end, getColorPairNumber(color),
-                    __attributes[color.getColorAttribute()]);
+                                    __attributes[color.getColorAttribute()]);
         }
     }
 
@@ -407,13 +353,11 @@ public class Toolkit
      * @param endY the y coordinate of the end point
      * @param color
      */
-    public static void drawVerticalThickLine(int startX, int startY, int endY, CharColor color)
-    {
+    public static void drawVerticalThickLine(int startX, int startY, int endY, CharColor color) {
         LinePart part = getLinePart(startY, endY, VERTICAL, startX, getCurrentClipRectangle());
-        if (!part.isEmpty())
-        {
+        if (!part.isEmpty()) {
             drawVerticalThickLine(startX, part._begin, part._end, getColorPairNumber(color),
-                    __attributes[color.getColorAttribute()]);
+                                  __attributes[color.getColorAttribute()]);
         }
     }
 
@@ -427,13 +371,11 @@ public class Toolkit
      * @param endX the x coordinate of the end point
      * @param color
      */
-    public static void drawHorizontalLine(int startX, int startY, int endX, CharColor color)
-    {
+    public static void drawHorizontalLine(int startX, int startY, int endX, CharColor color) {
         LinePart part = getLinePart(startX, endX, HORIZONTAL, startY, getCurrentClipRectangle());
-        if (!part.isEmpty())
-        {
+        if (!part.isEmpty()) {
             drawHorizontalLine(part._begin, startY, part._end, getColorPairNumber(color),
-                    __attributes[color.getColorAttribute()]);
+                               __attributes[color.getColorAttribute()]);
         }
     }
 
@@ -447,20 +389,17 @@ public class Toolkit
      * @param endY the y coordinate of the end point
      * @param color
      */
-    public static void drawVerticalLine(int startX, int startY, int endY, CharColor color)
-    {
+    public static void drawVerticalLine(int startX, int startY, int endY, CharColor color) {
         LinePart part = getLinePart(startY, endY, VERTICAL, startX, getCurrentClipRectangle());
-        if (!part.isEmpty())
-        {
+        if (!part.isEmpty()) {
             drawVerticalLine(startX, part._begin, part._end, getColorPairNumber(color),
-                    __attributes[color.getColorAttribute()]);
+                             __attributes[color.getColorAttribute()]);
         }
     }
 
     private static native void drawVerticalLine(int startX, int startY, int endX, short colorPairNumber, long attr);
 
-    private static Point getCornerCenterPoint(int startX, int startY, int endX, int endY, short alignment)
-    {
+    private static Point getCornerCenterPoint(int startX, int startY, int endX, int endY, short alignment) {
         @SuppressWarnings("UnusedAssignment")
         int x = 0;
         @SuppressWarnings("UnusedAssignment")
@@ -471,8 +410,7 @@ public class Toolkit
         return new Point(x, y);
     }
 
-    private static short getCornerChar(int startX, int startY, int endX, int endY, short alignment)
-    {
+    private static short getCornerChar(int startX, int startY, int endX, int endY, short alignment) {
         int cornerX = Math.min(startX, endX);
         int cornerY = (startX == cornerX) ? startY : endY;
         int otherX = (startX == cornerX) ? endX : startX;
@@ -480,22 +418,16 @@ public class Toolkit
 
         @SuppressWarnings("UnusedAssignment")
         short result = 0;
-        if (cornerY < otherY)
-        {
-            if (alignment == CORNER_UNDER_LINE)
-            {
+        if (cornerY < otherY) {
+            if (alignment == CORNER_UNDER_LINE) {
                 result = UR_CORNER;
-            } else
-            {
+            } else {
                 result = LL_CORNER;
             }
-        } else
-        {
-            if (alignment == CORNER_UNDER_LINE)
-            {
+        } else {
+            if (alignment == CORNER_UNDER_LINE) {
                 result = UL_CORNER;
-            } else
-            {
+            } else {
                 result = LR_CORNER;
             }
         }
@@ -521,30 +453,24 @@ public class Toolkit
      *
      */
     @SuppressWarnings("UnnecessaryReturnStatement")
-    public static void drawCorner(int startX, int startY, int endX, int endY, CharColor color, short alignment)
-    {
+    public static void drawCorner(int startX, int startY, int endX, int endY, CharColor color, short alignment) {
         Rectangle clipRect = getCurrentClipRectangle();
-        if ((clipRect == null))
-        {
+        if ((clipRect == null)) {
             drawCorner(startX, startY, endX, endY, getColorPairNumber(color),
-                    __attributes[color.getColorAttribute()], alignment);
-        } else
-        {
+                       __attributes[color.getColorAttribute()], alignment);
+        } else {
             Point center = getCornerCenterPoint(startX, startY, endX, endY, alignment);
-            if ((alignment == CORNER_UNDER_LINE) || (alignment == CORNER_OVER_LINE))
-            {
+            if ((alignment == CORNER_UNDER_LINE) || (alignment == CORNER_OVER_LINE)) {
                 @SuppressWarnings("UnusedAssignment")
                 LinePart verticalPart = null;
                 @SuppressWarnings("UnusedAssignment")
                 LinePart horizontalPart = null;
-                if (startX == center.x)
-                {
+                if (startX == center.x) {
                     int endY2 = (startY < center.y) ? (center.y - 1) : (center.y + 1);
                     verticalPart = new LinePart(startY, endY2, center.x, VERTICAL);
                     int endX2 = (endX < center.x) ? (center.x - 1) : (center.x + 1);
                     horizontalPart = new LinePart(endX, endX2, center.y, HORIZONTAL);
-                } else
-                {
+                } else {
                     int endY3 = (endY < center.y) ? (center.y - 1) : (center.y + 1);
                     verticalPart = new LinePart(endY, endY3, center.x, VERTICAL);
                     int endX3 = (startX < center.x) ? (center.x - 1) : (center.x + 1);
@@ -555,17 +481,14 @@ public class Toolkit
                 drawVerticalLine(verticalPart._position, verticalPart._begin, verticalPart._end, color);
             }
 
-            if (clipRect.inside(center.x, center.y))
-            {
-                if ((alignment != CORNER_UNDER_LINE) && (alignment != CORNER_OVER_LINE))
-                {
+            if (clipRect.inside(center.x, center.y)) {
+                if ((alignment != CORNER_UNDER_LINE) && (alignment != CORNER_OVER_LINE)) {
                     drawCorner(center.x, center.y, center.x, center.y, getColorPairNumber(color),
-                            __attributes[color.getColorAttribute()], alignment);
-                } else
-                {
+                               __attributes[color.getColorAttribute()], alignment);
+                } else {
                     short newAlignment = getCornerChar(startX, startY, endX, endY, alignment);
                     drawCorner(center.x, center.y, center.x, center.y, getColorPairNumber(color),
-                            __attributes[color.getColorAttribute()], newAlignment);
+                               __attributes[color.getColorAttribute()], newAlignment);
                 }
             }
 
@@ -581,8 +504,7 @@ public class Toolkit
      * @param rect bounds of the border to be painted
      * @param color color attributes of the border
      */
-    public static void drawBorder(Rectangle rect, CharColor color)
-    {
+    public static void drawBorder(Rectangle rect, CharColor color) {
         drawBorder((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight(), color);
     }
 
@@ -597,8 +519,7 @@ public class Toolkit
      * @param height the height of the border to be painted
      * @param color color attributes of the border
      */
-    public static void drawBorder(int x, int y, int width, int height, CharColor color)
-    {
+    public static void drawBorder(int x, int y, int width, int height, CharColor color) {
         drawCorner(x + 1, y, x + width - 1, y + height - 2, color, CORNER_UNDER_LINE);
         drawCorner(x, y + 1, x + width - 2, y + height - 1, color, CORNER_OVER_LINE);
         drawCorner(x, y, x, y, color, UL_CORNER);
@@ -612,29 +533,24 @@ public class Toolkit
      *
      * @param encoding
      */
-    public static void setEncoding(String encoding)
-    {
+    public static void setEncoding(String encoding) {
         __encoding = encoding;
     }
 
     /**
      * @return the java encoding used by sring input and output operations
      */
-    public static String getEncoding()
-    {
+    public static String getEncoding() {
         return __encoding;
     }
 
-    private static void initEncoding()
-    {
-        if (isWindows())
-        {
+    private static void initEncoding() {
+        if (isWindows()) {
             setEncoding("CP850");
         }
     }
 
-    private static boolean isWindows()
-    {
+    private static boolean isWindows() {
         return (java.io.File.separatorChar == '\\');
     }
 
@@ -646,102 +562,78 @@ public class Toolkit
      * string doesn't fit within the rectangle it will be broken.
      * @param color attributes of the string
      */
-    public static void printString(String text, Rectangle rect, CharColor color)
-    {
+    public static void printString(String text, Rectangle rect, CharColor color) {
         Rectangle clipRect = getCurrentClipRectangle();
-        if (clipRect != null)
-        {
+        if (clipRect != null) {
             Rectangle newRect = rect.intersection(clipRect);
-            if (!newRect.isEmpty())
-            {
+            if (!newRect.isEmpty()) {
                 printClippedString(rect, newRect, text, color);
             }
-        } else
-        {
+        } else {
             printStringWithoutClipping(text, rect, color);
         }
     }
 
-    private static void printStringWithoutClipping(String text, Rectangle rect, CharColor color)
-    {
+    private static void printStringWithoutClipping(String text, Rectangle rect, CharColor color) {
         @SuppressWarnings("UnusedAssignment")
         byte[] bytes = null;
-        if (__encoding == null)
-        {
+        if (__encoding == null) {
             bytes = text.getBytes();
-        } else
-        {
-            try
-            {
+        } else {
+            try {
                 bytes = text.getBytes(__encoding);
-            } catch (java.io.UnsupportedEncodingException e)
-            {
+            } catch (java.io.UnsupportedEncodingException e) {
                 __encoding = null;
                 bytes = text.getBytes();
             }
 
         }
         printString(bytes, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), getColorPairNumber(color),
-                __attributes[color.getColorAttribute()]);
+                    __attributes[color.getColorAttribute()]);
     }
 
-    private static List getLines(String text, int maxWidth)
-    {
+    private static List getLines(String text, int maxWidth) {
         ArrayList list = new ArrayList();
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < text.length(); i++)
-        {
+        for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            if (c == '\n')
-            {
+            if (c == '\n') {
                 String line = buffer.toString();
-                if (line.length() > maxWidth)
-                {
+                if (line.length() > maxWidth) {
                     list.add(line.substring(0, maxWidth));
                     list.add(line.substring(maxWidth, line.length()));
-                } else
-                {
+                } else {
                     list.add(line);
                 }
                 buffer = new StringBuffer();
-            } else if (c == '\r')
-            {
+            } else if (c == '\r') {
                 //ignore
-            } else
-            {
+            } else {
                 buffer.append(c);
             }
         }
-        if (buffer.length() > 0)
-        {
+        if (buffer.length() > 0) {
             list.add(buffer.toString());
         }
 
         return list;
     }
 
-    private static void printClippedString(Rectangle oldRect, Rectangle newRect, String text, CharColor color)
-    {
+    private static void printClippedString(Rectangle oldRect, Rectangle newRect, String text, CharColor color) {
         List lines = getLines(text, oldRect.getWidth());
         int beginY = Math.max(oldRect.getY(), newRect.getY());
         int endY = Math.min(oldRect.getY() + oldRect.getHeight() - 1, newRect.getY() + newRect.getHeight() - 1);
-        if (lines.size() > 0)
-        {
-            for (int i = 0; i < lines.size(); i++)
-            {
-                if (((i + oldRect.getY()) >= beginY) && ((i + oldRect.getY()) >= beginY))
-                {
+        if (lines.size() > 0) {
+            for (int i = 0; i < lines.size(); i++) {
+                if (((i + oldRect.getY()) >= beginY) && ((i + oldRect.getY()) >= beginY)) {
                     String line = (String) lines.get(i);
                     int beginPart = 0;
-                    if (oldRect.getX() < newRect.getX())
-                    {
+                    if (oldRect.getX() < newRect.getX()) {
                         beginPart = newRect.getX() - oldRect.getX();
                     }
-                    if (beginPart < line.length())
-                    {
+                    if (beginPart < line.length()) {
                         line = line.substring(beginPart, line.length());
-                        if (line.length() > newRect.getWidth())
-                        {
+                        if (line.length() > newRect.getWidth()) {
                             line = line.substring(0, newRect.getWidth());
                         }
                         //Zeichnen
@@ -762,8 +654,7 @@ public class Toolkit
      * @param y the y coordinate of the string start point
      * @param color color attributes of the string
      */
-    public static void printString(String text, int x, int y, CharColor color)
-    {
+    public static void printString(String text, int x, int y, CharColor color) {
         printString(text, x, y, text.length(), 1, color);
     }
 
@@ -778,8 +669,7 @@ public class Toolkit
      * @param height the width of bounds rectangle
      * @param color color attributes of the string
      */
-    public static void printString(String text, int x, int y, int width, int height, CharColor color)
-    {
+    public static void printString(String text, int x, int y, int width, int height, CharColor color) {
         Rectangle rect = new Rectangle(x, y, width, height);
         printString(text, rect, color);
     }
@@ -794,8 +684,7 @@ public class Toolkit
      *
      * @return the next read code
      */
-    public static synchronized InputChar readCharacter()
-    {
+    public static synchronized InputChar readCharacter() {
         int code = readByte();
         return new InputChar(code);
     }
@@ -811,17 +700,14 @@ public class Toolkit
      * @param rect rectangle, whose colors are to be changed
      * @param color new colors
      */
-    public static void changeColors(Rectangle rect, CharColor color)
-    {
+    public static void changeColors(Rectangle rect, CharColor color) {
         Rectangle clipRect = getCurrentClipRectangle();
-        if (clipRect != null)
-        {
+        if (clipRect != null) {
             rect = rect.intersection(clipRect);
         }
-        if (!rect.isEmpty())
-        {
+        if (!rect.isEmpty()) {
             changeColors(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), getColorPairNumber(color),
-                    __attributes[color.getColorAttribute()]);
+                         __attributes[color.getColorAttribute()]);
         }
     }
 
@@ -834,41 +720,35 @@ public class Toolkit
     public native static void beep();
 }
 
-class LinePart
-{
+class LinePart {
 
     int _begin = -1;
     int _end = -2;
     int _alignment = -1;
     int _position = -1;
 
-    public LinePart()
-    {
+    public LinePart() {
     }
 
-    LinePart(int begin, int end, int alignment)
-    {
+    LinePart(int begin, int end, int alignment) {
         _begin = begin;
         _end = end;
         _alignment = alignment;
     }
 
-    LinePart(int begin, int end, int position, int alignment)
-    {
+    LinePart(int begin, int end, int position, int alignment) {
         _begin = begin;
         _end = end;
         _position = position;
         _alignment = alignment;
     }
 
-    boolean isEmpty()
-    {
+    boolean isEmpty() {
         return (_begin > _end);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "[begin=" + _begin + ",end=" + _end + ",align=" + _alignment + ",isEmpty=" + isEmpty();
     }
 }

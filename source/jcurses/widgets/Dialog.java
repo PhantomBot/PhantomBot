@@ -8,8 +8,7 @@ import jcurses.event.WindowListener;
  * that a call oft the 'show' - method blocks, until the dialog window is
  * closed.
  */
-public class Dialog extends Window implements WindowListener, WindowManagerBlockingCondition
-{
+public class Dialog extends Window implements WindowListener, WindowManagerBlockingCondition {
 
     /**
      * The constructor
@@ -22,8 +21,7 @@ public class Dialog extends Window implements WindowListener, WindowManagerBlock
      * @param border true, if the dialog window has a border, false otherwise
      */
     @SuppressWarnings("LeakingThisInConstructor")
-    public Dialog(int x, int y, int width, int height, boolean border, String title)
-    {
+    public Dialog(int x, int y, int width, int height, boolean border, String title) {
         super(x, y, width, height, border, title);
         addListener(this);
     }
@@ -37,34 +35,26 @@ public class Dialog extends Window implements WindowListener, WindowManagerBlock
      * @param border true, if the dialog window has a border, false otherwise
      */
     @SuppressWarnings("LeakingThisInConstructor")
-    public Dialog(int width, int height, boolean border, String title)
-    {
+    public Dialog(int width, int height, boolean border, String title) {
         super(width, height, border, title);
         addListener(this);
     }
 
     @Override
-    public boolean evaluate()
-    {
+    public boolean evaluate() {
         return !isClosed();
     }
 
     @Override
-    public void setVisible(boolean value)
-    {
-        if (value)
-        {
+    public void setVisible(boolean value) {
+        if (value) {
             super.setVisible(true);
-            if (WindowManager.isInputThread())
-            {
+            if (WindowManager.isInputThread()) {
                 WindowManager.blockInputThread(this);
-            } else
-            {
-                try
-                {
+            } else {
+                try {
                     waitToClose();
-                } catch (InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     //ignore
                 }
             }
@@ -72,24 +62,19 @@ public class Dialog extends Window implements WindowListener, WindowManagerBlock
     }
 
     @Override
-    public void windowChanged(WindowEvent event)
-    {
-        if (event.getType() == WindowEvent.CLOSING)
-        {
+    public void windowChanged(WindowEvent event) {
+        if (event.getType() == WindowEvent.CLOSING) {
             close();
-        } else if (event.getType() == WindowEvent.CLOSED)
-        {
+        } else if (event.getType() == WindowEvent.CLOSED) {
             notifyOfClosing();
         }
     }
 
-    private synchronized void waitToClose() throws InterruptedException
-    {
+    private synchronized void waitToClose() throws InterruptedException {
         wait();
     }
 
-    private synchronized void notifyOfClosing()
-    {
+    private synchronized void notifyOfClosing() {
         notify();
     }
 

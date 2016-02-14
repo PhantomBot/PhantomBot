@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,8 +21,7 @@ package me.mast3rplan.phantombot.jerklib;
  *
  * @author mohadib
  */
-public class RequestedConnection
-{
+public class RequestedConnection {
 
     private final String hostName;
     private final int port;
@@ -37,16 +36,14 @@ public class RequestedConnection
      * @param port - port to use
      * @param profile - profile to use
      */
-    public RequestedConnection(String hostName, int port, Profile profile)
-    {
+    public RequestedConnection(String hostName, int port, Profile profile) {
         this.hostName = hostName;
         this.port = port;
         this.profile = profile;
         this.pass = null;
     }
 
-    public RequestedConnection(String hostName, int port, String pass, Profile profile)
-    {
+    public RequestedConnection(String hostName, int port, String pass, Profile profile) {
         this.hostName = hostName;
         this.port = port;
         this.pass = pass;
@@ -58,8 +55,7 @@ public class RequestedConnection
      *
      * @return hostname
      */
-    public String getHostName()
-    {
+    public String getHostName() {
         return hostName;
     }
 
@@ -68,8 +64,7 @@ public class RequestedConnection
      *
      * @return port
      */
-    public int getPort()
-    {
+    public int getPort() {
         return port;
     }
 
@@ -78,8 +73,7 @@ public class RequestedConnection
      *
      * @return profile
      */
-    public Profile getProfile()
-    {
+    public Profile getProfile() {
         return profile;
     }
 
@@ -88,8 +82,7 @@ public class RequestedConnection
      *
      * @return time
      */
-    public long getTimeRequested()
-    {
+    public long getTimeRequested() {
         return requestedTime;
     }
 
@@ -97,8 +90,7 @@ public class RequestedConnection
      * (non-Javadoc) @see java.lang.Object#hashCode()
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return hostName.hashCode() + port + profile.hashCode();
     }
 
@@ -106,14 +98,12 @@ public class RequestedConnection
      * (non-Javadoc) @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof RequestedConnection && o.hashCode() == hashCode())
-        {
+    public boolean equals(Object o) {
+        if (o instanceof RequestedConnection && o.hashCode() == hashCode()) {
             RequestedConnection rCon = (RequestedConnection) o;
             return rCon.getHostName().equals(hostName)
-                    && rCon.getPort() == port
-                    && rCon.getProfile().equals(profile);
+                   && rCon.getPort() == port
+                   && rCon.getProfile().equals(profile);
         }
         return false;
     }
@@ -123,13 +113,11 @@ public class RequestedConnection
      *
      * @param profile
      */
-    void setProfile(Profile profile)
-    {
+    void setProfile(Profile profile) {
         this.profile = profile;
     }
 
-    public String getPass()
-    {
+    public String getPass() {
         return pass;
     }
 }

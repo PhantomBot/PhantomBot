@@ -9,8 +9,7 @@ import jcurses.system.CharColor;
  * scrollbars. Througth this interface the widget gives to the
  * <code>ScrollbarPainter</code> needed data to paint or refresh scrollbars;
  */
-public interface IScrollable
-{
+public interface IScrollable {
 
     /**
      * This method returns true, if the using widget has a horizontal scrollbar,

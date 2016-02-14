@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,14 +26,12 @@ import java.util.List;
  *
  * @author mohadib
  */
-public class QuitEvent extends IRCEvent
-{
+public class QuitEvent extends IRCEvent {
 
     private final String msg;
     private final List<Channel> chanList;
 
-    public QuitEvent(String rawEventData, Session session, String msg, List<Channel> chanList)
-    {
+    public QuitEvent(String rawEventData, Session session, String msg, List<Channel> chanList) {
         super(rawEventData, session, Type.QUIT);
         this.msg = msg;
         this.chanList = chanList;
@@ -44,8 +42,7 @@ public class QuitEvent extends IRCEvent
      *
      * @return the quit message
      */
-    public final String getQuitMessage()
-    {
+    public final String getQuitMessage() {
         return msg;
     }
 
@@ -55,8 +52,7 @@ public class QuitEvent extends IRCEvent
      * @return List of channels nick was in
      * @see Channel
      */
-    public final List<Channel> getChannelList()
-    {
+    public final List<Channel> getChannelList() {
         return chanList;
     }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,8 +34,7 @@ import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
  * me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type...)
  * @see Type
  */
-public interface Task extends IRCEventListener
-{
+public interface Task extends IRCEventListener {
 
     /**
      * Gets the name of a task

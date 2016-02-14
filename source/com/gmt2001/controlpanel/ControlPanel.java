@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,8 +33,7 @@ import jcurses.widgets.Window;
  *
  * @author gmt2001
  */
-public class ControlPanel extends Thread implements ActionListener
-{
+public class ControlPanel extends Thread implements ActionListener {
 
     private static ControlPanel instance;
     private final Window w;
@@ -42,14 +41,12 @@ public class ControlPanel extends Thread implements ActionListener
     private final Thread t;
     private final HashMap<String, Panel> panels = new HashMap<>();
 
-    public ControlPanel instance()
-    {
+    public ControlPanel instance() {
         return instance;
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
-    private ControlPanel()
-    {
+    private ControlPanel() {
         w = new Window(80, 25, true, "PhantomBot Control Panel");
         w.setShadow(false);
         mgr = new DefaultLayoutManager();
@@ -90,11 +87,9 @@ public class ControlPanel extends Thread implements ActionListener
 
         w.show();
 
-        t = new Thread(new Runnable()
-        {
+        t = new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 onExit();
             }
         });
@@ -102,20 +97,17 @@ public class ControlPanel extends Thread implements ActionListener
         Runtime.getRuntime().addShutdownHook(t);
     }
 
-    private void onExit()
-    {
+    private void onExit() {
         w.close();
     }
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         ControlPanel.instance = new ControlPanel();
         ControlPanel.instance.start();
     }
 
     @Override
-    public void actionPerformed(ActionEvent event)
-    {
+    public void actionPerformed(ActionEvent event) {
         PopUpMenu m = new PopUpMenu(1, 2, "");
         m.add("Test 1");
         m.add("Test 2");

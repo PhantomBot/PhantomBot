@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,17 +25,14 @@ import me.mast3rplan.phantombot.event.Event;
 import me.mast3rplan.phantombot.event.Listener;
 import org.apache.commons.lang3.text.WordUtils;
 
-public class ScriptEventManager implements Listener
-{
+public class ScriptEventManager implements Listener {
 
     private static final ScriptEventManager instance = new ScriptEventManager();
 
-    public static ScriptEventManager instance()
-    {
+    public static ScriptEventManager instance() {
         return instance;
     }
-    private static final String[] eventPackages = new String[]
-    {
+    private static final String[] eventPackages = new String[] {
         "me.mast3rplan.phantombot.event.command",
         "me.mast3rplan.phantombot.event.console",
         "me.mast3rplan.phantombot.event.twitch.follower",
@@ -49,19 +46,16 @@ public class ScriptEventManager implements Listener
         "me.mast3rplan.phantombot.event.twitchalerts.donate"
     };
 
-    private ScriptEventManager()
-    {
+    private ScriptEventManager() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    private static class EventHandlerEntry
-    {
+    private static class EventHandlerEntry {
 
         Class<? extends Event> eventClass;
         ScriptEventHandler handler;
 
-        private EventHandlerEntry(Class<? extends Event> eventClass, ScriptEventHandler handler)
-        {
+        private EventHandlerEntry(Class<? extends Event> eventClass, ScriptEventHandler handler) {
             this.eventClass = eventClass;
             this.handler = handler;
         }
@@ -69,66 +63,51 @@ public class ScriptEventManager implements Listener
     private final List<EventHandlerEntry> entries = Lists.newCopyOnWriteArrayList();
 
     @Subscribe
-    public void onEvent(Event event)
-    {
-        if (PhantomBot.instance().isExiting())
-        {
+    public void onEvent(Event event) {
+        if (PhantomBot.instance().isExiting()) {
             return;
         }
 
-        try
-        {
-            for (EventHandlerEntry entry : entries)
-            {
-                if (event.getClass().isAssignableFrom(entry.eventClass))
-                {
-                    if (PhantomBot.enableDebugging)
-                    {
+        try {
+            for (EventHandlerEntry entry : entries) {
+                if (event.getClass().isAssignableFrom(entry.eventClass)) {
+                    if (PhantomBot.enableDebugging) {
                         com.gmt2001.Console.out.println(">>>[DEBUG] Dispatching event " + entry.eventClass.getName());
                     }
 
                     entry.handler.handle(event);
                 }
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             com.gmt2001.Console.out.println(">>>[DEBUG] Failed to dispatch event " + event.getClass().getName());
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
 
-    public void register(String eventName, ScriptEventHandler handler)
-    {
+    public void register(String eventName, ScriptEventHandler handler) {
         Class<? extends Event> eventClass = null;
-        for (String eventPackage : eventPackages)
-        {
-            try
-            {
+        for (String eventPackage : eventPackages) {
+            try {
                 eventClass = Class.forName(eventPackage + "." + WordUtils.capitalize(eventName) + "Event").asSubclass(Event.class);
                 break;
-            } catch (ClassNotFoundException e)
-            {
+            } catch (ClassNotFoundException e) {
             }
         }
 
-        if (eventClass == null)
-        {
+        if (eventClass == null) {
             throw new RuntimeException("Event class not found: " + eventName);
         }
 
         entries.add(new EventHandlerEntry(eventClass, handler));
     }
 
-    public void unregister(ScriptEventHandler handler)
-    {
+    public void unregister(ScriptEventHandler handler) {
         EventHandlerEntry entry;
         Iterator<EventHandlerEntry> iterator = entries.iterator();
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             entry = iterator.next();
 
-            if (entry.handler == handler)
-            {
+            if (entry.handler == handler) {
                 entries.remove(entry);
             }
         }

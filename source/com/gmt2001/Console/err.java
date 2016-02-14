@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,22 +28,18 @@ import java.util.TimeZone;
  *
  * @author Gary Tekulsky
  */
-public class err
-{
+public class err {
 
     private static final err instance = new err();
 
-    public static err instance()
-    {
+    public static err instance() {
         return instance;
     }
 
-    private err()
-    {
+    private err() {
     }
 
-    public static void print(Object o)
-    {
+    public static void print(Object o) {
         System.err.print(o);
 
         SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
@@ -54,13 +50,11 @@ public class err
         Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + o.toString());
     }
 
-    public static void println()
-    {
+    public static void println() {
         System.err.println();
     }
 
-    public static void println(Object o)
-    {
+    public static void println(Object o) {
         System.err.println(o);
 
         SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
@@ -72,15 +66,13 @@ public class err
         Logger.instance().log(Logger.LogType.Blank, "");
     }
 
-    public static void printStackTrace(Throwable e)
-    {
+    public static void printStackTrace(Throwable e) {
         e.printStackTrace(System.err);
 
         logStackTrace(e);
     }
 
-    public static void logStackTrace(Throwable e)
-    {
+    public static void logStackTrace(Throwable e) {
         Writer trace = new StringWriter();
         PrintWriter ptrace = new PrintWriter(trace);
 

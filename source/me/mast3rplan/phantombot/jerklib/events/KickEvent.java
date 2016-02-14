@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,20 +25,18 @@ import me.mast3rplan.phantombot.jerklib.Session;
  * @author mohadib
  * @see Channel#kick(String, String)
  */
-public class KickEvent extends IRCEvent
-{
+public class KickEvent extends IRCEvent {
 
     private final String byWho, who, message;
     private final Channel channel;
 
     public KickEvent(
-            String rawEventData,
-            Session session,
-            String byWho,
-            String who,
-            String message,
-            Channel channel)
-    {
+        String rawEventData,
+        Session session,
+        String byWho,
+        String who,
+        String message,
+        Channel channel) {
         super(rawEventData, session, Type.KICK_EVENT);
         this.byWho = byWho;
         this.who = who;
@@ -51,8 +49,7 @@ public class KickEvent extends IRCEvent
      *
      * @return nick
      */
-    public String byWho()
-    {
+    public String byWho() {
         return byWho;
     }
 
@@ -61,8 +58,7 @@ public class KickEvent extends IRCEvent
      *
      * @return who was kicked
      */
-    public String getWho()
-    {
+    public String getWho() {
         return who;
     }
 
@@ -71,8 +67,7 @@ public class KickEvent extends IRCEvent
      *
      * @return message
      */
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 
@@ -81,8 +76,7 @@ public class KickEvent extends IRCEvent
      *
      * @return The Channel
      */
-    public Channel getChannel()
-    {
+    public Channel getChannel() {
         return channel;
     }
 }

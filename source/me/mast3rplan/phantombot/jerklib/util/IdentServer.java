@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,8 +21,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 //http://books.google.com/books?id=MbHAnBh9AqQC&pg=PA310&lpg=PA310&dq=irc+fake+ident&source=web&ots=c5sHoXuzFS&sig=ZOuAeIFxKUYanirnj_hbnfpCXBQ&hl=en#PPA311,M1
-public class IdentServer implements Runnable
-{
+public class IdentServer implements Runnable {
 
     private ServerSocket socket;
     private String login = "";
@@ -31,81 +30,64 @@ public class IdentServer implements Runnable
     private static IdentServer instance = null;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    private IdentServer()
-    {
-        try
-        {
+    private IdentServer() {
+        try {
             socket = new ServerSocket(113);
             socket.setSoTimeout(60000);
             t = new Thread(this);
             t.start();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
 
-    public static IdentServer instance()
-    {
-        if (instance == null)
-        {
+    public static IdentServer instance() {
+        if (instance == null) {
             instance = new IdentServer();
         }
 
         return instance;
     }
 
-    public void setLogin(String login)
-    {
+    public void setLogin(String login) {
         this.login = login;
     }
 
     @Override
-    public void run()
-    {
-        if (socket == null)
-        {
+    public void run() {
+        if (socket == null) {
             return;
         }
-        try
-        {
+        try {
             soc = socket.accept();
             reply();
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
         }
 
-        if (t != null)
-        {
-            try
-            {
+        if (t != null) {
+            try {
                 t.join(1);
-            } catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 com.gmt2001.Console.err.printStackTrace(e);
             }
         }
         t = null;
     }
 
-    public void reply()
-    {
-        try
-        {
+    public void reply() {
+        try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(soc.getInputStream()));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(soc.getOutputStream()));
 
             String line = reader.readLine();
-            if (line != null)
-            {
+            if (line != null) {
                 writer.write(line + " : USERID : UNIX : " + login + "\r\n");
                 writer.flush();
                 writer.close();
                 reader.close();
             }
             socket.close();
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }

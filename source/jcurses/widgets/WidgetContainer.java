@@ -15,8 +15,8 @@ import java.util.Vector;
  * This class is a superclass for widget containers, that is, for widgets, that
  * can contain other widgets
  */
-public abstract class WidgetContainer extends Widget
-{
+@SuppressWarnings("unchecked")
+public abstract class WidgetContainer extends Widget {
 
     @SuppressWarnings("UseOfObsoleteCollectionType")
     private final Vector _widgets = new Vector();
@@ -29,8 +29,7 @@ public abstract class WidgetContainer extends Widget
      */
     protected abstract void paintSelf();
 
-    private Rectangle getChildsClippingRectangle()
-    {
+    private Rectangle getChildsClippingRectangle() {
         Rectangle rect = (getChildsRectangle() == null) ? getSize() : getChildsRectangle();
         int x = getAbsoluteX() + rect.getX();
         int y = getAbsoluteY() + rect.getY();
@@ -39,13 +38,11 @@ public abstract class WidgetContainer extends Widget
     }
 
     @Override
-    protected void doPaint()
-    {
+    protected void doPaint() {
         paintSelf();
 
         Toolkit.setClipRectangle(getChildsClippingRectangle());
-        for (int i = 0; i < _widgets.size(); i++)
-        {
+        for (int i = 0; i < _widgets.size(); i++) {
             Widget widget = (Widget) _widgets.elementAt(i);
             widget.paint();
         }
@@ -59,12 +56,10 @@ public abstract class WidgetContainer extends Widget
     protected abstract void repaintSelf();
 
     @Override
-    protected void doRepaint()
-    {
+    protected void doRepaint() {
         repaintSelf();
         Toolkit.setClipRectangle(getChildsClippingRectangle());
-        for (int i = 0; i < _widgets.size(); i++)
-        {
+        for (int i = 0; i < _widgets.size(); i++) {
             Widget widget = (Widget) _widgets.elementAt(i);
             widget.repaint();
         }
@@ -72,8 +67,7 @@ public abstract class WidgetContainer extends Widget
 
     }
 
-    private Rectangle getClippingRect(Rectangle rect, Widget widget)
-    {
+    private Rectangle getClippingRect(Rectangle rect, Widget widget) {
 
         Rectangle widgetRectangle = new Rectangle(widget.getAbsoluteX(), widget.getAbsoluteY(),
                 widget.getSize().getWidth(),
@@ -83,8 +77,7 @@ public abstract class WidgetContainer extends Widget
 
     }
 
-    private void packChild(Widget widget, Object constraint)
-    {
+    private void packChild(Widget widget, Object constraint) {
         getLayoutManager().layout(widget, constraint);
     }
 
@@ -92,14 +85,11 @@ public abstract class WidgetContainer extends Widget
      * The method layouts all childrens bei the widget, using containers layout
      * manager. The method is called bei framework, before it paints a window-
      */
-    protected void pack()
-    {
-        for (int i = 0; i < _widgets.size(); i++)
-        {
+    protected void pack() {
+        for (int i = 0; i < _widgets.size(); i++) {
             Widget widget = (Widget) _widgets.elementAt(i);
             packChild(widget, _constraints.get(widget));
-            if (widget instanceof WidgetContainer)
-            {
+            if (widget instanceof WidgetContainer) {
                 ((WidgetContainer) widget).pack();
             }
         }
@@ -114,8 +104,7 @@ public abstract class WidgetContainer extends Widget
      * @param widget widget to add
      * @param constraint layouting constraints
      */
-    protected void addWidget(Widget widget, Object constraint)
-    {
+    protected void addWidget(Widget widget, Object constraint) {
         _widgets.add(widget);
         _constraints.put(widget, constraint);
         widget.setParent(this);
@@ -130,8 +119,7 @@ public abstract class WidgetContainer extends Widget
      * @param widget widget to remove
      *
      */
-    protected void removeWidget(Widget widget)
-    {
+    protected void removeWidget(Widget widget) {
         _widgets.remove(widget);
         _constraints.remove(widget);
         widget.setParent(null);
@@ -143,17 +131,13 @@ public abstract class WidgetContainer extends Widget
      * @return input widgets within container
      */
     @SuppressWarnings("UseOfObsoleteCollectionType")
-    protected Vector getListOfFocusables()
-    {
+    protected Vector getListOfFocusables() {
         Vector result = new Vector();
-        for (int i = 0; i < _widgets.size(); i++)
-        {
+        for (int i = 0; i < _widgets.size(); i++) {
             Widget widget = (Widget) _widgets.elementAt(i);
-            if (widget.isFocusable() && widget.getVisible())
-            {
+            if (widget.isFocusable() && widget.getVisible()) {
                 result.add(widget);
-            } else if (widget instanceof WidgetContainer)
-            {
+            } else if (widget instanceof WidgetContainer) {
                 result.addAll(((WidgetContainer) widget).getListOfFocusables());
             }
         }
@@ -169,17 +153,13 @@ public abstract class WidgetContainer extends Widget
      * @return widgets within container, that can handle shortcuts
      */
     @SuppressWarnings("UseOfObsoleteCollectionType")
-    protected Vector getListOfWidgetsWithShortCuts()
-    {
+    protected Vector getListOfWidgetsWithShortCuts() {
         Vector result = new Vector();
-        for (int i = 0; i < _widgets.size(); i++)
-        {
+        for (int i = 0; i < _widgets.size(); i++) {
             Widget widget = (Widget) _widgets.elementAt(i);
-            if (widget.getShortCutsList() != null)
-            {
+            if (widget.getShortCutsList() != null) {
                 result.add(widget);
-            } else if (widget instanceof WidgetContainer)
-            {
+            } else if (widget instanceof WidgetContainer) {
                 result.addAll(((WidgetContainer) widget).getListOfWidgetsWithShortCuts());
             }
         }
@@ -200,8 +180,7 @@ public abstract class WidgetContainer extends Widget
      *
      * @return
      */
-    protected Rectangle getChildsRectangle()
-    {
+    protected Rectangle getChildsRectangle() {
         return null;
     }
 
@@ -215,10 +194,8 @@ public abstract class WidgetContainer extends Widget
      *
      * @param layoutManager new layout manager
      */
-    public void setLayoutManager(LayoutManager layoutManager)
-    {
-        if (_layoutManager != null)
-        {
+    public void setLayoutManager(LayoutManager layoutManager) {
+        if (_layoutManager != null) {
             _layoutManager.unbindFromContainer();
         }
         _layoutManager = layoutManager;
@@ -228,10 +205,8 @@ public abstract class WidgetContainer extends Widget
     /**
      * @return container's layout manager
      */
-    public LayoutManager getLayoutManager()
-    {
-        if (_layoutManager == null)
-        {
+    public LayoutManager getLayoutManager() {
+        if (_layoutManager == null) {
             setLayoutManager(new DefaultLayoutManager());
         }
         return _layoutManager;

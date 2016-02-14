@@ -6,16 +6,13 @@ package jcurses.widgets;
  * @author Dawie Malan
  * @author Alexei Chmelev
  */
-public class PasswordField extends TextField
-{
+public class PasswordField extends TextField {
 
-    public PasswordField()
-    {
+    public PasswordField() {
         super();
     }
 
-    public PasswordField(int width, String text)
-    {
+    public PasswordField(int width, String text) {
         super(width, text);
     }
 
@@ -24,8 +21,7 @@ public class PasswordField extends TextField
      *
      * @param width the preferred width, if -1, there is no preferred size.
      */
-    public PasswordField(int width)
-    {
+    public PasswordField(int width) {
         super(width);
     }
 
@@ -36,13 +32,11 @@ public class PasswordField extends TextField
      * @return
      */
     @Override
-    protected String replaceTextLineForPrinting(String line)
-    {
+    protected String replaceTextLineForPrinting(String line) {
         int length = line.length();
         @SuppressWarnings("StringBufferMayBeStringBuilder")
         StringBuffer buf = new StringBuffer(length);
-        for (int i = 0; i < length; i++)
-        {
+        for (int i = 0; i < length; i++) {
             buf.append('*');
         }
         return buf.toString();

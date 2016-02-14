@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,45 +18,36 @@ package me.mast3rplan.phantombot.script;
 
 import java.io.File;
 
-public class ScriptFileWatcher implements Runnable
-{
+public class ScriptFileWatcher implements Runnable {
 
     private final Script script;
 
-    public ScriptFileWatcher(Script script)
-    {
+    public ScriptFileWatcher(Script script) {
         this.script = script;
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     @Override
-    @SuppressWarnings(
-            {
-                "SleepWhileInLoop", "UseSpecificCatch"
-            })
-    public void run()
-    {
+    @SuppressWarnings( {
+        "SleepWhileInLoop", "UseSpecificCatch"
+    })
+    public void run() {
         File file = script.getFile();
         long lastUpdate = file.lastModified();
         boolean run = true;
-        while (run)
-        {
-            try
-            {
+        while (run) {
+            try {
                 Thread.sleep(100);
-                if (file.lastModified() != lastUpdate)
-                {
+                if (file.lastModified() != lastUpdate) {
                     lastUpdate = file.lastModified();
                     script.reload();
                 }
 
-                if (script.isKilled())
-                {
+                if (script.isKilled()) {
                     run = false;
                 }
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 com.gmt2001.Console.err.printStackTrace(e);
             }
         }

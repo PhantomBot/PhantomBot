@@ -33,8 +33,7 @@ import java.util.Properties;
  * @author JSON.org
  * @version 2015-05-05
  */
-public class Property
-{
+public class Property {
 
     /**
      * Converts a property file object into a JSONObject. The property file
@@ -44,14 +43,11 @@ public class Property
      * @return JSONObject
      * @throws JSONException
      */
-    public static JSONObject toJSONObject(java.util.Properties properties) throws JSONException
-    {
+    public static JSONObject toJSONObject(java.util.Properties properties) throws JSONException {
         JSONObject jo = new JSONObject();
-        if (properties != null && !properties.isEmpty())
-        {
+        if (properties != null && !properties.isEmpty()) {
             Enumeration<?> enumProperties = properties.propertyNames();
-            while (enumProperties.hasMoreElements())
-            {
+            while (enumProperties.hasMoreElements()) {
                 String name = (String) enumProperties.nextElement();
                 jo.put(name, properties.getProperty(name));
             }
@@ -66,14 +62,11 @@ public class Property
      * @return java.util.Properties
      * @throws JSONException
      */
-    public static Properties toProperties(JSONObject jo) throws JSONException
-    {
+    public static Properties toProperties(JSONObject jo) throws JSONException {
         Properties properties = new Properties();
-        if (jo != null)
-        {
+        if (jo != null) {
             Iterator<String> keys = jo.keys();
-            while (keys.hasNext())
-            {
+            while (keys.hasNext()) {
                 String name = keys.next();
                 properties.put(name, jo.getString(name));
             }

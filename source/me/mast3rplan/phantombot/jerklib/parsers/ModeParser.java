@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,15 +37,13 @@ import me.mast3rplan.phantombot.jerklib.events.ModeEvent;
  * known shortcoming: usermode event arguments are not correctly lined up Only
  * way i can think to fix this is to hardcode known usermodes?
  */
-public class ModeParser implements CommandParser
-{
+public class ModeParser implements CommandParser {
     //channel//  :mohadib_!n=mohadib@unaffiliated/mohadib MODE #me.mast3rplan.phantombot.jerklib +o scripyasas
     //channel//  :kubrick.freenode.net 324 mohadib__ #test +mnPzlfJ 101 #flood 1,2
     //usermode// :services. MODE mohadib :+e
 
     @Override
-    public IRCEvent createEvent(IRCEvent event)
-    {
+    public IRCEvent createEvent(IRCEvent event) {
         boolean userMode = event.numeric() != 324 && !event.getSession().isChannelToken(event.arg(0));
         char[] modeTokens;
         String[] arguments = new String[0];
@@ -54,8 +52,7 @@ public class ModeParser implements CommandParser
         modeTokens = event.arg(modeOffs).toCharArray();
 
         int size = event.args().size();
-        if (modeOffs + 1 < size)
-        {
+        if (modeOffs + 1 < size) {
             arguments = event.args().subList(modeOffs + 1, event.args().size()).toArray(arguments);
         }
 
@@ -63,44 +60,33 @@ public class ModeParser implements CommandParser
         char action = '+';
         List<ModeAdjustment> modeAdjustments = new ArrayList<>();
 
-        for (char mode : modeTokens)
-        {
-            if (mode == '+' || mode == '-')
-            {
+        for (char mode : modeTokens) {
+            if (mode == '+' || mode == '-') {
                 action = mode;
-            } else
-            {
-                if (userMode)
-                {
+            } else {
+                if (userMode) {
                     String argument = argumntOffset >= arguments.length ? "" : arguments[argumntOffset];
                     modeAdjustments.add(new ModeAdjustment(action == '+' ? Action.PLUS : Action.MINUS, mode, argument));
                     argumntOffset++;
-                } else
-                {
+                } else {
                     ServerInformation info = event.getSession().getServerInformation();
                     ModeType type = info.getTypeForMode(String.valueOf(mode));
                     // must have an argument on + and -
-                    if (type == ModeType.GROUP_A || type == ModeType.GROUP_B)
-                    {
+                    if (type == ModeType.GROUP_A || type == ModeType.GROUP_B) {
                         modeAdjustments.add(new ModeAdjustment(action == '+' ? Action.PLUS : Action.MINUS, mode, arguments[argumntOffset]));
                         argumntOffset++;
                     } // must have args on + , must not have args on -
-                    else if (type == ModeType.GROUP_C)
-                    {
-                        if (action == '-')
-                        {
+                    else if (type == ModeType.GROUP_C) {
+                        if (action == '-') {
                             modeAdjustments.add(new ModeAdjustment(Action.MINUS, mode, ""));
-                        } else
-                        {
+                        } else {
                             modeAdjustments.add(new ModeAdjustment(Action.PLUS, mode, arguments[argumntOffset]));
                             argumntOffset++;
                         }
                     } // no args
-                    else if (type == ModeType.GROUP_D)
-                    {
+                    else if (type == ModeType.GROUP_D) {
                         modeAdjustments.add(new ModeAdjustment(action == '+' ? Action.PLUS : Action.MINUS, mode, ""));
-                    } else
-                    {
+                    } else {
                         // lol @ derp typo
                         // com.gmt2001.Console.err.println("unreconzied mode " + mode);
                     }
@@ -108,23 +94,22 @@ public class ModeParser implements CommandParser
             }
         }
 
-        if (userMode)
-        {
+        if (userMode) {
             return new ModeEvent(
-                    ModeEvent.ModeType.USER,
-                    event.getRawEventData(),
-                    event.getSession(),
-                    modeAdjustments,
-                    event.getSession().getConnectedHostName(),
-                    null);
+                       ModeEvent.ModeType.USER,
+                       event.getRawEventData(),
+                       event.getSession(),
+                       modeAdjustments,
+                       event.getSession().getConnectedHostName(),
+                       null);
         }
 
         return new ModeEvent(
-                ModeEvent.ModeType.CHANNEL,
-                event.getRawEventData(),
-                event.getSession(),
-                modeAdjustments,
-                event.numeric() == 324 ? "" : event.getNick(),
-                event.getSession().getChannel(event.numeric() == 324 ? event.arg(1) : event.arg(0)));
+                   ModeEvent.ModeType.CHANNEL,
+                   event.getRawEventData(),
+                   event.getSession(),
+                   modeAdjustments,
+                   event.numeric() == 324 ? "" : event.getNick(),
+                   event.getSession().getChannel(event.numeric() == 324 ? event.arg(1) : event.arg(0)));
     }
 }

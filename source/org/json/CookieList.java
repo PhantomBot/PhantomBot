@@ -31,8 +31,7 @@ import java.util.Iterator;
  * @author JSON.org
  * @version 2014-05-03
  */
-public class CookieList
-{
+public class CookieList {
 
     /**
      * Convert a cookie list into a JSONObject. A cookie list is a sequence of
@@ -48,12 +47,10 @@ public class CookieList
      * @return A JSONObject
      * @throws JSONException
      */
-    public static JSONObject toJSONObject(String string) throws JSONException
-    {
+    public static JSONObject toJSONObject(String string) throws JSONException {
         JSONObject jo = new JSONObject();
         JSONTokener x = new JSONTokener(string);
-        while (x.more())
-        {
+        while (x.more()) {
             String name = Cookie.unescape(x.nextTo('='));
             x.next('=');
             jo.put(name, Cookie.unescape(x.nextTo(';')));
@@ -72,19 +69,15 @@ public class CookieList
      * @return A cookie list string
      * @throws JSONException
      */
-    public static String toString(JSONObject jo) throws JSONException
-    {
+    public static String toString(JSONObject jo) throws JSONException {
         boolean b = false;
         Iterator<String> keys = jo.keys();
         String string;
         StringBuilder sb = new StringBuilder();
-        while (keys.hasNext())
-        {
+        while (keys.hasNext()) {
             string = keys.next();
-            if (!jo.isNull(string))
-            {
-                if (b)
-                {
+            if (!jo.isNull(string)) {
+                if (b) {
                     sb.append(';');
                 }
                 sb.append(Cookie.escape(string));

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,17 +16,14 @@
  */
 package me.mast3rplan.phantombot;
 
-public class RepoVersion
-{
+public class RepoVersion {
 
     private static final String repoVersion = "aba9bd9";
 
-    private RepoVersion()
-    {
+    private RepoVersion() {
     }
 
-    public static String getRepoVersion()
-    {
+    public static String getRepoVersion() {
         return repoVersion;
     }
 }

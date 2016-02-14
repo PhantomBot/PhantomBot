@@ -3,8 +3,7 @@ package jcurses.widgets;
 /**
  * Die Klasse enthält wichtige Konstanten
  */
-public interface WidgetsConstants
-{
+public interface WidgetsConstants {
 
     /**
      * Ausrichtung

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,8 +25,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptableObject;
 
-public class Script
-{
+public class Script {
 
     public static final NativeObject global = new NativeObject();
     @SuppressWarnings("rawtypes")
@@ -38,8 +37,7 @@ public class Script
     private boolean killed = false;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    public Script(File file)
-    {
+    public Script(File file) {
         this.fileWatcher = new ScriptFileWatcher(this);
         this.file = file;
 
@@ -49,10 +47,8 @@ public class Script
     }
 
     @SuppressWarnings("rawtypes")
-    public void reload() throws IOException
-    {
-        if (killed)
-        {
+    public void reload() throws IOException {
+        if (killed) {
             return;
         }
 
@@ -60,10 +56,8 @@ public class Script
         load();
     }
 
-    public void load() throws IOException
-    {
-        if (killed)
-        {
+    public void load() throws IOException {
+        if (killed) {
             return;
         }
 
@@ -78,44 +72,36 @@ public class Script
     }
 
     @SuppressWarnings("rawtypes")
-    public List<ScriptDestroyable> destroyables()
-    {
+    public List<ScriptDestroyable> destroyables() {
         return destroyables;
     }
 
     @SuppressWarnings("rawtypes")
-    public void doDestroyables()
-    {
-        for (ScriptDestroyable destroyable : destroyables)
-        {
+    public void doDestroyables() {
+        for (ScriptDestroyable destroyable : destroyables) {
             destroyable.destroy();
         }
 
         destroyables.clear();
     }
 
-    public File getFile()
-    {
+    public File getFile() {
         return file;
     }
 
-    public String getPath()
-    {
+    public String getPath() {
         return file.toPath().toString();
     }
 
-    public Context getContext()
-    {
+    public Context getContext() {
         return context;
     }
 
-    public boolean isKilled()
-    {
+    public boolean isKilled() {
         return killed;
     }
 
-    public void kill()
-    {
+    public void kill() {
         ObservingDebugger od = new ObservingDebugger();
         context.setDebugger(od, 0);
         context.setGeneratingDebug(true);

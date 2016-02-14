@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,97 +22,79 @@ import org.mozilla.javascript.debug.DebugFrame;
 import org.mozilla.javascript.debug.DebuggableScript;
 import org.mozilla.javascript.debug.Debugger;
 
-public class ObservingDebugger implements Debugger
-{
+public class ObservingDebugger implements Debugger {
 
     boolean isDisconnected = false;
 
     private DebugFrame debugFrame = null;
 
-    public boolean isDisconnected()
-    {
+    public boolean isDisconnected() {
         return isDisconnected;
     }
 
-    public void setDisconnected(boolean isDisconnected)
-    {
+    public void setDisconnected(boolean isDisconnected) {
         this.isDisconnected = isDisconnected;
-        if (debugFrame != null)
-        {
+        if (debugFrame != null) {
             ((ObservingDebugFrame) debugFrame).setDisconnected(isDisconnected);
         }
     }
 
-    public ObservingDebugger()
-    {
+    public ObservingDebugger() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     @Override
-    public DebugFrame getFrame(Context cx, DebuggableScript fnOrScript)
-    {
-        if (debugFrame == null)
-        {
+    public DebugFrame getFrame(Context cx, DebuggableScript fnOrScript) {
+        if (debugFrame == null) {
             debugFrame = new ObservingDebugFrame(isDisconnected);
         }
         return debugFrame;
     }
 
     @Override
-    public void handleCompilationDone(Context arg0, DebuggableScript arg1, String arg2)
-    {
+    public void handleCompilationDone(Context arg0, DebuggableScript arg1, String arg2) {
     }
 }
 
-class ObservingDebugFrame implements DebugFrame
-{
+class ObservingDebugFrame implements DebugFrame {
 
     boolean isDisconnected = false;
 
-    public boolean isDisconnected()
-    {
+    public boolean isDisconnected() {
         return isDisconnected;
     }
 
-    public void setDisconnected(boolean isDisconnected)
-    {
+    public void setDisconnected(boolean isDisconnected) {
         this.isDisconnected = isDisconnected;
     }
 
-    ObservingDebugFrame(boolean isDisconnected)
-    {
+    ObservingDebugFrame(boolean isDisconnected) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.isDisconnected = isDisconnected;
     }
 
     @Override
     public void onEnter(Context cx, Scriptable activation,
-            Scriptable thisObj, Object[] args)
-    {
+                        Scriptable thisObj, Object[] args) {
     }
 
     @Override
-    public void onLineChange(Context cx, int lineNumber)
-    {
-        if (isDisconnected)
-        {
+    public void onLineChange(Context cx, int lineNumber) {
+        if (isDisconnected) {
             throw new RuntimeException("Script Execution terminated");
         }
     }
 
     @Override
-    public void onExceptionThrown(Context cx, Throwable ex)
-    {
+    public void onExceptionThrown(Context cx, Throwable ex) {
     }
 
     @Override
     public void onExit(Context cx, boolean byThrow,
-            Object resultOrException)
-    {
+                       Object resultOrException) {
     }
 
     @Override
-    public void onDebuggerStatement(Context arg0)
-    {
+    public void onDebuggerStatement(Context arg0) {
     }
 }

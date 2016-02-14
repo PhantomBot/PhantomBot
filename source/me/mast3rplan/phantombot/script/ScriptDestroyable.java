@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,18 +16,15 @@
  */
 package me.mast3rplan.phantombot.script;
 
-public abstract class ScriptDestroyable<T>
-{
+public abstract class ScriptDestroyable<T> {
 
     private final T object;
 
-    protected ScriptDestroyable(T object)
-    {
+    protected ScriptDestroyable(T object) {
         this.object = object;
     }
 
-    public void destroy()
-    {
+    public void destroy() {
         this.destroy(object);
     }
 

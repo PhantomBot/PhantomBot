@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,34 +27,27 @@ import java.util.Map;
  * :sterling.freenode.net 332 scrip #test :Welcome to #test - This channel is
  * :sterling.freenode.net 333 scrip #test LuX 1159267246
  */
-public class TopicParser implements CommandParser
-{
+public class TopicParser implements CommandParser {
 
     private final Map<Channel, TopicEvent> topicMap = new HashMap<>();
 
     @Override
     @SuppressWarnings("element-type-mismatch")
-    public IRCEvent createEvent(IRCEvent event)
-    {
-        if (event.numeric() == 332)
-        {
+    public IRCEvent createEvent(IRCEvent event) {
+        if (event.numeric() == 332) {
             TopicEvent tEvent = new TopicEvent(
-                    event.getRawEventData(),
-                    event.getSession(),
-                    event.getSession().getChannel(event.arg(1)),
-                    event.arg(2));
-            if (topicMap.containsValue(tEvent.getChannel()))
-            {
+                event.getRawEventData(),
+                event.getSession(),
+                event.getSession().getChannel(event.arg(1)),
+                event.arg(2));
+            if (topicMap.containsValue(tEvent.getChannel())) {
                 topicMap.get(tEvent.getChannel()).appendToTopic(tEvent.getTopic());
-            } else
-            {
+            } else {
                 topicMap.put(tEvent.getChannel(), tEvent);
             }
-        } else
-        {
+        } else {
             Channel chan = event.getSession().getChannel(event.arg(1));
-            if (topicMap.containsKey(chan))
-            {
+            if (topicMap.containsKey(chan)) {
                 TopicEvent tEvent = topicMap.get(chan);
                 topicMap.remove(chan);
                 tEvent.setSetBy(event.arg(2));
