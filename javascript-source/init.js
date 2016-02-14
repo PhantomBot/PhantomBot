@@ -258,6 +258,8 @@
     // Lookup the JS file that contains the command, this removes the need to cycle through all files.
     if (hook == 'command') {
       var i = getHookIndex(getCommandScript(event.getCommand()), hook);
+      if (i == -1)  // Do not handle init.js commands here.
+        return;
       if (isModuleEnabled(hooks[i].scriptFile) || alwaysRun) {
         try {
           hooks[i].handler(event);
