@@ -5,9 +5,9 @@
  */
 
 (function () {
-  var noticeReqMessages = (parseInt($.inidb.exists('noticeSettings', 'reqmessages')) ? parseInt($.inidb.get('noticeSettings', 'reqmessages')) : 25),
-      noticeInterval = (parseInt($.inidb.exists('noticeSettings', 'interval')) ? parseInt($.inidb.get('noticeSettings', 'interval')) : 10),
-      noticeToggle = ($.inidb.exists('noticeSettings', 'noticetoggle') ? $.inidb.get('noticeSettings', 'noticetoggle') : false),
+  var noticeReqMessages = ($.inidb.exists('noticeSettings', 'reqmessages') ? parseInt($.inidb.get('noticeSettings', 'reqmessages')) : 25),
+      noticeInterval = ($.inidb.exists('noticeSettings', 'interval') ? parseInt($.inidb.get('noticeSettings', 'interval')) : 10),
+      noticeToggle = ($.inidb.exists('noticeSettings', 'noticetoggle') ? $.getIniDbBoolean('noticeSettings', 'noticetoggle') : false),
       numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
       messageCount = 0;
 
@@ -162,7 +162,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-interval-404'));
                     return;
                 } else {
-                    $.inidb.set('noticeSettings', 'interval', parseInt(args[1]));
+                    $.inidb.set('noticeSettings', 'interval', args[1]);
                     noticeInterval = parseInt(args[1]);
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-inteval-success'));
                     return;
@@ -180,7 +180,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-404'));
                     return;
                 } else {
-                    $.inidb.set('noticeSettings', 'reqmessages', parseInt(args[1]));
+                    $.inidb.set('noticeSettings', 'reqmessages', args[1]);
                     noticeReqMessages = parseInt(args[1]);
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-success'));
                     return;
@@ -201,11 +201,11 @@
             if (action.equalsIgnoreCase('toggle')) {
                 if (noticeToggle) {
                     noticeToggle = false;
-                    $.inidb.set('noticeSettings', 'noticetoggle', noticeToggle);
+                    $.inidb.set('noticeSettings', 'noticetoggle', 'false');
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-disabled'));
                 } else {
                     noticeToggle = true;
-                    $.inidb.set('noticeSettings', 'noticetoggle', noticeToggle);
+                    $.inidb.set('noticeSettings', 'noticetoggle', 'true');
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-enabled'));
                 }
             }
