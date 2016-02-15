@@ -6,11 +6,11 @@ import java.util.Vector;
  * This class is the basic class for listener manager. Listener manager are used
  * in widgets classes to manage listeners on widgets's events. This can be also
  * implemented without an listener manager, but these make it easier.
- * 
+ *
 * @author Alexei Chmelev
  */
-public abstract class ListenerManager
-{
+@SuppressWarnings("unchecked")
+public abstract class ListenerManager {
 
     @SuppressWarnings("UseOfObsoleteCollectionType")
     private final Vector _listeners = new Vector();
@@ -21,8 +21,7 @@ public abstract class ListenerManager
      * @param listener The listener to be added. The listener must be of right
      * type for listened events.
      */
-    public void addListener(Object listener)
-    {
+    public void addListener(Object listener) {
         verifyListener(listener);
         _listeners.add(listener);
     }
@@ -32,8 +31,7 @@ public abstract class ListenerManager
      *
      * @param listener The listener to be removed from the list.
      */
-    public void removeListener(Object listener)
-    {
+    public void removeListener(Object listener) {
         _listeners.remove(listener);
     }
 
@@ -43,11 +41,9 @@ public abstract class ListenerManager
      *
      * @param event event to be handled
      */
-    public void handleEvent(Event event)
-    {
+    public void handleEvent(Event event) {
         verifyEvent(event);
-        for (int i = 0; i < _listeners.size(); i++)
-        {
+        for (int i = 0; i < _listeners.size(); i++) {
             doHandleEvent(event, _listeners.elementAt(i));
         }
     }
@@ -84,8 +80,7 @@ public abstract class ListenerManager
      *
      * @return number of registered listeners
      */
-    public int countListeners()
-    {
+    public int countListeners() {
         return _listeners.size();
     }
 

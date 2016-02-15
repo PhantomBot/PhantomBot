@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,23 +19,19 @@ package me.mast3rplan.phantombot.event.twitch;
 import me.mast3rplan.phantombot.event.Event;
 import me.mast3rplan.phantombot.jerklib.Channel;
 
-public class TwitchEvent extends Event
-{
+public class TwitchEvent extends Event {
 
     private final Channel channel;
 
-    public TwitchEvent()
-    {
+    public TwitchEvent() {
         this.channel = null;
     }
 
-    public TwitchEvent(Channel channel)
-    {
+    public TwitchEvent(Channel channel) {
         this.channel = channel;
     }
 
-    public Channel getChannel()
-    {
+    public Channel getChannel() {
         return this.channel;
     }
 }

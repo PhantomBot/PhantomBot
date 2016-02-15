@@ -7,11 +7,9 @@ import jcurses.widgets.Widget;
  * example is the textfield widget. Such events are generated, if an user has
  * modified the value assosiated with the widget.
  */
-public class ValueChangedEvent extends Event
-{
+public class ValueChangedEvent extends Event {
 
-    public ValueChangedEvent(Widget source)
-    {
+    public ValueChangedEvent(Widget source) {
         super(source);
     }
 

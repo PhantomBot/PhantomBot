@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,24 +29,20 @@ import org.apache.commons.io.IOUtils;
  *
  * @author gmt2001
  */
-public class HttpRequest
-{
+public class HttpRequest {
 
     private static final int timeout = 5 * 1000;
 
-    public static enum RequestType
-    {
+    public static enum RequestType {
 
         GET, POST, PUT, DELETE
     }
 
-    private HttpRequest()
-    {
+    private HttpRequest() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers)
-    {
+    public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         HttpResponse r = new HttpResponse();
@@ -56,14 +52,12 @@ public class HttpRequest
         r.post = post;
         r.headers = headers;
 
-        try
-        {
+        try {
             URL u = new URL(url);
 
             HttpURLConnection h = (HttpURLConnection) u.openConnection();
-            
-            for (Entry<String, String> e : headers.entrySet())
-            {
+
+            for (Entry<String, String> e : headers.entrySet()) {
                 h.addRequestProperty(e.getKey(), e.getValue());
             }
 
@@ -72,34 +66,29 @@ public class HttpRequest
             h.setDefaultUseCaches(false);
             h.setConnectTimeout(timeout);
             h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-            if (!post.isEmpty())
-            {
+            if (!post.isEmpty()) {
                 h.setDoOutput(true);
             }
 
             h.connect();
 
-            if (!post.isEmpty())
-            {
+            if (!post.isEmpty()) {
                 BufferedOutputStream stream = new BufferedOutputStream(h.getOutputStream());
                 stream.write(post.getBytes());
                 stream.flush();
                 stream.close();
             }
 
-            if (h.getResponseCode() < 400)
-            {
+            if (h.getResponseCode() < 400) {
                 r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
                 r.httpCode = h.getResponseCode();
                 r.success = true;
-            } else
-            {
+            } else {
                 r.content = IOUtils.toString(new BufferedInputStream(h.getErrorStream()), h.getContentEncoding());
                 r.httpCode = h.getResponseCode();
                 r.success = false;
             }
-        } catch (IOException ex)
-        {
+        } catch (IOException ex) {
             r.success = false;
             r.httpCode = 0;
             r.exception = ex.getMessage();

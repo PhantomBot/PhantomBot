@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,15 +19,13 @@ package me.mast3rplan.phantombot.jerklib.parsers;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.NumericErrorEvent;
 
-public class NumericErrorParser implements CommandParser
-{
+public class NumericErrorParser implements CommandParser {
 
     @Override
-    public IRCEvent createEvent(IRCEvent event)
-    {
+    public IRCEvent createEvent(IRCEvent event) {
         return new NumericErrorEvent(
-                event.arg(0),
-                event.getRawEventData(),
-                event.getSession());
+                   event.arg(0),
+                   event.getRawEventData(),
+                   event.getSession());
     }
 }

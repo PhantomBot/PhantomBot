@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,14 +23,12 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class IRCEvent extends EventToken
-{
+public class IRCEvent extends EventToken {
 
     /**
      * Type enum is used to determine type. It is returned from getType()
      */
-    public enum Type
-    {
+    public enum Type {
 
         /**
          * Topic event - channel topic event
@@ -105,8 +103,7 @@ public class IRCEvent extends EventToken
     private final String data;
     private final Session session;
 
-    public IRCEvent(String data, Session session, Type type)
-    {
+    public IRCEvent(String data, Session session, Type type) {
         super(data);
         this.type = type;
         this.session = session;
@@ -120,8 +117,7 @@ public class IRCEvent extends EventToken
      *
      * @return Type of event
      */
-    public Type getType()
-    {
+    public Type getType() {
         return type;
     }
 
@@ -131,8 +127,7 @@ public class IRCEvent extends EventToken
      * @return Raw IRC event text.
      */
     @Override
-    public String getRawEventData()
-    {
+    public String getRawEventData() {
         return data;
     }
 
@@ -141,8 +136,7 @@ public class IRCEvent extends EventToken
      *
      * @return Session
      */
-    public Session getSession()
-    {
+    public Session getSession() {
         return session;
     }
 
@@ -151,8 +145,7 @@ public class IRCEvent extends EventToken
      * (non-Javadoc) @see java.lang.Object#toString()
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return data;
     }
 }

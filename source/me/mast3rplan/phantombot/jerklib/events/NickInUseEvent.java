@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,13 +24,11 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class NickInUseEvent extends IRCEvent
-{
+public class NickInUseEvent extends IRCEvent {
 
     private final String inUseNick;
 
-    public NickInUseEvent(String inUseNick, String rawEventData, Session session)
-    {
+    public NickInUseEvent(String inUseNick, String rawEventData, Session session) {
         super(rawEventData, session, Type.NICK_IN_USE);
         this.inUseNick = inUseNick;
     }
@@ -40,8 +38,7 @@ public class NickInUseEvent extends IRCEvent
      *
      * @return nick that is in use.
      */
-    public String getInUseNick()
-    {
+    public String getInUseNick() {
         return inUseNick;
     }
 }

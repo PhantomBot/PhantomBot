@@ -8,8 +8,7 @@ package jcurses.widgets;
  * @author <a href="mailto:lenbok@myrealbox.com">Len Trigg</a>
  * @version $Revision: 1.1 $
  */
-public class WidgetUtilities
-{
+public class WidgetUtilities {
 
     /**
      * Method to be used by external threads wishing to perform safe calls to
@@ -19,8 +18,7 @@ public class WidgetUtilities
      * @param r a <code>Runnable</code> containing the code to be executed in a
      * thread-safe manner.
      */
-    public static void invokeAndWait(Runnable r)
-    {
+    public static void invokeAndWait(Runnable r) {
         WindowManager.invokeAndWait(r);
     }
 }

@@ -15,8 +15,7 @@ import java.io.FileFilter;
 /**
  * This class implements a file select dialog
  */
-public class FileDialog extends Dialog implements WidgetsConstants, ItemListener, ActionListener
-{
+public class FileDialog extends Dialog implements WidgetsConstants, ItemListener, ActionListener {
 
     private String _directory = null;
     private String _file = null;
@@ -50,8 +49,7 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      * @param title dialog's title
      */
     @SuppressWarnings("LeakingThisInConstructor")
-    public FileDialog(int x, int y, int width, int height, String title)
-    {
+    public FileDialog(int x, int y, int width, int height, String title) {
         super(x, y, width, height, true, title);
 
         _directories = new List();
@@ -102,21 +100,19 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      *
      * @param title dialog's title
      */
-    public FileDialog(String title)
-    {
+    public FileDialog(String title) {
         this(Toolkit.getScreenWidth() / 4,
-                Toolkit.getScreenHeight() / 4,
-                Toolkit.getScreenWidth() / 2,
-                Toolkit.getScreenHeight() / 2,
-                title);
+             Toolkit.getScreenHeight() / 4,
+             Toolkit.getScreenWidth() / 2,
+             Toolkit.getScreenHeight() / 2,
+             title);
     }
 
     /**
      * The constructor
      *
      */
-    public FileDialog()
-    {
+    public FileDialog() {
         this(null);
     }
 
@@ -125,8 +121,7 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      *
      * @param directory current directory
      */
-    public void setDirectory(String directory)
-    {
+    public void setDirectory(String directory) {
         _directory = directory;
     }
 
@@ -134,8 +129,7 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      * @return current directory
      *
      */
-    public String getDirectory()
-    {
+    public String getDirectory() {
         return _directory;
     }
 
@@ -145,8 +139,7 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      *
      * @param message i/o error message's text
      */
-    public void setIOErrorMessageText(String message)
-    {
+    public void setIOErrorMessageText(String message) {
         _ioErrorText = message;
     }
 
@@ -156,8 +149,7 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      *
      * @param message i/o error message's text
      */
-    public void setIOErrorMessageTitle(String message)
-    {
+    public void setIOErrorMessageTitle(String message) {
         _ioErrorTitle = message;
     }
 
@@ -167,8 +159,7 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      * <code>setIOErrorMessageTitle</code> and
      * <code>setIOErrorMessageText</code>. can be modified in derived classes.
      */
-    protected void directoryReadErrorMessage()
-    {
+    protected void directoryReadErrorMessage() {
         new Message(_ioErrorTitle, _ioErrorText, "OK").show();
     }
 
@@ -178,16 +169,14 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      * @param file default selected file, if null, no file is selected per
      * default.
      */
-    public void setDefaultFile(String file)
-    {
+    public void setDefaultFile(String file) {
         _file = file;
     }
 
     /**
      * @return default selected file
      */
-    public String getDefaultFile()
-    {
+    public String getDefaultFile() {
         return _file;
     }
 
@@ -198,10 +187,8 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      *
      * @return selected file
      */
-    public File getChoosedFile()
-    {
-        if (_result == null)
-        {
+    public File getChoosedFile() {
+        if (_result == null) {
             return null;
         }
         return new File(_result);
@@ -218,8 +205,7 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      *
      * @param filterString filter string
      */
-    public void setFilterString(String filterString)
-    {
+    public void setFilterString(String filterString) {
         _filterString = filterString;
     }
 
@@ -227,180 +213,143 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
      * @return filter string
      *
      */
-    public String getFilterString()
-    {
+    public String getFilterString() {
         return _filterString;
     }
 
-    public void setFilterFactory(JCursesFileFilterFactory filterFactory)
-    {
+    public void setFilterFactory(JCursesFileFilterFactory filterFactory) {
         _filterFactory = filterFactory;
     }
 
-    private String getCurrentDirectory()
-    {
-        if (_directory == null)
-        {
+    private String getCurrentDirectory() {
+        if (_directory == null) {
             _directory = System.getProperty("user.dir");
         }
         File directoryFile = new File(_directory);
         String directoryPath = directoryFile.getAbsolutePath().trim();
-        if (!directoryPath.endsWith(File.separator))
-        {
+        if (!directoryPath.endsWith(File.separator)) {
             directoryPath = directoryPath + File.separator;
         }
 
         return directoryPath;
     }
 
-    private String getRelativePath(File file, String directoryPath)
-    {
+    private String getRelativePath(File file, String directoryPath) {
         String path = file.getAbsolutePath().trim();
-        if (path.startsWith(directoryPath))
-        {
+        if (path.startsWith(directoryPath)) {
             path = path.substring(directoryPath.length(), path.length());
         }
 
-        if (path.endsWith(File.separator))
-        {
+        if (path.endsWith(File.separator)) {
             path = path.substring(0, (path.length() - 1));
         }
 
         return path;
     }
 
-    private void saveResult()
-    {
+    private void saveResult() {
         _result = _fileField.getText();
     }
 
-    private String getCurrentFileContent()
-    {
+    private String getCurrentFileContent() {
         String content = (_file != null) ? _file : getCurrentDirectory();
 
         return content;
     }
 
-    private void updateFileField()
-    {
+    private void updateFileField() {
         _fileField.setText(getCurrentFileContent());
         _fileField.paint();
     }
 
-    private void updateFilterField()
-    {
+    private void updateFilterField() {
         _filterField.setText(_filterString);
         _filterField.paint();
     }
 
-    private void updateListWidgets()
-    {
+    private void updateListWidgets() {
         updateListWidgets(false);
     }
 
-    private void updateListWidgets(boolean roots)
-    {
+    private void updateListWidgets(boolean roots) {
         _directories.clear();
         _files.clear();
-        if (!roots)
-        {
+        if (!roots) {
             fillListWidgets(getCurrentDirectory());
-        } else
-        {
+        } else {
             fillDirectoriesWidgetWithRoots();
         }
         _directories.paint();
         _files.paint();
     }
 
-    private void fillDirectoriesWidgetWithRoots()
-    {
+    private void fillDirectoriesWidgetWithRoots() {
         File[] roots = File.listRoots();
-        for (File root : roots)
-        {
+        for (File root : roots) {
             _directories.add(root.getAbsolutePath());
         }
     }
 
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
-    private void fillListWidgets(String directory)
-    {
+    private void fillListWidgets(String directory) {
 
         File directoryFile = new File(directory);
 
-        if (directoryFile.isDirectory())
-        {
+        if (directoryFile.isDirectory()) {
             File[] files = directoryFile.listFiles(new FileDialogFileFilter(_filterFactory.generateFileFilter(_filterString)));
-            if ((directoryFile.getParentFile() != null) || (isWindows()))
-            {
+            if ((directoryFile.getParentFile() != null) || (isWindows())) {
                 _directories.add("..");
             }
-            for (File file : files)
-            {
-                if (file.isDirectory())
-                {
+            for (File file : files) {
+                if (file.isDirectory()) {
                     _directories.add(getRelativePath(file, directory));
-                } else
-                {
+                } else {
                     _files.add(getRelativePath(file, directory));
                 }
             }
-        } else
-        {
+        } else {
             //Kann eigentlich nicht sein
             new Message("Error", "An error is occured trying to read the directory\n " + directory, "OK");
         }
     }
 
-    private boolean isWindows()
-    {
+    private boolean isWindows() {
         return (File.separatorChar == '\\');
     }
 
     @Override
-    public void stateChanged(ItemEvent event)
-    {
-        if (event.getSource() == _directories)
-        {
+    public void stateChanged(ItemEvent event) {
+        if (event.getSource() == _directories) {
             _file = null;
             String item = ((String) event.getItem()).trim();
             String backupDirectory = _directory;
-            if (item.equals(".."))
-            {
+            if (item.equals("..")) {
                 File directoryFile = new File(_directory);
-                if (directoryFile.getParentFile() == null)
-                {
+                if (directoryFile.getParentFile() == null) {
                     //This can occur only by Win32
                     _inRoots = true;
                     updateListWidgets(true);
                     return;
-                } else
-                {
+                } else {
                     _directory = new File(_directory).getParentFile().getAbsolutePath();
                 }
-            } else
-            {
-                if (!_inRoots)
-                {
+            } else {
+                if (!_inRoots) {
                     _directory = getCurrentDirectory() + event.getItem();
-                } else
-                {
+                } else {
                     _directory = (String) event.getItem();
                 }
             }
-            if (!checkDirectory(_directory))
-            {
+            if (!checkDirectory(_directory)) {
                 directoryReadErrorMessage();
                 _directory = backupDirectory;
                 return;
-            } else
-            {
+            } else {
                 _inRoots = false;
             }
             updateListWidgets();
             updateFileField();
-        } else if (event.getSource() == _files)
-        {
+        } else if (event.getSource() == _files) {
             String item = ((String) event.getItem()).trim();
             _file = getCurrentDirectory() + event.getItem();
             updateFileField();
@@ -408,21 +357,17 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
 
     }
 
-    private boolean checkDirectory(String directory)
-    {
+    private boolean checkDirectory(String directory) {
         File file = new File(directory);
         return (file.exists() && file.isDirectory() && file.canRead());
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        if (e.getSource() == _okButton)
-        {
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == _okButton) {
             saveResult();
             close();
-        } else
-        {
+        } else {
             close();
         }
     }
@@ -430,16 +375,12 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
     private static InputChar __returnChar = new InputChar('\n');
 
     @Override
-    protected void onChar(InputChar inp)
-    {
-        if (inp.equals(__returnChar))
-        {
-            if (_filterField.hasFocus())
-            {
+    protected void onChar(InputChar inp) {
+        if (inp.equals(__returnChar)) {
+            if (_filterField.hasFocus()) {
                 setFilterString(_filterField.getText());
                 updateListWidgets();
-            } else
-            {
+            } else {
                 saveResult();
                 close();
             }
@@ -448,38 +389,32 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
 
 }
 
-class FileDialogFileFilter implements FileFilter
-{
+class FileDialogFileFilter implements FileFilter {
 
     FileFilter _filter = null;
 
-    public FileDialogFileFilter(FileFilter filter)
-    {
+    public FileDialogFileFilter(FileFilter filter) {
         _filter = filter;
     }
 
     @Override
-    public boolean accept(File file)
-    {
+    public boolean accept(File file) {
         return (file.isDirectory()) || (_filter.accept(file));
     }
 
 }
 
-class FilterTextField extends TextField
-{
+class FilterTextField extends TextField {
 
     @SuppressWarnings("FieldNameHidesFieldInSuperclass")
     FileDialog _parent = null;
 
-    public FilterTextField(FileDialog parent)
-    {
+    public FilterTextField(FileDialog parent) {
         _parent = parent;
     }
 
     @Override
-    public void unfocus()
-    {
+    public void unfocus() {
         setText(_parent.getFilterString());
         super.unfocus();
     }

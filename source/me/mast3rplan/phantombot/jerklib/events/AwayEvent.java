@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,8 +28,7 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author <a href="mailto:robby.oconnor@gmail.com">Robert O'Connor</a>
  */
-public class AwayEvent extends IRCEvent
-{
+public class AwayEvent extends IRCEvent {
 
     private final boolean isAway, isYou;
     private final String awayMessage, nick;
@@ -41,8 +40,7 @@ public class AwayEvent extends IRCEvent
      * the lib returns from an away state.<br> USER_IS_AWAY is when some other
      * user goes away<br>
      */
-    public enum EventType
-    {
+    public enum EventType {
 
         WENT_AWAY,
         RETURNED_FROM_AWAY,
@@ -50,14 +48,13 @@ public class AwayEvent extends IRCEvent
     }
 
     public AwayEvent(
-            String awayMessage,
-            EventType eventType,
-            boolean away,
-            boolean you,
-            String nick,
-            String rawEventData,
-            Session session)
-    {
+        String awayMessage,
+        EventType eventType,
+        boolean away,
+        boolean you,
+        String nick,
+        String rawEventData,
+        Session session) {
         super(rawEventData, session, Type.AWAY_EVENT);
         this.awayMessage = awayMessage;
         this.eventType = eventType;
@@ -72,8 +69,7 @@ public class AwayEvent extends IRCEvent
      *
      * @return the away message
      */
-    public String getAwayMessage()
-    {
+    public String getAwayMessage() {
         return awayMessage;
     }
 
@@ -82,8 +78,7 @@ public class AwayEvent extends IRCEvent
      *
      * @return if we're away or not.
      */
-    public boolean isAway()
-    {
+    public boolean isAway() {
         return isAway;
     }
 
@@ -92,8 +87,7 @@ public class AwayEvent extends IRCEvent
      *
      * @return if it was us or not.
      */
-    public boolean isYou()
-    {
+    public boolean isYou() {
         return isYou;
     }
 
@@ -103,8 +97,7 @@ public class AwayEvent extends IRCEvent
      * @return the nick of the user who caused the event to fire.
      */
     @Override
-    public String getNick()
-    {
+    public String getNick() {
         return nick;
     }
 
@@ -114,8 +107,7 @@ public class AwayEvent extends IRCEvent
      * @return the type of event that was fired.
      * @see me.mast3rplan.phantombot.jerklib.events.AwayEvent.EventType
      */
-    public EventType getEventType()
-    {
+    public EventType getEventType() {
         return eventType;
     }
 }

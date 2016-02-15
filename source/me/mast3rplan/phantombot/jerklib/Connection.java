@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,8 +36,7 @@ import me.mast3rplan.phantombot.jerklib.listeners.WriteRequestListener;
  *
  * @author mohadib
  */
-class Connection
-{
+class Connection {
 
     /*
      * ConnectionManager for this Connection
@@ -84,8 +83,7 @@ class Connection
      * @param socChannel - socket channel to read from
      * @param session - Session this Connection belongs to
      */
-    Connection(ConnectionManager manager, SocketChannel socChannel, Session session)
-    {
+    Connection(ConnectionManager manager, SocketChannel socChannel, Session session) {
         this.manager = manager;
         this.socChannel = socChannel;
         this.session = session;
@@ -98,8 +96,7 @@ class Connection
      *
      * @return the Profile
      */
-    Profile getProfile()
-    {
+    Profile getProfile() {
         return session.getRequestedConnection().getProfile();
     }
 
@@ -108,8 +105,7 @@ class Connection
      *
      * @param name
      */
-    void setHostName(String name)
-    {
+    void setHostName(String name) {
         actualHostName = name;
     }
 
@@ -118,8 +114,7 @@ class Connection
      *
      * @return hostname
      */
-    String getHostName()
-    {
+    String getHostName() {
         return actualHostName;
     }
 
@@ -128,8 +123,7 @@ class Connection
      *
      * @param request
      */
-    void addWriteRequest(WriteRequest request)
-    {
+    void addWriteRequest(WriteRequest request) {
         writeRequests.add(request);
     }
 
@@ -139,8 +133,7 @@ class Connection
      * @return true if fincon is successfull
      * @throws java.io.IOException
      */
-    boolean finishConnect() throws IOException
-    {
+    boolean finishConnect() throws IOException {
         return socChannel.finishConnect();
     }
 
@@ -150,11 +143,9 @@ class Connection
      *
      * @return bytes read
      */
-    int read()
-    {
+    int read() {
 
-        if (!socChannel.isConnected())
-        {
+        if (!socChannel.isConnected()) {
             return -1;
         }
 
@@ -162,22 +153,18 @@ class Connection
 
         int numRead = 0;
 
-        try
-        {
+        try {
             numRead = socChannel.read(readBuffer);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             com.gmt2001.Console.err.printStackTrace(e);
             session.disconnected(e);
         }
 
-        if (numRead == -1)
-        {
+        if (numRead == -1) {
             session.disconnected(new Exception("Num read -1"));
         }
 
-        if (session.getState() == State.DISCONNECTED || numRead <= 0)
-        {
+        if (session.getState() == State.DISCONNECTED || numRead <= 0) {
             return 0;
         }
 
@@ -186,8 +173,7 @@ class Connection
         String tmpStr = new String(readBuffer.array(), 0, numRead);
 
         // read did not contain a \r\n
-        if (!tmpStr.contains("\r\n"))
-        {
+        if (!tmpStr.contains("\r\n")) {
             // append whole thing to buffer and set fragment flag
             stringBuff.append(tmpStr);
             gotFragment = true;
@@ -196,8 +182,7 @@ class Connection
         }
 
         // this read had a \r\n in it
-        if (gotFragment)
-        {
+        if (gotFragment) {
             // prepend fragment to front of current message
             tmpStr = stringBuff.toString() + tmpStr;
             stringBuff.delete(0, stringBuff.length());
@@ -206,22 +191,19 @@ class Connection
 
         String[] strSplit = tmpStr.split("\r\n");
 
-        for (int i = 0; i < (strSplit.length - 1); i++)
-        {
+        for (int i = 0; i < (strSplit.length - 1); i++) {
             manager.addToEventQueue(new IRCEvent(strSplit[i], session, Type.DEFAULT));
         }
 
         String last = strSplit[strSplit.length - 1];
 
-        if (!tmpStr.endsWith("\r\n"))
-        {
+        if (!tmpStr.endsWith("\r\n")) {
             // since string did not end with \r\n we need to
             // append the last element in strSplit to a stringbuffer
             // for next read and set flag to indicate we have a fragment waiting
             stringBuff.append(last);
             gotFragment = true;
-        } else
-        {
+        } else {
             manager.addToEventQueue(new IRCEvent(last, session, Type.DEFAULT));
         }
 
@@ -244,29 +226,23 @@ class Connection
      *
      */
 
-    int doWrites()
-    {
-        if (writeRequests.isEmpty())
-        {
+    int doWrites() {
+        if (writeRequests.isEmpty()) {
             return 0;
         }
 
         WriteRequest req;
-        if (nextWrite > System.currentTimeMillis())
-        {
+        if (nextWrite > System.currentTimeMillis()) {
             return 0;
         }
-        if (System.currentTimeMillis() - lastWrite < 3000)
-        {
-            if (bursts == maxBurst)
-            {
+        if (System.currentTimeMillis() - lastWrite < 3000) {
+            if (bursts == maxBurst) {
                 nextWrite = System.currentTimeMillis() + 8000;
                 bursts = 0;
                 return 0;
             }
             bursts++;
-        } else
-        {
+        } else {
             //bursts = Math.max(bursts-- , 0);
             bursts = 0;
             lastWrite = System.currentTimeMillis();
@@ -275,31 +251,24 @@ class Connection
         req = writeRequests.remove(0);
 
         String data;
-        if (req.getType() == WriteRequest.Type.CHANNEL_MSG)
-        {
+        if (req.getType() == WriteRequest.Type.CHANNEL_MSG) {
             data = "PRIVMSG " + req.getChannel().getName() + " :" + req.getMessage() + "\r\n";
-        } else if (req.getType() == WriteRequest.Type.PRIVATE_MSG)
-        {
-            if (req.getMessage().length() > 255)
-            {
+        } else if (req.getType() == WriteRequest.Type.PRIVATE_MSG) {
+            if (req.getMessage().length() > 255) {
                 writeRequests.add(0, new WriteRequest(req.getMessage().substring(100), req.getSession(), req.getNick()));
                 data = "PRIVMSG " + req.getNick() + " :" + req.getMessage().substring(0, 100) + "\r\n";
-            } else
-            {
+            } else {
                 data = "PRIVMSG " + req.getNick() + " :" + req.getMessage() + "\r\n";
             }
-        } else
-        {
+        } else {
             data = req.getMessage();
-            if (!data.endsWith("\r\n"))
-            {
+            if (!data.endsWith("\r\n")) {
                 data += "\r\n";
             }
         }
 
         int amount = 0;
-        try
-        {
+        try {
             Charset ch = Charset.forName("utf-8");
             CharsetEncoder cr = ch.newEncoder();
             ByteBuffer bf = cr.encode(CharBuffer.wrap(data));
@@ -309,14 +278,12 @@ class Connection
             buff.flip();
 
             amount = socChannel.write(buff);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             com.gmt2001.Console.err.printStackTrace(e);
             session.disconnected(e);
         }
 
-        if (session.getState() == State.DISCONNECTED)
-        {
+        if (session.getState() == State.DISCONNECTED) {
             return amount;
         }
 
@@ -356,8 +323,7 @@ class Connection
     /**
      * Send a ping
      */
-    void ping()
-    {
+    void ping() {
         writeRequests.add(new WriteRequest("PING " + actualHostName + "\r\n", session));
         session.pingSent();
     }
@@ -367,8 +333,7 @@ class Connection
      *
      * @param event , the Ping event
      */
-    void pong(IRCEvent event)
-    {
+    void pong(IRCEvent event) {
         session.gotResponse();
         String data = event.getRawEventData().substring(event.getRawEventData().lastIndexOf(":") + 1);
         writeRequests.add(new WriteRequest("PONG " + data + "\r\n", session));
@@ -377,8 +342,7 @@ class Connection
     /**
      * Alert connection a pong was received
      */
-    void gotPong()
-    {
+    void gotPong() {
         session.gotResponse();
     }
 
@@ -387,12 +351,9 @@ class Connection
      *
      * @param quitMessage
      */
-    void quit(String quitMessage)
-    {
-        try
-        {
-            if (quitMessage == null)
-            {
+    void quit(String quitMessage) {
+        try {
+            if (quitMessage == null) {
                 quitMessage = "";
             }
             WriteRequest request = new WriteRequest("QUIT :" + quitMessage + "\r\n", session);
@@ -400,8 +361,7 @@ class Connection
             // clear out write queue
             doWrites();
             socChannel.close();
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
@@ -411,10 +371,8 @@ class Connection
      *
      * @param request
      */
-    void fireWriteEvent(WriteRequest request)
-    {
-        for (WriteRequestListener listener : manager.getWriteListeners())
-        {
+    void fireWriteEvent(WriteRequest request) {
+        for (WriteRequestListener listener : manager.getWriteListeners()) {
             listener.receiveEvent(request);
         }
     }

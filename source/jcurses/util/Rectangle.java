@@ -5,8 +5,7 @@ package jcurses.util;
  * needed, because <code>java.awt.rectangle</code> works with double's, this is
  * by a text based terminal senseless.
  */
-public class Rectangle
-{
+public class Rectangle {
 
     int _x = 0;
     int _y = 0;
@@ -21,8 +20,7 @@ public class Rectangle
      * @param width the width of the rectangle
      * @param height the height of the rectangle
      */
-    public Rectangle(int x, int y, int width, int height)
-    {
+    public Rectangle(int x, int y, int width, int height) {
         _x = x;
         _y = y;
         _width = width;
@@ -36,8 +34,7 @@ public class Rectangle
      * @param width the width of the rectangle
      * @param height the height of the rectangle
      */
-    public Rectangle(int width, int height)
-    {
+    public Rectangle(int width, int height) {
         _width = width;
         _height = height;
     }
@@ -45,32 +42,28 @@ public class Rectangle
     /**
      * @return the x coordinate of the top left corner
      */
-    public int getX()
-    {
+    public int getX() {
         return _x;
     }
 
     /**
      * @return the y coordinate of the top left corner
      */
-    public int getY()
-    {
+    public int getY() {
         return _y;
     }
 
     /**
      * @return the width of the rectangle
      */
-    public int getWidth()
-    {
+    public int getWidth() {
         return _width;
     }
 
     /**
      * @return the height of the rectangle
      */
-    public int getHeight()
-    {
+    public int getHeight() {
         return _height;
     }
 
@@ -79,8 +72,7 @@ public class Rectangle
      *
      * @param x the x coordinate of the top left corner to set
      */
-    public void setX(int x)
-    {
+    public void setX(int x) {
         _x = x;
     }
 
@@ -89,8 +81,7 @@ public class Rectangle
      *
      * @param y the x coordinate of the top left corner to set
      */
-    public void setY(int y)
-    {
+    public void setY(int y) {
         _y = y;
     }
 
@@ -99,8 +90,7 @@ public class Rectangle
      *
      * @param width the width of the rectangle to set
      */
-    public void setWidth(int width)
-    {
+    public void setWidth(int width) {
         _width = width;
     }
 
@@ -109,8 +99,7 @@ public class Rectangle
      *
      * @param height the height of the rectangle to set
      */
-    public void setHeight(int height)
-    {
+    public void setHeight(int height) {
         _height = height;
     }
 
@@ -118,8 +107,7 @@ public class Rectangle
      * @return <code>true</code> if the rectangle is empty in other case
      * <code>false</code>
      */
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return (_width <= 0) || (_height <= 0);
     }
 
@@ -134,12 +122,10 @@ public class Rectangle
      * @return <code>true</code> if the parameter rectangle is withhin this
      * rectangle in other case <code>false</code>
      */
-    public boolean contains(int X, int Y, int W, int H)
-    {
+    public boolean contains(int X, int Y, int W, int H) {
         int width = _width;
         int height = _height;
-        if (width <= 0 || height <= 0 || W <= 0 || H <= 0)
-        {
+        if (width <= 0 || height <= 0 || W <= 0 || H <= 0) {
             return false;
         }
         int x = _x;
@@ -159,8 +145,7 @@ public class Rectangle
      * @return <code>true</code> if the parameter rectangle is withhin this
      * rectangle in other case <code>false</code>
      */
-    public boolean contains(Rectangle rect)
-    {
+    public boolean contains(Rectangle rect) {
         return contains(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
@@ -172,26 +157,21 @@ public class Rectangle
      *
      * @return the intersection rectangle
      */
-    public Rectangle intersection(Rectangle r)
-    {
-        if (isEmpty())
-        {
+    public Rectangle intersection(Rectangle r) {
+        if (isEmpty()) {
             return (Rectangle) this.clone();
-        } else if (r.isEmpty())
-        {
+        } else if (r.isEmpty()) {
             return (Rectangle) r.clone();
-        } else
-        {
+        } else {
             int x1 = Math.max(_x, r.getX());
             int x2 = Math.min(_x + _width, r.getX() + r.getWidth());
             int y1 = Math.max(_y, r.getY());
             int y2 = Math.min(_y + _height, r.getY() + r.getHeight());
             if (((x2 - x1) < 0) || ((y2 - y1) < 0))
-            // Width or height is negative. No intersection.
+                // Width or height is negative. No intersection.
             {
                 return new Rectangle(0, 0, 0, 0);
-            } else
-            {
+            } else {
                 return new Rectangle(x1, y1, x2 - x1, y2 - y1);
             }
         }
@@ -205,16 +185,12 @@ public class Rectangle
      *
      * @return the union rectangle
      */
-    public Rectangle union(Rectangle r)
-    {
-        if (isEmpty())
-        {
+    public Rectangle union(Rectangle r) {
+        if (isEmpty()) {
             return (Rectangle) r.clone();
-        } else if (r.isEmpty())
-        {
+        } else if (r.isEmpty()) {
             return (Rectangle) this.clone();
-        } else
-        {
+        } else {
             int x1 = Math.min(_x, r.getX());
             int x2 = Math.max(_x + _width, r.getX() + r.getWidth());
             int y1 = Math.min(_y, r.getY());
@@ -231,8 +207,7 @@ public class Rectangle
      * @return <code>true</code> if the point is withhin this rectangle in other
      * case <code>false</code>
      */
-    public boolean inside(int x, int y)
-    {
+    public boolean inside(int x, int y) {
         return (x >= _x) && ((x - _x) < _width) && (y >= _y) && ((y - _y) < _height);
     }
 
@@ -242,8 +217,7 @@ public class Rectangle
      * @param x new x coordinate
      * @param y new y coordinate
      */
-    public void setLocation(int x, int y)
-    {
+    public void setLocation(int x, int y) {
         setX(x);
         setY(y);
     }
@@ -254,25 +228,21 @@ public class Rectangle
      * @param width new width
      * @param height new height
      */
-    public void resize(int width, int height)
-    {
+    public void resize(int width, int height) {
         setWidth(width);
         setHeight(height);
     }
 
     @Override
-    @SuppressWarnings(
-            {
-                "CloneDoesntCallSuperClone", "CloneDeclaresCloneNotSupported"
-            })
-    public Object clone()
-    {
+    @SuppressWarnings( {
+        "CloneDoesntCallSuperClone", "CloneDeclaresCloneNotSupported"
+    })
+    public Object clone() {
         return new Rectangle(_x, _y, _width, _height);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "[x=" + _x + ",y=" + _y + ",width=" + _width + ",height=" + _height + ",isEmpty=" + isEmpty() + "]";
     }
 

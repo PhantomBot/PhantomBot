@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,29 +31,24 @@ import java.util.TimeZone;
  *
  * @author gmt2001
  */
-public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
-{
+public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     private static final UncaughtExceptionHandler instance = new UncaughtExceptionHandler();
 
-    public static UncaughtExceptionHandler instance()
-    {
+    public static UncaughtExceptionHandler instance() {
         return instance;
     }
 
     @Override
-    public void uncaughtException(Thread t, Throwable e)
-    {
+    public void uncaughtException(Thread t, Throwable e) {
         Writer trace = new StringWriter();
         PrintWriter ptrace = new PrintWriter(trace);
 
         e.printStackTrace(ptrace);
         com.gmt2001.Console.err.printStackTrace(e);
 
-        try
-        {
-            try (FileOutputStream fos = new FileOutputStream("stacktrace.txt", true))
-            {
+        try {
+            try (FileOutputStream fos = new FileOutputStream("stacktrace.txt", true)) {
                 PrintStream ps = new PrintStream(fos);
 
                 SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
@@ -64,11 +59,9 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
                 ps.println(timestamp + "Z (" + t.toString() + ") " + trace.toString());
                 ps.println();
             }
-        } catch (FileNotFoundException ex)
-        {
+        } catch (FileNotFoundException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (IOException ex)
-        {
+        } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,19 +23,17 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class ServerVersionEvent extends IRCEvent
-{
+public class ServerVersionEvent extends IRCEvent {
 
     private final String comment, hostName, version, debugLevel;
 
     public ServerVersionEvent(
-            String comment,
-            String hostName,
-            String version,
-            String debugLevel,
-            String rawEventData,
-            Session session)
-    {
+        String comment,
+        String hostName,
+        String version,
+        String debugLevel,
+        String rawEventData,
+        Session session) {
         super(rawEventData, session, Type.SERVER_VERSION_EVENT);
         this.comment = comment;
         this.hostName = hostName;
@@ -48,8 +46,7 @@ public class ServerVersionEvent extends IRCEvent
      *
      * @return comment
      */
-    public String getComment()
-    {
+    public String getComment() {
         return comment;
     }
 
@@ -59,8 +56,7 @@ public class ServerVersionEvent extends IRCEvent
      * @return hostname
      */
     @Override
-    public String getHostName()
-    {
+    public String getHostName() {
         return hostName;
     }
 
@@ -69,8 +65,7 @@ public class ServerVersionEvent extends IRCEvent
      *
      * @return version string
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
@@ -79,8 +74,7 @@ public class ServerVersionEvent extends IRCEvent
      *
      * @return Not impled
      */
-    public String getdebugLevel()
-    {
+    public String getdebugLevel() {
         return debugLevel;
     }
 }

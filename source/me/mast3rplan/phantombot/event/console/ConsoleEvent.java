@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,6 +18,5 @@ package me.mast3rplan.phantombot.event.console;
 
 import me.mast3rplan.phantombot.event.Event;
 
-public class ConsoleEvent extends Event
-{
+public class ConsoleEvent extends Event {
 }

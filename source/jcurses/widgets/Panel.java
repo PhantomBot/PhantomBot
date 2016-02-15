@@ -9,8 +9,7 @@ import jcurses.util.Rectangle;
  * with a specified color to place on it other widgets. Each window has a panel
  * called root panel that serves as root for the widget hierarchy.
  */
-public class Panel extends WidgetContainer
-{
+public class Panel extends WidgetContainer {
 
     public static final int ALIGNMENT_TOP = 0;
     public static final int ALIGNMENT_BOTTOM = 1;
@@ -23,8 +22,7 @@ public class Panel extends WidgetContainer
 
     private Rectangle _prefSize = null;
 
-    public Panel()
-    {
+    public Panel() {
         this(-1, -1);
     }
 
@@ -38,28 +36,24 @@ public class Panel extends WidgetContainer
      * so the width of the panel depends only on the layout manager of the
      * parent container or on the window width, if this is a root panel.
      */
-    public Panel(int width, int height)
-    {
+    public Panel(int width, int height) {
         _prefSize = new Rectangle(width, height);
     }
 
     @Override
-    protected Rectangle getPreferredSize()
-    {
+    protected Rectangle getPreferredSize() {
         return _prefSize;
     }
 
     @Override
-    protected void paintSelf()
-    {
+    protected void paintSelf() {
         Rectangle size = getSize();
         size.setLocation(getAbsoluteX(), getAbsoluteY());
         Toolkit.drawRectangle(size, getPanelColors());
     }
 
     @Override
-    protected void repaintSelf()
-    {
+    protected void repaintSelf() {
         paintSelf();
     }
 
@@ -69,8 +63,7 @@ public class Panel extends WidgetContainer
      * @return panel colors
      *
      */
-    public CharColor getPanelColors()
-    {
+    public CharColor getPanelColors() {
         return _colors;
     }
 
@@ -80,18 +73,15 @@ public class Panel extends WidgetContainer
      * @param colors new panel colors
      *
      */
-    public void setPanelColors(CharColor colors)
-    {
+    public void setPanelColors(CharColor colors) {
         _colors = colors;
     }
 
-    protected CharColor getDefaultPanelColors()
-    {
+    protected CharColor getDefaultPanelColors() {
         return __defaultPanelColors;
     }
 
-    protected Rectangle getPaintingRectangle()
-    {
+    protected Rectangle getPaintingRectangle() {
         return getSize();
     }
 

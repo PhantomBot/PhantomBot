@@ -7,8 +7,7 @@ import jcurses.util.Rectangle;
 /**
  * This class implements a text area to edit a text with meny lines
  */
-public class TextArea extends TextComponent implements IScrollable
-{
+public class TextArea extends TextComponent implements IScrollable {
 
     private ScrollbarPainter _scrollbars = null;
 
@@ -24,8 +23,7 @@ public class TextArea extends TextComponent implements IScrollable
      * @param text the initial text, if <code>null</code> the component is empty
      *
      */
-    public TextArea(int width, int height, String text)
-    {
+    public TextArea(int width, int height, String text) {
         super(width, height, text);
         _scrollbars = new ScrollbarPainter(this);
     }
@@ -41,16 +39,14 @@ public class TextArea extends TextComponent implements IScrollable
      * the container.
      *
      */
-    public TextArea(int width, int height)
-    {
+    public TextArea(int width, int height) {
         this(width, height, null);
     }
 
     /**
      * Constructor without arguments
      */
-    public TextArea()
-    {
+    public TextArea() {
         this(-1, -1);
     }
 
@@ -58,19 +54,16 @@ public class TextArea extends TextComponent implements IScrollable
 
     private CharColor _borderColors = getBorderDefaultColors();
 
-    public CharColor getBorderDefaultColors()
-    {
+    public CharColor getBorderDefaultColors() {
         return __borderDefaultColors;
     }
 
     @Override
-    public CharColor getBorderColors()
-    {
+    public CharColor getBorderColors() {
         return _borderColors;
     }
 
-    public void setBorderColors(CharColor colors)
-    {
+    public void setBorderColors(CharColor colors) {
         _borderColors = colors;
     }
 
@@ -78,25 +71,21 @@ public class TextArea extends TextComponent implements IScrollable
 
     private CharColor _scrollbarColors = getScrollbarDefaultColors();
 
-    public CharColor getScrollbarDefaultColors()
-    {
+    public CharColor getScrollbarDefaultColors() {
         return __scrollbarDefaultColors;
     }
 
     @Override
-    public CharColor getScrollbarColors()
-    {
+    public CharColor getScrollbarColors() {
         return _scrollbarColors;
     }
 
-    public void setScrollbarColors(CharColor colors)
-    {
+    public void setScrollbarColors(CharColor colors) {
         _scrollbarColors = colors;
     }
 
     @Override
-    protected Rectangle getTextRectangle()
-    {
+    protected Rectangle getTextRectangle() {
         Rectangle result = (Rectangle) getSize().clone();
         result.setLocation(getAbsoluteX() + 1, getAbsoluteY() + 1);
         result.setWidth(result.getWidth() - 2);
@@ -106,8 +95,7 @@ public class TextArea extends TextComponent implements IScrollable
     }
 
     @Override
-    protected void doPaint()
-    {
+    protected void doPaint() {
         super.doPaint();
         Toolkit.drawBorder(getBorderRectangle(), getBorderColors());
         drawAdditionalThings();
@@ -115,20 +103,17 @@ public class TextArea extends TextComponent implements IScrollable
     }
 
     @Override
-    protected void drawAdditionalThings()
-    {
+    protected void drawAdditionalThings() {
         _scrollbars.paint();
     }
 
     @Override
-    protected void refreshAdditionalThings()
-    {
+    protected void refreshAdditionalThings() {
         _scrollbars.refresh();
     }
 
     @Override
-    protected Rectangle getPreferredSize()
-    {
+    protected Rectangle getPreferredSize() {
         return new Rectangle(getWidth(), getHeight());
     }
 
@@ -172,71 +157,58 @@ public class TextArea extends TextComponent implements IScrollable
      *
      * }
      */
-    private int getVisibleTextWidth()
-    {
+    private int getVisibleTextWidth() {
         return getSize().getWidth() - 2;
     }
 
-    private int getVisibleTextHeight()
-    {
+    private int getVisibleTextHeight() {
         return getSize().getHeight() - 2;
     }
 
     @Override
-    public boolean hasHorizontalScrollbar()
-    {
+    public boolean hasHorizontalScrollbar() {
         return true;
     }
 
     @Override
-    public boolean hasVerticalScrollbar()
-    {
+    public boolean hasVerticalScrollbar() {
         return true;
     }
 
     @Override
-    public Rectangle getBorderRectangle()
-    {
+    public Rectangle getBorderRectangle() {
         Rectangle rect = (Rectangle) getSize().clone();
         rect.setLocation(getAbsoluteX(), getAbsoluteY());
         return rect;
     }
 
     @Override
-    public float getHorizontalScrollbarOffset()
-    {
-        if (!((getTextWidth() > 0) && (getTextWidth() > getVisibleTextWidth())))
-        {
+    public float getHorizontalScrollbarOffset() {
+        if (!((getTextWidth() > 0) && (getTextWidth() > getVisibleTextWidth()))) {
             return 0;
         }
         return ((float) getTextX()) / ((float) getTextWidth());
     }
 
     @Override
-    public float getHorizontalScrollbarLength()
-    {
-        if (!((getTextWidth() > 0) && (getTextWidth() > getVisibleTextWidth())))
-        {
+    public float getHorizontalScrollbarLength() {
+        if (!((getTextWidth() > 0) && (getTextWidth() > getVisibleTextWidth()))) {
             return 0;
         }
         return ((float) getVisibleTextWidth()) / ((float) getTextWidth());
     }
 
     @Override
-    public float getVerticalScrollbarOffset()
-    {
-        if (!((getTextHeight() > 0) && (getTextHeight() > getVisibleTextHeight())))
-        {
+    public float getVerticalScrollbarOffset() {
+        if (!((getTextHeight() > 0) && (getTextHeight() > getVisibleTextHeight()))) {
             return 0;
         }
         return ((float) getTextY()) / ((float) getTextHeight());
     }
 
     @Override
-    public float getVerticalScrollbarLength()
-    {
-        if (!((getTextHeight() > 0) && (getTextHeight() > getVisibleTextHeight())))
-        {
+    public float getVerticalScrollbarLength() {
+        if (!((getTextHeight() > 0) && (getTextHeight() > getVisibleTextHeight()))) {
             return 0;
         }
         return ((float) getVisibleTextHeight()) / ((float) getTextHeight());

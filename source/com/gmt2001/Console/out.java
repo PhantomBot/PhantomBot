@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,24 +26,19 @@ import me.mast3rplan.phantombot.PhantomBot;
  *
  * @author Gary Tekulsky
  */
-public class out
-{
+public class out {
 
     private static final out instance = new out();
 
-    public static out instance()
-    {
+    public static out instance() {
         return instance;
     }
 
-    private out()
-    {
+    private out() {
     }
 
-    public static void print(Object o)
-    {
-        if (PhantomBot.enableDebugging)
-        {
+    public static void print(Object o) {
+        if (PhantomBot.enableDebugging) {
             SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
             datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
@@ -55,20 +50,17 @@ public class out
         System.out.print(o);
     }
 
-    public static void println()
-    {
+    public static void println() {
         System.out.println();
     }
 
-    public static void println(Object o)
-    {
+    public static void println(Object o) {
         SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
         datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         String timestamp = datefmt.format(new Date());
 
-        if (PhantomBot.enableDebugging)
-        {
+        if (PhantomBot.enableDebugging) {
             Logger.instance().log(Logger.LogType.Output, timestamp + "Z " + o.toString());
             Logger.instance().log(Logger.LogType.Blank, "");
         }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,11 +35,9 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
  * @see me.mast3rplan.phantombot.jerklib.tasks.TaskImpl
  * @see Type
  */
-public abstract class OnceUntilSucceedsTaskImpl extends TaskImpl
-{
+public abstract class OnceUntilSucceedsTaskImpl extends TaskImpl {
 
-    public OnceUntilSucceedsTaskImpl(String name)
-    {
+    public OnceUntilSucceedsTaskImpl(String name) {
         super(name);
     }
 
@@ -60,10 +58,8 @@ public abstract class OnceUntilSucceedsTaskImpl extends TaskImpl
      * @param e
      */
     @Override
-    public final void receiveEvent(IRCEvent e)
-    {
-        if (receiveEventOnce(e))
-        {
+    public final void receiveEvent(IRCEvent e) {
+        if (receiveEventOnce(e)) {
             this.cancel();
         }
     }

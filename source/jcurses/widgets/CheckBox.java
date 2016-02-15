@@ -15,8 +15,7 @@ import jcurses.util.Rectangle;
  * typing a special char (default 'space'). You can register listeners by this
  * widget to track state changes.
  */
-public class CheckBox extends Widget
-{
+public class CheckBox extends Widget {
 
     private boolean _checked = false;
 
@@ -26,24 +25,21 @@ public class CheckBox extends Widget
     private static CharColor __checkBoxDefaultColors = new CharColor(CharColor.WHITE, CharColor.BLACK);
 
     @Override
-    public CharColor getDefaultColors()
-    {
+    public CharColor getDefaultColors() {
         return __checkBoxDefaultColors;
     }
 
     private static CharColor __focusedCheckBoxDefaultColors = new CharColor(CharColor.BLUE, CharColor.WHITE, CharColor.REVERSE);
     private CharColor _focusedCheckboxColors = getFocusedCheckboxDefaultColors();
 
-    private CharColor getFocusedCheckboxDefaultColors()
-    {
+    private CharColor getFocusedCheckboxDefaultColors() {
         return __focusedCheckBoxDefaultColors;
     }
 
     /**
      * @return checkboxes colors, if it is focused
      */
-    public CharColor getFocusedCheckboxColors()
-    {
+    public CharColor getFocusedCheckboxColors() {
         return _focusedCheckboxColors;
     }
 
@@ -52,8 +48,7 @@ public class CheckBox extends Widget
      *
      * @param colors checkboxes colors, if it is focused
      */
-    public void setFocusedCheckboxColors(CharColor colors)
-    {
+    public void setFocusedCheckboxColors(CharColor colors) {
         _focusedCheckboxColors = colors;
     }
 
@@ -63,16 +58,14 @@ public class CheckBox extends Widget
      * @param checked true, if the checkbox is checked at first time, false
      * otherwise
      */
-    public CheckBox(boolean checked)
-    {
+    public CheckBox(boolean checked) {
         _checked = checked;
     }
 
     /**
      * The constructor creates an unchecked checkbox
      */
-    public CheckBox()
-    {
+    public CheckBox() {
         this(false);
 
     }
@@ -80,8 +73,7 @@ public class CheckBox extends Widget
     /**
      * @return true, if the checkbox is checked , false otherwise
      */
-    public boolean getValue()
-    {
+    public boolean getValue() {
         return _checked;
     }
 
@@ -90,26 +82,22 @@ public class CheckBox extends Widget
      *
      * @param value if the checkbox becomes checked , false otherwise
      */
-    public void setValue(boolean value)
-    {
+    public void setValue(boolean value) {
         boolean oldValue = _checked;
         _checked = value;
-        if (oldValue != _checked)
-        {
+        if (oldValue != _checked) {
             _listenerManager.handleEvent(new ValueChangedEvent(this));
         }
         paint();
     }
 
     @Override
-    protected Rectangle getPreferredSize()
-    {
+    protected Rectangle getPreferredSize() {
         return new Rectangle(3, 1);
     }
 
     @Override
-    protected void doPaint()
-    {
+    protected void doPaint() {
         Rectangle rect = (Rectangle) getSize().clone();
         rect.setLocation(getAbsoluteX(), getAbsoluteY());
         String text = "[" + ((_checked) ? "X" : " ") + "]";
@@ -118,24 +106,20 @@ public class CheckBox extends Widget
     }
 
     @Override
-    protected boolean isFocusable()
-    {
+    protected boolean isFocusable() {
         return true;
     }
 
     @Override
-    protected void doRepaint()
-    {
+    protected void doRepaint() {
         doPaint();
     }
 
     private static InputChar __changeStatusChar = new InputChar(' ');
 
     @Override
-    protected boolean handleInput(InputChar ch)
-    {
-        if (ch.equals(__changeStatusChar))
-        {
+    protected boolean handleInput(InputChar ch) {
+        if (ch.equals(__changeStatusChar)) {
             setValue(!(_checked));
             paint();
             return true;
@@ -144,21 +128,18 @@ public class CheckBox extends Widget
         return false;
     }
 
-    private void changeColors()
-    {
+    private void changeColors() {
         CharColor colors = hasFocus() ? getFocusedCheckboxColors() : getColors();
         Toolkit.changeColors(getRectangle(), colors);
     }
 
     @Override
-    protected void focus()
-    {
+    protected void focus() {
         changeColors();
     }
 
     @Override
-    protected void unfocus()
-    {
+    protected void unfocus() {
         changeColors();
     }
 
@@ -167,8 +148,7 @@ public class CheckBox extends Widget
      *
      * @param listener listener to add
      */
-    public void addListener(ValueChangedListener listener)
-    {
+    public void addListener(ValueChangedListener listener) {
         _listenerManager.addListener(listener);
     }
 
@@ -177,8 +157,7 @@ public class CheckBox extends Widget
      *
      * @param listener to remove
      */
-    public void removeListener(ValueChangedListener listener)
-    {
+    public void removeListener(ValueChangedListener listener) {
         _listenerManager.removeListener(listener);
     }
 

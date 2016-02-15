@@ -6,8 +6,7 @@ package org.json;
  * @author JSON.org
  * @version 2014-05-03
  */
-public class JSONException extends RuntimeException
-{
+public class JSONException extends RuntimeException {
 
     private static final long serialVersionUID = 0;
     private Throwable cause;
@@ -17,8 +16,7 @@ public class JSONException extends RuntimeException
      *
      * @param message Detail about the reason for the exception.
      */
-    public JSONException(String message)
-    {
+    public JSONException(String message) {
         super(message);
     }
 
@@ -27,8 +25,7 @@ public class JSONException extends RuntimeException
      *
      * @param cause The cause.
      */
-    public JSONException(Throwable cause)
-    {
+    public JSONException(Throwable cause) {
         super(cause.getMessage());
         this.cause = cause;
     }
@@ -41,8 +38,7 @@ public class JSONException extends RuntimeException
      * or unknown.
      */
     @Override
-    public Throwable getCause()
-    {
+    public Throwable getCause() {
         return this.cause;
     }
 }

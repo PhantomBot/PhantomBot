@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,17 +22,15 @@ import me.mast3rplan.phantombot.jerklib.events.PartEvent;
 /**
  * @author mohadib
  */
-public class PartParser implements CommandParser
-{
+public class PartParser implements CommandParser {
 
     @Override
-    public PartEvent createEvent(IRCEvent event)
-    {
+    public PartEvent createEvent(IRCEvent event) {
         return new PartEvent(
-                event.getRawEventData(),
-                event.getSession(),
-                event.getNick(), // who
-                event.getSession().getChannel(event.arg(0)),
-                event.args().size() == 2 ? event.arg(1) : "");
+                   event.getRawEventData(),
+                   event.getSession(),
+                   event.getNick(), // who
+                   event.getSession().getChannel(event.arg(0)),
+                   event.args().size() == 2 ? event.arg(1) : "");
     }
 }

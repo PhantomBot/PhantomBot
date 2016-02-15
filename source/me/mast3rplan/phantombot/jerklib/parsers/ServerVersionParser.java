@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,31 +28,28 @@ import me.mast3rplan.phantombot.jerklib.events.ServerVersionEvent;
  * hyperion-1.0.2b :irc.nixgeeks.com 002 mohadib :Your host is irc.nixgeeks.com,
  * running version Unreal3.2.3
  */
-public class ServerVersionParser implements CommandParser
-{
+public class ServerVersionParser implements CommandParser {
 
     @Override
-    public IRCEvent createEvent(IRCEvent event)
-    {
+    public IRCEvent createEvent(IRCEvent event) {
 
         Session session = event.getSession();
-        if (event.numeric() == 002)
-        {
+        if (event.numeric() == 002) {
             return new ServerVersionEvent(
-                    event.arg(1),
-                    event.prefix(),
-                    event.arg(1).substring(event.arg(1).indexOf("running ") + 8),
-                    "",
-                    event.getRawEventData(),
-                    session);
+                       event.arg(1),
+                       event.prefix(),
+                       event.arg(1).substring(event.arg(1).indexOf("running ") + 8),
+                       "",
+                       event.getRawEventData(),
+                       session);
         }
 
         return new ServerVersionEvent(
-                event.arg(3),
-                event.prefix(),
-                event.arg(1),
-                "",
-                event.getRawEventData(),
-                session);
+                   event.arg(3),
+                   event.prefix(),
+                   event.arg(1),
+                   "",
+                   event.getRawEventData(),
+                   session);
     }
 }

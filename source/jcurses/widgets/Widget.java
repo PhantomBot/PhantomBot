@@ -12,7 +12,7 @@ import java.util.Vector;
 /**
  * This class is superclass for all jcurses widgets. For implementing a ne
  * widget you must derive it.
- * 
+ *
 * An jcurses widget is already used within a window. Its task ist to help it's
  * <code>WidgetContainer</code> to layout itself, giving needed informations, to
  * paint itself and to handle input. Handling input is needed only, if the
@@ -20,12 +20,11 @@ import java.util.Vector;
  * and has currently focus, that is is selected by user to handle input. This
  * selectig ocurrs by typing a special key (currenty 'tab') to switch between
  * input widgets.
- * 
+ *
 * All widgets are ordered in a hierarchy. An widget is already has a container,
  * if it isn't the root pane of a window.
  */
-public abstract class Widget
-{
+public abstract class Widget {
 
     WidgetContainer _parent = null;
     Window _window = null;
@@ -33,8 +32,7 @@ public abstract class Widget
     /**
      * @return widget's container
      */
-    protected WidgetContainer getParent()
-    {
+    protected WidgetContainer getParent() {
         return _parent;
     }
 
@@ -44,8 +42,7 @@ public abstract class Widget
      *
      * @param parent new container
      */
-    protected void setParent(WidgetContainer parent)
-    {
+    protected void setParent(WidgetContainer parent) {
         _parent = parent;
     }
 
@@ -56,21 +53,17 @@ public abstract class Widget
      *
      * @param window widget's window
      */
-    protected void setWindow(Window window)
-    {
+    protected void setWindow(Window window) {
         _window = window;
     }
 
     /**
      * @return widget's window
      */
-    protected Window getWindow()
-    {
-        if (getParent() == null)
-        {
+    protected Window getWindow() {
+        if (getParent() == null) {
             return _window;
-        } else
-        {
+        } else {
             return getParent().getWindow();
         }
     }
@@ -85,34 +78,28 @@ public abstract class Widget
      *
      * @param x x coordinate within the container
      */
-    protected void setX(int x)
-    {
+    protected void setX(int x) {
         _x = x;
     }
 
     /**
      * @return x coordinate within the container
      */
-    protected int getX()
-    {
+    protected int getX() {
         return _x;
     }
 
     /**
      * @return x coordinate on the screen
      */
-    protected int getAbsoluteX()
-    {
+    protected int getAbsoluteX() {
         @SuppressWarnings("UnusedAssignment")
         int result = 0;
-        if (getParent() == null)
-        {
+        if (getParent() == null) {
             result = _x;
-        } else
-        {
+        } else {
             result = _x + getParent().getAbsoluteX();
-            if (getParent().getChildsRectangle() != null)
-            {
+            if (getParent().getChildsRectangle() != null) {
                 result = result + getParent().getChildsRectangle().getX();
             }
         }
@@ -126,34 +113,28 @@ public abstract class Widget
      *
      * @param y y coordinate within the container
      */
-    protected void setY(int y)
-    {
+    protected void setY(int y) {
         _y = y;
     }
 
     /**
      * @return y coordinate within the container
      */
-    protected int getY()
-    {
+    protected int getY() {
         return _y;
     }
 
     /**
      * @return y coordinate on the screen
      */
-    protected int getAbsoluteY()
-    {
+    protected int getAbsoluteY() {
         @SuppressWarnings("UnusedAssignment")
         int result = 0;
-        if (getParent() == null)
-        {
+        if (getParent() == null) {
             result = _y;
-        } else
-        {
+        } else {
             result = _y + getParent().getAbsoluteY();
-            if (getParent().getChildsRectangle() != null)
-            {
+            if (getParent().getChildsRectangle() != null) {
                 result = result + getParent().getChildsRectangle().getY();
             }
         }
@@ -166,8 +147,7 @@ public abstract class Widget
      *
      * @return the rectangle on the screen, that contains this widget
      */
-    protected Rectangle getRectangle()
-    {
+    protected Rectangle getRectangle() {
         Rectangle size = (Rectangle) getSize().clone();
         size.setLocation(getAbsoluteX(), getAbsoluteY());
         return size;
@@ -176,8 +156,7 @@ public abstract class Widget
     /**
      * @return widget's size
      */
-    protected Rectangle getSize()
-    {
+    protected Rectangle getSize() {
         return (Rectangle) _size.clone();
     }
 
@@ -186,8 +165,7 @@ public abstract class Widget
      *
      * @param size new size
      */
-    protected void setSize(Rectangle size)
-    {
+    protected void setSize(Rectangle size) {
         _size = size;
 
     }
@@ -203,10 +181,8 @@ public abstract class Widget
     /**
      * The method is called by the framework to paint the widget
      */
-    protected void paint()
-    {
-        if (isVisible())
-        {
+    protected void paint() {
+        if (isVisible()) {
             doPaint();
         }
     }
@@ -220,10 +196,8 @@ public abstract class Widget
     /**
      * The method is called by the framework to repaint the widget
      */
-    protected void repaint()
-    {
-        if (isVisible())
-        {
+    protected void repaint() {
+        if (isVisible()) {
             doRepaint();
         }
     }
@@ -240,8 +214,7 @@ public abstract class Widget
      *
      * @return true, if the widget can handle input, in other case false
      */
-    protected boolean isFocusable()
-    {
+    protected boolean isFocusable() {
         return false;
     }
 
@@ -251,18 +224,15 @@ public abstract class Widget
      * @return true, if the widget has currenty focus,that is handles input, in
      * othe case false
      */
-    public boolean hasFocus()
-    {
+    public boolean hasFocus() {
         return _focus;
     }
 
     /**
      * The method switches focus to this widget, if it is focusable at all.
      */
-    public void getFocus()
-    {
-        if (getWindow() != null)
-        {
+    public void getFocus() {
+        if (getWindow() != null) {
             getWindow().changeFocus(this);
         }
     }
@@ -273,14 +243,11 @@ public abstract class Widget
      *
      * @param value true, if the widget has get focus, in other case false
      */
-    void setFocus(boolean value)
-    {
+    void setFocus(boolean value) {
         _focus = value;
-        if (_focus)
-        {
+        if (_focus) {
             focus();
-        } else
-        {
+        } else {
             unfocus();
         }
     }
@@ -290,8 +257,7 @@ public abstract class Widget
      * has get focus. This method schold be overrided bei derived class to react
      * getting focus, for examlple to repaint widget gettig focus.
      */
-    protected void focus()
-    {
+    protected void focus() {
 
     }
 
@@ -300,8 +266,7 @@ public abstract class Widget
      * has lost focus. This method schold be overrided bei derived class to
      * react losing focus, for examlple to repaint widget losing focus.
      */
-    protected void unfocus()
-    {
+    protected void unfocus() {
     }
 
     /**
@@ -311,8 +276,7 @@ public abstract class Widget
      * @param inputChar
      * @return true, if the widget has handled the char, false in other case
      */
-    protected boolean handleInput(InputChar inputChar)
-    {
+    protected boolean handleInput(InputChar inputChar) {
         return false;
     }
 
@@ -327,8 +291,7 @@ public abstract class Widget
      * @return
      */
     @SuppressWarnings("UseOfObsoleteCollectionType")
-    protected Vector getShortCutsList()
-    {
+    protected Vector getShortCutsList() {
         return null;
     }
 
@@ -343,8 +306,7 @@ public abstract class Widget
      *
      * @param visible true, if the widget is to make visible, false otherwise.
      */
-    public void setVisible(boolean visible)
-    {
+    public void setVisible(boolean visible) {
         _visible = visible;
     }
 
@@ -356,8 +318,7 @@ public abstract class Widget
      *
      * @return true, if the visibility flag is set, false otherwise
      */
-    public boolean getVisible()
-    {
+    public boolean getVisible() {
         return _visible;
     }
 
@@ -366,11 +327,9 @@ public abstract class Widget
      *
      * @return
      */
-    public boolean isVisible()
-    {
+    public boolean isVisible() {
         Widget parent = getParent();
-        if ((parent != null) && (!(parent.isVisible())))
-        {
+        if ((parent != null) && (!(parent.isVisible()))) {
             return false;
         }
         Window w = getWindow();
@@ -386,8 +345,7 @@ public abstract class Widget
      * @return default colors for this widget. What this mentiones in a concret
      * case, is dependent on the derived class.
      */
-    protected CharColor getDefaultColors()
-    {
+    protected CharColor getDefaultColors() {
         return __defaultColors;
     }
 
@@ -397,16 +355,14 @@ public abstract class Widget
      * @param colors new colors
      *
      */
-    public void setColors(CharColor colors)
-    {
+    public void setColors(CharColor colors) {
         _colors = colors;
     }
 
     /**
      * @return colors of the widget
      */
-    public CharColor getColors()
-    {
+    public CharColor getColors() {
         return (_colors == null) ? getDefaultColors() : _colors;
     }
 

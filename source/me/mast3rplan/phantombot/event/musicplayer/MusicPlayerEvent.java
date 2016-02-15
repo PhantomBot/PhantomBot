@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,23 +19,19 @@ package me.mast3rplan.phantombot.event.musicplayer;
 import me.mast3rplan.phantombot.event.Event;
 import me.mast3rplan.phantombot.jerklib.Channel;
 
-public class MusicPlayerEvent extends Event
-{
+public class MusicPlayerEvent extends Event {
 
     private final Channel channel;
 
-    protected MusicPlayerEvent()
-    {
+    protected MusicPlayerEvent() {
         this.channel = null;
     }
 
-    protected MusicPlayerEvent(Channel channel)
-    {
+    protected MusicPlayerEvent(Channel channel) {
         this.channel = channel;
     }
 
-    public Channel getChannel()
-    {
+    public Channel getChannel() {
         return this.channel;
     }
 }

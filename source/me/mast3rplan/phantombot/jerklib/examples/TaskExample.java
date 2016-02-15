@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,11 +30,9 @@ import me.mast3rplan.phantombot.jerklib.tasks.TaskImpl;
  *
  * @author mohadib
  */
-public class TaskExample
-{
+public class TaskExample {
 
-    public TaskExample()
-    {
+    public TaskExample() {
         ConnectionManager conman = new ConnectionManager(new Profile("scripy"));
         Session session = conman.requestConnection("irc.freenode.net");
 
@@ -43,11 +41,9 @@ public class TaskExample
          * Add a Task to join a channel when the connection is complete This
          * task will only ever be notified of ConnectionCompleteEvents
          */
-        session.onEvent(new TaskImpl("join_channels")
-        {
+        session.onEvent(new TaskImpl("join_channels") {
             @Override
-            public void receiveEvent(IRCEvent e)
-            {
+            public void receiveEvent(IRCEvent e) {
                 e.getSession().join("#me.mast3rplan.phantombot.jerklib");
             }
         }, Type.CONNECT_COMPLETE);
@@ -56,11 +52,9 @@ public class TaskExample
         /*
          * Add a Task to say hello
          */
-        session.onEvent(new TaskImpl("hello")
-        {
+        session.onEvent(new TaskImpl("hello") {
             @Override
-            public void receiveEvent(IRCEvent e)
-            {
+            public void receiveEvent(IRCEvent e) {
                 JoinCompleteEvent jce = (JoinCompleteEvent) e;
                 jce.getChannel().say("Hello from JerkLib!");
             }
@@ -69,17 +63,13 @@ public class TaskExample
         /*
          * Add a Task to be notified on MOTD and JoinComplete events
          */
-        session.onEvent(new TaskImpl("motd_join")
-        {
+        session.onEvent(new TaskImpl("motd_join") {
             @Override
-            public void receiveEvent(IRCEvent e)
-            {
-                if (e.getType() == Type.MOTD)
-                {
+            public void receiveEvent(IRCEvent e) {
+                if (e.getType() == Type.MOTD) {
                     MotdEvent me = (MotdEvent) e;
                     com.gmt2001.Console.out.println(me.getMotdLine());
-                } else
-                {
+                } else {
                     JoinCompleteEvent je = (JoinCompleteEvent) e;
                     je.getChannel().say("Yay tasks!");
                 }
@@ -89,11 +79,9 @@ public class TaskExample
         /*
          * Add a Task that will be notified of all events
          */
-        session.onEvent(new TaskImpl("print")
-        {
+        session.onEvent(new TaskImpl("print") {
             @Override
-            public void receiveEvent(IRCEvent e)
-            {
+            public void receiveEvent(IRCEvent e) {
                 com.gmt2001.Console.out.println(e.getRawEventData());
             }
         });
@@ -101,8 +89,7 @@ public class TaskExample
     }
 
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         new TaskExample();
     }
 }

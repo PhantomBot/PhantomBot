@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,13 +28,11 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class ConnectionCompleteEvent extends IRCEvent
-{
+public class ConnectionCompleteEvent extends IRCEvent {
 
     private final String hostName, oldHostName;
 
-    public ConnectionCompleteEvent(String rawEventData, String hostName, Session session, String oldHostName)
-    {
+    public ConnectionCompleteEvent(String rawEventData, String hostName, Session session, String oldHostName) {
         super(rawEventData, session, Type.CONNECT_COMPLETE);
         this.hostName = hostName;
         this.oldHostName = oldHostName;
@@ -45,8 +43,7 @@ public class ConnectionCompleteEvent extends IRCEvent
      *
      * @return old host name
      */
-    public String getOldHostName()
-    {
+    public String getOldHostName() {
         return oldHostName;
     }
 
@@ -55,8 +52,7 @@ public class ConnectionCompleteEvent extends IRCEvent
      *
      * @return actual host name
      */
-    public String getActualHostName()
-    {
+    public String getActualHostName() {
         return hostName;
     }
 }

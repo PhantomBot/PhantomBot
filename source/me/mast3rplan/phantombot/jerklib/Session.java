@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -49,8 +49,7 @@ import me.mast3rplan.phantombot.jerklib.tasks.Task;
  * @see ConnectionManager#requestConnection(String, int,
  * me.mast3rplan.phantombot.jerklib.Profile)
  */
-public class Session extends RequestGenerator
-{
+public class Session extends RequestGenerator {
 
     private final List<IRCEventListener> listenerList = new ArrayList<>();
     private final Map<Type, List<Task>> taskMap = new HashMap<>();
@@ -70,8 +69,7 @@ public class Session extends RequestGenerator
     public boolean isClosing = false;
     private final Timer sayTimer = new Timer();
 
-    public enum State
-    {
+    public enum State {
 
         CONNECTED,
         CONNECTING,
@@ -83,27 +81,23 @@ public class Session extends RequestGenerator
         NEED_TO_RECONNECT
     }
 
-    class Message
-    {
+    class Message {
 
         public Channel channel;
         public String message;
 
-        public Message(Channel channel, String message)
-        {
+        public Message(Channel channel, String message) {
             this.channel = channel;
             this.message = message;
         }
     }
 
-    class MessageTask extends TimerTask
-    {
+    class MessageTask extends TimerTask {
 
         private final Session s;
         private long lastMessage = 0;
 
-        public MessageTask(Session s)
-        {
+        public MessageTask(Session s) {
             super();
 
             this.s = s;
@@ -112,21 +106,16 @@ public class Session extends RequestGenerator
         }
 
         @Override
-        public void run()
-        {
-            if (PhantomBot.instance().isExiting())
-            {
+        public void run() {
+            if (PhantomBot.instance().isExiting()) {
                 return;
             }
 
             long now = System.currentTimeMillis();
-            if (now - lastMessage >= PhantomBot.instance().getMessageInterval())
-            {
+            if (now - lastMessage >= PhantomBot.instance().getMessageInterval()) {
                 Message msg = s.messages.poll();
-                if (msg != null)
-                {
-                    if (msg.channel.getAllowSendMessages())
-                    {
+                if (msg != null) {
+                    if (msg.channel.getAllowSendMessages()) {
                         s.sayChannelReal(msg.channel, msg.message);
                     }
 
@@ -141,8 +130,7 @@ public class Session extends RequestGenerator
      * @param conman
      */
     @SuppressWarnings("LeakingThisInConstructor")
-    Session(RequestedConnection rCon, ConnectionManager conman)
-    {
+    Session(RequestedConnection rCon, ConnectionManager conman) {
         this.rCon = rCon;
         this.conman = conman;
         setSession(this);
@@ -160,8 +148,7 @@ public class Session extends RequestGenerator
      * @see me.mast3rplan.phantombot.jerklib.parsers.DefaultInternalEventParser
      * @see me.mast3rplan.phantombot.jerklib.parsers.CommandParser
      */
-    public InternalEventParser getInternalEventParser()
-    {
+    public InternalEventParser getInternalEventParser() {
         return parser;
     }
 
@@ -173,8 +160,7 @@ public class Session extends RequestGenerator
      * @see me.mast3rplan.phantombot.jerklib.parsers.DefaultInternalEventParser
      * @see me.mast3rplan.phantombot.jerklib.parsers.CommandParser
      */
-    public void setInternalParser(InternalEventParser parser)
-    {
+    public void setInternalParser(InternalEventParser parser) {
         this.parser = parser;
     }
 
@@ -185,8 +171,7 @@ public class Session extends RequestGenerator
      * @see me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener
      * @see DefaultInternalEventHandler
      */
-    public void setInternalEventHandler(IRCEventListener handler)
-    {
+    public void setInternalEventHandler(IRCEventListener handler) {
         internalEventHandler = handler;
     }
 
@@ -197,8 +182,7 @@ public class Session extends RequestGenerator
      * @see me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener
      * @see DefaultInternalEventHandler
      */
-    public IRCEventListener getInternalEventHandler()
-    {
+    public IRCEventListener getInternalEventHandler() {
         return internalEventHandler;
     }
 
@@ -207,10 +191,8 @@ public class Session extends RequestGenerator
      *
      * @param modes
      */
-    void updateUserModes(List<ModeAdjustment> modes)
-    {
-        for (ModeAdjustment ma : modes)
-        {
+    void updateUserModes(List<ModeAdjustment> modes) {
+        for (ModeAdjustment ma : modes) {
             updateUserMode(ma);
         }
     }
@@ -230,27 +212,20 @@ public class Session extends RequestGenerator
      *
      * @param mode
      */
-    private void updateUserMode(ModeAdjustment mode)
-    {
+    private void updateUserMode(ModeAdjustment mode) {
         int index = indexOfMode(mode.getMode(), userModes);
 
-        if (mode.getAction() == Action.MINUS)
-        {
-            if (index != -1)
-            {
+        if (mode.getAction() == Action.MINUS) {
+            if (index != -1) {
                 ModeAdjustment ma = userModes.remove(index);
-                if (ma.getAction() == Action.MINUS)
-                {
+                if (ma.getAction() == Action.MINUS) {
                     userModes.add(ma);
                 }
-            } else
-            {
+            } else {
                 userModes.add(mode);
             }
-        } else
-        {
-            if (index != -1)
-            {
+        } else {
+            if (index != -1) {
                 userModes.remove(index);
             }
             userModes.add(mode);
@@ -264,13 +239,10 @@ public class Session extends RequestGenerator
      * @param modes
      * @return index of mode or -1 if mode if not found
      */
-    private int indexOfMode(char mode, List<ModeAdjustment> modes)
-    {
-        for (int i = 0; i < modes.size(); i++)
-        {
+    private int indexOfMode(char mode, List<ModeAdjustment> modes) {
+        for (int i = 0; i < modes.size(); i++) {
             ModeAdjustment ma = modes.get(i);
-            if (ma.getMode() == mode)
-            {
+            if (ma.getMode() == mode) {
                 return i;
             }
         }
@@ -282,8 +254,7 @@ public class Session extends RequestGenerator
      *
      * @return UserModes
      */
-    public List<ModeAdjustment> getUserModes()
-    {
+    public List<ModeAdjustment> getUserModes() {
         return new ArrayList<>(userModes);
     }
 
@@ -294,35 +265,26 @@ public class Session extends RequestGenerator
      * @param msg
      * @see me.mast3rplan.phantombot.jerklib.Channel#say(String)
      */
-    public void sayChannel(Channel channel, String msg)
-    {
+    public void sayChannel(Channel channel, String msg) {
         if (msg.startsWith(".timeout ") || msg.startsWith(".ban ")
-                || msg.startsWith(".unban ") || msg.equals(".clear") || msg.equals(".mods"))
-        {
+                || msg.startsWith(".unban ") || msg.equals(".clear") || msg.equals(".mods")) {
             this.sayChannelReal(channel, msg);
-        } else
-        {
-            if (msg.startsWith("/w "))
-            {
+        } else {
+            if (msg.startsWith("/w ")) {
                 msg = msg.replace("/w ", "PRIVMSG #jtv :/w ");
                 me.mast3rplan.phantombot.PhantomBot.tgcSession.sayRaw(msg);
                 return;
             }
-            if (msg.length() + 14 + channel.getName().length() < 512)
-            {
+            if (msg.length() + 14 + channel.getName().length() < 512) {
                 messages.add(new Message(channel, msg));
-            } else
-            {
+            } else {
                 int maxlen = 512 - 14 - channel.getName().length();
                 int pos = 0;
 
-                while (pos < msg.length())
-                {
-                    if (pos + maxlen >= msg.length())
-                    {
+                while (pos < msg.length()) {
+                    if (pos + maxlen >= msg.length()) {
                         messages.add(new Message(channel, msg.substring(pos)));
-                    } else
-                    {
+                    } else {
                         messages.add(new Message(channel, msg.substring(pos, pos + maxlen)));
                     }
 
@@ -332,8 +294,7 @@ public class Session extends RequestGenerator
         }
     }
 
-    public void sayChannelReal(Channel channel, String msg)
-    {
+    public void sayChannelReal(Channel channel, String msg) {
         super.sayChannel(msg, channel);
     }
 
@@ -345,8 +306,7 @@ public class Session extends RequestGenerator
      *
      * @return true if connected else false
      */
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         return state == State.CONNECTED;
     }
 
@@ -355,8 +315,7 @@ public class Session extends RequestGenerator
      *
      * @return true if channels should be rejoined else false
      */
-    public boolean isRejoinOnKick()
-    {
+    public boolean isRejoinOnKick() {
         return rejoinOnKick;
     }
 
@@ -365,16 +324,14 @@ public class Session extends RequestGenerator
      *
      * @param rejoin
      */
-    public void setRejoinOnKick(boolean rejoin)
-    {
+    public void setRejoinOnKick(boolean rejoin) {
         rejoinOnKick = rejoin;
     }
 
     /**
      * Called to alert the Session that login was a success
      */
-    void loginSuccess()
-    {
+    void loginSuccess() {
         isLoggedIn = true;
     }
 
@@ -384,8 +341,7 @@ public class Session extends RequestGenerator
      *
      * @return if logged in
      */
-    public boolean isLoggedIn()
-    {
+    public boolean isLoggedIn() {
         return isLoggedIn;
     }
 
@@ -395,8 +351,7 @@ public class Session extends RequestGenerator
      *
      * @param use
      */
-    public void setShouldUseAltNicks(boolean use)
-    {
+    public void setShouldUseAltNicks(boolean use) {
         useAltNicks = use;
     }
 
@@ -406,8 +361,7 @@ public class Session extends RequestGenerator
      *
      * @return should use alt nicks
      */
-    public boolean getShouldUseAltNicks()
-    {
+    public boolean getShouldUseAltNicks() {
         return useAltNicks;
     }
 
@@ -416,12 +370,10 @@ public class Session extends RequestGenerator
      *
      * @param quitMessage
      */
-    public void close(String quitMessage)
-    {
+    public void close(String quitMessage) {
         isClosing = true;
 
-        if (con != null)
-        {
+        if (con != null) {
             con.quit(quitMessage);
         }
 
@@ -434,8 +386,7 @@ public class Session extends RequestGenerator
      *
      * @return nick
      */
-    public String getNick()
-    {
+    public String getNick() {
         return getRequestedConnection().getProfile().getActualNick();
     }
 
@@ -444,8 +395,7 @@ public class Session extends RequestGenerator
      * me.mast3rplan.phantombot.jerklib.RequestGenerator#changeNick(java.lang.String)
      */
     @Override
-    public void changeNick(String newNick)
-    {
+    public void changeNick(String newNick) {
         super.changeNick(newNick);
     }
 
@@ -454,8 +404,7 @@ public class Session extends RequestGenerator
      *
      * @return true if away else false
      */
-    public boolean isAway()
-    {
+    public boolean isAway() {
         return isAway;
     }
 
@@ -464,8 +413,7 @@ public class Session extends RequestGenerator
      * me.mast3rplan.phantombot.jerklib.RequestGenerator#setAway(java.lang.String)
      */
     @Override
-    public void setAway(String message)
-    {
+    public void setAway(String message) {
         isAway = true;
         super.setAway(message);
     }
@@ -473,13 +421,11 @@ public class Session extends RequestGenerator
     /**
      * Unset away
      */
-    public void unsetAway()
-    {
+    public void unsetAway() {
         /*
          * if we're not away let's not bother even delegating
          */
-        if (isAway)
-        {
+        if (isAway) {
             super.unSetAway();
             isAway = false;
         }
@@ -494,8 +440,7 @@ public class Session extends RequestGenerator
      * @return ServerInformation for Session
      * @see ServerInformation
      */
-    public ServerInformation getServerInformation()
-    {
+    public ServerInformation getServerInformation() {
         return serverInfo;
     }
 
@@ -505,8 +450,7 @@ public class Session extends RequestGenerator
      * @return RequestedConnection for Session
      * @see RequestedConnection
      */
-    public RequestedConnection getRequestedConnection()
-    {
+    public RequestedConnection getRequestedConnection() {
         return rCon;
     }
 
@@ -518,8 +462,7 @@ public class Session extends RequestGenerator
      * @see me.mast3rplan.phantombot.jerklib.Session#getRequestedConnection()
      * @see RequestedConnection#getHostName()
      */
-    public String getConnectedHostName()
-    {
+    public String getConnectedHostName() {
         return con == null ? "" : con.getHostName();
     }
 
@@ -529,8 +472,7 @@ public class Session extends RequestGenerator
      *
      * @param listener
      */
-    public void addIRCEventListener(IRCEventListener listener)
-    {
+    public void addIRCEventListener(IRCEventListener listener) {
         listenerList.add(listener);
     }
 
@@ -540,8 +482,7 @@ public class Session extends RequestGenerator
      * @param listener
      * @return true if listener was removed else false
      */
-    public boolean removeIRCEventListener(IRCEventListener listener)
-    {
+    public boolean removeIRCEventListener(IRCEventListener listener) {
         return listenerList.remove(listener);
     }
 
@@ -550,8 +491,7 @@ public class Session extends RequestGenerator
      *
      * @return listeners
      */
-    public Collection<IRCEventListener> getIRCEventListeners()
-    {
+    public Collection<IRCEventListener> getIRCEventListeners() {
         return Collections.unmodifiableCollection(listenerList);
     }
 
@@ -562,8 +502,7 @@ public class Session extends RequestGenerator
      * @see me.mast3rplan.phantombot.jerklib.tasks.Task
      * @see me.mast3rplan.phantombot.jerklib.tasks.TaskImpl
      */
-    public void onEvent(Task task)
-    {
+    public void onEvent(Task task) {
         // null means task should be notified of all Events
         onEvent(task, (Type) null);
     }
@@ -577,19 +516,14 @@ public class Session extends RequestGenerator
      * @see me.mast3rplan.phantombot.jerklib.tasks.Task
      * @see me.mast3rplan.phantombot.jerklib.tasks.TaskImpl
      */
-    public void onEvent(Task task, Type... types)
-    {
-        synchronized (taskMap)
-        {
-            for (Type type : types)
-            {
-                if (!taskMap.containsKey(type))
-                {
+    public void onEvent(Task task, Type... types) {
+        synchronized (taskMap) {
+            for (Type type : types) {
+                if (!taskMap.containsKey(type)) {
                     List<Task> tasks = new ArrayList<>();
                     tasks.add(task);
                     taskMap.put(type, tasks);
-                } else
-                {
+                } else {
                     taskMap.get(type).add(task);
                 }
             }
@@ -603,8 +537,7 @@ public class Session extends RequestGenerator
      *
      * @return tasks
      */
-    Map<Type, List<Task>> getTasks()
-    {
+    Map<Type, List<Task>> getTasks() {
         return Collections.unmodifiableMap(new HashMap<>(taskMap));
     }
 
@@ -614,15 +547,11 @@ public class Session extends RequestGenerator
      *
      * @param t
      */
-    public void removeTask(Task t)
-    {
-        synchronized (taskMap)
-        {
-            for (Iterator<Type> it = taskMap.keySet().iterator(); it.hasNext();)
-            {
+    public void removeTask(Task t) {
+        synchronized (taskMap) {
+            for (Iterator<Type> it = taskMap.keySet().iterator(); it.hasNext();) {
                 List<Task> tasks = taskMap.get(it.next());
-                if (tasks != null)
-                {
+                if (tasks != null) {
                     tasks.remove(t);
                 }
             }
@@ -635,8 +564,7 @@ public class Session extends RequestGenerator
      * @return channels
      * @see me.mast3rplan.phantombot.jerklib.Channel
      */
-    public List<Channel> getChannels()
-    {
+    public List<Channel> getChannels() {
         return Collections.unmodifiableList(new ArrayList<>(channelMap.values()));
     }
 
@@ -646,8 +574,7 @@ public class Session extends RequestGenerator
      * @param channelName
      * @return Channel or null if no such Channel is joined.
      */
-    public Channel getChannel(String channelName)
-    {
+    public Channel getChannel(String channelName) {
         return channelMap.get(channelName.toLowerCase());
     }
 
@@ -657,8 +584,7 @@ public class Session extends RequestGenerator
      * @param channel
      * @see me.mast3rplan.phantombot.jerklib.Channel
      */
-    void addChannel(Channel channel)
-    {
+    void addChannel(Channel channel) {
         channelMap.put(channel.getName().toLowerCase(), channel);
     }
 
@@ -668,8 +594,7 @@ public class Session extends RequestGenerator
      * @param channel
      * @return true if channel was removed else false
      */
-    boolean removeChannel(Channel channel)
-    {
+    boolean removeChannel(Channel channel) {
         return channelMap.remove(channel.getName().toLowerCase()) == null;
     }
 
@@ -679,14 +604,10 @@ public class Session extends RequestGenerator
      * @param oldNick
      * @param newNick
      */
-    void nickChanged(String oldNick, String newNick)
-    {
-        synchronized (channelMap)
-        {
-            for (Channel chan : channelMap.values())
-            {
-                if (chan.getNicks().contains(oldNick))
-                {
+    void nickChanged(String oldNick, String newNick) {
+        synchronized (channelMap) {
+            for (Channel chan : channelMap.values()) {
+                if (chan.getNicks().contains(oldNick)) {
                     chan.nickChanged(oldNick, newNick);
                 }
             }
@@ -699,13 +620,10 @@ public class Session extends RequestGenerator
      * @param nick
      * @return list of Channels nick was found in
      */
-    public List<Channel> removeNickFromAllChannels(String nick)
-    {
+    public List<Channel> removeNickFromAllChannels(String nick) {
         List<Channel> returnList = new ArrayList<>();
-        for (Channel chan : channelMap.values())
-        {
-            if (chan.removeNick(nick))
-            {
+        for (Channel chan : channelMap.values()) {
+            if (chan.removeNick(nick)) {
                 returnList.add(chan);
             }
         }
@@ -720,18 +638,15 @@ public class Session extends RequestGenerator
      *
      * @return
      */
-    long getLastRetry()
-    {
+    long getLastRetry() {
         return lastRetry;
     }
 
     /**
      * sets time of last reconnect event
      */
-    void retried()
-    {
-        if (retries > 0)
-        {
+    void retried() {
+        if (retries > 0) {
             com.gmt2001.Console.out.println("Failed to connect to '" + rCon.getHostName() + "', retrying connection.");
         }
         retries++;
@@ -744,8 +659,7 @@ public class Session extends RequestGenerator
      *
      * @param con
      */
-    void setConnection(Connection con)
-    {
+    void setConnection(Connection con) {
         this.con = con;
     }
 
@@ -755,16 +669,14 @@ public class Session extends RequestGenerator
      *
      * @return Connection
      */
-    Connection getConnection()
-    {
+    Connection getConnection() {
         return con;
     }
 
     /**
      * Got ping response
      */
-    void gotResponse()
-    {
+    void gotResponse() {
         lastResponse = System.currentTimeMillis();
         state = State.CONNECTED;
     }
@@ -772,25 +684,21 @@ public class Session extends RequestGenerator
     /**
      * Ping has been sent but no response yet
      */
-    void pingSent()
-    {
+    void pingSent() {
         state = State.PING_SENT;
     }
 
     /**
      * Session has been disconnected
      */
-    void disconnected(Exception e)
-    {
-        if (state == State.DISCONNECTED)
-        {
+    void disconnected(Exception e) {
+        if (state == State.DISCONNECTED) {
             return;
         }
 
         state = State.DISCONNECTED;
 
-        if (con != null)
-        {
+        if (con != null) {
             con.quit("");
             con = null;
         }
@@ -802,8 +710,7 @@ public class Session extends RequestGenerator
     /**
      * Session is now connected
      */
-    void connected()
-    {
+    void connected() {
         retries = 0;
         gotResponse();
     }
@@ -811,24 +718,21 @@ public class Session extends RequestGenerator
     /**
      * Session is connecting
      */
-    void connecting()
-    {
+    void connecting() {
         state = State.CONNECTING;
     }
 
     /**
      * Session is half connected
      */
-    void halfConnected()
-    {
+    void halfConnected() {
         state = State.HALF_CONNECTED;
     }
 
     /**
      * Session has been marked for removal
      */
-    void markForRemoval()
-    {
+    void markForRemoval() {
         state = State.MARKED_FOR_REMOVAL;
     }
 
@@ -838,28 +742,23 @@ public class Session extends RequestGenerator
      * @return Session state
      * @see me.mast3rplan.phantombot.jerklib.Session.State
      */
-    State getState()
-    {
+    State getState() {
         long current = System.currentTimeMillis();
 
-        if (state == State.DISCONNECTED)
-        {
+        if (state == State.DISCONNECTED) {
             return state;
         }
 
-        if (current - lastResponse > 300000 && state == State.NEED_TO_PING)
-        {
+        if (current - lastResponse > 300000 && state == State.NEED_TO_PING) {
             state = State.NEED_TO_RECONNECT;
-        } else if (current - lastResponse > 200000 && state != State.PING_SENT)
-        {
+        } else if (current - lastResponse > 200000 && state != State.PING_SENT) {
             state = State.NEED_TO_PING;
         }
 
         return state;
     }
 
-    public int getRetries()
-    {
+    public int getRetries() {
         return retries;
     }
 
@@ -869,14 +768,11 @@ public class Session extends RequestGenerator
      * @param token
      * @return true if starts with a channel prefix else false
      */
-    public boolean isChannelToken(String token)
-    {
+    public boolean isChannelToken(String token) {
         ServerInformation lserverInfo = getServerInformation();
         String[] chanPrefixes = lserverInfo.getChannelPrefixes();
-        for (String prefix : chanPrefixes)
-        {
-            if (token.startsWith(prefix))
-            {
+        for (String prefix : chanPrefixes) {
+            if (token.startsWith(prefix)) {
                 return true;
             }
         }
@@ -886,12 +782,10 @@ public class Session extends RequestGenerator
     /**
      * Send login messages to server
      */
-    void login()
-    {
+    void login() {
         // test :irc.inter.net.il CAP * LS :multi-prefix
         // writeRequests.add(new WriteRequest("CAP LS", this));
-        if (rCon.getPass() != null)
-        {
+        if (rCon.getPass() != null) {
             sayRaw("PASS " + rCon.getPass());
         }
         sayRaw("NICK " + getNick());
@@ -902,8 +796,7 @@ public class Session extends RequestGenerator
      * (non-Javadoc) @see java.lang.Object#hashCode()
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return rCon.getHostName().hashCode();
     }
 
@@ -911,18 +804,15 @@ public class Session extends RequestGenerator
      * (non-Javadoc) @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof Session && o.hashCode() == hashCode())
-        {
+    public boolean equals(Object o) {
+        if (o instanceof Session && o.hashCode() == hashCode()) {
             return ((Session) o).getRequestedConnection().getHostName().matches(getRequestedConnection().getHostName())
-                    && ((Session) o).getNick().matches(getNick());
+                   && ((Session) o).getNick().matches(getNick());
         }
         return false;
     }
 
-    public void reconnect()
-    {
+    public void reconnect() {
         state = State.NEED_TO_RECONNECT;
     }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,26 +19,22 @@ package me.mast3rplan.phantombot.event.irc.channel;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
 
-public class IrcChannelLeaveEvent extends IrcChannelEvent
-{
+public class IrcChannelLeaveEvent extends IrcChannelEvent {
 
     private final String user;
     private final String message;
 
-    public IrcChannelLeaveEvent(Session session, Channel channel, String user, String message)
-    {
+    public IrcChannelLeaveEvent(Session session, Channel channel, String user, String message) {
         super(session, channel);
         this.user = user;
         this.message = message;
     }
 
-    public String getUser()
-    {
+    public String getUser() {
         return user;
     }
 
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 }

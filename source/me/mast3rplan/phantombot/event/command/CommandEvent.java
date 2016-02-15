@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,8 +23,7 @@ import java.util.Map;
 import me.mast3rplan.phantombot.event.Event;
 import me.mast3rplan.phantombot.jerklib.Channel;
 
-public class CommandEvent extends Event
-{
+public class CommandEvent extends Event {
 
     private final String sender;
     private String command;
@@ -33,8 +32,7 @@ public class CommandEvent extends Event
     private final Map<String, String> tags;
     private final Channel channel;
 
-    public CommandEvent(String sender, String command, String arguments)
-    {
+    public CommandEvent(String sender, String command, String arguments) {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
@@ -43,8 +41,7 @@ public class CommandEvent extends Event
         parse();
     }
 
-    public CommandEvent(String sender, String command, String arguments, Map<String, String> tags)
-    {
+    public CommandEvent(String sender, String command, String arguments, Map<String, String> tags) {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
@@ -53,8 +50,7 @@ public class CommandEvent extends Event
         parse();
     }
 
-    public CommandEvent(String sender, String command, String arguments, Map<String, String> tags, Channel channel)
-    {
+    public CommandEvent(String sender, String command, String arguments, Map<String, String> tags, Channel channel) {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
@@ -63,78 +59,62 @@ public class CommandEvent extends Event
         parse();
     }
 
-    private void parse()
-    {
+    private void parse() {
         List<String> tmpArgs = new LinkedList<>();
         boolean inquote = false;
         String tmpStr = "";
-        for (char c : arguments.toCharArray())
-        {
-            if (c == '"')
-            {
+        for (char c : arguments.toCharArray()) {
+            if (c == '"') {
                 inquote = !inquote;
-            } else if (!inquote && c == ' ')
-            {
-                if (tmpStr.length() > 0)
-                {
+            } else if (!inquote && c == ' ') {
+                if (tmpStr.length() > 0) {
                     tmpArgs.add(tmpStr);
                     tmpStr = "";
                 }
-            } else
-            {
+            } else {
                 tmpStr += c;
             }
         }
-        if (tmpStr.length() > 0)
-        {
+        if (tmpStr.length() > 0) {
             tmpArgs.add(tmpStr);
         }
         args = new String[tmpArgs.size()];
         int i = 0;
-        for (String s : tmpArgs)
-        {
+        for (String s : tmpArgs) {
             args[i] = s;
             ++i;
         }
     }
 
-    public String getSender()
-    {
+    public String getSender() {
         return sender;
     }
 
-    public String getCommand()
-    {
+    public String getCommand() {
         return command;
     }
 
-    public void setCommand(String command)
-    {
+    public void setCommand(String command) {
         this.command = command;
     }
 
-    public String[] getArgs()
-    {
+    public String[] getArgs() {
         return args;
     }
 
-    public String getArguments()
-    {
+    public String getArguments() {
         return arguments;
     }
 
-    public Map<String, String> getTags()
-    {
+    public Map<String, String> getTags() {
         return tags;
     }
 
-    public Channel getChannel()
-    {
+    public Channel getChannel() {
         return channel;
     }
 
-    public String toEventSocket()
-    {
-    	return this.getSender() + "|" + this.getCommand() + "|" + this.getArguments() + "|" + this.getChannel();
+    public String toEventSocket() {
+        return this.getSender() + "|" + this.getCommand() + "|" + this.getArguments() + "|" + this.getChannel();
     }
 }

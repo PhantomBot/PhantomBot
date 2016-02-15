@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,18 +26,15 @@ import me.mast3rplan.phantombot.jerklib.events.JoinCompleteEvent;
 import me.mast3rplan.phantombot.jerklib.events.MessageEvent;
 import me.mast3rplan.phantombot.jerklib.listeners.DefaultIRCEventListener;
 
-public class DefaultListenerExample extends DefaultIRCEventListener implements Runnable
-{
+public class DefaultListenerExample extends DefaultIRCEventListener implements Runnable {
 
-    public DefaultListenerExample()
-    {
+    public DefaultListenerExample() {
     }
     Session session;
     static final String CHANNEL_TO_JOIN = "#me.mast3rplan.phantombot.jerklib";
 
     @Override
-    public void run()
-    {
+    public void run() {
         ConnectionManager manager = new ConnectionManager(new Profile("ble", "bleh bleh", "ble", "ble_", "ble__"));
 
         session = manager.requestConnection("irc.freenode.net");
@@ -46,65 +43,51 @@ public class DefaultListenerExample extends DefaultIRCEventListener implements R
     }
 
     @Override
-    protected void handleJoinCompleteEvent(JoinCompleteEvent event)
-    {
+    protected void handleJoinCompleteEvent(JoinCompleteEvent event) {
         event.getChannel().say("Hello from BaseListenerExample");
     }
 
     @Override
-    protected void handleConnectComplete(ConnectionCompleteEvent event)
-    {
+    protected void handleConnectComplete(ConnectionCompleteEvent event) {
         event.getSession().join(CHANNEL_TO_JOIN);
     }
 
     @Override
-    protected void handleChannelMessage(MessageEvent event)
-    {
-        log.log(Level.INFO, "{0}:{1}:{2}", new Object[]
-        {
-            event.getChannel().getName(), event.getNick(), event.getMessage()
-        });
-        if ("now die".equalsIgnoreCase(event.getMessage()))
-        {
+    protected void handleChannelMessage(MessageEvent event) {
+        log.log(Level.INFO, "{0}:{1}:{2}", new Object[] {
+                    event.getChannel().getName(), event.getNick(), event.getMessage()
+                });
+        if ("now die".equalsIgnoreCase(event.getMessage())) {
             event.getChannel().say("Okay, fine, I'll die");
-            try
-            {
+            try {
                 Thread.sleep(2000);
-            } catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 com.gmt2001.Console.err.printStackTrace(e);
             }
             System.exit(0);
         }
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         DefaultListenerExample ble = new DefaultListenerExample();
         Thread t = new Thread(ble);
         t.start();
-        try
-        {
+        try {
             Thread.sleep(30000L); // give it the axe in 30!
-        } catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
         ble.sayGoodbye();
-        try
-        {
+        try {
             Thread.sleep(5000); // let the message be written!
-        } catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
         System.exit(0);
     }
 
-    private void sayGoodbye()
-    {
-        for (Channel chan : session.getChannels())
-        {
+    private void sayGoodbye() {
+        for (Channel chan : session.getChannels()) {
             chan.say("I'm melting! (built-in sword of Damocles... or bucket of water, whatever)");
         }
     }

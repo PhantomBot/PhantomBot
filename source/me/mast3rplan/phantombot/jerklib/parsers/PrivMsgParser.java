@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,8 +23,7 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
 import me.mast3rplan.phantombot.jerklib.events.MessageEvent;
 
-public class PrivMsgParser implements CommandParser
-{
+public class PrivMsgParser implements CommandParser {
     /*
      * :gh00p!~ghoti@nix-58E3BFC5.cpe.net.cable.rogers.com PRIVMSG #tvtorrents
      * :gotcha :NeWtoz!jimmy@nix-2F996C9F.dhcp.aldl.mi.charter.com PRIVMSG
@@ -33,28 +32,26 @@ public class PrivMsgParser implements CommandParser
      */
 
     @Override
-    public MessageEvent createEvent(IRCEvent event)
-    {
+    public MessageEvent createEvent(IRCEvent event) {
         Session session = event.getSession();
         Type type = session.isChannelToken(event.arg(0)) ? Type.CHANNEL_MESSAGE : Type.PRIVATE_MESSAGE;
         Channel chan = type == Type.CHANNEL_MESSAGE ? session.getChannel(event.arg(0)) : null;
 
         MessageEvent me = new MessageEvent(
-                chan,
-                event.arg(1),
-                event.getRawEventData(),
-                session,
-                type);
+            chan,
+            event.arg(1),
+            event.getRawEventData(),
+            session,
+            type);
 
         String msg = me.getMessage();
-        if (msg.startsWith("\u0001"))
-        {
+        if (msg.startsWith("\u0001")) {
             return new CtcpEvent(
-                    msg.substring(1, msg.length() - 1),
-                    me.getMessage(),
-                    me.getRawEventData(),
-                    me.getChannel(),
-                    me.getSession());
+                       msg.substring(1, msg.length() - 1),
+                       me.getMessage(),
+                       me.getRawEventData(),
+                       me.getChannel(),
+                       me.getSession());
         }
 
         return me;

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,44 +19,37 @@ package me.mast3rplan.phantombot.event.twitch.subscriber;
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 
-public abstract class TwitchSubscriberEvent extends TwitchEvent
-{
+public abstract class TwitchSubscriberEvent extends TwitchEvent {
 
     private final String subscriber;
     private final Type type;
 
-    public enum Type
-    {
+    public enum Type {
 
         SUBSCRIBE,
         UNSUBSCRIBE;
     }
 
-    protected TwitchSubscriberEvent(String subscriber, Type type)
-    {
+    protected TwitchSubscriberEvent(String subscriber, Type type) {
         this.subscriber = subscriber;
         this.type = type;
     }
 
-    protected TwitchSubscriberEvent(String subscriber, Type type, Channel channel)
-    {
+    protected TwitchSubscriberEvent(String subscriber, Type type, Channel channel) {
         super(channel);
         this.subscriber = subscriber;
         this.type = type;
     }
 
-    public String getSubscriber()
-    {
+    public String getSubscriber() {
         return subscriber;
     }
 
-    public Type getType()
-    {
+    public Type getType() {
         return type;
     }
 
-    public String toEventSocket()
-    {
-    	return this.getSubscriber() + "|" + this.getType();
+    public String toEventSocket() {
+        return this.getSubscriber() + "|" + this.getType();
     }
 }

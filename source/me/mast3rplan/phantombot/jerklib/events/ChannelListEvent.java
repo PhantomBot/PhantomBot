@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,19 +25,17 @@ import me.mast3rplan.phantombot.jerklib.Session;
  * @see Session#chanList()
  * @see Session#chanList(String)
  */
-public class ChannelListEvent extends IRCEvent
-{
+public class ChannelListEvent extends IRCEvent {
 
     private final String channelName, topic;
     private final int numUsers;
 
     public ChannelListEvent(
-            String rawEventData,
-            String channelName,
-            String topic,
-            int numUsers,
-            Session session)
-    {
+        String rawEventData,
+        String channelName,
+        String topic,
+        int numUsers,
+        Session session) {
         super(rawEventData, session, Type.CHANNEL_LIST_EVENT);
         this.channelName = channelName;
         this.topic = topic;
@@ -49,8 +47,7 @@ public class ChannelListEvent extends IRCEvent
      *
      * @return the channel name
      */
-    public String getChannelName()
-    {
+    public String getChannelName() {
         return channelName;
     }
 
@@ -59,8 +56,7 @@ public class ChannelListEvent extends IRCEvent
      *
      * @return number of users
      */
-    public int getNumberOfUser()
-    {
+    public int getNumberOfUser() {
         return numUsers;
     }
 
@@ -69,8 +65,7 @@ public class ChannelListEvent extends IRCEvent
      *
      * @return the channel topic
      */
-    public String getTopic()
-    {
+    public String getTopic() {
         return topic;
     }
 }

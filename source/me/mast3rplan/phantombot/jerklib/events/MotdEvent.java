@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,13 +23,11 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class MotdEvent extends IRCEvent
-{
+public class MotdEvent extends IRCEvent {
 
     private final String motdLine, hostName;
 
-    public MotdEvent(String rawEventData, Session session, String motdLine, String hostName)
-    {
+    public MotdEvent(String rawEventData, Session session, String motdLine, String hostName) {
         super(rawEventData, session, Type.MOTD);
         this.motdLine = motdLine;
         this.hostName = hostName;
@@ -40,8 +38,7 @@ public class MotdEvent extends IRCEvent
      *
      * @return One line of the MOTD
      */
-    public String getMotdLine()
-    {
+    public String getMotdLine() {
         return motdLine;
     }
 
@@ -51,8 +48,7 @@ public class MotdEvent extends IRCEvent
      * @return hostname
      */
     @Override
-    public String getHostName()
-    {
+    public String getHostName() {
         return hostName;
     }
 }

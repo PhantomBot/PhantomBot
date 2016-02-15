@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,8 +28,7 @@ import java.util.*;
  *
  * @author <a href="mailto:mohadib@openactive.org">Jason Davis</a>
  */
-public class ServerInformation
-{
+public class ServerInformation {
 
     private String caseMapping = "", ircd = "", serverName = "";
     private String[] channelPrefixes, statusPrefixes, channelModes;
@@ -56,8 +55,7 @@ public class ServerInformation
      * change a setting on a channel. These modes <b>MUST</b> NOT have a
      * parameter.</li> </ul> </p> .
      */
-    public enum ModeType
-    {
+    public enum ModeType {
 
         GROUP_A,
         GROUP_B,
@@ -67,13 +65,11 @@ public class ServerInformation
         ALL
     }
 
-    public ServerInformation()
-    {
+    public ServerInformation() {
         //init some defaults because some servers either dont send 005
         //or some events that need serverinformation to parse might happen before 005
 
-        channelPrefixes = new String[]
-        {
+        channelPrefixes = new String[] {
             "#", "&", "!", "+"
         };
         nickPrefixMap.put("@", "o");
@@ -112,190 +108,142 @@ public class ServerInformation
      * CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63
      * SILENCE=50 :are supported by this server
      */
-    public void parseServerInfo(String rawData)
-    {
+    public void parseServerInfo(String rawData) {
         String[] tokens = rawData.split("\\s+");
         serverName = tokens[0].substring(1);
 
-        for (int i = 3; i < tokens.length; i++)
-        {
+        for (int i = 3; i < tokens.length; i++) {
             String[] subTokens = tokens[i].split("=");
-            if (subTokens[0].equals("IRCD"))
-            {
+            if (subTokens[0].equals("IRCD")) {
                 ircd = subTokens[1];
-            } else if (subTokens[0].equals("	"))
-            {
+            } else if (subTokens[0].equals("	")) {
                 supportsCAPAB = true;
-            } else if (subTokens[0].equals("CHANTYPES") && subTokens.length == 2)
-            {
+            } else if (subTokens[0].equals("CHANTYPES") && subTokens.length == 2) {
                 String[] data = subTokens[1].split("");
                 channelPrefixes = new String[data.length - 1];
                 System.arraycopy(data, 1, channelPrefixes, 0, data.length - 1);
-            } else if (subTokens[0].equals("EXCEPTS"))
-            {
+            } else if (subTokens[0].equals("EXCEPTS")) {
                 supportsBanExceptions = true;
-            } else if (subTokens[0].equals("INVEX"))
-            {
+            } else if (subTokens[0].equals("INVEX")) {
                 supportsInviteExceptions = true;
-            } else if (subTokens[0].equals("SAFELIST"))
-            {
+            } else if (subTokens[0].equals("SAFELIST")) {
                 supportsSafeList = true;
-            } else if (subTokens[0].equals("CASEMAPPING"))
-            {
+            } else if (subTokens[0].equals("CASEMAPPING")) {
                 caseMapping = subTokens[1];
-            } else if (subTokens[0].equals("CHANNELLEN"))
-            {
+            } else if (subTokens[0].equals("CHANNELLEN")) {
                 maxChanNameLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("MAXCHANNELLEN"))
-            {
+            } else if (subTokens[0].equals("MAXCHANNELLEN")) {
                 maxChanNameLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("TOPICLEN"))
-            {
+            } else if (subTokens[0].equals("TOPICLEN")) {
                 maxTopicLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("AWAYLEN"))
-            {
+            } else if (subTokens[0].equals("AWAYLEN")) {
                 maxAwayLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("NICKLEN"))
-            {
+            } else if (subTokens[0].equals("NICKLEN")) {
                 maxNickLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("MAXNICKLEN"))
-            {
+            } else if (subTokens[0].equals("MAXNICKLEN")) {
                 maxNickLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("KICKLEN"))
-            {
+            } else if (subTokens[0].equals("KICKLEN")) {
                 maxKickLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("KEYLEN"))
-            {
+            } else if (subTokens[0].equals("KEYLEN")) {
                 maxKeyLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("HOSTLEN"))
-            {
+            } else if (subTokens[0].equals("HOSTLEN")) {
                 maxHostLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("USERLEN"))
-            {
+            } else if (subTokens[0].equals("USERLEN")) {
                 maxUserLen = Integer.parseInt(subTokens[1]);
-            } else if (subTokens[0].equals("CNOTICE"))
-            {
+            } else if (subTokens[0].equals("CNOTICE")) {
                 supportsCNotice = true;
-            } else if (subTokens[0].equals("CPRIVMSG"))
-            {
+            } else if (subTokens[0].equals("CPRIVMSG")) {
                 supportsCPrivMsg = true;
-            } else if (subTokens[0].equals("KNOCK"))
-            {
+            } else if (subTokens[0].equals("KNOCK")) {
                 supportsKnock = true;
-            } else if (subTokens[0].equals("WHOX"))
-            {
+            } else if (subTokens[0].equals("WHOX")) {
                 supportsWhox = true;
-            } else if (subTokens[0].equals("WALLCHOPS"))
-            {
+            } else if (subTokens[0].equals("WALLCHOPS")) {
                 supportsWallchops = true;
-            } else if (subTokens[0].equals("WALLVOICES"))
-            {
+            } else if (subTokens[0].equals("WALLVOICES")) {
                 supportsWallVoices = true;
-            } else if (subTokens[0].equals("USERIP"))
-            {
+            } else if (subTokens[0].equals("USERIP")) {
                 supportsUserIP = true;
-            } else if (subTokens[0].equals("ETRACE"))
-            {
+            } else if (subTokens[0].equals("ETRACE")) {
                 supportsEtrace = true;
-            } else if (subTokens[0].equals("SILENCE"))
-            {
-                if (subTokens.length == 2)
-                {
+            } else if (subTokens[0].equals("SILENCE")) {
+                if (subTokens.length == 2) {
                     supportsSilenceList = true;
                     maxSilenceListSize = Integer.parseInt(subTokens[1]);
-                } else
-                {
+                } else {
                     supportsSilenceList = false;
                 }
-            } else if (subTokens[0].equals("CHANLIMIT"))
-            {
+            } else if (subTokens[0].equals("CHANLIMIT")) {
                 String[] keyVals = subTokens[1].split(",");
-                for (String keyVal : keyVals)
-                {
+                for (String keyVal : keyVals) {
                     String[] limits = keyVal.split(":");
                     String[] chanPrefixes = limits[0].split("");
                     int limit = -1;
-                    if (limits.length == 2)
-                    {
+                    if (limits.length == 2) {
                         limit = Integer.parseInt(limits[1]);
                     }
-                    for (String chanPrefix : chanPrefixes)
-                    {
-                        if (chanPrefix.matches(""))
-                        {
+                    for (String chanPrefix : chanPrefixes) {
+                        if (chanPrefix.matches("")) {
                             continue;
                         }
                         joinLimits.put(chanPrefix, limit);
                     }
                 }
-            } else if (subTokens[0].equals("PREFIX"))
-            {
+            } else if (subTokens[0].equals("PREFIX")) {
                 nickPrefixMap.clear();
 
-                if (subTokens.length == 2)
-                {
+                if (subTokens.length == 2) {
                     supportsNickPrefixes = true;
                     String[] modesAndPrefixes = subTokens[1].split("\\)");
                     modesAndPrefixes[0] = modesAndPrefixes[0].substring(1);
                     String[] modes = modesAndPrefixes[0].split("");
                     String[] prefixes = modesAndPrefixes[1].split("");
-                    for (int x = 0; x < prefixes.length; x++)
-                    {
-                        if (prefixes[x].matches(""))
-                        {
+                    for (int x = 0; x < prefixes.length; x++) {
+                        if (prefixes[x].matches("")) {
                             continue;
                         }
                         nickPrefixMap.put(prefixes[x], modes[x]);
                         modeMap.put(modes[x], ModeType.GROUP_B);
                     }
                 }
-            } else if (subTokens[0].equals("MODES"))
-            {
-                if (subTokens.length == 2)
-                {
+            } else if (subTokens[0].equals("MODES")) {
+                if (subTokens.length == 2) {
                     maxModesPerCommand = Integer.parseInt(subTokens[1]);
                 }
-            } else if (subTokens[0].equals("STATUSMSG"))
-            {
+            } else if (subTokens[0].equals("STATUSMSG")) {
                 supportsStatusNotice = true;
                 String[] tmp = subTokens[1].split("");
                 statusPrefixes = new String[tmp.length - 1];
                 System.arraycopy(tmp, 1, statusPrefixes, 0, tmp.length - 1);
-            } else if (subTokens[0].equals("CHANMODES"))
-            {
+            } else if (subTokens[0].equals("CHANMODES")) {
                 String[] modeGroups = subTokens[1].split(",");
-                for (int x = 0; x < modeGroups.length; x++)
-                {
+                for (int x = 0; x < modeGroups.length; x++) {
                     ModeType mt = ModeType.CUSTOM;
-                    switch (x)
-                    {
-                        case 0:
-                            mt = ModeType.GROUP_A;
-                            break;
-                        case 1:
-                            mt = ModeType.GROUP_B;
-                            break;
-                        case 2:
-                            mt = ModeType.GROUP_C;
-                            break;
-                        case 3:
-                            mt = ModeType.GROUP_D;
-                            break;
+                    switch (x) {
+                    case 0:
+                        mt = ModeType.GROUP_A;
+                        break;
+                    case 1:
+                        mt = ModeType.GROUP_B;
+                        break;
+                    case 2:
+                        mt = ModeType.GROUP_C;
+                        break;
+                    case 3:
+                        mt = ModeType.GROUP_D;
+                        break;
                     }
 
                     String[] modes = modeGroups[x].split("");
-                    for (String mode : modes)
-                    {
-                        if (mode.equals(""))
-                        {
+                    for (String mode : modes) {
+                        if (mode.equals("")) {
                             continue;
                         }
                         modeMap.put(mode, mt);
                     }
                 }
                 channelModes = modeMap.keySet().toArray(new String[modeMap.size()]);
-            } else
-            {
+            } else {
                 //com.gmt2001.Console.err.println("Unreconized Server Info Token:" + subTokens[0]);
             }
         }
@@ -309,13 +257,10 @@ public class ServerInformation
      * @return an array containing all modes of the given type.
      * @see me.mast3rplan.phantombot.jerklib.ServerInformation.ModeType
      */
-    public String[] getModes(ModeType type)
-    {
+    public String[] getModes(ModeType type) {
         List<String> modesList = new ArrayList<>();
-        for (String key : modeMap.keySet())
-        {
-            if (modeMap.get(key) == type || type == ModeType.ALL)
-            {
+        for (String key : modeMap.keySet()) {
+            if (modeMap.get(key) == type || type == ModeType.ALL) {
                 modesList.add(key);
             }
         }
@@ -332,8 +277,7 @@ public class ServerInformation
      * {@link me.mast3rplan.phantombot.jerklib.ServerInformation.ModeType}.
      * @see me.mast3rplan.phantombot.jerklib.ServerInformation.ModeType
      */
-    public ModeType getTypeForMode(String mode)
-    {
+    public ModeType getTypeForMode(String mode) {
         return modeMap.get(mode);
     }
 
@@ -342,8 +286,7 @@ public class ServerInformation
      *
      * @return the name of the server
      */
-    public String getServerName()
-    {
+    public String getServerName() {
         return serverName;
     }
 
@@ -352,8 +295,7 @@ public class ServerInformation
      *
      * @return the IRCD string.
      */
-    public String getIrcdString()
-    {
+    public String getIrcdString() {
         return ircd;
     }
 
@@ -363,8 +305,7 @@ public class ServerInformation
      *
      * @return the case mapping used by the server
      */
-    public String getCaseMapping()
-    {
+    public String getCaseMapping() {
         return caseMapping;
     }
 
@@ -375,8 +316,7 @@ public class ServerInformation
      * @param prefix the channel prefix
      * @return the maximum join limit for the given channel prefix
      */
-    public int getChannelJoinLimitForPrefix(String prefix)
-    {
+    public int getChannelJoinLimitForPrefix(String prefix) {
         return joinLimits.get(prefix);
     }
 
@@ -385,8 +325,7 @@ public class ServerInformation
      *
      * @return the supported channel modes
      */
-    public String[] getSupportedChannelModes()
-    {
+    public String[] getSupportedChannelModes() {
         return channelModes;
     }
 
@@ -395,8 +334,7 @@ public class ServerInformation
      *
      * @return whether or not the server support CAPAB
      */
-    public boolean supportsCAPAB()
-    {
+    public boolean supportsCAPAB() {
         return supportsCAPAB;
     }
 
@@ -405,8 +343,7 @@ public class ServerInformation
      *
      * @return whether or not CNOTICE is supported by the server
      */
-    public boolean supportsCNotice()
-    {
+    public boolean supportsCNotice() {
         return supportsCNotice;
     }
 
@@ -415,8 +352,7 @@ public class ServerInformation
      *
      * @return whether or not the server supports CPRIVMSG
      */
-    public boolean supportsCPrivMsg()
-    {
+    public boolean supportsCPrivMsg() {
         return supportsCPrivMsg;
     }
 
@@ -425,8 +361,7 @@ public class ServerInformation
      *
      * @return whether or not WHOX is supported.
      */
-    public boolean supportsWhox()
-    {
+    public boolean supportsWhox() {
         return supportsWhox;
     }
 
@@ -435,8 +370,7 @@ public class ServerInformation
      *
      * @return whether or not WALLCHOPS is supported.
      */
-    public boolean supportsWallChops()
-    {
+    public boolean supportsWallChops() {
         return supportsWallchops;
     }
 
@@ -445,8 +379,7 @@ public class ServerInformation
      *
      * @return whether or not WALLVOICES is supported.
      */
-    public boolean supportsWallVoices()
-    {
+    public boolean supportsWallVoices() {
         return supportsWallVoices;
     }
 
@@ -455,8 +388,7 @@ public class ServerInformation
      *
      * @return whether or not server supports ban exceptions.
      */
-    public boolean supportsBanExceptions()
-    {
+    public boolean supportsBanExceptions() {
         return supportsBanExceptions;
     }
 
@@ -465,8 +397,7 @@ public class ServerInformation
      *
      * @return whether or not invite are supported.
      */
-    public boolean supportsInviteExceptions()
-    {
+    public boolean supportsInviteExceptions() {
         return supportsInviteExceptions;
     }
 
@@ -475,8 +406,7 @@ public class ServerInformation
      *
      * @return whether or not KNOCK is supported
      */
-    public boolean supportsKnock()
-    {
+    public boolean supportsKnock() {
         return supportsKnock;
     }
 
@@ -485,8 +415,7 @@ public class ServerInformation
      *
      * @return whether or not USERIP is supported.
      */
-    public boolean supportsUserIp()
-    {
+    public boolean supportsUserIp() {
         return supportsUserIP;
     }
 
@@ -495,8 +424,7 @@ public class ServerInformation
      *
      * @return whether or not ETRACE is supported.
      */
-    public boolean supportsEtrace()
-    {
+    public boolean supportsEtrace() {
         return supportsEtrace;
     }
 
@@ -505,8 +433,7 @@ public class ServerInformation
      *
      * @return whether or not SAFELIST is supported.
      */
-    public boolean supportsSafeList()
-    {
+    public boolean supportsSafeList() {
         return supportsSafeList;
     }
 
@@ -515,8 +442,7 @@ public class ServerInformation
      *
      * @return whether or not the SILENCE list is supported
      */
-    public boolean supportsSilenceList()
-    {
+    public boolean supportsSilenceList() {
         return supportsSilenceList;
     }
 
@@ -525,8 +451,7 @@ public class ServerInformation
      *
      * @return whether or not nick prefixes are supported.
      */
-    public boolean supportsNickPrefixes()
-    {
+    public boolean supportsNickPrefixes() {
         return supportsNickPrefixes;
     }
 
@@ -535,8 +460,7 @@ public class ServerInformation
      *
      * @return whether or not status notices are supported.
      */
-    public boolean supportsStatusNotices()
-    {
+    public boolean supportsStatusNotices() {
         return supportsStatusNotice;
     }
 
@@ -545,8 +469,7 @@ public class ServerInformation
      *
      * @return Maximum of number of modes per command.
      */
-    public int getMaxModesPerCommnad()
-    {
+    public int getMaxModesPerCommnad() {
         return maxModesPerCommand;
     }
 
@@ -555,8 +478,7 @@ public class ServerInformation
      *
      * @return max away message length
      */
-    public int getMaxAwayLength()
-    {
+    public int getMaxAwayLength() {
         return maxAwayLen;
     }
 
@@ -565,8 +487,7 @@ public class ServerInformation
      *
      * @return get the max kick msg length
      */
-    public int getMaxKickLength()
-    {
+    public int getMaxKickLength() {
         return maxKickLen;
     }
 
@@ -575,8 +496,7 @@ public class ServerInformation
      *
      * @return max nick length
      */
-    public int getMaxNickLength()
-    {
+    public int getMaxNickLength() {
         return maxNickLen;
     }
 
@@ -585,8 +505,7 @@ public class ServerInformation
      *
      * @return max length of the silence list
      */
-    public int getMaxSilenceListSize()
-    {
+    public int getMaxSilenceListSize() {
         return maxSilenceListSize;
     }
 
@@ -595,8 +514,7 @@ public class ServerInformation
      *
      * @return max topic length
      */
-    public int getMaxTopicLength()
-    {
+    public int getMaxTopicLength() {
         return maxTopicLen;
     }
 
@@ -605,8 +523,7 @@ public class ServerInformation
      *
      * @return max channel name length
      */
-    public int getMaxChannelNameLength()
-    {
+    public int getMaxChannelNameLength() {
         return maxChanNameLen;
     }
 
@@ -615,8 +532,7 @@ public class ServerInformation
      *
      * @return max channel key length
      */
-    public int getMaxKeyLength()
-    {
+    public int getMaxKeyLength() {
         return maxKeyLen;
     }
 
@@ -625,8 +541,7 @@ public class ServerInformation
      *
      * @return max hostname length
      */
-    public int getMaxHostLength()
-    {
+    public int getMaxHostLength() {
         return maxHostLen;
     }
 
@@ -635,8 +550,7 @@ public class ServerInformation
      *
      * @return max username length
      */
-    public int getMaxUserLength()
-    {
+    public int getMaxUserLength() {
         return maxUserLen;
     }
 
@@ -645,8 +559,7 @@ public class ServerInformation
      *
      * @return the nick prefixes
      */
-    public List<String> getNickPrefixes()
-    {
+    public List<String> getNickPrefixes() {
         return new ArrayList<>(nickPrefixMap.values());
     }
 
@@ -655,8 +568,7 @@ public class ServerInformation
      *
      * @return the nick prefixes
      */
-    public Map<String, String> getNickPrefixMap()
-    {
+    public Map<String, String> getNickPrefixMap() {
         return nickPrefixMap;
     }
 
@@ -665,8 +577,7 @@ public class ServerInformation
      *
      * @return the supported status prefixes
      */
-    public String[] getStatusPrefixes()
-    {
+    public String[] getStatusPrefixes() {
         return statusPrefixes;
     }
 
@@ -675,8 +586,7 @@ public class ServerInformation
      *
      * @return the channel prefixes supported on the server
      */
-    public String[] getChannelPrefixes()
-    {
+    public String[] getChannelPrefixes() {
         return channelPrefixes;
     }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,13 +24,11 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class JoinCompleteEvent extends IRCEvent
-{
+public class JoinCompleteEvent extends IRCEvent {
 
     private final Channel channel;
 
-    public JoinCompleteEvent(String rawEventData, Session session, Channel channel)
-    {
+    public JoinCompleteEvent(String rawEventData, Session session, Channel channel) {
         super(rawEventData, session, Type.JOIN_COMPLETE);
         this.channel = channel;
     }
@@ -41,8 +39,7 @@ public class JoinCompleteEvent extends IRCEvent
      * @return <code>Channel</code>
      * @see Channel
      */
-    public final Channel getChannel()
-    {
+    public final Channel getChannel() {
         return channel;
     }
 }

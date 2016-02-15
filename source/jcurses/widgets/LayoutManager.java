@@ -5,8 +5,7 @@ package jcurses.widgets;
  * This interface must be implemented bei layout managers, that layout widgets
  * within widget containers.
  */
-public interface LayoutManager
-{
+public interface LayoutManager {
 
     /**
      * The method layouts a widget within a container, dependet of layouting

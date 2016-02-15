@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,16 +18,13 @@ package me.mast3rplan.phantombot.event.twitchalerts.donate;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
 
-public class TwitchAlertsDonationEvent extends TwitchAlertsDonateEvent
-{
+public class TwitchAlertsDonationEvent extends TwitchAlertsDonateEvent {
 
-    public TwitchAlertsDonationEvent(String jsonString)
-    {
+    public TwitchAlertsDonationEvent(String jsonString) {
         super(jsonString);
     }
 
-    public TwitchAlertsDonationEvent(String jsonString, Channel channel)
-    {
+    public TwitchAlertsDonationEvent(String jsonString, Channel channel) {
         super(jsonString, channel);
     }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,18 +16,15 @@
  */
 package me.mast3rplan.phantombot.event.console;
 
-public class ConsoleInputEvent extends ConsoleEvent
-{
+public class ConsoleInputEvent extends ConsoleEvent {
 
     String msg;
 
-    public ConsoleInputEvent(String msg)
-    {
+    public ConsoleInputEvent(String msg) {
         this.msg = msg;
     }
 
-    public String getMsg()
-    {
+    public String getMsg() {
         return msg;
     }
 }

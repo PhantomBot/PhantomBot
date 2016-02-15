@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,18 +24,16 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class UnresolvedHostnameErrorEvent extends ErrorEvent
-{
+public class UnresolvedHostnameErrorEvent extends ErrorEvent {
 
     private final String hostName;
     private final UnresolvedAddressException exception;
 
     public UnresolvedHostnameErrorEvent(
-            Session session,
-            String rawEventData,
-            String hostName,
-            UnresolvedAddressException exception)
-    {
+        Session session,
+        String rawEventData,
+        String hostName,
+        UnresolvedAddressException exception) {
         super(rawEventData, session, ErrorType.UNRESOLVED_HOSTNAME);
         this.hostName = hostName;
         this.exception = exception;
@@ -46,8 +44,7 @@ public class UnresolvedHostnameErrorEvent extends ErrorEvent
      *
      * @return UnresolvedAddressException
      */
-    public UnresolvedAddressException getException()
-    {
+    public UnresolvedAddressException getException() {
         return exception;
     }
 
@@ -57,8 +54,7 @@ public class UnresolvedHostnameErrorEvent extends ErrorEvent
      * @return hostname that could not be resloved
      */
     @Override
-    public String getHostName()
-    {
+    public String getHostName() {
         return hostName;
     }
 }

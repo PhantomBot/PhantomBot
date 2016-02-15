@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,13 +21,11 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import me.mast3rplan.phantombot.PhantomBot;
 
-public class EventBus
-{
+public class EventBus {
 
     private static final EventBus instance = new EventBus();
 
-    public static EventBus instance()
-    {
+    public static EventBus instance() {
         return instance;
     }
     private final com.google.common.eventbus.AsyncEventBus aeventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(8), new ExceptionHandler());
@@ -35,46 +33,38 @@ public class EventBus
     private final com.google.common.eventbus.AsyncEventBus ceventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newCachedThreadPool(), new ExceptionHandler());
     private final Set<Listener> listeners = Sets.newHashSet();
 
-    public void register(Listener listener)
-    {
+    public void register(Listener listener) {
         listeners.add(listener);
         eventBus.register(listener);
         aeventBus.register(listener);
         ceventBus.register(listener);
     }
 
-    public void unregister(Listener listener)
-    {
+    public void unregister(Listener listener) {
         listeners.remove(listener);
         eventBus.unregister(listener);
         aeventBus.unregister(listener);
         ceventBus.register(listener);
     }
 
-    public void post(Event event)
-    {
-        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting())
-        {
+    public void post(Event event) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
             return;
         }
 
         eventBus.post(event);
     }
 
-    public void postAsync(Event event)
-    {
-        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting())
-        {
+    public void postAsync(Event event) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
             return;
         }
 
         aeventBus.post(event);
     }
 
-    public void postCommand(Event event)
-    {
-        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting())
-        {
+    public void postCommand(Event event) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
             return;
         }
 

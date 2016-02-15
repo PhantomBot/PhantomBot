@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,16 +27,14 @@ import java.util.Date;
  * @author mohadib
  * @see Channel
  */
-public class TopicEvent extends IRCEvent
-{
+public class TopicEvent extends IRCEvent {
 
     private String setBy, hostname;
     private Date setWhen;
     private final Channel channel;
     private final StringBuffer buff = new StringBuffer();
 
-    public TopicEvent(String rawEventData, Session session, Channel channel, String topic)
-    {
+    public TopicEvent(String rawEventData, Session session, Channel channel, String topic) {
         super(rawEventData, session, Type.TOPIC);
         this.channel = channel;
         buff.append(topic);
@@ -47,8 +45,7 @@ public class TopicEvent extends IRCEvent
      *
      * @return the topic
      */
-    public String getTopic()
-    {
+    public String getTopic() {
         return buff.toString();
     }
 
@@ -56,24 +53,21 @@ public class TopicEvent extends IRCEvent
      * @return hostname
      */
     @Override
-    public String getHostName()
-    {
+    public String getHostName() {
         return hostname;
     }
 
     /**
      * @param setWhen
      */
-    public void setSetWhen(String setWhen)
-    {
+    public void setSetWhen(String setWhen) {
         this.setWhen = new Date(1000L * Long.parseLong(setWhen));
     }
 
     /**
      * @param setBy
      */
-    public void setSetBy(String setBy)
-    {
+    public void setSetBy(String setBy) {
         this.setBy = setBy;
     }
 
@@ -82,8 +76,7 @@ public class TopicEvent extends IRCEvent
      *
      * @return topic setter
      */
-    public String getSetBy()
-    {
+    public String getSetBy() {
         return setBy;
     }
 
@@ -92,8 +85,7 @@ public class TopicEvent extends IRCEvent
      *
      * @return when
      */
-    public Date getSetWhen()
-    {
+    public Date getSetWhen() {
         return setWhen;
     }
 
@@ -101,16 +93,14 @@ public class TopicEvent extends IRCEvent
      * (non-Javadoc) @see
      * me.mast3rplan.phantombot.jerklib.events.TopicEvent#getChannel()
      */
-    public Channel getChannel()
-    {
+    public Channel getChannel() {
         return channel;
     }
 
     /**
      * @param topic
      */
-    public void appendToTopic(String topic)
-    {
+    public void appendToTopic(String topic) {
         buff.append(topic);
     }
 
@@ -118,8 +108,7 @@ public class TopicEvent extends IRCEvent
      * (non-Javadoc) @see java.lang.Object#hashCode()
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return channel.hashCode();
     }
 
@@ -127,14 +116,11 @@ public class TopicEvent extends IRCEvent
      * (non-Javadoc) @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object o)
-    {
-        if (o == this)
-        {
+    public boolean equals(Object o) {
+        if (o == this) {
             return true;
         }
-        if (o instanceof TopicEvent && o.hashCode() == hashCode())
-        {
+        if (o instanceof TopicEvent && o.hashCode() == hashCode()) {
             return ((TopicEvent) o).getChannel().equals(getChannel());
         }
         return false;

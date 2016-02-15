@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,18 +25,15 @@ import me.mast3rplan.phantombot.jerklib.events.JoinEvent;
 /**
  * @author mohadib
  */
-public class JoinParser implements CommandParser
-{
+public class JoinParser implements CommandParser {
 
     // :r0bby!n=wakawaka@guifications/user/r0bby JOIN :#me.mast3rplan.phantombot.jerklib
     // :mohadib_!~mohadib@68.35.11.181 JOIN &test
     @Override
-    public IRCEvent createEvent(IRCEvent event)
-    {
+    public IRCEvent createEvent(IRCEvent event) {
         Session session = event.getSession();
 
-        if (!event.getNick().equalsIgnoreCase(event.getSession().getNick()))
-        {
+        if (!event.getNick().equalsIgnoreCase(event.getSession().getNick())) {
             //someone else joined a channel we are in
             return new JoinEvent(event.getRawEventData(), session, session.getChannel(event.arg(0)));
         }

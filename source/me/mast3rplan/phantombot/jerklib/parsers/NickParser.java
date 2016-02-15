@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,18 +20,16 @@ import me.mast3rplan.phantombot.jerklib.Session;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.NickChangeEvent;
 
-public class NickParser implements CommandParser
-{
+public class NickParser implements CommandParser {
 
     @Override
-    public IRCEvent createEvent(IRCEvent event)
-    {
+    public IRCEvent createEvent(IRCEvent event) {
         Session session = event.getSession();
         return new NickChangeEvent(
-                event.getRawEventData(),
-                session,
-                event.getNick(), // old
-                event.arg(0)// new nick
-        );
+                   event.getRawEventData(),
+                   session,
+                   event.getNick(), // old
+                   event.arg(0)// new nick
+               );
     }
 }

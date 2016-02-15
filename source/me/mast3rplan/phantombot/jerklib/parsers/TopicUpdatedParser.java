@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,12 +21,10 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TopicUpdatedParser implements CommandParser
-{
+public class TopicUpdatedParser implements CommandParser {
 
     @Override
-    public IRCEvent createEvent(IRCEvent event)
-    {
+    public IRCEvent createEvent(IRCEvent event) {
         Pattern p = Pattern.compile("^.+?TOPIC\\s+(.+?)\\s+.*$");
         Matcher m = p.matcher(event.getRawEventData());
         m.matches();

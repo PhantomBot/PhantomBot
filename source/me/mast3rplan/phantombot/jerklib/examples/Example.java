@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,14 +30,12 @@ import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
  *
  * @author mohadib
  */
-public class Example implements IRCEventListener
-{
+public class Example implements IRCEventListener {
 
     private final ConnectionManager manager;
 
     @SuppressWarnings("LeakingThisInConstructor")
-    public Example()
-    {
+    public Example() {
         /*
          * ConnectionManager takes a Profile to use for new connections.
          */
@@ -66,33 +64,27 @@ public class Example implements IRCEventListener
      * it to a more specific type.
      */
     @Override
-    public void receiveEvent(IRCEvent e)
-    {
+    public void receiveEvent(IRCEvent e) {
 
-        if (e.getType() == Type.CONNECT_COMPLETE)
-        {
+        if (e.getType() == Type.CONNECT_COMPLETE) {
             e.getSession().join("#me.mast3rplan.phantombot.jerklib");
-        } else if (e.getType() == Type.CHANNEL_MESSAGE)
-        {
+        } else if (e.getType() == Type.CHANNEL_MESSAGE) {
             MessageEvent me = (MessageEvent) e;
             com.gmt2001.Console.out.println(me.getNick() + ":" + me.getMessage());
             me.getChannel().say("Modes :" + me.getChannel().getUsersModes(me.getNick()).toString());
-        } else if (e.getType() == Type.JOIN_COMPLETE)
-        {
+        } else if (e.getType() == Type.JOIN_COMPLETE) {
             JoinCompleteEvent jce = (JoinCompleteEvent) e;
             /*
              * say hello
              */
             jce.getChannel().say("Hello from Jerklib!");
-        } else
-        {
+        } else {
             com.gmt2001.Console.out.println(e.getType() + " " + e.getRawEventData());
         }
     }
 
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         new Example();
     }
 }

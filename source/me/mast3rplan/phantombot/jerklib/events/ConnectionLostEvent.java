@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,19 +23,16 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class ConnectionLostEvent extends IRCEvent
-{
+public class ConnectionLostEvent extends IRCEvent {
 
     private final Exception e;
 
-    public ConnectionLostEvent(String data, Session session, Exception e)
-    {
+    public ConnectionLostEvent(String data, Session session, Exception e) {
         super(data, session, Type.CONNECTION_LOST);
         this.e = e;
     }
 
-    public Exception getException()
-    {
+    public Exception getException() {
         return e;
     }
 }

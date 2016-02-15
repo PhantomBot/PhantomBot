@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,8 +19,7 @@ package me.mast3rplan.phantombot.jerklib.parsers;
 import me.mast3rplan.phantombot.jerklib.events.ConnectionCompleteEvent;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 
-public class ConnectionCompleteParser implements CommandParser
-{
+public class ConnectionCompleteParser implements CommandParser {
 
     /*
      * :irc.nmglug.org 001 namnar :Welcome to the nmglug.org * Lets user know
@@ -30,13 +29,12 @@ public class ConnectionCompleteParser implements CommandParser
      * might actually connect to kubrick.freenode.net etc
      */
     @Override
-    public ConnectionCompleteEvent createEvent(IRCEvent event)
-    {
+    public ConnectionCompleteEvent createEvent(IRCEvent event) {
         return new ConnectionCompleteEvent(
-                event.getRawEventData(),
-                event.prefix(), // actual hostname
-                event.getSession(),
-                event.getSession().getConnectedHostName() // requested hostname
-        );
+                   event.getRawEventData(),
+                   event.prefix(), // actual hostname
+                   event.getSession(),
+                   event.getSession().getConnectedHostName() // requested hostname
+               );
     }
 }

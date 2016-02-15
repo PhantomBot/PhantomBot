@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,16 +23,14 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
 import org.apache.commons.lang3.CharUtils;
 
-public abstract class IrcMessageEvent extends IrcEvent
-{
+public abstract class IrcMessageEvent extends IrcEvent {
 
     private final String sender;
     private final String message;
     private final Map<String, String> tags;
     private final Channel channel;
 
-    protected IrcMessageEvent(Session session, String sender, String message)
-    {
+    protected IrcMessageEvent(Session session, String sender, String message) {
         super(session);
         this.sender = sender;
         this.message = message;
@@ -40,68 +38,55 @@ public abstract class IrcMessageEvent extends IrcEvent
         this.channel = null;
     }
 
-    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags)
-    {
+    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags) {
         super(session);
         this.sender = sender;
         this.message = message;
         this.channel = null;
 
-        if (tags == null)
-        {
+        if (tags == null) {
             this.tags = new HashMap<>();
-        } else
-        {
+        } else {
             this.tags = tags;
         }
     }
 
-    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags, Channel channel)
-    {
+    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags, Channel channel) {
         super(session);
         this.sender = sender;
         this.message = message;
         this.channel = channel;
 
-        if (tags == null)
-        {
+        if (tags == null) {
             this.tags = new HashMap<>();
-        } else
-        {
+        } else {
             this.tags = tags;
         }
     }
 
-    public String getSender()
-    {
+    public String getSender() {
         return sender;
     }
 
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 
-    public Map<String, String> getTags()
-    {
+    public Map<String, String> getTags() {
         return tags;
     }
 
-    public int getCapsCount()
-    {
+    public int getCapsCount() {
         int count = 0;
-        for (int i = 0, l = message.length(); i < l; ++i)
-        {
-            if (CharUtils.isAsciiAlphaUpper(message.charAt(i)))
-            {
+        for (int i = 0, l = message.length(); i < l; ++i) {
+            if (CharUtils.isAsciiAlphaUpper(message.charAt(i))) {
                 ++count;
             }
         }
         return count;
     }
 
-    public Channel getChannel()
-    {
+    public Channel getChannel() {
         return channel;
     }
 }

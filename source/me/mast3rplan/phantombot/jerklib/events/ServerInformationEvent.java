@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,13 +24,11 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class ServerInformationEvent extends IRCEvent
-{
+public class ServerInformationEvent extends IRCEvent {
 
     private final ServerInformation serverInfo;
 
-    public ServerInformationEvent(Session session, String rawEventData, ServerInformation serverInfo)
-    {
+    public ServerInformationEvent(Session session, String rawEventData, ServerInformation serverInfo) {
         super(rawEventData, session, Type.SERVER_INFORMATION);
         this.serverInfo = serverInfo;
     }
@@ -40,8 +38,7 @@ public class ServerInformationEvent extends IRCEvent
      *
      * @return the info
      */
-    public ServerInformation getServerInformation()
-    {
+    public ServerInformation getServerInformation() {
         return serverInfo;
     }
 }
