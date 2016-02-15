@@ -56,20 +56,22 @@
     if (announceDonations) {
       if (donationReward > 0) {
         var rewardPoints = Math.round(donationAmount * donationReward);
-        var donationSay = $.lang.get('donationhandler.donation.newreward');
+        var donationSay = ($.inidb.exists('donations', 'rewardmessage') ? $.inidb.get('donations', 'rewardmessage') : $.lang.get('donationhandler.donation.newreward'));
         donationSay = donationSay.replace('(name)', donationUsername);
         donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
-        donationSay = donationSay.replace('(points)', rewardPoints);
+        donationSay = donationSay.replace('(points)', rewardPoints.toString());
         donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
+        donationSay = donationSay.replace('(currency)', donationCurrency);
         $.say(donationSay);
 
         if ($.inidb.exists('points', donationUsername.toLowerCase())) {
           $.inidb.incr('points', donationUsername.toLowerCase(), rewardPoints);
         }
       } else {
-        var donationSay = $.lang.get('donationhandler.donation.new');
+        var donationSay = ($.inidb.exists('donations', 'message') ? $.inidb.get('donations', 'message') : $.lang.get('donationhandler.donation.newreward'));
         donationSay = donationSay.replace('(name)', donationUsername);
         donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
+        donationSay = donationSay.replace('(currency)', donationCurrency);
         $.say(donationSay);
       }
     }
@@ -110,9 +112,10 @@
           donationUsername = donationJson.getString("name"),
           donationMessage = donationJson.getString("message");
 
-      var donationSay = $.lang.get('donationhandler.lastdonation.success');
+      var donationSay = ($.inidb.exists('donations', 'lastmessage') ? $.inidb.get('donations', 'lastmessage') : $.lang.get('donationhandler.lastdonation.success'));
       donationSay = donationSay.replace('(name)', donationUsername);
       donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
+      donationSay = donationSay.replace('(currency)', donationCurrency);
       $.say(donationSay);
     }
 
@@ -152,6 +155,24 @@
         $.inidb.set('donations', 'reward', args[1]);
         donationReward = parseFloat(args[1]);
         return;
+      }
+
+      if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('rewardmessage') || args[0].equalsIgnoreCase('lastmessage')) {
+        var comArg = args[0].toLowerCase();
+
+        if (!args[1]) {
+          $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.' + comArg + '.usage'));
+          return;
+        }
+
+        var message = args.splice(1).join(' ');
+        if (message.search(/\(name\)/) == -1) {
+          $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.' + comArg + '.no-name'));
+          return;
+        }
+
+        $.inidb.set('donations', comArg, message); 
+        $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.' + comArg + '.success', message));
       }
     }
   });
