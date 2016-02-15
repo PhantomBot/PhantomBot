@@ -48,6 +48,7 @@ import me.mast3rplan.phantombot.cache.FollowersCache;
 import me.mast3rplan.phantombot.cache.SubscribersCache;
 import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.cache.DonationsCache;
+import me.mast3rplan.phantombot.cache.EmotesCache;
 import me.mast3rplan.phantombot.console.ConsoleInputListener;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.Listener;
@@ -108,6 +109,7 @@ public class PhantomBot implements Listener {
     private SubscribersCache subscribersCache;
     private ChannelUsersCache channelUsersCache;
     private DonationsCache donationsCache;
+    private EmotesCache emotesCache;
     private MusicWebSocketServer musicsocketserver;
     private HTTPServer httpserver;
     private EventWebSocketServer eventsocketserver;
@@ -360,6 +362,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
         Script.global.defineProperty("donations", donationsCache, 0);
+        Script.global.defineProperty("emotes", emotesCache, 0);
 
         Thread t = new Thread(new Runnable() {
             @Override
@@ -472,6 +475,9 @@ public class PhantomBot implements Listener {
         if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
             this.donationsCache = DonationsCache.instance(this.channel.getName().toLowerCase());
         }
+        // Disabled for now, still in testing.
+        //this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
+
         //this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
     }
 

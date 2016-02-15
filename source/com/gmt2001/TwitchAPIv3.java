@@ -499,4 +499,14 @@ public class TwitchAPIv3 {
     public JSONObject GetUserFollowsChannel(String user, String channel) {
         return GetData(request_type.GET, base_url + "/users/" + user + "/follows/channels/" + channel, false);
     }
+
+    /**
+     * Gets the full list of emotes from Twitch
+     *
+     * @return
+     */
+    public JSONObject GetEmotes()
+    {
+        return GetData(request_type.GET, base_url + "/chat/emoticons", false);
+    }
 }

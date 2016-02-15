@@ -194,6 +194,38 @@
     }
   };
 
+  /**
+   * @function getNumberOfEmotes
+   * @export $.patternDetector
+   * @param {Object} event
+   * @returns {number}
+   */
+  function getNumberOfEmotes(event) {
+    var message = (event.getMessage() + ''),
+        sequences,
+        totalMatches = 0,
+        regExp,
+        regExpList;
+
+    if ($.emotesHelper.emotesLoaded()) {
+      // $.consoleLn(">> getNumberOfEmotes: emotes are loaded");
+      regExpList = $.emotesHelper.getEmotesRegExp();
+      for (var i = 0; i < regExpList.length; i++) {
+        regExp = regExpList[i];
+        sequences = message.match(regExp);
+        totalMatches += (sequences == null ? 0 : sequences.length);
+      }
+      if (totalMatches == 0) {
+        // $.consoleLn(">> getNumberOfEmotes: no match");
+        return 0;
+      }
+      // $.consoleLn(">> getNumberOfEmotes: matches " + totalMatches);
+      return totalMatches;
+    }
+    // $.consoleLn(">> getNumberOfEmotes: no emotes are loaded");
+    return 0;
+  }
+
   /** Export functions to API */
   $.patternDetector = {
     hasLinks: hasLinks,
@@ -201,5 +233,6 @@
     getLongestNonLetterSequence: getLongestNonLetterSequence,
     getNumberOfNonLetters: getNumberOfNonLetters,
     getLastFoundLink: getLastFoundLink,
+    getNumberOfEmotes: getNumberOfEmotes,
   };
 })();
