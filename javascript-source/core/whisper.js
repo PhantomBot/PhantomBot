@@ -17,7 +17,7 @@
       }
 
     }
-    return '@' + username + ' ';
+    return '@' + $.username.resolve(username) + ', ';
   };
 
   /**
