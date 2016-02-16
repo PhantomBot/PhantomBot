@@ -232,19 +232,18 @@
          * @commandpath points all [amount] - Send an amount of points to all users in the chat
          */
         if (action.equalsIgnoreCase('all')) {
-          actionArg1 = parseInt(actionArg1);
-          if (isNaN(actionArg1)) {
+          if (!actionArg1) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.all.usage'));
             return;
           }
-
-          if (parseInt(actionArg1) < 0) {
+actionArg1 = parseInt(actionArg1);
+          if (actionArg1 < 0) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.error.negative', $.pointNameMultiple));
             return;
           }
 
           for (i in $.users) {
-            $.inidb.incr('points', $.users[i][0].toLowerCase(), parseInt(actionArg1));
+            $.inidb.incr('points', $.users[i][0].toLowerCase(), actionArg1);
           }
           $.say($.lang.get('pointsystem.add.all.success', $.getPointsString(actionArg1)));
         }
@@ -410,6 +409,25 @@
       if (temp.length > 0) {
         $.say($.lang.get('pointsystem.makeitrain.success', username, $.pointNameMultiple, temp.join(', ')));
       }
+    }
+
+    /**
+     * @commandpath gift [user] [amount] - Give points to a friend.
+     */
+    if (command.equalsIgnoreCase('gift')) {
+        if (!args[0] || !args[1]) {
+            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.gift.usage'));
+            return;
+        }
+
+        if (parseInt(args[1]) > getUserPoints(sender)) {
+            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.err.not.points'));
+            return;
+        }
+
+        $.inidb.incr('points', args[0].toLowerCase(), parseInt(args[1]));
+        $.inidb.decr('points', sender, parseInt(args[1]));
+        $.say($.lang.get('pointsystem.gifted', $.username.resolve(sender), getPointsString(parseInt(args[1])), $.username.resolve(args[0])));
     }
   });
 
