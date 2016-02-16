@@ -31,22 +31,29 @@
             touser,
             price,
             message = message + '',
+            sender = event.getSender(),
             args = event.getArgs();
 
         if (message.indexOf('(touser)') != -1) {
              if (args.length < 1) { 
-			 touser = $.username.resolve(event.getSender());
-			 }
+                   touser = sender;
+             } else {
+                   if ($.userExists(args[0])) {
+                       touser = args[0];
+                   } else {
+                       return $.whisperPrefix(sender) + $.lang.get('customcommands.touser.offline', args[0]);
+                   }
+             }
         }
-		
-		if (message.indexOf('(price)') != -1) {
-			if ($.inidb.get('pricecom', command) == null) {
-				price = 0;
-			} else {
-				price = $.inidb.get('pricecom', command);
-			}
+
+        if (message.indexOf('(price)') != -1) {
+            if ($.inidb.get('pricecom', command) == null) {
+                price = 0;
+            } else {
+                price = $.inidb.get('pricecom', command);
+            }
         }
-		
+
         if (message.indexOf('(count)') != -1) {
             $.inidb.incr('commandCount', command, 1);
         }
@@ -58,13 +65,13 @@
             }
         }
 
-        // This needs to be improved, we can lose up to 500ms with all of the replace() methods when
+        // This needs to be improved, we can loose up to 500ms with all of the replace() methods when
         // there is nothing to replace.  This is a quick fix to just not even attempt to perform the
         // replace when we don't appear to see tags.
         if (message.match(/\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/))
         return message
             .replace('(sender)', $.username.resolve(event.getSender()))
-	    .replace('(touser)', $.username.resolve(touser))
+            .replace('(touser)', $.username.resolve(touser))
             .replace('(@sender)', '@' + $.username.resolve(event.getSender()))
             .replace('(baresender)', event.getSender())
             .replace('(random)', $.username.resolve($.randElement($.users)[0]))
@@ -74,7 +81,7 @@
             .replace('(status)', $.getStatus($.channelName))
             .replace('(follows)', $.getFollows($.channelName))
             .replace('(count)', $.inidb.get('commandCount', command))
-	    .replace('(price)', price)
+            .replace('(price)', price)
             ;
 
         return message;
@@ -85,6 +92,7 @@
    * @export $
    * @param {string} user
    * @param {string} command
+   * @param {sub} subcommand
    * @returns {boolean}
    */
     function permCom(user, command) {
@@ -203,6 +211,11 @@
                 return;
             }
 
+            if (!args[0]) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delete.usage'));
+                return;
+            }
+
             action = args[0].replace('!', '');
 
             if (!action) {
@@ -295,6 +308,11 @@
 
             if (isNaN(parseInt(group))) {
               group = $.getGroupIdByName(group);
+            }
+
+            if (!$.commandExists(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.404', action));
+                return;
             }
 
             $.inidb.set('permcom', action, group);
