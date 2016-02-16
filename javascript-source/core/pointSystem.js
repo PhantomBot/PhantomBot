@@ -232,12 +232,11 @@
          * @commandpath points all [amount] - Send an amount of points to all users in the chat
          */
         if (action.equalsIgnoreCase('all')) {
-          actionArg1 = parseInt(actionArg1);
           if (!actionArg1) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.all.usage'));
             return;
           }
-
+actionArg1 = parseInt(actionArg1);
           if (actionArg1 < 0) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.error.negative', $.pointNameMultiple));
             return;
