@@ -102,6 +102,7 @@
     if ($.bot.isModuleEnabled('./games/roulette.js')) {
       loadResponses();
       $.registerChatCommand('./games/roulette.js', 'roulette', 7);
+      $.registerChatCommand('./games/roulette.js', 'roulettetimeouttime', 1);
     }
   });
 })();

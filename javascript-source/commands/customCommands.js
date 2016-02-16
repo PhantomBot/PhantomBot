@@ -61,7 +61,7 @@
         // This needs to be improved, we can loose up to 500ms with all of the replace() methods when
         // there is nothing to replace.  This is a quick fix to just not even attempt to perform the
         // replace when we don't appear to see tags.
-        if (message.match('/\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/,g'))
+        if (message.match(/\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/))
         return message
             .replace('(sender)', $.username.resolve(event.getSender()))
 	    .replace('(touser)', $.username.resolve(touser))
@@ -203,6 +203,11 @@
                 return;
             }
 
+            if (!args[0]) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delete.usage'));
+                return;
+            }
+
             action = args[0].replace('!', '');
 
             if (!action) {
@@ -295,6 +300,11 @@
 
             if (isNaN(parseInt(group))) {
               group = $.getGroupIdByName(group);
+            }
+
+            if (!$.commandExists(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.404', action));
+                return;
             }
 
             $.inidb.set('permcom', action, group);

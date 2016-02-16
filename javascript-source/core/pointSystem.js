@@ -238,13 +238,13 @@
             return;
           }
 
-          if (actionArg1 < 0) {
+          if (parseInt(actionArg1) < 0) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.error.negative', $.pointNameMultiple));
             return;
           }
 
           for (i in $.users) {
-            $.inidb.incr('points', $.users[i][0].toLowerCase());
+            $.inidb.incr('points', $.users[i][0].toLowerCase(), parseInt(actionArg1));
           }
           $.say($.lang.get('pointsystem.add.all.success', $.getPointsString(actionArg1)));
         }
