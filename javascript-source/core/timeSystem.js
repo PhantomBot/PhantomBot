@@ -282,8 +282,8 @@
         var username = $.users[i][0].toLowerCase();
         if (!$.isMod(username)
             && $.inidb.exists('time', username)
-            && parseInt($.inidb.get('time', username)) * 60 > hoursForLevelUp
-            && parseInt($.getUserGroupId(username) > regularsGroupId)) {
+            && Math.floor(parseInt($.inidb.get('time', username)) / 3600) > hoursForLevelUp
+            && parseInt($.getUserGroupId(username)) > regularsGroupId) {
 
           $.setUserGroupById(username, regularsGroupId);
 
