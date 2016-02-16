@@ -40,9 +40,8 @@
       }
       else if (followTrain == 50) {
         $.say($.lang.get('followhandler.followtrain.unbelievable', followTrain));
-      } else {
-        ++followTrain;
-      }
+      } 
+      ++followTrain;
     }
     else {
       followTrain = 1;
