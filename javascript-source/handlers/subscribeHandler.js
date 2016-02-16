@@ -234,7 +234,7 @@
       $.registerChatCommand('./handlers/subscribehandler.js', 'subwelcometoggle', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'resubwelcometoggle', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 2);
-      $.registerChatCommand('./handlers/subscribehandler.js', 'subscribecount', 2);
+      $.registerChatCommand('./handlers/subscribehandler.js', 'subscribercount', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'subscribers', 2);
