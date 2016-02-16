@@ -233,21 +233,16 @@
          */
         if (action.equalsIgnoreCase('all')) {
           actionArg1 = parseInt(actionArg1);
-          if (isNaN(actionArg1)) {
-            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.all.usage'));
-            return;
-          }
-
           if (actionArg1 < 0) {
-            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.error.negative', $.pointNameMultiple));
-            return;
-          }
-
-          for (i in $.users) {
+              $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.error.negative', $.pointNameMultiple));
+              return;
+            }
+  
+            for (i in $.users) {
             $.inidb.incr('points', $.users[i][0].toLowerCase());
+            }
+            $.say($.lang.get('pointsystem.add.all.success', $.getPointsString(actionArg1)));
           }
-          $.say($.lang.get('pointsystem.add.all.success', $.getPointsString(actionArg1)));
-        }
 
         /**
          * @commandpath points setname single [name] - Set the points handle for single points
