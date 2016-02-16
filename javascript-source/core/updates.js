@@ -36,6 +36,7 @@
             './systems/pollSystem.js',
             './systems/quoteSystem.js',
             './systems/raffleSystem.js',
+            './systems/ticketraffleSystem.js',
             './systems/raidSystem.js',
             './systems/youtubePlayer.js',
         ];
