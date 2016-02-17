@@ -37,6 +37,8 @@ import org.json.JSONObject;
 
 public class EmotesCache implements Runnable {
 
+    private static final int LOOP_SLEEP_EMOTES_DISABLED = 60;
+    private static final int LOOP_SLEEP_EMOTES_ENABLED = 60 * 15;
     private static final Map<String, EmotesCache> instances = Maps.newHashMap();
     public static EmotesCache instance(String channel) {
         EmotesCache instance = instances.get(channel);
@@ -56,6 +58,7 @@ public class EmotesCache implements Runnable {
     private int numfail = 0;
     private int id = 0;
     private boolean killed = false;
+    private int loopSleep = 0;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private EmotesCache(String channel) {
@@ -95,6 +98,9 @@ public class EmotesCache implements Runnable {
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
+        this.cache = null;
+        loopSleep = 600;
+
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException ex) {
@@ -118,7 +124,7 @@ public class EmotesCache implements Runnable {
             }
 
             try {
-                Thread.sleep(300 * 1000); 
+                Thread.sleep(loopSleep * 1000); 
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.out.println("EmotesCache.run>> Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
                 com.gmt2001.Console.err.logStackTrace(ex);
@@ -161,26 +167,38 @@ public class EmotesCache implements Runnable {
         JSONObject jsonResult = null;
         JSONArray jsonArray = null;
         String emoteString = "";
+        String emote = "";
         String twitchEmoteString = "";
         String localBTTVEmoteString = "";
         String globalBTTVEmoteString = "";
         String localFrankerZEmoteString = "";
         String globalFrankerZEmoteString = "";
+        String emotesModEnabled = "";
         int totalEmotes = 0;
         boolean emoteDifferencesFound = false;
+        boolean firstEmote = true;
+
+        emotesModEnabled = PhantomBot.instance().getDataStore().GetString("chatModerator", "", "emotesToggle");
+
+        if (emotesModEnabled == null) {
+            loopSleep = LOOP_SLEEP_EMOTES_DISABLED;
+            return;
+        }
+        if (!emotesModEnabled.equals("true")) {
+            loopSleep = LOOP_SLEEP_EMOTES_DISABLED;
+            return;
+        }
+
+        // We will pull emotes, set the sleep to every 10 minutes.
+        loopSleep = LOOP_SLEEP_EMOTES_ENABLED;
 
         com.gmt2001.Console.out.println("Pulling Twitch Emotes");
         jsonResult = TwitchAPIv3.instance().GetEmotes();
         if (checkJSONExceptions(jsonResult, false)) {
             jsonArray = jsonResult.getJSONArray("emoticons");
             for (int i = 0; i < jsonArray.length(); i++) {
-                twitchEmoteString += " " + jsonArray.getJSONObject(i).getString("regex");
-                newCache.put(jsonArray.getJSONObject(i).getString("regex"), jsonArray.getJSONObject(i).getString("regex"));
-            }
-            if (jsonArray.length() > 0) {
-                twitchEmoteString = twitchEmoteString.trim();
-                twitchEmoteString = twitchEmoteString.replace(" ", ",");
-                emoteString = twitchEmoteString;
+                emote = jsonArray.getJSONObject(i).getString("regex");
+                newCache.put(emote, "unused");
             }
             totalEmotes += jsonArray.length();
         }
@@ -190,18 +208,12 @@ public class EmotesCache implements Runnable {
         if (checkJSONExceptions(jsonResult, true)) {
             jsonArray = jsonResult.getJSONArray("emotes");
             for (int i = 0; i < jsonArray.length(); i++) {
-                globalBTTVEmoteString += " " + jsonArray.getJSONObject(i).getString("code");
-                newCache.put(jsonArray.getJSONObject(i).getString("code"), jsonArray.getJSONObject(i).getString("code"));
-            }
-            if (jsonArray.length() > 0) {
-                globalBTTVEmoteString = globalBTTVEmoteString.trim();
-                globalBTTVEmoteString = globalBTTVEmoteString.replace("(", "\\(")
-                                                             .replace(")", "\\)")
-                                                             .replace("\'", "\\\'")
-                                                             .replace("[", "\\[")
-                                                             .replace("]", "\\]")
-                                                             .replace(" ", ",");
-                emoteString = emoteString + (emoteString == "" ? "" : ",") + globalBTTVEmoteString;
+                emote = jsonArray.getJSONObject(i).getString("code").replace("(", "\\(")
+                                                                    .replace(")", "\\)")
+                                                                    .replace("\'", "\\\'")
+                                                                    .replace("[", "\\[")
+                                                                    .replace("]", "\\]");
+                newCache.put(emote, "unused");
             }
             totalEmotes += jsonArray.length();
         }
@@ -211,18 +223,12 @@ public class EmotesCache implements Runnable {
         if (checkJSONExceptions(jsonResult, true)) {
             jsonArray = jsonResult.getJSONArray("emotes");
             for (int i = 0; i < jsonArray.length(); i++) {
-                localBTTVEmoteString += " " + jsonArray.getJSONObject(i).getString("code");
-                newCache.put(jsonArray.getJSONObject(i).getString("code"), jsonArray.getJSONObject(i).getString("code"));
-            }
-            if (jsonArray.length() > 0) {
-                localBTTVEmoteString = localBTTVEmoteString.trim();
-                localBTTVEmoteString = localBTTVEmoteString.replace("(", "\\(")
-                                                           .replace(")", "\\)")
-                                                           .replace("\'", "\\\'")
-                                                           .replace("[", "\\[")
-                                                           .replace("]", "\\]")
-                                                           .replace(" ", ",");
-                emoteString = emoteString + (emoteString == "" ? "" : ",") + localBTTVEmoteString;
+                emote = jsonArray.getJSONObject(i).getString("code").replace("(", "\\(")
+                                                                    .replace(")", "\\)")
+                                                                    .replace("\'", "\\\'")
+                                                                    .replace("[", "\\[")
+                                                                    .replace("]", "\\]");
+                newCache.put(emote, "unused");
             }
             totalEmotes += jsonArray.length();
         }
@@ -235,18 +241,12 @@ public class EmotesCache implements Runnable {
                 String currentSet = String.valueOf(defaultSets.getInt(i));
                 jsonArray = jsonResult.getJSONObject("sets").getJSONObject(currentSet).getJSONArray("emoticons");
                 for (int j = 0; j < jsonArray.length(); j++) {
-                    globalFrankerZEmoteString += " " + jsonArray.getJSONObject(j).getString("name");
-                    newCache.put(jsonArray.getJSONObject(j).getString("name"), jsonArray.getJSONObject(j).getString("name"));
-                }
-                if (jsonArray.length() > 0) {
-                    globalFrankerZEmoteString = globalFrankerZEmoteString.trim();
-                    globalFrankerZEmoteString = globalFrankerZEmoteString.replace("(", "\\(")
-                                                                         .replace(")", "\\)")
-                                                                         .replace("\'", "\\\'")
-                                                                         .replace("[", "\\[")
-                                                                         .replace("]", "\\]")
-                                                                         .replace(" ", ",");
-                    emoteString = emoteString + (emoteString == "" ? "" : ",") + globalFrankerZEmoteString;
+                    emote = jsonArray.getJSONObject(j).getString("name").replace("(", "\\(")
+                                                                        .replace(")", "\\)")
+                                                                        .replace("\'", "\\\'")
+                                                                        .replace("[", "\\[")
+                                                                        .replace("]", "\\]");
+                    newCache.put(emote, "unused");
                 }
                 totalEmotes += jsonArray.length();
             }
@@ -258,34 +258,29 @@ public class EmotesCache implements Runnable {
             String currentSet = String.valueOf(jsonResult.getJSONObject("sets").getInt("set"));
             jsonArray = jsonResult.getJSONObject("sets").getJSONObject(currentSet).getJSONArray("emoticons");
             for (int i = 0; i < jsonArray.length(); i++) {
-                localFrankerZEmoteString += " " + jsonArray.getJSONObject(i).getString("name");
-                newCache.put(jsonArray.getJSONObject(i).getString("name"), jsonArray.getJSONObject(i).getString("name"));
-            }
-            if (jsonArray.length() > 0) {
-                localFrankerZEmoteString = localFrankerZEmoteString.trim();
-                localFrankerZEmoteString = localFrankerZEmoteString.replace("(", "\\(")
-                                                                   .replace(")", "\\)")
-                                                                   .replace("\'", "\\\'")
-                                                                   .replace("[", "\\[")
-                                                                   .replace("]", "\\]")
-                                                                   .replace(" ", ",");
-                emoteString = emoteString + (emoteString == "" ? "" : ",") + localFrankerZEmoteString;
+                emote = jsonArray.getJSONObject(i).getString("name").replace("(", "\\(")
+                                                                    .replace(")", "\\)")
+                                                                    .replace("\'", "\\\'")
+                                                                    .replace("[", "\\[")
+                                                                    .replace("]", "\\]");
+                newCache.put(emote, "unused");
             }
             totalEmotes += jsonArray.length();
         }
 
         com.gmt2001.Console.out.println("Pulled a Total of " + totalEmotes + " Emotes");
-        if (emoteString != "") {
-            emoteString = emoteString.trim();
-            //newCache.put(emoteString, "unused");
-            //if (this.cache == null || !this.cache.containsKey(emoteString)) {
+        if (totalEmotes > 0) {
             for (String key : newCache.keySet()) {
-              if (!exists(key)) {
-                emoteDifferencesFound = true;
-                break;
-              }
+                emoteString += (firstEmote ? "" : ",") + key;
+                firstEmote = false;
+                if (this.cache != null && !emoteDifferencesFound) {
+                    if (!exists(key)) {
+                        emoteDifferencesFound = true;
+                    }
+                }
             }
             if (this.cache == null || emoteDifferencesFound) {
+                com.gmt2001.Console.out.println("Pushing Emotes onto the Bus");
                 EventBus.instance().post(new EmotesGetEvent(emoteString, PhantomBot.instance().getChannel("#" + this.channel)));
             } else {
                 com.gmt2001.Console.out.println("Emotes match Cache, not Sending to emoteHandler to Update");
