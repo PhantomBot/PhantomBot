@@ -14,7 +14,7 @@
    * @event twitchSubscribeInitialized
    */
   $.bind('twitchSubscribesInitialized', function () {
-    if (!$.bot.isModuleEnabled('./handlers/subsribeHandler.js')) {
+    if (!$.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
       return;
     }
 
@@ -25,7 +25,7 @@
    * @event twitchSubscribe
    */
   $.bind('twitchSubscribe', function (event) {
-    if (!$.bot.isModuleEnabled('./handlers/subsribeHandler.js')) {
+    if (!$.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
       return;
     }
 
@@ -42,7 +42,7 @@
    * @event twitchUnSubscribe
    */
   $.bind('twitchUnsubscribe', function (event) {
-    if (!$.bot.isModuleEnabled('./handlers/subsribeHandler.js')) {
+    if (!$.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
       return;
     }
 
@@ -211,16 +211,16 @@
     if (sender.equalsIgnoreCase('twitchnotify')) {
       if (message.contains('just subscribed!') && subWelcomeToggle) {
         s = s.replace(/\(name\)/ig, sub);
-        s = s.replace('/\(reward\)/ig', subReward);
+        s = s.replace(/\(reward\)/ig, subReward.toString());
         $.say(s);
         return;
       }
 
       if (message.contains('months in a row!') && message.contains('subscribed for') && reSubWelcomeToggle) {
         var months = message.substring(message.indexOf('months') - 3, message.indexOf('months') - 1).toString();
-        r = r.replace('/\(name\)/ig', sub);
-        r = r.replace('/\(months\)/ig', months);
-        r = r.replace('/\(reward\)/ig', subReward);
+        r = r.replace(/\(name\)/ig, sub);
+        r = r.replace(/\(months\)/ig, months);
+        r = r.replace(/\(reward\)/ig, subReward.toString());
         $.say(r);
       }
     }
