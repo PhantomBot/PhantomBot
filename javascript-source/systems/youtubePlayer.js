@@ -11,7 +11,7 @@
       playerVolume = ($.inidb.exists('youtubePlayer', 'playerVolume') ? parseInt($.inidb.get('youtubePlayer', 'playerVolume')) : 20),
       shuffleDefaultPlaylist = ($.inidb.exists('youtubePlayer', 'shuffleDefaultPlaylist') ? $.getIniDbBoolean('youtubePlayer', 'shuffleDefaultPlaylist') : false),
       requestsEnabled = ($.inidb.exists('youtubePlayer', 'requestsEnabled') ? $.getIniDbBoolean('youtubePlayer', 'requestsEnabled') : true),
-      maxVideoLength = ($.inidb.exists('youtubePlayer', 'maxVideoLength') ? parseInt($.inidb.get('youtubePlayer', 'maxVideoLength')) : 48e4), 
+      maxVideoLength = ($.inidb.exists('youtubePlayer', 'maxVideoLength') ? parseInt($.inidb.get('youtubePlayer', 'maxVideoLength')) : 600),
       workPath = './addons/youtubePlayer/',
       playerConnected = false,
       videoPaused = false,
@@ -202,6 +202,9 @@
       }
     }
     if (video == null) {
+      if ($.lang.exists('youtubeplayer.nothing-to-play')) {
+        $.say($.lang.get('youtubeplayer.nothing-to-play'));
+      }
       currentSong = null;
     } else {
       playYoutubeVideo(video);
@@ -391,17 +394,18 @@
       }
 
       /**
-       * @commandpath musicplayer maxvideolength [seconds] - Set the meximum video length for requests in seconds
+       * @commandpath musicplayer maxvideolength [minutes] - Set the meximum video length for requests in minutes
+       * Converts to seconds when it stores the value to match the YouTube value in seconds.
        */
       if (action.equalsIgnoreCase('maxvideolength')) {
         if (!actionArg || isNaN(parseInt(actionArg))) {
-          $.say($.whisperPrefix(sender) + $.lang.get('youtubeplayer.set.maxvideolength.usage', $.getTimeString(maxVideoLength / 1e3)));
+          $.say($.whisperPrefix(sender) + $.lang.get('youtubeplayer.set.maxvideolength.usage', $.getTimeString(maxVideoLength)));
           return;
         }
 
-        maxVideoLength = parseInt(actionArg) * 6e4;
+        maxVideoLength = parseInt(actionArg) * 60;
         $.inidb.set('youtubePlayer', 'maxVideoLength', maxVideoLength);
-        $.say($.whisperPrefix(sender) + $.lang.get('youtubeplayer.set.maxvideolength.success', $.getTimeString(maxVideoLength / 1e3)));
+        $.say($.whisperPrefix(sender) + $.lang.get('youtubeplayer.set.maxvideolength.success', $.getTimeString(maxVideoLength)));
       }
 
       /**
@@ -535,6 +539,10 @@
       if (currentSong != null) {
         $.say($.lang.get('youtubeplayer.nowplaying.getwithlink', currentSong.videoTitle,
         $.resolveRank(currentSong.username), currentSong.link));
+      } else {
+        if ($.lang.exists('youtubeplayer.nothing-to-play')) {
+          $.say($.lang.get('youtubeplayer.nothing-to-play'));
+        }
       }
     }
 
