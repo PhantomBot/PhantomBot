@@ -3,17 +3,12 @@
  *
  * Pull down emotes from Twitch, BetterTTV and FrankerZ.
  */
-
-/* Note that the handlers in Core have been disabled for now while still testing. */
-
 (function () {
-  var freshEmotes = false,
-      emotesString = ($.inidb.exists('emotecache', 'emotes') ? $.inidb.get('emotecache', 'emotes') : "");
+  var emotesString = ($.inidb.exists('emotecache', 'emotes') ? $.inidb.get('emotecache', 'emotes') : ""),
       emotesRegExpList = [];
 
   if (emotesString != "") {
-    freshEmotes = true;
-    getEmotesRegExp();
+    buildEmotesRegExp();
   }
 
   /**
@@ -24,51 +19,76 @@
       return;
     }
     emotesString = event.getEmotes();
+    $.writeToFile(emotesString, "emotesString", false);
     $.consoleLn("New emotes have been pushed from the Core.");
     $.inidb.set('emotecache', 'emotes', emotesString);
-    freshEmotes = true;
+    buildEmotesRegExp();
   });
 
   /**
    * @function emotesLoaded
-   * @export $.emotesHelper
-   * @param {Object} event
-   * @returns {number}
+   * @export $.emotesHandler
+   * @returns {boolean}
    */
   function emotesLoaded() {
-    return (emotesString != "");
+    return (emotesRegExpList.length != 0);
+  }
+
+ /**
+  * @function buildEmotesRegExp
+  */
+  function buildEmotesRegExp() {
+    var emotesList = emotesString.split(","),
+        emoteRegExp,
+        newEmotesRegExpList = [];
+
+    for (var i = 0; i < emotesList.length; i++) {
+      // Check for emote at the beginning, middle and end of a string.
+      emoteRegExp = '(^' + emotesList[i] + '|\\s' + emotesList[i] + '\\s|' + emotesList[i] + '$)';
+      newEmotesRegExpList.push(new RegExp(emoteRegExp, 'g'));
+    }
+    emotesRegExpList = newEmotesRegExpList;
+    $.consoleLn("Built " + emotesRegExpList.length + " regular expressions for emote handling.");
   }
 
   /**
    * @function getEmotesRegExp
-   * @export $.emotesHelper
+   * @export $.emotesHandler
    * @returns {List}{RegExp}
    */
   function getEmotesRegExp() {
-    if (freshEmotes) {
-      var emotesList = emotesString.split(","),
-          emoteRegExp;
-
-      emotesRegExpList = [];
-      $.writeToFile("", "emoteRegExp", false);
-      for (var i = 0; i < emotesList.length; i++) {
-        // Check for emote at the beginning, middle and end of a string.
-        emoteRegExp = '(^' + emotesList[i] + '|\\s' + emotesList[i] + '\\s|' + emotesList[i] + '$)';
-        emotesRegExpList.push(new RegExp(emoteRegExp, 'g'));
-        $.writeToFile(emoteRegExp, "emoteRegExp", true);
-      }
-      freshEmotes = false;
-      $.consoleLn("Built " + emotesList.length + " regular expressions for emote handling.");
-    }
     return emotesRegExpList;
+  }
+
+ /**
+  * @function getEmotesMatchCount
+  * @export $.emotesHandler
+  * @param {string}
+  * @returns {number}
+  */
+  function getEmotesMatchCount(checkString)
+  {
+    var matches = 0,
+        sequences;
+
+    if (!emotesLoaded()) {
+      return 0;
+    }
+
+    for (var i = 0; i < emotesRegExpList.length; i++) {
+      sequences = checkString.match(emotesRegExpList[i]);
+      matches += (sequences == null ? 0 : sequences.length);
+    }
+    return matches;
   }
 
   /**
    * Export functions to API
    */
-  $.emotesHelper = {
+  $.emotesHandler = {
     emotesLoaded: emotesLoaded,
     getEmotesRegExp: getEmotesRegExp,
+    getEmotesMatchCount: getEmotesMatchCount,
   };
 
 })();

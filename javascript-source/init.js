@@ -565,9 +565,15 @@
       callHook('twitchAlertsDonationInitialized', event, true);
     });
 
+    /**
+     * @event api-getEmotes
+     */
+    $api.on($script, 'emotesGet', function (event) {
+      callHook('emotesGet', event, true);
+    });
+
     $.logEvent('init.js', 553, 'Bot locked & loaded!');
     $.consoleLn('Bot locked & loaded!');
-
 
     /**
      * @event command

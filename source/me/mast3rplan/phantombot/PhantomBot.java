@@ -475,8 +475,7 @@ public class PhantomBot implements Listener {
         if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
             this.donationsCache = DonationsCache.instance(this.channel.getName().toLowerCase());
         }
-        // Disabled for now, still in testing.
-        //this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
+        this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
 
         //this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
     }
