@@ -66,6 +66,7 @@ public class TwitchAPIv3 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
+
     private JSONObject GetData(request_type type, String url, String post, String oauth, boolean isJson) {
         JSONObject j = new JSONObject("{}");
         InputStream i = null;
@@ -423,7 +424,7 @@ public class TwitchAPIv3 {
             dir = "asc";
         }
 
-        return GetData(request_type.GET, base_url + "/channels/" + channel + "/subscriptions?limit=" + limit + "&offset=" + offset + "&direction=" + dir, oauth, false);
+        return GetData(request_type.GET, base_url + "/channels/" + channel + "/subscriptions?limit=" + limit + "&offset=" + offset + "&direction=" + dir, "", oauth, false);
     }
 
     /**

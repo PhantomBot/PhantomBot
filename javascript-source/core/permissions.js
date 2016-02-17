@@ -306,7 +306,7 @@
   function restoreSubscriberStatus(username) {
     if ($.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
       if ($.inidb.exists('subscribed', username) && !$.isSub(username)) {
-        $.inidb.setIniDbBoolean('subscribed', username, false);
+        $.setIniDbBoolean('subscribed', username, false);
         if ($.inidb.exists('tempsubgroup', username) && !$.isMod(username)) {
           $.inidb.set('group', username, $.inidb.get('tempsubgroup', username));
           $.inidb.del('tempsubgroup', username);
