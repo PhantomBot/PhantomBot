@@ -211,16 +211,16 @@
     if (sender.equalsIgnoreCase('twitchnotify')) {
       if (message.contains('just subscribed!') && subWelcomeToggle) {
         s = s.replace(/\(name\)/ig, sub);
-        s = s.replace('/\(reward\)/ig', subReward.toString());
+        s = s.replace(/\(reward\)/ig, subReward.toString());
         $.say(s);
         return;
       }
 
       if (message.contains('months in a row!') && message.contains('subscribed for') && reSubWelcomeToggle) {
         var months = message.substring(message.indexOf('months') - 3, message.indexOf('months') - 1).toString();
-        r = r.replace('/\(name\)/ig', sub);
-        r = r.replace('/\(months\)/ig', months);
-        r = r.replace('/\(reward\)/ig', subReward.toString());
+        r = r.replace(/\(name\)/ig, sub);
+        r = r.replace(/\(months\)/ig, months);
+        r = r.replace(/\(reward\)/ig, subReward.toString());
         $.say(r);
       }
     }
