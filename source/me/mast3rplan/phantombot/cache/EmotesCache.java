@@ -38,7 +38,7 @@ import org.json.JSONObject;
 public class EmotesCache implements Runnable {
 
     private static final int LOOP_SLEEP_EMOTES_DISABLED = 60;
-    private static final int LOOP_SLEEP_EMOTES_ENABLED = 60 * 15;
+    private static final int LOOP_SLEEP_EMOTES_ENABLED = 60 * 20;
     private static final Map<String, EmotesCache> instances = Maps.newHashMap();
     public static EmotesCache instance(String channel) {
         EmotesCache instance = instances.get(channel);
@@ -174,7 +174,6 @@ public class EmotesCache implements Runnable {
         String localFrankerZEmoteString = "";
         String globalFrankerZEmoteString = "";
         String emotesModEnabled = "";
-        int totalEmotes = 0;
         boolean emoteDifferencesFound = false;
         boolean firstEmote = true;
 
@@ -198,9 +197,8 @@ public class EmotesCache implements Runnable {
             jsonArray = jsonResult.getJSONArray("emoticons");
             for (int i = 0; i < jsonArray.length(); i++) {
                 emote = jsonArray.getJSONObject(i).getString("regex");
-                newCache.put(emote, "unused");
+                newCache.put(emote, emote);
             }
-            totalEmotes += jsonArray.length();
         }
 
         com.gmt2001.Console.out.println("Pulling Global BTTV Emotes");
@@ -213,9 +211,8 @@ public class EmotesCache implements Runnable {
                                                                     .replace("\'", "\\\'")
                                                                     .replace("[", "\\[")
                                                                     .replace("]", "\\]");
-                newCache.put(emote, "unused");
+                newCache.put(emote, emote);
             }
-            totalEmotes += jsonArray.length();
         }
 
         com.gmt2001.Console.out.println("Pulling Local BTTV Emotes");
@@ -228,9 +225,8 @@ public class EmotesCache implements Runnable {
                                                                     .replace("\'", "\\\'")
                                                                     .replace("[", "\\[")
                                                                     .replace("]", "\\]");
-                newCache.put(emote, "unused");
+                newCache.put(emote, emote);
             }
-            totalEmotes += jsonArray.length();
         }
 
         com.gmt2001.Console.out.println("Pulling Global FrankerZ Emotes");
@@ -246,9 +242,8 @@ public class EmotesCache implements Runnable {
                                                                         .replace("\'", "\\\'")
                                                                         .replace("[", "\\[")
                                                                         .replace("]", "\\]");
-                    newCache.put(emote, "unused");
+                    newCache.put(emote, emote);
                 }
-                totalEmotes += jsonArray.length();
             }
         }
 
@@ -263,27 +258,37 @@ public class EmotesCache implements Runnable {
                                                                     .replace("\'", "\\\'")
                                                                     .replace("[", "\\[")
                                                                     .replace("]", "\\]");
-                newCache.put(emote, "unused");
+                newCache.put(emote, emote);
             }
-            totalEmotes += jsonArray.length();
         }
 
-        com.gmt2001.Console.out.println("Pulled a Total of " + totalEmotes + " Emotes");
-        if (totalEmotes > 0) {
+        com.gmt2001.Console.out.println("Pulled a Total of " + newCache.size() + " Emotes.");
+
+        if (this.cache != null) {
+            if (newCache.size() == this.cache.size()) {
+                com.gmt2001.Console.out.println("Emotes count has not changed, no data pushed to bus");
+                return;
+            }
+        }
+
+        if (newCache.size() > 0) {
             for (String key : newCache.keySet()) {
                 emoteString += (firstEmote ? "" : ",") + key;
                 firstEmote = false;
                 if (this.cache != null && !emoteDifferencesFound) {
-                    if (!exists(key)) {
+                    if (newCache.size() != this.cache.size()) {
+                        emoteDifferencesFound = true;
+                    }
+                    if (!this.cache.containsKey(key)) {
                         emoteDifferencesFound = true;
                     }
                 }
             }
             if (this.cache == null || emoteDifferencesFound) {
-                com.gmt2001.Console.out.println("Pushing Emotes onto the Bus");
+                com.gmt2001.Console.out.println("Pushing Emotes onto the bus");
                 EventBus.instance().post(new EmotesGetEvent(emoteString, PhantomBot.instance().getChannel("#" + this.channel)));
             } else {
-                com.gmt2001.Console.out.println("Emotes match Cache, not Sending to emoteHandler to Update");
+                com.gmt2001.Console.out.println("Emotes match cache, no data pushed to bus");
             }
         }
         this.cache = newCache;

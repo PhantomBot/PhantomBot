@@ -44,7 +44,7 @@
 
     for (var i = 0; i < emotesList.length; i++) {
       // Check for emote at the beginning, middle and end of a string.
-      emoteRegExp = '(^' + emotesList[i] + '|\\s' + emotesList[i] + '\\s|' + emotesList[i] + '$)';
+      emoteRegExp = '(\\b' + emotesList[i] + '\\b)';
       newEmotesRegExpList.push(new RegExp(emoteRegExp, 'g'));
     }
     emotesRegExpList = newEmotesRegExpList;
