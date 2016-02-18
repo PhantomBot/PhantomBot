@@ -4,12 +4,10 @@
  * Pull down emotes from Twitch, BetterTTV and FrankerZ.
  */
 (function () {
-  var emotesString = ($.inidb.exists('emotecache', 'emotes') ? $.inidb.get('emotecache', 'emotes') : ""),
-      emotesRegExpList = [];
+  var emotesRegExpList = [];
 
-  if (emotesString != "") {
-    buildEmotesRegExp();
-  }
+  // Attempt to build the regular expression cache from the inidb.
+  buildEmotesRegExp();
 
   /**
    * @event emotesGet
@@ -38,9 +36,15 @@
   * @function buildEmotesRegExp
   */
   function buildEmotesRegExp() {
-    var emotesList = emotesString.split(","),
+    var emotesList,
         emoteRegExp,
         newEmotesRegExpList = [];
+
+    if (!$.inidb.exists('emotecache', 'emotes')) {
+      return;
+    }
+
+    emotesList = $.inidb.get('emotecache', 'emotes').split(",");
 
     for (var i = 0; i < emotesList.length; i++) {
       // Check for emote at the beginning, middle and end of a string.

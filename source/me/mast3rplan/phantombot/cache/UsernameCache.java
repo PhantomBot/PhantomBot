@@ -77,7 +77,7 @@ public class UsernameCache {
                         return displayName;
                     } else {
                         try {
-                            throw new Exception("[HTTPErrorException] HTTP " + user.getInt("status") + " " + user.getString("error") + ". req="
+                            throw new Exception("[HTTPErrorException] HTTP " + user.getInt("_http") + " " + user.getString("error") + ". req="
                                                 + user.getString("_type") + " " + user.getString("_url") + " " + user.getString("_post") + "   "
                                                 + (user.has("message") && !user.isNull("message") ? "message=" + user.getString("message") : "content=" + user.getString("_content")));
                         } catch (Exception e) {

@@ -21,6 +21,7 @@
     pollTimerId: -1,
   };
 
+
   /**
    * @function runPoll
    * @export $.poll
@@ -28,12 +29,14 @@
    * @param {Array} options
    * @param {Number} time
    * @param {string} pollMaster
-   * @param {Function} callback
    * @param {Number} [minVotes]
+   * @param {Function} callback
    * @param {string} [initialVote]
    * @returns {boolean}
    */
-  function runPoll(question, options, time, pollMaster, callback, minVotes, initialVote) {
+  function runPoll(question, options, time, pollMaster, minVotes, callback) {
+    var optionsStr = "";
+
     if (poll.pollRunning) {
       return false
     }
@@ -44,13 +47,15 @@
     poll.callback = callback;
     poll.question = question;
     poll.options = options;
-    poll.minVotes = (minVotes ? minVotes : 0);
+    poll.minVotes = (minVotes ? minVotes : 1);
+    poll.votes = [];
+    poll.voters = [];
 
-    if (initialVote) {
-      vote(pollMaster, initialVote);
+    for (var i = 0; i < poll.options.length; i++) {
+      optionsStr += (i + 1) + ") " + poll.options[i] + " ";
     }
 
-    $.say($.resolveRank(pollMaster) + 'started a poll "' + poll.question + '"! Use "!vote [option]" to vote. Options: "' + poll.options.join('", "') + '".');
+    $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.question, optionsStr));
     if (poll.time) {
       poll.pollTimerId = setTimeout(function () {
         endPoll();
@@ -70,27 +75,24 @@
     var optionIndex;
 
     if (!poll.pollRunning) {
-      $.say($.whisperPrefix(sender) + 'There\'s currently no poll running.');
+      $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.nopoll'));
     }
 
     if ($.list.contains(poll.voters, sender.toLowerCase())) {
-      $.say($.whisperPrefix(sender) + $.resolveRank(sender) + ", you have already voted!");
+      $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.already'));
       return;
-    } else {
-      poll.voters.push(sender);
+    } 
+
+    optionIndex = parseInt(voteText);
+    if (isNaN(optionIndex) || optionIndex < 1 || optionIndex > poll.options.length) {
+      $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.invalid', voteText));
+      return;
     }
 
-    if (!$.list.contains(poll.options, voteText)) {
-      $.say($.whisperPrefix(sender) + '"' + voteText + '" is not a valid option!');
-      return;
-    }
-
-    if (optionIndex = poll.options.indexOf(voteText) > -1) {
-      poll.votes.push(poll.options[optionIndex]);
-      $.say($.whisperPrefix(sender) + 'You have voted "' + poll.options[optionIndex] + '" on "' + poll.question + '".')
-    } else {
-      $.say($.whisperPrefix(sender) + 'That option does not exist.');
-    }
+    optionIndex--;
+    $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.success', poll.options[optionIndex], poll.question));
+    poll.voters.push(sender);
+    poll.votes.push(optionIndex);
   };
 
   /**
@@ -98,8 +100,10 @@
    * @export $.poll
    */
   function endPoll() {
-    var counts = {},
+    var counts = [],
+        mostVotes = -1,
         i;
+
     if (!poll.pollRunning) {
       return;
     }
@@ -110,21 +114,21 @@
     }
 
     if (poll.minVotes > 0 && poll.votes.length < poll.minVotes) {
+      poll.result = '';
+      poll.pollMaster = '';
+      poll.pollRunning = false;
       poll.callback(false);
       return;
     }
 
-    for (i in poll.votes) {
-      counts[i] = (counts[i] || 0) + 1;
-    }
+    for (i = 0; i < poll.options.length; counts.push(0), i++) ;
+    for (i = 0; i < poll.votes.length; counts[poll.votes[i++]] += 1) ;
+    for (i = 1; i < counts.length; winner = ((counts[i] > mostVotes) ? i : winner), mostVotes = ((counts[i] > mostVotes) ? counts[i] : mostVotes), i++) ;
 
-    poll.result = Object.keys(counts).reduce(function (max, key) {
-      return ((max === undefined || counts[key] > counts[max]) ? +key : max);
-    });
-
-    poll.callback(poll.result);
-
+    poll.result = poll.options[winner];
+    poll.pollMaster = '';
     poll.pollRunning = false;
+    poll.callback(poll.result);
   };
 
   /**
@@ -138,8 +142,8 @@
         action = args[0];
 
     if (command.equalsIgnoreCase('vote') && action) {
-      if (!pollRunning) {
-        $.say($.whisperPrefix(sender) + 'There is no poll running!');
+      if (!poll.pollRunning) {
+        $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.nopoll'));
         return;
       }
       vote(sender, action);
@@ -150,14 +154,14 @@
      */
     if (command.equalsIgnoreCase('poll')) {
       if (!action) {
-        if (pollRunning) {
-          $.say(
-              $.whisperPrefix(sender)
-              + 'There is a poll running for "'
-              + poll.question
-              + '". Use "!vote [option]" to vote. The options are "'
-              + poll.options.join('", "') + '".'
-          );
+        if (poll.pollRunning) {
+          $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.poll.running', poll.question, poll.options.join('", "')));
+        } else {
+          if (!$.isMod(sender)) {
+            $.say($.whisperPrefix(sender) + $.modMsg);
+            return;
+          }
+          $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.poll.usage'));
         }
         return;
       }
@@ -171,11 +175,12 @@
        * @commandpath poll results - Announce result information about the last run poll (Poll information is retained until shutdown)
        */
       if (action.equalsIgnoreCase('results')) {
-        if (pollMaster != '') {
-          $.say('[Last Poll] - [Question: "' + poll.question + '"] - [Total votes: ' + poll.votes.length
-              + '] - [Result: "' + result + '"] - [Options: "' + poll.options.join('", "') + '"]');
+        if (poll.pollRunning) {
+          $.say($.lang.get('pollsystem.results.running'));
+        } else if (poll.result != '') {
+          $.say($.lang.get('pollsystem.results.lastpoll', poll.question, poll.votes.length, poll.result, poll.options.join('", "')));
         } else {
-          $.say($.whisperPrefix(sender) + 'There is no latest poll to retrieve results from!');
+          $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.results.404'));
         }
       }
 
@@ -183,31 +188,52 @@
        * @commandpath poll open [-t Run time in seconds] [-q Poll question] [-o "option1, option2..."] - Start a new poll
        */
       if (action.equalsIgnoreCase('open')) {
-        var time = parseInt(argsString.replace(/-t\s([0-9]+)/, '$1')),
-            question = argsString.replace(/-q\s".+"/, '$1'),
-            options = argsString.replace(/-o\s".+"/, '$1').split(', ');
-        if (isNaN(time) || !question || !options || options.length == 0) {
-          $.say($.whisperPrefix(sender) + 'Usage: !poll open [-t [time]] -q "[question]" -o "[option1], [option2], ..."');
+        var time = 60,
+            question = '',
+            options = [],
+            minVotes = 1;
+
+        argsString = argsString + ""; // Cast as a JavaScript string.
+
+        if (argsString.match(/-t\s+([0-9]+)/)) {
+          time = parseInt(argsString.match(/-t\s+([0-9]+)/)[1]);
+        }
+        if (argsString.match(/-q\s+"(.*)"\s+/)) {
+          question = argsString.match(/-q\s+"(.*)"\s+/)[1];
+        }
+        if (argsString.match(/-o\s+"(.+)"/)) {
+          options = argsString.match(/-o\s+"(.+)"/)[1].split(/,\s*/);
+        }
+        if (argsString.match(/-m\s+([0-9]+)/)) {
+          minVotes = parseInt(argsString.match(/-m\s+([0-9])+/)[1]);
+        }
+
+        if (isNaN(time) || !question || !options || options.length == 0 || isNaN(minVotes) || minVotes < 1) {
+          $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.open.usage'));
+          return;
+        }
+        if (options.length == 1) {
+          $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.open.moreoptions'));
           return;
         }
 
-        runPoll(question, options, time, sender, function (winner) {
+        runPoll(question, options, time, sender, minVotes, function (winner) {
           if (winner === false) {
-            $.say('The poll on "' + question + '" has ended! No votes were cast.');
+            $.say($.lang.get('pollsystem.runpoll.novotes', question));
             return;
           }
-          $.say('The poll on "' + question + '" has ended! The winner is "' + winner + '"!');
+          $.say($.lang.get('pollsystem.runpoll.winner', question, winner));
         });
 
-        $.say($.whisperPrefix(sender) + 'Poll started! use "!poll close" to end the poll manually or use "!poll result" to get the latest results');
+        $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.runpoll.started'));
       }
 
       /**
        * @commandpath poll close - Close the current poll
        */
       if (action.equalsIgnoreCase('close')) {
-        if (!pollRunning) {
-          $.say($.whisperPrefix(sender) + 'There is no poll running.');
+        if (!poll.pollRunning) {
+          $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.close.nopoll'));
           return;
         }
         endPoll();
