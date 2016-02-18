@@ -487,7 +487,7 @@
         return;
       }
 
-      videoRequest = new VideoRequest(new YoutubeVideo(action, sender), sender);
+      videoRequest = new VideoRequest(new YoutubeVideo(args.join(' '), sender), sender);
       if (videoRequest.youtubeVideo) {
         videoRequest.request();
       }
