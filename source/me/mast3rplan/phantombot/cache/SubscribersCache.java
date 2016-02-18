@@ -87,7 +87,7 @@ public class SubscribersCache implements Runnable {
                 com.gmt2001.Console.out.println(">> Twitch indicates that this account does not support subscribers. Disabling queries until next startup.");
                 return -1;
             } else {
-                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
+                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("_http") + " " + j.getString("error") + ". req="
                                     + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
                                     + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
             }
@@ -189,7 +189,7 @@ public class SubscribersCache implements Runnable {
                             run = false;
                         } else {
                             try {
-                                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
+                                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("_http") + " " + j.getString("error") + ". req="
                                                     + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
                                                     + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                             } catch (Exception e) {

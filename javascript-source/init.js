@@ -99,6 +99,11 @@
    */
   function loadScript(scriptFile, force, silent) {
     if (!isModuleLoaded(scriptFile) || force) {
+
+      if (!scriptFile.endsWith(".js")) {
+        return;
+      }
+
       try {
         var script = $api.loadScriptR($script, scriptFile),
             enabled;
