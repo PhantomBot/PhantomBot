@@ -8,7 +8,7 @@
  * The commandEvent will not get fired to your module if the registry does not know about it!
  */
 (function () {
-  var commands = [],
+  var commands = {},
       commandScriptTable = {};
 
   /**
@@ -18,6 +18,38 @@
    */
   function getCommandScript(command) {
     return commandScriptTable[command];
+  }
+
+  /**
+   * @function registerChatSubcommand
+   * @export $
+   * @param {string} command
+   * @param {string} subcommand
+   * @param {string|Number} [groupId]
+   */
+  function registerChatSubcommand(command, subcommand, groupId) {
+    groupId = (groupId ? groupId : 7);
+
+    if (typeof groupId == 'string') {
+      groupId = $.getGroupIdByName(groupId);
+    }
+
+    if (!$.commandExists(command)) {
+      return;
+    }
+
+    if (subCommandExists(command, subcommand)) {
+      return;
+    }
+
+    if ($.inidb.exists('permcom', command + " " + subcommand)) {
+      var newGroupId = parseInt($.inidb.get('permcom', command + " " + subcommand));
+      groupId = newGroupId;
+    }
+
+    commands[command].subcommands[subcommand] = {
+      groupId: groupId
+    }
   }
 
   /**
@@ -44,11 +76,11 @@
       groupId = newGroupId;
     }
 
-    commands.push({
-      command: command,
+    commands[command] = {
       groupId: groupId,
       script: script,
-    });
+      subcommands: {}
+    };
 
     commandScriptTable[command] = script;
   };
@@ -59,13 +91,21 @@
    * @param {string} command
    */
   function unregisterChatCommand(command) {
-    var i;
-    for (i in commands) {
-      if (commands[i].command.equalsIgnoreCase(command)) {
-        commands.splice(i, i);
-      }
-    }
+    delete commands[command];
+    delete commandScriptTable[command];
   };
+
+  /**
+   * @function unregisterChatSubcommand
+   * @export $
+   * @param {string} command
+   * @param {string} subcommand
+   */
+  function unregisterChatSubcommand(command, subcommand) {
+    if (commandExists(command)) {
+      delete commands[command].subcommands[subcommand];
+    }
+  }
 
   /**
    * @function commandExists
@@ -74,14 +114,22 @@
    * @returns {boolean}
    */
   function commandExists(command) {
-    var i;
-    for (i in commands) {
-      if (commands[i].command.equalsIgnoreCase(command)) {
-        return true;
-      }
+    return (commands[command] ? true : false);
+  };
+
+  /**
+   * @function subCommandExists
+   * @export $
+   * @param {string} command
+   * @param {string} subcommand
+   * @return {boolean}
+   */
+  function subCommandExists(command, subcommand) {
+    if (commandExists(command)) {
+      return (commands[command].subcommands[subcommand] ? true : false);
     }
     return false;
-  };
+  }
 
   /**
    * @function getCommandGroup
@@ -91,15 +139,26 @@
    * @returns {Number}
    */
   function getCommandGroup(command, name) {
-    var i;
-    for (i = 0; i < commands.length; i++) {
-      if (commands[i].command.equalsIgnoreCase(command)) {
-        if (name) {
-          return $.getGroupNameById(commands[i].groupId);
-        } else {
-          return commands[i].groupId;
-        }
+    if (commandExists(command)) {
+      return commands[command].groupId;
+    }
+    return 7;
+  };
+
+  /**
+   * @function getSubcommandGroup
+   * @export $
+   * @param command
+   * @param subcommand
+   * @param name
+   * @returns {Number}
+   */
+  function getSubcommandGroup(command, subcommand, name) {
+    if (commandExists(command)) {
+      if (subCommandExists(command, subcommand)) {
+        return commands[command].subcommands[subcommand].groupId;
       }
+      return getCommandGroup(command, name);
     }
     return 7;
   };
@@ -111,34 +170,34 @@
    * @param groupId
    */
   function updateCommandGroup(command, groupId) {
-    var i;
-    for (i = 0; i < commands.length; i++) {
-      if (commands[i].command.equalsIgnoreCase(command)) {
-        commands[i].groupId = groupId;
-      }
+    if (commandExists(command)) {
+      commands[command].groupId = groupId;
     }
   }
 
   /**
-   * @function updateCommandGroup
+   * @function updateSubcommandGroup
    * @export $
    * @param command
+   * @param sub
    * @param groupId
    */
-  function updateCommandGroup(command, groupId) {
-    var i;
-    for (i = 0; i < commands.length; i++) {
-      if (commands[i].command.equalsIgnoreCase(command)) {
-        commands[i].groupId = groupId;
-      }
+  function updateSubcommandGroup(command, subcommand, groupId) {
+    if (subCommandExists(command, subcommand)) {
+      commands[command].subcommands[subcommand].groupId = groupId;
     }
   }
 
   /** Export functions to API */
   $.registerChatCommand = registerChatCommand;
+  $.registerChatSubcommand = registerChatSubcommand;
   $.unregisterChatCommand = unregisterChatCommand;
+  $.unregisterChatSubcommand = unregisterChatSubcommand;
   $.commandExists = commandExists;
+  $.subCommandExists = subCommandExists;
   $.getCommandGroup = getCommandGroup;
+  $.getSubcommandGroup = getSubcommandGroup;
   $.updateCommandGroup = updateCommandGroup;
+  $.updateSubcommandGroup = updateSubcommandGroup;
   $.getCommandScript = getCommandScript;
 })();
