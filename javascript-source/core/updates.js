@@ -32,6 +32,7 @@
             './handlers/donationHandler.js',
             './systems/cleanupSystem.js',
             './systems/greetingSystem.js',
+            './systems/pointSystem.js',
             './systems/noticeSystem.js',
             './systems/pollSystem.js',
             './systems/quoteSystem.js',
