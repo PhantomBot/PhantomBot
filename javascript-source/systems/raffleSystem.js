@@ -277,4 +277,12 @@
       $.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
     }
   });
+
+  /**
+   * Warn the user if the points system is disabled and this is enabled.
+   */
+  if ($.bot.isModuleEnabled('./systems/raffleSystem.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
+    $.logError('raffleSystem.js', 402, "Disabled. ./systems/pointSystem.js is not enabled.");
+  }
+
 })();

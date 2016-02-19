@@ -114,6 +114,7 @@ $.lang.register('init.cmsgset', 'Connected message set!');
 $.lang.register('init.module.404', 'That module does not exist or is not loaded!');
 $.lang.register('init.module.check.disabled', 'Module $1 is currently disabled!');
 $.lang.register('init.module.check.enabled', 'Module $1 is currently enabled!');
+$.lang.register('init.module.auto-disabled', 'Modules related to pointSystem have been disabled. See logs.');
 $.lang.register('init.module.disabled', 'Module "$1" disabled!');
 $.lang.register('init.module.enabled', 'Module "$1" enabled!');
 $.lang.register('init.module.list', '$1 registered modules: $2');
