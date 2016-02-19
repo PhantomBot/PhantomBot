@@ -107,7 +107,7 @@
 
         $.inidb.decr('points', user, (times * cost));
         if (msgToggle) {
-            $.say($.username.reoslve(user) + $.lang.get('ticketrafflesystem.entered', tickets));
+            $.say($.lang.get('ticketrafflesystem.entered', $.username.resolve(user), tickets));
         }
     	for (var i = 0; i < times; i++) {
     	   entries.push(user);
@@ -195,12 +195,4 @@
     		$.registerChatCommand('./systems/ticketRaffleSystem.js', 'traffle', 2);
     	}
     });
-
-  /**
-   * Warn the user if the points system is disabled and this is enabled.
-   */
-  if ($.bot.isModuleEnabled('./systems/ticketRaffleSystem.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
-    $.logError('ticketRaffleSystem.js', 203, "Disabled. ./systems/pointSystem.js is not enabled.");
-  }
-
 })();
