@@ -67,14 +67,30 @@
    * @param {string} [oldName]
    */
   function registerPointCommands(oldName) {
-    if (oldName && $.commandExists(oldName)) {
-      $.unregisterChatCommand(oldName);
+    if (oldName && $.commandExists(oldName.toLowerCase())) {
+      $.unregisterChatCommand(oldName.toLowerCase()); 
     }
-    if (!$.commandExists(pointNameSingle) && !oldName) {
-      $.registerChatCommand('./core/pointSystem.js', $.pointNameSingle, 7);
+    if (!$.commandExists(pointNameSingle.toLowerCase()) && !oldName) {
+      $.registerChatCommand('./core/pointSystem.js', $.pointNameSingle.toLowerCase(), 7);
+      $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'add', 1);
+      $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'take', 1);
+      $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'set', 1);
+      $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'all', 1);
+      $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'setname', 1);
+      $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'setgain', 1);
+      $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'setofflinegain', 1);
+      $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'setinterval', 1);
     }
-    if (!$.commandExists(pointNameMultiple) && !oldName) {
-      $.registerChatCommand('./core/pointSystem.js', $.pointNameMultiple, 7);
+    if (!$.commandExists(pointNameMultiple.toLowerCase()) && !oldName) {
+      $.registerChatCommand('./core/pointSystem.js', $.pointNameMultiple.toLowerCase(), 7);
+      $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'add', 1);
+      $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'take', 1);
+      $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'set', 1);
+      $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'all', 1);
+      $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'setname', 1);
+      $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'setgain', 1);
+      $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'setofflinegain', 1);
+      $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'setinterval', 1);
     }
   };
 
@@ -87,7 +103,7 @@
         username,
         amount,
         i;
-    if (!$.bot.isModuleEnabled('./core/pointSystem.js')) {
+    if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
       return;
     }
 
@@ -144,9 +160,6 @@
           $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.withtime', $.resolveRank(sender), $.getPointsString($.getUserPoints(sender)), $.getUserTimeString(sender)));
         }
       } else {
-        if (!hasPerm(event)) {
-          return;
-        }
 
         /**
          * @commandpath points add [username] [amount] - Add an amount of points to a user's balance
@@ -440,9 +453,19 @@ actionArg1 = parseInt(actionArg1);
    * @event initReady
    */
   $.bind('initReady', function () {
-    if ($.bot.isModuleEnabled('./core/pointSystem.js')) {
-      $.registerChatCommand('./core/pointSystem.js', 'makeitrain', 2);
-      $.registerChatCommand('./core/pointSystem.js', 'points', 7);
+    if ($.bot.isModuleEnabled('./systems/pointSystem.js')) {
+      $.registerChatCommand('./systems/pointSystem.js', 'makeitrain', 2);
+      $.registerChatCommand('./systems/pointSystem.js', 'points', 7);
+
+      $.registerChatSubcommand('points', 'add', 1);
+      $.registerChatSubcommand('points', 'take', 1);
+      $.registerChatSubcommand('points', 'set', 1);
+      $.registerChatSubcommand('points', 'all', 1);
+      $.registerChatSubcommand('points', 'setname', 1);
+      $.registerChatSubcommand('points', 'setgain', 1);
+      $.registerChatSubcommand('points', 'setofflinegain', 1);
+      $.registerChatSubcommand('points', 'setinterval', 1);
+
       registerPointCommands();
     }
   });

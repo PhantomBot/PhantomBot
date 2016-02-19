@@ -141,7 +141,7 @@ public class DonationsCache implements Runnable {
                 }
             } else {
                 try {
-                    throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getString("error") + ". req=" +
+                    throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req=" +
                                         jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   " +
                                         (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
                                          jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));

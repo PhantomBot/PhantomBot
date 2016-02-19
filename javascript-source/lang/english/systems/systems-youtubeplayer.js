@@ -1,5 +1,6 @@
 $.lang.register('youtubeplayer.console.client.connected', '[\u266B] MusicClient connected!');
 $.lang.register('youtubeplayer.console.client.disconnected', '[\u266B] MusicClient disconnected!');
+$.lang.register('youtubeplayer.musicplayer.usage', 'usage: !musicplayer [togglenotify | limit | maxvideolength | shuffle | pause | reload | adddefault | deldefault]');
 $.lang.register('youtubeplayer.delete.usage', 'Usage: !musicplayer deletedefault [youtubeid]');
 $.lang.register('youtubeplayer.notrunning', 'The musicplayer is currently disabled.');
 $.lang.register('youtubeplayer.nowplaying.get', '[\u266B] $1 -- requested by @$2.');
@@ -30,6 +31,7 @@ $.lang.register('youtubeplayer.set.maxvideolength.usage', 'Current max video len
 $.lang.register('youtubeplayer.set.requestlimit.success', 'Song request limit has been changed to: $1.');
 $.lang.register('youtubeplayer.set.requestlimit.usage', 'Current song request limit is: $1. Usage: !musicplayer limit [request amount]');
 $.lang.register('youtubeplayer.stealsong.success', '[\u266B] $1 -- requested by @$2 has been stolen and added to the default playlist!');
+$.lang.register('youtubeplayer.stealsong.404', '[\u266B] No song is playing to steal!');
 $.lang.register('youtubeplayer.toggle.chatnotifications.success', '[\u266B] Chat notifications are now $1!');
 $.lang.register('youtubeplayer.toggle.songshuffle.success', 'Default playlist shuffling has been $1.');
 $.lang.register('youtubeplayer.volume.current', '[\u266B] Music volume: $1%.');

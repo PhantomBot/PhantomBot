@@ -41,6 +41,10 @@ public class Script {
         this.fileWatcher = new ScriptFileWatcher(this);
         this.file = file;
 
+        if (!file.getName().endsWith(".js")) {
+            return;
+        }
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         new Thread(fileWatcher).start();
@@ -54,10 +58,19 @@ public class Script {
 
         doDestroyables();
         load();
+        if (file.getPath().endsWith("init.js")) {
+            com.gmt2001.Console.out.println("Reloaded module: init.js");
+        } else {
+            com.gmt2001.Console.out.println("Reloaded module: " + file.getPath().replace("./scripts/./", ""));
+        }
     }
 
     public void load() throws IOException {
         if (killed) {
+            return;
+        }
+
+        if (!file.getName().endsWith(".js")) {
             return;
         }
 

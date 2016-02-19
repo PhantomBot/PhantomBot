@@ -61,4 +61,11 @@
         $.registerChatCommand('./games/roll.js', 'roll');
       }
     });
+
+  /**
+   * Warn the user if the points system is disabled and this is enabled.
+   */
+  if ($.bot.isModuleEnabled('./games/roll.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
+    $.logError('roll.js', 70, "Disabled. ./systems/pointSystem.js is not enabled.");
+  }
 })();

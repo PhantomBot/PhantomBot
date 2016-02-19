@@ -99,6 +99,11 @@
    */
   function loadScript(scriptFile, force, silent) {
     if (!isModuleLoaded(scriptFile) || force) {
+
+      if (!scriptFile.endsWith(".js")) {
+        return;
+      }
+
       try {
         var script = $api.loadScriptR($script, scriptFile),
             enabled;
@@ -303,7 +308,6 @@
     loadScript('./core/patternDetector.js');
     loadScript('./core/permissions.js');
     loadScript('./core/streamInfo.js');
-    loadScript('./core/pointSystem.js');
     loadScript('./core/ranks.js');
     loadScript('./core/timeSystem.js');
 
@@ -360,8 +364,10 @@
       var sender = event.getSender().toLowerCase(),
           tags = event.getTags(),
           origCommand = event.getCommand().toLowerCase(),
+          args = event.getArgs(),
           cooldown,
-          command;
+          command,
+          subcommand;
 
       if (!$.isModv3(sender, tags) && $.commandPause.isPaused()) {
         //$.say($.whisperPrefix(sender) + $.lang.get('commandpause.isactive'));
@@ -378,8 +384,9 @@
         return;
       }
 
-      if (!$.permCom(sender, command)) {
-        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', $.getUserGroupName(sender), command));
+      subcommand = (args[0] ? args[0] : '');
+      if (!$.permCom(sender, command, subcommand)) {
+        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', command + " " + subcommand + " (" + $.getUserGroupName(sender) + ")"));
         return;
       }
 
@@ -391,7 +398,7 @@
         }
       }
 
-      if (isModuleEnabled('./core/pointSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
+      if (isModuleEnabled('./systems/pointSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
         if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
           $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
           return;
@@ -565,9 +572,15 @@
       callHook('twitchAlertsDonationInitialized', event, true);
     });
 
+    /**
+     * @event api-getEmotes
+     */
+    $api.on($script, 'emotesGet', function (event) {
+      callHook('emotesGet', event, true);
+    });
+
     $.logEvent('init.js', 553, 'Bot locked & loaded!');
     $.consoleLn('Bot locked & loaded!');
-
 
     /**
      * @event command
@@ -578,6 +591,7 @@
           command = event.getCommand(),
           args = event.getArgs(),
           action = args[0],
+          pointsRelatedModules = [],
           temp,
           index;
 
@@ -673,6 +687,24 @@
             modules[index].enabled = false;
             $.setIniDbBoolean('modules', modules[index].scriptFile, false);
             $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', modules[index].getModuleName()));
+
+            if (modules[index].scriptFile == './systems/pointSystem.js') {
+              pointsRelatedModules.push('./games/adventureSystem.js');
+              pointsRelatedModules.push('./games/roll.js');
+              pointsRelatedModules.push('./games/slotMachine.js');
+              pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
+              pointsRelatedModules.push('./systems/raffleSystem.js');
+
+              for (var i = 0; i < pointsRelatedModules.length; i++) {
+                index = getModuleIndex(pointsRelatedModules[i]);
+                if (index > -1) {
+                  $.logEvent('init.js', 393, username + ' auto-disabled module "' + modules[index].scriptFile + '"');
+                  modules[index].enabled = false;
+                  $.setIniDbBoolean('modules', modules[index].scriptFile, false);
+                }
+              }
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.auto-disabled'));
+            }
           } else {
             $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
           }

@@ -35,7 +35,7 @@ import org.json.JSONObject;
 public class SubscribersCache implements Runnable {
 
     private static final Map<String, SubscribersCache> instances = Maps.newHashMap();
-    private boolean run = false;
+    private boolean run = true;
 
     public static SubscribersCache instance(String channel) {
         SubscribersCache instance = instances.get(channel);
@@ -51,7 +51,7 @@ public class SubscribersCache implements Runnable {
 
     private Map<String, JSONObject> cache;
     private final String channel;
-    private int count;
+    private int count = -1;
     private final Thread updateThread;
     private boolean firstUpdate = true;
     private Date timeoutExpire = new Date();
@@ -83,8 +83,11 @@ public class SubscribersCache implements Runnable {
                 int i = j.getInt("_total");
 
                 return i;
+            } else if (j.getInt("_http") == 422) {
+                com.gmt2001.Console.out.println(">> Twitch indicates that this account does not support subscribers. Disabling queries until next startup.");
+                return -1;
             } else {
-                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
+                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("_http") + " " + j.getString("error") + ". req="
                                     + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
                                     + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
             }
@@ -121,8 +124,13 @@ public class SubscribersCache implements Runnable {
                     if (new Date().after(timeoutExpire) && run && TwitchAPIv3.instance().HasOAuth()) {
                         int newCount = getCount(channel);
 
-                        if (new Date().after(timeoutExpire) && newCount != count) {
-                            this.updateCache(newCount);
+                        if (newCount == -1) {
+                            run = false;
+                        } else {
+                            if (new Date().after(timeoutExpire) && newCount != this.count) {
+                                this.updateCache(newCount);
+
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -152,7 +160,7 @@ public class SubscribersCache implements Runnable {
             }
 
             try {
-                Thread.sleep(30 * 1000);
+                Thread.sleep(60 * 60 * 1000); // One hour. This pulls every sub from the Twitch API and is for refreshing old subs more than anything.
             } catch (InterruptedException e) {
                 com.gmt2001.Console.out.println("SubscribersCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
                 com.gmt2001.Console.err.logStackTrace(e);
@@ -176,10 +184,12 @@ public class SubscribersCache implements Runnable {
                     if (j.getBoolean("_success")) {
                         if (j.getInt("_http") == 200) {
                             responses.add(j);
-
+                        } else if (j.getInt("_http") == 422) {
+                            com.gmt2001.Console.out.println(">> Twitch indicates that this account does not support subscribers. Disabling queries until next startup.");
+                            run = false;
                         } else {
                             try {
-                                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
+                                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("_http") + " " + j.getString("error") + ". req="
                                                     + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
                                                     + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                             } catch (Exception e) {
@@ -241,13 +251,13 @@ public class SubscribersCache implements Runnable {
         List<String> unsubscribers = Lists.newArrayList();
 
         for (String key : newCache.keySet()) {
-            if (cache == null || !cache.containsKey(key)) {
+            if (this.cache == null || !this.cache.containsKey(key)) {
                 subscribers.add(key);
             }
         }
 
-        if (cache != null) {
-            for (String key : cache.keySet()) {
+        if (this.cache != null) {
+            for (String key : this.cache.keySet()) {
                 if (!newCache.containsKey(key)) {
                     unsubscribers.add(key);
                 }
@@ -257,6 +267,11 @@ public class SubscribersCache implements Runnable {
         this.cache = newCache;
         this.count = newCache.size();
 
+        if (firstUpdate) {
+            firstUpdate = false;
+            EventBus.instance().post(new TwitchSubscribesInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+        }
+
         for (String subscriber : subscribers) {
             EventBus.instance().post(new TwitchSubscribeEvent(subscriber, PhantomBot.instance().getChannel("#" + this.channel)));
         }
@@ -265,10 +280,6 @@ public class SubscribersCache implements Runnable {
             EventBus.instance().post(new TwitchUnsubscribeEvent(subscriber, PhantomBot.instance().getChannel("#" + this.channel)));
         }
 
-        if (firstUpdate) {
-            firstUpdate = false;
-            EventBus.instance().post(new TwitchSubscribesInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
-        }
     }
 
     public void addSubscriber(String username) {

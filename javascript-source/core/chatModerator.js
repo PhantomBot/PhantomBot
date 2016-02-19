@@ -7,29 +7,33 @@
 
         linksToggle = ($.inidb.exists('chatModerator', 'linksToggle') ? $.getIniDbBoolean('chatModerator', 'linksToggle') : true),
         linksMessage = ($.inidb.exists('chatModerator', 'linksMessage') ? $.inidb.get('chatModerator', 'linksMessage') : 'you were timed out for linking'),
-        linkPermitTime = (parseInt($.inidb.exists('chatModerator', 'linkPermitTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'linkPermitTime')) : 120),
+        linkPermitTime = ($.inidb.exists('chatModerator', 'linkPermitTime') ? parseInt($.inidb.get('chatModerator', 'linkPermitTime')) : 120),
 
         capsToggle = ($.inidb.exists('chatModerator', 'capsToggle') ? $.getIniDbBoolean('chatModerator', 'capsToggle') : true),
         capsMessage = ($.inidb.exists('chatModerator', 'capsMessage') ? $.inidb.get('chatModerator', 'capsMessage') : 'you were timed out for overusing caps'),
-        capsLimit = (parseInt($.inidb.exists('chatModerator', 'capsLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'capsLimit')) : 50),
-        capsTriggerLength = (parseInt($.inidb.exists('chatModerator', 'capsTriggerLength')) ? parseInt($.getIniDbBoolean('chatModerator', 'capsTriggerLength')) : 10),
+        capsLimit = ($.inidb.exists('chatModerator', 'capsLimit') ? parseInt($.inidb.get('chatModerator', 'capsLimit')) : 50),
+        capsTriggerLength = ($.inidb.exists('chatModerator', 'capsTriggerLength') ? parseInt($.inidb.get('chatModerator', 'capsTriggerLength')) : 10),
 
         spamToggle = ($.inidb.exists('chatModerator', 'spamToggle') ? $.getIniDbBoolean('chatModerator', 'spamToggle') : true),
         spamMessage = ($.inidb.exists('chatModerator', 'spamMessage') ? $.inidb.get('chatModerator', 'spamMessage') : 'you were timed out for spamming'),
-        spamLimit = (parseInt($.inidb.exists('chatModerator', 'spamLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'spamLimit')) : 25),
+        spamLimit = ($.inidb.exists('chatModerator', 'spamLimit') ? parseInt($.inidb.get('chatModerator', 'spamLimit')) : 25),
 
         symbolsToggle = ($.inidb.exists('chatModerator', 'symbolsToggle') ? $.getIniDbBoolean('chatModerator', 'symbolsToggle') : true),
         symbolsMessage = ($.inidb.exists('chatModerator', 'symbolsMessage') ? $.inidb.get('chatModerator', 'symbolsMessage') : 'you were timed out for overusing symbols'),
-        symbolsLimit = (parseInt($.inidb.exists('chatModerator', 'symbolsLimit')) ? parseInt($.getIniDbBoolean('chatModerator', 'symbolsLimit')) : 25),
-        symbolsTriggerLength = (parseInt($.inidb.exists('chatModerator', 'symbolsTriggerLength')) ? parseInt($.getIniDbBoolean('chatModerator', 'symbolsTriggerLength')) : 5),
+        symbolsLimit = ($.inidb.exists('chatModerator', 'symbolsLimit') ? parseInt($.inidb.get('chatModerator', 'symbolsLimit')) : 25),
+        symbolsTriggerLength = ($.inidb.exists('chatModerator', 'symbolsTriggerLength') ? parseInt($.inidb.get('chatModerator', 'symbolsTriggerLength')) : 5),
+
+        emotesToggle = ($.inidb.exists('chatModerator', 'emotesToggle') ? $.getIniDbBoolean('chatModerator', 'emotesToggle') : false),
+        emotesMessage = ($.inidb.exists('chatModerator', 'emotesMessage') ? $.inidb.get('chatModerator', 'emotesMessage') : 'you were timed out for overusing emotes'),
+        emotesLimit = ($.inidb.exists('chatModerator', 'emotesLimit') ? parseInt($.inidb.get('chatModerator', 'emotesLimit')) : 30),
 
         regularsToggle = ($.inidb.exists('chatModerator', 'regularsToggle') ? $.getIniDbBoolean('chatModerator', 'regularsToggle') : false),
         subscribersToggle = ($.inidb.exists('chatModerator', 'subscribersToggle') ? $.getIniDbBoolean('chatModerator', 'subscribersToggle') : true),
 
         blacklistMessage = ($.inidb.exists('chatModerator', 'blacklistMessage') ? $.inidb.get('chatModerator', 'blacklistMessage') : 'you were timed out using a blacklisted phrase'),
-        warningTime = (parseInt($.inidb.exists('chatModerator', 'warningTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'warningTime')) : 5),
-        timeoutTime = (parseInt($.inidb.exists('chatModerator', 'timeoutTime')) ? parseInt($.getIniDbBoolean('chatModerator', 'timeoutTime')) : 600),
-        msgCooldownSec = (parseInt($.inidb.exists('chatModerator', 'msgCooldownSec')) ? parseInt($.getIniDbBoolean('chatModerator', 'msgCooldownSec')) : 20),
+        warningTime = ($.inidb.exists('chatModerator', 'warningTime') ? parseInt($.getIniDbBoolean('chatModerator', 'warningTime')) : 5),
+        timeoutTime = ($.inidb.exists('chatModerator', 'timeoutTime') ? parseInt($.inidb.get('chatModerator', 'timeoutTime')) : 600),
+        msgCooldownSec = ($.inidb.exists('chatModerator', 'msgCooldownSec') ? parseInt($.inidb.get('chatModerator', 'msgCooldownSec')) : 20),
         warning = '';
 
     /**
@@ -234,6 +238,13 @@
                     deleteMessage(sender);
                     sendMessage(sender, spamMessage);
                     return;
+                }
+            }
+
+            if (emotesToggle) {
+                if ($.patternDetector.getNumberOfEmotes(event) > emotesLimit) {
+                    deleteMessage(sender);
+                    sendMessage(sender, emotesMessage);
                 }
             }
         }
@@ -492,6 +503,28 @@
             }
         
             /**
+             * @commandpath moderation emotes [on / off] - Enable/Disable the emotes filter
+             */
+            if (action.equalsIgnoreCase('emotes')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.usage', getModerationFilterStatus(emotesToggle)));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('on')) {
+                    emotesToggle = true;
+                    $.inidb.set('chatModerator', 'emotesToggle', emotesToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.filter.enabled'));
+                    return;
+                } else if (subAction.equalsIgnoreCase('off')) {
+                    emotesToggle = false;
+                    $.inidb.set('chatModerator', 'symbolsToggle', emotesToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.filter.disabled'));
+                    return;
+                }
+            }
+
+            /**
              * @commandpath moderation regulars [true / false] - Allow regulars to post links
              */
             if (action.equalsIgnoreCase('regulars')) {
@@ -534,6 +567,7 @@
                     return;
                 }
             }
+
         
             /**
              * @commandpath moderation linksmessage [message] - Sets the link warning message
@@ -574,6 +608,20 @@
                 symbolsMessage = argString.replace(action, '').trim();
                 $.inidb.set('chatModerator', 'symbolsMessage', symbolsMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.message.set', symbolsMessage));
+                return;
+            }
+
+            /**
+             * @commandpath moderation emotesmessage [message] - Sets the emotes warning message
+             */
+            if (action.equalsIgnoreCase('emotesmessage')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.message.usage'));
+                    return;
+                }
+                emotesMessage = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'emotesMessage', emotesMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.message.set', emotesMessage));
                 return;
             }
         
@@ -686,6 +734,20 @@
                 symbolsTriggerLength = parseInt(subAction);
                 $.inidb.set('chatModerator', 'symbolsTriggerLength', symbolsTriggerLength);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.trigger.length.set', symbolsTriggerLength));
+                return;
+            }
+
+            /**
+             * @commandpath moderation emoteslimit [amount] - Sets the amount of emotes allowed in a message
+             */
+            if (action.equalsIgnoreCase('emoteslimit')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.limit.usage'));
+                    return;
+                }
+                emotesLimit = parseInt(subAction);
+                $.inidb.set('chatModerator', 'emotesLimit', emotesLimit);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.limit.set', emotesLimit));
                 return;
             }
         

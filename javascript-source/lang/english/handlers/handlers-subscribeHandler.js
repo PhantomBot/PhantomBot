@@ -6,6 +6,8 @@ $.lang.register('subscribehandler.new.sub.toggle.off', 'New Subscribers will no 
 $.lang.register('subscribehandler.new.sub.toggle.on', 'New Subscribers will now be welcomed upon subscribing.');
 $.lang.register('subscribehandler.resub.msg.set', 'Resubscriber welcome message set!');
 $.lang.register('subscribehandler.resub.msg.usage', 'Usage: !resubmessage (message) - Tags: (name), (months) and (reward)');
+$.lang.register('subscribehandler.resub.msg.noreward.set', 'Resubscriber welcome message set for no rewards!');
+$.lang.register('subscribehandler.resub.msg.noreward.usage', 'Usage: !resubmessage (message) - Tags: (name) (months)');
 $.lang.register('subscribehandler.resub.toggle.off', 'Resubscribers will no longer be welcomed upon resubscribing.');
 $.lang.register('subscribehandler.resub.toggle.on', 'Resubscribers will now be welcomed upon resubscribing.');
 $.lang.register('subscribehandler.reward.set', 'Reward for subscribing set!');
@@ -13,3 +15,5 @@ $.lang.register('subscribehandler.reward.usage', 'Usage: !subscribereward (amoun
 $.lang.register('subscribehandler.sub.count', 'There are currently $1 subscribers!');
 $.lang.register('subscribehandler.sub.msg.set', 'New subscriber welcome message set!');
 $.lang.register('subscribehandler.sub.msg.usage', 'Usage: !submessage (message) - Tags: (name) and (reward)');
+$.lang.register('subscribehandler.sub.msg.noreward.set', 'New subscriber welcome message set for no rewards!');
+$.lang.register('subscribehandler.sub.msg.noreward.usage', 'Usage: !submessage (message) - Tag: (name)');

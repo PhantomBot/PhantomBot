@@ -166,7 +166,7 @@ public class ChannelUsersCache implements Runnable {
                 }
             } else {
                 try {
-                    throw new Exception("[HTTPErrorException] HTTP " + j.getString("error") + ". req="
+                    throw new Exception("[HTTPErrorException] HTTP " + j.getInt("_http") + ". req="
                                         + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
                                         + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                 } catch (Exception e) {
