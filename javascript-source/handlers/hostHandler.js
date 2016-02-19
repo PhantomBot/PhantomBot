@@ -134,7 +134,15 @@
      * @commandpath hostcount - Announce the current number of other channels hosting this channel
      */
     if (command.equalsIgnoreCase('hostcount')) {
-      $.say($.lang.get('hosthandler.newhost', hostList.length));
+      for (i in hostList) {
+        temp.push(i);
+      }
+
+      if (temp.length == 0) {
+        $.say($.lang.get('hosthandler.hostcount.404'));
+        return;
+      }
+      $.say($.lang.get('hosthandler.hostcount', temp.length));
     }
 
     /**
