@@ -308,7 +308,6 @@
     loadScript('./core/patternDetector.js');
     loadScript('./core/permissions.js');
     loadScript('./core/streamInfo.js');
-    loadScript('./core/pointSystem.js');
     loadScript('./core/ranks.js');
     loadScript('./core/timeSystem.js');
 
@@ -399,7 +398,7 @@
         }
       }
 
-      if (isModuleEnabled('./core/pointSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
+      if (isModuleEnabled('./systems/pointSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
         if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
           $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
           return;
@@ -592,6 +591,7 @@
           command = event.getCommand(),
           args = event.getArgs(),
           action = args[0],
+          pointsRelatedModules = [],
           temp,
           index;
 
@@ -687,6 +687,24 @@
             modules[index].enabled = false;
             $.setIniDbBoolean('modules', modules[index].scriptFile, false);
             $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', modules[index].getModuleName()));
+
+            if (modules[index].scriptFile == './systems/pointSystem.js') {
+              pointsRelatedModules.push('./games/adventureSystem.js');
+              pointsRelatedModules.push('./games/roll.js');
+              pointsRelatedModules.push('./games/slotMachine.js');
+              pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
+              pointsRelatedModules.push('./systems/raffleSystem.js');
+
+              for (var i = 0; i < pointsRelatedModules.length; i++) {
+                index = getModuleIndex(pointsRelatedModules[i]);
+                if (index > -1) {
+                  $.logEvent('init.js', 393, username + ' auto-disabled module "' + modules[index].scriptFile + '"');
+                  modules[index].enabled = false;
+                  $.setIniDbBoolean('modules', modules[index].scriptFile, false);
+                }
+              }
+              $.say($.whisperPrefix(sender) + $.lang.get('init.module.auto-disabled'));
+            }
           } else {
             $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
           }

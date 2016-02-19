@@ -103,7 +103,7 @@
         username,
         amount,
         i;
-    if (!$.bot.isModuleEnabled('./core/pointSystem.js')) {
+    if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
       return;
     }
 
@@ -453,9 +453,9 @@ actionArg1 = parseInt(actionArg1);
    * @event initReady
    */
   $.bind('initReady', function () {
-    if ($.bot.isModuleEnabled('./core/pointSystem.js')) {
-      $.registerChatCommand('./core/pointSystem.js', 'makeitrain', 2);
-      $.registerChatCommand('./core/pointSystem.js', 'points', 7);
+    if ($.bot.isModuleEnabled('./systems/pointSystem.js')) {
+      $.registerChatCommand('./systems/pointSystem.js', 'makeitrain', 2);
+      $.registerChatCommand('./systems/pointSystem.js', 'points', 7);
 
       $.registerChatSubcommand('points', 'add', 1);
       $.registerChatSubcommand('points', 'take', 1);

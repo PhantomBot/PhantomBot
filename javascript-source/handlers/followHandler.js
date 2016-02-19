@@ -16,6 +16,7 @@
       announceFollows = false,
       followReward = ($.inidb.exists('settings', 'followReward') ? parseInt($.inidb.get('settings', 'followReward')) : 100),
       followMessage = ($.inidb.exists('settings', 'followMessage') ? $.inidb.get('settings', 'followMessage') : $.lang.get('followhandler.follow.message')),
+      followMessageNoReward = ($.inidb.exists('settings', 'followMessageNoReward') ? $.inidb.get('settings', 'followMessageNoReward') : $.lang.get('followhandler.follow.message.noreward')),
       followToggle = ($.inidb.exists('settings', 'followToggle') ? $.inidb.get('settings', 'followToggle') : false);
 
   /**
@@ -88,13 +89,13 @@
     }
 
     if (announceFollows) {
-			followmsg = followMessage.replace('(name)',$.username.resolve(follower)); 
-      if (followReward > 0) {
-			followmsg = followmsg.replace('(reward)', $.getPointsString(followReward));
-			$.say(followmsg);
+      if (followReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+        followmsg = followMessage.replace('(name)', $.username.resolve(follower)); 
+        followmsg = followmsg.replace('(reward)', $.getPointsString(followReward));
       } else {
-			$.say(followmsg.replace('(name)',$.username.resolve(follower)));
+        followmsg = followMessageNoReward.replace('(name)', $.username.resolve(follower));
       }
+      $.say(followmsg);
     }
 
     $.setIniDbBoolean('followed', follower, true);
@@ -158,17 +159,30 @@
     }
 
     /**
+     * @commandpath followmessagenoreward [message] - Set the follow message
+     */
+    if (command.equalsIgnoreCase('followmessagenoreward')) {
+      if (!comArg || comArg <= 0) {
+        $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessagenoreward.usage'));
+        return;
+      }
+
+      followMessage = argString;
+      $.inidb.set('settings', 'followMessage', followMessage);
+      $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessagenoreward.success'));
+    }
+    /**
      * @commandpath followtoggle - Enable or disabled the anouncements for new follows.
      */
     if (command.equalsIgnoreCase('followtoggle')) {
         if (followToggle) {
             followToggle = false;
             $.inidb.set('settings', 'followToggle', followToggle);
-            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.toggle.off'));
+            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.followtoggle.off'));
         } else if (!followToggle) {
             followToggle = true;
             $.inidb.set('settings', 'followToggle', followToggle);
-            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.toggle.on'));
+            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.followtoggle.on'));
         }
     }
 
@@ -234,6 +248,7 @@
       $.registerChatCommand('./handlers/followHandler.js', 'followreward', 1);
       $.registerChatCommand('./handlers/followHandler.js', 'followtoggle', 1);
       $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
+      $.registerChatCommand('./handlers/followHandler.js', 'followmessagenoreward', 1);
       $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
       $.registerChatCommand('./handlers/followHandler.js', 'followers', 7);
       $.registerChatCommand('./handlers/followHandler.js', 'follow', 2);

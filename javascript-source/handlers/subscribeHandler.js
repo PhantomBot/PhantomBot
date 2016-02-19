@@ -6,6 +6,8 @@
 (function () {
   var subMessage = ($.inidb.exists('subscribeHandler', 'subscribeMessage') ? $.inidb.get('subscribeHandler', 'subscribeMessage') : '(name) just subscribed!'),
       reSubMessage = ($.inidb.exists('subscribeHandler', 'reSubscribeMessage') ? $.inidb.get('subscribeHandler', 'reSubscribeMessage') : '(name) just subscribed for (months) months in a row!'),
+      subMessageNoReward = ($.inidb.exists('subscribeHandler', 'subscribeMessageNoReward') ? $.inidb.get('subscribeHandler', 'subscribeMessageNoReward') : '(name) just subscribed!'),
+      reSubMessageNoReward = ($.inidb.exists('subscribeHandler', 'reSubscribeMessageNoReward') ? $.inidb.get('subscribeHandler', 'reSubscribeMessageNoReward') : '(name) just subscribed for (months) months in a row!'),
       subWelcomeToggle = ($.inidb.exists('subscribeHandler', 'subscriberWelcomeToggle') ? $.getIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle') : true),
       reSubWelcomeToggle = ($.inidb.exists('subscribeHandler', 'reSubscriberWelcomeToggle') ? $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle') : true),
       subReward = (parseInt($.inidb.exists('subscribeHandler', 'subscribeReward')) ? parseInt($.inidb.get('subscribeHandler', 'subscribeReward')) : 0);
@@ -106,7 +108,7 @@
     }
 
     /**
-     * @commandpath submessae [message] - set a sub welcome message
+     * @commandpath submessage [message] - set a sub welcome message
      */
     if (command.equalsIgnoreCase('submessage')) {
       if (!$.isAdmin(sender)) {
@@ -138,6 +140,41 @@
       $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.set'));
       return;
     }
+
+    /**
+     * @commandpath submessagenoreward [message] - set a sub welcome message when rewards are disabled
+     */
+    if (command.equalsIgnoreCase('submessagenoreward')) {
+      if (!$.isAdmin(sender)) {
+        $.say($.whisperPrefix(sender) + $.adminMsg);
+        return;
+      } else if (args.length == 0) {
+        $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.usage'));
+        return;
+      }
+      $.inidb.set('subscribeHandler', 'subscribeMessageNoReward', argsString);
+      subMessage = argsString;
+      $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.set'));
+      return;
+    }
+
+    /**
+     * @commandpath resubmessagenoreward - set a resub message when rewards are disabled
+     */
+    if (command.equalsIgnoreCase('resubmessagenoreward')) {
+      if (!$.isAdmin(sender)) {
+        $.say($.whisperPrefix(sender) + $.adminMsg);
+        return;
+      } else if (args.length == 0) {
+        $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.noreward.usage'));
+        return;
+      }
+      $.inidb.set('subscribeHandler', 'reSubscribeMessageNoReward', argsString);
+      reSubMessage = argsString;
+      $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.noreward.set'));
+      return;
+    }
+
 
     /**
      * @commandpath subscribereward - set a sub reward
@@ -204,9 +241,12 @@
   $.bind('ircPrivateMessage', function (event) {
     var sender = event.getSender(),
         message = event.getMessage(),
-        s = subMessage,
-        r = reSubMessage,
+        s,
+        r,
         sub = message.substring(0, message.indexOf(' ', 1)).toString();
+
+    s = (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js') ? subMessage : subMessageNoReward);
+    r = (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js') ? reSubMessage : reSubMessageNoReward);
 
     if (sender.equalsIgnoreCase('twitchnotify')) {
       if (message.contains('just subscribed!') && subWelcomeToggle) {
@@ -236,7 +276,9 @@
       $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'subscribercount', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 2);
+      $.registerChatCommand('./handlers/subscribehandler.js', 'submessagenoreward', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 2);
+      $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessagenoreward', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'subscribers', 2);
       $.registerChatCommand('./handlers/subscribehandler.js', 'subscribersoff', 2);
     }

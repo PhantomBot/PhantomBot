@@ -42,6 +42,11 @@
      * @commandpath top5 - Get the top 5 viewers in the channel
      */
     if (command.equalsIgnoreCase('top5')) {
+      if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
+        $.say($.lang.get('top5.points-disabled'));
+        return;
+      }
+
       temp = getTop5('points');
 
       for (i in temp) {
