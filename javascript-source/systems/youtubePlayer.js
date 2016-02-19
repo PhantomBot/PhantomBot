@@ -370,6 +370,11 @@
         return;
       }
 
+      if (!action) {
+        $.say($.whisperPrefix(sender) + $.lang.get('youtubeplayer.musicplayer.usage', requestLimit));
+        return;
+      }
+
       /**
        * @commandpath musicplayer togglenotify - Toggle now-playing notifications in the chat
        */
@@ -504,9 +509,18 @@
 
       if (!actionArg && !isNaN(parseInt(action))) {
         playerVolume = parseInt(action);
-        $.inidb.set('youtubePlayer', 'playerVolume', playerVolume);
         if (playerConnected) {
+          $.inidb.set('youtubePlayer', 'playerVolume', playerVolume);
           $.musicplayer.setVolume(playerVolume);
+          $.say($.lang.get('youtubeplayer.volume.current', $.inidb.get('youtubePlayer', 'playerVolume')));
+        } else {
+          $.say($.lang.get('youtubeplayer.notrunning'));
+        }
+      } else {
+        if (playerConnected) {
+          $.say($.lang.get('youtubeplayer.volume.current', $.inidb.get('youtubePlayer', 'playerVolume')));
+        } else {
+          $.say($.lang.get('youtubeplayer.notrunning'));
         }
       }
     }
@@ -555,10 +569,17 @@
         return;
       }
 
+      if (!playerConnected) {
+        $.say($.whisperPrefix(sender) + $.lang.get('youtubeplayer.notrunning'));
+        return;
+      }
+
       if (currentSong) {
         $.writeToFile('https://youtube.com/watch?v=' + currentSong.videoId, workPath + 'playlist.txt', true);
         $.say($.lang.get('youtubeplayer.stealsong.success', currentSong.videoTitle, $.resolveRank(currentSong.username)));
         reloadDefaultPlaylist();
+      } else {
+        $.say($.lang.get('youtubeplayer.stealsong.404'));
       }
     }
 

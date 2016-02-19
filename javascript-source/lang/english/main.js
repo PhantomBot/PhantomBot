@@ -19,9 +19,9 @@ $.lang.register('chatmoderator.emotes.filter.disabled', 'emotes filter has been 
 $.lang.register('chatmoderator.regulars.usage', 'Usage: !moderation regulars [true / false] - Allows regulars to post links.');
 $.lang.register('chatmoderator.regulars.enabled', 'regulars are now allowed to post links.');
 $.lang.register('chatmoderator.regulars.disabled', 'regulars are no longet allowed to post links.');
-$.lang.register('chatmoderator.subscribers.usage', 'Usage: !moderation subscribers [true / false] - Allows subscribers to post links.');
-$.lang.register('chatmoderator.subscribers.enabled', 'subscribers are now allowed to post links.');
-$.lang.register('chatmoderator.subscribers.disabled', 'subscribers are no longet allowed to post links.');
+$.lang.register('chatmoderator.subscribers.usage', 'Usage: !moderation subscribers [true / false] - Allows subscribers to avoid the moderation filters');
+$.lang.register('chatmoderator.subscribers.enabled', 'subscribers will now avoid all spam filters.');
+$.lang.register('chatmoderator.subscribers.disabled', 'subscribers will no longer avoid all spam filters.');
 $.lang.register('chatmoderator.link.message.usage', 'Usage: !moderation linksmessage [message]');
 $.lang.register('chatmoderator.link.message.set', 'link warning message set to: $1');
 $.lang.register('chatmoderator.caps.message.usage', 'Usage: !moderation capsmessage [message]');
@@ -197,3 +197,4 @@ $.lang.register('timesystem.take.success', 'Taken $1 from $2. New balance is $3.
 $.lang.register('timesystem.take.usage', 'Usage: "!time take [name] [amount]"');
 $.lang.register('whisper.whispers.disabled', '[Whisper Mode] has been disabled.');
 $.lang.register('whisper.whispers.enabled', '[Whisper Mode] has been enabled.');
+$.lang.register('pausecommands.usage', 'usage: !pausecommands [seconds | clear]');

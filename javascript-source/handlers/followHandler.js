@@ -183,12 +183,13 @@
      * @commandpath checkfollow [username] - Check if a user is following the channel
      */
     if (command.equalsIgnoreCase('checkfollow')) {
-      comArg = comArg.toLowerCase();
       if (!comArg || comArg == '') {
         $.say($.whisperPrefix(sender) + $.lang.get('followhandler.check.usage'));
         return;
       }
 
+      comArg = comArg.toLowerCase();
+    
       if ($.user.isFollower(comArg)) {
         $.say($.lang.get('followhandler.check.follows', $.username.resolve(comArg)));
       } else {
