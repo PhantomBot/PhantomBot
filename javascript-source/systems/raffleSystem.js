@@ -1,288 +1,185 @@
-/**
- * raffleSystem.js
- *
- * Run/manage raffles
- */
 (function () {
-  var currentRaffle = {
-    raffleActive: false,
-    keyWord: '',
-    time: 0,
-    forFollowers: false,
-    cost: 0,
-    users: [],
-    winner: '',
-    raffleMaster: $.ownerName,
-    raffleTimerId: -1,
-    startTime: 0,
-  };
+	var cost = 0,
+	    entries = [],
+        keyword = '',
+	    followers = false,
+	    raffleStatus = false,
+        msgToggle = ($.inidb.exists('settings', 'raffleMSGToggle') ? $.getIniDbBoolean('settings', 'raffleMSGToggle') : false),
+        a = '';
 
-  /**
-   * @function updateFile
-   * @param {string} line
-   */
-  function updateFile(line) {
-    var append = true;
-    if (startTime == 0) {
-      currentRaffle.startTime = $.systemTime();
-      append = false;
-    }
+    function checkArgs (user, key, price, followersOnly) {
+    	if (raffleStatus) {
+    		$.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.opened'));
+    		return;
+    	}
 
-    if (!$.isDirectory('./addons/raffleSystem')) {
-      $.mkDir('./addons/raffleSystem');
-    }
-
-    $.writeToFile(line, './addons/raffleSystem/raffle_' + $.logging.getLogDateString(startTime) + '_' + $.logging.getLogTimeString(startTime) + '.txt', append);
-  };
-
-  /**
-   * @function startRaffle
-   * @param {string} keyWord
-   * @param {boolean} forFollowers
-   * @param {Number} time
-   * @param {Number} cost
-   * @param {string} raffleMaster
-   */
-  function startRaffle(keyWord, forFollowers, time, cost, raffleMaster) {
-    if (currentRaffle.raffleActive) {
-      $.say($.whisperPrefix(raffleMaster) + $.lang.get('rafflesystem.start.error.alreadyrunning'));
-      return;
-    }
-
-    $.registerChatCommand('./systems/raffleSystem.js', keyWord, 7);
-    currentRaffle.keyWord = keyWord;
-
-    if (raffleMaster) {
-      currentRaffle.raffleMaster = raffleMaster;
-    }
-
-    if (forFollowers) {
-      currentRaffle.forFollowers = forFollowers;
-    }
-
-    if (!isNaN(time) && time > 0) {
-      currentRaffle.raffleTimerId = setTimeout(function () {
-        endRaffle();
-      }, time * 1e3);
-    }
-
-    if (!isNaN(cost) && cost > 0) {
-      currentRaffle.cost = cost;
-    }
-
-    currentRaffle.raffleActive = true;
-    $.say(getRaffleText(raffleMaster));
-    updateFile(
-        'New Raffle: ' +
-        (raffleMaster ? 'By ' + raffleMaster : '') +
-        (keyWord ? ', Keyword !' + keyWord : '') +
-        (forFollowers ? ', followers only' : '') +
-        (time ? ', Run time ' + time + 'seconds' : '') +
-        (cost ? ', Cost ' + cost + ' ' + $.pointNameMultiple : '')
-    )
-  };
-
-  /**
-   * @function endRaffle
-   */
-  function endRaffle() {
-    if (!raffleActive) {
-      $.say($.whisperPrefix(currentRaffle.raffleMaster) + $.lang.get('rafflesystem.close.error.notrunning'));
-      return;
-    }
-    if (raffleTimerId > -1) {
-      clearTimeout(raffleTimerId);
-      currentRaffle.raffleTimerId = -1;
-    }
-    updateFile('Raffle ended');
-    pickWinner();
-    currentRaffle.raffleActive = false;
-    currentRaffle.startTime = 0;
-  };
-
-  /**
-   * @function pickWinner
-   * @param {boolean} [redraw]
-   */
-  function pickWinner(redraw) {
-    currentRaffle.winner = $.randElement(currentRaffle.users);
-    if (redraw) {
-      if (currentRaffle.users.length == 0) {
-        $.say($.lang.get('rafflesystem.redraw.error.noentries'));
-        return;
-      }
-      $.say($.lang.get('rafflesystem.redraw.success', $.username.resolve(winner)));
-      updateFile('Redraw winner: ' + winner);
-    } else {
-      if (currentRaffle.users.length == 0) {
-        $.say($.lang.get('rafflesystem.close.success.noentries'));
-        return
-      }
-      $.say($.lang.get('rafflesystem.close.success', $.username.resolve(winner)));
-      updateFile('Winner: ' + winner);
-    }
-  };
-
-  /**
-   * @function enterRaffle
-   * @param {string} username
-   */
-  function enterRaffle(username) {
-    if (raffleActive) {
-      if (username == $.channelName) {
-        $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.enter.error.iscaster'));
-        return;
-      }
-      if ($.list.contains(currentRaffle.users, username)) {
-        $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.enter.error.alreadyentered'));
-        return;
-      }
-      if (currentRaffle.forFollowers) {
-        if (!$.user.isFollower(username)) {
-          $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.enter.error.notfollows'));
-          return;
+        if (!key) {
+            $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.missing.syntax'));
+            return;
         }
-      }
-      if (currentRaffle.cost > 0) {
-        if (currentRaffle.cost > $.getUserPoints(username)) {
-          $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.enter.error.needpoints'));
-          return;
+
+        if (key.contains('!')) {
+            key = key.replace('!', '');
         }
-      }
-      currentRaffle.users.push(username);
-      updateFile('Join: ' + username);
-      $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.enter.success'));
-    } else {
-      $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.enter.error.notrunning'));
-    }
-  };
 
-  /**
-   * @function getRaffleText
-   * @param {string} sender
-   * @returns {string}
-   */
-  function getRaffleText(sender) {
-    if (currentRaffle.raffleActive) {
-      return $.lang.get('rafflesystem.enter.notkeyword', currentRaffle.keyWord);
-    } else {
-      return $.whisperPrefix(sender) + $.lang.get('rafflesystem.enter.error.notrunning');
-    }
-  };
+        if (key) {
+            keyword = key;
+        }
 
-  /**
-   * @function checkArgs
-   * @param {string} keyWord
-   * @param {Number} time
-   * @param {Number} cost
-   * @returns {boolean}
-   */
-  function checkArgs(keyWord, time, cost) {
-    var status = true;
-    if (!keyWord || keyWord == '') {
-      status = false;
-    }
-    if (time && isNaN(parseInt(time))) {
-      status = false;
-    }
-    if (cost && isNaN(parseInt(cost))) {
-      status = false;
-    }
-    if (status) {
-      return true;
-    }
-    $.say($.whisperPrefix(currentRaffle.raffleMaster) + $.lang.get('rafflesystem.start.usage'));
-    return false;
-  };
+        if (price) {
+            cost = parseInt(price);
+        }
 
-  /**
-   * @event command
-   */
-  $.bind('command', function (event) {
-    var sender = event.getSender().toLowerCase(),
-        command = event.getCommand(),
-        args = event.getArgs(),
-        action,
-        actionArgs;
+    	if (followersOnly && followersOnly.equalsIgnoreCase('-followers')) {
+    		followers = true;
+            a = $.lang.get('rafflesystem.msg.need.to.be.follwing');
+    	}
+    	openRaffle(key, followers, cost);
+    };
+
+    function openRaffle (key, followers, cost) {
+        $.say($.lang.get('rafflesystem.raffle.opened', $.getPointsString(cost), key, a));
+        $.registerChatCommand('./systems/raffleSystem.js', key, 7);
+        entries = [];
+    	raffleStatus = true;
+    };
+
+    function closeRaffle (user) {
+    	if (!raffleStatus) {
+    		$.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.not.opened'));
+    		return;
+    	}
+
+        raffleStatus = false;
+        followers = false;
+        keyword = '';
+        cost = 0;
+        a = '';
+
+    	$.say($.lang.get('rafflesystem.raffle.closed'));
+    	winner();
+    };
+
+    function winner (force) {
+    	if (entries.length == 0) {
+    		$.say($.lang.get('rafflesystem.raffle.close.err'));
+    		return;
+    	}
+
+    	if (force) {
+            $.say($.lang.get('rafflesystem.raffle.repick', $.username.resolve($.randElement(entries))));
+    		return;
+    	}
+
+    	winner = $.randElement(entries);
+        $.say($.lang.get('rafflesystem.winner', $.username.resolve(winner)));
+    };
+
+    function enterRaffle (user, cost) {
+        if (!raffleStatus) {
+            $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.not.opened'));
+            return;
+        }
+
+    	if (followers) {
+    		if (!$.user.isFollower(user)) {
+    			$.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.not.following'));
+    			return;
+    		}
+    	}
+
+        if ($.list.contains(entries, user)) {
+            $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.enter.error.alreadyentered'));
+            return;
+        }
+
+    	if (cost > 0) {
+            $.inidb.decr('points', user, cost);
+    		if (cost > $.getUserPoints(user)) {
+                $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.points', $.pointNameMultiple));
+    			return;
+    		}
+    	}
+
+        if (msgToggle) {
+            $.say($.lang.get('rafflesystem.entered', $.username.resolve(user)));
+        }
+
+    	entries.push(user);
+    };
 
     /**
-     * @commandpath raffle - Announce information about a possibly currently running raffle
-     */
-    if (command.equalsIgnoreCase('raffle')) {
-      if (args.length == 0) {
-        $.say(getRaffleText(sender));
-        return;
-      }
-
-      action = args[0];
-      actionArgs = (event.getArguments() + '').replace(action, '').trim();
-
-      if (action) {
-        if (!$.isModv3(sender, event.getTags())) {
-          $.say($.whisperPrefix(sender) + $.modMsg);
-          return;
-        }
+    * @event command
+    */
+    $.bind('command', function (event) {
+    	var sender = event.getSender(),
+    	    command = event.getCommand(),
+    	    argString = event.getArguments(),
+    	    args = event.getArgs(),
+    	    action = args[0];
 
         /**
-         * @commandpath raffle start [-follow] [-k keyword] [-t time in seconds] [-c cost] - Start a new raffle, follow, time and cost are optional
-         */
-        if (action.equalsIgnoreCase('start')) {
-          var forFollowers = (actionArgs.indexOf('-follow') > -1),
-              keyWord = actionArgs.match(/-k\s([a-z]+)/i),
-              time = actionArgs.match(/-t\s([0-9]+)/i),
-              cost = actionArgs.match(/-c\s([0-9]+)/i);
+        * @commandPath raffle [option] - Give's you the usage.
+        */
+    	if (command.equalsIgnoreCase('raffle')) {
+    		if (!$.isModv3(sender, event.getTags())) {
+    			$.say($.whisperPrefix(sender) + $.modMsg);
+    			return;
+            }
 
-          keyWord = (keyWord ? keyWord[1] : '');
-          time = (time ? time[1] : '');
-          cost = (cost ? cost[1] : '');
+    		if (!action) {
+    			$.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.usage'));
+    			return;
+            }
 
-          if (checkArgs(keyWord.toString(), parseInt(time), parseInt(cost))) {
-            startRaffle(keyWord.toString(), forFollowers, parseInt(time), parseInt(cost), $.username.resolve(sender));
-          }
+            /**
+            * @commandPath raffle open (keyword) (cost) (-followers) - Open's a  raffle. -followers is optional.
+            */
+    		if (action.equalsIgnoreCase('open')) {
+    			checkArgs(sender, args[1], args[2], args[3]);
+            }
+
+            /**
+            * @commandPath raffle close - closes a  raffle.
+            */
+    		if (action.equalsIgnoreCase('close')) {
+    			closeRaffle(sender);
+    		}
+
+            /**
+            * @commandPath raffle repick - Picks a new winner for the  raffle
+            */
+            if (action.equalsIgnoreCase('repick')) {
+                winner(true);
+            }
+
+            /**
+            * @commandPath raffle messagetoggle - Toggles on and off the entering message.
+            */
+            if (action.equalsIgnoreCase('messagetoggle')) {
+                if (msgToggle) {
+                    msgToggle = false;
+                    $.inidb.set('settings', 'raffleMSGToggle', msgToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.msg.disabled'));
+                } else {
+                    msgToggle = true;
+                    $.inidb.set('settings', 'raffleMSGToggle', msgToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.msg.enabled'));
+                }
+            }
+    	}
+
+        if (command.equalsIgnoreCase(keyword)) {
+            enterRaffle(sender, cost);
         }
-
-        /**
-         * @commandpath raffle close - End the current raffle and pick a winner
-         */
-        if (action.equalsIgnoreCase('close')) {
-          endRaffle();
-        }
-
-        /**
-         * @commandpath raffle redraw - Redraw the winner of the previous raffle
-         */
-        if (action.equalsIgnoreCase('redraw')) {
-          if (!currentRaffle.raffleActive) {
-            pickWinner(true);
-          } else {
-            $.say($.whisperPrefix(sender) + 'You can\'t repick a winner during a raffle!');
-          }
-        }
-      }
-    }
+    });
 
     /**
-     * @commandpath RAFFLEKEYWORD - Enter the current raffle
-     */
-    if (command.equalsIgnoreCase(keyWord)) {
-      enterRaffle(sender);
-    }
-  });
-
-  /**
-   * @event initReady
-   */
-  $.bind('initReady', function () {
-    if ($.bot.isModuleEnabled('./systems/raffleSystem.js')) {
-      $.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
-    }
-  });
-
-  /**
-   * Warn the user if the points system is disabled and this is enabled.
-   */
-  if ($.bot.isModuleEnabled('./systems/raffleSystem.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
-    $.logError('raffleSystem.js', 402, "Disabled. ./systems/pointSystem.js is not enabled.");
-  }
-
+    * @event initReady
+    */
+    $.bind('initReady', function () {
+    	if ($.bot.isModuleEnabled('./systems/raffleSystem.js')) {
+    		$.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
+    	}
+    });
 })();
