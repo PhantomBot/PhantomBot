@@ -8,8 +8,7 @@
   var hostReward = ($.inidb.exists('settings', 'hostReward') ? $.inidb.get('settings', 'hostReward') : 200),
       hostMessage = ($.inidb.exists('settings', 'hostMessage') ? $.inidb.get('settings', 'hostMessage') : $.lang.get('hosthandler.host.message')),
       hostTimeout = 216e5, //6 hours = 6 * 60 * 60 * 1000
-      hostList = [],
-      hostHistory = [],
+      hostList = {},
       announceHosts = false;
 
   /**
@@ -42,11 +41,16 @@
 
     $.writeToFile(hoster, "./addons/hostHandler/latestHost.txt", false);
 
-    if (hostList[hoster] > now || hostHistory[hoster] > now) {
-      return;
+    if (hostList[hoster]) {
+      if (hostList[hoster].hostTime > now) {
+        return;
+      }
+      hostList[hoster].hostTime = now + hostTimeout;
+    } else {
+      hostList[hoster] = {
+        hostTime: now + hostTimeout
+      };
     }
-
-    hostList[hoster] = now + hostTimeout;
 
     msg = msg.replace('(name)', hoster);
     msg = msg.replace('(reward)', hostReward.toString());
@@ -61,15 +65,8 @@
       return;
     }
 
-    var hoster = event.getHoster(),
-        i;
-    for (i in hostList) {
-      if (hoster.equalsIgnoreCase(i)) {
-        hostHistory[i] = hostList[i];
-        hostList.splice(i, 1);
-        return;
-      }
-    }
+    var hoster = event.getHoster();
+    delete hostList[hoster];
   });
 
   /**
@@ -145,8 +142,14 @@
      */
     if (command.equalsIgnoreCase('hostlist')) {
       for (i in hostList) {
-        temp.push(i)
+        temp.push(i);
       }
+
+      if (temp.length == 0) {
+        $.say($.lang.get('hosthandler.hostlist.404'));
+        return;
+      }
+
       $.say($.lang.get('hosthandler.hostlist', temp.join(', ')));
     }
   });
