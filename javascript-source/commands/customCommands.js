@@ -95,11 +95,14 @@
    * @param {sub} subcommand
    * @returns {boolean}
    */
-    function permCom(user, command) {
+    function permCom(user, command, subcommand) {
         if ($.isAdmin(user)) {
             return true;
         }
-        return ($.getCommandGroup(command) >= $.getUserGroupId(user));
+        if (subcommand == '') {
+          return ($.getCommandGroup(command) >= $.getUserGroupId(user));
+        }
+        return ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user));
     };
 
   /**
@@ -291,6 +294,7 @@
 
         /**
          * @commandpath permcom [command] [groupId] - Set the permissions for a command
+         * @commandpath permcom [command] [subcommand] [groupId] - Set the permissions for a subcommand
          */
         if (command.equalsIgnoreCase('permcom')) {
             if (!$.isAdmin(sender)) {
@@ -304,20 +308,39 @@
             }
 
             action = args[0].replace('!', '');
-            var group = args[1];
+
+            if (args.length == 2) {
+                var group = args[1];
+
+                if (isNaN(parseInt(group))) {
+                  group = $.getGroupIdByName(group);
+                }
+
+                if (!$.commandExists(action)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.404', action));
+                    return;
+                }
+
+                $.inidb.set('permcom', action, group);
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action, $.getGroupNameById(group)));
+                $.updateCommandGroup(action, group);
+            }
+
+            var subcommand = args[1];
+            var group = args[2];
 
             if (isNaN(parseInt(group))) {
               group = $.getGroupIdByName(group);
             }
 
-            if (!$.commandExists(action)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.404', action));
-                return;
+            if (!$.subCommandExists(action, subcommand)) {
+              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.404', action + " " + subcommand));
+              return;
             }
 
-            $.inidb.set('permcom', action, group);
-            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action, $.getGroupNameById(group)));
-            $.updateCommandGroup(action, group);
+            $.inidb.set('permcom', action + " " + subcommand, group);
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action + " " + subcommand, $.getGroupNameById(group)));
+            $.updateSubcommandGroup(action, subcommand, group);
         }
 
         /**

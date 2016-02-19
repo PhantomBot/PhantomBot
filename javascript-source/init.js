@@ -365,8 +365,10 @@
       var sender = event.getSender().toLowerCase(),
           tags = event.getTags(),
           origCommand = event.getCommand().toLowerCase(),
+          args = event.getArgs(),
           cooldown,
-          command;
+          command,
+          subcommand;
 
       if (!$.isModv3(sender, tags) && $.commandPause.isPaused()) {
         //$.say($.whisperPrefix(sender) + $.lang.get('commandpause.isactive'));
@@ -383,8 +385,9 @@
         return;
       }
 
-      if (!$.permCom(sender, command)) {
-        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', $.getUserGroupName(sender), command));
+      subcommand = (args[0] ? args[0] : '');
+      if (!$.permCom(sender, command, subcommand)) {
+        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', command + " " + subcommand + " (" + $.getUserGroupName(sender) + ")"));
         return;
       }
 
