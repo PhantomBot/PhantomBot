@@ -71,6 +71,8 @@
         } else {
           pause();
         }
+      } else {
+        $.say($.lang.get('pausecommands.usage'));
       }
     }
   });
