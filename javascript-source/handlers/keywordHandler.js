@@ -56,11 +56,10 @@ $.bind('ircChannelMessage', function (event) {
                     return;
                 }
 
-                var keyword = subAction,
-                    response = argString.substring(argString.indexOf(keyword) + keyword.length() + 1);
+                var response = args.splice(2).join(' ');
 
-                $.inidb.set('keywords', keyword, response);
-                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', keyword));
+                $.inidb.set('keywords', subAction, response);
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', subAction));
                 return;
             }
 
@@ -71,16 +70,20 @@ $.bind('ircChannelMessage', function (event) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('keywords', keyword)) {
+                } else if (!$.inidb.exists('keywords', subAction)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.404'));
                     return;
                 }
-                $.inidb.del('keywords', keyword);
-                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', keyword));
+                
+                $.inidb.del('keywords', subAction);
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', subAction));
             }
         }
     });
-    
+
+    /**
+    * @event initReady
+    */
     $.bind('initReady', function () {
         if ($.bot.isModuleEnabled('./handlers/keywordHandler.js')) {
             $.registerChatCommand('./handlers/keywordHandler.js', 'keyword', 1);
