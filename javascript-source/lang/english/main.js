@@ -137,6 +137,12 @@ $.lang.register('permissions.group.set.error.abovegroup', 'You must be a higher 
 $.lang.register('permissions.group.set.error.samegroup', 'You cannot promote others to the same group as you.');
 $.lang.register('permissions.group.set.success', 'Group for $1 changed to $2!');
 $.lang.register('permissions.group.usage', 'Usage: !group, !group [name] [groupid]');
+$.lang.register('permissions.grouppoints.usage', 'Usage: !grouppoints [group] [online|offline] [points]. points of -1 uses !setgain, !setofflinegain values.');
+$.lang.register('permissions.grouppoints.showgroup', 'Group $1 gains $2 $3 online and $4 $5 offline.');
+$.lang.register('permissions.grouppoints.showgroup.online', 'Group $1 gains $2 $3 online.');
+$.lang.register('permissions.grouppoints.showgroup.offline', 'Group $1 gains $2 $3 offline.');
+$.lang.register('permissions.grouppoints.set.online', 'Set group $1 to gain $2 $3 online.');
+$.lang.register('permissions.grouppoints.set.offline', 'Set group $1 to gain $2 $3 offline.');
 $.lang.register('pointsystem.add.all.success', '$1 have been sent to everybody in the channel!');
 $.lang.register('pointsystem.add.all.usage', 'Usage: "!points all [amount]"');
 $.lang.register('pointsystem.add.error.negative', 'You can not give negative $1.');

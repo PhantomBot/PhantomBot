@@ -123,10 +123,21 @@
 
     for (i in $.users) {
       username = $.users[i][0].toLowerCase();
+      if ($.isOnline($.channelName)) {
+        if ($.inidb.exists('grouppoints', $.getUserGroupId(username))) {
+          amount = (parseInt($.inidb.get('grouppoints', $.getUserGroupId(username))) < 0 ? 
+              onlineGain : parseInt($.inidb.get('grouppoints', $.getUserGroupId(username))));
+        }
+      } else {
+        if ($.inidb.exists('grouppointsoffline', $.getUserGroupId(username))) {
+          amount = (parseInt($.inidb.get('grouppointsoffline', $.getUserGroupId(username))) < 0 ?
+              offlineGain : parseInt($.inidb.get('grouppointsoffline', $.getUserGroupId(username))));
+        }
+      }
       $.inidb.incr('points', username, amount);
       uUsers.push(username);
     }
-    $.log('pointSystem', 'Executed ' + $.pointNameMultiple + ' payouts. Amount: ' + amount + '. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
+    $.log('pointSystem', 'Executed ' + $.pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
 
     lastPayout = now;
   };

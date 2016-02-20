@@ -324,48 +324,56 @@
     if (!userGroups[0] || userGroups[0] != 'Caster') {
       userGroups[0] = 'Caster';
       $.inidb.set('grouppoints', 'Caster', '7');
+      $.inidb.set('grouppointsoffline', 'Caster', '-1');
       $.inidb.set('groups', '0', 'Caster');
     }
 
     if (!userGroups[1] || userGroups[1] != 'Administrator') {
       userGroups[1] = 'Administrator';
       $.inidb.set('grouppoints', 'Administrator', '6');
+      $.inidb.set('grouppointsoffline', 'Administrator', '-1');
       $.inidb.set('groups', '1', 'Administrator');
     }
 
     if (!userGroups[2] || userGroups[2] != 'Moderator') {
       userGroups[2] = 'Moderator';
       $.inidb.set('grouppoints', 'Moderator', '5');
+      $.inidb.set('grouppointsoffline', 'Moderator', '-1');
       $.inidb.set('groups', '2', 'Moderator');
     }
 
     if (!userGroups[3] || userGroups[3] != 'Subscriber') {
       userGroups[3] = 'Subscriber';
       $.inidb.set('grouppoints', 'Subscriber', '4');
+      $.inidb.set('grouppointsoffline', 'Subscriber', '-1');
       $.inidb.set('groups', '3', 'Subscriber');
     }
 
     if (!userGroups[4] || userGroups[4] != 'Donator') {
       userGroups[4] = 'Donator';
       $.inidb.set('grouppoints', 'Donator', '3');
+      $.inidb.set('grouppointsoffline', 'Donator', '-1');
       $.inidb.set('groups', '4', 'Donator');
     }
 
     if (!userGroups[5] || userGroups[5] != 'Hoster') {
       userGroups[5] = 'Hoster';
       $.inidb.set('grouppoints', 'Hoster', '2');
+      $.inidb.set('grouppointsoffline', 'Hoster', '-1');
       $.inidb.set('groups', '5', 'Hoster');
     }
 
     if (!userGroups[6] || userGroups[6] != 'Regular') {
       userGroups[6] = 'Regular';
       $.inidb.set('grouppoints', 'Regular', '1');
+      $.inidb.set('grouppointsoffline', 'Regular', '-1');
       $.inidb.set('groups', '6', 'Regular');
     }
 
     if (!userGroups[7] || userGroups[7] != 'Viewer') {
       userGroups[7] = 'Viewer';
       $.inidb.set('grouppoints', 'Viewer', '0');
+      $.inidb.set('grouppointsoffline', 'Viewer', '-1');
       $.inidb.set('groups', '7', 'Viewer');
     }
   };
@@ -557,6 +565,73 @@
       $.inidb.set('group', username.toLowerCase(), groupId);
       $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.username.resolve(username), getGroupNameById(groupId) + " (" + groupId + ")"));
     }
+
+    /**
+     * @commandpath grouppoints [group] [online|offline] [points] - Show/set the points for each group.
+     */
+    if (command.equalsIgnoreCase('grouppoints')) {
+
+      var groupId,
+          channelStatus,
+          points;
+
+      if (!args[0]) {
+        $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.usage'));
+        return;
+      }
+        
+      groupId = parseInt(args[0]);
+      if (isNaN(groupId) || $.outOfRange(groupId, 0, userGroups.length - 1)) {
+        $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.usage'));
+        return;
+      }
+
+      if (!args[1]) {
+        $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup', groupId,
+            ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'), 
+            $.pointNameMultiple, 
+            ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
+            $.pointNameMultiple));
+        return;
+      }
+
+      channelStatus = args[1];
+      if (channelStatus.toLowerCase() != 'online' && channelStatus.toLowerCase() != 'offline') {
+        $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.usage'));
+        return;
+      }
+
+      if (!args[2]) {
+        if (channelStatus.toLowerCase() == 'online') {
+          $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.online', groupId,
+              ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'), 
+              $.pointNameMultiple));
+        } else if (channelStatus.toLowerCase() == 'offline') {
+          $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.offline', groupId,
+              ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
+              $.pointNameMultiple));
+        }
+        return;
+      }
+
+      points = parseInt(args[2]);
+      if (isNaN(points)) {
+        $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.usage'));
+        return;
+      }
+
+      if (points < 0) {
+        points = -1;
+      }
+
+      if (channelStatus.toLowerCase() == 'online') {
+        $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.online', groupId, points, $.pointNameMultiple));
+        $.inidb.set('grouppoints', getGroupNameById(groupId), points);
+      } else if (channelStatus.toLowerCase() == 'offline') {
+        $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.offline', groupId, points, $.pointNameMultiple));
+        $.inidb.set('grouppointsoffline', getGroupNameById(groupId), points);
+      }
+    }
   });
 
   // Load groups and generate default groups if they don't exist
@@ -580,6 +655,7 @@
    */
   $.bind('initReady', function () {
     $.registerChatCommand('./core/permissions.js', 'group', 7);
+    $.registerChatCommand('./core/permissions.js', 'grouppoints', 1);
     $.registerChatCommand('./core/permissions.js', 'users', 7);
     $.registerChatCommand('./core/permissions.js', 'mods', 7);
   });
