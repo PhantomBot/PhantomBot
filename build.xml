@@ -4,7 +4,7 @@
     <property environment="env" />
     <property name="project.base.dir" value="." />
     <property name="name" value="PhantomBot" />
-    <property name="version" value="2.0.3" />
+    <property name="version" value="2.0.4" />
     <property name="java.class.path" value="" />
     <property name="src" value="${project.base.dir}/source" />
     <property name="reference" value="${project.base.dir}/libraries" />
