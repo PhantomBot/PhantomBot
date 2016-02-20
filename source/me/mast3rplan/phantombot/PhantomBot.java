@@ -131,7 +131,7 @@ public class PhantomBot implements Listener {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core 2.0.3");
+        com.gmt2001.Console.out.println("PhantomBot Core 2.0.4");
         com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, Scania, Zelakto, IllusionaryOne, SimeonF, & Juraji");
