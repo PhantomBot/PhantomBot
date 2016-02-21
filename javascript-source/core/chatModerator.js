@@ -31,7 +31,7 @@
         subscribersToggle = ($.inidb.exists('chatModerator', 'subscribersToggle') ? $.getIniDbBoolean('chatModerator', 'subscribersToggle') : true),
 
         blacklistMessage = ($.inidb.exists('chatModerator', 'blacklistMessage') ? $.inidb.get('chatModerator', 'blacklistMessage') : 'you were timed out using a blacklisted phrase'),
-        warningTime = ($.inidb.exists('chatModerator', 'warningTime') ? parseInt($.getIniDbBoolean('chatModerator', 'warningTime')) : 5),
+        warningTime = ($.inidb.exists('chatModerator', 'warningTime') ? parseInt($.inidb.get('chatModerator', 'warningTime')) : 5),
         timeoutTime = ($.inidb.exists('chatModerator', 'timeoutTime') ? parseInt($.inidb.get('chatModerator', 'timeoutTime')) : 600),
         msgCooldownSec = ($.inidb.exists('chatModerator', 'msgCooldownSec') ? parseInt($.inidb.get('chatModerator', 'msgCooldownSec')) : 20),
         warning = '';
@@ -112,7 +112,6 @@
         timeoutList.push(user);
         clearTimeouts(user);
         if (msgCooldownSec > 0) {
-            $.consoleLn('push')
             messageCooldown.push($.systemTime());
         }
     };
