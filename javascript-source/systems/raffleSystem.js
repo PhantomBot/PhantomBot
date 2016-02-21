@@ -5,15 +5,16 @@
 	    followers = false,
 	    raffleStatus = false,
         msgToggle = ($.inidb.exists('settings', 'raffleMSGToggle') ? $.getIniDbBoolean('settings', 'raffleMSGToggle') : false),
+        timer = 0,
         a = '';
 
-    function checkArgs (user, key, price, followersOnly) {
+    function checkArgs (user, key, price, followersOnly, t) {
     	if (raffleStatus) {
     		$.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.opened'));
     		return;
     	}
 
-        if (!key) {
+        if (!key || !price) {
             $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.missing.syntax'));
             return;
         }
@@ -34,14 +35,29 @@
     		followers = true;
             a = $.lang.get('rafflesystem.msg.need.to.be.follwing');
     	}
-    	openRaffle(key, followers, cost);
+
+        if (t) {
+            timer = parseInt(t);
+        }
+    	openRaffle(key, followers, cost, timer);
     };
 
-    function openRaffle (key, followers, cost) {
+    function openRaffle (key, followers, cost, timer) {
         $.say($.lang.get('rafflesystem.raffle.opened', $.getPointsString(cost), key, a));
         $.registerChatCommand('./systems/raffleSystem.js', key, 7);
         entries = [];
     	raffleStatus = true;
+
+        if (timer > 0) {
+            var a = setInterval(function () {
+                $.say($.lang.get('rafflesystem.warn', key));
+                clearInterval(a);
+            }, (timer / 2) * 1000);
+            var b = setInterval(function () {
+                closeRaffle();
+                clearInterval(b);
+            }, timer * 1000);
+        }
     };
 
     function closeRaffle (user) {
@@ -133,7 +149,7 @@
             }
 
             /**
-            * @commandPath raffle open (keyword) (cost) (-followers) - Open's a  raffle. -followers is optional.
+            * @commandPath raffle open (keyword) (cost) (-followers) (timer) - Open's a  raffle. -followers and timer is optional.
             */
     		if (action.equalsIgnoreCase('open')) {
     			checkArgs(sender, args[1], args[2], args[3]);

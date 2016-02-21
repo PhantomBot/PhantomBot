@@ -1,5 +1,5 @@
 $.lang.register('rafflesystem.err.raffle.opened', 'A raffle is already opened.');
-$.lang.register('rafflesystem.err.missing.syntax', 'Usage: !raffle open (keyword) (cost) (-followers)');
+$.lang.register('rafflesystem.err.missing.syntax', 'Usage: !raffle open (keyword) (cost) (-followers) (timer in seconds)');
 $.lang.register('rafflesystem.msg.need.to.be.follwing', 'You need to be following to enter.');
 $.lang.register('rafflesystem.raffle.opened', 'Raffle is now open! Entering cost $1 Enter by saying !$2');
 $.lang.register('rafflesystem.err.raffle.not.opened', 'There is no raffle opened.');
@@ -10,7 +10,8 @@ $.lang.register('rafflesystem.winner', 'The Winner of this raffle is: $1!');
 $.lang.register('rafflesystem.err.not.following', 'you need to be following to enter.');
 $.lang.register('rafflesystem.err.points', 'you don\'t have enough $1 to enter.');
 $.lang.register('rafflesystem.entered', '$1 entered the raffle!');
-$.lang.register('rafflesystem.usage', 'Usage: !raffle open (keyword) (cost) (-followers)');
+$.lang.register('rafflesystem.usage', 'Usage: !raffle open (keyword) (cost) (-followers) (timer in seconds)');
 $.lang.register('rafflesystem.msg.enabled', 'Raffle message\'s have been enabled.');
 $.lang.register('rafflesystem.msg.disabled', 'Raffle message\'s have been disabled.');
 $.lang.register('rafflesystem.enter.error.alreadyentered', 'you already entered the raffle.');
+$.lang.register('rafflesystem.warn', 'T%he raffle is about to close get your entries in by saying !$1');
