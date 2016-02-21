@@ -104,6 +104,9 @@
 		$.say($.lang.get('auctionsystem.bid', user, $.getPointsString(amount), $.getPointsString(auction.topPoints + auction.increments)))
 	};
 
+	/**
+    * @event command
+    */
 	$.bind('command', function (event) {
 		var sender = event.getSender(),
 		    command = event.getCommand(),
@@ -121,24 +124,39 @@
             	return;
             }
 
+            /**
+            * @commandPath auction open (increments) (minimum bet) (timer) - Open's a auction timer is optional.
+            */
             if (action.equalsIgnoreCase('open')) {
             	openAuction(sender, args[1], args[2], args[3]);
             }
 
+            /**
+            * @commandPath auction close - closes a auction
+            */
             if (action.equalsIgnoreCase('close')) {
             	closeAuction(sender);
             }
 
+            /**
+            * @commandPath auction warn - Give's you the top bitter.
+            */
             if (action.equalsIgnoreCase('warn')) {
             	warnAuction();
             }
 		}
 
+		/**
+        * @commandPath bit (amount) - bids the amount you want.
+        */
 		if (command.equalsIgnoreCase('bid')) {
 			bid(sender, action);
 		}
 	});
 
+    /**
+    * @event initReady
+    */
 	$.bind('initReady', function () {
     	if ($.bot.isModuleEnabled('./systems/auctionSystem.js')) {
     		$.registerChatCommand('./systems/auctionSystem.js', 'auction', 2);
