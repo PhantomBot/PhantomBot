@@ -53,7 +53,7 @@ $.lang.register('chatmoderator.timeout.time.set', 'timeout time set to: $1 secon
 $.lang.register('chatmoderator.warning.time.usage', 'Usage: !moderation warningtime [amount]');
 $.lang.register('chatmoderator.warning.time.set', 'warning time set to: $1 seconds.');
 $.lang.register('chatmoderator.permit.usage', 'Usage: !permit [username]');
-$.lang.register('chatmoderator.permited', ' is now permited to post one link during the next $1 seconds!');
+$.lang.register('chatmoderator.permited', ' is now permitted to post one link during the next $1 seconds!');
 $.lang.register('chatmoderator.blacklist.usage', 'Usage: !blackList [add / remove / show]');
 $.lang.register('chatmoderator.blacklist.add.usage', 'Usage: !blackList add (message)');
 $.lang.register('chatmoderator.blacklist.added', 'Word added to the blacklist.');
