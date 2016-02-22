@@ -9,7 +9,8 @@
       noticeInterval = ($.inidb.exists('noticeSettings', 'interval') ? parseInt($.inidb.get('noticeSettings', 'interval')) : 10),
       noticeToggle = ($.inidb.exists('noticeSettings', 'noticetoggle') ? $.getIniDbBoolean('noticeSettings', 'noticetoggle') : false),
       numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
-      messageCount = 0;
+      messageCount = 0,
+      RandomNotice = 0;
 
   /**
    /* @function reloadNotices
@@ -37,10 +38,15 @@
    * @function sendNotice
    */
     function sendNotice() {
-        var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
-        var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
-        var RandomNotice = $.randRange(0, numberOfNotices);
-        var notice = $.inidb.get('notices', 'message_' + RandomNotice);
+        var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
+            CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
+            notice = $.inidb.get('notices', 'message_' + RandomNotice);
+
+        RandomNotice++;
+
+        if (RandomNotice >= numberOfNotices) {
+            RandomNotice = 0;
+        }
 
         if (notice.startsWith('command:')) {
             notice = notice.substring(8);
