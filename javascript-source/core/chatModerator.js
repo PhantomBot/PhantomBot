@@ -11,24 +11,24 @@
 
         capsToggle = ($.inidb.exists('chatModerator', 'capsToggle') ? $.getIniDbBoolean('chatModerator', 'capsToggle') : true),
         capsMessage = ($.inidb.exists('chatModerator', 'capsMessage') ? $.inidb.get('chatModerator', 'capsMessage') : 'you were timed out for overusing caps'),
-        capsLimit = ($.inidb.exists('chatModerator', 'capsLimit') ? parseInt($.inidb.get('chatModerator', 'capsLimit')) : 50),
+        capsLimit = ($.inidb.exists('chatModerator', 'capsLimit') ? parseInt($.inidb.get('chatModerator', 'capsLimit')) : 25),
         capsTriggerLength = ($.inidb.exists('chatModerator', 'capsTriggerLength') ? parseInt($.inidb.get('chatModerator', 'capsTriggerLength')) : 10),
 
         spamToggle = ($.inidb.exists('chatModerator', 'spamToggle') ? $.getIniDbBoolean('chatModerator', 'spamToggle') : true),
         spamMessage = ($.inidb.exists('chatModerator', 'spamMessage') ? $.inidb.get('chatModerator', 'spamMessage') : 'you were timed out for spamming'),
-        spamLimit = ($.inidb.exists('chatModerator', 'spamLimit') ? parseInt($.inidb.get('chatModerator', 'spamLimit')) : 25),
+        spamLimit = ($.inidb.exists('chatModerator', 'spamLimit') ? parseInt($.inidb.get('chatModerator', 'spamLimit')) : 15),
 
         symbolsToggle = ($.inidb.exists('chatModerator', 'symbolsToggle') ? $.getIniDbBoolean('chatModerator', 'symbolsToggle') : true),
         symbolsMessage = ($.inidb.exists('chatModerator', 'symbolsMessage') ? $.inidb.get('chatModerator', 'symbolsMessage') : 'you were timed out for overusing symbols'),
-        symbolsLimit = ($.inidb.exists('chatModerator', 'symbolsLimit') ? parseInt($.inidb.get('chatModerator', 'symbolsLimit')) : 25),
+        symbolsLimit = ($.inidb.exists('chatModerator', 'symbolsLimit') ? parseInt($.inidb.get('chatModerator', 'symbolsLimit')) : 15),
         symbolsTriggerLength = ($.inidb.exists('chatModerator', 'symbolsTriggerLength') ? parseInt($.inidb.get('chatModerator', 'symbolsTriggerLength')) : 5),
 
         emotesToggle = ($.inidb.exists('chatModerator', 'emotesToggle') ? $.getIniDbBoolean('chatModerator', 'emotesToggle') : false),
         emotesMessage = ($.inidb.exists('chatModerator', 'emotesMessage') ? $.inidb.get('chatModerator', 'emotesMessage') : 'you were timed out for overusing emotes'),
-        emotesLimit = ($.inidb.exists('chatModerator', 'emotesLimit') ? parseInt($.inidb.get('chatModerator', 'emotesLimit')) : 30),
+        emotesLimit = ($.inidb.exists('chatModerator', 'emotesLimit') ? parseInt($.inidb.get('chatModerator', 'emotesLimit')) : 15),
 
         regularsToggle = ($.inidb.exists('chatModerator', 'regularsToggle') ? $.getIniDbBoolean('chatModerator', 'regularsToggle') : false),
-        subscribersToggle = ($.inidb.exists('chatModerator', 'subscribersToggle') ? $.getIniDbBoolean('chatModerator', 'subscribersToggle') : true),
+        subscribersToggle = ($.inidb.exists('chatModerator', 'subscribersToggle') ? $.getIniDbBoolean('chatModerator', 'subscribersToggle') : false),
 
         blacklistMessage = ($.inidb.exists('chatModerator', 'blacklistMessage') ? $.inidb.get('chatModerator', 'blacklistMessage') : 'you were timed out using a blacklisted phrase'),
         warningTime = ($.inidb.exists('chatModerator', 'warningTime') ? parseInt($.inidb.get('chatModerator', 'warningTime')) : 5),
