@@ -19,9 +19,9 @@ $.lang.register('chatmoderator.emotes.filter.disabled', 'emotes filter has been 
 $.lang.register('chatmoderator.regulars.usage', 'Usage: !moderation regulars [true / false] - Allows regulars to post links.');
 $.lang.register('chatmoderator.regulars.enabled', 'regulars are now allowed to post links.');
 $.lang.register('chatmoderator.regulars.disabled', 'regulars are no longet allowed to post links.');
-$.lang.register('chatmoderator.subscribers.usage', 'Usage: !moderation subscribers [true / false] - Allows subscribers to avoid the moderation filters');
-$.lang.register('chatmoderator.subscribers.enabled', 'subscribers will now avoid all spam filters.');
-$.lang.register('chatmoderator.subscribers.disabled', 'subscribers will no longer avoid all spam filters.');
+$.lang.register('chatmoderator.subscribers.usage', 'Usage: !moderation subscribers [true / false] - Allows subscribers to post links.');
+$.lang.register('chatmoderator.subscribers.enabled', 'subscribers are now allowed to post links.');
+$.lang.register('chatmoderator.subscribers.disabled', 'subscribers are no longer allowed to post links.');
 $.lang.register('chatmoderator.link.message.usage', 'Usage: !moderation linksmessage [message]');
 $.lang.register('chatmoderator.link.message.set', 'link warning message set to: $1');
 $.lang.register('chatmoderator.caps.message.usage', 'Usage: !moderation capsmessage [message]');
