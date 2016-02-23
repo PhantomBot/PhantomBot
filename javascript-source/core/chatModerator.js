@@ -214,8 +214,8 @@
                     return;
                 }
     
-                //deleteMessage(sender);
-                //sendMessage(sender, linksMessage);
+                deleteMessage(sender);
+                sendMessage(sender, linksMessage);
                 return;
             }
           
