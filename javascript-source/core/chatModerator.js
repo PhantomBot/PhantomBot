@@ -27,6 +27,9 @@
         emotesMessage = ($.inidb.exists('chatModerator', 'emotesMessage') ? $.inidb.get('chatModerator', 'emotesMessage') : 'you were timed out for overusing emotes'),
         emotesLimit = ($.inidb.exists('chatModerator', 'emotesLimit') ? parseInt($.inidb.get('chatModerator', 'emotesLimit')) : 15),
 
+        colorsToggle = ($.inidb.exists('chatModerator', 'colorsToggle') ? $.getIniDbBoolean('chatModerator', 'colorsToggle') : true),
+        colorsMessage = ($.inidb.exists('chatModerator', 'colorsMessage') ? $.inidb.get('chatModerator', 'colorsMessage') : 'you were timed out for using a colored message'),
+
         regularsToggle = ($.inidb.exists('chatModerator', 'regularsToggle') ? $.getIniDbBoolean('chatModerator', 'regularsToggle') : false),
         subscribersToggle = ($.inidb.exists('chatModerator', 'subscribersToggle') ? $.getIniDbBoolean('chatModerator', 'subscribersToggle') : false),
 
@@ -84,13 +87,13 @@
             if (timeoutList[i].equalsIgnoreCase(user)) {
                 timeoutUser(user, timeoutTime);
                 setTimeoutAndCooldown(user);
-                warning = '(timeout)';
+                warning = $.lang.get('chatmoderator.timeout');
                 return;
             }
         }
         timeoutUser(user, warningTime);
         setTimeoutAndCooldown(user);
-        warning = '(warning)';
+        warning = $.lang.get('chatmoderator.warning');
     };
   
     /**
@@ -177,7 +180,7 @@
             for (i in blackList) {
                 if (message.contains(blackList[i])) {
                     timeoutUser(sender, timeoutTime);
-                    warning = '(timeout)';
+                    warning = $.lang.get('chatmoderator.timeout');
                     sendMessage(sender, blacklistMessage);
                     return;
                 }
@@ -211,8 +214,8 @@
                     return;
                 }
     
-                deleteMessage(sender);
-                sendMessage(sender, linksMessage);
+                //deleteMessage(sender);
+                //sendMessage(sender, linksMessage);
                 return;
             }
           
@@ -244,6 +247,14 @@
                 if ($.patternDetector.getNumberOfEmotes(event) > emotesLimit) {
                     deleteMessage(sender);
                     sendMessage(sender, emotesMessage);
+                    return;
+                }
+            }
+
+            if (colorsToggle) {
+                if (message.startsWith('/me')) {
+                    deleteMessage(sender);
+                    sendMessage(sender, colorsMessage);
                 }
             }
         }
@@ -517,8 +528,30 @@
                     return;
                 } else if (subAction.equalsIgnoreCase('off')) {
                     emotesToggle = false;
-                    $.inidb.set('chatModerator', 'symbolsToggle', emotesToggle);
+                    $.inidb.set('chatModerator', 'emotesToggle', emotesToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.filter.disabled'));
+                    return;
+                }
+            }
+
+            /**
+             * @commandpath moderation colors [on / off] - Enable/Disable the message color filter
+             */
+            if (action.equalsIgnoreCase('colors')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.colors.usage', getModerationFilterStatus(colorsToggle)));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('on')) {
+                    colorsToggle = true;
+                    $.inidb.set('chatModerator', 'colorsToggle', colorsToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.colors.filter.enabled'));
+                    return;
+                } else if (subAction.equalsIgnoreCase('off')) {
+                    colorsToggle = false;
+                    $.inidb.set('chatModerator', 'colorsToggle', colorsToggle);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.colors.filter.disabled'));
                     return;
                 }
             }
@@ -621,6 +654,20 @@
                 emotesMessage = argString.replace(action, '').trim();
                 $.inidb.set('chatModerator', 'emotesMessage', emotesMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.message.set', emotesMessage));
+                return;
+            }
+
+            /**
+             * @commandpath moderation colormessage [message] - Sets the color warning message
+             */
+            if (action.equalsIgnoreCase('colorsmessage')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.colors.message.usage'));
+                    return;
+                }
+                colorsMessage = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'colorsMessage', colorsMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.colors.message.set', colorsMessage));
                 return;
             }
         
