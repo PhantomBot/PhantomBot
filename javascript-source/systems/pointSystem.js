@@ -71,7 +71,7 @@
       $.unregisterChatCommand(oldName.toLowerCase()); 
     }
     if (!$.commandExists(pointNameSingle.toLowerCase()) && !oldName) {
-      $.registerChatCommand('./core/pointSystem.js', $.pointNameSingle.toLowerCase(), 7);
+      $.registerChatCommand('./systems/pointSystem.js', $.pointNameSingle.toLowerCase(), 7);
       $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'add', 1);
       $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'take', 1);
       $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'set', 1);
@@ -82,7 +82,7 @@
       $.registerChatSubcommand($.pointNameSingle.toLowerCase(), 'setinterval', 1);
     }
     if (!$.commandExists(pointNameMultiple.toLowerCase()) && !oldName) {
-      $.registerChatCommand('./core/pointSystem.js', $.pointNameMultiple.toLowerCase(), 7);
+      $.registerChatCommand('./systems/pointSystem.js', $.pointNameMultiple.toLowerCase(), 7);
       $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'add', 1);
       $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'take', 1);
       $.registerChatSubcommand($.pointNameMultiple.toLowerCase(), 'set', 1);
