@@ -278,7 +278,7 @@
             return;
           }
 
-          customRank = args.splice(2).join(' ');
+          customRank = args.splice(1).join(' ');
 
           if (userTime >= rankEligableTime &&
                  ($.bot.isModuleEnabled('./systems/pointSystem.js') && getUserPoints(sender) > rankEligableCost) || !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
@@ -307,6 +307,7 @@
         return;
       }
 
+      userLevel = -1;
       for (var i = 0; i < ranksTimeTable.length; i++) {
         if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
           userLevel = i;
@@ -323,7 +324,11 @@
       if (userLevel <= ranksTimeTable.length - 2) {
         nextLevel = parseInt(userLevel) + 1;
         timeUntilNextRank = parseInt(ranksTimeTable[nextLevel]) - userTime;
-        $.say($.lang.get('ranks.rank.success', username, $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString()), timeUntilNextRank));
+        if (userLevel == -1) {
+          $.say($.lang.get('ranks.rank.norank.success', username, timeUntilNextRank));
+        } else {
+          $.say($.lang.get('ranks.rank.success', username, $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString()), timeUntilNextRank));
+        }
       } else {
         $.say($.lang.get('ranks.rank.maxsuccess', username, $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString())));
       }
