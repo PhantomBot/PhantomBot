@@ -64,7 +64,7 @@
     if (hoursOnly) {
       return floor(cHours) + 'hrs ';
     } else {
-      return (time > 60 ? (floor(cHours) + 'hrs ' + floor(~~cMins) + 'min ').replace(/^0hrs/, '') : floor(cMins % 1 * 60) + 'sec');
+      return (time >= 60 ? (floor(cHours) + 'hrs ' + floor(~~cMins) + 'min ').replace(/^0hrs/, '') : floor(cMins % 1 * 60) + 'sec');
     }
   };
 

@@ -16,10 +16,11 @@ $.lang.register('followhandler.set.followmessage.usage', 'Usage: !followmessage 
 $.lang.register('followhandler.set.followmessagenoreward.success', 'Follow message set.');
 $.lang.register('followhandler.set.followmessagenoreward.usage', 'Usage: !followmessagenoreward [message] - Tags: (name)');
 $.lang.register('followhandler.set.followreward.success', 'Follow reward set to $1.');
-$.lang.register('followhandler.set.followreward.usage', 'Usage: !followreward [$1]');
+$.lang.register('followhandler.set.followreward.usage', 'Usage: !followreward [$1]. (Currently $2)');
 $.lang.register('followhandler.shoutout.usage', 'Usage: !$1 (streamer)');
 $.lang.register('followhandler.shoutout.offline', 'Hey! Go give $1 a follow at $2! They were last seen playing $3!');
 $.lang.register('followhandler.shoutout.online', 'Hey! Go give $1 a follow at $2! They are currently playing $3!');
 $.lang.register('followhandler.shoutout.404', 'Either Twitch has an issue or $1 does not exist on Twitch!');
 $.lang.register('followhandler.followtoggle.on', 'Announcements are enabled for new followers.');
 $.lang.register('followhandler.followtoggle.off', 'Announcements are disabled for new followers.');
+
