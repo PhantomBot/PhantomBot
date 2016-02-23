@@ -260,7 +260,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.all.usage'));
             return;
           }
-actionArg1 = parseInt(actionArg1);
+            actionArg1 = parseInt(actionArg1);
           if (actionArg1 < 0) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.error.negative', $.pointNameMultiple));
             return;
