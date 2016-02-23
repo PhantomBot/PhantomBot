@@ -16,9 +16,9 @@ $.lang.register('pointsystem.set.bonus.success', 'Set the $1 bonus to $2 per gro
 $.lang.register('pointsystem.set.bonus.usage', 'Usage: "!points bonus [amount]"');
 $.lang.register('pointsystem.set.gain.error.negative', 'You can not set the amount of $1 gained to a negative number.');
 $.lang.register('pointsystem.set.gain.offline.success', 'Set the $1 earnings to $2 every $3 minute(s) while the stream is offline.');
-$.lang.register('pointsystem.set.gain.offline.usage', 'Usage: "!points setofflinegain [amount]"');
+$.lang.register('pointsystem.set.gain.offline.usage', 'Usage: "!points setofflinegain [amount]", if you have !grouppoints set, it will override this!');
 $.lang.register('pointsystem.set.gain.success', 'Set the $1 earnings to $2 every $3 minute(s) while the stream is online.');
-$.lang.register('pointsystem.set.gain.usage', 'Usage: "!points setgain [amount]"');
+$.lang.register('pointsystem.set.gain.usage', 'Usage: "!points setgain [amount]", if you have !grouppoints set, it will override this!');
 $.lang.register('pointsystem.set.interval.error.negative', 'You can not set the $1 payout interval to negative minutes.');
 $.lang.register('pointsystem.set.interval.offline.success', 'Set the $1 payout interval to $2 minute(s) when the stream is offline.');
 $.lang.register('pointsystem.set.interval.offline.usage', 'Usage: "!points setofflineinterval [amount]"');
