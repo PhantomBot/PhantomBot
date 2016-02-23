@@ -218,7 +218,8 @@ public class PhantomBot implements Listener {
                 int pid = Integer.parseInt(runtime.getName().split("@")[0]);
 
                 //int pid = Integer.parseInt( ( new File("/proc/self")).getCanonicalFile().getName() );
-                File f = new File("/var/run/PhantomBot." + this.username.toLowerCase() + ".pid");
+                //File f = new File("/var/run/PhantomBot." + this.username.toLowerCase() + ".pid");
+                File f = new File("PhantomBot." + this.username.toLowerCase() + ".pid");
 
                 try (FileOutputStream fs = new FileOutputStream(f, false)) {
                     PrintStream ps = new PrintStream(fs);

@@ -17,8 +17,6 @@
       return;
     }
     emotesString = event.getEmotes();
-    $.writeToFile(emotesString, "emotesString", false);
-    $.consoleLn("New emotes have been pushed from the Core.");
     $.inidb.set('emotecache', 'emotes', emotesString);
     buildEmotesRegExp();
   });

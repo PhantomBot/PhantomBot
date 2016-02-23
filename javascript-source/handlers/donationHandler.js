@@ -54,7 +54,7 @@
     $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), donationAddonDir + "/latestDonation.txt", false);
 
     if (announceDonations) {
-      if (donationReward > 0) {
+      if (donationReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
         var rewardPoints = Math.round(donationAmount * donationReward);
         var donationSay = ($.inidb.exists('donations', 'rewardmessage') ? $.inidb.get('donations', 'rewardmessage') : $.lang.get('donationhandler.donation.newreward'));
         donationSay = donationSay.replace('(name)', donationUsername);
@@ -68,7 +68,7 @@
           $.inidb.incr('points', donationUsername.toLowerCase(), rewardPoints);
         }
       } else {
-        var donationSay = ($.inidb.exists('donations', 'message') ? $.inidb.get('donations', 'message') : $.lang.get('donationhandler.donation.newreward'));
+        var donationSay = ($.inidb.exists('donations', 'message') ? $.inidb.get('donations', 'message') : $.lang.get('donationhandler.donation.new'));
         donationSay = donationSay.replace('(name)', donationUsername);
         donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
         donationSay = donationSay.replace('(currency)', donationCurrency);

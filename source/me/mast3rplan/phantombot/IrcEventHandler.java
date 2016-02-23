@@ -58,13 +58,13 @@ public class IrcEventHandler implements IRCEventListener {
             break;
         case JOIN:
             JoinEvent joinEvent = (JoinEvent) event;
-            //com.gmt2001.Console.out.println("User Joined Channel [" + joinEvent.getChannelName() + "] " + joinEvent.getNick());
+            if (PhantomBot.enableDebugging) com.gmt2001.Console.out.println("User Joined Channel [" + joinEvent.getChannelName() + "] " + joinEvent.getNick());
             eventBus.postAsync(new IrcChannelJoinEvent(session, joinEvent.getChannel(), joinEvent.getNick()));
             break;
         case PART:
             PartEvent partEvent = (PartEvent) event;
             mods.remove(partEvent.getNick().toLowerCase());
-            //com.gmt2001.Console.out.println("User Left Channel [" + partEvent.getChannelName() + "] " + partEvent.getNick());
+            if (PhantomBot.enableDebugging) com.gmt2001.Console.out.println("User Left Channel [" + partEvent.getChannelName() + "] " + partEvent.getNick());
             eventBus.postAsync(new IrcChannelLeaveEvent(session, partEvent.getChannel(), partEvent.getNick(), partEvent.getPartMessage()));
             break;
         case CHANNEL_MESSAGE:
