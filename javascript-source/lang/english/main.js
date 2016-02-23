@@ -1,5 +1,5 @@
-$.lang.register('chatmoderator.usage.toggles', 'Usage: !moderation [links / caps / symbols / spam / emotes / regulars / subscribers]');
-$.lang.register('chatmoderator.usage.messages', 'Usage: !moderation [linksmessage / capsmessage / symbolsmessage / spammessage / emotesmessage / blacklistmessage]');
+$.lang.register('chatmoderator.usage.toggles', 'Usage: !moderation [links / caps / symbols / spam / emotes / colors regulars / subscribers]');
+$.lang.register('chatmoderator.usage.messages', 'Usage: !moderation [linksmessage / capsmessage / symbolsmessage / spammessage / emotesmessage / colorsmessage / blacklistmessage]');
 $.lang.register('chatmoderator.options', 'Usage: !moderation [capstriggerlength / capslimit / symbolstriggerlength / symbolslimit / spamlimit / emoteslimit / permittime / warningtime / timeouttime]');
 $.lang.register('chatmoderator.link.usage', 'Usage: !moderation links [on / off] (link filter is currently $1)');
 $.lang.register('chatmoderator.link.filter.enabled', 'link filter has been enabled.');
@@ -16,6 +16,9 @@ $.lang.register('chatmoderator.symbols.filter.disabled', 'symbol filter has been
 $.lang.register('chatmoderator.emotes.usage', 'Usage: !moderation emotes [on / off] (emotes filter is currently $1)');
 $.lang.register('chatmoderator.emotes.filter.enabled', 'emotes filter has been enabled.');
 $.lang.register('chatmoderator.emotes.filter.disabled', 'emotes filter has been disabled.');
+$.lang.register('chatmoderator.colors.usage', 'Usage: !moderation colors [on / off] (colors filter is currently $1)');
+$.lang.register('chatmoderator.colors.filter.enabled', 'color filter has been enabled.');
+$.lang.register('chatmoderator.colors.filter.disabled', 'color filter has been disabled.');
 $.lang.register('chatmoderator.regulars.usage', 'Usage: !moderation regulars [true / false] - Allows regulars to post links.');
 $.lang.register('chatmoderator.regulars.enabled', 'regulars are now allowed to post links.');
 $.lang.register('chatmoderator.regulars.disabled', 'regulars are no longet allowed to post links.');
@@ -32,6 +35,8 @@ $.lang.register('chatmoderator.emotes.message.usage', 'Usage: !moderation emotes
 $.lang.register('chatmoderator.emotes.message.set', 'emotes warning message set to: $1');
 $.lang.register('chatmoderator.spam.message.usage', 'Usage: !moderation spammessage [message]');
 $.lang.register('chatmoderator.spam.message.set', 'spam warning message set to: $1');
+$.lang.register('chatmoderator.colors.message.usage', 'Usage: !moderation colorsmessage [message]');
+$.lang.register('chatmoderator.colors.message.set', 'color warning message set to: $1');
 $.lang.register('chatmoderator.blacklist.message.usage', 'Usage: !moderation blacklistmessage [message]');
 $.lang.register('chatmoderator.blacklist.message.set', 'blacklist warning message set to: $1');
 $.lang.register('chatmoderator.permit.time.usage', 'Usage: !moderation permittime [time]');
@@ -53,7 +58,7 @@ $.lang.register('chatmoderator.timeout.time.set', 'timeout time set to: $1 secon
 $.lang.register('chatmoderator.warning.time.usage', 'Usage: !moderation warningtime [amount]');
 $.lang.register('chatmoderator.warning.time.set', 'warning time set to: $1 seconds.');
 $.lang.register('chatmoderator.permit.usage', 'Usage: !permit [username]');
-$.lang.register('chatmoderator.permited', ' is now permitted to post one link during the next $1 seconds!');
+$.lang.register('chatmoderator.permited', ' is now permited to post one link during the next $1 seconds!');
 $.lang.register('chatmoderator.blacklist.usage', 'Usage: !blackList [add / remove / show]');
 $.lang.register('chatmoderator.blacklist.add.usage', 'Usage: !blackList add (message)');
 $.lang.register('chatmoderator.blacklist.added', 'Word added to the blacklist.');
