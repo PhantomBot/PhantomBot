@@ -323,56 +323,56 @@
   function generateDefaultGroups() {
     if (!userGroups[0] || userGroups[0] != 'Caster') {
       userGroups[0] = 'Caster';
-      $.inidb.set('grouppoints', 'Caster', '7');
+      $.inidb.set('grouppoints', 'Caster', '-1');
       $.inidb.set('grouppointsoffline', 'Caster', '-1');
       $.inidb.set('groups', '0', 'Caster');
     }
 
     if (!userGroups[1] || userGroups[1] != 'Administrator') {
       userGroups[1] = 'Administrator';
-      $.inidb.set('grouppoints', 'Administrator', '6');
+      $.inidb.set('grouppoints', 'Administrator', '-1');
       $.inidb.set('grouppointsoffline', 'Administrator', '-1');
       $.inidb.set('groups', '1', 'Administrator');
     }
 
     if (!userGroups[2] || userGroups[2] != 'Moderator') {
       userGroups[2] = 'Moderator';
-      $.inidb.set('grouppoints', 'Moderator', '5');
+      $.inidb.set('grouppoints', 'Moderator', '-1');
       $.inidb.set('grouppointsoffline', 'Moderator', '-1');
       $.inidb.set('groups', '2', 'Moderator');
     }
 
     if (!userGroups[3] || userGroups[3] != 'Subscriber') {
       userGroups[3] = 'Subscriber';
-      $.inidb.set('grouppoints', 'Subscriber', '4');
+      $.inidb.set('grouppoints', 'Subscriber', '-1');
       $.inidb.set('grouppointsoffline', 'Subscriber', '-1');
       $.inidb.set('groups', '3', 'Subscriber');
     }
 
     if (!userGroups[4] || userGroups[4] != 'Donator') {
       userGroups[4] = 'Donator';
-      $.inidb.set('grouppoints', 'Donator', '3');
+      $.inidb.set('grouppoints', 'Donator', '-1');
       $.inidb.set('grouppointsoffline', 'Donator', '-1');
       $.inidb.set('groups', '4', 'Donator');
     }
 
     if (!userGroups[5] || userGroups[5] != 'Hoster') {
       userGroups[5] = 'Hoster';
-      $.inidb.set('grouppoints', 'Hoster', '2');
+      $.inidb.set('grouppoints', 'Hoster', '-1');
       $.inidb.set('grouppointsoffline', 'Hoster', '-1');
       $.inidb.set('groups', '5', 'Hoster');
     }
 
     if (!userGroups[6] || userGroups[6] != 'Regular') {
       userGroups[6] = 'Regular';
-      $.inidb.set('grouppoints', 'Regular', '1');
+      $.inidb.set('grouppoints', 'Regular', '-1');
       $.inidb.set('grouppointsoffline', 'Regular', '-1');
       $.inidb.set('groups', '6', 'Regular');
     }
 
     if (!userGroups[7] || userGroups[7] != 'Viewer') {
       userGroups[7] = 'Viewer';
-      $.inidb.set('grouppoints', 'Viewer', '0');
+      $.inidb.set('grouppoints', 'Viewer', '-1');
       $.inidb.set('grouppointsoffline', 'Viewer', '-1');
       $.inidb.set('groups', '7', 'Viewer');
     }

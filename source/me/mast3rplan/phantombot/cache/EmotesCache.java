@@ -132,7 +132,7 @@ public class EmotesCache implements Runnable {
         }
     }
 
-    private boolean checkJSONExceptions(JSONObject jsonResult, boolean ignore404) {
+    private boolean checkJSONExceptions(JSONObject jsonResult, boolean ignore404, String emoteType) {
 
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {
@@ -142,19 +142,20 @@ public class EmotesCache implements Runnable {
                     throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req=" +
                                         jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   " +
                                         (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
-                                         jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
+                                         jsonResult.getString("message") : "content=" + jsonResult.getString("_content")) +
+                                        "Emotes Type=" + emoteType);
                 } catch (Exception ex) {
-                    com.gmt2001.Console.out.println("EmotesCache.updateCache>> Failed to update emotes: " + ex.getMessage());
+                    com.gmt2001.Console.out.println("EmotesCache.updateCache>> Failed to update emotes (" + emoteType + "): " + ex.getMessage());
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
         } else {
             try {
-                throw new Exception("[" + jsonResult.getString("_exception") + "] " + jsonResult.getString("_exceptionMessage"));
+                throw new Exception("[" + jsonResult.getString("_exception") + "] " + jsonResult.getString("_exceptionMessage") + "Emotes Type=" + emoteType);
             } catch (Exception ex) {
                 if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
                     checkLastFail();
-                    com.gmt2001.Console.out.println("EmotesCache.updateCache>> Failed to update emotes: " + ex.getMessage());
+                    com.gmt2001.Console.out.println("EmotesCache.updateCache>> Failed to update emotes (" + emoteType + "): " + ex.getMessage());
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
@@ -191,9 +192,8 @@ public class EmotesCache implements Runnable {
         // We will pull emotes, set the sleep to every 10 minutes.
         loopSleep = LOOP_SLEEP_EMOTES_ENABLED;
 
-        com.gmt2001.Console.out.println("Pulling Twitch Emotes");
         jsonResult = TwitchAPIv3.instance().GetEmotes();
-        if (checkJSONExceptions(jsonResult, false)) {
+        if (checkJSONExceptions(jsonResult, false, "Twitch")) {
             jsonArray = jsonResult.getJSONArray("emoticons");
             for (int i = 0; i < jsonArray.length(); i++) {
                 emote = jsonArray.getJSONObject(i).getString("regex");
@@ -201,9 +201,8 @@ public class EmotesCache implements Runnable {
             }
         }
 
-        com.gmt2001.Console.out.println("Pulling Global BTTV Emotes");
         jsonResult = BTTVAPIv2.instance().GetGlobalEmotes();
-        if (checkJSONExceptions(jsonResult, true)) {
+        if (checkJSONExceptions(jsonResult, true, "Global BTTV")) {
             jsonArray = jsonResult.getJSONArray("emotes");
             for (int i = 0; i < jsonArray.length(); i++) {
                 emote = jsonArray.getJSONObject(i).getString("code").replace("(", "\\(")
@@ -215,9 +214,8 @@ public class EmotesCache implements Runnable {
             }
         }
 
-        com.gmt2001.Console.out.println("Pulling Local BTTV Emotes");
         jsonResult = BTTVAPIv2.instance().GetLocalEmotes(this.channel);
-        if (checkJSONExceptions(jsonResult, true)) {
+        if (checkJSONExceptions(jsonResult, true, "Local BTTV")) {
             jsonArray = jsonResult.getJSONArray("emotes");
             for (int i = 0; i < jsonArray.length(); i++) {
                 emote = jsonArray.getJSONObject(i).getString("code").replace("(", "\\(")
@@ -229,9 +227,8 @@ public class EmotesCache implements Runnable {
             }
         }
 
-        com.gmt2001.Console.out.println("Pulling Global FrankerZ Emotes");
         jsonResult = FrankerZAPIv1.instance().GetGlobalEmotes();
-        if (checkJSONExceptions(jsonResult, true)) {
+        if (checkJSONExceptions(jsonResult, true, "Global FrankerZ")) {
             JSONArray defaultSets = jsonResult.getJSONArray("default_sets");
             for (int i = 0; i < defaultSets.length(); i++) {
                 String currentSet = String.valueOf(defaultSets.getInt(i));
@@ -247,9 +244,8 @@ public class EmotesCache implements Runnable {
             }
         }
 
-        com.gmt2001.Console.out.println("Pulling Local FrankerZ Emotes");
         jsonResult = FrankerZAPIv1.instance().GetLocalEmotes(this.channel);
-        if (checkJSONExceptions(jsonResult, true)) {
+        if (checkJSONExceptions(jsonResult, true, "Local FrankerZ")) {
             String currentSet = String.valueOf(jsonResult.getJSONObject("sets").getInt("set"));
             jsonArray = jsonResult.getJSONObject("sets").getJSONObject(currentSet).getJSONArray("emoticons");
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -262,11 +258,9 @@ public class EmotesCache implements Runnable {
             }
         }
 
-        com.gmt2001.Console.out.println("Pulled a Total of " + newCache.size() + " Emotes.");
-
         if (this.cache != null) {
             if (newCache.size() == this.cache.size()) {
-                com.gmt2001.Console.out.println("Emotes count has not changed, no data pushed to bus");
+                com.gmt2001.Console.out.println("Emotes count has not changed, no data pushed to bus.");
                 return;
             }
         }
@@ -285,10 +279,10 @@ public class EmotesCache implements Runnable {
                 }
             }
             if (this.cache == null || emoteDifferencesFound) {
-                com.gmt2001.Console.out.println("Pushing Emotes onto the bus");
+                com.gmt2001.Console.out.println("Pushing " + newCache.size() + " emotes onto the event bus.");
                 EventBus.instance().post(new EmotesGetEvent(emoteString, PhantomBot.instance().getChannel("#" + this.channel)));
             } else {
-                com.gmt2001.Console.out.println("Emotes match cache, no data pushed to bus");
+                com.gmt2001.Console.out.println("Emotes match cache, no data pushed to bus.");
             }
         }
         this.cache = newCache;

@@ -119,7 +119,7 @@
         return;
       }
       $.inidb.set('subscribeHandler', 'subscribeMessage', argsString);
-      subMessage = argsString;
+      subMessage = argsString + '';
       $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.set'));
       return;
     }
@@ -136,7 +136,7 @@
         return;
       }
       $.inidb.set('subscribeHandler', 'reSubscribeMessage', argsString);
-      reSubMessage = argsString;
+      reSubMessage = argsString + '';
       $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.set'));
       return;
     }
@@ -153,7 +153,7 @@
         return;
       }
       $.inidb.set('subscribeHandler', 'subscribeMessageNoReward', argsString);
-      subMessage = argsString;
+      subMessageNoReward = argsString + '';
       $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.set'));
       return;
     }
@@ -170,7 +170,7 @@
         return;
       }
       $.inidb.set('subscribeHandler', 'reSubscribeMessageNoReward', argsString);
-      reSubMessage = argsString;
+      reSubMessage = argsString + '';
       $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.noreward.set'));
       return;
     }
@@ -245,13 +245,15 @@
         r,
         sub = message.substring(0, message.indexOf(' ', 1)).toString();
 
-    s = (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js') ? subMessage : subMessageNoReward);
-    r = (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js') ? reSubMessage : reSubMessageNoReward);
+    s = (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js') ? subMessage : subMessageNoReward) + '';
+    r = (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js') ? reSubMessage : reSubMessageNoReward) + '';
 
     if (sender.equalsIgnoreCase('twitchnotify')) {
       if (message.contains('just subscribed!') && subWelcomeToggle) {
         s = s.replace(/\(name\)/ig, sub);
-        s = s.replace(/\(reward\)/ig, subReward.toString());
+        if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+          s = s.replace(/\(reward\)/ig, subReward.toString());
+        }
         $.say(s);
         return;
       }
@@ -260,7 +262,9 @@
         var months = message.substring(message.indexOf('months') - 3, message.indexOf('months') - 1).toString();
         r = r.replace(/\(name\)/ig, sub);
         r = r.replace(/\(months\)/ig, months);
-        r = r.replace(/\(reward\)/ig, subReward.toString());
+        if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+          r = r.replace(/\(reward\)/ig, subReward.toString());
+        }
         $.say(r);
       }
     }

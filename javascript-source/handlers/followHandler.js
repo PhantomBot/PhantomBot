@@ -135,8 +135,9 @@
      */
     if (command.equalsIgnoreCase('followreward')) {
       comArg = parseInt(comArg);
-      if (!comArg || isNaN(comArg)) {
-        $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followreward.usage', $.pointNameMultiple));
+      if (!args[0] || isNaN(comArg)) {
+        $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followreward.usage', $.pointNameMultiple, followReward));
+        return;
       }
 
       followReward = comArg;

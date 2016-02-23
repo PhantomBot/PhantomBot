@@ -71,6 +71,7 @@
       if (!this.youtubeVideo.found) {
         $.say($.whisperPrefix(this.username) + $.lang.get('youtubeplayer.request.error.404', this.youtubeVideo.link));
         $.returnCommandCost(this.username, 'addsong');
+        nextVideo();
         return false;
       } else if (this.isOverRequestLimit()) {
         $.say($.whisperPrefix(this.username) + $.lang.get('youtubeplayer.request.error.overlimit', requestLimit));
