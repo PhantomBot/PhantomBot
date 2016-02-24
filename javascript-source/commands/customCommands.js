@@ -1,5 +1,35 @@
 (function () {
 
+  // Pre-build regular expressions.
+  var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/]+)\)/),                   // URL[1]
+      reCustomAPIJson = new RegExp(/\(customapijson ([\.\w]+)\s([\w\W:\/]+)\)/), // JSONmatch[1], URL[2]
+      reCheckTags = new RegExp(/\(customapi|\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/),
+      reSenderTag = new RegExp(/\(sender\)/),
+      reTouserTag = new RegExp(/\(touser\)/),
+      reATSenderTag = new RegExp(/\(@sender\)/),
+      reBaresenderTag = new RegExp(/\(baresender\)/),
+      reRandomTag = new RegExp(/\(random\)/),
+      rePointnameTag = new RegExp(/\(pointname\)/),
+      reUptimeTag = new RegExp(/\(uptime\)/),
+      reGameTag = new RegExp(/\(game\)/),
+      reStatusTag = new RegExp(/\(status\)/),
+      reFollowsTag = new RegExp(/\(follows\)/),
+      reCountTag = new RegExp(/\(count\)/),
+      rePriceTag = new RegExp(/\(price\)/);
+
+  /**
+   * @function getCustomAPIValue
+   * @param {string} url
+   * @returns {string}
+   */
+  function getCustomAPIValue(url) {
+    var HttpResponse = Packages.com.gmt2001.HttpResponse;
+    var HttpRequest = Packages.com.gmt2001.HttpRequest;
+    var HashMap = Packages.java.util.HashMap;
+    var responseData = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap());
+    return responseData.content;
+  };
+
   /**
    * @function returnCommandCost
    * @export $
@@ -27,9 +57,13 @@
    * @returns {string}
    */
     function replaceCommandTags(message, event, command, tagList, tagReplacements) {
-        var i,
+        var JSONObject = Packages.org.json.JSONObject, 
+            jsonObject,
             touser,
             price,
+            customAPIResponse = '',
+            regExCheck,
+            jsonCheckList,
             message = message + '',
             sender = event.getSender(),
             args = event.getArgs();
@@ -58,6 +92,31 @@
             $.inidb.incr('commandCount', command, 1);
         }
 
+        if ((regExCheck = message.match(reCustomAPI))) {
+            customAPIResponse = getCustomAPIValue(regExCheck[1]);
+        }
+
+        // Design Note.  As of this comment, this parser only supports parsing out of objects, it does not
+        // support parsing of arrays.  This could be done but how to allow the user to configure that
+        // would need to be hashed out.
+        // 
+        if ((regExCheck = message.match(reCustomAPIJson))) {
+            customAPIResponse = getCustomAPIValue(regExCheck[2]);
+            jsonCheckList = regExCheck[1].split('.');
+            if (jsonCheckList.length == 1) {
+                customAPIResponse = new JSONObject(customAPIResponse).getString(jsonCheckList[0]);
+            } else {
+                for (var i = 0; i < jsonCheckList.length - 1; i++) {
+                    if (i == 0) {
+                        jsonObject = new JSONObject(customAPIResponse).getJSONObject(jsonCheckList[i]);
+                    } else {
+                        jsonObject = new jsonObject.getJSONObject(jsonCheckList[i]);
+                    }
+                }
+                customAPIResponse = jsonObject.getString(jsonCheckList[i]);
+            }
+        }
+
         if (tagList) {
             for (i in tagList) {
                 var regex = new RegExp('/' + tagList[i].replace(/([\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|])/g, '\\$&') + '/', 'ig');
@@ -68,21 +127,22 @@
         // This needs to be improved, we can loose up to 500ms with all of the replace() methods when
         // there is nothing to replace.  This is a quick fix to just not even attempt to perform the
         // replace when we don't appear to see tags.
-        if (message.match(/\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/))
-        return message
-            .replace('(sender)', $.username.resolve(event.getSender()))
-            .replace('(touser)', $.username.resolve(touser))
-            .replace('(@sender)', '@' + $.username.resolve(event.getSender()))
-            .replace('(baresender)', event.getSender())
-            .replace('(random)', $.username.resolve($.randElement($.users)[0]))
-            .replace('(pointname)', $.pointNameMultiple)
-            .replace('(uptime)', $.getStreamUptime($.channelName))
-            .replace('(game)', $.getGame($.channelName))
-            .replace('(status)', $.getStatus($.channelName))
-            .replace('(follows)', $.getFollows($.channelName))
-            .replace('(count)', $.inidb.get('commandCount', command))
-            .replace('(price)', price)
-            ;
+        //
+        if (message.match(reCheckTags)) 
+            return message.replace(reSenderTag, $.username.resolve(event.getSender()))
+                          .replace(reTouserTag, $.username.resolve(touser))
+                          .replace(reATSenderTag, '@' + $.username.resolve(event.getSender()))
+                          .replace(reBaresenderTag, event.getSender())
+                          .replace(reRandomTag, $.username.resolve($.randElement($.users)[0]))
+                          .replace(rePointnameTag, $.pointNameMultiple)
+                          .replace(reUptimeTag, $.getStreamUptime($.channelName))
+                          .replace(reGameTag, $.getGame($.channelName))
+                          .replace(reStatusTag, $.getStatus($.channelName))
+                          .replace(reFollowsTag, $.getFollows($.channelName))
+                          .replace(reCountTag, $.inidb.get('commandCount', command))
+                          .replace(rePriceTag, price)
+                          .replace(reCustomAPI, customAPIResponse)
+                          .replace(reCustomAPIJson, customAPIResponse);
 
         return message;
     };

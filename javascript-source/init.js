@@ -308,7 +308,6 @@
     loadScript('./core/patternDetector.js');
     loadScript('./core/permissions.js');
     loadScript('./core/streamInfo.js');
-    loadScript('./core/ranks.js');
     loadScript('./core/timeSystem.js');
 
     $.logEvent('init.js', 285, 'Core loaded, initializing bot...');

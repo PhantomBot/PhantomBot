@@ -47,6 +47,8 @@
    * @returns {boolean}
    */
   function hasRank(username) {
+    var userTime;
+
     // Has a custom rank.
     if ($.inidb.exists('viewerRanks', username.toLowerCase())) {
       return true;
@@ -59,7 +61,16 @@
     if (ranksTimeTable.length == 0) {
       return false;
     }
-    return true;
+
+    userTime = parseInt(parseInt($.inidb.get('time', username)) / 3600);
+    for (var i = 0; i < ranksTimeTable.length; i++) {
+      if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
+        return true;
+      } else {
+        i = ranksTimeTable.length;
+      }
+    }
+    return false;
   }
 
   /**
@@ -82,6 +93,7 @@
     }
 
     // Return System Rank
+    userLevel = -1;
     userTime = parseInt(parseInt($.inidb.get('time', username)) / 3600);
     for (var i = 0; i < ranksTimeTable.length; i++) {
       if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
@@ -90,7 +102,10 @@
         i = ranksTimeTable.length;
       }
     }
-    return $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString());
+    if (userLevel != -1) {
+      return $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString());
+    }
+    return '';
   }
 
   /**
