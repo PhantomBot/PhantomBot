@@ -1087,8 +1087,8 @@ public class PhantomBot implements Listener {
                     }
                 }
                 if (arg.toLowerCase().startsWith("gport=") && arg.length() > 7) {
-                    if (gport != Integer.parseInt(arg.substring(5))) {
-                        gport = Integer.parseInt(arg.substring(5));
+                    if (gport != Integer.parseInt(arg.substring(6))) {
+                        gport = Integer.parseInt(arg.substring(6));
                         changed = true;
                     }
                 }
