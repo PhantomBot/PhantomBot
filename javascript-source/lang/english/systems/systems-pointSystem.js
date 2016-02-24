@@ -4,7 +4,9 @@ $.lang.register('pointsystem.add.error.negative', 'You can not give negative $1.
 $.lang.register('pointsystem.add.success', 'Sent $1 to $2. New balance is $3.');
 $.lang.register('pointsystem.add.usage', 'Usage: "!points give [name] [amount]"');
 $.lang.register('pointsystem.get.self.nopoints', 'You currently have no $1. Stay in the chat to start gaining $1!');
-$.lang.register('pointsystem.get.self.withtime', ' currently has $1 and has been in the chat for $2.');
+$.lang.register('pointsystem.get.self.withtime', ' $1 currently has $2 and has been in the chat for $3.');
+$.lang.register('pointsystem.user.usage', 'usage: !points user [username]');
+$.lang.register('pointsystem.user.success', ' $1 currently has $2.');
 $.lang.register('pointsystem.makeitrain.error.invalid', 'Sorry, but it\'s not possible to rain $1 at the moment.');
 $.lang.register('pointsystem.makeitrain.error.needpoints', 'You can not afford to make it rain $1.');
 $.lang.register('pointsystem.makeitrain.error.negative', 'You can not make it rain negative $1.');
@@ -39,3 +41,4 @@ $.lang.register('pointsystem.gift.usage', 'usage: !gift [user] [amount]');
 $.lang.register('pointsystem.gift.shortpoints', 'Sorry! You do not have enough points to send that gift!');
 $.lang.register('pointsystem.gift.404', 'Sorry! That user does not seem to be registered with the chat yet!');
 $.lang.register('pointsystem.gift.success', '$1 has sent a gift of $2 to $3.');
+$.lang.register('pointsystem.usage.invalid', 'Invalid option passed to $1 command');
