@@ -80,6 +80,7 @@
       $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'setgain', 1);
       $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'setofflinegain', 1);
       $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'setinterval', 1);
+      $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'user', 7);
     }
     if (!$.commandExists(pointNameMultiple.toLowerCase()) && !oldName) {
       $.registerChatCommand('./systems/pointSystem.js', pointNameMultiple.toLowerCase(), 7);
@@ -91,6 +92,7 @@
       $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'setgain', 1);
       $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'setofflinegain', 1);
       $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'setinterval', 1);
+      $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'user', 7);
     }
   };
 
@@ -154,28 +156,43 @@
         actionArg1 = args[1],
         actionArg2 = args[2],
         temp,
+        user,
         i;
 
     /**
      * @commandpath points - Announce YOUR current amount of points, this base command can be replaced by the pointsname and pointsnamemultiple
-     * @commandpath POINTNAMEMULTIPLE - Announce YOUR current amount of points
-     * @commandpath POINTNAMESINGLE - Announce YOUR current amount of points
-     *
-     * Todo: add @commandpath tags to command paths
      */
     if (command.equalsIgnoreCase('points') || command.equalsIgnoreCase('point') || command.equalsIgnoreCase(pointNameMultiple) || command.equalsIgnoreCase(pointNameSingle)) {
       if (!action) {
         if ($.getUserPoints(sender) == 0) {
           $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.nopoints', pointNameMultiple));
         } else {
-          $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.withtime', $.resolveRank(sender), $.getPointsString($.getUserPoints(sender)), $.getUserTimeString(sender)));
+          $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.withtime', ($.hasRank(sender) ? "the " + $.getRank(sender) : ""), $.getPointsString($.getUserPoints(sender)), $.getUserTimeString(sender)));
         }
       } else {
 
         /**
+         * @commandpath points user [username] - Check the points of another user
+         */
+        if (action.equalsIgnoreCase('user')) {
+          if (!actionArg1) {
+            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.usage'));
+            return;
+          }
+
+          user = (actionArg1 + '').toLowerCase();
+          if (!$.user.isKnown(user)) {
+            $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', user));
+            return;
+          }
+
+          $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.resolveRank(user), $.getPointsString($.getUserPoints(user))));
+        }
+
+        /**
          * @commandpath points add [username] [amount] - Add an amount of points to a user's balance
          */
-        if (action.equalsIgnoreCase('add')) {
+        else if (action.equalsIgnoreCase('add')) {
           actionArg1 = (actionArg1 + '').toLowerCase();
           actionArg2 = parseInt(actionArg2);
           if (isNaN(actionArg2)) {
@@ -203,7 +220,7 @@
         /**
          * @commandpath points take [username] [amount] - Take an amount of points from the user's balance
          */
-        if (action.equalsIgnoreCase('take')) {
+        else if (action.equalsIgnoreCase('take')) {
           actionArg1 = (actionArg1 + '').toLowerCase();
           actionArg2 = parseInt(actionArg2);
           if (isNaN(actionArg2)) {
@@ -229,7 +246,7 @@
         /**
          * @commandpath points set [username] [amount] - Set the user's points balance to an amount
          */
-        if (action.equalsIgnoreCase('set')) {
+        else if (action.equalsIgnoreCase('set')) {
           actionArg1 = (actionArg1 + '').toLowerCase();
           actionArg2 = parseInt(actionArg2);
           if (isNaN(actionArg2)) {
@@ -255,7 +272,7 @@
         /**
          * @commandpath points all [amount] - Send an amount of points to all users in the chat
          */
-        if (action.equalsIgnoreCase('all')) {
+        else if (action.equalsIgnoreCase('all')) {
           if (!actionArg1) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.all.usage'));
             return;
@@ -277,7 +294,7 @@
          * @commandpath points setname multiple [name] - Set the points handle for plural points
          * @commandpath points setname delete - Deletes single and multiple custom names
          */
-        if (action.equalsIgnoreCase('setname')) {
+        else if (action.equalsIgnoreCase('setname')) {
           (actionArg1 + '');
           (actionArg2 + '');
 
@@ -315,7 +332,7 @@
         /**
          * @commandpath points setgain [amount] - Set the amount of points gained per payout interval while the channel is online
          */
-        if (action.equalsIgnoreCase('setgain')) {
+        else if (action.equalsIgnoreCase('setgain')) {
           actionArg1 = parseInt(actionArg1);
           if (isNaN(actionArg1)) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.gain.usage'));
@@ -335,7 +352,7 @@
         /**
          * @commandpath points setofflinegain [amount] - Set the amount of points gained per interval while the channel is offline
          */
-        if (action.equalsIgnoreCase('setofflinegain')) {
+        else if (action.equalsIgnoreCase('setofflinegain')) {
           actionArg1 = parseInt(actionArg1);
           if (isNaN(actionArg1)) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.gain.offline.usage'));
@@ -356,7 +373,7 @@
         /**
          * @commandpath points setinterval [minutes] - Set the points payout interval for when the channel is online
          */
-        if (action.equalsIgnoreCase('setinterval')) {
+        else if (action.equalsIgnoreCase('setinterval')) {
           actionArg1 = parseInt(actionArg1);
           if (isNaN(actionArg1)) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.interval.usage'));
@@ -376,7 +393,7 @@
         /**
          * @commandpath points setofflineinterval [minutes] - Set the points payout interval for when the channel is offline
          */
-        if (action.equalsIgnoreCase('setofflineinterval')) {
+        else if (action.equalsIgnoreCase('setofflineinterval')) {
           actionArg1 = parseInt(actionArg1);
           if (isNaN(actionArg1)) {
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.interval.offline.usage'));
@@ -393,11 +410,15 @@
           $.say($.whisperPrefix(sender) + $.lang.get("pointsystem.set.interval.offline.success", pointNameSingle, offlinePayoutInterval));
         }
 
-        if (action.equalsIgnoreCase('modpermtoggle')) {
+        else if (action.equalsIgnoreCase('modpermtoggle')) {
           modPointsPermToggle = !modPointsPermToggle;
           $.setIniDbBoolean('pointSettings', 'modPointsPermToggle', modPointsPermToggle);
           $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.modpermtoggle.success',
                   (modPointsPermToggle ? 'moderator' : 'administrator')));
+        }
+
+        else {
+          $.say($.whisperPrefix(sender) + $.lang.get("pointsystem.usage.invalid", "!" + command));
         }
       }
     }
@@ -485,6 +506,7 @@
       $.registerChatSubcommand('points', 'setgain', 1);
       $.registerChatSubcommand('points', 'setofflinegain', 1);
       $.registerChatSubcommand('points', 'setinterval', 1);
+      $.registerChatSubcommand('points', 'user', 7);
 
       registerPointCommands();
     }
