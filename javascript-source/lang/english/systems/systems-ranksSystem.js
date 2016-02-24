@@ -22,8 +22,8 @@ $.lang.register('ranks.rank.norank.success', '$1 does not yet have a rank but is
 $.lang.register('ranks.rank.success', '$1 has reached the rank of $2 and is $3 hours away from the next rank!');
 $.lang.register('ranks.rank.maxsuccess', '$1 has reached the maximum rank of $2!');
 $.lang.register('ranks.rank.customsuccess', '$1 has been designated the rank of $2!');
-$.lang.register('ranks.set.usage', 'usage; !rank set [rankname] Requires $1 hours in chat and $2 $3.');
-$.lang.register('ranks.set.usage.nopoints', 'usage; !rank set [rankname] Requires $1 hours in chat.');
+$.lang.register('ranks.set.usage', 'usage: !rank set [rankname] Requires $1 hours in chat and $2 $3.');
+$.lang.register('ranks.set.usage.nopoints', 'usage: !rank set [rankname] Requires $1 hours in chat.');
 $.lang.register('ranks.set.failure', 'Either not enough hours ($1) or $2 ($3) to set rank!');
 $.lang.register('ranks.set.failure.nopoints', 'Not enough hours ($1) to set rank!');
 $.lang.register('ranks.set.success', 'Set rank to: $1');
