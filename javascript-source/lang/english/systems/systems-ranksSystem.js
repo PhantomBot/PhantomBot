@@ -4,7 +4,6 @@ $.lang.register('ranks.settime.success', 'Set time for users to create custom ra
 $.lang.register('ranks.setcost.usage', 'usage: !rankedit setcost [$1]');
 $.lang.register('ranks.setcost.success', 'Set cost for users to create custom rank to $1 $2.');
 $.lang.register('ranks.custom.usage', 'usage: !rankedit custom [user] [rankname]');
-$.lang.register('ranks.settime.usage', 'usage: !rankedit settime [hours]');
 $.lang.register('ranks.custom.404', 'Cannot find user to give a custom rank: $1');
 $.lang.register('ranks.custom.success', '$1 has received a custom rank of: $2');
 $.lang.register('ranks.customdel.usage', 'usage: !rankedit customdel [user]');
