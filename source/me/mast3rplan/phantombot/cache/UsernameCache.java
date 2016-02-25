@@ -76,15 +76,21 @@ public class UsernameCache {
 
                         return displayName;
                     } else {
+                        if (user.getInt("_http") == 404 && user.has("message") && !user.isNull("message")) {
+                            if (user.getString("message").endsWith("does not exist")) {
+                                com.gmt2001.Console.debug.println("UsernameCache.updateCache: " + user.getString("message"));
+                                return username;
+                            }
+                        }
                         try {
                             throw new Exception("[HTTPErrorException] HTTP " + user.getInt("_http") + " " + user.getString("error") + ". req="
                                                 + user.getString("_type") + " " + user.getString("_url") + " " + user.getString("_post") + "   "
                                                 + (user.has("message") && !user.isNull("message") ? "message=" + user.getString("message") : "content=" + user.getString("_content")));
                         } catch (Exception e) {
-                            com.gmt2001.Console.out.println("UsernameCache.updateCache>>Failed to get username: " + e.getMessage());
-                            com.gmt2001.Console.err.logStackTrace(e);
+                              com.gmt2001.Console.out.println("UsernameCache.updateCache>>Failed to get username: " + e.getMessage());
+                              com.gmt2001.Console.err.logStackTrace(e);
 
-                            return username;
+                              return username;
                         }
                     }
                 } else {

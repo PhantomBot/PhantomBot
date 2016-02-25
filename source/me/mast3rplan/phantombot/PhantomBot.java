@@ -486,8 +486,7 @@ public class PhantomBot implements Listener {
             this.donationsCache = DonationsCache.instance(this.channel.getName().toLowerCase());
         }
         this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
-
-        //this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
+        this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
     }
 
     @Subscribe
