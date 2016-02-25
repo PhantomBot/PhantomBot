@@ -16,10 +16,17 @@
  */
 package com.gmt2001;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.ArrayList;
 
 public class Logger implements Runnable {
@@ -29,39 +36,112 @@ public class Logger implements Runnable {
     private boolean disposed = false;
     private final ArrayList<LogItem> queue;
 
+    private FileOutputStream fosCore = null;
+    private FileOutputStream fosError = null;
+    private FileOutputStream fosDebug = null;
+    private PrintStream psCore = null;
+    private PrintStream psError = null;
+    private PrintStream psDebug = null;
+    private String logTimestamp = "";
+
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
         this.isRunning = true;
 
+        if (!new File ("./logs/").exists()) {
+          new File ("./logs/").mkdirs();
+        }
+        if (!new File ("./logs/core").exists()) {
+          new File ("./logs/core/").mkdirs();
+        }
+        if (!new File ("./logs/core-error").exists()) {
+          new File ("./logs/core-error/").mkdirs();
+        }
+        if (!new File ("./logs/core-debug").exists()) {
+          new File ("./logs/core-debug/").mkdirs();
+        }
+
         while (!disposed) {
             if (!queue.isEmpty()) {
+
+                SimpleDateFormat datefmt = new SimpleDateFormat("dd-MM-yyyy");
+                datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+                String timestamp = datefmt.format(new Date());
+
+                // New date, close all open streams.  Java spec says that closing the PrintStream closes the
+                // underlying streams automatically (FileOutputStream).
+                if (!timestamp.equals(logTimestamp)) {
+                    if (psCore != null) {
+                        psCore.close();
+                        psCore = null;
+                    }
+                    if (psError != null) {
+                        psError.close();
+                        psError = null;
+                    }
+                    if (psDebug != null) {
+                        psDebug.close();
+                        psDebug = null;
+                    }
+                    logTimestamp = timestamp;
+                }
+
                 try {
-                    try (FileOutputStream fos = new FileOutputStream("stdio.txt", true)) {
-                        PrintStream ps = new PrintStream(fos);
+                  
+                    if (queue.size() > 0) {
+                        LogItem i = queue.remove(0);
 
-                        if (queue.size() > 0) {
-                            LogItem i = queue.remove(0);
-
-                            switch (i.t) {
-                            case Output:
-                                ps.println(">>" + i.s);
-                                break;
-                            case Input:
-                                ps.println("<<" + i.s);
-                                break;
-                            case Error:
-                                ps.println("!!" + i.s);
-                                break;
-                            default:
-                                ps.println();
-                                break;
+                        switch (i.t) {
+                        case Output:
+                            if (psCore == null) {
+                                fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt");
+                                psCore = new PrintStream(fosCore);
                             }
+                            psCore.println(">>" + i.s);
+                            psCore.flush();
+                            break;
+
+                        case Input:
+                            if (psCore == null) {
+                                fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt");
+                                psCore = new PrintStream(fosCore);
+                            }
+                            psCore.println("<<" + i.s);
+                            psCore.flush();
+                            break;
+
+                        case Error:
+                            if (psError == null) {
+                                fosError = new FileOutputStream("./logs/core-error/" + timestamp + ".txt");
+                                psError = new PrintStream(fosError);
+                            }
+                            psError.println(i.s);
+                            psError.flush();
+                            break;
+
+                        case Debug:
+                            if (psDebug == null) {
+                                fosDebug = new FileOutputStream("./logs/core-debug/" + timestamp + ".txt");
+                                psDebug = new PrintStream(fosDebug);
+                            }
+                            psDebug.println(i.s);
+                            psDebug.flush();
+                            break;
+
+                        default:
+                            if (psCore == null) {
+                                fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt");
+                                psCore = new PrintStream(fosCore);
+                            } 
+                            psCore.println("??" + i.s);
+                            psCore.flush();
+                            break;
                         }
                     }
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace(System.err);
-                } catch (IOException ex) {
+                } catch (SecurityException ex) {
                     ex.printStackTrace(System.err);
                 }
             } else {
@@ -97,7 +177,7 @@ public class Logger implements Runnable {
         Output,
         Input,
         Error,
-        Blank
+        Debug
     }
 
     public static Logger instance() {

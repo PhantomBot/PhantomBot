@@ -63,7 +63,7 @@ public class err {
         String timestamp = datefmt.format(new Date());
 
         Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + o.toString());
-        Logger.instance().log(Logger.LogType.Blank, "");
+        Logger.instance().log(Logger.LogType.Error, "");
     }
 
     public static void printStackTrace(Throwable e) {
@@ -84,6 +84,6 @@ public class err {
         String timestamp = datefmt.format(new Date());
 
         Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + trace.toString());
-        Logger.instance().log(Logger.LogType.Blank, "");
+        Logger.instance().log(Logger.LogType.Error, "");
     }
 }
