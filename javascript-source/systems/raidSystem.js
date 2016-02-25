@@ -66,7 +66,7 @@
    */
   $.bind('initReady', function () {
     if ($.bot.isModuleEnabled('./systems/raidSystem.js')) {
-      $.consoleLn($.lang.get('raidsystem.console.announceraidmsg', raidMessage));
+      $.consoleDebug($.lang.get('raidsystem.console.announceraidmsg', raidMessage));
 
       $.registerChatCommand('./systems/raidSystem.js', 'raid', 2);
       $.registerChatCommand('./systems/raidSystem.js', 'raider', 2);
