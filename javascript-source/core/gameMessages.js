@@ -23,7 +23,7 @@
       lostMessagesCount++;
     }
 
-    $.consoleLn($.lang.get('gamemessages.console.loaded', winMessagesCount, lostMessagesCount));
+    $.consoleDebug($.lang.get('gamemessages.console.loaded', winMessagesCount, lostMessagesCount));
   };
 
   /**
