@@ -69,15 +69,7 @@
             args = event.getArgs();
 
         if (message.indexOf('(touser)') != -1) {
-             if (args.length < 1) { 
-                   touser = sender;
-             } else {
-                   if ($.userExists(args[0])) {
-                       touser = args[0];
-                   } else {
-                       return $.whisperPrefix(sender) + $.lang.get('customcommands.touser.offline', args[0]);
-                   }
-             }
+            touser = (!args[0] ? sender : args[0]);
         }
 
         if (message.indexOf('(price)') != -1) {
