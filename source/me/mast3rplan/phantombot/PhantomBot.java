@@ -370,6 +370,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
+        Script.global.defineProperty("ghostname", ghostname, 0);
         Script.global.defineProperty("donations", donationsCache, 0);
         Script.global.defineProperty("emotes", emotesCache, 0);
 
@@ -667,6 +668,8 @@ public class PhantomBot implements Listener {
                 data += "baseport=" + baseport + "\r\n";
                 data += "hostname=" + hostname + "\r\n";
                 data += "port=" + port + "\r\n";
+                data += "ghostname=" + ghostname + "\r\n";
+                data += "gport=" + gport + "\r\n";
                 data += "msglimit30=" + msglimit30 + "\r\n";
                 data += "datastore=" + datastore + "\r\n";
                 data += "youtubekey=" + youtubekey + "\r\n";
