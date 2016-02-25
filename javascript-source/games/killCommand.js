@@ -19,7 +19,7 @@
     for (i = 1; $.lang.exists('killcommand.other.' + i); i++) {
       otherMessageCount++;
     }
-    $.consoleLn($.lang.get('killcommand.console.loaded', selfMessageCount, otherMessageCount));
+    $.consoleDebug($.lang.get('killcommand.console.loaded', selfMessageCount, otherMessageCount));
   };
 
   /**

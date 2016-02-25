@@ -50,7 +50,7 @@
       newEmotesRegExpList.push(new RegExp(emoteRegExp, 'g'));
     }
     emotesRegExpList = newEmotesRegExpList;
-    $.consoleLn("Built " + emotesRegExpList.length + " regular expressions for emote handling.");
+    $.consoleDebug("Built " + emotesRegExpList.length + " regular expressions for emote handling.");
   }
 
   /**

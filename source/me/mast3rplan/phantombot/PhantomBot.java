@@ -370,6 +370,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
+        Script.global.defineProperty("ghostname", ghostname, 0);
         Script.global.defineProperty("donations", donationsCache, 0);
         Script.global.defineProperty("emotes", emotesCache, 0);
 
@@ -667,6 +668,8 @@ public class PhantomBot implements Listener {
                 data += "baseport=" + baseport + "\r\n";
                 data += "hostname=" + hostname + "\r\n";
                 data += "port=" + port + "\r\n";
+                data += "ghostname=" + ghostname + "\r\n";
+                data += "gport=" + gport + "\r\n";
                 data += "msglimit30=" + msglimit30 + "\r\n";
                 data += "datastore=" + datastore + "\r\n";
                 data += "youtubekey=" + youtubekey + "\r\n";
@@ -1168,8 +1171,8 @@ public class PhantomBot implements Listener {
                 if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
                     com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
                                                     + "[oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
-                                                    + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] "
-                                                    + "[port=<custom irc port>] [msglimit30=<message limit per 30 seconds>] "
+                                                    + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] [ghostname=<custom group chat server>] "
+                                                    + "[port=<custom irc port>] [gport=<custom group chat port>] [msglimit30=<message limit per 30 seconds>] "
                                                     + "[datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>] "
                                                     + "[datastoreconfig=<Optional DataStore config option, different for each DataStore type>] "
                                                     + "[youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]"

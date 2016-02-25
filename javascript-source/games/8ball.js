@@ -15,7 +15,7 @@
     for (i = 1; $.lang.exists('8ball.answer.' + i); i++) {
       responseCount++;
     }
-    $.consoleLn($.lang.get('8ball.console.loaded', responseCount));
+    $.consoleDebug($.lang.get('8ball.console.loaded', responseCount));
   };
 
   /**

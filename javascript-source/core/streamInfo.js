@@ -131,12 +131,12 @@
         $.logEvent('streamCommand.js', 25, $.username.resolve(sender) + ' changed the current game to ' + http.getString('game'));
       } else {
         $.say($.whisperPrefix(sender) + 'Failed to change the game. TwitchAPI must be having issues');
-        $.consoleLn(http.getString('message'));
+        $.consoleDebug(http.getString('message'));
         $.logError('streamCommand.js', 29, http.getString('message'));
       }
     } else {
       $.say('Failed to change the game. TwitchAPI must be having issues');
-      $.consoleLn(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
+      $.consoleDebug(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
       $.logError('streamCommand.js', 34, http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
     }
   };
@@ -158,12 +158,12 @@
         $.logEvent('streamCommand.js', 54, sender + ' changed the current status to ' + http.getString('status'));
       } else {
         $.say($.whisperPrefix(sender) + 'Failed to change the status. TwitchAPI must be having issues');
-        $.consoleLn(http.getString('message'));
+        $.consoleDebug(http.getString('message'));
         $.logError('streamCommand.js', 58, http.getString('message'));
       }
     } else {
       $.say($.whisperPrefix(sender) + 'Failed to change the status. TwitchAPI must be having issues');
-      $.consoleLn(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
+      $.consoleDebug(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
       $.logError('streamCommand.js', 63, http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
     }
   };

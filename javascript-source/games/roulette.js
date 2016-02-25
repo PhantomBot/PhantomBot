@@ -25,7 +25,7 @@
       responseCounts.lost++;
     }
 
-    $.consoleLn($.lang.get('roulette.console.loaded', responseCounts.win, responseCounts.lost));
+    $.consoleDebug($.lang.get('roulette.console.loaded', responseCounts.win, responseCounts.lost));
   };
 
   /**

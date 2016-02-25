@@ -44,7 +44,7 @@
         lines: lines,
       });
     }
-    $.consoleLn($.lang.get('adventuresystem.loaded', storyId - 1));
+    $.consoleDebug($.lang.get('adventuresystem.loaded', storyId - 1));
   };
 
   /**

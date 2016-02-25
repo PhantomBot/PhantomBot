@@ -118,7 +118,7 @@
     if (message.toLowerCase().indexOf('moderators if this room') == -1) {
       $.log('privMsg', $.username.resolve(sender) + ': ' + message, sender);
     }
-    $.consoleLn($.lang.get('console.received.irsprivmsg', sender, message));
+    $.consoleDebug($.lang.get('console.received.irsprivmsg', sender, message));
 
     message = message.toLowerCase();
     if (sender.equalsIgnoreCase('jtv')) {
@@ -221,7 +221,7 @@
    */
   $.bind('initReady', function () {
     if ($.bot.isModuleEnabled('./core/logging.js')) {
-      $.consoleLn($.lang.get('console.loggingstatus', (loggingEnabled ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+      $.consoleDebug($.lang.get('console.loggingstatus', (loggingEnabled ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
       $.registerChatCommand('./core/logging.js', 'log', 1);
     }
   });

@@ -15,7 +15,7 @@
     for (i = 1; $.lang.exists('randomcommand.' + i); i++) {
       randomsCount++;
     }
-    $.consoleLn($.lang.get('randomcommand.console.loaded', randomsCount));
+    $.consoleDebug($.lang.get('randomcommand.console.loaded', randomsCount));
   };
 
   /**
