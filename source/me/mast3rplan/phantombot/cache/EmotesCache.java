@@ -260,7 +260,7 @@ public class EmotesCache implements Runnable {
 
         if (this.cache != null) {
             if (newCache.size() == this.cache.size()) {
-                com.gmt2001.Console.out.println("Emotes count has not changed, no data pushed to bus.");
+                com.gmt2001.Console.debug.println("Emotes count has not changed, no data pushed to bus.");
                 return;
             }
         }
@@ -279,10 +279,10 @@ public class EmotesCache implements Runnable {
                 }
             }
             if (this.cache == null || emoteDifferencesFound) {
-                com.gmt2001.Console.out.println("Pushing " + newCache.size() + " emotes onto the event bus.");
+                com.gmt2001.Console.debug.println("Pushing " + newCache.size() + " emotes onto the event bus.");
                 EventBus.instance().post(new EmotesGetEvent(emoteString, PhantomBot.instance().getChannel("#" + this.channel)));
             } else {
-                com.gmt2001.Console.out.println("Emotes match cache, no data pushed to bus.");
+                com.gmt2001.Console.debug.println("Emotes match cache, no data pushed to bus.");
             }
         }
         this.cache = newCache;
