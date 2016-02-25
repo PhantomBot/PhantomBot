@@ -323,17 +323,17 @@ public class FollowersCache implements Runnable {
         this.cache = newCache;
         this.count = newCache.size();
 
+        if (firstUpdate) {
+            firstUpdate = false;
+            EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+        }
+
         for (String follower : followers) {
             EventBus.instance().post(new TwitchFollowEvent(follower, PhantomBot.instance().getChannel("#" + this.channel)));
         }
 
         for (String follower : unfollowers) {
             EventBus.instance().post(new TwitchUnfollowEvent(follower, PhantomBot.instance().getChannel("#" + this.channel)));
-        }
-
-        if (firstUpdate) {
-            firstUpdate = false;
-            EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
         }
     }
 
