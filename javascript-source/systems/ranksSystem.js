@@ -180,7 +180,7 @@
 
         rankEligableCost = parseInt(args[1]);
         $.inidb.set('settings', 'rankEligableCost', rankEligableCost);
-        $.say($.whisperPrefix(sender) + $.lang.get('ranks.settime.success', rankEligableCost, $.pointNameMultiple));
+        $.say($.whisperPrefix(sender) + $.lang.get('ranks.setcost.success', rankEligableCost, $.pointNameMultiple));
         return;
       }
 
