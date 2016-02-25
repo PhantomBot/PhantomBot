@@ -34,8 +34,9 @@
     var subscriber = event.getSubscriber();
 
     if (!$.inidb.exists('subscribed', subscriber)) {
-      $.inidb.set('subscribed', subscriber, 'true');
-    } else if (subReward > 0 && $.bot.isModuleEnabled('./core/pointSystem.js')) {
+      $.addSubUsersList(subscriber);
+      $.restoreSubscriberStatus(subscriber);
+    } else if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
       $.inidb.incr('points', subscriber, subReward);
     }
   });
@@ -51,7 +52,8 @@
     var subscriber = event.getSubscriber();
 
     if ($.inidb.exists('subscribed', subscriber)) {
-      $.inidb.del('subscribed', subscriber);
+      $.delSubUsersList(subscriber);
+      $.restoreSubscriberStatus(subscriber);
     }
   });
 
@@ -255,6 +257,10 @@
           s = s.replace(/\(reward\)/ig, subReward.toString());
         }
         $.say(s);
+
+        $.addSubUsersList(sub);
+        $.restoreSubscriberStatus(sub);
+
         return;
       }
 
