@@ -227,8 +227,8 @@
    */
   function getGroupIdByName(groupName) {
     var i;
-    for (i in userGroups) {
-      if (userGroups[i].toLowerCase().indexOf(groupName.toLowerCase())) {
+    for (i = 0; i < userGroups.length; i++) {
+      if (userGroups[i].equalsIgnoreCase(groupName.toLowerCase())) {
         return i;
       }
     }
@@ -300,18 +300,60 @@
   };
 
   /**
+   * @function addSubUsersList
+   * @export $
+   * @param username
+   */
+  function addSubUsersList(username)
+  {
+    username = (username + '').toLowerCase();
+    for (i in subUsers) {
+      if (subUsers[i][0].equalsIgnoreCase(username)) {
+        return;
+      }
+    }
+    subUsers.push([username, $.systemTime() + 1e4]);
+  }
+
+  /**
+  * @function delSubUsersList
+  * @export $
+  * @param username
+  */
+  function delSubUsersList(username)
+  {
+    var newSubUsers;
+
+    username = (username + '').toLowerCase();
+    for (i in subUsers) {
+      if (!subUsers[i][0].equalsIgnoreCase(username)) {
+        newSubUsers.push([subUsers[i][0], subUsers[i][1]]);
+      }
+    }
+    subUsers = newSubUsers;
+  }
+
+  /**
    * @function restoreSubscriberStatus
    * @param username
    */
   function restoreSubscriberStatus(username) {
+    username = (username + '').toLowerCase();
+
     if ($.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
-      if ($.inidb.exists('subscribed', username) && !$.isSub(username)) {
+      if ($.getIniDbBoolean('subscribed', username, false) && !isSub(username)) {
         $.setIniDbBoolean('subscribed', username, false);
-        if ($.inidb.exists('tempsubgroup', username) && !$.isMod(username)) {
-          $.inidb.set('group', username, $.inidb.get('tempsubgroup', username));
-          $.inidb.del('tempsubgroup', username);
+        if ($.inidb.exists('preSubGroup', username) && !$.isMod(username)) {
+          $.inidb.set('group', username, $.inidb.get('preSubGroup', username));
+          $.inidb.del('preSubGroup', username);
         } else {
           $.inidb.set('group', username, 7);
+        }
+      } else if (!getIniDbBoolean('subscribed', username, false) && isSub(username)) {
+        $.setIniDbBoolean('subscribed', username, true);
+        if (!isMod(username)) {
+          $.inidb.set('preSubGroup', username, getUserGroupId(username));
+          setUserGroupByName(username, 'Subscriber');
         }
       }
     }
@@ -632,6 +674,7 @@
         $.inidb.set('grouppointsoffline', getGroupNameById(groupId), points);
       }
     }
+
   });
 
   // Load groups and generate default groups if they don't exist
@@ -694,4 +737,7 @@
   $.getGroupPointMultiplier = getGroupPointMultiplier;
   $.setUserGroupById = setUserGroupById;
   $.setUserGroupByName = setUserGroupByName;
+  $.addSubUsersList = addSubUsersList;
+  $.delSubUsersList = delSubUsersList;
+  $.restoreSubscriberStatus = restoreSubscriberStatus;
 })();
