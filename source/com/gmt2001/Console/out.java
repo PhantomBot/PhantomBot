@@ -62,7 +62,7 @@ public class out {
 
         if (PhantomBot.enableDebugging) {
             Logger.instance().log(Logger.LogType.Output, timestamp + "Z " + o.toString());
-            Logger.instance().log(Logger.LogType.Blank, "");
+            Logger.instance().log(Logger.LogType.Output, "");
         }
 
         System.out.println("[" + timestamp + "] " + o);

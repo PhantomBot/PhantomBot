@@ -17,6 +17,9 @@
 package com.gmt2001.Console;
 
 import com.gmt2001.Logger;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -37,16 +40,57 @@ public class debug {
     private debug() {
     }
 
-    public static void println(Object o) {
-        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
-        datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-        String timestamp = datefmt.format(new Date());
-
+    private debug(Object o) {
         if (PhantomBot.enableDebugging) {
-            Logger.instance().log(Logger.LogType.Output, timestamp + "Z " + o.toString());
-            Logger.instance().log(Logger.LogType.Blank, "");
+            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
+            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String timestamp = datefmt.format(new Date());
+
+            Logger.instance().log(Logger.LogType.Debug, timestamp + "Z " + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "");
             System.out.println("[" + timestamp + "] >>>[DEBUG] " + o);
+        }
+    }
+
+    public static void println() {
+      if (PhantomBot.enableDebugging) {
+        System.out.println();
+      }
+    }
+
+    public static void println(Object o) {
+        if (PhantomBot.enableDebugging) {
+            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
+            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String timestamp = datefmt.format(new Date());
+
+            Logger.instance().log(Logger.LogType.Debug, timestamp + "Z " + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "");
+            System.out.println("[" + timestamp + "] >>>[DEBUG] " + o);
+        }
+    }
+
+    public static void printStackTrace(Throwable e) {
+        if (PhantomBot.enableDebugging) {
+            e.printStackTrace(System.err);
+            logStackTrace(e);
+        }
+    }
+
+    public static void logStackTrace(Throwable e) {
+        if (PhantomBot.enableDebugging) {
+            Writer trace = new StringWriter();
+            PrintWriter ptrace = new PrintWriter(trace);
+    
+            e.printStackTrace(ptrace);
+    
+            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
+            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+    
+            String timestamp = datefmt.format(new Date());
+    
+            Logger.instance().log(Logger.LogType.Debug, timestamp + "Z " + trace.toString());
+            Logger.instance().log(Logger.LogType.Debug, "");
         }
     }
 }

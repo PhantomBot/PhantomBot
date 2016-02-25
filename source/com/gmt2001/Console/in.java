@@ -50,7 +50,7 @@ public class in {
             String timestamp = datefmt.format(new Date());
 
             Logger.instance().log(Logger.LogType.Input, timestamp + "Z " + s);
-            Logger.instance().log(Logger.LogType.Blank, "");
+            Logger.instance().log(Logger.LogType.Input, "");
         }
 
         return s;
