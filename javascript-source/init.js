@@ -55,6 +55,15 @@
   };
 
   /**
+   * @function consoleDebug
+   * @export $
+   * @param {string} message
+   */
+  function consoleDebug(message) {
+    Packages.com.gmt2001.Console.debug.println(java.util.Objects.toString(message));
+  };
+
+  /**
    * @function generateJavaTrampolines
    */
   function generateJavaTrampolines() {
@@ -348,7 +357,7 @@
         if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
           if (event.getAdd()) {
             if (!modeO) {
-              $.consoleLn($.username.resolve($.botName) + ' is ready to receive commands!');
+              $.consoleLn($.username.resolve($.botName) + ' ready!');
             }
             modeO = true;
           }
@@ -579,7 +588,8 @@
     });
 
     $.logEvent('init.js', 553, 'Bot locked & loaded!');
-    $.consoleLn('Bot locked & loaded!');
+    $.consoleDebug('Bot locked & loaded!');
+    $.consoleLn('')
 
     /**
      * @event command
@@ -755,6 +765,7 @@
 
   /** Export functions to API */
   $.consoleLn = consoleLn;
+  $.consoleDebug = consoleDebug;
   $.bind = addHook;
   $.unbind = removeHook;
 
