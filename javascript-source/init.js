@@ -369,54 +369,52 @@
      * @event api-command
      */
     $api.on($script, 'command', function (event) {
-      var sender = event.getSender().toLowerCase(),
-          tags = event.getTags(),
-          origCommand = event.getCommand().toLowerCase(),
-          args = event.getArgs(),
-          cooldown,
-          command,
-          subcommand;
+        var sender = event.getSender(),
+            args = event.getArgs(),
+            origCommand = event.getCommand(),
+            command,
+            subCommand,
+            cooldown;
 
-      if (!$.isModv3(sender, tags) && $.commandPause.isPaused()) {
-        //$.say($.whisperPrefix(sender) + $.lang.get('commandpause.isactive'));
-        return;
-      }
-
-      if ($.inidb.exists('aliases', origCommand)) {
-        event.setCommand($.inidb.get('aliases', origCommand));
-      }
-
-      command = event.getCommand().toLowerCase();
-      if (!$.commandExists(command)) {
-        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.404', command));
-        return;
-      }
-
-      subcommand = (args[0] ? args[0] : '');
-      if (!$.permCom(sender, command, subcommand)) {
-        //$.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm', command + " " + subcommand + " (" + $.getUserGroupName(sender) + ")"));
-        return;
-      }
-
-      if (!$.isAdmin(sender)) {
-        cooldown = $.coolDown.get(command, sender);
-        if (cooldown > 0) {
-          //$.say($.whisperPrefix(sender) + $.lang.get('cooldown.active', command, $.getTimeString(cooldown / 1e3)));
-          return;
+        if (!$.isModv3(sender, event.getTags()) && $.commandPause.isPaused()) {
+            consoleDebug($.lang.get('commandpause.isactive'))
+            return;
         }
-      }
 
-      if (isModuleEnabled('./systems/pointSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
-        if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
-          $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
-          return;
+        if ($.inidb.exists('aliases', origCommand)) {
+            event.setCommand($.inidb.get('aliases', origCommand));
         }
-        if (parseInt($.inidb.get('pricecom', command)) > 0) {
-          $.inidb.decr('points', sender, $.inidb.get('pricecom', command));
+        
+        command = event.getCommand().toLowerCase();
+        if (!$.commandExists(command)) {
+            consoleDebug('that command does not exists.');
+            return;
         }
-      }
 
-      callHook('command', event, false);
+        subCommand = (args[0] ? args[0] : '');
+        if (!$.permCom(sender, command, subCommand)) {
+            $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command)));
+            return;
+        }
+
+        if (!$.isAdmin(sender)) {
+            cooldown = $.coolDown.get(command, sender);
+            if (cooldown > 0) {
+                consoleDebug('command ' + command + ' was not sent because it is still on a cooldown.');
+                return;
+            }
+        }
+
+        if (isModuleEnabled('./systems/pointSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
+            if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
+                return;
+            }
+            if (parseInt($.inidb.get('pricecom', command)) > 0) {
+                $.inidb.decr('points', sender, $.inidb.get('pricecom', command));
+            }
+        }
+        callHook('command', event, false);
     });
 
     /**
