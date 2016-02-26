@@ -1,6 +1,6 @@
 (function () {
     var betMinimum = ($.inidb.exists('betSettings', 'betMinimum') ? parseInt($.inidb.get('betSettings', 'betMinimum')) : 0),
-        betMaximum = ($.inidb.exists('betSettings', 'betMaximum') ? parseInt($.inidb.get('betSettings', 'betMaximum')) : 50),
+        betMaximum = ($.inidb.exists('betSettings', 'betMaximum') ? parseInt($.inidb.get('betSettings', 'betMaximum')) : 1000),
         time = 0,
         betStatus = false,
         betPot = 0,
@@ -26,17 +26,22 @@
 
         for (i = 0; i < bet.length; i++) {
             betOptions.push(bet[i].toLowerCase().trim());
+            if (!isNaN(bet[i])) {
+              $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.open'));
+                betOptions = [];
+          return;
+          }
         }
 
         string = betOptions.join(' vs ');
 
         betStatus = true;
-        
+
         $.say($.lang.get('betsystem.opened', string, $.pointNameMultiple));
     };
 
     function betClose(sender, event, subAction) {
-        var args = event.getArgs(), 
+        var args = event.getArgs(),
             betWinning = subAction.toLowerCase(),
             betWinPercent = 0,
             betPointsWon = 0,
@@ -115,7 +120,7 @@
                 $.inidb.incr('points', i, (betPot * betWinPercent));
             }
         }
-        
+
         $.say($.lang.get('betsystem.closed', betWinning, $.getPointsString(betPot * betWinPercent)));
         betPot = 0;
         betTotal = 0;
@@ -132,11 +137,18 @@
             bet = args.slice(1);
 
         if (command.equalsIgnoreCase('bet')) {
+
+            if (!action) {
+                // SHOW USAGE HERE //
+                $.say($.whisperPrefix(sender) + $.lang.get('betsystem.command.usage'));
+                return;
+            }
             if (action.equalsIgnoreCase('open')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
                     return;
                 }
+
                 betOpen(event, bet);
                 return;
             } else if (action.equalsIgnoreCase('close')) {
@@ -176,14 +188,32 @@
                 $.inidb.set('betSettings', 'betMinimum', betMaximum);
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.max', betMaximum, $.pointNameMultiple));
                 return;
-            } else if (isNaN(action) || !isNaN(parseInt(action))) {
+            } else {
                 if (!betStatus) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.bet.closed'));
                     return;
                 }
 
-                var betWager = parseInt(action),
-                    betOption = subAction;
+                var betWager,
+                    betOption;
+
+                if (!action || !subAction) {
+                  $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
+                  return;
+                }
+
+                if (isNaN(action) && isNaN(subAction)) {
+                  $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
+                  return;
+                }
+                if (isNaN(action) && !isNaN(subAction)) {
+                   betWager = parseInt(subAction);
+                   betOption = action;
+                 }
+                 if (!isNaN(action) && isNaN(subAction)) {
+                   betWager = parseInt(action);
+                   betOption = subAction;
+                 }
 
                 if (!$.list.contains(betOptions, betOption.toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
@@ -198,10 +228,10 @@
                     $.say($.whisperPrefix(sender) + 'You can not bet more then ' + $.getPointString(betMaximum));
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.bet.err.more', $.getPointString(betMaximum)));
                     return;
-                } else if ($.getUserPoints(sender) < betWager) {
+                } else if (parseInt($.getUserPoints(sender.toLowerCase())) < betWager) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.points', $.pointNameMultiple));
                     return;
-                } 
+                }
 
                 for (i in betTable) {
                     if (sender.equalsIgnoreCase(i)) {
@@ -224,7 +254,7 @@
                 };
 
                 $.say($.lang.get('betsystem.bet.updated', sender, $.getPointsString(betWager), betOption, $.getPointsString(betPot)));
-            } 
+            }
         }
     });
 
