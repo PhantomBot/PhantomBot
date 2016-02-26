@@ -1,4 +1,4 @@
-$.lang.register('chatmoderator.usage.toggles', 'Usage: !moderation [links / caps / symbols / spam / emotes / colors / longmessages / regulars / subscribers]');
+$.lang.register('chatmoderator.usage.toggles', 'Usage: !moderation [links / caps / symbols / spam / emotes / colors / longmessages/ regulars / subscribers]');
 $.lang.register('chatmoderator.usage.messages', 'Usage: !moderation [linksmessage / capsmessage / symbolsmessage / spammessage / emotesmessage / colorsmessage / blacklistmessage / longmsgmessage]');
 $.lang.register('chatmoderator.options', 'Usage: !moderation [capstriggerlength / capslimit / symbolstriggerlength / symbolslimit / spamlimit / emoteslimit / permittime / warningtime / timeouttime / messagecooldown / messagecharacterlimit]');
 $.lang.register('chatmoderator.link.usage', 'Usage: !moderation links [on / off] (link filter is currently $1)');
@@ -125,6 +125,7 @@ $.lang.register('cooldown.set.usage', 'Usage: "!cooldown [command] [seconds]".')
 $.lang.register('cooldown.unPause.success', 'Cleared cool down for !$1.');
 $.lang.register('cooldown.unPause.usage', 'Usage: !clearcooldown [command]');
 $.lang.register('init.cmsgset', 'Connected message set!');
+$.lang.register('cmd.perm.404', 'only a $1 has access to that command.');
 $.lang.register('init.module.404', 'That module does not exist or is not loaded!');
 $.lang.register('init.module.check.disabled', 'Module $1 is currently disabled!');
 $.lang.register('init.module.check.enabled', 'Module $1 is currently enabled!');
