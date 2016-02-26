@@ -16,6 +16,10 @@
  */
 package me.mast3rplan.phantombot.cache;
 
+import me.mast3rplan.phantombot.PhantomBot;
+import me.mast3rplan.phantombot.event.EventBus;
+import me.mast3rplan.phantombot.event.irc.channel.IrcChannelJoinEvent;
+import me.mast3rplan.phantombot.event.irc.channel.IrcChannelLeaveEvent;
 import com.gmt2001.TwitchAPIv3;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -51,6 +55,7 @@ public class ChannelUsersCache implements Runnable {
     private Date lastFail = new Date();
     private int numfail = 0;
     private boolean killed = false;
+    private boolean firstTime = true;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private ChannelUsersCache(String channel) {
@@ -85,7 +90,7 @@ public class ChannelUsersCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException e) {
-            com.gmt2001.Console.out.println("ChannelUsersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
+            com.gmt2001.Console.debug.println("ChannelUsersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
             com.gmt2001.Console.err.logStackTrace(e);
         }
 
@@ -114,7 +119,7 @@ public class ChannelUsersCache implements Runnable {
                         }
                     }
 
-                    com.gmt2001.Console.out.println("ChannelUsersCache.run>>Failed to update users: " + e.getMessage());
+                    com.gmt2001.Console.debug.println("ChannelUsersCache.run>>Failed to update users: " + e.getMessage());
                     com.gmt2001.Console.err.logStackTrace(e);
                 }
             } catch (Exception e) {
@@ -122,9 +127,13 @@ public class ChannelUsersCache implements Runnable {
             }
 
             try {
-                Thread.sleep(30 * 1000);
+    //            if (firstTime) {
+                    Thread.sleep(30 * 1000);      // Failed to fetch during startup, sleep 30 seconds.
+     //           } else {
+      //              Thread.sleep(60 * 60 * 1000); // Success on the iniital pull, now once an hour.
+       //         }
             } catch (InterruptedException e) {
-                com.gmt2001.Console.out.println("ChannelUsersCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
+                com.gmt2001.Console.debug.println("ChannelUsersCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
                 com.gmt2001.Console.err.logStackTrace(e);
             }
         }
@@ -170,7 +179,7 @@ public class ChannelUsersCache implements Runnable {
                                         + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
                                         + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                 } catch (Exception e) {
-                    com.gmt2001.Console.out.println("ChannelUsersCache.updateCache>>Failed to update users: " + e.getMessage());
+                    com.gmt2001.Console.debug.println("ChannelUsersCache.updateCache>>Failed to update users: " + e.getMessage());
                     com.gmt2001.Console.err.logStackTrace(e);
                 }
             }
@@ -196,7 +205,7 @@ public class ChannelUsersCache implements Runnable {
                     }
                 }
 
-                com.gmt2001.Console.out.println("ChannelUsersCache.updateCache>>Failed to update users: " + e.getMessage());
+                com.gmt2001.Console.debug.println("ChannelUsersCache.updateCache>>Failed to update users: " + e.getMessage());
                 com.gmt2001.Console.err.logStackTrace(e);
             }
         }
@@ -205,13 +214,13 @@ public class ChannelUsersCache implements Runnable {
         List<String> part = Lists.newArrayList();
 
         for (String key : newCache.keySet()) {
-            if (cache == null || !cache.containsKey(key)) {
+            if (this.cache == null || !this.cache.containsKey(key)) {
                 join.add(key);
             }
         }
 
-        if (cache != null) {
-            for (String key : cache.keySet()) {
+        if (this.cache != null) {
+            for (String key : this.cache.keySet()) {
                 if (!newCache.containsKey(key)) {
                     part.add(key);
                 }
@@ -220,15 +229,15 @@ public class ChannelUsersCache implements Runnable {
 
         this.cache = newCache;
 
-        /*
-         * for (String joined : join) { EventBus.instance().post(new
-         * IrcChannelJoinEvent(PhantomBot.instance().getSession(),
-         * PhantomBot.instance().getChannel(this.channel), joined)); }
-         *
-         * for (String parted : part) { EventBus.instance().post(new
-         * IrcChannelLeaveEvent(PhantomBot.instance().getSession(),
-         * PhantomBot.instance().getChannel(this.channel), parted, "Left")); }
-         */
+        for (String joined : join) {
+            EventBus.instance().post(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getChannel(this.channel), joined));
+        }
+
+        for (String parted : part) {
+            EventBus.instance().post(new IrcChannelLeaveEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getChannel(this.channel), parted, "Left"));
+        }
+
+        firstTime = false;
     }
 
     public void setCache(Map<String, String> cache) {
