@@ -144,6 +144,36 @@
     }
     return 7;
   };
+    
+
+    /**
+   * @function getCommandGroup
+   * @export $
+   * @param command
+   * @returns {name}
+   */
+    function getCommandGroupName(command) {
+        var group = '';
+
+        if (commandExists(command)) {
+            if (commands[command].groupId == 1) {
+                group = 'Administartor';
+            } else if (commands[command].groupId == 2) { 
+                group = 'Moderator';
+            } else if (commands[command].groupId == 3) {
+                group = 'Subscriber';
+            } else if (commands[command].groupId == 4) {
+                group = 'Donator';
+            } else if (commands[command].groupId == 5) {
+                group = 'Hoster';
+            } else if (commands[command].groupId == 6) {
+                group = 'Regular';
+            } else if (commands[command].groupId == 7) {
+                group = 'Viewer';
+            }
+            return group;
+        }
+    };
 
   /**
    * @function getSubcommandGroup
@@ -196,6 +226,7 @@
   $.commandExists = commandExists;
   $.subCommandExists = subCommandExists;
   $.getCommandGroup = getCommandGroup;
+  $.getCommandGroupName = getCommandGroupName;
   $.getSubcommandGroup = getSubcommandGroup;
   $.updateCommandGroup = updateCommandGroup;
   $.updateSubcommandGroup = updateSubcommandGroup;
