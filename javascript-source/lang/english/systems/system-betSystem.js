@@ -1,11 +1,13 @@
 $.lang.register('betsystem.err.bet.opened', 'A bet is already opened.');
+$.lang.register('betsystem.command.usage', 'Usage: !bet open (option1) (option2) | !bet (option) (amount)');
+$.lang.register('betsystem.err.open', 'You can\'t use numbers for starting a bet!');
 $.lang.register('betsystem.err.options', 'You did not spcify enough options.');
 $.lang.register('betsystem.opened', 'Bet started! You can vote for $1! For a chance to win $2!');
 $.lang.register('betsystem.err.bet.closed', 'There is no bet opened.');
 $.lang.register('betsystem.err.win.option', 'You need to choose the wining option.');
 $.lang.register('betsystem.err.option.404', 'That bet option does not exists.');
 $.lang.register('betsystem.not.enough.ppl', 'Bet is now closed! No enough people entered and peoples points have been refunded.');
-$.lang.register('betsystem.closed.404', 'Bet closed! No one enetred.');
+$.lang.register('betsystem.closed.404', 'Bet closed! No one entered.');
 $.lang.register('betsystem.err.points.refunded', 'Bet closed! Everyone wagered the same option. All points have been refunded.');
 $.lang.register('betsystem.closed', 'Bet closed! Every user that voted for $1 won $2!');
 $.lang.register('betsystem.set.min.usage', 'Usage: !bet setminimum (amount)');
