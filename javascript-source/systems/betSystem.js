@@ -1,5 +1,5 @@
 (function () {
-    var betMinimum = ($.inidb.exists('betSettings', 'betMinimum') ? parseInt($.inidb.get('betSettings', 'betMinimum')) : 0),
+    var betMinimum = ($.inidb.exists('betSettings', 'betMinimum') ? parseInt($.inidb.get('betSettings', 'betMinimum')) : 1),
         betMaximum = ($.inidb.exists('betSettings', 'betMaximum') ? parseInt($.inidb.get('betSettings', 'betMaximum')) : 1000),
         time = 0,
         betStatus = false,
@@ -234,7 +234,6 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.bet.err.less', $.getPointsString(betMinimum)));
                     return;
                 } else if (betWager > betMaximum) {
-                    $.say($.whisperPrefix(sender) + 'You can not bet more then ' + $.getPointsString(betMaximum));
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.bet.err.more', $.getPointsString(betMaximum)));
                     return;
                 } else if (parseInt($.getUserPoints(sender.toLowerCase())) < betWager) {
