@@ -75,8 +75,25 @@
             $.inidb.set('modules', defaultDisabledModules[i], 'false');
         }
 
-        $.consoleLn('Done!');
+        $.consoleLn('PhantomBot v2.0 updates completed!');
         $.inidb.set('updates', 'installedv2', 'true');
+    }
+
+    if (!$.inidb.exists('updates', 'installedv2.0.5') || $.inidb.get('updates', 'installedv2.0.5') != 'true') {
+        var newDefaultDisabledModules = [
+            './systems/betSystem.js',
+            './systems/wordCounter.js',
+        ]; //ADD NEW MODULES IN 2.0.5 TO BE DISABLED PLEASE.
+
+        $.consoleLn('Starting PhantomBot version 2.0.5 updates...');
+
+        $.consoleLn('Disabling new default modules...');
+        for (i in newDefaultDisabledModules) {
+            $.inidb.set('modules', defaultDisabledModules[i], 'false');
+        }
+
+        $.consoleLn('PhantomBot v2.0.5 updates completed!');
+        $.inidb.set('updates', 'installedv2.0.5', 'true');
     }
 
   /**
