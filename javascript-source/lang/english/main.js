@@ -1,4 +1,4 @@
-$.lang.register('chatmoderator.usage.toggles', 'Usage: !moderation [links / caps / symbols / spam / emotes / colors / longmessages/ regulars / subscribers]');
+$.lang.register('chatmoderator.usage.toggles', 'Usage: !moderation [links / caps / symbols / spam / emotes / colors / longmessages / regulars / subscribers]');
 $.lang.register('chatmoderator.usage.messages', 'Usage: !moderation [linksmessage / capsmessage / symbolsmessage / spammessage / emotesmessage / colorsmessage / blacklistmessage / longmsgmessage]');
 $.lang.register('chatmoderator.options', 'Usage: !moderation [capstriggerlength / capslimit / symbolstriggerlength / symbolslimit / spamlimit / emoteslimit / permittime / warningtime / timeouttime / messagecooldown / messagecharacterlimit]');
 $.lang.register('chatmoderator.link.usage', 'Usage: !moderation links [on / off] (link filter is currently $1)');
@@ -125,7 +125,6 @@ $.lang.register('cooldown.set.usage', 'Usage: "!cooldown [command] [seconds]".')
 $.lang.register('cooldown.unPause.success', 'Cleared cool down for !$1.');
 $.lang.register('cooldown.unPause.usage', 'Usage: !clearcooldown [command]');
 $.lang.register('init.cmsgset', 'Connected message set!');
-$.lang.register('cmd.perm.404', 'only a $1 has access to that command.');
 $.lang.register('init.module.404', 'That module does not exist or is not loaded!');
 $.lang.register('init.module.check.disabled', 'Module $1 is currently disabled!');
 $.lang.register('init.module.check.enabled', 'Module $1 is currently enabled!');
@@ -172,8 +171,8 @@ $.lang.register('timesystem.set.promotehours.error.negative', 'You can not set t
 $.lang.register('timesystem.set.promotehours.success', 'Set the time in hours to promote a user to $1 to $2.');
 $.lang.register('timesystem.set.promotehours.usage', 'Usage: "!time promotehours [amount]"');
 $.lang.register('timesystem.set.timezone.invalid', '"$1" is not a valid time zone. A list of time zones can be found on "http://en.wikipedia.org/wiki/List_of_tz_database_time_zones".');
-$.lang.register('timesystem.set.timezone.success', 'The time zone has been set to "$1".');
-$.lang.register('timesystem.set.timezone.usage', 'Usage: "!timezone [name]"');
+$.lang.register('timesystem.set.timezone.success', 'The time zone has been set to "$1". Automatically adjusts for daylight saving time: $2');
+$.lang.register('timesystem.set.timezone.usage', 'Usage: !timezone [timezone name] (Current timezone is $1)');
 $.lang.register('timesystem.settime.error.negative', 'You can not set a balance to negative time.');
 $.lang.register('timesystem.settime.success', 'Set the time balance of $1 to $2.');
 $.lang.register('timesystem.settime.usage', 'Usage: "!time set [name] [amount]"');
