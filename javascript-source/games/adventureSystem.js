@@ -316,7 +316,7 @@
         actionArg2 = parseInt(args[2]);
 
     /**
-     * @commandpath adventure - Base command
+     * @commandpath adventure [amount | top5 | set ] - Adventure command for starting, checking or setting options
      * @commandpath adventure [amount] - Start/join an adventure
      */
     if (command.equalsIgnoreCase('adventure')) {
@@ -352,28 +352,40 @@
         }
 
         /**
-         * @commandpath adventure set jointime [seconds] - Set the join time...
+         * @commandpath adventure set jointime [seconds] - Set the join time
          */
         if (actionArg1.equalsIgnoreCase('joinTime')) {
           joinTime = actionArg2;
           $.inidb.set('adventureSettings', 'joinTime', actionArg2);
         }
 
+        /**
+         * @commandpath adventure set cooldown [seconds] - Set cooldown time
+         */
         if (actionArg1.equalsIgnoreCase('coolDown')) {
           coolDown = actionArg2;
           $.inidb.set('adventureSettings', 'coolDown', actionArg2);
         }
 
+        /**
+         * @commandpath adventure set gainpercent [value] - Set the gain percent value
+         */
         if (actionArg1.equalsIgnoreCase('gainPercent')) {
           gainPercent = actionArg2;
           $.inidb.set('adventureSettings', 'gainPercent', actionArg2);
         }
 
+        /**
+         * @commandpath adventure set minbet [value] - Set the minimum bet
+         */
         if (actionArg1.equalsIgnoreCase('minBet')) {
           minBet = actionArg2;
           $.inidb.set('adventureSettings', 'minBet', actionArg2);
         }
 
+        /**
+         * @commandpath adventure set maxbet [value] - Set the maximum bet
+         */
         if (actionArg1.equalsIgnoreCase('maxBet')) {
           maxBet = actionArg2;
           $.inidb.set('adventureSettings', 'maxBet', actionArg2);

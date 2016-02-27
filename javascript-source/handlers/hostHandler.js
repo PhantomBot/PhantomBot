@@ -98,6 +98,9 @@
       $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostreward.success', $.getPointsString(commandArg)));
     }
 
+    /**
+     * @commandpath hostmessage [message] - Set a message given when a channel hosts
+     */
     if (command.equalsIgnoreCase('hostmessage')) {
       if (!args || args.length == 0) {
         $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostmessage.usage'));
@@ -121,6 +124,9 @@
       $.say('.unhost');
     }
 
+    /**
+     * @commandpath host [channel] - Send the /host command to twitch
+     */
     if (command.equalsIgnoreCase('host')) {
       if (!$.isAdmin(sender)) {
         $.say($.whisperPrefix(sender) + $.adminMsg);

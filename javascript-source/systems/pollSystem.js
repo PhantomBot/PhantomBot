@@ -150,7 +150,7 @@
     }
 
     /**
-     * @commandpath poll - Announce information about a possible currently running poll
+     * @commandpath poll - Announce information about a poll, if one is running.
      */
     if (command.equalsIgnoreCase('poll')) {
       if (!action) {
@@ -185,7 +185,7 @@
       }
 
       /**
-       * @commandpath poll open [-t Run time in seconds] [-q Poll question] [-o "option1, option2..."] - Start a new poll
+       * @commandpath poll open [-t Run time in seconds] [-m minvotes] [-q Poll question] [-o "option1, option2..."] - Starts a new poll, -q and -o are required
        */
       if (action.equalsIgnoreCase('open')) {
         var time = 60,

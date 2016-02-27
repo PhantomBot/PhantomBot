@@ -231,7 +231,7 @@
         }
 
         /**
-         * @commandpath editcom [command] [message] - Edits that command
+         * @commandpath editcom [command] [command text] - Replaces the given custom command
          */
         if (command.equalsIgnoreCase('editcom')) {
             if (!$.isModv3(sender, event.getTags())) {
@@ -439,7 +439,7 @@
         }
 
         /**
-         * @commandpath commands - Give's you a list of all your commands
+         * @commandpath commands - Gives you a list of all your commands
          */
         if (command.equalsIgnoreCase('commands')) {
             var cmds = $.inidb.GetKeyList('command', ''),

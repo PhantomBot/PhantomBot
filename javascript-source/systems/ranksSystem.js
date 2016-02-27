@@ -137,6 +137,7 @@
         customRank;
 
     /*
+     * @commandpath rankedit - Displays the usage of rankedit.
      * @commandpath rankedit [add] [time] [rankname] - Add a new rank.
      * @commandpath rankedit [del] [time] - Deletes the rank associated with a time.
      * @comamndpath rankedit [custom] [user] [rankname] - Add a custom rank to a user.

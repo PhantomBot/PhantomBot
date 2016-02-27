@@ -146,12 +146,18 @@
             subAction = args[1],
             bet = args.slice(1);
 
+        /**
+         * @commandpath bet [open | close | setminimum | setmaximum | option amount | amount option] - Performs bet operations.
+         */
         if (command.equalsIgnoreCase('bet')) {
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.command.usage'));
                 return;
             }
+
+            /**
+             * @commandpath bet open [option option option ...] - Opens a bet with options; not allowed to be digits, words only.
+             */
             if (action.equalsIgnoreCase('open')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -160,6 +166,10 @@
 
                 betOpen(event, bet);
                 return;
+
+            /**
+             * @commandpath bet close [option] - Closes the bet and selects option as the winner.
+             */
             } else if (action.equalsIgnoreCase('close')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -167,6 +177,10 @@
                 }
                 betClose(sender, event, subAction);
                 return;
+
+            /**
+             * @commandpath bet setminimum [value] - Set the minimum value of a bet.
+             */
             } else if (action.equalsIgnoreCase('setminimum')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -182,6 +196,10 @@
                 $.inidb.set('betSettings', 'betMinimum', betMinimum);
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.min', betMinimum, $.pointNameMultiple));
                 return;
+
+            /**
+             * @commandpath bet setmaximum [value] - Set the maximum value of a bet.
+             */
             } else if (action.equalsIgnoreCase('setmaximum')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -197,6 +215,10 @@
                 $.inidb.set('betSettings', 'betMinimum', betMaximum);
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.max', betMaximum, $.pointNameMultiple));
                 return;
+
+            /**
+             * @commandpath bet option amount | amount option - Places a bet on option, betting an amount of points.
+             */
             } else {
                 if (!betStatus) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.bet.closed'));
