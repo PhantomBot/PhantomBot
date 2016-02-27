@@ -18,11 +18,18 @@
         localDate,
         streamUptimeMinutes;
 
+     /**
+      * @commandpath highlight [description] - Marks a highlight with the current date stamp.
+      * @comamndpath gethighlights - Get a list of current highlights.
+      * @commandpath showhighlights - Get a list of current highlights.
+      * @comamndpath clearhighlights - Clear the current highlights.
+      */
       if (command.equalsIgnoreCase("highlight")) {
         if (!$.isOnline($.channelName)) {
           $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.offline'));
           return;
         }
+
         if (args.length == 0) {
           $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.usage', $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT"));
           return;

@@ -15,10 +15,12 @@
         i;
 
     for (i in keys) {
-      list.push({
-        username: keys[i],
-        value: $.inidb.get(iniName, keys[i])
-      });
+      if (!$.isBot(keys[i]) && !$.isOwner(keys[i])) {
+        list.push({
+          username: keys[i],
+          value: $.inidb.get(iniName, keys[i])
+        });
+      }
     }
 
     list.sort(function (a, b) {
