@@ -362,7 +362,7 @@
         }
     
         /**
-         * @commandpath whitelist [option] - Adds a link to the whitelist
+         * @commandpath whitelist [add | remove | show] - Manipulate the whitelist links
          */
         if (command.equalsIgnoreCase('whiteList')) {
             if (!$.isAdmin(sender)) {
@@ -762,7 +762,7 @@
             }
         
             /**
-             * @commandpath moderation capslimimt [amount] - Sets the caps limit
+             * @commandpath moderation capslimit [amount] - Sets the caps limit
              */
             if (action.equalsIgnoreCase('capslimit')) {
                 if (!subAction) {

@@ -173,7 +173,7 @@
       $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessagenoreward.success'));
     }
     /**
-     * @commandpath followtoggle - Enable or disabled the anouncements for new follows.
+     * @commandpath followtoggle - Enable or disable the anouncements for new follows.
      */
     if (command.equalsIgnoreCase('followtoggle')) {
         if (followToggle) {

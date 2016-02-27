@@ -135,7 +135,7 @@
         timeArg;
 
     /**
-     * @commandpath time - Announce YOUR logged time in the channel
+     * @commandpath time - Announce amount of time spent in channel
      */
     if (command.equalsIgnoreCase('time')) {
       if (!hasPerm(event) || !action) {
@@ -299,7 +299,7 @@
 
     /**
      * @commandpath timezone - Show configured timezone.
-     * @comamndpath timezone [tz] - Set timezone.
+     * @comamndpath timezone [timezone name] - Set timezone; use list from: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
      */
     if (command.equalsIgnoreCase('timezone')) {
       var tzData;

@@ -33,7 +33,7 @@
 
     /**
      * @commandpath game - Announce the current set game
-     * @commandpath game [game title] - Set the game
+     * @commandpath game [game title] - Set the game 
      */
     if (command.equalsIgnoreCase('game')) {
       if (args.length == 0) {

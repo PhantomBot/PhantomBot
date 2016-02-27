@@ -125,7 +125,7 @@
     	    action = args[0];
 
         /**
-        * @commandPath traffle [option] - Give's you the usage.
+        * @commandpath traffle [option] - Gives you the usage.
         */
     	if (command.equalsIgnoreCase('traffle')) {
     		if (!$.isModv3(sender, event.getTags())) {
@@ -139,28 +139,28 @@
             }
 
             /**
-            * @commandPath traffle open (max entries) (cost) (-followers) - Open's a ticket raffle. -followers is optional.
+            * @commandpath traffle open (max entries) (cost) (-followers) - Opens a ticket raffle. -followers is optional.
             */
     		if (action.equalsIgnoreCase('open')) {
     			checkArgs(sender, args[1], args[2], args[3]);
             }
 
             /**
-            * @commandPath traffle close - closes a ticket raffle.
+            * @commandpath traffle close - closes a ticket raffle.
             */
     		if (action.equalsIgnoreCase('close')) {
     			closeRaffle(sender);
     		}
 
             /**
-            * @commandPath traffle repick - Picks a new winner for the ticket raffle
+            * @commandpath traffle repick - Picks a new winner for the ticket raffle
             */
             if (action.equalsIgnoreCase('repick')) {
                 winner(true);
             }
 
             /**
-            * @commandPath traffle messagetoggle - Toggles on and off the entering message.
+            * @commandpath traffle messagetoggle - Toggles on and off the entering message.
             */
             if (action.equalsIgnoreCase('messagetoggle')) {
                 if (msgToggle) {
@@ -176,7 +176,7 @@
     	}
 
         /**
-        * @commandPath tickets [amount] - Buy tickets to enter the ticket raffle.
+        * @commandpath tickets [amount] - Buy tickets to enter the ticket raffle.
         */
         if (command.equalsIgnoreCase('tickets')) {
             if (!action) {

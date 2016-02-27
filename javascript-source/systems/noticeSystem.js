@@ -75,7 +75,7 @@
             message = '';
   
        /**
-       * @commandpath notice - gives you usage.
+       * @commandpath notice - Displays the notice usage
        */
         if (command.equalsIgnoreCase('notice')) {
             if (!$.isAdmin(sender)) {
@@ -89,7 +89,7 @@
             }
     
           /**
-           * @commandpath notice get [id] - gets the notice un that id
+           * @commandpath notice get [id] - gets the notice related to the ID
            */
             if (action.equalsIgnoreCase('get')) {
                 if (args.length < 2) {
@@ -105,7 +105,7 @@
             }
     
           /**
-           * @commandpath notice edit [id] [new message] - allows you to edit a notice with that id
+           * @commandpath notice edit [id] [new message] - allows you to edit a notice with the given ID
            */
             if (action.equalsIgnoreCase('edit')) {
                 if (args.length < 3) {
@@ -123,7 +123,7 @@
             }
     
           /**
-           * @commandpath notice remove [id] - removes that notice under that id
+           * @commandpath notice remove [id] - removes that notice under that ID
            */
             if (action.equalsIgnoreCase('remove')) {
                 if (args.length < 2) {
@@ -142,7 +142,7 @@
             }
     
           /**
-           * @commandpath notice add [message or command] - adds a notice, with a custom message, or a command
+           * @commandpath notice add [message or command] - adds a notice, with a custom message, or a command (command:command)
            */
             if (action.equalsIgnoreCase('add')) {
                 if (args.length < 2) {

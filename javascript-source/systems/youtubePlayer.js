@@ -363,7 +363,7 @@
         videoRequest;
 
     /**
-     * @commandpath musicplayer - MAnage Youtbe Player settings
+     * @commandpath musicplayer - Manage YouTube Player settings
      */
     if (command.equalsIgnoreCase('musicplayer')) {
       if (!$.isAdmin(sender)) {
@@ -400,7 +400,7 @@
       }
 
       /**
-       * @commandpath musicplayer maxvideolength [minutes] - Set the meximum video length for requests in minutes
+       * @commandpath musicplayer maxvideolength [minutes] - Set the maximum video length for requests in minutes
        * Converts to seconds when it stores the value to match the YouTube value in seconds.
        */
       if (action.equalsIgnoreCase('maxvideolength')) {
@@ -475,7 +475,7 @@
     }
 
     /**
-     * @commandpath addsong [Youtube link] - Add a song the the request list
+     * @commandpath addsong [Youtube link | search] - Add a song the the request list or provide a search string
      */
     if (command.equalsIgnoreCase('addsong')) {
       if (!requestsEnabled) {

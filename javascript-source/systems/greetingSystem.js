@@ -43,6 +43,9 @@
         action = args[0],
         message;
 
+    /**
+     * @commandpath greeting [toggledefault | setdefault | enable | disable] - Control greetings.
+     */
     if (command.equalsIgnoreCase('greeting')) {
       if (!action) {
         if ($.isAdmin(sender)) {
