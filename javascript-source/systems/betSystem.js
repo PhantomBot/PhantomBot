@@ -98,16 +98,23 @@
             }
         }
 
-        if (a < betMinimum) {
-            for (i in betTable) {
-                bet = betTable[i];
-                $.inidb.incr('points', i, bet.amount);
-            }
-
-            $.say($.lang.get('betsystem.not.enough.ppl'));
-            resetBet();
-            return;
-        }
+        /**
+         * Disable for now.  Needs to have a different value for
+         * betMinimum, right now this is the minimum amount, not
+         * minimum users. Could set a default through a set command
+         * and perhaps override with !bet open min=num option option
+         * 
+         * if (a < betMinimum) {
+         *   for (i in betTable) {
+         *     bet = betTable[i];
+         *     $.inidb.incr('points', i, bet.amount);
+         *   }
+         *
+         *   $.say($.lang.get('betsystem.not.enough.ppl'));
+         *   resetBet();
+         *   return;
+         * }
+         **/
 
         if (betTotal == 0) {
             $.say($.lang.get('betsystem.closed.404', betWinning));
