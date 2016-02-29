@@ -393,7 +393,7 @@
 
         subCommand = (args[0] ? args[0] : '');
         if (!$.permCom(sender, command, subCommand)) {
-            $.say($.whisperPrefix(sender) + $.lang.get('cmd.noperm'));
+            $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command)));
             return;
         }
 
