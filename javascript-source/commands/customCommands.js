@@ -1,8 +1,9 @@
 (function () {
 
   // Pre-build regular expressions.
-  var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/]+)\)/),                   // URL[1]
-      reCustomAPIJson = new RegExp(/\(customapijson ([\.\w]+)\s([\w\W:\/]+)\)/), // JSONmatch[1], URL[2]
+  var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&]+)\)/),                    // URL[1]
+      reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
+      reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
       reCheckTags = new RegExp(/\(customapi|\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/),
       reSenderTag = new RegExp(/\(sender\)/),
       reTouserTag = new RegExp(/\(touser\)/),
@@ -62,7 +63,11 @@
             touser,
             price,
             customAPIResponse = '',
+            origCustomAPIResponse = '',
+            customAPIReturnString = '',
+            customJSONStringTag = '',
             regExCheck,
+            jsonItems,
             jsonCheckList,
             message = message + '',
             sender = event.getSender(),
@@ -84,28 +89,96 @@
             $.inidb.incr('commandCount', command, 1);
         }
 
+        // Get the URL for a customapi, if applicable, and process $1 - $9.  See below about that.
+        //
         if ((regExCheck = message.match(reCustomAPI))) {
-            customAPIResponse = getCustomAPIValue(regExCheck[1]);
+            if (regExCheck[1].indexOf('$1') != -1) {
+                for (var i = 1; i <= 9; i++) {
+                    if (regExCheck[1].indexOf('$' + i) != -1) {
+                        if (!args[i - 1]) {
+                            return $.lang.get('customcommands.customapi.404', command);
+                        }
+                        regExCheck[1] = regExCheck[1].replace('$' + i, args[i - 1]);
+                    } else {
+                        break;
+                    }
+                }
+            }
+            customAPIReturnString = getCustomAPIValue(regExCheck[1]);
         }
 
         // Design Note.  As of this comment, this parser only supports parsing out of objects, it does not
-        // support parsing of arrays.  This could be done but how to allow the user to configure that
-        // would need to be hashed out.
+        // support parsing of arrays, especially walking arrays.  If that needs to be done, please write
+        // a custom JavaScript.  We limit $1 - $9 as well; 10 or more arguments being passed by users to an
+        // API seems like overkill.  Even 9 does, to be honest.
         // 
         if ((regExCheck = message.match(reCustomAPIJson))) {
-            customAPIResponse = getCustomAPIValue(regExCheck[2]);
-            jsonCheckList = regExCheck[1].split('.');
-            if (jsonCheckList.length == 1) {
-                customAPIResponse = new JSONObject(customAPIResponse).getString(jsonCheckList[0]);
-            } else {
-                for (var i = 0; i < jsonCheckList.length - 1; i++) {
-                    if (i == 0) {
-                        jsonObject = new JSONObject(customAPIResponse).getJSONObject(jsonCheckList[i]);
+            // Check for and process $1 - $9 in the URL.
+            if (regExCheck[1].indexOf('$1') != -1) {
+                for (var i = 1; i <= 9; i++) {
+                    if (regExCheck[1].indexOf('$' + i) != -1) {
+                        if (!args[i - 1]) {
+                            return $.lang.get('customcommands.customapi.404', command);
+                        }
+                        regExCheck[1] = regExCheck[1].replace('$' + i, args[i - 1]);
                     } else {
-                        jsonObject = new jsonObject.getJSONObject(jsonCheckList[i]);
+                        break;
                     }
                 }
-                customAPIResponse = jsonObject.getString(jsonCheckList[i]);
+            }
+            origCustomAPIResponse = getCustomAPIValue(regExCheck[1]);
+            jsonItems = regExCheck[2].split(' ');
+            for (var j = 0; j < jsonItems.length; j++) {
+                if (jsonItems[j].startsWith('{') && jsonItems[j].endsWith('}')) {
+                    customAPIReturnString += " " + jsonItems[j].match(reCustomAPITextTag)[1];
+                } else if (jsonItems[j].startsWith('{') && !jsonItems[j].endsWith('}')) {
+                    customJSONStringTag = '';
+                    while (!jsonItems[j].endsWith('}')) {
+                        customJSONStringTag += jsonItems[j++] + " ";
+                    }
+                    customJSONStringTag += jsonItems[j];
+                    customAPIReturnString += " " + customJSONStringTag.match(reCustomAPITextTag)[1];
+                } else {
+                    jsonCheckList = jsonItems[j].split('.');
+                    if (jsonCheckList.length == 1) {
+                        try {
+                            customAPIResponse = new JSONObject(origCustomAPIResponse).getString(jsonCheckList[0]);
+                        } catch (ex) {
+                            if (ex.message.indexOf('not a string') != -1) {
+                                try {
+                                    customAPIResponse = jsonObject.getInt(jsonCheckList[0]);
+                                } catch (ex) {
+                                    return $.lang.get('customcommands.customapijson.err', command);
+                                }
+                            } else {
+                                return $.lang.get('customcommands.customapijson.err', command);
+                            }
+                        }
+                        customAPIReturnString += " " + customAPIResponse;
+                    } else {
+                        for (var i = 0; i < jsonCheckList.length - 1; i++) {
+                            if (i == 0) {
+                                jsonObject = new JSONObject(origCustomAPIResponse).getJSONObject(jsonCheckList[i]);
+                            } else {
+                                jsonObject = jsonObject.getJSONObject(jsonCheckList[i]);
+                            }
+                        }
+                        try {
+                            customAPIResponse = jsonObject.getString(jsonCheckList[i]);
+                        } catch (ex) {
+                            if (ex.message.indexOf('not a string') != -1) {
+                                try {
+                                    customAPIResponse = jsonObject.getInt(jsonCheckList[i]);
+                                } catch (ex) {
+                                    return $.lang.get('customcommands.customapijson.err', command);
+                                }
+                            } else {
+                                return $.lang.get('customcommands.customapijson.err', command);
+                            }
+                        }
+                        customAPIReturnString += " " + customAPIResponse;
+                    }
+                }
             }
         }
 
@@ -133,8 +206,8 @@
                           .replace(reFollowsTag, $.getFollows($.channelName))
                           .replace(reCountTag, $.inidb.get('commandCount', command))
                           .replace(rePriceTag, price)
-                          .replace(reCustomAPI, customAPIResponse)
-                          .replace(reCustomAPIJson, customAPIResponse);
+                          .replace(reCustomAPI, customAPIReturnString)
+                          .replace(reCustomAPIJson, customAPIReturnString);
 
         return message;
     };
@@ -435,7 +508,7 @@
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
             }
-            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (uptime), (game), (status), (follows), (count), (touser), (price), (pointname)');
+            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (uptime), (game), (status), (follows), (count), (touser), (price), (pointname), (customapi) (customjsonapi)');
         }
 
         /**
