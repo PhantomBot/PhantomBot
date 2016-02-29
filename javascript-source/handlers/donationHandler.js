@@ -120,7 +120,7 @@
     }
 
     /**
-     * @commandpath donations [announce | reward n.n]
+     * @commandpath donations [announce | reward n.n | message | lastmessage | rewardmessage ]
      */
     if (command.equalsIgnoreCase('donations')) {
       if (!args[0]) {
@@ -128,6 +128,9 @@
         return;
       }
 
+      /**
+       * @commandpath donations announce - Toggles announcements for donations off and on
+       */
       if (args[0].equalsIgnoreCase('announce')) {
         if (announceDonations) {
           $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.announce.disable'));
@@ -141,6 +144,9 @@
         return;
       }
 
+      /**
+       * @commandpath donations reward [n.n] - Set a reward for donations.
+       */
       if (args[0].equalsIgnoreCase('reward')) {
         if (!args[1]) {
           $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.reward.usage'));
@@ -157,6 +163,11 @@
         return;
       }
 
+      /**
+       * @commandpath donations message [message] - Set the message when no reward is given.
+       * @commandpath donations rewardmessage [message] - Set the message when a reward is given.
+       * @commandpath donations lastmessage [message] - Set the message for !lastdonation
+       */
       if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('rewardmessage') || args[0].equalsIgnoreCase('lastmessage')) {
         var comArg = args[0].toLowerCase();
 

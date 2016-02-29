@@ -29,6 +29,53 @@
   };
 
   /**
+   * @function getCurLocalTimeString
+   * @export $
+   * @param {String} timeformat
+   * @returns {String}
+   *
+   * timeformat = java.text.SimpleDateFormat allowed formats:
+   *   Letter   Date or Time Component   Presentation        Examples
+   *   G        Era designator           Text                AD
+   *   y        Year                     Year                1996; 96
+   *   M        Month in year            Month               July; Jul; 07
+   *   w        Week in year             Number              27
+   *   W        Week in month            Number              2
+   *   D        Day in year              Number              189
+   *   d        Day in month             Number              9
+   *   F        Day of week in month     Number              2
+   *   E        Day in week              Text                Tuesday; Tue
+   *   a        AM/PM marker             Text                PM
+   *   H        Hour in day (0-23)       Number              0
+   *   k        Hour in day (1-24)       Number              24
+   *   K        Hour in am/pm (0-11)     Number              0
+   *   h        Hour in am/pm (1-12)     Number              12
+   *   m        Minute in hour           Number              30
+   *   s        Second in minute         Number              55
+   *   S        Millisecond              Number              978
+   *   z        Time zone                General time zone   Pacific Standard Time; PST; GMT-08:00
+   *   Z        Time zone                RFC 822 time zone   -0800
+   */
+  function getCurLocalTimeString(format) {
+    var dateFormat = new java.text.SimpleDateFormat(format);
+    dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
+    return dateFormat.format(new java.util.Date());
+  }
+
+  /**
+   * @function getLocalTimeString
+   * @export $
+   * @param {String} timeformat
+   * @param {Number} utc_seconds
+   * @return {String}
+   */
+  function getLocalTimeString(format, utc_secs) {
+    var dateFormat = new java.text.SimpleDateFormat(format);
+    dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
+    return dateFormat.format(new java.util.Date(utc_secs));
+  }
+
+  /**
    * @function dateToString
    * @export $
    * @param {Date} date
@@ -101,7 +148,7 @@
         timeArg;
 
     /**
-     * @commandpath time - Announce YOUR logged time in the channel
+     * @commandpath time - Announce amount of time spent in channel
      */
     if (command.equalsIgnoreCase('time')) {
       if (!hasPerm(event) || !action) {
@@ -262,6 +309,28 @@
               $.username.resolve($.ownerName)
           ));
     }
+
+    /**
+     * @commandpath timezone - Show configured timezone.
+     * @comamndpath timezone [timezone name] - Set timezone; use list from: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+     */
+    if (command.equalsIgnoreCase('timezone')) {
+      var tzData;
+
+      if (!action) {
+        $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.timezone.usage', ($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
+        return;
+      }
+
+      tzData = java.util.TimeZone.getTimeZone(action);
+      if (tzData.getID().equals("GMT") && !action.equals("GMT")) {
+        $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.timezone.invalid', action));
+        return;
+      } else {
+        $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.timezone.success', tzData.getID(), tzData.observesDaylightTime()));
+        $.inidb.set('settings', 'timezone', tzData.getID());
+      }
+    }
   });
 
   // Set an interval for increasing all current users logged time
@@ -273,7 +342,7 @@
 
     if ($.isOnline($.channelName) || keepTimeWhenOffline) {
       for (i in $.users) {
-        $.inidb.incr('time', $.users[i][0].toLowerCase(), 60);
+        $.inidb.incr('time', $.users[i][0].toLowerCase(), 61);
       }
     }
 
@@ -282,7 +351,7 @@
         var username = $.users[i][0].toLowerCase();
         if (!$.isMod(username)
             && $.inidb.exists('time', username)
-            && Math.floor(parseInt($.inidb.get('time', username)) / 3600) > hoursForLevelUp
+            && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp
             && parseInt($.getUserGroupId(username)) > regularsGroupId) {
 
           $.setUserGroupById(username, regularsGroupId);
@@ -305,6 +374,7 @@
     if ($.bot.isModuleEnabled('./core/timeSystem.js')) {
       $.registerChatCommand('./core/timeSystem.js', 'time');
       $.registerChatCommand('./core/timeSystem.js', 'streamertime');
+      $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
     }
   });
 
@@ -313,4 +383,6 @@
   $.getTimeString = getTimeString;
   $.getUserTime = getUserTime;
   $.getUserTimeString = getUserTimeString;
+  $.getCurLocalTimeString = getCurLocalTimeString;
+  $.getLocalTimeString = getLocalTimeString;
 })();

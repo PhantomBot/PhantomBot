@@ -36,7 +36,7 @@
         date;
 
     /**
-     * @commandpath lastseen [username] - Find out when the given user interacted with the chat
+     * @commandpath lastseen [username] - Find out when the given user last interacted with the chat
      */
     if (command.equalsIgnoreCase('lastseen')) {
       if (!target || target == '') {

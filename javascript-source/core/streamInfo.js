@@ -40,6 +40,31 @@
   };
 
   /**
+   * @function getStreamUptimeSeconds
+   * @export $
+   * @param channelName
+   * @returns {number}
+   */
+  function getStreamUptimeSeconds(channelName) {
+    var stream = $.twitch.GetStream(channelName),
+        now = new Date(),
+        createdAtDate,
+        time;
+
+    if (stream.isNull('stream')) {
+      return 0;
+    }
+
+    createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
+    if (createdAtDate) {
+      time = now - createdAtDate;
+      return Math.floor(time / 1000);
+    } else {
+      return 0;
+    }
+  }
+
+  /**
    * @function getStreamUptime
    * @export $
    * @param channelName
@@ -174,6 +199,7 @@
   $.getStatus = getStatus;
   $.getStreamStartedAt = getStreamStartedAt;
   $.getStreamUptime = getStreamUptime;
+  $.getStreamUptimeSeconds = getStreamUptimeSeconds;
   $.getViewers = getViewers;
   $.isOnline = isOnline;
   $.updateGame = updateGame;

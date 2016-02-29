@@ -28,7 +28,7 @@
             }
 
              /**
-            * @commandpath multi set [channels] - Adds channels to the mutli link, your is already there by default
+            * @commandpath multi set [channels] - Adds channels to the multi link; yours is already there by default
             */
             if (action.equalsIgnoreCase('set')) {
                 if (!$.isModv3(sender, event.getTags())) {
