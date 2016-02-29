@@ -63,6 +63,19 @@
   }
 
   /**
+   * @function getLocalTimeString
+   * @export $
+   * @param {String} timeformat
+   * @param {Number} utc_seconds
+   * @return {String}
+   */
+  function getLocalTimeString(format, utc_secs) {
+    var dateFormat = new java.text.SimpleDateFormat(format);
+    dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
+    return dateFormat.format(new java.util.Date(utc_secs));
+  }
+
+  /**
    * @function dateToString
    * @export $
    * @param {Date} date
@@ -371,4 +384,5 @@
   $.getUserTime = getUserTime;
   $.getUserTimeString = getUserTimeString;
   $.getCurLocalTimeString = getCurLocalTimeString;
+  $.getLocalTimeString = getLocalTimeString;
 })();
