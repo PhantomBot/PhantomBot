@@ -373,16 +373,18 @@
             if (!action || !subAction) {
               $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
               return;
-            } else if (!$.commandExists(action)) {
-              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404'));
-              return
             }
 
             action = args[0].replace('!', '');
             subAction = args[1].replace('!', '');
 
+            if (!$.commandExists(action)) {
+              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404'));
+              return
+            }
+
             if ($.inidb.exists('aliases', subAction)) {
-              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error'));
+              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error', subAction));
               return;
             }
 
@@ -401,15 +403,16 @@
                 return;
             }
 
-            if (!action || !subAction) {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.delete.usage'));
-                return;
-            } else if (!$.inidb.exists('alias', action)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.delete.error.alias.404'));
                 return;
             }
 
             action = args[0].replace('!', '');
+            if (!$.inidb.exists('aliases', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.delete.error.alias.404', action));
+                return;
+            }
 
             $.unregisterChatCommand(action);
             $.inidb.del('aliases', action);
