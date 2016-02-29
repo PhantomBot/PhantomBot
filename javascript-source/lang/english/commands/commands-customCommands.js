@@ -23,3 +23,5 @@ $.lang.register('customcommands.cmds', 'commands: $1');
 $.lang.register('customcommands.edit.usage', 'usage: !editcom (command) (message)');
 $.lang.register('customcommands.edit.success', 'command !$1 has been edited!');
 $.lang.register('customcommands.touser.offline', 'Sorry, but $1 appears to be offline!');
+$.lang.register('customcommands.customapi.404', 'The !$1 command requires parameters.');
+$.lang.register('customcommands.customapijson.err', '!$1: An error occurred processing the API.');
