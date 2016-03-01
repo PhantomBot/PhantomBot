@@ -95,6 +95,9 @@
             $.inidb.set('modules', newDefaultDisabledModules[i], 'false');
         }
 
+        $.consoleLn('Removing commandCooldown table...');
+        $.inidb.RemoveFile('commandCooldown');
+
         $.consoleLn('PhantomBot v2.0.5 updates completed!');
         $.inidb.set('updates', 'installedv2.0.5', 'true');
     }
