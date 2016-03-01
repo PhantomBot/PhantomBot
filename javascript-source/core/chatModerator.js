@@ -888,7 +888,7 @@
             }
 
             /**
-             * @commandpath moderation messagecooldown [message] - Sets the message displayed during a comamnd cooldown
+             * @commandpath moderation [messagecooldown] [message] - Sets the message displayed during a comamnd cooldown
              */
             if (action.equalsIgnoreCase('messagecooldown')) {
                 if (!subAction) {
