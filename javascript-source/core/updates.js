@@ -83,13 +83,16 @@
         var newDefaultDisabledModules = [
             './systems/betSystem.js',
             './handlers/wordCounter.js',
+            './systems/ranksSystem.js',
+            './systems/auctionSystem.js',
+            './commands/highlightCommand.js',
         ]; //ADD NEW MODULES IN 2.0.5 TO BE DISABLED PLEASE.
 
         $.consoleLn('Starting PhantomBot version 2.0.5 updates...');
 
         $.consoleLn('Disabling new default modules...');
         for (i in newDefaultDisabledModules) {
-            $.inidb.set('modules', defaultDisabledModules[i], 'false');
+            $.inidb.set('modules', newDefaultDisabledModules[i], 'false');
         }
 
         $.consoleLn('PhantomBot v2.0.5 updates completed!');
