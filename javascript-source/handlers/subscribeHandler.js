@@ -67,7 +67,7 @@
         args = event.getArgs();
 
     /**
-     * @commandpath subwelcometoggle - enable or disable sub alerts
+     * @commandpath subwelcometoggle - Enable or disable subscription alerts
      */
     if (command.equalsIgnoreCase('subwelcometoggle')) {
       if (!$.isAdmin(sender)) {
@@ -89,7 +89,7 @@
     }
 
     /**
-     * @commandpath resubwelcometoggle - enable or disable resub alerts
+     * @commandpath resubwelcometoggle - Eenable or disable resubsciption alerts
      */
     if (command.equalsIgnoreCase('resubwelcometoggle')) {
       if (!$.isAdmin(sender)) {
@@ -110,7 +110,7 @@
     }
 
     /**
-     * @commandpath submessage [message] - set a sub welcome message
+     * @commandpath submessage [message] - Set a welcome message for new subscribers when a reward is given
      */
     if (command.equalsIgnoreCase('submessage')) {
       if (!$.isAdmin(sender)) {
@@ -127,7 +127,7 @@
     }
 
     /**
-     * @commandpath resubmessage - set a resub message
+     * @commandpath resubmessage [message] - Set a message for resubscribers when a reward is given
      */
     if (command.equalsIgnoreCase('resubmessage')) {
       if (!$.isAdmin(sender)) {
@@ -144,7 +144,7 @@
     }
 
     /**
-     * @commandpath submessagenoreward [message] - set a sub welcome message when rewards are disabled
+     * @commandpath submessagenoreward [message] - Set a welcome message for new subscribers when no reward is given
      */
     if (command.equalsIgnoreCase('submessagenoreward')) {
       if (!$.isAdmin(sender)) {
@@ -161,7 +161,7 @@
     }
 
     /**
-     * @commandpath resubmessagenoreward - set a resub message when rewards are disabled
+     * @commandpath resubmessagenoreward [message] - Set a message for resubscribers when no reward is given
      */
     if (command.equalsIgnoreCase('resubmessagenoreward')) {
       if (!$.isAdmin(sender)) {
@@ -179,7 +179,7 @@
 
 
     /**
-     * @commandpath subscribereward - set a sub reward
+     * @commandpath subscribereward [points] - Set an award for subscribers
      */
     if (command.equalsIgnoreCase('subscribereward')) {
       if (!$.isAdmin(sender)) {
@@ -196,7 +196,7 @@
     }
 
     /**
-     * @commandpath subscribercount - see how many subs there are
+     * @commandpath subscribercount - Provide the number of subscribers
      */
     if (command.equalsIgnoreCase('subscribercount')) {
       if (!$.isAdmin(sender)) {
@@ -215,7 +215,7 @@
     }
     
     /**
-     * @commandpath subscribers - puts chat in sub mode
+     * @commandpath subscribers - Enables subscription only chat mode
      */
     if (command.equalsIgnoreCase('subscribers')) {
         if (!$.isModv3(sender, event.getTags())) {
@@ -226,7 +226,7 @@
     }
     
     /**
-     * @commandpath subscribersoff - removes chat from sub mode
+     * @commandpath subscribersoff - Disables subscription only chat mode
      */
     if (command.equalsIgnoreCase('subscribersoff')) {
         if (!$.isModv3(sender, event.getTags())) {

@@ -41,7 +41,7 @@
         i;
 
     /**
-     * @commandpath top5 - Get the top 5 viewers in the channel
+     * @commandpath top5 - Get the top 5 viewers in the channel based on points
      */
     if (command.equalsIgnoreCase('top5')) {
       if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
@@ -60,7 +60,7 @@
     }
 
     /**
-     * @commandpath top5time - Get the top 5 viewers in the channel with time
+     * @commandpath top5time - Get the top 5 viewers in the channel based on time
      */
     if (command.equalsIgnoreCase('top5time')) {
       temp = getTop5('time');

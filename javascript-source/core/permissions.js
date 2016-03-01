@@ -554,7 +554,7 @@
         args = event.getArgs();
 
     /**
-     * @commandpath users - List current users currently in the channel
+     * @commandpath users - List users currently in the channel
      */
     if (command.equalsIgnoreCase('users')) {
       if (users.length > 20) {
@@ -609,7 +609,7 @@
     }
 
     /**
-     * @commandpath grouppoints [group] [online|offline] [points] - Show/set the points for each group.
+     * @commandpath grouppoints [group] [online|offline] [points] - Show/set the points gained for each group. -1 defaults to the global configuration.
      */
     if (command.equalsIgnoreCase('grouppoints')) {
 

@@ -146,7 +146,7 @@
     }
 
     /**
-     * @commandpath followmessage [message] - Set the follow message
+     * @commandpath followmessage [message] - Set the new follower message when there is a reward
      */
     if (command.equalsIgnoreCase('followmessage')) {
       if (!comArg || comArg <= 0) {
@@ -160,7 +160,7 @@
     }
 
     /**
-     * @commandpath followmessagenoreward [message] - Set the follow message
+     * @commandpath followmessagenoreward [message] - Set the new follower message when there is no reward
      */
     if (command.equalsIgnoreCase('followmessagenoreward')) {
       if (!comArg || comArg <= 0) {
@@ -173,7 +173,7 @@
       $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessagenoreward.success'));
     }
     /**
-     * @commandpath followtoggle - Enable or disable the anouncements for new follows.
+     * @commandpath followtoggle - Enable or disable the anouncements for new followers
      */
     if (command.equalsIgnoreCase('followtoggle')) {
         if (followToggle) {

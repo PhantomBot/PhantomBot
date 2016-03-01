@@ -281,7 +281,7 @@
             subAction = args[1];
 
         /**
-         * @commandpath addcom [command] [command text] - Add a custom command
+         * @commandpath addcom [command] [command text] - Add a custom command (see !listtags)
          */
         if (command.equalsIgnoreCase('addcom')) {
             if (!$.isModv3(sender, event.getTags())) {
@@ -506,6 +506,9 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action, subAction, $.pointNameMultiple));
         }
 
+        /**
+         * @commandpath listtags - Displays a list of tags that may be used in custom commands
+         */
         if (command.equalsIgnoreCase('listtags')) {
             if (!$.isAdmin(sender)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
@@ -515,7 +518,7 @@
         }
 
         /**
-         * @commandpath commands - Gives you a list of all your commands
+         * @commandpath commands - Provides a list of all available commands.
          */
         if (command.equalsIgnoreCase('commands')) {
             var cmds = $.inidb.GetKeyList('command', ''),

@@ -154,7 +154,7 @@
             bet = args.slice(1);
 
         /**
-         * @commandpath bet [open | close | setminimum | setmaximum | option amount | amount option] - Performs bet operations.
+         * @commandpath bet [option] - Performs bet operations.
          */
         if (command.equalsIgnoreCase('bet')) {
             if (!action) {
@@ -163,7 +163,7 @@
             }
 
             /**
-             * @commandpath bet open [option option option ...] - Opens a bet with options; not allowed to be digits, words only.
+             * @commandpath bet [open] [option option option ...] - Opens a bet with options; not allowed to be digits, words only.
              */
             if (action.equalsIgnoreCase('open')) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -175,7 +175,7 @@
                 return;
 
             /**
-             * @commandpath bet close [option] - Closes the bet and selects option as the winner.
+             * @commandpath bet [close] [option] - Closes the bet and selects option as the winner.
              */
             } else if (action.equalsIgnoreCase('close')) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -186,7 +186,7 @@
                 return;
 
             /**
-             * @commandpath bet setminimum [value] - Set the minimum value of a bet.
+             * @commandpath bet [setminimum] [value] - Set the minimum value of a bet.
              */
             } else if (action.equalsIgnoreCase('setminimum')) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -205,7 +205,7 @@
                 return;
 
             /**
-             * @commandpath bet setmaximum [value] - Set the maximum value of a bet.
+             * @commandpath bet [setmaximum] [value] - Set the maximum value of a bet.
              */
             } else if (action.equalsIgnoreCase('setmaximum')) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -224,7 +224,7 @@
                 return;
 
             /**
-             * @commandpath bet option amount | amount option - Places a bet on option, betting an amount of points.
+             * @commandpath bet [option amount | amount option] - Places a bet on option, betting an amount of points.
              */
             } else {
                 if (!betStatus) {

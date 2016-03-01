@@ -120,7 +120,7 @@
     }
 
     /**
-     * @commandpath donations [announce | reward n.n | message | lastmessage | rewardmessage ]
+     * @commandpath donations [options] - Controls various options for donation handling
      */
     if (command.equalsIgnoreCase('donations')) {
       if (!args[0]) {
@@ -129,7 +129,7 @@
       }
 
       /**
-       * @commandpath donations announce - Toggles announcements for donations off and on
+       * @commandpath donations [announce] - Toggles announcements for donations off and on
        */
       if (args[0].equalsIgnoreCase('announce')) {
         if (announceDonations) {
@@ -145,7 +145,7 @@
       }
 
       /**
-       * @commandpath donations reward [n.n] - Set a reward for donations.
+       * @commandpath donations [reward] [n.n] - Set a reward for donations.
        */
       if (args[0].equalsIgnoreCase('reward')) {
         if (!args[1]) {
@@ -164,9 +164,9 @@
       }
 
       /**
-       * @commandpath donations message [message] - Set the message when no reward is given.
-       * @commandpath donations rewardmessage [message] - Set the message when a reward is given.
-       * @commandpath donations lastmessage [message] - Set the message for !lastdonation
+       * @commandpath donations [message] [message] - Set the message when no reward is given.
+       * @commandpath donations [rewardmessage] [message] - Set the message when a reward is given.
+       * @commandpath donations [lastmessage] [message] - Set the message for !lastdonation
        */
       if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('rewardmessage') || args[0].equalsIgnoreCase('lastmessage')) {
         var comArg = args[0].toLowerCase();

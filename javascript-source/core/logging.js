@@ -195,7 +195,7 @@
       }
 
       /**
-       * @commandpath log enable - Enable logging
+       * @commandpath log [enable] - Enable logging
        */
       if (action.equalsIgnoreCase('enable')) {
         loggingEnabled = true;
@@ -205,7 +205,7 @@
       }
 
       /**
-       * @commandpath log disable - Disable logging
+       * @commandpath log [disable] - Disable logging
        */
       if (action.equalsIgnoreCase('disable')) {
         loggingEnabled = false;

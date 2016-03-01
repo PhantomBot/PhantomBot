@@ -284,7 +284,7 @@
             subAction = args[1];
 
         /**
-         * @commandpath permit [user] - Permit someone to post a link
+         * @commandpath permit [user] - Permit someone to post a link for a configured period of time
          */
         if (command.equalsIgnoreCase('permit')) {
             if (!$.isModv3(sender, event.getTags())) {
@@ -303,7 +303,7 @@
         }
     
         /**
-         * @commandpath blacklist [option] - Add a word to the blacklist
+         * @commandpath blacklist [option] - Manipulate the blacklist of words in chat
          */
         if (command.equalsIgnoreCase('blacklist')) {
             if (!$.isAdmin(sender)) {
@@ -331,7 +331,7 @@
             }
     
           /**
-           * @commandpath blacklist remove [id] - removes a word to the blacklist
+           * @commandpath blacklist remove [id] - Removes a word from the blacklist based on ID.
            */
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {
@@ -347,7 +347,7 @@
             }
         
               /**
-               * @commandpath blacklist show [id] - Shows that blacklist
+               * @commandpath blacklist show [id] - Shows the blacklist word related to the ID.
                */
             if (action.equalsIgnoreCase('show')) {
                 if (!subAction) {
@@ -362,7 +362,7 @@
         }
     
         /**
-         * @commandpath whitelist [add | remove | show] - Manipulate the whitelist links
+         * @commandpath whitelist [option] - Manipulate the whitelist links
          */
         if (command.equalsIgnoreCase('whiteList')) {
             if (!$.isAdmin(sender)) {
@@ -390,7 +390,7 @@
             }
       
             /**
-             * @commandpath whitelist remove [id] - Removes a link to the whitelist
+             * @commandpath whitelist remove [id] - Removes a link to the whitelist based on ID.
              */
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {
@@ -406,7 +406,7 @@
             }
       
             /**
-             * @commandpath whitelist show [id] - Shows a link in the whitelist
+             * @commandpath whitelist show [id] - Shows a link in the whitelist based on ID.
              */
             if (action.equalsIgnoreCase('show')) {
                 if (!subAction) {
@@ -421,7 +421,7 @@
         }
     
         /**
-         * @commandpath moderation [option] - Set the moderation filter for your chat
+         * @commandpath moderation [option] - Set the moderation filter for chat
          */
         if (command.equalsIgnoreCase('moderation') || command.equalsIgnoreCase('mod')) {
             if (!$.isAdmin(sender)) {
@@ -887,6 +887,9 @@
                 return;
             }
 
+            /**
+             * @commandpath moderation [messagecooldown] [message] - Sets the message displayed during a comamnd cooldown
+             */
             if (action.equalsIgnoreCase('messagecooldown')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.msgcooldown.usage'));

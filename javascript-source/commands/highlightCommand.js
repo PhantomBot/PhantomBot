@@ -19,10 +19,10 @@
         streamUptimeMinutes;
 
      /**
-      * @commandpath highlight [description] - Marks a highlight with the current date stamp.
-      * @comamndpath gethighlights - Get a list of current highlights.
-      * @commandpath showhighlights - Get a list of current highlights.
-      * @comamndpath clearhighlights - Clear the current highlights.
+      * @commandpath highlight [description] - Marks a highlight using the given description and with the current date stamp
+      * @comamndpath gethighlights - Get a list of current highlights
+      * @commandpath showhighlights - Get a list of current highlights
+      * @comamndpath clearhighlights - Clear the current highlights
       */
       if (command.equalsIgnoreCase("highlight")) {
         if (!$.isOnline($.channelName)) {
