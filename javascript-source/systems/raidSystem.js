@@ -33,7 +33,7 @@
     }
 
     /**
-     * @commandpath raider [channelname] - Announce and register a new incomming raid
+     * @commandpath raider [channelname] - Announce and register a new incoming raid
      */
     if (command.equalsIgnoreCase('raider')) {
       if (!username) {

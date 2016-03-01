@@ -160,7 +160,7 @@
         i;
 
     /**
-     * @commandpath points - Announce YOUR current amount of points, this base command can be replaced by the pointsname and pointsnamemultiple
+     * @commandpath points - Announce points in chat when no parameters are given.
      */
     if (command.equalsIgnoreCase('points') || command.equalsIgnoreCase('point') || command.equalsIgnoreCase(pointNameMultiple) || command.equalsIgnoreCase(pointNameSingle)) {
       if (!action) {
@@ -172,7 +172,7 @@
       } else {
 
         /**
-         * @commandpath points user [username] - Check the points of another user
+         * @commandpath points [user] [username] - Check the points of the user given by username
          */
         if (action.equalsIgnoreCase('user')) {
           if (!actionArg1) {
@@ -190,7 +190,7 @@
         }
 
         /**
-         * @commandpath points add [username] [amount] - Add an amount of points to a user's balance
+         * @commandpath points [add] [username] [amount] - Add an amount of points to a user's balance
          */
         else if (action.equalsIgnoreCase('add')) {
           actionArg1 = (actionArg1 + '').toLowerCase();
@@ -218,7 +218,7 @@
         }
 
         /**
-         * @commandpath points take [username] [amount] - Take an amount of points from the user's balance
+         * @commandpath points [take] [username] [amount] - Take an amount of points from the user's balance
          */
         else if (action.equalsIgnoreCase('take')) {
           actionArg1 = (actionArg1 + '').toLowerCase();
@@ -244,7 +244,7 @@
         }
 
         /**
-         * @commandpath points set [username] [amount] - Set the user's points balance to an amount
+         * @commandpath points [set] [username] [amount] - Set the user's points balance to an amount
          */
         else if (action.equalsIgnoreCase('set')) {
           actionArg1 = (actionArg1 + '').toLowerCase();
@@ -270,7 +270,7 @@
         }
 
         /**
-         * @commandpath points all [amount] - Send an amount of points to all users in the chat
+         * @commandpath points [all] [amount] - Send an amount of points to all users in the chat
          */
         else if (action.equalsIgnoreCase('all')) {
           if (!actionArg1) {
@@ -290,9 +290,9 @@
         }
 
         /**
-         * @commandpath points setname single [name] - Set the points handle for single points
-         * @commandpath points setname multiple [name] - Set the points handle for plural points
-         * @commandpath points setname delete - Deletes single and multiple custom names
+         * @commandpath points [setname] [single] [name] - Set the points name for single points
+         * @commandpath points [setname] [multiple] [name] - Set the points name for plural points
+         * @commandpath points [setname] [delete] - Deletes single and multiple custom names
          */
         else if (action.equalsIgnoreCase('setname')) {
           (actionArg1 + '');
@@ -330,7 +330,7 @@
         }
 
         /**
-         * @commandpath points setgain [amount] - Set the amount of points gained per payout interval while the channel is online
+         * @commandpath points [setgain] [amount] - Set the amount of points gained per payout interval while the channel is online, can be overriden by group settings
          */
         else if (action.equalsIgnoreCase('setgain')) {
           actionArg1 = parseInt(actionArg1);
@@ -350,7 +350,7 @@
         }
 
         /**
-         * @commandpath points setofflinegain [amount] - Set the amount of points gained per interval while the channel is offline
+         * @commandpath points [setofflinegain] [amount] - Set the amount of points gained per interval while the channel is offline, can be overridden by group settings
          */
         else if (action.equalsIgnoreCase('setofflinegain')) {
           actionArg1 = parseInt(actionArg1);
@@ -371,7 +371,7 @@
         }
 
         /**
-         * @commandpath points setinterval [minutes] - Set the points payout interval for when the channel is online
+         * @commandpath points [setinterval] [minutes] - Set the points payout interval for when the channel is online
          */
         else if (action.equalsIgnoreCase('setinterval')) {
           actionArg1 = parseInt(actionArg1);
@@ -391,7 +391,7 @@
         }
 
         /**
-         * @commandpath points setofflineinterval [minutes] - Set the points payout interval for when the channel is offline
+         * @commandpath points [setofflineinterval] [minutes] - Set the points payout interval for when the channel is offline
          */
         else if (action.equalsIgnoreCase('setofflineinterval')) {
           actionArg1 = parseInt(actionArg1);

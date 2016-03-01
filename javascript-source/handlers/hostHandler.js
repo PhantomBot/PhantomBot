@@ -113,7 +113,7 @@
     }
 
     /**
-     * @commandpath unhost - Send the /unhost command to twitch
+     * @commandpath unhost - Send the /unhost command to Twitch
      */
     if (command.equalsIgnoreCase('unhost')) {
       if (!$.isAdmin(sender)) {
@@ -125,7 +125,7 @@
     }
 
     /**
-     * @commandpath host [channel] - Send the /host command to twitch
+     * @commandpath host [channel] - Send the /host command to Twitch
      */
     if (command.equalsIgnoreCase('host')) {
       if (!$.isAdmin(sender)) {
@@ -137,7 +137,7 @@
     }
 
     /**
-     * @commandpath hostcount - Announce the current number of other channels hosting this channel
+     * @commandpath hostcount - Announce the number of other channels hosting this channel
      */
     if (command.equalsIgnoreCase('hostcount')) {
       for (i in hostList) {
@@ -152,7 +152,7 @@
     }
 
     /**
-     * @commandpath hostlist - Announce a list of current other channels hosting this channel
+     * @commandpath hostlist - Announce a list of other channels hosting this channel
      */
     if (command.equalsIgnoreCase('hostlist')) {
       for (i in hostList) {

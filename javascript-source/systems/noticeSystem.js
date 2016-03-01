@@ -89,7 +89,7 @@
             }
     
           /**
-           * @commandpath notice get [id] - gets the notice related to the ID
+           * @commandpath notice [get] [id] - Gets the notice related to the ID
            */
             if (action.equalsIgnoreCase('get')) {
                 if (args.length < 2) {
@@ -105,7 +105,7 @@
             }
     
           /**
-           * @commandpath notice edit [id] [new message] - allows you to edit a notice with the given ID
+           * @commandpath notice [edit] [id] [new message] - Replace the notice at the given ID
            */
             if (action.equalsIgnoreCase('edit')) {
                 if (args.length < 3) {
@@ -123,7 +123,7 @@
             }
     
           /**
-           * @commandpath notice remove [id] - removes that notice under that ID
+           * @commandpath notice [remove] [id] - Removes the notice related to the given ID
            */
             if (action.equalsIgnoreCase('remove')) {
                 if (args.length < 2) {
@@ -142,7 +142,7 @@
             }
     
           /**
-           * @commandpath notice add [message or command] - adds a notice, with a custom message, or a command (command:command)
+           * @commandpath notice [add] [message or command] - Adds a notice, with a custom message, or a command (command:command)
            */
             if (action.equalsIgnoreCase('add')) {
                 if (args.length < 2) {
@@ -158,7 +158,7 @@
             }
     
           /**
-           * @commandpath notice interval [seconds] - sets the notice interval
+           * @commandpath notice [interval] [minutes] - Sets the notice interval
            */
             if (action.equalsIgnoreCase('interval')) {
                 if (args.length < 2) {
@@ -176,7 +176,7 @@
             }
       
           /**
-           * @commandpath notice req [amount of messages] - set the amount of messages needed to trigger a notice
+           * @commandpath notice [req] [message count] - Set the number of messages needed to trigger a notice
            */
             if (action.equalsIgnoreCase('req')) {
                 if (args.length < 2) {
@@ -194,7 +194,7 @@
             }
     
           /**
-           * @commandpath notice config - shows the notice settings
+           * @commandpath notice [config] - Shows current notice configuration
            */
             if (action.equalsIgnoreCase('config')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-config', noticeToggle, noticeInterval, noticeReqMessages, numberOfNotices));
@@ -202,7 +202,7 @@
             }
     
           /**
-           * @commandpath notice toggle - toggles notices on and off
+           * @commandpath notice [toggle] - Toggles notices on and off
            */
             if (action.equalsIgnoreCase('toggle')) {
                 if (noticeToggle) {
@@ -217,7 +217,7 @@
             }
     
           /**
-           * @commandpath notice reload - reloads all notices
+           * @commandpath notice [reload] - Reloads all notices
            */
             if (action.equalsIgnoreCase('reload')) {
                 reloadNotices();

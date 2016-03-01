@@ -44,7 +44,7 @@
         message;
 
     /**
-     * @commandpath greeting [toggledefault | setdefault | enable | disable] - Control greetings.
+     * @commandpath greeting [option] - Control greetings.
      */
     if (command.equalsIgnoreCase('greeting')) {
       if (!action) {
@@ -57,7 +57,7 @@
       }
 
       /**
-       * @commandpath greeting toggledefault - Enable/disable the default greeting
+       * @commandpath greeting [toggledefault] - Enable/disable the default greeting
        */
       if (action.equalsIgnoreCase('toggledefault')) {
         if (!$.isModv3(sender, event.getTags())) {
@@ -75,7 +75,7 @@
       }
 
       /**
-       * @commandpath greeting setdefault [message] - Set the default greeting
+       * @commandpath greeting [setdefault] [message] - Set the default greeting
        */
       if (action.equalsIgnoreCase('setdefault')) {
         message = args.splice(1, args.length - 1).join(' ');
@@ -103,7 +103,7 @@
       }
 
       /**
-       * @commandpath greeting enable [message] - Set YOUR personal greeting (Regardless of default greeting being enabled)
+       * @commandpath greeting [enable] [message] - Set a personal greeting which overrides the system default
        */
       if (action.equalsIgnoreCase('enable')) {
         message = args.splice(1, args.length - 1).join(' ');
@@ -118,7 +118,7 @@
       }
 
       /**
-       * @commandpath greeting disable - Delete YOUR personal greeting
+       * @commandpath greeting [disable] - Delete personal greeting and return to the system default
        */
       if (action.equalsIgnoreCase('disable')) {
         if ($.inidb.exists('greeting', sender)) {

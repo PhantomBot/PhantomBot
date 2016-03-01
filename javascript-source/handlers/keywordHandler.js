@@ -34,7 +34,7 @@ $.bind('ircChannelMessage', function (event) {
             subAction = args[1];
 
         /**
-        * @commandpath keyword [option] - Tells you keyword usage
+        * @commandpath keyword [option] - Base comamnd for keyword options
         */  
         if (command.equalsIgnoreCase('keyword')) {
             if (!$.isAdmin(sender)) {
@@ -48,7 +48,7 @@ $.bind('ircChannelMessage', function (event) {
             }
 
             /**
-            * @commandpath keyword add [keyword] [response] - Adds a keyword
+            * @commandpath keyword [add] [keyword] [response] - Adds a keyword and a response
             */  
             if (action.equalsIgnoreCase('add')) {
                 if (!subAction) {
@@ -64,7 +64,7 @@ $.bind('ircChannelMessage', function (event) {
             }
 
             /**
-            * @commandpath keyword remove [keyword] - Removes that keyword
+            * @commandpath keyword [remove] [keyword] - Removes a given keyword
             */ 
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {

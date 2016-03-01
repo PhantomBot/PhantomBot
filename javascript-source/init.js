@@ -605,7 +605,7 @@
 
 
       /**
-       * @commandpath reconnect - Tell the bot to reconnect to the twitch chat and API
+       * @commandpath reconnect - Tell the bot to reconnect to Twitch chat and the various APIs
        */
       if (command.equalsIgnoreCase('reconnect')) {
         if (!$.isModv3(sender, event.getTags())) {
@@ -644,7 +644,7 @@
         }
 
         /**
-         * @commandpath module enable [script file path] - Enable a module
+         * @commandpath module enable [./path/module] - Enable a module using the path and name of the module
          */
         if (action.equalsIgnoreCase('enable')) {
           temp = args[1];
@@ -673,7 +673,7 @@
         }
 
         /**
-         * @commandpath module disable [script file path] - Disable a module
+         * @commandpath module disable [./path/module] - Disable a module using the path and name of the module
          */
         if (action.equalsIgnoreCase('disable')) {
           temp = args[1];
@@ -718,7 +718,7 @@
         }
 
         /**
-         * @commandpath module status [script file path] - Get the current status of a module
+         * @commandpath module status [./path/module] - Retrieve the current status (enabled/disabled) of the given module
          */
         if (action.equalsIgnoreCase('status')) {
           temp = args[1];
@@ -743,7 +743,7 @@
       }
 
       /**
-       * @commandpath chat [message] - Used by the webpanel to announce messages in the chat in name of the bot
+       * @commandpath chat [message] - In the console, can be used to chat as the bot. Also used by the webpanel to communicate with chat
        */
       if (command.equalsIgnoreCase('chat')) {
         $.say(event.getArguments());

@@ -10,6 +10,9 @@
             action = args[0],
             subAction = args[1];
 
+        	/**
+             * @commandpath wordcounter [option] - Configures various option for the wordcounter
+             */
         if (command.equalsIgnoreCase('wordcounter')) {
         	if (!$.isAdmin(sender)) {
         		$.say($.whisperPrefix(sender) + $.adminMsg);
@@ -22,7 +25,7 @@
         	}
 
         	/**
-             * @commandpath wordcounter add [word] - Adds a word that will be counted every time someone says it
+             * @commandpath wordcounter [add] [word] - Adds a word that will be counted every time someone says it
              */
         	if (action.equalsIgnoreCase('add')) {
         		if (!subAction) {
@@ -36,7 +39,7 @@
         	}
 
         	/**
-             * @commandpath wordcounter remove [word] - Removed that word that will no longer be counted every time someone says it
+             * @commandpath wordcounter [remove] [word] - Removes the given word which will no longer be counted every time someone says it
              */
         	if (action.equalsIgnoreCase('remove')) {
         		if (!subAction) {
@@ -54,7 +57,7 @@
         }
 
         /**
-        * @commandpath count [word] - Tells you how many times that word as been said in chat.
+        * @commandpath [count] [word] - Tells you how many times that word as been said in chat.
         */
         if (command.equalsIgnoreCase('count')) {
         	if (!$.inidb.exists('wordCounter', action.toLowerCase())) {

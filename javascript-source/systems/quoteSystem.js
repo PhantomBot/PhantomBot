@@ -157,7 +157,7 @@
     }
 
     /**
-     * @commandpath quote [quoteId] - Announce a quote by its Id, ommit the id parameter to get a random quote
+     * @commandpath quote [quoteId] - Announce a quote by its Id, omit the id parameter to get a random quote
      */
     if (command.equalsIgnoreCase('quote')) {
       quote = getQuote(args[0]);

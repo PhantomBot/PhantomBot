@@ -12,7 +12,7 @@
             subAction = args[1];
 
             /**
-            * @commandpath multi - Gives usage or the multi link if its set.
+            * @commandpath multi - Displays the current multi-link information of the usage
             */
         if (command.equalsIgnoreCase('multi')) {
             if (!action) {
@@ -28,7 +28,7 @@
             }
 
              /**
-            * @commandpath multi set [channels] - Adds channels to the multi link; yours is already there by default
+            * @commandpath multi set [channels] - Adds a space-delimited list of channels to the multi-link (local channel already added)
             */
             if (action.equalsIgnoreCase('set')) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -47,7 +47,7 @@
             }
 
              /**
-            * @commandpath multi clear - Clears the multi links and disables the timer
+            * @commandpath multi clear - Clears the multi-links and disables the timer
             */
             if (action.equalsIgnoreCase('clear')) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -63,7 +63,7 @@
             }
 
              /**
-            * @commandpath multi timer [on / off] - Enable/Disable the multi timer
+            * @commandpath multi timer [on / off] - Enable/Disable the multi-links timer
             */
             if (action.equalsIgnoreCase('timer')) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -91,7 +91,7 @@
             }
 
             /**
-            * @commandpath multi timerinterval [time in minutes] - Set the interval for the multi timer
+            * @commandpath multi timerinterval [time in minutes] - Set the interval for the multi-links timer
             */
             if (action.equalsIgnoreCase('timerinterval')) {
                 if (!$.isModv3(sender, event.getTags())) {

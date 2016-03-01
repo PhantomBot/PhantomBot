@@ -32,7 +32,7 @@
         rand;
 
     /**
-     * @commandpath kill [username] - Kill a fellow viewer (not for real tho!), ommit the username to kill yourself
+     * @commandpath kill [username] - Kill a fellow viewer (not for real!), omit the username to kill yourself
      */
     if (command.equalsIgnoreCase('kill')) {
       if (args.length > 0) {

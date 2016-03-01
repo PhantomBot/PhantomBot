@@ -135,7 +135,7 @@
     	    action = args[0];
 
         /**
-        * @commandpath raffle [option] -  Displays the usage of the raffle command
+        * @commandpath raffle [option] - Displays the usage of the raffle command
         */
     	if (command.equalsIgnoreCase('raffle')) {
     		if (!$.isModv3(sender, event.getTags())) {
@@ -149,28 +149,28 @@
             }
 
             /**
-            * @commandpath raffle open (keyword) (cost) (-followers) (timer) - Opens a raffle. -followers and timer is optional.
+            * @commandpath raffle [open] [keyword] [cost] [-followers] [timer]- Opens a raffle. -followers and timer is optional
             */
     		if (action.equalsIgnoreCase('open')) {
     			checkArgs(sender, args[1], args[2], args[3]);
             }
 
             /**
-            * @commandpath raffle close - closes a  raffle.
+            * @commandpath raffle [close] - Closes a raffle.
             */
     		if (action.equalsIgnoreCase('close')) {
     			closeRaffle(sender);
     		}
 
             /**
-            * @commandpath raffle repick - Picks a new winner for the  raffle
+            * @commandpath raffle [repick] - Picks a new winner for the raffle
             */
             if (action.equalsIgnoreCase('repick')) {
                 winner(true);
             }
 
             /**
-            * @commandpath raffle messagetoggle - Toggles on and off the entering message.
+            * @commandpath raffle [messagetoggle] - Toggles on and off a message when entering a raffle
             */
             if (action.equalsIgnoreCase('messagetoggle')) {
                 if (msgToggle) {
