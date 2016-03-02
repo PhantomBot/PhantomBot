@@ -1,5 +1,5 @@
 $.lang.register('noticehandler.notice-config', '(Notice Settings, - (Notices: $1, - (Interval: $2 minutes, - (Msg Trigger: $3 messages, - (Amount: $4 notices)');
-$.lang.register('noticehandler.notice-usage', 'Usage: !notice add / remove / edit / config / interval / req / toggle');
+$.lang.register('noticehandler.notice-usage', 'Usage: !notice add / get / remove / edit / config / interval / req / toggle');
 $.lang.register('noticehandler.notice-get-usage', 'Usage: !notice get (notice id, Notice id\'s go from 0 to $1');
 $.lang.register('noticehandler.notice-error-notice-404', 'That notice does not exists.');
 $.lang.register('noticehandler.notice-edit-usage', 'Usage: !notice edit (notice id, (message, Notice id\'s go from 0 to $1');

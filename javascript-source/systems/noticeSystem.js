@@ -116,7 +116,7 @@
                     return;
                 } else {
                     argsString = argsString.replace(action + '', '').trim();
-                    $.inidb.set('notices', 'message_' + args[1], message);
+                    $.inidb.set('notices', 'message_' + args[1], argsString);
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-success'));
                     return;
                 }
