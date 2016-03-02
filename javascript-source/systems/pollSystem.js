@@ -19,8 +19,14 @@
     minVotes: 0,
     result: '',
     pollTimerId: -1,
+    hasTie: 0,
+    counts: [],
   };
 
+  // Compile regular expressions.
+  var rePollOpenFourOptions = new RegExp(/"([\w\W]+)"\s+"([\w\W]+)"\s+(\d+)\s+(\d+)/),
+      rePollOpenThreeOptions = new RegExp(/"([\w\W]+)"\s+"([\w\W]+)"\s+(\d+)/),
+      rePollOpenTwoOptions = new RegExp(/"([\w\W]+)"\s+"([\w\W]+)"/);
 
   /**
    * @function runPoll
@@ -50,12 +56,14 @@
     poll.minVotes = (minVotes ? minVotes : 1);
     poll.votes = [];
     poll.voters = [];
+    poll.counts = [];
+    poll.hasTie = 0;
 
     for (var i = 0; i < poll.options.length; i++) {
       optionsStr += (i + 1) + ") " + poll.options[i] + " ";
     }
 
-    $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.question, optionsStr));
+    $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
     if (poll.time) {
       poll.pollTimerId = setTimeout(function () {
         endPoll();
@@ -100,8 +108,7 @@
    * @export $.poll
    */
   function endPoll() {
-    var counts = [],
-        mostVotes = -1,
+    var mostVotes = -1,
         i;
 
     if (!poll.pollRunning) {
@@ -121,9 +128,10 @@
       return;
     }
 
-    for (i = 0; i < poll.options.length; counts.push(0), i++) ;
-    for (i = 0; i < poll.votes.length; counts[poll.votes[i++]] += 1) ;
-    for (i = 1; i < counts.length; winner = ((counts[i] > mostVotes) ? i : winner), mostVotes = ((counts[i] > mostVotes) ? counts[i] : mostVotes), i++) ;
+    for (i = 0; i < poll.options.length; poll.counts.push(0), i++) ;
+    for (i = 0; i < poll.votes.length; poll.counts[poll.votes[i++]] += 1) ;
+    for (i = 0; i < poll.counts.length; winner = ((poll.counts[i] > mostVotes) ? i : winner), mostVotes = ((poll.counts[i] > mostVotes) ? poll.counts[i] : mostVotes), i++) ;
+    for (i = 0; i < poll.counts.length; (i != winner && poll.counts[i] == poll.counts[winner] ? poll.hasTie = 1 : 0), (poll.hasTie == 1 ? i = poll.counts.length : 0), i++) ;
 
     poll.result = poll.options[winner];
     poll.pollMaster = '';
@@ -178,14 +186,18 @@
         if (poll.pollRunning) {
           $.say($.lang.get('pollsystem.results.running'));
         } else if (poll.result != '') {
-          $.say($.lang.get('pollsystem.results.lastpoll', poll.question, poll.votes.length, poll.result, poll.options.join('", "')));
+          if (poll.hasTie) {
+            $.say($.lang.get('pollsystem.results.lastpoll', poll.question, poll.votes.length, "Tie!" , poll.options.join('", "'), poll.counts.join('", "')));
+          } else {
+            $.say($.lang.get('pollsystem.results.lastpoll', poll.question, poll.votes.length, poll.result, poll.options.join('", "'), poll.counts.join(', ')));
+          }
         } else {
           $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.results.404'));
         }
       }
 
       /**
-       * @commandpath poll [open] [-t Run time in seconds] [-m minvotes] [-q Poll question] [-o "option1, option2..."] - Starts a new poll, -q and -o are required
+       * @commandpath poll [open] ["poll question"] ["option1, option2, ..."] [seconds] [min votes] - Starts a poll with question and options. If [seconds] is 0, defaults to 60.
        */
       if (action.equalsIgnoreCase('open')) {
         var time = 60,
@@ -195,17 +207,21 @@
 
         argsString = argsString + ""; // Cast as a JavaScript string.
 
-        if (argsString.match(/-t\s+([0-9]+)/)) {
-          time = parseInt(argsString.match(/-t\s+([0-9]+)/)[1]);
-        }
-        if (argsString.match(/-q\s+"(.*)"\s+/)) {
-          question = argsString.match(/-q\s+"(.*)"\s+/)[1];
-        }
-        if (argsString.match(/-o\s+"(.+)"/)) {
-          options = argsString.match(/-o\s+"(.+)"/)[1].split(/,\s*/);
-        }
-        if (argsString.match(/-m\s+([0-9]+)/)) {
-          minVotes = parseInt(argsString.match(/-m\s+([0-9])+/)[1]);
+        if (argsString.match(rePollOpenFourOptions)) {
+          question = argsString.match(rePollOpenFourOptions)[1];
+          options = argsString.match(rePollOpenFourOptions)[2].split(/,\s*/);
+          time = parseInt(argsString.match(rePollOpenFourOptions)[3]);
+          minVotes = parseInt(argsString.match(rePollOpenFourOptions)[4]);
+        } else if (argsString.match(rePollOpenThreeOptions)) {
+          question = argsString.match(rePollOpenThreeOptions)[1];
+          options = argsString.match(rePollOpenThreeOptions)[2].split(/,\s*/);
+          time = parseInt(argsString.match(rePollOpenThreeOptions)[3]);
+        } else if (argsString.match(rePollOpenTwoOptions)) {
+          question = argsString.match(rePollOpenTwoOptions)[1];
+          options = argsString.match(rePollOpenTwoOptions)[2].split(/,\s*/);
+        } else {
+          $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.open.usage'));
+          return;
         }
 
         if (isNaN(time) || !question || !options || options.length == 0 || isNaN(minVotes) || minVotes < 1) {
@@ -217,15 +233,22 @@
           return;
         }
 
-        runPoll(question, options, time, sender, minVotes, function (winner) {
+        if (runPoll(question, options, (time == 0 ? 60 : time), sender, minVotes, function (winner) {
           if (winner === false) {
             $.say($.lang.get('pollsystem.runpoll.novotes', question));
             return;
           }
-          $.say($.lang.get('pollsystem.runpoll.winner', question, winner));
-        });
-
-        $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.runpoll.started'));
+          if (poll.hasTie) {
+            $.say($.lang.get('pollsystem.runpoll.tie', question));
+          } else {
+            $.say($.lang.get('pollsystem.runpoll.winner', question, winner));
+          }
+        })) {
+          $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.runpoll.started'));
+        } else {
+          $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.results.running'));
+        }
+         
       }
 
       /**

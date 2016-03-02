@@ -55,6 +55,11 @@
    *   S        Millisecond              Number              978
    *   z        Time zone                General time zone   Pacific Standard Time; PST; GMT-08:00
    *   Z        Time zone                RFC 822 time zone   -0800
+   *
+   * Note that fixed strings must be encapsulated with quotes.  For example, the below inserts a comma
+   * and paranthesis into the returned time string:
+   *
+   *     getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss zzz '('Z')'");
    */
   function getCurLocalTimeString(format) {
     var dateFormat = new java.text.SimpleDateFormat(format);
@@ -297,15 +302,7 @@
     if (command.equalsIgnoreCase('streamertime')) {
       $.say($.whisperPrefix(sender) + $.lang.get(
               'timesystem.streamertime',
-              (new Date()).toLocaleString('en-GB', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: true,
-              }),
+              getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss zzz '('Z')'"),
               $.username.resolve($.ownerName)
           ));
     }
@@ -349,7 +346,7 @@
     if (levelWithTime) {
       for (i in $.users) {
         var username = $.users[i][0].toLowerCase();
-        if (!$.isMod(username)
+        if (!$.isMod(username) && !$.isAdmin(username)
             && $.inidb.exists('time', username)
             && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp
             && parseInt($.getUserGroupId(username)) > regularsGroupId) {

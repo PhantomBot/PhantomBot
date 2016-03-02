@@ -613,7 +613,7 @@
             }
         
             /**
-             * @commandpath moderation subscribers [true / false] - Allows subscribers to avoid all spam filters
+             * @commandpath moderation subscribers [true / false] - Allows subscribers to post links
              */
             if (action.equalsIgnoreCase('subscribers')) {
                 if (!subAction) {
@@ -888,7 +888,7 @@
             }
 
             /**
-             * @commandpath moderation [messagecooldown] [message] - Sets the message displayed during a comamnd cooldown
+             * @commandpath moderation messagecooldown [amount] - Sets a cooldown in seconds on the timeout messages
              */
             if (action.equalsIgnoreCase('messagecooldown')) {
                 if (!subAction) {
