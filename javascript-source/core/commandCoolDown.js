@@ -90,7 +90,7 @@
             time = parseInt(args[1]);
 
         /**
-        * @commandpath coolcom [command] [time in seconds] - Sets a cooldown for a command. Use -1 for seconds to remove it.
+        * @commandpath coolcom [command or keyword] [time in seconds] - Sets a cooldown for a command or a keyword. Use -1 for seconds to remove it.
         */
         if (command.equalsIgnoreCase('coolcom') || command.equalsIgnoreCase('cooldown')) {
             if (!$.isAdmin(sender)) {
