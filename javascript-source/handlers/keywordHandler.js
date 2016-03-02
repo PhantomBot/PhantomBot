@@ -16,6 +16,12 @@ $.bind('ircChannelMessage', function (event) {
             if (regex.exec(message)) {
                 keyword = $.inidb.get('keywords', key);
 				keyword = keyword.replace('(sender)', sender);
+
+                if ($.coolDown.get(key, sender) > 0) {
+                    $.consoleDebug('keyword ' + key + ' not sent because its on a cooldown.');
+                    return;
+                }
+
                 $.say(keyword);
                 return;
             }
@@ -31,7 +37,7 @@ $.bind('ircChannelMessage', function (event) {
             argString = event.getArguments().trim(),
             args = event.getArgs(),
             action = args[0],
-            subAction = args[1];
+            subAction = args[1].toLowerCase();
 
         /**
         * @commandpath keyword [option] - Base comamnd for keyword options
