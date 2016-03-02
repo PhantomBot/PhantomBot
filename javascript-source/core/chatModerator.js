@@ -888,7 +888,7 @@
             }
 
             /**
-             * @commandpath moderation [messagecooldown] [message] - Sets the message displayed during a comamnd cooldown
+             * @commandpath moderation messagecooldown [amount] - Sets a cooldown in seconds on the timeout messages
              */
             if (action.equalsIgnoreCase('messagecooldown')) {
                 if (!subAction) {
