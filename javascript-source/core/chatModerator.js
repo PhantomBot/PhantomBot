@@ -613,7 +613,7 @@
             }
         
             /**
-             * @commandpath moderation subscribers [true / false] - Allows subscribers to avoid all spam filters
+             * @commandpath moderation subscribers [true / false] - Allows subscribers to post links
              */
             if (action.equalsIgnoreCase('subscribers')) {
                 if (!subAction) {
