@@ -32,7 +32,7 @@
         longMessageLimit = ($.inidb.exists('chatModerator', 'longMessageLimit') ? parseInt($.inidb.get('chatModerator', 'longMessageLimit')) : 300),
 
         colorsToggle = ($.inidb.exists('chatModerator', 'colorsToggle') ? $.getIniDbBoolean('chatModerator', 'colorsToggle') : true),
-        colorsMessage = ($.inidb.exists('chatModerator', 'colorsMessage') ? $.inidb.get('chatModerator', 'colorsMessage') : 'you were timed out for using a colored message'),
+        colorsMessage = ($.inidb.exists('chatModerator', 'colorsMessage') ? $.inidb.get('chatModerator', 'colorsMessage') : 'you were timed out for posting a colored message'),
 
         regularsToggle = ($.inidb.exists('chatModerator', 'regularsToggle') ? $.getIniDbBoolean('chatModerator', 'regularsToggle') : false),
         subscribersToggle = ($.inidb.exists('chatModerator', 'subscribersToggle') ? $.getIniDbBoolean('chatModerator', 'subscribersToggle') : false),
@@ -47,11 +47,11 @@
      * @function loadBlackList
      */
     function loadBlackList(force) {
-        var keys = $.inidb.GetKeyList('blacklist', '');
+        var keys = $.inidb.GetKeyList('blackList', '');
 
         if (force) {
             for (var i in keys) {
-                blackList.push($.inidb.get('blacklist', keys[i]));
+                blackList.push($.inidb.get('blackList', keys[i]));
             }
         }
     };
@@ -60,11 +60,11 @@
      * @function loadWhiteList
      */
     function loadWhiteList(force) {
-        var keys = $.inidb.GetKeyList('whitelist', '');
+        var keys = $.inidb.GetKeyList('whiteList', '');
 
         if (force) {
             for (var i in keys) {
-                whiteList.push($.inidb.get('whitelist', keys[i]));
+                whiteList.push($.inidb.get('whiteList', keys[i]));
             }
         }
     };
@@ -692,7 +692,7 @@
             }
 
             /**
-             * @commandpath moderation colormessage [message] - Sets the color warning message
+             * @commandpath moderation colorsmessage [message] - Sets the color warning message
              */
             if (action.equalsIgnoreCase('colorsmessage')) {
                 if (!subAction) {
