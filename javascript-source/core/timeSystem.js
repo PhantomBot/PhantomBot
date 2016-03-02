@@ -349,7 +349,7 @@
     if (levelWithTime) {
       for (i in $.users) {
         var username = $.users[i][0].toLowerCase();
-        if (!$.isMod(username)
+        if (!$.isMod(username) && !$.isAdmin(username)
             && $.inidb.exists('time', username)
             && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp
             && parseInt($.getUserGroupId(username)) > regularsGroupId) {
