@@ -72,7 +72,7 @@ $.lang.register('chatmoderator.blacklist.usage', 'Usage: !blackList [add / remov
 $.lang.register('chatmoderator.blacklist.add.usage', 'Usage: !blackList add (message)');
 $.lang.register('chatmoderator.blacklist.added', 'Word added to the blacklist.');
 $.lang.register('chatmoderator.blacklist.remove.usage', 'Usage: !blackList remove (id)');
-$.lang.register('chatmoderator.err', 'That\'s an invalide id.');
+$.lang.register('chatmoderator.err', 'That\'s an invalid id.');
 $.lang.register('chatmoderator.blacklist.removed', 'Word removed from the blacklist.');
 $.lang.register('chatmoderator.blacklist.show.usage', 'Usage: !blackList show (id)');
 $.lang.register('chatmoderator.whitelist.usage', 'Usage: !whiteList [add / remove / show]');
