@@ -1,5 +1,5 @@
 (function () {
-    
+
 /**
 * @event ircChannelMessage
 */
@@ -15,7 +15,13 @@ $.bind('ircChannelMessage', function (event) {
             regex = new RegExp('\\b' + key + '\\b', 'i');
             if (regex.exec(message)) {
                 keyword = $.inidb.get('keywords', key);
-				keyword = keyword.replace('(sender)', sender);
+				keyword = keyword.replace('(sender)', $.username.resolve(event.getSender()));
+                keyword = keyword.replace('(@sender)', '@' + $.username.resolve(event.getSender()));
+                keyword = keyword.replace('(baresender)', event.getSender());
+                keyword = keyword.replace('(pointsname)', $.pointNameMultiple);
+                keyword = keyword.replace('(uptime)', $.getStreamUptime($.channelName));
+                keyword = keyword.replace('(game)', $.getGame($.channelName));
+                keyword = keyword.replace('(status)', $.getStatus($.channelName));
 
                 if ($.coolDown.get(key, sender) > 0) {
                     $.consoleDebug('keyword ' + key + ' not sent because its on a cooldown.');
@@ -40,7 +46,7 @@ $.bind('ircChannelMessage', function (event) {
             subAction = args[1].toLowerCase();
 
         /**
-        * @commandpath keyword - Base command for keyword options
+        * @commandpath keyword [option] - Base comamnd for keyword options
         */  
         if (command.equalsIgnoreCase('keyword')) {
             if (!$.isAdmin(sender)) {
@@ -54,7 +60,7 @@ $.bind('ircChannelMessage', function (event) {
             }
 
             /**
-            * @commandpath keyword add [keyword] [response] - Adds a keyword and a response
+            * @commandpath keyword [add] [keyword] [response] - Adds a keyword and a response
             */  
             if (action.equalsIgnoreCase('add')) {
                 if (!subAction) {
@@ -64,13 +70,13 @@ $.bind('ircChannelMessage', function (event) {
 
                 var response = args.splice(2).join(' ');
 
-                $.inidb.set('keywords', subAction, response);
+                $.inidb.set('keywords', subAction + '', response);
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', subAction));
                 return;
             }
 
             /**
-            * @commandpath keyword remove [keyword] - Removes a given keyword
+            * @commandpath keyword [remove] [keyword] - Removes a given keyword
             */ 
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {
