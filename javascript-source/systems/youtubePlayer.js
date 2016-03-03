@@ -327,7 +327,7 @@
     $.youtubePlayerConnected = playerConnected;
     updateRequestFile(true);
     if (updatesInChat && requestsEnabled) {
-      $.say("[\u266B] Song requests have been disabled.");
+      $.say($.lang.get("youtubeplayer.requests.disabled"));
     }
   });
 
