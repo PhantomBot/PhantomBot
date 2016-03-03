@@ -8,7 +8,7 @@
         timer = 0,
         a = '';
 
-    function checkArgs (user, key, price, followersOnly, t) {
+    function checkArgs (user, key, price, t, followersOnly) {
     	if (raffleStatus) {
     		$.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.opened'));
     		return;
@@ -31,18 +31,18 @@
             cost = parseInt(price);
         }
 
-    	if (followersOnly && followersOnly.equalsIgnoreCase('-followers')) {
-    		followers = true;
-            a = $.lang.get('rafflesystem.msg.need.to.be.follwing');
-    	}
-
         if (t) {
             timer = parseInt(t);
         }
-    	openRaffle(key, followers, cost, timer);
+
+        if (followersOnly && followersOnly.equalsIgnoreCase('-followers')) {
+            followers = true;
+            a = $.lang.get('rafflesystem.msg.need.to.be.follwing');
+        }
+    	openRaffle(key, cost, followers, timer, a);
     };
 
-    function openRaffle (key, followers, cost, timer) {
+    function openRaffle (key, cost, followers, timer, a) {
         $.say($.lang.get('rafflesystem.raffle.opened', $.getPointsString(cost), key, a));
         $.registerChatCommand('./systems/raffleSystem.js', key, 7);
         entries = [];
@@ -70,6 +70,7 @@
         followers = false;
         keyword = '';
         cost = 0;
+        timer = 0;
         a = '';
 
     	$.say($.lang.get('rafflesystem.raffle.closed'));
@@ -135,7 +136,7 @@
     	    action = args[0];
 
         /**
-        * @commandpath raffle - Displays the usage of the raffle command
+        * @commandpath raffle [option] - Displays the usage of the raffle command
         */
     	if (command.equalsIgnoreCase('raffle')) {
     		if (!$.isModv3(sender, event.getTags())) {
@@ -149,10 +150,10 @@
             }
 
             /**
-            * @commandpath raffle open [keyword] [cost] [-followers] [timer] - Opens a raffle. -followers and timer are optional
+            * @commandpath raffle open [keyword] [cost] [timer in seconds (use 0 if you dont want a timer)] [-followers] - Opens a raffle. -followers is optional.
             */
     		if (action.equalsIgnoreCase('open')) {
-    			checkArgs(sender, args[1], args[2], args[3]);
+    			checkArgs(sender, args[1], args[2], args[3], args[4]);
             }
 
             /**
