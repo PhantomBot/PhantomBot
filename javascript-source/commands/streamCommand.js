@@ -32,8 +32,7 @@
     }
 
     /**
-     * @commandpath game - Announce the game that is currently being played as configured in Twitch
-     * @commandpath game [game title] - Set the game title in Twitch
+     * @commandpath game [game title] - Announce Twitch game title or set the game title.
      */
     if (command.equalsIgnoreCase('game')) {
       if (args.length == 0) {
@@ -49,8 +48,7 @@
     }
 
     /**
-     * @commandpath title - Announce the title of the stream as configured in Twitch
-     * @commandpath title [title] - Set the stream title in Twitch
+     * @commandpath title [stream title] - Announce Twitch stream title or set the stream title
      */
     if (command.equalsIgnoreCase('title')) {
       if (args.length == 0) {

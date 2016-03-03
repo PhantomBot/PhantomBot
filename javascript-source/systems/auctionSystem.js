@@ -114,7 +114,7 @@
             action = args[0];
 
         /**
-         * @commandpath auction [options] - Primary auction command
+         * @commandpath auction - Primary auction command
          */
         if (command.equalsIgnoreCase('auction')) {
             if (!$.isModv3(sender, event.getTags())) {
@@ -128,21 +128,21 @@
             }
 
             /**
-             * @commandpath auction [open] [increments] [minimum bet] [timer] - Opens an auction; timer is optional.
+             * @commandpath auction open [increments] [minimum bet] [timer] - Opens an auction; timer is optional.
              */
             if (action.equalsIgnoreCase('open')) {
                 openAuction(sender, args[1], args[2], args[3]);
             }
 
             /**
-             * @commandpath auction [close] - Closes an open auction
+             * @commandpath auction close - Closes an open auction
              */
             if (action.equalsIgnoreCase('close')) {
                 closeAuction(sender);
             }
 
             /**
-             * @commandpath auction [warn] - Shows the top bidder in an auction
+             * @commandpath auction warn - Shows the top bidder in an auction
              */
             if (action.equalsIgnoreCase('warn')) {
                 warnAuction();
@@ -150,7 +150,7 @@
         }
 
         /**
-         * @commandpath bid [amount] - Amount to bid on the current auction
+         * @commandpath bid amount - Amount to bid on the current auction
          */
         if (command.equalsIgnoreCase('bid')) {
             bid(sender, action);

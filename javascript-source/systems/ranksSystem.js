@@ -138,12 +138,12 @@
 
     /*
      * @commandpath rankedit - Displays the usage of rankedit.
-     * @commandpath rankedit [add] [time] [rankname] - Add a new rank.
-     * @commandpath rankedit [del] [time] - Deletes the rank associated with a time.
-     * @commandpath rankedit [custom] [user] [rankname] - Add a custom rank to a user.
-     * @commandpath rankedit [customdel] [user] - Remove a custom rank from a user.
-     * @commandpath rankedit [settime] [time] - Number of minimum hours before user can choose custom rank.
-     * @commandpath rankedit [setcost] [points] - Cost of custom rank.
+     * @commandpath rankedit add [time] [rankname] - Add a new rank. Time is in hours.
+     * @commandpath rankedit del [time] - Deletes the rank associated with the given time
+     * @commandpath rankedit custom [user] [rankname] - Add a custom rank to a user.
+     * @commandpath rankedit customdel [user] - Remove a custom rank from a user.
+     * @commandpath rankedit settime [time] - Number of minimum hours before user can choose custom rank.
+     * @commandpath rankedit setcost [points] - Cost of custom rank.
      */
     if (command.equalsIgnoreCase('rankedit')) {
       if (!args[0]) {
@@ -268,8 +268,8 @@
 
     /**
      * @commandpath rank - Display current rank.
-     * @commandpath rank [set] [rankname] - Set rank for self if enough hours and points, if applicable, available in chat.
-     * @commandpath rank [del] - Deletes customized rank.
+     * @commandpath rank set [rankname] - Set rank for self if enough hours and points, if applicable, available in chat.
+     * @commandpath rank del - Deletes customized rank.
      */
     if (command.equalsIgnoreCase('rank')) {
 

@@ -180,7 +180,7 @@
       }
 
       /**
-       * @commandpath poll [results] - Announce result information about the last run poll (Poll information is retained until shutdown)
+       * @commandpath poll results - Announce result information about the last run poll (Poll information is retained until shutdown)
        */
       if (action.equalsIgnoreCase('results')) {
         if (poll.pollRunning) {
@@ -197,7 +197,7 @@
       }
 
       /**
-       * @commandpath poll [open] ["poll question"] ["option1, option2, ..."] [seconds] [min votes] - Starts a poll with question and options. If [seconds] is 0, defaults to 60.
+       * @commandpath poll open ["poll question"] ["option1, option2, ..."] [seconds] [min votes] - Starts a poll with question and options. Optionally provide seconds and min votes. If seconds are 0, defaults to 60
        */
       if (action.equalsIgnoreCase('open')) {
         var time = 60,
@@ -252,7 +252,7 @@
       }
 
       /**
-       * @commandpath poll [close] - Close the current poll
+       * @commandpath poll close - Close the current poll and tally the votes
        */
       if (action.equalsIgnoreCase('close')) {
         if (!poll.pollRunning) {
