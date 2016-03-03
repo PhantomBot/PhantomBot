@@ -303,7 +303,7 @@
         }
     
         /**
-         * @commandpath blacklist [option] - Manipulate the blacklist of words in chat
+         * @commandpath blacklist - Show usage of command to manipulate the blacklist of words in chat
          */
         if (command.equalsIgnoreCase('blacklist')) {
             if (!$.isAdmin(sender)) {
@@ -362,7 +362,7 @@
         }
     
         /**
-         * @commandpath whitelist [option] - Manipulate the whitelist links
+         * @commandpath whitelist - Shows usage of command to manipulate the whitelist links
          */
         if (command.equalsIgnoreCase('whiteList')) {
             if (!$.isAdmin(sender)) {
@@ -390,7 +390,7 @@
             }
       
             /**
-             * @commandpath whitelist remove [id] - Removes a link to the whitelist based on ID.
+             * @commandpath whitelist remove [id] - Removes a link from the whitelist based on ID.
              */
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {
@@ -421,7 +421,7 @@
         }
     
         /**
-         * @commandpath moderation [option] - Set the moderation filter for chat
+         * @commandpath moderation - Shows usage for the various chat moderation options
          */
         if (command.equalsIgnoreCase('moderation') || command.equalsIgnoreCase('mod')) {
             if (!$.isAdmin(sender)) {
@@ -748,7 +748,7 @@
             }
         
             /**
-             * @commandpath moderation permittime [amount] - Sets the permit time
+             * @commandpath moderation permittime [seconds] - Sets the permit time in seconds
              */
             if (action.equalsIgnoreCase('permittime')) {
                 if (!subAction) {
@@ -860,7 +860,7 @@
             }
         
             /**
-             * @commandpath moderation timeouttime [amount] - Sets the time in seconds for how a long a user gets timed out
+             * @commandpath moderation timeouttime [seconds] - Sets the time in seconds for how a long a user gets timed out
              */
             if (action.equalsIgnoreCase('timeouttime')) {
                 if (!subAction) {
@@ -874,7 +874,7 @@
             }
         
             /**
-             * @commandpath moderation warningtime [amount] - Sets the time in seconds for how a long a user gets purged for
+             * @commandpath moderation warningtime [seconds] - Sets the time in seconds for how a long a user gets purged for
              */
             if (action.equalsIgnoreCase('warningtime')) {
                 if (!subAction) {
@@ -888,7 +888,7 @@
             }
 
             /**
-             * @commandpath moderation messagecooldown [amount] - Sets a cooldown in seconds on the timeout messages
+             * @commandpath moderation messagecooldown [seconds] - Sets a cooldown in seconds on the timeout messages
              */
             if (action.equalsIgnoreCase('messagecooldown')) {
                 if (!subAction) {

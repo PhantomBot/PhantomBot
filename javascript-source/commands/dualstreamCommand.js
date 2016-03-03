@@ -63,7 +63,7 @@
             }
 
              /**
-            * @commandpath multi timer [on / off] - Enable/Disable the multi-links timer
+            * @commandpath multi timer [on | off] - Enable/Disable the multi-links timer
             */
             if (action.equalsIgnoreCase('timer')) {
                 if (!$.isModv3(sender, event.getTags())) {

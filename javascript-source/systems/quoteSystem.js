@@ -90,7 +90,9 @@
         quoteStr;
 
     /**
-     * @commandpath editquote [id] [user|game|quote] [text] - Edit a quote
+     * @commandpath editquite [id] [user] [new user] - Change the username associated with a quote ID
+     * @commandpath editquote [id] [game] [new game] - Change the game associated with a quote ID
+     * @commandpath editquote [id] [quote] [new quote] - Change the quote associated with the quote ID
      */
     if (command.equalsIgnoreCase("editquote")) {
       if (args.length < 3) {

@@ -40,7 +40,7 @@ $.bind('ircChannelMessage', function (event) {
             subAction = args[1].toLowerCase();
 
         /**
-        * @commandpath keyword [option] - Base comamnd for keyword options
+        * @commandpath keyword - Base command for keyword options
         */  
         if (command.equalsIgnoreCase('keyword')) {
             if (!$.isAdmin(sender)) {
@@ -54,7 +54,7 @@ $.bind('ircChannelMessage', function (event) {
             }
 
             /**
-            * @commandpath keyword [add] [keyword] [response] - Adds a keyword and a response
+            * @commandpath keyword add [keyword] [response] - Adds a keyword and a response
             */  
             if (action.equalsIgnoreCase('add')) {
                 if (!subAction) {
@@ -70,7 +70,7 @@ $.bind('ircChannelMessage', function (event) {
             }
 
             /**
-            * @commandpath keyword [remove] [keyword] - Removes a given keyword
+            * @commandpath keyword remove [keyword] - Removes a given keyword
             */ 
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {

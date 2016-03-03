@@ -47,7 +47,7 @@
     }
 
     /**
-     * @commandpath setraidmsg [message...] - Set a message for users to copy/paste into the target's chat
+     * @commandpath setraidmsg [message] - Set a message for users to copy/paste into the target's chat
      */
     if (command.equalsIgnoreCase('setraidmsg')) {
       if (!args || args.length == 0) {

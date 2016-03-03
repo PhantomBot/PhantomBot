@@ -163,7 +163,7 @@
         timeArg = parseInt(args[2]);
 
         /**
-         * @commandpath time [add] [seconds] - Add seconds to a user's logged time (for correction purposes)
+         * @commandpath time add [user] [seconds] - Add seconds to a user's logged time (for correction purposes)
          */
         if (action.equalsIgnoreCase('add')) {
 
@@ -189,7 +189,7 @@
         }
 
         /**
-         * @commandpath time [take] [seconds] - Take seconds from a user's logged time (for correction purposes)
+         * @commandpath time take [user] [seconds] - Take seconds from a user's logged time (for correction purposes)
          */
         if (action.equalsIgnoreCase('take')) {
           if (!subject || isNaN(timeArg)) {
@@ -233,7 +233,7 @@
         }
 
         /**
-         * @commandpath time [promotehours] [hours] - Set the amount of hours a user has to be logged to automatically become a regular
+         * @commandpath time promotehours [hours] - Set the amount of hours a user has to be logged to automatically become a regular
          */
         if (action.equalsIgnoreCase('promotehours')) {
           if (isNaN(subject)) {
@@ -268,7 +268,7 @@
 
 
         /**
-         * @commandpath time [offlinetime] - Toggle logging a user's time when the channel is offline
+         * @commandpath time offlinetime - Toggle logging a user's time when the channel is offline
          */
         if (action.equalsIgnoreCase('offline') || action.equalsIgnoreCase('offlinetime')) {
           keepTimeWhenOffline = !keepTimeWhenOffline;
@@ -282,7 +282,7 @@
         }
 
         /**
-         * @commandpath time [modpermtoggle] - Toggle permissions for changing user's logged time between admin/mod
+         * @commandpath time modpermtoggle - Toggle permissions for changing user's logged time between admin/mod
          */
         if (action.equalsIgnoreCase('modpermtoggle')) {
           modTimePermToggle = !modTimePermToggle;
@@ -308,8 +308,7 @@
     }
 
     /**
-     * @commandpath timezone - Show configured timezone.
-     * @comamndpath timezone [timezone name] - Set timezone; use list from: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+     * @commandpath timezone [timezone name] - Show configured timezone or optionally set the timezone. See List: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
      */
     if (command.equalsIgnoreCase('timezone')) {
       var tzData;
