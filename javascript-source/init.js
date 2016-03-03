@@ -633,17 +633,24 @@
         }
 
         /**
-         * @commandpath module list - List all known modules
-         */
+        * @commandpath module list - List all known modules
+        */
         if (action.equalsIgnoreCase('list')) {
-          temp = [];
-          for (index in modules) {
-            if (modules[index].enabled) {
-              temp.push(modules[index].getModuleName());
-            }
-          }
-
-          $.say($.whisperPrefix(sender) + $.lang.get('init.module.list', temp.length, temp.join(', ')));
+            var lstr = '';
+            for (index in modules) {
+                if (modules[index].scriptFile.indexOf('./core/') != -1 || modules[index].scriptFile.indexOf('./lang/') != -1) {
+                    continue;
+                }
+                lstr += ' - ';
+                lstr += modules[index].scriptFile + ' (';
+                    if (modules[index].enabled) {
+                        lstr += 'enabled';
+                    } else {
+                        lstr += 'disabled';
+                    }
+                    lstr += ')';
+                }
+            $.say($.whisperPrefix(sender) + lstr);
         }
 
         /**
