@@ -13,7 +13,7 @@
     		return;
     	}
 
-    	if (!max) {
+    	if (!max || !cost) {
     		$.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.missing.syntax'));
     		return;
     	}
@@ -30,10 +30,10 @@
     		followers = true;
             a = $.lang.get('ticketrafflesystem.msg.need.to.be.follwing');
     	}
-    	openRaffle(maxEntries, followers, cost);
+    	openRaffle(maxEntries, followers, cost, a);
     };
 
-    function openRaffle (maxEntries, followers, cost) {
+    function openRaffle (maxEntries, followers, cost, a) {
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
     	raffleStatus = true;
     };
@@ -125,7 +125,7 @@
     	    action = args[0];
 
         /**
-        * @commandpath traffle - Displays usage for the command
+        * @commandpath traffle [option] - Displays usage for the command
         */
     	if (command.equalsIgnoreCase('traffle')) {
     		if (!$.isModv3(sender, event.getTags())) {
@@ -139,28 +139,28 @@
             }
 
             /**
-            * @commandpath traffle open [max entries] [cost] [-followers] - Opens a ticket raffle. -followers is optional.
+            * @commandpath traffle [open] [max entries] [cost] [-followers] - Opens a ticket raffle. -followers is optional.
             */
     		if (action.equalsIgnoreCase('open')) {
     			checkArgs(sender, args[1], args[2], args[3]);
             }
 
             /**
-            * @commandpath traffle close - Closes a ticket raffle.
+            * @commandpath traffle [close] - Closes a ticket raffle.
             */
     		if (action.equalsIgnoreCase('close')) {
     			closeRaffle(sender);
     		}
 
             /**
-            * @commandpath traffle repick - Picks a new winner for the ticket raffle
+            * @commandpath traffle [repick] - Picks a new winner for the ticket raffle
             */
             if (action.equalsIgnoreCase('repick')) {
                 winner(true);
             }
 
             /**
-            * @commandpath traffle messagetoggle - Toggles on and off a message when entering a ticket raffle
+            * @commandpath traffle [messagetoggle] - Toggles on and off a message when entering a ticket raffle
             */
             if (action.equalsIgnoreCase('messagetoggle')) {
                 if (msgToggle) {
