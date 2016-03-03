@@ -363,7 +363,7 @@
         videoRequest;
 
     /**
-     * @commandpath musicplayer [option] - Manage YouTube Player settings
+     * @commandpath musicplayer - Manage YouTube Player settings
      */
     if (command.equalsIgnoreCase('musicplayer')) {
       if (!$.isAdmin(sender)) {
@@ -377,7 +377,7 @@
       }
 
       /**
-       * @commandpath musicplayer [togglenotify] - Toggle now-playing notifications in the chat
+       * @commandpath musicplayer togglenotify - Toggle now-playing notifications in the chat
        */
       if (action.equalsIgnoreCase('togglenotify')) {
         updatesInChat = !updatesInChat;
@@ -386,7 +386,7 @@
       }
 
       /**
-       * @commandpath musicplayer [limit] [amount] - Limit the maximum parallel songs a user can request
+       * @commandpath musicplayer limit [amount] - Limit the maximum parallel songs a user can request
        */
       if (action.equalsIgnoreCase('limit')) {
         if (!actionArg || isNaN(parseInt(actionArg))) {
@@ -400,7 +400,7 @@
       }
 
       /**
-       * @commandpath musicplayer [maxvideolength] [minutes] - Set the maximum video length for requests in minutes
+       * @commandpath musicplayer maxvideolength [minutes] - Set the maximum video length for requests in minutes
        * Converts to seconds when it stores the value to match the YouTube value in seconds.
        */
       if (action.equalsIgnoreCase('maxvideolength')) {
@@ -415,7 +415,7 @@
       }
 
       /**
-       * @commandpath musicplayer [shuffle] - Toggle the shuffling of the default playlist
+       * @commandpath musicplayer shuffle - Toggle the shuffling of the default playlist
        */
       if (action.equalsIgnoreCase('shuffle')) {
         shuffleDefaultPlaylist = !shuffleDefaultPlaylist;
@@ -425,14 +425,14 @@
       }
 
       /**
-       * @commandpath musicplayer [pause] - Toggle the play/pause state of the connected musicplayers
+       * @commandpath musicplayer pause - Toggle the play/pause state of the connected musicplayers
        */
       if (action.equalsIgnoreCase('pause')) {
         togglePauseVideo();
       }
 
       /**
-       * @commandpath musicplayer [reload] - Reload the default playlist
+       * @commandpath musicplayer reload - Reload the default playlist
        */
       if (action.equalsIgnoreCase('reload')) {
         reloadDefaultPlaylist();
@@ -440,7 +440,7 @@
       }
 
       /**
-       * @commandpath musicplayer [adddefault] [YouTube link] - Add a video to the default playlist
+       * @commandpath musicplayer adddefault [YouTube link] - Add a video to the default playlist
        */
       if (action.equalsIgnoreCase('adddefault')) {
         if (!actionArg) {
@@ -460,7 +460,7 @@
 
 
       /**
-       * @commandpath musicplayer [deldefault] [id in playlist] - Delete an entry from the default playlist
+       * @commandpath musicplayer deldefault [id in playlist] - Delete an entry from the default playlist
        */
       if (action.equalsIgnoreCase('deldefault')) {
         actionArg = parseInt(actionArg);
@@ -585,7 +585,7 @@
     }
 
     /**
-     * @commandpath playsong [id in playlsit] - Jump to a song at the given position in the playlist
+     * @commandpath playsong [id in playlist] - Jump to a song at the given position in the playlist
      */
     if (command.equalsIgnoreCase('playsong')) {
       if (!$.isAdmin(sender)) {

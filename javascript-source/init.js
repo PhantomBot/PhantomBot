@@ -618,6 +618,9 @@
         $.say($.lang.get('init.reconnect'));
       }
 
+      /**
+       * @commandpath module - Display the usage for !module
+       */
       if (command.equalsIgnoreCase('module')) {
         if (!$.isAdmin(sender)) {
           $.say($.whisperPrefix(sender) + $.adminMsg);

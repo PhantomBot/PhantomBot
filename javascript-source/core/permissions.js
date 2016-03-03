@@ -577,8 +577,7 @@
     }
 
     /**
-     * @commandpath group - Get your current group
-     * @commandpath group [username] [groupId] - Set the usergroup for a user
+     * @commandpath group [username] [groupId] - Get your current group or optionally set the usergroup for a user.
      */
     if (command.equalsIgnoreCase('group')) {
       if (!$.isModv3(sender, event.getTags()) || !args[0]) {
@@ -609,7 +608,7 @@
     }
 
     /**
-     * @commandpath grouppoints [group] [online|offline] [points] - Show/set the points gained for each group. -1 defaults to the global configuration.
+     * @commandpath grouppoints [groupId] [online|offline] [points] - Show/set the points gained for each group. -1 defaults to the global configuration.
      */
     if (command.equalsIgnoreCase('grouppoints')) {
 

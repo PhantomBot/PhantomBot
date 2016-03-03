@@ -81,8 +81,7 @@
         inversedState;
 
     /**
-     * @commandpath lang - Get the currently set language
-     * @commandpath lang [language name] - Change the current language (Use folder name from "./lang")
+     * @commandpath lang [language name] - Get or optionally set the current language (use folder name from "./lang" directory);
      */
     if (command.equalsIgnoreCase('lang')) {
       if (!$.isAdmin(sender)) {
