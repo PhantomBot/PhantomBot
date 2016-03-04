@@ -63,6 +63,9 @@
     }
 
     userTime = parseInt(parseInt($.inidb.get('time', username)) / 3600);
+    if (isNaN(userTime)) {
+      userTime = 0;
+    }
     for (var i = 0; i < ranksTimeTable.length; i++) {
       if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
         return true;
@@ -95,6 +98,9 @@
     // Return System Rank
     userLevel = -1;
     userTime = parseInt(parseInt($.inidb.get('time', username)) / 3600);
+    if (isNaN(userTime)) {
+      userTime = 0;
+    }
     for (var i = 0; i < ranksTimeTable.length; i++) {
       if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
         userLevel = i;
@@ -135,6 +141,10 @@
         isReplace,
         customUser,
         customRank;
+
+    if (isNaN(userTime)) {
+      userTime = 0;
+    }
 
     /*
      * @commandpath rankedit - Displays the usage of rankedit.
