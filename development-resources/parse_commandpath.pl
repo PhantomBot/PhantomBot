@@ -12,13 +12,14 @@ use File::Find;
 
 use strict;
 
+# <td><a class="tipped" data-title="Click to Copy Module to Clipboard">./commands/customCommands.js and !command</a></td>
 # Output format:
 # <tr class="hideLink">
 #   <td>
-#     <a onclick="copyToClipboard('./directory/script.js');" data-toggle="tooltip" data-placement="auto" title="Click to Copy Module to Clipboard">./directory/script.js</a>
+#     <div class="tipped" data-title="Click to Copy Module to Clipboard">./directory/script.js</div>
 #   </td>
 #   <td>
-#      <a onclick="copyToClipboard('!command');" data-toggle="tooltip" data-placement="auto" title="Click to Copy Command to Clipboard">!command</a>
+#     <div class="tipped" data-title="Click to Copy Command to Clipboard">!command</div>
 #   </td>
 #   <td>!command options</td>
 #   <td>Description</td>
@@ -62,9 +63,9 @@ foreach $moduleName (sort @fileList) {
         $commandName = $commandName." ".$commandSubCommands if (length($commandSubCommands) > 0) ;
       }
 
-      print "<tr class='hideLink'>\n";
-      print "    <td><a onclick=\"copyToClipboard('$moduleName');\" data-toggle='tooltip' data-placement='auto' title='Click to Copy Module to Clipboard'>$moduleName</a></td>\n";
-      print "    <td><a onclick=\"copyToClipboard('!$commandName');\" data-toggle='tooltip' data-placement='auto' title='Click to Copy Command to Clipboard'>!$commandName</a></td>\n";
+      print "<tr>\n";
+      print "    <td><div class='tipped' data-title='Click to Copy Module to Clipboard'>$moduleName</div></td>\n";
+      print "    <td><div class='tipped' data-title='Click to Copy Command to Clipboard'>!$commandName</div></td>\n";
       if (length($commandOptions) > 0) {
         print "    <td>!$commandName $commandOptions</td>\n";
       } else {
