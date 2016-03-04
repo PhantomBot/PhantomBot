@@ -437,6 +437,21 @@
   });
 
   /**
+   * @event ircChannelJoinUpdate
+   */
+  $.bind('ircChannelJoinUpdate', function (event) {
+    var username = event.getUser().toLowerCase();
+    if (!$.user.isKnown(username)) {
+      $.setIniDbBoolean('visited', username, true);
+    }
+
+    lastJoinPart = $.systemTime();
+    if (!$.userExists(username)) {
+      users.push([username, $.systemTime()]);
+    }
+  });
+
+  /**
    * @event ircChannelJoin
    */
   $.bind('ircChannelJoin', function (event) {

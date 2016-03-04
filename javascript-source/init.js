@@ -585,6 +585,13 @@
       callHook('emotesGet', event, true);
     });
 
+    /**
+     * @event api-ircChannelJoinUpdate
+     */
+    $api.on($script, 'ircChannelJoinUpdate', function (event) {
+      callHook('ircChannelJoinUpdate', event, true);
+    });
+
     $.logEvent('init.js', 553, 'Bot locked & loaded!');
     $.consoleDebug('Bot locked & loaded!');
     $.consoleLn('')
