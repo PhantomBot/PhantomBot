@@ -43,6 +43,7 @@ public class ScriptEventManager implements Listener {
         "me.mast3rplan.phantombot.event.irc.complete",
         "me.mast3rplan.phantombot.event.irc.message",
         "me.mast3rplan.phantombot.event.musicplayer",
+        "me.mast3rplan.phantombot.event.ytplayer",
         "me.mast3rplan.phantombot.event.twitchalerts.donate",
         "me.mast3rplan.phantombot.event.emotes"
     };
