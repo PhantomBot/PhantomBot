@@ -217,7 +217,6 @@ public class ChannelUsersCache implements Runnable {
 
             for (String key : newCache.keySet()) {
                 if (this.cache == null || !this.cache.containsKey(key)) {
-                    com.gmt2001.Console.out.println("addKey::" + key);
                     join.add(key);
                 }
             }
