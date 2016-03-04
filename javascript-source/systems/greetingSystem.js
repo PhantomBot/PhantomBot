@@ -11,24 +11,27 @@
 (function () {
   var autoGreetEnabled = ($.inidb.exists('greeting', 'autoGreetEnabled') ? $.getIniDbBoolean('greeting', 'autoGreetEnabled') : false),
       defaultJoinMessage = ($.inidb.exists('greeting', 'defaultJoin') ? $.inidb.get('greeting', 'defaultJoin') : ''),
-      greetingCooldown = 21600000;
+      greetingCooldown = parseInt($.inidb.exists('greeting', 'cooldown') ? $.inidb.get('greeting', 'cooldown') : (6 * 36e5));  // 6 hours
 
   /**
    * @event ircChannelJoin
    */
   $.bind('ircChannelJoin', function (event) {
-    if ($.isOnline($.channelName)) {
+    if (!$.isOnline($.channelName)) {
       var sender = event.getUser().toLowerCase(),
           username = $.resolveRank(sender),
           message = ($.inidb.exists('greeting', sender) ? $.inidb.get('greeting', sender) : ''),
           lastUserGreeting = ($.inidb.exists('greetingCoolDown', sender) ? parseInt($.inidb.get('greetingCoolDown', sender)) : 0),
           now = $.systemTime();
 
-      if (message && (lastUserGreeting + greetingCooldown < now)) {
-        $.say(message);
-        $.inidb.set('greetingCoolDown', sender, now);
-      } else if (autoGreetEnabled) {
-        $.say(defaultJoinMessage.replace('(name)', username));
+      if (lastUserGreeting + greetingCooldown < now) {
+        if (message) {
+          $.say(message);
+          $.inidb.set('greetingCoolDown', sender, now);
+        } else if (autoGreetEnabled) {
+          $.say(defaultJoinMessage.replace('(name)', username));
+          $.inidb.set('greetingCoolDown', sender, now);
+        }
       }
     }
   });
@@ -41,6 +44,7 @@
         command = event.getCommand(),
         args = event.getArgs(),
         action = args[0],
+        cooldown,
         message;
 
     /**
@@ -57,14 +61,29 @@
       }
 
       /**
-       * @commandpath greeting toggledefault - Enable/disable the default greeting
+       * @commandpath greeting cooldown [minutes] - Cooldown in minutes before displaying a greeting for a person rejoining chat.
        */
-      if (action.equalsIgnoreCase('toggledefault')) {
-        if (!$.isModv3(sender, event.getTags())) {
-          $.say($.whisperPrefix(sender) + $.modMsg);
+      if (action.equalsIgnoreCase('cooldown')) {
+        if (!args[1]) {
+          $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.usage'));
+          return;
+        }
+        cooldown = parseInt(args[1]);
+        if (isNaN(cooldown)) {
+          $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.usage'));
           return;
         }
 
+        greetingCooldown = cooldown * 6e5; // Convert minutes to ms
+        $.inidb.set('greeting', 'cooldown', greetingCooldown);  
+        $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.success', cooldown, (cooldown / 60).toFixed(2)));
+        return;
+      }
+
+      /**
+       * @commandpath greeting toggledefault - Enable/disable the default greeting
+       */
+      if (action.equalsIgnoreCase('toggledefault')) {
         autoGreetEnabled = !autoGreetEnabled;
         $.setIniDbBoolean('greeting', 'autoGreetEnabled', autoGreetEnabled);
         if (autoGreetEnabled) {
@@ -79,11 +98,6 @@
        */
       if (action.equalsIgnoreCase('setdefault')) {
         message = args.splice(1, args.length - 1).join(' ');
-        if (!$.isModv3(sender, event.getTags())) {
-          $.say($.whisperPrefix(sender) + $.modMsg);
-          return;
-        }
-
         if (!message) {
           $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.usage'));
           return;
@@ -135,6 +149,11 @@
   $.bind('initReady', function () {
     if ($.bot.isModuleEnabled('./systems/greetingSystem.js')) {
       $.registerChatCommand('./systems/greetingSystem.js', 'greeting', 6);
+      $.registerChatSubcommand('greeting', 'cooldown', 1);
+      $.registerChatSubcommand('greeting', 'toggledefault', 2);
+      $.registerChatSubcommand('greeting', 'setdefault', 2);
+      $.registerChatSubcommand('greeting', 'enable', 6);
+      $.registerChatSubcommand('greeting', 'disable', 6);
     }
   });
 })();
