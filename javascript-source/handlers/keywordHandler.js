@@ -15,7 +15,13 @@ $.bind('ircChannelMessage', function (event) {
             regex = new RegExp('\\b' + key + '\\b', 'i');
             if (regex.exec(message)) {
                 keyword = $.inidb.get('keywords', key);
-				keyword = keyword.replace('(sender)', sender);
+                keyword = keyword.replace('(sender)', $.username.resolve(event.getSender()));
+                keyword = keyword.replace('(@sender)', '@' + $.username.resolve(event.getSender()));
+                keyword = keyword.replace('(baresender)', event.getSender());
+                keyword = keyword.replace('(pointsname)', $.pointNameMultiple);
+                keyword = keyword.replace('(uptime)', $.getStreamUptime($.channelName));
+                keyword = keyword.replace('(game)', $.getGame($.channelName));
+                keyword = keyword.replace('(status)', $.getStatus($.channelName));
 
                 if ($.coolDown.get(key, sender) > 0) {
                     $.consoleDebug('keyword ' + key + ' not sent because its on a cooldown.');
