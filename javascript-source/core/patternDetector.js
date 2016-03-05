@@ -33,6 +33,7 @@
             + '|(?:tel|travel|t[cdfghjklmnoprtvwz])'
             + '|u[agkmsyz]'
             + '|v[aceginu]'
+            + '|m[e]'
             + '|w[fs]'
             + '|y[etu]'
             + '|z[amw]))'
