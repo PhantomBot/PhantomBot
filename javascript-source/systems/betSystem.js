@@ -1,4 +1,4 @@
-(function () {
+(function() {
     var betMinimum = ($.inidb.exists('betSettings', 'betMinimum') ? parseInt($.inidb.get('betSettings', 'betMinimum')) : 1),
         betMaximum = ($.inidb.exists('betSettings', 'betMaximum') ? parseInt($.inidb.get('betSettings', 'betMaximum')) : 1000),
         time = 0,
@@ -144,7 +144,7 @@
         resetBet();
     };
 
-    $.bind('command', function (event) {
+    $.bind('command', function(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
             argString = event.getArguments().trim(),
@@ -174,9 +174,9 @@
                 betOpen(event, bet);
                 return;
 
-            /**
-             * @commandpath bet close [option] - Closes the bet and selects option as the winner.
-             */
+                /**
+                 * @commandpath bet close [option] - Closes the bet and selects option as the winner.
+                 */
             } else if (action.equalsIgnoreCase('close')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -185,9 +185,9 @@
                 betClose(sender, event, subAction);
                 return;
 
-            /**
-             * @commandpath bet setminimum [value] - Set the minimum value of a bet.
-             */
+                /**
+                 * @commandpath bet setminimum [value] - Set the minimum value of a bet.
+                 */
             } else if (action.equalsIgnoreCase('setminimum')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -204,9 +204,9 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.min', betMinimum, $.pointNameMultiple));
                 return;
 
-            /**
-             * @commandpath bet setmaximum [value] - Set the maximum value of a bet.
-             */
+                /**
+                 * @commandpath bet setmaximum [value] - Set the maximum value of a bet.
+                 */
             } else if (action.equalsIgnoreCase('setmaximum')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -223,9 +223,9 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.max', betMaximum, $.pointNameMultiple));
                 return;
 
-            /**
-             * @commandpath bet [ [option amount] | [amount option] ]- Places a bet on option, betting an amount of points.
-             */
+                /**
+                 * @commandpath bet [ [option amount] | [amount option] ]- Places a bet on option, betting an amount of points.
+                 */
             } else {
                 if (!betStatus) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.bet.closed'));
@@ -236,22 +236,22 @@
                     betOption;
 
                 if (!action || !subAction) {
-                  $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
-                  return;
+                    $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
+                    return;
                 }
 
                 if (isNaN(action) && isNaN(subAction)) {
-                  $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
-                  return;
+                    $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
+                    return;
                 }
                 if (isNaN(action) && !isNaN(subAction)) {
-                   betWager = parseInt(subAction);
-                   betOption = action;
-                 }
-                 if (!isNaN(action) && isNaN(subAction)) {
-                   betWager = parseInt(action);
-                   betOption = subAction;
-                 }
+                    betWager = parseInt(subAction);
+                    betOption = action;
+                }
+                if (!isNaN(action) && isNaN(subAction)) {
+                    betWager = parseInt(action);
+                    betOption = subAction;
+                }
 
                 if (!$.list.contains(betOptions, betOption.toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
@@ -286,8 +286,8 @@
                 }
 
                 betTable[sender] = {
-                    amount : betWager,
-                    option : betOption
+                    amount: betWager,
+                    option: betOption
                 };
 
                 $.say($.lang.get('betsystem.bet.updated', sender, $.getPointsString(betWager), betOption, $.getPointsString(betPot)));
@@ -295,7 +295,7 @@
         }
     });
 
-    $.bind('initReady', function () {
+    $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/betSystem.js')) {
             $.registerChatCommand('./systems/betSystem.js', 'bet', 7);
         }

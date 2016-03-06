@@ -1,43 +1,43 @@
-(function () {
+(function() {
 
-  // Pre-build regular expressions.
-  var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&]+)\)/),                    // URL[1]
-      reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
-      reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
-      reCheckTags = new RegExp(/\(customapi|\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/),
-      reSenderTag = new RegExp(/\(sender\)/),
-      reTouserTag = new RegExp(/\(touser\)/),
-      reATSenderTag = new RegExp(/\(@sender\)/),
-      reBaresenderTag = new RegExp(/\(baresender\)/),
-      reRandomTag = new RegExp(/\(random\)/),
-      rePointnameTag = new RegExp(/\(pointname\)/),
-      reUptimeTag = new RegExp(/\(uptime\)/),
-      reGameTag = new RegExp(/\(game\)/),
-      reStatusTag = new RegExp(/\(status\)/),
-      reFollowsTag = new RegExp(/\(follows\)/),
-      reCountTag = new RegExp(/\(count\)/),
-      rePriceTag = new RegExp(/\(price\)/);
+    // Pre-build regular expressions.
+    var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&]+)\)/), // URL[1]
+        reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
+        reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
+        reCheckTags = new RegExp(/\(customapi|\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/),
+        reSenderTag = new RegExp(/\(sender\)/),
+        reTouserTag = new RegExp(/\(touser\)/),
+        reATSenderTag = new RegExp(/\(@sender\)/),
+        reBaresenderTag = new RegExp(/\(baresender\)/),
+        reRandomTag = new RegExp(/\(random\)/),
+        rePointnameTag = new RegExp(/\(pointname\)/),
+        reUptimeTag = new RegExp(/\(uptime\)/),
+        reGameTag = new RegExp(/\(game\)/),
+        reStatusTag = new RegExp(/\(status\)/),
+        reFollowsTag = new RegExp(/\(follows\)/),
+        reCountTag = new RegExp(/\(count\)/),
+        rePriceTag = new RegExp(/\(price\)/);
 
-  /**
-   * @function getCustomAPIValue
-   * @param {string} url
-   * @returns {string}
-   */
-  function getCustomAPIValue(url) {
-    var HttpResponse = Packages.com.gmt2001.HttpResponse;
-    var HttpRequest = Packages.com.gmt2001.HttpRequest;
-    var HashMap = Packages.java.util.HashMap;
-    var responseData = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap());
-    return responseData.content;
-  };
+    /**
+     * @function getCustomAPIValue
+     * @param {string} url
+     * @returns {string}
+     */
+    function getCustomAPIValue(url) {
+        var HttpResponse = Packages.com.gmt2001.HttpResponse;
+        var HttpRequest = Packages.com.gmt2001.HttpRequest;
+        var HashMap = Packages.java.util.HashMap;
+        var responseData = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap());
+        return responseData.content;
+    };
 
-  /**
-   * @function returnCommandCost
-   * @export $
-   * @param {string} sender
-   * @param {string} command
-   */
-  function returnCommandCost(sender, command) {
+    /**
+     * @function returnCommandCost
+     * @export $
+     * @param {string} sender
+     * @param {string} command
+     */
+    function returnCommandCost(sender, command) {
         sender = sender.toLowerCase();
         command = command.toLowerCase();
         if ($.inidb.exists('pricecom', command) && parseInt($.inidb.get('pricecom', command)) > 0) {
@@ -46,19 +46,19 @@
                 $.inidb.SaveAll();
             }
         }
-   };
+    };
 
-  /**
-   * @function replaceCommandTags
-   * @export $
-   * @param {string} message
-   * @param {Object} event
-   * @param {Array} [tagList]
-   * @param {Array} [tagReplacements]
-   * @returns {string}
-   */
+    /**
+     * @function replaceCommandTags
+     * @export $
+     * @param {string} message
+     * @param {Object} event
+     * @param {Array} [tagList]
+     * @param {Array} [tagReplacements]
+     * @returns {string}
+     */
     function replaceCommandTags(message, event, command, tagList, tagReplacements) {
-        var JSONObject = Packages.org.json.JSONObject, 
+        var JSONObject = Packages.org.json.JSONObject,
             jsonObject,
             touser,
             price,
@@ -193,56 +193,56 @@
         // there is nothing to replace.  This is a quick fix to just not even attempt to perform the
         // replace when we don't appear to see tags.
         //
-        if (message.match(reCheckTags)) 
+        if (message.match(reCheckTags))
             return message.replace(reSenderTag, $.username.resolve(event.getSender()))
-                          .replace(reTouserTag, $.username.resolve(touser))
-                          .replace(reATSenderTag, '@' + $.username.resolve(event.getSender()))
-                          .replace(reBaresenderTag, event.getSender())
-                          .replace(reRandomTag, $.username.resolve($.randElement($.users)[0]))
-                          .replace(rePointnameTag, $.pointNameMultiple)
-                          .replace(reUptimeTag, $.getStreamUptime($.channelName))
-                          .replace(reGameTag, $.getGame($.channelName))
-                          .replace(reStatusTag, $.getStatus($.channelName))
-                          .replace(reFollowsTag, $.getFollows($.channelName))
-                          .replace(reCountTag, $.inidb.get('commandCount', command))
-                          .replace(rePriceTag, price)
-                          .replace(reCustomAPI, customAPIReturnString)
-                          .replace(reCustomAPIJson, customAPIReturnString);
+                .replace(reTouserTag, $.username.resolve(touser))
+                .replace(reATSenderTag, '@' + $.username.resolve(event.getSender()))
+                .replace(reBaresenderTag, event.getSender())
+                .replace(reRandomTag, $.username.resolve($.randElement($.users)[0]))
+                .replace(rePointnameTag, $.pointNameMultiple)
+                .replace(reUptimeTag, $.getStreamUptime($.channelName))
+                .replace(reGameTag, $.getGame($.channelName))
+                .replace(reStatusTag, $.getStatus($.channelName))
+                .replace(reFollowsTag, $.getFollows($.channelName))
+                .replace(reCountTag, $.inidb.get('commandCount', command))
+                .replace(rePriceTag, price)
+                .replace(reCustomAPI, customAPIReturnString)
+                .replace(reCustomAPIJson, customAPIReturnString);
 
         return message;
     };
 
-  /**
-   * @function permCom
-   * @export $
-   * @param {string} user
-   * @param {string} command
-   * @param {sub} subcommand
-   * @returns {boolean}
-   */
+    /**
+     * @function permCom
+     * @export $
+     * @param {string} user
+     * @param {string} command
+     * @param {sub} subcommand
+     * @returns {boolean}
+     */
     function permCom(user, command, subcommand) {
         if ($.isAdmin(user)) {
             return true;
         }
         if (subcommand == '') {
-          return ($.getCommandGroup(command) >= $.getUserGroupId(user));
+            return ($.getCommandGroup(command) >= $.getUserGroupId(user));
         }
         return ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user));
     };
 
-  /**
-   * @function getCommandPrice
-   * @export $
-   * @param {string} command
-   * @returns {Number}
-   */
+    /**
+     * @function getCommandPrice
+     * @export $
+     * @param {string} command
+     * @returns {Number}
+     */
     function getCommandPrice(command) {
         return parseInt($.inidb.exists('pricecom', command) ? $.inidb.get('pricecom', command) : 0);
     };
 
-  /**
-   * @function addComRegisterCommands
-   */
+    /**
+     * @function addComRegisterCommands
+     */
     function addComRegisterCommands() {
         var commands = $.inidb.GetKeyList('command', ''),
             i;
@@ -253,9 +253,9 @@
         }
     };
 
-  /**
-   * @function addComRegisterAliases
-   */
+    /**
+     * @function addComRegisterAliases
+     */
     function addComRegisterAliases() {
         var commands = $.inidb.GetKeyList('aliases', ''),
             ownerCommand,
@@ -268,10 +268,10 @@
         }
     };
 
-   /**
-   * @event command
-   */
-    $.bind('command', function (event) {
+    /**
+     * @event command
+     */
+    $.bind('command', function(event) {
         var sender = event.getSender().toLowerCase(),
             username = $.username.resolve(sender, event.getTags()),
             command = event.getCommand(),
@@ -371,21 +371,21 @@
             }
 
             if (!action || !subAction) {
-              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
-              return;
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
+                return;
             }
 
             action = args[0].replace('!', '');
             subAction = args[1].replace('!', '');
 
             if (!$.commandExists(action)) {
-              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404'));
-              return
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404'));
+                return
             }
 
             if ($.inidb.exists('aliases', subAction)) {
-              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error', subAction));
-              return;
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error', subAction));
+                return;
             }
 
             $.inidb.set('aliases', subAction, action);
@@ -398,7 +398,7 @@
          * @commandpath delalias [alias] - Delete an alias
          */
         if (command.equalsIgnoreCase('delalias')) {
-           if (!$.isModv3(sender, event.getTags())) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.whisperPrefix(sender) + $.modMsg);
                 return;
             }
@@ -431,8 +431,8 @@
             }
 
             if (!action || !subAction) {
-              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.usage'));
-              return;
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.usage'));
+                return;
             }
 
             action = args[0].replace('!', '');
@@ -441,7 +441,7 @@
                 var group = args[1];
 
                 if (isNaN(parseInt(group))) {
-                  group = $.getGroupIdByName(group);
+                    group = $.getGroupIdByName(group);
                 }
 
                 if (!$.commandExists(action)) {
@@ -458,12 +458,12 @@
             var group = args[2];
 
             if (isNaN(parseInt(group))) {
-              group = $.getGroupIdByName(group);
+                group = $.getGroupIdByName(group);
             }
 
             if (!$.subCommandExists(action, subcommand)) {
-              $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.404', action + " " + subcommand));
-              return;
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.404', action + " " + subcommand));
+                return;
             }
 
             $.inidb.set('permcom', action + " " + subcommand, group);
@@ -543,14 +543,14 @@
         }
     });
 
-  /**
-   * @event initReady
-   */
-    $.bind('initReady', function () {
+    /**
+     * @event initReady
+     */
+    $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
             addComRegisterCommands();
             addComRegisterAliases();
-    
+
             $.registerChatCommand('./commands/customCommands.js', 'addcom', 2);
             $.registerChatCommand('./commands/customCommands.js', 'pricecom', 2);
             $.registerChatCommand('./commands/customCommands.js', 'aliascom', 2);
