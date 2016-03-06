@@ -1,6 +1,6 @@
 $.lang.register('chatmoderator.usage.toggles', 'Usage: !moderation [links / caps / symbols / spam / emotes / colors / longmessages / regulars / subscribers]');
 $.lang.register('chatmoderator.usage.messages', 'Usage: !moderation [linksmessage / capsmessage / symbolsmessage / spammessage / emotesmessage / colorsmessage / blacklistmessage / longmsgmessage]');
-$.lang.register('chatmoderator.options', 'Usage: !moderation [capstriggerlength / capslimit / symbolstriggerlength / symbolslimit / spamlimit / emoteslimit / permittime / warningtime / timeouttime / messagecooldown / messagecharacterlimit]');
+$.lang.register('chatmoderator.options', 'Usage: !moderation [capstriggerlength / capslimit / symbolstriggerlength / symbolslimit / symbolsgrouplimit / spamlimit / emoteslimit / permittime / warningtime / timeouttime / messagecooldown / messagecharacterlimit]');
 $.lang.register('chatmoderator.link.usage', 'Usage: !moderation links [on / off] (link filter is currently $1)');
 $.lang.register('chatmoderator.link.filter.enabled', 'link filter has been enabled.');
 $.lang.register('chatmoderator.msgcooldown.usage', 'Usage: !moderation messagecooldown [time in seconds]');
@@ -57,7 +57,9 @@ $.lang.register('chatmoderator.caps.trigger.length.usage', 'Usage: !moderation c
 $.lang.register('chatmoderator.spam.limit.usage', 'Usage: !moderation spamlimit [amount]');
 $.lang.register('chatmoderator.spam.limit.set', 'spam limit set to: $1');
 $.lang.register('chatmoderator.symbols.limit.usage', 'Usage: !moderation symbolslimit [amount]');
-$.lang.register('chatmoderator.symbols.limit.set', 'symbol limit set to: $1 symbols');
+$.lang.register('chatmoderator.symbols.limit.set', 'symbol limit set to: $1% of symbols');
+$.lang.register('chatmoderator.symbols.group.limit.usage', 'Usage: !moderation symbolsgrouplimit [amount]');
+$.lang.register('chatmoderator.symbols.group.limit.set', 'grouped symbol limit set to: $1 symbols');
 $.lang.register('chatmoderator.symbols.trigger.length.usage', 'Usage: !moderation symbolsTriggerLength [amount]');
 $.lang.register('chatmoderator.symbols.trigger.length.set', 'symbol trigger length set to: $1');
 $.lang.register('chatmoderator.emotes.limit.usage', 'Usage: !moderation emoteslimit [amount]');
