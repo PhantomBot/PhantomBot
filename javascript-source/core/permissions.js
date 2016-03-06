@@ -322,7 +322,7 @@
   */
   function delSubUsersList(username)
   {
-    var newSubUsers;
+    var newSubUsers = [];
 
     username = (username + '').toLowerCase();
     for (i in subUsers) {
@@ -341,20 +341,23 @@
     username = (username + '').toLowerCase();
 
     if ($.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
+
+      if ($.isMod(username) || $.isAdmin(username)) {
+        return;
+      }
+
       if ($.getIniDbBoolean('subscribed', username, false) && !isSub(username)) {
         $.setIniDbBoolean('subscribed', username, false);
-        if ($.inidb.exists('preSubGroup', username) && !$.isMod(username)) {
+        if ($.inidb.exists('preSubGroup', username)) {
           $.inidb.set('group', username, $.inidb.get('preSubGroup', username));
           $.inidb.del('preSubGroup', username);
         } else {
           $.inidb.set('group', username, 7);
         }
-      } else if (!getIniDbBoolean('subscribed', username, false) && isSub(username)) {
+      } else if (!$.getIniDbBoolean('subscribed', username, false) && isSub(username)) {
         $.setIniDbBoolean('subscribed', username, true);
-        if (!isMod(username)) {
-          $.inidb.set('preSubGroup', username, getUserGroupId(username));
-          setUserGroupByName(username, 'Subscriber');
-        }
+        $.inidb.set('preSubGroup', username, getUserGroupId(username));
+        setUserGroupByName(username, 'Subscriber');
       }
     }
   };
@@ -418,6 +421,8 @@
       $.inidb.set('grouppointsoffline', 'Viewer', '-1');
       $.inidb.set('groups', '7', 'Viewer');
     }
+
+    $.inidb.set('group', $.ownerName.toLowerCase(), 0);
   };
 
   /**
@@ -479,13 +484,6 @@
         restoreSubscriberStatus(username);
       }
     }
-
-    for (i in modeOUsers) {
-      if (modeOUsers[i][0].equalsIgnoreCase(username)) {
-        modeOUsers.splice(i, 1);
-        restoreSubscriberStatus(username);
-      }
-    }
   });
 
   /**
@@ -494,8 +492,9 @@
   $.bind('ircChannelUserMode', function (event) {
     var username = event.getUser().toLowerCase(),
         i;
+
     if (event.getMode().equalsIgnoreCase('o')) {
-      if (event.getAdd()) {
+      if (event.getAdd().toString().equals('true')) {
         if (!$.hasModeO(username)) {
           if ($.isOwner(username)) {
             modeOUsers.push([username, 0]);
@@ -511,10 +510,20 @@
           }
         }
       } else {
-        for (i in modeOUsers) {
-          if (modeOUsers[i][0].equalsIgnoreCase(username)) {
-            modeOUsers.splice(i, 1);
-            restoreSubscriberStatus(username);
+        if ($.hasModeO(username)) {
+          var newmodeOUsers = [];
+
+          for (i in modeOUsers) {
+            if (!modeOUsers[i][0].equalsIgnoreCase(username)) {
+              newmodeOUsers.push([modeOUsers[i][0], modeOUsers[i][1]]);
+            }
+          }
+          modeOUsers = newmodeOUsers;
+
+          if ($.getIniDbBoolean('subscribed', username, false)) {
+            setUserGroupByName(username, 'Subscriber'); // Subscriber, return to that group.
+          } else {
+            setUserGroupByName(username, 'Regular');    // Assume user that was a mod was a regular.
           }
         }
       }
@@ -544,6 +553,7 @@
       if (message.indexOf('specialuser') > -1) {
         spl = message.split(' ');
         if (spl[2].equalsIgnoreCase('subscriber')) {
+          restoreSubscriberStatus(spl[1].toLowerCase());
           for (i in subUsers) {
             if (subUsers[i][0].equalsIgnoreCase(spl[1])) {
               subUsers[i][1] = $.systemTime() + 1e4;
