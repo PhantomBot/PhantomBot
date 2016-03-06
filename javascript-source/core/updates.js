@@ -102,6 +102,19 @@
         $.inidb.set('updates', 'installedv2.0.5', 'true');
     }
 
+    if (!$.inidb.exists('updates', 'installedv2.0.6') || $.inidb.get('updates', 'installedv2.0.6') != 'true') {
+        $.consoleLn('Starting PhantomBot version 2.0.6 updates...');
+
+       
+        if ($.inidb.exists('chatModerator', 'capsLimit')) {
+            $.consoleLn('Removing old capsLimit table')
+            $.inidb.del('chatModerator', 'capsLimit')
+        }
+
+        $.consoleLn('PhantomBot v2.0.6 updates completed!');
+        $.inidb.set('updates', 'installedv2.0.6', 'true');
+    }
+
   /**
    * @function getTableContents
    * @param {string} tableName
