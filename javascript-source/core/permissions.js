@@ -322,7 +322,7 @@
   */
   function delSubUsersList(username)
   {
-    var newSubUsers;
+    var newSubUsers = [];
 
     username = (username + '').toLowerCase();
     for (i in subUsers) {
