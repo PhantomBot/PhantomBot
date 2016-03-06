@@ -83,11 +83,11 @@
             for (i in keys) {
                 key = keys[i].toLowerCase();
                 word = new RegExp('\\b' + key + '\\b', 'g');
-            }
-
-            if (word.test(message)) {
-                $.consoleDebug('inidb incr' + key + ' 1 in word counter');
-                $.inidb.incr('wordCounter', key, 1);
+                if (word.exec(message)) {
+                    $.consoleDebug('inidb incr' + key + ' 1 in word counter');
+                    $.inidb.incr('wordCounter', key, 1);
+                    break;
+                }
             }
         }
     });
