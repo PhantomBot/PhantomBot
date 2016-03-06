@@ -50,8 +50,8 @@ $.lang.register('chatmoderator.blacklist.message.usage', 'Usage: !moderation bla
 $.lang.register('chatmoderator.blacklist.message.set', 'blacklist warning message set to: $1');
 $.lang.register('chatmoderator.permit.time.usage', 'Usage: !moderation permittime [time]');
 $.lang.register('chatmoderator.permit.time.set', 'link permit time set to: $1 seconds.');
-$.lang.register('chatmoderator.caps.limit.usage', 'Usage: !moderation capslimit [amount]');
-$.lang.register('chatmoderator.caps.limit.set', 'cap limit set to: $1 caps.');
+$.lang.register('chatmoderator.caps.limit.usage', 'Usage: !moderation capslimit [amount in percent]');
+$.lang.register('chatmoderator.caps.limit.set', 'cap limit set to: $1% of caps.');
 $.lang.register('chatmoderator.caps.trigger.length.set', 'cap trigger length set to: $1');
 $.lang.register('chatmoderator.caps.trigger.length.usage', 'Usage: !moderation capstriggerlength [amount]');
 $.lang.register('chatmoderator.spam.limit.usage', 'Usage: !moderation spamlimit [amount]');
