@@ -27,7 +27,7 @@
             message = deobfuscateLinks(message, (aggressive));
 
             lastFoundLink = patterns.link.exec(message)[0];
-            $.consoleLn('>> Matched link on message from ' + event.getSender() + ': ' + lastFoundLink);
+            //$.consoleDebug('>> Matched link on message from ' + event.getSender() + ': ' + lastFoundLink);
             $.log('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + lastFoundLink);
             return true;
         } catch (e) {
