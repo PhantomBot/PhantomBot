@@ -179,8 +179,7 @@
      */
     function checkBlackList(event) {
         var sender = event.getSender(),
-            message = event.getMessage().toLowerCase(),
-            i;
+            message = event.getMessage().toLowerCase();
 
         for (i in blackList) {
             if (message.contains(blackList[i].toLowerCase())) {
@@ -201,11 +200,10 @@
     function checkPermitList(event) {
         var sender = event.getSender(),
             message = event.getMessage().toLowerCase(),
-            checkLink = $.patternDetector.hasLinks(event),
-            i;
+            checkLink = $.patternDetector.hasLinks(event);
 
         for (i in permitList) {
-            if (permitList[i].equalsIgnoreCase(sender)) {
+            if (permitList[i].equalsIgnoreCase(sender) && checkLink) {
                 permitList.splice(i, 1);
                 return true;
             }
@@ -220,8 +218,7 @@
      */
     function checkWhiteList(event) {
         var sender = event.getSender(),
-            message = event.getMessage().toLowerCase(),
-            i;
+            message = event.getMessage().toLowerCase();
 
         for (i in whiteList) {
             if (message.contains(whiteList[i])) {
@@ -395,7 +392,7 @@
                     return;
                 }
                 $.inidb.del('blackList', 'phrase_' + parseInt(subAction));
-                loadBlackList(true);
+                loadBlackList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.removed'));
             }
 
@@ -454,7 +451,7 @@
                     return;
                 }
                 $.inidb.del('whiteList', 'link_' + parseInt(subAction));
-                loadWhiteList(true);
+                loadWhiteList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.removed'));
             }
 
