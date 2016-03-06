@@ -6,7 +6,7 @@
  * Use the $.logging API for getting log-like date and time strings
  */
 (function() {
-    var loggingEnabled = $.getIniDbBoolean('settings', 'loggingEnabled', true);
+    var loggingEnabled = $.getIniDbBoolean('settings', 'loggingEnabled', false);
 
     /**
      * @function getLogDateString
