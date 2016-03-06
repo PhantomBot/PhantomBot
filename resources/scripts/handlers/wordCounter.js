@@ -1,1 +1,104 @@
-!function(){$.bind("command",function(e){var r=e.getSender(),n=e.getCommand(),o=e.getArgs(),i=o[0],t=o[1];if(n.equalsIgnoreCase("wordcounter")){if(!$.isAdmin(r))return void $.say($.whisperPrefix(r)+$.adminMsg);if(!i)return void $.say($.whisperPrefix(r)+$.lang.get("wordcounter.usage"));if(i.equalsIgnoreCase("add")){if(!t)return void $.say($.whisperPrefix(r)+$.lang.get("wordcounter.add.usage"));t=t.replace(i,""),$.inidb.set("wordCounter",t,0),$.say(t+$.lang.get("wordcounter.added"))}if(i.equalsIgnoreCase("remove")){if(!t)return void $.say($.whisperPrefix(r)+$.lang.get("wordcounter.remove.usage"));if(!$.inidb.exists("wordCounter",t))return void $.say($.whisperPrefix(r)+$.lang.get("wordcounter.err.404"));t=t.replace(i,""),$.inidb.del("wordCounter",t),$.say(t+$.lang.get("wordcounter.removed"))}}if(n.equalsIgnoreCase("count")){if(!$.inidb.exists("wordCounter",i.toLowerCase()))return void $.say($.whisperPrefix(r)+$.lang.get("wordcounter.err.404"));$.say($.lang.get("wordcounter.count",i,$.inidb.get("wordCounter",i.toLowerCase())))}}),$.bind("ircChannelMessage",function(e){var r,n,o=e.getMessage().toLowerCase(),t=$.inidb.GetKeyList("wordCounter","");if($.bot.isModuleEnabled("./handlers/wordCounter.js")){for(i in t)n=t[i].toLowerCase(),r=new RegExp("\\b"+n+"\\b","g");r.test(o)&&($.consoleDebug("inidb incr"+n+" 1 in word counter"),$.inidb.incr("wordCounter",n,1))}}),$.bind("initReady",function(){$.bot.isModuleEnabled("./handlers/wordCounter.js")&&($.registerChatCommand("./handlers/wordCounter.js","wordcounter",1),$.registerChatCommand("./handlers/wordCounter.js","count",7))})}();
+(function() {
+
+    /**
+     * @event ircChannelMessage
+     */
+    $.bind('ircChannelMessage', function(event) {
+        var message = event.getMessage().toLowerCase(),
+            sender = event.getSender(),
+            regex = '',
+            keyword = '',
+            key = '',
+            keys = $.inidb.GetKeyList('keywords', '');
+        for (var i = 0; i < keys.length; i++) {
+            key = keys[i].toLowerCase();
+            regex = new RegExp('\\b' + key + '\\b', 'i');
+            if (regex.exec(message)) {
+                keyword = $.inidb.get('keywords', key);
+                keyword = keyword.replace('(sender)', $.username.resolve(event.getSender()));
+                keyword = keyword.replace('(@sender)', '@' + $.username.resolve(event.getSender()));
+                keyword = keyword.replace('(baresender)', event.getSender());
+                keyword = keyword.replace('(pointsname)', $.pointNameMultiple);
+                keyword = keyword.replace('(uptime)', $.getStreamUptime($.channelName));
+                keyword = keyword.replace('(game)', $.getGame($.channelName));
+                keyword = keyword.replace('(status)', $.getStatus($.channelName));
+
+                if ($.coolDown.get(key, sender) > 0) {
+                    $.consoleDebug('keyword ' + key + ' not sent because its on a cooldown.');
+                    return;
+                }
+
+                $.say(keyword);
+                return;
+            }
+        }
+    });
+
+    /**
+     * @event command
+     */
+    $.bind('command', function(event) {
+        var sender = event.getSender(),
+            command = event.getCommand(),
+            argString = event.getArguments().trim(),
+            args = event.getArgs(),
+            action = args[0],
+            subAction = args[1].toLowerCase();
+
+        /**
+         * @commandpath keyword - Base command for keyword options
+         */
+        if (command.equalsIgnoreCase('keyword')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
+
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.usage'));
+                return;
+            }
+
+            /**
+             * @commandpath keyword add [keyword] [response] - Adds a keyword and a response
+             */
+            if (action.equalsIgnoreCase('add')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.add.usage'));
+                    return;
+                }
+
+                var response = args.splice(2).join(' ');
+
+                $.inidb.set('keywords', subAction, response);
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', subAction));
+                return;
+            }
+
+            /**
+             * @commandpath keyword remove [keyword] - Removes a given keyword
+             */
+            if (action.equalsIgnoreCase('remove')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.remove.usage'));
+                    return;
+                } else if (!$.inidb.exists('keywords', subAction)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.404'));
+                    return;
+                }
+
+                $.inidb.del('keywords', subAction);
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', subAction));
+            }
+        }
+    });
+
+    /**
+     * @event initReady
+     */
+    $.bind('initReady', function() {
+        if ($.bot.isModuleEnabled('./handlers/keywordHandler.js')) {
+            $.registerChatCommand('./handlers/keywordHandler.js', 'keyword', 1);
+        }
+    });
+})();
