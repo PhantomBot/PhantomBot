@@ -93,11 +93,13 @@ public class IrcEventHandler implements IRCEventListener {
                         || cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick())) {
                     if (!mods.contains(cmessageEvent.getNick().toLowerCase())) {
                         mods.add(cmessageEvent.getNick().toLowerCase());
+                        com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD)" + cmessageEvent.getNick());
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
                     }
                 } else {
                     if (mods.contains(cmessageEvent.getNick().toLowerCase())) {
                         mods.remove(cmessageEvent.getNick().toLowerCase());
+                        com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(NOT MOD)" + cmessageEvent.getNick());
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", false));
                     }
                 }
@@ -106,7 +108,7 @@ public class IrcEventHandler implements IRCEventListener {
             if (cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick())) {
                 if (!mods.contains(cmessageEvent.getNick().toLowerCase())) {
                     mods.add(cmessageEvent.getNick().toLowerCase());
-                    //com.gmt2001.Console.out.println(">>Next message marked Moderator (Broadcaster)");
+                    com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD)" + cmessageEvent.getNick());
                     eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
                 }
             }
@@ -136,11 +138,13 @@ public class IrcEventHandler implements IRCEventListener {
                             || ctcmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(ctcmessageEvent.getNick())) {
                         if (!mods.contains(ctcmessageEvent.getNick().toLowerCase())) {
                             mods.add(ctcmessageEvent.getNick().toLowerCase());
+                            com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD)" + ctcmessageEvent.getNick());
                             eventBus.postAsync(new IrcChannelUserModeEvent(session, ctcmessageEvent.getChannel(), ctcmessageEvent.getNick(), "O", true));
                         }
                     } else {
                         if (mods.contains(ctcmessageEvent.getNick().toLowerCase())) {
                             mods.remove(ctcmessageEvent.getNick().toLowerCase());
+                            com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(NOTMOD)" + ctcmessageEvent.getNick());
                             eventBus.postAsync(new IrcChannelUserModeEvent(session, ctcmessageEvent.getChannel(), ctcmessageEvent.getNick(), "O", false));
                         }
                     }
@@ -149,7 +153,7 @@ public class IrcEventHandler implements IRCEventListener {
                 if (ctcmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(ctcmessageEvent.getNick())) {
                     if (!mods.contains(ctcmessageEvent.getNick().toLowerCase())) {
                         mods.add(ctcmessageEvent.getNick().toLowerCase());
-                        //com.gmt2001.Console.out.println(">>Next message marked Moderator (Broadcaster)");
+                        com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD)" + ctcmessageEvent.getNick());
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, ctcmessageEvent.getChannel(), ctcmessageEvent.getNick(), "O", true));
                     }
                 }
@@ -186,9 +190,24 @@ public class IrcEventHandler implements IRCEventListener {
                                 mods.remove(adj.getArgument().toLowerCase());
                             }
                         }
-
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, modeEvent.getChannel(), adj.getArgument(),
-                                           String.valueOf(adj.getMode()), adj.getAction() == ModeAdjustment.Action.PLUS));
+                        // Twitch seems to send a +o and -o, even when modded, disabling this method of determining mod
+                        // status for now, rather the user-type will be used.
+                        // 
+                        // [03-06-2016 @ 06:45:50.052] ircChannelUserMode illusionarybot | o | true | true
+                        // [03-06-2016 @ 06:45:50.052] ircChannelUserMode notillusionaryone | o | true | true
+                        // [03-06-2016 @ 06:46:45.812] MODE [#notillusionaryone] +o illusionaryone
+                        // [03-06-2016 @ 06:46:45.813] ircChannelUserMode illusionaryone | o | true | true
+                        // ** User is still a mod here, but reported with -o (not a mod)
+                        // [03-06-2016 @ 06:48:39.851] MODE [#notillusionaryone] -o illusionaryone
+                        // [03-06-2016 @ 06:48:39.852] ircChannelUserMode illusionaryone | o | false | false
+                        // [03-06-2016 @ 06:51:45.518] MODE [#notillusionaryone] +o illusionaryone
+                        // [03-06-2016 @ 06:51:45.519] ircChannelUserMode illusionaryone | o | true | true
+                        // [03-06-2016 @ 06:53:06.548] IrcChannelUserModeEvent(NOT MOD)illusionaryone
+                        // [03-06-2016 @ 06:53:06.552] ircChannelUserMode illusionaryone | O | false | false
+                        //
+                        // com.gmt2001.Console.out.println("IrcChannelUserModeEvent()" + adj.getArgument() + " " + (adj.getAction() == ModeAdjustment.Action.PLUS));
+                        // eventBus.postAsync(new IrcChannelUserModeEvent(session, modeEvent.getChannel(), adj.getArgument(),
+                        //                 String.valueOf(adj.getMode()), adj.getAction() == ModeAdjustment.Action.PLUS));
                     }
                 }
             }

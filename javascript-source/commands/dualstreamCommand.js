@@ -1,9 +1,9 @@
-(function () {
+(function() {
     var otherChannels = ($.inidb.exists('dualStreamCommand', 'otherChannels') ? $.inidb.get('dualStreamCommand', 'otherChannels') : null),
         timerToggle = ($.inidb.exists('dualStreamCommand', 'timerToggle') ? $.inidb.get('dualStreamCommand', 'timerToggle') : false),
         timerInterval = (parseInt($.inidb.exists('dualStreamCommand', 'timerInterval')) ? parseInt($.inidb.get('dualStreamCommand', 'timerInterval')) : 5);
 
-    $.bind('command', function (event) {
+    $.bind('command', function(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
@@ -11,13 +11,13 @@
             action = args[0],
             subAction = args[1];
 
-            /**
-            * @commandpath multi - Displays the current multi-link information of the usage
-            */
+        /**
+         * @commandpath multi - Displays the current multi-link information of the usage
+         */
         if (command.equalsIgnoreCase('multi')) {
             if (!action) {
                 if (otherChannels != null) {
-                    $.say('http://multistre.am/' + $.username.resolve($.channelName)  + otherChannels);
+                    $.say('http://multistre.am/' + $.username.resolve($.channelName) + otherChannels);
                     return;
                 } else {
                     if ($.isModv3(sender, event.getTags())) {
@@ -27,9 +27,9 @@
                 }
             }
 
-             /**
-            * @commandpath multi set [channels] - Adds a space-delimited list of channels to the multi-link (local channel already added)
-            */
+            /**
+             * @commandpath multi set [channels] - Adds a space-delimited list of channels to the multi-link (local channel already added)
+             */
             if (action.equalsIgnoreCase('set')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -46,9 +46,9 @@
                 return;
             }
 
-             /**
-            * @commandpath multi clear - Clears the multi-links and disables the timer
-            */
+            /**
+             * @commandpath multi clear - Clears the multi-links and disables the timer
+             */
             if (action.equalsIgnoreCase('clear')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -62,9 +62,9 @@
                 return;
             }
 
-             /**
-            * @commandpath multi timer [on | off] - Enable/Disable the multi-links timer
-            */
+            /**
+             * @commandpath multi timer [on | off] - Enable/Disable the multi-links timer
+             */
             if (action.equalsIgnoreCase('timer')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -91,8 +91,8 @@
             }
 
             /**
-            * @commandpath multi timerinterval [time in minutes] - Set the interval for the multi-links timer
-            */
+             * @commandpath multi timerinterval [time in minutes] - Set the interval for the multi-links timer
+             */
             if (action.equalsIgnoreCase('timerinterval')) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.whisperPrefix(sender) + $.modMsg);
@@ -111,11 +111,11 @@
             }
         }
     });
-    
-    $.bind('initReady', function () {
+
+    $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./commands/dualstreamCommand.js')) {
             $.registerChatCommand('./commands/dualstreamCommand.js', 'multi', 7);
-            setInterval(function () {
+            setInterval(function() {
                 if (otherChannels != null) {
                     if (timerToggle) {
                         $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
