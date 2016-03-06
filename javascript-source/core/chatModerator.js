@@ -11,7 +11,7 @@
 
         capsToggle = ($.inidb.exists('chatModerator', 'capsToggle') ? $.getIniDbBoolean('chatModerator', 'capsToggle') : true),
         capsMessage = ($.inidb.exists('chatModerator', 'capsMessage') ? $.inidb.get('chatModerator', 'capsMessage') : 'you were timed out for overusing caps'),
-        capsLimit = ($.inidb.exists('chatModerator', 'capsLimit') ? parseInt($.inidb.get('chatModerator', 'capsLimit')) : 25),
+        capsLimitPercent = ($.inidb.exists('chatModerator', 'capsLimitPercent') ? parseFloat($.inidb.get('chatModerator', 'capsLimitPercent')) : 50),
         capsTriggerLength = ($.inidb.exists('chatModerator', 'capsTriggerLength') ? parseInt($.inidb.get('chatModerator', 'capsTriggerLength')) : 10),
 
         spamToggle = ($.inidb.exists('chatModerator', 'spamToggle') ? $.getIniDbBoolean('chatModerator', 'spamToggle') : true),
@@ -178,6 +178,8 @@
     $.bind('ircChannelMessage', function (event) {
         var sender = event.getSender(),
             message = event.getMessage(),
+            caps = parseFloat(event.getCapsCount()),
+            capsPercent = ((caps / message.length()) * 100),
             i;
 
         if (!$.isModv3(sender, event.getTags())) {
@@ -224,7 +226,7 @@
             }
           
             if (capsToggle && message.length() > capsTriggerLength) {
-                if (event.getCapsCount() > capsLimit) {
+                if (capsPercent > capsLimitPercent) {
                     deleteMessage(sender);
                     sendMessage(sender, capsMessage);
                     return;
@@ -481,7 +483,7 @@
             }
         
             /**
-             * @commandpath moderation links [on / off] - Enable/Disable the spam filter
+             * @commandpath moderation spam [on / off] - Enable/Disable the spam filter
              */
             if (action.equalsIgnoreCase('spam')) {
                 if (!subAction) {
@@ -503,7 +505,7 @@
             }
         
             /**
-             * @commandpath moderation links [on / off] - Enable/Disable the symbol filter
+             * @commandpath moderation symbols [on / off] - Enable/Disable the symbol filter
              */
             if (action.equalsIgnoreCase('symbols')) {
                 if (!subAction) {
@@ -762,16 +764,16 @@
             }
         
             /**
-             * @commandpath moderation capslimit [amount] - Sets the caps limit
+             * @commandpath moderation capslimit [amount] - Sets the caps limit in percent
              */
             if (action.equalsIgnoreCase('capslimit')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.limit.usage'));
                     return;
                 }
-                capsLimit = parseInt(subAction);
-                $.inidb.set('chatModerator', 'capsLimit', capsLimit);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.limit.set', capsLimit));
+                capsLimitPercent = parseFloat(subAction);
+                $.inidb.set('chatModerator', 'capsLimitPercent', capsLimitPercent);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.limit.set', capsLimitPercent));
                 return;
             }
         
