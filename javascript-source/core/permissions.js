@@ -536,6 +536,7 @@
             message = event.getMessage().toLowerCase().trim(),
             modMessageStart = 'the moderators of this room are: ',
             spl,
+            keys = $.inidb.GetKeyList('group', ''),
             subsTxtList = [],
             i;
 
@@ -543,8 +544,18 @@
             if (message.indexOf(modMessageStart) > -1) {
                 spl = message.replace(modMessageStart, '').split(', ');
                 modListUsers = [];
+
+                for (i in keys) {
+                    if ($.inidb.get('group', keys[i]).equalsIgnoreCase('2')) {
+                        $.inidb.del('group', keys[i]);
+                    }
+                }
+
                 for (i in spl) {
                     modListUsers.push(spl[i]);
+                    if (!isAdmin(spl[i]) && !isBot(spl[i])) {
+                        $.inidb.set('group', spl[i], '2');
+                    }
                 }
                 $.saveArray(modListUsers, 'addons/mods.txt', false);
             }
