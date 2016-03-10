@@ -42,6 +42,9 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import java.security.SecureRandom;
+import java.math.BigInteger;
+
 import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
 import me.mast3rplan.phantombot.cache.FollowersCache;
@@ -64,6 +67,7 @@ import me.mast3rplan.phantombot.jerklib.ConnectionManager;
 import me.mast3rplan.phantombot.jerklib.Profile;
 import me.mast3rplan.phantombot.jerklib.Session;
 import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
+import me.mast3rplan.phantombot.ytplayer.YTWebSocketServer;
 import me.mast3rplan.phantombot.script.Script;
 import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
@@ -76,6 +80,7 @@ public class PhantomBot implements Listener {
     private String twitchalertskey = null;
     private int twitchalertslimit;
     public final String username;
+    private final String webauth;
     private final String oauth;
     private String apioauth;
     private String clientid;
@@ -113,7 +118,9 @@ public class PhantomBot implements Listener {
     private DonationsCache donationsCache;
     private EmotesCache emotesCache;
     private MusicWebSocketServer musicsocketserver;
+    private YTWebSocketServer  ytsocketserver;
     private HTTPServer httpserver;
+    private NEWHTTPServer NEWhttpserver;
     private EventWebSocketServer eventsocketserver;
     private static final boolean debugD = false;
     public static boolean enableDebugging = false;
@@ -129,7 +136,7 @@ public class PhantomBot implements Listener {
 
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner, int baseport,
                       String hostname, int port, String ghostname, int gport, double msglimit30, String datastore, String datastoreconfig, String youtubekey, boolean webenable,
-                      boolean musicenable, boolean usehttps, String keystorepath, String keystorepassword, String keypassword, String twitchalertskey, int twitchalertslimit) {
+                      boolean musicenable, boolean usehttps, String keystorepath, String keystorepassword, String keypassword, String twitchalertskey, int twitchalertslimit, String webauth) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -145,6 +152,7 @@ public class PhantomBot implements Listener {
         this.username = username;
         this.oauth = oauth;
         this.apioauth = apioauth;
+        this.webauth = webauth;
         this.channelName = channel;
         this.ownerName = owner;
         this.baseport = baseport;
@@ -311,12 +319,14 @@ public class PhantomBot implements Listener {
                 httpserver = new HTTPServer(baseport, oauth);
                 if (musicenable) {
                     musicsocketserver = new MusicWebSocketSecureServer(baseport + 1, keystorepath, keystorepassword, keypassword);
+                    ytsocketserver = new YTWebSocketServer(baseport + 3);
                 }
                 eventsocketserver = new EventWebSocketSecureServer(baseport + 2, keystorepath, keystorepassword, keypassword);
             } else {
                 httpserver = new HTTPServer(baseport, oauth);
                 if (musicenable) {
                     musicsocketserver = new MusicWebSocketServer(baseport + 1);
+                    ytsocketserver = new YTWebSocketServer(baseport + 3);
                 }
                 eventsocketserver = new EventWebSocketServer(baseport + 2);
             }
@@ -326,15 +336,19 @@ public class PhantomBot implements Listener {
             if (musicenable) {
                 musicenabled = true;
                 musicsocketserver.start();
+                ytsocketserver.start();
                 int musicport = baseport + 1;
                 com.gmt2001.Console.out.println("MusicSocketServer accepting connections on port " + musicport);
+                com.gmt2001.Console.out.println("YouTubeSocketServer accepting connections on port " + (baseport + 3));
             }
-
 
             eventsocketserver.start();
             int eventport = baseport + 2;
             com.gmt2001.Console.out.println("EventSocketServer accepting connections on port " + eventport);
             EventBus.instance().register(eventsocketserver);
+
+            NEWhttpserver = new NEWHTTPServer(baseport + 1000, oauth, webauth);
+            com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 1000));
         }
 
         // Print an extra new line after announcing HTTP and Socket servers
@@ -364,6 +378,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("channelStatus", channelStatus, 0);
         Script.global.defineProperty("musicplayer", musicsocketserver, 0);
+        Script.global.defineProperty("ytplayer", ytsocketserver, 0);
         Script.global.defineProperty("random", rng, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("pollResults", pollResults, 0);
@@ -400,12 +415,14 @@ public class PhantomBot implements Listener {
         if (webenabled) {
             com.gmt2001.Console.out.println("[SHUTDOWN] Terminating web server...");
             httpserver.dispose();
+            NEWhttpserver.close();
             eventsocketserver.dispose();
         }
 
         if (musicenabled) {
             com.gmt2001.Console.out.println("[SHUTDOWN] Terminating music server...");
             musicsocketserver.dispose();
+            ytsocketserver.dispose();
         }
 
         com.gmt2001.Console.out.print("[SHUTDOWN] Waiting for running scripts to finish...");
@@ -661,6 +678,7 @@ public class PhantomBot implements Listener {
                 data += "user=" + username + "\r\n";
                 data += "oauth=" + oauth + "\r\n";
                 data += "apioauth=" + apioauth + "\r\n";
+                data += "webauth=" + webauth + "\r\n";
                 data += "clientid=" + clientid + "\r\n";
                 data += "channel=" + channel.getName().replace("#", "") + "\r\n";
                 data += "owner=" + ownerName + "\r\n";
@@ -857,6 +875,7 @@ public class PhantomBot implements Listener {
     public static void main(String[] args) throws IOException {
         String user = "";
         String oauth = "";
+        String webauth = "";
         String twitchalertskey = "";
         int twitchalertslimit = 5;
         String apioauth = "";
@@ -891,6 +910,9 @@ public class PhantomBot implements Listener {
                 for (String line : lines) {
                     if (line.startsWith("user=") && line.length() > 8) {
                         user = line.substring(5);
+                    }
+                    if (line.startsWith("webauth=") && line.length() > 11) {
+                        webauth = line.substring(8);
                     }
                     if (line.startsWith("oauth=") && line.length() > 9) {
                         oauth = line.substring(6);
@@ -965,6 +987,12 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
+        if (webauth.isEmpty()) {
+            webauth = generateWebAuth();
+            com.gmt2001.Console.out.println("New webauth key has been generated for botlogin.txt");
+            changed = true;
+        }
+
         if (user.isEmpty() || oauth.isEmpty() || channel.isEmpty()) {
             try {
                 com.gmt2001.Console.out.println("Login details for bot not found");
@@ -998,6 +1026,7 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("user='" + user + "'");
                     com.gmt2001.Console.out.println("oauth='" + oauth + "'");
                     com.gmt2001.Console.out.println("apioauth='" + apioauth + "'");
+                    com.gmt2001.Console.out.println("webauth='" + webauth + "'");
                     com.gmt2001.Console.out.println("clientid='" + clientid + "'");
                     com.gmt2001.Console.out.println("channel='" + channel + "'");
                     com.gmt2001.Console.out.println("owner='" + owner + "'");
@@ -1043,6 +1072,12 @@ public class PhantomBot implements Listener {
                 if (arg.toLowerCase().startsWith("apioauth=") && arg.length() > 12) {
                     if (!apioauth.equals(arg.substring(9))) {
                         apioauth = arg.substring(9);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("webauth=") && arg.length() > 11) {
+                    if (!webauth.equals(arg.substring(8))) {
+                        webauth = arg.substring(8);
                         changed = true;
                     }
                 }
@@ -1169,7 +1204,7 @@ public class PhantomBot implements Listener {
                 }
                 if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
                     com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
-                                                    + "[oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
+                                                    + "[webauth=<web auth key>] [oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
                                                     + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] [ghostname=<custom group chat server>] "
                                                     + "[port=<custom irc port>] [gport=<custom group chat port>] [msglimit30=<message limit per 30 seconds>] "
                                                     + "[datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>] "
@@ -1190,6 +1225,7 @@ public class PhantomBot implements Listener {
         if (changed) {
             String data = "";
             data += "user=" + user + "\r\n";
+            data += "webauth=" + webauth + "\r\n";
             data += "oauth=" + oauth + "\r\n";
             data += "apioauth=" + apioauth + "\r\n";
             data += "clientid=" + clientid + "\r\n";
@@ -1216,6 +1252,20 @@ public class PhantomBot implements Listener {
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit);
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit, webauth);
     }
+
+    private static String generateWebAuth() {
+        String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        char[] randomChars = randomAllowed.toCharArray();
+        char[] randomBuffer;
+
+        randomBuffer = new char[30];
+        SecureRandom random = new SecureRandom();
+        for (int i = 0; i < randomBuffer.length; i++) {
+           randomBuffer[i] = randomChars[random.nextInt(randomChars.length)];
+        }
+        return new String(randomBuffer);
+    }
+
 }

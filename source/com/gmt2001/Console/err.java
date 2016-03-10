@@ -40,14 +40,13 @@ public class err {
     }
 
     public static void print(Object o) {
-        System.err.print(o);
-
         SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
         datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         String timestamp = datefmt.format(new Date());
 
         Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + o.toString());
+        System.err.print("[" + timestamp + "] [ERROR] " + o);
     }
 
     public static void println() {
@@ -55,8 +54,6 @@ public class err {
     }
 
     public static void println(Object o) {
-        System.err.println(o);
-
         SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
         datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
@@ -64,11 +61,11 @@ public class err {
 
         Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
+        System.err.println("[" + timestamp + "] [ERROR] " + o);
     }
 
     public static void printStackTrace(Throwable e) {
         e.printStackTrace(System.err);
-
         logStackTrace(e);
     }
 

@@ -1,6 +1,6 @@
 var tag = document.createElement('script');
-
 tag.src = "https://www.youtube.com/iframe_api";
+
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -46,7 +46,7 @@ function onPlayerStateChange(event) {
 }
 
 var url = window.location.host.split (":");
-var addr = 'ws://' + url [0] + ':25001';
+var addr = 'ws://' + url [0] + ':26001';
 var connection = new WebSocket(addr, []);
 
 connection.onopen = function (e) {
@@ -97,13 +97,13 @@ connection.onmessage = function (e) {
 function handleNext(d) {
     i++;
     if (vids[i] == null) i = 0;
-    player.cueVideoById(vids[i], 0, "hd720");
+    player.cueVideoById(vids[i], 0, "medium");
 }
 
 function handlePrevious(d) {
     i--;
     if (vids[i] == null) i = vids.length - 1;
-    player.cueVideoById(vids[i], 0, "hd720");
+    player.cueVideoById(vids[i], 0, "medium");
 }
 
 function handlePlay(d) {
@@ -116,6 +116,7 @@ function handlePause(d) {
 
 function handleAdd(d) {
     vids.push(d[1]);
+    
 }
 
 function handleCurrentId(d) {
@@ -127,7 +128,8 @@ function handleReload(d) {
 }
 
 function handleCue(d) {
-    player.cueVideoById(d[1], 0, "hd720");
+    player.cueVideoById(d[1], 0, "medium");
+    displaySongList();
 }
 
 function handleEval(d) {
@@ -141,3 +143,22 @@ function handleSetVolume(d) {
 function handleCurrentVolume(d) {
     connection.send("currentvolume|" + player.getVolume());
 }
+
+function displaySongList() {
+    console.log("displaySongList()");
+    var div = document.getElementById("songlist");
+    div.innerHTML = "Adding Songlist<br><table border='0'>" +
+                    "  <tr>" +
+                    "    <td>Link</td>" +
+                    "  </tr>";
+    for (var j = 0; j < vids.length; j++) {
+        div.innerHTML += "  <tr><td>" + vids[j] + "</td></tr>";
+    }
+    div.innerHTML += "</tr></table>";
+}
+
+// Keep Alive
+setInterval(function() {
+    connection.send("state|200");
+}, 5000);
+
