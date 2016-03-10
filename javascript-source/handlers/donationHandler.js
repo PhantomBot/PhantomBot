@@ -164,9 +164,9 @@
             }
 
             /**
-             * @commandpath donations message [message text] - Set the message when no reward is given.
-             * @commandpath donations rewardmessage [message text] - Set the message when a reward is given.
-             * @commandpath donations lastmessage [message text] - Set the message for !lastdonation
+             * @commandpath donations message [message text] - Set the message when no reward is given. Tags: (name), (amount) and (currency)
+             * @commandpath donations rewardmessage [message text] - Set the message when a reward is given. Tags: (name), (amount), (currency), (points) and (pointname)
+             * @commandpath donations lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
              */
             if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('rewardmessage') || args[0].equalsIgnoreCase('lastmessage')) {
                 var comArg = args[0].toLowerCase();
