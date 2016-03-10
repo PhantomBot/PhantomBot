@@ -4,7 +4,7 @@
         maxEntries = 0,
         followers = false,
         raffleStatus = false,
-        msgToggle = ($.inidb.exists('settings', 'tRaffleMSGToggle') ? $.getIniDbBoolean('settings', 'tRaffleMSGToggle') : false),
+        msgToggle = ($.inidb.exists('settings', 'tRaffleMSGToggle') ? $.getIniDbBoolean('settings', 'tRaffleMSGToggle') : true),
         a = '';
 
     function checkArgs(user, max, price, followersOnly) {
@@ -13,8 +13,8 @@
             return;
         }
 
-        if (!max || !cost) {
-            $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.missing.syntax'));
+        if (!max) {
+            $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.missing.syntax'));
             return;
         }
 
@@ -107,7 +107,7 @@
 
         $.inidb.decr('points', user, (times * cost));
         if (msgToggle) {
-            $.say($.lang.get('ticketrafflesystem.entered', $.username.resolve(user), tickets));
+            $.say($.lang.get('ticketrafflesystem.entered', $.username.resolve(user), times));
         }
         for (var i = 0; i < times; i++) {
             entries.push(user);
@@ -193,6 +193,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/ticketRaffleSystem.js')) {
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'traffle', 2);
+            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'tickets', 7);
         }
     });
 })();
