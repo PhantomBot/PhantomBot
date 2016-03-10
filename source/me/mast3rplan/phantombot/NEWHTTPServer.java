@@ -35,6 +35,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.Headers;
+import org.json.JSONStringer;
 
 public class NEWHTTPServer {
   private HttpServer server;
@@ -119,6 +120,8 @@ public class NEWHTTPServer {
           if (requestMethod.equals("GET")) {
               if (uriPath.startsWith("/inistore")) {
                   handleIniStore(uriPath, exchange, hasPassword);
+              } else if (uriPath.startsWith("/dbquery")) {
+                  handleDBQuery(uriPath, uriQueryList, exchange, hasPassword);
               } else if (uriPath.startsWith("/addons") || uriPath.startsWith("/logs")) {
                   handleFile(uriPath, exchange, hasPassword, true);
               } else if (uriPath.equals("/")) {
@@ -133,6 +136,136 @@ public class NEWHTTPServer {
           }
 
       }  
+  }
+
+  /* Query List:
+   *
+   * table=tableName&getKeys       - Get list of keys.
+   * table=tableName&getData=key   - Get a specific row of data.
+   * table=tableName&tableExists   - Return if the table exists or not.
+   * table=tableName&keyExists=key - Return if a key exists in a table or not.
+   */
+  private void handleDBQuery(String uriPath, String[] uriQueryList, HttpExchange exchange, Boolean hasPassword) {
+      JSONStringer jsonObject = new JSONStringer();
+      String[] keyValue;
+      String   dbTable = null;
+      Boolean  dbExists;
+
+      if (!hasPassword) {
+          jsonObject.object().key("error").value("access denied").endObject();
+          sendHTMLError(403, jsonObject.toString(), exchange);
+          return;
+      } 
+
+      if (uriQueryList == null) {
+          jsonObject.object().key("error").value("bad request").endObject();
+          sendHTMLError(400, jsonObject.toString(), exchange);
+          return;
+      }
+
+      for (String uriQuery : uriQueryList) {
+          keyValue = uriQuery.split("=");
+          
+          if (keyValue[0].equals("table")) {
+              if (keyValue[1] == null) {
+                  sendHTMLError(400, "Bad Request", exchange);
+                  return;
+              }
+              if (!PhantomBot.instance().getDataStore().FileExists(keyValue[1])) {
+                  jsonObject.object().key("error").value("table does not exist").endObject();
+                  sendHTMLError(400, jsonObject.toString(), exchange);
+                  return;
+              }
+              dbTable = keyValue[1];
+          } else {
+              // All other commands need the table.
+              if (dbTable == null) {
+                  jsonObject.object().key("error").value("table not provided").endObject();
+                  sendHTMLError(400, jsonObject.toString(), exchange);
+                  return;
+              }
+          }
+
+          // { "table" : { "table_name": "tableName", "exists" : true } }
+          if (keyValue[0].equals("tableExists")) {
+              dbExists = PhantomBot.instance().getDataStore().FileExists(dbTable);
+              jsonObject.object().key("table");
+              jsonObject.object();
+              jsonObject.key("table_name").value(dbTable);
+              jsonObject.key("exists").value(dbExists);
+              jsonObject.endObject();
+              jsonObject.endObject();
+
+              sendData("text/text", jsonObject.toString(), exchange);
+              return;
+          }
+
+          // { "table" : { "table_name": "tableName", "key" : "keyString", "keyExists": true } } 
+          if (keyValue[0].equals("keyExists")) {
+              if (keyValue.length > 1) {
+                  dbExists = PhantomBot.instance().getDataStore().exists(dbTable, keyValue[1]);
+                  jsonObject.object().key("table");
+                  jsonObject.object();
+                  jsonObject.key("table_name").value(dbTable);
+                  jsonObject.key("key").value(keyValue[1]);
+                  jsonObject.key("keyExists").value(dbExists);
+                  jsonObject.endObject();
+                  jsonObject.endObject();
+
+                  sendData("text/text", jsonObject.toString(), exchange);
+                  return;
+              } else {
+                  jsonObject.object().key("error").value("key not provided").endObject();
+                  sendHTMLError(400, jsonObject.toString(), exchange);
+                  return;
+              }
+          }
+
+          // { "table" : { "table_name": "tableName", "key" : "keyString", "value": "valueString" } }
+          if (keyValue[0].equals("getData")) {
+              if (keyValue.length > 1) {
+                  String dbString = PhantomBot.instance().getDataStore().GetString(dbTable, "", keyValue[1]);
+                  jsonObject.object().key("table");
+                  jsonObject.object();
+                  jsonObject.key("table_name").value(dbTable);
+                  jsonObject.key("key").value(keyValue[0]);
+                  jsonObject.key("value").value(dbString);
+                  jsonObject.endObject();
+                  jsonObject.endObject();
+                  sendData("text/text", jsonObject.toString(), exchange);
+                  return;
+              } else {
+                  jsonObject.object().key("error").value("key not provided").endObject();
+                  sendHTMLError(400, jsonObject.toString(), exchange);
+                  return;
+              }
+          }
+
+          // { "table" : { "table_name": "tableName", "keylist" : [ { "key" : "keyString" } ] } }
+          if (keyValue[0].equals("getKeys")) {
+              jsonObject.object();
+              jsonObject.key("table");
+              jsonObject.object();
+              jsonObject.key("table_name").value(dbTable);
+              jsonObject.key("keylist").array();
+      
+              String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(dbTable, "");
+
+              for (String dbKey : dbKeys) {
+                  jsonObject.object();
+                  jsonObject.key("key").value(dbKey);
+                  jsonObject.endObject();
+              }
+              jsonObject.endArray();
+              jsonObject.endObject();
+              jsonObject.endObject();
+              sendData("text/text", jsonObject.toString(), exchange);
+              return;
+          }
+      }
+      jsonObject.object().key("error").value("malformed request").endObject();
+      sendHTMLError(400, jsonObject.toString(), exchange);
+      return;
   }
 
   private void handleFile(String uriPath, HttpExchange exchange, Boolean hasPassword, Boolean needsPassword) {
@@ -237,11 +370,10 @@ public class NEWHTTPServer {
   private void sendHTMLError(int error, String message, HttpExchange exchange) {
       Headers outHeaders = exchange.getResponseHeaders();
       outHeaders.set("Context-Type", "text/text");
-      String responseStr = "Access Denied";
       try { 
-          exchange.sendResponseHeaders(403, responseStr.length());
+          exchange.sendResponseHeaders(error, message.length());
           OutputStream outputStream = exchange.getResponseBody();
-          outputStream.write(responseStr.getBytes());
+          outputStream.write(message.getBytes());
           outputStream.close();
       } catch (IOException ex) {
           // Do not generate another HTML error, as we are already in sendHTMLError which failed.
