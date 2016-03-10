@@ -257,6 +257,19 @@
     };
 
     /**
+     * @function trueRandElement
+     * @exprtto $
+     * @param {Array} array
+     * @returns {*}
+     */
+    function trueRandElement(array) {
+        if (array == null) {
+            return null;
+        }
+        return array[$.trueRand(array.length - 1)];
+    };
+
+    /**
      * @function trueRand
      * @export $
      * @param {Number} max
