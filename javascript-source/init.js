@@ -632,8 +632,16 @@
          * @event api-yTPlayerDeleteSREvent
          */
         $api.on($script, 'yTPlayerDeleteSR', function(event) {
-            callHook('yTPlayerDeleteSREvent', event, false);
+            callHook('yTPlayerDeleteSR', event, false);
         });
+
+        /**
+         * @event api-yTPlayerVolumeEvent
+         */
+        $api.on($script, 'yTPlayerVolume', function(event) {
+            callHook('yTPlayerVolume', event, false);
+        });
+
 
         $.logEvent('init.js', 553, 'Bot locked & loaded!');
         $.consoleDebug('Bot locked & loaded!');
