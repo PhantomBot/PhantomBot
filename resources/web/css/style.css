@@ -127,21 +127,20 @@ option:hover {
     overflow: hidden;
     width: 100%;
     padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 #copyright {
-    position: fixed;
-    left: 0px;
-    bottom: 0px;
-    height: 40px;
+    display: inline;
+    float: left;
     width: 100%;
     background-color: rgb(34, 34, 34);
     color: grey;
     text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    vertical-align: middle;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
-
 
 #sidebar1 {
     position: fixed;
