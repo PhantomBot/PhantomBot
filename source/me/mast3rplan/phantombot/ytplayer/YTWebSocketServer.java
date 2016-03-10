@@ -131,9 +131,16 @@ public class YTWebSocketServer extends WebSocketServer {
             jsonStatus = jsonObject.getJSONObject("status");
             if (jsonStatus.has("state")) {
                 dataInt = jsonStatus.getInt("state");
-                currentState = (dataInt == 200 ? currentState : dataInt);
-                playerState = YTPlayerState.getStateFromId(dataInt);
-                EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
+                if (dataInt == 200) {
+                    playerState = YTPlayerState.getStateFromId(dataInt);
+                    EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
+                } else {
+                    if (currentState != dataInt) {
+                        currentState = dataInt; 
+                        playerState = YTPlayerState.getStateFromId(dataInt);
+                        EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
+                    }
+                }
             } else if (jsonStatus.has("ready")) {
                 currentState = -2;
                 EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEW));
