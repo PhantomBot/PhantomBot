@@ -131,16 +131,9 @@ public class YTWebSocketServer extends WebSocketServer {
             jsonStatus = jsonObject.getJSONObject("status");
             if (jsonStatus.has("state")) {
                 dataInt = jsonStatus.getInt("state");
-                if (dataInt == 200) {
-                    playerState = YTPlayerState.getStateFromId(dataInt);
-                    EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
-                } else {
-                    if (currentState != dataInt) {
-                        currentState = dataInt; 
-                        playerState = YTPlayerState.getStateFromId(dataInt);
-                        EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
-                    }
-                }
+                currentState = (dataInt == 200 ? currentState : dataInt);
+                playerState = YTPlayerState.getStateFromId(dataInt);
+                EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
             } else if (jsonStatus.has("ready")) {
                 currentState = -2;
                 EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEW));
@@ -150,6 +143,7 @@ public class YTWebSocketServer extends WebSocketServer {
             } else if (jsonStatus.has("volume")) {
                 dataInt = jsonStatus.getInt("volume");
                 currentVolume = dataInt;
+                EventBus.instance().postAsync(new YTPlayerVolumeEvent(dataInt));
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['status'] request passed ["+jsonString+"]");
                 return;
@@ -229,7 +223,7 @@ public class YTWebSocketServer extends WebSocketServer {
 
     public void pause() {
         JSONStringer jsonObject = new JSONStringer();
-        sendToAll(jsonObject.object().key("command").value("pause").toString());
+        sendToAll(jsonObject.object().key("command").value("pause").endObject().toString());
     }
 
     public void currentId() {
