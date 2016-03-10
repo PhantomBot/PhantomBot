@@ -4,7 +4,7 @@
         keyword = '',
         followers = false,
         raffleStatus = false,
-        msgToggle = ($.inidb.exists('settings', 'raffleMSGToggle') ? $.getIniDbBoolean('settings', 'raffleMSGToggle') : false),
+        msgToggle = ($.inidb.exists('settings', 'raffleMSGToggle') ? $.getIniDbBoolean('settings', 'raffleMSGToggle') : true),
         timer = 0,
         a = '';
 
