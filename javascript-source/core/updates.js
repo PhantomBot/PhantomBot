@@ -10,43 +10,43 @@
 /**
  * PhantomBot v2.0
  */
-(function () {
+(function() {
     if (!$.inidb.exists('updates', 'installedv2') || $.inidb.get('updates', 'installedv2') != 'true') {
-    var tableNamesList = $.inidb.GetFileList(),
-        commandsBackup,
-        timeBackup,
-        pointsBackup,
-        i,
-        defaultDisabledModules = [
-            './games/8ball.js',
-            './games/adventureSystem.js',
-            './games/killCommand.js',
-            './commands/topCommand.js',
-            './games/random.js',
-            './games/roll.js',
-            './games/roulette.js',
-            './games/slotMachine.js',
-            './handlers/followHandler.js',
-            './handlers/hostHandler.js',
-            './handlers/subscribeHandler.js',
-            './handlers/donationHandler.js',
-            './systems/cleanupSystem.js',
-            './systems/greetingSystem.js',
-            './systems/pointSystem.js',
-            './systems/noticeSystem.js',
-            './systems/pollSystem.js',
-            './systems/quoteSystem.js',
-            './systems/raffleSystem.js',
-            './systems/ticketraffleSystem.js',
-            './systems/raidSystem.js',
-            './systems/youtubePlayer.js',
-        ];
-        
+        var tableNamesList = $.inidb.GetFileList(),
+            commandsBackup,
+            timeBackup,
+            pointsBackup,
+            i,
+            defaultDisabledModules = [
+                './games/8ball.js',
+                './games/adventureSystem.js',
+                './games/killCommand.js',
+                './commands/topCommand.js',
+                './games/random.js',
+                './games/roll.js',
+                './games/roulette.js',
+                './games/slotMachine.js',
+                './handlers/followHandler.js',
+                './handlers/hostHandler.js',
+                './handlers/subscribeHandler.js',
+                './handlers/donationHandler.js',
+                './systems/cleanupSystem.js',
+                './systems/greetingSystem.js',
+                './systems/pointSystem.js',
+                './systems/noticeSystem.js',
+                './systems/pollSystem.js',
+                './systems/quoteSystem.js',
+                './systems/raffleSystem.js',
+                './systems/ticketraffleSystem.js',
+                './systems/raidSystem.js',
+                './systems/youtubePlayer.js',
+            ];
+
         if ($.inidb.FileExists('settings')) {
             $.consoleLn('Starting PhantomBot version 2.0 updates...');
             $.consoleLn('Backing up commands...');
             commandsBackup = getTableContents('command');
-            
+
             $.consoleLn('Backing up times...');
             timeBackup = getTableContents('time');
 
@@ -54,12 +54,12 @@
             pointsBackup = getTableContents('points');
 
             $.consoleLn('Backup completed.');
-            
+
             $.consoleLn('Deleting old files...');
             for (i in tableNamesList) {
                 $.inidb.RemoveFile(tableNamesList[i]);
             }
-            
+
             $.consoleLn('Restoring commands...');
             restoreTableContents('command', commandsBackup);
 
@@ -102,57 +102,70 @@
         $.inidb.set('updates', 'installedv2.0.5', 'true');
     }
 
-  /**
-   * @function getTableContents
-   * @param {string} tableName
-   * @returns {Array}
-   */
-  function getTableContents(tableName) {
-    var contents = [],
-        keyList = $.inidb.GetKeyList(tableName, ''),
-        temp,
-        i;
+    if (!$.inidb.exists('updates', 'installedv2.0.6') || $.inidb.get('updates', 'installedv2.0.6') != 'true') {
+        $.consoleLn('Starting PhantomBot version 2.0.6 updates...');
 
-    for (i in keyList) {
 
-      // Handle Exceptions per table
-      switch (tableName) {
-        // Ignore rows with less than 600 seconds (10 minutes)
-        case 'time':
-          temp = parseInt($.inidb.get(tableName, keyList[i]));
-          if (temp >= 600) {
-            contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
-          }
-          break;
+        if ($.inidb.exists('chatModerator', 'capsLimit')) {
+            $.consoleLn('Removing old capsLimit table')
+            $.inidb.del('chatModerator', 'capsLimit')
+        }
 
-        // Ignore rows with less than 10 points
-        case 'points':
-          temp = parseInt($.inidb.get(tableName, keyList[i]));
-          if (temp >= 10) {
-            contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
-          }
-          break;
-
-        // Put the rows in by default
-        default:
-          contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
-          break;
-      }
+        $.consoleLn('PhantomBot v2.0.6 updates completed!');
+        $.inidb.set('updates', 'installedv2.0.6', 'true');
     }
 
-    return contents;
-  }
+    /**
+     * @function getTableContents
+     * @param {string} tableName
+     * @returns {Array}
+     */
+    function getTableContents(tableName) {
+        var contents = [],
+            keyList = $.inidb.GetKeyList(tableName, ''),
+            temp,
+            i;
 
-  /**
-   * @function setTableContents
-   * @param {string} tableName
-   * @param {Array} contents
-   */
-  function restoreTableContents(tableName, contents) {
-    var i;
+        for (i in keyList) {
 
-    for (i in contents) {
-      $.inidb.set(tableName, i, contents[i]);
+            // Handle Exceptions per table
+            switch (tableName) {
+                // Ignore rows with less than 600 seconds (10 minutes)
+                case 'time':
+                    temp = parseInt($.inidb.get(tableName, keyList[i]));
+                    if (temp >= 600) {
+                        contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
+                    }
+                    break;
+
+                    // Ignore rows with less than 10 points
+                case 'points':
+                    temp = parseInt($.inidb.get(tableName, keyList[i]));
+                    if (temp >= 10) {
+                        contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
+                    }
+                    break;
+
+                    // Put the rows in by default
+                default:
+                    contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
+                    break;
+            }
+        }
+
+        return contents;
     }
-  }
+
+    /**
+     * @function setTableContents
+     * @param {string} tableName
+     * @param {Array} contents
+     */
+    function restoreTableContents(tableName, contents) {
+        var i;
+
+        for (i in contents) {
+            $.inidb.set(tableName, i, contents[i]);
+        }
+    }
 })();

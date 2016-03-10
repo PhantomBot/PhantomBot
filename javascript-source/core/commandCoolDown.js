@@ -7,13 +7,13 @@
  * To use the cooldown in other scipts use the $.coolDown API
  */
 
-(function () {
+(function() {
     var globalCooldown = ($.inidb.exists('cooldown', 'globalCooldown') ? $.getIniDbBoolean('cooldown', 'globalCooldown') : false),
         globalCooldownTime = ($.inidb.exists('cooldown', 'globalCooldownTime') ? parseInt($.inidb.get('cooldown', 'globalCooldownTime')) : 90),
         modCooldown = ($.inidb.exists('cooldown', 'modCooldown') ? $.getIniDbBoolean('cooldown', 'modCooldown') : false),
         cooldown = [];
 
-    function set (command, time, user) {
+    function set(command, time, user) {
         time = (time * 1000) + $.systemTime();
 
         if (globalCooldown) {
@@ -35,7 +35,7 @@
         }
     };
 
-    function get (command, user) {
+    function get(command, user) {
         if ($.isMod(user) && !modCooldown) {
             return 0;
         }
@@ -69,7 +69,7 @@
         set(command, parseInt($.inidb.get('cooldown', command)), user);
     };
 
-    function clear (command) {
+    function clear(command) {
         var i;
         for (i in cooldown) {
             if (cooldown[i].command.equalsIgnoreCase(command)) {
@@ -80,18 +80,18 @@
     };
 
     /**
-    * @event command
-    */
-    $.bind('command', function (event) {
+     * @event command
+     */
+    $.bind('command', function(event) {
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
             args = event.getArgs(),
             cmd = args[0];
-            time = parseInt(args[1]);
+        time = parseInt(args[1]);
 
         /**
-        * @commandpath coolcom [command or keyword] [seconds] - Sets a cooldown in seconds for a command or a keyword. Use -1 for seconds to remove it.
-        */
+         * @commandpath coolcom [command or keyword] [seconds] - Sets a cooldown in seconds for a command or a keyword. Use -1 for seconds to remove it.
+         */
         if (command.equalsIgnoreCase('coolcom') || command.equalsIgnoreCase('cooldown')) {
             if (!$.isAdmin(sender)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
@@ -116,8 +116,8 @@
         }
 
         /**
-        * @commandpath toggleglobalcooldown - Enables/Disables the global command cooldown.
-        */
+         * @commandpath toggleglobalcooldown - Enables/Disables the global command cooldown.
+         */
         if (command.equalsIgnoreCase('toggleglobalcooldown')) {
             if (!$.isAdmin(sender)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
@@ -131,8 +131,8 @@
         }
 
         /**
-        * @commandpath globalcooldown [seconds] - Sets the global cooldown time in seconds.
-        */
+         * @commandpath globalcooldown [seconds] - Sets the global cooldown time in seconds.
+         */
         if (command.equalsIgnoreCase('globalcooldown')) {
             if (!$.isAdmin(sender)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
@@ -149,8 +149,8 @@
         }
 
         /**
-        * @commandpath togglemodcooldown - Enable/Disable mods being affected by cooldowns
-        */
+         * @commandpath togglemodcooldown - Enable/Disable mods being affected by cooldowns
+         */
         if (command.equalsIgnoreCase('togglemodcooldown')) {
             if (!$.isAdmin(sender)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
@@ -165,9 +165,9 @@
     });
 
     /**
-    * @event initready
-    */
-    $.bind('initReady', function () {
+     * @event initready
+     */
+    $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./core/commandCoolDown.js')) {
             $.registerChatCommand('./core/commandCoolDown.js', 'coolcom', 1);
             $.registerChatCommand('./core/commandCoolDown.js', 'cooldown', 1);

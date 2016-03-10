@@ -23,4 +23,3 @@ $.lang.register('followhandler.shoutout.online', 'Hey! Go give $1 a follow at $2
 $.lang.register('followhandler.shoutout.404', 'Either Twitch has an issue or $1 does not exist on Twitch!');
 $.lang.register('followhandler.followtoggle.on', 'Announcements are enabled for new followers.');
 $.lang.register('followhandler.followtoggle.off', 'Announcements are disabled for new followers.');
-

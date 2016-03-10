@@ -1,21 +1,27 @@
-(function () {
-    
-/**
-* @event ircChannelMessage
-*/
-$.bind('ircChannelMessage', function (event) { 
-    var message = event.getMessage().toLowerCase(),
-        sender = event.getSender(),
-        regex = '',
-        keyword = '',
-        key = '',
-        keys = $.inidb.GetKeyList('keywords', '');
+(function() {
+
+    /**
+     * @event ircChannelMessage
+     */
+    $.bind('ircChannelMessage', function(event) {
+        var message = event.getMessage().toLowerCase(),
+            sender = event.getSender(),
+            regex = '',
+            keyword = '',
+            key = '',
+            keys = $.inidb.GetKeyList('keywords', '');
         for (var i = 0; i < keys.length; i++) {
             key = keys[i].toLowerCase();
             regex = new RegExp('\\b' + key + '\\b', 'i');
             if (regex.exec(message)) {
                 keyword = $.inidb.get('keywords', key);
-				keyword = keyword.replace('(sender)', sender);
+                keyword = keyword.replace('(sender)', $.username.resolve(event.getSender()));
+                keyword = keyword.replace('(@sender)', '@' + $.username.resolve(event.getSender()));
+                keyword = keyword.replace('(baresender)', event.getSender());
+                keyword = keyword.replace('(pointsname)', $.pointNameMultiple);
+                keyword = keyword.replace('(uptime)', $.getStreamUptime($.channelName));
+                keyword = keyword.replace('(game)', $.getGame($.channelName));
+                keyword = keyword.replace('(status)', $.getStatus($.channelName));
 
                 if ($.coolDown.get(key, sender) > 0) {
                     $.consoleDebug('keyword ' + key + ' not sent because its on a cooldown.');
@@ -29,9 +35,9 @@ $.bind('ircChannelMessage', function (event) {
     });
 
     /**
-    * @event command
-    */
-    $.bind('command', function (event) {
+     * @event command
+     */
+    $.bind('command', function(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
             argString = event.getArguments().trim(),
@@ -40,8 +46,8 @@ $.bind('ircChannelMessage', function (event) {
             subAction = args[1].toLowerCase();
 
         /**
-        * @commandpath keyword - Base command for keyword options
-        */  
+         * @commandpath keyword - Base command for keyword options
+         */
         if (command.equalsIgnoreCase('keyword')) {
             if (!$.isAdmin(sender)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
@@ -54,8 +60,8 @@ $.bind('ircChannelMessage', function (event) {
             }
 
             /**
-            * @commandpath keyword add [keyword] [response] - Adds a keyword and a response
-            */  
+             * @commandpath keyword add [keyword] [response] - Adds a keyword and a response
+             */
             if (action.equalsIgnoreCase('add')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.add.usage'));
@@ -70,8 +76,8 @@ $.bind('ircChannelMessage', function (event) {
             }
 
             /**
-            * @commandpath keyword remove [keyword] - Removes a given keyword
-            */ 
+             * @commandpath keyword remove [keyword] - Removes a given keyword
+             */
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.remove.usage'));
@@ -80,7 +86,7 @@ $.bind('ircChannelMessage', function (event) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.404'));
                     return;
                 }
-                
+
                 $.inidb.del('keywords', subAction);
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', subAction));
             }
@@ -88,9 +94,9 @@ $.bind('ircChannelMessage', function (event) {
     });
 
     /**
-    * @event initReady
-    */
-    $.bind('initReady', function () {
+     * @event initReady
+     */
+    $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./handlers/keywordHandler.js')) {
             $.registerChatCommand('./handlers/keywordHandler.js', 'keyword', 1);
         }
