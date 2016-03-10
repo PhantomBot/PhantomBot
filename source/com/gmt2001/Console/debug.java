@@ -48,7 +48,7 @@ public class debug {
 
             Logger.instance().log(Logger.LogType.Debug, timestamp + "Z " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
-            System.out.println("[" + timestamp + "] >>>[DEBUG] " + o);
+            System.out.println("[" + timestamp + "] [DEBUG] " + o);
         }
     }
 
@@ -66,7 +66,7 @@ public class debug {
 
             Logger.instance().log(Logger.LogType.Debug, timestamp + "Z " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
-            System.out.println("[" + timestamp + "] >>>[DEBUG] " + o);
+            System.out.println("[" + timestamp + "] [DEBUG] " + o);
         }
     }
 

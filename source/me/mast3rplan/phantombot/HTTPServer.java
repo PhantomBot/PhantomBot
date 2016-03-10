@@ -286,6 +286,7 @@ public class HTTPServer extends Thread {
     }
 
     public void dispose() {
+        com.gmt2001.Console.out.println("HTTP server closing down on port " + port);
         try {
             dorun = false;
             socket.close();
