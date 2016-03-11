@@ -123,6 +123,7 @@ public class PhantomBot implements Listener {
     private YTWebSocketServer  ytsocketserver;
     private HTTPServer httpserver;
     private NEWHTTPServer NEWhttpserver;
+    private NEWHTTPSServer NEWhttpsServer;
     private EventWebSocketServer eventsocketserver;
     private static final boolean debugD = false;
     public static boolean enableDebugging = false;
@@ -369,7 +370,9 @@ public class PhantomBot implements Listener {
             EventBus.instance().register(eventsocketserver);
 
             NEWhttpserver = new NEWHTTPServer(baseport + 1000, oauth, webauth);
+            NEWhttpsServer = new NEWHTTPSServer(baseport + 1443, oauth, webauth);
             com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 1000));
+            com.gmt2001.Console.out.println("NEW HTTPS Server accepting connections on port " + (baseport + 1443));
         }
 
         // Print an extra new line after announcing HTTP and Socket servers
