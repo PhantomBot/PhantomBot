@@ -52,7 +52,7 @@
             return;
         }
 
-        $.consoleLn($.lang.get('followhandler.anouncements.enabled'));
+        $.consoleLn('>> Enabling follower announcements');
         announceFollows = true;
     });
 
