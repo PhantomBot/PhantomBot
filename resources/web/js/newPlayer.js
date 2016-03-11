@@ -3,15 +3,18 @@
  * ------------
  * Interface for the YouTube Player for PhantomBot.
  */
-var DEBUG_MODE = true; 
+var DEBUG_MODE = false;
 
 var playerPaused = false;
 var playerMuted = false;
 var connectedToWS = false;
+var showChat = false;
+var loadedChat = false;
 var volumeSlider = null;
+var progressSlider = null;
 
 var url = window.location.host.split(":");
-var addr = 'ws://' + url[0] + ':26003';
+var addr = 'ws://' + url[0] + ':' + getPlayerPort();
 var connection = new WebSocket(addr, []);
 var currentVolume = 0;
 
@@ -143,9 +146,11 @@ function handleSongList(d) {
         var title = d['songlist'][i]['title'];
         var duration = d['songlist'][i]['duration'];
         var requester = d['songlist'][i]['requester'];
-        tableData += "<tr><td width=\"15\"><div style=\"width: 15px\" class=\"button\" onclick=\"deleteSong('" + id + "')\"><img src=\"images/delete-icon.png\" height=\"15\" width=\"15\"></div></td><td>" + title + "</td>" +
-                     "<td>" + requester + "</td>" +
-                     "<td>" + duration + "</td>" +
+        tableData += "<tr>" +
+                     "    <td width=\"15\"><divclass=\"button\" onclick=\"deleteSong('" + id + "')\"><i class=\"fa fa-trash-o\" /></div></td>" +
+                     "    <td>" + title + "</td>" +
+                     "    <td>" + requester + "</td>" +
+                     "    <td>" + duration + "</td>" +
                      "<td style=\"{width: 10%; text-align: right}\">"  + id + "</td></tr>";
     }
     $("#songTable").html(tableData);
@@ -156,27 +161,58 @@ function handlePlay(id, title, duration, requester) {
     try {
         playerObject.loadVideoById(id, 0, "medium");
         newSongAlert('Now Playing', title, 'success', 4000);
-        $("#currentSong").html("<strong>" + title + "</strong><br><span class=\"currentSong-small\">" +
-                               "<img style=\"margin: 0px 10px 0px 0px\" height=\"15\" width=\"15\" src=\"images/transparent-clock.png\">" + duration + "<br>" +
-                               "<img style=\"margin: 0px 10px 0px 0px\" height=\"15\" height=\"15\" width=\"15\" src=\"images/link-icon.png\">" +
-                               "<a id=\"playerLink\" href=\"https://youtu.be/" + id + "\">https://youtu.be/" + id + "</a><br>" +
-                               "<img style=\"margin: 0px 10px 0px 0px\" height=\"15\" height=\"15\" width=\"15\" src=\"images/user-icon.png\">" + requester + "</span>" +
+        var ytLink = "https://youtu.be/" + id;
+        $("#currentSong").html("<strong>" + title + "</strong><br>" +
+                               "<span class=\"currentSong-small\">" +
+                               "    <i class=\"fa fa-clock-o\">&nbsp;</i>" + duration + "<br>" +
+                               "    <i class=\"fa fa-youtube\">&nbsp;</i><a id=\"playerLink\" href=\"" + ytLink + "\">" + ytLink + "</a><br>" +
+                               "    <i class=\"fa fa-user\">&nbsp;</i>" + requester + 
+                               "</span>" +
                                "<table class=\"controlTable\">" +
-                               "  <tr><td><div style=\"width: 30px\" class=\"button\" onclick=\"handlePause()\"><img src=\"images/PlayPauseButton.png\" height=\"30\" width=\"30\"></div></td>" +
-                               "    <td><div id=\"songProgressBar\"></div></td>" +
-                               "    <td><div style=\"width: 30px\" class=\"button\" onclick=\"skipSong()\"><img src=\"images/SkipSongButton.png\" height=\"30\" width=\"30\"></div></td>" +
-                               "  <tr><td><div style=\"width: 30px\" class=\"button\" onclick=\"handleMute()\"><img src=\"images/MuteButton.png\" height=\"30\" width=\"30\"></div></td>" +
-                               "    <td><div id=\"volumeControl\"></div></td><td><div style=\"width: 65px\" id=\"mutedDiv\"></div></td></tr>" +
+                               "    <tr>" +
+                               "        <td><div id=\"playPauseDiv\" class=\"button\" onclick=\"handlePause()\"></div></td>" +
+                               "        <td colspan=\"3\"><div id=\"songProgressBar\"></div></td>" +
+                               "        <td><div class=\"button\" onclick=\"skipSong()\"><i class=\"fa fa-step-forward\" /></div></td>" +
+                               "    </tr>" +
+                               "    <tr>" +
+                               "        <td><div id=\"mutedDiv\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Mute/Unmute\" class=\"button\" onclick=\"handleMute()\"></div></td>" +
+                               "        <td><div id=\"volumeControl\"></div></td>" +
+                               "        <td><div id=\"tooltip-steal\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Steal Song\" class=\"button\" onclick=\"stealSong()\"><i class=\"fa fa-bookmark\" /></div></td>" +
+                               "        <td><div id=\"tooltip-chat\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Toggle Chat\" class=\"button\" onclick=\"toggleChat()\"><i class=\"fa fa-comment\" /></div></td>" +
+                               "    </tr>" +
                                "<table>");
+
+        $("#tooltip-steal").tooltip();
+        $("#tooltip-chat").tooltip();
+
         volumeSlider = $("#volumeControl").slider({
             min: 0,
             max: 100,
             value: currentVolume,
+            range: "min",
             slide: function (event, ui) { handleSetVolume(ui.value); handleCurrentVolume(currentVolume); }
         }).height(10);
+
+        progressSlider = $("#songProgressBar").slider({
+            min: 0,
+            max: playerObject.getDuration(),
+            value: 0,
+            range: "min",
+            slide: function (event, ui) { playerSeekSong(ui.value); }
+        }).height(10);
+
         if (playerMuted) {
-            $("#mutedDiv").html("<img src=\"images/MutedIcon.png\" height=\"30\" width=\"60\">");
+            $("#mutedDiv").html("<i class=\"fa fa-volume-off fa-lg\" style=\"color: #000000\" />");
+        } else {
+            $("#mutedDiv").html("<i class=\"fa fa-volume-off fa-lg\" style=\"color: #ffffff\" />");
         }
+       
+        if (playerPaused) {
+            $("#playPauseDiv").html("<i class=\"fa fa-pause\" />");
+        } else {
+            $("#playPauseDiv").html("<i class=\"fa fa-play\" />");
+        }
+
         querySongList();
     } catch (ex) {
         console.log("YouTubePlayer::handlePlay::loadVideoById: " + ex.message);
@@ -189,6 +225,29 @@ function deleteSong(id) {
     jsonObject["deletesr"] = id;
     connection.send(JSON.stringify(jsonObject));
     debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
+}
+
+function stealSong() {
+    debugMsg("stealSong()");
+    var jsonObject = {};
+    jsonObject["command"] = 'stealsong';
+    connection.send(JSON.stringify(jsonObject));
+    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
+}
+
+function toggleChat() {
+    debugMsg("toggleChat()");
+    if (showChat) {
+        showChat = false;
+        $(".chatFrame").hide();
+    } else {
+        if (!loadedChat) {
+            $(".chat").html("<iframe class=\"chatFrame\" src=\"http://www.twitch.tv/" + getChannelName() + "/chat?popout=\">");
+            loadedChat = true;
+        }
+        showChat = true;
+        $(".chatFrame").show();
+    }
 }
 
 function skipSong(d) {
@@ -204,9 +263,11 @@ function handlePause(d) {
     if (playerPaused) {
         playerPaused = false;
         playerObject.playVideo();
+            $("#playPauseDiv").html("<i class=\"fa fa-play\" />");
     } else {
         playerPaused = true;
         playerObject.pauseVideo();
+            $("#playPauseDiv").html("<i class=\"fa fa-pause\" />");
     }
 }
 
@@ -215,11 +276,11 @@ function handleMute(d) {
     if (playerMuted) {
         playerMuted = false;
         playerObject.unMute();
-        $("#mutedDiv").html("");
+        $("#mutedDiv").html("<i class=\"fa fa-volume-off fa-lg\" style=\"color: #ffffff\" />");
     } else {
         playerMuted = true;
         playerObject.mute();
-        $("#mutedDiv").html("<img src=\"images/MutedIcon.png\" height=\"30\" width=\"60\">");
+        $("#mutedDiv").html("<i class=\"fa fa-volume-off fa-lg\" style=\"color: #000000\" />");
     }
 }
 
@@ -276,10 +337,18 @@ function newSongAlert(message, title, type, timeout) {
   }
 }
 
-function updateSongProgressBar() {
-    $("#songProgressBar").progressbar({ max: playerObject.getDuration(), value: playerObject.getCurrentTime() }).height(20);
+function updateSongProgressBar(seekTo) {
+    debugMsg("updateSongProgress: " +  playerObject.getCurrentTime());
+    if (progressSlider != null) {
+        progressSlider.slider("option", "value", playerObject.getCurrentTime());
+        progressSlider.slider("option", "max", playerObject.getDuration());
+    }
 }
 setInterval(updateSongProgressBar, 2000);
+
+function playerSeekSong(seekPos) {
+   playerObject.seekTo(seekPos, true); 
+}
 
 function sendKeepAlive() {
     var jsonObject = {};

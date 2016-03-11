@@ -40,6 +40,9 @@
  * // Skip a song
  * { "command" : "skipsong" }
  *
+ * // Steal a song
+ * { "command" : "stealsong" }
+ *
  * -------------------------------------------------------------------------------------------------------------
  *
  * Websocket pushes the following to the Player Interface
@@ -166,6 +169,9 @@ public class YTWebSocketServer extends WebSocketServer {
         } else if (jsonObject.has("command")) {
             if (jsonObject.getString("command").equals("skipsong")) {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                return;
+            } else if (jsonObject.getString("command").equals("stealsong")) {
+                EventBus.instance().postAsync(new YTPlayerStealSongEvent());
                 return;
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
