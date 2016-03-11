@@ -88,6 +88,8 @@ public class PhantomBot implements Listener {
     private final String ownerName;
     private final String hostname;
     private final String ghostname;
+    private final String awshostname;
+    private final Boolean useAWSIRC;
     private int gport;
     private int port;
     private int baseport;
@@ -134,9 +136,12 @@ public class PhantomBot implements Listener {
         return instance;
     }
 
-    public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner, int baseport,
-                      String hostname, int port, String ghostname, int gport, double msglimit30, String datastore, String datastoreconfig, String youtubekey, boolean webenable,
-                      boolean musicenable, boolean usehttps, String keystorepath, String keystorepassword, String keypassword, String twitchalertskey, int twitchalertslimit, String webauth) {
+    public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel,
+                      String owner, int baseport, String hostname, int port, String ghostname, int gport,
+                      double msglimit30, String datastore, String datastoreconfig, String youtubekey,
+                      boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
+                      String keystorepassword, String keypassword, String twitchalertskey,
+                      int twitchalertslimit, String webauth, String awshostname) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -180,12 +185,23 @@ public class PhantomBot implements Listener {
         pollResults = new TreeMap<>();
         voters = new TreeSet<>();
 
+        switch(TwitchAPIv3.instance().GetChatServerType(channel)) {
+            case "aws": useAWSIRC = true; break;
+            default: case "main": useAWSIRC = false; break;
+        }
+
         if (hostname.isEmpty()) {
             this.hostname = "irc.twitch.tv";
             this.port = 6667;
         } else {
             this.hostname = hostname;
             this.port = port;
+        }
+
+        if (awshostname.isEmpty()) {
+            this.awshostname = "irc.chat.twitch.tv";
+        } else {
+            this.awshostname = awshostname;
         }
 
         if (msglimit30 > 0) {
@@ -257,7 +273,12 @@ public class PhantomBot implements Listener {
 
         channels = new HashMap<>();
 
-        this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
+        if (useAWSIRC) {
+            this.session = connectionManager.requestConnection(this.awshostname, this.port, oauth);
+        } else {
+            this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
+        }
+
         TwitchGroupChatHandler(this.oauth, this.connectionManager);
 
         if (clientid.length() == 0) {
@@ -386,6 +407,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
         Script.global.defineProperty("ghostname", ghostname, 0);
+        Script.global.defineProperty("awshostname", awshostname, 0);
         Script.global.defineProperty("donations", donationsCache, 0);
         Script.global.defineProperty("emotes", emotesCache, 0);
 
@@ -684,6 +706,7 @@ public class PhantomBot implements Listener {
                 data += "owner=" + ownerName + "\r\n";
                 data += "baseport=" + baseport + "\r\n";
                 data += "hostname=" + hostname + "\r\n";
+                data += "awshostname=" + awshostname + "\r\n";
                 data += "port=" + port + "\r\n";
                 data += "ghostname=" + ghostname + "\r\n";
                 data += "gport=" + gport + "\r\n";
@@ -886,6 +909,7 @@ public class PhantomBot implements Listener {
         int baseport = 25000;
         int port = 0;
         String ghostname = "";
+        String awshostname = "";
         int gport = 0;
         double msglimit30 = 0;
         String datastore = "";
@@ -934,6 +958,9 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("hostname=") && line.length() > 10) {
                         hostname = line.substring(9);
+                    }
+                    if (line.startsWith("awshostname=") && line.length() > 13) {
+                        awshostname = line.substring(12);
                     }
                     if (line.startsWith("port=") && line.length() > 6) {
                         port = Integer.parseInt(line.substring(5));
@@ -992,6 +1019,11 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("New webauth key has been generated for botlogin.txt");
             changed = true;
         }
+        if (awshostname.isEmpty()) {
+            awshostname = "irc.chat.twitch.tv";
+            com.gmt2001.Console.out.println("Adding new botlogin.txt entry for awshostname.");
+            changed = true;
+        }
 
         if (user.isEmpty() || oauth.isEmpty() || channel.isEmpty()) {
             try {
@@ -1032,6 +1064,7 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("owner='" + owner + "'");
                     com.gmt2001.Console.out.println("baseport='" + baseport + "'");
                     com.gmt2001.Console.out.println("hostname='" + hostname + "'");
+                    com.gmt2001.Console.out.println("awshostname='" + awshostname + "'");
                     com.gmt2001.Console.out.println("port='" + port + "'");
                     com.gmt2001.Console.out.println("ghostname='" + ghostname + "'");
                     com.gmt2001.Console.out.println("gport='" + gport + "'");
@@ -1108,6 +1141,12 @@ public class PhantomBot implements Listener {
                 if (arg.toLowerCase().startsWith("hostname=") && arg.length() > 10) {
                     if (!hostname.equals(arg.substring(9))) {
                         hostname = arg.substring(9);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("awshostname=") && arg.length() > 13) {
+                    if (!hostname.equals(arg.substring(12))) {
+                        hostname = arg.substring(12);
                         changed = true;
                     }
                 }
@@ -1205,7 +1244,7 @@ public class PhantomBot implements Listener {
                 if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
                     com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
                                                     + "[webauth=<web auth key>] [oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
-                                                    + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] [ghostname=<custom group chat server>] "
+                                                    + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] [awshostname=<custom aws irc server>] [ghostname=<custom group chat server>] "
                                                     + "[port=<custom irc port>] [gport=<custom group chat port>] [msglimit30=<message limit per 30 seconds>] "
                                                     + "[datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>] "
                                                     + "[datastoreconfig=<Optional DataStore config option, different for each DataStore type>] "
@@ -1233,6 +1272,7 @@ public class PhantomBot implements Listener {
             data += "owner=" + owner + "\r\n";
             data += "baseport=" + baseport + "\r\n";
             data += "hostname=" + hostname + "\r\n";
+            data += "awshostname=" + awshostname + "\r\n";
             data += "port=" + port + "\r\n";
             data += "ghostname=" + ghostname + "\r\n";
             data += "gport=" + gport + "\r\n";
@@ -1252,7 +1292,7 @@ public class PhantomBot implements Listener {
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit, webauth);
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit, webauth, awshostname);
     }
 
     private static String generateWebAuth() {

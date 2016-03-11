@@ -3,13 +3,17 @@
  * ------------
  * Interface for the YouTube Player for PhantomBot.
  */
+var DEBUG_MODE = false;
 
 var playerPaused = false;
+var playerMuted = false;
 var connectedToWS = false;
+var volumeSlider = null;
 
 var url = window.location.host.split(":");
 var addr = 'ws://' + url[0] + ':25003';
 var connection = new WebSocket(addr, []);
+var currentVolume = 0;
 
 var documentElement = document.createElement('script');
 documentElement.src = "https://www.youtube.com/iframe_api";
@@ -25,7 +29,7 @@ function onYouTubeIframeAPIReady() {
         videoId: '',
         playerVars: {
             iv_load_policy: 3,
-            //controls: 0,
+            controls: 0,
             showinfo: 0,
             showsearch: 0,
             autoplay: 1
@@ -37,27 +41,38 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+function debugMsg(message) {
+    if (DEBUG_MODE) console.log("YouTubePlayer::" + message);
+}
+
 function onPlayerReady(event) {
+    debugMsg("onPlayerReady()");
     readyEvent()
+    playerObject.setVolume(5); // Be safe with the caster
 }
 
 function readyEvent() {
     var jsonObject = {};
     jsonObject["status"] = { "ready" : true };
     connection.send(JSON.stringify(jsonObject));
+    debugMsg("readyEvent::connection.send(" + JSON.stringify(jsonObject)+")");
 }
 
 function onPlayerStateChange(event) {
+    debugMsg("onPlayerStateChange(" + event.data + ")");
     var jsonObject = {};
     jsonObject["status"] = { "state" : event.data };
     connection.send(JSON.stringify(jsonObject));
+    debugMsg("onPlayerStateChange::connection.send(" + JSON.stringify(jsonObject)+")");
 }
 
 connection.onopen = function(data) {
+    debugMsg("connection.onopen()");
     connectedToWS = true;
 }
 
 connection.onclose = function(data) {
+    debugMsg("connection.onclose()");
     newSongAlert('WebSocket has been closed', 'Restart player when bot is restored', 'danger', 0);
     connectedToWS = false;
 }
@@ -69,6 +84,7 @@ connection.onmessage = function(e) {
         console.log('YouTubePlayer::connection.onmessage: badJson(' + e.data + '): ' + ex.message);
         return;
     }
+    debugMsg("connection.onmessage("+ e.data + ")");
 
     if (messageObject['command']) {
         if (messageObject['command']['play']) {
@@ -107,6 +123,7 @@ connection.onmessage = function(e) {
 }
 
 function handlePlayList(d) {
+    debugMsg("handlePlayList(" + d + ")");
     $("#playlistTableTitle").html("Current Playlist: " + d['playlistname']);
     var tableData = "<tr><th>Song Title</th><th>Duration</th><th>YouTube ID</th></tr>";
     for (var i in d['playlist']) {
@@ -119,13 +136,14 @@ function handlePlayList(d) {
 }
 
 function handleSongList(d) {
+    debugMsg("handleSongList(" + d + ")");
     var tableData = "<tr><th></th><th>Song Title</th><th>Requester</th><th>Duration</th><th>YouTube ID</th></tr>";
     for (var i in d['songlist']) {
         var id = d['songlist'][i]['song'];
         var title = d['songlist'][i]['title'];
         var duration = d['songlist'][i]['duration'];
         var requester = d['songlist'][i]['requester'];
-        tableData += "<tr><td><button onclick=\"deleteSong('" + id + "')\"><img src=\"images/delete-icon.png\" height=\"15\" width=\"15\"></button></td><td>" + title + "</td>" +
+        tableData += "<tr><td width=\"15\"><div style=\"width: 15px\" class=\"button\" onclick=\"deleteSong('" + id + "')\"><img src=\"images/delete-icon.png\" height=\"15\" width=\"15\"></div></td><td>" + title + "</td>" +
                      "<td>" + requester + "</td>" +
                      "<td>" + duration + "</td>" +
                      "<td style=\"{width: 10%; text-align: right}\">"  + id + "</td></tr>";
@@ -134,22 +152,30 @@ function handleSongList(d) {
 }
 
 function handlePlay(id, title, duration, requester) {
+    debugMsg("handlePlay(" + id + ", " + title + ", " + duration + ", " + requester + ")");
     try {
         playerObject.loadVideoById(id, 0, "medium");
         newSongAlert('Now Playing', title, 'success', 4000);
-        $("#currentSong").html("<strong>" + title + "</strong><br>" +
+        $("#currentSong").html("<strong>" + title + "</strong><br><span class=\"currentSong-small\">" +
                                "<img style=\"margin: 0px 10px 0px 0px\" height=\"15\" width=\"15\" src=\"images/transparent-clock.png\">" + duration + "<br>" +
                                "<img style=\"margin: 0px 10px 0px 0px\" height=\"15\" height=\"15\" width=\"15\" src=\"images/link-icon.png\">" +
                                "<a id=\"playerLink\" href=\"https://youtu.be/" + id + "\">https://youtu.be/" + id + "</a><br>" +
-                               "<img style=\"margin: 0px 10px 0px 0px\" height=\"15\" height=\"15\" width=\"15\" src=\"images/user-icon.png\">" + requester + "<br><br>" +
-                               "<div id=\"songProgressBar\"> </div><br>" +
-                               "<div id=\"volumeControl\"> </div>");
-        $("#volumeControl").slider({
+                               "<img style=\"margin: 0px 10px 0px 0px\" height=\"15\" height=\"15\" width=\"15\" src=\"images/user-icon.png\">" + requester + "</span>" +
+                               "<table class=\"controlTable\">" +
+                               "  <tr><td><div style=\"width: 30px\" class=\"button\" onclick=\"handlePause()\"><img src=\"images/PlayPauseButton.png\" height=\"30\" width=\"30\"></div></td>" +
+                               "    <td colspan=\"2\"><div id=\"songProgressBar\"></div></td></tr>" +
+                               "  <tr><td><div style=\"width: 30px\" class=\"button\" onclick=\"handleMute()\"><img src=\"images/MuteButton.png\" height=\"30\" width=\"30\"></div></td>" +
+                               "    <td><div id=\"volumeControl\"></div></td><td><div style=\"width: 65px\" id=\"mutedDiv\"></div></td></tr>" +
+                               "<table>");
+        volumeSlider = $("#volumeControl").slider({
             min: 0,
             max: 100,
-            value: playerObject.getVolume(),
-            slide: function (event, ui) { playerObject.setVolume(ui.value); }
+            value: currentVolume,
+            slide: function (event, ui) { handleSetVolume(ui.value); handleCurrentVolume(currentVolume); }
         }).height(10);
+        if (playerMuted) {
+            $("#mutedDiv").html("<img src=\"images/MutedIcon.png\" height=\"30\" width=\"60\">");
+        }
         querySongList();
     } catch (ex) {
         console.log("YouTubePlayer::handlePlay::loadVideoById: " + ex.message);
@@ -157,12 +183,15 @@ function handlePlay(id, title, duration, requester) {
 }
 
 function deleteSong(id) {
+    debugMsg("deleteSong(" + id + ")");
     var jsonObject = {};
     jsonObject["deletesr"] = id;
     connection.send(JSON.stringify(jsonObject));
+    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
 function handlePause(d) {
+    debugMsg("handlePause()");
     if (playerPaused) {
         playerPaused = false;
         playerObject.playVideo();
@@ -172,36 +201,63 @@ function handlePause(d) {
     }
 }
 
+function handleMute(d) {
+    debugMsg("handleMute()");
+    if (playerMuted) {
+        playerMuted = false;
+        playerObject.unMute();
+        $("#mutedDiv").html("");
+    } else {
+        playerMuted = true;
+        playerObject.mute();
+        $("#mutedDiv").html("<img src=\"images/MutedIcon.png\" height=\"30\" width=\"60\">");
+    }
+}
+
 function handleCurrentId(d) {
+    debugMsg("handleCurrentId()");
     var jsonObject = {};
     jsonObject["status"] = { "currentid" : playerObject.getVideoUrl().match(/[?&]v=([^&]+)/)[1] };
     connection.send(JSON.stringify(jsonObject));
+    debugMsg("handleCurrentId::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
 function handleSetVolume(d) {
+    debugMsg("handleSetVolume(" + d + ")");
+    currentVolume = d;
     playerObject.setVolume(d);
+    if (volumeSlider != null) {
+        volumeSlider.slider("option", "value", currentVolume);
+    }
 }
 
 function handleCurrentVolume(d) {
+    debugMsg("handleCurrentVolume()");
     var jsonObject = {};
     jsonObject["status"] = { "volume" : playerObject.getVolume() };
     connection.send(JSON.stringify(jsonObject));
+    debugMsg("handleCurrentVolume::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
 function queryPlayList() {
+    debugMsg("queryPlayList()");
     var jsonObject = {};
     jsonObject["query"] = "playlist";
     connection.send(JSON.stringify(jsonObject));
+    debugMsg("queryPlayList::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
 function querySongList() {
+    debugMsg("querySongList()");
     var jsonObject = {};
     jsonObject["query"] = "songlist";
     connection.send(JSON.stringify(jsonObject));
+    debugMsg("querySongList::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
 // Type is: success (green), info (blue), warning (yellow), danger (red)
 function newSongAlert(message, title, type, timeout) {
+  debugMsg("newSongAlert(" + message + ", " + title + ", " + type + ", " + timeout + ")");
   $(".alert").fadeIn(1000);
   $("#newSongAlert").show().html('<div class="alert alert-' + type + '"><button type="button" '+
                       'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 

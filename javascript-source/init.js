@@ -573,13 +573,6 @@
         });
 
         /**
-         * @event api-twitchAlertsDonationInitialized
-         */
-        $api.on($script, 'twitchAlertsDonationInitialized', function(event) {
-            callHook('twitchAlertsDonationInitialized', event, true);
-        });
-
-        /**
          * @event api-getEmotes
          */
         $api.on($script, 'emotesGet', function(event) {
@@ -604,7 +597,7 @@
          * @event api-yTPlayerDisconnect
          */
         $api.on($script, 'yTPlayerDisconnect', function(event) {
-            callHook('yTPlayerConnect', event, false);
+            callHook('yTPlayerDisconnect', event, false);
         });
 
         /**
@@ -639,148 +632,16 @@
          * @event api-yTPlayerDeleteSREvent
          */
         $api.on($script, 'yTPlayerDeleteSR', function(event) {
-            callHook('yTPlayerDeleteSREvent', event, false);
+            callHook('yTPlayerDeleteSR', event, false);
         });
 
         /**
-         * @event api-ircChannelUserMode
+         * @event api-yTPlayerVolumeEvent
          */
-        $api.on($script, 'ircChannelUserMode', function(event) {
-            callHook('ircChannelUserMode', event, true);
+        $api.on($script, 'yTPlayerVolume', function(event) {
+            callHook('yTPlayerVolume', event, false);
         });
 
-        /**
-         * @event api-ircConnectComplete
-         */
-        $api.on($script, 'ircConnectComplete', function(event) {
-            callHook('ircConnectComplete', event, true);
-        });
-
-        /**
-         * @event api-ircJoinComplete
-         */
-        $api.on($script, 'ircJoinComplete', function(event) {
-            callHook('ircJoinComplete', event, true);
-        });
-
-        /**
-         * @event api-ircPrivateMessage
-         */
-        $api.on($script, 'ircPrivateMessage', function(event) {
-            callHook('ircPrivateMessage', event, false);
-        });
-
-        /**
-         * @event api-musicPlayerConnect
-         */
-        $api.on($script, 'musicPlayerConnect', function(event) {
-            callHook('musicPlayerConnect', event, false);
-        });
-
-        /**
-         * @event api-musicPlayerCurrentId
-         */
-        $api.on($script, 'musicPlayerCurrentId', function(event) {
-            callHook('musicPlayerCurrentId', event, false);
-        });
-
-        /**
-         * @event api-musicPlayerCurrentVolume
-         */
-        $api.on($script, 'musicPlayerCurrentVolume', function(event) {
-            callHook('musicPlayerCurrentVolume', event, false);
-        });
-
-        /**
-         * @event api-musicPlayerDisconnect
-         */
-        $api.on($script, 'musicPlayerDisconnect', function(event) {
-            callHook('musicPlayerDisconnect', event, false);
-        });
-
-        /**
-         * @event api-musicPlayerState
-         */
-        $api.on($script, 'musicPlayerState', function(event) {
-            callHook('musicPlayerState', event, false);
-        });
-
-        /**
-         * @event api-twitchAlertsDonation
-         */
-        $api.on($script, 'twitchAlertsDonation', function(event) {
-            callHook('twitchAlertsDonation', event, true);
-        });
-
-        /**
-         * @event api-twitchAlertsDonationInitialized
-         */
-        $api.on($script, 'twitchAlertsDonationInitialized', function(event) {
-            callHook('twitchAlertsDonationInitialized', event, true);
-        });
-
-        /**
-         * @event api-getEmotes
-         */
-        $api.on($script, 'emotesGet', function(event) {
-            callHook('emotesGet', event, true);
-        });
-
-        /**
-         * @event api-ircChannelJoinUpdate
-         */
-        $api.on($script, 'ircChannelJoinUpdate', function(event) {
-            callHook('ircChannelJoinUpdate', event, true);
-        });
-
-        /**
-         * @event api-yTPlayerConnect
-         */
-        $api.on($script, 'yTPlayerConnect', function(event) {
-            callHook('yTPlayerConnect', event, false);
-        });
-
-        /**
-         * @event api-yTPlayerDisconnect
-         */
-        $api.on($script, 'yTPlayerDisconnect', function(event) {
-            callHook('yTPlayerConnect', event, false);
-        });
-
-        /**
-         * @event api-yTPlayerState
-         */
-        $api.on($script, 'yTPlayerState', function(event) {
-            callHook('yTPlayerState', event, false);
-        });
-
-        /**
-         * @event api-yTPlayeCurrentId
-         */
-        $api.on($script, 'yTPlayerCurrentId', function(event) {
-            callHook('yTPlayerCurrentId', event, false);
-        });
-
-        /**
-         * @event api-yTPlayerRequestSonglist
-         */
-        $api.on($script, 'yTPlayerRequestSonglist', function(event) {
-            callHook('yTPlayerRequestSonglist', event, false);
-        });
-
-        /**
-         * @event api-yTPlayerRequestPlaylist
-         */
-        $api.on($script, 'yTPlayerRequestPlaylist', function(event) {
-            callHook('yTPlayerRequestPlaylist', event, false);
-        });
-
-        /**
-         * @event api-yTPlayerDeleteSREvent
-         */
-        $api.on($script, 'yTPlayerDeleteSR', function(event) {
-            callHook('yTPlayerDeleteSREvent', event, false);
-        });
 
         $.logEvent('init.js', 553, 'Bot locked & loaded!');
         $.consoleDebug('Bot locked & loaded!');
@@ -798,8 +659,6 @@
                 pointsRelatedModules = [],
                 temp,
                 index;
-
-
 
             /**
              * @commandpath reconnect - Tell the bot to reconnect to Twitch chat and the various APIs

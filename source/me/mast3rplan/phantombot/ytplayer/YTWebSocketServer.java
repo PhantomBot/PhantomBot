@@ -143,6 +143,7 @@ public class YTWebSocketServer extends WebSocketServer {
             } else if (jsonStatus.has("volume")) {
                 dataInt = jsonStatus.getInt("volume");
                 currentVolume = dataInt;
+                EventBus.instance().postAsync(new YTPlayerVolumeEvent(dataInt));
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['status'] request passed ["+jsonString+"]");
                 return;
@@ -222,7 +223,7 @@ public class YTWebSocketServer extends WebSocketServer {
 
     public void pause() {
         JSONStringer jsonObject = new JSONStringer();
-        sendToAll(jsonObject.object().key("command").value("pause").toString());
+        sendToAll(jsonObject.object().key("command").value("pause").endObject().toString());
     }
 
     public void currentId() {

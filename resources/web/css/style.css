@@ -5,7 +5,15 @@
     display: inline-block;
     margin-top: 17px;
 }
-.container { position:relative; padding:0 0 0 25px; }
+
+.container {
+    position:relative;
+    padding:0 0 0 25px;
+}
+
+#container {
+    width: 100%;
+}
 
 .header {
     background-color: #6441a5;
@@ -17,6 +25,11 @@
     -moz-box-shadow:    0px 3px 5px #000;
     box-shadow:         0px 3px 5px #000;
     overflow: hidden;
+}
+
+a {
+    color: #6441a5;
+    text-decoration: none;
 }
 
 body {
@@ -32,10 +45,6 @@ h1 {
     font-size: 26px;
     font-family: arial;
     display: inline-block;
-}
-
-#container {
-    width: 100%;
 }
 
 #main {
@@ -55,62 +64,24 @@ h1 {
     float: left;
     display: block;
 }
-#rightcontain {
-    display: inline;
-    width: 350px;
-    float: left;
-    vertical-align: top;
-    padding-left: 5px;
-}
-
-.selectbox {
-    background-color: rgb(34, 34, 34);
-    color: #fff;
-    width: 350px;
-    height: 200px;
-    font-size: 18px;
-    overflow:hidden;
-    border-color: #000;
-    border-style: solid;
-    border-width: 1px;
-    display: inline-block;
-}
 
 option:hover {
     background-color:#cd201f;
     cursor: pointer;
 }
+
 #selected {
     background-color: #000;
     padding: 5px;
 }
-#panel {
-    margin-left: -7px;
-}
 
 .button {
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border: 1px solid #b31217;
-    padding: 3px;
-    padding-left: 10px;
-    padding-right: 10px;
-    text-align: center;
-    margin-top: 10px;
-    margin-left: 7px;
-    margin-right: 2px;
-    margin-bottom: 10px;
-    color: #fff;
-    font-size: 16px;
-    font-family: normal normal normal 13.3333330154419px/normal Arial;
-    background-color: #cd201f;
-    display: inline-block;
-    -webkit-box-shadow: 0px 3px 5px #000;
-    -moz-box-shadow:    0px 3px 5px #000;
-    box-shadow:         0px 3px 5px #000;
-}
-.button:hover {
-    background-color: #b31217;
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
 }
 
 #songlist {
@@ -127,38 +98,19 @@ option:hover {
     overflow: hidden;
     width: 100%;
     padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 #copyright {
-    position: fixed;
-    left: 0px;
-    bottom: 0px;
-    height: 40px;
+    display: inline;
+    float: left;
     width: 100%;
     background-color: rgb(34, 34, 34);
     color: grey;
     text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-
-#sidebar1 {
-    position: fixed;
-    width: 350px;
-    right: 0%;
-    background-color: #f2f2f2;
-    height: 94%;
-    border-left: solid;
-    border-color: #6441a5;
-    border-width: 1px;
-    display: inline-block;
-    z-index: 2;
-}
-
-a {
-    color: #6441a5;
-    text-decoration: none;
+    vertical-align: middle;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 #playerLink {
@@ -166,19 +118,21 @@ a {
     text-decoration: none;
 }
 
-#chat {
-    height: 86%;
-    width: 100%;
-    margin-top: -5px;
+#currentSong {
+    color: #ffffff;
+    font-family: "Roboto Condensed", Sans-serif;
+    font-size: 18px;
 }
 
-.alert {
-    float: left;
-    width: 80%;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
+.currentSong-small {
+    color: #ffffff;
+    font-family: "Roboto Condensed", Sans-serif;
+    font-size: 16px;
+}
+
+table {
+    border: 0px;
+    width: 100%;
 }
 
 #songTable tr:nth-child(even) {
@@ -203,11 +157,6 @@ a {
     padding: 5px;
     text-align: left;
     vertical-align: middle;
-}
-
-table {
-    border: 0px;
-    width: 100%;
 }
 
 #playerTable tr {
@@ -263,11 +212,36 @@ table {
 }
 
 #songProgressBar {
-    width: 80%
+    width: 250px;
 }
 
 #volumeControl {
-    width: 50%
+    width: 150px;
 }
 
-.ui-slider .ui-slider-handle { width: 10px; margin-left: -5px; height: 10px; margin-top: 5px; }
+.controlTable {
+    margin-top: 20px;
+    width: 300px;
+}
+.controlTable td {
+    padding: 1px;
+    text-align: left;
+    vertical-align: midle;
+}
+
+.ui-slider .ui-slider-handle { 
+    width: 10px;
+    margin-left: -5px;
+    height: 10px;
+    margin-top: 5px;
+}
+
+.alert {
+    float: left;
+    width: 80%;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+}
+
