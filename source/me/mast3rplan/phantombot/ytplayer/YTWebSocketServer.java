@@ -37,6 +37,9 @@
  * // Delete requested song
  * { "deletesr" : "YouTube ID" }
  *
+ * // Skip a song
+ * { "command" : "skipsong" }
+ *
  * -------------------------------------------------------------------------------------------------------------
  *
  * Websocket pushes the following to the Player Interface
@@ -160,6 +163,14 @@ public class YTWebSocketServer extends WebSocketServer {
         } else if (jsonObject.has("deletesr")) {
             dataString = jsonObject.getString("deletesr");
             EventBus.instance().postAsync(new YTPlayerDeleteSREvent(dataString));
+        } else if (jsonObject.has("command")) {
+            if (jsonObject.getString("command").equals("skipsong")) {
+                EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                return;
+            } else {
+                com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
+                return;
+            }
         } else {
             com.gmt2001.Console.err.println("YTWebSocketServer: Unknown JSON passed ["+jsonString+"]");
             return;

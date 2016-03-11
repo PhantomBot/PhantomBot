@@ -3,7 +3,7 @@
  * ------------
  * Interface for the YouTube Player for PhantomBot.
  */
-var DEBUG_MODE = false;
+var DEBUG_MODE = true; 
 
 var playerPaused = false;
 var playerMuted = false;
@@ -11,7 +11,7 @@ var connectedToWS = false;
 var volumeSlider = null;
 
 var url = window.location.host.split(":");
-var addr = 'ws://' + url[0] + ':25003';
+var addr = 'ws://' + url[0] + ':26003';
 var connection = new WebSocket(addr, []);
 var currentVolume = 0;
 
@@ -163,7 +163,8 @@ function handlePlay(id, title, duration, requester) {
                                "<img style=\"margin: 0px 10px 0px 0px\" height=\"15\" height=\"15\" width=\"15\" src=\"images/user-icon.png\">" + requester + "</span>" +
                                "<table class=\"controlTable\">" +
                                "  <tr><td><div style=\"width: 30px\" class=\"button\" onclick=\"handlePause()\"><img src=\"images/PlayPauseButton.png\" height=\"30\" width=\"30\"></div></td>" +
-                               "    <td colspan=\"2\"><div id=\"songProgressBar\"></div></td></tr>" +
+                               "    <td><div id=\"songProgressBar\"></div></td>" +
+                               "    <td><div style=\"width: 30px\" class=\"button\" onclick=\"skipSong()\"><img src=\"images/SkipSongButton.png\" height=\"30\" width=\"30\"></div></td>" +
                                "  <tr><td><div style=\"width: 30px\" class=\"button\" onclick=\"handleMute()\"><img src=\"images/MuteButton.png\" height=\"30\" width=\"30\"></div></td>" +
                                "    <td><div id=\"volumeControl\"></div></td><td><div style=\"width: 65px\" id=\"mutedDiv\"></div></td></tr>" +
                                "<table>");
@@ -186,6 +187,14 @@ function deleteSong(id) {
     debugMsg("deleteSong(" + id + ")");
     var jsonObject = {};
     jsonObject["deletesr"] = id;
+    connection.send(JSON.stringify(jsonObject));
+    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
+}
+
+function skipSong(d) {
+    debugMsg("skipSong()");
+    var jsonObject = {};
+    jsonObject["command"] = "skipsong";
     connection.send(JSON.stringify(jsonObject));
     debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
 }

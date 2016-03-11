@@ -697,6 +697,14 @@
     }
 
     /**
+     * @event ytPlayerSkipSong
+     */
+    $.bind('yTPlayerSkipSong', function(event) {
+        currentPlaylist.nextVideo();
+        connectedPlayerClient.pushSongList();
+    });
+
+    /**
      * @event yTPlayerDeleteSR
      */
     $.bind('yTPlayerDeleteSR', function(event) {

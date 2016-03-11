@@ -642,6 +642,12 @@
             callHook('yTPlayerVolume', event, false);
         });
 
+        /**
+         * @event api-yTPlayerSkipSongEvent
+         */
+        $api.on($script, 'yTPlayerSkipSong', function(event) {
+            callHook('yTPlayerSkipSong', event, false);
+        });
 
         $.logEvent('init.js', 553, 'Bot locked & loaded!');
         $.consoleDebug('Bot locked & loaded!');
