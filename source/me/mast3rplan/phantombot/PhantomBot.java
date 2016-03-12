@@ -80,7 +80,9 @@ public class PhantomBot implements Listener {
     private String twitchalertskey = null;
     private int twitchalertslimit;
     public final String username;
+    private String ytpassword;
     private final String webauth;
+    private final String ytauth;
     private final String oauth;
     private String apioauth;
     private String clientid;
@@ -142,7 +144,7 @@ public class PhantomBot implements Listener {
                       double msglimit30, String datastore, String datastoreconfig, String youtubekey,
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
                       String keystorepassword, String keypassword, String twitchalertskey,
-                      int twitchalertslimit, String webauth, String awshostname) {
+                      int twitchalertslimit, String webauth, String awshostname, String ytpassword, String ytauth) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -158,7 +160,9 @@ public class PhantomBot implements Listener {
         this.username = username;
         this.oauth = oauth;
         this.apioauth = apioauth;
+        this.ytpassword = ytpassword;
         this.webauth = webauth;
+        this.ytauth = ytauth;
         this.channelName = channel;
         this.ownerName = owner;
         this.baseport = baseport;
@@ -341,14 +345,14 @@ public class PhantomBot implements Listener {
                 httpserver = new HTTPServer(baseport, oauth);
                 if (musicenable) {
                     musicsocketserver = new MusicWebSocketSecureServer(baseport + 1, keystorepath, keystorepassword, keypassword);
-                    ytsocketserver = new YTWebSocketServer(baseport + 3);
+                    ytsocketserver = new YTWebSocketServer(baseport + 3, ytauth);
                 }
                 eventsocketserver = new EventWebSocketSecureServer(baseport + 2, keystorepath, keystorepassword, keypassword);
             } else {
                 httpserver = new HTTPServer(baseport, oauth);
                 if (musicenable) {
                     musicsocketserver = new MusicWebSocketServer(baseport + 1);
-                    ytsocketserver = new YTWebSocketServer(baseport + 3);
+                    ytsocketserver = new YTWebSocketServer(baseport + 3, ytauth);
                 }
                 eventsocketserver = new EventWebSocketServer(baseport + 2);
             }
@@ -369,7 +373,7 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("EventSocketServer accepting connections on port " + eventport);
             EventBus.instance().register(eventsocketserver);
 
-            NEWhttpserver = new NEWHTTPServer(baseport + 1000, oauth, webauth);
+            NEWhttpserver = new NEWHTTPServer(baseport + 1000, oauth, webauth, ytpassword);
             // NEWhttpsServer = new NEWHTTPSServer(baseport + 1443, oauth, webauth);
             com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 1000));
             // com.gmt2001.Console.out.println("NEW HTTPS Server accepting connections on port " + (baseport + 1443));
@@ -386,9 +390,11 @@ public class PhantomBot implements Listener {
                                     "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n" +
                                     "var playerPort = " + (baseport + 3) + ";\r\n" +
                                     "var channelName = \"" + channelName + "\";\r\n" +
+                                    "var auth=\"" + ytauth + "\";\r\n" +
                                     "function getPlayerPort() { return playerPort; }\r\n" +
-                                    "function getChannelName() { return channelName; }\r\n";
-            Files.write(Paths.get("./web/js/playerConfig.js"), playerPortData.getBytes(StandardCharsets.UTF_8),
+                                    "function getChannelName() { return channelName; }\r\n" +
+                                    "function getAuth() { return auth; }\r\n";
+            Files.write(Paths.get("./web/ytplayer/js/playerConfig.js"), playerPortData.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -669,6 +675,13 @@ public class PhantomBot implements Listener {
             changed = true;
         }
 
+        if (message.equals("ytpassword")) {
+            com.gmt2001.Console.out.print("Please enter a new YouTube Player password (requires restart): ");
+            String newytpassword = System.console().readLine().trim();
+            ytpassword = newytpassword;
+            changed = true;
+        }
+
         if (message.equals("webenable")) {
             com.gmt2001.Console.out.print("Please note that the music server will also be disabled if the web server is disabled. The bot will require a restart for this to take effect. Type true or false to enable/disable web server: ");
             String newwebenable = System.console().readLine().trim();
@@ -734,6 +747,8 @@ public class PhantomBot implements Listener {
                 data += "youtubekey=" + youtubekey + "\r\n";
                 data += "webenable=" + webenable + "\r\n";
                 data += "musicenable=" + musicenable + "\r\n";
+                data += "ytpassword=" + ytpassword + "\r\n";
+                data += "ytauth=" + ytauth + "\r\n";
                 data += "usehttps=" + usehttps + "\r\n";
                 data += "keystorepath=" + keystorepath + "\r\n";
                 data += "keystorepassword=" + keystorepassword + "\r\n";
@@ -918,6 +933,8 @@ public class PhantomBot implements Listener {
         String user = "";
         String oauth = "";
         String webauth = "";
+        String ytpassword = "";
+        String ytauth = "";
         String twitchalertskey = "";
         int twitchalertslimit = 5;
         String apioauth = "";
@@ -956,6 +973,12 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("webauth=") && line.length() > 11) {
                         webauth = line.substring(8);
+                    }
+                    if (line.startsWith("ytpassword=") && line.length() > 12) {
+                        ytpassword = line.substring(11);
+                    }
+                    if (line.startsWith("ytauth=") && line.length() > 8) {
+                        ytauth = line.substring(7);
                     }
                     if (line.startsWith("oauth=") && line.length() > 9) {
                         oauth = line.substring(6);
@@ -1043,6 +1066,16 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("Adding new botlogin.txt entry for awshostname.");
             changed = true;
         }
+        if (ytpassword.isEmpty()) {
+            ytpassword = "Ph@ntomYT!";
+            com.gmt2001.Console.out.println("Set default ytpassword, please change in botlogin.txt and restart bot.");
+            changed = true;
+        }
+        if (ytauth.isEmpty()) {
+            ytauth = generateWebAuth();
+            com.gmt2001.Console.out.println("New YouTube websocket key has been generated for botlogin.txt");
+            changed = true;
+        }
 
         if (user.isEmpty() || oauth.isEmpty() || channel.isEmpty()) {
             try {
@@ -1058,6 +1091,9 @@ public class PhantomBot implements Listener {
 
                 com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join (not the link, just the name): ");
                 channel = System.console().readLine().trim();
+
+                com.gmt2001.Console.out.print("Please enter a YouTube Player password: ");
+                ytpassword = System.console().readLine().trim();
 
                 changed = true;
             } catch (NullPointerException ex) {
@@ -1092,6 +1128,8 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("youtubekey='" + youtubekey + "'");
                     com.gmt2001.Console.out.println("webenable=" + webenable);
                     com.gmt2001.Console.out.println("musicenable=" + musicenable);
+                    com.gmt2001.Console.out.println("ytpassword=" + ytpassword);
+                    com.gmt2001.Console.out.println("ytauth=" + ytauth);
                     com.gmt2001.Console.out.println("usehttps=" + usehttps);
                     com.gmt2001.Console.out.println("keystorepath='" + keystorepath + "'");
                     com.gmt2001.Console.out.println("keystorepassword='" + keystorepassword + "'");
@@ -1130,6 +1168,18 @@ public class PhantomBot implements Listener {
                 if (arg.toLowerCase().startsWith("webauth=") && arg.length() > 11) {
                     if (!webauth.equals(arg.substring(8))) {
                         webauth = arg.substring(8);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("ytpassword=") && arg.length() > 12) {
+                    if (!ytpassword.equals(arg.substring(11))) {
+                        ytpassword = arg.substring(11);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("ytauth=") && arg.length() > 8) {
+                    if (!ytpassword.equals(arg.substring(7))) {
+                        ytauth = arg.substring(7);
                         changed = true;
                     }
                 }
@@ -1268,7 +1318,7 @@ public class PhantomBot implements Listener {
                                                     + "[datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>] "
                                                     + "[datastoreconfig=<Optional DataStore config option, different for each DataStore type>] "
                                                     + "[youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]"
-                                                    + "[twitchalertskey=<twitch alerts key>] [twitchalertslimit=<limit>");
+                                                    + "[ytpassword=<ytplayer password>] [ytauth=<ytplayer ws auth>] [twitchalertskey=<twitch alerts key>] [twitchalertslimit=<limit>");
                     return;
                 }
                 if (arg.equalsIgnoreCase("storetypes")) {
@@ -1300,6 +1350,8 @@ public class PhantomBot implements Listener {
             data += "youtubekey=" + youtubekey + "\r\n";
             data += "webenable=" + webenable + "\r\n";
             data += "musicenable=" + musicenable + "\r\n";
+            data += "ytpassword=" + ytpassword + "\r\n";
+            data += "ytauth=" + ytauth + "\r\n";
             data += "usehttps=" + usehttps + "\r\n";
             data += "keystorepath=" + keystorepath + "\r\n";
             data += "keystorepassword=" + keystorepassword + "\r\n";
@@ -1311,7 +1363,7 @@ public class PhantomBot implements Listener {
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit, webauth, awshostname);
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit, webauth, awshostname, ytpassword, ytauth);
     }
 
     private static String generateWebAuth() {
@@ -1326,5 +1378,4 @@ public class PhantomBot implements Listener {
         }
         return new String(randomBuffer);
     }
-
 }

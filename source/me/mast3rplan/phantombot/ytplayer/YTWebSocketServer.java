@@ -17,6 +17,9 @@
 
 /* Websocket accepts the following JSON data from the Player Interface
  *
+ * // Authenticate
+ * { "authenticate : "authentication_key" }
+ * 
  * // Tell the bot the current state of the player.
  * // Values are: NEW(-2), UNSTARTED(-1), ENDED(0), PLAYING(1), PAUSED(2), BUFFERING(3), CUED(5), KEEPALIVE(200)
  * { "status" : { "state" : integer value } }
@@ -46,6 +49,9 @@
  * -------------------------------------------------------------------------------------------------------------
  *
  * Websocket pushes the following to the Player Interface
+ *
+ * // Return authorization result.
+ * { "authresult" : true/false }
  *
  * // Instruct the Interface to play a song.
  * { "command" : { "play" : "YouTube ID", "duration" : "mm:ss", "title" : "Song Title", "requester" : "Username" } }
@@ -92,11 +98,14 @@ import org.json.JSONStringer;
 
 public class YTWebSocketServer extends WebSocketServer {
 
+    private String authString;
     private int currentVolume = 0;
     private int currentState = -10;
+    private Boolean authenticated = false;
 
-    public YTWebSocketServer(int port) {
+    public YTWebSocketServer(int port, String authString) {
         super(new InetSocketAddress(port));
+        this.authString = authString;
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
@@ -130,6 +139,17 @@ public class YTWebSocketServer extends WebSocketServer {
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("YTWebSocketServer: Exception Occurred");
             com.gmt2001.Console.err.printStackTrace(ex);
+            return;
+        }
+
+        if (jsonObject.has("authenticate")) {
+            authenticated = jsonObject.getString("authenticate").equals(authString);
+            authResult();
+            return;
+        }
+
+        if (!authenticated) {
+            authResult();
             return;
         }
 
@@ -254,6 +274,11 @@ public class YTWebSocketServer extends WebSocketServer {
             currentVolume = volume;
             sendToAll(jsonObject.object().key("command").object().key("setvolume").value(volume).endObject().endObject().toString());
         }
+    }
+
+    public void authResult() {
+        JSONStringer jsonObject = new JSONStringer();
+        sendToAll(jsonObject.object().key("authresult").value(authenticated).endObject().toString());
     }
 
     public int getVolume() {

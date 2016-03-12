@@ -34,6 +34,8 @@ import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.BasicAuthenticator;
 import com.sun.net.httpserver.Headers;
 import org.json.JSONStringer;
 
@@ -43,7 +45,7 @@ public class NEWHTTPServer {
   private String     serverWebAuth;
   private int        serverPort;
 
-  public NEWHTTPServer(int myPort, String myPassword, String myWebAuth) {
+  public NEWHTTPServer(int myPort, String myPassword, String myWebAuth, final String ytPassword) {
       serverPort = myPort;
       serverPassword = myPassword;
       serverWebAuth = myWebAuth;
@@ -53,6 +55,15 @@ public class NEWHTTPServer {
       try {
           server = HttpServer.create(new InetSocketAddress(serverPort), 0);
           server.createContext("/", new HTTPServerHandler());
+          
+          HttpContext ytContext = server.createContext("/ytplayer", new YTPHandler());
+          ytContext.setAuthenticator(new BasicAuthenticator("PhantomBot YouTube Player") {
+              @Override
+              public boolean checkCredentials(String user, String pwd) {
+                  return user.equals("ytplayer") && pwd.equals(ytPassword);
+              }
+          });
+
           server.start();
       } catch (IOException ex) {
           com.gmt2001.Console.err.println("Failed to create HTTP Server: " + ex.getMessage());
@@ -64,9 +75,32 @@ public class NEWHTTPServer {
   }
 
   public void close() {
-      com.gmt2001.Console.out.println("HTTP server closing down on port " + serverPort + " with 2 second delay.");
-      server.stop(2);
-      com.gmt2001.Console.out.println("HTTP server stopped on port " + serverPort);
+      com.gmt2001.Console.out.println("NEW HTTP server closing down on port " + serverPort + " with 5 second delay.");
+      server.stop(5);
+      com.gmt2001.Console.out.println("NEW HTTP server stopped on port " + serverPort);
+  }
+
+  class YTPHandler implements HttpHandler {
+      public void handle(HttpExchange exchange) throws IOException {
+          URI uriData = exchange.getRequestURI();
+          String uriPath = uriData.getPath();
+
+          // Get the Request Method (GET/PUT)
+          String requestMethod = exchange.getRequestMethod();
+
+          // Get any data from the body, although, we just discard it, this is required
+          InputStream inputStream = exchange.getRequestBody();
+          while (inputStream.read() != -1) { inputStream.skip(0x10000); }
+          inputStream.close();
+
+          if (requestMethod.equals("GET")) {
+              if (uriPath.equals("/ytplayer")) {
+                  handleFile("/web/ytplayer/index.html", exchange, false, false);
+              } else {
+                  handleFile("/web/" + uriPath, exchange, false, false);
+              }
+           }
+      }
   }
 
   class HTTPServerHandler implements HttpHandler {
