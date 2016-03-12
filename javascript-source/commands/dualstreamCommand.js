@@ -8,6 +8,7 @@
             command = event.getCommand(),
             args = event.getArgs(),
             argsString = event.getArguments().trim(),
+            channel = argsString,
             action = args[0],
             subAction = args[1];
 
@@ -17,7 +18,7 @@
         if (command.equalsIgnoreCase('multi')) {
             if (!action) {
                 if (otherChannels != null) {
-                    $.say('http://multistre.am/' + $.username.resolve($.channelName) + otherChannels);
+                    $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
                     return;
                 } else {
                     if ($.isModv3(sender, event.getTags())) {
@@ -38,9 +39,9 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.set.usage'));
                     return;
                 }
-                argsString = argsString.replace('set', '');
-                argsString = argsString.replace(' ', '/');
-                otherChannels = argsString;
+                channel = channel.replace(action + ' ', '/');
+                channel = channel.replace(' ', '/');
+                otherChannels = channel;
                 $.inidb.set('dualStreamCommand', 'otherChannels', otherChannels);
                 $.say($.lang.get('dualstreamcommand.link.set', $.username.resolve($.channelName) + otherChannels));
                 return;
@@ -63,7 +64,7 @@
             }
 
             /**
-             * @commandpath multi timer [on | off] - Enable/Disable the multi-links timer
+             * @commandpath multi timer [on / off] - Enable/Disable the multi-links timer
              */
             if (action.equalsIgnoreCase('timer')) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -117,7 +118,7 @@
             $.registerChatCommand('./commands/dualstreamCommand.js', 'multi', 7);
             setInterval(function() {
                 if (otherChannels != null) {
-                    if (timerToggle) {
+                    if (timerToggle && $.isOnline($.channelName)) {
                         $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
                         return;
                     }
