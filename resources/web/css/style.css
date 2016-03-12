@@ -47,6 +47,22 @@ h1 {
     display: inline-block;
 }
 
+.chat {
+    width: 300px;
+    height: 600px;
+    padding-top: 0px;
+    vertical-align: top;
+}
+
+.chatFrame {
+    border-style: solid;
+    border-color: #6441a5;
+    height: 600px;
+    width: 300px;
+    scrolling: no;
+    order: 1px;
+}
+
 #main {
     display: inline;
     float: left;
@@ -57,8 +73,6 @@ h1 {
 
 #player {
     vertical-align: middle;
-    //width: 720px;
-    //height: 400px;
     width: 250px;
     height: 250px;
     float: left;
@@ -163,6 +177,7 @@ table {
     background: #6441a5;
     color: white;
     font-size: 18px;
+    vertical-align: middle;
 }
 
 #playerTable td {
@@ -216,7 +231,7 @@ table {
 }
 
 #volumeControl {
-    width: 150px;
+    width: 100px;
 }
 
 .controlTable {
@@ -226,22 +241,43 @@ table {
 .controlTable td {
     padding: 1px;
     text-align: left;
-    vertical-align: midle;
+    vertical-align: middle;
 }
 
 .ui-slider .ui-slider-handle { 
-    width: 10px;
-    margin-left: -5px;
-    height: 10px;
-    margin-top: 5px;
+    visibility: hidden;
 }
 
-.alert {
-    float: left;
-    width: 80%;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
+.alert-danger {
+    clear: left;
+    position: fixed;
+    right: 15px;
+    top: 14px;
+    height: 40px;
+    width: 60%;
+    text-align: center;
+    background-color: red;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
+.alert-success {
+    clear: left;
+    position: fixed;
+    right: 15px;
+    top: 14px;
+    height: 40px;
+    width: 60%;
+    text-align: center;
+    background-color: white;
+    color: #6441a5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+} 

@@ -56,4 +56,4 @@ $.lang.register('ytplayer.requestsong.error.maxrequests', 'exceeds maximum concu
 $.lang.register('ytplayer.requestsong.error.disabled', 'song requests are disabled');
 $.lang.register('ytplayer.requestsong.error.yterror', 'YouTube error ($1)');
 $.lang.register('ytplayer.requestsong.error.exists', 'song is already in queue');
-$.lang.register('ytplayer.requestsong.error.maxlength', 'song exceeds maximum length');
+$.lang.register('ytplayer.requestsong.error.maxlength', 'song length is $1 and exceeds maximum length');

@@ -205,8 +205,9 @@
                 return -1;
             }
             if (targetPlaylistName) {
-                newKey = parseInt($.inidb.GetKeyList(playlistDbPrefix + targetPlaylistName, '').length) + 1;
+                newKey = (!$.inidb.exists(playlistDbPrefix + targetPlaylistName, 'lastkey') ? 0 : parseInt($.inidb.get(playlistDbPrefix + targetPlaylistName, 'lastkey')) + 1);
                 $.inidb.set(playlistDbPrefix + targetPlaylistName, newKey, youtubeVideo.getVideoId());
+                $.inidb.set(playlistDbPrefix + targetPlaylistName, 'lastkey', newKey);
             }
             if (targetPlaylistName.equals(this.playlistName)) {
                 this.loadPlaylistKeys();
@@ -224,9 +225,11 @@
                 i;
 
             for (i = 0; i < keyList.length; i++) {
-                if ($.inidb.get(playListDbId, keyList[i]) == currentVideo.getVideoId()) {
-                    $.inidb.del(playListDbId, keyList[i]);
-                    break;
+                if (!keyList[i].equals("lastkey")) {
+                    if ($.inidb.get(playListDbId, keyList[i]) == currentVideo.getVideoId()) {
+                        $.inidb.del(playListDbId, keyList[i]);
+                        break;
+                    }
                 }
             }
 
@@ -352,7 +355,9 @@
             defaultPlaylistReadOnly = [];
 
             for (var i = 0; i < keyList.length; i++) {
-                defaultPlaylist.push(keyList[i]);
+                if (!keyList[i].equals("lastkey")) {
+                  defaultPlaylist.push(keyList[i]);
+                }
             }
             defaultPlaylist = (randomizePlaylist ? $.arrayShuffle(defaultPlaylist) : defaultPlaylist);
             for (var i = 0; i < defaultPlaylist.length; i++) {
@@ -487,8 +492,8 @@
                 return null;
             }
 
-            if (this.videoLengthExceedsMax(youtubeVideo)) {
-                requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength');
+            if (this.videoLengthExceedsMax(youtubeVideo) && !$.isAdmin(requestOwner)) {
+                requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength', youtubeVideo.getVideoLengthMMSS());
                 return null;
             }
 
@@ -543,8 +548,10 @@
                 i;
 
             for (i in keyList) {
-                if ($.inidb.get(playlistDbPrefix + targetPlaylistName, keyList[i]) == youtubeVideo.getVideoId) {
-                    return true;
+                if (!keyList[i].equals("lastkey")) {
+                    if ($.inidb.get(playlistDbPrefix + targetPlaylistName, keyList[i]) == youtubeVideo.getVideoId) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -695,6 +702,22 @@
             return parseInt(client.getPlayerState());
         }
     }
+
+    /**
+     * @event ytPlayerStealSong
+     */
+    $.bind('yTPlayerStealSong', function(event) {
+$.consoleLn("STEAL SONG: " + currentPlaylist.getCurrentVideo());
+        currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo());
+    });
+
+    /**
+     * @event ytPlayerSkipSong
+     */
+    $.bind('yTPlayerSkipSong', function(event) {
+        currentPlaylist.nextVideo();
+        connectedPlayerClient.pushSongList();
+    });
 
     /**
      * @event yTPlayerDeleteSR
@@ -1123,7 +1146,7 @@
                 return;
             }
             var request = currentPlaylist.requestSong(event.getArguments(), sender);
-            if (request) {
+            if (request != null) {
                 $.say($.lang.get(
                     'ytplayer.command.songrequest.success',
                     $.resolveRank(sender),
