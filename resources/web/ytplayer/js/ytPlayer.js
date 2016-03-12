@@ -50,11 +50,18 @@ function debugMsg(message) {
 
 function onPlayerReady(event) {
     debugMsg("onPlayerReady()");
+
+    var jsonObject = {};
+    jsonObject["authenticate"] = getAuth();
+    connection.send(JSON.stringify(jsonObject));
+    debugMsg("onPlayerReady::connection.send(" + JSON.stringify(jsonObject)+")");
+
     readyEvent()
     playerObject.setVolume(5); // Be safe with the caster
 }
 
 function readyEvent() {
+    debugMsg("readyEvent()");
     var jsonObject = {};
     jsonObject["status"] = { "ready" : true };
     connection.send(JSON.stringify(jsonObject));
@@ -88,6 +95,12 @@ connection.onmessage = function(e) {
         return;
     }
     debugMsg("connection.onmessage("+ e.data + ")");
+
+    if (messageObject['authresult'] == false) {
+        if (!messageObject['authresult']) {
+            newSongAlert('WS Auth Failed', 'Reload page, if that fails, restart bot', 'danger', 0);
+        }
+    }
 
     if (messageObject['command']) {
         if (messageObject['command']['play']) {
