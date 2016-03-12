@@ -156,6 +156,11 @@ public class HTTPServer extends Thread {
                             }
                         }
 
+                        if (request[1].toLowerCase().startsWith("ytplayer") || request[1].toLowerCase().startsWith("/ytplayer")) {
+                            data = "\r\n\r\nPlease use the NEW HTTP Server for the YouTube Player\r\n\r\n";
+                            target = new File(webhome + "/" + request[1] + ""); // Kludge for logic.
+                        }
+
                         if (target == null) {
                             if (request[1].startsWith("/")) {
                                 target = new File(webhome + request[1]);
