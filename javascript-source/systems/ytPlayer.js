@@ -707,7 +707,6 @@
      * @event ytPlayerStealSong
      */
     $.bind('yTPlayerStealSong', function(event) {
-$.consoleLn("STEAL SONG: " + currentPlaylist.getCurrentVideo());
         currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo());
     });
 
@@ -1307,6 +1306,7 @@ $.consoleLn("STEAL SONG: " + currentPlaylist.getCurrentVideo());
             $.registerChatCommand('./systems/ytPlayer.js', 'currentsong');
             $.registerChatCommand('./systems/ytPlayer.js', 'wrongsong');
             $.registerChatCommand('./systems/ytPlayer.js', 'nextsong');
+            $.registerChatCommand('./systems/ytPlayer.js', 'togglesongrequests', 1);
             $.registerChatSubcommand('wrongsong', 'user', 2);
 
             /** Pre-load last activated playlist */
