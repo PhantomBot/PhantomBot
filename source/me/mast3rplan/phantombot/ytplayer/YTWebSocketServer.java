@@ -46,6 +46,10 @@
  * // Steal a song
  * { "command" : "stealsong" }
  *
+ * // Add a song request
+ * { "command" : "songrequest", "search" : "search string" }
+ * 
+ *
  * -------------------------------------------------------------------------------------------------------------
  *
  * Websocket pushes the following to the Player Interface
@@ -193,6 +197,12 @@ public class YTWebSocketServer extends WebSocketServer {
             } else if (jsonObject.getString("command").equals("stealsong")) {
                 EventBus.instance().postAsync(new YTPlayerStealSongEvent());
                 return;
+            } else if (jsonObject.getString("command").equals("songrequest")) {
+                if (jsonObject.has("search")) {
+                    dataString = jsonObject.getString("search");
+                    EventBus.instance().postAsync(new YTPlayerSongRequestEvent(dataString));
+                    return;
+                }
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
                 return;

@@ -43,7 +43,7 @@ h1 {
     padding-top: 20px;
     margin-left: 15px;
     font-size: 26px;
-    font-family: arial;
+    font-family: "Roboto", arial;
     display: inline-block;
 }
 
@@ -116,6 +116,7 @@ option:hover {
 }
 
 #copyright {
+    font-family: "Roboto", arial;
     display: inline;
     float: left;
     width: 100%;
@@ -133,14 +134,15 @@ option:hover {
 }
 
 #currentSong {
+    background-color: #444444;
     color: #ffffff;
-    font-family: "Roboto Condensed", Sans-serif;
+    font-family: "Roboto", Sans-serif;
     font-size: 18px;
 }
 
 .currentSong-small {
     color: #ffffff;
-    font-family: "Roboto Condensed", Sans-serif;
+    font-family: "Roboto", Sans-serif;
     font-size: 16px;
 }
 
@@ -150,43 +152,50 @@ table {
 }
 
 #songTable tr:nth-child(even) {
+    font-family: "Roboto", Sans-serif;
     background: #CCC;
     color: black;
     font-size: 14px;
 }
 
 #songTable tr:nth-child(odd) {
+    font-family: "Roboto", Sans-serif;
     background: #FFF;
     color: black;
     font-size: 14px;
 }
 
 #songTable td {
+    font-family: "Roboto", Sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
 }
 
 #songTable th {
+    font-family: "Roboto", Sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
 }
 
 #playerTable tr {
-    background: #6441a5;
+    font-family: "Roboto", Sans-serif;
+    background: #444444;
     color: white;
     font-size: 18px;
     vertical-align: middle;
 }
 
 #playerTable td {
+    font-family: "Roboto", Sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
 }
 
 #songTableTitle {
+    font-family: "Roboto", Sans-serif;
     background: #7451b5;
     color: white;
     font-size:14px;
@@ -195,6 +204,7 @@ table {
 }
 
 #playlistTableTitle {
+    font-family: "Roboto", Sans-serif;
     background: #7451b5;
     color: white;
     font-size:14px;
@@ -203,24 +213,28 @@ table {
 }
 
 #playlistTable tr:nth-child(even) {
+    font-family: "Roboto", Sans-serif;
     background: #CCC;
     color: black;
     font-size: 14px;
 }
 
 #playlistTable tr:nth-child(odd) {
+    font-family: "Roboto", Sans-serif;
     background: #FFF;
     color: black;
     font-size: 14px;
 }
 
 #playlistTable td {
+    font-family: "Roboto", Sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
 }
 
 #playlistTable th {
+    font-family: "Roboto", Sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
@@ -235,10 +249,12 @@ table {
 }
 
 .controlTable {
+    background-color: #333333;
     margin-top: 20px;
     width: 300px;
 }
 .controlTable td {
+    background-color: #333333;
     padding: 1px;
     text-align: left;
     vertical-align: middle;
@@ -281,3 +297,8 @@ table {
     text-overflow: ellipsis;
     white-space: nowrap;
 } 
+
+.modal-dialog {
+    background-color: #444444;
+    color: #dddddd;
+}

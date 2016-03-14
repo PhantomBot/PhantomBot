@@ -10,7 +10,7 @@
         announceInChat = ($.inidb.exists('ytSettings', 'announceInChat') ? $.getIniDbBoolean('ytSettings', 'announceInChat') : false),
         activePlaylistname = ($.inidb.exists('ytSettings', 'activePlaylistname') ? $.inidb.get('ytSettings', 'activePlaylistname') : 'default'),
         baseFileOutputPath = ($.inidb.exists('ytSettings', 'baseFileOutputPath') ? $.inidb.get('ytSettings', 'baseFileOutputPath') : './addons/youtubePlayer/'),
-        songRequestsEnabled = ($.inidb.exists('ytSettings', 'songRequestsEnabled') ? $.getIniDbBoolean('ytSettings', 'songRequestsEnabled') : false),
+        songRequestsEnabled = ($.inidb.exists('ytSettings', 'songRequestsEnabled') ? $.getIniDbBoolean('ytSettings', 'songRequestsEnabled') : true),
         songRequestsMaxParallel = ($.inidb.exists('ytSettings', 'songRequestsMaxParallel') ? parseInt($.inidb.get('ytSettings', 'songRequestsMaxParallel')) : 1),
         songRequestsMaxSecondsforVideo = ($.inidb.exists('ytSettings', 'songRequestsMaxSecondsforVideo') ? parseInt($.inidb.get('ytSettings', 'songRequestsMaxSecondsforVideo')) : (8 * 60));
         playlistDJname = ($.inidb.exists('ytSettings', 'playlistDJname') ? $.inidb.get('ytSettings', 'playlistDJname') : $.botName);
@@ -145,10 +145,11 @@
      * @class
      * @description This class loads a playlist and takes care of managing currently playing songs and songrequest.
      * @param {string} playlistName
+     * @param {boolean} loadDefaultPlaylist
      * @return {boolean}
      * @requires YoutubeVideo
      */
-    function BotPlayList(playlistName) {
+    function BotPlayList(playlistName, loadDefault) {
         var previousVideo = null,
             currentVideo = null,
             playListDbId = playlistDbPrefix + playlistName,
@@ -161,6 +162,40 @@
         this.loaded = false;
 
         /** 
+         * @function importPlaylistFile
+         * @param {String}
+         * @param {String}
+         * @return {String}
+         */
+        this.importPlaylistFile = function(listName, fileName) {
+            var importedList = [],
+                importCount = 0;
+
+            if ($.inidb.exists('yt_playlists_registry', 'ytPlaylist_' + listName)) {
+                if ($.fileExists("./addons/youtubePlayer/" + fileName)) {
+                    importedList = readFile("./addons/youtubePlayer/" + fileName);
+                    for (var i = 0; i < importedList.length; i++) {
+                        try {
+                            var youtubeVideo = new YoutubeVideo(importedList[i], 'importPlaylistFile');
+                            importCount++;
+                            $.inidb.set(playlistDbPrefix + listName, importCount, youtubeVideo.getVideoId());
+                        } catch (ex) {
+                            $.logError("ytPlayer.js", 182, "importPlaylistFile::skipped [" + importedList[i] + "]: " + ex);
+                        }
+                    }
+                    $.inidb.set(playlistDbPrefix + listName, 'lastkey', importCount);
+
+                    return $.lang.get('ytplayer.command.importpl.file.success', importCount, fileName, listName);
+                } else {
+                    return $.lang.get('ytplayer.command.importpl.file.404', fileName);
+                    $.say("File does not exist: " + fileName);
+                    return false;
+                }
+            } 
+            return $.lang.get('ytplayer.command.importpl.file.registry404', listName);
+        };
+
+        /** 
          * @function loadNewPlaylist
          * @return {Boolean}
          */
@@ -171,7 +206,7 @@
                this.loadPlaylistKeys();
                connectedPlayerClient.pushPlayList();
             }
-        }
+        };
 
         /**
          * @function getplayListDbId
@@ -332,7 +367,7 @@
             if ($.inidb.exists(playListDbId, playlistPosition)) {
                 previousVideo = currentVideo;
                 try {
-                    currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playlistPosition), $.botName);
+                    currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playlistPosition), $.ownerName);
                 } catch (ex) {
                     $.logError("ytPlayer.js", 233, "YoutubeVideo::exception: " + ex);
                     return false;
@@ -549,7 +584,7 @@
 
             for (i in keyList) {
                 if (!keyList[i].equals("lastkey")) {
-                    if ($.inidb.get(playlistDbPrefix + targetPlaylistName, keyList[i]) == youtubeVideo.getVideoId) {
+                    if ($.inidb.get(playlistDbPrefix + targetPlaylistName, keyList[i]) == youtubeVideo.getVideoId()) {
                         return true;
                     }
                 }
@@ -590,7 +625,9 @@
         }
 
         this.preparePlaylist();
-        this.loadPlaylistKeys();
+        if (loadDefault) {
+            this.loadPlaylistKeys();
+        }
 
         /** END CONTRUCTOR PlayList() */
     }
@@ -702,6 +739,16 @@
             return parseInt(client.getPlayerState());
         }
     }
+
+    /**
+     * @event yTPlayerSongRequest
+     */
+    $.bind('yTPlayerSongRequest', function(event) {
+        var request = currentPlaylist.requestSong(event.getSearch(), $.ownerName);
+        if (request != null) {
+            connectedPlayerClient.pushSongList();
+        }
+    });
 
     /**
      * @event ytPlayerStealSong
@@ -908,7 +955,7 @@
                 $.setIniDbBoolean('ytSettings', 'announceInChat', announceInChat);
 
                 $.say($.whisperPrefix(sender) + $.lang.get(
-                    'ytplayer.command.ytp.toggleannounce.toggled', (randomizePlaylist ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))
+                    'ytplayer.command.ytp.toggleannounce.toggled', (announceInChat ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))
                 ));
                 return;
             }
@@ -1026,7 +1073,7 @@
                     return;
                 } 
                 if (actionArgs.length > 0) {
-                    var requestedPlaylist = new BotPlayList(actionArgs[0]);
+                    var requestedPlaylist = new BotPlayList(actionArgs[0], true);
                     if (requestedPlaylist.getplaylistLength() == 0) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.load.success.new', requestedPlaylist.getPlaylistname()));
                     } else {
@@ -1076,14 +1123,17 @@
             }
 
             /**
-             * commandpath statements disabled as the command is not supported.
-             * #commandpath playlist importpl youtube [new playlist name] [youtube playlist url] - Import a youtube playlist into a new playlist
-             * #commandpath playlist importpl spotify [new playlist name] [spotify playlist url] - Attempt to match each song in the spotify playlist to the corresponding youtube video and import it into a new playlist
-             * #commandpath playlist importpl file [new playlist name] [path to file] - Read youtube links from a file (preferably from a file in "./addons/...")
+             * @commandpath playlist importpl file [playlist name] [file] - Creates/overwrites playlist with new list generated from ./addons/youtubePlayer/file. File may contain links, descriptions, or YouTube IDs
              */
             if (action.equalsIgnoreCase('importpl')) {
-                // Todo: Implement playlist importing
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.importpl.notsupported'));
+                if (actionArgs.length == 3) {
+                    if (actionArgs[0].equalsIgnoreCase('file')) {
+                        var importPlaylist = new BotPlayList(actionArgs[1], false);
+                        $.say($.whisperPrefix(sender) + importPlaylist.importPlaylistFile(actionArgs[1], actionArgs[2]));
+                        return;
+                    }
+                }
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.importpl.file.usage'));
             }
             return;
         }
@@ -1306,11 +1356,10 @@
             $.registerChatCommand('./systems/ytPlayer.js', 'currentsong');
             $.registerChatCommand('./systems/ytPlayer.js', 'wrongsong');
             $.registerChatCommand('./systems/ytPlayer.js', 'nextsong');
-            $.registerChatCommand('./systems/ytPlayer.js', 'togglesongrequests', 1);
             $.registerChatSubcommand('wrongsong', 'user', 2);
 
             /** Pre-load last activated playlist */
-            currentPlaylist = new BotPlayList(activePlaylistname);
+            currentPlaylist = new BotPlayList(activePlaylistname, true);
 
             /** if the current playlist is "default" and it's empty, add some default songs. */
             if (currentPlaylist.getPlaylistname().equals('default') && currentPlaylist.getplaylistLength() == 0) {

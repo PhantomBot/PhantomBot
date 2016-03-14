@@ -655,6 +655,13 @@
             callHook('yTPlayerStealSong', event, false);
         });
 
+        /**
+         * @event api-YTPlayerSongRequestEvent
+         */
+        $api.on($script, 'yTPlayerSongRequest', function(event) {
+            callHook('yTPlayerSongRequest', event, false);
+        });
+
         $.logEvent('init.js', 553, 'Bot locked & loaded!');
         $.consoleDebug('Bot locked & loaded!');
         $.consoleLn('')

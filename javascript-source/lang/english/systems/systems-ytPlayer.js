@@ -41,7 +41,7 @@ $.lang.register('ytplayer.command.currentsong.404', 'There is not a curent song'
 $.lang.register('ytplayer.command.delrequest.success', 'Removed song with ID [$1] and title of [$2] from song requests.');
 $.lang.register('ytplayer.command.delrequest.404', 'Song requests do not have a song with an ID of [$1]');
 $.lang.register('ytplayer.command.delrequest.usage', 'usage: !ytp delrequest [YouTube ID]');
-$.lang.register('ytplayer.command.ytp.usage', 'usage: !ytp [delrequest | volume | togglerandom | setrequestmax | setmaxvidlength]');
+$.lang.register('ytplayer.command.ytp.usage', 'usage: !ytp [togglesongrequest | toggleanounce | delrequest | volume | togglerandom | setrequestmax | setmaxvidlength]');
 $.lang.register('ytplayer.command.wrongsong.success', 'Removed last requested song: [$1]');
 $.lang.register('ytplayer.command.wrongsong.404', 'No songs found');
 $.lang.register('ytplayer.command.wrongsong.user.success', 'Removed last requested song from $1: [$2]');
@@ -57,3 +57,7 @@ $.lang.register('ytplayer.requestsong.error.disabled', 'song requests are disabl
 $.lang.register('ytplayer.requestsong.error.yterror', 'YouTube error ($1)');
 $.lang.register('ytplayer.requestsong.error.exists', 'song is already in queue');
 $.lang.register('ytplayer.requestsong.error.maxlength', 'song length is $1 and exceeds maximum length');
+$.lang.register('ytplayer.command.importpl.file.success', 'Imported $1 songs from $2 to playlist $3');
+$.lang.register('ytplayer.command.importpl.file.404', 'Could not find file $1');
+$.lang.register('ytplayer.command.importpl.file.registry404', 'List $1 was not created in DB, try again.');
+$.lang.register('ytplayer.command.importpl.file.usage', 'usage: !importpl file [playlist name] [filename]');
