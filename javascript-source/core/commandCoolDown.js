@@ -36,10 +36,6 @@
     };
 
     function get(command, user) {
-        if ($.isMod(user) && !modCooldown) {
-            return 0;
-        }
-
         var cool,
             i;
 
@@ -47,10 +43,15 @@
             for (i in cooldown) {
                 if (cooldown[i].command.equalsIgnoreCase(command)) {
                     cool = cooldown[i].time - $.systemTime();
-                    if (cool <= 0) {
+                    if (cool > 0) {
+                        if (modCooldown && $.isMod(user)) {
+                            return parseInt(cool);
+                        } else {
+                            return parseInt(cool);
+                        }
+                    } else {
                         cooldown.splice(i, 1);
                     }
-                    return cool;
                 }
             }
             set(command, globalCooldownTime);
@@ -60,10 +61,15 @@
         for (i in cooldown) {
             if (cooldown[i].command.equalsIgnoreCase(command) && cooldown[i].user.equalsIgnoreCase(user)) {
                 cool = cooldown[i].time - $.systemTime();
-                if (cool <= 0) {
+                 if (cool > 0) {
+                    if (modCooldown && $.isMod(user)) {
+                        return parseInt(cool);
+                    } else {
+                        return parseInt(cool);
+                    }
+                } else {
                     cooldown.splice(i, 1);
                 }
-                return cool;
             }
         }
         set(command, parseInt($.inidb.get('cooldown', command)), user);

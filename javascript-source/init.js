@@ -391,19 +391,18 @@
                 consoleDebug('that command does not exists.');
                 return;
             }
+            
+            if (!$.isAdmin(sender)) {
+                if (parseInt($.coolDown.get(command, sender)) > 0) {
+                    consoleDebug('command ' + command + ' was not sent because it is still on a cooldown.');
+                    return;
+                }
+            }
 
             subCommand = (args[0] ? args[0] : '');
             if (!$.permCom(sender, command, subCommand)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command)));
                 return;
-            }
-
-            if (!$.isAdmin(sender)) {
-                cooldown = $.coolDown.get(command, sender);
-                if (cooldown > 0) {
-                    consoleDebug('command ' + command + ' was not sent because it is still on a cooldown.');
-                    return;
-                }
             }
 
             if (isModuleEnabled('./systems/pointSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
