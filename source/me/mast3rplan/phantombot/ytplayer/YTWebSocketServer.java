@@ -44,7 +44,7 @@
  * { "command" : "skipsong" }
  *
  * // Steal a song
- * { "command" : "stealsong" }
+ * { "command" : "stealsong", "youTubeID" : "YouTube ID" }  // youTubeID is optional
  *
  * // Add a song request
  * { "command" : "songrequest", "search" : "search string" }
@@ -195,8 +195,13 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
                 return;
             } else if (jsonObject.getString("command").equals("stealsong")) {
-                EventBus.instance().postAsync(new YTPlayerStealSongEvent());
-                return;
+                if (jsonObject.has("youTubeID")) {
+                    dataString = jsonObject.getString("youTubeID");
+                    EventBus.instance().postAsync(new YTPlayerStealSongEvent(dataString));
+                } else {
+                    EventBus.instance().postAsync(new YTPlayerStealSongEvent());
+                }
+                return;   
             } else if (jsonObject.getString("command").equals("songrequest")) {
                 if (jsonObject.has("search")) {
                     dataString = jsonObject.getString("search");

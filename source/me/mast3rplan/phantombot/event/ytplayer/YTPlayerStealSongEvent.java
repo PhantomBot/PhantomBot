@@ -20,10 +20,27 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 
 public class YTPlayerStealSongEvent extends YTPlayerEvent {
 
+    private final String youTubeID;
+
     public YTPlayerStealSongEvent() {
+        this.youTubeID = "";
     }
 
     public YTPlayerStealSongEvent(Channel channel) {
         super(channel);
+        this.youTubeID = "";
+    }
+
+    public YTPlayerStealSongEvent(String youTubeID) {
+        this.youTubeID = youTubeID;
+    }
+
+    public YTPlayerStealSongEvent(String youTubeID, Channel channel) {
+        super(channel);
+        this.youTubeID = youTubeID;
+    }
+
+    public String getYouTubeID() {
+        return youTubeID;
     }
 }
