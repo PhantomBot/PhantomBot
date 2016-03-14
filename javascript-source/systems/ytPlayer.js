@@ -754,7 +754,12 @@
      * @event ytPlayerStealSong
      */
     $.bind('yTPlayerStealSong', function(event) {
-        currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo());
+        var youTubeID = event.getYouTubeID()+'';
+        if (youTubeID.length > 1) {
+            currentPlaylist.addToPlaylist(new YoutubeVideo(youTubeID, $.ownerName));
+        } else {
+            currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo());
+        }
     });
 
     /**
