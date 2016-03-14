@@ -190,13 +190,17 @@ function handlePlay(id, title, duration, requester) {
                                "    <tr>" +
                                "        <td><div id=\"mutedDiv\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Mute/Unmute\" class=\"button\" onclick=\"handleMute()\"></div></td>" +
                                "        <td><div id=\"volumeControl\"></div></td>" +
+                               "        <td><div class=\"button\" data-toggle=\"modal\" data-target=\"#songRequestModal\"><i class=\"fa fa-plus\" /></div></td>" +
                                "        <td><div id=\"tooltip-steal\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Steal Song\" class=\"button\" onclick=\"stealSong()\"><i class=\"fa fa-bookmark\" /></div></td>" +
                                "        <td><div id=\"tooltip-chat\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Toggle Chat\" class=\"button\" onclick=\"toggleChat()\"><i class=\"fa fa-comment\" /></div></td>" +
                                "    </tr>" +
-                               "<table>");
+                               "<table>" +
+                               "<div id=\"songRequestDiv\"</div>");
 
+        songRequestDiv();
         $("#tooltip-steal").tooltip();
         $("#tooltip-chat").tooltip();
+        $("#tooltip-sr").tooltip();
 
         volumeSlider = $("#volumeControl").slider({
             min: 0,
@@ -211,7 +215,7 @@ function handlePlay(id, title, duration, requester) {
             max: playerObject.getDuration(),
             value: 0,
             range: "min",
-            slide: function (event, ui) { playerSeekSong(ui.value); }
+            stop: function (event, ui) { playerSeekSong(ui.value); }
         }).height(10);
 
         if (playerMuted) {
@@ -363,6 +367,40 @@ function playerSeekSong(seekPos) {
    playerObject.seekTo(seekPos, true); 
 }
 
+function songRequestDiv() {
+    $("#songRequestDiv").html(
+        "<div class=\"modal fade\" id=\"songRequestModal\" aria-hidden=\"true\">" +
+        "    <div class=\"modal-dialog\">" +
+        "        <div class=\"modal-header\">" +
+        "            <div class=\"modal-title\" id=\"modalLabel\">YouTube Song Request</div>" +
+        "         </div>" +
+        "         <div class=\"modal-body\">" +
+        "             <form role=\"form\" onkeypress=\"return event.keyCode != 13\">" +
+        "                 <div class=\"form-group\">" +
+        "                     <label for=\"songRequestInput\">Search String / YouTube Link / YouTube ID</label>" +
+        "                     <input type=\"text\" class=\"form-control\" id=\"songRequestInput\" placeholder=\"Song Request\" />" +
+        "                 </div>" +
+        "             </form>" +
+        "         </div>" +
+        "         <div class=\"modal-footer\">" +
+        "             <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" onclick=\"getFormSongRequest()\">Submit</button>" +
+        "             <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>" +
+        "         </div>" +
+        "     </div>" +
+        "</div>");
+
+    // Reset the data form.
+    $("#songRequestDiv").on("hidden.bs.modal", function() {
+        $("#songRequestInput").val("");
+    });
+}
+function getFormSongRequest() {
+    var jsonObject = {};
+    jsonObject["command"] = "songrequest";
+    jsonObject["search"] = $("#songRequestInput").val();
+    connection.send(JSON.stringify(jsonObject));
+}
+
 function sendKeepAlive() {
     var jsonObject = {};
     if (!connectedToWS) {
@@ -377,3 +415,4 @@ function sendKeepAlive() {
     }
 }
 setInterval(sendKeepAlive, 20000);
+
