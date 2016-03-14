@@ -249,16 +249,16 @@
             if (linksToggle && links) {
                 if ($.youtubePlayerConnected) {
                     if (message.indexOf('youtube.com') != -1 || message.indexOf('youtu.be') != -1) {
-                        return true;
+                        return;
                     }
                 }
 
                 if (regularsToggle && $.isReg(sender)) {
-                    return true;
+                    return;
                 }
 
                 if (subscribersToggle && $.isSubv3(sender, event.getTags())) {
-                    return true;
+                    return;
                 }
 
                 deleteMessage(sender);
