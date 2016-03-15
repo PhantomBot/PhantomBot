@@ -126,16 +126,32 @@
             owner = owner.toLowerCase();
         }
 
-        var data = null;
-        do {
-            data = $.youtube.SearchForVideo(searchQuery);
-        } while (data[0].length() < 11 && data[1] != "No Search Results Found");
+        if ($.inidb.exists('ytcache', searchQuery)) {
+            var jsonString = $.inidb.get('ytcache', searchQuery);
+            var jsonData = JSON.parse(jsonString);
+            videoId = jsonData["id"];
+            videoTitle = jsonData["title"];
+            videoLength = jsonData["time"];
+        } else {
+            var data = null;
+            do {
+                data = $.youtube.SearchForVideo(searchQuery);
+            } while (data[0].length() < 11 && data[1] != "No Search Results Found");
 
-        videoId = data[0];
-        videoTitle = data[1];
+            videoId = data[0];
+            videoTitle = data[1];
 
-        if (videoTitle.equalsIgnoreCase('video marked private') || videoTitle.equalsIgnoreCase('no search results found')) {
-            throw videoTitle;
+            if (videoTitle.equalsIgnoreCase('video marked private') || videoTitle.equalsIgnoreCase('no search results found')) {
+                throw videoTitle;
+            }
+
+            this.getVideoLength();
+            var jsonData = {};
+            jsonData["id"] = videoId+'';
+            jsonData["title"] = videoTitle+'';
+            jsonData["time"] = videoLength;
+            var jsonString = JSON.stringify(jsonData);
+            $.inidb.set('ytcache', videoId, jsonString);
         }
 
         /** END CONTRUCTOR YoutubeVideo() */
@@ -277,6 +293,25 @@
 
             return this.getplaylistLength();
         };
+
+        /**
+         * @function deleteVideoByID
+         * @param {String}
+         * @returns {Number}
+         */
+        this.deleteVideoByID = function(videoId) {
+            var keyList = $.inidb.GetKeyList(playListDbId, ''),
+                i;
+
+            for (i = 0; i < keyList.length; i++) {
+                if ($.inidb.get(playListDbId, keyList[i]).equals(videoId)) {
+                    $.inidb.del(playListDbId, keyList[i]);
+                    break;
+                }
+            }
+            this.loadPlaylistKeys();
+            connectedPlayerClient.pushPlayList();
+        }
 
         /**
          * @function deletePlaylist
@@ -739,6 +774,13 @@
             return parseInt(client.getPlayerState());
         }
     }
+
+    /**
+     * @event yTPlayerDeletePlaylistByID
+     */
+    $.bind('yTPlayerDeletePlaylistByID', function(event) {
+        currentPlaylist.deleteVideoByID(event.getYouTubeID());
+    });
 
     /**
      * @event yTPlayerSongRequest
