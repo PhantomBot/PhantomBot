@@ -99,7 +99,9 @@ connection.onmessage = function(e) {
     if (messageObject['authresult'] == false) {
         if (!messageObject['authresult']) {
             newSongAlert('WS Auth Failed', 'Reload page, if that fails, restart bot', 'danger', 0);
+            return;
         }
+        return;
     }
 
     if (messageObject['command']) {
@@ -185,18 +187,18 @@ function handlePlay(id, title, duration, requester) {
                                "    <i class=\"fa fa-user\">&nbsp;</i>" + requester + 
                                "</span>" +
                                "<table class=\"controlTable\">" +
-                               "    <tr>" +
+                               "    <tr><td />" +
                                "        <td><div id=\"playPauseDiv\" class=\"button\" onclick=\"handlePause()\"></div></td>" +
                                "        <td colspan=\"3\"><div id=\"songProgressBar\"></div></td>" +
                                "        <td><div class=\"button\" onclick=\"skipSong()\"><i class=\"fa fa-step-forward\" /></div></td>" +
-                               "    </tr>" +
-                               "    <tr>" +
+                               "    <td /></tr>" +
+                               "    <tr><td />" +
                                "        <td><div id=\"mutedDiv\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Mute/Unmute\" class=\"button\" onclick=\"handleMute()\"></div></td>" +
                                "        <td><div id=\"volumeControl\"></div></td>" +
                                "        <td><div class=\"button\" data-toggle=\"modal\" data-target=\"#songRequestModal\"><i class=\"fa fa-plus\" /></div></td>" +
                                "        <td><div id=\"tooltip-steal\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Steal Song\" class=\"button\" onclick=\"stealSong()\"><i class=\"fa fa-bookmark\" /></div></td>" +
                                "        <td><div id=\"tooltip-chat\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Toggle Chat\" class=\"button\" onclick=\"toggleChat()\"><i class=\"fa fa-comment\" /></div></td>" +
-                               "    </tr>" +
+                               "    <td /></tr>" +
                                "<table>" +
                                "<div id=\"songRequestDiv\"</div>");
 

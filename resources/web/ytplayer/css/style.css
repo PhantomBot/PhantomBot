@@ -249,14 +249,15 @@ table {
 }
 
 .controlTable {
+    box-shadow: 10px 10px 5px #111111;
     background-color: #333333;
     margin-top: 20px;
     width: 300px;
 }
 .controlTable td {
     background-color: #333333;
-    padding: 1px;
     text-align: left;
+    padding: 10px;
     vertical-align: middle;
 }
 
