@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# PhantomBot Launcher - OSX
+# PhantomBot Launch Service Script - OSX
 #
 # Please run the following to launch the bot, the chmod is required only once.
-# % chmod +x launch.osx.sh
-# % ./launch.osx.sh
+# % chmod +x launch-service.osx.sh
+# % ./launch-service.osx.sh
 #
 
 SOURCE="${BASH_SOURCE[0]}"
@@ -17,4 +17,4 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 cd "$DIR"
 
-java -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar
+java -Dfile.encoding=UTF-8 -jar PhantomBot.jar
