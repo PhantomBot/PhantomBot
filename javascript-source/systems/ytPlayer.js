@@ -187,10 +187,12 @@
             var importedList = [],
                 importCount = 0;
 
+$.consoleLn("start import file");
             if ($.inidb.exists('yt_playlists_registry', 'ytPlaylist_' + listName)) {
                 if ($.fileExists("./addons/youtubePlayer/" + fileName)) {
                     importedList = readFile("./addons/youtubePlayer/" + fileName);
                     for (var i = 0; i < importedList.length; i++) {
+if (i % 10 == 0) $.consoleLn("import file " + i);
                         try {
                             var youtubeVideo = new YoutubeVideo(importedList[i], 'importPlaylistFile');
                             importCount++;
@@ -201,6 +203,7 @@
                     }
                     $.inidb.set(playlistDbPrefix + listName, 'lastkey', importCount);
 
+if (i % 10 == 0) $.consoleLn("import file done");
                     return $.lang.get('ytplayer.command.importpl.file.success', importCount, fileName, listName);
                 } else {
                     return $.lang.get('ytplayer.command.importpl.file.404', fileName);
@@ -902,8 +905,9 @@
 
         /**
          * @commandpath ytp - Base command to manage YouTube player settings
+         * @commandpath musicplayer - Built-in permanent alias to !ytp
          */
-        if (command.equalsIgnoreCase('ytp')) {
+        if (command.equalsIgnoreCase('ytp') || command.equalsIgnoreCase('musicplayer')) {
             pActions = ['volume', 'pause'].join(', ');
             action = args[0];
             actionArgs = args.splice(1);
@@ -945,7 +949,7 @@
             }
 
             /**
-             * @commandpath ytp volume [0-100] - Set the player client's volume, omit the parameter to have the current volume announced
+             * @commandpath ytp volume [0-100] - Set volume in player. No value to display current volume.
              */
             if (action.equalsIgnoreCase('volume')) {
                 if (!connectedPlayerClient) {
@@ -962,7 +966,7 @@
             }
 
             /**
-             * @commandpath ytp pause - Toggle the player client's play/pause state
+             * @commandpath ytp pause - Pause/unpause the player.
              */
             if (action.equalsIgnoreCase('pause')) {
                 if (!connectedPlayerClient) {
@@ -975,8 +979,9 @@
 
             /**
              * @commandpath ytp togglerandom - Toggle randomizing playlists
+             * @commandpath ytp shuffle - Toggle randomizing playlists
              */
-            if (action.equalsIgnoreCase('togglerandom')) {
+            if (action.equalsIgnoreCase('togglerandom') || action.equalsIgnoreCase('shuffle')) {
                 randomizePlaylist = !randomizePlaylist;
 
                 $.setIniDbBoolean('ytSettings', 'randomizePlaylist', randomizePlaylist);
@@ -995,8 +1000,9 @@
 
             /**
              * @commandpath ytp toggleannounce - Toggle announcing now playing in the chat
+             * @commandpath ytp togglenotify - Toggle announcing now playing in the chat
              */
-            if (action.equalsIgnoreCase('toggleannounce')) {
+            if (action.equalsIgnoreCase('toggleannounce') || action.equalsIgnoreCase('togglenotify')) {
                 announceInChat = !announceInChat;
 
                 $.setIniDbBoolean('ytSettings', 'announceInChat', announceInChat);
@@ -1008,9 +1014,10 @@
             }
 
             /**
-             * @commandpath ytp togglesongrequests - Toggle announcing now playing in the chat
+             * @commandpath ytp togglerequests - Toggle announcing now playing in the chat
+             * @commandpath ytp togglesr - Toggle announcing now playing in the chat
              */
-            if (action.equalsIgnoreCase('togglesongrequests')) {
+            if (action.equalsIgnoreCase('togglerequests') || action.equalsIgnoreCase('togglesr')) {
                 songRequestsEnabled = !songRequestsEnabled;
 
                 $.setIniDbBoolean('ytSettings', 'songRequestsEnabled', songRequestsEnabled);
@@ -1024,9 +1031,10 @@
             }
 
             /**
-             * @commandpath ytp setrequestmax [number of max parallel requests] - Set the maximum of parallel songrequests a user can make
+             * @commandpath ytp setrequestmax [max concurrent requests] - Set the maximum of concurrent songrequests a user can make
+             * @commandpath ytp limit [max concurrent requests] - Set the maximum of concurrent songrequests a user can make
              */
-            if (action.equalsIgnoreCase('setrequestmax')) {
+            if (action.equalsIgnoreCase('setrequestmax') || action.equalsIgnoreCase('limit')) {
                 if (!actionArgs[0] || isNaN(parseInt(actionArgs[0]))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setrequestmax.usage'));
                     return;
@@ -1040,8 +1048,9 @@
 
             /**
              * @commandpath ytp setmaxvidlength [max video length in seconds] - Set the maximum length of a song that may be requested
+             * @commandpath ytp maxvideolength [max video length in seconds] - Set the maximum length of a song that may be requested
              */
-            if (action.equalsIgnoreCase('setmaxvidlength')) {
+            if (action.equalsIgnoreCase('setmaxvidlength') || action.equalsIgnoreCase('maxvideolength')) {
                 if (!actionArgs[0] || isNaN(parseInt(actionArgs[0]))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setmaxvidlength.usage'));
                     return;
@@ -1068,7 +1077,7 @@
             }
 
             /**
-             * @commandpath playlist add [youtube link] - Add a song to the current playlist
+             * @commandpath playlist add [youtube link | id | search] - Add a song to the current playlist
              */
             if (action.equalsIgnoreCase('add')) {
                 if (!connectedPlayerClient) {
@@ -1218,8 +1227,9 @@
 
         /**
          * @commandpath jumptosong [position in playlist] - Jump to a song in the current playlist by position in playlist.
+         * @commandpath playsong [position in playlist] - Jump to a song in the current playlist by position in playlist.
          */
-        if (command.equalsIgnoreCase('jumptosong')) {
+        if (command.equalsIgnoreCase('jumptosong') || command.equalsIgnoreCase('playsong')) {
             if (!currentPlaylist.jumpToSong(args[0])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.jumptosong.failed', args[0]));
             }
@@ -1236,7 +1246,7 @@
         /**
          * @commandpath songrequest [YouTube ID | YouTube link | search string] - Request a song!
          */
-        if (command.equalsIgnoreCase('songrequest')) {
+        if (command.equalsIgnoreCase('songrequest') || command.equalsIgnoreCase('addsong')) {
             if (args.length == 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.usage'));
                 return;
@@ -1394,11 +1404,14 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/ytPlayer.js')) {
             $.registerChatCommand('./systems/ytPlayer.js', 'ytp', 1);
+            $.registerChatCommand('./systems/ytPlayer.js', 'musicplayer', 1);
             $.registerChatCommand('./systems/ytPlayer.js', 'playlist', 1);
             $.registerChatCommand('./systems/ytPlayer.js', 'stealsong', 1);
             $.registerChatCommand('./systems/ytPlayer.js', 'jumptosong', 1);
+            $.registerChatCommand('./systems/ytPlayer.js', 'playsong', 1);
             $.registerChatCommand('./systems/ytPlayer.js', 'skipsong', 1);
             $.registerChatCommand('./systems/ytPlayer.js', 'songrequest');
+            $.registerChatCommand('./systems/ytPlayer.js', 'addsong');
             $.registerChatCommand('./systems/ytPlayer.js', 'previoussong');
             $.registerChatCommand('./systems/ytPlayer.js', 'currentsong');
             $.registerChatCommand('./systems/ytPlayer.js', 'wrongsong');
