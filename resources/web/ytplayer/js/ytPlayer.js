@@ -141,12 +141,14 @@ connection.onmessage = function(e) {
 function handlePlayList(d) {
     debugMsg("handlePlayList(" + d + ")");
     $("#playlistTableTitle").html("Current Playlist: " + d['playlistname']);
-    var tableData = "<tr><th>Song Title</th><th>Duration</th><th>YouTube ID</th></tr>";
+    var tableData = "<tr><th /><th>Song Title</th><th>Duration</th><th>YouTube ID</th></tr>";
     for (var i in d['playlist']) {
         var id = d['playlist'][i]['song'];
         var title = d['playlist'][i]['title'];
         var duration = d['playlist'][i]['duration'];
-        tableData += "<tr><td>" + title + "</td><td>" + duration + "</td><td>" + id + "</td></tr>";
+        tableData += "<tr>" +
+                     "<td width=\"15\"><divclass=\"button\" onclick=\"deletePLSong('" + id + "')\"><i class=\"fa fa-trash-o\" /></div></td>" +
+                     "<td>" + title + "</td><td>" + duration + "</td><td>" + id + "</td></tr>";
     }
     $("#playlistTable").html(tableData);
 }
@@ -241,6 +243,14 @@ function deleteSong(id) {
     debugMsg("deleteSong(" + id + ")");
     var jsonObject = {};
     jsonObject["deletesr"] = id;
+    connection.send(JSON.stringify(jsonObject));
+    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
+}
+
+function deletePLSong(id) {
+    debugMsg("deletePLSong(" + id + ")");
+    var jsonObject = {};
+    jsonObject["deletepl"] = id;
     connection.send(JSON.stringify(jsonObject));
     debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
 }

@@ -40,6 +40,9 @@
  * // Delete requested song
  * { "deletesr" : "YouTube ID" }
  *
+ * // Delete song from current playlist
+ * { "deletepl" : "YouTube ID" }
+ *
  * // Skip a song
  * { "command" : "skipsong" }
  *
@@ -190,10 +193,12 @@ public class YTWebSocketServer extends WebSocketServer {
         } else if (jsonObject.has("deletesr")) {
             dataString = jsonObject.getString("deletesr");
             EventBus.instance().postAsync(new YTPlayerDeleteSREvent(dataString));
+        } else if (jsonObject.has("deletepl")) {
+            dataString = jsonObject.getString("deletepl");
+            EventBus.instance().postAsync(new YTPlayerDeletePlaylistByIDEvent(dataString));
         } else if (jsonObject.has("command")) {
             if (jsonObject.getString("command").equals("skipsong")) {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
-                return;
             } else if (jsonObject.getString("command").equals("stealsong")) {
                 if (jsonObject.has("youTubeID")) {
                     dataString = jsonObject.getString("youTubeID");
@@ -201,12 +206,10 @@ public class YTWebSocketServer extends WebSocketServer {
                 } else {
                     EventBus.instance().postAsync(new YTPlayerStealSongEvent());
                 }
-                return;   
             } else if (jsonObject.getString("command").equals("songrequest")) {
                 if (jsonObject.has("search")) {
                     dataString = jsonObject.getString("search");
                     EventBus.instance().postAsync(new YTPlayerSongRequestEvent(dataString));
-                    return;
                 }
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
