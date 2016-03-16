@@ -47,7 +47,7 @@ public class NEWHTTPServer {
 
   public NEWHTTPServer(int myPort, String myPassword, String myWebAuth, final String ytPassword) {
       serverPort = myPort;
-      serverPassword = myPassword;
+      serverPassword = myPassword.replace("oauth:", "");
       serverWebAuth = myWebAuth;
 
       Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -133,8 +133,7 @@ public class NEWHTTPServer {
 
           if (headers.containsKey("password")) {
               myPassword = headers.getFirst("password");
-              myPassword.replace("oauth:", "");
-              if (myPassword.equals(serverPassword)) {
+              if (myPassword.equals(serverPassword) || myPassword.equals("oauth:" + serverPassword)) {
                   hasPassword = true;
               }
           }
@@ -380,6 +379,7 @@ public class NEWHTTPServer {
 
     EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(),
                              user, message, PhantomBot.instance().getChannel())); 
+    sendData("text/text", "event posted", exchange);
   }
 
   private void sendData(String contentType, String data, HttpExchange exchange) {
