@@ -2,7 +2,6 @@
 <html>
     <head>
         <title>Phantombot Youtube Player</title>
-        <script type="text/javascript" src="app.js"></script>
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
@@ -15,23 +14,19 @@
             <img id="logo" src="logo.png"/>
             <h1>YouTube Player</h1>
         </div>
-        <div class="container">
-            <div id="main">
-                <div id="player"></div>
-                <div id="songlist">
-
-                </div>
-                <div id="rightcontain">
-                    
-                </div>
-            </div>
-
-
-        </div>
-        <div id="copyright">
-            YouTube Player by: 
-            <a href="http://www.phantombot.net">www.phantombot.net</a>
-        </div>
-
+        <font style="color: white">
+            &nbsp;The YouTube Player has moved to the new HTTP Server.  Please connect to the following URL:<br>
+            <script>
+                var urlInfo = window.location.host.split(":");
+                var url = urlInfo[0];
+                var port;
+                if (urlInfo[1].endsWith("0")) {
+                   port = (parseInt(urlInfo[1]) + 5);
+                } else {
+                   port = urlInfo[1];
+                } 
+                document.write("&nbsp;" + urlInfo[0] + ":" + port + "/ytplayer<br>");
+            </script>
+        </font>
     </body>
 </html>
