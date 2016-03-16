@@ -24,7 +24,7 @@
         symbolsGroupLimit = ($.inidb.exists('chatModerator', 'symbolsGroupLimit') ? parseFloat($.inidb.get('chatModerator', 'symbolsGroupLimit')) : 10),
         symbolsTriggerLength = ($.inidb.exists('chatModerator', 'symbolsTriggerLength') ? parseInt($.inidb.get('chatModerator', 'symbolsTriggerLength')) : 5),
 
-        emotesToggle = ($.inidb.exists('chatModerator', 'emotesToggle') ? $.getIniDbBoolean('chatModerator', 'emotesToggle') : false),
+        emotesToggle = ($.inidb.exists('chatModerator', 'emotesToggle') ? $.getIniDbBoolean('chatModerator', 'emotesToggle') : true),
         emotesMessage = ($.inidb.exists('chatModerator', 'emotesMessage') ? $.inidb.get('chatModerator', 'emotesMessage') : 'you were timed out for overusing emotes'),
         emotesLimit = ($.inidb.exists('chatModerator', 'emotesLimit') ? parseInt($.inidb.get('chatModerator', 'emotesLimit')) : 15),
 
@@ -48,7 +48,7 @@
     /**
      * @function loadBlackList
      */
-    function loadBlackList(force) {
+    function loadBlackList() {
         var keys = $.inidb.GetKeyList('blackList', '');
 
         for (i in keys) {
@@ -60,7 +60,7 @@
     /**
      * @function loadWhiteList
      */
-    function loadWhiteList(force) {
+    function loadWhiteList() {
         var keys = $.inidb.GetKeyList('whiteList', '');
 
         for (i in keys) {
@@ -135,7 +135,7 @@
             }, (msgCooldownSec * 1000));
         }
         var b = setTimeout(function() {
-            for (var i in timeoutList) {
+            for (i in timeoutList) {
                 if (timeoutList[i].equalsIgnoreCase(user)) {
                     timeoutList.splice(i, 0);
                     break;
@@ -153,7 +153,7 @@
     function permitUser(user) {
         permitList.push(user);
         var c = setTimeout(function() {
-            for (var i in permitList) {
+            for (i in permitList) {
                 if (permitList[i].equalsIgnoreCase(user)) {
                     permitList.splice(i, 1);
                     break;
@@ -199,11 +199,10 @@
      */
     function checkPermitList(event) {
         var sender = event.getSender(),
-            message = event.getMessage().toLowerCase(),
-            checkLink = $.patternDetector.hasLinks(event);
+            message = event.getMessage().toLowerCase();
 
         for (i in permitList) {
-            if (permitList[i].equalsIgnoreCase(sender) && checkLink) {
+            if (permitList[i].equalsIgnoreCase(sender) && $.patternDetector.hasLinks(event)) {
                 permitList.splice(i, 1);
                 return true;
             }
@@ -234,23 +233,22 @@
     $.bind('ircChannelMessage', function(event) {
         var sender = event.getSender(),
             message = event.getMessage(),
-            messageLength = message.length(),
-            links = $.patternDetector.hasLinks(event),
-            emotes = $.patternDetector.getNumberOfEmotes(event),
-            spam = $.patternDetector.getLongestRepeatedSequence(event),
-            symbolsCount = $.patternDetector.getNumberOfNonLetters(event),
-            symbolsSeq = $.patternDetector.getLongestNonLetterSequence(event);
+            messageLength = message.length();
 
         if (!$.isModv3(sender, event.getTags())) {
-            if (message && checkBlackList(event) || checkPermitList(event) || checkWhiteList(event)) {
+            if (message && checkBlackList(event)) {
                 return;
             }
             
-            if (linksToggle && links) {
+            if (linksToggle && $.patternDetector.hasLinks(event)) {
                 if ($.youtubePlayerConnected) {
-                    if (message.indexOf('youtube.com') != -1 || message.indexOf('youtu.be') != -1) {
+                    if (message.contains('youtube.com') || message.contains('youtu.be')) {
                         return;
                     }
+                }
+
+                if (message && checkPermitList(event) || checkWhiteList(event)) {
+                    return;
                 }
 
                 if (regularsToggle && $.isReg(sender)) {
@@ -267,8 +265,7 @@
             }
 
             if (capsToggle && messageLength > capsTriggerLength) {
-                var capsPercent = ((parseFloat(event.getCapsCount) / messageLength) * 100);
-                if (capsPercent > capsLimitPercent) {
+                if (((parseFloat(event.getCapsCount()) / messageLength) * 100) > capsLimitPercent) {
                     deleteMessage(sender);
                     sendMessage(sender, capsMessage);
                     return;
@@ -276,13 +273,11 @@
             }
 
             if (symbolsToggle && messageLength > symbolsTriggerLength) {
-                if (symbolsSeq > symbolsGroupLimit) {
+                if ($.patternDetector.getLongestNonLetterSequence(event) > symbolsGroupLimit) {
                     deleteMessage(sender);
                     sendMessage(sender, symbolsMessage);
                     return;
-                }
-                var symbolsPercent = ((parseFloat(symbolsCount) / messageLength) * 100);
-                if (symbolsPercent > symbolsLimitPercent) {
+                } else if (((parseFloat($.patternDetector.getNumberOfNonLetters(event)) / messageLength) * 100) > symbolsLimitPercent) {
                     deleteMessage(sender);
                     sendMessage(sender, symbolsMessage);
                     return;
@@ -290,7 +285,7 @@
             }
 
             if (spamToggle) {
-                if (spam > spamLimit) {
+                if ($.patternDetector.getLongestRepeatedSequence(event) > spamLimit) {
                     deleteMessage(sender);
                     sendMessage(sender, spamMessage);
                     return;
@@ -298,7 +293,7 @@
             }
 
             if (emotesToggle) {
-                if (emotes > emotesLimit) {
+                if ($.patternDetector.getNumberOfEmotes(event) > emotesLimit) {
                     deleteMessage(sender);
                     sendMessage(sender, emotesMessage);
                     return;
