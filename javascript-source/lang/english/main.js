@@ -132,7 +132,7 @@ $.lang.register('init.module.disabled', 'Module "$1" disabled!');
 $.lang.register('init.module.enabled', 'Module "$1" enabled!');
 $.lang.register('init.module.list', '$1 registered modules: $2');
 $.lang.register('init.module.usage', 'Usage: !module list, !module enable [module name], !module disable [module name], !module status [module name]');
-$.lang.register('init.reconnect', 'Brb, reconnecting to Twitch IRC!');
+$.lang.register('init.reconnect', 'Reconnecting to chat...');
 $.lang.register('lang.curlang', 'The current language is $1!');
 $.lang.register('lang.lang.404', 'That language file does not exist!');
 $.lang.register('lang.lang.changed', 'Changed language to $1!');
