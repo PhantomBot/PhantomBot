@@ -227,7 +227,7 @@
 
     // Set the interval to announce
     setInterval(function() {
-        if (noticeToggle) {
+        if (noticeToggle && $.isOnline($.channelName)) {
             if ($.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
                 if (messageCount >= noticeReqMessages) {
                     sendNotice();
