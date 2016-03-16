@@ -807,7 +807,7 @@
             }
 
             /**
-             * @commandpath moderation capslimit [amount] - Sets the caps limit in percent
+             * @commandpath moderation capslimit [amount] - Sets the amount (in percent) of caps allowed in a message
              */
             if (action.equalsIgnoreCase('capslimit')) {
                 if (!subAction) {
@@ -849,7 +849,7 @@
             }
 
             /**
-             * @commandpath moderation symbolslimit [amount] - Sets the percent amount of symbols allowed in a message
+             * @commandpath moderation symbolslimit [amount] - Sets the amount (in percent) of symbols allowed in a message
              */
             if (action.equalsIgnoreCase('symbolslimit')) {
                 if (!subAction) {

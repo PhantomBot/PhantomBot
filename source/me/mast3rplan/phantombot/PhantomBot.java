@@ -148,7 +148,7 @@ public class PhantomBot implements Listener {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core 2.0.5");
+        com.gmt2001.Console.out.println("PhantomBot Core 2.0.6");
         com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, Scania, Zelakto, IllusionaryOne, SimeonF, & Juraji");
@@ -373,9 +373,9 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("EventSocketServer accepting connections on port " + eventport);
             EventBus.instance().register(eventsocketserver);
 
-            NEWhttpserver = new NEWHTTPServer(baseport + 1000, oauth, webauth, ytpassword);
+            NEWhttpserver = new NEWHTTPServer(baseport + 5, oauth, webauth, ytpassword);
             // NEWhttpsServer = new NEWHTTPSServer(baseport + 1443, oauth, webauth);
-            com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 1000));
+            com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 5));
             // com.gmt2001.Console.out.println("NEW HTTPS Server accepting connections on port " + (baseport + 1443));
         }
 

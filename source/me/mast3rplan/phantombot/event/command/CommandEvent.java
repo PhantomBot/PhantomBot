@@ -91,7 +91,7 @@ public class CommandEvent extends Event {
     }
 
     public String getCommand() {
-        return command;
+        return command.toLowerCase();
     }
 
     public void setCommand(String command) {
