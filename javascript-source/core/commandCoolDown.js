@@ -44,11 +44,10 @@
                 if (cooldown[i].command.equalsIgnoreCase(command)) {
                     cool = cooldown[i].time - $.systemTime();
                     if (cool > 0) {
-                        if (modCooldown && $.isMod(user)) {
-                            return parseInt(cool);
-                        } else {
-                            return parseInt(cool);
+                        if (!modCooldown && $.isMod(user)) {
+                            return 0;
                         }
+                        return parseInt(cool);
                     } else {
                         cooldown.splice(i, 1);
                     }
@@ -62,11 +61,10 @@
             if (cooldown[i].command.equalsIgnoreCase(command) && cooldown[i].user.equalsIgnoreCase(user)) {
                 cool = cooldown[i].time - $.systemTime();
                  if (cool > 0) {
-                    if (modCooldown && $.isMod(user)) {
-                        return parseInt(cool);
-                    } else {
-                        return parseInt(cool);
-                    }
+                    if (!modCooldown && $.isMod(user)) {
+                        return 0;
+                    } 
+                    return parseInt(cool);
                 } else {
                     cooldown.splice(i, 1);
                 }
