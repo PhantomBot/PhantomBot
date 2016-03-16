@@ -1,13 +1,12 @@
-#!/usr/bin/env bash
+#!/bin/bash
+#
+# PhantomBot Launcher - Linux
+#
+# Please run the following to launch the bot, the chmod is required only once.
+# % chmod +x launch.sh
+# % ./launch.sh
+#
 
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-  SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
-done
-DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+cd $(dirname $(readlink -f $0))
 
-cd "$DIR"
-
-java -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar
+java -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar 

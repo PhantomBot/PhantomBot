@@ -40,11 +40,18 @@
  * // Delete requested song
  * { "deletesr" : "YouTube ID" }
  *
+ * // Delete song from current playlist
+ * { "deletepl" : "YouTube ID" }
+ *
  * // Skip a song
  * { "command" : "skipsong" }
  *
  * // Steal a song
- * { "command" : "stealsong" }
+ * { "command" : "stealsong", "youTubeID" : "YouTube ID" }  // youTubeID is optional
+ *
+ * // Add a song request
+ * { "command" : "songrequest", "search" : "search string" }
+ * 
  *
  * -------------------------------------------------------------------------------------------------------------
  *
@@ -186,13 +193,24 @@ public class YTWebSocketServer extends WebSocketServer {
         } else if (jsonObject.has("deletesr")) {
             dataString = jsonObject.getString("deletesr");
             EventBus.instance().postAsync(new YTPlayerDeleteSREvent(dataString));
+        } else if (jsonObject.has("deletepl")) {
+            dataString = jsonObject.getString("deletepl");
+            EventBus.instance().postAsync(new YTPlayerDeletePlaylistByIDEvent(dataString));
         } else if (jsonObject.has("command")) {
             if (jsonObject.getString("command").equals("skipsong")) {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
-                return;
             } else if (jsonObject.getString("command").equals("stealsong")) {
-                EventBus.instance().postAsync(new YTPlayerStealSongEvent());
-                return;
+                if (jsonObject.has("youTubeID")) {
+                    dataString = jsonObject.getString("youTubeID");
+                    EventBus.instance().postAsync(new YTPlayerStealSongEvent(dataString));
+                } else {
+                    EventBus.instance().postAsync(new YTPlayerStealSongEvent());
+                }
+            } else if (jsonObject.getString("command").equals("songrequest")) {
+                if (jsonObject.has("search")) {
+                    dataString = jsonObject.getString("search");
+                    EventBus.instance().postAsync(new YTPlayerSongRequestEvent(dataString));
+                }
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
                 return;

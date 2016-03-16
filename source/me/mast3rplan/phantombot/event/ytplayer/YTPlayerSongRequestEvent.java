@@ -18,29 +18,20 @@ package me.mast3rplan.phantombot.event.ytplayer;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
 
-public class YTPlayerStealSongEvent extends YTPlayerEvent {
+public class YTPlayerSongRequestEvent extends YTPlayerEvent {
 
-    private final String youTubeID;
+    private final String search;
 
-    public YTPlayerStealSongEvent() {
-        this.youTubeID = "";
+    public YTPlayerSongRequestEvent(String search) {
+        this.search = search;
     }
 
-    public YTPlayerStealSongEvent(Channel channel) {
+    public YTPlayerSongRequestEvent(String search, Channel channel) {
         super(channel);
-        this.youTubeID = "";
+        this.search = search;
     }
 
-    public YTPlayerStealSongEvent(String youTubeID) {
-        this.youTubeID = youTubeID;
-    }
-
-    public YTPlayerStealSongEvent(String youTubeID, Channel channel) {
-        super(channel);
-        this.youTubeID = youTubeID;
-    }
-
-    public String getYouTubeID() {
-        return youTubeID;
+    public String getSearch() {
+        return search;
     }
 }

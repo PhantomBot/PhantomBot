@@ -99,7 +99,9 @@ connection.onmessage = function(e) {
     if (messageObject['authresult'] == false) {
         if (!messageObject['authresult']) {
             newSongAlert('WS Auth Failed', 'Reload page, if that fails, restart bot', 'danger', 0);
+            return;
         }
+        return;
     }
 
     if (messageObject['command']) {
@@ -141,19 +143,21 @@ connection.onmessage = function(e) {
 function handlePlayList(d) {
     debugMsg("handlePlayList(" + d + ")");
     $("#playlistTableTitle").html("Current Playlist: " + d['playlistname']);
-    var tableData = "<tr><th>Song Title</th><th>Duration</th><th>YouTube ID</th></tr>";
+    var tableData = "<tr><th /><th>Song Title</th><th>Duration</th><th>YouTube ID</th></tr>";
     for (var i in d['playlist']) {
         var id = d['playlist'][i]['song'];
         var title = d['playlist'][i]['title'];
         var duration = d['playlist'][i]['duration'];
-        tableData += "<tr><td>" + title + "</td><td>" + duration + "</td><td>" + id + "</td></tr>";
+        tableData += "<tr>" +
+                     "<td width=\"15\"><divclass=\"button\" onclick=\"deletePLSong('" + id + "')\"><i class=\"fa fa-trash-o\" /></div></td>" +
+                     "<td>" + title + "</td><td>" + duration + "</td><td>" + id + "</td></tr>";
     }
     $("#playlistTable").html(tableData);
 }
 
 function handleSongList(d) {
     debugMsg("handleSongList(" + d + ")");
-    var tableData = "<tr><th></th><th>Song Title</th><th>Requester</th><th>Duration</th><th>YouTube ID</th></tr>";
+    var tableData = "<tr><th /><th /><th>Song Title</th><th>Requester</th><th>Duration</th><th>YouTube ID</th></tr>";
     for (var i in d['songlist']) {
         var id = d['songlist'][i]['song'];
         var title = d['songlist'][i]['title'];
@@ -161,6 +165,7 @@ function handleSongList(d) {
         var requester = d['songlist'][i]['requester'];
         tableData += "<tr>" +
                      "    <td width=\"15\"><divclass=\"button\" onclick=\"deleteSong('" + id + "')\"><i class=\"fa fa-trash-o\" /></div></td>" +
+                     "    <td width=\"15\"><divclass=\"button\" onclick=\"stealSong('" + id + "')\"><i class=\"fa fa-bookmark\" /></div></td>" +
                      "    <td>" + title + "</td>" +
                      "    <td>" + requester + "</td>" +
                      "    <td>" + duration + "</td>" +
@@ -182,21 +187,25 @@ function handlePlay(id, title, duration, requester) {
                                "    <i class=\"fa fa-user\">&nbsp;</i>" + requester + 
                                "</span>" +
                                "<table class=\"controlTable\">" +
-                               "    <tr>" +
+                               "    <tr><td />" +
                                "        <td><div id=\"playPauseDiv\" class=\"button\" onclick=\"handlePause()\"></div></td>" +
                                "        <td colspan=\"3\"><div id=\"songProgressBar\"></div></td>" +
                                "        <td><div class=\"button\" onclick=\"skipSong()\"><i class=\"fa fa-step-forward\" /></div></td>" +
-                               "    </tr>" +
-                               "    <tr>" +
+                               "    <td /></tr>" +
+                               "    <tr><td />" +
                                "        <td><div id=\"mutedDiv\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Mute/Unmute\" class=\"button\" onclick=\"handleMute()\"></div></td>" +
                                "        <td><div id=\"volumeControl\"></div></td>" +
+                               "        <td><div class=\"button\" data-toggle=\"modal\" data-target=\"#songRequestModal\"><i class=\"fa fa-plus\" /></div></td>" +
                                "        <td><div id=\"tooltip-steal\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Steal Song\" class=\"button\" onclick=\"stealSong()\"><i class=\"fa fa-bookmark\" /></div></td>" +
                                "        <td><div id=\"tooltip-chat\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Toggle Chat\" class=\"button\" onclick=\"toggleChat()\"><i class=\"fa fa-comment\" /></div></td>" +
-                               "    </tr>" +
-                               "<table>");
+                               "    <td /></tr>" +
+                               "<table>" +
+                               "<div id=\"songRequestDiv\"</div>");
 
+        songRequestDiv();
         $("#tooltip-steal").tooltip();
         $("#tooltip-chat").tooltip();
+        $("#tooltip-sr").tooltip();
 
         volumeSlider = $("#volumeControl").slider({
             min: 0,
@@ -211,7 +220,7 @@ function handlePlay(id, title, duration, requester) {
             max: playerObject.getDuration(),
             value: 0,
             range: "min",
-            slide: function (event, ui) { playerSeekSong(ui.value); }
+            stop: function (event, ui) { playerSeekSong(ui.value); }
         }).height(10);
 
         if (playerMuted) {
@@ -240,10 +249,21 @@ function deleteSong(id) {
     debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
-function stealSong() {
+function deletePLSong(id) {
+    debugMsg("deletePLSong(" + id + ")");
+    var jsonObject = {};
+    jsonObject["deletepl"] = id;
+    connection.send(JSON.stringify(jsonObject));
+    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
+}
+
+function stealSong(id) {
     debugMsg("stealSong()");
     var jsonObject = {};
     jsonObject["command"] = 'stealsong';
+    if (id) {
+        jsonObject["youTubeID"] = id;
+    }
     connection.send(JSON.stringify(jsonObject));
     debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
@@ -363,6 +383,40 @@ function playerSeekSong(seekPos) {
    playerObject.seekTo(seekPos, true); 
 }
 
+function songRequestDiv() {
+    $("#songRequestDiv").html(
+        "<div class=\"modal fade\" id=\"songRequestModal\" aria-hidden=\"true\">" +
+        "    <div class=\"modal-dialog\">" +
+        "        <div class=\"modal-header\">" +
+        "            <div class=\"modal-title\" id=\"modalLabel\">YouTube Song Request</div>" +
+        "         </div>" +
+        "         <div class=\"modal-body\">" +
+        "             <form role=\"form\" onkeypress=\"return event.keyCode != 13\">" +
+        "                 <div class=\"form-group\">" +
+        "                     <label for=\"songRequestInput\">Search String / YouTube Link / YouTube ID</label>" +
+        "                     <input type=\"text\" class=\"form-control\" id=\"songRequestInput\" placeholder=\"Song Request\" />" +
+        "                 </div>" +
+        "             </form>" +
+        "         </div>" +
+        "         <div class=\"modal-footer\">" +
+        "             <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" onclick=\"getFormSongRequest()\">Submit</button>" +
+        "             <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>" +
+        "         </div>" +
+        "     </div>" +
+        "</div>");
+
+    // Reset the data form.
+    $("#songRequestDiv").on("hidden.bs.modal", function() {
+        $("#songRequestInput").val("");
+    });
+}
+function getFormSongRequest() {
+    var jsonObject = {};
+    jsonObject["command"] = "songrequest";
+    jsonObject["search"] = $("#songRequestInput").val();
+    connection.send(JSON.stringify(jsonObject));
+}
+
 function sendKeepAlive() {
     var jsonObject = {};
     if (!connectedToWS) {
@@ -377,3 +431,4 @@ function sendKeepAlive() {
     }
 }
 setInterval(sendKeepAlive, 20000);
+

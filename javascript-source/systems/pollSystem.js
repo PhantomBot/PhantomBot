@@ -163,7 +163,11 @@
         if (command.equalsIgnoreCase('poll')) {
             if (!action) {
                 if (poll.pollRunning) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.poll.running', poll.question, poll.options.join('", "')));
+                    var optionsStr = "";
+                    for (var i = 0; i < poll.options.length; i++) {
+                        optionsStr += (i + 1) + ") " + poll.options[i] + (i == poll.options.length - 1 ? "" : " ");
+                    }
+                    $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.poll.running', poll.question, optionsStr));
                 } else {
                     if (!$.isMod(sender)) {
                         $.say($.whisperPrefix(sender) + $.modMsg);
