@@ -88,7 +88,7 @@
      * @param {string} message
      */
     function logError(sourceFile, lineNumber, message) {
-        if (!$.bot.isModuleEnabled('./core/fileSystem.js') || !loggingEnabled) {
+        if (!$.bot.isModuleEnabled('./core/fileSystem.js')) {
             return;
         }
 
