@@ -562,7 +562,6 @@
             if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
-                    restoreSubscriberStatus(spl[1].toLowerCase());
                     for (i in subUsers) {
                         if (subUsers[i][0].equalsIgnoreCase(spl[1])) {
                             subUsers[i][1] = $.systemTime() + 1e4;
@@ -570,6 +569,7 @@
                         }
                     }
                     subUsers.push([spl[1], $.systemTime() + 1e4]);
+                    restoreSubscriberStatus(spl[1].toLowerCase());
                     for (i in subUsers) {
                         subsTxtList.push(subUsers[i][0]);
                     }
