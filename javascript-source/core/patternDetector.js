@@ -10,6 +10,7 @@
             repeatedSeq: /(.)(\1+)/g,
             nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
             nonAlphaCount: /([^a-z0-9 ])/ig,
+            capsCount: /([A-Z])/g,
         },
         lastFoundLink = '';
 
@@ -27,7 +28,6 @@
             message = deobfuscateLinks(message, (aggressive));
 
             lastFoundLink = patterns.link.exec(message)[0];
-            //$.consoleDebug('>> Matched link on message from ' + event.getSender() + ': ' + lastFoundLink);
             $.log('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + lastFoundLink);
             return true;
         } catch (e) {
@@ -99,18 +99,9 @@
      * @returns {number}
      */
     function getLongestRepeatedSequence(event) {
-        try {
             var message = (event.getMessage() + ''),
-                sequences = message.match(patterns.repeatedSeq);
-
-            sequences.sort(function(a, b) {
-                return (a.length < b.length ? 1 : -1);
-            });
-
-            return sequences.slice(0, 1)[0].length;
-        } catch (e) {
-            return 0;
-        }
+                sequences = event.getMessage().match(patterns.repeatedSeq);
+        return (sequences == null ? 0 : sequences.slice(0, 1)[0].length);
     };
 
     /**
@@ -120,18 +111,9 @@
      * @returns {number}
      */
     function getLongestNonLetterSequence(event) {
-        try {
-            var message = (event.getMessage() + ''),
-                sequences = message.match(patterns.nonAlphaSeq);
-
-            sequences.sort(function(a, b) {
-                return (a.length < b.length ? 1 : -1);
-            });
-
-            return sequences.slice(0, 1)[0].length;
-        } catch (e) {
-            return 0;
-        }
+        var message = (event.getMessage() + ''),
+            sequences = message.match(patterns.nonAlphaSeq);
+        return (sequences == null ? 0 : sequences.slice(0, 1)[0].length);
     };
 
     /**
@@ -143,16 +125,7 @@
     function getNumberOfNonLetters(event) {
         var message = (event.getMessage() + ''),
             sequences = message.match(patterns.nonAlphaCount);
-
-        try {
-            sequences.sort(function(a, b) {
-                return (a.length < b.length ? 1 : -1);
-            });
-
-            return sequences.length;
-        } catch (e) {
-            return 0;
-        }
+        return (sequences == null ? 0 : sequences.length);
     };
 
     /**
@@ -165,6 +138,18 @@
         return $.emotesHandler.getEmotesMatchCount(event.getMessage() + '');
     }
 
+    /**
+     * @function getNumberOfCaps
+     * @export $.patternDetector
+     * @param {Object} event
+     * @returns {number}
+     */
+    function getNumberOfCaps(event) {
+        var message = (event.getMessage() + ''),
+            sequences = message.match(patterns.capsCount);
+        return (sequences == null ? 0 : sequences.length);
+    }
+
     /** Export functions to API */
     $.patternDetector = {
         hasLinks: hasLinks,
@@ -173,5 +158,6 @@
         getNumberOfNonLetters: getNumberOfNonLetters,
         getLastFoundLink: getLastFoundLink,
         getNumberOfEmotes: getNumberOfEmotes,
+        getNumberOfCaps: getNumberOfCaps,
     };
 })();
