@@ -1182,5 +1182,4 @@
     /** Export functions to API */
     $.timeoutUser = timeoutUser;
     $.permitUserLink = permitUser;
-    $.emotesToggle = emotesToggle;
 })();
