@@ -28,8 +28,8 @@ $.lang.register('chatmoderator.emotes.filter.disabled', 'emotes filter has been 
 $.lang.register('chatmoderator.colors.usage', 'Usage: !moderation colors [on / off] (colors filter is currently $1)');
 $.lang.register('chatmoderator.colors.filter.enabled', 'color filter has been enabled.');
 $.lang.register('chatmoderator.colors.filter.disabled', 'color filter has been disabled.');
-$.lang.register('chatmoderator.regulars.usage', 'Usage: !moderation regulars [links / caps / symbols / spam / emotes / colors / longmessages] [true / false] - Current settings: [links: $1, caps: $2, symbols: $3, spam: $4, emotes: $5, colors: $6, long messages: $7]');
-$.lang.register('chatmoderator.subscribers.usage', 'Usage: !moderation subscribers [links / caps / symbols / spam / emotes / colors / longmessages] [true / false] - Current settings: [links: $1, caps: $2, symbols: $3, spam: $4, emotes: $5, colors: $6, long messages: $7]');
+$.lang.register('chatmoderator.regulars.usage', 'Usage: !moderation regulars [links / caps / symbols / spam / emotes / colors / longmessages] [true / false]');
+$.lang.register('chatmoderator.subscribers.usage', 'Usage: !moderation subscribers [links / caps / symbols / spam / emotes / colors / longmessages] [true / false]');
 $.lang.register('chatmoderator.subscribers.links.allowed', 'subscribers will now be effected by the link filter.');
 $.lang.register('chatmoderator.subscribers.links.not.allowed', 'subscribers will no longer be effected by the link filter.');
 $.lang.register('chatmoderator.subscribers.caps.allowed', 'subscribers will now be effected by the caps filter.');
@@ -44,6 +44,13 @@ $.lang.register('chatmoderator.subscribers.colors.allowed', 'subscribers will no
 $.lang.register('chatmoderator.subscribers.colors.not.allowed', 'subscribers will no longer be effected by the colors filter.');
 $.lang.register('chatmoderator.subscribers.long.messages.allowed', 'subscribers will now be effected by the long message filter.');
 $.lang.register('chatmoderator.subscribers.long.messages.not.allowed', 'subscribers will no longer be effected by the long message filter.');
+$.lang.register('chatmoderator.subscribers.toggle.link', 'subscribers are currently $1 to post links.');
+$.lang.register('chatmoderator.subscribers.toggle.caps', 'subscribers are currently $1 to type all in caps.');
+$.lang.register('chatmoderator.subscribers.toggle.symbols', 'subscribers are currently $1 to spam symbols.');
+$.lang.register('chatmoderator.subscribers.toggle.spam', 'subscribers are currently $1 to spam repeating characters.');
+$.lang.register('chatmoderator.subscribers.toggle.emotes', 'subscribers are currently $1 to overuse emotes.');
+$.lang.register('chatmoderator.subscribers.toggle.colors', 'subscribers are currently $1 to use /me for colored text');
+$.lang.register('chatmoderator.subscribers.toggle.long.msg', 'subscribers are currently $1 to post lon messages.');
 $.lang.register('chatmoderator.regulars.links.allowed', 'regulars will now be effected by the link filter.');
 $.lang.register('chatmoderator.regulars.links.not.allowed', 'regulars will no longer be effected by the link filter.');
 $.lang.register('chatmoderator.regulars.caps.allowed', 'regulars will now be effected by the caps filter.');
@@ -58,6 +65,13 @@ $.lang.register('chatmoderator.regulars.colors.allowed', 'regulars will now be e
 $.lang.register('chatmoderator.regulars.colors.not.allowed', 'regulars will no longer be effected by the colors filter.');
 $.lang.register('chatmoderator.regulars.long.messages.allowed', 'regulars will now be effected by the long message filter.');
 $.lang.register('chatmoderator.regulars.long.messages.not.allowed', 'regulars will no longer be effected by the long message filter.');
+$.lang.register('chatmoderator.regulars.toggle.link', 'regulars are currently $1 to post links.');
+$.lang.register('chatmoderator.regulars.toggle.caps', 'regulars are currently $1 to type all in caps.');
+$.lang.register('chatmoderator.regulars.toggle.symbols', 'regulars are currently $1 to spam symbols.');
+$.lang.register('chatmoderator.regulars.toggle.spam', 'regulars are currently $1 to spam repeating characters.');
+$.lang.register('chatmoderator.regulars.toggle.emotes', 'regulars are currently $1 to overuse emotes.');
+$.lang.register('chatmoderator.regulars.toggle.colors', 'regulars are currently $1 to use /me for colored text');
+$.lang.register('chatmoderator.regulars.toggle.long.msg', 'regulars are currently $1 to post lon messages.');
 $.lang.register('chatmoderator.link.message.usage', 'Usage: !moderation linksmessage [message]');
 $.lang.register('chatmoderator.link.message.set', 'link warning message set to: $1');
 $.lang.register('chatmoderator.caps.message.usage', 'Usage: !moderation capsmessage [message]');
