@@ -58,13 +58,13 @@ public class IrcEventHandler implements IRCEventListener {
             break;
         case JOIN:
             JoinEvent joinEvent = (JoinEvent) event;
-            if (PhantomBot.enableDebugging) com.gmt2001.Console.out.println("User Joined Channel [" + joinEvent.getChannelName() + "] " + joinEvent.getNick());
+            com.gmt2001.Console.debug.println("User Joined Channel [" + joinEvent.getChannelName() + "] " + joinEvent.getNick());
             eventBus.postAsync(new IrcChannelJoinEvent(session, joinEvent.getChannel(), joinEvent.getNick()));
             break;
         case PART:
             PartEvent partEvent = (PartEvent) event;
             mods.remove(partEvent.getNick().toLowerCase());
-            if (PhantomBot.enableDebugging) com.gmt2001.Console.out.println("User Left Channel [" + partEvent.getChannelName() + "] " + partEvent.getNick());
+            com.gmt2001.Console.debug.println("User Left Channel [" + partEvent.getChannelName() + "] " + partEvent.getNick());
             eventBus.postAsync(new IrcChannelLeaveEvent(session, partEvent.getChannel(), partEvent.getNick(), partEvent.getPartMessage()));
             break;
         case CHANNEL_MESSAGE:
@@ -113,7 +113,7 @@ public class IrcEventHandler implements IRCEventListener {
                 }
             }
 
-            //com.gmt2001.Console.out.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
+            com.gmt2001.Console.debug.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
             Channel cchannel = cmessageEvent.getChannel();
             String cusername = cmessageEvent.getNick();
             String cmessage = cmessageEvent.getMessage();
@@ -124,7 +124,7 @@ public class IrcEventHandler implements IRCEventListener {
             CtcpEvent ctcmessageEvent = (CtcpEvent) event;
 
             if (ctcmessageEvent.getCtcpString().startsWith("ACTION")) {
-                //com.gmt2001.Console.out.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
+                com.gmt2001.Console.debug.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
                 Map<String, String> ctcmessageTags = ctcmessageEvent.tags();
 
                 if (ctcmessageTags.containsKey("subscriber")) {
@@ -229,10 +229,9 @@ public class IrcEventHandler implements IRCEventListener {
                     } else {
                         if (nomodwarn) {
                             nomodwarn = false;
-                            com.gmt2001.Console.out.println("!!!!!WARNING!!!!!");
-                            com.gmt2001.Console.out.println("The bot is not a moderator in this channel.");
-                            com.gmt2001.Console.out.println("The broadcaster must mod the bot for it to be able to speak in channel.");
-                            com.gmt2001.Console.out.println("To do this, type this command in Twitch chat: /mod " + PhantomBot.instance().getSession().getNick().toLowerCase());
+                            com.gmt2001.Console.err.println(PhantomBot.instance().getSession().getNick().toUpperCase() + " IS NOT DETECTED AS A MODERATOR!");
+                            com.gmt2001.Console.err.println("IF " + PhantomBot.instance().getSession().getNick().toUpperCase() + " IS NOT A MODERATOR IT WILL NOT RESPOND TO COMMANDS!");
+                            com.gmt2001.Console.err.println("MAKE SURE TO ADD " + PhantomBot.instance().getSession().getNick().toUpperCase() + " AS A MODERATOR BY TYPING /mod " + PhantomBot.instance().getSession().getNick());
                         }
 
                         if (mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase())) {
@@ -245,7 +244,7 @@ public class IrcEventHandler implements IRCEventListener {
                 if (event.arg(0).replaceAll("#", "").equalsIgnoreCase(PhantomBot.instance().getSession().getNick())) {
                     if (!mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase())) {
                         mods.add(PhantomBot.instance().getSession().getNick().toLowerCase());
-                        //com.gmt2001.Console.out.println(">>Userstate marked bot Moderator (Broadcaster)");
+                        com.gmt2001.Console.debug.println(">>Userstate marked bot Moderator (Broadcaster)");
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
                     }
                 }
