@@ -657,10 +657,10 @@
             }
 
             /**
-             * @commandpath moderation regulars [links / caps / symbols / spam / emotes / colors / longmessages] [true / false] - Allows regulars to no be afected by that spam filter
+             * @commandpath moderation regulars [links / caps / symbols / spam / emotes / colors / longmessages] [true / false] - Allows regulars to no be affected by that spam filter
              */
             if (action.equalsIgnoreCase('regulars')) {
-                if (!subAction) {
+                if (!subAction || !args[2]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.usage', regulars.Links, regulars.Caps, regulars.Symbols, regulars.Spam, regulars.Emotes, regulars.Colors, regulars.LongMsg));
                     return;
                 }
@@ -742,7 +742,7 @@
              * @commandpath moderation subscribers [links / caps / symbols / spam / emotes / colors / longmessages] [true / false] - Allows subscribers to no be affected by that spam filter
              */
             if (action.equalsIgnoreCase('subscribers')) {
-                if (!subAction) {
+                if (!subAction || !args[2]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.usage', subscribers.Links, subscribers.Caps, subscribers.Symbols, subscribers.Spam, subscribers.Emotes, subscribers.Colors, subscribers.LongMsg));
                     return;
                 }
