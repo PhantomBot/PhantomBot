@@ -362,7 +362,7 @@
         }
 
         /**
-         * @commandpath aliascom [alias] [command] - Create an alias to any command
+         * @commandpath aliascom [existing command] [alias] - Create an alias to any command
          */
         if (command.equalsIgnoreCase('aliascom')) {
             if (!$.isModv3(sender, event.getTags())) {
@@ -385,6 +385,11 @@
 
             if ($.inidb.exists('aliases', subAction)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error', subAction));
+                return;
+            }
+
+            if ($.commandExists(subAction)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
                 return;
             }
 
