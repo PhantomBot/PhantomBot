@@ -103,18 +103,24 @@
      * @function deleteMessage
      * @param {string} user
      */
-    function deleteMessage(user) {
+    function deleteMessage(user, reason) {
         for (i in timeoutList) {
             if (timeoutList[i].equalsIgnoreCase(user)) {
                 timeoutUser(user, timeoutTime);
                 setTimeoutAndCooldown(user);
                 warning = $.lang.get('chatmoderator.timeout');
+                timeoutReason(user, timeoutTime, reason);
                 return;
             }
         }
         timeoutUser(user, warningTime);
         setTimeoutAndCooldown(user);
         warning = $.lang.get('chatmoderator.warning');
+        timeoutReason(user, warningTime, reason);
+    };
+
+    function timeoutReason(user, time, reason) {
+        $.logChatModEvent('chatModerator.js', user + ' was timed out for ' + time + ' seconds. Reason: ' + reason);
     };
 
     /**
@@ -274,7 +280,7 @@
                     return;
                 }
 
-                deleteMessage(sender);
+                deleteMessage(sender, 'posting a link');
                 sendMessage(sender, linksMessage);
                 return;
             }
@@ -284,7 +290,7 @@
                     return;
                 }
                 if (((parseFloat($.patternDetector.getNumberOfCaps(event)) / messageLength) * 100) > capsLimitPercent) {
-                    deleteMessage(sender);
+                    deleteMessage(sender, 'typing in caps');
                     sendMessage(sender, capsMessage);
                     return;
                 }
@@ -295,11 +301,11 @@
                     return;
                 }
                 if ($.patternDetector.getLongestNonLetterSequence(event) > symbolsGroupLimit) {
-                    deleteMessage(sender);
+                    deleteMessage(sender, 'spamming repeating symbols');
                     sendMessage(sender, symbolsMessage);
                     return;
                 } else if (((parseFloat($.patternDetector.getNumberOfNonLetters(event)) / messageLength) * 100) > symbolsLimitPercent) {
-                    deleteMessage(sender);
+                    deleteMessage(sender, 'overusing symbols');
                     sendMessage(sender, symbolsMessage);
                     return;
                 }
@@ -309,7 +315,7 @@
                 if (!regulars.Spam && $.isReg(sender) || !subscribers.Spam && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
-                deleteMessage(sender);
+                deleteMessage(sender, 'spamming repeating charaters');
                 sendMessage(sender, spamMessage);
                 return;
             }
@@ -318,7 +324,7 @@
                 if (!regulars.Emotes && $.isReg(sender) || !subscribers.Emotes && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
-                deleteMessage(sender);
+                deleteMessage(sender, 'spamming emotes');
                 sendMessage(sender, emotesMessage);
                 return;
             }
@@ -327,7 +333,7 @@
                 if (!regulars.Colors && $.isReg(sender) || !subscribers.Colors && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
-                deleteMessage(sender);
+                deleteMessage(sender, 'using /me (colored message)');
                 sendMessage(sender, colorsMessage);
                 return;
             }
@@ -336,7 +342,7 @@
                 if (!regulars.LongMsg && $.isReg(sender) || !subscribers.LongMsg && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
-                deleteMessage(sender);
+                deleteMessage(sender, 'posting a long message');
                 sendMessage(sender, longMessageMessage);
             }
         }
