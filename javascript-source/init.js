@@ -358,7 +358,7 @@
                 if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
                     if (event.getAdd()) {
                         if (!modeO) {
-                            $.consoleLn($.username.resolve($.botName) + ' ready!');
+                            consoleLn($.username.resolve($.botName) + ' ready!');
                         }
                         modeO = true;
                     }
@@ -670,8 +670,8 @@
         });
 
         $.logEvent('init.js', 553, 'Bot locked & loaded!');
-        $.consoleDebug('Bot locked & loaded!');
-        $.consoleLn('')
+        consoleDebug('Bot locked & loaded!');
+        consoleLn('');
 
         /**
          * @event command
