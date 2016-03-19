@@ -9,6 +9,7 @@
         noticeInterval = ($.inidb.exists('noticeSettings', 'interval') ? parseInt($.inidb.get('noticeSettings', 'interval')) : 10),
         noticeToggle = ($.inidb.exists('noticeSettings', 'noticetoggle') ? $.getIniDbBoolean('noticeSettings', 'noticetoggle') : false),
         numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
+        noticeOffline = ($.inidb.exists('noticeSettings', 'noticeOffline') ? $.getIniDbBoolean('noticeSettings', 'noticeOffline') : true),
         messageCount = 0,
         RandomNotice = 0;
 
@@ -197,7 +198,7 @@
              * @commandpath notice config - Shows current notice configuration
              */
             if (action.equalsIgnoreCase('config')) {
-                $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-config', noticeToggle, noticeInterval, noticeReqMessages, numberOfNotices));
+                $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-config', noticeToggle, noticeInterval, noticeReqMessages, numberOfNotices, noticeOffline));
                 return;
             }
 
@@ -217,19 +218,30 @@
             }
 
             /**
-             * @commandpath notice reload - Reloads all notices
+             * @commandpath notice toggleoffline - Toggles on and off if notices can be said in chat if the channel is offline
              */
-            if (action.equalsIgnoreCase('reload')) {
-                reloadNotices();
+            if (action.equalsIgnoreCase('toggleoffline')) {
+                if (noticeOffline) {
+                    noticeOffline = false;
+                    $.inidb.set('noticeSettings', 'noticeOffline', 'false');
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-disabled.offline'));
+                } else {
+                    noticeOffline = true;
+                    $.inidb.set('noticeSettings', 'noticeOffline', 'true');
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-enabled.offline'));
+                }
             }
         }
     });
 
     // Set the interval to announce
     setInterval(function() {
-        if (noticeToggle && $.isOnline($.channelName)) {
+        if (noticeToggle) {
             if ($.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
                 if (messageCount >= noticeReqMessages) {
+                    if (!noticeOffline && !$.isOnline($.channelName)) {
+                        return;
+                    }
                     sendNotice();
                     messageCount = 0;
                 }
