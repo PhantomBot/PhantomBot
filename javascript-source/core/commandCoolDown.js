@@ -90,8 +90,8 @@
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
             args = event.getArgs(),
-            cmd = args[0];
-        time = parseInt(args[1]);
+            cmd = args[0],
+            time = parseInt(args[1]);
 
         /**
          * @commandpath coolcom [command or keyword] [seconds] - Sets a cooldown in seconds for a command or a keyword. Use -1 for seconds to remove it.
