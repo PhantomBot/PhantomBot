@@ -102,6 +102,23 @@
     };
 
     /**
+     * @function logChatModEvent
+     * @export $
+     * @param {string} sourceFile
+     * @param {Number} lineNumber
+     * @param {string} message
+     */
+    function logChatModEvent(sourceFile, message) {
+        if (!$.isDirectory('./logs/chatModerator')) {
+            $.mkDir('./logs/chatModerator');
+        }
+
+        var now = new Date();
+        $.writeToFile(now.toDateString() + ' ' + now.toTimeString() + '[' + sourceFile + '] ' + message,
+            './logs/chatModerator/' + getLogDateString() + '.txt', true);
+    };
+
+    /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
@@ -235,4 +252,5 @@
     $.log = log;
     $.logEvent = logEvent;
     $.logError = logError;
+    $.logChatModEvent = logChatModEvent;
 })();
