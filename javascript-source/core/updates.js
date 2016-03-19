@@ -107,12 +107,38 @@
 
 
         if ($.inidb.exists('chatModerator', 'capsLimit')) {
-            $.consoleLn('Removing old capsLimit table')
-            $.inidb.del('chatModerator', 'capsLimit')
+            $.inidb.del('chatModerator', 'capsLimit');
         }
 
         $.consoleLn('PhantomBot v2.0.6 updates completed!');
         $.inidb.set('updates', 'installedv2.0.6', 'true');
+    }
+
+    if (!$.inidb.exists('updates', 'installedv2.0.7') || $.inidb.get('updates', 'installedv2.0.7') != 'true') {
+        $.consoleLn('Starting PhantomBot version 2.0.7 updates...');
+
+        if ($.inidb.exists('chatModerator', 'regularsToggle')) {
+            if ($.inidb.get('chatModerator', 'regularsToggle').equalsIgnoreCase('true')) {
+                $.inidb.set('chatModerator', 'regularsModerateLinks', false);
+                $.inidb.del('chatModerator', 'regularsToggle');
+            } else if ($.inidb.get('chatModerator', 'regularsToggle').equalsIgnoreCase('false')) {
+                $.inidb.set('chatModerator', 'regularsModerateLinks', true);
+                $.inidb.del('chatModerator', 'regularsToggle');
+            }
+        }
+
+        if ($.inidb.exists('chatModerator', 'subscribersToggle')) {
+            if ($.inidb.get('chatModerator', 'subscribersToggle').equalsIgnoreCase('true')) {
+                $.inidb.set('chatModerator', 'subscribersModerateLinks', false);
+                $.inidb.del('chatModerator', 'subscribersToggle');
+            } else if ($.inidb.get('chatModerator', 'subscribersToggle').equalsIgnoreCase('false')) {
+                $.inidb.set('chatModerator', 'subscribersModerateLinks', true);
+                $.inidb.del('chatModerator', 'subscribersToggle');
+            }
+        }
+
+        $.consoleLn('PhantomBot v2.0.7 updates completed!');
+        $.inidb.set('updates', 'installedv2.0.7', 'true');
     }
 
     /**
