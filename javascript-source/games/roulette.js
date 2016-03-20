@@ -35,7 +35,7 @@
     function timeoutUserR(username) {
         setTimeout(function() {
             $.say('.timeout ' + username + ' ' + timeoutTime);
-        }, 2500);
+        }, 1800);
     };
 
     /**
