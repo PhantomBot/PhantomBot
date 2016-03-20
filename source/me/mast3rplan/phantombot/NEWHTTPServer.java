@@ -56,13 +56,23 @@ public class NEWHTTPServer {
           server = HttpServer.create(new InetSocketAddress(serverPort), 0);
           server.createContext("/", new HTTPServerHandler());
           
+          HttpContext panelContext = server.createContext("/panel", new PanelHandler());
           HttpContext ytContext = server.createContext("/ytplayer", new YTPHandler());
+
           ytContext.setAuthenticator(new BasicAuthenticator("PhantomBot YouTube Player") {
               @Override
               public boolean checkCredentials(String user, String pwd) {
                   return user.equals("ytplayer") && pwd.equals(ytPassword);
               }
           });
+/* To be implemented when panel code is completed - use same ytpassword ?
+          panelContext.setAuthenticator(new BasicAuthenticator("PhantomBot Web Panel") {
+              @Override
+              public boolean checkCredentials(String user, String pwd) {
+                  return user.equals("web") && pwd.equals(ytPassword);
+              }
+          });
+*/
 
           server.start();
       } catch (IOException ex) {
@@ -96,6 +106,29 @@ public class NEWHTTPServer {
           if (requestMethod.equals("GET")) {
               if (uriPath.equals("/ytplayer")) {
                   handleFile("/web/ytplayer/index.html", exchange, false, false);
+              } else {
+                  handleFile("/web/" + uriPath, exchange, false, false);
+              }
+           }
+      }
+  }
+
+  class PanelHandler implements HttpHandler {
+      public void handle(HttpExchange exchange) throws IOException {
+          URI uriData = exchange.getRequestURI();
+          String uriPath = uriData.getPath();
+
+          // Get the Request Method (GET/PUT)
+          String requestMethod = exchange.getRequestMethod();
+
+          // Get any data from the body, although, we just discard it, this is required
+          InputStream inputStream = exchange.getRequestBody();
+          while (inputStream.read() != -1) { inputStream.skip(0x10000); }
+          inputStream.close();
+
+          if (requestMethod.equals("GET")) {
+              if (uriPath.equals("/panel")) {
+                  handleFile("/web/panel/index.html", exchange, false, false);
               } else {
                   handleFile("/web/" + uriPath, exchange, false, false);
               }

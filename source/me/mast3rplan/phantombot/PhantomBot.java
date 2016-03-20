@@ -74,6 +74,8 @@ import me.mast3rplan.phantombot.script.Script;
 import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.script.ScriptManager;
+import me.mast3rplan.phantombot.panel.PanelSocketServer;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -130,6 +132,7 @@ public class PhantomBot implements Listener {
     private NEWHTTPServer NEWhttpserver;
     private NEWHTTPSServer NEWhttpsServer;
     private EventWebSocketServer eventsocketserver;
+    private PanelSocketServer panelsocketserver;
     private static final boolean debugD = false;
     public static boolean enableDebugging = false;
     public static boolean interactive;
@@ -378,16 +381,21 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("EventSocketServer accepting connections on port " + eventport);
             EventBus.instance().register(eventsocketserver);
 
+            panelsocketserver = new PanelSocketServer(baseport + 4, webauth);
+            panelsocketserver.start();
+            com.gmt2001.Console.out.println("PanelSocketServer accepting connections on port " + (baseport + 4));
+
             NEWhttpserver = new NEWHTTPServer(baseport + 5, oauth, webauth, ytpassword);
-            // NEWhttpsServer = new NEWHTTPSServer(baseport + 1443, oauth, webauth);
             com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 5));
+
+            // NEWhttpsServer = new NEWHTTPSServer(baseport + 1443, oauth, webauth);
             // com.gmt2001.Console.out.println("NEW HTTPS Server accepting connections on port " + (baseport + 1443));
 
-             if (singularityauth.length() > 0) {
-                 GameWispAPIv1.instance().SetAccessToken(singularityauth);
-                 SingularityAPI.instance().setAccessToken(singularityauth);
-                 SingularityAPI.instance().StartService();
-             }
+            if (singularityauth.length() > 0) {
+                GameWispAPIv1.instance().SetAccessToken(singularityauth);
+                SingularityAPI.instance().setAccessToken(singularityauth);
+                SingularityAPI.instance().StartService();
+            }
         }
 
         // Print an extra new line after announcing HTTP and Socket servers
