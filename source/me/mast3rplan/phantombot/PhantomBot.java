@@ -27,6 +27,8 @@ import de.simeonf.EventWebSocketSecureServer;
 import de.simeonf.EventWebSocketServer;
 import de.simeonf.MusicWebSocketSecureServer;
 import com.illusionaryone.TwitchAlertsAPIv1;
+import com.illusionaryone.SingularityAPI;
+import com.illusionaryone.GameWispAPIv1;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -83,6 +85,7 @@ public class PhantomBot implements Listener {
     private String ytpassword;
     private final String webauth;
     private final String ytauth;
+    private final String singularityauth;
     private final String oauth;
     private String apioauth;
     private String clientid;
@@ -144,7 +147,8 @@ public class PhantomBot implements Listener {
                       double msglimit30, String datastore, String datastoreconfig, String youtubekey,
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
                       String keystorepassword, String keypassword, String twitchalertskey,
-                      int twitchalertslimit, String webauth, String awshostname, String ytpassword, String ytauth) {
+                      int twitchalertslimit, String webauth, String awshostname, String ytpassword,
+                      String ytauth, String singularityauth ) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -163,6 +167,7 @@ public class PhantomBot implements Listener {
         this.ytpassword = ytpassword;
         this.webauth = webauth;
         this.ytauth = ytauth;
+        this.singularityauth = singularityauth;
         this.channelName = channel;
         this.ownerName = owner;
         this.baseport = baseport;
@@ -377,6 +382,12 @@ public class PhantomBot implements Listener {
             // NEWhttpsServer = new NEWHTTPSServer(baseport + 1443, oauth, webauth);
             com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 5));
             // com.gmt2001.Console.out.println("NEW HTTPS Server accepting connections on port " + (baseport + 1443));
+
+             if (singularityauth.length() > 0) {
+                 GameWispAPIv1.instance().SetAccessToken(singularityauth);
+                 SingularityAPI.instance().setAccessToken(singularityauth);
+                 SingularityAPI.instance().StartService();
+             }
         }
 
         // Print an extra new line after announcing HTTP and Socket servers
@@ -435,6 +446,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("awshostname", awshostname, 0);
         Script.global.defineProperty("donations", donationsCache, 0);
         Script.global.defineProperty("emotes", emotesCache, 0);
+        Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
 
         Thread t = new Thread(new Runnable() {
             @Override
@@ -755,6 +767,7 @@ public class PhantomBot implements Listener {
                 data += "keypassword=" + keypassword + "\r\n";
                 data += "twitchalertsauth=" + twitchalertskey + "\r\n";
                 data += "twitchalertslimit=" + twitchalertslimit;
+                data += "singularityauth=" + singularityauth + "\r\n";
 
                 Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                             StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -935,6 +948,7 @@ public class PhantomBot implements Listener {
         String webauth = "";
         String ytpassword = "";
         String ytauth = "";
+        String singularityauth = "";
         String twitchalertskey = "";
         int twitchalertslimit = 5;
         String apioauth = "";
@@ -979,6 +993,9 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("ytauth=") && line.length() > 8) {
                         ytauth = line.substring(7);
+                    }
+                    if (line.startsWith("singularityauth=") && line.length() > 17) {
+                        singularityauth = line.substring(16);
                     }
                     if (line.startsWith("oauth=") && line.length() > 9) {
                         oauth = line.substring(6);
@@ -1130,6 +1147,7 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("musicenable=" + musicenable);
                     com.gmt2001.Console.out.println("ytpassword=" + ytpassword);
                     com.gmt2001.Console.out.println("ytauth=" + ytauth);
+                    com.gmt2001.Console.out.println("singularityauth=" + singularityauth);
                     com.gmt2001.Console.out.println("usehttps=" + usehttps);
                     com.gmt2001.Console.out.println("keystorepath='" + keystorepath + "'");
                     com.gmt2001.Console.out.println("keystorepassword='" + keystorepassword + "'");
@@ -1180,6 +1198,12 @@ public class PhantomBot implements Listener {
                 if (arg.toLowerCase().startsWith("ytauth=") && arg.length() > 8) {
                     if (!ytpassword.equals(arg.substring(7))) {
                         ytauth = arg.substring(7);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("singularityauth=") && arg.length() > 17) {
+                    if (!singularityauth.equals(arg.substring(16))) {
+                        singularityauth = arg.substring(16);
                         changed = true;
                     }
                 }
@@ -1311,20 +1335,26 @@ public class PhantomBot implements Listener {
                     }
                 }
                 if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
-                    com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
-                                                    + "[webauth=<web auth key>] [oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
-                                                    + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] [awshostname=<custom aws irc server>] [ghostname=<custom group chat server>] "
-                                                    + "[port=<custom irc port>] [gport=<custom group chat port>] [msglimit30=<message limit per 30 seconds>] "
-                                                    + "[datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>] "
-                                                    + "[datastoreconfig=<Optional DataStore config option, different for each DataStore type>] "
-                                                    + "[youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]"
-                                                    + "[ytpassword=<ytplayer password>] [ytauth=<ytplayer ws auth>] [twitchalertskey=<twitch alerts key>] [twitchalertslimit=<limit>");
+                    com.gmt2001.Console.out.println("\rUsage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>]\r\n"
+                                                    + "       [webauth=<web auth key>] [oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>]\r\n"
+                                                    + "       [channel=<channel to join>] [owner=<bot owner username>] [baseport=<bot webserver port>]\r\n"
+                                                    + "       [hostname=<custom irc server>] [awshostname=<custom aws irc server>] [ghostname=<custom group chat server>]\r\n"
+                                                    + "       [port=<custom irc port>] [gport=<custom group chat port>] [msglimit30=<message limit per 30 seconds>]\r\n"
+                                                    + "       [datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>]\r\n"
+                                                    + "       [datastoreconfig=<Optional DataStore config option, different for each DataStore type>]\r\n"
+                                                    + "       [youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]\r\n"
+                                                    + "       [ytpassword=<ytplayer password>] [ytauth=<ytplayer ws auth>] [twitchalertskey=<twitch alerts key>]\r\n"
+                                                    + "       [twitchalertslimit=<limit>] [singularityauth=<singularity password>]\r\n"
+                                                   );
+                    com.gmt2001.Console.out.println("\rPorts: Legacy MusicWebSocketServer baseport + 1. EventWebSocketServer baseport + 2\r\n"
+                                                    + "       YouTubeSocketServer baseport + 3. NEW HTTP Server baseport + 5"
+                                                   );
                     return;
                 }
                 if (arg.equalsIgnoreCase("storetypes")) {
-                    com.gmt2001.Console.out.println("DataStore types: IniStore (datastoreconfig parameter is folder name, stores in .ini files), "
-                                                    + "TempStore (Stores in memory, lost on shutdown), "
-                                                    + "SqliteStore (Default, Stores in a SQLite3 database, datastoreconfig parameter is a config file");
+                    com.gmt2001.Console.out.println("\rDataStore types: IniStore (datastoreconfig parameter is folder name, stores in .ini files),\r\n"
+                                                    + "TempStore (Stores in memory, lost on shutdown),\r\n"
+                                                    + "SqliteStore (Default, Stores in a SQLite3 database, datastoreconfig parameter is a config file.\r\n");
                     return;
                 }
             }
@@ -1352,6 +1382,7 @@ public class PhantomBot implements Listener {
             data += "musicenable=" + musicenable + "\r\n";
             data += "ytpassword=" + ytpassword + "\r\n";
             data += "ytauth=" + ytauth + "\r\n";
+            data += "singularityauth=" + singularityauth + "\r\n";
             data += "usehttps=" + usehttps + "\r\n";
             data += "keystorepath=" + keystorepath + "\r\n";
             data += "keystorepassword=" + keystorepassword + "\r\n";
@@ -1363,7 +1394,9 @@ public class PhantomBot implements Listener {
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit, webauth, awshostname, ytpassword, ytauth);
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore,
+                                             datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword,
+                                             twitchalertskey, twitchalertslimit, webauth, awshostname, ytpassword, ytauth, singularityauth);
     }
 
     private static String generateWebAuth() {
