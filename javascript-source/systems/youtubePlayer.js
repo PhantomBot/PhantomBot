@@ -1370,7 +1370,7 @@
                         return;
                     }
                     if (args[1].match(/\d+\-\d+/)) {
-                        minRange = parseInt(args[1].match(/(\d)+\-\d+/)[1]);
+                        minRange = parseInt(args[1].match(/(\d+)\-\d+/)[1]);
                         maxRange = parseInt(args[1].match(/\d+\-(\d+)/)[1]);
                         if (maxRange - minRange > 5) {
                             maxRange = minRange + 5;
