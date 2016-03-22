@@ -117,6 +117,15 @@
     if (!$.inidb.exists('updates', 'installedv2.0.7') || $.inidb.get('updates', 'installedv2.0.7') != 'true') {
         $.consoleLn('Starting PhantomBot version 2.0.7 updates...');
 
+        var newDefaultDisabledModules = [
+            './handlers/gameWispHandler.js',
+        ]; //ADD NEW MODULES IN 2.0.7 TO BE DISABLED PLEASE.
+
+        $.consoleLn('Disabling new default modules...');
+        for (i in newDefaultDisabledModules) {
+            $.inidb.set('modules', newDefaultDisabledModules[i], 'false');
+        }
+
         if ($.inidb.exists('chatModerator', 'regularsToggle')) {
             if ($.inidb.get('chatModerator', 'regularsToggle').equalsIgnoreCase('true')) {
                 $.inidb.set('chatModerator', 'regularsModerateLinks', false);
