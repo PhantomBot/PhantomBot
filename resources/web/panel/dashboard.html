@@ -1,0 +1,40 @@
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<div>
+    <!-- Each ID maps to a $("#ID").html() to update the contents. -->
+    <span id="streamOnline" />
+    <span id="streamUptime" />
+    <span id="viewerCount" />
+</div>
+<br>
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<div id="accordion">
+    <h3>Twitch</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="streamTitle">Stream Title</label>
+                <button type="button" class="btn btn-default inline pull-right" onclick="$.setStreamTitle()">Update</button>
+                <input type="text" class="form-control" id="streamTitleInput" placeholder="Stream Title" />
+            </div>
+        </form>
+        <br>
+        
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gameTitle">Game Title</label>
+                <button type="button" class="btn btn-default inline pull-right" onclick="$.setGameTitle()">Update</button>
+                <input type="text" class="form-control" id="gameTitleInput" placeholder="Game Title" />
+            </div>
+        </form>
+    </div>
+    <h3>Chat Statistics</h3>
+    <div>
+        <span id="chatCount" />
+        <span id="modCount" />
+    </div>
+</div>
+
+<!-- Run the Acordion -->
+<script>$("#accordion").accordion();</script>

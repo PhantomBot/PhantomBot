@@ -121,6 +121,9 @@
 
     function timeoutReason(user, time, reason) {
         $.logChatModEvent('chatModerator.js', user + ' was timed out for ' + time + ' seconds. Reason: ' + reason);
+        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            $.panelDB.updateModLinesDB();
+        }
     };
 
     /**
@@ -160,7 +163,7 @@
         var b = setTimeout(function() {
             for (i in timeoutList) {
                 if (timeoutList[i].equalsIgnoreCase(user)) {
-                    timeoutList.splice(i, 0);
+                    timeoutList.splice(i, 1);
                     break;
                 }
             }

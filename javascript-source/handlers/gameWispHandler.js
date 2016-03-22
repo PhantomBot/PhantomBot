@@ -129,6 +129,10 @@
     function checkGameWispSub(username) {
         var jsonData = JSON.parse($.gamewisp.getUserSubInfoString(username)+'');
 
+        if (!$.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
+            return;
+        }
+
         // If an error occurs in the API, pull back data from the database.
         if (jsonData['result']['status'] != 1) {
             if ($.getIniDbBoolean('gamewispsubs', username, false)) {
