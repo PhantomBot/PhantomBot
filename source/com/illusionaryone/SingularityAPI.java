@@ -20,6 +20,12 @@ package com.illusionaryone;
 
 import com.gmt2001.UncaughtExceptionHandler;
 
+import me.mast3rplan.phantombot.event.EventBus;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.KeyManagementException;
 import java.io.IOException;
@@ -138,32 +144,117 @@ public class SingularityAPI {
             webSocket.on("subscriber-new", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
+                    com.gmt2001.Console.debug.println("SingularityWS: subscriber-new received");
                     JSONObject jsonObject = new JSONObject(args[0].toString());
-                    // jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
+                    if (!jsonObject.has("data")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").has("usernames")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").getJSONObject("usernames").has("twitch")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").has("tier")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").getJSONObject("tier").has("level")) {
+                        return;
+                    }
+                    String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
+                    int tier = jsonObject.getJSONObject("data").getJSONObject("tier").getInt("level");
+                    EventBus.instance().post(new GameWispSubscribeEvent(username, tier));
                 }
             });
 
             webSocket.on("subscriber-anniversary", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
+                    com.gmt2001.Console.debug.println("SingularityWS: subscriber-anniversary received");
                     JSONObject jsonObject = new JSONObject(args[0].toString());
-                    // jsonObject.getJSONObject("data").getJSONObject("subscriber").getJSONObject("usernames").getString("twitch");
-                    // jsonObject.getJSONObject("data").getInt("month_count"));
+                    if (!jsonObject.has("data")) {
+                        return; 
+                    }
+                    if (!jsonObject.getJSONObject("data").has("subscriber")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").getJSONObject("subscriber").has("usernames")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").getJSONObject("subscriber").getJSONObject("usernames").has("twitch")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").has("month_count")) {
+                        return;
+                    }
+                    String username = jsonObject.getJSONObject("data").getJSONObject("subscriber").getJSONObject("usernames").getString("twitch");
+                    int months = jsonObject.getJSONObject("data").getInt("month_count");
+                    EventBus.instance().post(new GameWispAnniversaryEvent(username, months));
                 }
             });
 
+            webSocket.on("subscriber-benefits-change", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    com.gmt2001.Console.debug.println("SingularityWS: subscriber-benefits-change received");
+                    JSONObject jsonObject = new JSONObject(args[0].toString());
+                    if (!jsonObject.has("data")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").has("usernames")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").getJSONObject("usernames").has("twitch")) {
+                        return;
+                    }
+                    if (!jsonObject.has("tier")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("tier").has("level")) {
+                        return;
+                    }
+                    String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
+                    int tier = jsonObject.getJSONObject("tier").getInt("level");
+                    EventBus.instance().post(new GameWispBenefitsEvent(username, tier));
+                }
+            });
+
+            /**
+             * Status Change Values: https://gamewisp.readme.io/docs/subscriber-new
+             * active - a currently active subscriber
+             * trial - a subscriber on a trial code
+             * grace_period - a canceled subscriber that is still received benefits
+             * billing_grace_period - a canceled subscriber still receiving benefits that was canceled due to a payment processing error
+             * inactive - a subscriber that is canceled and receiving no benefits
+             * twitch - a subscriber that is receiving free benefits from a partnered Twitch streamer.
+             */
             webSocket.on("subscriber-status-change", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
+                    com.gmt2001.Console.debug.println("SingularityWS: subscriber-status-changed received");
                     JSONObject jsonObject = new JSONObject(args[0].toString());
-                    // jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
-                    // jsonObject.getJSONObject("data").getString("status"));
+                    if (!jsonObject.has("data")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").has("usernames")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").getJSONObject("usernames").has("twitch")) {
+                        return;
+                    }
+                    if (!jsonObject.getJSONObject("data").has("status")) {
+                        return;
+                    }
+                    String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
+                    String status = jsonObject.getJSONObject("data").getString("status");
+                    EventBus.instance().post(new GameWispChangeEvent(username, status));
                 }
             });
 
             webSocket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
+                    com.gmt2001.Console.debug.println("SingularityWS: Disconnected");
                 }
             });
 

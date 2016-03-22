@@ -498,7 +498,6 @@
         this.removeSong = function(youTubeID) {
             var songTitle = null,
                 newRequests = [],
-                youTubeObject,
                 i;
 
             for (i in requests) {
@@ -520,7 +519,6 @@
         this.removeUserSong = function(username) {
             var songTitle = null,
                 newRequests = [],
-                youTubeObject,
                 i;
 
             for (i = requests.length - 1; i >= 0; i--) {
@@ -592,8 +590,11 @@
                     ++currentRequestCount;
                 }
             }
-
-            return (currentRequestCount >= songRequestsMaxParallel);
+            if ($.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
+                return (currentRequestCount >= songRequestsMaxParallel + $.getTierData(sender, 'songrequests'));
+            } else {
+                return (currentRequestCount >= songRequestsMaxParallel);
+            }
         };
 
         /**
@@ -1057,7 +1058,7 @@
                 }
 
                 songRequestsMaxSecondsforVideo = parseInt(actionArgs[0]);
-                $.inidb.set('ytSettings', 'songRequestsMaxParallel', songRequestsMaxSecondsforVideo);
+                $.inidb.set('ytSettings', 'songRequestsMaxSecondsforVideo', songRequestsMaxSecondsforVideo);
                 $.say($.lang.get('ytplayer.command.ytp.setmaxvidlength.success', songRequestsMaxSecondsforVideo));
                 return;
             }
@@ -1440,7 +1441,6 @@
 
                 /** Tobu - Higher (Outertone Release) */
                 try {
-                    var youtubeVideo = new YoutubeVideo('l7C29RM1UmU', $.botName);
                     currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
                 } catch (ex) {
                     $.logError("youtubePlayer.js", 855, "YoutubeVideo::exception: " + ex);
