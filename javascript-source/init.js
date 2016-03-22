@@ -669,6 +669,34 @@
             callHook('yTPlayerDeletePlaylistByID', event, false);
         });
 
+        /**
+         * @event api-gameWispChangeEvent
+         */
+        $api.on($script, 'gameWispChange', function(event) {
+            callHook('gameWispChange', event, false);
+        });
+
+        /**
+         * @event api-gameWispBenefitsEvent
+         */
+        $api.on($script, 'gameWispBenefits', function(event) {
+            callHook('gameWispBenefits', event, false);
+        });
+
+        /**
+         * @event api-gameWispSubscribeEvent
+         */
+        $api.on($script, 'gameWispSubscribe', function(event) {
+            callHook('gameWispSubscribe', event, false);
+        });
+
+        /**
+         * @event api-gameWispAnniversaryEvent
+         */
+        $api.on($script, 'gameWispAnniversary', function(event) {
+            callHook('gameWispAnniversary', event, false);
+        }); 
+
         $.logEvent('init.js', 553, 'Bot locked & loaded!');
         consoleDebug('Bot locked & loaded!');
         consoleLn('');

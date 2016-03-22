@@ -136,6 +136,12 @@
                         offlineGain : parseInt($.inidb.get('grouppointsoffline', $.getUserGroupId(username))));
                 }
             }
+
+            if ($.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
+                if ($.getTierData(username, 'bonuspoints') != 0) {
+                    amount += Math.floor(amount * ($.getTierData(username, 'bonuspoints') / 100));
+                }
+            }
             $.inidb.incr('points', username, amount);
             uUsers.push(username);
         }

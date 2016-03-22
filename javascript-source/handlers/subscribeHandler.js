@@ -35,7 +35,7 @@
 
         if (!$.inidb.exists('subscribed', subscriber)) {
             $.addSubUsersList(subscriber);
-            $.restoreSubscriberStatus(subscriber);
+            $.restoreSubscriberStatus(subscriber, true);
         } else if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
             $.inidb.incr('points', subscriber, subReward);
         }
@@ -53,7 +53,7 @@
 
         if ($.inidb.exists('subscribed', subscriber)) {
             $.delSubUsersList(subscriber);
-            $.restoreSubscriberStatus(subscriber);
+            $.restoreSubscriberStatus(subscriber, true);
         }
     });
 
@@ -259,7 +259,7 @@
                 $.say(s);
 
                 $.addSubUsersList(sub);
-                $.restoreSubscriberStatus(sub);
+                $.restoreSubscriberStatus(sub, true);
 
                 return;
             }

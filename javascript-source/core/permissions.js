@@ -7,16 +7,13 @@
  * Use the $ API
  */
 (function() {
-    var //checkSubscribersInterval = 6e5,
-
-    /** @export $ */
-        userGroups = [],
+    var userGroups = [],
         modeOUsers = [],
         subUsers = [],
+        gwSubUsers = [];
         modListUsers = [],
         users = [],
         lastJoinPart = $.systemTime();
-
 
     /**
      * @function userExists
@@ -106,8 +103,34 @@
                 return true;
             }
         }
+        if (username in gwSubUsers) {
+            return true;
+        }
         return false;
     };
+
+    /**
+     * @function isTwitchSub
+     * @param {String}
+     * @returns {Boolean}
+     */
+    function isTwitchSub(username) {
+        for (var i in subUsers) {
+            if (subUsers[i][0].equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @function isGWSub
+     * @param {String}
+     * @returns {Boolean}
+     */
+    function isGWSub(username) {
+        return username in gwSubUsers;
+    }
 
     /**
      * @function isSubv3
@@ -119,6 +142,7 @@
     function isSubv3(username, tags) {
         return (tags != null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || $.isSub(username);
     };
+
     /**
      * @function isTurbo
      * @export $
@@ -300,6 +324,36 @@
     };
 
     /**
+     * @function getGWTier
+     * @export $
+     * @param username
+     */
+    function getGWTier(username) {
+        if (username.toLowerCase() in gwSubUsersList) {
+            return gwSubUsersList[username];
+        }
+        return 0;
+    }
+
+    /**
+     * @function addGWSubUsersList
+     * @export $
+     * @param username
+     */
+    function addGWSubUsersList(username, tier) {
+        gwSubUsersList[username] = tier;
+    }
+
+    /**
+     * @function delGWSubUsersList
+     * @export $
+     * @param username
+     */
+    function delGWSubUsersList(username) {
+        delete gwSubUsersList[username];
+    }
+   
+    /**
      * @function addSubUsersList
      * @export $
      * @param username
@@ -334,28 +388,48 @@
     /**
      * @function restoreSubscriberStatus
      * @param username
+     * @param haveTwitchStatus
      */
-    function restoreSubscriberStatus(username) {
+    function restoreSubscriberStatus(username, haveTwitchStatus) {
         username = (username + '').toLowerCase();
 
-        if ($.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
+        if ($.bot.isModuleEnabled('./handlers/subscribeHandler.js') ||
+            $.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
 
             if ($.isMod(username) || $.isAdmin(username)) {
                 return;
             }
 
-            if ($.getIniDbBoolean('subscribed', username, false) && !isSub(username)) {
-                $.setIniDbBoolean('subscribed', username, false);
-                if ($.inidb.exists('preSubGroup', username)) {
-                    $.inidb.set('group', username, $.inidb.get('preSubGroup', username));
-                    $.inidb.del('preSubGroup', username);
-                } else {
-                    $.inidb.set('group', username, 7);
-                }
-            } else if (!$.getIniDbBoolean('subscribed', username, false) && isSub(username)) {
-                $.setIniDbBoolean('subscribed', username, true);
+            if (haveTwitchStatus) {
+                if ($.getIniDbBoolean('subscribed', username, false) && !isTwitchSub(username)) {
+                    $.setIniDbBoolean('subscribed', username, false);
+                } else if (!$.getIniDbBoolean('subscribed', username, false) && isTwitchSub(username)) {
+                    $.setIniDbBoolean('subscribed', username, true);
+                } 
+            }
+
+            if ($.getIniDbBoolean('gamewispsubs', username, false) && !isGWSub(username)) {
+                $.setIniDbBoolean('gamewispsubs', username, false);
+                $.inidb.set('gamewispsubs', username + '_tier', 1);
+            } else if (!$.getIniDbBoolean('gamewispsubs', username, false) && isGwSub(username)) {
+                $.setIniDbBoolean('gamewispsubs', username, true);
+                $.inidb.set('gamewispsubs', username + '_tier', getGWTier(username));
+            }
+
+            if ((isTwitchSub(username) || isGWSub(username)) && getUserGroupId(username) != 3) {
                 $.inidb.set('preSubGroup', username, getUserGroupId(username));
                 setUserGroupByName(username, 'Subscriber');
+            }
+
+            if (haveTwitchStatus) {
+                if ((!isTwitchSub(username) && !isGWSub(username)) && getUserGroupId(username) == 3) {
+                    if ($.inidb.exists('preSubGroup', username)) {
+                        $.inidb.set('group', username, $.inidb.get('preSubGroup', username));
+                        $.inidb.del('preSubGroup', username);
+                    } else {
+                        $.inidb.set('group', username, 7);
+                    }
+                }
             }
         }
     };
@@ -435,6 +509,7 @@
             username = usersIterator.next().toLowerCase();
             if (!$.userExists(username)) {
                 users.push([username, $.systemTime()]);
+                $.checkGameWispSub(username);
             }
         }
     });
@@ -451,6 +526,7 @@
         lastJoinPart = $.systemTime();
         if (!$.userExists(username)) {
             users.push([username, $.systemTime()]);
+            $.checkGameWispSub(username);
         }
     });
 
@@ -466,6 +542,7 @@
         lastJoinPart = $.systemTime();
         if (!$.userExists(username)) {
             users.push([username, $.systemTime()]);
+            $.checkGameWispSub(username);
         }
     });
 
@@ -479,7 +556,7 @@
         for (i in users) {
             if (users[i][0].equalsIgnoreCase(username)) {
                 users.splice(i, 1);
-                restoreSubscriberStatus(username);
+                restoreSubscriberStatus(username, true);
             }
         }
     });
@@ -518,7 +595,7 @@
                     }
                     modeOUsers = newmodeOUsers;
 
-                    if ($.getIniDbBoolean('subscribed', username, false)) {
+                    if (isSub(username)) {
                         setUserGroupByName(username, 'Subscriber'); // Subscriber, return to that group.
                     } else {
                         setUserGroupByName(username, 'Regular'); // Assume user that was a mod was a regular.
@@ -569,7 +646,7 @@
                         }
                     }
                     subUsers.push([spl[1], $.systemTime() + 1e4]);
-                    restoreSubscriberStatus(spl[1].toLowerCase());
+                    restoreSubscriberStatus(spl[1].toLowerCase(), true);
                     for (i in subUsers) {
                         subsTxtList.push(subUsers[i][0]);
                     }
@@ -773,4 +850,7 @@
     $.addSubUsersList = addSubUsersList;
     $.delSubUsersList = delSubUsersList;
     $.restoreSubscriberStatus = restoreSubscriberStatus;
+    $.addGWSubUsersList = addGWSubUsersList;
+    $.delGWSubUsersList = delGWSubUsersList;
+    $.getGWTier = getGWTier;
 })();
