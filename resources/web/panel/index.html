@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PhantomBot Control Panel</title>
+
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <link rel="stylesheet" href="panel/js/jquery-ui/jquery-ui.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+        <script src="panel/js/jquery-ui/external/jquery/jquery.min.js"></script>
+        <script src="panel/js/jquery-ui/jquery-ui.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="panel/js/dateFormat.js"></script>
+        <script type="text/javascript" src="panel/js/panelConfig.js"></script>
+        <script type="text/javascript" src="panel/js/panelUtils.js"></script>
+
+        <link rel="icon" href="favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel="stylesheet" type="text/css" href="panel/css/style.css">
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    </head>
+
+    <body>
+        <div class="header">
+            <img id="logo" src="panel/images/logo.png"/>
+            <h1>Control Panel</h1>
+            <div id="newPanelAlert" class="alert" style="display:none"></div>
+        </div>
+             
+        <div id="tabs">
+            <ul>
+                <li> <a href="#dashboard"> Dashboard</a> </li>
+                <li> <a href="#viewers"> Viewers</a> </li>
+                <li> <a href="#raids">Raids</a> </li>
+                <li> <a href="#moderation">Moderation</a> </li>
+                <li> <a href="#games">Games</a> </li>
+                <li> <a href="#greeting">Greeting</a> </li>
+                <li> <a href="#cooldown">Cooldown</a> </li>
+                <li> <a href="#customcom">Custom Commands</a> </li>
+                <li> <a href="#host">Host</a> </li>
+                <li> <a href="#quotes">Quotes</a> </li>
+                <li> <a href="#raffle">Raffle</a> </li>
+                <li> <a href="#poll">Poll</a> </li>
+            </ul>
+
+            <div role="tabpanel" class="tab-pane active" id="dashboard">
+                <div id="dashboardPanel"></div>
+                <script type="text/javascript" src="panel/js/dashboardPanel.js"></script>
+            </div>
+            <div id="viewers">Viewers</div>
+            <div id="raids">Raids </div>
+            <div id="moderation">Moderation</div>
+            <div id="games">Games</div>
+            <div id="greeting">Greeting</div>
+            <div id="cooldown">Cooldown</div>
+            <div id="customcom">Custom Commands</div>
+            <div id="host">Host</div>
+            <div id="quotes">Quotes</div>
+            <div id="raffle">Raffle</div>
+            <div id="poll">Poll</div>
+        </div>
+
+        <script>$('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');</script>
+
+        <div id="copyright">
+            Control Panel by: 
+            <a href="http://www.phantombot.net">www.phantombot.net</a>
+        </div>
+    </body>
+</html>

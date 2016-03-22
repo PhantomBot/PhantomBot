@@ -336,6 +336,10 @@
                 callHook('ircPrivateMessage', event, false);
             } else {
                 callHook('ircChannelMessage', event, false);
+
+                if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+                    $.panelDB.updateChatLinesDB();
+                } 
             }
         });
 
