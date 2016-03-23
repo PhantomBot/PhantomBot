@@ -1,0 +1,206 @@
+#logo {
+    width: 70px;
+    margin-left: 15px;
+    float: left;
+    display: inline-block;
+    margin-top: 17px;
+}
+
+.container {
+    position:relative;
+    padding:0 0 0 25px;
+}
+
+#container {
+    width: 100%;
+}
+
+.header {
+    background-color: #6441a5;
+    margin-top: -20px;
+    margin-bottom: 10px;
+    max-width: 100%;
+    height: 85px;
+    -webkit-box-shadow: 0px 3px 5px #000;
+    -moz-box-shadow:    0px 3px 5px #000;
+    box-shadow:         0px 3px 5px #000;
+    overflow: hidden;
+}
+
+a {
+    color: #6441a5;
+    text-decoration: none;
+}
+
+body {
+    font-family: "Roboto", arial;
+    color: #aaaaaa;
+    padding: 0;
+    margin: 0;
+    background-color: rgb(20, 20, 20);
+}
+
+h1 {
+    color: white;
+    padding-top: 20px;
+    margin-left: 15px;
+    font-size: 26px;
+    font-family: "Roboto", arial;
+    display: inline-block;
+}
+
+option:hover {
+    background-color:#cd201f;
+    cursor: pointer;
+}
+
+table {
+    border: 0px;
+    width: 100%;
+}
+
+#selected {
+    background-color: #000;
+    padding: 5px;
+}
+
+.button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+#copyright {
+    font-family: "Roboto", arial;
+    display: inline;
+    float: left;
+    width: 100%;
+    background-color: rgb(34, 34, 34);
+    color: grey;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.redPill {
+    font-family: "Roboto", arial;
+    display: inline;
+    background-color: red;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.greenPill {
+    font-family: "Roboto", arial;
+    display: inline;
+    background-color: green;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.bluePill {
+    font-family: "Roboto", arial;
+    display: inline;
+    background-color: blue;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+// Bootstrap and JQuery Section //
+
+.tab-pane {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+
+}
+
+.ui-slider .ui-slider-handle { 
+    visibility: hidden;
+}
+
+.alert-danger {
+    clear: left;
+    position: fixed;
+    right: 15px;
+    top: 14px;
+    height: 40px;
+    width: 60%;
+    text-align: center;
+    background-color: red;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.alert-success {
+    clear: left;
+    position: fixed;
+    right: 15px;
+    top: 14px;
+    height: 40px;
+    width: 60%;
+    text-align: center;
+    background-color: white;
+    color: #6441a5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+} 
+
+.modal-dialog {
+    background-color: #444444;
+    color: #dddddd;
+}
+
+#tabs {
+    width: 100%;
+}
+.ui-tabs-vertical { 
+    width: 55em;
+}
+.ui-tabs-vertical .ui-tabs-nav {
+    padding: .2em .1em .2em .2em; float: left; width: 12em;
+}
+.ui-tabs-vertical .ui-tabs-nav li {
+    clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0;
+}
+.ui-tabs-vertical .ui-tabs-nav li a {
+    display:block;
+}
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+    padding-bottom: 0; padding-right: .1em; border-right-width: 1px;
+}
+.ui-tabs-vertical .ui-tabs-panel {
+    padding: 1em; float: left; width: 40em;
+}

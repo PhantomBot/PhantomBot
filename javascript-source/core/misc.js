@@ -341,6 +341,36 @@
         $.inidb.set(fileName, key, state.toString());
     };
 
+    /**
+     * @function getIniDbString
+     * @export $
+     * @param {string}
+     * @param {string}
+     * @param {string}
+     */
+    function getIniDbString(fileName, key, value, defaultValue) {
+        if ($.inidb.exists(fileName, key)) {
+            return ($.inidb.get(fileName, key));
+        } else {
+            return (defaultValue);
+        }
+    };
+
+    /**
+     * @function getIniDbNumber
+     * @export $
+     * @param {string}
+     * @param {string}
+     * @param {number}
+     */
+    function getIniDbNumber(fileName, key, value, defaultValue) {
+        if ($.inidb.exists(fileName, key)) {
+            return parseInt($.inidb.get(fileName, key));
+        } else {
+            return defaultValue;
+        }
+    }
+
     /** Export functions to API */
     $.list = {
         contains: contains,
@@ -354,6 +384,8 @@
     $.arrayShuffle = arrayShuffle;
     $.getCurrentHostTarget = getCurrentHostTarget;
     $.getIniDbBoolean = getIniDbBoolean;
+    $.getIniDbString = getIniDbString;
+    $.getIniDbNumber = getIniDbNumber;
     $.getOrdinal = getOrdinal;
     $.getPercentage = getPercentage;
     $.outOfRange = outOfRange;
