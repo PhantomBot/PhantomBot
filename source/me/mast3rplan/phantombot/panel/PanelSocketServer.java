@@ -25,7 +25,7 @@
  * // Authenticate
  * { "authenticate : "authentication_key" }
  *
- * // Send command - if username is not provided, defaults to BotPanelUserString
+ * // Send command - if username is not provided, defaults to the botname.
  * { "command" : "command line", "username" : "user name" }
  *
  * // Query DB
@@ -144,39 +144,43 @@ public class PanelSocketServer extends WebSocketServer {
             return;
         }
 
-        if (jsonObject.has("command")) {
-            jsonString = jsonObject.getString("command");
-            if (jsonObject.has("username")) {
-                PhantomBot.instance().handleCommand(jsonObject.getString("username"), jsonString);
+        try {
+            if (jsonObject.has("command")) {
+                jsonString = jsonObject.getString("command");
+                if (jsonObject.has("username")) {
+                    PhantomBot.instance().handleCommand(jsonObject.getString("username"), jsonString);
+                } else {
+                    PhantomBot.instance().handleCommand(PhantomBot.instance().getBotName(), jsonString);
+                }
+                return;
+            } else if (jsonObject.has("dbquery")) {
+                uniqueID = jsonObject.getString("dbquery");
+                String table = jsonObject.getJSONObject("query").getString("table");
+                String key = jsonObject.getJSONObject("query").getString("key");
+                doDBQuery(uniqueID, table, key);
+                return;
+            } else if (jsonObject.has("dbkeys")) {
+                uniqueID = jsonObject.getString("dbkeys");
+                String table = jsonObject.getJSONObject("query").getString("table");
+                doDBKeysQuery(uniqueID, table);
+            } else if (jsonObject.has("dbupdate")) {
+                uniqueID = jsonObject.getString("dbupdate");
+                String table = jsonObject.getJSONObject("update").getString("table");
+                String key = jsonObject.getJSONObject("update").getString("key");
+                String value = jsonObject.getJSONObject("update").getString("value");
+                doDBUpdate(uniqueID, table, key, value);
+            } else if (jsonObject.has("dbdelkey")) {
+                uniqueID = jsonObject.getString("dbdelkey");
+                String table = jsonObject.getJSONObject("update").getString("table");
+                String key = jsonObject.getJSONObject("update").getString("key");
+                doDBDelKey(uniqueID, table, key);
             } else {
-                PhantomBot.instance().handleCommand("BotPanelUserString", jsonString);
+                com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
+                return;
             }
-            return;
-        } else if (jsonObject.has("dbquery")) {
-            uniqueID = jsonObject.getString("dbquery");
-            String table = jsonObject.getJSONObject("query").getString("table");
-            String key = jsonObject.getJSONObject("query").getString("key");
-            doDBQuery(uniqueID, table, key);
-            return;
-        } else if (jsonObject.has("dbkeys")) {
-            uniqueID = jsonObject.getString("dbkeys");
-            String table = jsonObject.getJSONObject("query").getString("table");
-            doDBKeysQuery(uniqueID, table);
-        } else if (jsonObject.has("dbupdate")) {
-            uniqueID = jsonObject.getString("dbupdate");
-            String table = jsonObject.getJSONObject("update").getString("table");
-            String key = jsonObject.getJSONObject("update").getString("key");
-            String value = jsonObject.getJSONObject("update").getString("value");
-            doDBUpdate(uniqueID, table, key, value);
-        } else if (jsonObject.has("dbdelkey")) {
-            uniqueID = jsonObject.getString("dbdelkey");
-            String table = jsonObject.getJSONObject("update").getString("table");
-            String key = jsonObject.getJSONObject("update").getString("key");
-            doDBDelKey(uniqueID, table, key);
-        } else {
-            com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
-            return;
-        }
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.println("PanelSocketServer::JSONException(" + ex.getMessage() + "): " + jsonString);
+        } 
     }
 
     @Override

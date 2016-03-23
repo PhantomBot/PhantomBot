@@ -329,6 +329,10 @@ public class PhantomBot implements Listener {
         PhantomBot.enableDebugging = debug;
     }
 
+    public String getBotName() {
+        return this.username;
+    }
+
     public DataStore getDataStore() {
         return dataStoreObj;
     }

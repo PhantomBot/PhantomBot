@@ -15,7 +15,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="streamTitle">Stream Title</label>
-                <button type="button" class="btn btn-default inline pull-right" onclick="$.setStreamTitle()">Update</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setStreamTitle()">Update</button>
                 <input type="text" class="form-control" id="streamTitleInput" placeholder="Stream Title" />
             </div>
         </form>
@@ -24,15 +24,61 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gameTitle">Game Title</label>
-                <button type="button" class="btn btn-default inline pull-right" onclick="$.setGameTitle()">Update</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setGameTitle()">Update</button>
                 <input type="text" class="form-control" id="gameTitleInput" placeholder="Game Title" />
             </div>
         </form>
     </div>
+
     <h3>Chat Statistics</h3>
     <div>
+        <span id="chatDate" />
         <span id="chatCount" />
         <span id="modCount" />
+    </div>
+
+    <h3>Highlights</h3>
+    <div>
+        Make a note of an event in the broadcast to make creating highlights in Twitch easier later.
+        <br><br>
+        <form role="form">
+             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="highlight">Create Highlight</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.setHighlight()">Submit</button>
+                <input type="text" class="form-control" id="highlightInput" placeholder="Game Highlight" />
+            </div>
+        </form>
+        <br>
+        
+        <button type="button" class="btn btn-danger pull-right" onclick="$.clearHighlights()">Clear Highlights</button>
+        <strong>Current Highlights</strong><br>
+        <span id="showHighlights" />
+    </div>
+
+    <h3>Multi-Link</h3>
+    <div>
+        Multi-Link provides a link to share multiple Twitch channels in one UI.
+        Great for races or other competititions. Provide a space delimited list of channels.
+        Set a timer to let chat know on a regular basis that the Multi-Link is on.
+        <br><br>
+        <form role="form">
+             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="multi-link">Set Multi-Link Channels</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLink()">Submit</button>
+                <input type="text" class="form-control" id="multiLinkInput" placeholder="Channel_1 Channel_2 Channel_3" />
+            </div>
+        </form>
+
+        <form role="form">
+             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="multi-link">Timer Interval</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLinkTimer()">Submit</button>
+                <input type="text" class="form-control" id="multiLinkTimerInput" placeholder="Minutes" />
+            </div>
+        </form>
+        <button type="button" class="btn btn-danger" onclick="$.clearMultiLink()">Clear Multi-Link</button>
+        <button type="button" class="btn btn-success" onclick="$.multiLinkTimerOn()">Multi-Link Timer On</button>
+        <button type="button" class="btn btn-danger" onclick="$.multiLinkTimerOff()">Multi-Link Timer Off</button>
     </div>
 </div>
 
