@@ -157,7 +157,7 @@
 
         if (commandExists(command)) {
             if (commands[command].groupId == 1) {
-                group = 'Administartor';
+                group = 'Administrator';
             } else if (commands[command].groupId == 2) {
                 group = 'Moderator';
             } else if (commands[command].groupId == 3) {
