@@ -19,6 +19,7 @@
 package com.illusionaryone;
 
 import com.gmt2001.UncaughtExceptionHandler;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -30,6 +31,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -37,6 +39,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,9 +53,14 @@ import org.json.JSONObject;
 public class GameWispAPIv1 {
 
     private static final GameWispAPIv1 instance = new GameWispAPIv1();
-    private static final String sAPIURL = "https://api.gamewisp.com/pub/v1";
+    private static final String sAPIURL = "https://api.gamewisp.com";
     private static final int iHTTPTimeout = 2 * 1000;
+    private static final String devKey = "feac11eb4d9ac56510b938232a79cf317de155d";               // TODO: IllusionaryBot, needs PhantomBot
+    private static final String devSec = "6ecb43de8f1704bef5b8c4afa2c85052d6846a2";               // TODO: IllusionaryBot, needs PhantomBot
+    private static final String devURI = "http://www.illusionaryone.com/singularity/genauth.php"; // TODO: IllusionaryBot, needs PhantomBot
+
     private String sAccessToken = "";
+    private String sRefreshToken = "";
 
     public static GameWispAPIv1 instance() {
         return instance;
@@ -90,10 +98,19 @@ public class GameWispAPIv1 {
         jsonObject.put("_content", jsonContent);
     }
 
+    private static JSONObject readJsonFromGETUrl(String urlAddress) {
+        return readJsonFromUrl("GET", urlAddress);
+    }
+
+    private static JSONObject readJsonFromPOSTUrl(String urlAddress) {
+        return readJsonFromUrl("POST", urlAddress);
+    }
+
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) {
+    private static JSONObject readJsonFromUrl(String methodType, String urlAddress) {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
+        OutputStream outputStream = null;
         URL urlRaw;
         HttpsURLConnection urlConn;
         String jsonText = "";
@@ -102,13 +119,20 @@ public class GameWispAPIv1 {
             urlRaw = new URL(urlAddress);
             urlConn = (HttpsURLConnection) urlRaw.openConnection();
             urlConn.setDoInput(true);
-            urlConn.setRequestMethod("GET");
-            urlConn.addRequestProperty("Content-Type", "application/json");
+            urlConn.setRequestMethod(methodType);
             urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
                                        "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+
+            if (methodType.equals("POST")) {
+                urlConn.setDoOutput(true);
+                urlConn.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            } else {
+                urlConn.addRequestProperty("Content-Type", "application/json");
+            }
+
             urlConn.connect();
 
-            if (urlConn.getResponseCode() == 200) {
+            if (urlConn.getResponseCode() == 200 || urlConn.getResponseCode() == 400) {
                 inputStream = urlConn.getInputStream();
             } else {
                 inputStream = urlConn.getErrorStream();
@@ -117,31 +141,32 @@ public class GameWispAPIv1 {
             BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
             jsonText = readAll(rd);
             jsonResult = new JSONObject(jsonText);
-            fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
+            fillJSONObject(jsonResult, true, methodType, urlAddress, urlConn.getResponseCode(), "", "", jsonText);
         } catch (JSONException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
+            fillJSONObject(jsonResult, false, methodType, urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
+            com.gmt2001.Console.err.println("GameWispAPIv1::Bad JSON (" + urlAddress + "): " + jsonText.substring(0, 100) + "...");
             com.gmt2001.Console.err.printStackTrace(ex);
         } catch (NullPointerException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, methodType, urlAddress, 0, "NullPointerException", ex.getMessage(), "");
             com.gmt2001.Console.err.printStackTrace(ex);
         } catch (MalformedURLException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, methodType, urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
             com.gmt2001.Console.err.printStackTrace(ex);
         } catch (SocketTimeoutException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, methodType, urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
             com.gmt2001.Console.err.printStackTrace(ex);
         } catch (IOException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, methodType, urlAddress, 0, "IOException", ex.getMessage(), "");
             com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, methodType, urlAddress, 0, "Exception", ex.getMessage(), "");
             com.gmt2001.Console.err.printStackTrace(ex);
         } finally {
             if (inputStream != null)
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
-                    fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
+                    fillJSONObject(jsonResult, false, methodType, urlAddress, 0, "IOException", ex.getMessage(), "");
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
         }
@@ -159,12 +184,21 @@ public class GameWispAPIv1 {
     }
 
     /*
+     * Sets the Refresh Token to get a new Access Token later with the API.
+     *
+     * @param sRefreshToken
+     */
+    public void SetRefreshToken(String sRefreshToken) {
+        this.sRefreshToken = sRefreshToken;
+    }
+
+    /*
      * Pulls specific subscriber information.
      * @param String
      * @return JSONObject
      */
     public JSONObject getUserSubInfoJSON(String username) {
-        return readJsonFromUrl(sAPIURL + "/channel/subscriber-for-channel?access_token=" + this.sAccessToken + "&type=twitch&user_name=" + username + "&include=anniversaries");
+        return readJsonFromGETUrl(sAPIURL + "/pub/v1/channel/subscriber-for-channel?access_token=" + this.sAccessToken + "&type=twitch&user_name=" + username + "&include=anniversaries");
     }
 
     /*
@@ -175,5 +209,33 @@ public class GameWispAPIv1 {
     public String getUserSubInfoString(String username) {
         JSONObject jsonObject = getUserSubInfoJSON(username);
         return jsonObject.toString(); 
+    }
+
+    /*
+     * Refreshes the token.
+     * @param String
+     */
+    public String[] refreshToken() {
+        JSONObject jsonObject = readJsonFromPOSTUrl(sAPIURL + "/pub/v1/oauth/token" +
+                                                             "?grant_type=refresh_token" +
+                                                             "&client_id=" + devKey +
+                                                             "&client_secret=" + devSec +
+                                                             "&redirect_uri=" + devURI +
+                                                             "&refresh_token=" + sRefreshToken);
+        if (jsonObject.has("access_token") && jsonObject.has("refresh_token")) {
+            String newAccessToken = jsonObject.getString("access_token");
+            String newRefreshToken = jsonObject.getString("refresh_token");
+            String[] returnString = { newAccessToken, newRefreshToken };
+            com.gmt2001.Console.out.println("GameWispAPI: Refreshed GameWisp Token");
+
+            sAccessToken = newAccessToken;
+            sRefreshToken = newRefreshToken;
+            return returnString;
+        } else {
+            com.gmt2001.Console.err.println("GameWispAPI: Error Refreshing Tokens! Keeping Current Tokens!");
+            com.gmt2001.Console.err.println("GameWispAPI: JSON: " + jsonObject.toString().substring(0, 100));
+            String[] returnString = { sAccessToken, sRefreshToken };
+            return returnString;
+        }
     }
 }

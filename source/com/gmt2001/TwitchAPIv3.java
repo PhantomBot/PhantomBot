@@ -522,7 +522,12 @@ public class TwitchAPIv3 {
     }
     public String GetChatServerType(String channel) {
         JSONObject chatServerJSON = GetChatServer(channel);
-        return chatServerJSON.getString("cluster");
+        if (chatServerJSON.has("cluster")) {
+            return chatServerJSON.getString("cluster");
+        } else {
+            com.gmt2001.Console.err.println("TwitchAPIv3::GetChatServerType: Failed to communicate with Twitch API server. Assuming not AWS-chat");
+            return "main";
+        }
     }
   
 }

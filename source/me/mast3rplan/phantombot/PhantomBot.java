@@ -44,6 +44,10 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 import java.security.SecureRandom;
 import java.math.BigInteger;
 
@@ -87,7 +91,8 @@ public class PhantomBot implements Listener {
     private String ytpassword;
     private final String webauth;
     private final String ytauth;
-    private final String singularityauth;
+    private final String gamewispauth;
+    private final String gamewisprefresh;
     private final String oauth;
     private String apioauth;
     private String clientid;
@@ -96,7 +101,7 @@ public class PhantomBot implements Listener {
     private final String hostname;
     private final String ghostname;
     private final String awshostname;
-    private final Boolean useAWSIRC;
+    private Boolean useAWSIRC;
     private int gport;
     private int port;
     private int baseport;
@@ -151,7 +156,7 @@ public class PhantomBot implements Listener {
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
                       String keystorepassword, String keypassword, String twitchalertskey,
                       int twitchalertslimit, String webauth, String awshostname, String ytpassword,
-                      String ytauth, String singularityauth ) {
+                      String ytauth, String gamewispauth, String gamewisprefresh ) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -170,7 +175,8 @@ public class PhantomBot implements Listener {
         this.ytpassword = ytpassword;
         this.webauth = webauth;
         this.ytauth = ytauth;
-        this.singularityauth = singularityauth;
+        this.gamewispauth = gamewispauth;
+        this.gamewisprefresh = gamewisprefresh;
         this.channelName = channel;
         this.ownerName = owner;
         this.baseport = baseport;
@@ -194,14 +200,15 @@ public class PhantomBot implements Listener {
         Profile profile = new Profile(username.toLowerCase());
         this.connectionManager = new ConnectionManager(profile);
 
+        if (clientid.length() == 0) {
+            this.clientid = "rp2uhin43rvpr70nzwnh07417x2gck0";
+        } else {
+            this.clientid = clientid;
+        }
+
         rng = new SecureRandom();
         pollResults = new TreeMap<>();
         voters = new TreeSet<>();
-
-        switch(TwitchAPIv3.instance().GetChatServerType(channel)) {
-            case "aws": useAWSIRC = true; break;
-            default: case "main": useAWSIRC = false; break;
-        }
 
         if (hostname.isEmpty()) {
             this.hostname = "irc.twitch.tv";
@@ -286,6 +293,21 @@ public class PhantomBot implements Listener {
 
         channels = new HashMap<>();
 
+        // Already converted to AWS-Chat?
+        useAWSIRC = false;
+        if (dataStoreObj.exists("settings", "useAWSChat")) {
+            if (dataStoreObj.GetString("settings", "", "useAWSChat").equals("true")) {
+                useAWSIRC = true;
+            }
+        }
+
+        if (!useAWSIRC) {
+            switch(TwitchAPIv3.instance().GetChatServerType(channel)) {
+                case "aws": dataStoreObj.set("settings", "useAWSChat", "true"); useAWSIRC = true; break;
+                default: case "main": dataStoreObj.set("settings", "useAWSChat", "false"); useAWSIRC = false; break;
+            }
+        }
+
         if (useAWSIRC) {
             this.session = connectionManager.requestConnection(this.awshostname, this.port, oauth);
         } else {
@@ -293,12 +315,6 @@ public class PhantomBot implements Listener {
         }
 
         TwitchGroupChatHandler(this.oauth, this.connectionManager);
-
-        if (clientid.length() == 0) {
-            this.clientid = "rp2uhin43rvpr70nzwnh07417x2gck0";
-        } else {
-            this.clientid = clientid;
-        }
 
         TwitchAPIv3.instance().SetClientID(this.clientid);
         TwitchAPIv3.instance().SetOAuth(apioauth);
@@ -391,10 +407,12 @@ public class PhantomBot implements Listener {
             // NEWhttpsServer = new NEWHTTPSServer(baseport + 1443, oauth, webauth);
             // com.gmt2001.Console.out.println("NEW HTTPS Server accepting connections on port " + (baseport + 1443));
 
-            if (singularityauth.length() > 0) {
-                GameWispAPIv1.instance().SetAccessToken(singularityauth);
-                SingularityAPI.instance().setAccessToken(singularityauth);
+            if (gamewispauth.length() > 0) {
+                GameWispAPIv1.instance().SetAccessToken(gamewispauth);
+                GameWispAPIv1.instance().SetRefreshToken(gamewisprefresh);
+                SingularityAPI.instance().setAccessToken(gamewispauth);
                 SingularityAPI.instance().StartService();
+                doRefreshGameWispToken();
             }
         }
 
@@ -793,7 +811,8 @@ public class PhantomBot implements Listener {
                 data += "keypassword=" + keypassword + "\r\n";
                 data += "twitchalertsauth=" + twitchalertskey + "\r\n";
                 data += "twitchalertslimit=" + twitchalertslimit;
-                data += "singularityauth=" + singularityauth + "\r\n";
+                data += "gamewispauth=" + gamewispauth + "\r\n";
+                data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
 
                 Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                             StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -974,7 +993,8 @@ public class PhantomBot implements Listener {
         String webauth = "";
         String ytpassword = "";
         String ytauth = "";
-        String singularityauth = "";
+        String gamewispauth = "";
+        String gamewisprefresh = "";
         String twitchalertskey = "";
         int twitchalertslimit = 5;
         String apioauth = "";
@@ -1020,8 +1040,11 @@ public class PhantomBot implements Listener {
                     if (line.startsWith("ytauth=") && line.length() > 8) {
                         ytauth = line.substring(7);
                     }
-                    if (line.startsWith("singularityauth=") && line.length() > 17) {
-                        singularityauth = line.substring(16);
+                    if (line.startsWith("gamewispauth=") && line.length() > 14) {
+                        gamewispauth = line.substring(13);
+                    }
+                    if (line.startsWith("gamewisprefresh=") && line.length() > 17) {
+                        gamewisprefresh = line.substring(16);
                     }
                     if (line.startsWith("oauth=") && line.length() > 9) {
                         oauth = line.substring(6);
@@ -1173,7 +1196,8 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("musicenable=" + musicenable);
                     com.gmt2001.Console.out.println("ytpassword=" + ytpassword);
                     com.gmt2001.Console.out.println("ytauth=" + ytauth);
-                    com.gmt2001.Console.out.println("singularityauth=" + singularityauth);
+                    com.gmt2001.Console.out.println("gamewispauth=" + gamewispauth);
+                    com.gmt2001.Console.out.println("gamewisprefresh=" + gamewisprefresh);
                     com.gmt2001.Console.out.println("usehttps=" + usehttps);
                     com.gmt2001.Console.out.println("keystorepath='" + keystorepath + "'");
                     com.gmt2001.Console.out.println("keystorepassword='" + keystorepassword + "'");
@@ -1227,9 +1251,15 @@ public class PhantomBot implements Listener {
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("singularityauth=") && arg.length() > 17) {
-                    if (!singularityauth.equals(arg.substring(16))) {
-                        singularityauth = arg.substring(16);
+                if (arg.toLowerCase().startsWith("gamewispauth=") && arg.length() > 14) {
+                    if (!gamewispauth.equals(arg.substring(13))) {
+                        gamewispauth = arg.substring(13);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("gamewisprefresh=") && arg.length() > 17) {
+                    if (!gamewisprefresh.equals(arg.substring(16))) {
+                        gamewisprefresh = arg.substring(16);
                         changed = true;
                     }
                 }
@@ -1370,10 +1400,10 @@ public class PhantomBot implements Listener {
                                                     + "       [datastoreconfig=<Optional DataStore config option, different for each DataStore type>]\r\n"
                                                     + "       [youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]\r\n"
                                                     + "       [ytpassword=<ytplayer password>] [ytauth=<ytplayer ws auth>] [twitchalertskey=<twitch alerts key>]\r\n"
-                                                    + "       [twitchalertslimit=<limit>] [singularityauth=<singularity password>]\r\n"
+                                                    + "       [twitchalertslimit=<limit>] [gamewispauth=<gamewisp oauth> <gamewisprefresh=<gamewisp refresh key>]]\r\n"
                                                    );
                     com.gmt2001.Console.out.println("\rPorts: Legacy MusicWebSocketServer baseport + 1. EventWebSocketServer baseport + 2\r\n"
-                                                    + "       YouTubeSocketServer baseport + 3. NEW HTTP Server baseport + 5"
+                                                    + "       YouTubeSocketServer baseport + 3. PanelWebSocketServer baseport + 4. NEW HTTP Server baseport + 5"
                                                    );
                     return;
                 }
@@ -1408,7 +1438,8 @@ public class PhantomBot implements Listener {
             data += "musicenable=" + musicenable + "\r\n";
             data += "ytpassword=" + ytpassword + "\r\n";
             data += "ytauth=" + ytauth + "\r\n";
-            data += "singularityauth=" + singularityauth + "\r\n";
+            data += "gamewispauth=" + gamewispauth + "\r\n";
+            data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
             data += "usehttps=" + usehttps + "\r\n";
             data += "keystorepath=" + keystorepath + "\r\n";
             data += "keystorepassword=" + keystorepassword + "\r\n";
@@ -1422,7 +1453,52 @@ public class PhantomBot implements Listener {
 
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore,
                                              datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword,
-                                             twitchalertskey, twitchalertslimit, webauth, awshostname, ytpassword, ytauth, singularityauth);
+                                             twitchalertskey, twitchalertslimit, webauth, awshostname, ytpassword, ytauth, gamewispauth, gamewisprefresh);
+    }
+
+    public void updateGameWispTokens(String[] newTokens) {
+com.gmt2001.Console.out.println(">> updateGameWispTokens: " + newTokens[0] + " | " + newTokens[1]);
+        String data = "";
+        data += "user=" + username + "\r\n";
+        data += "webauth=" + webauth + "\r\n";
+        data += "oauth=" + oauth + "\r\n";
+        data += "apioauth=" + apioauth + "\r\n";
+        data += "clientid=" + this.clientid + "\r\n";
+        data += "channel=" + this.channelName + "\r\n";
+        data += "owner=" + ownerName + "\r\n";
+        data += "baseport=" + baseport + "\r\n";
+        data += "hostname=" + hostname + "\r\n";
+        data += "awshostname=" + awshostname + "\r\n";
+        data += "port=" + port + "\r\n";
+        data += "ghostname=" + ghostname + "\r\n";
+        data += "gport=" + gport + "\r\n";
+        data += "msglimit30=" + msglimit30 + "\r\n";
+        data += "datastore=" + datastore + "\r\n";
+        data += "youtubekey=" + youtubekey + "\r\n";
+        data += "webenable=" + webenable + "\r\n";
+        data += "musicenable=" + musicenable + "\r\n";
+        data += "ytpassword=" + ytpassword + "\r\n";
+        data += "ytauth=" + ytauth + "\r\n";
+        data += "gamewispauth=" + newTokens[0] + "\r\n";
+        data += "gamewisprefresh=" + newTokens[1] + "\r\n";
+        data += "usehttps=" + usehttps + "\r\n";
+        data += "keystorepath=" + keystorepath + "\r\n";
+        data += "keystorepassword=" + keystorepassword + "\r\n";
+        data += "keypassword=" + keypassword + "\r\n";
+        data += "twitchalertskey=" + twitchalertskey + "\r\n";
+        data += "twitchalertslimit=" + twitchalertslimit;
+
+        try {
+            Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            com.gmt2001.Console.out.println("GameWisp Token has been refreshed.");
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.println("!!!! CRITICAL !!!! Failed to update GameWisp Refresh Tokens into botlogin.txt! Must manually add!");
+            com.gmt2001.Console.err.println("!!!! CRITICAL !!!! gamewispauth = " + newTokens[0] + " gamewisprefresh = " + newTokens[1]);
+        }
+
+        SingularityAPI.instance().setAccessToken(gamewispauth);
+        
     }
 
     private static String generateWebAuth() {
@@ -1436,5 +1512,33 @@ public class PhantomBot implements Listener {
            randomBuffer[i] = randomChars[random.nextInt(randomChars.length)];
         }
         return new String(randomBuffer);
+    }
+
+    /*
+     * doRefreshGameWispToken
+     * 
+     */
+    public void doRefreshGameWispToken() {
+
+        long curTime = System.currentTimeMillis() / 1000l;
+
+        if (!dataStoreObj.exists("settings", "gameWispRefreshTime")) {
+            dataStoreObj.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
+        }
+
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                long curTime = System.currentTimeMillis() / 1000l;
+                String lastRunStr = dataStoreObj.GetString("settings", "", "gameWispRefreshTime");
+
+                long lastRun = Long.parseLong(lastRunStr);
+                if ((curTime - lastRun) > (10 * 24 * 60 * 60)) { // 10 days, token expires every 35.
+                    dataStoreObj.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
+                    updateGameWispTokens(GameWispAPIv1.instance().refreshToken());
+                }
+            }
+        }, 0, 1, TimeUnit.DAYS);
     }
 }
