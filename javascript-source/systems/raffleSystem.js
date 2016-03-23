@@ -8,6 +8,10 @@
         timer = 0,
         a = '';
 
+    /**
+     * @function checkArgs
+     * @returns {boolean}
+     */
     function checkArgs(user, key, price, t, followersOnly) {
         if (raffleStatus) {
             $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.opened'));
@@ -42,6 +46,10 @@
         openRaffle(key, cost, followers, timer, a);
     };
 
+    /**
+     * @function openRaffle
+     * @returns {opens raffle}
+     */
     function openRaffle(key, cost, followers, timer, a) {
         $.say($.lang.get('rafflesystem.raffle.opened', $.getPointsString(cost), key, a));
         $.registerChatCommand('./systems/raffleSystem.js', key, 7);
@@ -60,23 +68,27 @@
         }
     };
 
-    function closeRaffle(user) {
+    /**
+     * @function closeRaffle
+     * @returns {closes raffle}
+     */
+    function closeRaffle(user, key) {
         if (!raffleStatus) {
             $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.not.opened'));
             return;
         }
 
-        raffleStatus = false;
-        followers = false;
-        keyword = '';
-        cost = 0;
-        timer = 0;
-        a = '';
+        resetRaffle();
+        $.unregisterChatCommand(key);
 
         $.say($.lang.get('rafflesystem.raffle.closed'));
         winner();
     };
 
+    /**
+     * @function winner
+     * @returns {winner}
+     */
     function winner(force) {
         if (entries.length == 0) {
             $.say($.lang.get('rafflesystem.raffle.close.err'));
@@ -88,10 +100,14 @@
             return;
         }
 
-        winner = $.randElement(entries);
-        $.say($.lang.get('rafflesystem.winner', $.username.resolve(winner)));
+        var Winner = $.randElement(entries);
+        $.say($.lang.get('rafflesystem.winner', $.username.resolve(Winner)));
     };
 
+    /**
+     * @function enterRaffle
+     * @returns {message}
+     */
     function enterRaffle(user, cost) {
         if (!raffleStatus) {
             $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.not.opened'));
@@ -111,18 +127,31 @@
         }
 
         if (cost > 0) {
-            $.inidb.decr('points', user, cost);
             if (cost > $.getUserPoints(user)) {
                 $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.points', $.pointNameMultiple));
                 return;
+            } else {
+                $.inidb.decr('points', user, cost);
             }
         }
 
         if (msgToggle) {
-            $.say($.lang.get('rafflesystem.entered', $.username.resolve(user)));
+            $.say($.lang.get('rafflesystem.entered', user)); //Removed $.username.resolve() to not abuse the api in a big channel.
         }
 
         entries.push(user);
+    };
+
+    /**
+     * @function resetRaffle
+     */
+    function resetRaffle() {
+        raffleStatus = false;
+        followers = false;
+        keyword = '';
+        cost = 0;
+        timer = 0;
+        a = '';
     };
 
     /**
@@ -160,7 +189,7 @@
              * @commandpath raffle close - Closes a raffle.
              */
             if (action.equalsIgnoreCase('close')) {
-                closeRaffle(sender);
+                closeRaffle(sender, keyword);
             }
 
             /**
