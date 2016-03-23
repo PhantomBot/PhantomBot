@@ -511,23 +511,4 @@ public class TwitchAPIv3 {
     {
         return GetData(request_type.GET, base_url + "/chat/emoticons", false);
     }
-
-    /**
-     * Requests Twitch to send chat server information
-     * @param channel
-     * @return JSONObject
-     */
-    public JSONObject GetChatServer(String channel) {
-        return GetData(request_type.GET, "https://tmi.twitch.tv/servers?channel=" + channel, false);
-    }
-    public String GetChatServerType(String channel) {
-        JSONObject chatServerJSON = GetChatServer(channel);
-        if (chatServerJSON.has("cluster")) {
-            return chatServerJSON.getString("cluster");
-        } else {
-            com.gmt2001.Console.err.println("TwitchAPIv3::GetChatServerType: Failed to communicate with Twitch API server. Assuming not AWS-chat");
-            return "main";
-        }
-    }
-  
 }
