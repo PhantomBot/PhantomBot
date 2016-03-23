@@ -875,6 +875,10 @@
              * @commandpath chat [message] - In the console, can be used to chat as the bot. Also used by the webpanel to communicate with chat
              */
             if (command.equalsIgnoreCase('chat')) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.whisperPrefix(sender) + $.adminMsg);
+                    return;
+                }
                 $.say(event.getArguments());
             }
         });
@@ -882,9 +886,9 @@
         /**
          * @event initReady
          */
-        $.registerChatCommand('./init.js', 'chat', 1);
-        $.registerChatCommand('./init.js', 'module', 1);
-        $.registerChatCommand('./init.js', 'reconnect', 2);
+        $.registerChatCommand('./init.js', 'chat', 7);
+        $.registerChatCommand('./init.js', 'module', 7);
+        $.registerChatCommand('./init.js', 'reconnect', 7);
 
         // emit initReady event
         callHook('initReady', null, true);
