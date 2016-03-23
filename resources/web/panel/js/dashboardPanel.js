@@ -19,6 +19,23 @@
             return;
         }
 
+        // Check for dbkeysresult queries
+        if (msgObject['dbkeysresult'] != undefined) {
+            if (msgObject['dbkeysresult'].localeCompare('highlights') == 0) {
+                var htmlStr = "";
+                for (var i in msgObject['results']) {
+                    var highlightData = msgObject['results'][i]['value'];
+                    htmlStr += highlightData + "<br>";
+                }
+                if (htmlStr.length == 0) {
+                    $("#showHighlights").html("No Highlights Found");
+                } else {
+                    $("#showHighlights").html(htmlStr);
+                }
+            }
+        }
+
+        // Check for dbqueryresult queries
         if (msgObject['dbqueryresult'] != undefined) {
 
             if (msgObject['dbqueryresult'].localeCompare('panelStatsEnabled') == 0) {
@@ -31,7 +48,7 @@
                     $("#panelStatsEnabled").html("<span>Panel Stats are Disabled</span>");
                 }
             }
- 
+
             if (msgObject['dbqueryresult'].localeCompare('streamTitle') == 0) {
                 $("#streamTitleInput").attr("placeholder", msgObject['result']['title']).blur();
             }
@@ -50,6 +67,7 @@
             }
 
             if (msgObject['dbqueryresult'].localeCompare('chatCount') == 0) {
+                $("#chatDate").html("<span class=\"purplePill\">Date: " + curDate + "</span>");
                 if (msgObject['result'][curDate] != undefined) {
                     $("#chatCount").html("<span class=\"bluePill\">Chat Count: " + msgObject['result']['chat_'+curDate] + "</span>");
                 } else {
@@ -64,7 +82,7 @@
                     $("#modCount").html("<span class=\"redPill\">Timeouts: 0</span>");
                 }
             }
- 
+
             if (streamOnline) {
                 if (msgObject['dbqueryresult'].localeCompare('streamUptime') == 0) {
                     $("#streamUptime").html("<span class=\"bluePill\">Uptime: " + msgObject['result']['streamUptime']);
@@ -80,42 +98,18 @@
      * @function doQuery
      */
     function doQuery() {
-        var jsonObject = {};
-
-        jsonObject["dbquery"] = "streamTitle";
-        jsonObject["query"] = { "table": "streamInfo", "key": "title" };
-        connection.send(JSON.stringify(jsonObject));
-
-        jsonObject["dbquery"] = "gameTitle";
-        jsonObject["query"] = { "table": "streamInfo", "key": "game" };
-        connection.send(JSON.stringify(jsonObject));
+        sendDBQuery("streamTitle", "streamInfo", "title");
+        sendDBQuery("gameTitle", "streamInfo", "game");
+        sendDBKeys("highlights", "highlights");
 
         if (!panelStatsEnabled) {
-            jsonObject["dbquery"] = "panelStatsEnabled";
-            jsonObject["query"] = { "table": "panelstats", "key": "enabled" };
-            connection.send(JSON.stringify(jsonObject));
-        }
-
-        if (panelStatsEnabled) {
-            jsonObject["dbquery"] = "viewerCount";
-            jsonObject["query"] = { "table": "panelstats", "key": "viewerCount" };
-            connection.send(JSON.stringify(jsonObject));
-
-            jsonObject["dbquery"] = "streamOnline";
-            jsonObject["query"] = { "table": "panelstats", "key": "streamOnline" };
-            connection.send(JSON.stringify(jsonObject));
-    
-            jsonObject["dbquery"] = "streamUptime";
-            jsonObject["query"] = { "table": "panelstats", "key": "streamUptime" };
-            connection.send(JSON.stringify(jsonObject));
-
-            jsonObject["dbquery"] = "chatCount";
-            jsonObject["query"] = { "table": "panelchatstats", "key": "chat_" + curDate };
-            connection.send(JSON.stringify(jsonObject));
-
-            jsonObject["dbquery"] = "modCount";
-            jsonObject["query"] = { "table": "panelchatstats", "key": "mod_" + curDate };
-            connection.send(JSON.stringify(jsonObject));
+            sendDBQuery("panelStatsEnabled", "panelstats", "enabled");
+        } else {
+            sendDBQuery("viewerCount", "panelstats", "viewerCount");
+            sendDBQuery("streamOnline", "panelstats", "streamOnline");
+            sendDBQuery("streamUptime", "panelstats", "streamUptime");
+            sendDBQuery("chatCount", "panelchatstats", "chat_" + curDate);
+            sendDBQuery("modCount", "panelchatstats", "mod_" + curDate);
         }
     }
 
@@ -123,22 +117,65 @@
      * @function setStreamTitle
      */
     function setStreamTitle() {
-        var jsonObject = {};
-        jsonObject["command"] = "title " + $("#streamTitleInput").val();
-        jsonObject["username"] = "illusionarybot";
-        connection.send(JSON.stringify(jsonObject));
+        sendCommand("title " + $("#streamTitleInput").val());
     }
 
     /**
      * @function setGameTitle
      */
     function setGameTitle() {
-        var jsonObject = {};
-        jsonObject["command"] = "game " + $("#gameTitleInput").val();
-        jsonObject["username"] = "illusionarybot";
-        connection.send(JSON.stringify(jsonObject));
+        sendCommand("game " + $("#gameTitleInput").val());
     }
 
+    /**
+     * @function setHighlight
+     */
+    function setHighlight() {
+        sendCommand("highlight " + $("#highlightInput").val());
+    }
+
+    /**
+     * @function clearHighlights
+     */
+    function clearHighlights() {
+        sendCommand("clearhighlights");
+    }
+
+    /**
+     * @function setMultiLink
+     */
+    function setMultiLink() {
+        sendCommand("multi set " + $("#multiLinkInput").val());
+    }
+    
+    /**
+     * @function setMultiLinkTimer
+     */
+    function setMultiLinkTimer() {
+        sendCommand("multi timerinterval " + $("#multiLinkTimerInput").val());
+    }
+
+    /**
+     * @function clearMultiLink
+     */
+    function clearMultiLink() {
+        sendCommand("multi clear");
+    }
+ 
+    /**
+     * @function multiLinkTimerOn
+     */
+    function multiLinkTimerOn() {
+        sendCommand("multi timer on");
+    }
+ 
+    /**
+     * @function multiLinkTimerOff
+     */
+    function multiLinkTimerOff() {
+        sendCommand("multi timer off");
+    }
+ 
     // Import the HTML file for this panel.
     $("#dashboardPanel").load("/panel/dashboard.html");
 
@@ -151,16 +188,23 @@
         }
     }, 1000);
 
-    // Query the DB every minute for updates.
+    // Query the DB every 30 seconds for updates.
     setInterval(function() {
         if (isConnected) {
+            newPanelAlert('Refreshing Data', 'success', 500);
             curDate = $.format.date(new Date(), "MM.dd.yy");
             doQuery();
         }
-    }, 6e4);
+    }, 3e4);
 
     // Export functions - Needed when calling from HTML.
     $.setStreamTitle = setStreamTitle;
     $.setGameTitle = setGameTitle;
-
+    $.setHighlight = setHighlight;
+    $.clearHighlights = clearHighlights;
+    $.setMultiLink = setMultiLink;
+    $.setMuliLinkTimer = setMultiLinkTimer;
+    $.clearMultiLink = clearMultiLink;
+    $.multiLinkTimerOn = multiLinkTimerOn;
+    $.multiLinkTimerOff = multiLinkTimerOff;
 })();

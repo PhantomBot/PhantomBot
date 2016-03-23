@@ -86,6 +86,19 @@ table {
     padding-bottom: 5px;
 }
 
+.purplePill {
+    font-family: "Roboto", arial;
+    display: inline;
+    background-color: purple;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
 .redPill {
     font-family: "Roboto", arial;
     display: inline;
@@ -202,5 +215,5 @@ table {
     padding-bottom: 0; padding-right: .1em; border-right-width: 1px;
 }
 .ui-tabs-vertical .ui-tabs-panel {
-    padding: 1em; float: left; width: 40em;
+    padding: 1em; float: left; width: 60em;
 }
