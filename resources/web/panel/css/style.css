@@ -40,6 +40,10 @@ body {
     background-color: rgb(20, 20, 20);
 }
 
+.textList {
+    font-family: "Roboto", arial;
+}
+
 h1 {
     color: white;
     padding-top: 20px;
@@ -57,6 +61,21 @@ option:hover {
 table {
     border: 0px;
     width: 100%;
+}
+tr:nth-child(even) {
+    font-family: "Roboto", Sans-serif;
+    background: #CCC;
+    color: black;
+    font-size: 14px;
+}
+tr:nth-child(odd) {
+    font-family: "Roboto", Sans-serif;
+    background: #FFF;
+    color: black;
+    font-size: 14px;
+}
+td {
+    padding: 4px;
 }
 
 #selected {
@@ -102,7 +121,7 @@ table {
 .redPill {
     font-family: "Roboto", arial;
     display: inline;
-    background-color: red;
+    background-color: #990000;
     color: white;
     text-align: center;
     vertical-align: middle;
@@ -133,6 +152,48 @@ table {
     text-align: center;
     vertical-align: middle;
     padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.redPill-sm {
+    font-family: "Roboto", arial;
+    font-size: 70%;
+    display: inline;
+    background-color: #990000;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    padding: 2px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.greenPill-sm {
+    font-family: "Roboto", arial;
+    font-size: 70%;
+    display: inline;
+    background-color: green;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    padding: 2px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.bluePill-sm {
+    font-family: "Roboto", arial;
+    font-size: 70%;
+    display: inline;
+    background-color: blue;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    padding: 2px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;

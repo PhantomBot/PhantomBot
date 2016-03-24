@@ -1,0 +1,84 @@
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<div id="customCommandsAccordion">
+    <h3>Add/Edit Custom Command and Aliases</h3>
+    <div>
+        Add and edit custom commands from here. The following tags may be used as well:<br><br>
+        <div style="font-size: 90%">
+        <ul>
+          <li>(sender) - User that ran the command</li>
+          <li>(@sender) - User that ran the command, prefixed with '@'</li>
+          <li>(baresender) - User that ran the command, all lowercase</li>
+          <li>(touser) - Returns first parameter passed command</li>
+          <li>(count) - Number of times command ran</li>
+          <li>(random) - Chooses a random person in the channel</li>
+          <li>(pointname) - Display pointname</li>
+          <li>(uptime) - Display stream uptime</li>
+          <li>(game) - Display game</li>
+          <li>(status) - Display the status (title of stream)</li>
+          <li>(follows) - Display number of followers</li>
+          <li>(price) - Display price of the comamnd</li>
+          <li>(customapi [requesturl]) - Call a remote URL</li>
+          <li>(customapijson URL key | object.key | object.object...key | {literal string} ...) - Call a remote URL that returns JSON</li>
+        </ul>
+        </div>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addCommand">Add Command</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCustomCommand()">Submit</button>
+                <input type="text" class="form-control" id="addCommandInput" placeholder="command_name response of command " />
+            </div>
+        </form>
+        <br>
+        
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="editCommand">Edit Command</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.editCustomCommand()">Submit</button>
+                <input type="text" class="form-control" id="editCommandInput" placeholder="command_name response of command" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="aliasCommand">Create Alias</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.aliasCommand()">Submit</button>
+                <input type="text" class="form-control" id="aliasCommandInput" placeholder="existing_command alias_command" />
+            </div>
+        </form>
+    </div>
+
+    <h3>View/Delete Custom Commands</h3>
+    <div>
+        <div id="customCommandsList" style="height: 400px; overflow: scroll;" />
+    </div>
+
+    <h3>View/Delete Command Aliases</h3>
+    <div>
+        <div id="aliasCommandsList" style="height: 400px; overflow: scroll;" />
+    </div>
+
+    <h3>View/Set Command Permissions</h3>
+    <div>
+        <div id="permCommandsList" style="height: 400px; overflow: scroll;" />
+    </div>
+
+    <h3>View/Set Command Prices</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="setCommandPrice">Add New Command Price</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPrice()">Submit</button>
+                <input type="text" class="form-control" id="setCommandPriceInput" placeholder="command_name price" />
+            </div>
+        </form>
+
+        <strong>Current Command Prices</strong><br><br>
+        <div id="priceCommandsList" style="height: 400px; overflow: scroll;" />
+    </div>
+</div>
+
+<!-- Run the Acordion -->
+<script>$("#customCommandsAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
