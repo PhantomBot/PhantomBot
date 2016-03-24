@@ -42,7 +42,9 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./games/random.js')) {
-            loadResponses();
+            if (randomsCount == 0) {
+                loadResponses();
+            }
             $.registerChatCommand('./games/random.js', 'random');
         }
     });

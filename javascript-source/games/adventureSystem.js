@@ -24,7 +24,9 @@
         tgExpIncr = 0.5,
         tgFoodDecr = 0.25,
         currentAdventure = 1,
-        stories = [];
+        stories = [],
+        moduleLoaded = false;
+
 
     /**
      * @function loadStories
@@ -403,7 +405,10 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./games/adventureSystem.js')) {
             clearCurrentAdventure();
-            loadStories();
+            if (!moduleLoaded) {
+                loadStories();
+                moduleLoaded = true;
+            }
             $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
         }
     });
