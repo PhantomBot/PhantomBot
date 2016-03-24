@@ -9,7 +9,7 @@
 <br>
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
-<div id="accordion">
+<div id="dashboardAccordion">
     <h3>Twitch</h3>
     <div>
         <form role="form">
@@ -28,13 +28,41 @@
                 <input type="text" class="form-control" id="gameTitleInput" placeholder="Game Title" />
             </div>
         </form>
+
+        <button type="button" class="btn btn-warning inline pull-left" onclick="$.chatReconnect()">Reconnect to Twitch Chat</button>
     </div>
 
     <h3>Chat Statistics</h3>
     <div>
-        <span id="chatDate" />
-        <span id="chatCount" />
-        <span id="modCount" />
+        <div>
+            <span id="chatDate-0" />
+            <span id="chatCount-0" />
+            <span id="modCount-0" />
+        </div>
+        <br>
+        <div>
+            <span id="chatDate-1" />
+            <span id="chatCount-1" />
+            <span id="modCount-1" />
+        </div>
+        <br>
+        <div>
+            <span id="chatDate-2" />
+            <span id="chatCount-2" />
+            <span id="modCount-2" />
+         </div>
+        <br>
+         <div>
+            <span id="chatDate-3" />
+            <span id="chatCount-3" />
+            <span id="modCount-3" />
+        </div>
+        <br>
+        <div>
+            <span id="chatDate-4" />
+            <span id="chatCount-4" />
+            <span id="modCount-4" />
+        </div>
     </div>
 
     <h3>Highlights</h3>
@@ -83,4 +111,4 @@
 </div>
 
 <!-- Run the Acordion -->
-<script>$("#accordion").accordion();</script>
+<script>$("#dashboardAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
