@@ -154,6 +154,10 @@
                 $.inidb.set('streamInfo', 'game', http.getString('game'));
                 $.say('Changed the game to "' + http.getString('game') + '"!');
                 $.logEvent('streamCommand.js', 25, $.username.resolve(sender) + ' changed the current game to ' + http.getString('game'));
+
+                if ($.bot.isModuleEnabled('./commands/deathctrCommand.js')) {
+                    $.deathUpdateFile(game);
+                }
             } else {
                 $.say($.whisperPrefix(sender) + 'Failed to change the game. TwitchAPI must be having issues');
                 $.consoleDebug(http.getString('message'));
