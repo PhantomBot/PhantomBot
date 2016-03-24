@@ -50,7 +50,9 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./games/8ball.js')) {
-            loadResponses();
+            if (responseCount == 0) {
+                loadResponses();
+            }
             $.registerChatCommand('./games/8ball.js', '8ball', 7);
         }
     });

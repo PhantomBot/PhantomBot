@@ -295,6 +295,195 @@
         }
     };
 
+
+    /**
+     * @function handleInitCommands
+     * @param event
+     */
+    function handleInitCommands(event) {
+        var sender = event.getSender().toLowerCase(),
+            username = $.username.resolve(sender, event.getTags()),
+            command = event.getCommand(),
+            args = event.getArgs(),
+            action = args[0],
+            pointsRelatedModules = [],
+            temp,
+            index;
+
+        /**
+         * @commandpath reconnect - Tell the bot to reconnect to Twitch chat and the various APIs
+         */
+        if (command.equalsIgnoreCase('reconnect')) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.whisperPrefix(sender) + $.modMsg);
+                return;
+            }
+
+            $.logEvent('init.js', 354, username + ' requested a reconnect!');
+            $.connmgr.reconnectSession($.hostname);
+            $.say($.lang.get('init.reconnect'));
+        }
+
+        /**
+         * @commandpath module - Display the usage for !module
+         */
+        if (command.equalsIgnoreCase('module')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
+
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+                return;
+            }
+
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+                return;
+            }
+
+            /**
+             * @commandpath module list - List all known modules
+             */
+            if (action.equalsIgnoreCase('list')) {
+                var lstr = '';
+                for (index in modules) {
+                    if (modules[index].scriptFile.indexOf('./core/') != -1 || modules[index].scriptFile.indexOf('./lang/') != -1) {
+                        continue;
+                    }
+                    lstr += ' - ';
+                    lstr += modules[index].scriptFile + ' (';
+                    if (modules[index].enabled) {
+                        lstr += 'enabled';
+                    } else {
+                        lstr += 'disabled';
+                    }
+                    lstr += ')';
+                }
+                $.say($.whisperPrefix(sender) + lstr);
+            }
+
+            /**
+             * @commandpath module enable [./path/module] - Enable a module using the path and name of the module
+             */
+            if (action.equalsIgnoreCase('enable')) {
+                temp = args[1];
+
+                if (!temp) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+                    return;
+                }
+
+                if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
+                    return;
+                }
+
+                index = getModuleIndex(temp);
+
+                if (index > -1) {
+                    $.logEvent('init.js', 393, username + ' enabled module "' + modules[index].scriptFile + '"');
+                    modules[index].enabled = true;
+                    $.setIniDbBoolean('modules', modules[index].scriptFile, true);
+                    loadScript(modules[index].scriptFile);
+
+                    var hookIdx = getHookIndex(modules[index].scriptFile, 'initReady');
+                    try {
+                        hooks[hookIdx].handler(null);
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
+                    } catch (e) {
+                        $.logError('init.js', 394, 'Unable to call initReady for enabled module (' + modules[index].scriptFile +'): ' + e);
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.error', modules[index].getModuleName()));
+                    }
+
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
+                }
+            }
+
+            /**
+             * @commandpath module disable [./path/module] - Disable a module using the path and name of the module
+             */
+            if (action.equalsIgnoreCase('disable')) {
+                temp = args[1];
+
+                if (!temp) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+                    return;
+                }
+
+                if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
+                    return;
+                }
+
+                index = getModuleIndex(temp);
+
+                if (index > -1) {
+                    $.logEvent('init.js', 393, username + ' disabled module "' + modules[index].scriptFile + '"');
+                    modules[index].enabled = false;
+                    $.setIniDbBoolean('modules', modules[index].scriptFile, false);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', modules[index].getModuleName()));
+
+                    if (modules[index].scriptFile == './systems/pointSystem.js') {
+                        pointsRelatedModules.push('./games/adventureSystem.js');
+                        pointsRelatedModules.push('./games/roll.js');
+                        pointsRelatedModules.push('./games/slotMachine.js');
+                        pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
+                        pointsRelatedModules.push('./systems/raffleSystem.js');
+
+                        for (var i = 0; i < pointsRelatedModules.length; i++) {
+                            index = getModuleIndex(pointsRelatedModules[i]);
+                            if (index > -1) {
+                                $.logEvent('init.js', 393, username + ' auto-disabled module "' + modules[index].scriptFile + '"');
+                                modules[index].enabled = false;
+                                $.setIniDbBoolean('modules', modules[index].scriptFile, false);
+                            }
+                        }
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.auto-disabled'));
+                    }
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
+                }
+            }
+
+            /**
+             * @commandpath module status [./path/module] - Retrieve the current status (enabled/disabled) of the given module
+             */
+            if (action.equalsIgnoreCase('status')) {
+                temp = args[1];
+
+                if (!temp) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+                    return;
+                }
+
+                index = getModuleIndex(temp);
+
+                if (index > 1) {
+                    if (modules[index].enabled) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.check.enabled', modules[index].getModuleName()))
+                    } else {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.check.disabled', modules[index].getModuleName()))
+                    }
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
+                }
+            }
+        }
+
+        /**
+         * @commandpath chat [message] - In the console, can be used to chat as the bot. Also used by the webpanel to communicate with chat
+         */
+        if (command.equalsIgnoreCase('chat')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
+            $.say(event.getArguments());
+        }
+    }
+
+
     /**
      * Load her up!
      */
@@ -419,6 +608,7 @@
                 }
             }
             callHook('command', event, false);
+            handleInitCommands(event);
         });
 
         /**
@@ -706,189 +896,11 @@
         consoleLn('');
 
         /**
-         * @event command
-         */
-        $api.on($script, 'command', function(event) {
-            var sender = event.getSender().toLowerCase(),
-                username = $.username.resolve(sender, event.getTags()),
-                command = event.getCommand(),
-                args = event.getArgs(),
-                action = args[0],
-                pointsRelatedModules = [],
-                temp,
-                index;
-
-            /**
-             * @commandpath reconnect - Tell the bot to reconnect to Twitch chat and the various APIs
-             */
-            if (command.equalsIgnoreCase('reconnect')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                }
-
-                $.logEvent('init.js', 354, username + ' requested a reconnect!');
-                $.connmgr.reconnectSession($.hostname);
-                $.say($.lang.get('init.reconnect'));
-            }
-
-            /**
-             * @commandpath module - Display the usage for !module
-             */
-            if (command.equalsIgnoreCase('module')) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.whisperPrefix(sender) + $.adminMsg);
-                    return;
-                }
-
-                if (!action) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-                    return;
-                }
-
-                if (!action) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-                    return;
-                }
-
-                /**
-                 * @commandpath module list - List all known modules
-                 */
-                if (action.equalsIgnoreCase('list')) {
-                    var lstr = '';
-                    for (index in modules) {
-                        if (modules[index].scriptFile.indexOf('./core/') != -1 || modules[index].scriptFile.indexOf('./lang/') != -1) {
-                            continue;
-                        }
-                        lstr += ' - ';
-                        lstr += modules[index].scriptFile + ' (';
-                        if (modules[index].enabled) {
-                            lstr += 'enabled';
-                        } else {
-                            lstr += 'disabled';
-                        }
-                        lstr += ')';
-                    }
-                    $.say($.whisperPrefix(sender) + lstr);
-                }
-
-                /**
-                 * @commandpath module enable [./path/module] - Enable a module using the path and name of the module
-                 */
-                if (action.equalsIgnoreCase('enable')) {
-                    temp = args[1];
-
-                    if (!temp) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-                        return;
-                    }
-
-                    if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
-                        return;
-                    }
-
-                    index = getModuleIndex(temp);
-
-                    if (index > -1) {
-                        $.logEvent('init.js', 393, username + ' enabled module "' + modules[index].scriptFile + '"');
-                        modules[index].enabled = true;
-                        $.setIniDbBoolean('modules', modules[index].scriptFile, true);
-                        loadScript(modules[index].scriptFile);
-                        callHook('initReady', null, true);
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
-                    } else {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
-                    }
-                }
-
-                /**
-                 * @commandpath module disable [./path/module] - Disable a module using the path and name of the module
-                 */
-                if (action.equalsIgnoreCase('disable')) {
-                    temp = args[1];
-
-                    if (!temp) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-                        return;
-                    }
-
-                    if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
-                        return;
-                    }
-
-                    index = getModuleIndex(temp);
-
-                    if (index > -1) {
-                        $.logEvent('init.js', 393, username + ' disabled module "' + modules[index].scriptFile + '"');
-                        modules[index].enabled = false;
-                        $.setIniDbBoolean('modules', modules[index].scriptFile, false);
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', modules[index].getModuleName()));
-
-                        if (modules[index].scriptFile == './systems/pointSystem.js') {
-                            pointsRelatedModules.push('./games/adventureSystem.js');
-                            pointsRelatedModules.push('./games/roll.js');
-                            pointsRelatedModules.push('./games/slotMachine.js');
-                            pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
-                            pointsRelatedModules.push('./systems/raffleSystem.js');
-
-                            for (var i = 0; i < pointsRelatedModules.length; i++) {
-                                index = getModuleIndex(pointsRelatedModules[i]);
-                                if (index > -1) {
-                                    $.logEvent('init.js', 393, username + ' auto-disabled module "' + modules[index].scriptFile + '"');
-                                    modules[index].enabled = false;
-                                    $.setIniDbBoolean('modules', modules[index].scriptFile, false);
-                                }
-                            }
-                            $.say($.whisperPrefix(sender) + $.lang.get('init.module.auto-disabled'));
-                        }
-                    } else {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
-                    }
-                }
-
-                /**
-                 * @commandpath module status [./path/module] - Retrieve the current status (enabled/disabled) of the given module
-                 */
-                if (action.equalsIgnoreCase('status')) {
-                    temp = args[1];
-
-                    if (!temp) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-                        return;
-                    }
-
-                    index = getModuleIndex(temp);
-
-                    if (index > 1) {
-                        if (modules[index].enabled) {
-                            $.say($.whisperPrefix(sender) + $.lang.get('init.module.check.enabled', modules[index].getModuleName()))
-                        } else {
-                            $.say($.whisperPrefix(sender) + $.lang.get('init.module.check.disabled', modules[index].getModuleName()))
-                        }
-                    } else {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
-                    }
-                }
-            }
-
-            /**
-             * @commandpath chat [message] - In the console, can be used to chat as the bot. Also used by the webpanel to communicate with chat
-             */
-            if (command.equalsIgnoreCase('chat')) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.whisperPrefix(sender) + $.adminMsg);
-                    return;
-                }
-                $.say(event.getArguments());
-            }
-        });
-
-        /**
          * @event initReady
          */
-        $.registerChatCommand('./init.js', 'chat', 7);
-        $.registerChatCommand('./init.js', 'module', 7);
-        $.registerChatCommand('./init.js', 'reconnect', 7);
+        $.registerChatCommand('./init.js', 'chat', 1);
+        $.registerChatCommand('./init.js', 'module', 1);
+        $.registerChatCommand('./init.js', 'reconnect', 1);
 
         // emit initReady event
         callHook('initReady', null, true);

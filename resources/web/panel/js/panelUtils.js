@@ -70,7 +70,10 @@ connection.onmessage = function(e) {
         return;
     }
 
-    logMsg('connection.onmessage: unknownJson(' + e.data + ')');
+    // Look for the tag in the return value of the message to route to the proper onMessage handler.
+    if (e.data.indexOf('dashboard_') !== -1) $.dashboardOnMessage(e);
+    if (e.data.indexOf('modules_') !== -1) $.modulesOnMessage(e);
+    if (e.data.indexOf('commands_') !== -1) $.commandsOnMessage(e);
 }
 
 /**

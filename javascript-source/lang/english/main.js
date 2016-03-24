@@ -168,6 +168,7 @@ $.lang.register('init.module.check.enabled', 'Module $1 is currently enabled!');
 $.lang.register('init.module.auto-disabled', 'Modules related to pointSystem have been disabled. See logs.');
 $.lang.register('init.module.disabled', 'Module "$1" disabled!');
 $.lang.register('init.module.enabled', 'Module "$1" enabled!');
+$.lang.register('init.module.error', 'Module "$1" enabled but did not initialize! Check error logs!');
 $.lang.register('init.module.list', '$1 registered modules: $2');
 $.lang.register('init.module.usage', 'Usage: !module list, !module enable [module name], !module disable [module name], !module status [module name]');
 $.lang.register('init.reconnect', 'Reconnecting to chat...');

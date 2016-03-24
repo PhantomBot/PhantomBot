@@ -4,6 +4,7 @@
  */
 
 (function() {
+    var alreadyStarted = false;
 
     /**
      * @function updateViewerCount()
@@ -60,17 +61,18 @@
      * set the table as such.
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            $.consoleLn("Web Panel Statistics Enabled");
-            $.inidb.set('panelstats', 'enabled', 'true');
-            updateAll();
-    
-            setInterval(function() {
+        if (!alreadyStarted) {
+            if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+                alreadyStarted = true;
+                $.inidb.set('panelstats', 'enabled', 'true');
                 updateAll();
-            }, 6e4);
-        } else {
-            $.consoleLn("Web Panel Statistics Disabled");
-            $.inidb.set('panelstats', 'enabled', 'false');
+        
+                setInterval(function() {
+                    updateAll();
+                }, 6e4);
+            } else {
+                $.inidb.set('panelstats', 'enabled', 'false');
+            }
         }
     });
 

@@ -55,7 +55,9 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./games/killCommand.js')) {
-            loadResponses();
+            if (selfMessageCount == 0 && otherMessageCount == 0) {
+              loadResponses();
+            }
             $.registerChatCommand('./games/killCommand.js', 'kill', 6);
         }
     });

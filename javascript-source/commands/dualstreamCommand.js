@@ -1,7 +1,8 @@
 (function() {
     var otherChannels = ($.inidb.exists('dualStreamCommand', 'otherChannels') ? $.inidb.get('dualStreamCommand', 'otherChannels') : null),
         timerToggle = ($.inidb.exists('dualStreamCommand', 'timerToggle') ? $.inidb.get('dualStreamCommand', 'timerToggle') : false),
-        timerInterval = (parseInt($.inidb.exists('dualStreamCommand', 'timerInterval')) ? parseInt($.inidb.get('dualStreamCommand', 'timerInterval')) : 5);
+        timerInterval = (parseInt($.inidb.exists('dualStreamCommand', 'timerInterval')) ? parseInt($.inidb.get('dualStreamCommand', 'timerInterval')) : 5),
+        initIntervalStarted = false;
 
     $.bind('command', function(event) {
         var sender = event.getSender(),
@@ -116,14 +117,18 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./commands/dualstreamCommand.js')) {
             $.registerChatCommand('./commands/dualstreamCommand.js', 'multi', 7);
-            setInterval(function() {
-                if (otherChannels != null) {
-                    if (timerToggle && $.isOnline($.channelName)) {
-                        $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
-                        return;
+
+            if (!initIntervalStarted) {
+                initIntervalStarted = true;
+                setInterval(function() {
+                    if (otherChannels != null) {
+                        if (timerToggle && $.isOnline($.channelName)) {
+                            $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
+                            return;
+                        }
                     }
-                }
-            }, timerInterval * 60 * 1000);
+                }, timerInterval * 60 * 1000);
+            }
         }
     });
 })();

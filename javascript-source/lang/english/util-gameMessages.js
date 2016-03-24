@@ -25,6 +25,6 @@ $.lang.register('gamemessages.lost.14', '404 Win Not Found.');
 $.lang.register('gamemessages.lost.15', 'The gods have forsaken you!');
 $.lang.register('gamemessages.lost.16', 'To win you must gain sight beyond sight!');
 $.lang.register('gamemessages.lost.17', 'You\'re great at losing! Don\'t let anyone tell you otherwise.');
-$.lang.register('gamemessages.lost.18', 'So tell me, what?s it like living in a constant haze of losses?');
+$.lang.register('gamemessages.lost.18', 'So tell me, what\'s it like living in a constant haze of losses?');
 
 $.lang.register('gamemessages.console.loaded', 'Found general game messages: $1 wins, $2 losts.');
