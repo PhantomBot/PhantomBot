@@ -10,4 +10,5 @@
 
 cd $(dirname $(readlink -f $0))
 
+unset DISPLAY
 java -Dfile.encoding=UTF-8 -jar PhantomBot.jar
