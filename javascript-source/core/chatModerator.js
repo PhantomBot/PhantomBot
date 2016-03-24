@@ -241,7 +241,7 @@
             message = event.getMessage(),
             messageLength = message.length();
 
-        //if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isModv3(sender, event.getTags())) {
             if (message && checkBlackList(event)) {
                 return;
             }
@@ -340,7 +340,7 @@
                     sendMessage(sender, longMessageMessage);
                 }
             }
-        //}
+        }
     });
 
     /**
