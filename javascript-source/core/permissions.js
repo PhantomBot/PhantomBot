@@ -329,8 +329,8 @@
      * @param username
      */
     function getGWTier(username) {
-        if (username.toLowerCase() in gwSubUsersList) {
-            return gwSubUsersList[username];
+        if (username.toLowerCase() in gwSubUsers) {
+            return gwSubUsers[username];
         }
         return 0;
     }
@@ -341,7 +341,7 @@
      * @param username
      */
     function addGWSubUsersList(username, tier) {
-        gwSubUsersList[username] = tier;
+        gwSubUsers[username] = tier;
     }
 
     /**
@@ -350,7 +350,7 @@
      * @param username
      */
     function delGWSubUsersList(username) {
-        delete gwSubUsersList[username];
+        delete gwSubUsers[username];
     }
    
     /**
@@ -411,7 +411,7 @@
             if ($.getIniDbBoolean('gamewispsubs', username, false) && !isGWSub(username)) {
                 $.setIniDbBoolean('gamewispsubs', username, false);
                 $.inidb.set('gamewispsubs', username + '_tier', 1);
-            } else if (!$.getIniDbBoolean('gamewispsubs', username, false) && isGwSub(username)) {
+            } else if (!$.getIniDbBoolean('gamewispsubs', username, false) && isGWSub(username)) {
                 $.setIniDbBoolean('gamewispsubs', username, true);
                 $.inidb.set('gamewispsubs', username + '_tier', getGWTier(username));
             }

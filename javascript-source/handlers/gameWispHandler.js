@@ -140,7 +140,13 @@
             }
             return;
         }
-        if (!'status' in jsonData['data'][0]) {
+        if (jsonData['data'][0] == undefined) {
+            if ($.getIniDbBoolean('gamewispsubs', username, false)) {
+                $.addGWSubUsersList($.users[i][0], $.getIniDbNumber('gamewispsubs', username + '_tier', 1));
+            }
+            return;
+        }
+        if (jsonData['data'][0]['status'] == undefined) {
             if ($.getIniDbBoolean('gamewispsubs', username, false)) {
                 $.addGWSubUsersList($.users[i][0], $.getIniDbNumber('gamewispsubs', username + '_tier', 1));
             }
@@ -187,7 +193,7 @@
             }
   
             /*
-             * @comamndpath gamewisp submessage [message] - Edit/show the new subscription message for GameWisp.
+             * @commandpath gamewisp submessage [message] - Edit/show the new subscription message for GameWisp.
              */
             if (args[0].equalsIgnoreCase('submessage')) {
                 if (args.length < 2) {
@@ -201,7 +207,7 @@
             }
 
             /*
-             * @comamndpath gamewisp resubmessage [message] - Edit/show the resubscription message for GameWisp.
+             * @commandpath gamewisp resubmessage [message] - Edit/show the resubscription message for GameWisp.
              */
             if (args[0].equalsIgnoreCase('resubmessage')) {
                 if (args.length < 2) {
@@ -249,7 +255,7 @@
             }
 
             /*
-             * @comamndpath gamewisp reward [points] - Set/show base points given for a subscriber. Tiers can add onto this.
+             * @commandpath gamewisp reward [points] - Set/show base points given for a subscriber. Tiers can add onto this.
              */
             if (args[0].equalsIgnoreCase('reward')) {
                 if (args.length < 2) {
@@ -298,9 +304,9 @@
             }
 
             /*
-             * @commandpath gamewisptier songrequest [number] - Set/view number of additional song requests per tier.
-             * @commandpath gamewisptier bonuspoints [points] - Set/view point percentage bonus, use whole numbers (30 = 30%).
-             * @comamndpath gamewisptier subbonuspoints [points] - Set/view bonus points to give for sub or resubbing per tier.
+             * @commandpath gamewisptier songrequest [tier] [number] - Set/view number of additional song requests per tier.
+             * @commandpath gamewisptier bonuspoints [tier] [points] - Set/view point percentage bonus, use whole numbers (30 = 30%).
+             * @comamndpath gamewisptier subbonuspoints [tier] [points] - Set/view bonus points to give for sub or resubbing per tier.
              *
              * NOTE: When adding more options, ensure that the primary key of tierData and the database key and lang file entries
              * match the subcommand. This function will then take care of all of the rest for you.
