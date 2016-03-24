@@ -390,13 +390,12 @@
                     var hookIdx = getHookIndex(modules[index].scriptFile, 'initReady');
                     try {
                         hooks[hookIdx].handler(null);
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
                     } catch (e) {
                         $.logError('init.js', 394, 'Unable to call initReady for enabled module (' + modules[index].scriptFile +'): ' + e);
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.error', modules[index].getModuleName()));
                     }
 
-                    // callHook('initReady', null, true);
-
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
                 }
