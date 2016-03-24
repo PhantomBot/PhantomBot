@@ -100,7 +100,9 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./games/roulette.js')) {
-            loadResponses();
+            if (responseCounts.win == 0 && responseCounts.lost == 0) {
+                loadResponses();
+            }
             $.registerChatCommand('./games/roulette.js', 'roulette', 7);
             $.registerChatCommand('./games/roulette.js', 'roulettetimeouttime', 1);
         }

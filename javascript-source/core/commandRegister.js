@@ -45,6 +45,8 @@
         if ($.inidb.exists('permcom', command + " " + subcommand)) {
             var newGroupId = parseInt($.inidb.get('permcom', command + " " + subcommand));
             groupId = newGroupId;
+        } else {
+            $.inidb.set('permcom', command + " " + subcommand, groupId);
         }
 
         commands[command].subcommands[subcommand] = {
@@ -74,6 +76,8 @@
         if ($.inidb.exists('permcom', command)) {
             var newGroupId = parseInt($.inidb.get('permcom', command));
             groupId = newGroupId;
+        } else {
+            $.inidb.set('permcom', command, groupId);
         }
 
         commands[command] = {
@@ -156,7 +160,9 @@
         var group = '';
 
         if (commandExists(command)) {
-            if (commands[command].groupId == 1) {
+            if (commands[command].groupId == 0) {
+                group = "Caster";
+            } else if (commands[command].groupId == 1) {
                 group = 'Administrator';
             } else if (commands[command].groupId == 2) {
                 group = 'Moderator';
