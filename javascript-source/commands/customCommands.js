@@ -218,16 +218,24 @@
      * @param {string} user
      * @param {string} command
      * @param {sub} subcommand
-     * @returns {boolean}
+     * @returns 0 = good, 1 = command perm bad, 2 = subcommand perm bad
      */
     function permCom(user, command, subcommand) {
         if ($.isAdmin(user)) {
-            return true;
+            return 0;
         }
         if (subcommand == '') {
-            return ($.getCommandGroup(command) >= $.getUserGroupId(user));
+            if ($.getCommandGroup(command) >= $.getUserGroupId(user)) {
+                return 0;
+            } else {
+                return 1;
+            }
         }
-        return ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user));
+        if ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user)) {
+            return 0;
+        } else {
+            return 2;
+        }
     };
 
     /**
@@ -398,6 +406,7 @@
             $.logEvent('customCommands.js', 59, sender + ' added alias "!' + subAction + '" for "!' + action + '"');
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.success', action, subAction));
         }
+        return ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user));
 
         /**
          * @commandpath delalias [alias] - Delete an alias
