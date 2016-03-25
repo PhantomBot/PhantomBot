@@ -44,6 +44,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 /*
  * Communicates with the GameWisp v1 API server.
@@ -59,8 +60,9 @@ public class GameWispAPIv1 {
     private static final String devSec = "6ecb43de8f1704bef5b8c4afa2c85052d6846a2";               // TODO: IllusionaryBot, needs PhantomBot
     private static final String devURI = "http://www.illusionaryone.com/singularity/genauth.php"; // TODO: IllusionaryBot, needs PhantomBot
 
-    private String sAccessToken = "";
-    private String sRefreshToken = "";
+    private static String sAccessToken = "";
+    private static String sRefreshToken = "";
+    private static Boolean noAccessWarning = false;
 
     public static GameWispAPIv1 instance() {
         return instance;
@@ -115,6 +117,15 @@ public class GameWispAPIv1 {
         HttpsURLConnection urlConn;
         String jsonText = "";
 
+        if (sAccessToken.length() == 0) {
+            if (!noAccessWarning) {
+                com.gmt2001.Console.err.println("GameWispAPIv1: Attempting to use GameWisp API without key. Disable GameWisp module.");
+                noAccessWarning = true;
+            }
+            JSONStringer jsonObject = new JSONStringer();
+            return(new JSONObject(jsonObject.object().key("result").object().key("status").value(-1).endObject().endObject().toString()));
+        }
+
         try {
             urlRaw = new URL(urlAddress);
             urlConn = (HttpsURLConnection) urlRaw.openConnection();
@@ -132,7 +143,7 @@ public class GameWispAPIv1 {
 
             urlConn.connect();
 
-            if (urlConn.getResponseCode() == 200 || urlConn.getResponseCode() == 400) {
+            if (urlConn.getResponseCode() == 200) {
                 inputStream = urlConn.getInputStream();
             } else {
                 inputStream = urlConn.getErrorStream();
