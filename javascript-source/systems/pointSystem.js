@@ -136,12 +136,6 @@
                         offlineGain : parseInt($.inidb.get('grouppointsoffline', $.getUserGroupId(username))));
                 }
             }
-
-            if ($.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
-                if ($.getTierData(username, 'bonuspoints') != 0) {
-                    amount += Math.floor(amount * ($.getTierData(username, 'bonuspoints') / 100));
-                }
-            }
             $.inidb.incr('points', username, amount);
             uUsers.push(username);
         }
@@ -476,6 +470,11 @@
 
             if (!$.user.isKnown(args[0].toLowerCase())) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.gift.404'));
+                return;
+            }
+
+            if (parseInt(args[1]) <= 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.err.negative', pointNameMultiple));
                 return;
             }
 
