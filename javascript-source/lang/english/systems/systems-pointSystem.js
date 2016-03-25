@@ -42,3 +42,4 @@ $.lang.register('pointsystem.gift.shortpoints', 'Sorry! You do not have enough p
 $.lang.register('pointsystem.gift.404', 'Sorry! That user does not seem to be registered with the chat yet!');
 $.lang.register('pointsystem.gift.success', '$1 has sent a gift of $2 to $3.');
 $.lang.register('pointsystem.usage.invalid', 'Invalid option passed to $1 command');
+$.lang.register('pointsystem.err.negative', 'you can not gift less then 0 $1');

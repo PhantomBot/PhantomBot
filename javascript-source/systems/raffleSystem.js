@@ -23,6 +23,11 @@
             return;
         }
 
+        if (price < 0) {
+            $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.negative'));
+            return;
+        }
+
         if (key.contains('!')) {
             key = key.replace('!', '');
         }
