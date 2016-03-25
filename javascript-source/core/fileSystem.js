@@ -51,7 +51,11 @@
             pathO = new JFile(path);
 
         if ((fileO != null && pathO != null) || (file != "" && path != "")) {
-            org.apache.commons.io.FileUtils.moveFileToDirectory(file, path, true);
+            try {
+                org.apache.commons.io.FileUtils.moveFileToDirectory(fileO, pathO, true);
+            } catch (ex) {
+                $.logError("fileSystem.js", 57, "moveFile(" + file + ", " + path + ") failed: " + ex);
+            }
         }
     };
 
