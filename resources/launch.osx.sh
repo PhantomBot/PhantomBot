@@ -17,4 +17,5 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 cd "$DIR"
 
+unset DISPLAY
 java -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar

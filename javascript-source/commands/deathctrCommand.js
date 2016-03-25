@@ -21,13 +21,13 @@
      * @event command
      */
     $.bind('command', function(event) {
-        var sender = event.getSender();
-        var username = $.username.resolve(sender);
-        var command = event.getCommand();
-        var argsString = event.getArguments().trim();
-        var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
-        var args = event.getArgs();
-        var game = ($.getGame($.channelName) != '' ? $.getGame($.channelName) : "Some Game");
+        var sender = event.getSender(),
+            username = $.username.resolve(sender),
+            command = event.getCommand(),
+            argsString = event.getArguments().trim(),
+            argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length()),
+            args = event.getArgs(),
+            game = ($.getGame($.channelName) != '' ? $.getGame($.channelName) : "Some Game");
 
         /**
          * @commandpath deathctr - Display the current number of deaths in game being played.
@@ -48,7 +48,7 @@
             } else {
                 if (argsString.equalsIgnoreCase("reset")) {
                     if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.adminmsg);
+                        $.say($.getWhisperString(sender) + $.adminMsg);
                         return;
                     }
 
@@ -65,7 +65,7 @@
 
                 if (args[0].equalsIgnoreCase("set")) {
                     if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.adminmsg);
+                        $.say($.getWhisperString(sender) + $.adminMsg);
                         return;
                     }
 
@@ -94,8 +94,8 @@
                 }
 
                 if (argsString.equalsIgnoreCase("sub") || argsString.equalsIgnoreCase("decr") || argsString.equalsIgnoreCase("-")) {
-                    if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.adminmsg);
+                    if (!$.isModv3(sender, event.getTags())) {
+                        $.say($.getWhisperString(sender) + $.modMsg);
                         return;
                     }
                     if (isNaN($.inidb.get('deaths', game)) || parseInt($.inidb.get('deaths', game)) == 0) {
@@ -139,7 +139,5 @@
             }
         }
     });
-
     $.deathUpdateFile = deathUpdateFile;
-
 })();
