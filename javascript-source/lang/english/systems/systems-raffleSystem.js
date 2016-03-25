@@ -15,3 +15,4 @@ $.lang.register('rafflesystem.msg.enabled', 'Raffle message\'s have been enabled
 $.lang.register('rafflesystem.msg.disabled', 'Raffle message\'s have been disabled.');
 $.lang.register('rafflesystem.enter.error.alreadyentered', 'you already entered the raffle.');
 $.lang.register('rafflesystem.warn', 'The raffle is about to close get your entries in by saying !$1');
+$.lang.register('rafflesystem.err.negative', 'you can not set a price in the negatives.');
