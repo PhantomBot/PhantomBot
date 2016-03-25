@@ -82,8 +82,8 @@
                 }
 
                 if (argsString.equalsIgnoreCase("add") || argsString.equalsIgnoreCase("incr") || argsString.equalsIgnoreCase("+")) {
-                    if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.adminmsg);
+                    if (!$.isModv3(sender, event.getTags())) {
+                        $.say($.getWhisperString(sender) + $.modMsg);
                         return;
                     }
 
