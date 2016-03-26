@@ -98,7 +98,7 @@ public class DonationsCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.out.println("DonationsCache.run>> Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+            com.gmt2001.Console.debug.println("DonationsCache.run>> Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
         }
 
@@ -110,7 +110,7 @@ public class DonationsCache implements Runnable {
                     }
                 } catch (Exception ex) {
                     checkLastFail();
-                    com.gmt2001.Console.out.println("DonationsCache.run>> Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("DonationsCache.run>> Failed to update donations: " + ex.getMessage());
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             } catch (Exception ex) {
@@ -120,7 +120,7 @@ public class DonationsCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.out.println("DonationsCache.run>> Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+                com.gmt2001.Console.debug.println("DonationsCache.run>> Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
         }
@@ -146,7 +146,7 @@ public class DonationsCache implements Runnable {
                                         (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
                                          jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
                 } catch (Exception ex) {
-                    com.gmt2001.Console.out.println("Donations.updateCache>> Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("Donations.updateCache>> Failed to update donations: " + ex.getMessage());
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
@@ -156,7 +156,7 @@ public class DonationsCache implements Runnable {
             } catch (Exception ex) {
                 if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
                     checkLastFail();
-                    com.gmt2001.Console.out.println("DonationsCache.run>> Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("DonationsCache.run>> Failed to update donations: " + ex.getMessage());
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
