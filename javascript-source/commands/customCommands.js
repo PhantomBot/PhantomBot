@@ -280,6 +280,7 @@
      * @event command
      */
     $.bind('command', function(event) {
+$.consoleLn("command : " + event.getCommand() + " sender : " + event.getSender().toLowerCase());
         var sender = event.getSender().toLowerCase(),
             username = $.username.resolve(sender, event.getTags()),
             command = event.getCommand(),
@@ -406,7 +407,6 @@
             $.logEvent('customCommands.js', 59, sender + ' added alias "!' + subAction + '" for "!' + action + '"');
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.success', action, subAction));
         }
-        return ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user));
 
         /**
          * @commandpath delalias [alias] - Delete an alias
