@@ -464,6 +464,7 @@ $.consoleLn("command : " + event.getCommand() + " sender : " + event.getSender()
                 }
 
                 $.inidb.set('permcom', action, group);
+                $.logEvent('customCommands.js', 56, sender + ' set permission on command !' + action + ' to group ' + group);
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action, $.getGroupNameById(group)));
                 $.updateCommandGroup(action, group);
             }
@@ -481,6 +482,7 @@ $.consoleLn("command : " + event.getCommand() + " sender : " + event.getSender()
             }
 
             $.inidb.set('permcom', action + " " + subcommand, group);
+            $.logEvent('customCommands.js', 56, sender + ' set permission on sub command !' + action + ' ' + subcommand + ' to group ' + group);
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action + " " + subcommand, $.getGroupNameById(group)));
             $.updateSubcommandGroup(action, subcommand, group);
         }
@@ -517,6 +519,7 @@ $.consoleLn("command : " + event.getCommand() + " sender : " + event.getSender()
                     }
                 }
             }
+            $.logEvent('customCommands.js', 56, sender + ' set price on command !' + action + ' to ' + subAction + ' ' + $.pointNameMultiple);
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action, subAction, $.pointNameMultiple));
         }
 
