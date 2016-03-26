@@ -114,7 +114,7 @@ public class SubscribersCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException e) {
-            com.gmt2001.Console.out.println("SubscribersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
+            com.gmt2001.Console.debug.println("SubscribersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
             com.gmt2001.Console.err.logStackTrace(e);
         }
 
@@ -152,7 +152,7 @@ public class SubscribersCache implements Runnable {
                         }
                     }
 
-                    com.gmt2001.Console.out.println("SubscribersCache.run>>Failed to update subscribers: " + e.getMessage());
+                    com.gmt2001.Console.debug.println("SubscribersCache.run>>Failed to update subscribers: " + e.getMessage());
                     com.gmt2001.Console.err.logStackTrace(e);
                 }
             } catch (Exception e) {
@@ -162,7 +162,7 @@ public class SubscribersCache implements Runnable {
             try {
                 Thread.sleep(60 * 60 * 1000); // One hour. This pulls every sub from the Twitch API and is for refreshing old subs more than anything.
             } catch (InterruptedException e) {
-                com.gmt2001.Console.out.println("SubscribersCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
+                com.gmt2001.Console.debug.println("SubscribersCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
                 com.gmt2001.Console.err.logStackTrace(e);
             }
         }
@@ -185,7 +185,7 @@ public class SubscribersCache implements Runnable {
                         if (j.getInt("_http") == 200) {
                             responses.add(j);
                         } else if (j.getInt("_http") == 422) {
-                            com.gmt2001.Console.out.println(">> Twitch indicates that this account does not support subscribers. Disabling queries until next startup.");
+                            com.gmt2001.Console.debug.println(">> Twitch indicates that this account does not support subscribers. Disabling queries until next startup.");
                             run = false;
                         } else {
                             try {
@@ -193,7 +193,7 @@ public class SubscribersCache implements Runnable {
                                                     + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
                                                     + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                             } catch (Exception e) {
-                                com.gmt2001.Console.out.println("SubscribersCache.updateCache>>Failed to update subscribers: " + e.getMessage());
+                                com.gmt2001.Console.debug.println("SubscribersCache.updateCache>>Failed to update subscribers: " + e.getMessage());
                                 com.gmt2001.Console.err.logStackTrace(e);
                             }
                         }
@@ -219,7 +219,7 @@ public class SubscribersCache implements Runnable {
                                 }
                             }
 
-                            com.gmt2001.Console.out.println("SubscribersCache.updateCache>>Failed to update subscribers: " + e.getMessage());
+                            com.gmt2001.Console.debug.println("SubscribersCache.updateCache>>Failed to update subscribers: " + e.getMessage());
                             com.gmt2001.Console.err.logStackTrace(e);
                         }
                     }

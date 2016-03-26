@@ -104,7 +104,7 @@ public class EmotesCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.out.println("EmotesCache.run>> Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+            com.gmt2001.Console.debug.println("EmotesCache.run>> Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
         }
 
@@ -116,7 +116,7 @@ public class EmotesCache implements Runnable {
                     }
                 } catch (Exception ex) {
                     checkLastFail();
-                    com.gmt2001.Console.out.println("EmotesCache.run>> Failed to update emotes: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("EmotesCache.run>> Failed to update emotes: " + ex.getMessage());
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             } catch (Exception ex) {
