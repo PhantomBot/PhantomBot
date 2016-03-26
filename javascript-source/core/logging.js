@@ -102,23 +102,6 @@
     };
 
     /**
-     * @function logChatModEvent
-     * @export $
-     * @param {string} sourceFile
-     * @param {Number} lineNumber
-     * @param {string} message
-     */
-    function logChatModEvent(sourceFile, message) {
-        if (!$.isDirectory('./logs/chatModerator')) {
-            $.mkDir('./logs/chatModerator');
-        }
-
-        var now = new Date();
-        $.writeToFile(now.toDateString() + ' ' + now.toTimeString() + '[' + sourceFile + '] ' + message,
-            './logs/chatModerator/' + getLogDateString() + '.txt', true);
-    };
-
-    /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
@@ -133,40 +116,40 @@
             message = event.getMessage();
 
         if (message.toLowerCase().indexOf('moderators if this room') == -1) {
-            $.log('privMsg', $.username.resolve(sender) + ': ' + message, sender);
+            $.logEvent('privMsg', $.username.resolve(sender) + ': ' + message, sender);
         }
         $.consoleDebug($.lang.get('console.received.irsprivmsg', sender, message));
 
         message = message.toLowerCase();
         if (sender.equalsIgnoreCase('jtv')) {
             if (message.equalsIgnoreCase('clearchat')) {
-                $.logEvent('misc.js', 333, $.lang.get('console.received.clearchat'));
+                $.logEvent('misc.js', 126, $.lang.get('console.received.clearchat'));
             } else if (message.indexOf('clearchat') != -1) {
-                $.logEvent('misc.js', 335, $.lang.get('console.received.purgetimeoutban', message.substring(10)));
+                $.logEvent('misc.js', 128, $.lang.get('console.received.purgetimeoutban', message.substring(10)));
             }
 
             if (message.indexOf('now in slow mode') != -1) {
-                $.logEvent('misc.js', 339, $.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
+                $.logEvent('misc.js', 132, $.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
             }
 
             if (message.indexOf('no longer in slow mode') != -1) {
-                $.logEvent('misc.js', 343, $.lang.get('console.received.slowmode.end'));
+                $.logEvent('misc.js', 136, $.lang.get('console.received.slowmode.end'));
             }
 
             if (message.indexOf('now in subscribers-only') != -1) {
-                $.logEvent('misc.js', 347, $.lang.get('console.received.subscriberonly.start'));
+                $.logEvent('misc.js', 140, $.lang.get('console.received.subscriberonly.start'));
             }
 
             if (message.indexOf('no longer in subscribers-only') != -1) {
-                $.logEvent('misc.js', 351, $.lang.get('console.received.subscriberonly.end'));
+                $.logEvent('misc.js', 144, $.lang.get('console.received.subscriberonly.end'));
             }
 
             if (message.indexOf('now in r9k') != -1) {
-                $.logEvent('misc.js', 355, $.lang.get('console.received.r9k.start'));
+                $.logEvent('misc.js', 148, $.lang.get('console.received.r9k.start'));
             }
 
             if (message.indexOf('no longer in r9k') != -1) {
-                $.logEvent('misc.js', 359, $.lang.get('console.received.r9k.end'));
+                $.logEvent('misc.js', 152, $.lang.get('console.received.r9k.end'));
             }
 
             if (message.indexOf('hosting') != -1) {
@@ -174,10 +157,10 @@
 
                 if (target.equalsIgnoreCase('-')) {
                     $.bot.channelIsHosting = null;
-                    $.logEvent('misc.js', 366, $.lang.get('console.received.host.end'));
+                    $.logEvent('misc.js', 160, $.lang.get('console.received.host.end'));
                 } else {
                     $.bot.channelIsHosting = target;
-                    $.logEvent('misc.js', 368, $.lang.get('console.received.host.start', target));
+                    $.logEvent('misc.js', 163, $.lang.get('console.received.host.start', target));
                 }
             }
         }
@@ -217,7 +200,7 @@
             if (action.equalsIgnoreCase('enable')) {
                 loggingEnabled = true;
                 $.setIniDbBoolean('settings', 'loggingEnabled', loggingEnabled);
-                $.logEvent('misc.js', 84, username + ' enabled logging');
+                $.logEvent('misc.js', 203, username + ' enabled logging');
                 $.say($.whisperPrefix(sender) + $.lang.get('logging.enabled'));
             }
 
@@ -227,7 +210,7 @@
             if (action.equalsIgnoreCase('disable')) {
                 loggingEnabled = false;
                 $.setIniDbBoolean('settings', 'loggingEnabled', loggingEnabled);
-                $.logEvent('misc.js', 91, username + ' disabled logging');
+                $.logEvent('misc.js', 213, username + ' disabled logging');
                 $.say($.whisperPrefix(sender) + $.lang.get('logging.disabled'));
             }
         }
@@ -252,5 +235,4 @@
     $.log = log;
     $.logEvent = logEvent;
     $.logError = logError;
-    $.logChatModEvent = logChatModEvent;
 })();
