@@ -88,6 +88,12 @@
         if (message.indexOf('(count)') != -1) {
             $.inidb.incr('commandCount', command, 1);
         }
+        
+        if (message.indexOf('(1)') != -1) {
+            for (var i = 0; i < args.length; i++) {
+                message = message.replace('(' + (i + 1) + ')', args[i]);
+            }
+        }
 
         // Get the URL for a customapi, if applicable, and process $1 - $9.  See below about that.
         //
@@ -280,7 +286,6 @@
      * @event command
      */
     $.bind('command', function(event) {
-$.consoleLn("command : " + event.getCommand() + " sender : " + event.getSender().toLowerCase());
         var sender = event.getSender().toLowerCase(),
             username = $.username.resolve(sender, event.getTags()),
             command = event.getCommand(),
