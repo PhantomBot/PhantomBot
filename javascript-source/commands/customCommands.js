@@ -218,16 +218,24 @@
      * @param {string} user
      * @param {string} command
      * @param {sub} subcommand
-     * @returns {boolean}
+     * @returns 0 = good, 1 = command perm bad, 2 = subcommand perm bad
      */
     function permCom(user, command, subcommand) {
         if ($.isAdmin(user)) {
-            return true;
+            return 0;
         }
         if (subcommand == '') {
-            return ($.getCommandGroup(command) >= $.getUserGroupId(user));
+            if ($.getCommandGroup(command) >= $.getUserGroupId(user)) {
+                return 0;
+            } else {
+                return 1;
+            }
         }
-        return ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user));
+        if ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user)) {
+            return 0;
+        } else {
+            return 2;
+        }
     };
 
     /**
@@ -272,6 +280,7 @@
      * @event command
      */
     $.bind('command', function(event) {
+$.consoleLn("command : " + event.getCommand() + " sender : " + event.getSender().toLowerCase());
         var sender = event.getSender().toLowerCase(),
             username = $.username.resolve(sender, event.getTags()),
             command = event.getCommand(),

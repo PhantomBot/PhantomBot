@@ -568,7 +568,8 @@
                 origCommand = event.getCommand(),
                 command,
                 subCommand,
-                cooldown;
+                cooldown,
+                permComCheck;
 
             if (!$.isModv3(sender, event.getTags()) && $.commandPause.isPaused()) {
                 consoleDebug($.lang.get('commandpause.isactive'))
@@ -593,8 +594,12 @@
             }
 
             subCommand = (args[0] ? args[0] : '');
-            if (!$.permCom(sender, command, subCommand)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command)));
+            if ((permComCheck = $.permCom(sender, command, subCommand)) != 0) {
+                if (permComCheck == 1) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command)));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getSubCommandGroupName(command, subCommand)));
+                }
                 return;
             }
 

@@ -47,46 +47,31 @@
                 }
             } else {
                 if (argsString.equalsIgnoreCase("reset")) {
-                    if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.adminMsg);
-                        return;
-                    }
-
                     var deathCounter = parseInt($.inidb.get('deaths', game));
                     if (isNaN(deathCounter) || parseInt(deathCounter) == 0) {
-                        $.say($.getWhisperString(sender) + $.lang.get("deathcounter.reset-nil", game));
+                        $.say($.whisperPrefix(sender) + $.lang.get("deathcounter.reset-nil", game));
                     } else {
                         $.inidb.set('deaths', game, 0);
-                        $.say($.getWhisperString(sender) + $.lang.get("deathcounter.reset", game, deathCounter));
+                        $.say($.whisperPrefix(sender) + $.lang.get("deathcounter.reset", game, deathCounter));
                         $.deathUpdateFile(game);
                     }
                     return;
                 }
 
                 if (args[0].equalsIgnoreCase("set")) {
-                    if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.adminMsg);
-                        return;
-                    }
-
                     if (isNaN(parseInt(argsString2))) {
-                        $.say($.getWhisperString(sender) + $.lang.get("deathcounter.set-error"));
+                        $.say($.whisperPrefix(sender) + $.lang.get("deathcounter.set-error"));
                         return;
                     } else {
                         var setDeath = parseInt(argsString2);
                         $.inidb.set('deaths', game, setDeath);
-                        $.say($.getWhisperString(sender) + $.lang.get("deathcounter.set-success", game, setDeath));
+                        $.say($.whisperPrefix(sender) + $.lang.get("deathcounter.set-success", game, setDeath));
                         $.deathUpdateFilegame();
                         return;
                     }
                 }
 
                 if (argsString.equalsIgnoreCase("add") || argsString.equalsIgnoreCase("incr") || argsString.equalsIgnoreCase("+")) {
-                    if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.getWhisperString(sender) + $.modMsg);
-                        return;
-                    }
-
                     $.inidb.incr('deaths', game, 1);
                     $.say($.lang.get("deathcounter.add-success", $.ownerName, game, $.inidb.get('deaths', game)));
                     $.deathUpdateFile(game);
@@ -94,10 +79,6 @@
                 }
 
                 if (argsString.equalsIgnoreCase("sub") || argsString.equalsIgnoreCase("decr") || argsString.equalsIgnoreCase("-")) {
-                    if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.getWhisperString(sender) + $.modMsg);
-                        return;
-                    }
                     if (isNaN($.inidb.get('deaths', game)) || parseInt($.inidb.get('deaths', game)) == 0) {
                         $.say($.lang.get("deathcounter.sub-zero", game));
                         return;

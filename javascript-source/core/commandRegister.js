@@ -200,6 +200,40 @@
     };
 
     /**
+     * @function getSubCommandGroupName
+     * @export $
+     * @param command
+     * @param subcommand
+     * @returns {String}
+     *
+     */
+    function getSubCommandGroupName(command, subcommand) {
+        var group = "";
+
+        if (subCommandExists(command, subcommand)) {
+           if (commands[command].subcommands[subcommand].groupId == 0) {
+                group = "Caster";
+            } else if (commands[command].subcommands[subcommand].groupId == 1) {
+                group = 'Administrator';
+            } else if (commands[command].subcommands[subcommand].groupId == 2) {
+                group = 'Moderator';
+            } else if (commands[command].subcommands[subcommand].groupId == 3) {
+                group = 'Subscriber';
+            } else if (commands[command].subcommands[subcommand].groupId == 4) {
+                group = 'Donator';
+            } else if (commands[command].subcommands[subcommand].groupId == 5) {
+                group = 'Hoster';
+            } else if (commands[command].subcommands[subcommand].groupId == 6) {
+                group = 'Regular';
+            } else if (commands[command].subcommands[subcommand].groupId == 7) {
+                group = 'Viewer';
+            }
+            return group;
+        }
+    }
+
+
+    /**
      * @function updateCommandGroup
      * @export $
      * @param command
@@ -234,6 +268,7 @@
     $.getCommandGroup = getCommandGroup;
     $.getCommandGroupName = getCommandGroupName;
     $.getSubcommandGroup = getSubcommandGroup;
+    $.getSubCommandGroupName = getSubCommandGroupName;
     $.updateCommandGroup = updateCommandGroup;
     $.updateSubcommandGroup = updateSubcommandGroup;
     $.getCommandScript = getCommandScript;
