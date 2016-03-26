@@ -143,7 +143,7 @@
             }
 
             /**
-             * @commandpath notice add [message or command] - Adds a notice, with a custom message, or a command (command:command)
+             * @commandpath notice add [message or command] - Adds a notice, with a custom message, or a command ex: !notice add command:COMMANDS_NAME
              */
             if (action.equalsIgnoreCase('add')) {
                 if (args.length < 2) {
