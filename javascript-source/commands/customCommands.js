@@ -71,7 +71,6 @@
             jsonCheckList,
             message = message + '',
             sender = event.getSender(),
-            t,
             args = event.getArgs();
 
         if (message.indexOf('(touser)') != -1) {
@@ -213,7 +212,6 @@
                 .replace(reFollowsTag, $.getFollows($.channelName))
                 .replace(reCountTag, $.inidb.get('commandCount', command))
                 .replace(rePriceTag, price)
-                .replace(argsTag, t)
                 .replace(reCustomAPI, customAPIReturnString)
                 .replace(reCustomAPIJson, customAPIReturnString);
 
