@@ -53,6 +53,7 @@
         }
 
         $.consoleLn('>> Enabling follower announcements');
+        $.logEvent('followHandler.js', 56, 'Follow announcements enabled');
         announceFollows = true;
     });
 
@@ -137,6 +138,7 @@
             followReward = comArg;
             $.inidb.set('settings', 'followReward', followReward);
             $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followreward.success', $.getPointsString(followReward)));
+            $.logEvent('followHandler.js', 141, sender + ' set the follow reward to ' + followReward);
         }
 
         /**
@@ -151,6 +153,7 @@
             followMessage = argString;
             $.inidb.set('settings', 'followMessage', followMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessage.success'));
+            $.logEvent('followHandler.js', 156, sender + ' set the follow message to ' + followMessage);
         }
 
         /**
@@ -162,9 +165,10 @@
                 return;
             }
 
-            followMessage = argString;
-            $.inidb.set('settings', 'followMessage', followMessage);
+            followMessageNoReward = argString;
+            $.inidb.set('settings', 'followMessageNoReward', followMessageNoReward);
             $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessagenoreward.success'));
+            $.logEvent('followHandler.js', 171, sender + ' set the follow message no reward to ' + followMessageNoReward);
         }
         /**
          * @commandpath followtoggle - Enable or disable the anouncements for new followers
@@ -174,10 +178,12 @@
                 followToggle = false;
                 $.inidb.set('settings', 'followToggle', followToggle);
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.followtoggle.off'));
+                $.logEvent('followHandler.js', 181, sender + ' turned follow announcements off');
             } else if (!followToggle) {
                 followToggle = true;
                 $.inidb.set('settings', 'followToggle', followToggle);
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.followtoggle.on'));
+                $.logEvent('followHandler.js', 181, sender + ' turned follow announcements on');
             }
         }
 
@@ -227,8 +233,10 @@
 
             if (!$.isOnline(streamer)) {
                 shoutout = $.lang.get('followhandler.shoutout.offline', streamer, streamerURL, streamerGame);
+                $.logEvent('followHandler.js', 181, sender + ' shouted out streamer ' + streamer);
             } else {
                 shoutout = $.lang.get('followhandler.shoutout.online', streamer, streamerURL, streamerGame);
+                $.logEvent('followHandler.js', 181, sender + ' shouted out streamer ' + streamer);
             }
             $.say(shoutout);
             return;

@@ -204,6 +204,7 @@
                 subMessage = args.splice(1).join(' ');
                 $.inidb.set('gameWispSubHandler', 'subscribeMessage', subMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.submessage.success', subMessage));
+                $.logEvent('gameWispHandler.js', 207, sender + ' changed subscribe message to "' + subMessage + '"');
                 return;
             }
 
@@ -218,6 +219,7 @@
                 reSubMessage = args.splice(1).join(' ');
                 $.inidb.set('gameWispSubHandler', 'reSubscribeMessage', reSubMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.resubmessage.success', reSubMessage));
+                $.logEvent('gameWispHandler.js', 222, sender + ' changed re-subscribe message to "' + reSubMessage + '"');
                 return;
             }
 
@@ -232,6 +234,7 @@
                 tierUpMessage = args.splice(1).join(' ');
                 $.inidb.set('gameWispSubHandler', 'tierUpMessage', tierUpessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.tierupmessage.success', tierUpMessage));
+                $.logEvent('gameWispHandler.js', 237, sender + ' changed tier up message to "' + tierUpMessage + '"');
                 return;
             }
 
@@ -245,8 +248,10 @@
                 }
                 if (args[1].equalsIgnoreCase("on")) {
                     $.setIniDbBoolean('gameWispSubHandler', 'subscriberShowMessages', true);
+                    $.logEvent('gameWispHandler.js', 251, sender + ' enabled subscriber announce messages');
                 } else if (args[1].equalsIgnoreCase("off")) {
                     $.setIniDbBoolean('gameWispSubHandler', 'subscriberShowMessages', false);
+                    $.logEvent('gameWispHandler.js', 254, sender + ' disabled subscriber announce messages');
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.togglemessage.usage', subShowMessages));
                     return;
@@ -269,6 +274,7 @@
                 }
                 subReward = parseInt(args[1]);
                 $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.reward.success', subReward));
+                $.logEvent('gameWispHandler.js', 277, sender + ' changed subscribe reward to ' + subReward);
                 return;
             }
 
@@ -286,6 +292,7 @@
                 }
                 reSubReward = parseInt(args[1]);
                 $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.resubreward.success', reSubReward));
+                $.logEvent('gameWispHandler.js', 295, sender + ' changed re-subscribe reward to ' + reSubReward);
                 return;
             }
         }
@@ -339,6 +346,7 @@
                 tierData[args[0]][tierLevel] = newValue;
                 $.inidb.set('gameWispTiers', args[0] + '_' + tierLevel, newValue);
                 $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.success', tierLevel, oldValue, newValue));
+                $.logEvent('gameWispHandler.js', 277, sender + ' changed tier to ' + newValue);
                 return;
             }
         }
