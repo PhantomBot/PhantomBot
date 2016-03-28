@@ -225,7 +225,6 @@
             $.registerChatCommand('./handlers/followHandler.js', 'followreward', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followtoggle', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
-            $.registerChatCommand('./handlers/followHandler.js', 'followmessagenoreward', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
             $.registerChatCommand('./handlers/followHandler.js', 'followers', 7);
             $.registerChatCommand('./handlers/followHandler.js', 'follow', 2);
