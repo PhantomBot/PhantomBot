@@ -1514,7 +1514,7 @@
             $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 1);
             $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', 1);
             $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
-            $.registerChatCommand('./systems/youtubePlayerx.js', 'songrequest');
+            $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
             $.registerChatCommand('./systems/youtubePlayer.js', 'addsong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
