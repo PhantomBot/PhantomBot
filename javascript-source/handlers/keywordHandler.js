@@ -6,28 +6,26 @@
     $.bind('ircChannelMessage', function(event) {
         var message = event.getMessage().toLowerCase(),
             sender = event.getSender(),
-            regex = '',
-            keyword = '',
-            key = '',
+            username = $.username.resolve(sender),
+            keywordCheck,
             keys = $.inidb.GetKeyList('keywords', '');
-        for (var i = 0; i < keys.length; i++) {
-            key = keys[i].toLowerCase();
-            regex = new RegExp('\\b' + key + '\\b', 'i');
-            if (regex.exec(message)) {
-                keyword = $.inidb.get('keywords', key);
-                keyword = keyword.replace('(sender)', $.username.resolve(event.getSender()));
-                keyword = keyword.replace('(@sender)', '@' + $.username.resolve(event.getSender()));
-                keyword = keyword.replace('(baresender)', event.getSender());
-                keyword = keyword.replace('(pointsname)', $.pointNameMultiple);
-                keyword = keyword.replace('(uptime)', $.getStreamUptime($.channelName));
-                keyword = keyword.replace('(game)', $.getGame($.channelName));
-                keyword = keyword.replace('(status)', $.getStatus($.channelName));
 
-                if ($.coolDown.get(key, sender) > 0) {
-                    $.consoleDebug('keyword ' + key + ' not sent because its on a cooldown.');
+        for (var i in keys) {
+            keywordCheck = new RegExp('\\b' + keys[i] + '\\b', 'i');
+            if (keywordCheck.exec(message)) {
+                keyword = $.inidb.get('keywords', keys[i]);
+                keyword = keyword.replace('(sender)', username)
+                       .replace('(@sender)', '@' + username)
+                       .replace('(baresender)', sender)
+                       .replace('(pointsname)', $.pointNameMultiple)
+                       .replace('(uptime)', $.getStreamUptime($.channelName))
+                       .replace('(game)', $.getGame($.channelName))
+                       .replace('(status)', $.getStatus($.channelName));
+
+                if ($.coolDown.get(keys[i], sender) > 0 && !$.isAdmin(sender)) {
+                    $.consoleDebug('keyword ' + keys[i] + ' not sent because its on a cooldown.');
                     return;
                 }
-
                 $.say(keyword);
                 return;
             }
