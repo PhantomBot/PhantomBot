@@ -49,18 +49,19 @@
         var lastLocalSong = '';
         /* Read from local file when YouTube Player is not connected */
         function updateLocalSong() {
-            if (localMusicPlayer && !connectedPlayerClient && $.isOnline($.channelName)) {
+            if (localMusicPlayer && !connectedPlayerClient) {
                 if ($.fileExists(localNowPlayingFile)) {
                     var localSongTitle = $.readFile(localNowPlayingFile).toString().trim();
-                    var separator = '    |    ';
-                    if (!localSongTitle.equalsIgnoreCase(lastLocalSong)) {
+                    var separator = '             //             ';
+                    if (localSongTitle !== lastLocalSong) {
                         lastLocalSong = localSongTitle;
                         if (localSongTitle === null || localSongTitle === undefined || localSongTitle === '') {
                             $.writeToFile(
-                                $.lang.get('ytplayer.command.currentsong.404') + separator,
+                                ($.lang.get('ytplayer.command.currentsong.404') + separator),
                                 baseFileOutputPath + 'currentSong.txt',
                                 false
                             );
+                            setTimeout(updateLocalSong, 5 * 1000);
                             return;
                         } else {
                             $.writeToFile(
@@ -68,20 +69,22 @@
                                 baseFileOutputPath + 'currentSong.txt',
                                 false
                             );
+                            setTimeout(updateLocalSong, 5 * 1000);
                             if (announceInChat) {
                                 $.say($.lang.get('ytplayer.local.announce.nextsong', localSongTitle));
-                                $.consoleLn($.lang.get('ytplayer.local.announce.nextsong', localSongTitle));
                                 return;
                             } else {
                                 $.consoleLn($.lang.get('ytplayer.local.announce.nextsong', localSongTitle));
+                                return;
                             }
                         }
                     }
+                    setTimeout(updateLocalSong, 5 * 1000);
                 } else {
                     $.consoleLn($.lang.get('ytplayer.local.localpath.404'));
+                    setTimeout(updateLocalSong, 30 * 1000);
                 }
             }
-            setTimeout(updateLocalSong, 5 * 1000);
         }
 
     /**
@@ -1521,7 +1524,7 @@
             $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
             $.registerChatSubcommand('wrongsong', 'user', 2);
-            setTimeout(updateLocalSong, 10 * 1000);
+            setTimeout(updateLocalSong, 15 * 1000);
     
             if (currentPlaylist == null) {
                 /** Pre-load last activated playlist */
