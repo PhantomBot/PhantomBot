@@ -32,9 +32,13 @@
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
                     html += "<tr class=\"textList\">" +
-                            "<td padding=\"5px\"><div class=\"button\" onclick=\"$.deleteCommand('" + commandName + "')\"><i class=\"fa fa-trash\" /></button></td>" +
-                            "<td><strong>" + commandName + "</strong></td>" +
-                            "<td>" + commandValue + "</td>" +
+                            "    <td padding=\"5px\">" +
+                            "        <div id=\"deleteCommand_" + commandName + "\" class=\"button\" " +
+                            "             onclick=\"$.deleteCommand('" + commandName + "')\"><i class=\"fa fa-trash\" />" +
+                            "        </div>" +
+                            "    </td>" +
+                            "    <td><strong>" + commandName + "</strong></td>" +
+                            "    <td>" + commandValue + "</td>" +
                             "</tr>";
                 }
                 html += "</table>";
@@ -46,9 +50,13 @@
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
                     html += "<tr class=\"textList\">" +
-                            "<td padding=\"5px\"><div class=\"button\" onclick=\"$.deleteAlias('" + commandName + "')\"><i class=\"fa fa-trash\" /></button></td>" +
-                            "<td><strong>" + commandName + "</strong></td>" +
-                            "<td>" + commandValue + "</td>" +
+                            "    <td padding=\"5px\">" +
+                            "        <div id=\"deleteAlias_" + commandName + "\" class=\"button\" " +
+                            "             onclick=\"$.deleteAlias('" + commandName + "')\"><i class=\"fa fa-trash\" />" +
+                            "        </div>" +
+                            "    </td>" +
+                            "    <td><strong>" + commandName + "</strong></td>" +
+                            "    <td>" + commandValue + "</td>" +
                             "</tr>";
                 }
                 html += "</table>";
@@ -64,8 +72,8 @@
                             "<td style=\"vertical-align: middle\">" + commandValue + "</td>" +
                             "<td style=\"vertical-align: middle\">" +
                             "    <form onkeypress=\"return event.keyCode != 13\">" +
-                            "        <input type=\"text\" id=\"inlineCommandPrice\" placeholder=\"new_price\" />" +
-                            "        <input type=\"button\" value=\"Update\" onclick=\"$.updateCommandPrice('" + commandName + "')\">" +
+                            "        <input type=\"text\" id=\"inlineCommandPrice_"+commandName+"\" placeholder=\"new_price\" />" +
+                            "        <input type=\"button\" value=\"Update\" onclick=\"$.updateCommandPrice('" + commandName + "')\" />" +
                             "    </form>" +
                             "</td>" +
                             "</tr>";
@@ -80,30 +88,32 @@
                     commandValue = msgObject['results'][idx]['value'];
                     html += "<tr class=\"textList\">" +
                             "<td><strong>" + commandName + "</strong></td>" +
-                            "<td><strong><font style=\"color: blue\">" + groupIcons[commandValue] + "</font></strong></td>" +
+                            "<td><div id=\"commandsList_" + commandName + "\"><strong><font style=\"color: blue\">" + groupIcons[commandValue] + 
+                            "    </font></strong></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Caster\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 0);\">" +
-                            "    <i class=\"fa fa-television\" /></div>" +
+                            "    <i class=\"fa fa-television\" /></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Admin\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 1);\">" +
-                            "    <i class=\"fa fa-laptop\" /></div>" +
+                            "    <i class=\"fa fa-laptop\" /></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Mod\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 2);\">" +
-                            "    <i class=\"fa fa-shield\" /></div>" +
+                            "    <i class=\"fa fa-shield\" /></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Sub\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 3);\">" +
-                            "    <i class=\"fa fa-credit-card\" /></div>" +
+                            "    <i class=\"fa fa-credit-card\" /></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Regular\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 6);\">" +
-                            "    <i class=\"fa fa-clock-o\" /></div>" +
+                            "    <i class=\"fa fa-clock-o\" /></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Viewer\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 7);\">" +
-                            "    <i class=\"fa fa-user\" /></div>" +
+                            "    <i class=\"fa fa-user\" /></div></td>" +
 
                             "</tr>";
                 }
                 html += "</table>";
                 $("#permCommandsList").html(html);
+                $('[data-toggle="tooltip"]').tooltip();
             }
         }
     }
@@ -123,18 +133,26 @@
      * @param {String} command
      */
     function deleteCommand(command) {
+        $("#deleteCommand_" + command).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        // sendDBDelete("commands_delcom_" + command, "command", command);
         sendCommand("delcom " + command);
-        setTimeout(function() { doQuery(); }, 1000);
+        setTimeout(function() { doQuery(); }, 500);
     }
 
     /**
      * @function addCustomCommand
      */
     function addCustomCommand() {
-        sendCommand("addcom " + $("#addCommandInput").val());
-        $("#addCommandInput").val("Submitted");
-        setTimeout(function() { $("#addCommandInput").val(""); }, 1000);
-        doQuery();
+        var value = $("#addCommandInput").val();
+        if (value.length == 0) {
+            $("#addCommandInput").val("Please enter a value");
+            setTimeout(function() { $("#addCommandInput").val(""); }, 1000);
+        } else {
+            sendCommand("addcom " + $("#addCommandInput").val());
+            $("#addCommandInput").val("Submitted");
+            setTimeout(function() { $("#addCommandInput").val(""); }, 1000);
+            doQuery();
+        }
     }
 
     /**
@@ -162,16 +180,19 @@
      * @param {String} command
      */
     function deleteAlias(command) {
-       sendCommand("delalias " + command);
-       setTimeout(function() { doQuery(); }, 1000);
+        $("#deleteAlias_" + command).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        // sendDBDelete("commands_delalias_" + command, "aliases", command);
+        sendCommand("delalias " + command);
+        setTimeout(function() { doQuery(); }, 500);
     }
 
     /**
      * @function commandPermission
      */
     function commandPermission(command, group) {
+        $("#commandsList_" + command).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("permcom " + command + " " + group);
-        setTimeout(function() { doQuery(); }, 1000);
+        setTimeout(function() { doQuery(); }, 500);
     }
 
     /**
@@ -188,8 +209,8 @@
      * @function updateCommandPrice
      */
     function updateCommandPrice(command) {
-        sendCommand("pricecom " + command + " " + $("#inlineCommandPrice").val());
-        $("#inlineCommandPrice").val("Submitted");
+        sendCommand("pricecom " + command + " " + $("#inlineCommandPrice_" + command).val());
+        $("#inlineCommandPrice_" + command).val("Submitted");
         setTimeout(function() { $("#inlineCommandPrice").val(""); }, 1000);
         doQuery();
     }
@@ -208,8 +229,9 @@
 
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
-        if (isConnected) {
-            newPanelAlert('Refreshing Data', 'success', 500);
+        var active = $("#tabs").tabs("option", "active");
+        if (active == 2 && isConnected) {
+            newPanelAlert('Refreshing Commands Data', 'success', 1000);
             doQuery();
         }
     }, 3e4);

@@ -406,7 +406,6 @@
             $.logEvent('customCommands.js', 59, sender + ' added alias "!' + subAction + '" for "!' + action + '"');
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.success', action, subAction));
         }
-        return ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user));
 
         /**
          * @commandpath delalias [alias] - Delete an alias

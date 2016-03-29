@@ -32,10 +32,10 @@
                         } else {
                             pill = "<span class=\"redPill-sm\">Disabled</span>";
                         }
-                        html += "<tr><td><div class=\"textList\" style=\"padding: 2px\">" + pill +
-                                "</td><td>" + module + "</div></td>" +
-                                "<td><button type=\"button\" class=\"btn btn-success btn-xs pull-right\" onclick=\"$.enableModule('" + module + "')\">Enable</button></td>" +
-                                "<td><button type=\"button\" class=\"btn btn-danger btn-xs pull-right\" onclick=\"$.disableModule('" + module + "')\">Disable</button></td>" +
+                        html += "<tr><td><div id=\"moduleStatus_" + idx + "\" class=\"textList\" style=\"padding: 2px\">" + pill + "</div></td>" +
+                                "<td><div class=\"textList\" style=\"padding: 2px\">" + module + "</div></td>" +
+                                "<td><button type=\"button\" class=\"btn btn-success btn-xs pull-right\" onclick=\"$.enableModule('" + module + "', " + idx + ")\">Enable</button></td>" +
+                                "<td><button type=\"button\" class=\"btn btn-danger btn-xs pull-right\" onclick=\"$.disableModule('" + module + "', " + idx + ")\">Disable</button></td>" +
                                 "</tr>";
                     }
                 }
@@ -56,7 +56,8 @@
      * @function enableModule
      * @param {String} module
      */
-    function enableModule(module) {
+    function enableModule(module, idx) {
+        $("#moduleStatus_" + idx).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module enable " + module);
         setTimeout(function() { doQuery(); }, 1000);
     }
@@ -65,7 +66,8 @@
      * @function disableModule
      * @param {String} module
      */
-    function disableModule(module) {
+    function disableModule(module, idx) {
+        $("#moduleStatus_" + idx).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module disable " + module);
         setTimeout(function() { doQuery(); }, 1000);
     }
@@ -83,8 +85,9 @@
 
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
-        if (isConnected) {
-            newPanelAlert('Refreshing Data', 'success', 500);
+        var active = $("#tabs").tabs("option", "active");
+        if (active == 1 && isConnected) {
+            newPanelAlert('Refreshing Modules Data', 'success', 1000);
             doQuery();
         }
     }, 3e4);

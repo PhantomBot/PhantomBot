@@ -252,6 +252,24 @@ td {
     white-space: nowrap;
 } 
 
+.alert-info {
+    clear: left;
+    position: fixed;
+    right: 15px;
+    top: 14px;
+    height: 40px;
+    width: 60%;
+    text-align: center;
+    background-color: #add8e6;
+    color: #6441a5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
 .modal-dialog {
     background-color: #444444;
     color: #dddddd;
@@ -259,22 +277,65 @@ td {
 
 #tabs {
     width: 100%;
+    overflow: hidden;
+    position: relative;
 }
+
 .ui-tabs-vertical { 
     width: 55em;
 }
 .ui-tabs-vertical .ui-tabs-nav {
-    padding: .2em .1em .2em .2em; float: left; width: 12em;
+    padding: .2em .1em .2em .2em;
+    float: left;
+    width: 12em;
+    border-style: none;
+    background:transparent;
 }
 .ui-tabs-vertical .ui-tabs-nav li {
-    clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0;
+    clear: left;
+    width: 100%;
+    border-bottom-width: 1px !important;
+    border-right-width: 1px !important;
+    margin: 0 -1px .2em 0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 .ui-tabs-vertical .ui-tabs-nav li a {
     display:block;
 }
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
-    padding-bottom: 0; padding-right: .1em; border-right-width: 1px;
+    clear: left;
+    width: 100%;
+    border-bottom-width: 1px !important;
+    border-right-width: 1px !important;
+    margin: 0 -1px .2em 0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 .ui-tabs-vertical .ui-tabs-panel {
-    padding: 1em; float: left; width: 60em;
+    padding: 1em;
+    float: left;
+    width: 60em;
+}
+
+.tooltip-inner {
+    background-color: #444488;
+    color: #eee;
+}
+.tooltip.top .tooltip-arrow {
+    border-top-color: #444488;
+}
+
+.tooltip.right .tooltip-arrow {
+    border-right-color: #444488;
+}
+
+.tooltip.bottom .tooltip-arrow {
+    border-bottom-color: #444488;
+}
+
+.tooltip.left .tooltip-arrow {
+    border-left-color: #444488;
 }

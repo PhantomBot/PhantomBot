@@ -119,7 +119,9 @@ public class PhantomBot implements Listener {
     private TreeMap<String, Integer> pollResults;
     private TreeSet<String> voters;
     private ConnectionManager connectionManager;
+    // private ConnectionManager hostConnectionManager; // new hostHandler
     private final Session session;
+    // private final Session hostSession; // new HostHandler
     public static Session tgcSession;
     private Channel channel;
     private final HashMap<String, Channel> channels;
@@ -148,6 +150,14 @@ public class PhantomBot implements Listener {
         return instance;
     }
 
+    public String botVersion() {
+        return "PhantomBot Core 2.0.6";
+    }
+
+    public String getBotInfo() {
+        return botVersion() + " (Revision: " + RepoVersion.getRepoVersion() + ")";
+    }
+
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel,
                       String owner, int baseport, String hostname, int port, String ghostname, int gport,
                       double msglimit30, String datastore, String datastoreconfig, String youtubekey,
@@ -158,7 +168,7 @@ public class PhantomBot implements Listener {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core 2.0.6");
+        com.gmt2001.Console.out.println(botVersion());
         com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, Scania, Zelakto, IllusionaryOne, SimeonF, & Juraji");
@@ -197,6 +207,10 @@ public class PhantomBot implements Listener {
 
         Profile profile = new Profile(username.toLowerCase());
         this.connectionManager = new ConnectionManager(profile);
+
+        // Profile hostProfile = new Profile(owner.toLowerCase()); // new hosted method 
+        // this.hostConnectionManager = new ConnectionManager(hostProfile); // new hosted method
+       
 
         if (clientid.length() == 0) {
             this.clientid = "rp2uhin43rvpr70nzwnh07417x2gck0";
@@ -296,6 +310,12 @@ public class PhantomBot implements Listener {
         TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchalertslimit);
 
         this.session.addIRCEventListener(new IrcEventHandler());
+
+        /* Connect caster to Twitch IRC for host monitoring - disabled for now. */
+        // com.gmt2001.Console.out.println("Sending to Extra connection");
+        // this.hostSession = hostConnectionManager.requestConnection(this.hostname, this.port, casterOauth);
+        // this.hostSession.addIRCEventListener(new IrcHostHandler());
+        
     }
 
     public static void setDebugging(boolean debug) {
@@ -537,6 +557,7 @@ public class PhantomBot implements Listener {
 
         com.gmt2001.Console.out.println("[SHUTDOWN] Disconnecting from Twitch IRC...");
         connectionManager.quit();
+        // hostConnectionManager.quit(); // new hostHandler
 
         com.gmt2001.Console.out.println("[SHUTDOWN] Waiting for JVM to exit...");
     }

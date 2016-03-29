@@ -1,0 +1,55 @@
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<div id="cooldownAccordion">
+    <h3>Global Cooldown Settings</h3>
+    <div style="height: 200px;">
+        <table>
+            <tr class="textList">
+                <td>Global Cooldown</td>
+                <td><div id="toggleGlobalCooldown" /></td>
+                <td>
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGlobalCooldown();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Mod Cooldown</td>
+                <td><div id="toggleModCooldown" /></td>
+                <td>
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleModCooldown();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="globalCooldownTime">Global Cooldown Time</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setGlobalCooldownTime()">Submit</button>
+                <input type="number" min="0" class="form-control" id="globalCooldownTimeInput" placeholder="seconds" />
+            </div>
+        </form>
+    </div>
+
+    <h3>Command Cooldowns</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="cooldownCmd">Cooldown Command</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldown()">Submit</button>
+                <input type="text" class="form-control" id="cooldownCmdInput" placeholder="command_name seconds" />
+            </div>
+        </form>
+
+        <strong>Commands with Cooldowns</strong>
+        <div id="cooldownList" style="height: 300px; overflow: auto;" />
+    </div>
+</div>
+
+<!-- Run the Accordion -->
+<script>$("#cooldownAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
