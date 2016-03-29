@@ -78,7 +78,7 @@
                         }
                     }
                 } else {
-                    $.consoleLn($.lang.get('ytplayer.local.localpath.404');
+                    $.consoleLn($.lang.get('ytplayer.local.localpath.404'));
                 }
             }
             setTimeout(updateLocalSong, 5 * 1000);
@@ -1071,7 +1071,7 @@
                 $.setIniDbBoolean('ytSettings', 'localMusicPlayer', localMusicPlayer);
 
                 var state = localMusicPlayer ? 'Enabled' : 'Disabled';
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.togglelocal.toggled', state);
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.togglelocal.toggled', state));
                 return;
             }
 
@@ -1523,33 +1523,32 @@
             $.registerChatSubcommand('wrongsong', 'user', 2);
             setTimeout(updateLocalSong, 10 * 1000);
     
-                if (currentPlaylist == null) {
-                    /** Pre-load last activated playlist */
-                    currentPlaylist = new BotPlayList(activePlaylistname, true);
-    
-                    /** if the current playlist is "default" and it's empty, add some default songs. */
-                    if (currentPlaylist.getPlaylistname().equals('default') && currentPlaylist.getplaylistLength() == 0) {
-                        /** CyberPosix - Under The Influence (Outertone Free Release) */
-                        try {
-                            currentPlaylist.addToPlaylist(new YoutubeVideo('gotxnim9h8w', $.botName));
-                        } catch (ex) {
-                            $.logError("youtubePlayer.js", 839, "YoutubeVideo::exception: " + ex);
-                        }
-        
-                        /** Different Heaven & Eh!de - My Heart (Outertone 001 - Zero Release) */
-                        try {
-                            currentPlaylist.addToPlaylist(new YoutubeVideo('WFqO9DoZZjA', $.botName));
-                        } catch (ex) {
-                            $.logError("youtubePlayer.js", 846, "YoutubeVideo::exception: " + ex);
-                        }
-        
-        
-                        /** Tobu - Higher (Outertone Release) */
-                        try {
-                            currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
-                        } catch (ex) {
-                            $.logError("youtubePlayer.js", 855, "YoutubeVideo::exception: " + ex);
-                        }
+            if (currentPlaylist == null) {
+                /** Pre-load last activated playlist */
+                currentPlaylist = new BotPlayList(activePlaylistname, true);
+
+                /** if the current playlist is "default" and it's empty, add some default songs. */
+                if (currentPlaylist.getPlaylistname().equals('default') && currentPlaylist.getplaylistLength() == 0) {
+                    /** CyberPosix - Under The Influence (Outertone Free Release) */
+                    try {
+                        currentPlaylist.addToPlaylist(new YoutubeVideo('gotxnim9h8w', $.botName));
+                    } catch (ex) {
+                        $.logError("youtubePlayer.js", 839, "YoutubeVideo::exception: " + ex);
+                    }
+
+                    /** Different Heaven & Eh!de - My Heart (Outertone 001 - Zero Release) */
+                    try {
+                        currentPlaylist.addToPlaylist(new YoutubeVideo('WFqO9DoZZjA', $.botName));
+                    } catch (ex) {
+                        $.logError("youtubePlayer.js", 846, "YoutubeVideo::exception: " + ex);
+                    }
+
+
+                    /** Tobu - Higher (Outertone Release) */
+                    try {
+                        currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
+                    } catch (ex) {
+                        $.logError("youtubePlayer.js", 855, "YoutubeVideo::exception: " + ex);
                     }
                 }
             }
