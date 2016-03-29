@@ -35,13 +35,13 @@
         colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using /me.'),
 
         subscribers = {
-            Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', false),
-            Caps: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateCaps', false),
-            Symbols: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSymbols', false),
-            Spam: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSpam', false),
-            Emotes: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateEmotes', false),
-            Colors: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateColors', false),
-            LongMsg: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLongMsg', false),
+            Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', true),
+            Caps: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateCaps', true),
+            Symbols: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSymbols', true),
+            Spam: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSpam', true),
+            Emotes: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateEmotes', true),
+            Colors: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateColors', true),
+            LongMsg: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLongMsg', true),
         },
 
         regulars = {
@@ -405,155 +405,16 @@
     });
 
     /**
-     * @event command
+     * @function moderationCommand
+     * @param event
      */
-    $.bind('command', function(event) {
+    function moderationCommand(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
             argString = event.getArguments(),
             args = event.getArgs(),
             action = args[0],
             subAction = args[1];
-
-        /**
-         * @commandpath permit [user] - Permit someone to post a link for a configured period of time
-         */
-        if (command.equalsIgnoreCase('permit')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-
-            if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.permit.usage'));
-                return;
-            }
-
-            permitUser(action);
-            $.say($.username.resolve(action) + $.lang.get('chatmoderator.permited', linkPermitTime));
-            $.logEvent('chatModerator.js', 365, action + ' was permited by ' + sender);
-            return;
-        }
-
-        /**
-         * @commandpath blacklist - Show usage of command to manipulate the blacklist of words in chat
-         */
-        if (command.equalsIgnoreCase('blacklist')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
-            if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.usage'));
-                return;
-            }
-
-            /**
-             * @commandpath blacklist add [word] - Adds a word to the blacklist
-             */
-            if (action.equalsIgnoreCase('add')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.add.usage'));
-                    return;
-                }
-                var word = argString.replace(action, '').trim().toLowerCase();
-                $.inidb.set('blackList', 'phrase_' + blackList.length, word);
-                blackList.push(word);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.added'));
-                $.logEvent('chatModerator.js', 395, '"' + word + '" was added to the blacklist by ' + sender);
-            }
-
-            /**
-             * @commandpath blacklist remove [id] - Removes a word from the blacklist based on ID.
-             */
-            if (action.equalsIgnoreCase('remove')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.remove.usage'));
-                    return;
-                } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
-                    return;
-                }
-                $.inidb.del('blackList', 'phrase_' + parseInt(subAction));
-                loadBlackList();
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.removed'));
-            }
-
-            /**
-             * @commandpath blacklist show [id] - Shows the blacklist word related to the ID.
-             */
-            if (action.equalsIgnoreCase('show')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.show.usage'));
-                    return;
-                } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
-                    return;
-                }
-                $.say($.whisperPrefix(sender) + $.inidb.get('blackList', 'phrase_' + parseInt(subAction)));
-            }
-        }
-
-        /**
-         * @commandpath whitelist - Shows usage of command to manipulate the whitelist links
-         */
-        if (command.equalsIgnoreCase('whiteList')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
-            if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.usage'));
-                return;
-            }
-
-            /**
-             * @commandpath whitelist add [link] - Adds a link to the whitelist
-             */
-            if (action.equalsIgnoreCase('add')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.add.usage'));
-                    return;
-                }
-                var link = argString.replace(action, '').trim().toLowerCase();
-                $.inidb.set('whiteList', 'link_' + whiteList.length, link);
-                whiteList.push(link);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));
-                $.logEvent('chatModerator.js', 455, '"' + link + '" was added the the whitelist by ' + sender);
-            }
-
-            /**
-             * @commandpath whitelist remove [id] - Removes a link from the whitelist based on ID.
-             */
-            if (action.equalsIgnoreCase('remove')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.remove.usage'));
-                    return;
-                } else if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
-                    return;
-                }
-                $.inidb.del('whiteList', 'link_' + parseInt(subAction));
-                loadWhiteList();
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.removed'));
-            }
-
-            /**
-             * @commandpath whitelist show [id] - Shows a link in the whitelist based on ID.
-             */
-            if (action.equalsIgnoreCase('show')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.show.usage'));
-                    return;
-                } else if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
-                    return;
-                }
-                $.say($.whisperPrefix(sender) + $.inidb.get('whiteList', 'link_' + parseInt(subAction)));
-            }
-        }
 
         /**
          * @commandpath moderation - Shows usage for the various chat moderation options
@@ -1407,10 +1268,169 @@
                 msgCooldownSec = parseInt(subAction);
                 $.inidb.set('chatModerator', 'msgCooldownSec', msgCooldownSec);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.msgcooldown.set', msgCooldownSec));
-                /* Removed this log because it give's a error that the $.bind function is too big.
-                $.logEvent('chatModerator.js', 1342, sender + ' changed the timeout message cooldown to ' + msgCooldownSec + ' seconds'); */
+                $.logEvent('chatModerator.js', 1342, sender + ' changed the timeout message cooldown to ' + msgCooldownSec + ' seconds');
             }
         }
+
+    }
+
+    /**
+     * @event command
+     */
+    $.bind('command', function(event) {
+        var sender = event.getSender(),
+            command = event.getCommand(),
+            argString = event.getArguments(),
+            args = event.getArgs(),
+            action = args[0],
+            subAction = args[1];
+
+
+        /**
+         * Handle !moderation command
+         */
+        moderationCommand(event);
+
+        /**
+         * @commandpath permit [user] - Permit someone to post a link for a configured period of time
+         */
+        if (command.equalsIgnoreCase('permit')) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.whisperPrefix(sender) + $.modMsg);
+                return;
+            }
+
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.permit.usage'));
+                return;
+            }
+
+            permitUser(action);
+            $.say($.username.resolve(action) + $.lang.get('chatmoderator.permited', linkPermitTime));
+            $.logEvent('chatModerator.js', 365, action + ' was permited by ' + sender);
+            return;
+        }
+
+        /**
+         * @commandpath blacklist - Show usage of command to manipulate the blacklist of words in chat
+         */
+        if (command.equalsIgnoreCase('blacklist')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
+
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.usage'));
+                return;
+            }
+
+            /**
+             * @commandpath blacklist add [word] - Adds a word to the blacklist
+             */
+            if (action.equalsIgnoreCase('add')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.add.usage'));
+                    return;
+                }
+                var word = argString.replace(action, '').trim().toLowerCase();
+                $.inidb.set('blackList', 'phrase_' + blackList.length, word);
+                blackList.push(word);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.added'));
+                $.logEvent('chatModerator.js', 395, '"' + word + '" was added to the blacklist by ' + sender);
+            }
+
+            /**
+             * @commandpath blacklist remove [id] - Removes a word from the blacklist based on ID.
+             */
+            if (action.equalsIgnoreCase('remove')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.remove.usage'));
+                    return;
+                } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
+                    return;
+                }
+                $.inidb.del('blackList', 'phrase_' + parseInt(subAction));
+                loadBlackList();
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.removed'));
+            }
+
+            /**
+             * @commandpath blacklist show [id] - Shows the blacklist word related to the ID.
+             */
+            if (action.equalsIgnoreCase('show')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.show.usage'));
+                    return;
+                } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
+                    return;
+                }
+                $.say($.whisperPrefix(sender) + $.inidb.get('blackList', 'phrase_' + parseInt(subAction)));
+            }
+        }
+
+        /**
+         * @commandpath whitelist - Shows usage of command to manipulate the whitelist links
+         */
+        if (command.equalsIgnoreCase('whiteList')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
+
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.usage'));
+                return;
+            }
+
+            /**
+             * @commandpath whitelist add [link] - Adds a link to the whitelist
+             */
+            if (action.equalsIgnoreCase('add')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.add.usage'));
+                    return;
+                }
+                var link = argString.replace(action, '').trim().toLowerCase();
+                $.inidb.set('whiteList', 'link_' + whiteList.length, link);
+                whiteList.push(link);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));
+                $.logEvent('chatModerator.js', 455, '"' + link + '" was added the the whitelist by ' + sender);
+            }
+
+            /**
+             * @commandpath whitelist remove [id] - Removes a link from the whitelist based on ID.
+             */
+            if (action.equalsIgnoreCase('remove')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.remove.usage'));
+                    return;
+                } else if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
+                    return;
+                }
+                $.inidb.del('whiteList', 'link_' + parseInt(subAction));
+                loadWhiteList();
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.removed'));
+            }
+
+            /**
+             * @commandpath whitelist show [id] - Shows a link in the whitelist based on ID.
+             */
+            if (action.equalsIgnoreCase('show')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.show.usage'));
+                    return;
+                } else if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
+                    return;
+                }
+                $.say($.whisperPrefix(sender) + $.inidb.get('whiteList', 'link_' + parseInt(subAction)));
+            }
+        }
+
 
         /**
          * Used by the panel, no commandpath given. 
