@@ -23,8 +23,14 @@ public class TwitchHostedEvent extends TwitchHostEvent {
     public TwitchHostedEvent(String hoster) {
         super(hoster, Type.HOST);
     }
-
+    public TwitchHostedEvent(String hoster, int users) {
+        super(hoster, Type.HOST, users);
+    }
     public TwitchHostedEvent(String hoster, Channel channel) {
-        super(hoster, Type.HOST, channel);
+        super(hoster, Type.HOST, 0, channel);
+    }
+
+    public TwitchHostedEvent(String hoster, int users, Channel channel) {
+        super(hoster, Type.HOST, users, channel);
     }
 }
