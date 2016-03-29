@@ -280,7 +280,6 @@
      * @event command
      */
     $.bind('command', function(event) {
-$.consoleLn("command : " + event.getCommand() + " sender : " + event.getSender().toLowerCase());
         var sender = event.getSender().toLowerCase(),
             username = $.username.resolve(sender, event.getTags()),
             command = event.getCommand(),
