@@ -49,7 +49,7 @@
         var lastLocalSong = '';
         /* Read from local file when YouTube Player is not connected */
         function updateLocalSong() {
-            if (localMusicPlayer && !connectedPlayerClient) {
+            if (localMusicPlayer && !connectedPlayerClient && $.isOnline($.channelName)) {
                 if ($.fileExists(localNowPlayingFile)) {
                     var localSongTitle = $.readFile(localNowPlayingFile).toString().trim();
                     var separator = '             //             ';
