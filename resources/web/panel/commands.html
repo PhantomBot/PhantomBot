@@ -28,7 +28,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="addCommand">Add Command</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCustomCommand()">Submit</button>
-                <input type="text" class="form-control" id="addCommandInput" placeholder="command_name response of command " />
+                <input type="text" class="form-control" id="addCommandInput" placeholder="command_name response of command" />
             </div>
         </form>
         <br>
@@ -52,17 +52,17 @@
 
     <h3>View/Delete Custom Commands</h3>
     <div>
-        <div id="customCommandsList" style="height: 400px; overflow: scroll;" />
+        <div id="customCommandsList" style="height: 400px; overflow: auto;" />
     </div>
 
     <h3>View/Delete Command Aliases</h3>
     <div>
-        <div id="aliasCommandsList" style="height: 400px; overflow: scroll;" />
+        <div id="aliasCommandsList" style="height: 400px; overflow: auto;" />
     </div>
 
     <h3>View/Set Command Permissions</h3>
     <div>
-        <div id="permCommandsList" style="height: 400px; overflow: scroll;" />
+        <div id="permCommandsList" style="height: 400px; overflow: auto;" />
     </div>
 
     <h3>View/Set Command Prices</h3>
@@ -76,7 +76,7 @@
         </form>
 
         <strong>Current Command Prices</strong><br><br>
-        <div id="priceCommandsList" style="height: 400px; overflow: scroll;" />
+        <div id="priceCommandsList" style="height: 400px; overflow: auto;" />
     </div>
 </div>
 

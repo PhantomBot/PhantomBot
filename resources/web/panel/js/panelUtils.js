@@ -64,6 +64,7 @@ connection.onmessage = function(e) {
 
     if (messageObject['authresult'] == false) {
         if (!messageObject['authresult']) {
+            isConnected = false;
             newPanelAlert('Authorization Failed! Check Configuration File', 'danger', 0);
             return;
         }
@@ -71,9 +72,14 @@ connection.onmessage = function(e) {
     }
 
     // Look for the tag in the return value of the message to route to the proper onMessage handler.
+    // If new panels are added a new tag MUST be created and implemented.
+    //
     if (e.data.indexOf('dashboard_') !== -1) $.dashboardOnMessage(e);
     if (e.data.indexOf('modules_') !== -1) $.modulesOnMessage(e);
     if (e.data.indexOf('commands_') !== -1) $.commandsOnMessage(e);
+    if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
+    if (e.data.indexOf('moderation_') !== -1) $.moderationOnMessage(e);
+    if (e.data.indexOf('cooldown_') !== -1) $.cooldownOnMessage(e);
 }
 
 /**
@@ -91,6 +97,16 @@ function newPanelAlert(message, type, timeout) {
   if (timeout != 0) {
       $(".alert-" + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
   }
+}
+
+/**
+ * @function requestVersion
+ * @param {String} unique_id
+ */
+function requestVersion(unique_id) {
+    var jsonObject = {};
+    jsonObject["version"] = unique_id;
+    connection.send(JSON.stringify(jsonObject));
 }
 
 /**
@@ -131,3 +147,31 @@ function sendDBKeys(unique_id, table) {
     jsonObject["query"] = { "table": table };
     connection.send(JSON.stringify(jsonObject));
 }
+
+/**
+ * @function sendDBUpdate
+ * @param {String} unique_id
+ * @param {String} table
+ * @param {String} key
+ * @param {String} value
+ */
+function sendDBUpdate(unique_id, table, key, value) {
+    jsonObject = {};
+    jsonObject["dbupdate"] = unique_id;
+    jsonObject["update"] = { "table" : table, "key" : key, "value" : value };
+    connection.send(JSON.stringify(jsonObject));
+}
+
+/**
+ * @function sendDBDelete
+ * @param {String} unique_id
+ * @param {String} table
+ * @param {String} key
+ */
+function sendDBDelete(unique_id, table, key) {
+    jsonObject = {};
+    jsonObject["dbdelkey"] = unique_id;
+    jsonObject["delkey"] = { "table" : table, "key" : key };
+    connection.send(JSON.stringify(jsonObject));
+}
+    
