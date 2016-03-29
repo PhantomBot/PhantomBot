@@ -8,9 +8,9 @@
  */
 
 (function() {
-    var globalCooldown = ($.inidb.exists('cooldown', 'globalCooldown') ? $.getIniDbBoolean('cooldown', 'globalCooldown') : false),
-        globalCooldownTime = ($.inidb.exists('cooldown', 'globalCooldownTime') ? parseInt($.inidb.get('cooldown', 'globalCooldownTime')) : 90),
-        modCooldown = ($.inidb.exists('cooldown', 'modCooldown') ? $.getIniDbBoolean('cooldown', 'modCooldown') : false),
+    var globalCooldown = $.getSetIniDbBoolean('cooldown', 'globalCooldown', false),
+        globalCooldownTime = $.getSetIniDbNumber('cooldown', 'globalCooldownTime', 90),
+        modCooldown = $.getSetIniDbBoolean('cooldown', 'modCooldown', false),
         cooldown = [];
 
     function set(command, time, user) {
@@ -147,9 +147,14 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.global.usage'));
                 return;
             }
+            if (isNaN(cmd)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.global.usage'));
+                return;
+            }
 
             $.inidb.set('cooldown', 'globalCooldownTime', parseInt(cmd));
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.global.set', cmd));
+            globalCooldownTime = parseInt(cmd);
         }
 
         /**

@@ -24,7 +24,7 @@
                 var htmlStr = "";
                 for (var i in msgObject['results']) {
                     var highlightData = msgObject['results'][i]['value'];
-                    htmlStr += highlightData + "<br>";
+                    htmlStr += highlightData + " @ " + msgObject['results'][i]['key'] + "<br>";
                 }
                 if (htmlStr.length == 0) {
                     $("#showHighlights").html("No Highlights Found");
@@ -142,14 +142,24 @@
      * @function setStreamTitle
      */
     function setStreamTitle() {
-        sendCommand("title " + $("#streamTitleInput").val());
+        var newTitle = $("#streamTitleInput").val();
+        if (newTitle.length > 0) {
+            sendCommand("title " + newTitle);
+            $("#streamTitleInput").val('')
+            $("#streamTitleInput").attr("placeholder", newTitle).blur();
+        }
     }
 
     /**
      * @function setGameTitle
      */
     function setGameTitle() {
-        sendCommand("game " + $("#gameTitleInput").val());
+        var newGame = $("#gameTitleInput").val();
+        if (newGame.length > 0) {
+            sendCommand("game " + newGame);
+            $("#gameTitleInput").val('')
+            $("#gameTitleInput").attr("placeholder", newGame).blur();
+        }
     }
 
     /**
@@ -163,14 +173,19 @@
      * @function setHighlight
      */
     function setHighlight() {
+        $("#showHighlights").html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("highlight " + $("#highlightInput").val());
+        $("#highlightInput").val('');
+        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, 500);
     }
 
     /**
      * @function clearHighlights
      */
     function clearHighlights() {
+        $("#showHighlights").html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("clearhighlights");
+        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, 500);
     }
 
     /**
@@ -221,8 +236,9 @@
 
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
-        if (isConnected) {
-            newPanelAlert('Refreshing Data', 'success', 500);
+        var active = $("#tabs").tabs("option", "active");
+        if (active == 0 && isConnected) {
+            newPanelAlert('Refreshing Dashboard Data', 'success', 1000);
             doQuery();
         }
     }, 3e4);

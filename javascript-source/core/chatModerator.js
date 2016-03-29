@@ -4,75 +4,148 @@
         whiteList = [],
         blackList = [],
 
-        linksToggle = ($.inidb.exists('chatModerator', 'linksToggle') ? $.getIniDbBoolean('chatModerator', 'linksToggle') : true),
-        linksMessage = ($.inidb.exists('chatModerator', 'linksMessage') ? $.inidb.get('chatModerator', 'linksMessage') : 'you were timed out for linking'),
-        linkPermitTime = ($.inidb.exists('chatModerator', 'linkPermitTime') ? parseInt($.inidb.get('chatModerator', 'linkPermitTime')) : 120),
+        linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', true),
+        linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking'),
+        linkPermitTime = $.getSetIniDbNumber('chatModerator', 'linkPermitTime', 120),
 
-        capsToggle = ($.inidb.exists('chatModerator', 'capsToggle') ? $.getIniDbBoolean('chatModerator', 'capsToggle') : true),
-        capsMessage = ($.inidb.exists('chatModerator', 'capsMessage') ? $.inidb.get('chatModerator', 'capsMessage') : 'you were timed out for overusing caps'),
-        capsLimitPercent = ($.inidb.exists('chatModerator', 'capsLimitPercent') ? parseFloat($.inidb.get('chatModerator', 'capsLimitPercent')) : 50),
-        capsTriggerLength = ($.inidb.exists('chatModerator', 'capsTriggerLength') ? parseInt($.inidb.get('chatModerator', 'capsTriggerLength')) : 15),
+        capsToggle = $.getSetIniDbBoolean('chatModerator', 'capsToggle', true),
+        capsMessage = $.getSetIniDbString('chatModerator', 'capsMessage', 'you were timed out for overusing caps'),
+        capsLimitPercent = $.getSetIniDbFloat('chatModerator', 'capsLimitPercent', 50),
+        capsTriggerLength = $.getSetIniDbNumber('chatModerator', 'capsTriggerLength', 15),
 
-        spamToggle = ($.inidb.exists('chatModerator', 'spamToggle') ? $.getIniDbBoolean('chatModerator', 'spamToggle') : true),
-        spamMessage = ($.inidb.exists('chatModerator', 'spamMessage') ? $.inidb.get('chatModerator', 'spamMessage') : 'you were timed out for spamming repeating characters'),
-        spamLimit = ($.inidb.exists('chatModerator', 'spamLimit') ? parseInt($.inidb.get('chatModerator', 'spamLimit')) : 15),
+        spamToggle = $.getSetIniDbBoolean('chatModerator', 'spamToggle', true),
+        spamMessage = $.getSetIniDbString('chatModerator', 'spamMessage', 'you were timed out for spamming repeating characters'),
+        spamLimit = $.getSetIniDbNumber('chatModerator', 'spamLimit', 15),
 
-        symbolsToggle = ($.inidb.exists('chatModerator', 'symbolsToggle') ? $.getIniDbBoolean('chatModerator', 'symbolsToggle') : true),
-        symbolsMessage = ($.inidb.exists('chatModerator', 'symbolsMessage') ? $.inidb.get('chatModerator', 'symbolsMessage') : 'you were timed out for overusing symbols'),
-        symbolsLimitPercent = ($.inidb.exists('chatModerator', 'symbolsLimitPercent') ? parseFloat($.inidb.get('chatModerator', 'symbolsLimitPercent')) : 50),
-        symbolsGroupLimit = ($.inidb.exists('chatModerator', 'symbolsGroupLimit') ? parseFloat($.inidb.get('chatModerator', 'symbolsGroupLimit')) : 10),
-        symbolsTriggerLength = ($.inidb.exists('chatModerator', 'symbolsTriggerLength') ? parseInt($.inidb.get('chatModerator', 'symbolsTriggerLength')) : 15),
+        symbolsToggle = $.getSetIniDbBoolean('chatModerator', 'symbolsToggle', true),
+        symbolsMessage = $.getSetIniDbString('chatModerator', 'symbolsMessage', 'you were timed out for overusing symbols'),
+        symbolsLimitPercent = $.getSetIniDbFloat('chatModerator', 'symbolsLimitPercent', 50),
+        symbolsGroupLimit = $.getSetIniDbFloat('chatModerator', 'symbolsGroupLimit', 10),
+        symbolsTriggerLength = $.getSetIniDbNumber('chatModerator', 'symbolsTriggerLength', 15),
 
-        emotesToggle = ($.inidb.exists('chatModerator', 'emotesToggle') ? $.getIniDbBoolean('chatModerator', 'emotesToggle') : false),
-        emotesMessage = ($.inidb.exists('chatModerator', 'emotesMessage') ? $.inidb.get('chatModerator', 'emotesMessage') : 'you were timed out for overusing emotes'),
-        emotesLimit = ($.inidb.exists('chatModerator', 'emotesLimit') ? parseInt($.inidb.get('chatModerator', 'emotesLimit')) : 15),
+        emotesToggle = $.getSetIniDbBoolean('chatModerator', 'emotesToggle', false),
+        emotesMessage = $.getSetIniDbString('chatModerator', 'emotesMessage', 'you were timed out for overusing emotes'),
+        emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 25),
 
-        longMessageToggle = ($.inidb.exists('chatModerator', 'longMessageToggle') ? $.getIniDbBoolean('chatModerator', 'longMessageToggle') : true),
-        longMessageMessage = ($.inidb.exists('chatModerator', 'longMessageMessage') ? $.inidb.get('chatModerator', 'longMessageMessage') : 'you were timed out for posting a long message'),
-        longMessageLimit = ($.inidb.exists('chatModerator', 'longMessageLimit') ? parseInt($.inidb.get('chatModerator', 'longMessageLimit')) : 300),
+        longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', true),
+        longMessageMessage = $.getSetIniDbBoolean('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message'),
+        longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 300),
 
-        colorsToggle = ($.inidb.exists('chatModerator', 'colorsToggle') ? $.getIniDbBoolean('chatModerator', 'colorsToggle') : true),
-        colorsMessage = ($.inidb.exists('chatModerator', 'colorsMessage') ? $.inidb.get('chatModerator', 'colorsMessage') : 'you were timed out for using /me.'),
+        colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
+        colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using /me.'),
 
         subscribers = {
-            Links: ($.inidb.exists('chatModerator', 'subscribersModerateLinks') ? $.getIniDbBoolean('chatModerator', 'subscribersModerateLinks') : true),
-            Caps: ($.inidb.exists('chatModerator', 'subscribersModerateCaps') ? $.getIniDbBoolean('chatModerator', 'subscribersModerateCaps') : true),
-            Symbols: ($.inidb.exists('chatModerator', 'subscribersModerateSymbols') ? $.getIniDbBoolean('chatModerator', 'subscribersModerateSymbols') : true),
-            Spam: ($.inidb.exists('chatModerator', 'subscribersModerateSpam') ? $.getIniDbBoolean('chatModerator', 'subscribersModerateSpam') : true),
-            Emotes: ($.inidb.exists('chatModerator', 'subscribersModerateEmotes') ? $.getIniDbBoolean('chatModerator', 'subscribersModerateEmotes') : true),
-            Colors: ($.inidb.exists('chatModerator', 'subscribersModerateColors') ? $.getIniDbBoolean('chatModerator', 'subscribersModerateColors') : true),
-            LongMsg: ($.inidb.exists('chatModerator', 'subscribersModerateLongMsg') ? $.getIniDbBoolean('chatModerator', 'subscribersModerateLongMsg') : true),
+            Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', false),
+            Caps: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateCaps', false),
+            Symbols: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSymbols', false),
+            Spam: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSpam', false),
+            Emotes: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateEmotes', false),
+            Colors: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateColors', false),
+            LongMsg: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLongMsg', false),
         },
 
         regulars = {
-            Links: ($.inidb.exists('chatModerator', 'regularsModerateLinks') ? $.getIniDbBoolean('chatModerator', 'regularsModerateLinks') : true),
-            Caps: ($.inidb.exists('chatModerator', 'regularsModerateCaps') ? $.getIniDbBoolean('chatModerator', 'regularsModerateCaps') : true),
-            Symbols: ($.inidb.exists('chatModerator', 'regularsModerateSymbols') ? $.getIniDbBoolean('chatModerator', 'regularsModerateSymbols') : true),
-            Spam: ($.inidb.exists('chatModerator', 'regularsModerateSpam') ? $.getIniDbBoolean('chatModerator', 'regularsModerateSpam') : true),
-            Emotes: ($.inidb.exists('chatModerator', 'regularsModerateEmotes') ? $.getIniDbBoolean('chatModerator', 'regularsModerateEmotes') : true),
-            Colors: ($.inidb.exists('chatModerator', 'regularsModerateColors') ? $.getIniDbBoolean('chatModerator', 'regularsModerateColors') : true),
-            LongMsg: ($.inidb.exists('chatModerator', 'regularsModerateLongMsg') ? $.getIniDbBoolean('chatModerator', 'regularsModerateLongMsg') : true),
+            Links: $.getSetIniDbBoolean('chatModerator', 'regularsModerateLinks', true),
+            Caps: $.getSetIniDbBoolean('chatModerator', 'regularsModerateCaps', true),
+            Symbols: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSymbols', true),
+            Spam: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSpam', true),
+            Emotes: $.getSetIniDbBoolean('chatModerator', 'regularsModerateEmotes', true),
+            Colors: $.getSetIniDbBoolean('chatModerator', 'regularsModerateColors', true),
+            LongMsg: $.getSetIniDbBoolean('chatModerator', 'regularsModerateLongMsg', true),
         },
 
         silentTimeout = {
-            Links: ($.inidb.exists('chatModerator', 'silentTimeoutLinks') ? $.getIniDbBoolean('chatModerator', 'silentTimeoutLinks') : false),
-            Caps: ($.inidb.exists('chatModerator', 'silentTimeoutCaps') ? $.getIniDbBoolean('chatModerator', 'silentTimeoutCaps') : false),
-            Symbols: ($.inidb.exists('chatModerator', 'silentTimeoutSymbols') ? $.getIniDbBoolean('chatModerator', 'silentTimeoutSymbols') : false),
-            Spam: ($.inidb.exists('chatModerator', 'silentTimeoutSpam') ? $.getIniDbBoolean('chatModerator', 'silentTimeoutSpam') : false),
-            Emotes: ($.inidb.exists('chatModerator', 'silentTimeoutEmotes') ? $.getIniDbBoolean('chatModerator', 'silentTimeoutEmotes') : false),
-            Colors: ($.inidb.exists('chatModerator', 'silentTimeoutColors') ? $.getIniDbBoolean('chatModerator', 'silentTimeoutColors') : false),
-            LongMsg: ($.inidb.exists('chatModerator', 'silentTimeoutLongMsg') ? $.getIniDbBoolean('chatModerator', 'silentTimeoutLongMsg') : false),
+            Links: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLinks', false),
+            Caps: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutCaps', false),
+            Symbols: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSymbols', false),
+            Spam: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSpam', false),
+            Emotes: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutEmotes', false),
+            Colors: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutColors', false),
+            LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
         },
 
-        blacklistMessage = ($.inidb.exists('chatModerator', 'blacklistMessage') ? $.inidb.get('chatModerator', 'blacklistMessage') : 'you were timed out using a blacklisted phrase'),
-        warningTime = ($.inidb.exists('chatModerator', 'warningTime') ? parseInt($.inidb.get('chatModerator', 'warningTime')) : 5),
-        timeoutTime = ($.inidb.exists('chatModerator', 'timeoutTime') ? parseInt($.inidb.get('chatModerator', 'timeoutTime')) : 600),
-        msgCooldownSec = ($.inidb.exists('chatModerator', 'msgCooldownSec') ? parseInt($.inidb.get('chatModerator', 'msgCooldownSec')) : 20),
+        blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out using a blacklisted phrase'),
+        warningTime = $.getSetIniDbNumber('chatModerator', 'warningTime', 5),
+        timeoutTime = $.getSetIniDbNumber('chatModerator', 'timeoutTime', 600),
+        msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSec', 20),
         warning = '',
         resetTime = (60 * 60 * 1000) + $.systemTime(),
         messageTime = 0,
         messageReset = 0,
         i;
+
+    /**
+     * @function reloadModeration
+     * To be called by the panel to update the chatmod settings after updating the DB directly.
+     */
+    function reloadModeration() {
+        linksToggle = $.getIniDbBoolean('chatModerator', 'linksToggle');
+        linksMessage = $.getIniDbString('chatModerator', 'linksMessage');
+        linkPermitTime = $.getIniDbNumber('chatModerator', 'linkPermitTime');
+
+        capsToggle = $.getIniDbBoolean('chatModerator', 'capsToggle');
+        capsMessage = $.getIniDbString('chatModerator', 'capsMessage');
+        capsLimitPercent = $.getIniDbFloat('chatModerator', 'capsLimitPercent');
+        capsTriggerLength = $.getIniDbNumber('chatModerator', 'capsTriggerLength');
+
+        spamToggle = $.getIniDbBoolean('chatModerator', 'spamToggle');
+        spamMessage = $.getIniDbString('chatModerator', 'spamMessage');
+        spamLimit = $.getIniDbNumber('chatModerator', 'spamLimit');
+
+        symbolsToggle = $.getIniDbBoolean('chatModerator', 'symbolsToggle');
+        symbolsMessage = $.getIniDbString('chatModerator', 'symbolsMessage');
+        symbolsLimitPercent = $.getIniDbFloat('chatModerator', 'symbolsLimitPercent');
+        symbolsGroupLimit = $.getIniDbFloat('chatModerator', 'symbolsGroupLimit');
+        symbolsTriggerLength = $.getIniDbNumber('chatModerator', 'symbolsTriggerLength');
+
+        emotesToggle = $.getIniDbBoolean('chatModerator', 'emotesToggle');
+        emotesMessage = $.getIniDbString('chatModerator', 'emotesMessage');
+        emotesLimit = $.getIniDbNumber('chatModerator', 'emotesLimit');
+
+        longMessageToggle = $.getIniDbBoolean('chatModerator', 'longMessageToggle');
+        longMessageMessage = $.getIniDbBoolean('chatModerator', 'longMessageMessage');
+        longMessageLimit = $.getIniDbNumber('chatModerator', 'longMessageLimit');
+
+        colorsToggle = $.getIniDbBoolean('chatModerator', 'colorsToggle');
+        colorsMessage = $.getIniDbString('chatModerator', 'colorsMessage');
+
+        subscribers = {
+            Links: $.getIniDbBoolean('chatModerator', 'subscribersModerateLinks'),
+            Caps: $.getIniDbBoolean('chatModerator', 'subscribersModerateCaps'),
+            Symbols: $.getIniDbBoolean('chatModerator', 'subscribersModerateSymbols'),
+            Spam: $.getIniDbBoolean('chatModerator', 'subscribersModerateSpam'),
+            Emotes: $.getIniDbBoolean('chatModerator', 'subscribersModerateEmotes'),
+            Colors: $.getIniDbBoolean('chatModerator', 'subscribersModerateColors'),
+            LongMsg: $.getIniDbBoolean('chatModerator', 'subscribersModerateLongMsg'),
+        };
+
+        regulars = {
+            Links: $.getIniDbBoolean('chatModerator', 'regularsModerateLinks'),
+            Caps: $.getIniDbBoolean('chatModerator', 'regularsModerateCaps'),
+            Symbols: $.getIniDbBoolean('chatModerator', 'regularsModerateSymbols'),
+            Spam: $.getIniDbBoolean('chatModerator', 'regularsModerateSpam'),
+            Emotes: $.getIniDbBoolean('chatModerator', 'regularsModerateEmotes'),
+            Colors: $.getIniDbBoolean('chatModerator', 'regularsModerateColors'),
+            LongMsg: $.getIniDbBoolean('chatModerator', 'regularsModerateLongMsg'),
+        };
+
+        silentTimeout = {
+            Links: $.getIniDbBoolean('chatModerator', 'silentTimeoutLinks'),
+            Caps: $.getIniDbBoolean('chatModerator', 'silentTimeoutCaps'),
+            Symbols: $.getIniDbBoolean('chatModerator', 'silentTimeoutSymbols'),
+            Spam: $.getIniDbBoolean('chatModerator', 'silentTimeoutSpam'),
+            Emotes: $.getIniDbBoolean('chatModerator', 'silentTimeoutEmotes'),
+            Colors: $.getIniDbBoolean('chatModerator', 'silentTimeoutColors'),
+            LongMsg: $.getIniDbBoolean('chatModerator', 'silentTimeoutLongMsg'),
+        };
+
+        blacklistMessage = $.getIniDbString('chatModerator', 'blacklistMessage');
+        warningTime = $.getIniDbNumber('chatModerator', 'warningTime', 5);
+        timeoutTime = $.getIniDbNumber('chatModerator', 'timeoutTime', 600);
+
+        loadBlackList();
+        loadWhiteList();
+    }
 
     /**
      * @function loadBlackList
@@ -1338,6 +1411,13 @@
                 $.logEvent('chatModerator.js', 1342, sender + ' changed the timeout message cooldown to ' + msgCooldownSec + ' seconds'); */
             }
         }
+
+        /**
+         * Used by the panel, no commandpath given. 
+         */
+        if (command.equalsIgnoreCase('reloadmod')) {
+            reloadModeration();
+        }
     });
 
     /**
@@ -1353,6 +1433,7 @@
             $.registerChatCommand('./core/chatmoderator.js', 'mod', 1);
             $.registerChatCommand('./core/chatmoderator.js', 'blacklist', 1);
             $.registerChatCommand('./core/chatmoderator.js', 'whitelist', 1);
+            $.registerChatCommand('./core/chatmoderator.js', 'reloadmod', 1); // Used by the panel //
         }
     });
 

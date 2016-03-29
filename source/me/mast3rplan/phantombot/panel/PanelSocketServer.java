@@ -25,6 +25,9 @@
  * // Authenticate
  * { "authenticate : "authentication_key" }
  *
+ * // Get Version
+ * { "version" : "unique_id" }
+ *
  * // Send command - if username is not provided, defaults to the botname.
  * { "command" : "command line", "username" : "user name" }
  *
@@ -46,6 +49,9 @@
  *
  * // Return authorization result.
  * { "authresult" : true/false }
+ *
+ * // Return Version
+ * { "versionresult" : "unique_id", "version" : "core version (repo version)" }
  *
  * // Return DB query. Returns "error" key only if error occurred.
  * { "dbqueryresult" : "unique_id", "result" :  { "table" : "table_name", "key_name" : "value" } }
@@ -146,13 +152,16 @@ public class PanelSocketServer extends WebSocketServer {
 
         try {
             if (jsonObject.has("command")) {
-                jsonString = jsonObject.getString("command");
+                dataString = jsonObject.getString("command");
                 if (jsonObject.has("username")) {
-                    PhantomBot.instance().handleCommand(jsonObject.getString("username"), jsonString);
+                    PhantomBot.instance().handleCommand(jsonObject.getString("username"), dataString);
                 } else {
-                    PhantomBot.instance().handleCommand(PhantomBot.instance().getBotName(), jsonString);
+                    PhantomBot.instance().handleCommand(PhantomBot.instance().getBotName(), dataString);
                 }
                 return;
+            } else if (jsonObject.has("version")) {
+                uniqueID = jsonObject.getString("version");
+                doVersion(uniqueID);
             } else if (jsonObject.has("dbquery")) {
                 uniqueID = jsonObject.getString("dbquery");
                 String table = jsonObject.getJSONObject("query").getString("table");
@@ -171,8 +180,8 @@ public class PanelSocketServer extends WebSocketServer {
                 doDBUpdate(uniqueID, table, key, value);
             } else if (jsonObject.has("dbdelkey")) {
                 uniqueID = jsonObject.getString("dbdelkey");
-                String table = jsonObject.getJSONObject("update").getString("table");
-                String key = jsonObject.getJSONObject("update").getString("key");
+                String table = jsonObject.getJSONObject("delkey").getString("table");
+                String key = jsonObject.getJSONObject("delkey").getString("key");
                 doDBDelKey(uniqueID, table, key);
             } else {
                 com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
@@ -220,6 +229,15 @@ public class PanelSocketServer extends WebSocketServer {
     public InetSocketAddress getRemoteSocketAddress(WebSocket conn) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    private void doVersion(String id) {
+        JSONStringer jsonObject = new JSONStringer();
+
+        String version = PhantomBot.instance().getBotInfo();
+
+        jsonObject.object().key("versionresult").value(id).key("version").value(version).endObject();
+        sendToAll(jsonObject.toString());
+   }
 
     private void doDBQuery(String id, String table, String key) {
         JSONStringer jsonObject = new JSONStringer();

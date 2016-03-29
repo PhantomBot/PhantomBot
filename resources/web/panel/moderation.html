@@ -1,0 +1,382 @@
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+<form role="form">
+    <div class="form-group" onkeypress="return event.keyCode != 13">
+        <label for="linkPermit">Permit User to Post Link</label>
+        <button type="button" class="btn btn-primary inline pull-right" onclick="$.permitUserCommand()">Permit</button>
+        <input type="text" class="form-control" id="permitUserInput" placeholder="Username" />
+    </div>
+</form>
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<div id="moderationAccordion">
+    <h3>Timeout Length Configuration</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="warningTime">Warning Timeout Length</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#warningTimeInput', 'warningTime')">Submit</button>
+                <input type="number" min="0" class="form-control" id="warningTimeInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Number of seconds to timeout a user for a first offense." />
+            </div>
+        </form>
+        
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="timeoutTime">Timeout Length</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#timeoutTimeInput', 'timeoutTime')">Submit</button>
+                <input type="number" min="0" class="form-control" id="timeoutTimeInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Number of seconds to timeout a user for later offenses." />
+            </div>
+        </form>
+    </div>
+
+    <h3>Quick Moderation Settings</h3>
+    <div>
+        This section allows you to choose pre-configured moderation settings which should fit for most chats.
+        Choose a setting and you may review the various configuration tabs below this one for specifics or
+        tweak further as needed.<br><br>
+        
+        <table>
+            <tr>
+                <td>Extreme Moderation</td>
+                <td>
+                    <button type="button" data-toggle="tooltip" title="Very strict moderation for all users." onclick="$.quickSetModeration('extreme', false, false, false)">
+                        All Users
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Very strict, ignore subscribers." onclick="$.quickSetModeration('extreme', true, false, false)">
+                        Viewers/Regulars
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Very strict, ignore subcribers and regulars." onclick="$.quickSetModeration('extreme', true, true, false)">
+                        Viewers Only
+                    </button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>High Moderation</td>
+                <td>
+                    <button type="button" data-toggle="tooltip" title="High moderation for all users." onclick="$.quickSetModeration('high', false, false, false)">
+                        All Users
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="High, ignore subscribers." onclick="$.quickSetModeration('high', true, false, false)">
+                        Viewers/Regulars
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="High, ignore subscribers and regulars." onclick="$.quickSetModeration('high', true, true, false)">
+                        Viewers Only
+                    </button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Medium Moderation</td>
+                <td>
+                    <button type="button" data-toggle="tooltip" title="Medium moderation for all users." onclick="$.quickSetModeration('medium', false, false, false)">
+                        All Users
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Medium, ignore subscribers." onclick="$.quickSetModeration('medium', true, false, false)">
+                        Viewers/Regulars
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Medium, ignore subscribers and regulars." onclick="$.quickSetModeration('medium', true, true, false)">
+                        Viewers Only
+                    </button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Low Moderation</td>
+                <td>
+                    <button type="button" data-toggle="tooltip" title="Low moderation for all users." onclick="$.quickSetModeration('low', false, false, false)">
+                        All Users
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Low, ignore subscribers" onclick="$.quickSetModeration('low', true, false, false)">
+                        Viewers/Regulars
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Low, ignore subscribers and regulars." onclick="$.quickSetModeration('low', true, true, false)">
+                        Viewers Only
+                    </button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Link Moderation Only</td>
+                <td>
+                    <button type="button" data-toggle="tooltip" title="Only moderate links." onclick="$.quickSetModeration('linksonly', false, false, false)">
+                        All Users
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Only moderate links on viewers and regulars." onclick="$.quickSetModeration('linksonly', true, false, false)">
+                        Viewers/Regulars
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Only moderate links on viewers." onclick="$.quickSetModeration('linksonly', true, true, false)">
+                        Viewers Only
+                    </button>
+                </td>
+            </tr>
+
+            <tr style="background-color: #990000">
+                <td style="color: white">Disable Moderation</td>
+                <td>
+                    <button type="button" data-toggle="tooltip" title="Disable all moderation for subscribers only." onclick="$.quickSetModeration('disable', true, false, false)">
+                        Subscribers
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Disable all moderation rules for subscribers and regulars." onclick="$.quickSetModeration('disable', true, true, false)">
+                        Regulars/Subscribers
+                    </button>
+                    <button type="button" data-toggle="tooltip" title="Disable all moderation rules for all users." onclick="$.quickSetModeration('disable', true, true, true)">
+                        All Users
+                    </button>
+                </td>
+            </tr>
+        </table>
+        <div id="quickModerationUpdate" />
+    </div>
+ 
+    <h3>Enable/Disable Viewer Moderation Protection</h3>
+    <div>
+        <div id="viewerModSettings" style="height: 200px; overflow: auto;" />
+    </div>
+
+    <h3>Enable/Disable Regulars Moderation Protection</h3>
+    <div>
+        <div id="regularsModSettings" style="height: 200px; overflow: auto;" />
+    </div>
+
+    <h3>Enable/Disable Subscriber Moderation Protection</h3>
+    <div>
+        <div id="subscribersModSettings" style="height: 200px; overflow: auto;" />
+    </div>
+
+    <h3>Enable/Disable Silent Moderation Protection</h3>
+    <div>
+        <div id="silentModSettings" style="height: 200px; overflow: auto;" />
+    </div>
+
+    <h3>Links Protection Settings</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="linksMessage">Links Protection Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#linksMessageInput', 'linksMessage')">Submit</button>
+                <input type="text" class="form-control" id="linksMessageInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to user when they are timed out for posting a link." />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="linkPermitTime">Links Permit Time (Seconds)</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#linkPermitTimeInput', 'linkPermitTime')">Submit</button>
+                <input type="number" min="0" class="form-control" id="linkPermitTimeInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Number of seconds to permit a user to post a link." />
+            </div>
+        </form>
+    </div>
+
+    <h3>Symbols Protection Settings</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="symbolsMessage">Symbols Protection Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#symbolsMessageInput', 'symbolsMessage')">Submit</button>
+                <input type="text" class="form-control" id="symbolsMessageInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to user when they are timed out for posting symbols." />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="symbolsLimitPercent">Symbols Limit Percent</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#symbolsLimitPercentInput', 'symbolsLimitPercent')">Submit</button>
+                <input type="number" min="0" max="100" class="form-control" id="symbolsLimitPercentInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Percentage of the message allowed to have symbols. 0 would be none, 
+                                                  100 would ignore this rule." />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="symbolsGroupLimit">Symbols Group Limit</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#symbolsGroupLimitInput', 'symbolsGroupLimit')">Submit</button>
+                <input type="number" min="0" class="form-control" id="symbolsGroupLimitInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="How many symbols people can be grouped together in a message. Set
+                                                  to a high setting to allow for symbol based images." />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="symbolsTriggerLength">Symbols Trigger Length</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#symbolsTriggerLengthInput', 'symbolsTriggerLength')">Submit</button>
+                <input type="number" min="0" class="form-control" id="symbolsTriggerLengthInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Set length of chat message that triggers the bot to enforce symbols 
+                                                  protection. A lower value will catch shorter messages and enforce the 
+                                                  rule while larger values will ignore shorter messages." />
+            </div>
+        </form>
+    </div>
+
+    <h3>Caps Protection Settings</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="capsMessage">Caps Protection Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#capsMessageInput', 'capsMessage')">Submit</button>
+                <input type="text" class="form-control" id="capsMessageInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to user when they are timed out for posting too many caps." />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="capsLimitPercent">Caps Limit Percent</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#capsLimitPercentInput', 'capsLimitPercent')">Submit</button>
+                <input type="number" min="0" max="100" class="form-control" id="capsLimitPercentInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Percentage of the message allowed to have caps. 0 would be none, 
+                                                  100 would ignore this rule." />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="capsTriggerLength">Caps Trigger Length</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#capsTriggerLengthInput', 'capsTriggerLength')">Submit</button>
+                <input type="number" min="0" class="form-control" id="capsTriggerLengthInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Set length of chat message that triggers the bot to enforce caps
+                                                  protection. A lower value will catch shorter messages and enforce the 
+                                                  rule while larger values will ignore shorter messages." />
+            </div>
+        </form>
+    </div>
+
+    <h3>Spam Protection Settings</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="spamMessage">Spam Protection Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#spamMessageInput', 'spamMessage')">Submit</button>
+                <input type="text" class="form-control" id="spamMessageInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to user when they are timed out for spamming." />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="spamLimit">Spam Limit</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#spamLimitInput', 'spamLimit')">Submit</button>
+                <input type="number" min="2" class="form-control" id="spamLimitInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Number of characters that can be repeated before the rule is enforced.
+                                                  Setting to a very low number would enforce the rule on words that have
+                                                  repeating characters, set to a higher value to catch real spammers." />
+            </div>
+        </form>
+    </div>
+
+    <h3>Emotes Protection Settings</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="emotesMessage">Emotes Protection Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#emotesMessageInput', 'emotesMessage')">Submit</button>
+                <input type="text" class="form-control" id="emotesMessageInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to user when they are timed out for posting too many emotes." />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="emotesLimit">Emotes Limit</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#emotesLimitInput', 'emotesLimit')">Submit</button>
+                <input type="number" min="2" class="form-control" id="emotesLimitInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Number of emotes allowed in a message before the rule is enforced.
+                                                  Setting to a very low number would prevent emotes from being used, essentially.
+                                                  For partners it is suggested that this is set to a high value when asking
+                                                  users to show 'hype' for subscribers." />
+            </div>
+        </form>
+    </div>
+
+    <h3>Color (/me) Protection Settings</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="colorsMessage">Colors (/me) Protection Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#colorsMessageInput', 'colorsMessage')">Submit</button>
+                <input type="text" class="form-control" id="colorsMessageInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to user when they are timed out for using /me." />
+            </div>
+        </form>
+    </div>
+
+    <h3>Long Message Protection Settings</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="longMessageMessage">Long Message Protection Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#longMessageMessageInput', 'longMessageMessage')">Submit</button>
+                <input type="text" class="form-control" id="longMessageMessageInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to user when they are timed out for posting too long of a message." />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="longMessageLimit">Long Message Limit</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#longMessageLimitInput', 'longMessageLimit')">Submit</button>
+                <input type="number" min="10" max="1400" class="form-control" id="longMessageLimitInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Maximum length of a message before a user is timed out. Too low of 
+                                                  a setting will timeout users for typing in a single word.  Set to a 
+                                                  reasonable limit to prevent people from creating text-blocks in chat." />
+            </div>
+        </form>
+    </div>
+
+    <h3>Chat Blacklist Words</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addModBlacklist">Add Phrase to Blacklist</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addModBlacklist()">Submit</button>
+                <input type="text" class="form-control" id="addModBlacklistInput" placeholder="phrase" />
+            </div>
+        </form>
+
+        <strong>Blacklisted Words</strong>
+        <div id="blacklistModSettings" style="height: 200px; overflow: auto;" />
+    </div>
+
+    <h3>Whitelisted Links</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addModWhitelist">Add Link to Whitelist</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addModWhitelist()">Submit</button>
+                <input type="text" class="form-control" id="addModWhitelistInput" placeholder="URL" />
+            </div>
+        </form>
+
+        <strong>Whitelisted Links</strong>
+        <div id="whitelistModSettings" style="height: 200px; overflow: auto;" />
+    </div>
+
+</div>
+
+<!-- Run the Acordion -->
+<script>$("#moderationAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
