@@ -20,7 +20,7 @@ $.lang.register('killcommand.self.19', '$1 fell off himself.');
 $.lang.register('killcommand.self.20', '$1 bursts into flames.');
 $.lang.register('killcommand.self.21', '$1 was struck by lightening.');
 $.lang.register('killcommand.self.22', '$1 starved to death.');
-$.lang.register('killcommand.self.23', '$1 was stabbed to death by (random).');
+$.lang.register('killcommand.self.23', '$1 was stabbed to death.');
 $.lang.register('killcommand.self.24', '$1 fell victim to gravity.');
 $.lang.register('killcommand.self.25', '$1\'s plead for death was answered.');
 $.lang.register('killcommand.self.26', '$1\'s vital organs were ruptured.');
@@ -49,7 +49,7 @@ $.lang.register('killcommand.other.16', '$1 stole a car known as \'KITT\' and ra
 $.lang.register('killcommand.other.17', '$1 tickled $2 to death!');
 $.lang.register('killcommand.other.18', '$2\'s skull was crushed by $1!');
 $.lang.register('killcommand.other.19', '$2 is in several pieces after a tragic accident involving $1 and sporks.');
-$.lang.register('killcommand.other.20', '$1 licked $2 until $1 was squishy, yeah.. squishy.');
+$.lang.register('killcommand.other.20', '$1 licked $2 until $2 was squishy, yeah.. squishy.');
 $.lang.register('killcommand.other.21', '$1 catapulted a huge load of rusty sporks on to $2. $2 died.');
 $.lang.register('killcommand.other.22', '$1 ran out of rusty sporks and unicorn horns to kill $2 with and so instead used a rusty hanger.');
 $.lang.register('killcommand.other.23', '$1 came in like a mystical being of awesomeness and destroyed $2!');

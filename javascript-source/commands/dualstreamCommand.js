@@ -45,6 +45,7 @@
                 otherChannels = channel;
                 $.inidb.set('dualStreamCommand', 'otherChannels', otherChannels);
                 $.say($.lang.get('dualstreamcommand.link.set', $.username.resolve($.channelName) + otherChannels));
+                $.logEvent('dualstreamCommand.js', 48, sender + ' set the multi link to "' + $.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels + '"');
                 return;
             }
 
@@ -61,6 +62,7 @@
                 $.inidb.del('dualStreamCommand', 'otherChannels');
                 $.inidb.set('dualStreamCommand', 'timerToggle', timerToggle);
                 $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.clear'));
+                $.logEvent('dualstreamCommand.js', 64, sender + ' cleared the multi link');
                 return;
             }
 
@@ -80,11 +82,13 @@
                     timerToggle = true;
                     $.inidb.set('dualStreamCommand', 'timerToggle', timerToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timer.enabled'));
+                    $.logEvent('dualstreamCommand.js', 85, sender + ' enabled the multi timer');
                     return;
                 } else if (subAction.equalsIgnoreCase('off')) {
                     timerToggle = false;
                     $.inidb.set('dualStreamCommand', 'timerToggle', timerToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timer.disabled'));
+                    $.logEvent('dualstreamCommand.js', 91, sender + ' disabled the multi timer');
                     return;
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timer.usage'));
@@ -109,6 +113,7 @@
                 timerInterval = parseInt(subAction);
                 $.inidb.set('dualStreamCommand', 'timerInterval', timerInterval);
                 $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timerinterval.set'));
+                $.logEvent('dualstreamCommand.js', 116, sender + ' changed the multi timer interval to ' + timerInterval + ' seconds');
                 return;
             }
         }
@@ -124,6 +129,7 @@
                     if (otherChannels != null) {
                         if (timerToggle && $.isOnline($.channelName)) {
                             $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
+                            $.logEvent('dualstreamCommand.js', 132, 'Ran multi timer at ' + $.systemTime());
                             return;
                         }
                     }

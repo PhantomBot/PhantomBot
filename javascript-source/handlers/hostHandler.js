@@ -20,6 +20,7 @@
         }
 
         $.consoleLn(">> Enabling hosts announcements");
+        $.logEvent('hostHandler.js', 23, 'Host announcements enabled');
         announceHosts = true;
     });
 
@@ -96,6 +97,7 @@
 
             $.inidb.set('settings', 'hostReward', commandArg);
             $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostreward.success', $.getPointsString(commandArg)));
+            $.logEvent('hostHandler.js', 100, sender + ' changed the host reward to ' + commandArg);
         }
 
         /**
@@ -110,6 +112,7 @@
             hostMessage = event.getArguments();
             $.inidb.set('settings', 'hostMessage', hostMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostmessage.success'));
+            $.logEvent('hostHandler.js', 115, sender + ' changed the host message to ' + hostMessage);
         }
 
         /**
@@ -134,6 +137,7 @@
             }
 
             $.say('.host ' + args[0]);
+            $.logEvent('hostHandler.js', 140, sender + ' hosted channel ' + args[1]);
         }
 
         /**

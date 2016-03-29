@@ -87,7 +87,7 @@ public class UsernameCache {
                                                 + user.getString("_type") + " " + user.getString("_url") + " " + user.getString("_post") + "   "
                                                 + (user.has("message") && !user.isNull("message") ? "message=" + user.getString("message") : "content=" + user.getString("_content")));
                         } catch (Exception e) {
-                              com.gmt2001.Console.out.println("UsernameCache.updateCache>>Failed to get username: " + e.getMessage());
+                              com.gmt2001.Console.debug.println("UsernameCache.updateCache>>Failed to get username: " + e.getMessage());
                               com.gmt2001.Console.err.logStackTrace(e);
 
                               return username;

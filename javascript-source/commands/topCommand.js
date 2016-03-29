@@ -15,7 +15,8 @@
             i;
 
         for (i in keys) {
-            if (!$.isBot(keys[i]) && !$.isOwner(keys[i])) {
+            if (!$.isBot(keys[i]) && !$.isOwner(keys[i]) && !keys[i].equalsIgnoreCase('monstercat') 
+                && !keys[i].equalsIgnoreCase('moobot') && !keys[i].equalsIgnoreCase('nightbot') && !keys[i].equalsIgnoreCase('xanbot')) {
                 list.push({
                     username: keys[i],
                     value: $.inidb.get(iniName, keys[i])
