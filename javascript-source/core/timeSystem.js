@@ -6,10 +6,10 @@
  * Use the $ API
  */
 (function() {
-    var levelWithTime = ($.inidb.exists('timeSettings', 'timeLevel') ? $.getIniDbBoolean('timeSettings', 'timeLevel') : false),
-        keepTimeWhenOffline = ($.inidb.exists('timeSettings', 'keepTimeWhenOffline') ? $.getIniDbBoolean('timeSettings', 'keepTimeWhenOffline') : false),
-        modTimePermToggle = ($.inidb.exists('timeSettings', 'modTimePermToggle') ? $.getIniDbBoolean('timeSettings', 'modTimePermToggle') : false),
-        hoursForLevelUp = ($.inidb.exists('timeSettings', 'timePromoteHours') ? parseInt($.inidb.get('timeSettings', 'timePromoteHours')) : 50),
+    var levelWithTime = $.getSetIniDbBoolean('timeSettings', 'timeLevel', false),
+        keepTimeWhenOffline = $.getSetIniDbBoolean('timeSettings', 'keepTimeWhenOffline', false),
+        modTimePermToggle = $.getSetIniDbBoolean('timeSettings', 'modTimePermToggle', false),
+        hoursForLevelUp = $.getSetIniDbNumber('timeSettings', 'timePromoteHours', 50),
         regularsGroupId = 6;
 
     /**

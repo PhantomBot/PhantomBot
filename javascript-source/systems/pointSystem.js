@@ -5,17 +5,17 @@
  * Use the $ API
  */
 (function() {
-    var pointsTimedGain = ($.getIniDbBoolean('pointSettings', 'pointsTimedGain') ? $.getIniDbBoolean('pointSettings', 'pointsTimedGain') : true),
-        onlineGain = ($.inidb.exists('pointSettings', 'onlineGain') ? parseInt($.inidb.get('pointSettings', 'onlineGain')) : 1),
-        offlineGain = ($.inidb.exists('pointSettings', 'offlineGain') ? parseInt($.inidb.get('pointSettings', 'offlineGain')) : 1),
-        onlinePayoutInterval = ($.inidb.exists('pointSettings', 'onlinePayoutInterval') ? parseInt($.inidb.get('pointSettings', 'onlinePayoutInterval')) : 10),
-        offlinePayoutInterval = ($.inidb.exists('pointSettings', 'offlinePayoutInterval') ? parseInt($.inidb.get('pointSettings', 'offlinePayoutInterval')) : 0),
-        modPointsPermToggle = ($.getIniDbBoolean('pointSettings', 'modPointsPermToggle') ? $.getIniDbBoolean('pointSettings', 'modPointsPermToggle') : false),
+    var pointsTimedGain = $.getSetIniDbBoolean('pointSettings', 'pointsTimedGain', true),
+        onlineGain = $.getSetIniDbNumber('pointSettings', 'onlineGain', 1),
+        offlineGain = $.getSetIniDbNumber('pointSettings', 'offlineGain', 1),
+        onlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'onlinePayoutInterval', 10),
+        offlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'offlinePayoutInterval',  0),
+        modPointsPermToggle = $.getSetIniDbBoolean('pointSettings', 'modPointsPermToggle', false),
         lastPayout = 0,
 
         /** @export $ */
-        pointNameSingle = ($.inidb.exists('pointSettings', 'pointNameSingle') ? $.inidb.get('pointSettings', 'pointNameSingle') : 'Point'),
-        pointNameMultiple = ($.inidb.exists('pointSettings', 'pointNameMultiple') ? $.inidb.get('pointSettings', 'pointNameMultiple') : 'Points');
+        pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'Point'),
+        pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'Points');
 
     /**
      * @function getUserPoints
