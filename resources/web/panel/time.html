@@ -1,0 +1,86 @@
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<div id="timeAccordion">
+    <h3>Time Configuration</h3>
+    <div>
+        <table>
+            <tr class="textList">
+                <td>Stream Offline Time Accumulation</td>
+                <td style="width: 25px"><div id="keepTimeWhenOffline" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleTimeMode('keepTimeWhenOffline', 'offlinetime');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Automatic Time Promotion to Regular</td>
+                <td style="width: 25px"><div id="timeLevel" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleTimeMode('timeLevel', 'autolevel');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Moderators May Adjust User Time</td>
+                <td style="width: 25px"><div id="modTimePermToggle" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleTimeMode('modTimePermToggle', 'modpermtoggle');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setTimePromotion">Hours to Regular Promotion</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setTimePromotion()">Update</button>
+            <input type="number" min="0" class="form-control" id="setTimePromotionInput" placeholder="Hours" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setTimeZone">Configure Time Zone (see list
+                <a target="_blank" href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">here</a>)
+            </label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setTimeZone()">Update</button>
+            <input type="text" class="form-control" id="setTimeZoneInput" placeholder="Timezone" />
+        </div>
+    </div>
+
+    <h3>Modify User Time</h3>
+    <div>
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="adjustUserTime">Adjust User Time (Seconds)</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('take')">Take</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('add')">Add</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('set')">Set</button>
+            <input type="text" class="form-control" id="adjustUserTimeNameInput" placeholder="Username" />
+            <input type="number" min="0" class="form-control" id="adjustUserTimeSecsInput" placeholder="Seconds" />
+        </div>
+        <br>
+
+        <div>
+            User Time Table
+            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setTimeSort('time_desc')">
+                <i class="fa fa-clock-o" /><i class="fa fa-arrow-down" />
+            </button>
+            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setTimeSort('time_asc')">
+                <i class="fa fa-clock-o" /><i class="fa fa-arrow-up" />
+            </button>
+            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setTimeSort('alpha_desc')">
+                <i class="fa fa-user" /><i class="fa fa-arrow-down" />
+            </button>
+            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setTimeSort('alpha_asc')">
+                <i class="fa fa-user" /><i class="fa fa-arrow-up" />
+            </button>
+        </div>
+        <br>
+        <div id="userTimeTable" style="height: 400px; overflow: auto;" />
+    </div>
+</div>
+
+<!-- Run the Acordion -->
+<script>$("#timeAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>

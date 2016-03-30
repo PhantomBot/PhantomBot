@@ -77,9 +77,13 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('dashboard_') !== -1) $.dashboardOnMessage(e);
     if (e.data.indexOf('modules_') !== -1) $.modulesOnMessage(e);
     if (e.data.indexOf('commands_') !== -1) $.commandsOnMessage(e);
-    if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
     if (e.data.indexOf('moderation_') !== -1) $.moderationOnMessage(e);
     if (e.data.indexOf('cooldown_') !== -1) $.cooldownOnMessage(e);
+    if (e.data.indexOf('logging_') !== -1) $.loggingOnMessage(e);
+    if (e.data.indexOf('time_') !== -1) $.timeOnMessage(e);
+    if (e.data.indexOf('points_') !== -1) $.pointsOnMessage(e);
+
+    if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
 }
 
 /**
@@ -174,4 +178,3 @@ function sendDBDelete(unique_id, table, key) {
     jsonObject["delkey"] = { "table" : table, "key" : key };
     connection.send(JSON.stringify(jsonObject));
 }
-    
