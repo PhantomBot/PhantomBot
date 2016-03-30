@@ -1,0 +1,27 @@
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<div id="loggingAccordion">
+    <h3>Enable/Disable Logging</h3>
+    <div>
+        <table>
+            <tr class="textList">
+                <td>Logging</td>
+                <td style="width: 25px"><div id="loggingMode" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button"
+                         onclick="$.changeLoggingStatus('enable');"><i class="fa fa-circle" />
+                     </div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button"
+                         onclick="$.changeLoggingStatus('disable');"><i class="fa fa-circle-o" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- Run the Accordion -->
+<script>$("#loggingAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
