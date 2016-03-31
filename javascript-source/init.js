@@ -588,7 +588,7 @@
             
             if (!$.isAdmin(sender)) {
                 if (parseInt($.coolDown.get(command, sender)) > 0) {
-                    consoleDebug('command ' + command + ' was not sent because it is still on a cooldown.');
+                    consoleLn('[COOLDOWN] command: !' + command + ' was not sent because it is still on a cooldown.');
                     return;
                 }
             }
