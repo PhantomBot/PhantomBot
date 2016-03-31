@@ -180,6 +180,7 @@ $.lang.register('cooldown.set.togglemodcooldown', 'Command cooldowns have been $
 $.lang.register('cooldown.set.usage', 'Usage: !cooldown [command] [time in seconds]');
 $.lang.register('cooldown.global.usage', 'Usage: !globalcooldown [time in seconds]');
 $.lang.register('cooldown.global.toggle', 'global cooldown has been $1.');
+$.lang.register('cooldown.per.user.toggle', 'per-user cooldown has been $1.');
 $.lang.register('cooldown.global.set', 'global cooldown set to $1 seconds.');
 $.lang.register('cooldown.removed', 'cooldown for command !$1 has been removed.');
 $.lang.register('cooldown.set', 'cooldown for command !$1 has been set to $2 seconds.');
