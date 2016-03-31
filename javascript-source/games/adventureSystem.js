@@ -291,7 +291,7 @@
 
         $.say($.lang.get('adventuresystem.completed', currentAdventure.survivors.length, currentAdventure.caught.length));
         clearCurrentAdventure();
-        $.coolDown.set('adventure', coolDown * 1e3);
+        $.coolDown.set('adventure', coolDown);
     };
 
     /**
