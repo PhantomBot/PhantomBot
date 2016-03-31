@@ -1,0 +1,85 @@
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<div id="pointsAccordion">
+    <h3>Points Configuration</h3>
+    <div>
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Alternate Point Name</label>
+            <button type="button" class="btn btn-danger inline pull-right" onclick="$.clearPointName()">Delete Names</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointName()">Update</button>
+            <input type="text" data-toggle="tooltip" title="Name given to a single point." class="form-control"
+                   id="setPointNameInput" placeholder="Singular Point Name" />
+            <input type="text" data-toggle="tooltip" title="Name given to zero and two or more points." class="form-control"
+                   id="setPointsNameInput" placeholder="Plural Point Name" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Online Points Gain</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setgain')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setgain" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Offline Points Gain</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflinegain')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflinegain" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Online Points Payout Interval (Minutes)</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setinterval')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setinterval" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Offline Points Payout Interval (Minutes)</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflineinterval')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflineinterval" placeholder="Points" />
+        </div>
+    </div>
+
+    <h3>Modify User Points</h3>
+    <div>
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="giftPoints">Gift Chat with Points</label>
+            <button type="button" data-toggle="tooltip" title="Gift the amount below to each person in chat."
+                    class="btn btn-primary inline pull-right" onclick="$.giftChatPoints('all')">Gift to All</button>
+            <button type="button" data-toggle="tooltip" title="Randomly gift up to the amount below to each person in chat."
+                    class="btn btn-primary inline pull-right" onclick="$.giftChatPoints('makeitrain')">Make it Rain</button>
+            <input type="number" min="0" class="form-control" id="giftChatPointsInput" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="adjustUserPoints">Adjust User Points</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('take')">Take</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('add')">Add</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('set')">Set</button>
+            <input type="text" class="form-control" id="adjustUserPointsNameInput" placeholder="Username" />
+            <input type="number" min="0" class="form-control" id="adjustUserPointsInput" placeholder="Points" />
+        </div>
+        <br>
+
+        <div>
+            User Points Table
+            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('points_desc')">
+                <i class="fa fa-money" /><i class="fa fa-arrow-down" />
+            </button>
+            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('points_asc')">
+                <i class="fa fa-money" /><i class="fa fa-arrow-up" />
+            </button>
+            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('alpha_desc')">
+                <i class="fa fa-user" /><i class="fa fa-arrow-down" />
+            </button>
+            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('alpha_asc')">
+                <i class="fa fa-user" /><i class="fa fa-arrow-up" />
+            </button>
+        </div>
+        <br>
+        <div id="userPointsTable" style="height: 400px; overflow: auto;" />
+    </div>
+</div>
+
+<!-- Run the Acordion -->
+<script>$("#pointsAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>

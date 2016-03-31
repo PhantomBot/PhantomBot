@@ -1,5 +1,5 @@
 (function() {
-    var whisperMode = ($.inidb.exists('settings', 'whisperMode') ? $.getIniDbBoolean('settings', 'whisperMode') : true);
+    var whisperMode = $.getSetIniDbBoolean('settings', 'whisperMode', true);
 
     /**
      * @function whisperPrefix

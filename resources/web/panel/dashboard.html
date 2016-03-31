@@ -5,6 +5,10 @@
     <span id="streamOnline" />
     <span id="streamUptime" />
     <span id="viewerCount" />
+    <span id="whisperModeStatus" />
+    <span id="meModeStatus" />
+    <span id="commandPauseStatus" />
+    <span id="muteModeStatus" />
 </div>
 <br>
 
@@ -32,37 +36,47 @@
         <button type="button" class="btn btn-warning inline pull-left" onclick="$.chatReconnect()">Reconnect to Twitch Chat</button>
     </div>
 
-    <h3>Chat Statistics</h3>
+    <h3>Chat Configuration and Statistics</h3>
     <div>
         <div>
-            <span id="chatDate-0" />
-            <span id="chatCount-0" />
-            <span id="modCount-0" />
+            <strong>Chat Configuration</strong><br><br>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('pausecommands')">Toggle Command Pause</button>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('togglewhispermode')">Toggle Whisper Mode</button>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('toggleme')">Toggle Action (/me) Mode</button>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('mute')">Toggle Mute Mode</button>
         </div>
         <br>
-        <div>
-            <span id="chatDate-1" />
-            <span id="chatCount-1" />
-            <span id="modCount-1" />
-        </div>
-        <br>
-        <div>
-            <span id="chatDate-2" />
-            <span id="chatCount-2" />
-            <span id="modCount-2" />
-         </div>
-        <br>
-         <div>
-            <span id="chatDate-3" />
-            <span id="chatCount-3" />
-            <span id="modCount-3" />
-        </div>
-        <br>
-        <div>
-            <span id="chatDate-4" />
-            <span id="chatCount-4" />
-            <span id="modCount-4" />
-        </div>
+
+        <div><strong>Chat Statistics</strong><br><br></div>
+        <div id="panelStatsEnabled" />
+        <table>
+            <tr style="background-color: transparent">
+            <td style="width: 130px">
+                <span id="chatDate-0" /><br><br>
+                <span id="chatDate-1" /><br><br>
+                <span id="chatDate-2" /><br><br>
+                <span id="chatDate-3" /><br><br>
+                <span id="chatDate-4" />
+            </td>
+            <td style="width: 140px">
+                <span id="chatCount-0" /><br><br>
+                <span id="chatCount-1" /><br><br>
+                <span id="chatCount-2" /><br><br>
+                <span id="chatCount-3" /><br><br>
+                <span id="chatCount-4" />
+            </td>
+            <td style="width: 140px">
+                <span id="modCount-0" /><br><br>
+                <span id="modCount-1" /><br><br>
+                <span id="modCount-2" /><br><br>
+                <span id="modCount-3" /><br><br>
+                <span id="modCount-4" />
+             </td>
+             <td>
+                 <div id="panelStatsGraph" style="width:250px; height: 180px" />
+             </td>
+             </tr>
+        </table>
     </div>
 
     <h3>Highlights</h3>

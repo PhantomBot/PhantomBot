@@ -64,13 +64,13 @@ table {
 }
 tr:nth-child(even) {
     font-family: "Roboto", Sans-serif;
-    background: #CCC;
+    background: #999;
     color: black;
     font-size: 14px;
 }
 tr:nth-child(odd) {
     font-family: "Roboto", Sans-serif;
-    background: #FFF;
+    background: #BBB;
     color: black;
     font-size: 14px;
 }
@@ -269,7 +269,6 @@ td {
     white-space: nowrap;
 }
 
-
 .modal-dialog {
     background-color: #444444;
     color: #dddddd;
@@ -318,6 +317,9 @@ td {
     padding: 1em;
     float: left;
     width: 60em;
+}
+.ui-tabs-anchor:active, .ui-tabs-anchor:focus {
+     outline:none;
 }
 
 .tooltip-inner {

@@ -9,6 +9,7 @@
 
         <script src="panel/js/jquery-ui/external/jquery/jquery.min.js"></script>
         <script src="panel/js/jquery-ui/jquery-ui.min.js"></script>
+        <script src="panel/js/flot/jquery.flot.min.js"></script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
         <script type="text/javascript" src="panel/js/dateFormat.js"></script>
@@ -36,15 +37,10 @@
                 <li> <a href="#commands">Commands</a> </li>
                 <li> <a href="#moderation">Moderation</a> </li>
                 <li> <a href="#cooldown">Cooldown</a> </li>
+                <li> <a href="#logging">Logging</a> </li>
+                <li> <a href="#time">Time</a> </li>
+                <li> <a href="#points">Points</a> </li>
 
-                <li> <a href="#viewers"> Viewers</a> </li>
-                <li> <a href="#raids">Raids</a> </li>
-                <li> <a href="#games">Games</a> </li>
-                <li> <a href="#greeting">Greeting</a> </li>
-                <li> <a href="#host">Host</a> </li>
-                <li> <a href="#quotes">Quotes</a> </li>
-                <li> <a href="#raffle">Raffle</a> </li>
-                <li> <a href="#poll">Poll</a> </li>
                 <li> <a href="#help">Help</a> </li>
             </ul>
 
@@ -73,14 +69,20 @@
                 <script type="text/javascript" src="panel/js/cooldownPanel.js"></script>
             </div>
 
-            <div id="viewers">Viewers</div>
-            <div id="raids">Raids </div>
-            <div id="games">Games</div>
-            <div id="greeting">Greeting</div>
-            <div id="host">Host</div>
-            <div id="quotes">Quotes</div>
-            <div id="raffle">Raffle</div>
-            <div id="poll">Poll</div>
+            <div role="tabpanel" class="tab-pane" id="logging">
+                <div id="loggingPanel"></div>
+                <script type="text/javascript" src="panel/js/loggingPanel.js"></script>
+            </div>
+
+            <div role="time" class="tab-pane" id="time">
+                <div id="timePanel"></div>
+                <script type="text/javascript" src="panel/js/timePanel.js"></script>
+            </div>
+
+            <div role="time" class="tab-pane" id="points">
+                <div id="pointsPanel"></div>
+                <script type="text/javascript" src="panel/js/pointsPanel.js"></script>
+            </div>
 
             <div role="tabpanel" class="tab-pane" id="help">
                 <div id="helpPanel"></div>

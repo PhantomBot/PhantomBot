@@ -4,8 +4,8 @@
  * Pause using ANY command
  */
 (function() {
-    var isActive = false,
-        defaultTime = ($.inidb.exists('commandPause', 'defaultTime') ? parseInt($.inidb.get('commandPause', 'defaultTime')) : 300),
+    var isActive = $.getSetIniDbBoolean('commandPause', 'commandsPaused', false),
+        defaultTime = $.getSetIniDbNumber('commandPause', 'defaultTime', 300),
         timerId = -1;
 
     /**
@@ -18,6 +18,7 @@
         if (isActive) {
             clearTimeout(timerId);
         } else {
+            $.setIniDbBoolean('commandPause', 'commandsPaused', true);
             isActive = true;
         }
         timerId = setTimeout(function() {
@@ -42,6 +43,7 @@
     function unPause() {
         if (timerId > -1) {
             clearTimeout(timerId);
+            $.setIniDbBoolean('commandPause', 'commandsPaused', false);
             isActive = false;
             timerId = -1;
             $.say($.lang.get('commandpause.ended'));
