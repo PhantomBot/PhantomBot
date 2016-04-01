@@ -8,10 +8,10 @@
  */
 
 (function() {
-    var globalCooldown = ($.inidb.exists('cooldown', 'globalCooldown') ? $.getIniDbBoolean('cooldown', 'globalCooldown') : false),
-        perUserCooldown = ($.inidb.exists('cooldown', 'perUserCooldown') ? $.getIniDbBoolean('cooldown', 'perUserCooldown') : false),
-        globalCooldownTime = ($.inidb.exists('cooldown', 'globalCooldownTime') ? parseInt($.inidb.get('cooldown', 'globalCooldownTime')) : 90),
-        modCooldown = ($.inidb.exists('cooldown', 'modCooldown') ? $.getIniDbBoolean('cooldown', 'modCooldown') : false),
+    var globalCooldown = $.getSetIniDbBoolean('cooldown', 'globalCooldown', false),
+        perUserCooldown = $.getSetIniDbBoolean('cooldown', 'perUserCooldown', false),
+        globalCooldownTime = $.getSetIniDbNumber('cooldown', 'globalCooldownTime', 90),
+        modCooldown = $.getSetIniDbBoolean('cooldown', 'modCooldown', false),
         cooldown = [];
 
     function set(command, time, user) {
