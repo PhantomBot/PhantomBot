@@ -108,6 +108,25 @@ td {
     padding-bottom: 5px;
 }
 
+.soundButton {
+    font-family: "Roboto", arial;
+    display: block;
+    float: left;
+    margin: 0 10px 10px 0;
+    width: 130px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background-color: purple;
+    border-color: purple;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
 .purplePill {
     font-family: "Roboto", arial;
     display: inline;
@@ -319,7 +338,7 @@ td {
 .ui-tabs-vertical .ui-tabs-panel {
     padding: 1em;
     float: left;
-    width: 60em;
+    width: 55em;
 }
 .ui-tabs-anchor:active, .ui-tabs-anchor:focus {
      outline:none;

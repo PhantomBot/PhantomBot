@@ -1,0 +1,43 @@
+{
+    "name": "ion-sound",
+    "version": "3.0.7",
+    "description": "JavaScript plugin for playing sounds and music in web",
+    "homepage": "http://ionden.com/a/plugins/ion.sound/en.html",
+    "author": {
+        "name": "Denis Ineshin (IonDen)",
+        "email": "ionden.tech@gmail.com",
+        "url": "https://github.com/IonDen"
+    },
+    "keywords": [
+        "sound",
+        "sounds",
+        "web",
+        "audio",
+        "api",
+        "WebAudioAPI",
+        "html5",
+        "events",
+        "alert",
+        "effect",
+        "mp3",
+        "ogg",
+        "aac",
+        "ui"
+    ],
+    "main": "./js/ion.sound.js",
+    "directories": {
+        "lib": "js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/IonDen/ion.sound"
+    },
+    "bugs": {
+        "url": "https://github.com/IonDen/ion.sound/issues"
+    },
+    "license": "MIT",
+
+    "spm": {
+        "main": "js/ion.sound.js"
+    }
+}

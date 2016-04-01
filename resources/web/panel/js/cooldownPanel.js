@@ -48,6 +48,7 @@
                 time = "",
                 globalCooldown = "",
                 globalCooldownTime = "",
+                perUserCooldown = "",
                 modCooldown = "",
                 html = "",
                 foundData = false;
@@ -70,6 +71,10 @@
                         modCooldown = msgObject['results'][idx]['value'];
                         continue;
                     }
+                    if (command.localeCompare('perUserCooldown') == 0) {
+                        perUserCooldown  = msgObject['results'][idx]['value'];
+                        continue;
+                    }
 
                     foundData = true;
                     html += "<tr class=\"textList\">" +
@@ -89,6 +94,7 @@
                 $("#cooldownList").html(html);
     
                 $("#toggleGlobalCooldown").html(toggleIcon[globalCooldown]);
+                $("#togglePerUserCooldown").html(toggleIcon[perUserCooldown]);
                 $("#toggleModCooldown").html(toggleIcon[modCooldown]);
             }
         }
@@ -120,12 +126,22 @@
     }
 
     /**
+     * @function togglePerUserCooldown
+     */
+    function togglePerUserCooldown() {
+        $("#togglePerUserCooldown").html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("toggleperusercooldown");
+        setTimeout(function() { doQuery(); }, 500);
+    }
+
+
+    /**
      * @function setGlobalCooldownTime
      */
     function setGlobalCooldownTime() {
         var newValue = $("#globalCooldownTimeInput").val();
         if (newValue.length > 0) {
-            sendCommand("globalcooldown " + newValue);
+            sendCommand("globalcooldowntime " + newValue);
             $("#globalCooldownTimeInput").val('');
             $("#globalCooldownTimeInput").attr('placeholder', newValue).blur();
         }
@@ -180,5 +196,6 @@
     $.deleteCooldown = deleteCooldown;
     $.toggleGlobalCooldown = toggleGlobalCooldown;
     $.toggleModCooldown = toggleModCooldown;
+    $.togglePerUserCooldown = togglePerUserCooldown;
     $.setGlobalCooldownTime = setGlobalCooldownTime;
 })();
