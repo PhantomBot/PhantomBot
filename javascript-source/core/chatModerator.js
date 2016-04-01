@@ -188,13 +188,13 @@
                     timeoutUserFor(user, timeoutTime);
                     timeouts.splice(i, 1);
                     timeouts.push({user: user, time: resetTime});
-                    panelLog();
+                    panelLog(user);
                     warning = $.lang.get('chatmoderator.timeout');
                 } else {
                     timeoutUserFor(user, warningTime);
                     timeouts.splice(i, 1);
                     timeouts.push({user: user, time: resetTime});
-                    panelLog();
+                    panelLog(user);
                     warning = $.lang.get('chatmoderator.warning');
                 }
                 return;
@@ -202,7 +202,7 @@
         }
         timeoutUserFor(user, warningTime);
         timeouts.push({user: user, time: resetTime});
-        panelLog();
+        panelLog(user);
         warning = $.lang.get('chatmoderator.warning');
     };
 
@@ -211,7 +211,7 @@
      */
     function panelLog() {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            $.panelDB.updateModLinesDB();
+            $.panelDB.updateModLinesDB(user);
         }
     };
 

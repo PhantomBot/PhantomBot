@@ -21,12 +21,33 @@
 <!-- This is outside of the accordion, so will always be on top of the tab -->
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
-<div id="modulesAccordion">
-    <h3>Modules</h3>
+<div id="viewersAccordion">
+    <h3>Admins <span id="viewersAdminCount" /></h3>
     <div>
-        <div id="modulesList" style="height: 400px; overflow: auto;" />
+        <div id="viewersAdminList" style="height: 300px; overflow: auto;" />
+    </div>
+
+    <h3>Moderators <span id="viewersModCount" /></h3>
+    <div>
+        <div id="viewersModList" style="height: 300px; overflow: auto;" />
+    </div>
+
+    <h3>Subscribers <span id="viewersSubCount" /></h3>
+    <div>
+        <div id="viewersSubList" style="height: 300px; overflow: auto;" />
+    </div>
+
+    <h3>Regulars <span id="viewersRegCount" /></h3>
+    <div>
+        <div id="viewersRegList" style="height: 300px; overflow: auto;" />
+    </div>
+
+    <h3>Viewers <span id="viewersViewerCount" /></h3>
+    <div>
+        <div id="viewersViewerList" style="height: 300px; overflow: auto;" />
     </div>
 </div>
 
 <!-- Run the Acordion -->
-<script>$("#modulesAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$("#viewersAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>

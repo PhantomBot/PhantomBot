@@ -527,7 +527,7 @@
                 callHook('ircChannelMessage', event, false);
 
                 if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-                    $.panelDB.updateChatLinesDB();
+                    $.panelDB.updateChatLinesDB(event.getSender().toLowerCase());
                 } 
             }
         });
