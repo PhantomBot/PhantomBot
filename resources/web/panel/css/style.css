@@ -74,6 +74,9 @@ tr:nth-child(odd) {
     color: black;
     font-size: 14px;
 }
+th {
+    padding: 4px;
+}
 td {
     padding: 4px;
 }

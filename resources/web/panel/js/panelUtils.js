@@ -1,4 +1,25 @@
 /*
+ * Copyright (C) 2016 www.phantombot.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* 
+ * @author IllusionaryOne
+ */
+
+/*
  * Filename : panelUtils.js
  * Purpose  : Contains utilities for the control panel.
  */
@@ -8,6 +29,7 @@ var url = window.location.host.split(":");
 var addr = 'ws://' + url[0] + ':' + getPanelPort();
 var connection = new WebSocket(addr, []);
 var isConnected = false;
+var panelStatsEnabled = false;
 
 /**
  * @function debugMsg
@@ -82,6 +104,7 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('logging_') !== -1) $.loggingOnMessage(e);
     if (e.data.indexOf('time_') !== -1) $.timeOnMessage(e);
     if (e.data.indexOf('points_') !== -1) $.pointsOnMessage(e);
+    if (e.data.indexOf('viewers_') !== -1) $.viewersOnMessage(e);
 
     if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
 }

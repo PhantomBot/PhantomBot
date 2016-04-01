@@ -33,15 +33,21 @@
     /**
      * @function updateChatLinesDB()
      */
-    function updateChatLinesDB() {
-       $.inidb.incr('panelchatstats', 'chat_' + $.getCurLocalTimeString('MM.dd.yy'), 1);
+    function updateChatLinesDB(user) {
+        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            $.inidb.incr('panelchatstats', 'chat_' + $.getCurLocalTimeString('MM.dd.yy'), 1);
+            $.inidb.incr('panelchatuserstats', user, 1);
+        }
     }
 
     /**
      * @function updateChatLinesDB()
      */
-    function updateModLinesDB() {
-       $.inidb.incr('panelchatstats', 'mod_' + $.getCurLocalTimeString('MM.dd.yy'), 1);
+    function updateModLinesDB(user) {
+        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            $.inidb.incr('panelmodstats', 'mod_' + $.getCurLocalTimeString('MM.dd.yy'), 1);
+            $.inidb.incr('panelmoduserstats', user, 1);
+        }
     }
 
     /**
