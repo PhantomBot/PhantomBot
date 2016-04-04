@@ -1,3 +1,23 @@
+<!--
+
+ Copyright (C) 2016 www.phantombot.net
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ @author IllusionaryOne
+-->
+
 <!-- This is outside of the accordion, so will always be on top of the tab -->
 
 <div>
@@ -34,16 +54,17 @@
         </form>
 
         <button type="button" class="btn btn-warning inline pull-left" onclick="$.chatReconnect()">Reconnect to Twitch Chat</button>
+        <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleTwitchChat()">Toggle Twitch Chat</button>
     </div>
 
     <h3>Chat Configuration and Statistics</h3>
     <div>
         <div>
-            <strong>Chat Configuration</strong><br><br>
-            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('pausecommands')">Toggle Command Pause</button>
-            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('togglewhispermode')">Toggle Whisper Mode</button>
-            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('toggleme')">Toggle Action (/me) Mode</button>
-            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('mute')">Toggle Mute Mode</button>
+            <strong>Chat Configuration Toggles</strong><br><br>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('pausecommands')">Command Pause</button>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('togglewhispermode')">Whisper Mode</button>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('toggleme')">Action (/me) Mode</button>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('mute')">Mute Mode</button>
         </div>
         <br>
 

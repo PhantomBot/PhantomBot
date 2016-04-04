@@ -1,3 +1,23 @@
+<!--
+
+ Copyright (C) 2016 www.phantombot.net
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ @author IllusionaryOne
+-->
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,6 +30,7 @@
         <script src="panel/js/jquery-ui/external/jquery/jquery.min.js"></script>
         <script src="panel/js/jquery-ui/jquery-ui.min.js"></script>
         <script src="panel/js/flot/jquery.flot.min.js"></script>
+        <script src="panel/js/ion-sound/js/ion.sound.min.js"</script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
         <script type="text/javascript" src="panel/js/dateFormat.js"></script>
@@ -40,7 +61,10 @@
                 <li> <a href="#logging">Logging</a> </li>
                 <li> <a href="#time">Time</a> </li>
                 <li> <a href="#points">Points</a> </li>
+                <li> <a href="#viewers">Viewers</a> </li>
+                <li> <a href="#ranks">Ranks</a> </li>
 
+                <li> <a href="#audio">Audio</a> </li>
                 <li> <a href="#help">Help</a> </li>
             </ul>
 
@@ -74,14 +98,32 @@
                 <script type="text/javascript" src="panel/js/loggingPanel.js"></script>
             </div>
 
-            <div role="time" class="tab-pane" id="time">
+            <div role="tabpanel" class="tab-pane" id="time">
                 <div id="timePanel"></div>
                 <script type="text/javascript" src="panel/js/timePanel.js"></script>
             </div>
 
-            <div role="time" class="tab-pane" id="points">
+            <div role="tabpanel" class="tab-pane" id="points">
                 <div id="pointsPanel"></div>
                 <script type="text/javascript" src="panel/js/pointsPanel.js"></script>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="viewers">
+                <div id="viewersPanel"></div>
+                <script type="text/javascript" src="panel/js/viewersPanel.js"></script>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="ranks">
+                <div id="ranksPanel"></div>
+                <script type="text/javascript" src="panel/js/ranksPanel.js"></script>
+            </div>
+
+
+            <!-- Must be the last two -->
+
+            <div role="tabpanel" class="tab-pane" id="audio">
+                <div id="audioPanel"></div>
+                <script type="text/javascript" src="panel/js/audioPanel.js"></script>
             </div>
 
             <div role="tabpanel" class="tab-pane" id="help">
@@ -91,6 +133,13 @@
         </div>
 
         <script>$('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');</script>
+
+        <div id="chatsidebar" name="chat">
+            <script>
+                $("#chatsidebar").html("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\"" +
+                                       "src=\"http://www.twitch.tv/" + getChannelName() + "/chat?popout=\">");
+            </script>
+        </div>
 
         <div id="copyright">
             Control Panel by: 

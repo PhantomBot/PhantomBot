@@ -1,4 +1,25 @@
 /*
+ * Copyright (C) 2016 www.phantombot.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* 
+ * @author IllusionaryOne
+ */
+
+/*
  * cooldownPanel.js
  * Drives the Cooldown Panel
  */
@@ -22,31 +43,36 @@
         }
 
         // Check for dbkeysresult queries
-        if (msgObject['dbkeysresult'] != undefined) {
+        if (panelHasQuery(msgObject)) {
             var command = "",
                 time = "",
                 globalCooldown = "",
                 globalCooldownTime = "",
+                perUserCooldown = "",
                 modCooldown = "",
                 html = "",
                 foundData = false;
 
-            if (msgObject['dbkeysresult'].localeCompare('cooldown_cooldowns') == 0) {
+            if (panelCheckQuery(msgObject, 'cooldown_cooldowns')) {
                 html = "<table>";
                 for (idx in msgObject['results']) {
                     command = msgObject['results'][idx]['key'];
                     time = msgObject['results'][idx]['value'];
 
-                    if (command.localeCompare('globalCooldown') == 0) {
+                    if (panelMatch(command, 'globalCooldown')) {
                         globalCooldown = msgObject['results'][idx]['value'];
                         continue;
                     }
-                    if (command.localeCompare('globalCooldownTime') == 0) {
+                    if (panelMatch(command, 'globalCooldownTime')) {
                         globalCooldownTime = msgObject['results'][idx]['value'];
                         continue;
                     }
-                    if (command.localeCompare('modCooldown') == 0) {
+                    if (panelMatch(command, 'modCooldown')) {
                         modCooldown = msgObject['results'][idx]['value'];
+                        continue;
+                    }
+                    if (panelMatch(command, 'perUserCooldown')) {
+                        perUserCooldown  = msgObject['results'][idx]['value'];
                         continue;
                     }
 
@@ -68,6 +94,7 @@
                 $("#cooldownList").html(html);
     
                 $("#toggleGlobalCooldown").html(toggleIcon[globalCooldown]);
+                $("#togglePerUserCooldown").html(toggleIcon[perUserCooldown]);
                 $("#toggleModCooldown").html(toggleIcon[modCooldown]);
             }
         }
@@ -99,12 +126,22 @@
     }
 
     /**
+     * @function togglePerUserCooldown
+     */
+    function togglePerUserCooldown() {
+        $("#togglePerUserCooldown").html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("toggleperusercooldown");
+        setTimeout(function() { doQuery(); }, 500);
+    }
+
+
+    /**
      * @function setGlobalCooldownTime
      */
     function setGlobalCooldownTime() {
         var newValue = $("#globalCooldownTimeInput").val();
         if (newValue.length > 0) {
-            sendCommand("globalcooldown " + newValue);
+            sendCommand("globalcooldowntime " + newValue);
             $("#globalCooldownTimeInput").val('');
             $("#globalCooldownTimeInput").attr('placeholder', newValue).blur();
         }
@@ -159,5 +196,6 @@
     $.deleteCooldown = deleteCooldown;
     $.toggleGlobalCooldown = toggleGlobalCooldown;
     $.toggleModCooldown = toggleModCooldown;
+    $.togglePerUserCooldown = togglePerUserCooldown;
     $.setGlobalCooldownTime = setGlobalCooldownTime;
 })();

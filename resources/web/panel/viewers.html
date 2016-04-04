@@ -1,0 +1,53 @@
+<!--
+
+ Copyright (C) 2016 www.phantombot.net
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ @author IllusionaryOne
+-->
+
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<div id="viewersAccordion">
+    <h3>Admins <span id="viewersAdminCount" /></h3>
+    <div>
+        <div id="viewersAdminList" style="height: 300px; overflow: auto;" />
+    </div>
+
+    <h3>Moderators <span id="viewersModCount" /></h3>
+    <div>
+        <div id="viewersModList" style="height: 300px; overflow: auto;" />
+    </div>
+
+    <h3>Subscribers <span id="viewersSubCount" /></h3>
+    <div>
+        <div id="viewersSubList" style="height: 300px; overflow: auto;" />
+    </div>
+
+    <h3>Regulars <span id="viewersRegCount" /></h3>
+    <div>
+        <div id="viewersRegList" style="height: 300px; overflow: auto;" />
+    </div>
+
+    <h3>Viewers <span id="viewersViewerCount" /></h3>
+    <div>
+        <div id="viewersViewerList" style="height: 300px; overflow: auto;" />
+    </div>
+</div>
+
+<!-- Run the Acordion -->
+<script>$("#viewersAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>

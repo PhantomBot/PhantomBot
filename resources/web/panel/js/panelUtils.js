@@ -1,4 +1,25 @@
 /*
+ * Copyright (C) 2016 www.phantombot.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* 
+ * @author IllusionaryOne
+ */
+
+/*
  * Filename : panelUtils.js
  * Purpose  : Contains utilities for the control panel.
  */
@@ -8,6 +29,7 @@ var url = window.location.host.split(":");
 var addr = 'ws://' + url[0] + ':' + getPanelPort();
 var connection = new WebSocket(addr, []);
 var isConnected = false;
+var panelStatsEnabled = false;
 
 /**
  * @function debugMsg
@@ -82,6 +104,8 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('logging_') !== -1) $.loggingOnMessage(e);
     if (e.data.indexOf('time_') !== -1) $.timeOnMessage(e);
     if (e.data.indexOf('points_') !== -1) $.pointsOnMessage(e);
+    if (e.data.indexOf('viewers_') !== -1) $.viewersOnMessage(e);
+    if (e.data.indexOf('ranks_') !== -1) $.ranksOnMessage(e);
 
     if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
 }
@@ -93,14 +117,14 @@ connection.onmessage = function(e) {
  * @param {Number} timeout (0 = infinite, else timeout in ms)
  */
 function newPanelAlert(message, type, timeout) {
-  debugMsg("newPanelAlert(" + message + ", " + type + ", " + timeout + ")");
-  $(".alert").fadeIn(1000);
-  $("#newPanelAlert").show().html('<div class="alert alert-' + type + '"><button type="button" '+
-                      'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 
-                       message + '</span></div>');
-  if (timeout != 0) {
-      $(".alert-" + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
-  }
+    debugMsg("newPanelAlert(" + message + ", " + type + ", " + timeout + ")");
+    $(".alert").fadeIn(1000);
+    $("#newPanelAlert").show().html('<div class="alert alert-' + type + '"><button type="button" '+
+                        'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 
+                         message + '</span></div>');
+    if (timeout != 0) {
+        $(".alert-" + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
+    }
 }
 
 /**
@@ -177,4 +201,55 @@ function sendDBDelete(unique_id, table, key) {
     jsonObject["dbdelkey"] = unique_id;
     jsonObject["delkey"] = { "table" : table, "key" : key };
     connection.send(JSON.stringify(jsonObject));
+}
+
+/**
+ * @function panelStrcmp
+ * @param {String} a
+ * @param {String} b
+ * @return {Number} match == 0; no match != 0
+ *
+ * Note that the below will not work on interational strings, only 
+ * ASCII compares.  If international strings are in play, then
+ * localeCompare should be used instead.
+ */
+function panelStrcmp(a, b) {
+    return ( ( a == b ) ? 0 : ( ( a > b ) ? 1 : -1 ) );
+}
+
+/**
+ * @function panelMatch
+ * @param {String} a
+ * @param {String} b
+ * @return {Boolean}
+ */
+function panelMatch(a, b) {
+   return (panelStrcmp(a, b) === 0);
+}
+
+/**
+ * @function panelIsDefined
+ * @param {Object}
+ * @return {Boolean}
+ */
+function panelIsDefined(obj) {
+    return (obj !== undefined);
+}
+
+/**
+ * @function panelHasQuery
+ * @param {Object}
+ * @return {Boolean}
+ */
+function panelHasQuery(obj) {
+    return (panelIsDefined(obj['query_id']));
+}
+
+/**
+ * @function panelCheckQuery
+ * @param {Object}
+ * @return {Boolean}
+ */
+function panelCheckQuery(obj, query_id) {
+    return (panelMatch(obj['query_id'], query_id));
 }

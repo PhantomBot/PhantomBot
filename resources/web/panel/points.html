@@ -1,3 +1,23 @@
+<!--
+
+ Copyright (C) 2016 www.phantombot.net
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ @author IllusionaryOne
+-->
+
 <!-- This is outside of the accordion, so will always be on top of the tab -->
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
@@ -39,6 +59,18 @@
         </div>
     </div>
 
+    <h3>Group Point Configuration</h3>
+    <div>
+        The settings defined here override the global settings. Note that a value of "-1" indicates that the global
+        setting is to be used.<br><br>
+        <strong>Group Point Configuration - Online</strong><br>
+        <div id="groupPointsTable" style="height: 150px; overflow: auto;" />
+        <br>
+
+        <strong>Group Point Configuration - Offline</strong><br>
+        <div id="groupPointsOfflineTable" style="height: 150px; overflow: auto;" />
+    </div>
+
     <h3>Modify User Points</h3>
     <div>
         <div class="form-group" onkeypress="return event.keyCode != 13">
@@ -61,7 +93,7 @@
         <br>
 
         <div>
-            User Points Table
+            <strong>User Points Table</strong>
             <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('points_desc')">
                 <i class="fa fa-money" /><i class="fa fa-arrow-down" />
             </button>

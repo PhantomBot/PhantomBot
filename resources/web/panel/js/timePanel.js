@@ -1,4 +1,25 @@
 /*
+ * Copyright (C) 2016 www.phantombot.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* 
+ * @author IllusionaryOne
+ */
+
+/*
  * timePanel.js
  * Drives the Time Panel
  */
@@ -23,17 +44,16 @@
             return;
         }
 
-        if (msgObject['dbqueryresult'] != undefined) {
-            if (msgObject['dbqueryresult'].localeCompare('time_timezone') == 0) {
-                if (msgObject['result']['timezone'] != undefined) {
-                    timezone = msgObject['result']['timezone'];
+        if (panelHasQuery(msgObject)) {
+ 
+            if (panelCheckQuery(msgObject, 'time_timezone')) {
+                if (msgObject['results']['timezone'] != undefined) {
+                    timezone = msgObject['results']['timezone'];
                 }
                 $("#setTimeZoneInput").attr("placeholder", timezone).blur();
             }
-        }
 
-        if (msgObject['dbkeysresult'] != undefined) {
-            if (msgObject['dbkeysresult'].localeCompare('time_settings') == 0) {
+            if (panelCheckQuery(msgObject, 'time_settings')) {
                 for (idx in msgObject['results']) {
                     var key = "",
                         value = "";
@@ -41,7 +61,7 @@
                     key = msgObject['results'][idx]['key'];
                     value = msgObject['results'][idx]['value'];
     
-                    if (key.localeCompare('timePromoteHours') == 0) {
+                    if (panelMatch(key, 'timePromoteHours')) {
                         $("#setTimePromotionInput").attr("placeholder", value).blur();
                     } else {
                         $("#" + key).html(modeIcon[value]);
@@ -49,20 +69,20 @@
                 }
             }
 
-            if (msgObject['dbkeysresult'].localeCompare('time_timetable') == 0) {
+            if (panelCheckQuery(msgObject, 'time_timetable')) {
                 var timeTableData = msgObject['results'],
                     username = "",
                     timeValue = "",
                     hrsValue = "",
                     html = "";
 
-                if (sortType.localeCompare('time_asc') == 0) {
+                if (panelMatch(sortType, 'time_asc')) {
                     timeTableData.sort(sortTimeTable_time_asc);
-                } else if (sortType.localeCompare('time_desc') == 0) {
+                } else if (panelMatch(sortType, 'time_desc')) {
                     timeTableData.sort(sortTimeTable_time_desc);
-                } else if (sortType.localeCompare('alpha_asc') == 0) {
+                } else if (panelMatch(sortType, 'alpha_asc')) {
                     timeTableData.sort(sortTimeTable_alpha_asc);
-                } else if (sortType.localeCompare('alpha_desc') == 0) {
+                } else if (panelMatch(sortType, 'alpha_desc')) {
                     timeTableData.sort(sortTimeTable_alpha_desc);
                 }
 
@@ -70,7 +90,7 @@
                 for (var idx = 0; idx < timeTableData.length; idx++) {
                     username = timeTableData[idx]['key'];
                     timeValue = timeTableData[idx]['value'];
-                    hrsValue = "(" + (timeValue / 3600).toFixed(0) + " hrs)";
+                    hrsValue = "(" + Math.floor(timeValue / 3600) + " hrs)";
                     html += "<tr class=\"textList\">" +
                             "    <td style=\"vertical-align: middle; width: 50%\">" + username + "</td>" +
                             "    <td style=\"vertical-align: middle; width: 25%\">" + timeValue + " " + hrsValue +"</td>" +
@@ -79,7 +99,7 @@
                             "        <input type=\"number\" min=\"0\" id=\"inlineUserTime_" + username + "\"" +
                             "               placeholder=\"" + timeValue + "\" value=\"" + timeValue + "\"" +
                             "               style=\"width: 8em\"/>" +
-                            "        <input type=\"button\" value=\"Update\" onclick=\"$.updateUserTime('" + username + "')\" />" +
+                            "        <button type=\"button\" class=\"btn btn-default btn-xs\" onclick=\"$.updateUserTime('" + username + "')\"><i class=\"fa fa-pencil\" /></button>" +
                             "    </form>" +
                             "</tr>";
                 }
@@ -117,24 +137,16 @@
      * @param {Object} b
      */
     function sortTimeTable_alpha_desc(a, b) {
-        var keyA = a['key'],
-            keyB = b['key'];
-        return keyB.localeCompare(keyA);
+        return panelStrcmp(b.key, a.key);
     }
     function sortTimeTable_alpha_asc(a, b) {
-        var keyA = a['key'],
-            keyB = b['key'];
-        return keyA.localeCompare(keyB);
+        return panelStrcmp(a.key, b.key);
     }
     function sortTimeTable_time_asc(a, b) {
-        var valA = a['value'],
-            valB = b['value'];
-        return parseInt(valA) - parseInt(valB);
+        return parseInt(a.value) - parseInt(b.value);
     }
     function sortTimeTable_time_desc(a, b) {
-        var valA = a['value'],
-            valB = b['value'];
-        return parseInt(valB) - parseInt(valA);
+        return parseInt(b.value) - parseInt(a.value);
     }
 
     /**
