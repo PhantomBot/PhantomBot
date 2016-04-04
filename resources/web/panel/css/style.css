@@ -64,14 +64,14 @@ table {
 }
 tr:nth-child(even) {
     font-family: "Roboto", Sans-serif;
-    background: #999;
-    color: black;
+    background: rgba(30, 30, 30, 0.3);
+    color: #aaaaaa;
     font-size: 14px;
 }
 tr:nth-child(odd) {
     font-family: "Roboto", Sans-serif;
-    background: #BBB;
-    color: black;
+    background: rgba(0, 0, 0, 0.3);
+    color: #aaaaaa;
     font-size: 14px;
 }
 th {
@@ -112,19 +112,29 @@ td {
     font-family: "Roboto", arial;
     display: block;
     float: left;
-    margin: 0 10px 10px 0;
+    margin: 2px 2px 2px 2px;
     width: 130px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    background-color: purple;
-    border-color: purple;
-    color: white;
+    background-color: rgba(153, 50, 204, 0.5);
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: #cccccc;
     padding: 5px;
     text-align: center;
     vertical-align: middle;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+}
+
+.soundButton:hover {
+    font-color: #eeeeee;
+    color: #eeeeee;
+    background: rgba(183, 80, 234, 0.5) !important;
+    border: none !important;
+    outline: none !important;
 }
 
 .purplePill {
@@ -221,7 +231,22 @@ td {
     border-radius: 5px;
 }
 
-// Bootstrap and JQuery Section //
+#chatsidebar {
+    position: absolute;
+    top: 82px;
+    right: 10px;
+    bottom: 0;
+    height: 425px;
+    width: 300px;
+    -webkit-animation: fade 1s;
+}
+#chat {
+    height: 425px;
+    width: 300px;
+    -webkit-animation: fade 1s;
+}
+
+/* Bootstrap and JQuery Section */
 
 .tab-pane {
     -webkit-border-radius: 5px;
@@ -363,3 +388,189 @@ td {
 .tooltip.left .tooltip-arrow {
     border-left-color: #444488;
 }
+
+input, textarea {
+    background-color: rgba(50, 50, 50, 0.3) !important;
+    color: #aaaaaa !important;
+}
+
+/* Buttons */
+
+/* Default Button Class */
+
+.btn {
+    font-family: "Roboto", arial;
+    font-color: #aaaaaa;
+    color: #aaaaaa;
+    background: rgba(100, 100, 100, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+    margin: 0px 2px 0px 2px;
+}
+
+.btn:hover {
+    font-color: #eeeeee;
+    color: #eeeeee;
+    background: rgba(150, 150, 150, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn:active, .btn.active {
+    font-color: #aaaaaa;
+    color: #aaaaaa;
+    background: rgba(100, 100, 100, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn.active.focus, .btn.active:focus, .btn.focus,
+.btn:active.focus, .btn:active:focus, .btn:focus {
+    font-color: #aaaaaa;
+    color: #aaaaaa;
+    background: rgba(100, 100, 100, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Bootstrap Primary Button */
+
+.btn-primary {
+    background: rgba(100, 100, 100, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-primary:hover {
+    background: rgba(150, 150, 150, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-primary:active, .btn-primary.active {
+    background: rgba(100, 100, 100, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.focus,
+.btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:focus {
+    background: rgba(100, 100, 100, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Bootstrap Default Button */
+
+.btn-default {
+    background: rgba(100, 100, 100, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-default:hover {
+    background: rgba(150, 150, 150, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-default:active, .btn-default.active {
+    background: rgba(100, 100, 100, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-default.active.focus, .btn-default.active:focus, .btn-default.focus,
+.btn-default:active.focus, .btn-default:active:focus, .btn-default:focus {
+    background: rgba(100, 100, 100, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Bootstrap Warning Button */
+
+.btn-warning {
+    background: rgba(255, 69, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-warning:hover {
+    background: rgba(255, 100, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-warning:active, .btn-warning.active {
+    background: rgba(255, 69, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-warning.active.focus, .btn-warning.active:focus, .btn-warning.focus,
+.btn-warning:active.focus, .btn-warning:active:focus, .btn-warning:focus {
+    background: rgba(255, 69, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Bootstrap Success Button */
+
+.btn-success {
+    background: rgba(0, 255, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-success:hover {
+    background: rgba(20, 255, 20, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-success:active, .btn-success.active {
+    background: rgba(0, 255, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-success.active.focus, .btn-success.active:focus, .btn-success.focus,
+.btn-success:active.focus, .btn-success:active:focus, .btn-success:focus {
+    background: rgba(0, 255, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Bootstrap Danger Button */
+
+.btn-danger {
+    background: rgba(255, 0, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-danger:hover {
+    background: rgba(255, 20, 20, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-danger:active, .btn-danger.active {
+    background: rgba(255, 0, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-danger.active.focus, .btn-danger.active:focus, .btn-danger.focus,
+.btn-danger:active.focus, .btn-danger:active:focus, .btn-danger:focus {
+    background: rgba(255, 0, 0, 0.5) !important;
+    border: none !important;
+    outline: none !important;
+}
+

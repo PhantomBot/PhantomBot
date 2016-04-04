@@ -36,6 +36,7 @@
      */
     function onMessage(message) {
         var msgObject,
+            groupPointKeys = [ "Caster", "Administrator", "Subscriber", "Regular", "Viewer" ];
             timezone = "GMT"; // Default time zone in Core if none given.
 
         try {
@@ -44,8 +45,8 @@
             return;
         }
 
-        if (msgObject['dbkeysresult'] != undefined) {
-            if (msgObject['dbkeysresult'].localeCompare('points_settings') == 0) {
+        if (panelHasQuery(msgObject)) {
+            if (panelCheckQuery(msgObject, 'points_settings')) {
                 for (idx in msgObject['results']) {
                     var key = "",
                         value = "";
@@ -53,36 +54,36 @@
                     key = msgObject['results'][idx]['key'];
                     value = msgObject['results'][idx]['value'];
     
-                    if (key.localeCompare('onlineGain') == 0) {
+                    if (panelMatch(key, 'onlineGain')) {
                         $("#setPointGainInput_setgain").attr("placeholder", value).blur();
-                    } else if (key.localeCompare('offlineGain') == 0) {
+                    } else if (panelMatch(key, 'offlineGain')) {
                         $("#setPointGainInput_setofflinegain").attr("placeholder", value).blur();
-                    } else if (key.localeCompare('onlinePayoutInterval') == 0) {
+                    } else if (panelMatch(key, 'onlinePayoutInterval')) {
                         $("#setPointGainInput_setinterval").attr("placeholder", value).blur();
-                    } else if (key.localeCompare('offlinePayoutInterval') == 0) {
+                    } else if (panelMatch(key, 'offlinePayoutInterval')) {
                         $("#setPointGainInput_setofflineinterval").attr("placeholder", value).blur();
-                    } else if (key.localeCompare('pointNameSingle') == 0) {
+                    } else if (panelMatch(key, 'pointNameSingle')) {
                         $("#setPointNameInput").attr("placeholder", value).blur();
-                    } else if (key.localeCompare('pointNameMultiple') == 0) {
+                    } else if (panelMatch(key, 'pointNameMultiple')) {
                         $("#setPointsNameInput").attr("placeholder", value).blur();
                     }
                 }
             }
 
-            if (msgObject['dbkeysresult'].localeCompare('points_pointstable') == 0) {
+            if (panelCheckQuery(msgObject, 'points_pointstable')) {
                 var pointsTableData = msgObject['results'],
                     username = "",
                     points = "",
                     timeValue = "",
                     html = "";
 
-                if (sortType.localeCompare('points_asc') == 0) {
+                if (panelMatch(sortType, 'points_asc')) {
                     pointsTableData.sort(sortPointsTable_points_asc);
-                } else if (sortType.localeCompare('points_desc') == 0) {
+                } else if (panelMatch(sortType, 'points_desc')) {
                     pointsTableData.sort(sortPointsTable_points_desc);
-                } else if (sortType.localeCompare('alpha_asc') == 0) {
+                } else if (panelMatch(sortType, 'alpha_asc')) {
                     pointsTableData.sort(sortPointsTable_alpha_asc);
-                } else if (sortType.localeCompare('alpha_desc') == 0) {
+                } else if (panelMatch(sortType, 'alpha_desc')) {
                     pointsTableData.sort(sortPointsTable_alpha_desc);
                 }
                 
@@ -98,12 +99,90 @@
                             "        <input type=\"number\" min=\"0\" id=\"inlineUserPoints_" + username + "\"" +
                             "               placeholder=\"" + points + "\" value=\"" + points + "\"" +
                             "               style=\"width: 8em\"/>" +
-                            "        <input type=\"button\" value=\"Update\" onclick=\"$.updateUserPoints('" + username + "')\" />" +
+                            "        <button type=\"button\" class=\"btn btn-default btn-xs\" onclick=\"$.updateUserPoints('" + username + "')\"><i class=\"fa fa-pencil\" /></button>" +
                             "    </form>" +
                             "</tr>";
                 }
                 html += "</table>";
                 $("#userPointsTable").html(html);
+            }
+
+            if (panelCheckQuery(msgObject, 'points_grouppoints')) {
+                var groupName = "",
+                    groupPoints = "",
+                    groupPointsData = [];
+
+                html = "<table>";
+                for (var idx = 0; idx < msgObject['results'].length; idx++) {
+                    groupName = msgObject['results'][idx]['key'];
+                    groupPoints = msgObject['results'][idx]['value'];
+                    groupPointsData[groupName] = groupPoints;
+                }
+                for (key in groupPointKeys) {
+                    groupName = groupPointKeys[key];
+                    groupPoints = groupPointsData[groupName];
+
+                    html += "<tr class=\"textList\">" +
+                            "    <td style=\"width: 15px\">" +
+                            "        <div id=\"clearGroupPoints_" + groupName + "\" class=\"button\"" +
+                            "             onclick=\"$.updateGroupPoints('" + groupName + "', true, true)\"><i class=\"fa fa-trash\" />" +
+                            "        </div>" +
+                            "    <td style=\"width: 8em\">" + groupName + "</td>" +
+                            "    <td><form onkeypress=\"return event.keyCode != 13\">" +
+                            "        <input type=\"number\" min=\"-1\" id=\"inlineGroupPointsEdit_" + groupName + "\"" +
+                            "               value=\"" + groupPoints + "\" style=\"width: 5em\"/>" +
+                            "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
+                            "               onclick=\"$.updateGroupPoints('" + groupName + "', true, false)\"><i class=\"fa fa-pencil\" />" +
+                            "        </button>" +
+                            "    </form></td>";
+
+                     if (groupPoints === '-1') {
+                         html += "<td style=\"float: right\"><i>Using Global Value</i></td>";
+                     } else {
+                         html += "<td />";
+                     }
+                     html += "</tr>";
+                }
+                $("#groupPointsTable").html(html);
+            }
+
+            if (panelCheckQuery(msgObject, 'points_grouppointsoffline')) {
+                var groupName = "",
+                    groupPoints = "",
+                    groupPointsData = [];
+
+                html = "<table>";
+                for (var idx = 0; idx < msgObject['results'].length; idx++) {
+                    groupName = msgObject['results'][idx]['key'];
+                    groupPoints = msgObject['results'][idx]['value'];
+                    groupPointsData[groupName] = groupPoints;
+                }
+                for (key in groupPointKeys) {
+                    groupName = groupPointKeys[key];
+                    groupPoints = groupPointsData[groupName];
+
+                    html += "<tr class=\"textList\">" +
+                            "    <td style=\"width: 15px\">" +
+                            "        <div id=\"clearGroupPointsOffline_" + groupName + "\" class=\"button\"" +
+                            "             onclick=\"$.updateGroupPoints('" + groupName + "', false, true)\"><i class=\"fa fa-trash\" />" +
+                            "        </div>" +
+                            "    <td style=\"width: 8em\">" + groupName + "</td>" +
+                            "    <td><form onkeypress=\"return event.keyCode != 13\">" +
+                            "        <input type=\"number\" min=\"-1\" id=\"inlineGroupPointsOfflineEdit_" + groupName + "\"" +
+                            "               value=\"" + groupPoints + "\" style=\"width: 5em\"/>" +
+                            "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
+                            "               onclick=\"$.updateGroupPoints('" + groupName + "', false, false)\"><i class=\"fa fa-pencil\" />" +
+                            "        </button>" +
+                            "    </form></td>";
+
+                     if (groupPoints === '-1') {
+                         html += "<td style=\"float: right\"><i>Using Global Value</i></td>";
+                     } else {
+                         html += "<td />";
+                     }
+                     html += "</tr>";
+                }
+                $("#groupPointsOfflineTable").html(html);
             }
         }
     }
@@ -114,6 +193,8 @@
     function doQuery() {
         sendDBKeys("points_settings", "pointSettings");
         sendDBKeys("points_pointstable", "points");
+        sendDBKeys("points_grouppoints", "grouppoints");
+        sendDBKeys("points_grouppointsoffline", "grouppointsoffline");
     }
 
     /**
@@ -122,24 +203,33 @@
      * @param {Object} b
      */
     function sortPointsTable_alpha_desc(a, b) {
-        var keyA = a['key'],
-            keyB = b['key'];
-        return keyB.localeCompare(keyA);
+        return panelStrcmp(b.key, a.key);
     }
     function sortPointsTable_alpha_asc(a, b) {
-        var keyA = a['key'],
-            keyB = b['key'];
-        return keyA.localeCompare(keyB);
+        return panelStrcmp(a.key, b.key);
     }
     function sortPointsTable_points_asc(a, b) {
-        var valA = a['value'],
-            valB = b['value'];
-        return parseInt(valA) - parseInt(valB);
+        return parseInt(a.value) - parseInt(b.value);
     }
     function sortPointsTable_points_desc(a, b) {
-        var valA = a['value'],
-            valB = b['value'];
-        return parseInt(valB) - parseInt(valA);
+        return parseInt(b.value) - parseInt(a.value);
+    }
+
+    /**
+     * @function updateGroupPoints
+     * @param {String} group
+     * @param {Boolean} online
+     * @param {Boolean} clear
+     */
+    function updateGroupPoints(group, online, clear) {
+        var divId = (online ? "#inlineGroupPointsEdit_" + group : "#inlineGroupPointsOfflineEdit_" + group),
+            points = (clear ? "-1" : $(divId).val()),
+            dbtable = (online ? "grouppoints" : "grouppointsoffline");
+
+        if (points.length > 0) {
+            sendDBUpdate("points_updateGroupPoints", dbtable, group, points);
+            setTimeout(function() { doQuery(); }, 500);
+        }
     }
 
     /**
@@ -215,10 +305,10 @@
             command = "";
 
         if (points.length > 0) {
-            if (action.localeCompare('all') == 0) {
+            if (panelMatch(action, 'all')) {
                 command = "points all " + points;
             }
-            if (action.localeCompare('makeitrain') == 0) {
+            if (panelMatch(action, 'makeitrain')) {
                 command = "makeitrain " + points;
             }
             $("#giftChatPointsInput").val('');
@@ -258,6 +348,7 @@
 
     // Export functions - Needed when calling from HTML.
     $.pointsOnMessage = onMessage;
+    $.updateGroupPoints = updateGroupPoints;
     $.setPointName = setPointName;
     $.clearPointName = clearPointName;
     $.setPointGain = setPointGain;

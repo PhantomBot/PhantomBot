@@ -108,11 +108,11 @@
                     updateQuote(args[0], quote);
                 } else if (args[1].equalsIgnoreCase("game")) {
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.game.success', args[0], args.splice(2).join(' ')));
-                    quote[1] = args.splice(2).join(' ');
+                    quote[3] = args.splice(2).join(' ');
                     updateQuote(args[0], quote);
                 } else if (args[1].equalsIgnoreCase("quote")) {
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.quote.success', args[0], args.splice(2).join(' ')));
-                    quote[2] = args.splice(2).join(' ');
+                    quote[1] = args.splice(2).join(' ');
                     updateQuote(args[0], quote);
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.usage'));

@@ -48,8 +48,8 @@
         }
 
         // Check for dbkeysresult queries
-        if (msgObject['dbkeysresult'] != undefined) {
-            if (msgObject['dbkeysresult'].localeCompare('dashboard_highlights') == 0) {
+        if (panelHasQuery(msgObject)) {
+            if (panelMatch(msgObject['query_id'], 'dashboard_highlights')) {
                 var htmlStr = "";
                 for (var i in msgObject['results']) {
                     var highlightData = msgObject['results'][i]['value'];
@@ -62,7 +62,7 @@
                 }
             }
 
-            if (msgObject['dbkeysresult'].localeCompare('dashboard_chatCount') == 0) {
+            if (panelCheckQuery(msgObject, 'dashboard_chatCount')) {
                 var chatDate = "",
                     chatKey = "",
                     chatCount = "";
@@ -74,7 +74,7 @@
                     chatKey = "chat_" + chatDate;
                     chatCount = "0";
                     for (idx in msgObject['results']) {
-                        if (msgObject['results'][idx]['key'].localeCompare(chatKey) == 0) {
+                        if (panelMatch(msgObject['results'][idx]['key'], chatKey)) {
                             chatCount = msgObject['results'][idx]['value'];
                             break;
                         }
@@ -85,7 +85,7 @@
                 }
             }
 
-            if (msgObject['dbkeysresult'].localeCompare('dashboard_modCount') == 0) {
+            if (panelCheckQuery(msgObject, 'dashboard_modCount')) {
                 var modDate = "",
                     modKey = "",
                     modCount = "";
@@ -97,7 +97,7 @@
                     modKey = "mod_" + modDate;
                     modCount = "0";
                     for (idx in msgObject['results']) {
-                        if (msgObject['results'][idx]['key'].localeCompare(modKey) == 0) {
+                        if (panelMatch(msgObject['results'][idx]['key'], modKey)) {
                             modCount = msgObject['results'][idx]['value'];
                             break;
                         }
@@ -116,12 +116,9 @@
                            { xaxis: { show: false }, yaxis: { show: false }
                        });
             }
-        }
 
-        // Check for dbqueryresult queries
-        if (msgObject['dbqueryresult'] != undefined) {
-            if (msgObject['dbqueryresult'].localeCompare('dashboard_panelStatsEnabled') == 0) {
-                if (msgObject['result']['enabled'].localeCompare('true') == 0) {
+            if (panelCheckQuery(msgObject, 'dashboard_panelStatsEnabled')) {
+                if (panelMatch(msgObject['results']['enabled'], 'true')) {
                     if (!panelStatsEnabled) {
                         panelStatsEnabled = true;
                         doQuery(); // Run the query again to populate fields.
@@ -131,16 +128,16 @@
                 }
             }
 
-            if (msgObject['dbqueryresult'].localeCompare('dashboard_streamTitle') == 0) {
-                $("#streamTitleInput").attr("placeholder", msgObject['result']['title']).blur();
+            if (panelCheckQuery(msgObject, 'dashboard_streamTitle')) {
+                $("#streamTitleInput").attr("placeholder", msgObject['results']['title']).blur();
             }
  
-            if (msgObject['dbqueryresult'].localeCompare('dashboard_gameTitle') == 0) {
-                $("#gameTitleInput").attr("placeholder", msgObject['result']['game']).blur();
+            if (panelCheckQuery(msgObject, 'dashboard_gameTitle')) {
+                $("#gameTitleInput").attr("placeholder", msgObject['results']['game']).blur();
             }
  
-            if (msgObject['dbqueryresult'].localeCompare('dashboard_streamOnline') == 0) {
-                streamOnline = (msgObject['result']['streamOnline'].localeCompare('true') == 0);
+            if (panelCheckQuery(msgObject, 'dashboard_streamOnline')) {
+                streamOnline = (panelMatch(msgObject['results']['streamOnline'], 'true'));
                 if (streamOnline) {
                     $("#streamOnline").html("<span class=\"greenPill\">Stream Online</span>");
                 } else {
@@ -148,17 +145,17 @@
                 }
             }
 
-            if (msgObject['dbqueryresult'].localeCompare('dashboard_whisperMode') == 0) {
-                whisperMode = (msgObject['result']['whisperMode'].localeCompare('true') == 0);
+            if (panelCheckQuery(msgObject, 'dashboard_whisperMode')) {
+                whisperMode = (panelMatch(msgObject['results']['whisperMode'], 'true'));
             }
-            if (msgObject['dbqueryresult'].localeCompare('dashboard_muteMode') == 0) {
-                responseMode = (msgObject['result']['response_@chat'].localeCompare('true') == 0);
+            if (panelCheckQuery(msgObject, 'dashboard_muteMode')) {
+                responseMode = (panelMatch(msgObject['results']['response_@chat'], 'true'));
             }
-            if (msgObject['dbqueryresult'].localeCompare('dashboard_toggleMe') == 0) {
-                meMode = (msgObject['result']['response_action'].localeCompare('true') == 0);
+            if (panelCheckQuery(msgObject, 'dashboard_toggleMe')) {
+                meMode = (panelMatch(msgObject['results']['response_action'], 'true'));
             }
-            if (msgObject['dbqueryresult'].localeCompare('dashboard_commandsPaused') == 0) {
-                pauseMode = (msgObject['result']['commandsPaused'].localeCompare('true') == 0);
+            if (panelCheckQuery(msgObject, 'dashboard_commandsPaused')) {
+                pauseMode = (panelMatch(msgObject['results']['commandsPaused'], 'true'));
             }
 
             if (whisperMode) {
@@ -185,11 +182,11 @@
             }
 
             if (streamOnline) {
-                if (msgObject['dbqueryresult'].localeCompare('dashboard_streamUptime') == 0) {
-                    $("#streamUptime").html("<span class=\"bluePill\">Uptime: " + msgObject['result']['streamUptime'] + "</span>");
+                if (panelCheckQuery(msgObject, 'dashboard_streamUptime')) {
+                    $("#streamUptime").html("<span class=\"bluePill\">Uptime: " + msgObject['results']['streamUptime'] + "</span>");
                 }
-                if (msgObject['dbqueryresult'].localeCompare('dashboard_viewerCount') == 0) {
-                    $("#viewerCount").html("<span class=\"bluePill\">Viewers: " + msgObject['result']['viewerCount'] + "</span>");
+                if (panelCheckQuery(msgObject, 'dashboard_viewerCount')) {
+                    $("#viewerCount").html("<span class=\"bluePill\">Viewers: " + msgObject['results']['viewerCount'] + "</span>");
                 }
             }
 
@@ -224,7 +221,7 @@
      */
     function toggleCommand(command)
     {
-        if (command.localeCompare('pausecommands') == 0) {
+        if (panelMatch(command, 'pausecommands')) {
             if (pauseMode) {
                 command += " clear";
             } else {
@@ -319,6 +316,18 @@
     function multiLinkTimerOff() {
         sendCommand("multi timer off");
     }
+
+    /**
+     * @function toggleTwitchChat
+     */
+    function toggleTwitchChat() {
+        if (panelMatch(document.getElementById("chatsidebar").style.display, 'none')) {
+            document.getElementById("chatsidebar").style.display = "block";
+        } else {
+            document.getElementById("chatsidebar").style.display = "none";
+        }
+    }
+
  
     // Import the HTML file for this panel.
     $("#dashboardPanel").load("/panel/dashboard.html");
@@ -354,4 +363,5 @@
     $.multiLinkTimerOn = multiLinkTimerOn;
     $.multiLinkTimerOff = multiLinkTimerOff;
     $.toggleCommand = toggleCommand;
+    $.toggleTwitchChat = toggleTwitchChat;
 })();

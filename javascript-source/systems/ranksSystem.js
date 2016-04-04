@@ -6,8 +6,8 @@
 
 (function() {
 
-    rankEligableTime = ($.inidb.exists('settings', 'rankEligableTime') ? parseInt($.inidb.get('settings', 'rankEligableTime')) : 50);
-    rankEligableCost = ($.inidb.exists('settings', 'rankEligableCost') ? parseInt($.inidb.get('settings', 'rankEligableCost')) : 200);
+    rankEligableTime = $.getSetIniDbNumber('settings', 'rankEligableTime', 50),
+    rankEligableCost = $.getSetIniDbNumber('settings', 'rankEligableCost', 200);
 
     var ranksTimeTable;
 

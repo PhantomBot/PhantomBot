@@ -55,15 +55,15 @@
         if (seconds > 86400) {    // Day: 60 * 60 * 24
             days = seconds / 86400;
             seconds = seconds % 86400;
-            durationStr += days.toFixed(0) + " days ";
+            durationStr += Math.floor(days) + " days ";
         }
         if (seconds > 3600) {     // Minutes: 60 * 60
             hours = seconds / 3600;
             seconds = seconds % 3600;
-            durationStr += hours.toFixed(0) + " hrs ";
+            durationStr += Math.floor(hours) + " hrs ";
         }
         minutes = seconds / 60;
-        durationStr += minutes.toFixed(0) + " mins";
+        durationStr += Math.floor(minutes) + " mins";
         return durationStr;
     }
 
@@ -96,14 +96,13 @@
             return;
         }
 
-        if (msgObject['dbkeysresult'] != undefined) {
-            if (msgObject['dbkeysresult'].indexOf('viewers_') == 0) {
+        if (panelHasQuery(msgObject)) {
+            if (msgObject['query_id'].indexOf('viewers_') === 0) {
                 for (idx in msgObject['results']) {
-                    var key = "",
-                        value = "";
-                    key = msgObject['results'][idx]['key'];
-                    value = msgObject['results'][idx]['value'];
-                    if (msgObject['dbkeysresult'].localeCompare('viewers_groups') == 0) {
+                    var key = msgObject['results'][idx]['key'],
+                        value = msgObject['results'][idx]['value'];
+
+                    if (panelCheckQuery(msgObject, 'viewers_groups')) {
                         groupData[key] = value;
                         if (value.indexOf("0") == 0) groupData[key] = "1";
                         if (value.indexOf("0") == 0 || value.indexOf("1") == 0) countAdmin++;
@@ -112,37 +111,36 @@
                         if (value.indexOf("6") == 0) countReg++;
                         if (value.indexOf("7") == 0) countViewer++; // Not written to the bot all the time.
                     }
-                    if (msgObject['dbkeysresult'].localeCompare('viewers_time') == 0) {
+                    if (panelCheckQuery(msgObject, 'viewers_time')) {
                         usernameData.push(key);
                         timeData[key] = value;
                     }
-                    if (msgObject['dbkeysresult'].localeCompare('viewers_points') == 0) {
+                    if (panelCheckQuery(msgObject, 'viewers_points')) {
                         pointsData[key] = value;
                     }
-                    if (msgObject['dbkeysresult'].localeCompare('viewers_lastseen') == 0) {
+                    if (panelCheckQuery(msgObject, 'viewers_lastseen')) {
                         lastseenData[key] = value;
                     }
-                    if (msgObject['dbkeysresult'].localeCompare('viewers_timeout') == 0) {
+                    if (panelCheckQuery(msgObject, 'viewers_timeout')) {
                         timeoutData[key] = value;
                     }
-                    if (msgObject['dbkeysresult'].localeCompare('viewers_chat') == 0) {
+                    if (panelCheckQuery(msgObject, 'viewers_chat')) {
                         chatData[key] = value;
                     }
                 }
             }
 
             viewersInDB = (countViewer > 0);
-            loadedGroups = (loadedGroups ? true : msgObject['dbkeysresult'].localeCompare('viewers_groups') == 0);
-            loadedTime = (loadedTime ? true : msgObject['dbkeysresult'].localeCompare('viewers_time') == 0);
-            loadedPoints = (loadedPoints ? true : msgObject['dbkeysresult'].localeCompare('viewers_points') == 0);
-            loadedLastSeen = (loadedLastSeen ? true : msgObject['dbkeysresult'].localeCompare('viewers_lastseen') == 0);
-            loadedTimeout = (loadedTimeout ? true : msgObject['dbkeysresult'].localeCompare('viewers_timeout') == 0);
-            loadedChat = (loadedChat ? true : msgObject['dbkeysresult'].localeCompare('viewers_chat') == 0);
+            loadedGroups = (loadedGroups ? true : panelCheckQuery(msgObject, 'viewers_groups'));
+            loadedTime = (loadedTime ? true : panelCheckQuery(msgObject, 'viewers_time'));
+            loadedPoints = (loadedPoints ? true : panelCheckQuery(msgObject, 'viewers_points'));
+            loadedLastSeen = (loadedLastSeen ? true : panelCheckQuery(msgObject, 'viewers_lastseen'));
+            loadedTimeout = (loadedTimeout ? true : panelCheckQuery(msgObject, 'viewers_timeout'));
+            loadedChat = (loadedChat ? true : panelCheckQuery(msgObject, 'viewers_chat'));
 
             // Produce the data //
             if (loadedLastSeen && loadedGroups && loadedTime && loadedPoints && 
                 (!panelStatsEnabled || (panelStatsEnabled && loadedChat && loadedTimeout))) {
-
                 usernameData.sort(sortUsersTable_alpha_asc);
                 for (var idx in usernameData) {
                     user = usernameData[idx];
@@ -255,14 +253,10 @@
      * @param {Object} b
      */
     function sortUsersTable_alpha_desc(a, b) {
-        var keyA = a,
-            keyB = b;
-        return keyB.localeCompare(keyA);
+        return panelStrcmp(b, a);
     }
     function sortUsersTable_alpha_asc(a, b) {
-        var keyA = a,
-            keyB = b;
-        return keyA.localeCompare(keyB);
+        return panelStrcmp(a, b);
     }
 
     // Import the HTML file for this panel.

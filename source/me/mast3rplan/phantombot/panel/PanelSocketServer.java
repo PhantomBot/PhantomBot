@@ -32,16 +32,16 @@
  * { "command" : "command line", "username" : "user name" }
  *
  * // Query DB
- * { "dbquery" : "unique_id", "query" : { "table" : "table_name", "key" : "key_name" } }
+ * { "dbquery" : "query_id", "query" : { "table" : "table_name", "key" : "key_name" } }
  *
  * // Query DB keys and values
- * { "dbkeys" : "unique_id", "query" : { "table" : "table_name"  } }
+ * { "dbkeys" : "query_id", "query" : { "table" : "table_name"  } }
  *
  * // Update DB
- * { "dbupdate" : "unique_id", "update" : { "table" : "table_name", "key" : "key_name", "value" : "new_value" } }
+ * { "dbupdate" : "query_id", "update" : { "table" : "table_name", "key" : "key_name", "value" : "new_value" } }
  *
  * // Delete from DB
- * { "dbdelkey" : "unique_id", "delkey" : { "table" : "table_name", "key" : "key_name" } }
+ * { "dbdelkey" : "query_id", "delkey" : { "table" : "table_name", "key" : "key_name" } }
  * 
  * ---------------------------------------------------------------------------
  *
@@ -54,18 +54,18 @@
  * { "versionresult" : "unique_id", "version" : "core version (repo version)" }
  *
  * // Return DB query. Returns "error" key only if error occurred.
- * { "dbqueryresult" : "unique_id", "result" :  { "table" : "table_name", "key_name" : "value" } }
- * { "dbqueryresult" : "unique_id", "error" : "error" } 
+ * { "query_id" : "unique_id", "result" :  { "table" : "table_name", "key_name" : "value" } }
+ * { "query_id" : "unique_id", "error" : "error" } 
  *
  * // Return DB keylist. Returns "error" key only if error occurred.
- * { "dbkeysresult" : "unique_id", "results" : { [ "table" : "table_name", "key" : "key_name", "value" : "value" ] } }
- * { "dbkeysresult" : "unique_id", "error" : "error" }
+ * { "query_id" : "query_id", "results" : { [ "table" : "table_name", "key" : "key_name", "value" : "value" ] } }
+ * { "query_id" : "query_id", "error" : "error" }
  *
  * // Return when DB has been updated.
- * { "dbupdateresult" : "unique_id" }
+ * { "query_id" : "query_id" }
  *
  * // Return when DB key has been deleted.
- * { "dbdelkeyresult" : "unique_id" }
+ * { "query_id" : "query_id" }
  */
 
 /*
@@ -243,7 +243,7 @@ public class PanelSocketServer extends WebSocketServer {
         JSONStringer jsonObject = new JSONStringer();
 
         String value = PhantomBot.instance().getDataStore().GetString(table, "", key);
-        jsonObject.object().key("dbqueryresult").value(id).key("result").object();
+        jsonObject.object().key("query_id").value(id).key("results").object();
         jsonObject.key("table").value(table).key(key).value(value).endObject().endObject();
         sendToAll(jsonObject.toString());
     }
@@ -251,7 +251,7 @@ public class PanelSocketServer extends WebSocketServer {
     private void doDBKeysQuery(String id, String table) {
         JSONStringer jsonObject = new JSONStringer();
 
-        jsonObject.object().key("dbkeysresult").value(id).key("results").array();
+        jsonObject.object().key("query_id").value(id).key("results").array();
 
         String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(table, "");
         for (String dbKey : dbKeys) {
@@ -266,14 +266,14 @@ public class PanelSocketServer extends WebSocketServer {
     private void doDBUpdate(String id, String table, String key, String value) {
         JSONStringer jsonObject = new JSONStringer();
         PhantomBot.instance().getDataStore().set(table, key, value);
-        jsonObject.object().key("dbupdateresult").value(id).endObject();
+        jsonObject.object().key("query_id").value(id).endObject();
         sendToAll(jsonObject.toString());
     }
 
     private void doDBDelKey(String id, String table, String key) {
         JSONStringer jsonObject = new JSONStringer();
         PhantomBot.instance().getDataStore().del(table, key);
-        jsonObject.object().key("dbdelkeyresult").value(id).endObject();
+        jsonObject.object().key("query_id").value(id).endObject();
         sendToAll(jsonObject.toString());
     }
 

@@ -59,6 +59,18 @@
         </div>
     </div>
 
+    <h3>Group Point Configuration</h3>
+    <div>
+        The settings defined here override the global settings. Note that a value of "-1" indicates that the global
+        setting is to be used.<br><br>
+        <strong>Group Point Configuration - Online</strong><br>
+        <div id="groupPointsTable" style="height: 150px; overflow: auto;" />
+        <br>
+
+        <strong>Group Point Configuration - Offline</strong><br>
+        <div id="groupPointsOfflineTable" style="height: 150px; overflow: auto;" />
+    </div>
+
     <h3>Modify User Points</h3>
     <div>
         <div class="form-group" onkeypress="return event.keyCode != 13">
@@ -81,7 +93,7 @@
         <br>
 
         <div>
-            User Points Table
+            <strong>User Points Table</strong>
             <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('points_desc')">
                 <i class="fa fa-money" /><i class="fa fa-arrow-down" />
             </button>
