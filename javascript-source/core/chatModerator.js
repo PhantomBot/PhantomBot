@@ -209,7 +209,7 @@
     /**
      * @function panelLog
      */
-    function panelLog() {
+    function panelLog(user) {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
             $.panelDB.updateModLinesDB(user);
         }
