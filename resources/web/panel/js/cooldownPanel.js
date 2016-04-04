@@ -43,7 +43,7 @@
         }
 
         // Check for dbkeysresult queries
-        if (msgObject['dbkeysresult'] != undefined) {
+        if (panelHasQuery(msgObject)) {
             var command = "",
                 time = "",
                 globalCooldown = "",
@@ -53,25 +53,25 @@
                 html = "",
                 foundData = false;
 
-            if (msgObject['dbkeysresult'].localeCompare('cooldown_cooldowns') == 0) {
+            if (panelCheckQuery(msgObject, 'cooldown_cooldowns')) {
                 html = "<table>";
                 for (idx in msgObject['results']) {
                     command = msgObject['results'][idx]['key'];
                     time = msgObject['results'][idx]['value'];
 
-                    if (command.localeCompare('globalCooldown') == 0) {
+                    if (panelMatch(command, 'globalCooldown')) {
                         globalCooldown = msgObject['results'][idx]['value'];
                         continue;
                     }
-                    if (command.localeCompare('globalCooldownTime') == 0) {
+                    if (panelMatch(command, 'globalCooldownTime')) {
                         globalCooldownTime = msgObject['results'][idx]['value'];
                         continue;
                     }
-                    if (command.localeCompare('modCooldown') == 0) {
+                    if (panelMatch(command, 'modCooldown')) {
                         modCooldown = msgObject['results'][idx]['value'];
                         continue;
                     }
-                    if (command.localeCompare('perUserCooldown') == 0) {
+                    if (panelMatch(command, 'perUserCooldown')) {
                         perUserCooldown  = msgObject['results'][idx]['value'];
                         continue;
                     }

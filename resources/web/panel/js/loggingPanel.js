@@ -44,10 +44,10 @@
         }
 
         // Check for dbkeysresult queries
-        if (msgObject['dbqueryresult'] != undefined) {
+        if (panelHasQuery(msgObject)) {
             var mode;
-            if (msgObject['dbqueryresult'].localeCompare('logging_mode') == 0) {
-                loggingMode = (msgObject['result']['loggingEnabled'].localeCompare('true') == 0);
+            if (panelCheckQuery(msgObject, 'logging_mode')) {
+                loggingMode = (panelMatch(msgObject['results']['loggingEnabled'], 'true'));
                 $("#loggingMode").html(modeIcon[loggingMode]);
             }
         }

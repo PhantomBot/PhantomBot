@@ -105,6 +105,7 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('time_') !== -1) $.timeOnMessage(e);
     if (e.data.indexOf('points_') !== -1) $.pointsOnMessage(e);
     if (e.data.indexOf('viewers_') !== -1) $.viewersOnMessage(e);
+    if (e.data.indexOf('ranks_') !== -1) $.ranksOnMessage(e);
 
     if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
 }
@@ -116,14 +117,14 @@ connection.onmessage = function(e) {
  * @param {Number} timeout (0 = infinite, else timeout in ms)
  */
 function newPanelAlert(message, type, timeout) {
-  debugMsg("newPanelAlert(" + message + ", " + type + ", " + timeout + ")");
-  $(".alert").fadeIn(1000);
-  $("#newPanelAlert").show().html('<div class="alert alert-' + type + '"><button type="button" '+
-                      'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 
-                       message + '</span></div>');
-  if (timeout != 0) {
-      $(".alert-" + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
-  }
+    debugMsg("newPanelAlert(" + message + ", " + type + ", " + timeout + ")");
+    $(".alert").fadeIn(1000);
+    $("#newPanelAlert").show().html('<div class="alert alert-' + type + '"><button type="button" '+
+                        'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 
+                         message + '</span></div>');
+    if (timeout != 0) {
+        $(".alert-" + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
+    }
 }
 
 /**
@@ -200,4 +201,55 @@ function sendDBDelete(unique_id, table, key) {
     jsonObject["dbdelkey"] = unique_id;
     jsonObject["delkey"] = { "table" : table, "key" : key };
     connection.send(JSON.stringify(jsonObject));
+}
+
+/**
+ * @function panelStrcmp
+ * @param {String} a
+ * @param {String} b
+ * @return {Number} match == 0; no match != 0
+ *
+ * Note that the below will not work on interational strings, only 
+ * ASCII compares.  If international strings are in play, then
+ * localeCompare should be used instead.
+ */
+function panelStrcmp(a, b) {
+    return ( ( a == b ) ? 0 : ( ( a > b ) ? 1 : -1 ) );
+}
+
+/**
+ * @function panelMatch
+ * @param {String} a
+ * @param {String} b
+ * @return {Boolean}
+ */
+function panelMatch(a, b) {
+   return (panelStrcmp(a, b) === 0);
+}
+
+/**
+ * @function panelIsDefined
+ * @param {Object}
+ * @return {Boolean}
+ */
+function panelIsDefined(obj) {
+    return (obj !== undefined);
+}
+
+/**
+ * @function panelHasQuery
+ * @param {Object}
+ * @return {Boolean}
+ */
+function panelHasQuery(obj) {
+    return (panelIsDefined(obj['query_id']));
+}
+
+/**
+ * @function panelCheckQuery
+ * @param {Object}
+ * @return {Boolean}
+ */
+function panelCheckQuery(obj, query_id) {
+    return (panelMatch(obj['query_id'], query_id));
 }

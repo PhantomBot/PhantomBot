@@ -39,18 +39,18 @@
         }
 
         // Check for dbkeysresult queries
-        if (msgObject['dbkeysresult'] != undefined) {
+        if (panelHasQuery(msgObject)) {
             var module = "",
                 moduleEnabled = "",
                 html = "<table>",
                 pill = "";
 
-            if (msgObject['dbkeysresult'].localeCompare('modules_modules') == 0) {
+            if (panelCheckQuery(msgObject, 'modules_modules')) {
                 for (idx in msgObject['results']) {
                     module = msgObject['results'][idx]['key'];
                     moduleEnabled = msgObject['results'][idx]['value'];
                     if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
-                        if (moduleEnabled.localeCompare('true') == 0) {
+                        if (panelMatch(moduleEnabled, 'true')) {
                             pill = "<span class=\"greenPill-sm\">Enabled&nbsp;</span>";
                         } else {
                             pill = "<span class=\"redPill-sm\">Disabled</span>";

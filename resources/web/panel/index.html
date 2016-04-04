@@ -62,6 +62,7 @@
                 <li> <a href="#time">Time</a> </li>
                 <li> <a href="#points">Points</a> </li>
                 <li> <a href="#viewers">Viewers</a> </li>
+                <li> <a href="#ranks">Ranks</a> </li>
 
                 <li> <a href="#audio">Audio</a> </li>
                 <li> <a href="#help">Help</a> </li>
@@ -97,22 +98,30 @@
                 <script type="text/javascript" src="panel/js/loggingPanel.js"></script>
             </div>
 
-            <div role="time" class="tab-pane" id="time">
+            <div role="tabpanel" class="tab-pane" id="time">
                 <div id="timePanel"></div>
                 <script type="text/javascript" src="panel/js/timePanel.js"></script>
             </div>
 
-            <div role="time" class="tab-pane" id="points">
+            <div role="tabpanel" class="tab-pane" id="points">
                 <div id="pointsPanel"></div>
                 <script type="text/javascript" src="panel/js/pointsPanel.js"></script>
             </div>
 
-            <div role="time" class="tab-pane" id="viewers">
+            <div role="tabpanel" class="tab-pane" id="viewers">
                 <div id="viewersPanel"></div>
                 <script type="text/javascript" src="panel/js/viewersPanel.js"></script>
             </div>
 
-            <div role="time" class="tab-pane" id="audio">
+            <div role="tabpanel" class="tab-pane" id="ranks">
+                <div id="ranksPanel"></div>
+                <script type="text/javascript" src="panel/js/ranksPanel.js"></script>
+            </div>
+
+
+            <!-- Must be the last two -->
+
+            <div role="tabpanel" class="tab-pane" id="audio">
                 <div id="audioPanel"></div>
                 <script type="text/javascript" src="panel/js/audioPanel.js"></script>
             </div>
@@ -124,6 +133,13 @@
         </div>
 
         <script>$('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');</script>
+
+        <div id="chatsidebar" name="chat">
+            <script>
+                $("#chatsidebar").html("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\"" +
+                                       "src=\"http://www.twitch.tv/" + getChannelName() + "/chat?popout=\">");
+            </script>
+        </div>
 
         <div id="copyright">
             Control Panel by: 

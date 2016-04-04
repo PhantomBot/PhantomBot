@@ -46,12 +46,12 @@
         }
 
         // Check for dbkeysresult queries
-        if (msgObject['dbkeysresult'] != undefined) {
+        if (panelHasQuery(msgObject)) {
             var commandName = "",
                 commandValue = "",
                 html = "<table>";
 
-            if (msgObject['dbkeysresult'].localeCompare('commands_commands') == 0) {
+            if (panelCheckQuery(msgObject, 'commands_commands')) {
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
@@ -69,7 +69,7 @@
                 $("#customCommandsList").html(html);
             }
 
-            if (msgObject['dbkeysresult'].localeCompare('commands_aliases') == 0) {
+            if (panelCheckQuery(msgObject, 'commands_aliases')) {
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
@@ -87,7 +87,7 @@
                 $("#aliasCommandsList").html(html);
             }
 
-            if (msgObject['dbkeysresult'].localeCompare('commands_pricecom') == 0) {
+            if (panelCheckQuery(msgObject, 'commands_pricecom')) {
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
@@ -106,7 +106,7 @@
                 $("#priceCommandsList").html(html);
             }
 
-            if (msgObject['dbkeysresult'].localeCompare('commands_permcom') == 0) {
+            if (panelCheckQuery(msgObject, 'commands_permcom')) {
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];

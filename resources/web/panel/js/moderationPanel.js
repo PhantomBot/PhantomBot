@@ -76,12 +76,12 @@
         }
 
         // Check for dbkeysresult queries
-        if (msgObject['dbkeysresult'] != undefined) {
+        if (panelHasQuery(msgObject)) {
             var modSetting = "",
                 modValue = "",
                 html = "";
 
-            if (msgObject['dbkeysresult'].localeCompare('moderation_blacklist') == 0) {
+            if (panelCheckQuery(msgObject, 'moderation_blacklist')) {
                 if (msgObject['results'].length > 0) {
                     html = "<table>";
                     for (idx in msgObject['results']) {
@@ -104,7 +104,7 @@
                 $("#blacklistModSettings").html(html);
             }
 
-            if (msgObject['dbkeysresult'].localeCompare('moderation_whitelist') == 0) {
+            if (panelCheckQuery(msgObject, 'moderation_whitelist')) {
                 if (msgObject['results'].length > 0) {
                     html = "<table>";
                     for (idx in msgObject['results']) {
@@ -127,7 +127,7 @@
                 $("#whitelistModSettings").html(html);
             }
 
-            if (msgObject['dbkeysresult'].localeCompare('moderation_chatmod') == 0) {
+            if (panelCheckQuery(msgObject, 'moderation_chatmod')) {
 
                 /**
                  * Update the text and number based fields.

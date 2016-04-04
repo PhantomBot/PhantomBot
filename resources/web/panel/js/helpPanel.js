@@ -39,10 +39,10 @@
         }
 
         // Check for dbkeysresult queries
-        if (msgObject['versionresult'] != undefined) {
+        if (msgObject['versionresult'] !== undefined) {
             var version = "";
 
-            if (msgObject['versionresult'].localeCompare('help_version') == 0) {
+            if (panelMatch(msgObject['versionresult'], 'help_version')) {
                 version = msgObject['version'];
             } else {
                 version = "PhantomBot 2";
