@@ -119,6 +119,7 @@
 
         var newDefaultDisabledModules = [
             './handlers/gameWispHandler.js',
+            './commands/deathctrCommand.js',
         ]; //ADD NEW MODULES IN 2.0.7 TO BE DISABLED PLEASE.
 
         $.consoleLn('Disabling new default modules...');
