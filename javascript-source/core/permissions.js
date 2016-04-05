@@ -43,7 +43,7 @@
      * @returns {boolean}
      */
     function isOwner(username) {
-        return username.equalsIgnoreCase($.ownerName);
+        return username.equalsIgnoreCase($.ownerName) || username.equalsIgnoreCase($.botName);
     };
 
 
@@ -710,12 +710,12 @@
                 return;
             }
 
-            if (groupId < $.getUserGroupId(sender)) {
+            if (!$.isOwner(sender) && groupId < $.getUserGroupId(sender)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.error.abovegroup'));
                 return;
             }
 
-            if (groupId == $.getUserGroupId(sender)) {
+            if (!$.isOwner(sender) && groupId == $.getUserGroupId(sender)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.error.samegroup'));
                 return;
             }
