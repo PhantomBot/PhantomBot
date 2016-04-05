@@ -6,6 +6,8 @@ Dowload your copy over on the [Releases](https://github.com/PhantomBot/PhantomBo
 
 *Credits for v1.6.6.2 and older go to everyone who contributed in various ways to the repo of GloriousEggroll. Notably gmt2001, and GloriousEggroll himself. From v2.0 and onward it will be purely the efforts of the team outlined below.*
 
+*Honorable mention to Juraji for the massive script overhaul and core work.*
+
 ##Prerequisites
 - [Java 7/8](https://www.java.com/en/download/)
 
@@ -20,7 +22,6 @@ These are the people who will provide help for specific things related to the bo
 - **@Zelakto**: Website, General bot use
 - **@SimeonF**: Bot core, Javascript modules, General bot use
 - **@IllusionaryOne**: Bot core, Javascript modules, General bot use
-- **@Juraji**: Bot core, Javascript modules, General bot use, [Webpanel](https://github.com/PhantomBot/PhantomBot-WebPanel) & [PHP Connector](https://github.com/PhantomBot/PhantomBot-PHP-Connector)
 
 ##TravisCI
 The Java sources are tested against:
