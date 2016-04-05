@@ -97,14 +97,14 @@
     function say(message) {
         $.consoleLn('[CHAT] ' + message);
         if ($.channel) {
-            if (!message.substr(0, 1).equals('.')) {
+            if (message.substr(0, 1).equals('.')) {
                 $.channel.say(message);
                 return;
             }
 
             if ($.getIniDbBoolean('settings', 'response_@chat')) {
                 if ($.getIniDbBoolean('settings', 'response_action') && !message.substr(0, 2).equals('/w')) {
-                    $.channel.say('/me ' + message.replace(/^\/me/, ''));
+                    $.channel.say('/me ' + message);
                 } else {
                     $.channel.say(message);
                 }
