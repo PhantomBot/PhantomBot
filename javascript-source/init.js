@@ -582,8 +582,15 @@
 
             command = event.getCommand().toLowerCase();
             if (!$.commandExists(command)) {
-                consoleDebug('that command does not exists.');
+                consoleDebug('command: !' + command + ' does not exists.');
                 return;
+            }
+
+            if ($.inidb.exists('disabledCommands', command)) {
+                if ($.getIniDbBoolean('disabledCommands', command)) {
+                    consoleDebug('command: !' + command + ' was not sent because its disabled.');
+                    return;
+                }
             }
             
             if (!$.isAdmin(sender)) {
