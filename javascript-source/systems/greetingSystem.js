@@ -9,9 +9,9 @@
  * - (name) The username corresponding to the target user
  */
 (function() {
-    var autoGreetEnabled = ($.inidb.exists('greeting', 'autoGreetEnabled') ? $.getIniDbBoolean('greeting', 'autoGreetEnabled') : false),
-        defaultJoinMessage = ($.inidb.exists('greeting', 'defaultJoin') ? $.inidb.get('greeting', 'defaultJoin') : ''),
-        greetingCooldown = parseInt($.inidb.exists('greeting', 'cooldown') ? $.inidb.get('greeting', 'cooldown') : (6 * 36e5)); // 6 hours
+    var autoGreetEnabled = $.getSetIniDbBoolean('greeting', 'autoGreetEnabled', false),
+        defaultJoinMessage = $.getSetIniDbString('greeting', 'defaultJoin', ''),
+        greetingCooldown = $.getSetIniDbNumber('greeting', 'cooldown', (6 * 36e5)); // 6 hours
 
     /**
      * @event ircChannelJoin
@@ -20,8 +20,8 @@
         if ($.isOnline($.channelName)) {
             var sender = event.getUser().toLowerCase(),
                 username = $.resolveRank(sender),
-                message = ($.inidb.exists('greeting', sender) ? $.inidb.get('greeting', sender) : ''),
-                lastUserGreeting = ($.inidb.exists('greetingCoolDown', sender) ? parseInt($.inidb.get('greetingCoolDown', sender)) : 0),
+                message = $.getIniDbString('greeting', sender, ''),
+                lastUserGreeting = $.getIniDbNumber('greetingCoolDown', sender, 0),
                 now = $.systemTime();
 
             if (lastUserGreeting + greetingCooldown < now) {
@@ -37,6 +37,15 @@
     });
 
     /**
+     * @function greetingspanelupdate
+     */
+    function greetingspanelupdate() {
+        autoGreetEnabled = $.getIniDbBoolean('greeting', 'autoGreetEnabled');
+        defaultJoinMessage = $.getIniDbString('greeting', 'defaultJoin');
+        greetingCooldown = $.getIniDbNumber('greeting', 'cooldown');
+    }
+
+    /**
      * @event command
      */
     $.bind('command', function(event) {
@@ -46,7 +55,12 @@
             action = args[0],
             cooldown,
             message;
-
+        
+        /* Hidden from command list, for panel only. */
+        if (command.equalsIgnoreCase('greetingspanelupdate')) {
+            greetingspanelupdate();
+        }
+    
         /**
          * @commandpath greeting - Base command for controlling greetings.
          */
@@ -148,6 +162,7 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/greetingSystem.js')) {
+            $.registerChatCommand('./systems/greetingSystem.js', 'greetingspanelupdate', 1);
             $.registerChatCommand('./systems/greetingSystem.js', 'greeting', 6);
             $.registerChatSubcommand('greeting', 'cooldown', 1);
             $.registerChatSubcommand('greeting', 'toggledefault', 2);

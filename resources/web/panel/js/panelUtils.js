@@ -24,6 +24,7 @@
  * Purpose  : Contains utilities for the control panel.
  */
 var DEBUG_MODE = false;
+var PANEL_VERSION = "0.5 (Alpha)";
 
 var url = window.location.host.split(":");
 var addr = 'ws://' + url[0] + ':' + getPanelPort();
@@ -100,12 +101,11 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('modules_') !== -1) $.modulesOnMessage(e);
     if (e.data.indexOf('commands_') !== -1) $.commandsOnMessage(e);
     if (e.data.indexOf('moderation_') !== -1) $.moderationOnMessage(e);
-    if (e.data.indexOf('cooldown_') !== -1) $.cooldownOnMessage(e);
-    if (e.data.indexOf('logging_') !== -1) $.loggingOnMessage(e);
     if (e.data.indexOf('time_') !== -1) $.timeOnMessage(e);
     if (e.data.indexOf('points_') !== -1) $.pointsOnMessage(e);
     if (e.data.indexOf('viewers_') !== -1) $.viewersOnMessage(e);
     if (e.data.indexOf('ranks_') !== -1) $.ranksOnMessage(e);
+    if (e.data.indexOf('greetings_') !== -1) $.greetingsOnMessage(e);
 
     if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
 }
@@ -252,4 +252,17 @@ function panelHasQuery(obj) {
  */
 function panelCheckQuery(obj, query_id) {
     return (panelMatch(obj['query_id'], query_id));
+}
+
+/**
+ * @function hideLoadingImage
+ * Callback to hide the chat loading image and to enable the chat
+ * to be resizable.
+ */
+function hideLoadingImage() {
+    setTimeout(function() {
+        $("#iframeLoader").hide();
+        $("#chat").fadeIn(1000);
+        $(function() { $("#chatsidebar").resizable(); });
+    }, 500);
 }

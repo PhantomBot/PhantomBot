@@ -29,9 +29,18 @@
         whisperMode = false,
         responseMode = false,
         meMode = false,
-        pauseMode = false;
-        toutGraphData = [];
-        chatGraphData = [];
+        pauseMode = false,
+        toutGraphData = [],
+        chatGraphData = [],
+        loggingMode = false,
+        modeIcon = [],
+        settingIcon = [];
+
+        modeIcon['false'] = "<i style=\"color: magenta\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: magenta\" class=\"fa fa-circle\" />";
+
+        settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
+        settingIcon['true'] = "<i class=\"fa fa-circle\" />";
 
 
     /*
@@ -60,6 +69,40 @@
                 } else {
                     $("#showHighlights").html(htmlStr);
                 }
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_modules')) {
+                var html = "",
+                    module = "",
+                    moduleEnabled = "";
+
+                for (idx in msgObject['results']) {
+                    module = msgObject['results'][idx]['key'];
+                    moduleEnabled = msgObject['results'][idx]['value'];
+                    if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
+                        html += "<tr class=\"textList\">" +
+                                "    <td>" + module + "</td>" +
+
+                                "    <td style=\"width: 25px\">" +
+                                "        <div id=\"moduleStatus_" + idx + "\">" + modeIcon[moduleEnabled] + "</div>" +
+                                "    </td>" +
+
+                                "    <td style=\"width: 25px\">" +
+                                "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
+                                "        </div>" +
+                                "    </td>" +
+
+                                "    <td style=\"width: 25px\">" +
+                                "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
+                                "        </div>" +
+                                "    </td>" +
+                                "</tr>";
+                    }
+                }
+                html += "</table>";
+                $("#modulesList").html(html);
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_chatCount')) {
@@ -188,6 +231,14 @@
                 if (panelCheckQuery(msgObject, 'dashboard_viewerCount')) {
                     $("#viewerCount").html("<span class=\"bluePill\">Viewers: " + msgObject['results']['viewerCount'] + "</span>");
                 }
+            } else {
+                $("#streamUptime").html('');
+                $("#viewerCount").html('');
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_loggingMode')) {
+                loggingMode = (panelMatch(msgObject['results']['loggingEnabled'], 'true'));
+                $("#loggingMode").html(modeIcon[loggingMode]);
             }
 
         }
@@ -203,7 +254,9 @@
         sendDBQuery("dashboard_muteMode", "settings", "response_@chat");
         sendDBQuery("dashboard_toggleMe", "settings", "response_action");
         sendDBQuery("dashboard_commandsPaused", "commandPause", "commandsPaused");
+        sendDBQuery("dashboard_loggingMode", "settings", "loggingEnabled");
         sendDBKeys("dashboard_highlights", "highlights");
+        sendDBKeys("dashboard_modules", "modules");
 
         if (!panelStatsEnabled) {
             sendDBQuery("dashboard_panelStatsEnabled", "panelstats", "enabled");
@@ -214,6 +267,36 @@
             sendDBKeys("dashboard_chatCount", "panelchatstats");
             sendDBKeys("dashboard_modCount", "panelmodstats");
         }
+    }
+
+    /** 
+     * @function enableModule
+     * @param {String} module
+     */
+    function enableModule(module, idx) {
+        $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("module enable " + module);
+        setTimeout(function() { doQuery(); }, 1000);
+    }
+
+    /**
+     * @function disableModule
+     * @param {String} module
+     */
+    function disableModule(module, idx) {
+        $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("module disable " + module);
+        setTimeout(function() { doQuery(); }, 1000);
+    }
+
+    /**
+     * @function changeLoggingStatus
+     * @param {String} mode
+     */
+    function changeLoggingStatus(mode) {
+        $("#loggingMode").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("log " + mode);
+        setTimeout(function() { doQuery(); }, 500);
     }
 
     /**
@@ -267,7 +350,7 @@
      * @function setHighlight
      */
     function setHighlight() {
-        $("#showHighlights").html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("highlight " + $("#highlightInput").val());
         $("#highlightInput").val('');
         setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, 500);
@@ -277,7 +360,7 @@
      * @function clearHighlights
      */
     function clearHighlights() {
-        $("#showHighlights").html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("clearhighlights");
         setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, 500);
     }
@@ -321,10 +404,10 @@
      * @function toggleTwitchChat
      */
     function toggleTwitchChat() {
-        if (panelMatch(document.getElementById("chatsidebar").style.display, 'none')) {
-            document.getElementById("chatsidebar").style.display = "block";
+        if ($("#chatsidebar").is(":visible")) {
+            $("#chatsidebar").fadeOut(1000);
         } else {
-            document.getElementById("chatsidebar").style.display = "none";
+            $("#chatsidebar").fadeIn(1000);
         }
     }
 
@@ -364,4 +447,7 @@
     $.multiLinkTimerOff = multiLinkTimerOff;
     $.toggleCommand = toggleCommand;
     $.toggleTwitchChat = toggleTwitchChat;
+    $.changeLoggingStatus = changeLoggingStatus;
+    $.enableModule = enableModule;
+    $.disableModule = disableModule;
 })();

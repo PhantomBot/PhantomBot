@@ -14,9 +14,19 @@
     var lastFollowTime = 0,
         followTrain = 0,
         announceFollows = false,
-        followReward = ($.inidb.exists('settings', 'followReward') ? parseInt($.inidb.get('settings', 'followReward')) : 100),
-        followMessage = ($.inidb.exists('settings', 'followMessage') ? $.inidb.get('settings', 'followMessage') : $.lang.get('followhandler.follow.message')),
-        followToggle = ($.inidb.exists('settings', 'followToggle') ? $.inidb.get('settings', 'followToggle') : false);
+        followReward = $.getSetIniDbNumber('settings', 'followReward', 100),
+        followMessage = $.getSetIniDbString('settings', 'followMessage', $.lang.get('followhandler.follow.message')),
+        followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false);
+
+    /**
+     * @function updateFollowConfig
+     */
+    function updateFollowConfig()
+    {
+        followReward = $.getIniDbNumber('settings', 'followReward'),
+        followMessage = $.getIniDbString('settings', 'followMessage'),
+        followToggle = $.getIniDbBoolean('settings', 'followToggle');
+    }
 
     /**
      * @function checkFollowTrain
@@ -112,6 +122,11 @@
             streamerGame,
             streamerURL,
             shoutout;
+
+        /* Do not show command on the command list, for the panel only. */
+        if (command.equalsIgnoreCase('followerpanelupdate')) {
+            updateFollowConfig();
+        }
 
         /**
          * @commandpath followreward [amount] - Set the points reward for following
@@ -230,6 +245,7 @@
             $.registerChatCommand('./handlers/followHandler.js', 'follow', 2);
             $.registerChatCommand('./handlers/followHandler.js', 'shoutout', 2);
             $.registerChatCommand('./handlers/followHandler.js', 'caster', 2);
+            $.registerChatCommand('./handlers/followHandler.js', 'followerpanelupdate', 1);
         }
     });
 })();

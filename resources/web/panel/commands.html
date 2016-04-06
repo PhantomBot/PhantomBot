@@ -24,24 +24,51 @@
 <div id="customCommandsAccordion">
     <h3>Add/Edit Custom Command and Aliases</h3>
     <div>
-        Add and edit custom commands from here. The following tags may be used as well:<br><br>
-        <div style="font-size: 90%">
-        <ul>
-          <li>(sender) - User that ran the command</li>
-          <li>(@sender) - User that ran the command, prefixed with '@'</li>
-          <li>(baresender) - User that ran the command, all lowercase</li>
-          <li>(touser) - Returns first parameter passed command</li>
-          <li>(count) - Number of times command ran</li>
-          <li>(random) - Chooses a random person in the channel</li>
-          <li>(pointname) - Display pointname</li>
-          <li>(uptime) - Display stream uptime</li>
-          <li>(game) - Display game</li>
-          <li>(status) - Display the status (title of stream)</li>
-          <li>(follows) - Display number of followers</li>
-          <li>(price) - Display price of the comamnd</li>
-          <li>(customapi [requesturl]) - Call a remote URL</li>
-          <li>(customapijson URL key | object.key | object.object...key | {literal string} ...) - Call a remote URL that returns JSON</li>
-        </ul>
+
+        <div id="tagHelpDialog" title="Custom Command Tags" style="font-size: 90%">
+            <table>
+                <tr>
+                    <td>(sender) </td><td> User that ran the command<td>
+                </tr><tr>
+                    <td>(@sender) </td><td> User that ran the command, prefixed with '@'<td>
+                </tr><tr>
+                    <td>(baresender) </td><td> User that ran the command, all lowercase<td>
+                </tr><tr>
+                    <td>(touser) </td><td> Returns first parameter passed command<td>
+                </tr><tr>
+                    <td>(count) </td><td> Number of times command ran<td>
+                </tr><tr>
+                    <td>(random) </td><td> Chooses a random person in the channel<td>
+                </tr><tr>
+                    <td>(pointname) </td><td> Display pointname<td>
+                </tr><tr>
+                    <td>(uptime) </td><td> Display stream uptime<td>
+                </tr><tr>
+                    <td>(game) </td><td> Display game<td>
+                </tr><tr>
+                    <td>(status) </td><td> Display the status (title of stream)<td>
+                </tr><tr>
+                    <td>(follows) </td><td> Display number of followers<td>
+                </tr><tr>
+                    <td>(price) </td><td> Display price of the comamnd<td>
+                </tr><tr>
+                    <td>(customapi [requesturl]) </td><td> Call a remote URL<td>
+                </tr><tr>
+                    <td>(customapijson URL key | {literal string} ...) </td>
+                    <td> Call a remote URL that returns JSON. key or object.key or object.object.key to access JSON data.
+                </tr>
+            </table>
+        </div>
+
+        <script>
+            $("#tagHelpDialog").dialog({ autoOpen: false, maxHeight: 400, maxWidth: 400 });
+        </script>
+
+        <div>
+            Add and edit custom commands from here, custom commands may use tags.
+            <button type="button" class="btn btn-primary btn-xs inline pull-right"
+                     onclick="$('#tagHelpDialog').dialog('open')"><small>Tag Help</small></button>
+            <br><br>
         </div>
 
         <form role="form">
@@ -98,7 +125,65 @@
         <strong>Current Command Prices</strong><br><br>
         <div id="priceCommandsList" style="height: 400px; overflow: auto;" />
     </div>
+
+    <h3>Global Cooldown Settings</h3>
+    <div style="height: 220px;">
+        <table>
+            <tr class="textList">
+                <td>Global Cooldown</td>
+                <td style="width: 25px"><div id="toggleGlobalCooldown" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGlobalCooldown();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Per-User Cooldown</td>
+                <td style="width: 25px"><div id="togglePerUserCooldown" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.togglePerUserCooldown();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Mod Cooldown</td>
+                <td style="width: 25px"><div id="toggleModCooldown" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleModCooldown();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="globalCooldownTime">Global Cooldown Time</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setGlobalCooldownTime()">Submit</button>
+                <input type="number" min="0" class="form-control" id="globalCooldownTimeInput" placeholder="seconds" />
+            </div>
+        </form>
+    </div>
+
+    <h3>Command Cooldowns</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="cooldownCmd">Cooldown Command</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldown()">Submit</button>
+                <input type="text" class="form-control" id="cooldownCmdInput" placeholder="command_name seconds" />
+            </div>
+        </form>
+
+        <strong>Commands with Cooldowns</strong>
+        <div id="cooldownList" style="height: 300px; overflow: auto;" />
+    </div>
+
 </div>
 
 <!-- Run the Acordion -->
 <script>$("#customCommandsAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>

@@ -24,51 +24,97 @@
  * Drives the Audio Panel
  */
 (function() {
+
+    /**
+     * Sounds Object
+     *
+     * name is used by Ion.Sound to find files to play.
+     * desc is used to generate the buttons for the audio panel.
+     */
+    var sounds = [
+        { name: "beer_can_opening",    desc: "Beer Can Opening" },
+        { name: "bell_ring",           desc: "Bell Ring" },
+        { name: "branch_break",        desc: "Branch Break" },
+        { name: "button_click",        desc: "Button Click" },
+        { name: "button_click_on",     desc: "Button Click On" },
+        { name: "button_push",         desc: "Button Push" },
+        { name: "button_tiny",         desc: "Button Tiny" },
+        { name: "camera_flashing",     desc: "Camera Flashing" },
+        { name: "camera_flashing_2",   desc: "Camera Flashing 2" },
+        { name: "cd_tray",             desc: "CD Tray" },
+        { name: "computer_error",      desc: "Computer Error" },
+        { name: "door_bell",           desc: "Door Bell" },
+        { name: "door_bump",           desc: "Door Bump" },
+        { name: "glass",               desc: "Glass" },
+        { name: "keyboard_desk",       desc: "Keyboard Desk" },
+        { name: "light_bulb_breaking", desc: "Light Bulb Breaking" },
+        { name: "metal_plate",         desc: "Metal Plate" },
+        { name: "metal_plate_2",       desc: "Metal Plate 2" },
+        { name: "pop_cork",            desc: "Pop Cork" },
+        { name: "snap",                desc: "Snap" },
+        { name: "staple_gun",          desc: "Staple Gun" },
+        { name: "tap",                 desc: "Tap" },
+        { name: "water_droplet_2",     desc: "Water Droplet 2" },
+        { name: "water_droplet_3",     desc: "Water Droplet 3" },
+        { name: "water_droplet",       desc: "Water Droplet" },
+        { name: "sweetcrap",           desc: "Sweet Merciful Crap" },
+        { name: "badumtiss",           desc: "Ba-Dum-Tiss!" },
+        { name: "whaawhaa",            desc: "Whaa Whaa Whaa" },
+        { name: "nobodycares",         desc: "Nobody Cares" }
+    ];
+
     // Configure the sound panel.
     $(document).ready(function() {
         ion.sound({
-            sounds: [
-                { name: "beer_can_opening" },
-                { name: "bell_ring" },
-                { name: "branch_break" },
-                { name: "button_click" },
-                { name: "button_click_on" },
-                { name: "button_push" },
-                { name: "button_tiny" },
-                { name: "camera_flashing_2" },
-                { name: "camera_flashing" },
-                { name: "cd_tray" },
-                { name: "computer_error" },
-                { name: "door_bell" },
-                { name: "door_bump" },
-                { name: "glass" },
-                { name: "keyboard_desk" },
-                { name: "light_bulb_breaking" },
-                { name: "metal_plate_2" },
-                { name: "metal_plate" },
-                { name: "pop_cork" },
-                { name: "snap" },
-                { name: "staple_gun" },
-                { name: "tap" },
-                { name: "water_droplet_2" },
-                { name: "water_droplet_3" },
-                { name: "water_droplet" }
-            ],
-    
+            sounds: sounds,
             path: "/panel/js/ion-sound/sounds/",
             preload: true,
             volume: 1.0,
-            ready_callback: ionSoundLoaded
+            ready_callback: ionSoundLoaded,
+            ended_callback: clearIonSoundPlaying 
         });
     });
+
+    /**
+     * @function loadAudioPanel
+     */
+    function loadAudioPanel() {
+        $("#audioPanelButtons").html('');
+        for (var idx in sounds) {
+            $("#audioPanelButtons").append("<button type=\"button\" class=\"soundButton\"" +
+                                           "onclick=\"$.playIonSound('" + sounds[idx]['name'] + "');\">" +
+                                           sounds[idx]['desc'] + "</button>");
+        }
+    }
 
     /**
      * @function ionSoundLoaded
      */
     function ionSoundLoaded() {
         $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
+        loadAudioPanel();
+    }
+
+    /**
+     * @function playIonSound
+     * @param {String} name
+     */
+    function playIonSound(name)
+    {
+        ion.sound.play(name);
+        $("#ionSoundPlaying").html('<i class="fa fa-volume-up fa-3x" />');
+    }
+
+    /**
+     * @function clearIonSoundPlaying
+     */
+    function clearIonSoundPlaying() {
+        $("#ionSoundPlaying").html('');
     }
 
     // Import the HTML file for this panel.
     $("#audioPanel").load("/panel/audio.html");
+
+    // Export functions to HTML.
+    $.playIonSound = playIonSound;
 })();

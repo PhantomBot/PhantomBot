@@ -668,6 +668,14 @@ public class PhantomBot implements Listener {
         String message = msg.getMsg();
         boolean changed = false;
 
+        if (message.equals("testsub")) {
+            EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "twitchnotify", "testuser just subscribed!"));
+        }
+
+        if (message.equals("testresub")) {
+            EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "twitchnotify", "testuser just subscribed for 2 months in a row!"));
+        }
+
         if (message.equals("debugon")) {
             PhantomBot.setDebugging(true);
         }

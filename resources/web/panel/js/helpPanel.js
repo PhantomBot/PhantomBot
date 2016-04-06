@@ -40,14 +40,24 @@
 
         // Check for dbkeysresult queries
         if (msgObject['versionresult'] !== undefined) {
-            var version = "";
+            var version = "",
+                panelVersion = "Control Panel Version " + PANEL_VERSION;
 
             if (panelMatch(msgObject['versionresult'], 'help_version')) {
                 version = msgObject['version'];
             } else {
                 version = "PhantomBot 2";
             }
-            $("#botVersion").html("<strong>" + version + "</strong>");
+            $("#botVersion").html("<strong>" + version + "<br>" + panelVersion + "</strong><br><br>" +
+                                  "<small>" +
+                                  "    <strong>Control Panel Software</strong><br>" +
+                                  "    jQuery " + $().jquery + "<br>" + 
+                                  "    jQuery UI " + $.ui.version + "<br>" +
+                                  "    Bootstrap 3.3.6<br>" +
+                                  "    Font Awesome 4.5.0<br>" +
+                                  "    Ion.Sound 3.0.7<br>" +
+                                  "    FlotCharts 0.8.3<br>" +
+                                  "</small>");
         }
     }
 
