@@ -100,6 +100,32 @@
         </table>
     </div>
 
+    <h3>Enable/Disable Logging</h3>
+    <div>
+        <table>
+            <tr class="textList">
+                <td>Logging</td>
+                <td style="width: 25px"><div id="loggingMode" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button"
+                         onclick="$.changeLoggingStatus('enable');"><i class="fa fa-circle" />
+                     </div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button"
+                         onclick="$.changeLoggingStatus('disable');"><i class="fa fa-circle-o" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>Modules</h3>
+    <div>
+        <div id="modulesList" style="height: 300px; overflow: auto;" />
+    </div>
+
+
     <h3>Highlights</h3>
     <div>
         Make a note of an event in the broadcast to make creating highlights in Twitch easier later.

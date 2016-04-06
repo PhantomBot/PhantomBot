@@ -22,6 +22,7 @@
         loadedPoints = false,
         loadedChat = false,
         loadedTimeout = false,
+        loadedFollowed = false,
         usernameData = [],
         lastseenData = [],
         groupData = [],
@@ -29,6 +30,7 @@
         pointsData = [],
         chatData = [],
         timeoutData = [],
+        followedData = [],
         countAdmin = 0,
         countMod = 0,
         countSub = 0,
@@ -36,7 +38,7 @@
         countViewer = 0,
         viewersInDB = false;
 
-    var viewerData = {}; // [ user: { group, time, points, lastseen, timeout } ]
+    var viewerData = {}; // [ user: { group, time, points, lastseen, timeout, followed } ]
 
     /*
      * @function secsToDurationStr
@@ -127,6 +129,9 @@
                     if (panelCheckQuery(msgObject, 'viewers_chat')) {
                         chatData[key] = value;
                     }
+                    if (panelCheckQuery(msgObject, 'viewers_followed')) {
+                        followedData[key] = value;
+                    }
                 }
             }
 
@@ -135,11 +140,12 @@
             loadedTime = (loadedTime ? true : panelCheckQuery(msgObject, 'viewers_time'));
             loadedPoints = (loadedPoints ? true : panelCheckQuery(msgObject, 'viewers_points'));
             loadedLastSeen = (loadedLastSeen ? true : panelCheckQuery(msgObject, 'viewers_lastseen'));
+            loadedFollowed = (loadedFollowed ? true : panelCheckQuery(msgObject, 'viewers_followed'));
             loadedTimeout = (loadedTimeout ? true : panelCheckQuery(msgObject, 'viewers_timeout'));
             loadedChat = (loadedChat ? true : panelCheckQuery(msgObject, 'viewers_chat'));
 
             // Produce the data //
-            if (loadedLastSeen && loadedGroups && loadedTime && loadedPoints && 
+            if (loadedLastSeen && loadedGroups && loadedTime && loadedPoints && loadedFollowed &&
                 (!panelStatsEnabled || (panelStatsEnabled && loadedChat && loadedTimeout))) {
                 usernameData.sort(sortUsersTable_alpha_asc);
                 for (var idx in usernameData) {
@@ -149,15 +155,17 @@
                         if (!viewersInDB) countViewer++;
                         groupData[user] = "7";
                     }
-                    if (pointsData[user] == undefined) pointsData[user] = "0";
-                    if (timeoutData[user] == undefined) timeoutData[user] = "0";
-                    if (chatData[user] == undefined) chatData[user] = "0";
+                    if (!panelIsDefined(pointsData[user])) pointsData[user] = "0";
+                    if (!panelIsDefined(timeoutData[user])) timeoutData[user] = "0";
+                    if (!panelIsDefined(chatData[user])) chatData[user] = "0";
+                    if (!panelIsDefined(followedData[user])) followedData[user] = 'false';
 
                     viewerData[user] = {
                         group: groupData[user],
                         time: timeData[user],
                         points: pointsData[user],
                         lastseen: lastseenData[user],
+                        followed: followedData[user],
                         timeout: (panelStatsEnabled ? timeoutData[user] : 0),
                         chat: (panelStatsEnabled ? chatData[user] : 0)
                     };
@@ -165,7 +173,7 @@
  
                 htmlHeader = "<table><tr class=\"textList\"><th>User</th><th>Last Seen</th><th>Time in Chat</th>" +
                              "<th><i class=\"fa fa-money\" /></th><th><i class=\"fa fa-comment\" /></th>" +
-                             "<th><i class=\"fa fa-ban\" /></th></tr>";
+                             "<th><i class=\"fa fa-ban\" /></th><th><i class=\"fa fa-heart\" /></th></tr>";
                 htmlData["1"] = htmlHeader;
                 htmlData["2"] = htmlHeader;
                 htmlData["3"] = htmlHeader;
@@ -185,6 +193,14 @@
                             "    <td>" + viewerData[user].chat + "</td>" +
                             "    <td>" + viewerData[user].timeout + "</td>";
                     }
+                    if (panelStrcmp(viewerData[user].followed, 'true')) {
+                        htmlData[viewerData[user].group.toString()] +=
+                            "    <td><i class=\"fa fa-heart\" /></td>";
+                    } else {
+                        htmlData[viewerData[user].group.toString()] +=
+                            "    <td><i class=\"fa fa-heart-o\" /></td>";
+                    }
+    
                     htmlData[viewerData[user].group.toString()] += "</tr>";
                 }
 
@@ -216,6 +232,7 @@
                 loadedLastSeen = false;
                 loadedTimeout = false;
                 loadedChat = false; 
+                loadedFollowed = false;
 
                 lastseenData = [];
                 groupData = [];
@@ -223,6 +240,7 @@
                 pointsData = [];
                 chatData = [];
                 timeoutData = [];
+                followedData = [];
                 countAdmin = 0;
                 countMod = 0;
                 countSub = 0;
@@ -241,6 +259,7 @@
         sendDBKeys("viewers_groups", "group");
         sendDBKeys("viewers_time", "time");
         sendDBKeys("viewers_points", "points");
+        sendDBKeys("viewers_followed", "followed");
         if (panelStatsEnabled) {
             sendDBKeys("viewers_timeout", "panelmoduserstats");
             sendDBKeys("viewers_chat", "panelchatuserstats");
@@ -265,7 +284,7 @@
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 8 && isConnected) {
+        if (active == 5 && isConnected) {
             doQuery();
             clearInterval(interval); 
         }
@@ -274,7 +293,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 8 && isConnected) {
+        if (active == 5 && isConnected) {
             newPanelAlert('Refreshing Viewers Data', 'success', 1000);
             doQuery();
         }

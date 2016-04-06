@@ -174,7 +174,7 @@
 
                                 "<td style=\"width: 25px\">" +
                                 "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: blue\">" + modSettingIcon[modValue] + "</font></strong>" +
+                                "        <strong><font style=\"color: magenta\">" + modSettingIcon[modValue] + "</font></strong>" +
                                 "    </div>" +
                                 "</td>" +
 
@@ -206,7 +206,7 @@
 
                                 "<td style=\"width: 25px\">" +
                                 "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: blue\">" + modSettingIcon[modValue] + "</font></strong>" +
+                                "        <strong><font style=\"color: magenta\">" + modSettingIcon[modValue] + "</font></strong>" +
                                 "    </div>" +
                                 "</td>" +
 
@@ -238,7 +238,7 @@
     
                                 "<td style=\"width: 25px\">" +
                                 "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: blue\">" + modSettingIcon[modValue] + "</font></strong>" +
+                                "        <strong><font style=\"color: magenta\">" + modSettingIcon[modValue] + "</font></strong>" +
                                 "    </div>" +
                                 "</td>" +
 
@@ -270,7 +270,7 @@
 
                                 "<td style=\"width: 25px\">" +
                                 "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: blue\">" + modSettingIcon[modValue] + "</font></strong>" +
+                                "        <strong><font style=\"color: magenta\">" + modSettingIcon[modValue] + "</font></strong>" +
                                 "    </div>" +
                                 "</td>" +
 
@@ -339,7 +339,7 @@
      * @param {String} key
      */
     function deleteBlacklist(key) {
-        $("#delete_blackList_" + key).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#delete_blackList_" + key).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delblacklist_" + key, "blackList", key);
         setTimeout(function() { doQuery(); }, 500);
         setTimeout(function() { sendCommand("reloadmod"); }, 500);
@@ -350,7 +350,7 @@
      * @param {String} key
      */
     function deleteWhitelist(key) {
-        $("#delete_whiteList_" + key.replace(".", "_")).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#delete_whiteList_" + key.replace(".", "_")).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delwhitelist_" + key, "whiteList", key);
         setTimeout(function() { doQuery(); }, 500);
         setTimeout(function() { sendCommand("reloadmod"); }, 500);
@@ -482,10 +482,10 @@
      * @param {String} newValue
      */
     function updateModSetting(tableKey, newValue) {
-        $("#modSetting_" + tableKey).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#modSetting_" + tableKey).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
         setTimeout(function() {
-            $("#modSetting_" + tableKey).html("<strong><font style=\"color: blue\">" + modSettingIcon[newValue] + "</font></strong>");
+            $("#modSetting_" + tableKey).html("<strong><font style=\"color: magenta\">" + modSettingIcon[newValue] + "</font></strong>");
         }, 500);
         setTimeout(function() { sendCommand("reloadmod"); }, 500);
     }
@@ -511,7 +511,7 @@
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 3 && isConnected) {
+        if (active == 2 && isConnected) {
             doQuery();
             clearInterval(interval); 
         }
@@ -520,7 +520,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 3 && isConnected) {
+        if (active == 2 && isConnected) {
             newPanelAlert('Refreshing Moderation Data', 'success', 1000);
             doQuery();
         }

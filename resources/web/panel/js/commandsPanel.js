@@ -49,7 +49,58 @@
         if (panelHasQuery(msgObject)) {
             var commandName = "",
                 commandValue = "",
+                html = "<table>",
+                time = "",
+                globalCooldown = "",
+                globalCooldownTime = "",
+                perUserCooldown = "",
+                modCooldown = "",
+                foundData = false;
+
+            if (panelCheckQuery(msgObject, 'coommands_cooldowns')) {
                 html = "<table>";
+                for (idx in msgObject['results']) {
+                    commandName = msgObject['results'][idx]['key'];
+                    time = msgObject['results'][idx]['value'];
+
+                    if (panelMatch(commandName, 'globalCooldown')) {
+                        globalCooldown = msgObject['results'][idx]['value'];
+                        continue;
+                    }
+                    if (panelMatch(commandName, 'globalCooldownTime')) {
+                        globalCooldownTime = msgObject['results'][idx]['value'];
+                        continue;
+                    }
+                    if (panelMatch(commandName, 'modCooldown')) {
+                        modCooldown = msgObject['results'][idx]['value'];
+                        continue;
+                    }
+                    if (panelMatch(commandName, 'perUserCooldown')) {
+                        perUserCooldown  = msgObject['results'][idx]['value'];
+                        continue;
+                    }
+
+                    foundData = true;
+                    html += "<tr class=\"textList\">" +
+                            "    <td style=\"width: 15px\">" +
+                            "        <div id=\"deleteCooldown_" + commandName + "\" class=\"button\" " +
+                            "             onclick=\"$.deleteCooldown('" + commandName + "')\"><i class=\"fa fa-trash\" />" +
+                            "    </td>" +
+                            "    <td>" + commandName + "</td>" +
+                            "    <td>" + time + "</td>" +
+                            "</tr>";
+                }
+                html += "</table>";
+
+                if (!foundData) {
+                    html = "<i>No entries in cooldown table.</i>";
+                }
+                $("#cooldownList").html(html);
+
+                $("#toggleGlobalCooldown").html(toggleIcon[globalCooldown]);
+                $("#togglePerUserCooldown").html(toggleIcon[perUserCooldown]);
+                $("#toggleModCooldown").html(toggleIcon[modCooldown]);
+            }
 
             if (panelCheckQuery(msgObject, 'commands_commands')) {
                 for (idx in msgObject['results']) {
@@ -97,7 +148,8 @@
                             "<td style=\"vertical-align: middle\">" +
                             "    <form onkeypress=\"return event.keyCode != 13\">" +
                             "        <input type=\"number\" min=\"0\" id=\"inlineCommandPrice_"+commandName+"\" placeholder=\"new_price\" />" +
-                            "        <input type=\"button\" value=\"Update\" onclick=\"$.updateCommandPrice('" + commandName + "')\" />" +
+                            "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
+                            "                onclick=\"$.updateCommandPrice('" + commandName + "')\"><i class=\"fa fa-pencil\" /></button>" +
                             "    </form>" +
                             "</td>" +
                             "</tr>";
@@ -112,7 +164,7 @@
                     commandValue = msgObject['results'][idx]['value'];
                     html += "<tr class=\"textList\">" +
                             "<td><strong>" + commandName + "</strong></td>" +
-                            "<td><div id=\"commandsList_" + commandName + "\"><strong><font style=\"color: blue\">" + groupIcons[commandValue] + 
+                            "<td><div id=\"commandsList_" + commandName + "\"><strong><font style=\"color: magenta\">" + groupIcons[commandValue] + 
                             "    </font></strong></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Caster\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 0);\">" +
@@ -150,6 +202,7 @@
         sendDBKeys("commands_aliases", "aliases");
         sendDBKeys("commands_permcom", "permcom");
         sendDBKeys("commands_pricecom", "pricecom");
+        sendDBKeys("commands_cooldown", "cooldown");
     }
 
     /** 
@@ -157,7 +210,7 @@
      * @param {String} command
      */
     function deleteCommand(command) {
-        $("#deleteCommand_" + command).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCommand_" + command).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         // sendDBDelete("commands_delcom_" + command, "command", command);
         sendCommand("delcom " + command);
         setTimeout(function() { doQuery(); }, 500);
@@ -204,7 +257,7 @@
      * @param {String} command
      */
     function deleteAlias(command) {
-        $("#deleteAlias_" + command).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteAlias_" + command).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         // sendDBDelete("commands_delalias_" + command, "aliases", command);
         sendCommand("delalias " + command);
         setTimeout(function() { doQuery(); }, 500);
@@ -214,7 +267,7 @@
      * @function commandPermission
      */
     function commandPermission(command, group) {
-        $("#commandsList_" + command).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#commandsList_" + command).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("permcom " + command + " " + group);
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -238,6 +291,67 @@
         doQuery();
     }
 
+    /**
+     * @function toggleGlobalCooldown
+     */
+    function toggleGlobalCooldown() {
+        $("#toggleGlobalCooldown").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("toggleglobalcooldown");
+        setTimeout(function() { doQuery(); }, 500);
+    }
+
+    /**
+     * @function toggleModCooldown
+     */
+    function toggleModCooldown() {
+        $("#toggleModCooldown").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("togglemodcooldown");
+        setTimeout(function() { doQuery(); }, 500);
+    }
+
+    /**
+     * @function togglePerUserCooldown
+     */
+    function togglePerUserCooldown() {
+        $("#togglePerUserCooldown").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("toggleperusercooldown");
+        setTimeout(function() { doQuery(); }, 500);
+    }
+
+
+    /**
+     * @function setGlobalCooldownTime
+     */
+    function setGlobalCooldownTime() {
+        var newValue = $("#globalCooldownTimeInput").val();
+        if (newValue.length > 0) {
+            sendCommand("globalcooldowntime " + newValue);
+            $("#globalCooldownTimeInput").val('');
+            $("#globalCooldownTimeInput").attr('placeholder', newValue).blur();
+        }
+    }
+
+    /**
+     * @function deleteCooldown
+     * @param {String} command
+     */
+    function deleteCooldown(command) {
+        $("#deleteCooldown_" + command).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("cooldown " + command + " -1");
+        setTimeout(function() { doQuery(); }, 500);
+    }
+
+    /**
+     * @function addCooldown
+     */
+    function addCooldown() {
+        var input = $("#cooldownCmdInput").val();
+        if (input.length > 0) {
+            sendCommand("cooldown " + input);
+            $("#cooldownCmdInput").val("Submitted");
+            setTimeout(function() { $("#cooldownCmdInput").val(""); doQuery(); }, 1000);
+        }
+    }
 
     // Import the HTML file for this panel.
     $("#commandsPanel").load("/panel/commands.html");
@@ -245,7 +359,7 @@
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 2 && isConnected) {
+        if (active == 1 && isConnected) {
             doQuery();
             clearInterval(interval); 
         }
@@ -254,7 +368,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 2 && isConnected) {
+        if (active == 1 && isConnected) {
             newPanelAlert('Refreshing Commands Data', 'success', 1000);
             doQuery();
         }
@@ -270,4 +384,10 @@
     $.commandPermission = commandPermission;
     $.setCommandPrice = setCommandPrice;
     $.updateCommandPrice = updateCommandPrice;
+    $.addCooldown = addCooldown;
+    $.deleteCooldown = deleteCooldown;
+    $.toggleGlobalCooldown = toggleGlobalCooldown;
+    $.toggleModCooldown = toggleModCooldown;
+    $.togglePerUserCooldown = togglePerUserCooldown;
+    $.setGlobalCooldownTime = setGlobalCooldownTime;
 })();

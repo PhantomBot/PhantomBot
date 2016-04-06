@@ -155,7 +155,7 @@
      * @param {String} setting
      */
     function toggleTimeMode(divId, setting) {
-        $("#" + divId).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#" + divId).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("time " + setting);
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -217,7 +217,7 @@
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 6 && isConnected) {
+        if (active == 3 && isConnected) {
             doQuery();
             clearInterval(interval); 
         }
@@ -226,7 +226,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 6 && isConnected) {
+        if (active == 3 && isConnected) {
             newPanelAlert('Refreshing Time Data', 'success', 1000);
             doQuery();
         }

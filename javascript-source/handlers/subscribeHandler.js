@@ -4,13 +4,22 @@
  * Register new subscribers and unsubscribers in the channel
  */
 (function() {
-    var subMessage = ($.inidb.exists('subscribeHandler', 'subscribeMessage') ? $.inidb.get('subscribeHandler', 'subscribeMessage') : '(name) just subscribed!'),
-        reSubMessage = ($.inidb.exists('subscribeHandler', 'reSubscribeMessage') ? $.inidb.get('subscribeHandler', 'reSubscribeMessage') : '(name) just subscribed for (months) months in a row!'),
-        subMessageNoReward = ($.inidb.exists('subscribeHandler', 'subscribeMessageNoReward') ? $.inidb.get('subscribeHandler', 'subscribeMessageNoReward') : '(name) just subscribed!'),
-        reSubMessageNoReward = ($.inidb.exists('subscribeHandler', 'reSubscribeMessageNoReward') ? $.inidb.get('subscribeHandler', 'reSubscribeMessageNoReward') : '(name) just subscribed for (months) months in a row!'),
-        subWelcomeToggle = ($.inidb.exists('subscribeHandler', 'subscriberWelcomeToggle') ? $.getIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle') : true),
-        reSubWelcomeToggle = ($.inidb.exists('subscribeHandler', 'reSubscriberWelcomeToggle') ? $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle') : true),
-        subReward = (parseInt($.inidb.exists('subscribeHandler', 'subscribeReward')) ? parseInt($.inidb.get('subscribeHandler', 'subscribeReward')) : 0);
+    var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
+        reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
+        subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
+        reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
+        subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0);
+
+    /**
+     * @function updateSubscribeConfig
+     */
+    function updateSubscribeConfig() {
+        subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage');
+        reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage');
+        subWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle');
+        reSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle');
+        subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
+    }
 
     /**
      * @event twitchSubscribeInitialized
@@ -67,6 +76,11 @@
             argsString = event.getArguments().trim(),
             args = event.getArgs();
 
+        /* Do not show command in command list, for the panel only. */
+        if (command.equalsIgnoreCase('subscribepanelupdate')) {
+            updateSubscribeConfig();
+        }
+    
         /**
          * @commandpath subwelcometoggle - Enable or disable subscription alerts
          */
@@ -151,43 +165,6 @@
         }
 
         /**
-         * @commandpath submessagenoreward [message] - Set a welcome message for new subscribers when no reward is given
-         */
-        if (command.equalsIgnoreCase('submessagenoreward')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            } else if (args.length == 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.usage'));
-                return;
-            }
-            $.inidb.set('subscribeHandler', 'subscribeMessageNoReward', argsString);
-            subMessageNoReward = argsString + '';
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.set'));
-            $.logEvent('subscribehandler.js', 167, sender + ' changed the subscriber (no reward) message to "' + subMessageNoReward + '"');
-            return;
-        }
-
-        /**
-         * @commandpath resubmessagenoreward [message] - Set a message for resubscribers when no reward is given
-         */
-        if (command.equalsIgnoreCase('resubmessagenoreward')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            } else if (args.length == 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.noreward.usage'));
-                return;
-            }
-            $.inidb.set('subscribeHandler', 'reSubscribeMessageNoReward', argsString);
-            reSubMessageNoReward = argsString + '';
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.noreward.set'));
-            $.logEvent('subscribehandler.js', 185, sender + ' changed the re-subscriber (no reward) message to "' + reSubMessageNoReward + '"');
-            return;
-        }
-
-
-        /**
          * @commandpath subscribereward [points] - Set an award for subscribers
          */
         if (command.equalsIgnoreCase('subscribereward')) {
@@ -259,15 +236,13 @@
             r,
             sub = message.substring(0, message.indexOf(' ', 1)).toString();
 
-        s = (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js') ? subMessage : subMessageNoReward) + '';
-        r = (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js') ? reSubMessage : reSubMessageNoReward) + '';
+        s = subMessage + '';
+        r = reSubMessage + '';
 
         if (sender.equalsIgnoreCase('twitchnotify')) {
             if (message.contains('just subscribed!') && subWelcomeToggle) {
                 s = s.replace(/\(name\)/ig, sub);
-                if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
-                    s = s.replace(/\(reward\)/ig, subReward.toString());
-                }
+                s = s.replace(/\(reward\)/ig, subReward.toString());
                 $.say(s);
 
                 $.addSubUsersList(sub);
@@ -280,9 +255,7 @@
                 var months = message.substring(message.indexOf('months') - 3, message.indexOf('months') - 1).toString();
                 r = r.replace(/\(name\)/ig, sub);
                 r = r.replace(/\(months\)/ig, months);
-                if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
-                    r = r.replace(/\(reward\)/ig, subReward.toString());
-                }
+                r = r.replace(/\(reward\)/ig, subReward.toString());
                 $.say(r);
             }
         }
@@ -298,11 +271,10 @@
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribercount', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 2);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'submessagenoreward', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 2);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessagenoreward', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribers', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribersoff', 2);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'subscribepanelupdate', 1);
         }
     });
 })();

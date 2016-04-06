@@ -49,6 +49,27 @@
         <a target="_blank" href="https://phantombot.net/twitchalerts/">Connect to TwitchAlerts</a><br>
 
     </div>
+
+    <h3>Adding Sounds to Audio Panel</h3>
+    <div>
+        To add sounds to the Audio Panel you must first obtain, or create, sounds in the MP3, OGG and AAC formats for 
+        the audio engine that is used.  It requires this to ensure compatibility with many different browsers.  Even if
+        you only use one browser, the engine believes that it needs to support many different ones.<br><br>
+
+        Once you have obtained the sound file in the various formats, you will need to copy the files to the following
+        directory on the bot host:<br>
+        <pre>&lt;bot directory&gt;/web/panel/js/ion-sound/sounds/</pre>
+
+        Then, modify the following file on the bot host:<br>
+        <pre>&lt;bot directory&gt;/web/panel/js/audioPanel.js</pre>
+
+        Modify the <i>sounds</i> array in the file, you will need to enter the base file <i>name</i> to let the engine
+        know which file to look for, note that this does not include .mp3 or .ogg or .aac - simply provide the base of 
+        the file name without an extension.  You must also provide a <i>desc</i>ription to be be displayed on the Audio
+        Panel page. Simply create a new line in the format, as shown below:<br>
+        <pre>{ name: "sound_file",    desc: "A Random Sound" },</pre>
+        Once you have added your sound, or sounds, restart the PhantomBot Control Panel.
+    </div>
 </div>
 
 <!-- Run the Acordion -->
