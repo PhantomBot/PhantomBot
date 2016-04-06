@@ -559,6 +559,64 @@
             }
         }
 
+        /**
+         * @commandpath disablecom [command] - Disable a command from being used in chat
+         */
+        if (command.equalsIgnoreCase('disablecom')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
+
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.usage'));
+                return;
+            }
+
+            if (!$.commandExists(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.404'));
+                return;
+            }
+
+            if ($.inidb.exists('disabledCommands', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.err'));
+                return;
+            }
+
+            $.inidb.set('disabledCommands', action, true);
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.success', action));
+            $.logEvent('customCommands.js', 588, sender + ' disabled command !' + command);
+        }
+
+        /**
+         * @commandpath enablecom [command] - Enable a command thats been disabled from being used in chat
+         */
+        if (command.equalsIgnoreCase('enablecom')) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            }
+
+             if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.usage'));
+                return;
+            }
+
+            if (!$.commandExists(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.404'));
+                return;
+            }
+
+            if (!$.inidb.exists('disabledCommands', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.err'));
+                return;
+            }
+
+            $.inidb.del('disabledCommands', action);
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.success', action));
+            $.logEvent('customCommands.js', 616, sender + ' re-enabled command !' + command);
+        }
+
         if ($.inidb.exists('command', command.toLowerCase())) {
             subAction = $.inidb.get('command', command.toLowerCase());
             $.say(replaceCommandTags(subAction, event, command.toLowerCase()));
@@ -582,6 +640,8 @@
             $.registerChatCommand('./commands/customCommands.js', 'permcom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'listtags', 2);
             $.registerChatCommand('./commands/customCommands.js', 'commands', 7);
+            $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
+            $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
         }
     });
 
