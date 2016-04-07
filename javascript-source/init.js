@@ -495,13 +495,13 @@
         // Load core scripts
         loadScript('./core/misc.js');
         loadScript('./core/jsTimers.js');
+        loadScript('./core/chatModerator.js');
         loadScript('./core/updates.js');
         loadScript('./core/fileSystem.js');
         loadScript('./core/lang.js');
         loadScript('./core/logging.js');
         loadScript('./core/commandRegister.js');
         loadScript('./core/whisper.js');
-        loadScript('./core/chatModerator.js');
         loadScript('./core/commandCoolDown.js');
         loadScript('./core/gameMessages.js');
         loadScript('./core/patternDetector.js');
