@@ -181,27 +181,23 @@
      * @function timeout
      */
     function timeout(user) {
-        for (i in timeouts) {
-            if (timeouts[i].user.equalsIgnoreCase(user)) {
-                var time = timeouts[i].time - $.systemTime();
-                if (time > 0) {
-                    timeoutUserFor(user, timeoutTime);
-                    timeouts.splice(i, 1);
-                    timeouts.push({user: user, time: resetTime});
-                    panelLog(user);
-                    warning = $.lang.get('chatmoderator.timeout');
-                } else {
-                    timeoutUserFor(user, warningTime);
-                    timeouts.splice(i, 1);
-                    timeouts.push({user: user, time: resetTime});
-                    panelLog(user);
-                    warning = $.lang.get('chatmoderator.warning');
-                }
-                return;
+        if (timeouts[user] !== undefined) {
+            var time = timeouts[user] - $.systemTime();
+            if (time > 0) {
+                timeoutUserFor(user, timeoutTime);
+                timeouts[user] = resetTime;
+                panelLog(user);
+                warning = $.lang.get('chatmoderator.timeout');
+            } else {
+                timeoutUserFor(user, warningTime);
+                timeouts[user] = resetTime;
+                panelLog(user);
+                warning = $.lang.get('chatmoderator.warning');
             }
+            return;
         }
         timeoutUserFor(user, warningTime);
-        timeouts.push({user: user, time: resetTime});
+        timeouts[user] = resetTime;
         panelLog(user);
         warning = $.lang.get('chatmoderator.warning');
     };
