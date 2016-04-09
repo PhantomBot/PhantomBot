@@ -140,6 +140,24 @@
     };
 
     /**
+     * @function getFollowAge
+     * @export $
+     * @param channelName
+     * @returns {Number}
+     */
+    function getFollowAge (sender, channelName) {
+        var username = $.twitch.GetUserFollowsChannel(sender, channelName),
+            followedAt = new Date(username.getString('created_at')),
+            now = new Date(followedAt).getTime();
+
+        if (followedAt) {
+            return $.getLongTimeString(now);
+        } else {
+            return sender + ' is not following';
+        }
+    }
+
+    /**
      * @function updateGame
      * @export $
      * @param {string} channelName
@@ -208,4 +226,5 @@
     $.isOnline = isOnline;
     $.updateGame = updateGame;
     $.updateStatus = updateStatus;
+    $.getFollowAge = getFollowAge;
 })();
