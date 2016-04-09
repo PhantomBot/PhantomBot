@@ -218,6 +218,8 @@ $.lang.register('permissions.grouppoints.showgroup.online', 'Group $1 gains $2 $
 $.lang.register('permissions.grouppoints.showgroup.offline', 'Group $1 gains $2 $3 offline.');
 $.lang.register('permissions.grouppoints.set.online', 'Set group $1 to gain $2 $3 online.');
 $.lang.register('permissions.grouppoints.set.offline', 'Set group $1 to gain $2 $3 offline.');
+$.lang.register('timesystem.uptime.offline', '$1 is currently offline.');
+$.lang.register('timesystem.uptime', '$1 has been live for $2!');
 $.lang.register('timesystem.add.error.negative', 'You can not give negative time.');
 $.lang.register('timesystem.add.success', 'Sent $1 to $2. New balance is $3.');
 $.lang.register('timesystem.add.usage', 'Usage: "!time give [name] [amount]"');
