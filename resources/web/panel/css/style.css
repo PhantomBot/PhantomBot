@@ -44,6 +44,16 @@ body {
     font-family: "Roboto", arial;
 }
 
+pre {
+    border-color: #666666;
+    color: #dddddd;
+    background-color: rgba(20, 20, 20, 0.5);
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0;
+}
+
 h1 {
     color: white;
     padding-top: 20px;
@@ -112,8 +122,8 @@ td {
     font-family: "Roboto", arial;
     display: block;
     float: left;
-    margin: 2px 2px 2px 2px;
-    width: 130px;
+    margin: 5px 5px 5px 5px;
+    width: 150px;
     white-space: nowrap;
     text-overflow: ellipsis;
     background-color: rgba(153, 50, 204, 0.5);
@@ -231,35 +241,33 @@ td {
     border-radius: 5px;
 }
 
+#iframeLoader {
+    font-family: "Roboto", arial;
+    position: absolute;
+    top: 150px;
+    right: 10px;
+    bottom: 0;
+    height: 425px;
+    width: 325px;
+    text-align: center;
+    vertical-align: middle;
+}
 #chatsidebar {
     position: absolute;
     top: 82px;
     right: 10px;
     bottom: 0;
     height: 425px;
-    width: 300px;
-    -webkit-animation: fade 1s;
+    width: 325px;
+    border: none !important;
+    outline: none !important;
 }
 #chat {
-    height: 425px;
-    width: 300px;
-    -webkit-animation: fade 1s;
+    height: 100%;
+    width: 100%;
 }
 
 /* Bootstrap and JQuery Section */
-
-.tab-pane {
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    background-color: white;
-    color: black;
-    padding-right: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-
-}
 
 .ui-slider .ui-slider-handle { 
     visibility: hidden;
@@ -326,7 +334,21 @@ td {
     overflow: hidden;
     position: relative;
 }
-
+.tab-pane {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-color: white;
+    font-family: "Roboto", arial;
+    color: #cccccc;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+.ui-state-focus {
+    outline: none;
+}
 .ui-tabs-vertical { 
     width: 55em;
 }
@@ -400,8 +422,8 @@ input, textarea {
 
 .btn {
     font-family: "Roboto", arial;
-    font-color: #aaaaaa;
-    color: #aaaaaa;
+    font-color: #cccccc;
+    color: #cccccc;
     background: rgba(100, 100, 100, 0.5) !important;
     border: none !important;
     outline: none !important;
@@ -417,8 +439,8 @@ input, textarea {
 }
 
 .btn:active, .btn.active {
-    font-color: #aaaaaa;
-    color: #aaaaaa;
+    font-color: #cccccc;
+    color: #cccccc;
     background: rgba(100, 100, 100, 0.5) !important;
     border: none !important;
     outline: none !important;
@@ -427,8 +449,8 @@ input, textarea {
 
 .btn.active.focus, .btn.active:focus, .btn.focus,
 .btn:active.focus, .btn:active:focus, .btn:focus {
-    font-color: #aaaaaa;
-    color: #aaaaaa;
+    font-color: #cccccc;
+    color: #cccccc;
     background: rgba(100, 100, 100, 0.5) !important;
     border: none !important;
     outline: none !important;

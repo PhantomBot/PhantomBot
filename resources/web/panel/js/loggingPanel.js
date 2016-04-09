@@ -27,8 +27,8 @@
 
     var loggingMode = false,
         modeIcon = [];
-        modeIcon['false'] = "<i style=\"color: blue\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: blue\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: magenta\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: magenta\" class=\"fa fa-circle\" />";
 
     /*
      * onMessage
@@ -65,7 +65,7 @@
      * @param {String} mode
      */
     function changeLoggingStatus(mode) {
-        $("#loggingMode").html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#loggingMode").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("log " + mode);
         setTimeout(function() { doQuery(); }, 500);
     }

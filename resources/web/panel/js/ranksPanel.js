@@ -197,7 +197,7 @@
      * @param {String} rankKey
      */
     function deleteCustomRank(rankKey) {
-        $("#deleteCustomRankIcon_" + rankKey).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCustomRankIcon_" + rankKey).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("ranks_customDelete", "viewerRanks", rankKey);
         setTimeout(function() { doQuery() }, 500);
     }
@@ -232,7 +232,7 @@
      * @param {String} rankKey
      */
     function deleteRank(rankKey) {
-        $("#deleteRankIcon_" + rankKey).html("<i style=\"color: blue\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteRankIcon_" + rankKey).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("ranks_ranksDelete", "ranksMapping", rankKey);
         setTimeout(function() { doQuery() }, 500);
     }
@@ -243,7 +243,7 @@
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 9 && isConnected) {
+        if (active == 6 && isConnected) {
             doQuery();
             clearInterval(interval); 
         }
@@ -252,7 +252,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 9 && isConnected) {
+        if (active == 6 && isConnected) {
             newPanelAlert('Refreshing Ranks Data', 'success', 1000);
             doQuery();
         }

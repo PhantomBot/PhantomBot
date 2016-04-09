@@ -4,9 +4,21 @@
  * Detect and report donations.
  */
 (function() {
-    var announceDonations = ($.inidb.exists('donations', 'announce') ? $.getIniDbBoolean('donations', 'announce') : true),
-        donationReward = parseFloat($.inidb.exists('donations', 'reward') ? $.inidb.get('donations', 'reward') : 0),
+    var announceDonations = $.getSetIniDbBoolean('donations', 'announce', true),
+        donationReward = $.getSetIniDbFloat('donations', 'reward', 0),
+        donationMessage = $.getSetIniDbString('donations', 'message', $.lang.get('donationhandler.donation.new')),
+        donationLastMsg = $.getSetIniDbString('donations', 'lastmessage', $.lang.get('donationhandler.lastdonation.success')),
         donationAddonDir = "./addons/donationHandler";
+
+    /**
+     * @function donationpanelupdate
+     */
+    function donationpanelupdate() {
+        announceDonations = $.getIniDbBoolean('donations', 'announce');
+        donationReward = $.getIniDbFloat('donations', 'reward');
+        donationMessage = $.getIniDbString('donations', 'message');
+        donationLastMsg = $.getIniDbString('donations', 'lastmessage');
+    }
 
     /**
      * @event twitchAlertsDonationsInitialized
@@ -55,25 +67,17 @@
         $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), donationAddonDir + "/latestDonation.txt", false);
 
         if (announceDonations) {
-            if (donationReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
-                var rewardPoints = Math.round(donationAmount * donationReward);
-                var donationSay = ($.inidb.exists('donations', 'rewardmessage') ? $.inidb.get('donations', 'rewardmessage') : $.lang.get('donationhandler.donation.newreward'));
-                donationSay = donationSay.replace('(name)', donationUsername);
-                donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
-                donationSay = donationSay.replace('(points)', rewardPoints.toString());
-                donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
-                donationSay = donationSay.replace('(currency)', donationCurrency);
-                $.say(donationSay);
+            var rewardPoints = Math.round(donationAmount * donationReward);
+            var donationSay = donationMessage;
+            donationSay = donationSay.replace('(name)', donationUsername);
+            donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
+            donationSay = donationSay.replace('(points)', rewardPoints.toString());
+            donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
+            donationSay = donationSay.replace('(currency)', donationCurrency);
+            $.say(donationSay);
 
-                if ($.inidb.exists('points', donationUsername.toLowerCase())) {
-                    $.inidb.incr('points', donationUsername.toLowerCase(), rewardPoints);
-                }
-            } else {
-                var donationSay = ($.inidb.exists('donations', 'message') ? $.inidb.get('donations', 'message') : $.lang.get('donationhandler.donation.new'));
-                donationSay = donationSay.replace('(name)', donationUsername);
-                donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
-                donationSay = donationSay.replace('(currency)', donationCurrency);
-                $.say(donationSay);
+            if ($.inidb.exists('points', donationUsername.toLowerCase())) {
+                $.inidb.incr('points', donationUsername.toLowerCase(), rewardPoints);
             }
         }
 
@@ -86,6 +90,11 @@
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
             args = event.getArgs();
+
+        /* Hidden from command list, for panel only. */
+        if (command.equalsIgnoreCase('donationpanelupdate')) {
+            donationpanelupdate();
+        }
 
         /**
          * @commandpath lastdonation - Display the last donation.
@@ -113,7 +122,7 @@
                 donationUsername = donationJson.getString("name"),
                 donationMessage = donationJson.getString("message");
 
-            var donationSay = ($.inidb.exists('donations', 'lastmessage') ? $.inidb.get('donations', 'lastmessage') : $.lang.get('donationhandler.lastdonation.success'));
+            var donationSay = donationLastMsg;
             donationSay = donationSay.replace('(name)', donationUsername);
             donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
             donationSay = donationSay.replace('(currency)', donationCurrency);
@@ -168,11 +177,10 @@
             }
 
             /**
-             * @commandpath donations message [message text] - Set the message when no reward is given. Tags: (name), (amount) and (currency)
-             * @commandpath donations rewardmessage [message text] - Set the message when a reward is given. Tags: (name), (amount), (currency), (points) and (pointname)
+             * @commandpath donations message [message text] - Set the message when no reward is given. Tags: (name), (amount), (points) (pointname) and (currency)
              * @commandpath donations lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
              */
-            if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('rewardmessage') || args[0].equalsIgnoreCase('lastmessage')) {
+            if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('lastmessage')) {
                 var comArg = args[0].toLowerCase();
 
                 if (!args[1]) {
@@ -200,6 +208,7 @@
         if ($.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             $.registerChatCommand('./handlers/donationHandler.js', 'lastdonation', 7);
             $.registerChatCommand('./handlers/donationHandler.js', 'donations', 1);
+            $.registerChatCommand('./handlers/donationHandler.js', 'donationpanelupdate', 1);
         }
     });
 })();

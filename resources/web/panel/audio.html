@@ -22,83 +22,17 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="audioAccordion">
-    <h3>Audio Panel <span id="ionSoundLoaded"><span style="float: right" class=\"redPill-sm\">Initalizing</span></span></h3>
+    <h3>
+        Audio Panel
+        <span id="ionSoundLoaded"><span style="float: right" class="redPill-sm">Initalizing</span></span>
+    </h3>
     <div>
-        <button type="button" class="soundButton" onclick="ion.sound.play('beer_can_opening');">
-            Beer Can Opening
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('bell_ring');">
-            Bell Ring
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('branch_break');">
-            Branch Break
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('button_click');">
-            Button Click
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('button_click_on');">
-            Button Click On
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('button_push');">
-            Button Push
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('button_tiny');">
-            Button Tiny
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('camera_flashing');">
-            Camera Flashing
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('camera_flashing_2');">
-            Camera Flashing 2
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('cd_tray');">
-            CD Tray
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('computer_error');">
-            Computer Error
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('door_bell');">
-            Door Bell
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('door_bump');">
-            Door Bump
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('glass');">
-            Glass
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('keyboard_desk');">
-            Keyboard Desk
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('light_bulb_breaking');">
-            Light Bulb Breaking
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('metal_plate');">
-            Metal Plate
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('metal_plate_2');">
-            Metal Plate 2
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('pop_cork');">
-            Pop Cork
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('snap');">
-            Snap
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('staple_gun');">
-            Staple Gun
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('tap');">
-            Tap
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('water_droplet');">
-            Water Droplet
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('water_droplet_2');">
-            Water Droplet 2
-        </button>
-        <button type="button" class="soundButton" onclick="ion.sound.play('water_droplet_3');">
-            Water Droplet 3
-        </button>
+        <table>
+            <tr style="background: transparent">
+              <td><div id="audioPanelButtons" /></td>
+              <td style="width: 30px; float: right"><div id="ionSoundPlaying" /></td>
+            </tr>
+        </table>
     </div>
 </div>
 
