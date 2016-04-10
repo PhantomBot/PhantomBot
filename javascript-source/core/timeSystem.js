@@ -114,10 +114,40 @@
             cMins = cHours % 1 * 60;
 
         if (hoursOnly) {
-            return floor(cHours) + 'hrs ';
+            return floor(cHours) + ' hours ';
         } else {
-            return (time >= 60 ? (floor(cHours) + 'hrs ' + floor(~~cMins) + 'min ').replace(/^0hrs/, '') : floor(cMins % 1 * 60) + 'sec');
+            return ((floor(cHours) + ' hours, ' + floor(~~cMins) + ' minutes, ' + floor(cMins % 1 * 60) + ' seconds').replace(/^0 hours,/, ''));
         }
+    };
+
+     /**
+     * @function getLongTimeString
+     * @export $
+     * @param {Number} time
+     * @returns {string}
+     */
+    function getLongTimeString(time) {
+        var d = Math.abs(time - new Date().getTime()) / 1000,
+            v = '',
+            r = {},
+            s = {
+                months: 2592000,
+                days: 86400,
+                hours: 3600,
+                minutes: 60,
+                seconds: 1
+            },
+            followage = '';
+
+        Object.keys(s).forEach(function(key){
+            v = Math.floor(d / s[key]);
+            if (v > 0) {
+                followage = followage + v + ' ' + key + ', ';
+                r[key] = Math.floor(d / s[key]);
+                d -= r[key] * s[key];
+            }
+        });
+        return followage.slice(0, -2);
     };
 
     /**
@@ -327,6 +357,16 @@
                 $.inidb.set('settings', 'timezone', tzData.getID());
             }
         }
+
+        if (command.equalsIgnoreCase('uptime')) {
+            var name = $.username.resolve($.channelName);
+            var uptime = $.getStreamUptime($.channelName);
+            if (!$.isOnline($.channelName)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('timesystem.uptime.offline', name));
+                return;
+            }
+            $.say($.lang.get('timesystem.uptime', name, uptime));
+        }
     });
 
     // Set an interval for increasing all current users logged time
@@ -367,6 +407,7 @@
         if ($.bot.isModuleEnabled('./core/timeSystem.js')) {
             $.registerChatCommand('./core/timeSystem.js', 'time');
             $.registerChatCommand('./core/timeSystem.js', 'streamertime');
+            $.registerChatCommand('./core/timeSystem.js', 'uptime');
             $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
         }
     });
@@ -378,4 +419,5 @@
     $.getUserTimeString = getUserTimeString;
     $.getCurLocalTimeString = getCurLocalTimeString;
     $.getLocalTimeString = getLocalTimeString;
+    $.getLongTimeString = getLongTimeString;
 })();

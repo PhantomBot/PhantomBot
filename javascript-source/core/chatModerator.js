@@ -219,9 +219,9 @@
         if (messageReset <= 0) {
             if (!filter) {
                 $.say('@' + $.username.resolve(user) + ', ' + message + ' ' + warning);
+                messageTime = (msgCooldownSec * 1000) + $.systemTime();
             }
         }
-        messageTime = (msgCooldownSec * 1000) + $.systemTime();
     };
 
     /**
@@ -312,10 +312,6 @@
             messageLength = message.length();
 
         if (!$.isModv3(sender, event.getTags())) {
-            if (message && checkBlackList(event)) {
-                return;
-            }
-            
             if (linksToggle && $.patternDetector.hasLinks(event)) {
                 if ($.youtubePlayerConnected && message.contains('youtube.com') || message.contains('youtu.be')) {
                     return;
@@ -396,6 +392,10 @@
                 timeout(sender);
                 sendMessage(sender, longMessageMessage, silentTimeout.LongMsg);
                 $.logEvent('chatModerator.js', 333, sender + ' was timed out for posting a long message.');
+                return;
+            }
+
+            if (message && checkBlackList(event)) {
             }
         }
     });

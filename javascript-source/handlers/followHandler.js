@@ -118,10 +118,8 @@
             args = event.getArgs(),
             argString = event.getArguments(),
             comArg = args[0],
-            streamer,
-            streamerGame,
-            streamerURL,
-            shoutout;
+            channel = $.username.resolve($.channelName),
+            username = $.username.resolve(sender);
 
         /* Do not show command on the command list, for the panel only. */
         if (command.equalsIgnoreCase('followerpanelupdate')) {
@@ -211,9 +209,10 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.usage', command.toLowerCase()));
                 return;
             }
-            streamer = $.username.resolve(args[0]);
-            streamerGame = $.getGame(streamer);
-            streamerURL = "http://twitch.tv/" + streamer;
+
+            var streamer = $.username.resolve(args[0]),
+                streamerGame = $.getGame(streamer),
+                streamerURL = 'https://twitch.tv/' + streamer;
 
             if (streamerGame == null || streamerGame == '') {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.404', args[0]));
@@ -221,14 +220,30 @@
             }
 
             if (!$.isOnline(streamer)) {
-                shoutout = $.lang.get('followhandler.shoutout.offline', streamer, streamerURL, streamerGame);
+                $.say($.lang.get('followhandler.shoutout.offline', streamer, streamerURL, streamerGame));
                 $.logEvent('followHandler.js', 181, sender + ' shouted out streamer ' + streamer);
-            } else {
-                shoutout = $.lang.get('followhandler.shoutout.online', streamer, streamerURL, streamerGame);
-                $.logEvent('followHandler.js', 181, sender + ' shouted out streamer ' + streamer);
+                return;
+            } 
+            $.say($.lang.get('followhandler.shoutout.online', streamer, streamerURL, streamerGame))
+            $.logEvent('followHandler.js', 181, sender + ' shouted out streamer ' + streamer);
+        }
+
+        if (command.equalsIgnoreCase('followage')) {
+            if (args.length > 0) {
+                username = $.username.resolve(args[0]);
             }
-            $.say(shoutout);
-            return;
+
+            if (args.length > 1) {
+                channel = $.username.resolve(args[1]);
+            }
+
+            if ($.twitch.GetUserFollowsChannel(username, channel).getInt('_http') == 200) {
+                $.say($.lang.get('followhandler.follow.age.time', username, channel, $.getFollowAge(username, channel)));
+                //No need to log this command event.
+                return;
+            }
+            $.say($.lang.get('followhandler.follow.age.err.404', username, channel));
+            //No need to log this command event.
         }
     });
 
@@ -246,6 +261,7 @@
             $.registerChatCommand('./handlers/followHandler.js', 'shoutout', 2);
             $.registerChatCommand('./handlers/followHandler.js', 'caster', 2);
             $.registerChatCommand('./handlers/followHandler.js', 'followerpanelupdate', 1);
+            $.registerChatCommand('./handlers/followHandler.js', 'followage');
         }
     });
 })();
