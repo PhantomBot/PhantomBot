@@ -12,9 +12,9 @@ var setTimeout,
     lookupTimeoutDelay;
 
 (function() {
-    var executor = new java.util.concurrent.Executors.newScheduledThreadPool(1),
+    var timerObject = new java.util.Timer(),
         counter = 1,
-        registry = [],
+        registry = {},
         timerTable = [];
 
     /**
@@ -22,13 +22,23 @@ var setTimeout,
      * @param {Function} fn
      * @param {Number} delay
      * @returns {Number}
+     * 
+     * NOTE: If using unique_id it will check to see if a timer already exists and destroy
+     * that timer before creating the new one.
      */
     setTimeout = function(fn, delay, unique_id) {
-        var id = ++counter,
-            runnable = new JavaAdapter(java.lang.Runnable, {
-                run: fn
-            });
-        registry[id] = executor.schedule(runnable, delay, java.util.concurrent.TimeUnit.MILLISECONDS);
+        var id;
+
+        if (unique_id !== undefined) {
+            if ((id = lookupTimeoutID(unique_id)) !== -1) {
+                $.consoleDebug("timers.js::auto-clear previous timer for: " + unique_id);
+                clearInterval(id);
+            }
+        }
+
+        id = counter++;
+        registry[id] = new JavaAdapter(java.util.TimerTask, { run: fn });
+        timerObject.schedule(registry[id], delay);
 
         if (unique_id !== undefined) {
             timerTable[unique_id] = {
@@ -36,7 +46,6 @@ var setTimeout,
                 delay: delay
             };
         }
- 
         return id;
     };
 
@@ -45,13 +54,23 @@ var setTimeout,
      * @param {Function} fn
      * @param {Number} delay
      * @returns {Number}
+     * 
+     * NOTE: If using unique_id it will check to see if a timer already exists and destroy
+     * that timer before creating the new one.
      */
     setInterval = function(fn, delay, unique_id) {
-        var id = ++counter,
-            runnable = new JavaAdapter(java.lang.Runnable, {
-                run: fn
-            });
-        registry[id] = executor.scheduleAtFixedRate(runnable, delay, delay, java.util.concurrent.TimeUnit.MILLISECONDS);
+        var id;
+
+        if (unique_id !== undefined) {
+            if ((id = lookupTimeoutID(unique_id)) !== -1) {
+                $.consoleDebug("timers.js::auto-clear previous timer for: " + unique_id);
+                clearInterval(id);
+            }
+        }
+
+        id = counter++;
+        registry[id] = new JavaAdapter(java.util.TimerTask, { run: fn });
+        timerObject.schedule(registry[id], delay, delay);
 
         if (unique_id !== undefined) {
             timerTable[unique_id] = {
@@ -59,7 +78,6 @@ var setTimeout,
                 delay: delay
             };
         }
-
         return id;
     };
 
@@ -68,10 +86,14 @@ var setTimeout,
      * @param {Number} id
      */
     clearTimeout = function(id) {
-        registry[id].cancel(false);
-        executor.purge();
-        registry[id] = null;
+        registry[id].cancel();
+        timerObject.purge();
         delete registry[id];
+        for (unique_id in timerTable) {
+            if (timerTable[unique_id].id == id) {
+                delete timerTable[unique_id];
+            }
+        }
     };
 
     /**
