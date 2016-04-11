@@ -27,6 +27,7 @@ var DEBUG_MODE = false;
 var PANEL_VERSION = "0.5 (Alpha)";
 var TABS_INITIALIZED = false;
 var INITIAL_WAIT_TIME = 200;
+var TIMEOUT_WAIT_TIME = 500;
 
 var url = window.location.host.split(":");
 var addr = 'ws://' + url[0] + ':' + getPanelPort();
@@ -110,6 +111,8 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('greetings_') !== -1) $.greetingsOnMessage(e);
     if (e.data.indexOf('donations_') !== -1) $.donationsOnMessage(e);
     if (e.data.indexOf('hostraid_') !== -1) $.hostraidOnMessage(e);
+    if (e.data.indexOf('notices_') !== -1) $.noticesOnMessage(e);
+    if (e.data.indexOf('quotes_') !== -1) $.quotesOnMessage(e);
 
     if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
 }

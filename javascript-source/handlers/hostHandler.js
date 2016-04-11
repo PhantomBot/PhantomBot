@@ -184,15 +184,17 @@
          */
         if (command.equalsIgnoreCase('hosthistory')) {
             if (!args || args.length == 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.inidb.get('settings', 'hostHistory') ? "on" : "off"));
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
                 return;
             }
             if (args[0].equalsIgnoreCase('on')) {
                 $.setIniDbBoolean('settings', 'hostHistory', true);
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.change', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
             } else if (args[0].equalsIgnoreCase('off')) {
                 $.setIniDbBoolean('settings', 'hostHistory', false);
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.change', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
             } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.inidb.get('settings', 'hostHistory') ? "on" : "off"));
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
                 return;
             }
         }

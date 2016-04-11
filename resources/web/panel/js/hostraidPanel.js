@@ -139,11 +139,82 @@
     /** 
      * @function hostChannel
      */
-/*
     function hostChannel() {
         var value = $('#hostChannelInput').val();
+        if (value.length > 0) {
+            sendCommand('host ' + value);
+            $('#hostChannelInput').val('');
+        }
     }
-*/
+
+    /** 
+     * @function raidChannel
+     */
+    function raidChannel() {
+        var value = $('#raidChannelInput').val();
+        if (value.length > 0) {
+            sendCommand('raid ' + value);
+            $('#raidChannelInput').val('');
+        }
+    }
+
+    /** 
+     * @function raiderChannel
+     */
+    function raiderChannel() {
+        var value = $('#raiderChannelInput').val();
+        if (value.length > 0) {
+            sendCommand('raider ' + value);
+            $('#raiderChannelInput').val('');
+        }
+    }
+
+    /** 
+     * @function updateHostAnnounce
+     */
+    function updateHostAnnounce() {
+        var value = $('#hostAnnounceInput').val();
+        if (value.length > 0) {
+            sendCommand('hostmessage ' + value);
+            $('#hostAnnounceInput').attr('placeholder', 'Updating...').blur();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /** 
+     * @function updateHostReward
+     */
+    function updateHostReward() {
+        var value = $('#hostRewardInput').val();
+        if (value.length > 0) {
+            sendCommand('hostreward ' + value);
+            $('#hostRewardInput').attr('placeholder', value).blur();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /**
+     * @function changeHostHistory
+     * @param {String} action
+     */
+    function changeHostHistory(action) {
+        sendCommand('hosthistory ' + action);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /** 
+     * @function updateRaidMessage
+     */
+    function updateRaidMessage() {
+logMsg("updateraidmsg");
+        var value = $('#raidMessageInput').val();
+        if (value.length > 0) {
+            sendCommand('setraidmsg ' + value);
+            $('#raidMessageInput').attr('placeholder', 'Updating...').blur();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
     // Import the HTML file for this panel.
     $('#hostraidPanel').load('/panel/hostraid.html');
 
@@ -169,4 +240,11 @@
 
     // Export to HTML
     $.hostraidOnMessage = onMessage;
+    $.hostChannel = hostChannel;
+    $.raidChannel = raidChannel;
+    $.raiderChannel = raiderChannel;
+    $.updateHostAnnounce = updateHostAnnounce;
+    $.updateHostReward = updateHostReward;
+    $.changeHostHistory = changeHostHistory;
+    $.updateRaidMessage = updateRaidMessage;
 })();
