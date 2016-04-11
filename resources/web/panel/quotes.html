@@ -24,7 +24,18 @@
 <div id="quotesAccordion">
     <h3>Quotes</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addQuote">Add Quote</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.addQuote()">Submit</button>
+                <input type="text" class="form-control" id="addQuoteInput" placeholder="A New Quote">
+            </div>
+        </form>
+        <br>
+
+        <strong>Quotes</strong><br><br>
+        <div id="quoteList" style="height: 400px; overflow: auto;" />
     </div>
 </div>
 

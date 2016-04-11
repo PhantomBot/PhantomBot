@@ -26,7 +26,7 @@
 (function() {
 
    var refreshIcon = '<i class="fa fa-refresh" />',
-       spinIcon = '<i class="fa fa-spinner fa-spin" />',
+       spinIcon = '<i style="color: magenta" class="fa fa-spinner fa-spin" />',
        settingIcon = [];
        settingIcon['false'] = '<i style="color: magenta" class="fa fa-circle-o" />';
        settingIcon['true'] = '<i style="color: magenta" class="fa fa-circle" />';
@@ -203,7 +203,7 @@
 
         if (value.length > 0) {
             sendDBUpdate('greetings_updateTier', 'gameWispTiers', key, value);
-            setTimeout(function() { sendCommand('gamewisppanelupdate'); doQuery(); }, 500);
+            setTimeout(function() { sendCommand('gamewisppanelupdate'); doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -215,27 +215,34 @@
     function toggleGreetings(table, key)
     {
         if (panelMatch(table, 'greeting')) {
+            $('#globalGreetings').html(spinIcon);
             sendCommand('greeting toggledefault');
         }
         if (panelMatch(table, 'settings')) { // Confusing? Follow is in the settings table.
+            $('#followerGreetings').html(spinIcon);
             sendCommand('followtoggle'); 
         }
         if (panelMatch(table, 'donations')) { 
+            $('#donationGreetings').html(spinIcon);
             sendCommand('donations announce');
         }
         if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'subscriberWelcomeToggle')) { 
+            $('#subscriptionGreetings').html(spinIcon);
             sendCommand('subwelcometoggle');
         }
         if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'reSubscriberWelcomeToggle')) { 
+            $('#resubscriptionGreetings').html(spinIcon);
             sendCommand('resubwelcometoggle');
         }
         if (panelMatch(table, 'gameWispSubHandler') && panelMatch(key, 'subscriberShowMessages_on')) { 
+            $('#gameWispGreetings').html(spinIcon);
             sendCommand('gamewisp togglemessage on');
         }
         if (panelMatch(table, 'gameWispSubHandler') && panelMatch(key, 'subscriberShowMessages_off')) { 
+            $('#gameWispGreetings').html(spinIcon);
             sendCommand('gamewisp togglemessage off');
         }
-        setTimeout(function() { doQuery(); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -266,7 +273,7 @@
             if (panelMatch(table, 'gameWispSubHandler')) {
                 sendCommand('gamewisppanelupdate');
             }
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         } 
     }
 

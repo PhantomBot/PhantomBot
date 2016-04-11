@@ -5,11 +5,11 @@
  */
 
 (function() {
-    var noticeReqMessages = ($.inidb.exists('noticeSettings', 'reqmessages') ? parseInt($.inidb.get('noticeSettings', 'reqmessages')) : 25),
-        noticeInterval = ($.inidb.exists('noticeSettings', 'interval') ? parseInt($.inidb.get('noticeSettings', 'interval')) : 10),
-        noticeToggle = ($.inidb.exists('noticeSettings', 'noticetoggle') ? $.getIniDbBoolean('noticeSettings', 'noticetoggle') : false),
+    var noticeReqMessages = $.getSetIniDbNumber('noticeSettings', 'reqmessages', 25),
+        noticeInterval = $.getSetIniDbNumber('noticeSettings', 'interval', 10),
+        noticeToggle = $.getSetIniDbBoolean('noticeSettings', 'noticetoggle', false),
         numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
-        noticeOffline = ($.inidb.exists('noticeSettings', 'noticeOffline') ? $.getIniDbBoolean('noticeSettings', 'noticeOffline') : true),
+        noticeOffline = $.getSetIniDbBoolean('noticeSettings', 'noticeOffline', true),
         messageCount = 0,
         RandomNotice = 0;
 
@@ -116,7 +116,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
                     return;
                 } else {
-                    argsString = argsString.replace(action + '', '').trim();
+                    argsString = argsString.replace(action + ' ' + args[1], '').trim();
                     $.inidb.set('notices', 'message_' + args[1], argsString);
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-success'));
                     return;

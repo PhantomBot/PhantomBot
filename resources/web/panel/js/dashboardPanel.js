@@ -298,7 +298,7 @@
         }
         $('#deathCounterValue').html('<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />');
         sendCommand('deathctr ' + action);
-        setTimeout(function() { sendDBQuery("dashboard_deathctr", "deaths", gameTitle); }, 500);
+        setTimeout(function() { sendDBQuery("dashboard_deathctr", "deaths", gameTitle); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -315,7 +315,7 @@
     function enableModule(module, idx) {
         $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module enable " + module);
-        setTimeout(function() { doQuery(); }, 1000);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -325,7 +325,7 @@
     function disableModule(module, idx) {
         $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module disable " + module);
-        setTimeout(function() { doQuery(); }, 1000);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -335,7 +335,7 @@
     function changeLoggingStatus(mode) {
         $("#loggingMode").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("log " + mode);
-        setTimeout(function() { doQuery(); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -351,7 +351,7 @@
             }
         }
         sendCommand(command);
-        setTimeout(function() { doQuery(); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -393,7 +393,7 @@
         $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("highlight " + $("#highlightInput").val());
         $("#highlightInput").val('');
-        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, 500);
+        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -402,7 +402,7 @@
     function clearHighlights() {
         $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("clearhighlights");
-        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, 500);
+        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -430,6 +430,7 @@
      * @function multiLinkTimerOn
      */
     function multiLinkTimerOn() {
+        $('#multiStatus').html('<span class="bluePill">Multi-Link</span>');
         sendCommand("multi timer on");
     }
  
@@ -437,6 +438,7 @@
      * @function multiLinkTimerOff
      */
     function multiLinkTimerOff() {
+        $('#multiStatus').html('');
         sendCommand("multi timer off");
     }
 
