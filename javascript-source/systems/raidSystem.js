@@ -4,7 +4,7 @@
  * Register and announce incomming/outgoing raids
  */
 (function() {
-    var raidMessage = ($.inidb.exists('settings', 'raidMessage') ? $.inidb.get('settings', 'raidMessage') : $.lang.get('raidsystem.message.nomessageset', $.ownerName));
+    var raidMessage = $.getSetIniDbString('settings', 'raidMessage', $.lang.get('raidsystem.message.nomessageset', $.ownerName));
 
     /**
      * @event command
@@ -25,9 +25,6 @@
                 return;
             }
 
-            if ($.bot.isModuleEnabled('./core/commandPause.js')) {
-                $.commandPause.pause(300);
-            }
             $.inidb.incr('outgoingRaids', username, 1);
             $.say($.lang.get('raidsystem.raid', $.username.resolve(username), raidMessage));
         }

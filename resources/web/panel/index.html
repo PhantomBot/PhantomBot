@@ -42,6 +42,7 @@
         <link rel="stylesheet" type="text/css" href="panel/css/style.css">
 
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     </head>
 
     <body>
@@ -51,7 +52,9 @@
             <div id="newPanelAlert" class="alert" style="display:none"></div>
         </div>
              
-        <div id="tabs">
+        <span id="panelLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading PhantomBot Control Panel</span>
+
+        <div id="tabs" style="display:none">
             <ul>
                 <li> <a href="#dashboard">Dashboard</a> </li>
                 <li> <a href="#commands">Commands</a> </li>
@@ -60,7 +63,7 @@
                 <li> <a href="#points">Points</a> </li>
                 <li> <a href="#viewers">Viewers</a> </li>
                 <li> <a href="#ranks">Ranks</a> </li>
-                <li> <a href="#greetings">Greetings/Rewards</a> </li>
+                <li> <a href="#greetings">Alerts/Rewards</a> </li>
 
                 <li> <a href="#donations">Donations</a> </li>
                 <li> <a href="#notices">Notices</a> </li>
@@ -168,7 +171,7 @@
             </div>
         </div>
 
-        <script>$('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');</script>
+        <script>$('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix').fadeIn(1000); TABS_INITIALIZED = true; $("#panelLoader").fadeOut(1000);</script>
 
         <div class="ui-widget-content" id="chatsidebar" name="chat">
             <span id="iframeLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading Twitch Chat</span>

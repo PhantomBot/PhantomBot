@@ -160,6 +160,10 @@ public class HTTPServer extends Thread {
                             data = "\r\n\r\nPlease use the NEW HTTP Server for the YouTube Player\r\n\r\n";
                             target = new File(webhome + "/" + request[1] + ""); // Kludge for logic.
                         }
+                        if (request[1].toLowerCase().startsWith("panel") || request[1].toLowerCase().startsWith("/panel")) {
+                            data = "\r\n\r\nPlease use the NEW HTTP Server for the Control Panel\r\n\r\n";
+                            target = new File(webhome + "/" + request[1] + ""); // Kludge for logic.
+                        }
 
                         if (target == null) {
                             if (request[1].startsWith("/")) {

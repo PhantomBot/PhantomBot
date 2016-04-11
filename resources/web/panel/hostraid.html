@@ -22,14 +22,105 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="hostraidAccordion">
-    <h3>Hosts</h3>
+    <h3>Host/Raid Channel</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="hostChannel">Host Channel</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.hostChannel()">Submit</button>
+                <input type="text" class="form-control" id="hostChannelInput" placeholder="Twitch Channel">
+            </div>
+        </form>   
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="raidChannel">Raid Channel</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.raidChannel()">Submit</button>
+                <input type="text" class="form-control" id="raidChannelInput" placeholder="Twitch Channel">
+            </div>
+        </form> 
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="raiderChannel">Announce Incoming Raid</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.raiderChannel()">Submit</button>
+                <input type="text" class="form-control" id="raiderChannelInput" placeholder="Twitch Channel">
+            </div>
+        </form> 
     </div>
 
-    <h3>Raids</h3>
+    <h3>Host Alerts</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="hostAnnounce">Host Announcement</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.updateHostAnnounce()">Submit</button>
+                <input type="text" class="form-control" id="hostAnnounceInput" placeholder="Host Message"
+                       data-toggle="tooltip" title="Tags: (name) (reward)"/>
+            </div>
+        </form>
+        
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="hostReward">Host Reward</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateHostReward()">Submit</button>
+                <input type="number" min="0" class="form-control" id="hostRewardInput" placeholder="Points" />
+            </div>
+        </form>
+        
+    </div>
+
+    <h3>Host History</h3>
+    <div>
+        <table>
+            <tr class="textList">
+                <td>Host History</td>
+                <td style="width: 25px"><div id="hostHistoryMode" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button"
+                         onclick="$.changeHostHistory('on');"><i class="fa fa-circle" />
+                     </div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button"
+                         onclick="$.changeHostHistory('off');"><i class="fa fa-circle-o" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <strong>Host History</strong>
+        <div id="hostHistoryList" style="height: 200px; overflow: auto" />
+    </div>
+
+    <h3>Raid Message</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="raidMessage">Raid Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.updateHostAnnounce()">Submit</button>
+                <input type="text" class="form-control" id="raidMessageInput" placeholder="Raid Message" />
+            </div>
+        </form>
+    </div>
+
+    <h3>Incoming Raids</h3>
+    <div>
+        <strong>Incoming Raid List</strong>
+        <div id="incomingRaidList" style="height: 200px; overflow: auto" />
+    </div>
+
+    <h3>Outgoing Raids</h3>
+    <div>
+        <strong>Outgoing Raid List</strong>
+        <div id="outgoingRaidList" style="height: 200px; overflow: auto" />
     </div>
 </div>
 

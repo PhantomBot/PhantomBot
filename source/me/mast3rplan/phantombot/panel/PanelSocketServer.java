@@ -54,8 +54,8 @@
  * { "versionresult" : "unique_id", "version" : "core version (repo version)" }
  *
  * // Return DB query. Returns "error" key only if error occurred.
- * { "query_id" : "unique_id", "results" :  { "table" : "table_name", "key_name" : "value" } }
- * { "query_id" : "unique_id", "error" : "error" } 
+ * { "query_id" : "query_id", "results" :  { "table" : "table_name", "key_name" : "value" } }
+ * { "query_id" : "query_id", "error" : "error" } 
  *
  * // Return DB keylist. Returns "error" key only if error occurred.
  * { "query_id" : "query_id", "results" : { [ "table" : "table_name", "key" : "key_name", "value" : "value" ] } }
