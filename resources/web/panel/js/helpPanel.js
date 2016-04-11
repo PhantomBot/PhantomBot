@@ -66,11 +66,11 @@
 
     // Request the version from the bot. This is only done once.
     var interval = setInterval(function() {
-        if (isConnected) {
+        if (isConnected && TABS_INITIALIZED) {
             requestVersion("help_version");
             clearInterval(interval); 
         }
-    }, 200);
+    }, INITIAL_WAIT_TIME);
 
     // Export functions - Needed when calling from HTML
     $.helpOnMessage = onMessage;

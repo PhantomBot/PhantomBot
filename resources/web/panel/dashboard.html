@@ -144,6 +144,24 @@
         <span id="showHighlights" />
     </div>
 
+    <h3>Death Counter</h3>
+    <div>
+        <table>
+            <tr class="textList" style="vertical-align: middle">
+                <td>Death Counter: <span id="deathCounterValue">Fetching Game...</span></td>
+                <td style="width: 30px">
+                    <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('add')"><i class="fa fa-plus fa-1x" /></button>
+                </td>
+                <td style="width: 30px">
+                    <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('sub')"><i class="fa fa-minus fa-1x" /></button>
+                </td>
+                <td style="width: 30px">
+                    <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('reset')"><i class="fa fa-power-off fa-1x" /></button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <h3>Multi-Link</h3>
     <div>
         Multi-Link provides a link to share multiple Twitch channels in one UI.
@@ -173,3 +191,4 @@
 
 <!-- Run the Acordion -->
 <script>$("#dashboardAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>

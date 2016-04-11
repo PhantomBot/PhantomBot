@@ -35,6 +35,7 @@
         loggingMode = false,
         modeIcon = [],
         settingIcon = [];
+        gameTitle = '__not_loaded__';
 
         modeIcon['false'] = "<i style=\"color: magenta\" class=\"fa fa-circle-o\" />";
         modeIcon['true'] = "<i style=\"color: magenta\" class=\"fa fa-circle\" />";
@@ -56,7 +57,6 @@
             return;
         }
 
-        // Check for dbkeysresult queries
         if (panelHasQuery(msgObject)) {
             if (panelMatch(msgObject['query_id'], 'dashboard_highlights')) {
                 var htmlStr = "";
@@ -72,13 +72,15 @@
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_modules')) {
-                var html = "",
+                var html = "<table>",
+                    moduleData = msgObject['results'];
                     module = "",
                     moduleEnabled = "";
 
-                for (idx in msgObject['results']) {
-                    module = msgObject['results'][idx]['key'];
-                    moduleEnabled = msgObject['results'][idx]['value'];
+                moduleData.sort(sortModuleNames);
+                for (idx in moduleData) {
+                    module = moduleData[idx]['key'];
+                    moduleEnabled = moduleData[idx]['value'];
                     if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
                         html += "<tr class=\"textList\">" +
                                 "    <td>" + module + "</td>" +
@@ -94,7 +96,7 @@
                                 "    </td>" +
 
                                 "    <td style=\"width: 25px\">" +
-                                "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
                                 "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
                                 "        </div>" +
                                 "    </td>" +
@@ -103,6 +105,7 @@
                 }
                 html += "</table>";
                 $("#modulesList").html(html);
+                $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_chatCount')) {
@@ -172,11 +175,20 @@
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_streamTitle')) {
-                $("#streamTitleInput").attr("placeholder", msgObject['results']['title']).blur();
+                if (msgObject['results']['title'] === undefined || msgObject['results']['title'] === null) {
+                    $('#streamTitleInput').attr('placeholder', 'Some Title').blur();
+                } else {
+                    $('#streamTitleInput').attr('placeholder', msgObject['results']['title']).blur();
+                }
             }
  
             if (panelCheckQuery(msgObject, 'dashboard_gameTitle')) {
-                $("#gameTitleInput").attr("placeholder", msgObject['results']['game']).blur();
+                gameTitle = msgObject['results']['game'];
+                if (gameTitle === undefined || gameTitle === null) {
+                    gameTitle = "Some Game";
+                }
+                $('#gameTitleInput').attr('placeholder', gameTitle).blur();
+                sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
             }
  
             if (panelCheckQuery(msgObject, 'dashboard_streamOnline')) {
@@ -241,6 +253,13 @@
                 $("#loggingMode").html(modeIcon[loggingMode]);
             }
 
+            if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
+                if (msgObject['results'][gameTitle] === undefined) {
+                    $("#deathCounterValue").html('0');
+                } else {
+                    $("#deathCounterValue").html(msgObject['results'][gameTitle]);
+                }
+            }
         }
     }
 
@@ -267,6 +286,26 @@
             sendDBKeys("dashboard_chatCount", "panelchatstats");
             sendDBKeys("dashboard_modCount", "panelmodstats");
         }
+    }
+
+    /**
+     * @function adjustDeathCounter
+     * @param {String} action
+     */
+    function adjustDeathCounter(action) {
+        if (panelMatch(gameTitle, '__not_loaded__')) {
+            return;
+        }
+        $('#deathCounterValue').html('<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />');
+        sendCommand('deathctr ' + action);
+        setTimeout(function() { sendDBQuery("dashboard_deathctr", "deaths", gameTitle); }, 500);
+    }
+
+    /**
+     * @function sortModuleNames
+     */
+    function sortModuleNames(a, b) {
+        return panelStrcmp(a.key, b.key);
     }
 
     /** 
@@ -336,6 +375,7 @@
             sendCommand("game " + newGame);
             $("#gameTitleInput").val('')
             $("#gameTitleInput").attr("placeholder", newGame).blur();
+            gameTitle = newGame;
         }
     }
 
@@ -417,12 +457,14 @@
 
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
-        var active = $("#tabs").tabs("option", "active");
-        if (active == 0 && isConnected) {
-            doQuery();
-            clearInterval(interval); 
+        if (isConnected && TABS_INITIALIZED) {
+            var active = $("#tabs").tabs("option", "active");
+            if (active == 0) {
+                doQuery();
+                clearInterval(interval);
+            }
         }
-    }, 200);
+    }, INITIAL_WAIT_TIME);
 
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
@@ -450,4 +492,5 @@
     $.changeLoggingStatus = changeLoggingStatus;
     $.enableModule = enableModule;
     $.disableModule = disableModule;
+    $.adjustDeathCounter = adjustDeathCounter;
 })();

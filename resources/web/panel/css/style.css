@@ -241,6 +241,19 @@ td {
     border-radius: 5px;
 }
 
+#panelLoader {
+    font-family: "Roboto", arial;
+    font-size: 150%;
+    position: absolute;
+    top: 150px;
+    left: 150px;
+    bottom: 0;
+    height: 425px;
+    width: 325px;
+    text-align: center;
+    vertical-align: middle;
+}
+    
 #iframeLoader {
     font-family: "Roboto", arial;
     position: absolute;
