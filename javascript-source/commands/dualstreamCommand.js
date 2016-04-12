@@ -1,8 +1,13 @@
 (function() {
     var otherChannels = ($.inidb.exists('dualStreamCommand', 'otherChannels') ? $.inidb.get('dualStreamCommand', 'otherChannels') : null),
         timerToggle = ($.inidb.exists('dualStreamCommand', 'timerToggle') ? $.inidb.get('dualStreamCommand', 'timerToggle') : false),
-        timerInterval = (parseInt($.inidb.exists('dualStreamCommand', 'timerInterval')) ? parseInt($.inidb.get('dualStreamCommand', 'timerInterval')) : 5),
-        initIntervalStarted = false;
+        timerInterval = (parseInt($.inidb.exists('dualStreamCommand', 'timerInterval')) ? parseInt($.inidb.get('dualStreamCommand', 'timerInterval')) : 20),
+        reqMessages = (parseInt($.inidb.exists('dualStreamCommand', 'reqMessages')) ? parseInt($.inidb.get('dualStreamCommand', 'reqMessages')) : 10),
+        messageCount = 0;
+
+    $.bind('ircChannelMessage', function() {
+        messageCount++;
+    });
 
     $.bind('command', function(event) {
         var sender = event.getSender(),
@@ -112,29 +117,52 @@
                 }
                 timerInterval = parseInt(subAction);
                 $.inidb.set('dualStreamCommand', 'timerInterval', timerInterval);
-                $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timerinterval.set'));
+                $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timerinterval.set', timerInterval));
                 $.logEvent('dualstreamCommand.js', 116, sender + ' changed the multi timer interval to ' + timerInterval + ' seconds');
+
+                setInterval(function() {
+                    if (timerToggle && otherChannels != null) {
+                        if ($.isOnline($.channelName) && messageCount >= reqMessages) {
+                            $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
+                            messageCount = 0;
+                        }
+                    }
+                }, timerInterval * 60 * 1000, 'dualStreamTimer');
                 return;
+            }
+
+            /**
+             * @commandpath multi reqmessage [amount of messages] - Set the amount of message required before triggering the dual stream link
+             */
+            if (action.equalsIgnoreCase('reqmessage')) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.whisperPrefix(sender) + $.modMsg);
+                    return;
+                } else if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.req.usage'));
+                    return;
+                }
+                
+                reqMessages = parseInt(subAction);
+                $.inidb.set('dualStreamCommand', 'reqMessages', reqMessages);
+                $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.reqmessages.set', reqMessages));
+                $.logEvent('dualstreamCommand.js', 116, sender + ' changed the multi req messages to ' + reqMessages + ' messages');
             }
         }
     });
 
+    setInterval(function() {
+        if (timerToggle && otherChannels != null) {
+            if ($.isOnline($.channelName) && messageCount >= reqMessages) {
+                $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
+                messageCount = 0;
+            }
+        }
+    }, timerInterval * 60 * 1000, 'dualStreamTimer');
+
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./commands/dualstreamCommand.js')) {
             $.registerChatCommand('./commands/dualstreamCommand.js', 'multi', 7);
-
-            if (!initIntervalStarted) {
-                initIntervalStarted = true;
-                setInterval(function() {
-                    if (otherChannels != null) {
-                        if (timerToggle && $.isOnline($.channelName)) {
-                            $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
-                            $.logEvent('dualstreamCommand.js', 132, 'Ran multi timer at ' + $.systemTime());
-                            return;
-                        }
-                    }
-                }, timerInterval * 60 * 1000);
-            }
         }
     });
 })();
