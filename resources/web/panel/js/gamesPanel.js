@@ -25,6 +25,103 @@
 
 (function() {
 
+    /**
+     * @function onMessage
+     */
+    function onMessage(message) {
+        var msgObject;
+
+        try {
+            msgObject = JSON.parse(message.data);
+        } catch (ex) {
+            return;
+        }
+
+        if (panelHasQuery(msgObject)) {
+            if (panelCheckQuery(msgObject, 'games_roulette')) {
+                $('#rouletteTimeoutInput').attr('placeholder', msgObject['results']['timeoutTime']);
+            }
+
+            if (panelCheckQuery(msgObject, 'games_adventure')) {
+                for (idx in msgObject['results']) {
+                   $('#adventure' + msgObject['results'][idx]['key'] + 'Input').attr('placeholder', msgObject['results'][idx]['value']);
+                }
+            }
+        }
+    }
+
+    /**
+     * @function doQuery
+     */
+    function doQuery() {
+        sendDBQuery('games_roulette', 'roulette', 'timeoutTime');
+        sendDBKeys('games_adventure', 'adventureSettings');
+    }
+
+    /**
+     * @function rouletteTimeout
+     */
+    function rouletteTimeout() {
+        var time = $('#rouletteTimeoutInput').val();
+
+        if (time.length > 0) {
+            $('#rouletteTimeoutInput').val(time);
+            sendCommand('roulettetimeouttime ' + time);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /**
+     * @function adventureStart
+     */
+    function adventureStart() {
+        var value = $('#adventureStartInput').val();
+
+        if (value.length > 0) {
+            $('#adventureStartInput').val('');
+            sendCommand('adventure ' + value);
+        }
+    }
+
+    /**
+     * @function adventureUpdateSetting
+     * @param {String} setting
+     */
+    function adventureUpdateSetting(setting) {
+        var value = $('#adventure' + setting + 'Input').val();
+        if (value.length > 0) {
+           sendCommand('adventure set ' + setting + ' ' + value);
+           setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
     // Import the HTML file for this panel.
     $("#gamesPanel").load("/panel/games.html");
+
+    // Load the DB items for this panel, wait to ensure that we are connected.
+    var interval = setInterval(function() {
+        if (isConnected && TABS_INITIALIZED) {
+            var active = $("#tabs").tabs("option", "active");
+            if (active == 15) {
+                doQuery();
+                clearInterval(interval);
+            }
+        }
+    }, INITIAL_WAIT_TIME);
+
+    // Query the DB every 30 seconds for updates.
+    setInterval(function() {
+        var active = $("#tabs").tabs("option", "active");
+        if (active == 15 && isConnected) {
+            newPanelAlert('Refreshing Games Data', 'success', 1000);
+            doQuery();
+        }
+    }, 3e4);
+
+
+    // Export to HTML
+    $.gamesOnMessage = onMessage;
+    $.rouletteTimeout = rouletteTimeout;
+    $.adventureStart = adventureStart;
+    $.adventureUpdateSetting = adventureUpdateSetting;
 })();

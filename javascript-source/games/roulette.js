@@ -4,7 +4,7 @@
  * Resolve issues with a game of russian roulette.
  */
 (function() {
-    var timeoutTime = ($.inidb.exists('roulette', 'timeoutTime') ? parseInt($.inidb.get('roulette', 'timeoutTime')) : 60),
+    var timeoutTime = $.getSetIniDbNumber('roulette', 'timeoutTime', 60),
         responseCounts = {
             win: 0,
             lost: 0,

@@ -180,9 +180,17 @@
 
         <form role="form">
              <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="multi-link">Timer Interval (Minutes)</label>
+                <label for="multi-link">Timer Interval to Send Notice (Minutes)</label>
                 <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLinkTimer()">Submit</button>
                 <input type="text" class="form-control" id="multiLinkTimerInput" placeholder="Minutes" />
+            </div>
+        </form>
+
+        <form role="form">
+             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="multi-link">Minimum Chat Messages to Send Notice</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiReqMsgs()">Submit</button>
+                <input type="text" class="form-control" id="multiLinkReqMsgsInput" placeholder="Message Count" />
             </div>
         </form>
 
