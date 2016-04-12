@@ -147,6 +147,13 @@
             }
         }
 
+        /**
+        * delete uptime command if it exits because I added this as a default command.
+        */
+        if ($.inidb.exists('command', 'uptime')) {
+            $.inidb.del('command', 'uptime');
+        }
+
         $.consoleLn('PhantomBot v2.0.7 updates completed!');
         $.inidb.set('updates', 'installedv2.0.7', 'true');
     }
