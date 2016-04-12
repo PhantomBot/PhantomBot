@@ -150,7 +150,7 @@
         if (time.length > 0) {
             $("#customRankTimeInput").val(time);
             sendCommand("rankedit settime " + time);
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -163,7 +163,7 @@
         if (cost.length > 0) {
             $("#customRankCostInput").val(cost);
             sendCommand("rankedit setcost " + cost);
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -178,7 +178,7 @@
             $("#addCustomRankUserInput").val('');
             $("#addCustomRankNameInput").val('');
             sendDBUpdate("ranks_customAdd", "viewerRanks", user, rank);
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -199,7 +199,7 @@
     function deleteCustomRank(rankKey) {
         $("#deleteCustomRankIcon_" + rankKey).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("ranks_customDelete", "viewerRanks", rankKey);
-        setTimeout(function() { doQuery() }, 500);
+        setTimeout(function() { doQuery() }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -213,7 +213,7 @@
             $("#addRankHoursInput").val('');
             $("#addRankNameInput").val('');
             sendDBUpdate("ranks_ranksAdd", "ranksMapping", hours, rank);
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -234,7 +234,7 @@
     function deleteRank(rankKey) {
         $("#deleteRankIcon_" + rankKey).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("ranks_ranksDelete", "ranksMapping", rankKey);
-        setTimeout(function() { doQuery() }, 500);
+        setTimeout(function() { doQuery() }, TIMEOUT_WAIT_TIME);
     }
 
     // Import the HTML file for this panel.
@@ -242,12 +242,14 @@
 
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
-        var active = $("#tabs").tabs("option", "active");
-        if (active == 6 && isConnected) {
-            doQuery();
-            clearInterval(interval); 
+        if (isConnected && TABS_INITIALIZED) {
+            var active = $("#tabs").tabs("option", "active");
+            if (active == 6) {
+                doQuery();
+                clearInterval(interval);
+            }
         }
-    }, 200);
+    }, INITIAL_WAIT_TIME);
 
     // Query the DB every 30 seconds for updates.
     setInterval(function() {

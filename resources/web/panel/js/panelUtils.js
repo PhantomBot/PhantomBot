@@ -25,6 +25,9 @@
  */
 var DEBUG_MODE = false;
 var PANEL_VERSION = "0.5 (Alpha)";
+var TABS_INITIALIZED = false;
+var INITIAL_WAIT_TIME = 200;
+var TIMEOUT_WAIT_TIME = 500;
 
 var url = window.location.host.split(":");
 var addr = 'ws://' + url[0] + ':' + getPanelPort();
@@ -37,7 +40,7 @@ var panelStatsEnabled = false;
  * @param {String} message
  */
 function debugMsg(message) {
-    if (DEBUG_MODE) console.log("WebPanel::" + message);
+    if (DEBUG_MODE) console.log('WebPanel::DEBUG::' + message);
 }
 
 /**
@@ -45,7 +48,7 @@ function debugMsg(message) {
  * @param {String} message
  */
 function logMsg(message) {
-    console.log("WebPanel::" + message);
+    console.log('WebPanel::' + message);
 }
 
 /**
@@ -54,8 +57,8 @@ function logMsg(message) {
  */
 connection.onopen = function(data) {
     var jsonObject = {};
-    debugMsg("connection.onopen()");
-    jsonObject["authenticate"] = getAuth();
+    debugMsg('connection.onopen()');
+    jsonObject['authenticate'] = getAuth();
     connection.send(JSON.stringify(jsonObject));
     newPanelAlert('Connecting to WebSocket', 'success', 1000);
     isConnected = true;
@@ -66,7 +69,7 @@ connection.onopen = function(data) {
  * Triggered when the WebSocket connection is closed by the bot.
  */
 connection.onclose = function(data) {
-    debugMsg("connection.onclose()");
+    debugMsg('connection.onclose()');
     newPanelAlert('WebSocket Disconnected - Restart Panel When Restored', 'danger', 0);
     isConnected = false;
 }
@@ -83,7 +86,7 @@ connection.onmessage = function(e) {
         logMsg('connection.onmessage: badJson(' + e.data + '): ' + ex.message);
         return;
     }
-    debugMsg("connection.onmessage("+ e.data + ")");
+    debugMsg('connection.onmessage('+ e.data + ')');
 
     if (messageObject['authresult'] == false) {
         if (!messageObject['authresult']) {
@@ -106,6 +109,10 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('viewers_') !== -1) $.viewersOnMessage(e);
     if (e.data.indexOf('ranks_') !== -1) $.ranksOnMessage(e);
     if (e.data.indexOf('greetings_') !== -1) $.greetingsOnMessage(e);
+    if (e.data.indexOf('donations_') !== -1) $.donationsOnMessage(e);
+    if (e.data.indexOf('hostraid_') !== -1) $.hostraidOnMessage(e);
+    if (e.data.indexOf('notices_') !== -1) $.noticesOnMessage(e);
+    if (e.data.indexOf('quotes_') !== -1) $.quotesOnMessage(e);
 
     if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
 }

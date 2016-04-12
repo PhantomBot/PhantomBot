@@ -228,7 +228,7 @@
 
         if (points.length > 0) {
             sendDBUpdate("points_updateGroupPoints", dbtable, group, points);
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -241,7 +241,7 @@
         if (points.length > 0) {
             $("#inlineUserPoints_" + username).val('');
             sendDBUpdate("points_pointstableUpdate", "points", username, points);
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -255,7 +255,7 @@
         if (singleName.length > 0 && pluralName.length > 0) {
             sendCommand("points setname single " + singleName);
             sendCommand("points setname multiple " + pluralName);
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -264,7 +264,7 @@
      */
     function clearPointName() {
         sendCommand("points setname delete");
-        setTimeout(function() { doQuery(); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -276,7 +276,7 @@
         if (value.length > 0) {
             $("#setPointGainInput_" + action).val('');
             sendCommand("points " + action + " " + value);
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
  
@@ -292,7 +292,7 @@
             sendCommand("points " + action + " "  + username + " " + points);
             $("#adjustUserPointsNameInput").val('');
             $("#adjustUserPointsInput").val('');
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -330,12 +330,14 @@
 
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
-        var active = $("#tabs").tabs("option", "active");
-        if (active == 4 && isConnected) {
-            doQuery();
-            clearInterval(interval); 
+        if (isConnected && TABS_INITIALIZED) {
+            var active = $("#tabs").tabs("option", "active");
+            if (active == 4) {
+                doQuery();
+                clearInterval(interval);
+            }
         }
-    }, 200);
+    }, INITIAL_WAIT_TIME);
 
     // Query the DB every 30 seconds for updates.
     setInterval(function() {

@@ -35,6 +35,7 @@
         loggingMode = false,
         modeIcon = [],
         settingIcon = [];
+        gameTitle = '__not_loaded__';
 
         modeIcon['false'] = "<i style=\"color: magenta\" class=\"fa fa-circle-o\" />";
         modeIcon['true'] = "<i style=\"color: magenta\" class=\"fa fa-circle\" />";
@@ -56,7 +57,6 @@
             return;
         }
 
-        // Check for dbkeysresult queries
         if (panelHasQuery(msgObject)) {
             if (panelMatch(msgObject['query_id'], 'dashboard_highlights')) {
                 var htmlStr = "";
@@ -72,13 +72,15 @@
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_modules')) {
-                var html = "",
+                var html = "<table>",
+                    moduleData = msgObject['results'];
                     module = "",
                     moduleEnabled = "";
 
-                for (idx in msgObject['results']) {
-                    module = msgObject['results'][idx]['key'];
-                    moduleEnabled = msgObject['results'][idx]['value'];
+                moduleData.sort(sortModuleNames);
+                for (idx in moduleData) {
+                    module = moduleData[idx]['key'];
+                    moduleEnabled = moduleData[idx]['value'];
                     if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
                         html += "<tr class=\"textList\">" +
                                 "    <td>" + module + "</td>" +
@@ -94,7 +96,7 @@
                                 "    </td>" +
 
                                 "    <td style=\"width: 25px\">" +
-                                "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
                                 "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
                                 "        </div>" +
                                 "    </td>" +
@@ -103,6 +105,7 @@
                 }
                 html += "</table>";
                 $("#modulesList").html(html);
+                $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_chatCount')) {
@@ -172,11 +175,20 @@
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_streamTitle')) {
-                $("#streamTitleInput").attr("placeholder", msgObject['results']['title']).blur();
+                if (msgObject['results']['title'] === undefined || msgObject['results']['title'] === null) {
+                    $('#streamTitleInput').attr('placeholder', 'Some Title').blur();
+                } else {
+                    $('#streamTitleInput').attr('placeholder', msgObject['results']['title']).blur();
+                }
             }
  
             if (panelCheckQuery(msgObject, 'dashboard_gameTitle')) {
-                $("#gameTitleInput").attr("placeholder", msgObject['results']['game']).blur();
+                gameTitle = msgObject['results']['game'];
+                if (gameTitle === undefined || gameTitle === null) {
+                    gameTitle = "Some Game";
+                }
+                $('#gameTitleInput').attr('placeholder', gameTitle).blur();
+                sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
             }
  
             if (panelCheckQuery(msgObject, 'dashboard_streamOnline')) {
@@ -241,6 +253,13 @@
                 $("#loggingMode").html(modeIcon[loggingMode]);
             }
 
+            if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
+                if (msgObject['results'][gameTitle] === undefined) {
+                    $("#deathCounterValue").html('0');
+                } else {
+                    $("#deathCounterValue").html(msgObject['results'][gameTitle]);
+                }
+            }
         }
     }
 
@@ -269,6 +288,26 @@
         }
     }
 
+    /**
+     * @function adjustDeathCounter
+     * @param {String} action
+     */
+    function adjustDeathCounter(action) {
+        if (panelMatch(gameTitle, '__not_loaded__')) {
+            return;
+        }
+        $('#deathCounterValue').html('<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />');
+        sendCommand('deathctr ' + action);
+        setTimeout(function() { sendDBQuery("dashboard_deathctr", "deaths", gameTitle); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /**
+     * @function sortModuleNames
+     */
+    function sortModuleNames(a, b) {
+        return panelStrcmp(a.key, b.key);
+    }
+
     /** 
      * @function enableModule
      * @param {String} module
@@ -276,7 +315,7 @@
     function enableModule(module, idx) {
         $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module enable " + module);
-        setTimeout(function() { doQuery(); }, 1000);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -286,7 +325,7 @@
     function disableModule(module, idx) {
         $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module disable " + module);
-        setTimeout(function() { doQuery(); }, 1000);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -296,7 +335,7 @@
     function changeLoggingStatus(mode) {
         $("#loggingMode").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("log " + mode);
-        setTimeout(function() { doQuery(); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -312,7 +351,7 @@
             }
         }
         sendCommand(command);
-        setTimeout(function() { doQuery(); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -336,6 +375,7 @@
             sendCommand("game " + newGame);
             $("#gameTitleInput").val('')
             $("#gameTitleInput").attr("placeholder", newGame).blur();
+            gameTitle = newGame;
         }
     }
 
@@ -353,7 +393,7 @@
         $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("highlight " + $("#highlightInput").val());
         $("#highlightInput").val('');
-        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, 500);
+        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -362,7 +402,7 @@
     function clearHighlights() {
         $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("clearhighlights");
-        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, 500);
+        setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -390,6 +430,7 @@
      * @function multiLinkTimerOn
      */
     function multiLinkTimerOn() {
+        $('#multiStatus').html('<span class="bluePill">Multi-Link</span>');
         sendCommand("multi timer on");
     }
  
@@ -397,6 +438,7 @@
      * @function multiLinkTimerOff
      */
     function multiLinkTimerOff() {
+        $('#multiStatus').html('');
         sendCommand("multi timer off");
     }
 
@@ -417,12 +459,14 @@
 
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
-        var active = $("#tabs").tabs("option", "active");
-        if (active == 0 && isConnected) {
-            doQuery();
-            clearInterval(interval); 
+        if (isConnected && TABS_INITIALIZED) {
+            var active = $("#tabs").tabs("option", "active");
+            if (active == 0) {
+                doQuery();
+                clearInterval(interval);
+            }
         }
-    }, 200);
+    }, INITIAL_WAIT_TIME);
 
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
@@ -450,4 +494,5 @@
     $.changeLoggingStatus = changeLoggingStatus;
     $.enableModule = enableModule;
     $.disableModule = disableModule;
+    $.adjustDeathCounter = adjustDeathCounter;
 })();

@@ -22,11 +22,69 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="noticesAccordion">
+    <h3>Notice Configuration</h3>
+    <div>
+        <table>
+            <tr class="textList">
+                <td>Toggle Chat Notices</td>
+                <td style="width: 25px"><div id="chatNoticeMode" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleChatNotice();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+
+        <table>
+            <tr class="textList">
+                <td>Toggle Offline Chat Notices</td>
+                <td style="width: 25px"><div id="chatOfflineNoticeMode" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleChatOfflineNotice();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="noticeInterval">Notice Interval (Minutes)</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateNoticeInterval()">Submit</button>
+                <input type="number" min="2" class="form-control" id="noticeIntervalInput" placeholder="Minutes" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="noticeMsgReq">Notice Required Chat Messages</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateNoticeReq()">Submit</button>
+                <input type="number" min="1" class="form-control" id="noticeReqInput" placeholder="Number of Messages" />
+            </div>
+        </form>
+    </div>
+
     <h3>Notices</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addNotice">Add New Notice</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.addNotice()">Submit</button>
+                <input type="text" class="form-control" id="addNoticeInput" placeholder="New Notice"
+                       data-toggle="tooltip" title="Enter a notice or command:chat_command (command:!quote for example)" />
+            </div>
+        </form>
+
+        Current Notices
+        <div id="noticeList" style="height: 200px; overflow: auto;" />
     </div>
 </div>
 
 <!-- Run the Acordion -->
 <script>$("#noticesAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>

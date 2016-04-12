@@ -314,9 +314,9 @@
         if (value.length > 0) {
             sendDBUpdate("moderation_addBlacklist", "blackList", "phrase_" + value, value);
             $("#addModBlacklistInput").val("Submitted");
-            setTimeout(function() { $("#addModBlacklistInput").val(""); }, 1000);
+            setTimeout(function() { $("#addModBlacklistInput").val(""); }, TIMEOUT_WAIT_TIME);
             doQuery();
-            setTimeout(function() { sendCommand("reloadmod"); }, 500);
+            setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -328,9 +328,9 @@
         if (value.length > 0) {
             sendDBUpdate("moderation_addWhitelist", "whiteList", "link_" + value, value);
             $("#addModWhitelistInput").val("Submitted");
-            setTimeout(function() { $("#addModWhitelistInput").val(""); }, 1000);
+            setTimeout(function() { $("#addModWhitelistInput").val(""); }, TIMEOUT_WAIT_TIME);
             doQuery();
-            setTimeout(function() { sendCommand("reloadmod"); }, 500);
+            setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -341,8 +341,8 @@
     function deleteBlacklist(key) {
         $("#delete_blackList_" + key).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delblacklist_" + key, "blackList", key);
-        setTimeout(function() { doQuery(); }, 500);
-        setTimeout(function() { sendCommand("reloadmod"); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -352,8 +352,8 @@
     function deleteWhitelist(key) {
         $("#delete_whiteList_" + key.replace(".", "_")).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delwhitelist_" + key, "whiteList", key);
-        setTimeout(function() { doQuery(); }, 500);
-        setTimeout(function() { sendCommand("reloadmod"); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -379,7 +379,7 @@
         for (key in modDbKeys) {
             sendDBUpdate("moderation_toggleAll_" + group, "chatModerator", modDbKeys[key], type.toString());
         }
-        setTimeout(function() { sendCommand("reloadmod"); }, 500);
+        setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -462,9 +462,9 @@
         }
 
         $("#quickModerationUpdate").html("<br><span class=\"purplePill\">&nbsp;Please wait, updating settings...&nbsp;</span>");
-        setTimeout(function() { doQuery(); }, 500);
-        setTimeout(function() { $("#quickModerationUpdate").html(""); }, 1000);
-        setTimeout(function() { sendCommand("reloadmod"); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { $("#quickModerationUpdate").html(""); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -473,7 +473,7 @@
     function permitUserCommand() {
         sendCommand("permit " + $("#permitUserInput").val());
         $("#permitUserInput").val("Submitted");
-        setTimeout(function() { $("#permitUserInput").val(""); }, 1000);
+        setTimeout(function() { $("#permitUserInput").val(""); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -486,8 +486,8 @@
         sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
         setTimeout(function() {
             $("#modSetting_" + tableKey).html("<strong><font style=\"color: magenta\">" + modSettingIcon[newValue] + "</font></strong>");
-        }, 500);
-        setTimeout(function() { sendCommand("reloadmod"); }, 500);
+        }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -501,7 +501,7 @@
             sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
             $(tagId).val('')
             $(tagId).attr("placeholder", newValue).blur();
-            setTimeout(function() { sendCommand("reloadmod"); }, 500);
+            setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -510,12 +510,14 @@
 
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
-        var active = $("#tabs").tabs("option", "active");
-        if (active == 2 && isConnected) {
-            doQuery();
-            clearInterval(interval); 
+        if (isConnected && TABS_INITIALIZED) {
+            var active = $("#tabs").tabs("option", "active");
+            if (active == 2) {
+                doQuery();
+                clearInterval(interval);
+            }
         }
-    }, 200);
+    }, INITIAL_WAIT_TIME);
 
     // Query the DB every 30 seconds for updates.
     setInterval(function() {

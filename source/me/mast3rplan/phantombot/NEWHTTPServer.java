@@ -45,7 +45,7 @@ public class NEWHTTPServer {
   private String     serverWebAuth;
   private int        serverPort;
 
-  public NEWHTTPServer(int myPort, String myPassword, String myWebAuth, final String ytPassword) {
+  public NEWHTTPServer(int myPort, String myPassword, String myWebAuth, final String ytPassword, final String panelUser, final String panelPassword) {
       serverPort = myPort;
       serverPassword = myPassword.replace("oauth:", "");
       serverWebAuth = myWebAuth;
@@ -65,14 +65,12 @@ public class NEWHTTPServer {
                   return user.equals("ytplayer") && pwd.equals(ytPassword);
               }
           });
-/* To be implemented when panel code is completed - use same ytpassword ?
           panelContext.setAuthenticator(new BasicAuthenticator("PhantomBot Web Panel") {
               @Override
               public boolean checkCredentials(String user, String pwd) {
-                  return user.equals("web") && pwd.equals(ytPassword);
+                  return user.equals(panelUser) && pwd.equals(panelPassword);
               }
           });
-*/
 
           server.start();
       } catch (IOException ex) {

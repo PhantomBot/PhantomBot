@@ -5,9 +5,10 @@
  * Optionally supports rewarding points for a follow (Only every 6 hours!)
  */
 (function() {
-    var hostReward = ($.inidb.exists('settings', 'hostReward') ? $.inidb.get('settings', 'hostReward') : 200),
-        hostMessage = ($.inidb.exists('settings', 'hostMessage') ? $.inidb.get('settings', 'hostMessage') : $.lang.get('hosthandler.host.message')),
-        hostTimeout = 216e5, //6 hours = 6 * 60 * 60 * 1000
+    var hostReward = $.getSetIniDbNumber('settings', 'hostReward', 200),
+        hostMessage = $.getSetIniDbString('settings', 'hostMessage', $.lang.get('hosthandler.host.message')),
+        hostHistory = $.getSetIniDbBoolean('settings', 'hostHistory', false),
+        hostTimeout = 216e5, // 6 hours = 6 * 60 * 60 * 1000
         hostList = {},
         announceHosts = false;
 
@@ -34,7 +35,8 @@
 
         var hoster = $.username.resolve(event.getHoster()),
             now = $.systemTime(),
-            msg = hostMessage;
+            msg = hostMessage,
+            jsonObject = {};
 
         if (!announceHosts) {
             return;
@@ -56,6 +58,12 @@
         msg = msg.replace('(name)', hoster);
         msg = msg.replace('(reward)', hostReward.toString());
         $.say(msg);
+
+       if ($.getIniDbBoolean('settings', 'hostHistory', false)) {
+           jsonObject = { 'host' : hoster, 'time' : now, 'viewers' : 0 }; // Add viewers as placeholder.
+           $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
+       }
+
     });
 
     /**
@@ -170,6 +178,26 @@
 
             $.say($.lang.get('hosthandler.hostlist', temp.join(', ')));
         }
+
+        /**
+         * @commandpath hosthistory [on/off] - Enable/disable collection of host history data for the Panel.
+         */
+        if (command.equalsIgnoreCase('hosthistory')) {
+            if (!args || args.length == 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
+                return;
+            }
+            if (args[0].equalsIgnoreCase('on')) {
+                $.setIniDbBoolean('settings', 'hostHistory', true);
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.change', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
+            } else if (args[0].equalsIgnoreCase('off')) {
+                $.setIniDbBoolean('settings', 'hostHistory', false);
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.change', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
+                return;
+            }
+        }
     });
 
     /**
@@ -183,6 +211,7 @@
             $.registerChatCommand('./handlers/hostHandler.js', 'host', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'hostcount');
             $.registerChatCommand('./handlers/hostHandler.js', 'hostlist');
+            $.registerChatCommand('./handlers/hostHandler.js', 'hosthistory', 1);
         }
     });
 })();

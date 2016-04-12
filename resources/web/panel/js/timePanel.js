@@ -127,7 +127,7 @@
         if (timeValue.length > 0) {
             $("#inlineUserTime_" + username).val('')
             sendDBUpdate("time_timetableUpdate", "time", username, timeValue);
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -157,7 +157,7 @@
     function toggleTimeMode(divId, setting) {
         $("#" + divId).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("time " + setting);
-        setTimeout(function() { doQuery(); }, 500);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -169,7 +169,7 @@
             sendCommand("time promotehours " + newTimePromotion);
             $("#setTimePromtionInput").val('');
             $("#setTimePromotionInput").attr("placeholder", "Submitting").blur();
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -182,7 +182,7 @@
             sendCommand("timezone " + newTimeZone);
             $("#setTimeZoneInput").val('');
             $("#setTimeZoneInput").attr("placeholder", "Submitting").blur();
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -198,7 +198,7 @@
             sendCommand("time " + action + " "  + username + " " + timeAdjust);
             $("#adjustUserTimeNameInput").val('');
             $("#adjustUserTimeSecsInput").val('');
-            setTimeout(function() { doQuery(); }, 500);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -216,12 +216,14 @@
 
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
-        var active = $("#tabs").tabs("option", "active");
-        if (active == 3 && isConnected) {
-            doQuery();
-            clearInterval(interval); 
+        if (isConnected && TABS_INITIALIZED) {
+            var active = $("#tabs").tabs("option", "active");
+            if (active == 3) {
+                doQuery();
+                clearInterval(interval);
+            }
         }
-    }, 200);
+    }, INITIAL_WAIT_TIME);
 
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
