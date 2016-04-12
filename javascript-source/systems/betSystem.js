@@ -1,6 +1,6 @@
 (function() {
-    var betMinimum = ($.inidb.exists('betSettings', 'betMinimum') ? parseInt($.inidb.get('betSettings', 'betMinimum')) : 1),
-        betMaximum = ($.inidb.exists('betSettings', 'betMaximum') ? parseInt($.inidb.get('betSettings', 'betMaximum')) : 1000),
+    var betMinimum = $.getSetIniDbNumber('betSettings', 'betMinimum', 1),
+        betMaximum = $.getSetIniDbNumber('betSettings', 'betMaximum', 1000),
         time = 0,
         betStatus = false,
         betPot = 0,
@@ -93,7 +93,7 @@
                     if (betWinners.length > 0) {
                         betWinners += ', ';
                     }
-                    betWinners = i;
+                    betWinners += i;
                 }
             }
         }
@@ -139,6 +139,10 @@
                 $.inidb.incr('points', i, (betPot * betWinPercent));
             }
         }
+
+        // For the Panel
+        $.inidb.set('betresults', 'winners', betWinners);
+        $.inidb.set('betresults', 'amount', (betPot * betWinPercent));
 
         $.say($.lang.get('betsystem.closed', betWinning, $.getPointsString(betPot * betWinPercent)));
         resetBet();
@@ -219,7 +223,7 @@
                 }
 
                 betMaximum = parseInt(subAction);
-                $.inidb.set('betSettings', 'betMinimum', betMaximum);
+                $.inidb.set('betSettings', 'betMaximum', betMaximum);
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.max', betMaximum, $.pointNameMultiple));
                 return;
 

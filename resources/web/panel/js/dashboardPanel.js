@@ -278,12 +278,20 @@
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_dsToggle')) {
-                if (msgObject['results']['timerToggle'] !== undefined) {
+                if (msgObject['results']['timerToggle'] !== undefined && msgObject['results']['timerToggle'] !== null) {
                     if (panelMatch(msgObject['results']['timerToggle'], 'true')) {
                         $('#multiStatus').html('<span class="bluePill">Multi-Link</span>');
                     } else {
                         $('#multiStatus').html('');
                     }
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_dsReqMsgs')) {
+                if (msgObject['results']['reqMessages'] !== undefined && msgObject['results']['reqMessages'] !== null) {
+                    $('#multiLinkReqMsgsInput').attr('placeholder', msgObject['results']['reqMessages']);
+                } else {
+                    $('#multiLinkReqMsgsInput').attr('placeholder', 'Message Count');
                 }
             }
         }
@@ -303,6 +311,7 @@
         sendDBQuery("dashboard_dsChannels", "dualStreamCommand", "otherChannels");
         sendDBQuery("dashboard_dsInterval", "dualStreamCommand", "timerInterval");
         sendDBQuery("dashboard_dsToggle", "dualStreamCommand", "timerToggle");
+        sendDBQuery("dashboard_dsReqMsgs", "dualStreamCommand", "reqMessages");
         sendDBKeys("dashboard_highlights", "highlights");
         sendDBKeys("dashboard_modules", "modules");
 
@@ -457,6 +466,16 @@
     }
 
     /**
+     * @function setMultiReqMsgs
+     */
+    function setMultiReqMsgs() {
+        if ($('#multiLinkReqMsgsInput').val().length > 0) {
+            sendCommand("multi reqmessage " + $("#multiLinkReqMsgsInput").val());
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /**
      * @function clearMultiLink
      */
     function clearMultiLink() {
@@ -534,6 +553,7 @@
     $.clearHighlights = clearHighlights;
     $.setMultiLink = setMultiLink;
     $.setMultiLinkTimer = setMultiLinkTimer;
+    $.setMultiReqMsgs = setMultiReqMsgs;
     $.clearMultiLink = clearMultiLink;
     $.multiLinkTimerOn = multiLinkTimerOn;
     $.multiLinkTimerOff = multiLinkTimerOff;

@@ -101,6 +101,9 @@
         auction.topUser = user;
         auction.topPoints = parseInt(amount);
 
+        $.inidb.set('auctionresults', 'winner', auction.topUser);
+        $.inidb.set('auctionresults', 'amount', auction.topPoints);
+
         $.say($.lang.get('auctionsystem.bid', user, $.getPointsString(amount), $.getPointsString(auction.topPoints + auction.increments)))
     };
 

@@ -24,22 +24,102 @@
 <div id="gamblingAccordion">
     <h3>Auction</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="auctionOpen">Open/Close an Auction</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.auctionClose()">Close Auction</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.auctionOpen()">Open Auction</button>
+                <input type="number" min="0" class="form-control" id="auctionIncrementInput" placeholder="Increments" />
+                <input type="number" min="0" class="form-control" id="auctionBetInput" placeholder="Minimum Bet" />
+                <input type="number" min="0" class="form-control" id="auctionTimerInput" placeholder="Length of Auction in Seconds (optional, default is until closed)" />
+            </div>
+        </form>
+
+        <div id="auctionResults" />
     </div>
 
     <h3>Bet</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="betOpen">Start a Bet </label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.betHandler('open', 'betOpenInput')">Open</button>
+                <input type="text" class="form-control" id="betOpenInput" placeholder="Option1 Option2 ...">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="betClose">Close a Bet </label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.betHandler('close', 'betCloseInput')">Close</button>
+                <input type="text" class="form-control" id="betCloseInput" placeholder="Winning Option">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="betSetMinimum">Set Minimum Bet</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.betHandler('setminimum', 'betMinimumInput')">Submit</button>
+                <input type="number" min="1" class="form-control" id="betMinimumInput" placeholder="Points">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="betSetMaximum">Set Maximum Bet</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.betHandler('setmaximum', 'betMaximumInput')">Submit</button>
+                <input type="number" min="1" class="form-control" id="betMaximumInput" placeholder="Points">
+            </div>
+        </form>
+
+        <div id="betResults" />
     </div>
 
     <h3>Raffle</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="raffleOpen">Open/Close a Raffle</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.raffleRepick()">Repick Winner</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.raffleClose()">Close Raffle</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.raffleOpen()">Open Raffle</button>
+                <input type="text" class="form-control" id="raffleKeywordInput" placeholder="Keyword" />
+                <input type="number" min="0" class="form-control" id="raffleCostInput" placeholder="Raffle Cost" />
+                <input type="number" min="0" class="form-control" id="raffleTimerInput" placeholder="Length of Raffle in Seconds (optional, default is until closed)" />
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="raffleFollowerInput" value="-followers">Followers Only
+                </label>
+            </div>
+        </form>
+
+        <div id="raffleResults" />
     </div>
 
     <h3>Ticket Raffle</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="traffleOpen">Open/Close a Ticket Raffle</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.traffleRepick()">Repick Winner</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.traffleClose()">Close Raffle</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.traffleOpen()">Open Raffle</button>
+                <input type="number" min="0" class="form-control" id="traffleMaxInput" placeholder="Max Entries" />
+                <input type="number" min="0" class="form-control" id="traffleCostInput" placeholder="Cost per Ticket" />
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="traffleFollowerInput" value="-followers">Followers Only
+                </label>
+            </div>
+        </form>
+
+        <div id="traffleResults" />
     </div>
 
 </div>

@@ -106,6 +106,7 @@
         }
 
         var Winner = $.randElement(entries);
+        $.inidb.set('raffleresults', 'winner', $.username.resolve(Winner));
         $.say($.lang.get('rafflesystem.winner', $.username.resolve(Winner)));
     };
 
