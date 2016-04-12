@@ -172,6 +172,17 @@
                     $.inidb.set('noticeSettings', 'interval', args[1]);
                     noticeInterval = parseInt(args[1]);
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-inteval-success'));
+
+                    setInterval(function() {
+                        if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
+                            if (messageCount >= noticeReqMessages) {
+                                if (noticeOffline && $.isOnline($.channelName)) {
+                                    sendNotice();
+                                    messageCount = 0;
+                                }
+                            }
+                        }
+                    }, noticeInterval * 60 * 1000, 'noticeTimer');
                     return;
                 }
             }
@@ -236,25 +247,22 @@
 
     // Set the interval to announce
     setInterval(function() {
-        if (noticeToggle) {
-            if ($.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
-                if (messageCount >= noticeReqMessages) {
-                    if (!noticeOffline && !$.isOnline($.channelName)) {
-                        return;
-                    }
+        if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
+            if (messageCount >= noticeReqMessages) {
+                if (noticeOffline && $.isOnline($.channelName)) {
                     sendNotice();
                     messageCount = 0;
                 }
             }
         }
-    }, noticeInterval * 60 * 1000);
+    }, noticeInterval * 60 * 1000, 'noticeTimer');
 
     /**
      * @event initReady
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/noticeSystem.js')) {
-            $.registerChatCommand('./systems/noticeSystem.js', 'notice');
+            $.registerChatCommand('./systems/noticeSystem.js', 'notice', 1);
         }
     });
 })();

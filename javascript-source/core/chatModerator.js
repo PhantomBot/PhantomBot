@@ -1301,6 +1301,10 @@
                 return;
             }
 
+            if (!linksToggle) {
+                return;
+            }
+
             permitUser(action);
             $.say($.username.resolve(action) + $.lang.get('chatmoderator.permited', linkPermitTime));
             $.logEvent('chatModerator.js', 365, action + ' was permited by ' + sender);
