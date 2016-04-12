@@ -186,9 +186,12 @@
             }
 
             if (panelCheckQuery(msgObject, 'commands_permcom')) {
-                for (idx in msgObject['results']) {
-                    commandName = msgObject['results'][idx]['key'];
-                    commandValue = msgObject['results'][idx]['value'];
+                var commandTableData = msgObject['results'];
+                commandTableData.sort(sortCommandTable);
+
+                for (idx in commandTableData) {
+                    commandName = commandTableData[idx]['key'];
+                    commandValue = commandTableData[idx]['value'];
                     html += "<tr class=\"textList\">" +
                             "<td><strong>" + commandName + "</strong></td>";
 
@@ -196,17 +199,17 @@
                         if (disabledCommands[commandName] !== undefined) {
                             html +=  "<td><div id=\"commandEnabled_" + commandName + "\"" +
                                      "         data-toggle=\"tooltip\" title=\"Enable Command\" class=\"button\" onclick=\"$.commandEnable('" + commandName + "', 'enable');\">" +
-                                     "    <i style=\"color: magenta\" class=\"fa fa-circle-o\" /></div></td>";
+                                     "    <i style=\"color: magenta\" class=\"fa fa-toggle-off\" /></div></td>";
                         } else {
                             html +=  "<td><div id=\"commandEnabled_" + commandName + "\"" +
                                      "         data-toggle=\"tooltip\" title=\"Disable Command\" class=\"button\" onclick=\"$.commandEnable('" + commandName + "', 'disable');\">" +
-                                     "    <i style=\"color: magenta\" class=\"fa fa-circle\" /></div></td>";
+                                     "    <i style=\"color: magenta\" class=\"fa fa-toggle-on\" /></div></td>";
                         }
                     } else {
                         html += "<td />";
                     }
 
-                    html += "<td><div id=\"commandsList_" + commandName + "\"><strong><font style=\"color: magenta\">" + groupIcons[commandValue] + 
+                    html += "<td /><td><div id=\"commandsList_" + commandName + "\"><strong><font style=\"color: magenta\">" + groupIcons[commandValue] + 
                             "    </font></strong></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Caster\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 0);\">" +
@@ -245,6 +248,15 @@
         sendDBKeys("commands_pricecom", "pricecom");
         sendDBKeys("commands_cooldown", "cooldown");
         sendDBKeys('commands_disabled', 'disabledCommands');
+    }
+
+    /**
+     * @function sortCommandTable
+     * @param {Object} a
+     * @param {Object} b
+     */
+    function sortCommandTable(a, b) {
+        return panelStrcmp(a.key, b.key);
     }
 
     /** 
@@ -401,10 +413,11 @@
      * @param {String} action
      */
     function commandEnable(commandName, action) {
-        $('#commandEnabled_' + commandName).html('<i style="color: magenta" class="fa fa-spinner fa-spin" />');
         if (panelMatch(action, 'enable')) {
+            $('#commandEnabled_' + commandName).html('<i style="color: #333333" class="fa fa-toggle-on" />');
             sendDBDelete('commands_enablecom', 'disabledCommands', commandName);
         } else {
+            $('#commandEnabled_' + commandName).html('<i style="color: #333333" class="fa fa-toggle-off" />');
             sendDBUpdate('commands_enablecom', 'disabledCommands', commandName, 'true');
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);

@@ -113,6 +113,8 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('hostraid_') !== -1) $.hostraidOnMessage(e);
     if (e.data.indexOf('notices_') !== -1) $.noticesOnMessage(e);
     if (e.data.indexOf('quotes_') !== -1) $.quotesOnMessage(e);
+    if (e.data.indexOf('keywords_') !== -1) $.keywordsOnMessage(e);
+    if (e.data.indexOf('poll_') !== -1) $.pollOnMessage(e);
 
     if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
 }

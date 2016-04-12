@@ -260,6 +260,32 @@
                     $("#deathCounterValue").html(msgObject['results'][gameTitle]);
                 }
             }
+
+            if (panelCheckQuery(msgObject, 'dashboard_dsChannels')) {
+                if (msgObject['results']['otherChannels'] !== undefined && msgObject['results']['otherChannels'] !== null) {
+                    $('#multiLinkInput').attr('placeholder', msgObject['results']['otherChannels'].replace(/\//g, ' '));
+                } else {
+                    $('#multiLinkInput').attr('placeholder', 'Channel_1 Channel_2 Channel_3 ...');
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_dsInterval')) {
+                if (msgObject['results']['timerInterval'] !== undefined && msgObject['results']['timerInterval'] !== null) {
+                    $('#multiLinkTimerInput').attr('placeholder', msgObject['results']['timerInterval']);
+                } else {
+                    $('#multiLinkTimerInput').attr('placeholder', 'Minutes');
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_dsToggle')) {
+                if (msgObject['results']['timerToggle'] !== undefined) {
+                    if (panelMatch(msgObject['results']['timerToggle'], 'true')) {
+                        $('#multiStatus').html('<span class="bluePill">Multi-Link</span>');
+                    } else {
+                        $('#multiStatus').html('');
+                    }
+                }
+            }
         }
     }
 
@@ -274,6 +300,9 @@
         sendDBQuery("dashboard_toggleMe", "settings", "response_action");
         sendDBQuery("dashboard_commandsPaused", "commandPause", "commandsPaused");
         sendDBQuery("dashboard_loggingMode", "settings", "loggingEnabled");
+        sendDBQuery("dashboard_dsChannels", "dualStreamCommand", "otherChannels");
+        sendDBQuery("dashboard_dsInterval", "dualStreamCommand", "timerInterval");
+        sendDBQuery("dashboard_dsToggle", "dualStreamCommand", "timerToggle");
         sendDBKeys("dashboard_highlights", "highlights");
         sendDBKeys("dashboard_modules", "modules");
 
@@ -409,14 +438,22 @@
      * @function setMultiLink
      */
     function setMultiLink() {
-        sendCommand("multi set " + $("#multiLinkInput").val());
+        if ($('#multiLinkInput').val().length > 0) {
+            sendCommand("multi set " + $("#multiLinkInput").val());
+            $('#multiLinkInput').val('');
+            $('#multiLinkInput').attr('placeholder', 'Sending...');
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
     }
     
     /**
      * @function setMultiLinkTimer
      */
     function setMultiLinkTimer() {
-        sendCommand("multi timerinterval " + $("#multiLinkTimerInput").val());
+        if ($('#multiLinkTimerInput').val().length > 0) {
+            sendCommand("multi timerinterval " + $("#multiLinkTimerInput").val());
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
     }
 
     /**
@@ -424,6 +461,7 @@
      */
     function clearMultiLink() {
         sendCommand("multi clear");
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
  
     /**
@@ -440,6 +478,16 @@
     function multiLinkTimerOff() {
         $('#multiStatus').html('');
         sendCommand("multi timer off");
+    }
+
+    /**
+     * @function shoutOut
+     */
+    function shoutOut() {
+        if ($('#shoutOutInput').val().length > 0) {
+            sendCommand('shoutout ' + $('#shoutOutInput').val());
+            $('#shoutOutInput').val('');
+        }
     }
 
     /**
@@ -485,7 +533,7 @@
     $.setHighlight = setHighlight;
     $.clearHighlights = clearHighlights;
     $.setMultiLink = setMultiLink;
-    $.setMuliLinkTimer = setMultiLinkTimer;
+    $.setMultiLinkTimer = setMultiLinkTimer;
     $.clearMultiLink = clearMultiLink;
     $.multiLinkTimerOn = multiLinkTimerOn;
     $.multiLinkTimerOff = multiLinkTimerOff;
@@ -495,4 +543,5 @@
     $.enableModule = enableModule;
     $.disableModule = disableModule;
     $.adjustDeathCounter = adjustDeathCounter;
+    $.shoutOut = shoutOut;
 })();

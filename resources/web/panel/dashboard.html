@@ -173,13 +173,14 @@
              <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="multi-link">Set Multi-Link Channels</label>
                 <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLink()">Submit</button>
-                <input type="text" class="form-control" id="multiLinkInput" placeholder="Channel_1 Channel_2 Channel_3" />
+                <input type="text" class="form-control" id="multiLinkInput" placeholder="Channel_1 Channel_2 Channel_3"
+                       data-toggle="tooltip" title="Input format: Channel_1 Channel_2 Channel_3 ..." />
             </div>
         </form>
 
         <form role="form">
              <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="multi-link">Timer Interval</label>
+                <label for="multi-link">Timer Interval (Minutes)</label>
                 <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLinkTimer()">Submit</button>
                 <input type="text" class="form-control" id="multiLinkTimerInput" placeholder="Minutes" />
             </div>
@@ -188,6 +189,18 @@
         <button type="button" class="btn btn-success" onclick="$.multiLinkTimerOn()">Multi-Link Timer On</button>
         <button type="button" class="btn btn-danger" onclick="$.multiLinkTimerOff()">Multi-Link Timer Off</button>
         <button type="button" class="btn btn-danger" onclick="$.clearMultiLink()">Clear Multi-Link</button>
+    </div>
+
+    <h3>Shoutout a Streamer</h3>
+    <div>
+        Shoutout a streamer!  Will display their Twitch URL in chat along with game being played, or last played.<br><br>
+        <form role="form">
+             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="shoutOut">Twitch Channel to Shoutout</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.shoutOut()">Submit</button>
+                <input type="text" class="form-control" id="shoutOutInput" placeholder="Twitch Channel" />
+            </div>
+        </form>
     </div>
 </div>
 
