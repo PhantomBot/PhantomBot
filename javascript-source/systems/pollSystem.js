@@ -136,6 +136,15 @@
         poll.result = poll.options[winner];
         poll.pollMaster = '';
         poll.pollRunning = false;
+
+        // Store the results for the Panel to read.
+        $.inidb.set('pollresults', 'question', poll.question);
+        $.inidb.set('pollresults', 'result', poll.result);
+        $.inidb.set('pollresults', 'votes', poll.votes.length);
+        $.inidb.set('pollresults', 'options', poll.options.join(','));
+        $.inidb.set('pollresults', 'counts', poll.counts.join(','));
+        $.inidb.set('pollresults', 'istie', poll.hasTie);
+
         poll.callback(poll.result);
     };
 
@@ -191,9 +200,9 @@
                     $.say($.lang.get('pollsystem.results.running'));
                 } else if (poll.result != '') {
                     if (poll.hasTie) {
-                        $.say($.lang.get('pollsystem.results.lastpoll', poll.question, poll.votes.length, "Tie!", poll.options.join('", "'), poll.counts.join('", "')));
+                        $.say($.lang.get('pollsystem.results.lastpoll', poll.question, poll.votes.length, "Tie!", poll.options.join(', '), poll.counts.join(', ')));
                     } else {
-                        $.say($.lang.get('pollsystem.results.lastpoll', poll.question, poll.votes.length, poll.result, poll.options.join('", "'), poll.counts.join(', ')));
+                        $.say($.lang.get('pollsystem.results.lastpoll', poll.question, poll.votes.length, poll.result, poll.options.join(', '), poll.counts.join(', ')));
                     }
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.results.404'));
