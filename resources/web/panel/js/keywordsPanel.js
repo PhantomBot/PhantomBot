@@ -93,12 +93,12 @@
             response = $('#addKeywordResponseInput').val();
 
         if (keyword.length > 0 && response.length > 0) {
-            $('#addKeywordInput').attr('placeholder', 'Submitting...');
-            $('#addKeywordResponseInput').attr('placeholder', 'Submitting...');
+            $('#addKeywordInput').val('Submitting...');
+            $('#addKeywordResponseInput').val('Submitting...');
             sendDBUpdate('keywords_addkeyword', 'keywords', keyword, response);
             setTimeout(function() {
-                $('#addKeywordInput').attr('placeholder', '');
-                $('#addKeywordResponseInput').attr('placeholder', '');
+                $('#addKeywordInput').val('');
+                $('#addKeywordResponseInput').val('');
                 doQuery();
             }, TIMEOUT_WAIT_TIME);
         }
@@ -109,7 +109,7 @@
      * @param {String} keywordIdx
      */
     function deleteKeyword(keywordIdx) {
-        $('#deleteKeyword_' + keywordIdx).val(spinIcon);
+        $('#deleteKeyword_' + keywordIdx).html(spinIcon);
         keyword = keywordMap[keywordIdx];
         sendDBDelete('keywords_delkeyword', 'keywords', keyword);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);

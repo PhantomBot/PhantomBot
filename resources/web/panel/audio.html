@@ -35,7 +35,48 @@
             </tr>
         </table>
     </div>
+
+    <h3>YouTube Player</h3>
+    <div>
+        <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayer()">Hide/Show YouTube Player</button>
+        <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerPause()">Toggle Pause</button>
+        <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerRequests()">Toggle Song Requests</button>
+        <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerNotify()">Toggle Chat Notification</button>
+        <br><br><br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="ytpDJName">Set Playlist DJ Name</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setYouTubePlayerDJName()">Submit</button>
+                <input type="text" class="form-control" id="ytpDJNameInput" placeholder="DJ Name">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="ytpMaxRequests">Set Max Parallel Requests</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setYouTubePlayerMaxReqs()">Submit</button>
+                <input type="number" min="1" class="form-control" id="ytpMaxReqsInput" placeholder="Request Count">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addKeyword">Set Max Video Length (Seconds)</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setYouTubePlayerMaxLength()">Submit</button>
+                <input type="number" min="1" class="form-control" id="ytpMaxLengthInput" placeholder="Request Count">
+            </div>
+        </form>
+
+        <div id="youTubePlayerIframe" />
+        <script>$('#youTubePlayerIframe').hide(); $.fillYouTubePlayerIframe();</script>
+    </div>
+    
 </div>
+
 
 <!-- Run the Acordion -->
 <script>$("#audioAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>

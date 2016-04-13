@@ -18,6 +18,7 @@ package me.mast3rplan.phantombot.ytplayer;
 
 public enum YTPlayerState {
 
+    NEWPAUSE(-3),
     NEW(-2),
     UNSTARTED(-1),
     ENDED(0),

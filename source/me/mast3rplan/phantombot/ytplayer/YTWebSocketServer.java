@@ -27,6 +27,9 @@
  * // Tell the bot if the player is ready or not
  * { "status" : { "ready" : true | false } }
  *
+ * // Tell the bot if the player is ready or not and force a pause
+ * { "status" : { "readypause" : true | false } }
+ *
  * // Tell the bot the current song being played; from { "command" : "querysong" }
  * { "status" : { "currentid" : "YouTube ID" } }
  *
@@ -170,6 +173,9 @@ public class YTWebSocketServer extends WebSocketServer {
             } else if (jsonStatus.has("ready")) {
                 currentState = -2;
                 EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEW));
+            } else if (jsonStatus.has("readypause")) {
+                currentState = -3;
+                EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEWPAUSE));
             } else if (jsonStatus.has("currentid")) {
                 dataString = jsonStatus.getString("currentid");
                 EventBus.instance().postAsync(new YTPlayerCurrentIdEvent(dataString));
