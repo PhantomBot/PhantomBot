@@ -87,6 +87,42 @@
     });
 
     /**
+     * @function onMessage
+     */
+    function onMessage(message) {
+        var msgObject,
+            html = '',
+            keyword = '';
+
+        try {
+            msgObject = JSON.parse(message.data);
+        } catch (ex) {
+            return;
+        }
+
+        if (panelHasQuery(msgObject)) {
+            if (panelCheckQuery(msgObject, 'audio_ytpMaxReqs')) {
+                $('#ytpMaxReqsInput').attr('placeholder', msgObject['results']['songRequestsMaxParallel']);
+            }
+            if (panelCheckQuery(msgObject, 'audio_ytpMaxLength')) {
+                $('#ytpMaxLengthInput').attr('placeholder', msgObject['results']['songRequestsMaxSecondsforVideo']);
+            }
+            if (panelCheckQuery(msgObject, 'audio_ytpDJName')) {
+                $('#ytpDJNameInput').attr('placeholder', msgObject['results']['playlistDJname']);
+            }
+        }
+    }
+
+    /**
+     * @function doQuery
+     */
+    function doQuery(message) {
+        sendDBQuery('audio_ytpMaxReqs', 'ytSettings', 'songRequestsMaxParallel');
+        sendDBQuery('audio_ytpMaxLength', 'ytSettings', 'songRequestsMaxSecondsforVideo');
+        sendDBQuery('audio_ytpDJName', 'ytSettings', 'playlistDJname');
+    }
+
+    /**
      * @function loadAudioPanel
      */
     function loadAudioPanel() {
@@ -123,9 +159,118 @@
         $("#ionSoundPlaying").fadeOut(400);
     }
 
+    /**
+     * @function toggleYouTubePlayer
+     */
+    function toggleYouTubePlayer() {
+        if ($("#youTubePlayerIframe").is(":visible")) {
+            $("#youTubePlayerIframe").fadeOut(1000);
+        } else {
+            $("#youTubePlayerIframe").fadeIn(1000);
+        }
+    }
+
+    /**
+     * @function toggleYouTubePlayerPause
+     */
+    function toggleYouTubePlayerPause() {
+        sendCommand('ytp pause');
+    }
+
+    /**
+     * @function toggleYouTubePlayerRequests
+     */
+    function toggleYouTubePlayerRequests() {
+        sendCommand('ytp togglerequests');
+    }
+
+    /**
+     * @function toggleYouTubePlayerNotify
+     */
+    function toggleYouTubePlayerNotify() {
+        sendCommand('ytp togglenotify');
+    }
+
+    /**
+     * @function setYouTubePlayerDJName
+     */
+    function setYouTubePlayerDJName() {
+        var value = $('#ytpDJNameInput').val();
+        if (value.length > 0) {
+            $('#ytpDJNameInput').val('Updating...');
+            sendCommand('ytp djname ' + value);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        }
+    }
+
+    /**
+     * @function setYouTubePlayerMaxReqs
+     */
+    function setYouTubePlayerMaxReqs() {
+        var value = $('#ytpMaxReqsInput').val();
+        if (value.length > 0) {
+            $('#ytpMaxReqsInput').val('');
+            $('#ytpMaxReqsInput').attr('placeholder', value);
+            sendCommand('ytp setrequestmax ' + value);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        }
+    }
+
+    /**
+     * @function setYouTubePlayerMaxLength
+     */
+    function setYouTubePlayerMaxLength() {
+        var value = $('#ytpMaxLengthInput').val();
+        if (value.length > 0) {
+            $('#ytpMaxLengthInput').val('');
+            $('#ytpMaxLengthInput').attr('placeholder', value);
+            sendCommand('ytp setmaxvidlength ' + value);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        }
+    }
+
+    /**
+     * @function fillYouTubePlayerIframe
+     */
+    function fillYouTubePlayerIframe() {
+        $('#youTubePlayerIframe').html('<iframe id="youTubePlayer" frameborder="0" scrolling="auto" height="400" width="650"'+
+                                       '        src="http://' + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer?start_paused">');
+    }
+
     // Import the HTML file for this panel.
     $("#audioPanel").load("/panel/audio.html");
 
+    // Load the DB items for this panel, wait to ensure that we are connected.
+    var interval = setInterval(function() {
+        if (isConnected && TABS_INITIALIZED) {
+            var active = $('#tabs').tabs('option', 'active');
+            if (active == 16) {
+                doQuery();
+                clearInterval(interval);
+            }
+        }
+    }, INITIAL_WAIT_TIME);
+
+    // Query the DB every 30 seconds for updates.
+    setInterval(function() {
+        var active = $('#tabs').tabs('option', 'active');
+        if (active == 16 && isConnected) {
+            newPanelAlert('Refreshing Audio Data', 'success', 1000);
+            doQuery();
+        }
+    }, 3e4);
+
+    // Export to HTML
+    $.audioOnMessage = onMessage;
+
     // Export functions to HTML.
     $.playIonSound = playIonSound;
+    $.toggleYouTubePlayer = toggleYouTubePlayer;
+    $.toggleYouTubePlayerPause = toggleYouTubePlayerPause;
+    $.toggleYouTubePlayerNotify = toggleYouTubePlayerNotify;
+    $.toggleYouTubePlayerRequests = toggleYouTubePlayerRequests;
+    $.setYouTubePlayerDJName = setYouTubePlayerDJName;
+    $.setYouTubePlayerMaxReqs = setYouTubePlayerMaxReqs;
+    $.setYouTubePlayerMaxLength = setYouTubePlayerMaxLength;
+    $.fillYouTubePlayerIframe = fillYouTubePlayerIframe;
 })();

@@ -280,6 +280,12 @@ td {
     width: 100%;
 }
 
+#youTubePlayerIframe {
+    margin-top: 5px;
+    border: none !important;
+    outline: none !important;
+}
+
 /* Bootstrap and JQuery Section */
 
 .ui-slider .ui-slider-handle { 

@@ -5,6 +5,7 @@
  */
 var DEBUG_MODE = false;
 
+var startPaused = false;
 var playerPaused = false;
 var playerMuted = false;
 var connectedToWS = false;
@@ -17,6 +18,10 @@ var url = window.location.host.split(":");
 var addr = 'ws://' + url[0] + ':' + getPlayerPort();
 var connection = new WebSocket(addr, []);
 var currentVolume = 0;
+
+if (window.location.href.indexOf('start_paused') !== -1) {
+    startPaused = true;
+}
 
 var documentElement = document.createElement('script');
 documentElement.src = "https://www.youtube.com/iframe_api";
@@ -63,7 +68,11 @@ function onPlayerReady(event) {
 function readyEvent() {
     debugMsg("readyEvent()");
     var jsonObject = {};
-    jsonObject["status"] = { "ready" : true };
+    if (startPaused) {
+        jsonObject["status"] = { "readypause" : true };
+    } else {
+        jsonObject["status"] = { "ready" : true };
+    }
     connection.send(JSON.stringify(jsonObject));
     debugMsg("readyEvent::connection.send(" + JSON.stringify(jsonObject)+")");
 }

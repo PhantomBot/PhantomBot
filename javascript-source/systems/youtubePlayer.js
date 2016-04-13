@@ -6,17 +6,18 @@
  */
 (function() {
     var playlistDbPrefix = 'ytPlaylist_',
-        randomizePlaylist = ($.inidb.exists('ytSettings', 'randomizePlaylist') ? $.getIniDbBoolean('ytSettings', 'randomizePlaylist') : false),
-        announceInChat = ($.inidb.exists('ytSettings', 'announceInChat') ? $.getIniDbBoolean('ytSettings', 'announceInChat') : false),
-        activePlaylistname = ($.inidb.exists('ytSettings', 'activePlaylistname') ? $.inidb.get('ytSettings', 'activePlaylistname') : 'default'),
-        baseFileOutputPath = ($.inidb.exists('ytSettings', 'baseFileOutputPath') ? $.inidb.get('ytSettings', 'baseFileOutputPath') : './addons/youtubePlayer/'),
-        songRequestsEnabled = ($.inidb.exists('ytSettings', 'songRequestsEnabled') ? $.getIniDbBoolean('ytSettings', 'songRequestsEnabled') : true),
-        songRequestsMaxParallel = ($.inidb.exists('ytSettings', 'songRequestsMaxParallel') ? parseInt($.inidb.get('ytSettings', 'songRequestsMaxParallel')) : 1),
-        songRequestsMaxSecondsforVideo = ($.inidb.exists('ytSettings', 'songRequestsMaxSecondsforVideo') ? parseInt($.inidb.get('ytSettings', 'songRequestsMaxSecondsforVideo')) : (8 * 60));
-        playlistDJname = ($.inidb.exists('ytSettings', 'playlistDJname') ? $.inidb.get('ytSettings', 'playlistDJname') : $.botName);
+        randomizePlaylist = $.getSetIniDbBoolean('ytSettings', 'randomizePlaylist', false),
+        announceInChat = $.getSetIniDbBoolean('ytSettings', 'announceInChat', false),
+        activePlaylistname = $.getSetIniDbString('ytSettings', 'activePlaylistname', 'default'),
+        baseFileOutputPath = $.getSetIniDbString('ytSettings', 'baseFileOutputPath', './addons/youtubePlayer/'),
+        songRequestsEnabled = $.getSetIniDbBoolean('ytSettings', 'songRequestsEnabled', true),
+        songRequestsMaxParallel = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxParallel', 1),
+        songRequestsMaxSecondsforVideo = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxSecondsforVideo', (8 * 60)),
+        playlistDJname = $.getSetIniDbString('ytSettings', 'playlistDJname', $.botName);
 
         /* enum for player status */
         playerStateEnum = {
+            NEWPAUSE: -3,
             NEW: -2,
             UNSTARTED: -1,
             ENDED: 0,
@@ -851,11 +852,14 @@
         var state = event.getStateId(),
             volume;
 
-        if (state == playerStateEnum.NEW) {
+        if (state == playerStateEnum.NEW || state == playerStateEnum.NEWPAUSE) {
             volume = $.inidb.exists('ytSettings', 'volume') ? parseInt($.inidb.get('ytSettings', 'volume')) : 5;
             connectedPlayerClient.setVolume(volume);
             if (currentPlaylist) {
                 currentPlaylist.nextVideo();
+                if (state == playerStateEnum.NEWPAUSE) {
+                    connectedPlayerClient.togglePause();
+                }
             }
         }
 
