@@ -24,7 +24,23 @@
 <div id="pollAccordion">
     <h3>Poll</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addNotice">Open/Close a Poll</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.closePoll()">Close Poll</button>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.openPoll()">Open Poll</button>
+                <input type="text" class="form-control" id="pollQuestionInput" placeholder="Poll Question" />
+                <input type="text" class="form-control" id="pollOptionsInput" placeholder="Option1, Option2, ..." />
+                <input type="number" min="30" class="form-control" id="pollLengthInput" placeholder="Seconds (optional, default is 60)" />
+                <input type="number" min="1" class="form-control" id="pollMinVotesInput" placeholder="Vote Count (optional, default is 1)" />
+            </div>
+        </form>
+        <br>
+        
+        <strong>Results from Last Poll</strong>
+        <div id="pollLastResults" />
     </div>
 </div>
 

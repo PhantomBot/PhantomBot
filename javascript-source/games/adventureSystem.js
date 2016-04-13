@@ -15,11 +15,11 @@
  * If the tamagotchi survives it wil then give it's price to it's owner.
  */
 (function() {
-    var joinTime = ($.inidb.exists('adventureSettings', 'joinTime') ? parseInt($.inidb.get('adventureSettings', 'joinTime')) : 60),
-        coolDown = ($.inidb.exists('adventureSettings', 'coolDown') ? parseInt($.inidb.get('adventureSettings', 'coolDown')) : 900),
-        gainPercent = ($.inidb.exists('adventureSettings', 'gainPercent') ? parseInt($.inidb.get('adventureSettings', 'gainPercent')) : 30),
-        minBet = ($.inidb.exists('adventureSettings', 'minBet') ? parseInt($.inidb.get('adventureSettings', 'minBet')) : 10),
-        maxBet = ($.inidb.exists('adventureSettings', 'maxBet') ? parseInt($.inidb.get('adventureSettings', 'maxBet')) : 1000),
+    var joinTime = $.getSetIniDbNumber('adventureSettings', 'joinTime', 60),
+        coolDown = $.getSetIniDbNumber('adventureSettings', 'coolDown', 900),
+        gainPercent = $.getSetIniDbNumber('adventureSettings', 'gainPercent', 30),
+        minBet = $.getSetIniDbNumber('adventureSettings', 'minBet', 10),
+        maxBet = $.getSetIniDbNumber('adventureSettings', 'maxBet', 1000),
         tgFunIncr = 1,
         tgExpIncr = 0.5,
         tgFoodDecr = 0.25,

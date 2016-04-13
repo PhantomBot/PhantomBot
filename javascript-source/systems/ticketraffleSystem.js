@@ -67,6 +67,7 @@
         }
 
         winner = $.randElement(entries);
+        $.inidb.set('traffleresults', 'winner', $.username.resolve(winner));
         $.say($.lang.get('ticketrafflesystem.winner', $.username.resolve(winner)));
     };
 

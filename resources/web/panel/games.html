@@ -22,10 +22,74 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="gamesAccordion">
-    <h3>Games</h3>
+    <h3>Roulette Configuration</h3>
     <div>
-        Coming Soon
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="rouletteTimeout">Roulette Timeout (Seconds)</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.rouletteTimeout()">Submit</button>
+                <input type="number" min="0" class="form-control" id="rouletteTimeoutInput" placeholder="Seconds">
+            </div>
+        </form>
     </div>
+
+    <h3>Start an Adventure / Adventure Configuration</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="adventureStart">Start an Adventure - Provide Points to Start</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.adventureStart()">Start</button>
+                <input type="number" min="0" class="form-control" id="adventureStartInput" placeholder="Points to Start Adventure">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="adventureJoinTime">Time to Join an Adventure (Seconds)</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.adventureUpdateSetting('joinTime')">Submit</button>
+                <input type="number" min="0" class="form-control" id="adventurejoinTimeInput" placeholder="Seconds">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="adventureCooldown">Cooldown Time Between Adventures (Seconds)</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.adventureUpdateSetting('coolDown')">Submit</button>
+                <input type="number" min="0" class="form-control" id="adventurecoolDownInput" placeholder="Seconds">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="adventureGainPct">Gain Percent Applied to Winning an Adventure</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.adventureUpdateSetting('gainPercent')">Submit</button>
+                <input type="number" min="1" class="form-control" id="adventuregainPercentInput" placeholder="Number Value">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="adventureMinBet">Minimum Bet to Start an Adventure</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.adventureUpdateSetting('minBet')">Submit</button>
+                <input type="number" min="1" class="form-control" id="adventureminBetInput" placeholder="Number Value">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="adventureMaxBet">Maximum Bet to Start an Adventure</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.adventureUpdateSetting('maxBet')">Submit</button>
+                <input type="number" min="1" class="form-control" id="adventuremaxBetInput" placeholder="Number Value">
+            </div>
+        </form>
+    </div>    
 </div>
 
 <!-- Run the Acordion -->

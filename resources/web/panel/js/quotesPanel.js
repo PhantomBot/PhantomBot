@@ -73,7 +73,7 @@
                             '            <input type="text" id="inlineQuoteEdit_user_' + id + '"' +
                             '                   value="' + quoteData[0] + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
-                            '                   onclick="$.updateQuote(\'' + id + '\', \'' + quoteData + '\', \'user\')">' +
+                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteData + '\', \'user\')">' +
                             '                <i class="fa fa-pencil" />' +
                             '            </button>' +
                             '        </form>' +
@@ -85,7 +85,7 @@
                             '            <input type="text" id="inlineQuoteEdit_game_' + id + '"' +
                             '                   value="' + (quoteData.length == 4 ? quoteData[3] : 'Some Game') + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
-                            '                   onclick="$.updateQuote(\'' + id + '\', \'' + quoteData + '\', \'game\')">' +
+                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteData + '\', \'game\')">' +
                             '                <i class="fa fa-pencil" />' +
                             '            </button>' +
                             '        </form>' +
@@ -99,7 +99,7 @@
                             '            <input style="width: 89%" type="text" id="inlineQuoteEdit_quote_' + id + '"' +
                             '                   value="' + quoteData[1] + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
-                            '                   onclick="$.updateQuote(\'' + id + '\', \'' + quoteData + '\', \'quote\')">' +
+                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteData + '\', \'quote\')">' +
                             '                <i class="fa fa-pencil" />' +
                             '            </button>' +
                             '        </form>' +
