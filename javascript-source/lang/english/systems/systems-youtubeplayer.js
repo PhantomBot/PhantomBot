@@ -1,4 +1,7 @@
 $.lang.register('ytplayer.client.404', 'The YouTube Player is not connected!');
+$.lang.register('ytplayer.local.404', 'Local music functionality is not enabled.');
+$.lang.register('ytplayer.local.announce.nextsong', '[\u266B] Now Playing [$1]');
+$.lang.register('ytplayer.local.localpath.404', 'Could not locate local now playing file at [$1]');
 $.lang.register('ytplayer.playlist.404', 'Cannot find playlist [$1]');
 $.lang.register('ytplayer.announce.nextsong', '[\u266B] Now Playing [$1] Requester: $2');
 $.lang.register('ytplayer.console.client.connected', '[\u266B] YouTube Player is connected! [\u266B]');
@@ -36,7 +39,8 @@ $.lang.register('ytplayer.command.songrequest.failed', 'Failed adding song to qu
 $.lang.register('ytplayer.command.previoussong', 'Previous song was [$1] requested by $2 from $3');
 $.lang.register('ytplayer.command.previoussong.404', 'There is not a previous song to report');
 $.lang.register('ytplayer.command.currentsong', 'Current song is [$1] requested by $2 from $3');
-$.lang.register('ytplayer.command.currentsong.404', 'There is not a curent song');
+$.lang.register('ytplayer.command.currentsong.local', 'Current song is [$1]');
+$.lang.register('ytplayer.command.currentsong.404', 'No song is currently playing.');
 $.lang.register('ytplayer.command.delrequest.success', 'Removed song with ID [$1] and title of [$2] from song requests.');
 $.lang.register('ytplayer.command.delrequest.404', 'Song requests do not have a song with an ID of [$1]');
 $.lang.register('ytplayer.command.delrequest.usage', 'usage: !ytp delrequest [YouTube ID]');
@@ -51,6 +55,10 @@ $.lang.register('ytplayer.command.nextsong.range', 'Songs in Range: $1');
 $.lang.register('ytplayer.command.nextsong.usage', 'usage: !nextsong [index number | next [n] | list [x-y]. Display next song, or title at index number or next n songs or a range with list x-y');
 $.lang.register('ytplayer.command.nextsong.404', 'Song request queue is empty.');
 $.lang.register('ytplayer.command.nextsong.range.404', 'No songs found in that range.');
+$.lang.register('ytplayer.command.togglelocal.toggled', '$1 local now playing.');
+$.lang.register('ytplayer.command.localpath.usage', 'usage: !ytp localpath [./path/to/file.txt]');
+$.lang.register('ytplayer.command.localpath.get', 'Path to local now playing file set to [$1]');
+$.lang.register('ytplayer.command.localpath.set', 'Local now playing file updated to [$1]');
 $.lang.register('ytplayer.requestsong.error.maxrequests', 'exceeds maximum concurrent requests');
 $.lang.register('ytplayer.requestsong.error.disabled', 'song requests are disabled');
 $.lang.register('ytplayer.requestsong.error.yterror', 'YouTube error ($1)');

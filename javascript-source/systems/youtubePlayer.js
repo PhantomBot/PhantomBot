@@ -1,8 +1,7 @@
 /**
  * youtubePlayer.js
  *
- * This is version 2 of the youtube player.
- *
+ * version of youtubePlayer including support for local song files when song requests are disabled.
  */
 (function() {
     var playlistDbPrefix = 'ytPlaylist_',
@@ -12,11 +11,27 @@
         baseFileOutputPath = ($.inidb.exists('ytSettings', 'baseFileOutputPath') ? $.inidb.get('ytSettings', 'baseFileOutputPath') : './addons/youtubePlayer/'),
         songRequestsEnabled = ($.inidb.exists('ytSettings', 'songRequestsEnabled') ? $.getIniDbBoolean('ytSettings', 'songRequestsEnabled') : true),
         songRequestsMaxParallel = ($.inidb.exists('ytSettings', 'songRequestsMaxParallel') ? parseInt($.inidb.get('ytSettings', 'songRequestsMaxParallel')) : 1),
-        songRequestsMaxSecondsforVideo = ($.inidb.exists('ytSettings', 'songRequestsMaxSecondsforVideo') ? parseInt($.inidb.get('ytSettings', 'songRequestsMaxSecondsforVideo')) : (8 * 60));
-        playlistDJname = ($.inidb.exists('ytSettings', 'playlistDJname') ? $.inidb.get('ytSettings', 'playlistDJname') : $.botName);
+        songRequestsMaxSecondsforVideo = ($.inidb.exists('ytSettings', 'songRequestsMaxSecondsforVideo') ? parseInt($.inidb.get('ytSettings', 'songRequestsMaxSecondsforVideo')) : (8 * 60)),
+        playlistDJname = ($.inidb.exists('ytSettings', 'playlistDJname') ? $.inidb.get('ytSettings', 'playlistDJname') : $.botName),
+        localNowPlayingFile,
+        localMusicPlayer;
 
-        /* enum for player status */
-        playerStateEnum = {
+    if ($.inidb.exists('ytSettings','localMusicPlayer')) {
+        localMusicPlayer = $.getIniDbBoolean('ytSettings','localMusicPlayer');
+    } else {
+        $.setIniDbBoolean('ytSettings','localMusicPlayer', true);
+        localMusicPlayer = true;
+    }
+
+    if ($.inidb.exists('ytSettings','localNowPlayingFile')) {
+        localNowPlayingFile = $.inidb.get('ytSettings','localNowPlayingFile');
+    } else {
+        localNowPlayingFile = './addons/youtubePlayer/localNowPlaying.txt';
+        $.inidb.set('ytSettings','localNowPlayingFile', localNowPlayingFile);
+    }
+
+    /* enum for player status */
+    var playerStateEnum = {
             NEW: -2,
             UNSTARTED: -1,
             ENDED: 0,
@@ -26,10 +41,57 @@
             CUED: 5,
             KEEPALIVE: 200
         },
-        /* @type {PlayerClientInterface} */
+    /* @type {PlayerClientInterface} */
         connectedPlayerClient = null,
-        /* @type {BotPlayList} */
+    /* @type {BotPlayList} */
         currentPlaylist = null;
+
+    /**
+     * @function updateLocalSong
+     * @description Read from local file when YouTube Player is not connected
+     * @param {Boolean} force local song title to be updated if true
+     */
+    var lastLocalSong = '';
+    function updateLocalSong(force) {
+        if ($.isOnline($.channelName)) {
+            if (localMusicPlayer && !connectedPlayerClient || connectedPlayerClient === null) {
+                if ($.fileExists(localNowPlayingFile)) {
+                    var localSongTitle = $.readFile(localNowPlayingFile).toString().trim();
+                    var separator = '    |    ';
+                    if (localSongTitle !== lastLocalSong || force) {
+                        lastLocalSong = localSongTitle;
+                        if (localSongTitle === null || localSongTitle === undefined || localSongTitle === '') {
+                            $.writeToFile(
+                                ($.lang.get('ytplayer.command.currentsong.404') + separator),
+                                baseFileOutputPath + 'currentSong.txt',
+                                false
+                            );
+                            setTimeout(updateLocalSong, 5 * 1000);
+                            return;
+                        } else {
+                            $.writeToFile(
+                                localSongTitle + separator,
+                                baseFileOutputPath + 'currentSong.txt',
+                                false
+                            );
+                            setTimeout(updateLocalSong, 5 * 1000);
+                            if (announceInChat) {
+                                $.say($.lang.get('ytplayer.local.announce.nextsong', localSongTitle));
+                                return;
+                            } else {
+                                $.consoleLn($.lang.get('ytplayer.local.announce.nextsong', localSongTitle));
+                                return;
+                            }
+                        }
+                    }
+                    setTimeout(updateLocalSong, 5 * 1000);
+                } else {
+                    $.consoleLn($.lang.get('ytplayer.local.localpath.404'));
+                    setTimeout(updateLocalSong, 30 * 1000);
+                }
+            }
+        }
+    }
 
     /**
      * @class
@@ -154,7 +216,7 @@
             $.inidb.set('ytcache', videoId, jsonString);
         }
 
-        /** END CONTRUCTOR YoutubeVideo() */
+        /** END CONSTRUCTOR YoutubeVideo() */
     }
 
     /**
@@ -177,7 +239,7 @@
         this.playlistName = playlistName;
         this.loaded = false;
 
-        /** 
+        /**
          * @function importPlaylistFile
          * @param {String}
          * @param {String}
@@ -208,20 +270,20 @@
                 } else {
                     return $.lang.get('ytplayer.command.importpl.file.404', fileName);
                 }
-            } 
+            }
             return $.lang.get('ytplayer.command.importpl.file.registry404', listName);
         };
 
-        /** 
+        /**
          * @function loadNewPlaylist
          * @return {Boolean}
          */
         this.loadNewPlaylist = function(listName) {
-           if ($.inidb.exists('yt_playlists_registry', 'ytPlaylist_' + listName)) {
-               this.playlistName = listName;
-               playListDbId = playlistDbPrefix + listName;
-               this.loadPlaylistKeys();
-               connectedPlayerClient.pushPlayList();
+            if ($.inidb.exists('yt_playlists_registry', 'ytPlaylist_' + listName)) {
+                this.playlistName = listName;
+                playListDbId = playlistDbPrefix + listName;
+                this.loadPlaylistKeys();
+                connectedPlayerClient.pushPlayList();
             }
         };
 
@@ -264,7 +326,7 @@
             if (targetPlaylistName.equals(this.playlistName)) {
                 this.loadPlaylistKeys();
                 connectedPlayerClient.pushPlayList();
-            } 
+            }
             return newKey;
         };
 
@@ -427,13 +489,13 @@
 
             for (var i = 0; i < keyList.length; i++) {
                 if (!keyList[i].equals("lastkey")) {
-                  defaultPlaylist.push(keyList[i]);
+                    defaultPlaylist.push(keyList[i]);
                 }
             }
             defaultPlaylist = (randomizePlaylist ? $.arrayShuffle(defaultPlaylist) : defaultPlaylist);
             for (var i = 0; i < defaultPlaylist.length; i++) {
                 defaultPlaylistReadOnly.push(defaultPlaylist[i]);
-            } 
+            }
             this.loaded = true;
             return keyList.length;
         };
@@ -459,7 +521,7 @@
                 }
 
                 try {
-                    var playListIndex = defaultPlaylist.shift();                    
+                    var playListIndex = defaultPlaylist.shift();
                     currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
                 } catch (ex) {
                     $.logError("youtubePlayer.js", 277, "YoutubeVideo::exception: " + ex);
@@ -493,7 +555,7 @@
         /**
          * @function removeSong
          * @param {String} YouTube ID
-         * @return {String} 
+         * @return {String}
          */
         this.removeSong = function(youTubeID) {
             var songTitle = null,
@@ -513,7 +575,7 @@
 
         /**
          * @function removeUserSong
-         * @param {String} 
+         * @param {String}
          * @return {String}
          */
         this.removeUserSong = function(username) {
@@ -601,12 +663,22 @@
          * @function updateCurrentSongFile
          * @param {YoutubeVideo} youtubeVideo
          */
+
+        var separator = '    |    ';
         this.updateCurrentSongFile = function(youtubeVideo) {
-            $.writeToFile(
-                youtubeVideo.getVideoTitle(),
-                baseFileOutputPath + 'currentSong.txt',
-                false
-            );
+            if (youtubeVideo.getVideoTitle().trim() === '') {
+                $.writeToFile(
+                    $.lang.get('ytplayer.command.currentsong.404') + separator,
+                    baseFileOutputPath + 'currentSong.txt',
+                    false
+                );
+            } else {
+                $.writeToFile(
+                    youtubeVideo.getVideoTitle() + separator,
+                    baseFileOutputPath + 'currentSong.txt',
+                    false
+                );
+            }
         };
 
         /**
@@ -891,6 +963,8 @@
             $.say($.lang.get('ytplayer.songrequests.disabled'));
         }
         $.youtubePlayerConnected = false;
+
+        updateLocalSong(true);
     });
 
     /**
@@ -921,16 +995,16 @@
             /**
              * @commandpath ytp djname [DJ Name] - Name the DJ for playlists
              */
-           if (action.equalsIgnoreCase('djname')) {
-               if (actionArgs[0]) {
-                  playlistDJname = actionArgs.join(' ');
-                  $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setdjname.success', playlistDJname));
-                  $.inidb.set('ytSettings', 'playlistDJname', playlistDJname);
-               } else {
-                  $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setdjname.usage'));
-               }
-           }
-         
+            if (action.equalsIgnoreCase('djname')) {
+                if (actionArgs[0]) {
+                    playlistDJname = actionArgs.join(' ');
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setdjname.success', playlistDJname));
+                    $.inidb.set('ytSettings', 'playlistDJname', playlistDJname);
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setdjname.usage'));
+                }
+            }
+
             /**
              * @commandpath ytp delrequest [YouTube ID] - Delete a song that has been requested
              */
@@ -956,7 +1030,7 @@
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
-                } 
+                }
                 if (actionArgs[0] && !isNaN(parseInt(actionArgs[0]))) {
                     connectedPlayerClient.setVolume(actionArgs[0]);
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', actionArgs[0]));
@@ -973,7 +1047,7 @@
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
-                } 
+                }
                 connectedPlayerClient.togglePause();
                 return;
             }
@@ -994,8 +1068,39 @@
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get(
-                    'ytplayer.command.ytp.togglerandom.toggled', (randomizePlaylist ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))
-                ));
+                        'ytplayer.command.ytp.togglerandom.toggled', (randomizePlaylist ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))
+                    ));
+                return;
+            }
+
+            /**
+             * @commandpath ytp togglelocal - Toggle checking for local music if YouTube is disabled
+             */
+            if (action.equalsIgnoreCase('togglelocal')) {
+                localMusicPlayer = !localMusicPlayer;
+
+                $.setIniDbBoolean('ytSettings', 'localMusicPlayer', localMusicPlayer);
+
+                var state = localMusicPlayer ? 'Enabled' : 'Disabled';
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.togglelocal.toggled', state));
+                return;
+            }
+
+            /**
+             * @commandpath ytp localpath [path] - Display or change the path to the local now playing file
+             */
+            if (action.equalsIgnoreCase('localpath')) {
+                var currentFile = $.inidb.get('ytSettings','localNowPlayingFile');
+                if (!actionArgs[0]) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.localpath.get',currentFile));
+                    return;
+                } else if (actionArgs[0].slice(-4) !== '.txt') {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.localpath.usage'));
+                    return;
+                }
+                $.inidb.set('ytSettings','localNowPlayingFile', actionArgs[0]);
+                localNowPlayingFile = $.inidb.get('ytSettings','localNowPlayingFile');
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.localpath.set', localNowPlayingFile));
                 return;
             }
 
@@ -1009,8 +1114,8 @@
                 $.setIniDbBoolean('ytSettings', 'announceInChat', announceInChat);
 
                 $.say($.whisperPrefix(sender) + $.lang.get(
-                    'ytplayer.command.ytp.toggleannounce.toggled', (announceInChat ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))
-                ));
+                        'ytplayer.command.ytp.toggleannounce.toggled', (announceInChat ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))
+                    ));
                 return;
             }
 
@@ -1084,7 +1189,7 @@
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
-                } 
+                }
                 if (actionArgs.length > 0) {
                     try {
                         var youtubeVideo = new YoutubeVideo(actionArgs.join(' '), sender);
@@ -1096,10 +1201,10 @@
 
                     if (currentPlaylist.addToPlaylist(youtubeVideo)) {
                         $.say($.whisperPrefix(sender) + $.lang.get(
-                            'ytplayer.command.playlist.add.success',
-                            youtubeVideo.getVideoTitle(),
-                            currentPlaylist.getPlaylistname()
-                        ));
+                                'ytplayer.command.playlist.add.success',
+                                youtubeVideo.getVideoTitle(),
+                                currentPlaylist.getPlaylistname()
+                            ));
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.add.failed', currentPlaylist.getRequestFailReason()));
                     }
@@ -1116,7 +1221,7 @@
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
-                } 
+                }
                 currentPlaylist.deleteCurrentVideo();
                 return;
             }
@@ -1128,7 +1233,7 @@
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
-                } 
+                }
                 if (actionArgs.length > 0) {
                     var requestedPlaylist = new BotPlayList(actionArgs[0], true);
                     if (requestedPlaylist.getplaylistLength() == 0) {
@@ -1150,7 +1255,7 @@
             if (action.equalsIgnoreCase('listpl')) {
                 var playlistsList = $.inidb.GetKeyList('yt_playlists_registry', '');
 
-                if (playlistsList) { 
+                if (playlistsList) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.listpl', playlistsList.join(', ').replace(/ytPlaylist_/g, '')));
                 }
             }
@@ -1162,7 +1267,7 @@
                 if (!currentPlaylist) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
-                } 
+                }
                 if (actionArgs.length > 0) {
                     if (actionArgs[0].equalsIgnoreCase('default')) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.delete.isdefault'));
@@ -1195,9 +1300,33 @@
             return;
         }
 
+        /**
+         * @commandpath currentsong - Announce the currently playing song in the chat
+         */
+        if (command.equalsIgnoreCase('currentsong')) {
+            var nowPlaying;
+            var currentLocal = $.readFile(localNowPlayingFile);
+            if (connectedPlayerClient) {
+                nowPlaying = $.lang.get(
+                    'ytplayer.command.currentsong',
+                    currentPlaylist.getCurrentVideo().getVideoTitle(),
+                    currentPlaylist.getCurrentVideo().getOwner(),
+                    currentPlaylist.getCurrentVideo().getVideoLink()
+                );
+            } else if (localMusicPlayer && $.fileExists(localNowPlayingFile && currentLocal !== ' ')) {
+                nowPlaying = $.lang.get(
+                    'ytplayer.command.currentsong.local',
+                    currentLocal
+                );
+            } else {
+                nowPlaying = $.lang.get('ytplayer.command.currentsong.404');
+            }
+            $.say(nowPlaying);
+        }
+
         // Skip all following commands, since they all need the client to be connected
         // (a.k.a. they need a current song to be active)
-        if (connectedPlayerClient == null) {
+        if (!localMusicPlayer && connectedPlayerClient == null) {
             $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
             return;
         }
@@ -1264,8 +1393,8 @@
                 connectedPlayerClient.pushSongList();
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get(
-                    'ytplayer.command.songrequest.failed', currentPlaylist.getRequestFailReason()
-                ));
+                        'ytplayer.command.songrequest.failed', currentPlaylist.getRequestFailReason()
+                    ));
             }
         }
 
@@ -1316,18 +1445,6 @@
         }
 
         /**
-         * @commandpath currentsong - Announce the currently playing song in the chat
-         */
-        if (command.equalsIgnoreCase('currentsong')) {
-            $.say($.lang.get(
-                'ytplayer.command.currentsong',
-                currentPlaylist.getCurrentVideo().getVideoTitle(),
-                currentPlaylist.getCurrentVideo().getOwner(),
-                currentPlaylist.getCurrentVideo().getVideoLink()
-            ));
-        }
-
-        /**
          * @commandpath nextsong - Display the next song in the request queue
          * @commandpath nextsong [index number] - Display the full song title at the index.
          * @commandpath nextsong next [n] - Display the next n songs in queue, max of 5
@@ -1340,14 +1457,12 @@
             if (!args[0]) {
                 if (currentPlaylist.getRequestAtIndex(1) == null) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.404'));
-                    return;
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.single', currentPlaylist.getRequestAtIndex(1).getVideoTitle()));
-                    return;
                 }
             } else {
                 if (!isNaN(args[0])) {
-                   if (currentPlaylist.getRequestAtIndex(parseInt(args[0])) == null) {
+                    if (currentPlaylist.getRequestAtIndex(parseInt(args[0])) == null) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.404'));
                         return;
                     } else {
@@ -1418,6 +1533,7 @@
             $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
             $.registerChatSubcommand('wrongsong', 'user', 2);
+            setTimeout(updateLocalSong, 15 * 1000);
 
             if (currentPlaylist == null) {
                 /** Pre-load last activated playlist */
@@ -1431,15 +1547,14 @@
                     } catch (ex) {
                         $.logError("youtubePlayer.js", 839, "YoutubeVideo::exception: " + ex);
                     }
-    
+
                     /** Different Heaven & Eh!de - My Heart (Outertone 001 - Zero Release) */
                     try {
                         currentPlaylist.addToPlaylist(new YoutubeVideo('WFqO9DoZZjA', $.botName));
                     } catch (ex) {
                         $.logError("youtubePlayer.js", 846, "YoutubeVideo::exception: " + ex);
                     }
-    
-    
+
                     /** Tobu - Higher (Outertone Release) */
                     try {
                         currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
