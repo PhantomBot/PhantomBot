@@ -10,6 +10,7 @@ $.lang.register('customcommands.alias.success', 'the command !$1 was successfull
 $.lang.register('customcommands.alias.usage', 'usage: !aliascom (existing command) (alias name)');
 $.lang.register('customcommands.delete.success', 'command !$1 has been removed!');
 $.lang.register('customcommands.delete.usage', 'usage: !delcom (command)');
+$.lang.register('customcommands.edit.404', 'you cannot overwrite a default command.');
 $.lang.register('customcommands.set.perm.error.target404', 'the command !$1 does not exist!');
 $.lang.register('customcommands.set.perm.success', 'permissions for command: $1 set for group: $2 and higher.');
 $.lang.register('customcommands.set.perm.unset.success', 'All recursive permissions for the command: $1 and any of its aliases have been removed.');
@@ -19,7 +20,8 @@ $.lang.register('customcommands.set.price.error.404', 'please select a command t
 $.lang.register('customcommands.set.price.error.invalid', 'please enter a valid price, 0 or greater.');
 $.lang.register('customcommands.set.price.success', 'the price for !$1 has been set to $2 $3.');
 $.lang.register('customcommands.set.price.usage', 'usage: !pricecom (command) (price)');
-$.lang.register('customcommands.cmds', 'commands: $1');
+$.lang.register('customcommands.404.no.commands', 'there are no custom commands, add one with !addcom');
+$.lang.register('customcommands.cmds', 'current custom commands: $1');
 $.lang.register('customcommands.edit.usage', 'usage: !editcom (command) (message)');
 $.lang.register('customcommands.edit.success', 'command !$1 has been edited!');
 $.lang.register('customcommands.touser.offline', 'Sorry, but $1 appears to be offline!');
