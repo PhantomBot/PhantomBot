@@ -311,6 +311,11 @@
             action = args[0].replace('!', '');
             argString = argString.substring(argString.indexOf(args[0]) + args[0].length() + 1);
 
+            if ($.commandExists(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.error'));
+                return;
+            }
+
             $.inidb.set('command', action, argString);
             $.registerChatCommand('./commands/customCommands.js', action);
             $.logEvent('./commands/customCommands.js', 28, sender + ' added command !' + action + ' with the message "' + argString + '"');
@@ -333,6 +338,9 @@
                 return;
             } else if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', action));
+                return;
+            } else if ($.commandExists(action) && !$.inidb.exists('command', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.404'));
                 return;
             }
 
@@ -554,9 +562,23 @@
             }
 
             if (cmd.length != 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.cmds', cmd));
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.cmds', cmd.slice(0, -2)));
+            } else {
+                if ($.isModv3(sender, event.getTags())) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.404.no.commands'));
+                    return;
+                }
+            }
+        }
+
+        /**
+         * @commandpath botcommands - Links you to the bot commands site
+         */
+        if (command.equalsIgnoreCase('botcommands')) {
+            if (!$.isOwner(sender)) {
                 return;
             }
+            $.say('https://phantombot.net/commands');
         }
 
         /**
@@ -642,6 +664,7 @@
             $.registerChatCommand('./commands/customCommands.js', 'commands', 7);
             $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
+            $.registerChatCommand('./commands/customCommands.js', 'botcommands');
         }
     });
 
