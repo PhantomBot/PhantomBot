@@ -8,28 +8,40 @@
             sender = event.getSender(),
             username = $.username.resolve(sender),
             keywordCheck,
+            keyword,
+            key,
+            i,
             keys = $.inidb.GetKeyList('keywords', '');
 
-        for (var i in keys) {
-            keywordCheck = new RegExp('\\b' + keys[i] + '\\b', 'i');
-            if (keywordCheck.exec(message)) {
-                keyword = $.inidb.get('keywords', keys[i]);
-                keyword = keyword.replace('(sender)', username)
-                       .replace('(@sender)', '@' + username)
-                       .replace('(baresender)', sender)
-                       .replace('(pointsname)', $.pointNameMultiple)
-                       .replace('(uptime)', $.getStreamUptime($.channelName))
-                       .replace('(game)', $.getGame($.channelName))
-                       .replace('(status)', $.getStatus($.channelName));
-
-                if ($.coolDown.get(keys[i], sender) > 0 && !$.isAdmin(sender)) {
-                    $.consoleDebug('keyword ' + keys[i] + ' not sent because its on a cooldown.');
-                    return;
-                }
-                $.say(keyword);
-                return;
+        for (i in keys) {
+            if (message.contains(keys[i])) {
+                key = keys[i];
+                continue;
             }
         }
+
+        keywordCheck = new RegExp('\\b' + key + '\\b', 'i');
+
+        if (keywordCheck.test(message)) {
+            keyword = $.inidb.get('keywords', key);
+        } else {
+            return;
+        }
+
+        keyword = keyword.replace('(sender)', username)
+               .replace('(@sender)', '@' + username)
+               .replace('(baresender)', sender)
+               .replace('(pointsname)', $.pointNameMultiple)
+               .replace('(uptime)', $.getStreamUptime($.channelName))
+               .replace('(game)', $.getGame($.channelName))
+               .replace('(status)', $.getStatus($.channelName));
+
+        if (!$.isAdmin(sender) && $.coolDown.get(key, sender) > 0) {
+            $.consoleDebug('keyword ' + key + ' not sent because its on a cooldown.');
+            return;
+        }
+
+        $.say(keyword);
     });
 
     /**
@@ -41,7 +53,7 @@
             argString = event.getArguments().trim(),
             args = event.getArgs(),
             action = args[0],
-            subAction = args[1].toLowerCase();
+            subAction = args[1];
 
         /**
          * @commandpath keyword - Base command for keyword options
@@ -67,6 +79,7 @@
                 }
 
                 var response = args.splice(2).join(' ');
+                subAction = args[1].toLowerCase();
 
                 $.inidb.set('keywords', subAction, response);
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', subAction));
@@ -86,6 +99,8 @@
                     return;
                 }
 
+                subAction = args[1].toLowerCase();
+                
                 $.inidb.del('keywords', subAction);
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', subAction));
                 $.logEvent('keywordHandler.js', 100, sender + ' removed the keyword "' + subAction + '"');
