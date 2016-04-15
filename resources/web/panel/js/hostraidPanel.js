@@ -94,7 +94,7 @@
                     return;
                 }
 
-                html = '<table><tr><th>Channel</th><th style="float: right">Raid Count</th></tr>';
+                html = '<br><table><tr><th>Channel</th><th style="float: right">Raid Count</th></tr>';
 
                 for (idx in msgObject['results']) {
                     html += '<tr style="textList">' +

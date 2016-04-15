@@ -54,6 +54,21 @@
              
         <span id="panelLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading PhantomBot Control Panel</span>
 
+        <div>
+            <table class="panelStatus">
+                <tr>
+                    <td> <span id="streamOnline" /> </td>
+                    <td> <span id="whisperModeStatus" /> </td>
+                    <td> <span id="meModeStatus" /> </td>
+                    <td> <span id="commandPauseStatus" /> </td>
+                    <td> <span id="muteModeStatus" /> </td>
+                    <td> <span id="multiStatus" /> </td>
+                    <td style="width: 140px;"> <span id="streamUptime" /> </td>
+                    <td style="width: 140px;"> <span id="viewerCount" /> </td>
+                </tr>
+            </table>
+        </div>
+
         <div id="tabs" style="display:none">
             <ul>
                 <li> <a href="#dashboard">Dashboard</a> </li>
@@ -174,13 +189,17 @@
         <script>$('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix').fadeIn(1000); TABS_INITIALIZED = true; $("#panelLoader").fadeOut(1000);</script>
 
         <div class="ui-widget-content" id="chatsidebar" name="chat">
+            <div id="chatsidebar-header" class="ui-widget-header"> <i class="fa fa-twitch"></i></div>
             <span id="iframeLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading Twitch Chat</span>
             <script>
                 $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
                                        "src=\"http://www.twitch.tv/" + getChannelName() + "/chat?popout=\">");
                 $("#chat").hide();
+                $("#chatsidebar").draggable( { iframeFix: true } );
             </script>
         </div>
+
+        <script type="text/javascript" src="panel/js/globalPanel.js"></script>
 
         <div id="copyright">
             Control Panel by: 

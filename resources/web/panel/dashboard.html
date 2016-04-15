@@ -20,19 +20,6 @@
 
 <!-- This is outside of the accordion, so will always be on top of the tab -->
 
-<div>
-    <!-- Each ID maps to a $("#ID").html() to update the contents. -->
-    <span id="streamOnline" />
-    <span id="streamUptime" />
-    <span id="viewerCount" />
-    <span id="whisperModeStatus" />
-    <span id="meModeStatus" />
-    <span id="commandPauseStatus" />
-    <span id="muteModeStatus" />
-    <span id="multiStatus" />
-</div>
-<br>
-
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="dashboardAccordion">
     <h3>Twitch</h3>
@@ -213,5 +200,5 @@
 </div>
 
 <!-- Run the Acordion -->
-<script>$("#dashboardAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$("#dashboardAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
 <script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
