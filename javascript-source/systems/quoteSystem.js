@@ -90,7 +90,7 @@
             quoteStr;
 
         /**
-         * @commandpath editquite [id] [user] [new user] - Change the username associated with a quote ID
+         * @commandpath editquote [id] [user] [new user] - Change the username associated with a quote ID
          * @commandpath editquote [id] [game] [new game] - Change the game associated with a quote ID
          * @commandpath editquote [id] [quote] [new quote] - Change the quote associated with the quote ID
          */
