@@ -199,7 +199,7 @@
         if (value.length > 0) {
             $('#ytpDJNameInput').val('Updating...');
             sendCommand('ytp djname ' + value);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+            setTimeout(function() { doQuery(); $('#ytpDJNameInput').val('') }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
@@ -233,7 +233,7 @@
      * @function fillYouTubePlayerIframe
      */
     function fillYouTubePlayerIframe() {
-        $('#youTubePlayerIframe').html('<iframe id="youTubePlayer" frameborder="0" scrolling="auto" height="400" width="650"'+
+        $('#youTubePlayerIframe').html('<iframe id="youTubePlayer" frameborder="0" scrolling="auto" height="400" width="680"'+
                                        '        src="http://' + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer?start_paused">');
     }
 
@@ -241,7 +241,8 @@
      * @function launchYouTubePlayer
      */
     function launchYouTubePlayer() {
-        window.open('http://' + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer');
+        window.open('http://' + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer', 'PhantomBot YouTube Player',
+                    'menubar=no,resizeable=yes,scrollbars=yes,status=no,toolbar=no,height=700,width=900,location=no' );
     }
 
     /**
