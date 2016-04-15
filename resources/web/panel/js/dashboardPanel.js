@@ -197,8 +197,8 @@
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
-                if (msgObject['results'][gameTitle] === undefined) {
-                    $("#deathCounterValue").html('0');
+                if (gameTitle === undefined || gameTitle === null) {
+                    $("#deathCounterValue").html("0");
                 } else {
                     $("#deathCounterValue").html(msgObject['results'][gameTitle]);
                 }
