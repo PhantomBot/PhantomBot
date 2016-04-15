@@ -30,7 +30,6 @@
         responseMode = false,
         meMode = false,
         pauseMode = false,
-        panelStatsEnabled = false,
         toutGraphData = [],
         chatGraphData = [],
         loggingMode = false,
@@ -38,8 +37,8 @@
         settingIcon = [];
         gameTitle = '__not_loaded__';
 
-        modeIcon['false'] = "<i style=\"color: magenta\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: magenta\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
 
         settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
         settingIcon['true'] = "<i class=\"fa fa-circle\" />";
@@ -260,7 +259,7 @@
         if (panelMatch(gameTitle, '__not_loaded__')) {
             return;
         }
-        $('#deathCounterValue').html('<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />');
+        $('#deathCounterValue').html('<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />');
         sendCommand('deathctr ' + action);
         setTimeout(function() { sendDBQuery("dashboard_deathctr", "deaths", gameTitle); }, TIMEOUT_WAIT_TIME);
     }
@@ -277,7 +276,7 @@
      * @param {String} module
      */
     function enableModule(module, idx) {
-        $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module enable " + module);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -287,7 +286,7 @@
      * @param {String} module
      */
     function disableModule(module, idx) {
-        $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module disable " + module);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -297,7 +296,7 @@
      * @param {String} mode
      */
     function changeLoggingStatus(mode) {
-        $("#loggingMode").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#loggingMode").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("log " + mode);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -354,7 +353,7 @@
      * @function setHighlight
      */
     function setHighlight() {
-        $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#showHighlights").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("highlight " + $("#highlightInput").val());
         $("#highlightInput").val('');
         setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
@@ -364,7 +363,7 @@
      * @function clearHighlights
      */
     function clearHighlights() {
-        $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#showHighlights").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("clearhighlights");
         setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
     }

@@ -28,8 +28,8 @@
         groupIcons = [],
         disabledCommands = [];
 
-        modeIcon['false'] = "<i style=\"color: magenta\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: magenta\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
 
         groupIcons['0'] = "<i class=\"fa fa-television\" />";
         groupIcons['1'] = "<i class=\"fa fa-laptop\" />";
@@ -199,17 +199,17 @@
                         if (disabledCommands[commandName] !== undefined) {
                             html +=  "<td><div id=\"commandEnabled_" + commandName + "\"" +
                                      "         data-toggle=\"tooltip\" title=\"Enable Command\" class=\"button\" onclick=\"$.commandEnable('" + commandName + "', 'enable');\">" +
-                                     "    <i style=\"color: magenta\" class=\"fa fa-toggle-off\" /></div></td>";
+                                     "    <i style=\"color: #6136b1\" class=\"fa fa-toggle-off\" /></div></td>";
                         } else {
                             html +=  "<td><div id=\"commandEnabled_" + commandName + "\"" +
                                      "         data-toggle=\"tooltip\" title=\"Disable Command\" class=\"button\" onclick=\"$.commandEnable('" + commandName + "', 'disable');\">" +
-                                     "    <i style=\"color: magenta\" class=\"fa fa-toggle-on\" /></div></td>";
+                                     "    <i style=\"color: #6136b1\" class=\"fa fa-toggle-on\" /></div></td>";
                         }
                     } else {
                         html += "<td />";
                     }
 
-                    html += "<td /><td><div id=\"commandsList_" + commandName + "\"><strong><font style=\"color: magenta\">" + groupIcons[commandValue] + 
+                    html += "<td /><td><div id=\"commandsList_" + commandName + "\"><strong><font style=\"color: #6136b1\">" + groupIcons[commandValue] + 
                             "    </font></strong></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Caster\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 0);\">" +
@@ -264,7 +264,7 @@
      * @param {String} command
      */
     function deleteCommand(command) {
-        $("#deleteCommand_" + command).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCommand_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         // sendDBDelete("commands_delcom_" + command, "command", command);
         sendCommand("delcom " + command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -311,7 +311,7 @@
      * @param {String} command
      */
     function deleteAlias(command) {
-        $("#deleteAlias_" + command).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteAlias_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         // sendDBDelete("commands_delalias_" + command, "aliases", command);
         sendCommand("delalias " + command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -321,7 +321,7 @@
      * @function commandPermission
      */
     function commandPermission(command, group) {
-        $("#commandsList_" + command).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#commandsList_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("permcom " + command + " " + group);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -349,7 +349,7 @@
      * @function toggleGlobalCooldown
      */
     function toggleGlobalCooldown() {
-        $("#toggleGlobalCooldown").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#toggleGlobalCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("toggleglobalcooldown");
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -358,7 +358,7 @@
      * @function toggleModCooldown
      */
     function toggleModCooldown() {
-        $("#toggleModCooldown").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#toggleModCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("togglemodcooldown");
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -367,7 +367,7 @@
      * @function togglePerUserCooldown
      */
     function togglePerUserCooldown() {
-        $("#togglePerUserCooldown").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#togglePerUserCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("toggleperusercooldown");
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -390,7 +390,7 @@
      * @param {String} command
      */
     function deleteCooldown(command) {
-        $("#deleteCooldown_" + command).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCooldown_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("cooldown " + command + " -1");
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }

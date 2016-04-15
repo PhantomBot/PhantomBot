@@ -29,8 +29,7 @@
         whisperMode = false,
         responseMode = false,
         meMode = false,
-        pauseMode = false,
-        panelStatsEnabled = false;
+        pauseMode = false;
 
     /*
      * @function onMessage

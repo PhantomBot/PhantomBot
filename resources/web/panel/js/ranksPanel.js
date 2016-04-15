@@ -197,7 +197,7 @@
      * @param {String} rankKey
      */
     function deleteCustomRank(rankKey) {
-        $("#deleteCustomRankIcon_" + rankKey).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCustomRankIcon_" + rankKey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("ranks_customDelete", "viewerRanks", rankKey);
         setTimeout(function() { doQuery() }, TIMEOUT_WAIT_TIME);
     }
@@ -232,7 +232,7 @@
      * @param {String} rankKey
      */
     function deleteRank(rankKey) {
-        $("#deleteRankIcon_" + rankKey).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteRankIcon_" + rankKey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("ranks_ranksDelete", "ranksMapping", rankKey);
         setTimeout(function() { doQuery() }, TIMEOUT_WAIT_TIME);
     }

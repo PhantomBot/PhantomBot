@@ -155,7 +155,7 @@
      * @param {String} setting
      */
     function toggleTimeMode(divId, setting) {
-        $("#" + divId).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#" + divId).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("time " + setting);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
