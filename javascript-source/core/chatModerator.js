@@ -64,10 +64,10 @@
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
         },
 
-        blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out using a blacklisted phrase'),
+        blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase'),
         warningTime = $.getSetIniDbNumber('chatModerator', 'warningTime', 5),
         timeoutTime = $.getSetIniDbNumber('chatModerator', 'timeoutTime', 600),
-        msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSec', 20),
+        msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSec', 30),
         warning = '',
         resetTime = (60 * 60 * 1000) + $.systemTime(),
         messageTime = 0,
@@ -228,41 +228,39 @@
      * @function permitUser
      */
     function permitUser(user) {
-        permitList.push(user);
-        var c = setTimeout(function() {
-            for (i in permitList) {
-                if (permitList[i].equalsIgnoreCase(user)) {
-                    permitList.splice(i, 1);
-                    break;
-                }
-            }
-            clearTimeout(c);
-        }, (linkPermitTime * 1000));
+        permitList[user] = (linkPermitTime * 1000) + $.systemTime();
     };
 
     /**
      * @function getModerationFilterStatus
      */
-    function getModerationFilterStatus(filter) {
-        return (filter ? $.lang.get('common.enabled') : $.lang.get('common.disabled'));
+    function getModerationFilterStatus(filter, toggle) {
+        if (toggle) {
+            return (filter ? $.lang.get('common.enabled') : $.lang.get('common.disabled'));
+        } else {
+            return (filter ? 'not allowed' : 'allowed');
+        }
     };
 
     /**
-     * @function getSatusCheck
+     * @function checkPermitList
      */
-    function getSatusCheck(filter) {
-        return (filter ? 'not allowed' : 'allowed');
-    }
+    function checkPermitList(user) {
+        if (permitList[user] !== undefined) {
+            var time = permitList[user] - $.systemTime();
+            if (time > 0) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     /**
      * @function checkBlackList
      */
-    function checkBlackList(event) {
-        var sender = event.getSender(),
-            message = event.getMessage().toLowerCase();
-
+    function checkBlackList(sender, message) {
         for (i in blackList) {
-            if (message.contains(blackList[i].toLowerCase())) {
+            if (message.contains(blackList[i])) {
                 timeoutUser(sender, timeoutTime);
                 warning = $.lang.get('chatmoderator.timeout');
                 sendMessage(sender, blacklistMessage);
@@ -273,28 +271,9 @@
     };
 
     /**
-     * @function checkPermitList
-     */
-    function checkPermitList(event) {
-        var sender = event.getSender(),
-            message = event.getMessage().toLowerCase();
-
-        for (i in permitList) {
-            if (permitList[i].equalsIgnoreCase(sender) && $.patternDetector.hasLinks(event)) {
-                permitList.splice(i, 1);
-                return true;
-            }
-        }
-        return false;
-    };
-
-    /**
      * @function checkWhiteList
      */
-    function checkWhiteList(event) {
-        var sender = event.getSender(),
-            message = event.getMessage().toLowerCase();
-
+    function checkWhiteList(message) {
         for (i in whiteList) {
             if (message.contains(whiteList[i])) {
                 return true;
@@ -304,20 +283,26 @@
     };
 
     /**
+     * @function checkYoutubePlayer
+     */
+    function checkYoutubePlayer(message) {
+        if ($.youtubePlayerConnected && message.contains('youtube.com') || message.contains('youtu.be')) {
+            return true;
+        }
+        return false;
+    };
+
+    /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
         var sender = event.getSender(),
-            message = event.getMessage(),
+            message = event.getMessage().toLowerCase(),
             messageLength = message.length();
 
         if (!$.isModv3(sender, event.getTags())) {
             if (linksToggle && $.patternDetector.hasLinks(event)) {
-                if ($.youtubePlayerConnected && message.contains('youtube.com') || message.contains('youtu.be')) {
-                    return;
-                }
-
-                if (message && checkPermitList(event) || checkWhiteList(event)) {
+                if (checkYoutubePlayer(message) || checkPermitList(sender) || checkWhiteList(message)) {
                     return;
                 }
 
@@ -395,7 +380,7 @@
                 return;
             }
 
-            if (message && checkBlackList(event)) {
+            if (message && checkBlackList(sender, message)) {
             }
         }
     });
@@ -433,7 +418,7 @@
              */
             if (action.equalsIgnoreCase('links')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.link.usage', getModerationFilterStatus(linksToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.link.usage', getModerationFilterStatus(linksToggle, true)));
                     return;
                 }
 
@@ -457,7 +442,7 @@
              */
             if (action.equalsIgnoreCase('caps')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.usage', getModerationFilterStatus(capsToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.caps.usage', getModerationFilterStatus(capsToggle, true)));
                     return;
                 }
 
@@ -481,7 +466,7 @@
              */
             if (action.equalsIgnoreCase('spam')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spam.usage', getModerationFilterStatus(spamToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spam.usage', getModerationFilterStatus(spamToggle, true)));
                     return;
                 }
 
@@ -505,7 +490,7 @@
              */
             if (action.equalsIgnoreCase('symbols')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.usage', getModerationFilterStatus(symbolsToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.usage', getModerationFilterStatus(symbolsToggle, true)));
                     return;
                 }
 
@@ -529,7 +514,7 @@
              */
             if (action.equalsIgnoreCase('emotes')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.usage', getModerationFilterStatus(emotesToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.usage', getModerationFilterStatus(emotesToggle, true)));
                     return;
                 }
 
@@ -553,7 +538,7 @@
              */
             if (action.equalsIgnoreCase('colors')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.colors.usage', getModerationFilterStatus(colorsToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.colors.usage', getModerationFilterStatus(colorsToggle, true)));
                     return;
                 }
 
@@ -577,7 +562,7 @@
              */
             if (action.equalsIgnoreCase('longmessages')) {
                 if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.message.usage', getModerationFilterStatus(longMessageToggle)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.message.usage', getModerationFilterStatus(longMessageToggle, true)));
                     return;
                 }
 
@@ -607,7 +592,7 @@
 
                 if (subAction.equalsIgnoreCase('links')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.link', getSatusCheck(regulars.Links)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.link', getModerationFilterStatus(regulars.Links)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -623,7 +608,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('caps')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.caps', getSatusCheck(regulars.Caps)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.caps', getModerationFilterStatus(regulars.Caps)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -639,7 +624,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('symbols')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.symbols', getSatusCheck(regulars.Symbols)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.symbols', getModerationFilterStatus(regulars.Symbols)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -655,7 +640,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('spam')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.spam', getSatusCheck(regulars.Spam)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.spam', getModerationFilterStatus(regulars.Spam)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -671,7 +656,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('emotes')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.emotes', getSatusCheck(regulars.Emotes)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.emotes', getModerationFilterStatus(regulars.Emotes)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -687,7 +672,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('colors')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.colors', getSatusCheck(regulars.Colors)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.colors', getModerationFilterStatus(regulars.Colors)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -703,7 +688,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('longmessages')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.long.msg', getSatusCheck(regulars.LongMsg)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.long.msg', getModerationFilterStatus(regulars.LongMsg)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -731,7 +716,7 @@
 
                 if (subAction.equalsIgnoreCase('links')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.link', getSatusCheck(subscribers.Links)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.link', getModerationFilterStatus(subscribers.Links)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -747,7 +732,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('caps')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.caps', getSatusCheck(subscribers.Caps)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.caps', getModerationFilterStatus(subscribers.Caps)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -763,7 +748,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('symbols')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.symbols', getSatusCheck(subscribers.Symbols)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.symbols', getModerationFilterStatus(subscribers.Symbols)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -779,7 +764,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('spam')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.spam', getSatusCheck(subscribers.Spam)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.spam', getModerationFilterStatus(subscribers.Spam)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -795,7 +780,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('emotes')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.emotes', getSatusCheck(subscribers.Emotes)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.emotes', getModerationFilterStatus(subscribers.Emotes)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -811,7 +796,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('colors')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.colors', getSatusCheck(subscribers.Colors)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.colors', getModerationFilterStatus(subscribers.Colors)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -827,7 +812,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('longmessages')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.long.msg', getSatusCheck(subscribers.LongMsg)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.long.msg', getModerationFilterStatus(subscribers.LongMsg)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -855,7 +840,7 @@
                 
                 if (subAction.equalsIgnoreCase('links')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.links', getModerationFilterStatus(silentTimeout.Links)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.links', getModerationFilterStatus(silentTimeout.Links, true)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -871,7 +856,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('caps')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.caps', getSatusCheck(silentTimeout.Caps)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.caps', getModerationFilterStatus(silentTimeout.Caps, true)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -887,7 +872,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('symbols')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.symbols', getSatusCheck(silentTimeout.Symbols)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.symbols', getModerationFilterStatus(silentTimeout.Symbols, true)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -903,7 +888,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('spam')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.spam', getSatusCheck(silentTimeout.Spam)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.spam', getModerationFilterStatus(silentTimeout.Spam, true)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -919,7 +904,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('emotes')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.emotes', getSatusCheck(silentTimeout.Emotes)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.emotes', getModerationFilterStatus(silentTimeout.Emotes, true)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -935,7 +920,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('colors')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.colors', getSatusCheck(silentTimeout.Colors)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.colors', getModerationFilterStatus(silentTimeout.Colors, true)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
@@ -951,7 +936,7 @@
                     }
                 } else if (subAction.equalsIgnoreCase('longmessages')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.long.msg', getSatusCheck(silentTimeout.LongMsg)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.long.msg', getModerationFilterStatus(silentTimeout.LongMsg, true)));
                         return;
                     }
                     if (args[2].equalsIgnoreCase('true')) {
