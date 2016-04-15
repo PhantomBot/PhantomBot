@@ -54,6 +54,21 @@
              
         <span id="panelLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading PhantomBot Control Panel</span>
 
+        <div>
+            <table class="panelStatus">
+                <tr>
+                    <td class="block"> <span id="streamOnline" /> </td>
+                    <td class="block"> <span id="streamUptime" /> </td>
+                    <td class="block"> <span id="viewerCount" /> </td>
+                    <td class="block"> <span id="whisperModeStatus" /> </td>
+                    <td class="block"> <span id="meModeStatus" /> </td>
+                    <td class="block"> <span id="commandPauseStatus" /> </td>
+                    <td class="block"> <span id="muteModeStatus" /> </td>
+                    <td class="block"> <span id="multiStatus" /> </td>
+                </tr>
+            </table>
+        </div>
+
         <div id="tabs" style="display:none">
             <ul>
                 <li> <a href="#dashboard">Dashboard</a> </li>
@@ -171,14 +186,26 @@
             </div>
         </div>
 
-        <script>$('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix').fadeIn(1000); TABS_INITIALIZED = true; $("#panelLoader").fadeOut(1000);</script>
+        <script>
+            $('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix').fadeIn(1000);
+            TABS_INITIALIZED = true;
+            $("#panelLoader").fadeOut(1000);
+        </script>
+        <script type="text/javascript" src="panel/js/globalPanel.js"></script>
 
         <div class="ui-widget-content" id="chatsidebar" name="chat">
+            <div id="chatsidebar-header" class="ui-widget-header">
+               <div class="button" style="float: left; padding-left: 5px;" onclick="$.toggleTwitchChatRollup()">
+                   <i class="fa fa-bars"></i>
+               </div>
+               <i class="fa fa-twitch"></i>
+            </div>
             <span id="iframeLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading Twitch Chat</span>
             <script>
                 $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
-                                       "src=\"http://www.twitch.tv/" + getChannelName() + "/chat?popout=\">");
+                                         "src=\"http://www.twitch.tv/" + getChannelName() + "/chat?popout=\">");
                 $("#chat").hide();
+                $("#chatsidebar").draggable( { iframeFix: true } );
             </script>
         </div>
 

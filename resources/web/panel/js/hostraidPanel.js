@@ -26,12 +26,12 @@
 (function() {
 
    var refreshIcon = '<i class="fa fa-refresh" />',
-       spinIcon = '<i style=\"color: magenta\" class="fa fa-spinner fa-spin" />',
+       spinIcon = '<i style=\"color: #6136b1\" class="fa fa-spinner fa-spin" />',
        modeIcon = [],
        settingIcon = [];
 
-       modeIcon['false'] = "<i style=\"color: magenta\" class=\"fa fa-circle-o\" />";
-       modeIcon['true'] = "<i style=\"color: magenta\" class=\"fa fa-circle\" />";
+       modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
+       modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
 
        settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
        settingIcon['true'] = "<i class=\"fa fa-circle\" />";
@@ -94,7 +94,7 @@
                     return;
                 }
 
-                html = '<table><tr><th>Channel</th><th style="float: right">Raid Count</th></tr>';
+                html = '<br><table><tr><th>Channel</th><th style="float: right">Raid Count</th></tr>';
 
                 for (idx in msgObject['results']) {
                     html += '<tr style="textList">' +

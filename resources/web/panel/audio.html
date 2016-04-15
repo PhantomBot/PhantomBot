@@ -38,8 +38,7 @@
 
     <h3>YouTube Player</h3>
     <div>
-        <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayer()">Hide/Show YouTube Player</button>
-        <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerPause()">Toggle Pause</button>
+        <span id="youTubeLauncher" />
         <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerRequests()">Toggle Song Requests</button>
         <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerNotify()">Toggle Chat Notification</button>
         <br><br><br>
@@ -72,11 +71,11 @@
         </form>
 
         <div id="youTubePlayerIframe" />
-        <script>$('#youTubePlayerIframe').hide(); $.fillYouTubePlayerIframe();</script>
+        <script>$('#youTubePlayerIframe').hide();</script>
     </div>
     
 </div>
 
 
 <!-- Run the Acordion -->
-<script>$("#audioAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$("#audioAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>

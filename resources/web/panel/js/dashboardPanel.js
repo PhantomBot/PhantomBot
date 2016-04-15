@@ -37,8 +37,8 @@
         settingIcon = [];
         gameTitle = '__not_loaded__';
 
-        modeIcon['false'] = "<i style=\"color: magenta\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: magenta\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
 
         settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
         settingIcon['true'] = "<i class=\"fa fa-circle\" />";
@@ -191,71 +191,14 @@
                 sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
             }
  
-            if (panelCheckQuery(msgObject, 'dashboard_streamOnline')) {
-                streamOnline = (panelMatch(msgObject['results']['streamOnline'], 'true'));
-                if (streamOnline) {
-                    $("#streamOnline").html("<span class=\"greenPill\">Stream Online</span>");
-                } else {
-                    $("#streamOnline").html("<span class=\"redPill\">Stream Offline</span>");
-                }
-            }
-
-            if (panelCheckQuery(msgObject, 'dashboard_whisperMode')) {
-                whisperMode = (panelMatch(msgObject['results']['whisperMode'], 'true'));
-            }
-            if (panelCheckQuery(msgObject, 'dashboard_muteMode')) {
-                responseMode = (panelMatch(msgObject['results']['response_@chat'], 'true'));
-            }
-            if (panelCheckQuery(msgObject, 'dashboard_toggleMe')) {
-                meMode = (panelMatch(msgObject['results']['response_action'], 'true'));
-            }
-            if (panelCheckQuery(msgObject, 'dashboard_commandsPaused')) {
-                pauseMode = (panelMatch(msgObject['results']['commandsPaused'], 'true'));
-            }
-
-            if (whisperMode) {
-                $("#whisperModeStatus").html("<span class=\"bluePill\">Whisper Mode</span>");
-            } else {
-                $("#whisperModeStatus").html("");
-            }
-
-            if (meMode) {
-                $("#meModeStatus").html("<span class=\"bluePill\">Action (/me) Mode</span>");
-            } else {
-                $("#meModeStatus").html("");
-            }
-            if (!responseMode) {
-                $("#muteModeStatus").html("<span class=\"redPill\">Mute Mode</span>");
-            } else {
-                $("#muteModeStatus").html("");
-            }
-
-            if (pauseMode) {
-                $("#commandPauseStatus").html("<span class=\"redPill\">Commands Paused</span>");
-            } else {
-                $("#commandPauseStatus").html("");
-            }
-
-            if (streamOnline) {
-                if (panelCheckQuery(msgObject, 'dashboard_streamUptime')) {
-                    $("#streamUptime").html("<span class=\"bluePill\">Uptime: " + msgObject['results']['streamUptime'] + "</span>");
-                }
-                if (panelCheckQuery(msgObject, 'dashboard_viewerCount')) {
-                    $("#viewerCount").html("<span class=\"bluePill\">Viewers: " + msgObject['results']['viewerCount'] + "</span>");
-                }
-            } else {
-                $("#streamUptime").html('');
-                $("#viewerCount").html('');
-            }
-
             if (panelCheckQuery(msgObject, 'dashboard_loggingMode')) {
                 loggingMode = (panelMatch(msgObject['results']['loggingEnabled'], 'true'));
                 $("#loggingMode").html(modeIcon[loggingMode]);
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
-                if (msgObject['results'][gameTitle] === undefined) {
-                    $("#deathCounterValue").html('0');
+                if (gameTitle === undefined || gameTitle === null) {
+                    $("#deathCounterValue").html("0");
                 } else {
                     $("#deathCounterValue").html(msgObject['results'][gameTitle]);
                 }
@@ -277,16 +220,6 @@
                 }
             }
 
-            if (panelCheckQuery(msgObject, 'dashboard_dsToggle')) {
-                if (msgObject['results']['timerToggle'] !== undefined && msgObject['results']['timerToggle'] !== null) {
-                    if (panelMatch(msgObject['results']['timerToggle'], 'true')) {
-                        $('#multiStatus').html('<span class="bluePill">Multi-Link</span>');
-                    } else {
-                        $('#multiStatus').html('');
-                    }
-                }
-            }
-
             if (panelCheckQuery(msgObject, 'dashboard_dsReqMsgs')) {
                 if (msgObject['results']['reqMessages'] !== undefined && msgObject['results']['reqMessages'] !== null) {
                     $('#multiLinkReqMsgsInput').attr('placeholder', msgObject['results']['reqMessages']);
@@ -303,14 +236,9 @@
     function doQuery() {
         sendDBQuery("dashboard_streamTitle", "streamInfo", "title");
         sendDBQuery("dashboard_gameTitle", "streamInfo", "game");
-        sendDBQuery("dashboard_whisperMode", "settings", "whisperMode"); 
-        sendDBQuery("dashboard_muteMode", "settings", "response_@chat");
-        sendDBQuery("dashboard_toggleMe", "settings", "response_action");
-        sendDBQuery("dashboard_commandsPaused", "commandPause", "commandsPaused");
         sendDBQuery("dashboard_loggingMode", "settings", "loggingEnabled");
         sendDBQuery("dashboard_dsChannels", "dualStreamCommand", "otherChannels");
         sendDBQuery("dashboard_dsInterval", "dualStreamCommand", "timerInterval");
-        sendDBQuery("dashboard_dsToggle", "dualStreamCommand", "timerToggle");
         sendDBQuery("dashboard_dsReqMsgs", "dualStreamCommand", "reqMessages");
         sendDBKeys("dashboard_highlights", "highlights");
         sendDBKeys("dashboard_modules", "modules");
@@ -318,9 +246,6 @@
         if (!panelStatsEnabled) {
             sendDBQuery("dashboard_panelStatsEnabled", "panelstats", "enabled");
         } else {
-            sendDBQuery("dashboard_viewerCount", "panelstats", "viewerCount");
-            sendDBQuery("dashboard_streamOnline", "panelstats", "streamOnline");
-            sendDBQuery("dashboard_streamUptime", "panelstats", "streamUptime");
             sendDBKeys("dashboard_chatCount", "panelchatstats");
             sendDBKeys("dashboard_modCount", "panelmodstats");
         }
@@ -334,7 +259,7 @@
         if (panelMatch(gameTitle, '__not_loaded__')) {
             return;
         }
-        $('#deathCounterValue').html('<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />');
+        $('#deathCounterValue').html('<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />');
         sendCommand('deathctr ' + action);
         setTimeout(function() { sendDBQuery("dashboard_deathctr", "deaths", gameTitle); }, TIMEOUT_WAIT_TIME);
     }
@@ -351,7 +276,7 @@
      * @param {String} module
      */
     function enableModule(module, idx) {
-        $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module enable " + module);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -361,7 +286,7 @@
      * @param {String} module
      */
     function disableModule(module, idx) {
-        $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module disable " + module);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -371,7 +296,7 @@
      * @param {String} mode
      */
     function changeLoggingStatus(mode) {
-        $("#loggingMode").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#loggingMode").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("log " + mode);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -382,14 +307,14 @@
     function toggleCommand(command)
     {
         if (panelMatch(command, 'pausecommands')) {
-            if (pauseMode) {
+            if ($.globalPauseMode) {
                 command += " clear";
             } else {
                 command += " 300";
             }
         }
         sendCommand(command);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { $.globalDoQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -428,7 +353,7 @@
      * @function setHighlight
      */
     function setHighlight() {
-        $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#showHighlights").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("highlight " + $("#highlightInput").val());
         $("#highlightInput").val('');
         setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
@@ -438,7 +363,7 @@
      * @function clearHighlights
      */
     function clearHighlights() {
-        $("#showHighlights").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#showHighlights").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("clearhighlights");
         setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
     }
@@ -487,7 +412,8 @@
      * @function multiLinkTimerOn
      */
     function multiLinkTimerOn() {
-        $('#multiStatus').html('<span class="bluePill">Multi-Link</span>');
+        $('#multiStatus').html('<span class="purplePill" data-toggle="tooltip" title="Multi-Link Enabled"><i class=\"fa fa-link fa-lg\" /></span>');
+        $('[data-toggle="tooltip"]').tooltip();
         sendCommand("multi timer on");
     }
  
@@ -520,6 +446,19 @@
         }
     }
 
+    /**
+     * @function toggleTwitchChatRollup
+     */
+    function toggleTwitchChatRollup() {
+        if ($("#chat").is(":visible")) {
+            $(function() { $("#chatsidebar").resizable('disable'); });
+            $("#chat").fadeOut(1000);
+        } else {
+            $("#chat").fadeIn(1000);
+            $(function() { $("#chatsidebar").resizable('enable'); });
+        }
+
+    }
  
     // Import the HTML file for this panel.
     $("#dashboardPanel").load("/panel/dashboard.html");
@@ -559,6 +498,7 @@
     $.multiLinkTimerOff = multiLinkTimerOff;
     $.toggleCommand = toggleCommand;
     $.toggleTwitchChat = toggleTwitchChat;
+    $.toggleTwitchChatRollup = toggleTwitchChatRollup;
     $.changeLoggingStatus = changeLoggingStatus;
     $.enableModule = enableModule;
     $.disableModule = disableModule;
