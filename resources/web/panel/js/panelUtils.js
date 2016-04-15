@@ -24,10 +24,11 @@
  * Purpose  : Contains utilities for the control panel.
  */
 var DEBUG_MODE = false;
-var PANEL_VERSION = "0.5 (Alpha)";
+var PANEL_VERSION = "0.9 (Public Beta)";
 var TABS_INITIALIZED = false;
 var INITIAL_WAIT_TIME = 200;
 var TIMEOUT_WAIT_TIME = 500;
+var YOUTUBE_IFRAME = false;
 
 var url = window.location.host.split(":");
 var addr = 'ws://' + url[0] + ':' + getPanelPort();
@@ -100,6 +101,7 @@ connection.onmessage = function(e) {
     // Look for the tag in the return value of the message to route to the proper onMessage handler.
     // If new panels are added a new tag MUST be created and implemented.
     //
+    if (e.data.indexOf('global_') !== -1) $.globalOnMessage(e);
     if (e.data.indexOf('dashboard_') !== -1) $.dashboardOnMessage(e);
     if (e.data.indexOf('modules_') !== -1) $.modulesOnMessage(e);
     if (e.data.indexOf('commands_') !== -1) $.commandsOnMessage(e);

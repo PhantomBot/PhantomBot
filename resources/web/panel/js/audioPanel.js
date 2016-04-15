@@ -237,11 +237,34 @@
                                        '        src="http://' + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer?start_paused">');
     }
 
+    /**
+     * @function launchYouTubePlayer
+     */
+    function launchYouTubePlayer() {
+        window.open('http://' + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer');
+    }
+
+    /**
+     * function drawYouTubePlayer
+     */
+    function drawYouTubePlayer() {
+        if (YOUTUBE_IFRAME) {
+            fillYouTubePlayerIframe();
+            $('#youTubeLauncher').html('<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayer()">Hide/Show YouTube Player</button>' +
+                                       '<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerPause()">Toggle Pause</button>');
+        } else {
+            $('#youTubeLauncher').html('<button type="button" class="btn btn-primary inline pull-left" onclick="$.launchYouTubePlayer()">Launch YouTube Player</button>');
+        }
+    }
+
     // Import the HTML file for this panel.
     $("#audioPanel").load("/panel/audio.html");
 
     // Load the DB items for this panel, wait to ensure that we are connected.
     var interval = setInterval(function() {
+        if (TABS_INITIALIZED) {
+            drawYouTubePlayer();
+        }
         if (isConnected && TABS_INITIALIZED) {
             var active = $('#tabs').tabs('option', 'active');
             if (active == 16) {
@@ -273,4 +296,5 @@
     $.setYouTubePlayerMaxReqs = setYouTubePlayerMaxReqs;
     $.setYouTubePlayerMaxLength = setYouTubePlayerMaxLength;
     $.fillYouTubePlayerIframe = fillYouTubePlayerIframe;
+    $.launchYouTubePlayer = launchYouTubePlayer;
 })();
