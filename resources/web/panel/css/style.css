@@ -320,6 +320,7 @@ td {
     width: 325px;
     border: none !important;
     outline: none !important;
+    background: transparent;
 }
 #chat {
     height: 95%;

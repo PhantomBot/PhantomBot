@@ -267,11 +267,8 @@
             drawYouTubePlayer();
         }
         if (isConnected && TABS_INITIALIZED) {
-            var active = $('#tabs').tabs('option', 'active');
-            if (active == 16) {
-                doQuery();
-                clearInterval(interval);
-            }
+            doQuery();
+            clearInterval(interval);
         }
     }, INITIAL_WAIT_TIME);
 

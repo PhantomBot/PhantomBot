@@ -446,6 +446,19 @@
         }
     }
 
+    /**
+     * @function toggleTwitchChatRollup
+     */
+    function toggleTwitchChatRollup() {
+        if ($("#chat").is(":visible")) {
+            $(function() { $("#chatsidebar").resizable('disable'); });
+            $("#chat").fadeOut(1000);
+        } else {
+            $("#chat").fadeIn(1000);
+            $(function() { $("#chatsidebar").resizable('enable'); });
+        }
+
+    }
  
     // Import the HTML file for this panel.
     $("#dashboardPanel").load("/panel/dashboard.html");
@@ -485,6 +498,7 @@
     $.multiLinkTimerOff = multiLinkTimerOff;
     $.toggleCommand = toggleCommand;
     $.toggleTwitchChat = toggleTwitchChat;
+    $.toggleTwitchChatRollup = toggleTwitchChatRollup;
     $.changeLoggingStatus = changeLoggingStatus;
     $.enableModule = enableModule;
     $.disableModule = disableModule;
