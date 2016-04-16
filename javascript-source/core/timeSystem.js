@@ -114,9 +114,9 @@
             cMins = cHours % 1 * 60;
 
         if (hoursOnly) {
-            return floor(cHours) + ' hours ';
+            return floor(cHours) + $.lang.get('common.hours');
         } else {
-            return ((floor(cHours) + ' hours, ' + floor(~~cMins) + ' minutes, ' + floor(cMins % 1 * 60) + ' seconds').replace(/^0 hours,/, ''));
+            return ((floor(cHours) + $.lang.get('common.hours') + floor(~~cMins) + $.lang.get('common.minutes') + floor(cMins % 1 * 60) + $.lang.get('common.seconds')).replace('0' + $.lang.get('common.hours'), ''));
         }
     };
 
