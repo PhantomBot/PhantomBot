@@ -8,7 +8,7 @@
             command = event.getCommand(),
             args = event.getArgs(),
             action = args[0],
-            subAction = args[1].toLowerCase();
+            subAction = args[1];
 
         /**
          * @commandpath wordcounter - Configures various option for the wordcounter
@@ -33,7 +33,7 @@
                     return;
                 }
 
-                subAction = subAction.replace(action, '');
+                subAction = subAction.replace(action, '').toLowerCase();
                 $.inidb.set('wordCounter', subAction, 0);
                 $.say(subAction + $.lang.get('wordcounter.added'));
                 $.logEvent('wordCounter.js', 236, sender + ' added "' + subAction + '" to the word counter list');
@@ -51,7 +51,7 @@
                     return;
                 }
 
-                subAction = subAction.replace(action, '');
+                subAction = subAction.replace(action, '').toLowerCase();
                 $.inidb.del('wordCounter', subAction);
                 $.say(subAction + $.lang.get('wordcounter.removed'));
                 $.logEvent('wordCounter.js', 236, sender + ' removed "' + subAction + '" to the word counter list');
