@@ -51,13 +51,29 @@
     }
 
     /**
+     * @function getTitlePanel()
+     */
+    function getTitlePanel() {
+        $.inidb.set('streamInfo', 'title', $.getStatus($.channelName));
+    };
+
+    /**
+     * @function getTitlePanel()
+     */
+    function getGamePanel() {
+        $.inidb.set('streamInfo', 'game', $.getGame($.channelName));
+    };
+
+    /**
      * @function updateAll()
      */
     function updateAll() {
         updateViewerCount();
         updateStreamOnline();
         updateStreamUptime();
-    }
+        getTitlePanel();
+        getGamePanel();
+    };
 
     /**
      * @event initReady
@@ -72,6 +88,8 @@
                 alreadyStarted = true;
                 $.inidb.set('panelstats', 'enabled', 'true');
                 updateAll();
+                getTitlePanel();
+                getGamePanel();
         
                 setInterval(function() {
                     updateAll();
