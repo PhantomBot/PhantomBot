@@ -43,6 +43,8 @@ foreach $moduleName (sort @fileList) {
       chomp;
       if (/\@commandpath\s+(\w+)\s+([\w\W]*)\s+\-\s+([\w\W]+)/) { 
         ($commandName, $commandSubText, $commandDesc) = $_ =~ m/[\w\W]+\@commandpath\s+(\w+)\s+([\w\W]+)\s+\-\s+([\w\W]+)/;
+        $commandOptions = '';
+        $commandSubCommands = '';
       } elsif (/\@commandpath\s+(\w+)\s+-\s+([\w\W]+)/) {
         ($commandName, $commandDesc) = $_ =~ m/\@commandpath\s+(\w+)\s+\-\s+([\w\W]+)/;
         $commandSubText = '';
