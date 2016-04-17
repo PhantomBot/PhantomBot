@@ -158,26 +158,28 @@
         <br><br>
         <form role="form">
              <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="multi-link">Set Multi-Link Channels</label>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLink()">Submit</button>
-                <input type="text" class="form-control" id="multiLinkInput" placeholder="Channel_1 Channel_2 Channel_3"
-                       data-toggle="tooltip" title="Input format: Channel_1 Channel_2 Channel_3 ..." />
+                <label for="multi-link">Multi-Link Channels</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLink('#multiLinkInput', 'otherChannels')">Submit</button>
+                <input type="text" class="form-control" id="multiLinkInput" placeholder="Channel-1 Channel-2"
+                       data-toggle="tooltip" title="Place channels that you want to be in the multi-link, separate them with a space. Do not include your channel in this." />
             </div>
         </form>
 
         <form role="form">
              <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="multi-link">Timer Interval to Send Notice (Minutes)</label>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLinkTimer()">Submit</button>
-                <input type="text" class="form-control" id="multiLinkTimerInput" placeholder="Minutes" />
+                <label for="multi-link">Timer Interval</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLinkTimer('#multiLinkTimerInput', 'timerInterval')">Submit</button>
+                <input type="text" class="form-control" id="multiLinkTimerInput" placeholder="Interval"
+                    data-toggle="tooltip" title="Set the interval (in minutes) for the multi-link to be said in chat. Minimum is 5 minutes." />
             </div>
         </form>
 
         <form role="form">
              <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="multi-link">Minimum Chat Messages to Send Notice</label>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiReqMsgs()">Submit</button>
-                <input type="text" class="form-control" id="multiLinkReqMsgsInput" placeholder="Message Count" />
+                <label for="multi-link">Required Messages</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiReqMsgs('#multiLinkReqMsgsInput', 'reqMessages')">Submit</button>
+                <input type="text" class="form-control" id="multiLinkReqMsgsInput" placeholder="Amount" 
+                    data-toggle="tooltip" title="Set the amount of messages required before sending the multi-link." />
             </div>
         </form>
 
