@@ -371,32 +371,42 @@
     /**
      * @function setMultiLink
      */
-    function setMultiLink() {
-        if ($('#multiLinkInput').val().length > 0) {
-            sendCommand("multi set " + $("#multiLinkInput").val());
-            $('#multiLinkInput').val('');
-            $('#multiLinkInput').attr('placeholder', 'Sending...');
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function setMultiLink(tagId, tableKey) {
+        var newValue = $(tagId).val();
+        if (newValue.length > 0) {
+            sendDBUpdate("multiLinkInput", "dualStreamCommand", tableKey, newValue);
+            $(tagId).val('')
+            $(tagId).attr("placeholder", newValue).blur();
+            setTimeout(function() { sendCommand("reloadmulti"); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
     
     /**
      * @function setMultiLinkTimer
      */
-    function setMultiLinkTimer() {
-        if ($('#multiLinkTimerInput').val().length > 0) {
-            sendCommand("multi timerinterval " + $("#multiLinkTimerInput").val());
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function setMultiLinkTimer(tagId, tableKey) {
+        var newValue = $(tagId).val();
+        if (parseInt(newValue) >= 5 && newValue.length > 0) {
+            sendDBUpdate("multiLinkTimerInput", "dualStreamCommand", tableKey, newValue);
+            $(tagId).val('')
+            $(tagId).attr("placeholder", newValue).blur();
+            setTimeout(function() { sendCommand("reloadmulti"); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
     /**
      * @function setMultiReqMsgs
      */
-    function setMultiReqMsgs() {
-        if ($('#multiLinkReqMsgsInput').val().length > 0) {
-            sendCommand("multi reqmessage " + $("#multiLinkReqMsgsInput").val());
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function setMultiReqMsgs(tagId, tableKey) {
+        var newValue = $(tagId).val();
+        if (newValue.length > 0) {
+            sendDBUpdate("multiLinkReqMsgsInput", "dualStreamCommand", tableKey, newValue);
+            $(tagId).val('')
+            $(tagId).attr("placeholder", newValue).blur();
+            setTimeout(function() { sendCommand("reloadmulti"); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
@@ -404,7 +414,9 @@
      * @function clearMultiLink
      */
     function clearMultiLink() {
-        sendCommand("multi clear");
+        sendDBUpdate("multiLinkClear", "dualStreamCommand", "otherChannels", "Channel-1 Channel-2");
+        sendDBUpdate("multiLinkClear", "dualStreamCommand", "timerToggle", "false");
+        setTimeout(function() { sendCommand("reloadmulti"); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
  
@@ -414,7 +426,9 @@
     function multiLinkTimerOn() {
         $('#multiStatus').html('<span class="purplePill" data-toggle="tooltip" title="Multi-Link Enabled"><i class=\"fa fa-link fa-lg\" /></span>');
         $('[data-toggle="tooltip"]').tooltip();
-        sendCommand("multi timer on");
+        sendDBUpdate("multiLinkClear", "dualStreamCommand", "timerToggle", "true");
+        setTimeout(function() { sendCommand("reloadmulti"); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
  
     /**
@@ -422,7 +436,9 @@
      */
     function multiLinkTimerOff() {
         $('#multiStatus').html('');
-        sendCommand("multi timer off");
+        sendDBUpdate("multiLinkClear", "dualStreamCommand", "timerToggle", "false");
+        setTimeout(function() { sendCommand("reloadmulti"); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
