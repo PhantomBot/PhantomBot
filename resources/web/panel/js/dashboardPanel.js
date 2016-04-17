@@ -29,6 +29,7 @@
         whisperMode = false,
         responseMode = false,
         meMode = false,
+        amountCheck = false,
         pauseMode = false,
         toutGraphData = [],
         chatGraphData = [],
@@ -176,7 +177,7 @@
 
             if (panelCheckQuery(msgObject, 'dashboard_streamTitle')) {
                 if (msgObject['results']['title'] === undefined || msgObject['results']['title'] === null) {
-                    $('#streamTitleInput').attr('placeholder', 'Some Title').blur();
+                    $('#streamTitleInput').attr('placeholder', 'Title').blur();
                 } else {
                     $('#streamTitleInput').attr('placeholder', msgObject['results']['title']).blur();
                 }
@@ -185,7 +186,7 @@
             if (panelCheckQuery(msgObject, 'dashboard_gameTitle')) {
                 gameTitle = msgObject['results']['game'];
                 if (gameTitle === undefined || gameTitle === null) {
-                    gameTitle = "Some Game";
+                    gameTitle = "Game";
                 }
                 $('#gameTitleInput').attr('placeholder', gameTitle).blur();
                 sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
@@ -197,18 +198,18 @@
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
-                if (gameTitle === undefined || gameTitle === null) {
+                var amount = sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
+                if (gameTitle === undefined || gameTitle === null || amount === null || amount === undefined || amount === 0) {
                     $("#deathCounterValue").html("0");
-                } else {
-                    $("#deathCounterValue").html(msgObject['results'][gameTitle]);
                 }
+                $("#deathCounterValue").html(msgObject['results'][gameTitle]);
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_dsChannels')) {
                 if (msgObject['results']['otherChannels'] !== undefined && msgObject['results']['otherChannels'] !== null) {
                     $('#multiLinkInput').attr('placeholder', msgObject['results']['otherChannels'].replace(/\//g, ' '));
                 } else {
-                    $('#multiLinkInput').attr('placeholder', 'Channel_1 Channel_2 Channel_3 ...');
+                    $('#multiLinkInput').attr('placeholder', 'Channel-1 Channel-2');
                 }
             }
 
@@ -240,6 +241,7 @@
         sendDBQuery("dashboard_dsChannels", "dualStreamCommand", "otherChannels");
         sendDBQuery("dashboard_dsInterval", "dualStreamCommand", "timerInterval");
         sendDBQuery("dashboard_dsReqMsgs", "dualStreamCommand", "reqMessages");
+        sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
         sendDBKeys("dashboard_highlights", "highlights");
         sendDBKeys("dashboard_modules", "modules");
 
@@ -261,7 +263,7 @@
         }
         $('#deathCounterValue').html('<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />');
         sendCommand('deathctr ' + action);
-        setTimeout(function() { sendDBQuery("dashboard_deathctr", "deaths", gameTitle); }, TIMEOUT_WAIT_TIME);
+        sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
     }
 
     /**
