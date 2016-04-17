@@ -82,7 +82,7 @@
                     $.say($.whisperPrefix(sender) + $.modMsg);
                     return;
                 }
-                otherChannels = null;
+                otherChannels = 'Channel-1 Channel-2';
                 timerToggle = false;
                 $.inidb.del('dualStreamCommand', 'otherChannels');
                 $.inidb.set('dualStreamCommand', 'timerToggle', timerToggle);
@@ -141,7 +141,7 @@
                 $.logEvent('dualstreamCommand.js', 116, sender + ' changed the multi timer interval to ' + timerInterval + ' seconds');
 
                 setInterval(function() {
-                    if (timerToggle && otherChannels != null) {
+                    if (timerToggle && otherChannels != 'Channel-1 Channel-2') {
                         if ($.isOnline($.channelName) && messageCount >= reqMessages) {
                             $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
                             messageCount = 0;
@@ -176,7 +176,7 @@
     });
 
     setInterval(function() {
-        if (timerToggle && otherChannels != null) {
+        if (timerToggle && otherChannels != 'Channel-1 Channel-2') {
             if ($.isOnline($.channelName) && messageCount >= reqMessages) {
                 $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + '/' + otherChannels.replace(' ', '/'));
                 messageCount = 0;
