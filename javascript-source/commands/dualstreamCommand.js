@@ -1,9 +1,25 @@
 (function() {
-    var otherChannels = ($.inidb.exists('dualStreamCommand', 'otherChannels') ? $.inidb.get('dualStreamCommand', 'otherChannels') : null),
-        timerToggle = ($.inidb.exists('dualStreamCommand', 'timerToggle') ? $.inidb.get('dualStreamCommand', 'timerToggle') : false),
-        timerInterval = (parseInt($.inidb.exists('dualStreamCommand', 'timerInterval')) ? parseInt($.inidb.get('dualStreamCommand', 'timerInterval')) : 20),
-        reqMessages = (parseInt($.inidb.exists('dualStreamCommand', 'reqMessages')) ? parseInt($.inidb.get('dualStreamCommand', 'reqMessages')) : 10),
+    var otherChannels = $.getSetIniDbString('dualStreamCommand', 'otherChannels', 'Channel-1 Channel-2'),
+        timerToggle = $.getSetIniDbBoolean('dualStreamCommand', 'timerToggle', false),
+        timerInterval = $.getSetIniDbNumber('dualStreamCommand', 'timerInterval', 20),
+        reqMessages = $.getSetIniDbNumber('dualStreamCommand', 'reqMessages', 10),
         messageCount = 0;
+
+    function reloadMulti() {
+        otherChannels = $.getIniDbString('dualStreamCommand', 'otherChannels');
+        timerToggle = $.getIniDbBoolean('dualStreamCommand', 'timerToggle');
+        timerInterval = $.getIniDbNumber('dualStreamCommand', 'timerInterval');
+        reqMessages = $.getIniDbNumber('dualStreamCommand', 'reqMessages');
+
+        setInterval(function() {
+            if (timerToggle && otherChannels != 'Channel-1 Channel-2') {
+                if ($.isOnline($.channelName) && messageCount >= reqMessages) {
+                    $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + '/' + otherChannels.replace(' ', '/'));
+                    messageCount = 0;
+                }
+            }
+        }, timerInterval * 1000, 'dualStreamTimer');
+    };
 
     $.bind('ircChannelMessage', function() {
         messageCount++;
@@ -15,6 +31,8 @@
             args = event.getArgs(),
             argsString = event.getArguments().trim(),
             channel = argsString,
+            channel2 = argsString,
+            chan,
             action = args[0],
             subAction = args[1];
 
@@ -45,12 +63,14 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.set.usage'));
                     return;
                 }
-                channel = channel.replace(action + ' ', '/');
-                channel = channel.replace(' ', '/');
+                channel = channel.replace(action + ' ', '');
+                channel2 = channel.replace(action + ' ', '/');
+                channel2 = channel.replace(' ', '/');
+                chan = channel2;
                 otherChannels = channel;
                 $.inidb.set('dualStreamCommand', 'otherChannels', otherChannels);
-                $.say($.lang.get('dualstreamcommand.link.set', $.username.resolve($.channelName) + otherChannels));
-                $.logEvent('dualstreamCommand.js', 48, sender + ' set the multi link to "' + $.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels + '"');
+                $.say($.lang.get('dualstreamcommand.link.set', $.username.resolve($.channelName) + '/' + chan));
+                $.logEvent('dualstreamCommand.js', 48, sender + ' set the multi link to "' + $.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + '/' + chan + '"');
                 return;
             }
 
@@ -149,12 +169,16 @@
                 $.logEvent('dualstreamCommand.js', 116, sender + ' changed the multi req messages to ' + reqMessages + ' messages');
             }
         }
+
+        if (command.equalsIgnoreCase('reloadmulti')){
+            reloadMulti();
+        }
     });
 
     setInterval(function() {
         if (timerToggle && otherChannels != null) {
             if ($.isOnline($.channelName) && messageCount >= reqMessages) {
-                $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
+                $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + '/' + otherChannels.replace(' ', '/'));
                 messageCount = 0;
             }
         }
@@ -163,6 +187,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./commands/dualstreamCommand.js')) {
             $.registerChatCommand('./commands/dualstreamCommand.js', 'multi', 7);
+            $.registerChatCommand('./commands/dualstreamCommand.js', 'reloadmulti', 1);
         }
     });
 })();
