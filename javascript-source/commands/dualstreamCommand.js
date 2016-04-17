@@ -18,7 +18,7 @@
                     messageCount = 0;
                 }
             }
-        }, timerInterval * 1000, 'dualStreamTimer');
+        }, timerInterval * 60 *1000, 'dualStreamTimer');
     };
 
     $.bind('ircChannelMessage', function() {
