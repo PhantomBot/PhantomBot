@@ -157,7 +157,7 @@
         var value = $('#addNoticeInput').val();
         if (value.length > 0) {
             sendCommand('notice add ' + value);
-            $('#addNoticeInput').attr('placeholder', 'Updating...').blur();
+            $('#addNoticeInput').val('');
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);    
         }
     }
@@ -168,7 +168,7 @@
      */
     function deleteNotice(id) {
         sendCommand('notice remove ' + id);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
