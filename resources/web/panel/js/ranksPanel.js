@@ -90,7 +90,7 @@
             }
 
             if (panelCheckQuery(msgObject, 'ranks_customranks')) {
-                html = "<br><table><tr><th /><th>Hours in Chat</th><th>Rank Name</th></tr>";
+                html = "<br><table><tr><th /><th>User Name</th><th>Rank Name</th></tr>";
                 ranksData = msgObject['results'];
                 ranksData.sort();
                 for (idx = 0; idx < ranksData.length; idx++) {
