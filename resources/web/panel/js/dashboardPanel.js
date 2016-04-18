@@ -78,6 +78,8 @@
                     module = "",
                     moduleEnabled = "";
 
+                $.disablePanels(moduleData);
+
                 moduleData.sort(sortModuleNames);
                 for (idx in moduleData) {
                     module = moduleData[idx]['key'];

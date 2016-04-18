@@ -24,6 +24,8 @@
 <div id="hostraidAccordion">
     <h3>Host/Raid Channel</h3>
     <div>
+        <div id="_hostChannelPanelDisabled" />
+        <div id="_hostChannelPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="hostChannel">Host Channel</label>
@@ -32,7 +34,10 @@
                 <input type="text" class="form-control" id="hostChannelInput" placeholder="Twitch Channel">
             </div>
         </form>   
+        </div>
 
+        <div id="_raidChannelPanelDisabled" />
+        <div id="_raidChannelPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="raidChannel">Raid Channel</label>
@@ -50,10 +55,13 @@
                 <input type="text" class="form-control" id="raiderChannelInput" placeholder="Twitch Channel">
             </div>
         </form> 
+        </div>
     </div>
 
     <h3>Host Alerts</h3>
     <div>
+    <div id="_hostAlertsPanelDisabled" />
+    <div id="_hostAlertsPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="hostAnnounce">Host Announcement</label>
@@ -72,11 +80,13 @@
                 <input type="number" min="0" class="form-control" id="hostRewardInput" placeholder="Points" />
             </div>
         </form>
-        
+    </div>
     </div>
 
     <h3>Host History</h3>
     <div>
+    <div id="_hostHistoryPanelDisabled" />
+    <div id="_hostHistoryPanel">
         <table>
             <tr class="textList">
                 <td>Host History</td>
@@ -98,9 +108,12 @@
         <strong>Host History</strong>
         <div id="hostHistoryList" style="height: 200px; overflow: auto" />
     </div>
+    </div>
 
     <h3>Raid Message</h3>
     <div>
+    <div id="_raidMsgPanelDisabled" />
+    <div id="_raidMsgPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="raidMessage">Raid Message</label>
@@ -110,17 +123,24 @@
             </div>
         </form>
     </div>
+    </div>
 
     <h3>Incoming Raids</h3>
     <div>
+    <div id="_raidIncomingPanelDisabled" />
+    <div id="_raidIncomingPanel">
         <strong>Incoming Raid List</strong>
         <div id="incomingRaidList" style="height: 200px; overflow: auto" />
+    </div>
     </div>
 
     <h3>Outgoing Raids</h3>
     <div>
+    <div id="_raidOutgoingPanelDisabled" />
+    <div id="_raidOutgoingPanel">
         <strong>Outgoing Raid List</strong>
         <div id="outgoingRaidList" style="height: 200px; overflow: auto" />
+    </div>
     </div>
 </div>
 

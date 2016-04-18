@@ -24,6 +24,8 @@
 <div id="gamesAccordion">
     <h3>Roulette Configuration</h3>
     <div>
+    <div id="_roulettePanelDisabled" />
+    <div id="_roulettePanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="rouletteTimeout">Roulette Timeout (Seconds)</label>
@@ -33,9 +35,12 @@
             </div>
         </form>
     </div>
+    </div>
 
     <h3>Start an Adventure / Adventure Configuration</h3>
     <div>
+    <div id="_adventurePanelDisabled" />
+    <div id="_advnturePanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="adventureStart">Start an Adventure - Provide Points to Start</label>
@@ -89,6 +94,7 @@
                 <input type="number" min="1" class="form-control" id="adventuremaxBetInput" placeholder="Number Value">
             </div>
         </form>
+    </div>    
     </div>    
 </div>
 

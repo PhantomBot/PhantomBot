@@ -24,6 +24,8 @@
 <div id="pointsAccordion">
     <h3>Points Configuration</h3>
     <div>
+    <div id="_pointsConfigPanelDisabled" />
+    <div id="_pointsConfigPanel">
         <div class="form-group" onkeypress="return event.keyCode != 13">
             <label for="setPointName">Set Alternate Point Name</label>
             <button type="button" class="btn btn-danger inline pull-right" onclick="$.clearPointName()">Delete Names</button>
@@ -58,9 +60,12 @@
             <input type="number" min="0" class="form-control" id="setPointGainInput_setofflineinterval" placeholder="Points" />
         </div>
     </div>
+    </div>
 
     <h3>Group Point Configuration</h3>
     <div>
+    <div id="_groupPointConfigPanelDisabled" />
+    <div id="_groupPointConfigPanel">
         The settings defined here override the global settings. Note that a value of "-1" indicates that the global
         setting is to be used.<br><br>
         <strong>Group Point Configuration - Online</strong><br>
@@ -70,9 +75,12 @@
         <strong>Group Point Configuration - Offline</strong><br>
         <div id="groupPointsOfflineTable" style="height: 150px; overflow: auto;" />
     </div>
+    </div>
 
     <h3>Modify User Points</h3>
     <div>
+    <div id="_userPointConfigPanelDisabled" />
+    <div id="_userPointConfigPanel">
         <div class="form-group" onkeypress="return event.keyCode != 13">
             <label for="giftPoints">Gift Chat with Points</label>
             <button type="button" data-toggle="tooltip" title="Gift the amount below to each person in chat."
@@ -109,6 +117,7 @@
         </div>
         <br>
         <div id="userPointsTable" style="height: 400px; overflow: auto;" />
+    </div>
     </div>
 </div>
 
