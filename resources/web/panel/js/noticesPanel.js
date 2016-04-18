@@ -85,7 +85,7 @@
                             '    </td>' +
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input type="text" id="inlineNoticeEdit_' + id + '"' +
+                            '            <input style="width: 90%" type="text" id="inlineNoticeEdit_' + id + '"' +
                             '                   value="' + msgObject['results'][idx]['value'] + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                   onclick="$.updateNotice(\'' + id + '\')"><i class="fa fa-pencil" />' +
