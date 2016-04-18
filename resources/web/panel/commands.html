@@ -24,6 +24,8 @@
 <div id="customCommandsAccordion">
     <h3>Add/Edit Custom Command and Aliases</h3>
     <div>
+    <div id="_editCustomCommandsPanelDisabled" />
+    <div id="_editCustomCommandsPanel">
 
         <div id="tagHelpDialog" title="Custom Command Tags" style="font-size: 90%">
             <table>
@@ -96,24 +98,36 @@
             </div>
         </form>
     </div>
+    </div>
 
     <h3>View/Delete Custom Commands</h3>
     <div>
+    <div id="_viewCustomCommandsPanelDisabled" />
+    <div id="_viewCustomCommandsPanel">
         <div id="customCommandsList" style="height: 300px; overflow: auto;" />
+    </div>
     </div>
 
     <h3>View/Delete Command Aliases</h3>
     <div>
+    <div id="_viewCommandAliasesPanelDisabled" />
+    <div id="_viewCommandAliasesPanel">
         <div id="aliasCommandsList" style="height: 300px; overflow: auto;" />
+    </div>
     </div>
 
     <h3>Enable/Disable and Manage Command Permissions</h3>
     <div>
+    <div id="_commandPermissionPanelDisabled" />
+    <div id="_commandPermissionPanel">
         <div id="permCommandsList" style="height: 300px; overflow: auto;" />
+    </div>
     </div>
 
     <h3>View/Set Command Prices</h3>
     <div>
+    <div id="_commandPricesPanelDisabled" />
+    <div id="_commandPricesPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="setCommandPrice">Add New Command Price</label>
@@ -124,6 +138,7 @@
 
         <strong>Current Command Prices</strong><br><br>
         <div id="priceCommandsList" style="height: 300px; overflow: auto;" />
+    </div>
     </div>
 
     <h3>Global Cooldown Settings</h3>

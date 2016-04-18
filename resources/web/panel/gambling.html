@@ -24,6 +24,8 @@
 <div id="gamblingAccordion">
     <h3>Auction</h3>
     <div>
+    <div id="_auctionPanelDisabled" />
+    <div id="_auctionPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="auctionOpen">Open/Close an Auction</label>
@@ -37,9 +39,12 @@
 
         <div id="auctionResults" />
     </div>
+    </div>
 
     <h3>Bet</h3>
     <div>
+    <div id="_betPanelDisabled" />
+    <div id="_betPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="betOpen">Start a Bet </label>
@@ -78,9 +83,12 @@
 
         <div id="betResults" />
     </div>
+    </div>
 
     <h3>Raffle</h3>
     <div>
+    <div id="_rafflePanelDisabled" />
+    <div id="_rafflePanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="raffleOpen">Open/Close a Raffle</label>
@@ -100,9 +108,12 @@
 
         <div id="raffleResults" />
     </div>
+    </div>
 
     <h3>Ticket Raffle</h3>
     <div>
+    <div id="_trafflePanelDisabled" />
+    <div id="_trafflePanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="traffleOpen">Open/Close a Ticket Raffle</label>
@@ -120,6 +131,7 @@
         </form>
 
         <div id="traffleResults" />
+    </div>
     </div>
 
 </div>
