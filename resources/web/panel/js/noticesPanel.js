@@ -129,24 +129,26 @@
     /**
      * @function updateNoticeInterval
      */
-    function updateNoticeInterval() {
-        var value = $('#noticeIntervalInput').val();
-        if (value.length > 0) {
-            sendCommand('notice interval ' + value);
-            $('#noticeIntervalInput').attr('placeholder', value).blur();
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function updateNoticeInterval(tagId, tableKey) {
+        var newValue = $(tagId).val();
+        if (parseInt(newValue) >= 5 && newValue.length > 0) {
+            sendDBUpdate("noticeIntervalInput", "noticeSettings", tableKey, newValue);
+            $(tagId).val('')
+            $(tagId).attr("placeholder", newValue).blur();
+            setTimeout(function() { sendCommand("reloadnotice"); }, TIMEOUT_WAIT_TIME);
         }
     }
 
     /**
      * @function updateNoticeReq
      */
-    function updateNoticeReq() {
-        var value = $('#noticeReqInput').val();
-        if (value.length > 0) {
-            sendCommand('notice req ' + value);
-            $('#noticeReqInput').attr('placeholder', value).blur();
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function updateNoticeReq(tagId, tableKey) {
+        var newValue = $(tagId).val();
+        if (parseInt(newValue) >= 1 && newValue.length > 0) {
+            sendDBUpdate("noticeReqInput", "noticeSettings", tableKey, newValue);
+            $(tagId).val('')
+            $(tagId).attr("placeholder", newValue).blur();
+            setTimeout(function() { sendCommand("reloadnotice"); }, TIMEOUT_WAIT_TIME);
         }
     }
 
