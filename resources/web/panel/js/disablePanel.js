@@ -143,6 +143,13 @@
             if (panelMatch(module, './games/roulette.js')) {
                 handlePanel('./games/roulette.js', '#_roulettePanel', moduleEnabled);
             }
+            if (panelMatch(module, './handlers/panelHandler.js')) {
+                if (!moduleEnabled) {
+                    $('#panelStatsStatus').html('<span class="purplePill" data-toggle="tooltip" title="Panel Stats Disabled. Enable module ./handlers/panelHandler.js for Twitch online/offline information, uptime, and chat statistics data in the panel."><i class="fa fa-exclamation-triangle fa-lg" /></span>');
+                } else {
+                    $('#panelStatsStatus').html('');
+                }
+            }
         }            
     }
 
