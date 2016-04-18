@@ -101,8 +101,8 @@ public class PhantomBot implements Listener {
     private final String channelName;
     private final String ownerName;
     private final String hostname;
-    private final String ghostname;
-    private int gport;
+    private final String groupChat;
+    private int groupChatPort;
     private int port;
     private int baseport;
     private double msglimit30;
@@ -161,7 +161,7 @@ public class PhantomBot implements Listener {
     }
 
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel,
-                      String owner, int baseport, String hostname, int port, String ghostname, int gport,
+                      String owner, int baseport, String hostname, int port, String groupChat, int groupChatPort,
                       double msglimit30, String datastore, String datastoreconfig, String youtubekey,
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
                       String keystorepassword, String keypassword, String twitchalertskey,
@@ -193,6 +193,7 @@ public class PhantomBot implements Listener {
         this.datastore = datastore;
         this.datastoreconfig = datastoreconfig;
         this.youtubekey = youtubekey;
+        
         if (!youtubekey.isEmpty()) {
             YouTubeAPIv3.instance().SetAPIKey(youtubekey);
         }
@@ -244,6 +245,14 @@ public class PhantomBot implements Listener {
             this.port = port;
         }
 
+        if (groupChat.isEmpty()) {
+            this.groupChat = "group.tmi.twitch.tv";
+            this.groupChatPort = 6667;
+        } else {
+            this.groupChat = groupChat;
+            this.groupChatPort = groupChatPort;
+        }
+
         if (msglimit30 > 0) {
             this.msglimit30 = msglimit30;
         } else {
@@ -256,14 +265,6 @@ public class PhantomBot implements Listener {
             dataStoreObj = IniStore.instance();
         } else {
             dataStoreObj = SqliteStore.instance();
-        }
-        
-        if (ghostname.isEmpty()) {
-            this.ghostname = "192.16.64.180";
-            this.gport = 6667;
-        } else {
-            this.ghostname = ghostname;
-            this.gport = gport;
         }
 
         if (datastore.isEmpty() && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0) {
@@ -370,7 +371,7 @@ public class PhantomBot implements Listener {
 
     private void TwitchGroupChatHandler(String oauth, ConnectionManager connManager) {
 
-        tgcSession = connManager.requestConnection(ghostname, gport, oauth);
+        tgcSession = connManager.requestConnection(groupChat, groupChatPort, oauth);
         tgcSession.addIRCEventListener(new IrcEventHandler());
     }
 
@@ -500,7 +501,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
-        Script.global.defineProperty("ghostname", ghostname, 0);
+        Script.global.defineProperty("groupChat", groupChat, 0);
         Script.global.defineProperty("donations", donationsCache, 0);
         Script.global.defineProperty("emotes", emotesCache, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
@@ -817,8 +818,8 @@ public class PhantomBot implements Listener {
                 data += "baseport=" + baseport + "\r\n";
                 data += "hostname=" + hostname + "\r\n";
                 data += "port=" + port + "\r\n";
-                data += "ghostname=" + ghostname + "\r\n";
-                data += "gport=" + gport + "\r\n";
+                data += "groupChat=" + groupChat + "\r\n";
+                data += "groupChatPort=" + groupChatPort + "\r\n";
                 data += "msglimit30=" + msglimit30 + "\r\n";
                 data += "datastore=" + datastore + "\r\n";
                 data += "youtubekey=" + youtubekey + "\r\n";
@@ -1029,8 +1030,8 @@ public class PhantomBot implements Listener {
         String hostname = "";
         int baseport = 25000;
         int port = 0;
-        String ghostname = "";
-        int gport = 0;
+        String groupChat = "";
+        int groupChatPort = 0;
         double msglimit30 = 0;
         String datastore = "";
         String datastoreconfig = "";
@@ -1100,11 +1101,11 @@ public class PhantomBot implements Listener {
                     if (line.startsWith("port=") && line.length() > 6) {
                         port = Integer.parseInt(line.substring(5));
                     }
-                    if (line.startsWith("ghostname=") && line.length() > 11) {
-                        ghostname = line.substring(10);
+                    if (line.startsWith("groupChat=") && line.length() > 11) {
+                        groupChat = line.substring(10);
                     }
-                    if (line.startsWith("gport=") && line.length() > 7) {
-                        gport = Integer.parseInt(line.substring(6));
+                    if (line.startsWith("groupChatPort=") && line.length() > 7) {
+                        groupChatPort = Integer.parseInt(line.substring(14));
                     }
                     if (line.startsWith("msglimit30=") && line.length() > 12) {
                         msglimit30 = Double.parseDouble(line.substring(11));
@@ -1211,8 +1212,8 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("baseport='" + baseport + "'");
                     com.gmt2001.Console.out.println("hostname='" + hostname + "'");
                     com.gmt2001.Console.out.println("port='" + port + "'");
-                    com.gmt2001.Console.out.println("ghostname='" + ghostname + "'");
-                    com.gmt2001.Console.out.println("gport='" + gport + "'");
+                    com.gmt2001.Console.out.println("groupChat='" + groupChat + "'");
+                    com.gmt2001.Console.out.println("groupChatPort='" + groupChatPort + "'");
                     com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
                     com.gmt2001.Console.out.println("datastore='" + datastore + "'");
                     com.gmt2001.Console.out.println("youtubekey='" + youtubekey + "'");
@@ -1338,15 +1339,15 @@ public class PhantomBot implements Listener {
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("ghostname=") && arg.length() > 11) {
-                    if (!ghostname.equals(arg.substring(10))) {
-                        ghostname = arg.substring(10);
+                if (arg.toLowerCase().startsWith("groupChat=") && arg.length() > 11) {
+                    if (!groupChat.equals(arg.substring(10))) {
+                        groupChat = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("gport=") && arg.length() > 7) {
-                    if (gport != Integer.parseInt(arg.substring(6))) {
-                        gport = Integer.parseInt(arg.substring(6));
+                if (arg.toLowerCase().startsWith("groupChatPort=") && arg.length() > 15) {
+                    if (groupChatPort != Integer.parseInt(arg.substring(14))) {
+                        groupChatPort = Integer.parseInt(arg.substring(14));
                         changed = true;
                     }
                 }
@@ -1427,8 +1428,8 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("\rUsage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>]\r\n"
                                                     + "       [webauth=<web auth key>] [oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>]\r\n"
                                                     + "       [channel=<channel to join>] [owner=<bot owner username>] [baseport=<bot webserver port>]\r\n"
-                                                    + "       [hostname=<custom irc server>] [ghostname=<custom group chat server>]\r\n"
-                                                    + "       [port=<custom irc port>] [gport=<custom group chat port>] [msglimit30=<message limit per 30 seconds>]\r\n"
+                                                    + "       [hostname=<custom irc server>] [groupChat=<custom group chat server>]\r\n"
+                                                    + "       [port=<custom irc port>] [groupChatPort=<custom group chat port>] [msglimit30=<message limit per 30 seconds>]\r\n"
                                                     + "       [datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>]\r\n"
                                                     + "       [datastoreconfig=<Optional DataStore config option, different for each DataStore type>]\r\n"
                                                     + "       [youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]\r\n"
@@ -1462,8 +1463,8 @@ public class PhantomBot implements Listener {
             data += "baseport=" + baseport + "\r\n";
             data += "hostname=" + hostname + "\r\n";
             data += "port=" + port + "\r\n";
-            data += "ghostname=" + ghostname + "\r\n";
-            data += "gport=" + gport + "\r\n";
+            data += "groupChat=" + groupChat + "\r\n";
+            data += "groupChatPort=" + groupChatPort + "\r\n";
             data += "msglimit30=" + msglimit30 + "\r\n";
             data += "datastore=" + datastore + "\r\n";
             data += "youtubekey=" + youtubekey + "\r\n";
@@ -1486,7 +1487,7 @@ public class PhantomBot implements Listener {
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, ghostname, gport, msglimit30, datastore,
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, groupChat, groupChatPort, msglimit30, datastore,
                                              datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword,
                                              twitchalertskey, twitchalertslimit, webauth, ytpassword, ytauth, gamewispauth, gamewisprefresh, paneluser, panelpassword);
     }
@@ -1503,8 +1504,8 @@ public class PhantomBot implements Listener {
         data += "baseport=" + baseport + "\r\n";
         data += "hostname=" + hostname + "\r\n";
         data += "port=" + port + "\r\n";
-        data += "ghostname=" + ghostname + "\r\n";
-        data += "gport=" + gport + "\r\n";
+        data += "groupChat=" + groupChat + "\r\n";
+        data += "groupChatPort=" + groupChatPort + "\r\n";
         data += "msglimit30=" + msglimit30 + "\r\n";
         data += "datastore=" + datastore + "\r\n";
         data += "youtubekey=" + youtubekey + "\r\n";
