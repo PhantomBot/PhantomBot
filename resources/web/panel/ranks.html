@@ -24,6 +24,8 @@
 <div id="ranksAccordion">
     <h3>Ranks Mapping</h3>
     <div>
+    <div id="_ranksMappingPanelDisabled" />
+    <div id="_ranksMappingPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="addRank">Add Rank</label>
@@ -38,9 +40,12 @@
         <strong>Current Ranks</strong>
         <div id="ranksMapping" style="height: 300px; overflow: auto;" />
     </div>
+    </div>
 
     <h3>Custom User Ranks</h3>
     <div>
+    <div id="_customRanksPanelDisabled" />
+    <div id="_customRanksPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="customRankTime">User Custom Rank Eligable Time</label>
@@ -71,6 +76,7 @@
 
         <strong>Users with Custom Ranks</strong>
         <div id="ranksCustom" style="height: 300px; overflow: auto;" />
+    </div>
     </div>
 
 </div>

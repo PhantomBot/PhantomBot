@@ -43,6 +43,12 @@
         }
 
         if (panelHasQuery(msgObject)) {
+            if (panelCheckQuery(msgObject, 'quotes_quotemessage')) {
+                if (msgObject['results']['quoteMessage'] !== null) {
+                    $('#quoteMessageInput').val(msgObject['results']['quoteMessage']);
+                }
+            }
+
             if (panelCheckQuery(msgObject, 'quotes_quotes')) {
                 if (msgObject['results'].length === 0) {
                     $('#quoteList').html('<i>No Quotes Are Defined</i>');
@@ -117,6 +123,19 @@
      */
     function doQuery() {
         sendDBKeys('quotes_quotes', 'quotes');
+        sendDBQuery('quotes_quotemessage', 'settings', 'quoteMessage');
+    }
+
+    /**
+     * @function setQuoteMessage
+     */
+    function setQuoteMessage() {
+        var value = $('#quoteMessageInput').val();
+        if (value.length > 0) {
+            $('#quoteMessageInput').val('Updating...');
+            sendCommand('quotemessage ' + value);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
     }
 
     /**
@@ -194,4 +213,5 @@
     $.deleteQuote = deleteQuote;
     $.updateQuote = updateQuote;
     $.addQuote = addQuote;
+    $.setQuoteMessage = setQuoteMessage;
 })();

@@ -116,7 +116,7 @@
             if (panelCheckQuery(msgObject, 'global_dsToggle')) {
                 if (msgObject['results']['timerToggle'] !== undefined && msgObject['results']['timerToggle'] !== null) {
                     if (panelMatch(msgObject['results']['timerToggle'], 'true')) {
-                        $('#multiStatus').html('<span class="purplePill" data-toggle="tooltip" title="Multi-Link Enabled"><i class=\"fa fa-link fa-lg\" /></span>');
+                        $('#multiStatus').html('<span class="purplePill" data-toggle="tooltip" title="Multi-Link Enabled"><i class="fa fa-link fa-lg" /></span>');
                     } else {
                         $('#multiStatus').html('');
                     }

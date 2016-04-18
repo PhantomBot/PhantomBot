@@ -116,88 +116,100 @@
 
     <h3>Highlights</h3>
     <div>
-        Make a note of an event in the broadcast to make creating highlights in Twitch easier later.
-        <br><br>
-        <form role="form">
-             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="highlight">Create Highlight</label>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.setHighlight()">Submit</button>
-                <input type="text" class="form-control" id="highlightInput" placeholder="Game Highlight" />
-            </div>
-        </form>
-        <br>
-        
-        <button type="button" class="btn btn-danger pull-right" onclick="$.clearHighlights()">Clear Highlights</button>
-        <strong>Current Highlights</strong><br>
-        <span id="showHighlights" />
+        <div id="_highlightsPanelDisabled" />
+        <div id="_highlightsPanel">
+            Make a note of an event in the broadcast to make creating highlights in Twitch easier later.
+            <br><br>
+            <form role="form">
+                 <div class="form-group" onkeypress="return event.keyCode != 13">
+                    <label for="highlight">Create Highlight</label>
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.setHighlight()">Submit</button>
+                    <input type="text" class="form-control" id="highlightInput" placeholder="Game Highlight" />
+                </div>
+            </form>
+            <br>
+            
+            <button type="button" class="btn btn-danger pull-right" onclick="$.clearHighlights()">Clear Highlights</button>
+            <strong>Current Highlights</strong><br>
+            <span id="showHighlights" />
+        </div>
     </div>
-
+    
     <h3>Death Counter</h3>
     <div>
-        <table>
-            <tr class="textList" style="vertical-align: middle">
-                <td>Deaths: <span id="deathCounterValue">Fetching Game...</span></td>
-                <td style="width: 30px">
-                    <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('add')"><i class="fa fa-plus fa-1x" /></button>
-                </td>
-                <td style="width: 30px">
-                    <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('sub')"><i class="fa fa-minus fa-1x" /></button>
-                </td>
-                <td style="width: 30px">
-                    <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('reset')"><i class="fa fa-power-off fa-1x" /></button>
-                </td>
-            </tr>
-        </table>
+        <div id="_deathCtrPanelDisabled" />
+        <div id="_deathCtrPanel">
+            <table>
+                <tr class="textList" style="vertical-align: middle">
+                    <td>Deaths: <span id="deathCounterValue">Fetching Game...</span></td>
+                    <td style="width: 30px">
+                        <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('add')"><i class="fa fa-plus fa-1x" /></button>
+                    </td>
+                    <td style="width: 30px">
+                        <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('sub')"><i class="fa fa-minus fa-1x" /></button>
+                    </td>
+                    <td style="width: 30px">
+                        <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('reset')"><i class="fa fa-power-off fa-1x" /></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
     <h3>Multi-Link</h3>
     <div>
-        Multi-Link provides a link to share multiple Twitch channels in one UI.
-        Great for races or other competititions. Provide a space delimited list of channels.
-        Set a timer to let chat know on a regular basis that the Multi-Link is on.
-        <br><br>
-        <form role="form">
-             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="multi-link">Multi-Link Channels</label>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLink('#multiLinkInput', 'otherChannels')">Submit</button>
-                <input type="text" class="form-control" id="multiLinkInput" placeholder="Channel-1 Channel-2"
-                       data-toggle="tooltip" title="Place channels that you want to be in the multi-link, separate them with a space. Do not include your channel in this." />
-            </div>
-        </form>
-
-        <form role="form">
-             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="multi-link">Timer Interval</label>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLinkTimer('#multiLinkTimerInput', 'timerInterval')">Submit</button>
-                <input type="text" class="form-control" id="multiLinkTimerInput" placeholder="Interval"
-                    data-toggle="tooltip" title="Set the interval (in minutes) for the multi-link to be said in chat. Minimum is 5 minutes." />
-            </div>
-        </form>
-
-        <form role="form">
-             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="multi-link">Required Messages</label>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiReqMsgs('#multiLinkReqMsgsInput', 'reqMessages')">Submit</button>
-                <input type="text" class="form-control" id="multiLinkReqMsgsInput" placeholder="Amount" 
-                    data-toggle="tooltip" title="Set the amount of messages required before sending the multi-link." />
-            </div>
-        </form>
-
-        <button type="button" class="btn btn-success" onclick="$.multiLinkTimerOn()">Multi-Link Timer On</button>
-        <button type="button" class="btn btn-danger" onclick="$.multiLinkTimerOff()">Multi-Link Timer Off</button>
-        <button type="button" class="btn btn-danger" onclick="$.clearMultiLink()">Clear Multi-Link</button>
+        <div id="_multiLinkPanelDisabled" />
+        <div id="_multiLinkPanel">
+            Multi-Link provides a link to share multiple Twitch channels in one UI.
+            Great for races or other competititions. Provide a space delimited list of channels.
+            Set a timer to let chat know on a regular basis that the Multi-Link is on.
+            <br><br>
+            <form role="form">
+                 <div class="form-group" onkeypress="return event.keyCode != 13">
+                    <label for="multi-link">Multi-Link Channels</label>
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLink('#multiLinkInput', 'otherChannels')">Submit</button>
+                    <input type="text" class="form-control" id="multiLinkInput" placeholder="Channel-1 Channel-2"
+                           data-toggle="tooltip" title="Place channels that you want to be in the multi-link, separate them with a space. Do not include your channel in this." />
+                </div>
+            </form>
+    
+            <form role="form">
+                 <div class="form-group" onkeypress="return event.keyCode != 13">
+                    <label for="multi-link">Timer Interval</label>
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLinkTimer('#multiLinkTimerInput', 'timerInterval')">Submit</button>
+                    <input type="text" class="form-control" id="multiLinkTimerInput" placeholder="Interval"
+                        data-toggle="tooltip" title="Set the interval (in minutes) for the multi-link to be said in chat. Minimum is 5 minutes." />
+                </div>
+            </form>
+    
+            <form role="form">
+                 <div class="form-group" onkeypress="return event.keyCode != 13">
+                    <label for="multi-link">Required Messages</label>
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiReqMsgs('#multiLinkReqMsgsInput', 'reqMessages')">Submit</button>
+                    <input type="text" class="form-control" id="multiLinkReqMsgsInput" placeholder="Amount" 
+                        data-toggle="tooltip" title="Set the amount of messages required before sending the multi-link." />
+                </div>
+            </form>
+    
+            <button type="button" class="btn btn-success" onclick="$.multiLinkTimerOn()">Multi-Link Timer On</button>
+            <button type="button" class="btn btn-danger" onclick="$.multiLinkTimerOff()">Multi-Link Timer Off</button>
+            <button type="button" class="btn btn-danger" onclick="$.clearMultiLink()">Clear Multi-Link</button>
+        </div>
     </div>
 
     <h3>Shoutout a Streamer</h3>
     <div>
-        Shoutout a streamer!  Will display their Twitch URL in chat along with game being played, or last played.<br><br>
-        <form role="form">
-             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="shoutOut">Twitch Channel to Shoutout</label>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.shoutOut()">Submit</button>
-                <input type="text" class="form-control" id="shoutOutInput" placeholder="Twitch Channel" />
-            </div>
-        </form>
+        <div id="_shoutoutPanelDisabled" />
+        <div id="_shoutoutPanel">
+            Shoutout a streamer!  Will display their Twitch URL in chat along with game being played, or last played.<br><br>
+            <form role="form">
+                 <div class="form-group" onkeypress="return event.keyCode != 13">
+                    <label for="shoutOut">Twitch Channel to Shoutout</label>
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.shoutOut()">Submit</button>
+                    <input type="text" class="form-control" id="shoutOutInput" placeholder="Twitch Channel" />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
