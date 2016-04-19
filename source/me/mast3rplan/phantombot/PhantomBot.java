@@ -684,6 +684,10 @@ public class PhantomBot implements Listener {
         String message = msg.getMsg();
         boolean changed = false;
 
+        if (message == null) {
+            return;
+        }
+
         if (message.equals("testsub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testsub");
             EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "twitchnotify", "testuser just subscribed!"));
