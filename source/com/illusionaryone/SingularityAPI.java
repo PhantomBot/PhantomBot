@@ -66,8 +66,8 @@ public class SingularityAPI {
     private static final SingularityAPI instance = new SingularityAPI();
 
     private static final String apiURL = "https://singularity.gamewisp.com";
-    private static final String devKey = "feac11eb4d9ac56510b938232a79cf317de155d"; // TODO: IllusionaryBot, needs PhantomBot
-    private static final String devSec = "6ecb43de8f1704bef5b8c4afa2c85052d6846a2"; // TODO: IllusionaryBot, needs PhantomBot
+    private static final String devKey = "32e01468d8bbc250721fe3b0d38c090a8ac589e";
+    private static final String devSec = "470651f241fec8972d94cdca5cbfdd5b9ec45ce";
 
     private Socket webSocket;
 

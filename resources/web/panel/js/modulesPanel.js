@@ -80,7 +80,7 @@
      * @param {String} module
      */
     function enableModule(module, idx) {
-        $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module enable " + module);
         setTimeout(function() { doQuery(); }, 1000);
     }
@@ -90,7 +90,7 @@
      * @param {String} module
      */
     function disableModule(module, idx) {
-        $("#moduleStatus_" + idx).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module disable " + module);
         setTimeout(function() { doQuery(); }, 1000);
     }

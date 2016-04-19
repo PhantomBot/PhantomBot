@@ -111,7 +111,7 @@
      * @function toggleGlobalCooldown
      */
     function toggleGlobalCooldown() {
-        $("#toggleGlobalCooldown").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#toggleGlobalCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("toggleglobalcooldown");
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -120,7 +120,7 @@
      * @function toggleModCooldown
      */
     function toggleModCooldown() {
-        $("#toggleModCooldown").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#toggleModCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("togglemodcooldown");
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -129,7 +129,7 @@
      * @function togglePerUserCooldown
      */
     function togglePerUserCooldown() {
-        $("#togglePerUserCooldown").html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#togglePerUserCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("toggleperusercooldown");
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -152,7 +152,7 @@
      * @param {String} command
      */
     function deleteCooldown(command) {
-        $("#deleteCooldown_" + command).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCooldown_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("cooldown " + command + " -1");
         setTimeout(function() { doQuery(); }, 500);
     }

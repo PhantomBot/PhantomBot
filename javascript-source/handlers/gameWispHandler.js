@@ -86,7 +86,7 @@
             return;
         }
 
-        var username = event.GetUsername().toLowerCase(),
+        var username = event.getUsername().toLowerCase(),
             userstatus = event.getStatus();
 
         if (userstatus.equals('inactive')) {
@@ -132,7 +132,7 @@
 
         if (subShowMessages) {
             $.inidb.incr('points', username, userreward);
-            $.say(subMessage.replace('(name)', resolvename).replace('(tier)', tier).replace('(reward)', userreward));
+            $.say(subMessage.replace('(name)', resolvename).replace('(tier)', tier.toString()).replace('(reward)', userreward.toString()));
         }
     });
 
@@ -151,7 +151,7 @@
 
         if (subShowMessages) {
             $.inidb.incr('points', username, userreward);
-            $.say(reSubMessage.replace('(name)', resolvename).replace('(tier)', tier).replace('(reward)', userreward).replace('(months)', months));
+            $.say(reSubMessage.replace('(name)', resolvename).replace('(tier)', tier.toString()).replace('(reward)', userreward.toString()).replace('(months)', months.toString()));
         }
     });
 
