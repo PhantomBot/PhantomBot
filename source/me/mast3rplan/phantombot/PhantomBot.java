@@ -685,32 +685,44 @@ public class PhantomBot implements Listener {
         boolean changed = false;
 
         if (message.equals("testsub")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testsub");
             EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "twitchnotify", "testuser just subscribed!"));
+            return;
         }
 
         if (message.equals("testresub")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testresub");
             EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "twitchnotify", "testuser just subscribed for 2 months in a row!"));
+            return;
         }
 
         if (message.equals("debugon")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing debugon: Enable Debug Mode");
             PhantomBot.setDebugging(true);
+            return;
         }
 
         if (message.equals("debugoff")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing debugoff: Disable Debug Mode");
             PhantomBot.setDebugging(false);
+            return;
         }
 
         if (message.startsWith("inidb.get")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing inidb.get");
             String spl[] = message.split(" ", 4);
 
             com.gmt2001.Console.out.println(dataStoreObj.GetString(spl[1], spl[2], spl[3]));
+            return;
         }
 
         if (message.startsWith("inidb.set")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing inidb.set");
             String spl[] = message.split(" ", 5);
 
             dataStoreObj.SetString(spl[1], spl[2], spl[3], spl[4]);
             com.gmt2001.Console.out.println(dataStoreObj.GetString(spl[1], spl[2], spl[3]));
+            return;
         }
 
         if (message.equals("apioauth")) {
@@ -857,17 +869,23 @@ public class PhantomBot implements Listener {
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
+            return;
         }
 
         if (message.equals("save")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing save");
             dataStoreObj.SaveAll(true);
+            return;
         }
 
         if (message.equals("quicksave")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing quicksave");
             dataStoreObj.SaveChangedNow();
+            return;
         }
 
         if (message.equals("exit")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing exit");
             System.exit(0);
         }
 
