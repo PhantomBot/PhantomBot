@@ -45,7 +45,7 @@ public class NEWHTTPServer {
   private String     serverWebAuth;
   private int        serverPort;
 
-  public NEWHTTPServer(int myPort, String myPassword, String myWebAuth, final String ytPassword, final String panelUser, final String panelPassword) {
+  public NEWHTTPServer(int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword) {
       serverPort = myPort;
       serverPassword = myPassword.replace("oauth:", "");
       serverWebAuth = myWebAuth;
@@ -59,18 +59,14 @@ public class NEWHTTPServer {
           HttpContext panelContext = server.createContext("/panel", new PanelHandler());
           HttpContext ytContext = server.createContext("/ytplayer", new YTPHandler());
 
-          ytContext.setAuthenticator(new BasicAuthenticator("PhantomBot YouTube Player") {
-              @Override
-              public boolean checkCredentials(String user, String pwd) {
-                  return user.equals("ytplayer") && pwd.equals(ytPassword);
-              }
-          });
-          panelContext.setAuthenticator(new BasicAuthenticator("PhantomBot Web Panel") {
+          BasicAuthenticator auth = new BasicAuthenticator("PhantomBot Web Utilities") {
               @Override
               public boolean checkCredentials(String user, String pwd) {
                   return user.equals(panelUser) && pwd.equals(panelPassword);
               }
-          });
+          };
+          ytContext.setAuthenticator(auth);
+          panelContext.setAuthenticator(auth);
 
           server.start();
       } catch (IOException ex) {

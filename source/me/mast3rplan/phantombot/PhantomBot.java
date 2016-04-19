@@ -90,7 +90,6 @@ public class PhantomBot implements Listener {
     public final String username;
     private String panelpassword;
     private String paneluser;
-    private String ytpassword;
     private final String webauth;
     private final String ytauth;
     private final String gamewispauth;
@@ -165,7 +164,7 @@ public class PhantomBot implements Listener {
                       double msglimit30, String datastore, String datastoreconfig, String youtubekey,
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
                       String keystorepassword, String keypassword, String twitchalertskey,
-                      int twitchalertslimit, String webauth, String ytpassword, String ytauth,
+                      int twitchalertslimit, String webauth, String ytauth,
                       String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
@@ -182,7 +181,6 @@ public class PhantomBot implements Listener {
         this.username = username;
         this.oauth = oauth;
         this.apioauth = apioauth;
-        this.ytpassword = ytpassword;
         this.webauth = webauth;
         this.ytauth = ytauth;
         this.gamewispauth = gamewispauth;
@@ -205,7 +203,7 @@ public class PhantomBot implements Listener {
         }
 
         if (panelpassword.isEmpty()) {
-            this.panelpassword = ytpassword;
+            this.panelpassword = "panel";
         } else {
             this.panelpassword = panelpassword;
         }
@@ -413,7 +411,7 @@ public class PhantomBot implements Listener {
             panelsocketserver.start();
             com.gmt2001.Console.out.println("PanelSocketServer accepting connections on port " + (baseport + 4));
 
-            NEWhttpserver = new NEWHTTPServer(baseport + 5, oauth, webauth, ytpassword, paneluser, panelpassword);
+            NEWhttpserver = new NEWHTTPServer(baseport + 5, oauth, webauth, paneluser, panelpassword);
             com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 5));
 
             // NEWhttpsServer = new NEWHTTPSServer(baseport + 1443, oauth, webauth);
@@ -754,10 +752,17 @@ public class PhantomBot implements Listener {
             changed = true;
         }
 
-        if (message.equals("ytpassword")) {
-            com.gmt2001.Console.out.print("Please enter a new YouTube Player password (requires restart): ");
-            String newytpassword = System.console().readLine().trim();
-            ytpassword = newytpassword;
+        if (message.equals("paneluser")) {
+            com.gmt2001.Console.out.print("Please enter a new Panel Username (requires a restart): ");
+            String newpaneluser = System.console().readLine().trim();
+            paneluser = newpaneluser;
+            changed = true;
+        }
+
+        if (message.equals("panelpassword")) {
+            com.gmt2001.Console.out.print("Please enter a new Panel Password (requires a restart): ");
+            String newpanelpassword = System.console().readLine().trim();
+            panelpassword = newpanelpassword;
             changed = true;
         }
 
@@ -825,7 +830,6 @@ public class PhantomBot implements Listener {
                 data += "youtubekey=" + youtubekey + "\r\n";
                 data += "webenable=" + webenable + "\r\n";
                 data += "musicenable=" + musicenable + "\r\n";
-                data += "ytpassword=" + ytpassword + "\r\n";
                 data += "ytauth=" + ytauth + "\r\n";
                 data += "usehttps=" + usehttps + "\r\n";
                 data += "keystorepath=" + keystorepath + "\r\n";
@@ -1015,7 +1019,6 @@ public class PhantomBot implements Listener {
         String user = "";
         String oauth = "";
         String webauth = "";
-        String ytpassword = "";
         String paneluser = "";
         String panelpassword = "";
         String ytauth = "";
@@ -1064,9 +1067,6 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("panelpassword=") && line.length() > 16) {
                         panelpassword = line.substring(14);
-                    }
-                    if (line.startsWith("ytpassword=") && line.length() > 12) {
-                        ytpassword = line.substring(11);
                     }
                     if (line.startsWith("ytauth=") && line.length() > 8) {
                         ytauth = line.substring(7);
@@ -1155,13 +1155,15 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("New webauth key has been generated for botlogin.txt");
             changed = true;
         }
-        if (ytpassword.isEmpty()) {
-            ytpassword = "Ph@ntomYT!";
-            com.gmt2001.Console.out.println("Set default ytpassword, please change in botlogin.txt and restart bot.");
+        if (paneluser.isEmpty()) {
+            com.gmt2001.Console.out.println("No Panel Username, using default value of 'panel' for Control Panel and YouTube Player");
+            paneluser = "panel";
             changed = true;
         }
         if (panelpassword.isEmpty()) {
-            com.gmt2001.Console.out.println("No Panel Password, using ytpassword.");
+            com.gmt2001.Console.out.println("No Panel Password, using default value of 'panel' for Control Panel and YouTube Player");
+            panelpassword = "panel";
+            changed = true;
         }
         if (ytauth.isEmpty()) {
             ytauth = generateWebAuth();
@@ -1184,8 +1186,11 @@ public class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join (not the link, just the name): ");
                 channel = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a YouTube Player password: ");
-                ytpassword = System.console().readLine().trim();
+                com.gmt2001.Console.out.print("Please enter a panel username to replace the default value: ");
+                paneluser = System.console().readLine().trim();
+
+                com.gmt2001.Console.out.print("Please enter a panel password to replace the default value: ");
+                panelpassword = System.console().readLine().trim();
 
                 changed = true;
             } catch (NullPointerException ex) {
@@ -1219,7 +1224,6 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("youtubekey='" + youtubekey + "'");
                     com.gmt2001.Console.out.println("webenable=" + webenable);
                     com.gmt2001.Console.out.println("musicenable=" + musicenable);
-                    com.gmt2001.Console.out.println("ytpassword=" + ytpassword);
                     com.gmt2001.Console.out.println("ytauth=" + ytauth);
                     com.gmt2001.Console.out.println("gamewispauth=" + gamewispauth);
                     com.gmt2001.Console.out.println("gamewisprefresh=" + gamewisprefresh);
@@ -1276,12 +1280,6 @@ public class PhantomBot implements Listener {
                 if (arg.toLowerCase().startsWith("panelpassword=") && arg.length() > 16) {
                     if (!panelpassword.equals(arg.substring(14))) {
                         panelpassword = arg.substring(14);
-                        changed = true;
-                    }
-                }
-                if (arg.toLowerCase().startsWith("ytpassword=") && arg.length() > 12) {
-                    if (!ytpassword.equals(arg.substring(11))) {
-                        ytpassword = arg.substring(11);
                         changed = true;
                     }
                 }
@@ -1433,7 +1431,7 @@ public class PhantomBot implements Listener {
                                                     + "       [datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>]\r\n"
                                                     + "       [datastoreconfig=<Optional DataStore config option, different for each DataStore type>]\r\n"
                                                     + "       [youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]\r\n"
-                                                    + "       [ytpassword=<ytplayer password>] [ytauth=<ytplayer ws auth>] [twitchalertskey=<twitch alerts key>]\r\n"
+                                                    + "       [ytauth=<ytplayer ws auth>] [twitchalertskey=<twitch alerts key>]\r\n"
                                                     + "       [twitchalertslimit=<limit>] [gamewispauth=<gamewisp oauth>] [gamewisprefresh=<gamewisp refresh key>]\r\n"
                                                     + "       [paneluser=<username>] [panelpassword=<password>]\r\n"
                                                    );
@@ -1470,7 +1468,6 @@ public class PhantomBot implements Listener {
             data += "youtubekey=" + youtubekey + "\r\n";
             data += "webenable=" + webenable + "\r\n";
             data += "musicenable=" + musicenable + "\r\n";
-            data += "ytpassword=" + ytpassword + "\r\n";
             data += "ytauth=" + ytauth + "\r\n";
             data += "gamewispauth=" + gamewispauth + "\r\n";
             data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
@@ -1489,7 +1486,7 @@ public class PhantomBot implements Listener {
 
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, groupChat, groupChatPort, msglimit30, datastore,
                                              datastoreconfig, youtubekey, webenable, musicenable, usehttps, keystorepath, keystorepassword, keypassword,
-                                             twitchalertskey, twitchalertslimit, webauth, ytpassword, ytauth, gamewispauth, gamewisprefresh, paneluser, panelpassword);
+                                             twitchalertskey, twitchalertslimit, webauth, ytauth, gamewispauth, gamewisprefresh, paneluser, panelpassword);
     }
 
     public void updateGameWispTokens(String[] newTokens) {
@@ -1511,7 +1508,6 @@ public class PhantomBot implements Listener {
         data += "youtubekey=" + youtubekey + "\r\n";
         data += "webenable=" + webenable + "\r\n";
         data += "musicenable=" + musicenable + "\r\n";
-        data += "ytpassword=" + ytpassword + "\r\n";
         data += "ytauth=" + ytauth + "\r\n";
         data += "gamewispauth=" + newTokens[0] + "\r\n";
         data += "gamewisprefresh=" + newTokens[1] + "\r\n";
