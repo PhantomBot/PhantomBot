@@ -127,10 +127,11 @@
          * @commandpath addquote [quote text] - Save a quote
          */
         if (command.equalsIgnoreCase('addquote')) {
-            if (!isModv3(sender, event.getTags()) && !$.isOnline($.channelName)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.offline'));
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.whisperPrefix(sender) + $.modMsg);
                 return;
             }
+            
             if (args.length < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage'));
                 return;
@@ -196,7 +197,7 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/quoteSystem.js')) {
-            $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 7);
+            $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
             $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
             $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
             $.registerChatCommand('./systems/quoteSystem.js', 'quote');
