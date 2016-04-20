@@ -191,7 +191,7 @@
             $.delGWSubUsersList(username);
             $.restoreSubscriberStatus(username, false);
         } else {
-            $.addGWSubUsersList(username, parseInt(jsonData['data'][0]['tier']['level']));
+            $.addGWSubUsersList(username, parseInt(jsonData['data'][0]['tier']['data']['level']));
             $.restoreSubscriberStatus(username, false);
         }
     }
