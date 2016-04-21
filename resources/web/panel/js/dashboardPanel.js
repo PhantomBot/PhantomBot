@@ -378,7 +378,7 @@
     function setMultiLink(tagId, tableKey) {
         var newValue = $(tagId).val();
         if (newValue.length > 0) {
-            sendDBUpdate("multiLinkInput", "dualStreamCommand", tableKey, newValue);
+            sendDBUpdate('multiLinkInput', 'dualStreamCommand', tableKey, '/' + newValue.replace(/\s+/g, '/'));
             $(tagId).val('')
             $(tagId).attr("placeholder", newValue).blur();
             setTimeout(function() { sendCommand("reloadmulti"); }, TIMEOUT_WAIT_TIME);

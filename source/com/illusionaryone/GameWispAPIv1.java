@@ -209,7 +209,7 @@ public class GameWispAPIv1 {
      * @return JSONObject
      */
     public JSONObject getUserSubInfoJSON(String username) {
-        return readJsonFromGETUrl(sAPIURL + "/pub/v1/channel/subscriber-for-channel?access_token=" + this.sAccessToken + "&type=twitch&user_name=" + username + "&include=anniversaries");
+        return readJsonFromGETUrl(sAPIURL + "/pub/v1/channel/subscriber-for-channel?access_token=" + this.sAccessToken + "&type=twitch&user_name=" + username + "&include=anniversaries,user,tier");
     }
 
     /*
