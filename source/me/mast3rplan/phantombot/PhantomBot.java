@@ -157,7 +157,7 @@ public class PhantomBot implements Listener {
     }
 
     public String botVersion() {
-        return "PhantomBot Core 2.0.7";
+        return "PhantomBot Core 2.0.7.1";
     }
 
     public String getBotInfo() {
