@@ -75,12 +75,11 @@
             donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
             donationSay = donationSay.replace('(currency)', donationCurrency);
             $.say(donationSay);
-
-            if ($.inidb.exists('points', donationUsername.toLowerCase())) {
-                $.inidb.incr('points', donationUsername.toLowerCase(), rewardPoints);
-            }
         }
 
+        if ($.inidb.exists('points', donationUsername.toLowerCase()) && rewardPoints > 0) {
+            $.inidb.incr('points', donationUsername.toLowerCase(), rewardPoints);
+        }
     });
 
     /**
@@ -157,9 +156,9 @@
             }
 
             /**
-             * @commandpath donations reward [n.n] - Set a reward for donations.
+             * @commandpath donations rewardmultiplier [n.n] - Set a reward multiplier for donations.
              */
-            if (args[0].equalsIgnoreCase('reward')) {
+            if (args[0].equalsIgnoreCase('rewardmultiplier')) {
                 if (!args[1]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.reward.usage'));
                     return;
@@ -177,7 +176,7 @@
             }
 
             /**
-             * @commandpath donations message [message text] - Set the message when no reward is given. Tags: (name), (amount), (points) (pointname) and (currency)
+             * @commandpath donations message [message text] - Set the donation message. Tags: (name), (amount), (points) (pointname) and (currency)
              * @commandpath donations lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
              */
             if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('lastmessage')) {
