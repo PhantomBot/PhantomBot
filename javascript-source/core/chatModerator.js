@@ -62,6 +62,7 @@
             Emotes: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutEmotes', false),
             Colors: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutColors', false),
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
+            Blacklist: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutBlacklist', false),
         },
 
         blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase'),
@@ -137,6 +138,7 @@
             Emotes: $.getIniDbBoolean('chatModerator', 'silentTimeoutEmotes'),
             Colors: $.getIniDbBoolean('chatModerator', 'silentTimeoutColors'),
             LongMsg: $.getIniDbBoolean('chatModerator', 'silentTimeoutLongMsg'),
+            Blacklist: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutBlacklist'),
         };
 
         blacklistMessage = $.getIniDbString('chatModerator', 'blacklistMessage');
@@ -263,7 +265,7 @@
             if (message.contains(blackList[i])) {
                 timeoutUser(sender, timeoutTime);
                 warning = $.lang.get('chatmoderator.timeout');
-                sendMessage(sender, blacklistMessage);
+                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
                 return true;
             }
         }
@@ -830,7 +832,7 @@
             }
 
             /**
-             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
+             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / blacklist] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
              */
             if (action.equalsIgnoreCase('silenttimeout')) {
                 if (!subAction) {
@@ -949,6 +951,22 @@
                         $.inidb.set('chatModerator', 'silentTimeoutLongMsg', silentTimeout.LongMsg);
                         $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.long.messages.false'));
                         $.logEvent('chatModerator.js', 1040, sender + ' disabled silent timeout for long messages');
+                    }
+                } else if (subAction.equalsIgnoreCase('blacklist')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.blacklist', getModerationFilterStatus(silentTimeout.Blacklist, true)));
+                        return;
+                    }
+                    if (args[2].equalsIgnoreCase('true')) {
+                        silentTimeout.Blacklist = true;
+                        $.inidb.set('chatModerator', 'silentTimeoutBlacklist', silentTimeout.Blacklist);
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.blacklist.messages.true'));
+                        $.logEvent('chatModerator.js', 1035, sender + ' enabled silent timeout for blacklist messages');
+                    } else if (args[2].equalsIgnoreCase('false')) {
+                        silentTimeout.Blacklist = false;
+                        $.inidb.set('chatModerator', 'silentTimeoutBlacklist', silentTimeout.Blacklist);
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.blacklist.messages.false'));
+                        $.logEvent('chatModerator.js', 1040, sender + ' disabled silent timeout for blacklist messages');
                     }
                 }
             }
@@ -1281,12 +1299,12 @@
                 return;
             }
 
-            if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.permit.usage'));
+            if (!linksToggle) {
                 return;
             }
 
-            if (!linksToggle) {
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.permit.usage'));
                 return;
             }
 
