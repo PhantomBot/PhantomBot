@@ -79,6 +79,7 @@ $.lang.register('chatmoderator.silenttimeout.toggle.spam', 'silent timeout is cu
 $.lang.register('chatmoderator.silenttimeout.toggle.emotes', 'silent timeout is currently $1 for emotes.');
 $.lang.register('chatmoderator.silenttimeout.toggle.colors', 'silent timeout is currently $1 for colors.');
 $.lang.register('chatmoderator.silenttimeout.toggle.long.message', 'silent timeout is currently $1 for long messages.');
+$.lang.register('chatmoderator.silenttimeout.toggle.blacklist', 'silent timeout is currently $1 for blacklist.');
 $.lang.register('chatmoderator.silenttimeout.links.true', 'silent timeout has been turned on for links.');
 $.lang.register('chatmoderator.silenttimeout.caps.true', 'silent timeout has been turned on for caps.');
 $.lang.register('chatmoderator.silenttimeout.symbols.true', 'silent timeout has been turned on for symbols.');
@@ -93,7 +94,9 @@ $.lang.register('chatmoderator.silenttimeout.spam.false', 'silent timeout has be
 $.lang.register('chatmoderator.silenttimeout.emotes.false', 'silent timeout has been turned off for emotes.');
 $.lang.register('chatmoderator.silenttimeout.colors.false', 'silent timeout has been turned off for colors.');
 $.lang.register('chatmoderator.silenttimeout.long.msg.false', 'silent timeout has been turned off for long messages.');
-$.lang.register('chatmoderator.silenttimeout.usage', 'Usage: !moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages] [true / false]');
+$.lang.register('chatmoderator.silenttimeout.blacklist.messages.false', 'silent timeout has been turned off for blacklist.');
+$.lang.register('chatmoderator.silenttimeout.blacklist.messages.true', 'silent timeout has been turned on for blacklist.');
+$.lang.register('chatmoderator.silenttimeout.usage', 'Usage: !moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / blacklist] [true / false]');
 $.lang.register('chatmoderator.link.message.usage', 'Usage: !moderation linksmessage [message]');
 $.lang.register('chatmoderator.link.message.set', 'link warning message set to: $1');
 $.lang.register('chatmoderator.caps.message.usage', 'Usage: !moderation capsmessage [message]');
