@@ -150,6 +150,8 @@ public class PanelSocketServer extends WebSocketServer {
             return;
         }
 
+        // com.gmt2001.Console.out.println("PanelSocketServer::onMessage(" + jsonString + ")");
+
         try {
             if (jsonObject.has("command")) {
                 dataString = jsonObject.getString("command");
@@ -200,7 +202,7 @@ public class PanelSocketServer extends WebSocketServer {
     public void dispose() {
         try {
             this.stop(2000);
-        } catch (IOException | InterruptedException ex) {
+        } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
@@ -215,19 +217,21 @@ public class PanelSocketServer extends WebSocketServer {
     }
 
     public void onWebsocketClosing(WebSocket ws, int code, String reason, boolean remote) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        com.gmt2001.Console.debug.println("PanelSocketServer::Closing WebSocket");
     }
 
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        com.gmt2001.Console.debug.println("PanelSocketServer::Closing WebSocket");
     }
 
     public InetSocketAddress getLocalSocketAddress(WebSocket conn) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        com.gmt2001.Console.debug.println("PanelSocketServer::Get Local Socket Address");
+        return null;
     }
 
     public InetSocketAddress getRemoteSocketAddress(WebSocket conn) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        com.gmt2001.Console.debug.println("PanelSocketServer::Get Remote Socket Address");
+        return null;
     }
 
     private void doVersion(String id) {

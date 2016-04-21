@@ -193,7 +193,7 @@
                             "    <td>" + viewerData[user].chat + "</td>" +
                             "    <td>" + viewerData[user].timeout + "</td>";
                     }
-                    if (panelStrcmp(viewerData[user].followed, 'true')) {
+                    if (panelStrcmp(viewerData[user].followed, 'true') === 0) {
                         htmlData[viewerData[user].group.toString()] +=
                             "    <td><i class=\"fa fa-heart\" /></td>";
                     } else {

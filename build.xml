@@ -73,6 +73,7 @@
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />
         </javac>
+        <echo>Compiling with Java Version ${ant.java.version}</echo>
     </target>
     
     <target depends="pre.compile" name="clean.build.test">

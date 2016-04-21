@@ -36,7 +36,7 @@
      */
     function onMessage(message) {
         var msgObject,
-            groupPointKeys = [ "Caster", "Administrator", "Moderators", "Subscriber", "Regular", "Viewer" ];
+            groupPointKeys = [ "Caster", "Administrator", "Moderator", "Subscriber", "Regular", "Viewer" ];
             timezone = "GMT"; // Default time zone in Core if none given.
 
         try {

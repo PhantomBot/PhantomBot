@@ -60,7 +60,7 @@
         $.say(msg);
 
        if ($.getIniDbBoolean('settings', 'hostHistory', false)) {
-           jsonObject = { 'host' : hoster, 'time' : now, 'viewers' : 0 }; // Add viewers as placeholder.
+           jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : 0 }; // Add viewers as placeholder.
            $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
        }
 
