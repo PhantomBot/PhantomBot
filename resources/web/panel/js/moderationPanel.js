@@ -61,6 +61,7 @@
         modSettingMap['silentTimeoutEmotes'] = "Silent Timeout on " + modSettingMap['emotesToggle'];
         modSettingMap['silentTimeoutColors'] = "Silent Timeout on " + modSettingMap['colorsToggle'];
         modSettingMap['silentTimeoutLongMsg'] = "Silent Timeout on " + modSettingMap['longMessageToggle'];
+        modSettingMap['silentTimeoutBlacklist'] = "Silent Timeout on Blacklist";
 
     /**
      * Not used at this time.
