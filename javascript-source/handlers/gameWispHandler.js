@@ -143,14 +143,14 @@
         if (!$.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
             return;
         }
-        var username = event.getUsername(),
+        var username = event.getUsername().toLowerCase(),
             resolvename = $.resolveRank(username),
             months = parseInt(event.getMonths()),
             tier = $.getGWTier(username),
             userreward = subReward + tierData['subbonuspoints'][tier];
 
         if (subShowMessages) {
-            $.inidb.incr('points', username, userreward);
+            $.inidb.incr('points', username, parseInt(userreward));
             $.say(reSubMessage.replace('(name)', resolvename).replace('(tier)', tier.toString()).replace('(reward)', userreward.toString()).replace('(months)', months.toString()));
         }
     });
@@ -163,24 +163,30 @@
         if (!$.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
             return;
         }
+$.consoleDebug('checkGameWispSub(' + username + ')');
 
         var jsonString = $.gamewisp.getUserSubInfoString(username)+'',
             jsonData = JSON.parse(jsonString);
 
+$.consoleDebug('checkGameWispSub(' + username + '): ' + jsonString);
+
         // If an error occurs in the API, pull back data from the database.
         if (jsonData['result']['status'] != 1) {
+$.consoleDebug('checkGameWispSub(' + username + '): status != 1');
             if ($.getIniDbBoolean('gamewispsubs', username, false)) {
                 $.addGWSubUsersList($.users[i][0], $.getIniDbNumber('gamewispsubs', username + '_tier', 1));
             }
             return;
         }
         if (jsonData['data'][0] == undefined) {
+$.consoleDebug('checkGameWispSub(' + username + '): data is undefined');
             if ($.getIniDbBoolean('gamewispsubs', username, false)) {
                 $.addGWSubUsersList($.users[i][0], $.getIniDbNumber('gamewispsubs', username + '_tier', 1));
             }
             return;
         }
         if (jsonData['data'][0]['status'] == undefined) {
+$.consoleDebug('checkGameWispSub(' + username + '): status is undefined');
             if ($.getIniDbBoolean('gamewispsubs', username, false)) {
                 $.addGWSubUsersList($.users[i][0], $.getIniDbNumber('gamewispsubs', username + '_tier', 1));
             }
@@ -188,11 +194,15 @@
         }
         
         if (jsonData['data'][0]['status'].equals('inactive')) {
+$.consoleDebug('checkGameWispSub(' + username + '): inactive account');
             $.delGWSubUsersList(username);
             $.restoreSubscriberStatus(username, false);
         } else {
+$.consoleDebug('checkGameWispSub(' + username + '): adding to sub users list');
             $.addGWSubUsersList(username, parseInt(jsonData['data'][0]['tier']['data']['level']));
+$.consoleDebug('checkGameWispSub(' + username + '): calling DB update; mods are ignored');
             $.restoreSubscriberStatus(username, false);
+$.consoleDebug('checkGameWispSub(' + username + '): handler complete');
         }
     }
 

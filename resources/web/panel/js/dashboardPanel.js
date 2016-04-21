@@ -200,7 +200,7 @@
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
-                var amount = sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
+                amount = msgObject['results'][gameTitle];
                 if (gameTitle === undefined || gameTitle === null || amount === null || amount === undefined || amount === 0) {
                     $("#deathCounterValue").html("0");
                 }
@@ -265,7 +265,7 @@
         }
         $('#deathCounterValue').html('<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />');
         sendCommand('deathctr ' + action);
-        sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
+        setTimeout(function() { sendDBQuery("dashboard_deathctr", "deaths", gameTitle); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
