@@ -76,7 +76,7 @@
         }
 
         /**
-         * @commandpath roulettetimeouttime [seconds] - Set the timeout time for the roulette command
+         * @commandpath roulettetimeouttime [seconds] - Sets for how long the user gets timed out for when loosing at roulette
          */
         if (command.equalsIgnoreCase('roulettetimeouttime')) {
             if (!$.isAdmin(sender)) {
