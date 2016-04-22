@@ -28,7 +28,7 @@
         emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 25),
 
         longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', true),
-        longMessageMessage = $.getSetIniDbBoolean('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message'),
+        longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message'),
         longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 300),
 
         colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
@@ -302,7 +302,7 @@
             message = event.getMessage().toLowerCase(),
             messageLength = message.length();
 
-        if (!$.isModv3(sender, event.getTags())) {
+        //if (!$.isModv3(sender, event.getTags())) {
             if (linksToggle && $.patternDetector.hasLinks(event)) {
                 if (checkYoutubePlayer(message) || checkPermitList(sender.toLowerCase()) || checkWhiteList(message)) {
                     return;
@@ -384,7 +384,7 @@
 
             if (message && checkBlackList(sender, message)) {
             }
-        }
+        //}
     });
 
     /**
