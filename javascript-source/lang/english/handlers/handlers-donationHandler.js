@@ -8,11 +8,11 @@ $.lang.register('donationhandler.donations.announce.disable', 'Donations will no
 $.lang.register('donationhandler.donations.announce.enable', 'Donations will be announced.');
 $.lang.register('donationhandler.donations.reward.usage', 'usage: !donations rewardmultiplier n.n  Set to 0 to disable');
 $.lang.register('donationhandler.donations.reward.success', 'The reward for donations has been set to $1 $2 per whole amount of currency donated.');
-$.lang.register('donationhandler.donations.message.usage', 'usage: !donations message [message...] Tags: (name) (amount) (currency)');
-$.lang.register('donationhandler.donations.rewardmessage.usage', 'usage: !donations rewardmessage [message...] Tags: (name) (amount) (currency) (points) (pointname)');
+$.lang.register('donationhandler.donations.message.usage', 'usage: !donations message [message...] Tags: (name) (amount) (currency) (message)');
+$.lang.register('donationhandler.donations.rewardmessage.usage', 'usage: !donations rewardmessage [message...] Tags: (name) (amount) (currency) (points) (pointname) (message)');
 $.lang.register('donationhandler.donations.lastmessage.usage', 'usage: !donations lastmessage [message...] Tags: (name) (amount) (currency)');
-$.lang.register('donationhandler.donations.message.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency)');
-$.lang.register('donationhandler.donations.rewardmessage.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (points) (pointname)');
+$.lang.register('donationhandler.donations.message.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (message)');
+$.lang.register('donationhandler.donations.rewardmessage.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (points) (pointname) (message)');
 $.lang.register('donationhandler.donations.lastmessage.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency)');
 $.lang.register('donationhandler.donations.message.success', 'Updated the message for donations when rewards are disabled.');
 $.lang.register('donationhandler.donations.rewardmessage.success', 'Updated the message for donations with rewards enabled.');

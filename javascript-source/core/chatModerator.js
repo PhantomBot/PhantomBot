@@ -304,7 +304,7 @@
 
         if (!$.isModv3(sender, event.getTags())) {
             if (linksToggle && $.patternDetector.hasLinks(event)) {
-                if (checkYoutubePlayer(message) || checkPermitList(sender) || checkWhiteList(message)) {
+                if (checkYoutubePlayer(message) || checkPermitList(sender.toLowerCase()) || checkWhiteList(message)) {
                     return;
                 }
 
@@ -1308,7 +1308,7 @@
                 return;
             }
 
-            permitUser(action);
+            permitUser(action.toLowerCase());
             $.say($.username.resolve(action) + $.lang.get('chatmoderator.permited', linkPermitTime));
             $.logEvent('chatModerator.js', 365, action + ' was permited by ' + sender);
             return;
