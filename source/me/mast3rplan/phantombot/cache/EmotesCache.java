@@ -246,7 +246,7 @@ public class EmotesCache implements Runnable {
 
         jsonResult = FrankerZAPIv1.instance().GetLocalEmotes(this.channel);
         if (checkJSONExceptions(jsonResult, true, "Local FrankerZ")) {
-            String currentSet = String.valueOf(jsonResult.getJSONObject("sets").getInt("set"));
+            String currentSet = String.valueOf(jsonResult.getJSONObject("room").getInt("set"));
             jsonArray = jsonResult.getJSONObject("sets").getJSONObject(currentSet).getJSONArray("emoticons");
             for (int i = 0; i < jsonArray.length(); i++) {
                 emote = jsonArray.getJSONObject(i).getString("name").replace("(", "\\(")

@@ -77,8 +77,8 @@
 
                 html = '<table><tr><th>Channel</th><th style="float: right">Date/Time</th></tr>';
 
-                for (idx = msgObject['results'].length - 1; idx >= 0; idx++) {
-                    var hostData = JSON.parse(msgObject[idx]['results']['value']);
+                for (idx = msgObject['results'].length - 1; idx >= 0; idx--) {
+                    var hostData = JSON.parse(msgObject['results'][idx]['value']);
                     html +='<tr style="textList">' +
                            '  <td>' + hostData['host'] + '</td>' +
                            '  <td style="float: right">' + $.format.date(parseInt(hostData['time']), "MM.dd.yy hh:mm:ss") + '</td>' +

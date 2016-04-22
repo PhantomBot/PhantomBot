@@ -75,7 +75,7 @@ public class MusicWebSocketServer extends WebSocketServer {
     public void dispose() {
         try {
             this.stop(2000);
-        } catch (IOException | InterruptedException ex) {
+        } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }

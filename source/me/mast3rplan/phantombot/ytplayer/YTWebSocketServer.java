@@ -235,7 +235,7 @@ public class YTWebSocketServer extends WebSocketServer {
     public void dispose() {
         try {
             this.stop(2000);
-        } catch (IOException | InterruptedException ex) {
+        } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
@@ -250,19 +250,17 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     public void onWebsocketClosing(WebSocket ws, int code, String reason, boolean remote) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public InetSocketAddress getLocalSocketAddress(WebSocket conn) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     public InetSocketAddress getRemoteSocketAddress(WebSocket conn) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     // Methods for the Bot JS player to call.

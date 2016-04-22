@@ -68,6 +68,11 @@ import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
+import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.ConnectionManager;
 import me.mast3rplan.phantombot.jerklib.Profile;
@@ -152,7 +157,7 @@ public class PhantomBot implements Listener {
     }
 
     public String botVersion() {
-        return "PhantomBot Core 2.0.7";
+        return "PhantomBot Core 2.0.7.1";
     }
 
     public String getBotInfo() {
@@ -688,6 +693,24 @@ public class PhantomBot implements Listener {
             return;
         }
 
+        if (message.equals("testhost")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testhost");
+            EventBus.instance().post(new TwitchHostedEvent(this.username, PhantomBot.instance().getChannel("#" + this.channel)));
+            return;
+        }
+
+        if (message.equals("testgwsub")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testgwsub");
+            EventBus.instance().post(new GameWispSubscribeEvent(this.username, 1));
+            return;
+        }
+
+        if (message.equals("testgwresub")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testgwresub");
+            EventBus.instance().post(new GameWispAnniversaryEvent(this.username, 2));
+            return;
+        }
+      
         if (message.equals("testsub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testsub");
             EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "twitchnotify", "testuser just subscribed!"));
