@@ -59,10 +59,12 @@
         msg = msg.replace('(reward)', hostReward.toString());
         $.say(msg);
 
-       if ($.getIniDbBoolean('settings', 'hostHistory', false)) {
-           jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : 0 }; // Add viewers as placeholder.
-           $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
-       }
+        $.inidb.incr('points', hoster.toLowerCase(), hostReward);
+
+        if ($.getIniDbBoolean('settings', 'hostHistory', false)) {
+            jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : 0 }; // Add viewers as placeholder.
+            $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
+        }
 
     });
 
@@ -104,6 +106,7 @@
             }
 
             $.inidb.set('settings', 'hostReward', commandArg);
+            hostReward = parseInt(commandArg);
             $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostreward.success', $.getPointsString(commandArg)));
             $.logEvent('hostHandler.js', 100, sender + ' changed the host reward to ' + commandArg);
         }
