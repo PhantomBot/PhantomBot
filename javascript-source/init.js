@@ -389,7 +389,9 @@
 
                     var hookIdx = getHookIndex(modules[index].scriptFile, 'initReady');
                     try {
-                        hooks[hookIdx].handler(null);
+                        if (hookIdx !== -1) {
+                            hooks[hookIdx].handler(null);
+                        }
                         $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
                     } catch (e) {
                         $.logError('init.js', 394, 'Unable to call initReady for enabled module (' + modules[index].scriptFile +'): ' + e);
