@@ -158,6 +158,19 @@
         $.inidb.set('updates', 'installedv2.0.7', 'true');
     }
 
+    if (!$.inidb.exists('updates', 'installedv2.0.7.2') || $.inidb.get('updates', 'installedv2.0.7.2') != 'true') {
+        $.consoleLn('Starting PhantomBot version 2.0.7.2 updates...');
+
+        if ($.inidb.exists('chatModerator', 'longMessageMessage')) {
+            if ($.inidb.get('chatModerator', 'longMessageMessage').equalsIgnoreCase('false')) {
+                $.inidb.del('chatModerator', 'longMessageMessage');
+            }
+        }
+
+        $.consoleLn('PhantomBot v2.0.7.2 updates completed!');
+        $.inidb.set('updates', 'installedv2.0.7.2', 'true');
+    }
+
     /**
      * @function getTableContents
      * @param {string} tableName
