@@ -584,20 +584,20 @@
 
             command = event.getCommand().toLowerCase();
             if (!$.commandExists(command)) {
-                consoleDebug('command: !' + command + ' does not exists.');
+                consoleDebug('[ERROR] Command: !' + command + ' does not exists.');
                 return;
             }
 
             if ($.inidb.exists('disabledCommands', command)) {
                 if ($.getIniDbBoolean('disabledCommands', command)) {
-                    consoleDebug('command: !' + command + ' was not sent because its disabled.');
+                    consoleDebug('[DISABLED COMMAND] Command: !' + command + ' was not sent because its disabled.');
                     return;
                 }
             }
             
             if (!$.isAdmin(sender)) {
                 if (parseInt($.coolDown.get(command, sender)) > 0) {
-                    consoleLn('[COOLDOWN] command: !' + command + ' was not sent because it is still on a cooldown.');
+                    consoleLn('[COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
                     return;
                 }
             }
@@ -607,7 +607,11 @@
                 if (permComCheck == 1) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command)));
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getSubCommandGroupName(command, subCommand)));
+                    if ($.subCommandExists(command, subCommand)) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getSubCommandGroupName(command, subCommand)));
+                    } else {
+                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command)));
+                    }
                 }
                 return;
             }
