@@ -8,9 +8,9 @@ $.lang.register('gamewisp.tierupmessage.success', 'Set GameWisp tier upgrade mes
 $.lang.register('gamewisp.togglemessage.usage', 'usage: !gamewisp togglemessage [on/off] (Currently: $1)');
 $.lang.register('gamewisp.togglemessage.success', 'Set GameWisp sub, resub and tier up message alerts to $1');
 $.lang.register('gamewisp.reward.usage', 'usage: !gamewisp reward [points] (Currently: $1)');
-$.lang.register('gamewisp.reward.usage.success', 'Set GameWisp sub reward to $1');
+$.lang.register('gamewisp.reward.success', 'Set GameWisp sub reward to $1');
 $.lang.register('gamewisp.resubreward.usage', 'usage: !gamewisp resubreward [points] (Currently: $1)');
-$.lang.register('gamewisp.resubreward.usage.success', 'Set GameWisp resub reward to $1');
+$.lang.register('gamewisp.resubreward.success', 'Set GameWisp resub reward to $1');
 $.lang.register('gamewisptier.usage', 'usage: !gamewisptier [ $1 ]');
 $.lang.register('gamewisptier.songrequests.usage', 'usage: !gamewisptier songrequests [tier] [number]');
 $.lang.register('gamewisptier.songrequests.usage.tier', 'usage: !gamewisptier songrequests [tier] [number] (Tier $1 is currently: $2)');
