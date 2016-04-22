@@ -222,6 +222,7 @@
                 return;
             }
             $.say('.subscribersoff');
+            $.logEvent('subscribehandler.js', 236, sender + ' disabled subscriber only mode');
         }
     });
 
