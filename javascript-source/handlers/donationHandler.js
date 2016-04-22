@@ -55,7 +55,7 @@
             donationCurrency = donationJson.getString("currency"),
             donationAmount = parseFloat(donationJson.getString("amount")),
             donationUsername = donationJson.getString("name"),
-            donationMessage = donationJson.getString("message");
+            donationMsg = donationJson.getString("message");
 
         if ($.inidb.exists('donations', donationID)) {
             return;
@@ -74,6 +74,7 @@
             donationSay = donationSay.replace('(points)', rewardPoints.toString());
             donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
             donationSay = donationSay.replace('(currency)', donationCurrency);
+            donationSay = donationSay.replace('(message)', donationMsg);
             $.say(donationSay);
         }
 
@@ -119,7 +120,7 @@
                 donationCurrency = donationJson.getString("currency"),
                 donationAmount = parseFloat(donationJson.getString("amount")),
                 donationUsername = donationJson.getString("name"),
-                donationMessage = donationJson.getString("message");
+                donationMsg = donationJson.getString("message");
 
             var donationSay = donationLastMsg;
             donationSay = donationSay.replace('(name)', donationUsername);
@@ -176,7 +177,7 @@
             }
 
             /**
-             * @commandpath donations message [message text] - Set the donation message. Tags: (name), (amount), (points) (pointname) and (currency)
+             * @commandpath donations message [message text] - Set the donation message. Tags: (name), (amount), (points), (pointname), (message) and (currency)
              * @commandpath donations lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
              */
             if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('lastmessage')) {
