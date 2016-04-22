@@ -222,7 +222,6 @@
                 return;
             }
             $.say('.subscribersoff');
-            $.logEvent('subscribehandler.js', 236, sender + ' disabled subscriber only mode');
         }
     });
 
@@ -232,31 +231,31 @@
     $.bind('ircPrivateMessage', function(event) {
         var sender = event.getSender(),
             message = event.getMessage(),
+            sub = message.substring(0, message.indexOf(' ', 1)).toString(),
             s,
-            r,
-            sub = message.substring(0, message.indexOf(' ', 1)).toString();
+            r;
 
         s = subMessage + '';
         r = reSubMessage + '';
 
         if (sender.equalsIgnoreCase('twitchnotify')) {
-            if (message.contains('just subscribed!') && subWelcomeToggle) {
+            if (subWelcomeToggle && message.contains('just subscribed!')) {
                 s = s.replace(/\(name\)/ig, sub);
                 s = s.replace(/\(reward\)/ig, subReward.toString());
                 $.say(s);
-
                 $.addSubUsersList(sub);
                 $.restoreSubscriberStatus(sub, true);
-
+                $.logEvent('subscribehandler.js', 248, sub + ' subscribed.');
                 return;
             }
 
-            if (message.contains('months in a row!') && message.contains('subscribed for') && reSubWelcomeToggle) {
+            if (reSubWelcomeToggle && message.contains('months in a row!') && message.contains('subscribed for')) {
                 var months = message.substring(message.indexOf('months') - 3, message.indexOf('months') - 1).toString();
                 r = r.replace(/\(name\)/ig, sub);
                 r = r.replace(/\(months\)/ig, months);
                 r = r.replace(/\(reward\)/ig, subReward.toString());
                 $.say(r);
+                $.logEvent('subscribehandler.js', 258, sub + ' re-subscribed for ' + months + ' months.');
             }
         }
     });
