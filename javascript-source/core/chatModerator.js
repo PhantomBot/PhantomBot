@@ -28,7 +28,7 @@
         emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 25),
 
         longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', true),
-        longMessageMessage = $.getSetIniDbBoolean('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message'),
+        longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message'),
         longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 300),
 
         colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
