@@ -302,7 +302,7 @@
             message = event.getMessage().toLowerCase(),
             messageLength = message.length();
 
-        //if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isModv3(sender, event.getTags())) {
             if (linksToggle && $.patternDetector.hasLinks(event)) {
                 if (checkYoutubePlayer(message) || checkPermitList(sender.toLowerCase()) || checkWhiteList(message)) {
                     return;
@@ -384,7 +384,7 @@
 
             if (message && checkBlackList(sender, message)) {
             }
-        //}
+        }
     });
 
     /**
