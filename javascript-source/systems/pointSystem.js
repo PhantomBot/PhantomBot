@@ -503,7 +503,7 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/pointSystem.js')) {
-            $.registerChatCommand('./systems/pointSystem.js', 'makeitrain', 2);
+            $.registerChatCommand('./systems/pointSystem.js', 'makeitrain', 1);
             $.registerChatCommand('./systems/pointSystem.js', 'points', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'point', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'gift', 7);
