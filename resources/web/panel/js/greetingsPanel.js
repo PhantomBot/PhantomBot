@@ -26,10 +26,10 @@
 (function() {
 
    var refreshIcon = '<i class="fa fa-refresh" />',
-       spinIcon = '<i style="color: magenta" class="fa fa-spinner fa-spin" />',
+       spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />',
        settingIcon = [];
-       settingIcon['false'] = '<i style="color: magenta" class="fa fa-circle-o" />';
-       settingIcon['true'] = '<i style="color: magenta" class="fa fa-circle" />';
+       settingIcon['false'] = '<i style="color: #6136b1" class="fa fa-circle-o" />';
+       settingIcon['true'] = '<i style="color: #6136b1" class="fa fa-circle" />';
 
     /*
      * onMessage

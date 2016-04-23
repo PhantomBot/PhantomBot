@@ -24,6 +24,8 @@
 <div id="noticesAccordion">
     <h3>Notice Configuration</h3>
     <div>
+    <div id="_noticeConfigPanelDisabled" />
+    <div id="_noticeConfigPanel">
         <table>
             <tr class="textList">
                 <td>Toggle Chat Notices</td>
@@ -51,40 +53,46 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="noticeInterval">Notice Interval (Minutes)</label>
+                <label for="noticeInterval">Timer Interval</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateNoticeInterval()">Submit</button>
-                <input type="number" min="2" class="form-control" id="noticeIntervalInput" placeholder="Minutes" />
+                        onclick="$.updateNoticeInterval('#noticeIntervalInput', 'interval')">Submit</button>
+                <input type="number" min="5" class="form-control" id="noticeIntervalInput" placeholder="Minutes" 
+                    data-toggle="tooltip" title="Set the interval (in minutes) of when a notice gets said in chat. Minimum is 5 minutes" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="noticeMsgReq">Notice Required Chat Messages</label>
+                <label for="noticeMsgReq">Required Messages</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateNoticeReq()">Submit</button>
-                <input type="number" min="1" class="form-control" id="noticeReqInput" placeholder="Number of Messages" />
+                        onclick="$.updateNoticeReq('#noticeReqInput', 'reqmessages')">Submit</button>
+                <input type="number" min="1" class="form-control" id="noticeReqInput" placeholder="Number of Messages"
+                    data-toggle="tooltip" title="Set the amount of messages required before a notice gets said in chat. Minimum is 1 message" />
             </div>
         </form>
+    </div>
     </div>
 
     <h3>Notices</h3>
     <div>
+    <div id="_noticesPanelDisabled" />
+    <div id="_noticesPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="addNotice">Add New Notice</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.addNotice()">Submit</button>
                 <input type="text" class="form-control" id="addNoticeInput" placeholder="New Notice"
-                       data-toggle="tooltip" title="Enter a notice or command:chat_command (command:!quote for example)" />
+                       data-toggle="tooltip" title="Enter a message, or you can use a command. command:Command_Name" />
             </div>
         </form>
 
         Current Notices
         <div id="noticeList" style="height: 200px; overflow: auto;" />
     </div>
+    </div>
 </div>
 
 <!-- Run the Acordion -->
-<script>$("#noticesAccordion").accordion( { clearStyle: true, heightStyle: "panel" } );</script>
+<script>$("#noticesAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
 <script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>

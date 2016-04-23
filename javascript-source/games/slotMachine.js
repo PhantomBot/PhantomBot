@@ -43,13 +43,14 @@
             message = $.lang.get('slotmachine.result.start', $.username.resolve(sender), emotes[e1], emotes[e2], emotes[e3]);
 
         if (e1 == e2 && e2 == e3) {
-            message += $.lang.get('slotmachine.result.win', parseInt($.getPointsString(prices[e1])));
+            message += $.lang.get('slotmachine.result.win', $.getPointsString(prices[e1]));
             $.inidb.incr('points', sender, prices[e1]);
             $.say(message + $.gameMessages.getWin(sender));
             return;
         }
+        
         if (e1 == e2 || e2 == e3 || e3 == e1) {
-            message += $.lang.get('slotmachine.result.win', parseInt($.getPointsString(prices[e1] / 3)));
+            message += $.lang.get('slotmachine.result.win', $.getPointsString(Math.floor(prices[Math.min(e1, e2, e3)] / 3)));
             $.inidb.incr('points', sender, Math.floor(prices[Math.min(e1, e2, e3)] / 3));
             $.say(message + $.gameMessages.getWin(sender));
             return;
@@ -87,5 +88,4 @@
     if ($.bot.isModuleEnabled('./games/slotMachine.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
         $.logError('slotMachine.js', 88, "Disabled. ./systems/pointSystem.js is not enabled.");
     }
-
 })();

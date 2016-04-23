@@ -61,6 +61,7 @@
         modSettingMap['silentTimeoutEmotes'] = "Silent Timeout on " + modSettingMap['emotesToggle'];
         modSettingMap['silentTimeoutColors'] = "Silent Timeout on " + modSettingMap['colorsToggle'];
         modSettingMap['silentTimeoutLongMsg'] = "Silent Timeout on " + modSettingMap['longMessageToggle'];
+        modSettingMap['silentTimeoutBlacklist'] = "Silent Timeout on Blacklist";
 
     /**
      * Not used at this time.
@@ -189,7 +190,7 @@
 
                                 "<td style=\"width: 25px\">" +
                                 "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: magenta\">" + modSettingIcon[modValue] + "</font></strong>" +
+                                "        <strong><font style=\"color: #6136b1\">" + modSettingIcon[modValue] + "</font></strong>" +
                                 "    </div>" +
                                 "</td>" +
 
@@ -221,7 +222,7 @@
 
                                 "<td style=\"width: 25px\">" +
                                 "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: magenta\">" + modSettingIcon[modValue] + "</font></strong>" +
+                                "        <strong><font style=\"color: #6136b1\">" + modSettingIcon[modValue] + "</font></strong>" +
                                 "    </div>" +
                                 "</td>" +
 
@@ -253,7 +254,7 @@
     
                                 "<td style=\"width: 25px\">" +
                                 "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: magenta\">" + modSettingIcon[modValue] + "</font></strong>" +
+                                "        <strong><font style=\"color: #6136b1\">" + modSettingIcon[modValue] + "</font></strong>" +
                                 "    </div>" +
                                 "</td>" +
 
@@ -285,7 +286,7 @@
 
                                 "<td style=\"width: 25px\">" +
                                 "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: magenta\">" + modSettingIcon[modValue] + "</font></strong>" +
+                                "        <strong><font style=\"color: #6136b1\">" + modSettingIcon[modValue] + "</font></strong>" +
                                 "    </div>" +
                                 "</td>" +
 
@@ -354,7 +355,7 @@
      * @param {String} key
      */
     function deleteBlacklist(key) {
-        $("#delete_blackList_" + key).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#delete_blackList_" + key).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delblacklist_" + key, "blackList", key);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
@@ -365,7 +366,7 @@
      * @param {String} key
      */
     function deleteWhitelist(key) {
-        $("#delete_whiteList_" + key.replace(".", "_")).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#delete_whiteList_" + key.replace(".", "_")).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delwhitelist_" + key, "whiteList", key);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
@@ -497,10 +498,10 @@
      * @param {String} newValue
      */
     function updateModSetting(tableKey, newValue) {
-        $("#modSetting_" + tableKey).html("<i style=\"color: magenta\" class=\"fa fa-spinner fa-spin\" />");
+        $("#modSetting_" + tableKey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
         setTimeout(function() {
-            $("#modSetting_" + tableKey).html("<strong><font style=\"color: magenta\">" + modSettingIcon[newValue] + "</font></strong>");
+            $("#modSetting_" + tableKey).html("<strong><font style=\"color: #6136b1\">" + modSettingIcon[newValue] + "</font></strong>");
         }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }

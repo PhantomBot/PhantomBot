@@ -79,7 +79,7 @@
 
         if (value.length > 0) {
             $('#adventureStartInput').val('');
-            sendCommand('adventure ' + value);
+            sendCommand('adventure ' + value, getChannelName());
         }
     }
 

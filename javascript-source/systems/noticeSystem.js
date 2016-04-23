@@ -58,6 +58,16 @@
     };
 
     /**
+     * @function reloadNoticeSettings
+     */
+    function reloadNoticeSettings() {
+        noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages');
+        noticeInterval = $.getIniDbNumber('noticeSettings', 'interval');
+        noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle');
+        noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOffline');
+    };
+
+    /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function() {
@@ -243,13 +253,20 @@
                 }
             }
         }
+
+        if (command.equalsIgnoreCase('reloadnotice')) {
+            if (!$.isAdmin(sender)) {
+                return;
+            }
+            reloadNoticeSettings();
+        }
     });
 
     // Set the interval to announce
     setInterval(function() {
         if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
             if (messageCount >= noticeReqMessages) {
-                if (noticeOffline && $.isOnline($.channelName)) {
+                if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
                     sendNotice();
                     messageCount = 0;
                 }
@@ -263,6 +280,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/noticeSystem.js')) {
             $.registerChatCommand('./systems/noticeSystem.js', 'notice', 1);
+            $.registerChatCommand('./systems/noticeSystem.js', 'reloadnotice');
         }
     });
 })();

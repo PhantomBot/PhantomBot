@@ -11,4 +11,4 @@ $.lang.register('auctionsystem.bid.usage', 'Usage: !bid (amount)');
 $.lang.register('auctionsystem.err.bid.minimum', 'You can not bid under $1!');
 $.lang.register('auctionsystem.err.points', 'You don\'t have that many $1 to auction.');
 $.lang.register('auctionsystem.err.increments', 'This auction is in increments of $1!');
-$.lang.register('auctionsystem.bid', '$1 just bid $1! Do we have $3?');
+$.lang.register('auctionsystem.bid', '$1 just bid $2! Do we have $3?');

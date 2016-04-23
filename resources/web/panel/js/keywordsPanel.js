@@ -25,7 +25,7 @@
 
 (function() {
 
-    var spinIcon = '<i style="color: magenta" class="fa fa-spinner fa-spin" />',
+    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />',
         keywordMap = [];
 
     /**

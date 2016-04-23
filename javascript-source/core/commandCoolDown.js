@@ -22,12 +22,12 @@
         time = (time * 1000) + $.systemTime();
 
         if (!command.equalsIgnoreCase('adventure')) {
-            if (globalCooldown) {
+            if (globalCooldown && !$.inidb.exists('cooldown', command)) {
                 cooldown.push({
                     command: command,
                     time: time,
                 });
-                $.consoleDebug('pushed command !' + command + ' to global cooldown.');
+                $.consoleDebug('Pushed command !' + command + ' to global cooldown.');
                 return;
             }
     
@@ -37,7 +37,7 @@
                     time: time,
                     user: user,
                 });
-                $.consoleDebug('pushed command !' + command + ' to user cooldown.');
+                $.consoleDebug('Pushed command !' + command + ' to user cooldown.');
                 return;
             }
         }
@@ -47,7 +47,7 @@
                 command: command,
                 time: time,
             });
-            $.consoleDebug('pushed command !' + command + ' to cooldown.');
+            $.consoleDebug('Pushed command !' + command + ' to cooldown.');
         }
     };
 
@@ -55,7 +55,7 @@
         var cool,
             i;
 
-        if (globalCooldown) {
+        if (globalCooldown && !$.inidb.exists('cooldown', command)) {
             for (i in cooldown) {
                 if (cooldown[i].command.equalsIgnoreCase(command)) {
                     cool = cooldown[i].time - $.systemTime();
@@ -73,7 +73,7 @@
             return;
         }
 
-        if (perUserCooldown) {
+        if (perUserCooldown && $.inidb.exists('cooldown', command)) {
             for (i in cooldown) {
                 if (cooldown[i].command.equalsIgnoreCase(command) && cooldown[i].user.equalsIgnoreCase(user)) {
                     cool = cooldown[i].time - $.systemTime();

@@ -856,9 +856,20 @@
             volume = $.inidb.exists('ytSettings', 'volume') ? parseInt($.inidb.get('ytSettings', 'volume')) : 5;
             connectedPlayerClient.setVolume(volume);
             if (currentPlaylist) {
-                currentPlaylist.nextVideo();
+                if (announceInChat && state == playerStateEnum.NEWPAUSE) {
+                    announceInChat = false; 
+                    currentPlaylist.nextVideo();
+                    announceInChat = true;
+                } else {
+                    currentPlaylist.nextVideo();
+                }
+               
                 if (state == playerStateEnum.NEWPAUSE) {
                     connectedPlayerClient.togglePause();
+                } else {
+                    if (songRequestsEnabled) {
+                        $.say($.lang.get('ytplayer.songrequests.enabled'));
+                    }
                 }
             }
         }
@@ -877,9 +888,6 @@
         connectedPlayerClient = new PlayerClientInterface();
 
         $.consoleLn($.lang.get('ytplayer.console.client.connected'));
-        if (songRequestsEnabled) {
-            $.say($.lang.get('ytplayer.songrequests.enabled'));
-        }
         connectedPlayerClient.pushPlayList();
         $.youtubePlayerConnected = true;
     });

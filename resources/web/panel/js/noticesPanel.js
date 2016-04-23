@@ -26,12 +26,12 @@
 (function() {
 
    var refreshIcon = '<i class="fa fa-refresh" />',
-       spinIcon = '<i style=\"color: magenta\" class="fa fa-spinner fa-spin" />',
+       spinIcon = '<i style=\"color: #6136b1\" class="fa fa-spinner fa-spin" />',
        modeIcon = [],
        settingIcon = [];
 
-       modeIcon['false'] = "<i style=\"color: magenta\" class=\"fa fa-circle-o\" />";
-       modeIcon['true'] = "<i style=\"color: magenta\" class=\"fa fa-circle\" />";
+       modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
+       modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
 
        settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
        settingIcon['true'] = "<i class=\"fa fa-circle\" />";
@@ -85,7 +85,7 @@
                             '    </td>' +
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input type="text" id="inlineNoticeEdit_' + id + '"' +
+                            '            <input style="width: 90%" type="text" id="inlineNoticeEdit_' + id + '"' +
                             '                   value="' + msgObject['results'][idx]['value'] + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                   onclick="$.updateNotice(\'' + id + '\')"><i class="fa fa-pencil" />' +
@@ -129,24 +129,26 @@
     /**
      * @function updateNoticeInterval
      */
-    function updateNoticeInterval() {
-        var value = $('#noticeIntervalInput').val();
-        if (value.length > 0) {
-            sendCommand('notice interval ' + value);
-            $('#noticeIntervalInput').attr('placeholder', value).blur();
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function updateNoticeInterval(tagId, tableKey) {
+        var newValue = $(tagId).val();
+        if (parseInt(newValue) >= 5 && newValue.length > 0) {
+            sendDBUpdate("noticeIntervalInput", "noticeSettings", tableKey, newValue);
+            $(tagId).val('')
+            $(tagId).attr("placeholder", newValue).blur();
+            setTimeout(function() { sendCommand("reloadnotice"); }, TIMEOUT_WAIT_TIME);
         }
     }
 
     /**
      * @function updateNoticeReq
      */
-    function updateNoticeReq() {
-        var value = $('#noticeReqInput').val();
-        if (value.length > 0) {
-            sendCommand('notice req ' + value);
-            $('#noticeReqInput').attr('placeholder', value).blur();
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function updateNoticeReq(tagId, tableKey) {
+        var newValue = $(tagId).val();
+        if (parseInt(newValue) >= 1 && newValue.length > 0) {
+            sendDBUpdate("noticeReqInput", "noticeSettings", tableKey, newValue);
+            $(tagId).val('')
+            $(tagId).attr("placeholder", newValue).blur();
+            setTimeout(function() { sendCommand("reloadnotice"); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -157,7 +159,7 @@
         var value = $('#addNoticeInput').val();
         if (value.length > 0) {
             sendCommand('notice add ' + value);
-            $('#addNoticeInput').attr('placeholder', 'Updating...').blur();
+            $('#addNoticeInput').val('');
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);    
         }
     }
@@ -168,7 +170,7 @@
      */
     function deleteNotice(id) {
         sendCommand('notice remove ' + id);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
