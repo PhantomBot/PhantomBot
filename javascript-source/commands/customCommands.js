@@ -378,7 +378,7 @@
 
             $.inidb.del('command', action);
             $.inidb.del('permcom', action);
-            $.unregisterChatCommand('./commands/customCommands.js', action);
+            $.unregisterChatCommand(action);
             $.logEvent('./commands/customCommands.js', 28, sender + ' deleted the command !' + action);
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delete.success', action));
         }
