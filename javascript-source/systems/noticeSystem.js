@@ -266,7 +266,7 @@
     setInterval(function() {
         if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
             if (messageCount >= noticeReqMessages) {
-                if (noticeOffline && $.isOnline($.channelName)) {
+                if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
                     sendNotice();
                     messageCount = 0;
                 }
