@@ -94,7 +94,7 @@
      * @export $
      * @param {string} command
      */
-    function unregisterChatCommand(script, command) {
+    function unregisterChatCommand(command) {
         if (commandExists(command)) {
             delete commands[command];
             delete commandScriptTable[command];
