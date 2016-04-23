@@ -36,6 +36,7 @@
     function openRaffle(maxEntries, followers, cost, a) {
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
         raffleStatus = true;
+        entries = [];
     };
 
     function closeRaffle(user) {
@@ -52,7 +53,6 @@
 
         $.say($.lang.get('ticketrafflesystem.raffle.closed'));
         winner();
-        entries = [];
     };
 
     function winner(force) {
@@ -66,9 +66,9 @@
             return;
         }
 
-        winner = $.randElement(entries);
-        $.inidb.set('traffleresults', 'winner', $.username.resolve(winner));
-        $.say($.lang.get('ticketrafflesystem.winner', $.username.resolve(winner)));
+        var Winner = $.randElement(entries);
+        $.inidb.set('traffleresults', 'winner', $.username.resolve(Winner));
+        $.say($.lang.get('ticketrafflesystem.winner', $.username.resolve(Winner)));
     };
 
     function enterRaffle(user, times) {
@@ -77,7 +77,7 @@
             return;
         }
 
-        if (times > maxEntries) {
+        if (times > maxEntries || times == 0) {
             $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only, buy.amount', maxEntries));
             return;
         }
@@ -85,7 +85,7 @@
         for (var i = 0, t = 0; i < entries.length; i++) {
             if (entries[i].equalsIgnoreCase(user)) {
                 t++;
-                if (t >= maxEntries) {
+                if ((t + times) > maxEntries) {
                     $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.litmi.hit', maxEntries));
                     return;
                 }
@@ -100,7 +100,7 @@
         }
 
         if (cost > 0) {
-            if (cost > $.getUserPoints(user)) {
+            if ((times * cost) > $.getUserPoints(user)) {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.points', $.pointNameMultiple));
                 return;
             }
