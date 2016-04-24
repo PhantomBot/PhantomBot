@@ -14,7 +14,7 @@
     var lastFollowTime = 0,
         followTrain = 0,
         announceFollows = false,
-        followReward = $.getSetIniDbNumber('settings', 'followReward', 100),
+        followReward = $.getSetIniDbNumber('settings', 'followReward', 0),
         followMessage = $.getSetIniDbString('settings', 'followMessage', $.lang.get('followhandler.follow.message')),
         followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false);
 
