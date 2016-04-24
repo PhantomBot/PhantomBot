@@ -32,14 +32,18 @@
         }
 
         /**
-         * @commandpath game [game title] - Announce Twitch game title or set the game title.
+         * @commandpath game [game title] - Announce Twitch game title, and play time or set the game title.
          */
         if (command.equalsIgnoreCase('game')) {
             if (args.length == 0) {
-                $.say('Current Game: ' + $.getGame($.channelName));
+                if (!$.isOnline($.channelName)) {
+                    $.say('Current Game: ' + $.getGame($.channelName));
+                } else {
+                    $.say('Current Game: ' + $.getGame($.channelName) + ', Playtime: ' + $.getPlayTime());
+                }
             } else {
                 if (!$.isAdmin(sender)) {
-                    $.say($.whisperPrefix(sender) + $.casterMsg);
+                    $.say($.whisperPrefix(sender) + $.adminMsg);
                     return;
                 }
 
@@ -55,15 +59,29 @@
                 $.say('Current Status: ' + $.getStatus($.channelName));
             } else {
                 if (!$.isAdmin(sender)) {
-                    $.say($.whisperPrefix(sender) + $.casterMsg);
+                    $.say($.whisperPrefix(sender) + $.adminMsg);
                     return;
                 }
 
                 $.updateStatus($.channelName, argsString, sender);
             }
         }
+
+        /**
+         * @commandpath playtime - Tell's you how long the streamer has been playing that game for, in the current stream
+         */
+        if (command.equalsIgnoreCase('playtime')) {
+            if (!$.isOnline($.channelName)) {
+                $.say($.whisperPrefix(sender) + $.channelName + ' is currently offline.');
+                return;
+            }
+            $.say('@' + $.username.resolve(sender) + ', ' + $.username.resolve($.channelName) + ' has been playing ' + $.getGame($.channelName) + ' for ' + $.getPlayTime() + '!');
+        }
     });
 
+
+    /** NEED TO LANG THIS SCRIPT **/
+    
     /**
      * @event initReady
      */
@@ -73,6 +91,7 @@
             $.registerChatCommand('./commands/streamCommand.js', 'viewers');
             $.registerChatCommand('./commands/streamCommand.js', 'game');
             $.registerChatCommand('./commands/streamCommand.js', 'title');
+            $.registerChatCommand('./commands/streamCommand.js', 'playtime');
         }
     });
 })();
