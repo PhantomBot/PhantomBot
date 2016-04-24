@@ -4,7 +4,10 @@
  */
 
 (function() {
-    var alreadyStarted = false;
+    var alreadyStarted = false,
+        currentGame = null,
+        lastGame = null,
+        playTime = null;
 
     /**
      * @function updateViewerCount()
@@ -58,10 +61,40 @@
     };
 
     /**
+     * @function updatePlayTime()
+     */
+    function updatePlayTime() { //This is not for the panel, but the info I need to not abuse the api, is in this module.
+        if ($.inidb.get('streamInfo', 'streamOnline').equalsIgnoreCase('false')) {
+            playTime = null;
+            currentGame = null;
+            return;
+        }
+
+        currentGame = $.getGame($.channelName);
+
+        if (currentGame != null && lastGame != currentGame) {
+            lastGame = currentGame;
+            playTime = $.systemTime();
+        }
+    };
+
+    /**
+     * @function getPlayTime()
+     */
+    function getPlayTime() { //This is not for the panel, but the info I need to not abuse the api, is in this module.
+        if (playTime != null) {
+            var time = $.systemTime() - playTime;
+            return $.getTimeString(time / 1000);
+        } else {
+            return '0 seconds'; //Put this here, but it should never happen.
+        }
+    };
+
+    /**
      * @function getTitlePanel()
      */
     function getGamePanel() {
-        $.inidb.set('streamInfo', 'game', $.getGame($.channelName));
+        $.inidb.set('streamInfo', 'game', currentGame);
     };
 
     /**
@@ -71,6 +104,7 @@
         updateViewerCount();
         updateStreamOnline();
         updateStreamUptime();
+        updatePlayTime();
         getTitlePanel();
         getGamePanel();
     };
@@ -88,8 +122,6 @@
                 alreadyStarted = true;
                 $.inidb.set('panelstats', 'enabled', 'true');
                 updateAll();
-                getTitlePanel();
-                getGamePanel();
         
                 setInterval(function() {
                     updateAll();
@@ -103,9 +135,9 @@
     /**
      * Export functions to API
      */
+    $.getPlayTime = getPlayTime;
     $.panelDB = {
         updateChatLinesDB: updateChatLinesDB,
         updateModLinesDB: updateModLinesDB,
     };
-
 })();
