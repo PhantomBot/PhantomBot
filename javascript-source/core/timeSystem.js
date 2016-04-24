@@ -281,8 +281,8 @@
                         return;
                     }
 
-                    $.inidb.set('settings', 'timePromoteHours', args[1]);
-                    hoursForLevelUp = parseInt($.inidb.get('settings', 'timePromoteHours'));
+                    $.inidb.set('timeSettings', 'timePromoteHours', subject);
+                    hoursForLevelUp = parseInt($.inidb.get('timeSettings', 'timePromoteHours'));
 
                     $.say($.whisperPrefix(sender) + $.lang.get("timesystem.set.promotehours.success",
                         $.getGroupNameById(regularsGroupId).toLowerCase(), hoursForLevelUp));
