@@ -179,136 +179,166 @@
                 /**
                  * Build the Toggle Table for all of the moderation options.
                  */
-                html = "<table>";
                 for (idx in msgObject['results']) {
                     modSetting = msgObject['results'][idx]['key'];
                     modValue = msgObject['results'][idx]['value'];
 
-                    if ((modSetting.indexOf('subscribers') !== 0 || modSetting.indexOf('regulars')) !== 0 && modSetting.indexOf('Toggle') !== -1) {
-                        html += "<tr class=\"textList\">" +
-                                "<td>" + modSettingMap[modSetting] + "</td>" +
+                    if (panelMatch(modSetting, 'linksToggle')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleModerationLinks').attr('checked', 'checked');
+                        }
+                    }
 
-                                "<td style=\"width: 25px\">" +
-                                "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: #6136b1\">" + modSettingIcon[modValue] + "</font></strong>" +
-                                "    </div>" +
-                                "</td>" +
+                    if (panelMatch(modSetting, 'capsToggle')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleModerationCaps').attr('checked', 'checked');
+                        }
+                    }
 
-                                "<td style=\"width: 25px\">" +
-                                "    <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
-                                "         onclick=\"$.updateModSetting('" + modSetting + "', 'true');\">" + modSettingIcon['true'] + 
-                                "    </div>" +
-                                "</td>" +
+                    if (panelMatch(modSetting, 'symbolsToggle')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleModerationSymbols').attr('checked', 'checked');
+                        }
+                    }
 
-                                "<td style=\"width: 25px\">" +
-                                "    <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
-                                "         onclick=\"$.updateModSetting('" + modSetting + "', 'false');\">" + modSettingIcon['false'] + 
-                                "    </div>" +
-                                "</td>" +
+                    if (panelMatch(modSetting, 'spamToggle')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleModerationSpam').attr('checked', 'checked');
+                        }
+                    }
 
-                                "</tr>";
+                    if (panelMatch(modSetting, 'emotesToggle')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleModerationEmotes').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'colorsToggle')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleModerationColors').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'longMessageToggle')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleModerationLongMsg').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'regularsModerateLinks')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularLinks').attr('checked', 'checked');
+                        }
+                    }
+                
+                    if (panelMatch(modSetting, 'regularsModerateCaps')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularCaps').attr('checked', 'checked');
+                        }
+                    }
+                
+                    if (panelMatch(modSetting, 'regularsModerateSymbols')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularSymbols').attr('checked', 'checked');
+                        }
+                    }
+                    
+                    if (panelMatch(modSetting, 'regularsModerateSpam')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularSpam').attr('checked', 'checked');
+                        }
+                    }
+                    
+                    if (panelMatch(modSetting, 'regularsModerateColors')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularColors').attr('checked', 'checked');
+                        }
+                    }
+                    
+                    if (panelMatch(modSetting, 'regularsModerateLongMsg')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularLongMsg').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'subscribersModerateLinks')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberLinks').attr('checked', 'checked');
+                        }
+                    }
+                
+                    if (panelMatch(modSetting, 'subscribersModerateCaps')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberCaps').attr('checked', 'checked');
+                        }
+                    }
+                
+                    if (panelMatch(modSetting, 'subscribersModerateSymbols')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberSymbols').attr('checked', 'checked');
+                        }
+                    }
+                    
+                    if (panelMatch(modSetting, 'subscribersModerateSpam')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberSpam').attr('checked', 'checked');
+                        }
+                    }
+                    
+                    if (panelMatch(modSetting, 'subscribersModerateColors')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberColors').attr('checked', 'checked');
+                        }
+                    }
+                    
+                    if (panelMatch(modSetting, 'subscribersModerateLongMsg')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberLongMsg').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutLinks')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutLinks').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutCaps')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutCaps').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutSymbols')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutSymbols').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutSpam')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutSpam').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutColors')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutColors').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutLongMsg')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutLongMsg').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutBlacklist')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutBlackList').attr('checked', 'checked');
+                        }
                     }
                 }
-                $("#viewerModSettings").html(html);
-
-                html = "<table>";
-                for (idx in msgObject['results']) {
-                    modSetting = msgObject['results'][idx]['key'];
-                    modValue = msgObject['results'][idx]['value'];
-
-                    if (modSetting.indexOf('regularsModerate') === 0) {
-                        html += "<tr class=\"textList\">" +
-                                "<td>" + modSettingMap[modSetting] + "</td>" +
-
-                                "<td style=\"width: 25px\">" +
-                                "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: #6136b1\">" + modSettingIcon[modValue] + "</font></strong>" +
-                                "    </div>" +
-                                "</td>" +
-
-                                "<td style=\"width: 25px\">" +
-                                "    <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
-                                "         onclick=\"$.updateModSetting('" + modSetting + "', 'true');\">" + modSettingIcon['true'] +
-                                "    </div>" +
-                                "</td>" +
-
-                                "<td style=\"width: 25px\">" +
-                                "    <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\" " +
-                                "         onclick=\"$.updateModSetting('" + modSetting + "', 'false');\">" + modSettingIcon['false'] +
-                                "    </div>" +
-                                "</td>" +
-
-                                "</tr>";
-                    }
-                }
-                $("#regularsModSettings").html(html);
-
-                html = "<table>";
-                for (idx in msgObject['results']) {
-                    modSetting = msgObject['results'][idx]['key'];
-                    modValue = msgObject['results'][idx]['value'];
-
-                    if (modSetting.indexOf('subscribersModerate') === 0) {
-                        html += "<tr class=\"textList\">" +
-                                "<td>" + modSettingMap[modSetting] + "</td>" +
-    
-                                "<td style=\"width: 25px\">" +
-                                "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: #6136b1\">" + modSettingIcon[modValue] + "</font></strong>" +
-                                "    </div>" +
-                                "</td>" +
-
-                                "<td style=\"width: 25px\">" +
-                                "    <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
-                                "         onclick=\"$.updateModSetting('" + modSetting + "', 'true');\">" + modSettingIcon['true'] +
-                                "    </div>" +
-                                "</td>" +
-    
-                                "<td style=\"width: 25px\">" +
-                                "    <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
-                                "         onclick=\"$.updateModSetting('" + modSetting + "', 'false');\">" + modSettingIcon['false'] +
-                                "    </div>" +
-                                "</td>" +
-    
-                                "</tr>";
-                    }
-                }
-                $("#subscribersModSettings").html(html);
-
-                html = "<table>";
-                for (idx in msgObject['results']) {
-                    modSetting = msgObject['results'][idx]['key'];
-                    modValue = msgObject['results'][idx]['value'];
-
-                    if (modSetting.indexOf('silentTimeout') === 0) {
-                        html += "<tr class=\"textList\">" +
-                                "<td>" + modSettingMap[modSetting] + "</td>" +
-
-                                "<td style=\"width: 25px\">" +
-                                "    <div id=\"modSetting_" + modSetting + "\">" +
-                                "        <strong><font style=\"color: #6136b1\">" + modSettingIcon[modValue] + "</font></strong>" +
-                                "    </div>" +
-                                "</td>" +
-
-                                "<td style=\"width: 25px\">" +
-                                "    <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
-                                "         onclick=\"$.updateModSetting('" + modSetting + "', 'true');\">" + modSettingIcon['true'] +
-                                "    </div>" +
-                                "</td>" +
-
-                                "<td style=\"width: 25px\">" +
-                                "    <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
-                                "         onclick=\"$.updateModSetting('" + modSetting + "', 'false');\">" + modSettingIcon['false'] +
-                                "    </div>" +
-                                "</td>" +
-
-                                "</tr>";
-                    }
-                }
-
-                html += "</table>";
-                $("#silentModSettings").html(html);
-                $('[data-toggle="tooltip"]').tooltip();
             }
         }
     }
@@ -521,6 +551,67 @@
         }
     }
 
+    /**
+     * @function toggleRegular()
+     * @param {String} val
+     */
+    function toggleRegular(val) {
+        var value = $('#toggleRegular' + val).attr('checked', 'checked');
+
+        if ($('#toggleRegular' + val).is(':checked') === true) {
+            sendDBUpdate("moderation_chatmod", "chatModerator", "regularsModerate" + val, 'false');
+        } else {
+            sendDBUpdate("moderation_chatmod", "chatModerator", "regularsModerate" + val, 'true');
+        }
+        setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /**
+     * @function toggleSubscriber()
+     * @param {String} val
+     */
+    function toggleSubscriber(val) {
+        var value = $('#toggleSubscriber' + val).attr('checked', 'checked');
+
+        if ($('#toggleSubscriber' + val).is(':checked') === true) {
+            sendDBUpdate("moderation_chatmod", "chatModerator", "subscribersModerate" + val, 'false');
+        } else {
+            sendDBUpdate("moderation_chatmod", "chatModerator", "subscribersModerate" + val, 'true');
+        }
+        setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /**
+     * @function toggleSilentTimeout()
+     * @param {String} val
+     */
+    function toggleSilentTimeout(val) {
+        var value = $('#toggleSilentTimeout' + val).attr('checked', 'checked');
+
+        if ($('#toggleSilentTimeout' + val).is(':checked') === true) {
+            sendDBUpdate("moderation_chatmod", "chatModerator", "silentTimeout" + val, 'true');
+        } else {
+            sendDBUpdate("moderation_chatmod", "chatModerator", "silentTimeout" + val, 'false');
+        }
+        setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /**
+     * @function toggleModerations()
+     * @param {String} val
+     * @param {String} id
+     */
+    function toggleModerations(val, id) {
+        var value = $('#toggleModeration' + val).attr('checked', 'checked');
+
+        if ($('#toggleModeration' + val).is(':checked') === true) {
+            sendDBUpdate("moderation_chatmod", "chatModerator", id, 'true');
+        } else {
+            sendDBUpdate("moderation_chatmod", "chatModerator", id, 'false');
+        }
+        setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
+    }
+
     // Import the HTML file for this panel.
     $("#moderationPanel").load("/panel/moderation.html");
 
@@ -554,4 +645,8 @@
     $.addModWhitelist = addModWhitelist;
     $.deleteBlacklist = deleteBlacklist;
     $.deleteWhitelist = deleteWhitelist;
+    $.toggleRegular = toggleRegular;
+    $.toggleSubscriber = toggleSubscriber;
+    $.toggleSilentTimeout = toggleSilentTimeout;
+    $.toggleModerations = toggleModerations;
 })();
