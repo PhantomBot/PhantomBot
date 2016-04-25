@@ -62,9 +62,23 @@
      */
     function reloadNoticeSettings() {
         noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages');
-        noticeInterval = $.getIniDbNumber('noticeSettings', 'interval');
         noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle');
         noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOffline');
+
+        // Only update noticeInterval if it changed and then reset the timer.
+        if (noticeInterval != $.getIniDbNumber('noticeSettings', 'interval')) {
+            noticeInterval = $.getIniDbNumber('noticeSettings', 'interval');
+            setInterval(function() {
+                if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
+                    if (messageCount >= noticeReqMessages) {
+                        if (noticeOffline && $.isOnline($.channelName)) {
+                            sendNotice();
+                            messageCount = 0;
+                        }
+                    }
+                }
+            }, noticeInterval * 60 * 1000, 'noticeTimer');
+        }
     };
 
     /**
