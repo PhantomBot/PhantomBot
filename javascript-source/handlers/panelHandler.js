@@ -57,24 +57,28 @@
      * @function getTitlePanel()
      */
     function getTitlePanel() {
-        $.inidb.set('streamInfo', 'title', $.getStatus($.channelName));
+        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            $.inidb.set('streamInfo', 'title', $.getStatus($.channelName));
+        }
     };
 
     /**
      * @function updatePlayTime()
      */
     function updatePlayTime() { //This is not for the panel, but the info I need to not abuse the api, is in this module.
-        if ($.inidb.get('panelstats', 'streamOnline').equalsIgnoreCase('false')) {
-            playTime = null;
-            currentGame = null;
-            return;
-        }
-
-        currentGame = $.getGame($.channelName);
-
-        if (currentGame != null && lastGame != currentGame) {
-            lastGame = currentGame;
-            playTime = $.systemTime();
+        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            if ($.inidb.get('panelstats', 'streamOnline').equalsIgnoreCase('false')) {
+                playTime = null;
+                currentGame = null;
+                return;
+            }
+    
+            currentGame = $.getGame($.channelName);
+    
+            if (currentGame != null && lastGame != currentGame) {
+                lastGame = currentGame;
+                playTime = $.systemTime();
+            }
         }
     };
 
@@ -82,11 +86,13 @@
      * @function getPlayTime()
      */
     function getPlayTime() { //This is not for the panel, but the info I need to not abuse the api, is in this module.
-        if (playTime != null) {
-            var time = $.systemTime() - playTime;
-            return $.getTimeString(time / 1000);
-        } else {
-            return '0 seconds'; //Put this here, but it should never happen.
+        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            if (playTime != null) {
+                var time = $.systemTime() - playTime;
+                return $.getTimeString(time / 1000);
+            } else {
+                return '0 seconds'; //Put this here, but it should never happen.
+            }
         }
     };
 
@@ -94,7 +100,9 @@
      * @function getTitlePanel()
      */
     function getGamePanel() {
-        $.inidb.set('streamInfo', 'game', currentGame);
+        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            $.inidb.set('streamInfo', 'game', currentGame);
+        }
     };
 
     /**
