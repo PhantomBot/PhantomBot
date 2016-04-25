@@ -336,7 +336,7 @@
         if (command.equalsIgnoreCase('streamertime')) {
             $.say($.whisperPrefix(sender) + $.lang.get(
                 'timesystem.streamertime',
-                getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss zzz '('Z')'"),
+                getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss a zzz '('Z')'"),
                 $.username.resolve($.ownerName)
             ));
         }
