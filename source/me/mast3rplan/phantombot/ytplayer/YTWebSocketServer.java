@@ -39,6 +39,7 @@
  * // Ask the bot for the current list of requested songs (songlist) or songs from the playlist (playlist).
  * { "query" : "songlist" }
  * { "query" : "playlist" }
+ * { "query" : "currentsong" }
  *
  * // Delete requested song
  * { "deletesr" : "YouTube ID" }
@@ -95,23 +96,32 @@ import java.io.FileReader;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.regex.Pattern;
-import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.event.ytplayer.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.google.common.collect.Maps;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONStringer;
 
+import me.mast3rplan.phantombot.PhantomBot;
+import me.mast3rplan.phantombot.event.EventBus;
+import me.mast3rplan.phantombot.event.ytplayer.*;
 
 public class YTWebSocketServer extends WebSocketServer {
 
     private String authString;
     private int currentVolume = 0;
     private int currentState = -10;
-    private Boolean authenticated = false;
+
+    private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
 
     public YTWebSocketServer(int port, String authString) {
         super(new InetSocketAddress(port));
@@ -122,12 +132,18 @@ public class YTWebSocketServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-        EventBus.instance().postAsync(new YTPlayerConnectEvent());
+        wsSessionMap.put(genSessionKey(webSocket), new wsSession(false, false, webSocket));
     }
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
-        EventBus.instance().postAsync(new YTPlayerDisconnectEvent());
+        wsSession sessionData;
+
+        sessionData = wsSessionMap.get(genSessionKey(webSocket));
+        if (sessionData.isPlayer()) {
+            EventBus.instance().postAsync(new YTPlayerDisconnectEvent());
+        }
+        wsSessionMap.remove(genSessionKey(webSocket));
     }
 
     @Override
@@ -135,6 +151,8 @@ public class YTWebSocketServer extends WebSocketServer {
         YTPlayerState    playerState;
         JSONObject       jsonObject;
         JSONObject       jsonStatus;
+        wsSession        sessionData;
+        Boolean          authenticated;
         String           dataString;
         int              dataInt;
 
@@ -151,15 +169,28 @@ public class YTWebSocketServer extends WebSocketServer {
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         }
+        sessionData = wsSessionMap.get(genSessionKey(webSocket));
 
         if (jsonObject.has("authenticate")) {
             authenticated = jsonObject.getString("authenticate").equals(authString);
-            authResult();
+            sessionData.setAuthenticated(authenticated);
+            sessionData.setPlayer(true);
+            authResult(authenticated, webSocket);
+            if (authenticated) {
+                EventBus.instance().postAsync(new YTPlayerConnectEvent());
+            }
             return;
-        }
+        } 
+        if (jsonObject.has("readauth")) {
+            authenticated = jsonObject.getString("readauth").equals(authString);
+            sessionData.setAuthenticated(authenticated);
+            sessionData.setPlayer(false);
+            authResult(authenticated, webSocket);
+            return;
+        } 
 
-        if (!authenticated) {
-            authResult();
+        if (!sessionData.isAuthenticated()) {
+            authResult(false, webSocket);
             return;
         }
 
@@ -192,6 +223,8 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerRequestSonglistEvent());
             } else if (jsonObject.getString("query").equals("playlist")) {
                 EventBus.instance().postAsync(new YTPlayerRequestPlaylistEvent());
+            } else if (jsonObject.getString("query").equals("currentsong")) {
+                EventBus.instance().postAsync(new YTPlayerRequestCurrentSongEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['query'] request passed ["+jsonString+"]");
                 return;
@@ -255,14 +288,6 @@ public class YTWebSocketServer extends WebSocketServer {
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
     }
 
-    public InetSocketAddress getLocalSocketAddress(WebSocket conn) {
-        return null;
-    }
-
-    public InetSocketAddress getRemoteSocketAddress(WebSocket conn) {
-        return null;
-    }
-
     // Methods for the Bot JS player to call.
     //
     public void play(String youtubeID, String songTitle, String duration, String requester) {
@@ -298,9 +323,9 @@ public class YTWebSocketServer extends WebSocketServer {
         }
     }
 
-    public void authResult() {
+    public void authResult(Boolean authenticated, WebSocket webSocket) {
         JSONStringer jsonObject = new JSONStringer();
-        sendToAll(jsonObject.object().key("authresult").value(authenticated).endObject().toString());
+        webSocket.send(jsonObject.object().key("authresult").value(authenticated).endObject().toString());
     }
 
     public int getVolume() {
@@ -318,4 +343,48 @@ public class YTWebSocketServer extends WebSocketServer {
     public void playList(String jsonString) {
         sendToAll(jsonString);
     }
+
+    public void currentSong(String jsonString) {
+        sendToAll(jsonString);
+    }
+
+    private static String genSessionKey(WebSocket webSocket) {
+        return new String(webSocket.getRemoteSocketAddress().toString());
+    }
+
+    // Class for storing Session data.
+    private class wsSession {
+        Boolean authenticated;
+        Boolean player;
+        WebSocket webSocket;
+
+        public wsSession(Boolean authenticated, Boolean player, WebSocket webSocket) {
+            this.authenticated = authenticated;
+            this.player = player;
+            this.webSocket = webSocket;
+        }
+
+        public void setAuthenticated(Boolean authenticated) {
+            this.authenticated = authenticated;
+        }
+        public Boolean isAuthenticated() {
+            return authenticated;
+        }
+
+        public void setPlayer(Boolean player) {
+            this.player = player;
+        }
+        public Boolean isPlayer() {
+            return player;
+        }
+
+        public void setWebSocket(WebSocket webSocket) {
+            this.webSocket = webSocket;
+        }
+        public WebSocket getWebSocket() {
+            return webSocket;
+        }
+    }
+
+
 }
