@@ -253,8 +253,6 @@
             fillYouTubePlayerIframe();
             $('#youTubeLauncher').html('<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayer()">Hide/Show YouTube Player</button>' +
                                        '<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerPause()">Toggle Pause</button>');
-        } else {
-            $('#youTubeLauncher').html('<button type="button" class="btn btn-primary inline pull-left" onclick="$.launchYouTubePlayer()">Launch YouTube Player</button>');
         }
     }
 
