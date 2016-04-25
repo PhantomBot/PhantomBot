@@ -874,7 +874,7 @@ public class PhantomBot implements Listener {
                 data += "keystorepath=" + keystorepath + "\r\n";
                 data += "keystorepassword=" + keystorepassword + "\r\n";
                 data += "keypassword=" + keypassword + "\r\n";
-                data += "twitchalertsauth=" + twitchalertskey + "\r\n";
+                data += "twitchalertskey=" + twitchalertskey + "\r\n";
                 data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
                 data += "gamewispauth=" + gamewispauth + "\r\n";
                 data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
