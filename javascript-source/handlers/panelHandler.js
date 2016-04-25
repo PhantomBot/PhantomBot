@@ -64,7 +64,7 @@
      * @function updatePlayTime()
      */
     function updatePlayTime() { //This is not for the panel, but the info I need to not abuse the api, is in this module.
-        if ($.inidb.get('streamInfo', 'streamOnline').equalsIgnoreCase('false')) {
+        if ($.inidb.get('panelstats', 'streamOnline').equalsIgnoreCase('false')) {
             playTime = null;
             currentGame = null;
             return;
