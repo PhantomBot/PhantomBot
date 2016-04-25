@@ -679,6 +679,21 @@
             playerPaused = false;
 
         /**
+         * @function pushCurrentSong
+         */
+        this.pushCurrentSong = function() {
+            var jsonData = {};
+
+            jsonData['currentsong'] = {
+                "requester" : currentPlaylist.getCurrentVideo().getOwner() + '',
+                "song" : currentPlaylist.getCurrentVideo().getVideoId() + '',
+                "title" : currentPlaylist.getCurrentVideo().getVideoTitle() + '',
+                "duration" : currentPlaylist.getCurrentVideo().getVideoLengthMMSS() + ''
+            };
+            client.currentSong(JSON.stringify(jsonData));
+        }
+
+        /**
          * @function pushPlayList
          */
         this.pushPlayList = function() {
@@ -844,6 +859,12 @@
         connectedPlayerClient.pushPlayList();
     });
 
+    /**
+     * @event yTPlayerRequestCurrentSong
+     */
+    $.bind('yTPlayerRequestCurrentSong', function(event) {
+        connectedPlayerClient.pushCurrentSong();
+    });
 
     /**
      * @event yTPlayerState

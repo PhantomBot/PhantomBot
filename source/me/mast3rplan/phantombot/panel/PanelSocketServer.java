@@ -111,11 +111,18 @@ public class PanelSocketServer extends WebSocketServer {
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
             com.gmt2001.Console.debug.println("PanelSocketServer: onOpen");
+            com.gmt2001.Console.debug.println("PanelSocketServer: Connection from " + 
+                                            webSocket.getRemoteSocketAddress().getHostName() + 
+                                            ":" + webSocket.getRemoteSocketAddress().getPort());
+
     }
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
             com.gmt2001.Console.debug.println("PanelSocketServer: onClose");
+            com.gmt2001.Console.debug.println("PanelSocketServer: Disconnection from " + 
+                                            webSocket.getRemoteSocketAddress().getHostName() + 
+                                            ":" + webSocket.getRemoteSocketAddress().getPort());
     }
 
     @Override
@@ -222,16 +229,6 @@ public class PanelSocketServer extends WebSocketServer {
 
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
         com.gmt2001.Console.debug.println("PanelSocketServer::Closing WebSocket");
-    }
-
-    public InetSocketAddress getLocalSocketAddress(WebSocket conn) {
-        com.gmt2001.Console.debug.println("PanelSocketServer::Get Local Socket Address");
-        return null;
-    }
-
-    public InetSocketAddress getRemoteSocketAddress(WebSocket conn) {
-        com.gmt2001.Console.debug.println("PanelSocketServer::Get Remote Socket Address");
-        return null;
     }
 
     private void doVersion(String id) {
