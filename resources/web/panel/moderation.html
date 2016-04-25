@@ -23,7 +23,7 @@
     <div class="form-group" onkeypress="return event.keyCode != 13">
         <label for="linkPermit">Permit User to Post Link</label>
         <button type="button" class="btn btn-primary inline pull-right" onclick="$.permitUserCommand()">Permit</button>
-        <input type="text" class="form-control" id="permitUserInput" placeholder="Username" />
+        <input type="text" class="form-control" id="permitUserInput" placeholder="username" />
     </div>
 </form>
 
@@ -151,35 +151,6 @@
         </table>
         <div id="quickModerationUpdate" />
     </div>
- 
-    <h3>Enable/Disable Moderation Protection</h3>
-    <div>
-        Decide which moderation settings should be enforced and not enforced on all users below
-        a moderator in chat.  Users in the Regular and Subscriber groups may be made exempt from 
-        enabled settings. Disabling settings here completely disables the type of moderation.<br><br>
-        <div id="viewerModSettings" style="height: 180px; overflow: auto;" />
-    </div>
-
-    <h3>Enable/Disable Moderation Protection for Regulars</h3>
-    <div>
-        Decide which moderation settings should be enforced and not enforced on Regulars in chat.
-        If a specific moderation type is enabled but disabled here for Regulars, Regulars
-        are exempt from that moderation type.<br><br>
-        <div id="regularsModSettings" style="height: 180px; overflow: auto;" />
-    </div>
-
-    <h3>Enable/Disable Moderation Protection for Subscribers</h3>
-    <div>
-        Decide which moderation settings should be enforced and not enforced on Subscribers in chat.
-        If a specific moderation type is enabled disabled here for Subscribers, Subscribers
-        are exempt from that moderation type.<br><br>
-        <div id="subscribersModSettings" style="height: 180px; overflow: auto;" />
-    </div>
-
-    <h3>Enable/Disable Silent Moderation Protection</h3>
-    <div>
-        <div id="silentModSettings" style="height: 200px; overflow: auto;" />
-    </div>
 
     <h3>Links Protection Settings</h3>
     <div>
@@ -192,7 +163,6 @@
                      data-toggle="tooltip" title="Message sent to user when they are timed out for posting a link." />
             </div>
         </form>
-
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="linkPermitTime">Links Permit Time (Seconds)</label>
@@ -200,6 +170,35 @@
                      onclick="$.updateRedrawModSetting('#linkPermitTimeInput', 'linkPermitTime')">Submit</button>
                 <input type="number" min="0" class="form-control" id="linkPermitTimeInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Number of seconds to permit a user to post a link." />
+            </div>
+        </form>
+    </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleModerationLinks" onclick="$.toggleModerations('Links', 'linksToggle')">Moderate Links
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleRegularLinks" onclick="$.toggleRegular('Links')">Exclude Regulars
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSubscriberLinks" onclick="$.toggleSubscriber('Links')">Exclude Subscribers
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutLinks" onclick="$.toggleSilentTimeout('Links')">Silent Timeout
+                </label>
             </div>
         </form>
     </div>
@@ -249,6 +248,35 @@
                                                   rule while larger values will ignore shorter messages." />
             </div>
         </form>
+    </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleModerationSymbols" onclick="$.toggleModerations('Symbols', 'symbolsToggle')">Moderate Symbols
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleRegularSymbols" onclick="$.toggleRegular('Symbols')">Exclude Regulars
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSubscriberSymbols" onclick="$.toggleSubscriber('Symbols')">Exclude Subscribers
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutSymbols" onclick="$.toggleSilentTimeout('Symbols')">Silent Timeout
+                </label>
+            </div>
+        </form>
     </div>
 
     <h3>Caps Protection Settings</h3>
@@ -285,6 +313,35 @@
                                                   rule while larger values will ignore shorter messages." />
             </div>
         </form>
+    </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleModerationCaps" onclick="$.toggleModerations('Caps', 'capsToggle')">Moderate Caps
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleRegularCaps" onclick="$.toggleRegular('Caps')">Exclude Regulars
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSubscriberCaps" onclick="$.toggleSubscriber('Caps')">Exclude Subscribers
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutCaps" onclick="$.toggleSilentTimeout('Caps')">Silent Timeout
+                </label>
+            </div>
+        </form>
     </div>
 
     <h3>Spam Protection Settings</h3>
@@ -308,6 +365,35 @@
                      data-toggle="tooltip" title="Number of characters that can be repeated before the rule is enforced.
                                                   Setting to a very low number would enforce the rule on words that have
                                                   repeating characters, set to a higher value to catch real spammers." />
+            </div>
+        </form>
+    </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleModerationSpam" onclick="$.toggleModerations('Spam', 'spamToggle')">Moderate Spam
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleRegularSpam" onclick="$.toggleRegular('Spam')">Exclude Regulars
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSubscriberSpam" onclick="$.toggleSubscriber('Spam')">Exclude Subscribers
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutSpam" onclick="$.toggleSilentTimeout('Spam')">Silent Timeout
+                </label>
             </div>
         </form>
     </div>
@@ -336,6 +422,35 @@
                                                   users to show 'hype' for subscribers." />
             </div>
         </form>
+    </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleModerationEmotes" onclick="$.toggleModerations('Emotes', 'emotesToggle')">Moderate Emotes
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleRegularEmotes" onclick="$.toggleRegular('Emotes')">Exclude Regulars
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSubscriberEmotes" onclick="$.toggleSubscriber('Emotes')">Exclude Subscribers
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutEmotes" onclick="$.toggleSilentTimeout('Emotes')">Silent Timeout
+                </label>
+            </div>
+        </form>
     </div>
 
     <h3>Color (/me) Protection Settings</h3>
@@ -347,6 +462,35 @@
                      onclick="$.updateRedrawModSetting('#colorsMessageInput', 'colorsMessage')">Submit</button>
                 <input type="text" class="form-control" id="colorsMessageInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Message sent to user when they are timed out for using /me." />
+            </div>
+        </form>
+    </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleModerationColors" onclick="$.toggleModerations('Colors', 'colorsToggle')">Moderate Colors
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleRegularColors" onclick="$.toggleRegular('Colors')">Exclude Regulars
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSubscriberColors" onclick="$.toggleSubscriber('Colors')">Exclude Subscribers
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutColors" onclick="$.toggleSilentTimeout('Colors')">Silent Timeout
+                </label>
             </div>
         </form>
     </div>
@@ -374,6 +518,35 @@
                                                   reasonable limit to prevent people from creating text-blocks in chat." />
             </div>
         </form>
+    </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleModerationLongMsg" onclick="$.toggleModerations('LongMsg', 'longMessageToggle')">Moderate Long Messages
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleRegularLongMsg" onclick="$.toggleRegular('LongMsg')">Exclude Regulars
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSubscriberLongMsg" onclick="$.toggleSubscriber('LongMsg')">Exclude Subscribers
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutLongMsg" onclick="$.toggleSilentTimeout('LongMsg')">Silent Timeout
+                </label>
+            </div>
+        </form>
     </div>
 
     <h3>Chat Blacklist Words</h3>
@@ -383,6 +556,13 @@
                 <label for="addModBlacklist">Add Phrase to Blacklist</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.addModBlacklist()">Submit</button>
                 <input type="text" class="form-control" id="addModBlacklistInput" placeholder="phrase" />
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutBlacklist" onclick="$.toggleSilentTimeout('Blacklist')">Silent Timeout
+                </label>
             </div>
         </form>
 
