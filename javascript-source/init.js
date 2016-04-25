@@ -882,6 +882,13 @@
         });
 
         /**
+         * @event api-yTPlayerRequestCurrentSongEvent
+         */
+        $api.on($script, 'yTPlayerRequestCurrentSong', function(event) {
+            callHook('yTPlayerRequestCurrentSong', event, false);
+        });
+
+        /**
          * @event api-gameWispChangeEvent
          */
         $api.on($script, 'gameWispChange', function(event) {

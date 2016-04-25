@@ -131,7 +131,7 @@
      */
     function updateNoticeInterval(tagId, tableKey) {
         var newValue = $(tagId).val();
-        if (parseInt(newValue) >= 5 && newValue.length > 0) {
+        if (parseInt(newValue) >= 2 && newValue.length > 0) {
             sendDBUpdate("noticeIntervalInput", "noticeSettings", tableKey, newValue);
             $(tagId).val('')
             $(tagId).attr("placeholder", newValue).blur();
