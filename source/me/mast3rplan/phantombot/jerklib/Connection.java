@@ -215,39 +215,32 @@ class Connection {
      * @return number bytes written
      */
     long lastWrite = System.currentTimeMillis();
-    int bursts = 0;
-    int maxBurst = 5;
+    int bursts = 1;
+    int maxBurst = 10;
     long nextWrite = -1;
-    /*
-     * if lastwrite was less than a second ago: if burst == limit return; else
-     * burst++; write packet; recordtime; else burst = 0; write packet; record
-     * time;
-     *
-     *
-     */
 
     int doWrites() {
         if (writeRequests.isEmpty()) {
             return 0;
         }
 
-        WriteRequest req;
         if (nextWrite > System.currentTimeMillis()) {
             return 0;
         }
-        if (System.currentTimeMillis() - lastWrite < 3000) {
+
+        if (System.currentTimeMillis() - lastWrite < 2500) {
             if (bursts == maxBurst) {
-                nextWrite = System.currentTimeMillis() + 8000;
-                bursts = 0;
+                nextWrite = System.currentTimeMillis() + 5000;
+                bursts = 1;
                 return 0;
             }
             bursts++;
         } else {
-            //bursts = Math.max(bursts-- , 0);
-            bursts = 0;
+            bursts = 1;
             lastWrite = System.currentTimeMillis();
         }
 
+        WriteRequest req;
         req = writeRequests.remove(0);
 
         String data;
