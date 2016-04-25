@@ -635,7 +635,15 @@ input, textarea {
 /* Bootstrap Warning Button */
 
 .btn-warning {
-    background: rgba(255, 69, 0, 0.5) !important;
+    background: rgba(240, 229, 14, 1) !important;
+    color: #696969;
+    border: none !important;
+    outline: none !important;
+}
+
+.btn-alert {
+    background: rgba(153, 0, 0, 1) !important;
+    color: #d3d3d3;
     border: none !important;
     outline: none !important;
 }

@@ -354,6 +354,13 @@
     }
 
     /**
+     * @function disconnect
+     */
+    function disconnect() {
+        sendCommand("disconnect");
+    }
+
+    /**
      * @function setHighlight
      */
     function setHighlight() {
@@ -524,4 +531,5 @@
     $.disableModule = disableModule;
     $.adjustDeathCounter = adjustDeathCounter;
     $.shoutOut = shoutOut;
+    $.disconnect = disconnect;
 })();

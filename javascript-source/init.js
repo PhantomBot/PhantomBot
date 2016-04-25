@@ -325,6 +325,19 @@
         }
 
         /**
+         * @commandpath disconnect - Removes the bot from chat
+         */
+        if (command.equalsIgnoreCase('disconnect')) {
+            if (!$.isOwner(sender)) {
+                $.say($.whisperPrefix(sender) + $.casterMsg);
+                return;
+            }
+
+            $.logEvent('init.js', 354, username + ' removed the bot from chat!');
+            java.lang.System.exit(0);
+        }
+
+        /**
          * @commandpath module - Display the usage for !module
          */
         if (command.equalsIgnoreCase('module')) {
@@ -926,6 +939,7 @@
         $.registerChatCommand('./init.js', 'chat', 1);
         $.registerChatCommand('./init.js', 'module', 1);
         $.registerChatCommand('./init.js', 'reconnect', 1);
+        $.registerChatCommand('./init.js', 'disconnect');
 
         // emit initReady event
         callHook('initReady', null, true);
