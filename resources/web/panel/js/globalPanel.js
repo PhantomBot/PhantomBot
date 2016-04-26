@@ -105,11 +105,15 @@
                 if (panelCheckQuery(msgObject, 'global_streamUptime')) {
                     $("#streamUptime").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Uptime\"><i class=\"fa fa-clock-o fa-lg\" /> " + msgObject['results']['streamUptime'] + "</span>");
                 }
+                if (panelCheckQuery(msgObject, 'global_playTime')) {
+                    $("#timePlayed").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Time Played\"><i class=\"fa fa-gamepad fa-lg\" /> " + msgObject['results']['timePlay'] + "</span>");
+                }
                 if (panelCheckQuery(msgObject, 'global_viewerCount')) {
                     $("#viewerCount").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Viewers\"><i class=\"fa fa-users fa-lg\" /> " + msgObject['results']['viewerCount'] + "</span>");
                 }
             } else {
                 $("#streamUptime").html('');
+                $("#timePlayed").html('');
                 $("#viewerCount").html('');
             }
 
@@ -143,6 +147,7 @@
             sendDBQuery("global_viewerCount", "panelstats", "viewerCount");
             sendDBQuery("global_streamOnline", "panelstats", "streamOnline");
             sendDBQuery("global_streamUptime", "panelstats", "streamUptime");
+            sendDBQuery("global_playTime", "panelstats", "playTime");
         }
     }
 
