@@ -144,6 +144,13 @@
             userTime = 0;
         }
 
+        /* commandpath not provided as this is an internal Panel command. */
+        if (command.equalsIgnoreCase('rankreloadtable')) {
+            $.consoleDebug('Reloading Ranks Table after Panel Modification');
+            loadRanksTimeTable();
+            return;
+        }
+
         /*
          * @commandpath rankedit - Displays the usage of rankedit.
          * @commandpath rankedit add [time] [rankname] - Add a new rank. Time is in hours.
@@ -369,6 +376,7 @@
         if ($.bot.isModuleEnabled('./systems/ranksSystem.js')) {
             $.registerChatCommand('./systems/ranksSystem.js', 'rank', 7);
             $.registerChatCommand('./systems/ranksSystem.js', 'rankedit', 1);
+            $.registerChatCommand('./systems/ranksSystem.js', 'rankreloadtable', 1);
 
             $.registerChatSubcommand('rankedit', 'add', 1);
             $.registerChatSubcommand('rankedit', 'del', 1);

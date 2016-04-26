@@ -75,7 +75,7 @@
                             "    <td style=\"width: 8em\">" + hours + "</td>" +
                             "    <td><form onkeypress=\"return event.keyCode != 13\">" +
                             "        <input type=\"text\" id=\"inlineRankNameEdit_" + hours + "\"" +
-                            "               value=\"" + rank + "\" />" +
+                            "               value=\"" + rank + "\" style=\"width: 80%\"/>" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" + 
                             "                onclick=\"$.updateRank('" + hours + "')\"><i class=\"fa fa-pencil\" />" +
                             "        </button>" +
@@ -106,7 +106,7 @@
                             "    <td style=\"width: 8em\">" + user + "</td>" +
                             "    <td><form onkeypress=\"return event.keyCode != 13\">" +
                             "        <input type=\"text\" id=\"inlineRankCustomEdit_" + user + "\"" +
-                            "               value=\"" + rank + "\" />" +
+                            "               value=\"" + rank + "\" style=\"width: 80%\" />" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" + 
                             "                onclick=\"$.updateCustomRank('" + user + "')\"><i class=\"fa fa-pencil\" />" +
                             "        </button>" +
@@ -213,7 +213,7 @@
             $("#addRankHoursInput").val('');
             $("#addRankNameInput").val('');
             sendDBUpdate("ranks_ranksAdd", "ranksMapping", hours, rank);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { doQuery(); sendCommand('rankreloadtable'); }, TIMEOUT_WAIT_TIME);
         }
     }
 
