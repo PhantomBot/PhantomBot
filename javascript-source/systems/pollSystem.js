@@ -17,7 +17,6 @@
         question: '',
         minVotes: 0,
         result: '',
-        pollTimerId: -1,
         hasTie: 0,
         counts: [],
     };
@@ -64,10 +63,7 @@
 
         $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
         if (poll.time) {
-            poll.pollTimerId = setTimeout(function() {
-                endPoll();
-                clearTimeout(poll.pollTimerId);
-            }, poll.time);
+            setTimeout(function() { endPoll(); }, poll.time, 'pollSystem');
         }
 
         return true;
@@ -114,10 +110,7 @@
             return;
         }
 
-        if (poll.pollTimerId > -1) {
-            clearTimeout(poll.pollTimerId);
-            poll.pollTimerId = -1;
-        }
+        clearTimeout(lookupTimeoutID('pollSystem'));
 
         if (poll.minVotes > 0 && poll.votes.length < poll.minVotes) {
             poll.result = '';

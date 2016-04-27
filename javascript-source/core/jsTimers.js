@@ -15,7 +15,7 @@ var setTimeout,
     var timerObject = new java.util.Timer(),
         counter = 1,
         registry = {},
-        timerTable = [];
+        timerTable = {};
 
     /**
      * @function setTimeout
@@ -31,7 +31,7 @@ var setTimeout,
 
         if (unique_id !== undefined) {
             if ((id = lookupTimeoutID(unique_id)) !== -1) {
-                $.consoleDebug("timers.js::auto-clear previous timer for: " + unique_id);
+                $.consoleDebug('timers.js::auto-clear previous timer for: ' + unique_id);
                 clearInterval(id);
             }
         }
@@ -62,6 +62,7 @@ var setTimeout,
         var id;
 
         if (unique_id !== undefined) {
+            $.consoleDebug('timers.js::setInterval::unique_id(' + unique_id + ')');
             if ((id = lookupTimeoutID(unique_id)) !== -1) {
                 $.consoleDebug("timers.js::auto-clear previous timer for: " + unique_id);
                 clearInterval(id);
@@ -86,8 +87,11 @@ var setTimeout,
      * @param {Number} id
      */
     clearTimeout = function(id) {
-        registry[id].cancel();
-        timerObject.purge();
+        // Java Timer may have already expired this timer and it would be undefined.
+        if (registry[id] !== undefined) {
+            registry[id].cancel();
+            timerObject.purge();
+        }
         delete registry[id];
         for (unique_id in timerTable) {
             if (timerTable[unique_id].id == id) {
