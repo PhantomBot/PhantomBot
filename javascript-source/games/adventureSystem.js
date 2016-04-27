@@ -194,7 +194,6 @@
 
         var t = setTimeout(function() {
             runStory();
-            clearTimeout(t);
         }, joinTime * 1e3);
 
         $.say($.lang.get('adventuresystem.start.success', $.resolveRank(username), $.pointNameMultiple));
