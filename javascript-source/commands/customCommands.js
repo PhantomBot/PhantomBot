@@ -5,18 +5,18 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCheckTags = new RegExp(/\(customapi|\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/),
-        reSenderTag = new RegExp(/\(sender\)/),
-        reTouserTag = new RegExp(/\(touser\)/),
-        reATSenderTag = new RegExp(/\(@sender\)/),
-        reBaresenderTag = new RegExp(/\(baresender\)/),
-        reRandomTag = new RegExp(/\(random\)/),
-        rePointnameTag = new RegExp(/\(pointname\)/),
-        reUptimeTag = new RegExp(/\(uptime\)/),
-        reGameTag = new RegExp(/\(game\)/),
-        reStatusTag = new RegExp(/\(status\)/),
-        reFollowsTag = new RegExp(/\(follows\)/),
-        reCountTag = new RegExp(/\(count\)/),
-        rePriceTag = new RegExp(/\(price\)/);
+        reSenderTag = new RegExp(/\(sender\)/g),
+        reTouserTag = new RegExp(/\(touser\)/g),
+        reATSenderTag = new RegExp(/\(@sender\)/g),
+        reBaresenderTag = new RegExp(/\(baresender\)/g),
+        reRandomTag = new RegExp(/\(random\)/g),
+        rePointnameTag = new RegExp(/\(pointname\)/g),
+        reUptimeTag = new RegExp(/\(uptime\)/g),
+        reGameTag = new RegExp(/\(game\)/g),
+        reStatusTag = new RegExp(/\(status\)/g),
+        reFollowsTag = new RegExp(/\(follows\)/g),
+        reCountTag = new RegExp(/\(count\)/g),
+        rePriceTag = new RegExp(/\(price\)/g);
 
     /**
      * @function getCustomAPIValue
