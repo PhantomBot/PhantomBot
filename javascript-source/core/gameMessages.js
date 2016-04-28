@@ -60,7 +60,6 @@
         if ($.bot.isModuleEnabled('./core/gameMessages.js')) {
             loadResponses();
         }
-        clearTimeout(t);
     }, 5e3);
 
     /** Export functions to API */

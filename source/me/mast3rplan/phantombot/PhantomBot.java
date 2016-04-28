@@ -1101,6 +1101,10 @@ public class PhantomBot implements Listener {
                 String[] lines = data.replaceAll("\\r", "").split("\\n");
 
                 for (String line : lines) {
+                    if (line.startsWith("debugon")) {
+                        com.gmt2001.Console.out.println("Debug Mode Enabled via botlogin.txt");
+                        PhantomBot.enableDebugging = true;
+                    }
                     if (line.startsWith("user=") && line.length() > 8) {
                         user = line.substring(5);
                     }
@@ -1283,6 +1287,7 @@ public class PhantomBot implements Listener {
  
                 }
                 if (arg.equalsIgnoreCase("debugon")) {
+                    com.gmt2001.Console.out.println("Debug Mode Enabled via command line");
                     PhantomBot.enableDebugging = true;
                 }
                 if (arg.equalsIgnoreCase("ini2sqlite")) {

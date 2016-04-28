@@ -41,8 +41,12 @@
             </div>
         </form>
 
-        <button type="button" class="btn btn-alert inline pull-left" onclick="$.disconnect()">Remove</button>
-        <button type="button" class="btn btn-warning inline pull-left" onclick="$.chatReconnect()">Rejoin</button>
+        <button type="button" class="btn btn-alert inline pull-left" onclick="$.disconnect()" 
+        data-toggle="tooltip" title="NOTE: This will remove the bot from your channel, you will have to manually rejoin it.">Remove</button>
+
+        <button type="button" class="btn btn-warning inline pull-left" onclick="$.chatReconnect()" 
+        data-toggle="tooltip" title="Reconnect PhantomBot to your Twitch channel. This does not reconnect if the 'Remove' action was performed.">Reconnect</button>
+
         <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleTwitchChat()">Toggle Chat</button>
     </div>
 
