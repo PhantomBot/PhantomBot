@@ -169,8 +169,6 @@
                         case 'longMessageMessage' :
                         case 'longMessageLimit' :
                         case 'colorsMessage' :
-                        case 'warningTime' :
-                        case 'timeoutTime' : 
                             $("#" + modSetting + "Input").attr("placeholder", modValue).blur();
                             break;
                     } 
@@ -182,6 +180,70 @@
                 for (idx in msgObject['results']) {
                     modSetting = msgObject['results'][idx]['key'];
                     modValue = msgObject['results'][idx]['value'];
+
+                    if (panelMatch(modSetting, 'warningTimeLinks')) {
+                        $("#warningTimeLinks").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'timeoutTimeLinks')) {
+                        $("#timeoutTimeLinks").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'warningTimeCaps')) {
+                        $("#warningTimeCaps").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'timeoutTimeCaps')) {
+                        $("#timeoutTimeCaps").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'warningTimeSymbols')) {
+                        $("#warningTimeSymbols").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'timeoutTimeSymbols')) {
+                        $("#timeoutTimeSymbols").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'warningTimeSpam')) {
+                        $("#warningTimeSpam").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'timeoutTimeSpam')) {
+                        $("#timeoutTimeSpam").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'warningTimeEmotes')) {
+                        $("#warningTimeEmotes").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'timeoutTimeEmotes')) {
+                        $("#timeoutTimeEmotes").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'warningTimeColors')) {
+                        $("#warningTimeColors").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'timeoutTimeColors')) {
+                        $("#timeoutTimeColors").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'warningTimeLongMsg')) {
+                        $("#warningTimeLongMsg").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'timeoutTimeLongMsg')) {
+                        $("#timeoutTimeLongMsg").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'blacklistTimeoutTime')) {
+                        $("#blacklistTimeoutTime").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'blacklistMessage')) {
+                        $("#blacklistMessage").attr("placeholder", modValue).blur();
+                    }
 
                     if (panelMatch(modSetting, 'linksToggle')) {
                         if (panelMatch(modValue, 'true')) {
