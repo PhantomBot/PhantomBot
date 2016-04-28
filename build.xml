@@ -68,12 +68,12 @@
     </target>
 
     <target depends="pre.compile" name="compile.src">
+        <echo>Compiling with Java Version ${ant.java.version}</echo>
         <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />
         </javac>
-        <echo>Compiling with Java Version ${ant.java.version}</echo>
     </target>
     
     <target depends="pre.compile" name="clean.build.test">
@@ -115,11 +115,15 @@
         <copy todir="${lib.dir}">
             <fileset dir="./libraries" />
         </copy>
-        <echo level="info" message="lib folder content was copied." />
+        <echo level="info" message="staging javascript-source into resources." />
+        <copy todir="./resources/scripts">
+            <fileset dir="./javascript-source" />
+        </copy>
+        <echo level="info" message="staging lib folder into resources." />
         <copy todir="${res.dir}">
             <fileset dir="./resources" />
         </copy>
-        <echo level="info" message="res folder content was copied." />
+        <echo level="info" message="staging files into distribution folder." />
         <copy todir="${versionfolder}">
             <fileset dir="${build.dir}" />
         </copy>
