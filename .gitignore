@@ -53,7 +53,7 @@ resources/web/default.txt
 resources/scripts/*
 
 # Do not include the class files for GenerateTwitterTokens
-genTwitterTokens/classes/*
+genTwitterTokens/classes/generatetwittertokens
 
 # IntelliJ Project files
 .idea
