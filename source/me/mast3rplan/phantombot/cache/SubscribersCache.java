@@ -84,7 +84,7 @@ public class SubscribersCache implements Runnable {
 
                 return i;
             } else if (j.getInt("_http") == 422) {
-                com.gmt2001.Console.out.println(">> Twitch indicates that this account does not support subscribers. Disabling queries until next startup.");
+                com.gmt2001.Console.debug.println(">> Twitch indicates that this account does not support subscribers. Disabling queries until next startup.");
                 return -1;
             } else {
                 throw new Exception("[HTTPErrorException] HTTP " + j.getInt("_http") + " " + j.getString("error") + ". req="
