@@ -29,6 +29,7 @@ import de.simeonf.MusicWebSocketSecureServer;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.SingularityAPI;
 import com.illusionaryone.GameWispAPIv1;
+import com.illusionaryone.TwitterAPI;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -102,6 +103,9 @@ public class PhantomBot implements Listener {
     private final String gamewispauth;
     private final String gamewisprefresh;
     private final String oauth;
+    private final String twitter_username;
+    private final String twitter_access_token;
+    private final String twitter_secret_token;
     private String apioauth;
     private String clientid;
     private final String channelName;
@@ -172,7 +176,8 @@ public class PhantomBot implements Listener {
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
                       String keystorepassword, String keypassword, String twitchalertskey,
                       int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
-                      String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword) {
+                      String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword,
+                      String twitter_username, String twitter_access_token, String twitter_secret_token) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -200,6 +205,10 @@ public class PhantomBot implements Listener {
         this.datastore = datastore;
         this.datastoreconfig = datastoreconfig;
         this.youtubekey = youtubekey;
+
+        this.twitter_username = twitter_username;
+        this.twitter_access_token = twitter_access_token;
+        this.twitter_secret_token = twitter_secret_token;
         
         if (!youtubekey.isEmpty()) {
             YouTubeAPIv3.instance().SetAPIKey(youtubekey);
@@ -432,6 +441,16 @@ public class PhantomBot implements Listener {
                 SingularityAPI.instance().setAccessToken(gamewispauth);
                 SingularityAPI.instance().StartService();
                 doRefreshGameWispToken();
+            }
+
+            // Connect to Twitter API
+            if (twitter_username.length() > 0 &&
+                twitter_access_token.length() > 0 && twitter_secret_token.length() > 0)
+            {
+                TwitterAPI.instance().setUsername(twitter_username);
+                TwitterAPI.instance().setAccessToken(twitter_access_token);
+                TwitterAPI.instance().setSecretToken(twitter_secret_token);
+                TwitterAPI.instance().authenticate();
             }
         }
 
@@ -1137,6 +1156,10 @@ public class PhantomBot implements Listener {
         String keystorepassword = "";
         String keypassword = "";
 
+        String twitter_username = "";
+        String twitter_access_token = "";
+        String twitter_secret_token = "";
+
         boolean changed = false;
 
         com.gmt2001.Console.out.println("The working directory is: " + System.getProperty("user.dir"));
@@ -1244,6 +1267,27 @@ public class PhantomBot implements Listener {
                         } catch (NumberFormatException nfe) {
                             twitchalertslimit = 5;
                         }
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        try {
+            if (new File("./twitter.txt").exists()) {
+                String data = FileUtils.readFileToString(new File("./twitter.txt"));
+                String[] lines = data.replaceAll("\\r", "").split("\\n");
+
+                for (String line : lines) {
+                    if (line.startsWith("twitter_username=") && line.length() > 18) {
+                        twitter_username = line.substring(17);
+                    }
+                    if (line.startsWith("twitter_access_token=") && line.length() > 22) {
+                        twitter_access_token = line.substring(21);
+                    }
+                    if (line.startsWith("twitter_secret_token=") && line.length() > 22) {
+                        twitter_secret_token = line.substring(21);
                     }
                 }
             }
@@ -1591,7 +1635,8 @@ public class PhantomBot implements Listener {
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, groupChat,
                                              groupChatPort, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable,
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
-                                             webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword);
+                                             webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
+                                             twitter_username, twitter_access_token, twitter_secret_token);
     }
 
     public void updateGameWispTokens(String[] newTokens) {
