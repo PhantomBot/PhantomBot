@@ -304,6 +304,7 @@
         var sender = event.getSender().toLowerCase(),
             username = $.username.resolve(sender, event.getTags()),
             command = event.getCommand(),
+            argsString = event.getArguments().trim(),
             args = event.getArgs(),
             action = args[0],
             pointsRelatedModules = [],
@@ -311,29 +312,68 @@
             index;
 
         /**
-         * @commandpath reconnect - Tell the bot to reconnect to Twitch chat and the various APIs
+         * @commandpath YourBotName reconnect - Tell the bot to reconnect to Twitch chat and the various APIs
+         * @commandpath YourBotName disconnect - Removes the bot from chat
+         * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel
+         * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
          */
-        if (command.equalsIgnoreCase('reconnect')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
+
+         if (command.equalsIgnoreCase($.botName)) {
+            if (!$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
             }
 
-            $.logEvent('init.js', 354, username + ' requested a reconnect!');
-            $.connmgr.reconnectSession($.hostname);
-            $.say($.lang.get('init.reconnect'));
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('init.usage', $.botName));
+                return;
+            }
+
+            if (action.equalsIgnoreCase('reconnect') || action.equalsIgnoreCase('rejoin')) {
+                $.say($.lang.get('init.reconnect', $.hostname));
+                $.logEvent('init.js', 354, username + ' requested a reconnect!');
+                $.connmgr.reconnectSession($.hostname);
+                return;
+            }
+
+            if (action.equalsIgnoreCase('disconnect') || action.equalsIgnoreCase('remove')) {
+                $.say($.lang.get('init.disconnect', $.hostname));
+                $.logEvent('init.js', 354, username + ' removed the bot from chat!');
+                java.lang.System.exit(0);
+                return;
+            }
+
+            if (action.equalsIgnoreCase('connectmessage') || action.equalsIgnoreCase('setconnectmessage')) {
+                if (!args[1]) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg.usage', $.botName));
+                    return;
+                }
+
+                var msg = argsString.replace(action, '').trim();
+                $.inidb.set('settings', 'connectedMsg', msg);
+                $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg', msg));
+                return;
+            }
+
+            if (action.equalsIgnoreCase('removeconnectmessage')) {
+                $.inidb.del('settings', 'connectedMsg');
+                $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg.removed'));
+            }
         }
 
-        /**
-         * @commandpath disconnect - Removes the bot from chat
-         */
-        if (command.equalsIgnoreCase('disconnect')) {
-            if (!$.isOwner(sender)) {
-                $.say($.whisperPrefix(sender) + $.casterMsg);
+        /* Used for the panel, no command path needed*/
+        if (command.equalsIgnoreCase('reconnect')) {
+            if (!$.isBot(sender)) {
                 return;
             }
+            $.connmgr.reconnectSession($.hostname);
+        }
 
-            $.logEvent('init.js', 354, username + ' removed the bot from chat!');
+        /* Used for the panel, no command path needed*/
+        if (command.equalsIgnoreCase('disconnect')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
             java.lang.System.exit(0);
         }
 
@@ -553,6 +593,7 @@
         $api.on($script, 'ircJoinComplete', function(event) {
             connected = true;
             $.channel = event.getChannel();
+            connectedMsg = false;
         });
 
         /**
@@ -565,8 +606,13 @@
             if (event.getChannel().getName().equalsIgnoreCase($.channel.getName())) {
                 if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
                     if (event.getAdd()) {
-                        if (!modeO) {
+                        if (!modeO && !$.inidb.exists('settings', 'connectedMsg')) {
                             consoleLn($.username.resolve($.botName) + ' ready!');
+                        } else {
+                            if (!modeO && $.inidb.exists('settings', 'connectedMsg') && !connectedMsg) {
+                                $.say($.inidb.get('settings', 'connectedMsg'));
+                                connectedMsg = true;
+                            }
                         }
                         modeO = true;
                     }
@@ -938,8 +984,9 @@
          */
         $.registerChatCommand('./init.js', 'chat', 1);
         $.registerChatCommand('./init.js', 'module', 1);
-        $.registerChatCommand('./init.js', 'reconnect', 1);
+        $.registerChatCommand('./init.js', 'reconnect');
         $.registerChatCommand('./init.js', 'disconnect');
+        $.registerChatCommand('./init.js', $.botName, 1);
 
         // emit initReady event
         callHook('initReady', null, true);
