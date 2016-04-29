@@ -94,6 +94,7 @@ import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.util.Collection;
 import java.util.regex.Pattern;
 import java.util.HashMap;
@@ -118,14 +119,16 @@ import me.mast3rplan.phantombot.event.ytplayer.*;
 public class YTWebSocketServer extends WebSocketServer {
 
     private String authString;
+    private String authStringRO;
     private int currentVolume = 0;
     private int currentState = -10;
 
     private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
 
-    public YTWebSocketServer(int port, String authString) {
+    public YTWebSocketServer(int port, String authString, String authStringRO) {
         super(new InetSocketAddress(port));
         this.authString = authString;
+        this.authStringRO = authStringRO;
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
@@ -182,7 +185,7 @@ public class YTWebSocketServer extends WebSocketServer {
             return;
         } 
         if (jsonObject.has("readauth")) {
-            authenticated = jsonObject.getString("readauth").equals(authString);
+            authenticated = jsonObject.getString("readauth").equals(authStringRO);
             sessionData.setAuthenticated(authenticated);
             sessionData.setPlayer(false);
             authResult(authenticated, webSocket);
@@ -194,7 +197,7 @@ public class YTWebSocketServer extends WebSocketServer {
             return;
         }
 
-        if (jsonObject.has("status")) {
+        if (jsonObject.has("status") && sessionData.isPlayer()) {
             jsonStatus = jsonObject.getJSONObject("status");
             if (jsonStatus.has("state")) {
                 dataInt = jsonStatus.getInt("state");
@@ -229,13 +232,13 @@ public class YTWebSocketServer extends WebSocketServer {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['query'] request passed ["+jsonString+"]");
                 return;
             }
-        } else if (jsonObject.has("deletesr")) {
+        } else if (jsonObject.has("deletesr") && sessionData.isPlayer()) {
             dataString = jsonObject.getString("deletesr");
             EventBus.instance().postAsync(new YTPlayerDeleteSREvent(dataString));
-        } else if (jsonObject.has("deletepl")) {
+        } else if (jsonObject.has("deletepl") && sessionData.isPlayer()) {
             dataString = jsonObject.getString("deletepl");
             EventBus.instance().postAsync(new YTPlayerDeletePlaylistByIDEvent(dataString));
-        } else if (jsonObject.has("command")) {
+        } else if (jsonObject.has("command") && sessionData.isPlayer()) {
             if (jsonObject.getString("command").equals("skipsong")) {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             } else if (jsonObject.getString("command").equals("stealsong")) {
@@ -349,7 +352,7 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     private static String genSessionKey(WebSocket webSocket) {
-        return new String(webSocket.getRemoteSocketAddress().toString());
+        return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
     }
 
     // Class for storing Session data.
