@@ -469,6 +469,14 @@ public class PhantomBot implements Listener {
                                     "function getPlayerPort() { return playerPort; }\r\n" +
                                     "function getChannelName() { return channelName; }\r\n" +
                                     "function getAuth() { return auth; }\r\n";
+
+            if (!new File ("./web/ytplayer/").exists()) {
+                new File ("./web/ytplayer/").mkdirs();
+            }
+            if (!new File ("./web/ytplayer/js").exists()) {
+                new File ("./web/ytplayer/js").mkdirs();
+            }
+
             Files.write(Paths.get("./web/ytplayer/js/playerConfig.js"), playerPortData.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException ex) {
@@ -485,8 +493,17 @@ public class PhantomBot implements Listener {
                                     "function getPlayerPort() { return playerPort; }\r\n" +
                                     "function getChannelName() { return channelName; }\r\n" +
                                     "function getAuth() { return auth; }\r\n";
+
+            if (!new File ("./web/playlist/").exists()) {
+                new File ("./web/playlist/").mkdirs();
+            }
+            if (!new File ("./web/playlist/js").exists()) {
+                new File ("./web/playlist/js").mkdirs();
+            }
+
             Files.write(Paths.get("./web/playlist/js/playerConfig.js"), playerPortData.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -506,6 +523,14 @@ public class PhantomBot implements Listener {
                                    "function getPanelPort() { return panelSettings.panelPort; }\r\n" +
                                    "function getChannelName() { return panelSettings.channelName; }\r\n" +
                                    "function getAuth() { return panelSettings.auth; }\r\n";
+
+            if (!new File ("./web/panel/").exists()) {
+                new File ("./web/panel/").mkdirs();
+            }
+            if (!new File ("./web/panel/js").exists()) {
+                new File ("./web/panel/js").mkdirs();
+            }
+
             Files.write(Paths.get("./web/panel/js/panelConfig.js"), panelPortData.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException ex) {
@@ -526,6 +551,14 @@ public class PhantomBot implements Listener {
                                   "function getPanelPort() { return panelSettings.panelPort; }\r\n" +
                                   "function getChannelName() { return panelSettings.channelName; }\r\n" +
                                   "function getAuth() { return panelSettings.auth; }\r\n";
+
+            if (!new File ("./web/common/").exists()) {
+                new File ("./web/common/").mkdirs();
+            }
+            if (!new File ("./web/common/js").exists()) {
+                new File ("./web/common/js").mkdirs();
+            }
+
             Files.write(Paths.get("./web/common/js/wsConfig.js"), wsROPortData.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException ex) {
