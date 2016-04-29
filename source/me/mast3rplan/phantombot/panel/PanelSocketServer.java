@@ -81,7 +81,13 @@ import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.google.common.collect.Maps;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -97,38 +103,40 @@ import me.mast3rplan.phantombot.PhantomBot;
 public class PanelSocketServer extends WebSocketServer {
 
     private String authString;
-    private int currentVolume = 0;
-    private int currentState = -10;
-    private Boolean authenticated = false;
+    private String authStringRO;
+    private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
 
-    public PanelSocketServer(int port, String authString) {
+    public PanelSocketServer(int port, String authString, String authStringRO) {
         super(new InetSocketAddress(port));
         this.authString = authString;
+        this.authStringRO = authStringRO;
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-            com.gmt2001.Console.debug.println("PanelSocketServer: onOpen");
-            com.gmt2001.Console.debug.println("PanelSocketServer: Connection from " + 
-                                            webSocket.getRemoteSocketAddress().getHostName() + 
-                                            ":" + webSocket.getRemoteSocketAddress().getPort());
+        wsSessionMap.put(genSessionKey(webSocket), new wsSession(false, true, webSocket));
+        com.gmt2001.Console.debug.println("PanelSocketServer: Connection from " + 
+                                          webSocket.getRemoteSocketAddress().getHostName() + 
+                                          ":" + webSocket.getRemoteSocketAddress().getPort());
 
     }
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
-            com.gmt2001.Console.debug.println("PanelSocketServer: onClose");
-            com.gmt2001.Console.debug.println("PanelSocketServer: Disconnection from " + 
-                                            webSocket.getRemoteSocketAddress().getHostName() + 
-                                            ":" + webSocket.getRemoteSocketAddress().getPort());
+        wsSessionMap.remove(genSessionKey(webSocket));
+        com.gmt2001.Console.debug.println("PanelSocketServer: Disconnection from " + 
+                                          webSocket.getRemoteSocketAddress().getHostName() + 
+                                          ":" + webSocket.getRemoteSocketAddress().getPort());
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String jsonString) {
         JSONObject jsonObject;
         JSONArray  jsonArray;
+        wsSession  sessionData;
+        Boolean    authenticated;
         String     dataString;
         String     uniqueID;
         int        dataInt;
@@ -144,20 +152,29 @@ public class PanelSocketServer extends WebSocketServer {
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         }
+        sessionData = wsSessionMap.get(genSessionKey(webSocket));
 
         if (jsonObject.has("authenticate")) {
             authenticated = jsonObject.getString("authenticate").equals(authString);
+            if (authenticated) {
+                sessionData.setAuthenticated(authenticated);
+                sessionData.setReadOnly(false);
+            } else {
+                authenticated = jsonObject.getString("authenticate").equals(authStringRO);
+                sessionData.setAuthenticated(authenticated);
+                sessionData.setReadOnly(true);
+            } 
             return;
         }
 
-        if (!authenticated) {
+        if (!sessionData.isAuthenticated()) {
             JSONStringer jsonStringer = new JSONStringer();
             jsonStringer.object().key("autherror").value("not authenticated").endObject();
-            sendToAll(jsonStringer.toString());
+            webSocket.send(jsonStringer.toString());
             return;
         }
 
-        // com.gmt2001.Console.out.println("PanelSocketServer::onMessage(" + jsonString + ")");
+        // debugMsg("PanelSocketServer::onMessage(" + jsonString + ")");
 
         try {
             if (jsonObject.has("command")) {
@@ -170,28 +187,28 @@ public class PanelSocketServer extends WebSocketServer {
                 return;
             } else if (jsonObject.has("version")) {
                 uniqueID = jsonObject.getString("version");
-                doVersion(uniqueID);
+                doVersion(webSocket, uniqueID);
             } else if (jsonObject.has("dbquery")) {
                 uniqueID = jsonObject.getString("dbquery");
                 String table = jsonObject.getJSONObject("query").getString("table");
                 String key = jsonObject.getJSONObject("query").getString("key");
-                doDBQuery(uniqueID, table, key);
+                doDBQuery(webSocket, uniqueID, table, key);
                 return;
             } else if (jsonObject.has("dbkeys")) {
                 uniqueID = jsonObject.getString("dbkeys");
                 String table = jsonObject.getJSONObject("query").getString("table");
-                doDBKeysQuery(uniqueID, table);
-            } else if (jsonObject.has("dbupdate")) {
+                doDBKeysQuery(webSocket, uniqueID, table);
+            } else if (jsonObject.has("dbupdate") && !sessionData.isReadOnly()) {
                 uniqueID = jsonObject.getString("dbupdate");
                 String table = jsonObject.getJSONObject("update").getString("table");
                 String key = jsonObject.getJSONObject("update").getString("key");
                 String value = jsonObject.getJSONObject("update").getString("value");
-                doDBUpdate(uniqueID, table, key, value);
-            } else if (jsonObject.has("dbdelkey")) {
+                doDBUpdate(webSocket, uniqueID, table, key, value);
+            } else if (jsonObject.has("dbdelkey") && !sessionData.isReadOnly()) {
                 uniqueID = jsonObject.getString("dbdelkey");
                 String table = jsonObject.getJSONObject("delkey").getString("table");
                 String key = jsonObject.getJSONObject("delkey").getString("key");
-                doDBDelKey(uniqueID, table, key);
+                doDBDelKey(webSocket, uniqueID, table, key);
             } else {
                 com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
                 return;
@@ -214,42 +231,33 @@ public class PanelSocketServer extends WebSocketServer {
         }
     }
 
-    public void sendToAll(String text) {
-        Collection<WebSocket> con = connections();
-        synchronized (con) {
-            for (WebSocket c : con) {
-                c.send(text);
-            }
-        }
-    }
-
     public void onWebsocketClosing(WebSocket ws, int code, String reason, boolean remote) {
         com.gmt2001.Console.debug.println("PanelSocketServer::Closing WebSocket");
     }
 
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
-        com.gmt2001.Console.debug.println("PanelSocketServer::Closing WebSocket");
+        com.gmt2001.Console.debug.println("PanelSocketServer::Closing WebSocket Initiated");
     }
 
-    private void doVersion(String id) {
+    private void doVersion(WebSocket webSocket, String id) {
         JSONStringer jsonObject = new JSONStringer();
 
         String version = PhantomBot.instance().getBotInfo();
 
         jsonObject.object().key("versionresult").value(id).key("version").value(version).endObject();
-        sendToAll(jsonObject.toString());
+        webSocket.send(jsonObject.toString());
    }
 
-    private void doDBQuery(String id, String table, String key) {
+    private void doDBQuery(WebSocket webSocket, String id, String table, String key) {
         JSONStringer jsonObject = new JSONStringer();
 
         String value = PhantomBot.instance().getDataStore().GetString(table, "", key);
         jsonObject.object().key("query_id").value(id).key("results").object();
         jsonObject.key("table").value(table).key(key).value(value).endObject().endObject();
-        sendToAll(jsonObject.toString());
+        webSocket.send(jsonObject.toString());
     }
 
-    private void doDBKeysQuery(String id, String table) {
+    private void doDBKeysQuery(WebSocket webSocket, String id, String table) {
         JSONStringer jsonObject = new JSONStringer();
 
         jsonObject.object().key("query_id").value(id).key("results").array();
@@ -261,24 +269,63 @@ public class PanelSocketServer extends WebSocketServer {
         }
 
         jsonObject.endArray().endObject();
-        sendToAll(jsonObject.toString());
+        webSocket.send(jsonObject.toString());
     }
 
-    private void doDBUpdate(String id, String table, String key, String value) {
+    private void doDBUpdate(WebSocket webSocket, String id, String table, String key, String value) {
         JSONStringer jsonObject = new JSONStringer();
         PhantomBot.instance().getDataStore().set(table, key, value);
         jsonObject.object().key("query_id").value(id).endObject();
-        sendToAll(jsonObject.toString());
+        webSocket.send(jsonObject.toString());
     }
 
-    private void doDBDelKey(String id, String table, String key) {
+    private void doDBDelKey(WebSocket webSocket, String id, String table, String key) {
         JSONStringer jsonObject = new JSONStringer();
         PhantomBot.instance().getDataStore().del(table, key);
         jsonObject.object().key("query_id").value(id).endObject();
-        sendToAll(jsonObject.toString());
+        webSocket.send(jsonObject.toString());
     }
 
     private void debugMsg(String message) {
         com.gmt2001.Console.debug.println("PanelSocketServer: " + message);
     }
+
+    private static String genSessionKey(WebSocket webSocket) {
+        return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
+    }
+
+    // Class for storing Session data.
+    private class wsSession {
+        Boolean authenticated;
+        Boolean readonly;
+        WebSocket webSocket;
+
+        public wsSession(Boolean authenticated, Boolean readonly, WebSocket webSocket) {
+            this.authenticated = authenticated;
+            this.readonly = readonly;
+            this.webSocket = webSocket;
+        }
+
+        public void setAuthenticated(Boolean authenticated) {
+            this.authenticated = authenticated;
+        }
+        public Boolean isAuthenticated() {
+            return authenticated;
+        }
+
+        public void setReadOnly(Boolean readonly) {
+            this.readonly = readonly;
+        }
+        public Boolean isReadOnly() {
+            return readonly;
+        }
+
+        public void setWebSocket(WebSocket webSocket) {
+            this.webSocket = webSocket;
+        }
+        public WebSocket getWebSocket() {
+            return webSocket;
+        }
+    }
+
 }

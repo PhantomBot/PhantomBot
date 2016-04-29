@@ -50,6 +50,7 @@ resources/stacktrace.txt
 resources/stdio.txt
 resources/web/default.html
 resources/web/default.txt
+resources/scripts/*
 
 # IntelliJ Project files
 .idea
