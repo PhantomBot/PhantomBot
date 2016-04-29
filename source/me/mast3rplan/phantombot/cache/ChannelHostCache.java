@@ -93,7 +93,7 @@ public class ChannelHostCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException e) {
-            com.gmt2001.Console.out.println("ChannelHostCache.run>> Failed to initial sleep: [InterruptedException] " + e.getMessage());
+            com.gmt2001.Console.debug.println("ChannelHostCache.run>> Failed to initial sleep: [InterruptedException] " + e.getMessage());
             com.gmt2001.Console.err.logStackTrace(e);
         }
 
@@ -122,7 +122,7 @@ public class ChannelHostCache implements Runnable {
                         }
                     }
 
-                    com.gmt2001.Console.out.println("ChannelHostCache.run>> Failed to update hosts: " + e.getMessage());
+                    com.gmt2001.Console.debug.println("ChannelHostCache.run>> Failed to update hosts: " + e.getMessage());
                     com.gmt2001.Console.err.logStackTrace(e);
                 }
             } catch (Exception e) {
@@ -132,7 +132,7 @@ public class ChannelHostCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException e) {
-                com.gmt2001.Console.out.println("ChannelHostCache.run>> Failed to sleep: [InterruptedException] " + e.getMessage());
+                com.gmt2001.Console.debug.println("ChannelHostCache.run>> Failed to sleep: [InterruptedException] " + e.getMessage());
                 com.gmt2001.Console.err.logStackTrace(e);
             }
         }
@@ -179,7 +179,7 @@ public class ChannelHostCache implements Runnable {
                                         + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
                                         + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                 } catch (Exception e) {
-                    com.gmt2001.Console.out.println("ChannelHostCache.updateCache>>Failed to update hosts: " + e.getMessage());
+                    com.gmt2001.Console.debug.println("ChannelHostCache.updateCache>>Failed to update hosts: " + e.getMessage());
                     com.gmt2001.Console.err.logStackTrace(e);
                 }
             }
@@ -205,7 +205,7 @@ public class ChannelHostCache implements Runnable {
                     }
                 }
 
-                com.gmt2001.Console.out.println("ChannelHostCache.updateCache>>Failed to update hosts: " + e.getMessage());
+                com.gmt2001.Console.debug.println("ChannelHostCache.updateCache>>Failed to update hosts: " + e.getMessage());
                 com.gmt2001.Console.err.logStackTrace(e);
             }
         }
