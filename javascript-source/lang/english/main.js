@@ -225,7 +225,7 @@ $.lang.register('init.module.enabled', 'Module "$1" enabled!');
 $.lang.register('init.module.error', 'Module "$1" enabled but did not initialize! Check error logs!');
 $.lang.register('init.module.list', '$1 registered modules: $2');
 $.lang.register('init.module.usage', 'Usage: !module list, !module enable [module name], !module disable [module name], !module status [module name]');
-$.lang.register('init.reconnect', 'Reconnecting from $1');
+$.lang.register('init.reconnect', 'Reconnecting to $1');
 $.lang.register('init.disconnect', 'Disconnecting from $1');
 $.lang.register('init.usage', '!$1 [reconnect / disconnect / connectmessage / removeconnectmessage]');
 $.lang.register('init.connected.msg', 'Connect message set to: $1');
