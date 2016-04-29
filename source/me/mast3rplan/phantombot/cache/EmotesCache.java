@@ -126,7 +126,7 @@ public class EmotesCache implements Runnable {
             try {
                 Thread.sleep(loopSleep * 1000); 
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.out.println("EmotesCache.run>> Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+                com.gmt2001.Console.debug.println("EmotesCache.run>> Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
         }
@@ -145,7 +145,7 @@ public class EmotesCache implements Runnable {
                                          jsonResult.getString("message") : "content=" + jsonResult.getString("_content")) +
                                         "Emotes Type=" + emoteType);
                 } catch (Exception ex) {
-                    com.gmt2001.Console.out.println("EmotesCache.updateCache>> Failed to update emotes (" + emoteType + "): " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("EmotesCache.updateCache>> Failed to update emotes (" + emoteType + "): " + ex.getMessage());
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
@@ -155,7 +155,7 @@ public class EmotesCache implements Runnable {
             } catch (Exception ex) {
                 if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
                     checkLastFail();
-                    com.gmt2001.Console.out.println("EmotesCache.updateCache>> Failed to update emotes (" + emoteType + "): " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("EmotesCache.updateCache>> Failed to update emotes (" + emoteType + "): " + ex.getMessage());
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
