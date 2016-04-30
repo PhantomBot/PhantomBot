@@ -116,7 +116,6 @@
         if (hoursOnly) {
             return floor(cHours) + $.lang.get('common.hours');
         } else {
-            //return ((floor(cHours) + $.lang.get('common.hours') + floor(~~cMins) + $.lang.get('common.minutes') + floor(cMins % 1 * 60) + $.lang.get('common.seconds')).replace('0' + $.lang.get('common.hours'), ''));
             if (floor(cHours) > 0) {
                 return ((floor(cHours) + $.lang.get('common.hours') + floor(~~cMins) + $.lang.get('common.minutes') + floor(cMins % 1 * 60) + $.lang.get('common.seconds')));
             } else {
