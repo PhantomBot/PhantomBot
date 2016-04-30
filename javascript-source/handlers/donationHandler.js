@@ -97,9 +97,9 @@
         }
 
         /**
-         * @commandpath lastdonation - Display the last donation.
+         * @commandpath lasttip - Display the last donation.
          */
-        if (command.equalsIgnoreCase('lastdonation')) {
+        if (command.equalsIgnoreCase('lastdonation') || command.equalsIgnoreCase('lasttip')) {
             if (!$.inidb.exists('donations', 'last_donation')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.lastdonation.no-donations'));
                 return;
@@ -130,16 +130,16 @@
         }
 
         /**
-         * @commandpath donations - Controls various options for donation handling
+         * @commandpath tip - Controls various options for donation handling
          */
-        if (command.equalsIgnoreCase('donations')) {
+        if (command.equalsIgnoreCase('donations') || command.equalsIgnoreCase('tip')) {
             if (!args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.usage'));
                 return;
             }
 
             /**
-             * @commandpath donations announce - Toggles announcements for donations off and on
+             * @commandpath tip announce - Toggles announcements for donations off and on
              */
             if (args[0].equalsIgnoreCase('announce')) {
                 if (announceDonations) {
@@ -157,7 +157,7 @@
             }
 
             /**
-             * @commandpath donations rewardmultiplier [n.n] - Set a reward multiplier for donations.
+             * @commandpath tip rewardmultiplier [n.n] - Set a reward multiplier for donations.
              */
             if (args[0].equalsIgnoreCase('rewardmultiplier')) {
                 if (!args[1]) {
@@ -177,8 +177,8 @@
             }
 
             /**
-             * @commandpath donations message [message text] - Set the donation message. Tags: (name), (amount), (points), (pointname), (message) and (currency)
-             * @commandpath donations lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
+             * @commandpath tip message [message text] - Set the donation message. Tags: (name), (amount), (points), (pointname), (message) and (currency)
+             * @commandpath tip lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
              */
             if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('lastmessage')) {
                 var comArg = args[0].toLowerCase();
@@ -207,7 +207,9 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             $.registerChatCommand('./handlers/donationHandler.js', 'lastdonation', 7);
+            $.registerChatCommand('./handlers/donationHandler.js', 'lasttip', 7);
             $.registerChatCommand('./handlers/donationHandler.js', 'donations', 1);
+            $.registerChatCommand('./handlers/donationHandler.js', 'tip', 1);
             $.registerChatCommand('./handlers/donationHandler.js', 'donationpanelupdate', 1);
         }
     });
