@@ -94,6 +94,16 @@
         warning = '',
         i;
 
+        if (warningResetTime < 30) {
+            $.inidb.set('chatModerator', 'warningResetTime', 30);
+            warningResetTime = 30;
+        }
+
+        if (msgCooldownSec < 10) {
+            $.inidb.set('chatModerator', 'msgCooldownSec', 10);
+            msgCooldownSec = 10;
+        }
+
     /**
      * @function reloadModeration
      * To be called by the panel to update the chatmod settings after updating the DB directly.
@@ -183,7 +193,18 @@
         blacklistTimeoutTime = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime');
         blacklistMessage = $.getIniDbString('chatModerator', 'blacklistMessage');
         warningResetTime = $.getIniDbNumber('chatModerator', 'warningResetTime');
+        msgCooldownSec = $.getIniDbNumber('chatModerator', 'msgCooldownSec');
         resetTime = (warningResetTime * 60 * 1000) + $.systemTime();
+
+        if (warningResetTime < 30) {
+            $.inidb.set('chatModerator', 'msgCooldownSec', 30);
+            warningResetTime = 30;
+        }
+
+        if (msgCooldownSec < 10) {
+            $.inidb.set('chatModerator', 'msgCooldownSec', 10);
+            msgCooldownSec = 10;
+        }
 
         loadBlackList();
         loadWhiteList();
@@ -1455,7 +1476,7 @@
             }
 
             /**
-             * @commandpath moderation messagecooldown [seconds] - Sets a cooldown in seconds on the timeout messages
+             * @commandpath moderation messagecooldown [seconds] - Sets a cooldown in seconds on the timeout messages (minimum is 10 seconds)
              */
             if (action.equalsIgnoreCase('messagecooldown')) {
                 if (!subAction) {
@@ -1469,7 +1490,7 @@
             }
 
             /**
-             * @commandpath moderation warningresettime [seconds] - Sets how long a user stays on his first offence for (there are 2 offences). Default is 60 minutes
+             * @commandpath moderation warningresettime [seconds] - Sets how long a user stays on his first offence for (there are 2 offences). Default is 60 minutes (minimum is 30 minutes)
              */
             if (action.equalsIgnoreCase('warningresettime')) {
                 if (!subAction) {
