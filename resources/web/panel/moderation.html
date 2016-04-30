@@ -30,11 +30,27 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="moderationAccordion">
-    <!--<h3>Global Moderation Settings</h3>
+    <h3>Global Moderation Settings</h3>
     <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="msgCooldownSec">Message Cooldown (seconds)</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#msgCooldownSec', 'msgCooldownSec')">Submit</button>
+                <input type="text" class="form-control" id="msgCooldownSec" placeholder="Loading..."
+                     data-toggle="tooltip" title="Sets a cooldown on the warning and timeout messages (minimum is 10 seconds)." />
+            </div>
+        </form>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="warningResetTime">Warning Count Reset Time (minutes)</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#warningResetTime', 'warningResetTime')">Submit</button>
+                <input type="text" class="form-control" id="warningResetTime" placeholder="Loading..."
+                     data-toggle="tooltip" title="Sets how long a user stays on his first offence for. (there are 2 offences) (minimum is 30 minutes)." />
+            </div>
+        </form>
     </div> 
-    **More to be added here later.**
-    -->
 
     <h3>Quick Moderation Settings</h3>
     <div>
