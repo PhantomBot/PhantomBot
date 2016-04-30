@@ -245,6 +245,14 @@
                         $("#blacklistMessage").attr("placeholder", modValue).blur();
                     }
 
+                    if (panelMatch(modSetting, 'msgCooldownSec')) {
+                        $("#msgCooldownSec").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'warningResetTime')) {
+                        $("#warningResetTime").attr("placeholder", modValue).blur();
+                    }
+
                     if (panelMatch(modSetting, 'linksToggle')) {
                         if (panelMatch(modValue, 'true')) {
                             $('#toggleModerationLinks').attr('checked', 'checked');
