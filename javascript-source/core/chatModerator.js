@@ -88,7 +88,8 @@
         blacklistTimeoutTime = $.getSetIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
         blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase'),
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSec', 30),
-        resetTime = (60 * 60 * 1000) + $.systemTime(),
+        warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
+        resetTime = (warningResetTime * 60 * 1000) + $.systemTime(),
         messageTime = 0,
         warning = '',
         i;
@@ -181,6 +182,8 @@
 
         blacklistTimeoutTime = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime');
         blacklistMessage = $.getIniDbString('chatModerator', 'blacklistMessage');
+        warningResetTime = $.getIniDbNumber('chatModerator', 'warningResetTime');
+        resetTime = (warningResetTime * 60 * 1000) + $.systemTime();
 
         loadBlackList();
         loadWhiteList();
@@ -333,13 +336,13 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
-        var sender = event.getSender(),
+        var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase(),
             messageLength = message.length();
 
-        //if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isModv3(sender, event.getTags())) {
             if (linksToggle && $.patternDetector.hasLinks(event)) {
-                if (checkYoutubePlayer(message) || checkPermitList(sender.toLowerCase()) || checkWhiteList(message)) {
+                if (checkYoutubePlayer(message) || checkPermitList(sender) || checkWhiteList(message)) {
                     return;
                 }
 
@@ -418,7 +421,7 @@
             }
 
             if (message && checkBlackList(sender, message)) {
-            //}
+            }
         }
     });
 
@@ -1463,6 +1466,20 @@
                 $.inidb.set('chatModerator', 'msgCooldownSec', msgCooldownSec);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.msgcooldown.set', msgCooldownSec));
                 $.logEvent('chatModerator.js', 1342, sender + ' changed the timeout message cooldown to ' + msgCooldownSec + ' seconds');
+            }
+
+            /**
+             * @commandpath moderation warningresettime [seconds] - Sets how long a user stays on his first offence for (there are 2 offences). Default is 60 minutes
+             */
+            if (action.equalsIgnoreCase('warningresettime')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningresettime.usage'));
+                    return;
+                }
+                warningResetTime = parseInt(subAction);
+                $.inidb.set('chatModerator', 'warningResetTime', warningResetTime);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningresettime.set', warningResetTime));
+                $.logEvent('chatModerator.js', 1342, sender + ' changed the warning reset time to ' + warningResetTime + ' seconds');
             }
 
             /**
