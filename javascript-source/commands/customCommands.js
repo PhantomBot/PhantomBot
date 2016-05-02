@@ -308,7 +308,7 @@
                 return;
             }
 
-            action = args[0].replace('!', '');
+            action = args[0].replace('!', '').toLowerCase();
             argString = argString.substring(argString.indexOf(args[0]) + args[0].length() + 1);
 
             if ($.commandExists(action)) {
@@ -331,7 +331,7 @@
                 return;
             }
 
-            action = args[0].replace('!', '');
+            action = args[0].replace('!', '').toLowerCase();
 
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.usage'));
@@ -366,7 +366,7 @@
                 return;
             }
 
-            action = args[0].replace('!', '');
+            action = args[0].replace('!', '').toLowerCase();
 
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delete.usage'));
@@ -397,8 +397,8 @@
                 return;
             }
 
-            action = args[0].replace('!', '');
-            subAction = args[1].replace('!', '');
+            action = args[0].replace('!', '').toLowerCase();
+            subAction = args[1].replace('!', '').toLowerCase();
 
             if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404'));
@@ -435,7 +435,7 @@
                 return;
             }
 
-            action = args[0].replace('!', '');
+            action = args[0].replace('!', '').toLowerCase();
             if (!$.inidb.exists('aliases', action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.delete.error.alias.404', action));
                 return;
@@ -462,7 +462,7 @@
                 return;
             }
 
-            action = args[0].replace('!', '');
+            action = args[0].replace('!', '').toLowerCase();
 
             if (args.length == 2) {
                 var group = args[1];
@@ -520,7 +520,7 @@
                 return;
             }
 
-            action = args[0].replace('!', '');
+            action = args[0].replace('!', '').toLowerCase();
 
             $.inidb.set('pricecom', action, subAction);
             list = $.inidb.GetKeyList('aliases', '');
@@ -595,6 +595,7 @@
                 return;
             }
 
+            action = action.toLowerCase();
             if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.404'));
                 return;
@@ -624,6 +625,7 @@
                 return;
             }
 
+            action = action.toLowerCase();
             if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.404'));
                 return;
