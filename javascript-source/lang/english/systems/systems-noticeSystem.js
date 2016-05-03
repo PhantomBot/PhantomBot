@@ -13,7 +13,7 @@ $.lang.register('noticehandler.notice-interval-404', 'Notice interval needs to b
 $.lang.register('noticehandler.notice-inteval-success', 'Notice interval set!');
 $.lang.register('noticehandler.notice-req-success', 'Notice req message set!');
 $.lang.register('noticehandler.notice-req-usage', 'Usage: !notice req (req messages)');
-$.lang.register('noticehandler.notice-req-404', 'Notice req messages needs to at lease 1.');
+$.lang.register('noticehandler.notice-req-404', 'Notice req messages needs to at least 1.');
 $.lang.register('noticehandler.notice-enabled', 'Notices have been enabled!');
 $.lang.register('noticehandler.notice-disabled', 'Notices have been disabled.');
 $.lang.register('noticehandler.notice-enabled.offline', 'Notices now be said in offline chat.');
