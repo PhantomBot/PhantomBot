@@ -64,8 +64,8 @@ import java.nio.charset.StandardCharsets;
 
 public class GenerateTwitterTokens {
 
-    private final static String consumerKey = "B7XaZDvKqq5J4QruegBjB9iMr";
-    private final static String consumerSecret = "yErkwZoHZEnqH7GrpZEybP9C25sUK1xVeWcF9KszMIsCjG6U58";
+    private final static String consumerKey = "tNuyxOX6kCnLdBhYBmyBqG6zr";
+    private final static String consumerSecret = "0lQIKeaRWKG9CQkfr2a2pwrqQBxl0IK0FqDwgfmIZdVybHnXeX";
 
     public static void main(String[] args) {
         String username = "";

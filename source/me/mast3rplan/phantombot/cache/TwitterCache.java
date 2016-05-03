@@ -166,16 +166,16 @@ public class TwitterCache implements Runnable {
         }
 
         /* Check DB for the last poll times. */
-        last_retweetTime = getDBLong("lastpoll_retweets", poll_retweets);
-        last_mentionsTime = getDBLong("lastpoll_mentions", poll_mentions);
-        last_hometimelineTime = getDBLong("lastpoll_hometimeline", poll_hometimeline);
-        last_usertimelineTime = getDBLong("lastpoll_usertimeline", poll_usertimeline);
+        last_retweetTime = getDBLong("lastpoll_retweets", poll_retweets, 0L);
+        last_mentionsTime = getDBLong("lastpoll_mentions", poll_mentions, 0L);
+        last_hometimelineTime = getDBLong("lastpoll_hometimeline", poll_hometimeline, 0L);
+        last_usertimelineTime = getDBLong("lastpoll_usertimeline", poll_usertimeline, 0L);
 
-        /* Check DB for the poll delay times. */
-        delay_retweets = getDBLong("polldelay_retweets", poll_retweets);
-        delay_mentions = getDBLong("polldelay_mentions", poll_mentions);
-        delay_hometimeline = getDBLong("polldelay_hometimeline", poll_hometimeline);
-        delay_usertimeline = getDBLong("polldelay_usertimeline", poll_usertimeline);
+        /* Check DB for the poll delay times.  Note that minimum polling times are enforced here. */
+        delay_retweets = getDBLong("polldelay_retweets", poll_retweets, 60L);
+        delay_mentions = getDBLong("polldelay_mentions", poll_mentions, 60L);
+        delay_hometimeline = getDBLong("polldelay_hometimeline", poll_hometimeline, 60L);
+        delay_usertimeline = getDBLong("polldelay_usertimeline", poll_usertimeline, 15L);
 
         /* Handle each type of data from the Twitter API. */
         presentTime = System.currentTimeMillis() / 1000L;
@@ -206,7 +206,7 @@ public class TwitterCache implements Runnable {
         }
         updateDBLong("lastpoll_retweets", presentTime);
 
-        long lastID = getDBLong("lastid_retweets", true);
+        long lastID = getDBLong("lastid_retweets", true, 0L);
         List<Status>statuses = TwitterAPI.instance().getRetweetsOfMe(lastID);
 
         if (statuses == null) {
@@ -234,7 +234,7 @@ public class TwitterCache implements Runnable {
         }
         updateDBLong("lastpoll_mentions", presentTime);
 
-        long lastID = getDBLong("lastid_mentions", true);
+        long lastID = getDBLong("lastid_mentions", true, 0L);
         List<Status>statuses = TwitterAPI.instance().getMentions(lastID);
 
         if (statuses == null) {
@@ -262,7 +262,7 @@ public class TwitterCache implements Runnable {
         }
         updateDBLong("lastpoll_hometimeline", presentTime);
 
-        long lastID = getDBLong("lastid_hometimeline", true);
+        long lastID = getDBLong("lastid_hometimeline", true, 0L);
         List<Status>statuses = TwitterAPI.instance().getHomeTimeline(lastID);
 
         if (statuses == null) {
@@ -290,7 +290,7 @@ public class TwitterCache implements Runnable {
         }
         updateDBLong("lastpoll_usertimeline", presentTime);
 
-        long lastID = getDBLong("lastid_usertimeline", true);
+        long lastID = getDBLong("lastid_usertimeline", true, 0L);
         List<Status>statuses = TwitterAPI.instance().getUserTimeline(lastID);
 
         if (statuses == null) {
@@ -327,17 +327,21 @@ public class TwitterCache implements Runnable {
      *
      * @param   String   Database key to inspect.
      * @param   Boolean  Determines if polling is active or not.
-     * @return  long     The time since the last poll or 0.
+     * @return  long     0 if not polling; defaultVal if no value in database; defaultVal
+     *                   if database value is less than defaultVal; else database value.
      */
-    private long getDBLong(String dbKey, Boolean doPoll) {
+    private long getDBLong(String dbKey, Boolean doPoll, long defaultVal) {
         if (!doPoll) {
             return 0L;
         }
 
         String dbData = PhantomBot.instance().getDataStore().GetString("twitter", "", dbKey);
         if (dbData == null) {
-            return 0L;
+            return defaultVal;
         } else {
+            if (Long.parseLong(dbData) < defaultVal) {
+                return defaultVal;
+            }
             return Long.parseLong(dbData);
         }
     }
