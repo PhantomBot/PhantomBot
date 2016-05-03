@@ -70,8 +70,8 @@ public class TwitterAPI {
     private AccessToken accessToken = null;
     private Twitter twitter = null;
 
-    private final String consumerKey = "B7XaZDvKqq5J4QruegBjB9iMr";
-    private final String consumerSecret = "yErkwZoHZEnqH7GrpZEybP9C25sUK1xVeWcF9KszMIsCjG6U58";
+    private final String consumerKey = "tNuyxOX6kCnLdBhYBmyBqG6zr";
+    private final String consumerSecret = "0lQIKeaRWKG9CQkfr2a2pwrqQBxl0IK0FqDwgfmIZdVybHnXeX";
 
     /*
      * Instance method for Twitter API.
@@ -118,8 +118,10 @@ public class TwitterAPI {
      * Authenticates with Twitter using the OAuth method.  Twitter may throw an exception which is
      * captured and reported to the error logs.  If an error does occur, accessToken is set to null
      * so that other methods know not to try to interact with Twitter.
+     *
+     * @return  Boolean  Returns true if authentication was successful else false.
      */
-    public void authenticate() {
+    public Boolean authenticate() {
         com.gmt2001.Console.debug.println("TwitterAPI::authenticate()");
         try {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
@@ -133,10 +135,12 @@ public class TwitterAPI {
 
             accessToken = twitter.getOAuthAccessToken();
             com.gmt2001.Console.out.println("Authenticated with Twitter API");
+            return true;
         }
         catch (TwitterException ex) {
             com.gmt2001.Console.err.println("TwitterAPI::authenticate: Failed: " + ex.getMessage());
             accessToken = null;
+            return false;
         }
     }     
 
@@ -174,9 +178,9 @@ public class TwitterAPI {
         }
 
         try {
-            Paging paging = new Paging(sinceId);
             com.gmt2001.Console.debug.println("TwitterAPI::getUserTimeline: Polling Data");
-            if (sinceId != 0) {
+            if (sinceId != 0L) {
+                Paging paging = new Paging(sinceId);
                 List<Status> statuses = twitter.getUserTimeline(paging);
                 if (statuses.size() == 0) {
                     return null;
@@ -234,9 +238,9 @@ public class TwitterAPI {
         }
 
         try {
-            Paging paging = new Paging(sinceId);
             com.gmt2001.Console.debug.println("TwitterAPI::getHomeTimeline: Polling Data");
-            if (sinceId != 0) {
+            if (sinceId != 0L) {
+                Paging paging = new Paging(sinceId);
                 List<Status> statuses = twitter.getHomeTimeline(paging);
                 if (statuses.size() == 0) {
                     return null;
@@ -268,9 +272,9 @@ public class TwitterAPI {
         }
 
         try {
-            Paging paging = new Paging(sinceId);
             com.gmt2001.Console.debug.println("TwitterAPI::getRetweetsOfMe: Polling Data");
-            if (sinceId != 0) {
+            if (sinceId != 0L) {
+                Paging paging = new Paging(sinceId);
                 List<Status> statuses = twitter.getRetweetsOfMe(paging);
                 if (statuses.size() == 0) {
                     return null;
@@ -302,9 +306,9 @@ public class TwitterAPI {
         }
 
         try {
-            Paging paging = new Paging(sinceId);
             com.gmt2001.Console.debug.println("TwitterAPI::getMentions: Polling Data");
-            if (sinceId != 0) {
+            if (sinceId != 0L) {
+                Paging paging = new Paging(sinceId);
                 List<Status> statuses = twitter.getMentionsTimeline(paging);
                 if (statuses.size() == 0) {
                     return null;
@@ -330,6 +334,6 @@ public class TwitterAPI {
      * @return  String  URL in the format of https://twitter.com/<username>/status/<id>
      */
     public String getTwitterURLFromId(long id) {
-        return new String("https://twitter.com/" + username + " /status/ " + Long.toString(id));
+        return new String("https://twitter.com/" + username + "/status/" + Long.toString(id));
     }
 }

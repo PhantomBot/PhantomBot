@@ -59,6 +59,7 @@ import me.mast3rplan.phantombot.cache.SubscribersCache;
 import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.cache.DonationsCache;
 import me.mast3rplan.phantombot.cache.EmotesCache;
+import me.mast3rplan.phantombot.cache.TwitterCache;
 import me.mast3rplan.phantombot.console.ConsoleInputListener;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.Listener;
@@ -122,6 +123,7 @@ public class PhantomBot implements Listener {
     private boolean webenable;
     private boolean musicenable;
     private boolean usehttps;
+    private boolean twitterAuthenticated;
     private String keystorepath;
     private String keystorepassword;
     private String keypassword;
@@ -143,6 +145,7 @@ public class PhantomBot implements Listener {
     private ChannelUsersCache channelUsersCache;
     private DonationsCache donationsCache;
     private EmotesCache emotesCache;
+    private TwitterCache twitterCache;
     private MusicWebSocketServer musicsocketserver;
     private YTWebSocketServer  ytsocketserver;
     private HTTPServer httpserver;
@@ -450,7 +453,7 @@ public class PhantomBot implements Listener {
                 TwitterAPI.instance().setUsername(twitter_username);
                 TwitterAPI.instance().setAccessToken(twitter_access_token);
                 TwitterAPI.instance().setSecretToken(twitter_secret_token);
-                TwitterAPI.instance().authenticate();
+                this.twitterAuthenticated = TwitterAPI.instance().authenticate();
             }
         }
 
@@ -602,6 +605,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("donations", donationsCache, 0);
         Script.global.defineProperty("emotes", emotesCache, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
+        Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
 
         Thread t = new Thread(new Runnable() {
             @Override
@@ -719,6 +723,16 @@ public class PhantomBot implements Listener {
         }
         this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
         this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
+
+        if (this.twitter_username.length() > 0 &&
+            this.twitter_access_token.length() > 0 && this.twitter_secret_token.length() > 0) 
+        {
+            if (this.twitterAuthenticated) {
+                this.twitterCache = TwitterCache.instance(this.channel.getName().toLowerCase());
+            } else {
+                com.gmt2001.Console.out.println(">> Disabling Twitter Features. Correct Authentication Issues and Restart.");
+            }
+        }
     }
 
     @Subscribe
