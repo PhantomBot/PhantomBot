@@ -9,8 +9,8 @@
 (function() {
 
     /* Set default values for the messages. */
-    $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream at (twitchurl)');
-    $.getSetIniDbString('twitter', 'message_gamechange', 'Changing game over to (game) at (twitchurl)');
+    $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
+    $.getSetIniDbString('twitter', 'message_gamechange', 'Changing game over to (game) (twitchurl)');
 
     /**
      * @event twitter
@@ -32,8 +32,23 @@
             return;
         }
         if ($.getIniDbBoolean('twitter', 'post_online', false)) {
-            $.twitter.updateStatus($.getIniDbString('twitter', 'message_online').replace('(game)', $.twitchcache.getGameTitle()).
-                                                                                 replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName));
+            $.twitter.updateStatus($.getIniDbString('twitter', 'message_online').
+                                       replace('(game)', $.twitchcache.getGameTitle()).
+                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName));
+        }
+    });
+
+    /**
+     * @event twitchGameChange
+     */
+    $.bind('twitchGameChange', function(event) {
+        if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
+            return;
+        }
+        if ($.getIniDbBoolean('twitter', 'post_gamechange', false)) {
+            $.twitter.updateStatus($.getIniDbString('twitter', 'message_gamechange').
+                                       replace('(game)', $.twitchcache.getGameTitle()).
+                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName));
         }
     });
 
