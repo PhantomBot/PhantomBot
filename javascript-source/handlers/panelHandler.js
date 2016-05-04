@@ -96,7 +96,6 @@
      * @function updateAll()
      */
     function updateAll() {
-$.consoleLn('updateAll()');
         updateViewerCount();
         updatePlayTime();
         updateStreamUptime();
