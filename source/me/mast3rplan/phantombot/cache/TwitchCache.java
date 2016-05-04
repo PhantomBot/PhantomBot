@@ -59,7 +59,7 @@ public class TwitchCache implements Runnable {
     private boolean killed = false;
 
     /* Cached data */
-    private boolean isOnline = false;
+    private Boolean isOnline = false;
     private long streamUptimeSeconds = 0L;
     private String gameTitle = "Some Game";
 
@@ -143,8 +143,8 @@ public class TwitchCache implements Runnable {
     private void updateCache() throws Exception {
         Boolean isOnline = false;
         String  gameTitle = "Some Game";
-        Date    streamCreatedDate;
-        Date    currentDate;
+        Date    streamCreatedDate = new Date();
+        Date    currentDate = new Date();
         long    streamUptimeSeconds = 0L;
 
         /* Retrieve Stream Information */
@@ -169,8 +169,7 @@ public class TwitchCache implements Runnable {
 
                 if (isOnline) {
                     /* Calculate the stream uptime in seconds. */
-                    currentDate = new Date();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD'T'HH:mm:ss'Z'");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
                     dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
                     try {
                         streamCreatedDate = dateFormat.parse(streamObj.getJSONObject("stream").getString("created_at"));
@@ -206,14 +205,25 @@ public class TwitchCache implements Runnable {
     /*
      * Returns if the channel is online or not.
      */
-    public boolean isStreamOnline() {
+    public Boolean isStreamOnline() {
         return this.isOnline;
+    }
+
+    /*
+     * Returns a String representation of true/false to indicate if the stream is online or not.
+     */
+    public String isStreamOnlineString() {
+        if (this.isOnline) {
+            return new String("true");
+        }
+        return new String("false");
     }
 
     /*
      * Returns the uptime of the channel in seconds.
      */
     public long getStreamUptimeSeconds() {
+        com.gmt2001.Console.debug.println("getStreamUptimeSeconds::CORE::" + this.streamUptimeSeconds);
         return this.streamUptimeSeconds;
     }
 
