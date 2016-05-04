@@ -39,6 +39,7 @@
             return;
         }
 
+
         if (panelHasQuery(msgObject)) {
             if (panelCheckQuery(msgObject, 'gambling_betsettings')) {
                 for (idx in msgObject['results']) {
@@ -92,6 +93,23 @@
                     $('#traffleResults').html('<strong>Winner of Last Ticket Raffle: </strong>' + winner);
                 }
             }
+
+            if (panelCheckQuery(msgObject, 'gambling_raffleresults')) {
+                var raffleList = msgObject['results'],
+                    html = "",
+                    username = "";
+
+            html = "<table>";
+            for (var idx = 0; idx < raffleList.length; idx++) {
+                username = raffleList[idx]['key'];
+                html += "<tr class=\"textList\">" +
+                        "    <td style=\"vertical-align: middle; width: 50%\">" + username + "</td>" +
+                        "    <td style=\"vertical-align: middle width: 25%\">" +
+                        "</tr>";
+                }
+                html += "</table>";
+                $("#raffleListTable").html(html);
+            }
         }
     }
 
@@ -104,6 +122,7 @@
         sendDBKeys('gambling_auctionresults', 'auctionresults');
         sendDBQuery('gambling_raffleresults', 'raffleresults', 'winner');
         sendDBQuery('gambling_traffleresults', 'traffleresults', 'winner');
+        sendDBKeys('gambling_raffleresults', 'raffleList');
     }
 
     /**
