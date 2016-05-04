@@ -224,6 +224,7 @@
 
         if (http.getBoolean('_success')) {
             if (http.getInt('_http') == 200) {
+                $.twitchcache.setGameTitle(http.getString('game'));
                 $.inidb.set('streamInfo', 'game', http.getString('game'));
                 $.say('Changed the game to "' + http.getString('game') + '"!');
                 $.logEvent('streamCommand.js', 25, $.username.resolve(sender) + ' changed the current game to ' + http.getString('game'));

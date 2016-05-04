@@ -996,6 +996,13 @@
             callHook('twitchOffline', event, false);
         });
 
+        /**
+         * @event api-twitchGameChangeEvent
+         */
+        $api.on($script, 'twitchGameChange', function(event) {
+            callHook('twitchGameChange', event, false);
+        });
+
         $.logEvent('init.js', 553, 'Bot locked & loaded!');
         consoleDebug('Bot locked & loaded!');
         consoleLn('');

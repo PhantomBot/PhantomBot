@@ -44,6 +44,7 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
 import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
+import me.mast3rplan.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
 
 /*
  * TwitchCache Class
@@ -60,6 +61,7 @@ public class TwitchCache implements Runnable {
 
     /* Cached data */
     private Boolean isOnline = false;
+    private Boolean forcedGameTitleUpdate = false;
     private long streamUptimeSeconds = 0L;
     private String gameTitle = "Some Game";
 
@@ -142,6 +144,7 @@ public class TwitchCache implements Runnable {
      */
     private void updateCache() throws Exception {
         Boolean isOnline = false;
+        Boolean sentTwitchOnlineEvent = false;
         String  gameTitle = "Some Game";
         Date    streamCreatedDate = new Date();
         Date    currentDate = new Date();
@@ -156,13 +159,11 @@ public class TwitchCache implements Runnable {
                 /* Determine if the stream is online or not */
                 isOnline = !streamObj.isNull("stream");
 
-                com.gmt2001.Console.debug.println("TwitchCache::updateCache: isOnline(" + isOnline + ")");
                 if (!this.isOnline && isOnline) {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Sending TwitchOnlineEvent()");
                     this.isOnline = true;
                     EventBus.instance().post(new TwitchOnlineEvent(getChannel()));
+                    sentTwitchOnlineEvent = true;
                 } else if (this.isOnline && !isOnline) {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Sending TwitchOfflineEvent()");
                     this.isOnline = false;
                     EventBus.instance().post(new TwitchOfflineEvent(getChannel()));
                 }
@@ -182,7 +183,19 @@ public class TwitchCache implements Runnable {
 
                     /* Determine the game being streamed. */
                     gameTitle = streamObj.getJSONObject("stream").getString("game");
-                    this.gameTitle = gameTitle;
+
+                    if (!forcedGameTitleUpdate && !this.gameTitle.equals(gameTitle)) {
+                        /* Send an event if we did not just send a TwitchOnlineEvent. */
+                        if (!sentTwitchOnlineEvent) {
+                            this.gameTitle = gameTitle;
+                            EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
+                        }
+                        this.gameTitle = gameTitle;
+                    }
+
+                    if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitle)) {
+                        forcedGameTitleUpdate = false;
+                    }
                 } else {
                     streamUptimeSeconds = 0L;
                     this.streamUptimeSeconds = streamUptimeSeconds;
@@ -223,7 +236,6 @@ public class TwitchCache implements Runnable {
      * Returns the uptime of the channel in seconds.
      */
     public long getStreamUptimeSeconds() {
-        com.gmt2001.Console.debug.println("getStreamUptimeSeconds::CORE::" + this.streamUptimeSeconds);
         return this.streamUptimeSeconds;
     }
 
@@ -233,6 +245,15 @@ public class TwitchCache implements Runnable {
     public String getGameTitle() {
         return this.gameTitle;
     }
+
+    /*
+     * Sets the game title.  Useful for when !game is used.
+     */
+     public void setGameTitle(String gameTitle) {   
+         forcedGameTitleUpdate = true;
+         this.gameTitle = gameTitle;
+         EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
+     }
 
     /*
      * Destroys the current instance of the TwitchCache object.

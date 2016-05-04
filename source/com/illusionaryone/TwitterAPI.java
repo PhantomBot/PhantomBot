@@ -24,6 +24,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.StatusUpdate;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
@@ -31,6 +32,7 @@ import twitter4j.conf.ConfigurationFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.Paging;
 
+import java.io.File;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -158,6 +160,30 @@ public class TwitterAPI {
 
         try {
             Status status = twitter.updateStatus(statusString);
+            com.gmt2001.Console.debug.println("TwitterAPI::updateStatus: Success");
+            return true;
+        } catch (TwitterException ex) {
+            com.gmt2001.Console.err.println("TwitterAPI::updateStatus: Failed: " + ex.getMessage());
+            return false;
+        }
+    }
+
+    /*
+     * Posts a Tweet on Twitter and includes a media file.
+     *
+     * @param  statusString  The string that will be posted on Twitter.
+     * @param  filename      The filename to read as media and post to Twitter.
+     * @param  Boolean       true on success and false on failure
+     */
+    public Boolean updateStatus(String statusString, String filename) {
+        if (accessToken == null) {
+            return false;
+        }
+
+        try {
+            StatusUpdate statusUpdate = new StatusUpdate(statusString);
+            statusUpdate.setMedia(new File(filename));
+            Status status = twitter.updateStatus(statusUpdate);
             com.gmt2001.Console.debug.println("TwitterAPI::updateStatus: Success");
             return true;
         } catch (TwitterException ex) {
