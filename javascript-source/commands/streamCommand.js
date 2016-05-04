@@ -75,7 +75,7 @@
                 $.say($.whisperPrefix(sender) + $.channelName + ' is currently offline.');
                 return;
             }
-            $.say('@' + $.username.resolve(sender) + ', ' + $.username.resolve($.channelName) + ' has been playing ' + $.getGame($.channelName) + ' for ' + $.getPlayTime() + '!');
+            $.say('@' + $.username.resolve(sender) + ', ' + $.username.resolve($.channelName) + ' has been playing ' + $.getPlayTimeGame() + ' for ' + $.getPlayTime() + '!');
         }
     });
 

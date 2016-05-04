@@ -4,10 +4,21 @@
  */
 
 (function() {
-    var alreadyStarted = false,
-        currentGame = null,
-        lastGame = null,
-        playTime = null;
+    var alreadyStarted = false;
+
+    /**
+     * @event twitchOnline
+     */
+    $.bind('twitchOnline', function(event) {
+        $.setIniDbBoolean('panelstats', 'streamOnline', true);
+    });
+
+    /**
+     * @event twitchOffline
+     */
+    $.bind('twitchOffline', function(event) {
+        $.setIniDbBoolean('panelstats', 'streamOnline', false);
+    });
 
     /**
      * @function updateViewerCount()
@@ -17,20 +28,13 @@
     }
 
     /**
-     * @function updateStreamOnline()
-     */
-    function updateStreamOnline() {
-        $.setIniDbBoolean('panelstats', 'streamOnline', $.isOnline($.channelName));
-    }
-
-    /**
      * @function updateStreamUptime()
      */
     function updateStreamUptime() {
-        var uptimeSec = $.getStreamUptimeSeconds($.channelName),
-            hrs = (uptimeSec / 3600 < 10 ? "0" : "") + Math.floor(uptimeSec / 3600),
-            min = ((uptimeSec % 3600) / 60 < 10 ? "0" : "") + Math.floor((uptimeSec % 3600) / 60);
-        $.inidb.set('panelstats', 'streamUptime', hrs + ":" + min);
+        var uptimeSec = $.twitchcache.getStreamUptimeSeconds(),
+            hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
+            min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
+        $.inidb.set('panelstats', 'streamUptime', hrs + ':' + min);
     }
 
     /**
@@ -54,6 +58,23 @@
     }
 
     /**
+     * @function updatePlayTime()
+     */
+    function updatePlayTime() {
+        var playTimeStart = $.getIniDbNumber('panelstats', 'playTimeStart', 0),
+            currentTime = new Date(),
+            diffTime;
+
+        if (playTimeStart === 0) {
+            playTimeStart = currentTime;
+        }
+        diffTime = Math.floor((currentTime - playTimeStart) / 1000);
+        hrs = (diffTime / 3600 < 10 ? "0" : "") + Math.floor(diffTime / 3600),
+        min = ((diffTime % 3600) / 60 < 10 ? "0" : "") + Math.floor((diffTime % 3600) / 60);
+        $.inidb.set('panelstats', 'playTime', hrs + ":" + min);
+    }
+
+    /**
      * @function getTitlePanel()
      */
     function getTitlePanel() {
@@ -61,50 +82,24 @@
     };
 
     /**
-     * @function updatePlayTime()
-     */
-    function updatePlayTime() { //This is not for the panel, but the info I need to not abuse the api, is in this module.
-        if ($.inidb.get('panelstats', 'streamOnline').equalsIgnoreCase('false')) {
-            playTime = null;
-            currentGame = null;
-            return;
-        }
-
-        currentGame = $.getGame($.channelName);
-
-        if (currentGame != null && lastGame != currentGame) {
-            lastGame = currentGame;
-            playTime = $.systemTime();
-        }
-    };
-
-    /**
-     * @function getPlayTime()
-     */
-    function getPlayTime() { //This is not for the panel, but the info I need to not abuse the api, is in this module.
-        if (playTime != null) {
-            var time = $.systemTime() - playTime;
-            return $.getTimeString(time / 1000);
-        } else {
-            return '0 seconds'; //Put this here, but it should never happen.
-        }
-    };
-
-    /**
      * @function getTitlePanel()
      */
     function getGamePanel() {
-        $.inidb.set('streamInfo', 'game', $.getGame($.channelName));
+        if ($.twitchcache !== null) {
+            $.inidb.set('streamInfo', 'game', $.twitchcache.getGameTitle() + '');
+        } else {
+            $.inidb.set('streamInfo', 'game', 'Some Game');
+        }
     };
 
     /**
      * @function updateAll()
      */
     function updateAll() {
+$.consoleLn('updateAll()');
         updateViewerCount();
-        updateStreamOnline();
-        updateStreamUptime();
         updatePlayTime();
+        updateStreamUptime();
         getTitlePanel();
         getGamePanel();
     };
@@ -121,11 +116,7 @@
             if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
                 alreadyStarted = true;
                 $.inidb.set('panelstats', 'enabled', 'true');
-                updateAll();
-        
-                setInterval(function() {
-                    updateAll();
-                }, 6e4);
+                setInterval(function() { updateAll(); }, 6e4, 'panelHandler');
             } else {
                 $.inidb.set('panelstats', 'enabled', 'false');
             }
@@ -135,7 +126,6 @@
     /**
      * Export functions to API
      */
-    $.getPlayTime = getPlayTime;
     $.panelDB = {
         updateChatLinesDB: updateChatLinesDB,
         updateModLinesDB: updateModLinesDB,

@@ -1,4 +1,59 @@
 (function() {
+
+    var playTime = null;
+    var lastGame = null;
+    var currentGame = null;
+
+    /**
+     * @function updatePlayTime()
+     */
+    function updatePlayTime() {
+        if ($.twitchcache.isStreamOnlineString().equals('false')) {
+            playTime = null;
+            currentGame = null;
+
+            if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+                $.inidb.set('panelstats', 'playTimeStart', 0);
+            }
+            return;
+        }
+
+        currentGame = $.twitchcache.getGameTitle() + '';
+
+        if (currentGame != null && lastGame != currentGame) {
+            lastGame = currentGame;
+            playTime = $.systemTime();
+
+            if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+                $.inidb.set('panelstats', 'playTimeStart', playTime);
+            }
+        }
+    };
+
+    /**
+     * @function getPlayTimeGame()
+     * @export $
+     */
+    function getPlayTimeGame() {
+        if (currentGame == null) {
+            return "Some Game";
+        }
+        return currentGame;
+    }  
+
+    /**
+     * @function getPlayTime()
+     * @export $
+     */
+    function getPlayTime() { 
+        if (playTime != null) {
+            var time = $.systemTime() - playTime;
+            return $.getTimeString(time / 1000);
+        } else {
+            return '0 seconds'; //Put this here, but it should never happen.
+        }
+    };
+
     /**
      * @function isOnline
      * @export $
@@ -215,7 +270,16 @@
         }
     };
 
+    /**
+     * Execute the updatePlayTime function.
+     */
+    setInterval(function() {
+        updatePlayTime();
+    }, 6e4, 'updatePlayTime');
+
     /** Export functions to API */
+    $.getPlayTime = getPlayTime;
+    $.getPlayTimeGame = getPlayTimeGame;
     $.getFollows = getFollows;
     $.getGame = getGame;
     $.getStatus = getStatus;

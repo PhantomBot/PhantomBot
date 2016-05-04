@@ -77,15 +77,13 @@ public class ScriptEventManager implements Listener {
         try {
             for (EventHandlerEntry entry : entries) {
                 if (event.getClass().isAssignableFrom(entry.eventClass)) {
-                    if (PhantomBot.enableDebugging) {
-                        com.gmt2001.Console.out.println(">>>[DEBUG] Dispatching event " + entry.eventClass.getName());
-                    }
+                    com.gmt2001.Console.debug.println("Dispatching event " + entry.eventClass.getName());
 
                     entry.handler.handle(event);
                 }
             }
         } catch (Exception e) {
-            com.gmt2001.Console.out.println(">>>[DEBUG] Failed to dispatch event " + event.getClass().getName());
+            com.gmt2001.Console.err.println("Failed to dispatch event " + event.getClass().getName());
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
