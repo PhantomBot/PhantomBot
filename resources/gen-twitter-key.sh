@@ -7,5 +7,7 @@
 #     ./gen-twitter-key.sh
 #
 
+unset DISPLAY
+
 cd $(dirname $(readlink -f $0))
 java -jar GenerateTwitterTokens.jar

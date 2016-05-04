@@ -8,6 +8,10 @@
  */
 (function() {
 
+    /* Set default values for the messages. */
+    $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream at (twitchurl)');
+    $.getSetIniDbString('twitter', 'message_gamechange', 'Changing game over to (game) at (twitchurl)');
+
     /**
      * @event twitter
      */
@@ -18,6 +22,19 @@
         var tweet = event.getTweet();
 
         $.say($.lang.get('twitter.tweet', tweet));
+    });
+
+    /**
+     * @event twitchOnline
+     */
+    $.bind('twitchOnline', function(event) {
+        if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
+            return;
+        }
+        if ($.getIniDbBoolean('twitter', 'post_online', false)) {
+            $.twitter.updateStatus($.getIniDbString('twitter', 'message_online').replace('(game)', $.twitchcache.getGameTitle()).
+                                                                                 replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName));
+        }
     });
 
     /**
@@ -145,7 +162,7 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.post.usage'));
                         return;
                     }
-                    if (setCommandVal == undefined) {
+                    if (setCommandVal === undefined) {
                         setCommandVal = $.getSetIniDbBoolean('twitter', 'post_' + setCommandArg, false);
                         setCommandVal = setCommandVal ? 'on' : 'off';
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.post.' + setCommandArg + '.usage', setCommandVal));
@@ -160,6 +177,34 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.post.' + setCommandArg + '.success', setCommandVal.toLowerCase()));
                     setCommandVal = setCommandVal.equalsIgnoreCase('on') ? 'true' : 'false';
                     $.inidb.set('twitter', 'post_' + setCommandArg, setCommandVal);
+                    return;
+                }
+
+                /**
+                 * @commandpath twitter set message - Twitter automatic post message configuration base command
+                 */
+                if (subCommandArg.equalsIgnoreCase('message')) {
+                    if (setCommandArg === undefined) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.message.usage'));
+                        return;
+                    }
+
+                    /**
+                     * @commandpath twitter set message online [message] - Configures message that is sent out when stream goes online. Tags: (game) (twitchurl)
+                     * @commandpath twitter set message gamechange [message] - Configures message that is sent out on game change. Tags: (game) (twitchurl)
+                     */
+                    if (!setCommandArg.equalsIgnoreCase('online') && !setCommandArg.equalsIgnoreCase('gamechange')) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.message.usage'));
+                        return;
+                    }
+                    if (setCommandVal === undefined) {
+                        setCommandVal = $.getIniDbString('twitter', 'message_' + setCommandArg);
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.message.' + setCommandArg + '.usage', setCommandVal));
+                        return;
+                    }
+                    setCommandVal = args.splice(3).join(' ');
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.message.' + setCommandArg + '.success', setCommandVal));
+                    $.inidb.set('twitter', 'message_' + setCommandArg, setCommandVal);
                     return;
                 }
             }
