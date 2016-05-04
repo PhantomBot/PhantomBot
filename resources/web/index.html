@@ -1,47 +1,108 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>PhantomBot YouTube Player and Panel</title>
+        <title>PhantomBot</title>
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     </head>
 
     <body>
 
         <div class="header">
             <img id="logo" src="logo.png"/>
-            <h1>YouTube Player and Panel</h1>
+            <h1>PhantomBot</h1>
+
+            <span>
+                <a target="_blank" href="https://twitter.com/PhantomBotApp" id="header-right">
+                    <i style="color: white" id="fontawesome" class="fa fa-twitter fa-lg" aria-hidden="true"></i>
+                </a>
+            </span>
+            <span>
+                <a target="_blank" href="https://community.phantombot.net" id="header-right">
+                    <i data-toggle="tooltip" data-placement="left" title="Forums" style="color: white" id="fontawesome" class="fa fa-users fa-lg" aria-hidden="true"></i>
+                </a>
+            </span>
         </div>
-        <center><h1><font style="color: white" style="">
-            &nbsp;To connect to the bots YouTube Player, please connect to the following URL:<br>
-            <script>
-                var urlInfo = window.location.host.split(":");
-                var url = urlInfo[0];
-                var port;
-                if (urlInfo[1].endsWith("0")) {
-                   port = (parseInt(urlInfo[1]) + 5);
-                } else {
-                   port = urlInfo[1];
-                }
-                document.write("&nbsp;" + urlInfo[0] + ":" + port + "/ytplayer<br>");
-            </script>
-            <br />
-            &nbsp;To connect to the bots built in web control panel, please connect to the following URL:<br>
-            <script>
-                var urlInfo = window.location.host.split(":");
-                var url = urlInfo[0];
-                var port;
-                if (urlInfo[1].endsWith("0")) {
-                   port = (parseInt(urlInfo[1]) + 5);
-                } else {
-                   port = urlInfo[1];
-                }
-                document.write("&nbsp;" + urlInfo[0] + ":" + port + "/panel<br>");
-            </script>
-          </h1>
-            <br /><h2>You can find the username and password to login in the <code>botlogin.txt</code> file under the <code>paneluser=</code> and <code>panelpassword=</code> options.
-        </font>
+
+        <div class="main">
+            <div class="launcher" data-toggle="tooltip" data-placement="right" title="The username and password are found in botlogin.txt, see the paneluser and panelpassword settings.">
+                <script>
+                    var urlInfo = window.location.host.split(":");
+                    var url = urlInfo[0];
+                    var port;
+                    if (urlInfo[1].endsWith("0")) {
+                       port = (parseInt(urlInfo[1]) + 5);
+                    } else {
+                       port = urlInfo[1];
+                    }
+                    document.write('<a target="_blank" style="color: white;" href="http://' + urlInfo[0] + ':' + port + '/ytplayer">');
+                </script>
+                <span id="middle">
+                    <span id="spacer" />
+                    <i id="fontawesome" class="fa fa-youtube" aria-hidden="true"></i>
+                    <span id="spacer">Launch PhantomBot YouTube Player</span>
+                </span>
+                </a>
+                <span class="launcher-lock"><i class="fa fa-lock"></i></span>
+            </div>
+
+            <div class="launcher" data-toggle="tooltip" data-placement="right" title="The username and password are found in botlogin.txt, see the paneluser and panelpassword settings.">
+                <script>
+                    var urlInfo = window.location.host.split(":");
+                    var url = urlInfo[0];
+                    var port;
+                    if (urlInfo[1].endsWith("0")) {
+                       port = (parseInt(urlInfo[1]) + 5);
+                    } else {
+                       port = urlInfo[1];
+                    }
+                    document.write('<a target="_blank" style="color: white;" href="http://' + urlInfo[0] + ':' + port + '/panel">');
+                </script>
+                <span id="middle">
+                    <span id="spacer" />
+                    <i id="fontawesome" class="fa fa-desktop" aria-hidden="true"></i>
+                    <span id="spacer">Launch PhantomBot Control Panel</span>
+                </span>
+                </a>
+                <span class="launcher-lock"><i class="fa fa-lock"></i></span>
+            </div>
+
+            <div class="launcher">
+                <script>
+                    var urlInfo = window.location.host.split(":");
+                    var url = urlInfo[0];
+                    var port;
+                    if (urlInfo[1].endsWith("0")) {
+                       port = (parseInt(urlInfo[1]) + 5);
+                    } else {
+                       port = urlInfo[1];
+                    }
+                    document.write('<a target="_blank" style="color: white;" href="http://' + urlInfo[0] + ':' + port + '/playlist">');
+                </script>
+                <span id="middle">
+                    <span id="spacer" />
+                    <i id="fontawesome" class="fa fa-music" aria-hidden="true"></i>
+                    <span id="spacer">Launch PhantomBot YouTube Playlist Viewer</span>
+                </span>
+                </a>
+            </div>
+
+        </div>
+
+        <div id="copyright">
+            PhantomBot - A Free, Open Source, Multipurpose Twitch Chat Bot<br>
+            <a href="http://www.phantombot.net">www.phantombot.net</a>
+        </div>
+
+        <script>$(document).ready(function() { $('[data-toggle="tooltip"').tooltip(); });</script>
+
     </body>
 </html>
