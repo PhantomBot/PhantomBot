@@ -60,6 +60,7 @@ import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.cache.DonationsCache;
 import me.mast3rplan.phantombot.cache.EmotesCache;
 import me.mast3rplan.phantombot.cache.TwitterCache;
+import me.mast3rplan.phantombot.cache.TwitchCache;
 import me.mast3rplan.phantombot.console.ConsoleInputListener;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.Listener;
@@ -146,6 +147,7 @@ public class PhantomBot implements Listener {
     private DonationsCache donationsCache;
     private EmotesCache emotesCache;
     private TwitterCache twitterCache;
+    private TwitchCache twitchCache;
     private MusicWebSocketServer musicsocketserver;
     private YTWebSocketServer  ytsocketserver;
     private HTTPServer httpserver;
@@ -584,10 +586,6 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("tempdb", TempStore.instance(), 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
-        Script.global.defineProperty("followers", followersCache, 0);
-        Script.global.defineProperty("hosts", hostCache, 0);
-        Script.global.defineProperty("subscribers", subscribersCache, 0);
-        Script.global.defineProperty("channelUsers", channelUsersCache, 0);
         Script.global.defineProperty("botName", username, 0);
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("channels", channels, 0);
@@ -602,8 +600,6 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
         Script.global.defineProperty("groupChat", groupChat, 0);
-        Script.global.defineProperty("donations", donationsCache, 0);
-        Script.global.defineProperty("emotes", emotesCache, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
 
@@ -718,6 +714,7 @@ public class PhantomBot implements Listener {
         this.followersCache = FollowersCache.instance(this.channel.getName().toLowerCase());
         this.hostCache = ChannelHostCache.instance(this.channel.getName().toLowerCase());
         this.subscribersCache = SubscribersCache.instance(this.channel.getName().toLowerCase());
+        this.twitchCache = TwitchCache.instance(this.channel.getName().toLowerCase());
         if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
             this.donationsCache = DonationsCache.instance(this.channel.getName().toLowerCase());
         }
@@ -733,6 +730,15 @@ public class PhantomBot implements Listener {
                 com.gmt2001.Console.out.println(">> Disabling Twitter Features. Correct Authentication Issues and Restart.");
             }
         }
+
+        /* Make newly created instances available to JS. */
+        Script.global.defineProperty("twitchcache", this.twitchCache, 0);
+        Script.global.defineProperty("followers", this.followersCache, 0);
+        Script.global.defineProperty("hosts", this.hostCache, 0);
+        Script.global.defineProperty("subscribers", this.subscribersCache, 0);
+        Script.global.defineProperty("channelUsers", this.channelUsersCache, 0);
+        Script.global.defineProperty("donations", this.donationsCache, 0);
+        Script.global.defineProperty("emotes", this.emotesCache, 0);
     }
 
     @Subscribe

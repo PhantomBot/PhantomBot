@@ -72,7 +72,7 @@ public class TwitterCache implements Runnable {
     }
 
     /*
-     * Constructor for TwitterChat object.
+     * Constructor for TwitterCache object.
      *
      * @param  channel  Name of the Twitch Channel for which this object is created.
      */
@@ -93,7 +93,7 @@ public class TwitterCache implements Runnable {
 
     /*
      * Thread run instance.  This is the main loop for the thread that is created to manage
-     * retrieving data from the Twitch API.  This loop runs every 15 seconds, calling the 
+     * retrieving data from the Twitter API.  This loop runs every 15 seconds, calling the 
      * method to update data from Twitter.  That method checks against limits.
      */
     @Override
