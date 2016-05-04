@@ -4,7 +4,8 @@
         keyword = '',
         followers = false,
         raffleStatus = false,
-        msgToggle = ($.inidb.exists('settings', 'raffleMSGToggle') ? $.getIniDbBoolean('settings', 'raffleMSGToggle') : true),
+        msgToggle = $.getSetIniDbBoolean('settings', 'raffleMSGToggle', true),
+        noRepickSame = $.getSetIniDbBoolean('settings', 'noRepickSame', true),
         timer = 0,
         a = '';
 
@@ -59,16 +60,19 @@
         $.say($.lang.get('rafflesystem.raffle.opened', $.getPointsString(cost), key, a));
         $.registerChatCommand('./systems/raffleSystem.js', key, 7);
         entries = [];
+        $.inidb.RemoveFile('raffleList');
         raffleStatus = true;
 
         if (timer > 0) {
-            var a = setInterval(function() {
-                $.say($.lang.get('rafflesystem.warn', key));
-                clearInterval(a);
+            setTimeout(function() {
+                if (raffleStatus) {
+                    $.say($.lang.get('rafflesystem.warn', key));
+                }
             }, (timer / 2) * 1000);
-            var b = setInterval(function() {
-                closeRaffle();
-                clearInterval(b);
+            setTimeout(function() {
+                if (raffleStatus) {
+                    closeRaffle();
+                }
             }, timer * 1000);
         }
     };
@@ -108,6 +112,15 @@
         var Winner = $.randElement(entries);
         $.inidb.set('raffleresults', 'winner', $.username.resolve(Winner));
         $.say($.lang.get('rafflesystem.winner', $.username.resolve(Winner)));
+
+        if (noRepickSame) {
+            $.inidb.del('raffleList', Winner);
+            for (var i in entries) {
+                if (entries[i].equalsIgnoreCase(Winner)) {
+                    entries.splice(i, 1);
+                }
+            }
+        }
     };
 
     /**
@@ -146,6 +159,15 @@
         }
 
         entries.push(user);
+        raffleListPush(user);
+    };
+
+    function raffleListPush(user) {
+        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            if (!$.inidb.exists('raffleList', user)) {
+                $.inidb.set('raffleList', user, 'entered');
+            }
+        }
     };
 
     /**
@@ -202,7 +224,7 @@
              * @commandpath raffle repick - Picks a new winner for the raffle
              */
             if (action.equalsIgnoreCase('repick')) {
-                winner(true);
+                winner();
             }
 
             /**
@@ -217,6 +239,21 @@
                     msgToggle = true;
                     $.inidb.set('settings', 'raffleMSGToggle', msgToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.msg.enabled'));
+                }
+            }
+
+            /**
+             * @commandpath raffle norepick - Toggles on and off if a user can be repicked more then once
+             */
+            if (action.equalsIgnoreCase('norepick')) {
+                if (noRepickSame) {
+                    noRepickSame = false;
+                    $.inidb.set('settings', 'noRepickSame', noRepickSame);
+                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.no.repick.true'));
+                } else {
+                    noRepickSame = true;
+                    $.inidb.set('settings', 'noRepickSame', noRepickSame);
+                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.no.repick.false'));
                 }
             }
         }
