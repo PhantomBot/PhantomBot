@@ -9,6 +9,11 @@
         timer = 0,
         a = '';
 
+    function reloadRaffle() {
+        noRepickSame = $.getIniDbBoolean('settings', 'noRepickSame');
+        msgToggle = $.getIniDbBoolean('settings', 'raffleMSGToggle');
+    }
+
     /**
      * @function checkArgs
      * @returns {boolean}
@@ -258,6 +263,13 @@
             }
         }
 
+        if (command.equalsIgnoreCase('reloadraffle')) {
+            if (!$.isAdmin(sender)) {
+                return;
+            }
+            reloadRaffle();
+        }
+
         if (command.equalsIgnoreCase(keyword)) {
             enterRaffle(sender, cost);
         }
@@ -269,6 +281,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/raffleSystem.js')) {
             $.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
+            $.registerChatCommand('./systems/raffleSystem.js', 'reloadraffle');
         }
     });
 })();
