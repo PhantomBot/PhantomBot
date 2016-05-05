@@ -81,6 +81,15 @@
             </div>
         </form>
 
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="betSetTimer">Set Bet Timer (seconds)</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.betHandler('settimer', 'betTimerInput')">Submit</button>
+                <input type="number" min="0" class="form-control" id="betTimerInput" placeholder="amount in seconds">
+            </div>
+        </form>
+
         <div id="betResults" />
     </div>
     </div>
@@ -102,6 +111,18 @@
             <div class="checkbox">
                 <label>
                     <input type="checkbox" id="raffleFollowerInput" value="-followers">Followers Only
+                </label>
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="raffleMultipleRepick" onclick="$.toggleRaffleMultipleRepick()">Allow multiple repick
+                </label>
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="raffleEnterMsg" onclick="$.toggleRaffleMsg()">Entry Messages
                 </label>
             </div>
         </form>
