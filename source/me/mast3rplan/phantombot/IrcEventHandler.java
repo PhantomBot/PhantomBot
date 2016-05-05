@@ -80,14 +80,12 @@ public class IrcEventHandler implements IRCEventListener {
             eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel));
 
             if (PhantomBot.enableDebugging) {
-                com.gmt2001.Console.out.println(">>Channel Message Tags");
-                com.gmt2001.Console.out.println(">>>>Raw: " + cmessageEvent.tagsString());
+                com.gmt2001.Console.debug.println("Channel Message Tags");
+                com.gmt2001.Console.debug.println("    Raw: " + cmessageEvent.tagsString());
 
                 for (Map.Entry<String, String> tag : cmessageTags.entrySet()) {
-                    com.gmt2001.Console.out.println(">>>>" + tag.getKey() + " = " + tag.getValue());
+                    com.gmt2001.Console.debug.println("    " + tag.getKey() + " = " + tag.getValue());
                 }
-
-                com.gmt2001.Console.out.println(">>End of Tags");
             }
 
             if (cmessageTags.containsKey("subscriber")) {
@@ -249,7 +247,7 @@ public class IrcEventHandler implements IRCEventListener {
                 if (event.arg(0).replaceAll("#", "").equalsIgnoreCase(PhantomBot.instance().getSession().getNick())) {
                     if (!mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase())) {
                         mods.add(PhantomBot.instance().getSession().getNick().toLowerCase());
-                        com.gmt2001.Console.debug.println(">>Userstate marked bot Moderator (Broadcaster)");
+                        com.gmt2001.Console.debug.println("Userstate marked bot Moderator (Broadcaster)");
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
                     }
                 }

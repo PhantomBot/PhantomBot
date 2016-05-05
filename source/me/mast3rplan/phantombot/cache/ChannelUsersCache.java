@@ -91,8 +91,7 @@ public class ChannelUsersCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException e) {
-            com.gmt2001.Console.debug.println("ChannelUsersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
-            com.gmt2001.Console.err.logStackTrace(e);
+            com.gmt2001.Console.debug.println("ChannelUsersCache.run: Failed to initial sleep: [InterruptedException] " + e.getMessage());
         }
 
         while (!killed) {
@@ -120,8 +119,7 @@ public class ChannelUsersCache implements Runnable {
                         }
                     }
 
-                    com.gmt2001.Console.debug.println("ChannelUsersCache.run>>Failed to update users: " + e.getMessage());
-                    com.gmt2001.Console.err.logStackTrace(e);
+                    com.gmt2001.Console.debug.println("ChannelUsersCache.run: Failed to update users: " + e.getMessage());
                 }
             } catch (Exception e) {
                 com.gmt2001.Console.err.printStackTrace(e);
@@ -134,8 +132,7 @@ public class ChannelUsersCache implements Runnable {
                     Thread.sleep(60 * 60 * 1000); // Success on the iniital pull, now once an hour.
                 }
             } catch (InterruptedException e) {
-                com.gmt2001.Console.debug.println("ChannelUsersCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
-                com.gmt2001.Console.err.logStackTrace(e);
+                com.gmt2001.Console.debug.println("ChannelUsersCache.run: Failed to sleep: [InterruptedException] " + e.getMessage());
             }
         }
     }
@@ -180,8 +177,7 @@ public class ChannelUsersCache implements Runnable {
                                         + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
                                         + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                 } catch (Exception e) {
-                    com.gmt2001.Console.debug.println("ChannelUsersCache.updateCache>>Failed to update users: " + e.getMessage());
-                    com.gmt2001.Console.err.logStackTrace(e);
+                    com.gmt2001.Console.debug.println("ChannelUsersCache.updateCache: Failed to update users: " + e.getMessage());
                 }
             }
         } else {
@@ -206,8 +202,7 @@ public class ChannelUsersCache implements Runnable {
                     }
                 }
 
-                com.gmt2001.Console.debug.println("ChannelUsersCache.updateCache>>Failed to update users: " + e.getMessage());
-                com.gmt2001.Console.err.logStackTrace(e);
+                com.gmt2001.Console.debug.println("ChannelUsersCache.updateCache: Failed to update users: " + e.getMessage());
             }
         }
 
