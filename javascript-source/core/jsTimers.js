@@ -87,6 +87,10 @@ var setTimeout,
      * @param {Number} id
      */
     clearTimeout = function(id) {
+        if (id === -1) {
+            return;
+        }
+
         // Java Timer may have already expired this timer and it would be undefined.
         if (registry[id] !== undefined) {
             registry[id].cancel();
@@ -94,7 +98,7 @@ var setTimeout,
         }
         delete registry[id];
         for (unique_id in timerTable) {
-            if (timerTable[unique_id].id == id) {
+            if (timerTable[unique_id].id === id) {
                 delete timerTable[unique_id];
             }
         }

@@ -161,6 +161,7 @@ public class PhantomBot implements Listener {
     public static boolean interactive;
     public static boolean webenabled = false;
     public static boolean musicenabled = false;
+    public static String twitchCacheReady;
     private boolean exiting = false;
     private static PhantomBot instance;
 
@@ -196,6 +197,7 @@ public class PhantomBot implements Listener {
 
         interactive = System.getProperty("interactive") != null;
 
+        this.twitchCacheReady = "false";
         this.username = username;
         this.oauth = oauth;
         this.apioauth = apioauth;
@@ -606,6 +608,7 @@ public class PhantomBot implements Listener {
         //Script.global.defineProperty("groupChat", groupChat, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
+        Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
 
         Thread t = new Thread(new Runnable() {
             @Override
@@ -1780,5 +1783,10 @@ public class PhantomBot implements Listener {
                 }
             }
         }, 0, 1, TimeUnit.DAYS);
+    }
+
+    public void setTwitchCacheReady(String twitchCacheReady) {
+        this.twitchCacheReady = twitchCacheReady;
+        Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
     }
 }

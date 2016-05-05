@@ -116,10 +116,11 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="donateReward">Donation Reward</label>
+                <label for="donateReward">Donation Multiplier Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateGreetingData('donateRewardInput', 'donations', 'reward')">Submit</button>
-                <input type="number" min="0" step="0.1" class="form-control" id="donateRewardInput" placeholder="Points" />
+                <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
+                       type="number" min="0" step="0.1" class="form-control" id="donateRewardInput" placeholder="Points" />
             </div>
         </form>
 
