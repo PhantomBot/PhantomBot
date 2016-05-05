@@ -20,3 +20,8 @@ $.lang.register('betsystem.bet.err.more', 'You can not bet more then $1');
 $.lang.register('betsystem.err.points', 'You don\'t have that many $1 to bet.');
 $.lang.register('betsystem.err.voted', 'You already voted.');
 $.lang.register('betsystem.bet.updated', 'Bet updated! $1 wagers $2 on $3! New pot $4');
+$.lang.register('betsystem.err.option.err', 'usage: !bet (option) (points)');
+$.lang.register('betsystem.set.timer.usage', 'Usage: !bet settimer (amount in seconds)');
+$.lang.register('betsystem.set.timer', 'bet auto close timer set to $1 seconds!');
+$.lang.register('betsystem.auto.close.warn', 'Bet is about to close !bet for $1!');
+$.lang.register('betsystem.auto.close', 'Bet is now closed! Now wiating on wining option.');

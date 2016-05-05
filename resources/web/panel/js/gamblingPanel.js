@@ -95,6 +95,18 @@
             }
 
             if (panelCheckQuery(msgObject, 'gambling_raffleresults')) {
+                if (panelMatch(msgObject['results']['noRepickSame'], 'false')) {
+                    $('#raffleMultipleRepick').attr('checked', 'checked');
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_raffleresults')) {
+                if (panelMatch(msgObject['results']['raffleMSGToggle'], 'true')) {
+                    $('#raffleEnterMsg').attr('checked', 'checked');
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_raffleresults')) {
                 var raffleList = msgObject['results'],
                     html = "",
                     username = "";
@@ -123,6 +135,8 @@
         sendDBQuery('gambling_raffleresults', 'raffleresults', 'winner');
         sendDBQuery('gambling_traffleresults', 'traffleresults', 'winner');
         sendDBKeys('gambling_raffleresults', 'raffleList');
+        sendDBQuery('gambling_raffleresults', 'settings', 'noRepickSame');
+        sendDBQuery('gambling_raffleresults', 'settings', 'raffleMSGToggle');
     }
 
     /**
@@ -237,6 +251,28 @@
         }
     }
 
+    function toggleRaffleMultipleRepick() {
+        var value = $('#raffleMultipleRepick').attr('checked', 'checked');
+
+        if ($('#raffleMultipleRepick').is(':checked') === true) {
+            sendDBUpdate("gambling_raffleresults", "settings", "noRepickSame", 'false');
+        } else {
+            sendDBUpdate("gambling_raffleresults", "settings", "noRepickSame", 'true');
+        }
+        setTimeout(function() { sendCommand("reloadraffle"); }, TIMEOUT_WAIT_TIME);
+    }
+
+    function toggleRaffleMsg() {
+        var value = $('#raffleEnterMsg').attr('checked', 'checked');
+
+        if ($('#raffleEnterMsg').is(':checked') === true) {
+            sendDBUpdate("gambling_raffleresults", "settings", "raffleMSGToggle", 'true');
+        } else {
+            sendDBUpdate("gambling_raffleresults", "settings", "raffleMSGToggle", 'false');
+        }
+        setTimeout(function() { sendCommand("reloadraffle"); }, TIMEOUT_WAIT_TIME);
+    }
+
     // Import the HTML file for this panel.
     $("#gamblingPanel").load("/panel/gambling.html");
 
@@ -272,4 +308,6 @@
     $.traffleRepick = traffleRepick;
     $.traffleOpen = traffleOpen;
     $.traffleClose = traffleClose;
+    $.toggleRaffleMultipleRepick = toggleRaffleMultipleRepick;
+    $.toggleRaffleMsg = toggleRaffleMsg;
 })();

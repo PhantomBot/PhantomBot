@@ -3,23 +3,25 @@
         betMaximum = $.getSetIniDbNumber('betSettings', 'betMaximum', 1000),
         time = 0,
         betStatus = false,
+        betTimerStatus = false,
+        betTimer = $.getSetIniDbNumber('betSettings', 'betTimer', 0),
         betPot = 0,
         betOptions = [],
         betTable = [];
 
-    function betOpen(event, bet) {
+    function betOpen(event, bet, timer) {
         var sender = event.getSender(),
             args = event.getArgs(),
             string,
             betOp = '',
             i;
 
-        if (betStatus) {
+        if (betStatus || betTimerStatus) {
             $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.bet.opened'));
             return;
         }
 
-        if (bet.length < 2) {
+        if (bet.length < 2 && !timer) {
             $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.options'));
             return;
         }
@@ -36,8 +38,19 @@
         string = betOptions.join(' vs ');
 
         betStatus = true;
+        betTimerStatus = true
 
         $.say($.lang.get('betsystem.opened', string, $.pointNameMultiple));
+
+        if (timer > 0) {
+            setTimeout(function () {
+                $.say($.lang.get('betsystem.auto.close.warn', string));
+            }, (betTimer / 2) * 1000);
+            setTimeout(function () {
+                betTimerStatus = false;
+                $.say($.lang.get('betsystem.auto.close'));
+            }, betTimer * 1000);
+        }
     };
 
     function resetBet() {
@@ -76,6 +89,7 @@
 
         betWinning = subAction.toLowerCase();
         betStatus = false;
+        betTimerStatus = false;
 
         for (i in betTable) {
             bet = betTable[i];
@@ -175,7 +189,7 @@
                     return;
                 }
 
-                betOpen(event, bet);
+                betOpen(event, bet, betTimer);
                 return;
 
                 /**
@@ -228,6 +242,25 @@
                 return;
 
                 /**
+                 * @commandpath bet settimer [amount in seconds] - Sets a auto close timer for bets
+                 */
+            } else if (action.equalsIgnoreCase('settimer')) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.whisperPrefix(sender) + $.modMsg);
+                    return;
+                }
+
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.timer.usage'));
+                    return;
+                }
+
+                betTimer = parseInt(subAction);
+                $.inidb.set('betSettings', 'betTimer', betTimer);
+                $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.timer', betTimer));
+                return;
+
+                /**
                  * @commandpath bet [ [option amount] | [amount option] ]- Places a bet on option, betting an amount of points.
                  */
             } else {
@@ -240,7 +273,7 @@
                     betOption;
 
                 if (!action || !subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.err'));
                     return;
                 }
 
