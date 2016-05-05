@@ -39,7 +39,7 @@
             return "Some Game";
         }
         return currentGame;
-    }  
+    };
 
     /**
      * @function getPlayTime()
@@ -61,7 +61,11 @@
      * @returns {boolean}
      */
     function isOnline(channelName) {
-        return !$.twitch.GetStream(channelName).isNull('stream');
+        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+            return $.twitchcache.isStreamOnlineString().equals('true');
+        } else {
+            return !$.twitch.GetStream(channelName).isNull('stream');
+        }
     };
 
     /**
@@ -71,12 +75,16 @@
      * @returns {string}
      */
     function getStatus(channelName) {
-        var channelData = $.twitch.GetChannel(channelName);
+        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+            return $.twitchcache.getStreamStatus() + '';
+        } else {
+            var channelData = $.twitch.GetChannel(channelName);
 
-        if (!channelData.isNull('status')) {
-            return channelData.getString('status');
+            if (!channelData.isNull('status')) {
+                return channelData.getString('status');
+            }
+            return '';
         }
-        return '';
     };
 
     /**
@@ -86,12 +94,16 @@
      * @returns {string}
      */
     function getGame(channelName) {
-        var channelData = $.twitch.GetChannel(channelName);
+        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+            return $.twitchcache.getGameTitle() + '';
+        } else {
+            var channelData = $.twitch.GetChannel(channelName);
 
-        if (!channelData.isNull('game')) {
-            return channelData.getString("game");
+            if (!channelData.isNull('game')) {
+                return channelData.getString("game");
+            }
+            return '';
         }
-        return '';
     };
 
     /**
@@ -101,23 +113,27 @@
      * @returns {number}
      */
     function getStreamUptimeSeconds(channelName) {
-        var stream = $.twitch.GetStream(channelName),
-            now = new Date(),
-            createdAtDate,
-            time;
-
-        if (stream.isNull('stream')) {
-            return 0;
-        }
-
-        createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
-        if (createdAtDate) {
-            time = now - createdAtDate;
-            return Math.floor(time / 1000);
+        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+            return $.twitchcache.getStreamUptimeSeconds();
         } else {
-            return 0;
+            var stream = $.twitch.GetStream(channelName),
+                now = new Date(),
+                createdAtDate,
+                time;
+
+            if (stream.isNull('stream')) {
+                return 0;
+            }
+
+            createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
+            if (createdAtDate) {
+                time = now - createdAtDate;
+                return Math.floor(time / 1000);
+            } else {
+                return 0;
+            }
         }
-    }
+    };
 
     /**
      * @function getStreamUptime
@@ -126,21 +142,30 @@
      * @returns {string}
      */
     function getStreamUptime(channelName) {
-        var stream = $.twitch.GetStream(channelName),
-            now = new Date(),
-            createdAtDate,
-            time;
+        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+            var uptime = $.twitchcache.getStreamUptimeSeconds();
 
-        if (stream.isNull('stream')) {
-            return 'Stream is offline';
-        }
-
-        createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
-        if (createdAtDate) {
-            time = now - createdAtDate;
-            return $.getTimeString(time / 1000);
+            if (now === 0) {
+                return 'Stream is offline';
+            }
+            return $.getTimeString(uptime);
         } else {
-            return 'Stream is offline';
+            var stream = $.twitch.GetStream(channelName),
+                now = new Date(),
+                createdAtDate,
+                time;
+    
+            if (stream.isNull('stream')) {
+                return 'Stream is offline';
+            }
+    
+            createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
+            if (createdAtDate) {
+                time = now - createdAtDate;
+                return $.getTimeString(time / 1000);
+            } else {
+                return 'Stream is offline';
+            }
         }
     };
 
@@ -151,15 +176,23 @@
      * @returns {string}
      */
     function getStreamStartedAt(channelName) {
-        var stream = $.twitch.GetStream(channelName),
-            createdAtDate;
+        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+            if ($.twitchcache.getStreamOnlineString === 'false') {
+                return 'Stream is offline';
+            }
+            createdAtDate = new Date($.twitchcache.getStreamCreatedAt() + '');
+            return $.dateToString(createdAtDate);
+        } else {
+            var stream = $.twitch.GetStream(channelName),
+                createdAtDate;
 
-        if (stream.isNull('stream')) {
-            return 'Stream is offline';
+            if (stream.isNull('stream')) {
+                return 'Stream is offline';
+            }
+    
+            createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
+            return $.dateToString(createdAtDate);
         }
-
-        createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
-        return $.dateToString(createdAtDate);
     };
 
     /**
@@ -169,12 +202,16 @@
      * @returns {Number}
      */
     function getViewers(channelName) {
-        var stream = $.twitch.GetStream(channelName);
-
-        if (!stream.isNull('stream')) {
-            return stream.getJSONObject('stream').getInt('viewers');
+        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+            return $.twitchcache.getViewerCount();
         } else {
-            return 0;
+            var stream = $.twitch.GetStream(channelName);
+
+            if (!stream.isNull('stream')) {
+                return stream.getJSONObject('stream').getInt('viewers');
+            } else {
+                return 0;
+            }
         }
     };
 
@@ -256,6 +293,7 @@
 
         if (http.getBoolean('_success')) {
             if (http.getInt('_http') == 200) {
+                $.twitchcache.setStreamStatus(http.getString('game'));
                 $.inidb.set('streamInfo', 'title', http.getString('status'));
                 $.say('Changed the title to "' + http.getString('status') + '"!');
                 $.logEvent('streamCommand.js', 54, sender + ' changed the current status to ' + http.getString('status'));

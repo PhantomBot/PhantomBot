@@ -31,10 +31,12 @@
      * @function updateStreamUptime()
      */
     function updateStreamUptime() {
-        var uptimeSec = $.twitchcache.getStreamUptimeSeconds(),
-            hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
-            min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
-        $.inidb.set('panelstats', 'streamUptime', hrs + ':' + min);
+        if ($.twitchCacheReady.equals('true')) {
+            var uptimeSec = $.twitchcache.getStreamUptimeSeconds(),
+                hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
+                min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
+            $.inidb.set('panelstats', 'streamUptime', hrs + ':' + min);
+        }
     }
 
     /**
@@ -82,14 +84,10 @@
     };
 
     /**
-     * @function getTitlePanel()
+     * @function getGamePanel()
      */
     function getGamePanel() {
-        if ($.twitchcache !== null) {
-            $.inidb.set('streamInfo', 'game', $.twitchcache.getGameTitle() + '');
-        } else {
-            $.inidb.set('streamInfo', 'game', 'Some Game');
-        }
+        $.inidb.set('streamInfo', 'game', $.getGame($.channelName));
     };
 
     /**
@@ -115,7 +113,8 @@
             if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
                 alreadyStarted = true;
                 $.inidb.set('panelstats', 'enabled', 'true');
-                setInterval(function() { updateAll(); }, 6e4, 'panelHandler');
+                updateAll();
+                setInterval(function() { updateAll(); }, 3e4, 'panelHandler');
             } else {
                 $.inidb.set('panelstats', 'enabled', 'false');
             }
