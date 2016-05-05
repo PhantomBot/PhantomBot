@@ -26,6 +26,7 @@ import me.mast3rplan.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
+import me.mast3rplan.phantombot.event.irc.message.IrcModerationEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.ModeAdjustment;
@@ -71,6 +72,13 @@ public class IrcEventHandler implements IRCEventListener {
             MessageEvent cmessageEvent = (MessageEvent) event;
             Map<String, String> cmessageTags = cmessageEvent.tags();
 
+            Channel cchannel = cmessageEvent.getChannel();
+            String cusername = cmessageEvent.getNick();
+            String cmessage = cmessageEvent.getMessage();
+
+            com.gmt2001.Console.debug.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
+            eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel));
+
             if (PhantomBot.enableDebugging) {
                 com.gmt2001.Console.out.println(">>Channel Message Tags");
                 com.gmt2001.Console.out.println(">>>>Raw: " + cmessageEvent.tagsString());
@@ -113,18 +121,19 @@ public class IrcEventHandler implements IRCEventListener {
                 }
             }
 
-            com.gmt2001.Console.debug.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
-            Channel cchannel = cmessageEvent.getChannel();
-            String cusername = cmessageEvent.getNick();
-            String cmessage = cmessageEvent.getMessage();
-
             eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
             break;
         case CTCP_EVENT:
             CtcpEvent ctcmessageEvent = (CtcpEvent) event;
 
             if (ctcmessageEvent.getCtcpString().startsWith("ACTION")) {
+                Channel ctcchannel = ctcmessageEvent.getChannel();
+                String ctcusername = ctcmessageEvent.getNick();
+                String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");
+
                 com.gmt2001.Console.debug.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
+                eventBus.postModeration(new IrcModerationEvent(session, ctcusername, ctcmessage, ctcchannel));
+
                 Map<String, String> ctcmessageTags = ctcmessageEvent.tags();
 
                 if (ctcmessageTags.containsKey("subscriber")) {
@@ -157,10 +166,6 @@ public class IrcEventHandler implements IRCEventListener {
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, ctcmessageEvent.getChannel(), ctcmessageEvent.getNick(), "O", true));
                     }
                 }
-
-                Channel ctcchannel = ctcmessageEvent.getChannel();
-                String ctcusername = ctcmessageEvent.getNick();
-                String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");
 
                 //Don't change this to postAsync. It cannot be processed in async or messages will be delayed
                 eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));

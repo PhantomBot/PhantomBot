@@ -28,9 +28,12 @@ public class EventBus {
     public static EventBus instance() {
         return instance;
     }
+
     private final com.google.common.eventbus.AsyncEventBus aeventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(8), new ExceptionHandler());
-    private final com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
     private final com.google.common.eventbus.AsyncEventBus ceventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newCachedThreadPool(), new ExceptionHandler());
+    private final com.google.common.eventbus.EventBus meventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
+    private final com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
+
     private final Set<Listener> listeners = Sets.newHashSet();
 
     public void register(Listener listener) {
@@ -38,6 +41,7 @@ public class EventBus {
         eventBus.register(listener);
         aeventBus.register(listener);
         ceventBus.register(listener);
+        meventBus.register(listener);
     }
 
     public void unregister(Listener listener) {
@@ -45,6 +49,7 @@ public class EventBus {
         eventBus.unregister(listener);
         aeventBus.unregister(listener);
         ceventBus.register(listener);
+        meventBus.register(listener);
     }
 
     public void post(Event event) {
@@ -70,4 +75,13 @@ public class EventBus {
 
         ceventBus.post(event);
     }
+
+    public void postModeration(Event event) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
+            return;
+        }
+
+        meventBus.post(event);
+    }
+
 }
