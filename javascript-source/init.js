@@ -570,6 +570,14 @@
         loadScriptRecursive('.');
 
         // Bind all $api events
+
+        /**
+         * @event api-ircModeration
+         */
+        $api.on($script, 'ircModeration', function(event) {
+            $.performModeration(event);
+        });
+
         /**
          * @event api-ircChannelMessage
          */
