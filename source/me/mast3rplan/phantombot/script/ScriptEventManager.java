@@ -38,6 +38,9 @@ public class ScriptEventManager implements Listener {
         "me.mast3rplan.phantombot.event.twitch.follower",
         "me.mast3rplan.phantombot.event.twitch.host",
         "me.mast3rplan.phantombot.event.twitch.subscriber",
+        "me.mast3rplan.phantombot.event.twitch.online",
+        "me.mast3rplan.phantombot.event.twitch.offline",
+        "me.mast3rplan.phantombot.event.twitch.gamechange",
         "me.mast3rplan.phantombot.event.irc",
         "me.mast3rplan.phantombot.event.irc.channel",
         "me.mast3rplan.phantombot.event.irc.complete",
@@ -46,7 +49,8 @@ public class ScriptEventManager implements Listener {
         "me.mast3rplan.phantombot.event.ytplayer",
         "me.mast3rplan.phantombot.event.twitchalerts.donate",
         "me.mast3rplan.phantombot.event.emotes",
-        "me.mast3rplan.phantombot.event.gamewisp"
+        "me.mast3rplan.phantombot.event.gamewisp",
+        "me.mast3rplan.phantombot.event.twitter"
     };
 
     private ScriptEventManager() {
@@ -74,15 +78,13 @@ public class ScriptEventManager implements Listener {
         try {
             for (EventHandlerEntry entry : entries) {
                 if (event.getClass().isAssignableFrom(entry.eventClass)) {
-                    if (PhantomBot.enableDebugging) {
-                        com.gmt2001.Console.out.println(">>>[DEBUG] Dispatching event " + entry.eventClass.getName());
-                    }
+                    com.gmt2001.Console.debug.println("Dispatching event " + entry.eventClass.getName());
 
                     entry.handler.handle(event);
                 }
             }
         } catch (Exception e) {
-            com.gmt2001.Console.out.println(">>>[DEBUG] Failed to dispatch event " + event.getClass().getName());
+            com.gmt2001.Console.err.println("Failed to dispatch event " + event.getClass().getName());
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }

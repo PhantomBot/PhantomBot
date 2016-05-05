@@ -5,27 +5,95 @@
     display: inline-block;
     margin-top: 17px;
 }
-.container { position:relative; padding:0 0 0 25px; }
+
+.container {
+    position:relative;
+    padding: 0 0 0 25px;
+}
+
+#container {
+    width: 100%;
+}
 
 .header {
+    font-family: Roboto, Verdana, Arial, sans-serif;
     background-color: #6441a5;
     margin-top: -20px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     max-width: 100%;
     height: 85px;
+    vertical-align: middle;
     -webkit-box-shadow: 0px 3px 5px #000;
     -moz-box-shadow:    0px 3px 5px #000;
     box-shadow:         0px 3px 5px #000;
     overflow: hidden;
 }
 
+#header-right {
+    margin-top: 40px;
+    margin-right: 20px;
+    height: 85px;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    float: right;
+}
+
+.main {
+    margin-left: 10px;
+    font-family: Roboto, Verdana, Arial, sans-serif;
+}
+
+.large {
+    font-family: Roboto, Verdana, Arial, sans-serif;
+    font-size: x-large;
+} 
+
+.launcher {
+    font-family: Roboto, Verdana, Arial, sans-serif;
+    font-size: large;
+    margin-bottom: 25px;
+    background-color: rgb(40, 40, 40);
+    height: 80px;
+    width: 500px;
+    line-height: 80px;
+    margin-left: 20px;
+
+    -webkit-box-shadow: 8px 8px 5px #888888;
+    -moz-box-shadow:    8px 8px 5px #888888;
+    box-shadow:         8px 8px 5px #888888;
+} 
+    
+.launcher-lock {
+    font-size: x-small;
+    display: inline-block;
+    vertical-align: top;
+    float: right;
+    line-height: normal;
+    margin-right: 8px;
+    margin-top: 5px;
+}
+
+.small {
+    font-family: Roboto, Verdana, Arial, sans-serif;
+    font-size: small;
+}
+
+
+a {
+    color: #6441a5;
+    text-decoration: none;
+}
+
 body {
     padding: 0;
     margin: 0;
     background-color: rgb(20, 20, 20);
+    color: white;
 }
 
 h1 {
+    font-family: Roboto, Verdana, Arial, sans-serif;
     color: white;
     padding-top: 20px;
     margin-left: 15px;
@@ -34,106 +102,36 @@ h1 {
     display: inline-block;
 }
 
-#container {
+table {
+    border: 0px;
     width: 100%;
-}
-
-#main {
-    display: inline;
-    float: left;
-    overflow: hidden;
-    width: 720px;
-    padding-top: 5px;
-}
-
-#player {
-    vertical-align: middle;
-    //width: 720px;
-    //height: 400px;
-    width: 250px;
-    height: 250px;
-    float: left;
-    display: block;
-}
-#rightcontain {
-    display: inline;
-    width: 350px;
-    float: left;
-    vertical-align: top;
-    padding-left: 5px;
-}
-
-.selectbox {
-    background-color: rgb(34, 34, 34);
-    color: #fff;
-    width: 350px;
-    height: 200px;
-    font-size: 18px;
-    overflow:hidden;
-    border-color: #000;
-    border-style: solid;
-    border-width: 1px;
-    display: inline-block;
 }
 
 option:hover {
     background-color:#cd201f;
     cursor: pointer;
 }
-#selected {
-    background-color: #000;
-    padding: 5px;
-}
-#panel {
-    margin-left: -7px;
+
+#fontawesome {
+    width: 30px;
 }
 
-.button {
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border: 1px solid #b31217;
-    padding: 3px;
-    padding-left: 10px;
-    padding-right: 10px;
-    text-align: center;
-    margin-top: 10px;
-    margin-left: 7px;
-    margin-right: 2px;
-    margin-bottom: 10px;
-    color: #fff;
-    font-size: 16px;
-    font-family: normal normal normal 13.3333330154419px/normal Arial;
-    background-color: #cd201f;
+#spacer {
+    margin-left: 15px;
+}
+
+#middle {
     display: inline-block;
-    -webkit-box-shadow: 0px 3px 5px #000;
-    -moz-box-shadow:    0px 3px 5px #000;
-    box-shadow:         0px 3px 5px #000;
-}
-.button:hover {
-    background-color: #b31217;
-}
-
-#songlist {
-    display: inline;
-    float: left;
-    overflow: hidden;
-    width: 100%;
-    padding-top: 10px;
-}
-
-#playlist {
-    display: inline;
-    float: left;
-    overflow: hidden;
-    width: 100%;
-    padding-top: 10px;
+    vertical-align: middle;
+    line-height: normal;
 }
 
 #copyright {
+    font-family: Roboto, Verdana, Arial, sans-serif;
     position: fixed;
     left: 0px;
     bottom: 0px;
-    height: 40px;
+    height: 60px;
     width: 100%;
     background-color: rgb(34, 34, 34);
     color: grey;
@@ -141,133 +139,3 @@ option:hover {
     padding-top: 10px;
     padding-bottom: 10px;
 }
-
-
-#sidebar1 {
-    position: fixed;
-    width: 350px;
-    right: 0%;
-    background-color: #f2f2f2;
-    height: 94%;
-    border-left: solid;
-    border-color: #6441a5;
-    border-width: 1px;
-    display: inline-block;
-    z-index: 2;
-}
-
-a {
-    color: #6441a5;
-    text-decoration: none;
-}
-
-#playerLink {
-    color: #ffffff;
-    text-decoration: none;
-}
-
-#chat {
-    height: 86%;
-    width: 100%;
-    margin-top: -5px;
-}
-
-.alert {
-    float: left;
-    width: 80%;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
-}
-
-#songTable tr:nth-child(even) {
-    background: #CCC;
-    color: black;
-    font-size: 14px;
-}
-
-#songTable tr:nth-child(odd) {
-    background: #FFF;
-    color: black;
-    font-size: 14px;
-}
-
-#songTable td {
-    padding: 5px;
-    text-align: left;
-    vertical-align: middle;
-}
-
-#songTable th {
-    padding: 5px;
-    text-align: left;
-    vertical-align: middle;
-}
-
-table {
-    border: 0px;
-    width: 100%;
-}
-
-#playerTable tr {
-    background: #6441a5;
-    color: white;
-    font-size: 18px;
-}
-
-#playerTable td {
-    padding: 5px;
-    text-align: left;
-    vertical-align: middle;
-}
-
-#songTableTitle {
-    background: #7451b5;
-    color: white;
-    font-size:14px;
-    width: 100%;
-    padding: 5px;
-}
-
-#playlistTableTitle {
-    background: #7451b5;
-    color: white;
-    font-size:14px;
-    width: 100%;
-    padding: 5px;
-}
-
-#playlistTable tr:nth-child(even) {
-    background: #CCC;
-    color: black;
-    font-size: 14px;
-}
-
-#playlistTable tr:nth-child(odd) {
-    background: #FFF;
-    color: black;
-    font-size: 14px;
-}
-
-#playlistTable td {
-    padding: 5px;
-    text-align: left;
-    vertical-align: middle;
-}
-
-#playlistTable th {
-    padding: 5px;
-    text-align: left;
-    vertical-align: middle;
-}
-
-#songProgressBar {
-    width: 80%
-}
-
-#volumeControl {
-    width: 50%
-}
-
-.ui-slider .ui-slider-handle { width: 10px; margin-left: -5px; height: 10px; margin-top: 5px; }

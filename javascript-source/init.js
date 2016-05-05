@@ -975,6 +975,34 @@
             callHook('gameWispAnniversary', event, false);
         }); 
 
+        /**
+         * @event api-twitterEvent
+         */
+        $api.on($script, 'twitter', function(event) {
+            callHook('twitter', event, false);
+        });
+
+        /**
+         * @event api-twitchOnlineEvent
+         */
+        $api.on($script, 'twitchOnline', function(event) {
+            callHook('twitchOnline', event, false);
+        });
+
+        /**
+         * @event api-twitchOfflineEvent
+         */
+        $api.on($script, 'twitchOffline', function(event) {
+            callHook('twitchOffline', event, false);
+        });
+
+        /**
+         * @event api-twitchGameChangeEvent
+         */
+        $api.on($script, 'twitchGameChange', function(event) {
+            callHook('twitchGameChange', event, false);
+        });
+
         $.logEvent('init.js', 553, 'Bot locked & loaded!');
         consoleDebug('Bot locked & loaded!');
         consoleLn('');
