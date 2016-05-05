@@ -260,7 +260,7 @@ public class PhantomBot implements Listener {
         voters = new TreeSet<>();
 
         if (hostname.isEmpty()) {
-            this.hostname = "irc.twitch.tv";
+            this.hostname = "irc.chat.twitch.tv";
             this.port = 6667;
         } else {
             this.hostname = hostname;
