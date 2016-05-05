@@ -19,6 +19,8 @@
 package com.illusionaryone;
 
 import com.gmt2001.UncaughtExceptionHandler;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.BufferedOutputStream;
@@ -27,6 +29,10 @@ import java.io.BufferedWriter;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import java.net.URL;
 
 /*
@@ -59,7 +65,11 @@ public class ImgDownload {
             inputStream.close();
             byte[] imgData = outputStream.toByteArray();
     
-            FileOutputStream fileOutputStream = new FileOutputStream(filename);
+            if (!new File ("./addons/downloadHTTP").exists()) {
+                new File ("./addons/downloadHTTP").mkdirs();
+            }
+
+            FileOutputStream fileOutputStream = new FileOutputStream("./addons/downloadHTTP/" + filename);
             fileOutputStream.write(imgData);
             fileOutputStream.close();
             return new String("true");
