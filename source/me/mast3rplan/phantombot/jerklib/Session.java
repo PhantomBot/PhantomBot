@@ -272,7 +272,8 @@ public class Session extends RequestGenerator {
         } else {
             if (msg.startsWith("/w ")) {
                 msg = msg.replace("/w ", "PRIVMSG #jtv :/w ");
-                me.mast3rplan.phantombot.PhantomBot.tgcSession.sayRaw(msg);
+                //me.mast3rplan.phantombot.PhantomBot.tgcSession.sayRaw(msg);
+                this.sayRaw(msg);
                 return;
             }
             if (msg.length() + 14 + channel.getName().length() < 512) {

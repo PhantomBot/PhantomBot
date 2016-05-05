@@ -113,8 +113,9 @@ public class PhantomBot implements Listener {
     private final String channelName;
     private final String ownerName;
     private final String hostname;
-    private final String groupChat;
-    private int groupChatPort;
+    //*Removed this because we can handle whispers in one irc server now.
+    //private final String groupChat;
+    //private int groupChatPort;
     private int port;
     private int baseport;
     private double msglimit30;
@@ -176,7 +177,7 @@ public class PhantomBot implements Listener {
     }
 
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel,
-                      String owner, int baseport, String hostname, int port, String groupChat, int groupChatPort,
+                      String owner, int baseport, String hostname, int port,
                       double msglimit30, String datastore, String datastoreconfig, String youtubekey,
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
                       String keystorepassword, String keypassword, String twitchalertskey,
@@ -266,13 +267,14 @@ public class PhantomBot implements Listener {
             this.port = port;
         }
 
-        if (groupChat.isEmpty()) {
+        //*Removed this because we can handle whispers in one irc server now.
+        /*if (groupChat.isEmpty()) {
             this.groupChat = "group.tmi.twitch.tv";
             this.groupChatPort = 6667;
         } else {
             this.groupChat = groupChat;
             this.groupChatPort = groupChatPort;
-        }
+        }*/
 
         if (msglimit30 > 0) {
             this.msglimit30 = msglimit30;
@@ -337,7 +339,8 @@ public class PhantomBot implements Listener {
 
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
 
-        TwitchGroupChatHandler(this.oauth, this.connectionManager);
+        //*Removed this because we can handle whispers in one irc server now.
+        //TwitchGroupChatHandler(this.oauth, this.connectionManager);
 
         TwitchAPIv3.instance().SetClientID(this.clientid);
         TwitchAPIv3.instance().SetOAuth(apioauth);
@@ -390,11 +393,12 @@ public class PhantomBot implements Listener {
         return channels;
     }
 
-    private void TwitchGroupChatHandler(String oauth, ConnectionManager connManager) {
+    /**Removed this because we can handle whispers in one irc server now */
+    /*private void TwitchGroupChatHandler(String oauth, ConnectionManager connManager) {
 
         tgcSession = connManager.requestConnection(groupChat, groupChatPort, oauth);
         tgcSession.addIRCEventListener(new IrcEventHandler());
-    }
+    }*/
 
     public final void init() {
         if (webenable) {
@@ -599,7 +603,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
-        Script.global.defineProperty("groupChat", groupChat, 0);
+        //Script.global.defineProperty("groupChat", groupChat, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
 
@@ -977,8 +981,8 @@ public class PhantomBot implements Listener {
                 data += "baseport=" + baseport + "\r\n";
                 data += "hostname=" + hostname + "\r\n";
                 data += "port=" + port + "\r\n";
-                data += "groupChat=" + groupChat + "\r\n";
-                data += "groupChatPort=" + groupChatPort + "\r\n";
+                //data += "groupChat=" + groupChat + "\r\n";
+                //data += "groupChatPort=" + groupChatPort + "\r\n";
                 data += "msglimit30=" + msglimit30 + "\r\n";
                 data += "datastore=" + datastore + "\r\n";
                 data += "youtubekey=" + youtubekey + "\r\n";
@@ -1685,8 +1689,7 @@ public class PhantomBot implements Listener {
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, groupChat,
-                                             groupChatPort, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable,
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable,
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
                                              webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
                                              twitter_username, twitter_access_token, twitter_secret_token);
@@ -1705,8 +1708,8 @@ public class PhantomBot implements Listener {
         data += "baseport=" + baseport + "\r\n";
         data += "hostname=" + hostname + "\r\n";
         data += "port=" + port + "\r\n";
-        data += "groupChat=" + groupChat + "\r\n";
-        data += "groupChatPort=" + groupChatPort + "\r\n";
+        //data += "groupChat=" + groupChat + "\r\n";
+        //data += "groupChatPort=" + groupChatPort + "\r\n";
         data += "msglimit30=" + msglimit30 + "\r\n";
         data += "datastore=" + datastore + "\r\n";
         data += "youtubekey=" + youtubekey + "\r\n";
