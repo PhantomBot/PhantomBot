@@ -12,7 +12,6 @@
         perUserCooldown = $.getSetIniDbBoolean('cooldown', 'perUserCooldown', false),
         globalCooldownTime = $.getSetIniDbNumber('cooldown', 'globalCooldownTime', 90),
         modCooldown = $.getSetIniDbBoolean('cooldown', 'modCooldown', false),
-        commandAntiSpam = 
         cooldown = [];
 
     function set(command, time, user) {
