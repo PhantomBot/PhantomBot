@@ -12,6 +12,7 @@
         perUserCooldown = $.getSetIniDbBoolean('cooldown', 'perUserCooldown', false),
         globalCooldownTime = $.getSetIniDbNumber('cooldown', 'globalCooldownTime', 90),
         modCooldown = $.getSetIniDbBoolean('cooldown', 'modCooldown', false),
+        commandAntiSpam = 
         cooldown = [];
 
     function set(command, time, user) {
@@ -60,7 +61,7 @@
                 if (cooldown[i].command.equalsIgnoreCase(command)) {
                     cool = cooldown[i].time - $.systemTime();
                     if (cool > 0) {
-                        if (!modCooldown && $.isMod(user)) {
+                        if ((!modCooldown && $.isMod(user)) || $.isAdmin(user)) {
                             return 0;
                         }
                         return parseInt(cool);
@@ -78,7 +79,7 @@
                 if (cooldown[i].command.equalsIgnoreCase(command) && cooldown[i].user.equalsIgnoreCase(user)) {
                     cool = cooldown[i].time - $.systemTime();
                      if (cool > 0) {
-                        if (!modCooldown && $.isMod(user)) {
+                        if ((!modCooldown && $.isMod(user)) || $.isAdmin(user)) {
                             return 0;
                         } 
                         return parseInt(cool);
@@ -95,7 +96,7 @@
             if (cooldown[i].command.equalsIgnoreCase(command)) {
                 cool = cooldown[i].time - $.systemTime();
                 if (cool > 0) {
-                    if (!modCooldown && $.isMod(user)) {
+                    if ((!modCooldown && $.isMod(user)) || $.isAdmin(user)) {
                         return 0;
                     }
                     return parseInt(cool);
