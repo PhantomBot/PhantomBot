@@ -150,6 +150,9 @@
                     $('#panelStatsStatus').html('');
                 }
             }
+            if (panelMatch(module, './handlers/twitterHandler.js')) {
+                handlePanel('./handlers/twitterHandler.js', '#_twitterPanel', moduleEnabled);
+            }
         }            
     }
 

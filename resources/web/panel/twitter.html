@@ -19,6 +19,8 @@
 -->
 
 <!-- This is outside of the accordion, so will always be on top of the tab -->
+<div id="_twitterPanelDisabled"><br><br></div>
+<div id="_twitterPanel">
 <div>
     <form role="form">
         <div class="form-group" onkeypress="return event.keyCode != 13">
@@ -28,7 +30,6 @@
         </div>
     </form>
 </div>
-
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="twitterAccordion">
@@ -80,7 +81,6 @@
 
     <h3>Posting Options</h3>
     <div>
-
         <div id="twitterPostTable" style="height: 100px; overflow: auto;" />
 
         <form role="form">
@@ -116,6 +116,7 @@
             </div>
         </form>
     </div>
+</div>
 </div>
 
 <!-- Run the Acordion -->
