@@ -122,6 +122,26 @@
                 html += "</table>";
                 $("#raffleListTable").html(html);
             }
+
+        if (panelCheckQuery(msgObject, 'gambling_traffleresults')) {
+                var ticketsList = msgObject['results'],
+                    html = "",
+                    username = "",
+                    tickets = "";
+
+            html = "<table>";
+            for (var idx = 0; idx < ticketsList.length; idx++) {
+                username = ticketsList[idx]['key'];
+                tickets = ticketsList[idx]['value'];
+                html += "<tr class=\"textList\">" +
+                        "    <td style=\"vertical-align: middle; width: 50%\">" + username + "</td>" +
+                        "    <td style=\"vertical-align: middle; width: 25%\">" + tickets + "</td>" +
+                        "    <td style=\"vertical-align: middle width: 25%\">" +
+                        "</tr>";
+                }
+                html += "</table>";
+                $("#traffleListTable").html(html);
+            }
         }
     }
 
@@ -135,6 +155,7 @@
         sendDBQuery('gambling_raffleresults', 'raffleresults', 'winner');
         sendDBQuery('gambling_traffleresults', 'traffleresults', 'winner');
         sendDBKeys('gambling_raffleresults', 'raffleList');
+        sendDBKeys('gambling_traffleresults', 'ticketsList');
         sendDBQuery('gambling_raffleresults', 'settings', 'noRepickSame');
         sendDBQuery('gambling_raffleresults', 'settings', 'raffleMSGToggle');
     }

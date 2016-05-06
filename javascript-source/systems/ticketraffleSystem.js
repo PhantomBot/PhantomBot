@@ -36,6 +36,7 @@
     function openRaffle(maxEntries, followers, cost, a) {
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
         raffleStatus = true;
+        $.inidb.RemoveFile('ticketsList');
         entries = [];
     };
 
@@ -50,6 +51,7 @@
         maxEntries = 0;
         cost = 0;
         a = '';
+        $.inidb.RemoveFile('ticketsList');
 
         $.say($.lang.get('ticketrafflesystem.raffle.closed'));
         winner();
@@ -107,12 +109,20 @@
         }
 
         $.inidb.decr('points', user, (times * cost));
+        $.inidb.incr('ticketsList', user, times);
         if (msgToggle) {
             $.say($.lang.get('ticketrafflesystem.entered', $.username.resolve(user), times));
         }
         for (var i = 0; i < times; i++) {
             entries.push(user);
         }
+    };
+
+    function getTickets(user) {
+        if (!$.inidb.exists('ticketsList', user)) {
+            return 0;
+        }
+        return $.inidb.get('ticketsList', user);
     };
 
     /**
@@ -180,8 +190,8 @@
          * @commandpath tickets [amount] - Buy tickets to enter the ticket raffle.
          */
         if (command.equalsIgnoreCase('tickets')) {
-            if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.ticket.usage'));
+            if (!action && msgToggle && raffleStatus) {
+                $.say('@' + sender + ' ' + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
                 return;
             }
             enterRaffle(sender, parseInt(action));
