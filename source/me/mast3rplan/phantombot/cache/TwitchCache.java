@@ -62,8 +62,12 @@ public class TwitchCache implements Runnable {
     /* Cached data */
     private Boolean isOnline = false;
     private Boolean forcedGameTitleUpdate = false;
-    private long streamUptimeSeconds = 0L;
+    private String streamCreatedAt = "";
     private String gameTitle = "Some Game";
+    private String streamTitle = "Some Title";
+    private String previewLink = "";
+    private long streamUptimeSeconds = 0L;
+    private int viewerCount = 0;
 
     /*
      * Creates an instance for a channel.
@@ -110,15 +114,6 @@ public class TwitchCache implements Runnable {
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
 
-        /* Wait 15 seconds before starting to poll Twitch.  This time is to ensure that
-         * all threads are up and running for handling this data.
-         */
-        try {
-            Thread.sleep(15 * 1000);
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
-        }
-
         while (!killed) {
             try {
                 try {
@@ -146,6 +141,8 @@ public class TwitchCache implements Runnable {
         Boolean isOnline = false;
         Boolean sentTwitchOnlineEvent = false;
         String  gameTitle = "Some Game";
+        String  streamTitle = "Some Title";
+        String  previewLink = "";
         Date    streamCreatedDate = new Date();
         Date    currentDate = new Date();
         long    streamUptimeSeconds = 0L;
@@ -176,6 +173,7 @@ public class TwitchCache implements Runnable {
                         streamCreatedDate = dateFormat.parse(streamObj.getJSONObject("stream").getString("created_at"));
                         streamUptimeSeconds = (long) (Math.floor(currentDate.getTime() - streamCreatedDate.getTime()) / 1000);
                         this.streamUptimeSeconds = streamUptimeSeconds;
+                        this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
                     } catch (Exception ex) {
                         com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" +
                                                          streamObj.getJSONObject("stream").getString("created_at") + ")");
@@ -196,9 +194,27 @@ public class TwitchCache implements Runnable {
                     if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitle)) {
                         forcedGameTitleUpdate = false;
                     }
+
+                    /* Determine the stream title (status). */
+                    streamTitle = streamObj.getJSONObject("stream").getJSONObject("channel").getString("status");
+                    this.streamTitle = streamTitle;
+
+                    /* Determine the preview link. */
+                    previewLink = streamObj.getJSONObject("stream").getJSONObject("preview").getString("medium");
+
+                    /* Get the viewer count. */
+                    viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
+                    
                 } else {
                     streamUptimeSeconds = 0L;
                     this.streamUptimeSeconds = streamUptimeSeconds;
+                    this.previewLink = "";
+                    this.streamCreatedAt = "";
+                    this.viewerCount = 0;
+                }
+
+                if (PhantomBot.instance().twitchCacheReady.equals("false")) {
+                    PhantomBot.instance().setTwitchCacheReady("true");
                 }
             }
         } catch (Exception ex) {
@@ -240,6 +256,13 @@ public class TwitchCache implements Runnable {
     }
 
     /*
+     * Returns the stream created_at date from Twitch.
+     */
+    public String getStreamCreatedAt() {
+        return this.streamCreatedAt;
+    }
+
+    /*
      * Returns the name of the game being played in the channel.
      */
     public String getGameTitle() {
@@ -254,6 +277,34 @@ public class TwitchCache implements Runnable {
          this.gameTitle = gameTitle;
          EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
      }
+
+    /*
+     * Returns the title (status) of the stream.
+     */
+    public String getStreamStatus() {
+        return this.streamTitle;
+    }
+
+    /*
+     * Sets the title (status) of the stream.  Useful for when !title is used.
+     */
+    public void setStreamStatus(String streamTitle) {
+        this.streamTitle = streamTitle;
+    }
+
+    /*
+     * Returns the preview link.
+     */
+    public String getPreviewLink() {
+        return this.previewLink;
+    }
+
+    /* 
+     * Returns the viewer count.
+     */
+    public int getViewerCount() {
+        return this.viewerCount;
+    }
 
     /*
      * Destroys the current instance of the TwitchCache object.

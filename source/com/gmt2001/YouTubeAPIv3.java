@@ -258,14 +258,12 @@ public class YouTubeAPIv3 {
             }
         }
 
-        if (PhantomBot.enableDebugging) {
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Timers " + (preconnect.getTime() - start.getTime()) + " "
+        com.gmt2001.Console.debug.println("YouTubeAPIv3.GetData Timers " + (preconnect.getTime() - start.getTime()) + " "
                                             + (postconnect.getTime() - start.getTime()) + " " + (prejson.getTime() - start.getTime()) + " "
                                             + (postjson.getTime() - start.getTime()) + " " + start.toString() + " " + postjson.toString());
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Exception " + j.getString("_exception") + " " + j.getString("_exceptionMessage"));
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData HTTP/Available " + j.getInt("_http") + "(" + responsecode + ")/" + j.getInt("_available") + "(" + cl + ")");
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData RawContent[0,100] " + j.getString("_content").substring(0, Math.min(100, j.getString("_content").length())));
-        }
+        com.gmt2001.Console.debug.println("YouTubeAPIv3.GetData Exception " + j.getString("_exception") + " " + j.getString("_exceptionMessage"));
+        com.gmt2001.Console.debug.println("YouTubeAPIv3.GetData HTTP/Available " + j.getInt("_http") + "(" + responsecode + ")/" + j.getInt("_available") + "(" + cl + ")");
+        com.gmt2001.Console.debug.println("YouTubeAPIv3.GetData RawContent[0,100] " + j.getString("_content").substring(0, Math.min(100, j.getString("_content").length())));
 
         return j;
     }
@@ -276,7 +274,7 @@ public class YouTubeAPIv3 {
 
     public String[] SearchForVideo(String q) {
         if (PhantomBot.enableDebugging) {
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo Start q=" + q);
+            com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo Start q=" + q);
         }
 
         if (q.contains("v=") | q.contains("?v=")) {
@@ -292,9 +290,7 @@ public class YouTubeAPIv3 {
         JSONObject j = GetData(request_type.GET, "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
         if (j.getBoolean("_success") && !j.toString().contains("Bad Request") && !j.toString().contains("Not Found")) {
             if (j.toString().contains("Unauthorized")) {
-                if (PhantomBot.enableDebugging) {
-                    com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo End Private");
-                }
+                com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End Private");
 
                 return new String[] {
                            q, "Video Marked Private", ""
@@ -302,18 +298,14 @@ public class YouTubeAPIv3 {
             }
             if (j.getInt("_http") == 200) {
                 try {
-                    if (PhantomBot.enableDebugging) {
-                        com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo End Success");
-                    }
+                    com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End Success");
 
                     String a = j.getString("title");
                     return new String[] {
                                q, a, ""
                            };
                 } catch (Exception e) {
-                    if (PhantomBot.enableDebugging) {
-                        com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo Exception");
-                    }
+                    com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo Exception");
 
                     return new String[] {
                                "", "", ""
@@ -329,9 +321,7 @@ public class YouTubeAPIv3 {
                 if (j2.getInt("_http") == 200) {
                     JSONObject pageInfo = j2.getJSONObject("pageInfo");
                     if (pageInfo.getInt("totalResults") == 0) {
-                        if (PhantomBot.enableDebugging) {
-                            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo End No Results");
-                        }
+                        com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End No Results");
 
                         return new String[] {
                                    q, "No Search Results Found", ""
@@ -344,36 +334,27 @@ public class YouTubeAPIv3 {
 
                         JSONObject id = it.getJSONObject("id");
                         JSONObject sn = it.getJSONObject("snippet");
-
-                        if (PhantomBot.enableDebugging) {
-                            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo End Success2");
-                        }
+                        com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End Success2");
 
                         return new String[] {
                                    id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle")
                                };
                     } else {
-                        if (PhantomBot.enableDebugging) {
-                            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo End Fail");
-                        }
+                        com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End Fail");
 
                         return new String[] {
                                    "", "", ""
                                };
                     }
                 } else {
-                    if (PhantomBot.enableDebugging) {
-                        com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo End Fail2");
-                    }
+                    com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End Fail2");
 
                     return new String[] {
                                "", "", ""
                            };
                 }
             } else {
-                if (PhantomBot.enableDebugging) {
-                    com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo End Fail3");
-                }
+                com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End Fail3");
 
                 return new String[] {
                            "", "", ""
@@ -382,7 +363,7 @@ public class YouTubeAPIv3 {
         }
 
         if (PhantomBot.enableDebugging) {
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.SearchForVideo End Fail4");
+            com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End Fail4");
         }
 
         return new String[] {
@@ -391,9 +372,7 @@ public class YouTubeAPIv3 {
     }
 
     public int[] GetVideoLength(String id) {
-        if (PhantomBot.enableDebugging) {
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetVideoLength Start id=" + id);
-        }
+        com.gmt2001.Console.debug.println("YouTubeAPIv3.GetVideoLength Start id=" + id);
 
         JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails");
         if (j.getBoolean("_success")) {
@@ -433,36 +412,27 @@ public class YouTubeAPIv3 {
                      *
                      * s = Integer.parseInt(d.substring(0, d.indexOf("S")));
                      */
-                    if (PhantomBot.enableDebugging) {
-                        com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetVideoLength Success");
-                    }
+                    com.gmt2001.Console.debug.println("YouTubeAPIv3.GetVideoLength Success");
 
                     return new int[] {
                                h, m, s
                            };
                 } else {
-                    if (PhantomBot.enableDebugging) {
-                        com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetVideoLength Fail");
-                    }
+                    com.gmt2001.Console.debug.println("YouTubeAPIv3.GetVideoLength Fail");
 
                     return new int[] {
                                0, 0, 0
                            };
                 }
             } else {
-                if (PhantomBot.enableDebugging) {
-                    com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetVideoLength Fail2");
-                }
+                com.gmt2001.Console.debug.println("YouTubeAPIv3.GetVideoLength Fail2");
 
                 return new int[] {
                            0, 0, 0
                        };
             }
         }
-
-        if (PhantomBot.enableDebugging) {
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetVideoLength Fail3");
-        }
+        com.gmt2001.Console.debug.println("YouTubeAPIv3.GetVideoLength Fail3");
 
         return new int[] {
                    0, 0, 0

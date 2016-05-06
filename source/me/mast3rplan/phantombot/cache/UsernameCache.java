@@ -56,7 +56,7 @@ public class UsernameCache {
                 cache.put(lusername, tags.get("display-name"));
 
                 if (PhantomBot.enableDebugging) {
-                    com.gmt2001.Console.out.println(">>UsernameCache detected using v3: " + tags.get("display-name"));
+                    com.gmt2001.Console.out.println("UsernameCache.resolve: Detected using v3: " + tags.get("display-name"));
                 }
 
                 return tags.get("display-name");
@@ -87,8 +87,7 @@ public class UsernameCache {
                                                 + user.getString("_type") + " " + user.getString("_url") + " " + user.getString("_post") + "   "
                                                 + (user.has("message") && !user.isNull("message") ? "message=" + user.getString("message") : "content=" + user.getString("_content")));
                         } catch (Exception e) {
-                              com.gmt2001.Console.debug.println("UsernameCache.updateCache>>Failed to get username: " + e.getMessage());
-                              com.gmt2001.Console.err.logStackTrace(e);
+                              com.gmt2001.Console.debug.println("UsernameCache.updateCache: Failed to get username: " + e.getMessage());
 
                               return username;
                         }

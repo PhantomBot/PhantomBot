@@ -161,6 +161,7 @@ public class PhantomBot implements Listener {
     public static boolean interactive;
     public static boolean webenabled = false;
     public static boolean musicenabled = false;
+    public static String twitchCacheReady;
     private boolean exiting = false;
     private static PhantomBot instance;
 
@@ -196,6 +197,7 @@ public class PhantomBot implements Listener {
 
         interactive = System.getProperty("interactive") != null;
 
+        this.twitchCacheReady = "false";
         this.username = username;
         this.oauth = oauth;
         this.apioauth = apioauth;
@@ -260,7 +262,7 @@ public class PhantomBot implements Listener {
         voters = new TreeSet<>();
 
         if (hostname.isEmpty()) {
-            this.hostname = "irc.twitch.tv";
+            this.hostname = "irc.chat.twitch.tv";
             this.port = 6667;
         } else {
             this.hostname = hostname;
@@ -606,6 +608,7 @@ public class PhantomBot implements Listener {
         //Script.global.defineProperty("groupChat", groupChat, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
+        Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
 
         Thread t = new Thread(new Runnable() {
             @Override
@@ -731,7 +734,7 @@ public class PhantomBot implements Listener {
             if (this.twitterAuthenticated) {
                 this.twitterCache = TwitterCache.instance(this.channel.getName().toLowerCase());
             } else {
-                com.gmt2001.Console.out.println(">> Disabling Twitter Features. Correct Authentication Issues and Restart.");
+                com.gmt2001.Console.out.println("Disabling Twitter Features. Correct Authentication Issues and Restart.");
             }
         }
 
@@ -1097,19 +1100,19 @@ public class PhantomBot implements Listener {
     }
 
     private static void ini2sqlite(boolean delete) {
-        com.gmt2001.Console.out.print(">>Initializing...");
+        com.gmt2001.Console.out.print("Performing INI 2 SQLite Upgrade");
         IniStore ini = IniStore.instance();
         SqliteStore sqlite = SqliteStore.instance();
         com.gmt2001.Console.out.println("done");
 
-        com.gmt2001.Console.out.print(">>Wiping existing SqliteStore...");
+        com.gmt2001.Console.out.print("  Wiping Existing SQLiteStore...");
         String[] deltables = sqlite.GetFileList();
         for (String table : deltables) {
             sqlite.RemoveFile(table);
         }
         com.gmt2001.Console.out.println("done");
 
-        com.gmt2001.Console.out.print(">>Copying IniStore to SqliteStore...");
+        com.gmt2001.Console.out.print("  Copying IniStore to SQLiteStore...");
         String[] files = ini.GetFileList();
         int i = 0;
         String str;
@@ -1122,7 +1125,7 @@ public class PhantomBot implements Listener {
                 str += " ";
             }
             maxlen = Math.max(maxlen, str.length());
-            com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore..." + str);
+            com.gmt2001.Console.out.print("\r  Copying IniStore to SQLiteStore..." + str);
             sqlite.AddFile(file);
 
             String[] sections = ini.GetCategoryList(file);
@@ -1135,7 +1138,7 @@ public class PhantomBot implements Listener {
                     str += " ";
                 }
                 maxlen = Math.max(maxlen, str.length());
-                com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore..." + str);
+                com.gmt2001.Console.out.print("\r  Copying IniStore to SQLiteStore..." + str);
 
                 String[] keys = ini.GetKeyList(file, section);
                 int k = 0;
@@ -1147,7 +1150,7 @@ public class PhantomBot implements Listener {
                         str += " ";
                     }
                     maxlen = Math.max(maxlen, str.length());
-                    com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore..." + str);
+                    com.gmt2001.Console.out.print("\r  Copying IniStore to SQLiteStore..." + str);
 
                     String value = ini.GetString(file, section, key);
                     sqlite.SetString(file, section, key, value);
@@ -1165,17 +1168,17 @@ public class PhantomBot implements Listener {
         for (i = 0; i < maxlen - 4; i++) {
             str += " ";
         }
-        com.gmt2001.Console.out.println("\r>>Copying IniStore to SqliteStore...done" + str);
+        com.gmt2001.Console.out.println("\r  Copying IniStore to SQLiteStore is Completed" + str);
 
         if (delete) {
-            com.gmt2001.Console.out.print(">>Deleting IniStore folder...");
+            com.gmt2001.Console.out.print("  Deleting IniStore folder...");
             for (String file : files) {
                 ini.RemoveFile(file);
             }
 
             File f = new File("./inistore");
             if (f.delete()) {
-                com.gmt2001.Console.out.println("done");
+                com.gmt2001.Console.out.println("Process is Done");
             }
         }
     }
@@ -1780,5 +1783,10 @@ public class PhantomBot implements Listener {
                 }
             }
         }, 0, 1, TimeUnit.DAYS);
+    }
+
+    public void setTwitchCacheReady(String twitchCacheReady) {
+        this.twitchCacheReady = twitchCacheReady;
+        Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
     }
 }

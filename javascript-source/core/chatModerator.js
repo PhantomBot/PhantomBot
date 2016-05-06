@@ -354,9 +354,9 @@
     };
 
     /**
-     * @event ircChannelMessage
+     * @function performModeration
      */
-    $.bind('ircChannelMessage', function(event) {
+    function performModeration(event) {
         var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase(),
             messageLength = message.length();
@@ -444,7 +444,7 @@
             if (message && checkBlackList(sender, message)) {
             }
         }
-    });
+    }
 
     /**
      * @function blacklistAndWhitelistCommands()
@@ -1544,6 +1544,7 @@
     });
 
     /** Export functions to API */
+    $.performModeration = performModeration;
     $.timeoutUser = timeoutUserFor;
     $.permitUserLink = permitUser;
 })();
