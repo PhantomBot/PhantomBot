@@ -112,7 +112,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 15 && isConnected) {
+        if (active == 15 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Games Data', 'success', 1000);
             doQuery();
         }

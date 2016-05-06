@@ -537,7 +537,7 @@
 
         if (type.indexOf('medium') === 0) {
             sendDBUpdate("moderation_quickSet", "chatModerator", "capsLimitPercent", "30");
-            sendDBUpdate("moderation_quickSet", "chatModerator", "capsLimitTriggerLength", "30");
+            sendDBUpdate("moderation_quickSet", "chatModerator", "capsLimitTriggerLength", "600");
             sendDBUpdate("moderation_quickSet", "chatModerator", "spamLimit", "15");
             sendDBUpdate("moderation_quickSet", "chatModerator", "symbolsLimitPercent", "75");
             sendDBUpdate("moderation_quickSet", "chatModerator", "symbolsGroupLimit", "30");
@@ -551,7 +551,7 @@
 
         if (type.indexOf('low') === 0) {
             sendDBUpdate("moderation_quickSet", "chatModerator", "capsLimitPercent", "20");
-            sendDBUpdate("moderation_quickSet", "chatModerator", "capsLimitTriggerLength", "50");
+            sendDBUpdate("moderation_quickSet", "chatModerator", "capsLimitTriggerLength", "100");
             sendDBUpdate("moderation_quickSet", "chatModerator", "spamLimit", "20");
             sendDBUpdate("moderation_quickSet", "chatModerator", "symbolsLimitPercent", "90");
             sendDBUpdate("moderation_quickSet", "chatModerator", "symbolsGroupLimit", "40");
@@ -699,7 +699,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 2 && isConnected) {
+        if (active == 2 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Moderation Data', 'success', 1000);
             doQuery();
         }

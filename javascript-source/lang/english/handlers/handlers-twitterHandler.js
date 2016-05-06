@@ -20,11 +20,13 @@ $.lang.register('twitter.set.poll.mentions.success', 'Set Twitter poll mentions 
 $.lang.register('twitter.set.poll.retweets.success', 'Set Twitter poll retweets to $1.');
 $.lang.register('twitter.set.poll.hometimeline.success', 'Set Twitter poll hometimeline to $1. Core will no longer poll anything else.');
 $.lang.register('twitter.set.poll.usertimeline.success', 'Set Twitter poll usertimeline to $1.');
-$.lang.register('twitter.set.post.usage', 'usage: !twitter set post [online | gamechange]');
+$.lang.register('twitter.set.post.usage', 'usage: !twitter set post [online | gamechange | update]');
 $.lang.register('twitter.set.post.online.usage', 'usage: !twitter set post online [on/off]. Currently $1.');
 $.lang.register('twitter.set.post.gamechange.usage', 'usage: !twitter set post gamechange [on/off]. Currently $1.');
+$.lang.register('twitter.set.post.update.usage', 'usage: !twitter set post update [on/off]. Currently $1.');
 $.lang.register('twitter.set.post.online.success', 'Set Twitter post online to $1.');
 $.lang.register('twitter.set.post.gamechange.success', 'Set Twitter post gamechange to $1.');
+$.lang.register('twitter.set.post.update.success', 'Set Twitter post update to $1.');
 $.lang.register('twitter.set.message.usage', 'usage; !twitter set message [online | gamechange]');
 $.lang.register('twitter.set.message.online.usage', 'usage: !twitter set message online [message]. Tags: (game) (twitchurl). Currently: $1');
 $.lang.register('twitter.set.message.online.success', 'Set Twitter auto-post online message to $1');

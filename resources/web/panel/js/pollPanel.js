@@ -150,7 +150,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
-        if (active == 12 && isConnected) {
+        if (active == 12 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Poll Data', 'success', 1000);
             doQuery();
         }

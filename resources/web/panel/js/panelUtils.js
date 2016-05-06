@@ -35,6 +35,7 @@ var addr = 'ws://' + url[0] + ':' + getPanelPort();
 var connection = new WebSocket(addr, []);
 var isConnected = false;
 var panelStatsEnabled = false;
+var inputFieldInFocus = false;
 
 /**
  * @function debugMsg
@@ -119,8 +120,9 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('poll_') !== -1) $.pollOnMessage(e);
     if (e.data.indexOf('gambling_') !== -1) $.gamblingOnMessage(e);
     if (e.data.indexOf('games_') !== -1) $.gamesOnMessage(e);
-    if (e.data.indexOf('audio_') !== -1) $.audioOnMessage(e);
+    if (e.data.indexOf('twitter_') !== -1) $.twitterOnMessage(e);
 
+    if (e.data.indexOf('audio_') !== -1) $.audioOnMessage(e);
     if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
 }
 
@@ -279,4 +281,32 @@ function hideLoadingImage() {
         $("#chat").fadeIn(1000);
         $(function() { $("#chatsidebar").resizable(); });
     }, 500);
+}
+
+/**
+ * @function handleInputFocus
+ * Checks for input focus on a page. This needs to be on every HTML
+ * page and must be called after generating HTML that has form inputs.
+ */
+function handleInputFocus() {
+    $(':input[type="number"]').focusin(function() { setInputFocus(true); });
+    $(':input[type="number"]').focusout(function() { setInputFocus(false); });
+    $(':input[type="text"]').focusin(function() { setInputFocus(true); });
+    $(':input[type="text"]').focusout(function() { setInputFocus(false); });
+}
+
+/**
+ * @function setInputFocus
+ * Stores if a field is in focus or not.
+ */
+function setInputFocus(value) {
+   inputFieldInFocus = value;
+} 
+
+/**
+ * @function isInputFocus
+ * Returns if there is a form with input focus.
+ */
+function isInputFocus() {
+    return inputFieldInFocus;
 }

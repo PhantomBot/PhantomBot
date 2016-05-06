@@ -105,6 +105,7 @@
                 }
                 html += "</table>";
                 $("#userPointsTable").html(html);
+                handleInputFocus();
             }
 
             if (panelCheckQuery(msgObject, 'points_grouppoints')) {
@@ -144,6 +145,7 @@
                      html += "</tr>";
                 }
                 $("#groupPointsTable").html(html);
+                handleInputFocus();
             }
 
             if (panelCheckQuery(msgObject, 'points_grouppointsoffline')) {
@@ -183,6 +185,7 @@
                      html += "</tr>";
                 }
                 $("#groupPointsOfflineTable").html(html);
+                handleInputFocus();
             }
         }
     }
@@ -342,7 +345,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 4 && isConnected) {
+        if (active == 4 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Time Data', 'success', 1000);
             doQuery();
         }

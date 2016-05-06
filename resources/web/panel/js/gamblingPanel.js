@@ -290,7 +290,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 14 && isConnected) {
+        if (active == 14 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Gambling Data', 'success', 1000);
             doQuery();
         }

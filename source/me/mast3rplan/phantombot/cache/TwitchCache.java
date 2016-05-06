@@ -201,9 +201,11 @@ public class TwitchCache implements Runnable {
 
                     /* Determine the preview link. */
                     previewLink = streamObj.getJSONObject("stream").getJSONObject("preview").getString("medium");
+                    this.previewLink = previewLink;
 
                     /* Get the viewer count. */
                     viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
+                    this.viewerCount = viewerCount;
                     
                 } else {
                     streamUptimeSeconds = 0L;
