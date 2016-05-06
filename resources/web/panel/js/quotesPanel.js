@@ -114,6 +114,7 @@
                 }
                 html += '</table>';
                 $('#quoteList').html(html);
+                handleInputFocus();
             }
         }
     }
@@ -202,7 +203,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
-        if (active == 10 && isConnected) {
+        if (active == 10 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Quotes Data', 'success', 1000);
             doQuery();
         }

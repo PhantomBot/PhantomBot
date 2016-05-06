@@ -96,6 +96,7 @@
                 }
                 html += '</table>';
                 $('#noticeList').html(html);
+                handleInputFocus();
             }
         }
     }
@@ -203,7 +204,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
-        if (active == 9 && isConnected) {
+        if (active == 9 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Notices Data', 'success', 1000);
             doQuery();
         }

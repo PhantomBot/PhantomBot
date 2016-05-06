@@ -295,7 +295,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 5 && isConnected) {
+        if (active == 5 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Viewers Data', 'success', 1000);
             doQuery();
         }
