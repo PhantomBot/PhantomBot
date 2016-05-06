@@ -662,11 +662,9 @@
                 }
             }
             
-            if (!$.isAdmin(sender)) {
-                if (parseInt($.coolDown.get(command, sender)) > 0) {
-                    consoleLn('[COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
-                    return;
-                }
+            if (parseInt($.coolDown.get(command, sender)) > 0) {
+                consoleLn('[COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
+                return;
             }
 
             subCommand = (args[0] ? args[0] : '');
