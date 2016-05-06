@@ -84,6 +84,8 @@
             ready_callback: ionSoundLoaded,
             ended_callback: clearIonSoundPlaying 
         });
+
+        sendAudioHooksToCore();
     });
 
     /**
@@ -110,7 +112,23 @@
             if (panelCheckQuery(msgObject, 'audio_ytpDJName')) {
                 $('#ytpDJNameInput').attr('placeholder', msgObject['results']['playlistDJname']);
             }
+            if (panelCheckQuery(msgObject, 'audio_panel_hook')) {
+                logMsg('Will Play: ' + msgObject['audio_panel_hook']);
+            }
         }
+
+        if (msgObject['audio_panel_hook'] !== undefined) {
+            playIonSound(msgObject['audio_panel_hook']);
+        }
+    }
+
+    /**
+     * @function sendAudioHooksToCore
+     */
+    function sendAudioHooksToCore() {
+        var jsonObject = {};
+        jsonObject["audio_hooks"] = sounds;
+        connection.send(JSON.stringify(jsonObject));
     }
 
     /**

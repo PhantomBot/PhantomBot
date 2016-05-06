@@ -599,6 +599,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("channelStatus", channelStatus, 0);
         Script.global.defineProperty("musicplayer", musicsocketserver, 0);
         Script.global.defineProperty("ytplayer", ytsocketserver, 0);
+        Script.global.defineProperty("panelsocketserver", panelsocketserver, 0);
         Script.global.defineProperty("random", rng, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("pollResults", pollResults, 0);
