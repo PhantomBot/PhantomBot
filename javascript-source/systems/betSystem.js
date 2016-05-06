@@ -44,11 +44,15 @@
 
         if (timer > 0) {
             setTimeout(function () {
-                $.say($.lang.get('betsystem.auto.close.warn', string));
+                if (betStatus) {
+                    $.say($.lang.get('betsystem.auto.close.warn', string));
+                }
             }, (betTimer / 2) * 1000);
             setTimeout(function () {
                 betTimerStatus = false;
-                $.say($.lang.get('betsystem.auto.close'));
+                if (betStatus) {
+                    $.say($.lang.get('betsystem.auto.close'));
+                }
             }, betTimer * 1000);
         }
     };
@@ -59,6 +63,7 @@
         betWinners = '';
         betOptions = [];
         betTable = [];
+        betStatus = false;
     }
 
     function betClose(sender, event, subAction) {
@@ -77,8 +82,19 @@
             return;
         }
 
-        if (!betWinning) {
+        if (!betWinning && !subAction.equalsIgnoreCase('refundall')) {
             $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.win.option'));
+            return;
+        }
+
+        if (subAction && subAction.equalsIgnoreCase('refundall')) {
+            betStatus = false;
+            for (i in betTable) {
+                bet = betTable[i];
+                $.inidb.incr('points', i, bet.amount);
+            }
+            $.say($.lang.get('betsystem.close.refund', $.pointNameMultiple));
+            resetBet();
             return;
         }
 
@@ -194,6 +210,7 @@
 
                 /**
                  * @commandpath bet close [option] - Closes the bet and selects option as the winner.
+                 * @commandpath bet close refundall - Closes the bet and refunds all points.
                  */
             } else if (action.equalsIgnoreCase('close')) {
                 if (!$.isModv3(sender, event.getTags())) {
