@@ -184,7 +184,7 @@
             $.inidb.set('modules', newDefaultDisabledModules[i], 'false');
         }
 
-        $.consoleLn("PhantomBot v2.0.8 updates completed!');
+        $.consoleLn('PhantomBot v2.0.8 updates completed!');
         $.inidb.set('updates', 'installedv2.0.8', 'true');
     }
 
