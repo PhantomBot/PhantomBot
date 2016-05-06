@@ -59,9 +59,11 @@
                 <label for="betClose">Close a Bet </label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.betHandler('close', 'betCloseInput')">Close</button>
-                <input type="text" class="form-control" id="betCloseInput" placeholder="Winning Option">
+                <input type="text" class="form-control" id="betCloseInput" placeholder="Winning Option"
+                       data-toggle="tooltip" title="User refundall for winning option if you want to refund all points." />
             </div>
         </form>
+
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
@@ -162,3 +164,4 @@
 
 <!-- Run the Acordion -->
 <script>$("#gamblingAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
