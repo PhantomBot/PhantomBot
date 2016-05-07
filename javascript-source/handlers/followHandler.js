@@ -16,17 +16,17 @@
         announceFollows = false,
         followReward = $.getSetIniDbNumber('settings', 'followReward', 0),
         followMessage = $.getSetIniDbString('settings', 'followMessage', $.lang.get('followhandler.follow.message')),
-        followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false);
+        followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false),
+        followTrainToggle = $.getSetIniDbBoolean('settings', 'followTrainToggle', false);
 
     /**
      * @function updateFollowConfig
      */
-    function updateFollowConfig()
-    {
+    function updateFollowConfig() {
         followReward = $.getIniDbNumber('settings', 'followReward'),
         followMessage = $.getIniDbString('settings', 'followMessage'),
         followToggle = $.getIniDbBoolean('settings', 'followToggle');
-    }
+    };
 
     /**
      * @function checkFollowTrain
@@ -83,8 +83,10 @@
                     s = followMessage;
                     s = s.replace('(name)', $.username.resolve(follower));
                     s = s.replace('(reward)', $.getPointsString(followReward));
-                    checkFollowTrain();
                     $.say(s);
+                    if (followTrainToggle) {
+                        checkFollowTrain();
+                    }
                 }
                 /** Don't use $.username.resolve() here, because it will abuse the api when this module is enabled for the first time.*/
                 $.setIniDbBoolean('followed', follower, true);
@@ -175,6 +177,23 @@
         }
 
         /**
+         * @commandpath followtaintoggle - Enable or disable the follow train anouncements
+         */
+        if (command.equalsIgnoreCase('followtraintoggle')) {
+            if (followTrainToggle) {
+                followTrainToggle = false;
+                $.inidb.set('settings', 'followTrainToggle', followTrainToggle);
+                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.followtraintoggle.off'));
+                $.logEvent('followHandler.js', 181, sender + ' turned follow train announcements off');
+            } else if (!followTrainToggle) {
+                followTrainToggle = true;
+                $.inidb.set('settings', 'followTrainToggle', followTrainToggle);
+                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.followtraintoggle.on'));
+                $.logEvent('followHandler.js', 181, sender + ' turned follow train announcements on');
+            }
+        }
+
+        /**
          * @commandpath followers - Announce the current amount of followers
          */
         if (command.equalsIgnoreCase('followers')) {
@@ -254,6 +273,7 @@
         if ($.bot.isModuleEnabled('./handlers/followHandler.js')) {
             $.registerChatCommand('./handlers/followHandler.js', 'followreward', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followtoggle', 1);
+            $.registerChatCommand('./handlers/followHandler.js', 'followtraintoggle', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
             $.registerChatCommand('./handlers/followHandler.js', 'followers', 7);
