@@ -63,6 +63,9 @@
         auction.status = false;
         $.inidb.decr('points', auction.topUser, auction.topPoints);
         $.say($.lang.get('auctionsystem.closed', auction.topUser, $.getPointsString(auction.topPoints)));
+        setTimeout(function () {
+            resetAuction();
+        }, 1000);
     };
 
     function warnAuction(force) {
@@ -105,6 +108,14 @@
         $.inidb.set('auctionresults', 'amount', auction.topPoints);
 
         $.say($.lang.get('auctionsystem.bid', user, $.getPointsString(amount), $.getPointsString(auction.topPoints + auction.increments)))
+    };
+
+    function resetAuction() {
+        auction.increments = 0;
+        auction.minimum = 0;
+        auction.topUser = 0;
+        auction.topPoints = 0;
+        auction.timer = 0;
     };
 
     /**
