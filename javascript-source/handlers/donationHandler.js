@@ -195,6 +195,10 @@
                 }
 
                 $.inidb.set('donations', comArg, message);
+
+                donationMessage = $.getIniDbString('donations', 'message');
+                donationLastMsg = $.getIniDbString('donations', 'lastmessage');
+
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.' + comArg + '.success', message));
                 $.logEvent('donationHandler.js', 191, sender + ' set the donation message to ' + message);
             }
