@@ -484,7 +484,21 @@
             $("#chat").fadeIn(1000);
             $(function() { $("#chatsidebar").resizable('enable'); });
         }
+    }
 
+    /**
+     * @function queueCMD
+     */
+    function queueCMD(cmd) {
+        sendCommand("queue " + cmd);
+    }
+
+    function queueCMDNext(cmd, amount) {
+        if ($('#amountQueue').val().length > 0) {
+            sendCommand("queue " + cmd + " " + $('#amountQueue').val());
+        } else {
+            sendCommand("queue " + cmd + " 1");
+        }
     }
  
     // Import the HTML file for this panel.
@@ -532,4 +546,6 @@
     $.adjustDeathCounter = adjustDeathCounter;
     $.shoutOut = shoutOut;
     $.disconnect = disconnect;
+    $.queueCMD = queueCMD;
+    $.queueCMDNext = queueCMDNext;
 })();
