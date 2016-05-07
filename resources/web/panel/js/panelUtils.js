@@ -310,3 +310,86 @@ function setInputFocus(value) {
 function isInputFocus() {
     return inputFieldInFocus;
 }
+
+/**
+ * @function performCurrentPanelRefresh
+ * Refreshes the current panel.
+ */
+function performCurrentPanelRefresh() {
+    var active = $("#tabs").tabs("option", "active");
+
+    switch (active) {
+         case 0 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.dashboardDoQuery();
+             break;
+         case 1 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.commandsDoQuery();
+             break;
+         case 2 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.moderationDoQuery();
+             break;
+         case 3 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.timeDoQuery();
+             break;
+         case 4 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.pointsDoQuery();
+             break;
+         case 5 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.viewersDoQuery();
+             break;
+         case 6 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.ranksDoQuery();
+             break;
+         case 7 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.greetingsDoQuery();
+             break;
+         case 8 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.donationsDoQuery();
+             break;
+         case 9 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.noticesDoQuery();
+             break;
+         case 10 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.quotesDoQuery();
+             break;
+         case 11 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.keywordsDoQuery();
+             break;
+         case 12 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.pollDoQuery();
+             break;
+         case 13 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.hostraidDoQuery();
+             break;
+         case 14 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.gamblingDoQuery();
+             break;
+         case 15 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.gamesDoQuery();
+             break;
+         case 16 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.twitterDoQuery();
+             break;
+         case 17 : 
+             newPanelAlert('Refreshing Data', 'success', 1000);
+             $.audioDoQuery();
+             break;
+    }
+}

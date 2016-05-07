@@ -212,6 +212,7 @@
     
     // Export to HTML
     $.noticesOnMessage = onMessage;
+    $.noticesDoQuery = doQuery;
     $.toggleChatNotice = toggleChatNotice;
     $.toggleChatOfflineNotice = toggleChatOfflineNotice;
     $.updateNoticeInterval = updateNoticeInterval;

@@ -707,6 +707,7 @@
 
     // Export functions - Needed when calling from HTML.
     $.moderationOnMessage = onMessage;
+    $.moderationDoQuery = doQuery;
     $.permitUserCommand = permitUserCommand;
     $.updateModSetting = updateModSetting;
     $.updateRedrawModSetting = updateRedrawModSetting;

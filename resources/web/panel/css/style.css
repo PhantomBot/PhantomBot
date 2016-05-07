@@ -27,6 +27,17 @@
     overflow: hidden;
 }
 
+#header-right {
+    color: white;
+    margin-top: 40px;
+    margin-right: 20px;
+    height: 85px;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    float: right;
+}
+
 a {
     color: #6441a5;
     text-decoration: none;

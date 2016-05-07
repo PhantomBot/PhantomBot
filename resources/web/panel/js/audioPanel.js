@@ -291,7 +291,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
-        if (active == 16 && isConnected && !isInputFocus()) {
+        if (active == 17 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Audio Data', 'success', 1000);
             doQuery();
         }
@@ -299,6 +299,7 @@
 
     // Export to HTML
     $.audioOnMessage = onMessage;
+    $.audioDoQuery = doQuery;
 
     // Export functions to HTML.
     $.playIonSound = playIonSound;

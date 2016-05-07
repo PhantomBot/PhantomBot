@@ -264,6 +264,7 @@
 
     // Export functions - Needed when calling from HTML.
     $.ranksOnMessage = onMessage;
+    $.ranksDoQuery = doQuery;
     $.updateCustomRank = updateCustomRank;
     $.deleteCustomRank = deleteCustomRank;
     $.addCustomRank = addCustomRank;

@@ -121,6 +121,7 @@
 
     // Export to HTML
     $.gamesOnMessage = onMessage;
+    $.gamesDoQuery = doQuery;
     $.rouletteTimeout = rouletteTimeout;
     $.adventureStart = adventureStart;
     $.adventureUpdateSetting = adventureUpdateSetting;

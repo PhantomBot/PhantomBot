@@ -158,6 +158,7 @@
 
     // Export to HTML
     $.pollOnMessage = onMessage;
+    $.pollDoQuery = doQuery;
     $.openPoll = openPoll;
     $.closePoll = closePoll;
 

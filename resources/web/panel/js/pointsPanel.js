@@ -353,6 +353,7 @@
 
     // Export functions - Needed when calling from HTML.
     $.pointsOnMessage = onMessage;
+    $.pointsDoQuery = doQuery;
     $.updateGroupPoints = updateGroupPoints;
     $.setPointName = setPointName;
     $.clearPointName = clearPointName;

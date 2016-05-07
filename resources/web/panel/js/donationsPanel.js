@@ -172,5 +172,6 @@
 
     // Export for HTML
     $.donationsOnMessage = onMessage;
+    $.donationsDoQuery = doQuery;
     $.setDonationSort = setDonationSort;
 })();
