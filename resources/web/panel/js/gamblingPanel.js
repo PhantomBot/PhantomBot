@@ -94,36 +94,36 @@
                 }
             }
 
-            if (panelCheckQuery(msgObject, 'gambling_raffleresults')) {
+            if (panelCheckQuery(msgObject, 'gambling_rafflenorepicksame')) {
                 if (panelMatch(msgObject['results']['noRepickSame'], 'false')) {
                     $('#raffleMultipleRepick').attr('checked', 'checked');
                 }
             }
 
-            if (panelCheckQuery(msgObject, 'gambling_raffleresults')) {
+            if (panelCheckQuery(msgObject, 'gambling_rafflemsgtoggle')) {
                 if (panelMatch(msgObject['results']['raffleMSGToggle'], 'true')) {
                     $('#raffleEnterMsg').attr('checked', 'checked');
                 }
             }
 
-            if (panelCheckQuery(msgObject, 'gambling_raffleresults')) {
+            if (panelCheckQuery(msgObject, 'gambling_rafflelist')) {
                 var raffleList = msgObject['results'],
                     html = "",
                     username = "";
 
-            html = "<table>";
-            for (var idx = 0; idx < raffleList.length; idx++) {
-                username = raffleList[idx]['key'];
-                html += "<tr class=\"textList\">" +
-                        "    <td style=\"vertical-align: middle; width: 50%\">" + username + "</td>" +
-                        "    <td style=\"vertical-align: middle width: 25%\">" +
-                        "</tr>";
+                html = "<table>";
+                for (var idx = 0; idx < raffleList.length; idx++) {
+                    username = raffleList[idx]['key'];
+                    html += "<tr class=\"textList\">" +
+                            "    <td style=\"vertical-align: middle; width: 50%\">" + username + "</td>" +
+                            "    <td style=\"vertical-align: middle width: 25%\">" +
+                            "</tr>";
                 }
                 html += "</table>";
                 $("#raffleListTable").html(html);
             }
 
-        if (panelCheckQuery(msgObject, 'gambling_traffleresults')) {
+        if (panelCheckQuery(msgObject, 'gambling_trafflelist')) {
                 var ticketsList = msgObject['results'],
                     html = "",
                     username = "",
@@ -154,10 +154,10 @@
         sendDBKeys('gambling_auctionresults', 'auctionresults');
         sendDBQuery('gambling_raffleresults', 'raffleresults', 'winner');
         sendDBQuery('gambling_traffleresults', 'traffleresults', 'winner');
-        sendDBKeys('gambling_raffleresults', 'raffleList');
-        sendDBKeys('gambling_traffleresults', 'ticketsList');
-        sendDBQuery('gambling_raffleresults', 'settings', 'noRepickSame');
-        sendDBQuery('gambling_raffleresults', 'settings', 'raffleMSGToggle');
+        sendDBKeys('gambling_rafflelist', 'raffleList');
+        sendDBKeys('gambling_trafflelist', 'ticketsList');
+        sendDBQuery('gambling_norepicksame', 'settings', 'noRepickSame');
+        sendDBQuery('gambling_rafflemsgtoggle', 'settings', 'raffleMSGToggle');
     }
 
     /**
@@ -308,14 +308,14 @@
         }
     }, INITIAL_WAIT_TIME);
 
-    // Query the DB every 30 seconds for updates.
+    // Query the DB every 15 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 14 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Gambling Data', 'success', 1000);
             doQuery();
         }
-    }, 3e4);
+    }, 15e3); // 15 seconds since it is trying to refresh results.
 
 
     // Export to HTML
