@@ -177,6 +177,7 @@
         var newDefaultDisabledModules = [
             './handlers/twitterHandler.js',
             './systems/audioPanelSystem.js',
+            './systems/queueSystem.js',
         ]; //ADD NEW MODULES IN 2.0.8 TO BE DISABLED PLEASE.
 
         $.consoleLn('Disabling new default modules...');
