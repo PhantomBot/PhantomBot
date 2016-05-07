@@ -360,11 +360,9 @@
         var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase(),
             messageLength = message.length(),
-            localCapsTriggerLength = capsTriggerLength,
             emotesObject = {};
 
         if (!$.isModv3(sender, event.getTags())) {
-
             if (linksToggle && $.patternDetector.hasLinks(event)) {
                 if (checkYoutubePlayer(message) || checkPermitList(sender) || checkWhiteList(message)) {
                     return;
@@ -402,24 +400,7 @@
                 return;
             }
 
-            if (!$.bot.isModuleEnabled('./handlers/emotesHandler.js')) {
-                emotesObject = $.patternDetector.getNumberOfEmotes(event);
-                localCapsTriggerLength += emotesObject.length + emotesObject.matches;
-            }
-
-            if (capsToggle && messageLength > localCapsTriggerLength) {
-                if (((parseFloat($.patternDetector.getNumberOfCaps(event)) / messageLength) * 100) > capsLimitPercent) {
-                    if (!regulars.Caps && $.isReg(sender) || !subscribers.Caps && $.isSubv3(sender, event.getTags())) {
-                        return;
-                    }
-                    timeout(sender, warningTime.Caps, timeoutTime.Caps);
-                    sendMessage(sender, capsMessage, silentTimeout.Caps);
-                    $.logEvent('chatModerator.js', 280, sender + ' was timed out for overusing caps.');
-                    return;
-                }
-            }
-
-            if (emotesToggle && emotesObject.matches > emotesLimit) {
+            if (emotesToggle && $.patternDetector.getNumberOfEmotes(event) > emotesLimit) {
                 if (!regulars.Emotes && $.isReg(sender) || !subscribers.Emotes && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
@@ -450,6 +431,19 @@
             }
 
             if (message && checkBlackList(sender, message)) {
+                return;
+            }
+
+            if (capsToggle && messageLength > capsTriggerLength) {
+                emotesObject = $.patternDetector.getNumberOfEmotes(event);
+                if (((parseFloat($.patternDetector.getNumberOfCaps(event) - (emotesObject.length + emotesObject.matches)) / messageLength) * 100) > capsLimitPercent) {
+                    if (!regulars.Caps && $.isReg(sender) || !subscribers.Caps && $.isSubv3(sender, event.getTags())) {
+                        return;
+                    }
+                    timeout(sender, warningTime.Caps, timeoutTime.Caps);
+                    sendMessage(sender, capsMessage, silentTimeout.Caps);
+                    $.logEvent('chatModerator.js', 280, sender + ' was timed out for overusing caps.');
+                }
             }
         }
     }
