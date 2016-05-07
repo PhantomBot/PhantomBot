@@ -76,7 +76,8 @@
             retObject = {};
 
         if (!emotesLoaded()) {
-            return 0;
+            retObject = { "matches" : 0, "length" : 0 };
+            return retObject;
         }
 
         for (var i = 0; i < emotesRegExpList.length; i++) {
