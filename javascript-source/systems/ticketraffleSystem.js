@@ -51,7 +51,6 @@
         maxEntries = 0;
         cost = 0;
         a = '';
-        $.inidb.RemoveFile('ticketsList');
 
         $.say($.lang.get('ticketrafflesystem.raffle.closed'));
         winner();
