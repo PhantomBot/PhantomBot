@@ -449,6 +449,7 @@
 
     // Export functions - Needed when calling from HTML.
     $.commandsOnMessage = onMessage;
+    $.commandsDoQuery = doQuery;
     $.deleteCommand = deleteCommand;
     $.addCustomCommand = addCustomCommand;
     $.editCustomCommand = editCustomCommand;

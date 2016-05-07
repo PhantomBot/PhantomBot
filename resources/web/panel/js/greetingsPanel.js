@@ -304,6 +304,7 @@
 
     // Export functions - Needed when calling from HTML.
     $.greetingsOnMessage = onMessage;
+    $.greetingsDoQuery = doQuery;
     $.toggleGreetings = toggleGreetings;
     $.updateGreetingData = updateGreetingData;
     $.updateGWTierData = updateGWTierData;

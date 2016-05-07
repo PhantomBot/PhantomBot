@@ -211,6 +211,7 @@
 
     // Export to HTML
     $.quotesOnMessage = onMessage;
+    $.quotesDoQuery = doQuery;
     $.deleteQuote = deleteQuote;
     $.updateQuote = updateQuote;
     $.addQuote = addQuote;

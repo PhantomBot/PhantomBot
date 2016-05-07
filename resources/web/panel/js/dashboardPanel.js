@@ -526,6 +526,7 @@
 
     // Export functions - Needed when calling from HTML.
     $.dashboardOnMessage = onMessage;
+    $.dashboardDoQuery = doQuery;
     $.setStreamTitle = setStreamTitle;
     $.setGameTitle = setGameTitle;
     $.chatReconnect = chatReconnect;

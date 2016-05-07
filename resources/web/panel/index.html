@@ -50,6 +50,9 @@
         <div class="header">
             <img id="logo" src="panel/images/logo.png"/>
             <h1>Control Panel</h1>
+            <span id="header-right">
+                <i data-toggle="tooltip" data-placement="left" title="Refresh Current Panel Data" class="fa fa-refresh fa-lg" aria-hidden="true" onclick="performCurrentPanelRefresh()"></i>
+            </span>
             <div id="newPanelAlert" class="alert" style="display:none"></div>
         </div>
              
@@ -221,5 +224,8 @@
             Control Panel by: 
             <a href="http://www.phantombot.net">www.phantombot.net</a>
         </div>
+
+        <script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
+
     </body>
 </html>
