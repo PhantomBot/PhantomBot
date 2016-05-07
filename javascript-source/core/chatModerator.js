@@ -400,16 +400,6 @@
                 return;
             }
 
-            if (emotesToggle && $.patternDetector.getNumberOfEmotes(event) > emotesLimit) {
-                if (!regulars.Emotes && $.isReg(sender) || !subscribers.Emotes && $.isSubv3(sender, event.getTags())) {
-                    return;
-                }
-                timeout(sender, warningTime.Emotes, timeoutTime.Emotes);
-                sendMessage(sender, emotesMessage, silentTimeout.Emotes);
-                $.logEvent('chatModerator.js', 313, sender + ' was timed out for overusing emotes.');
-                return;
-            }
-
             if (colorsToggle && message.startsWith('/me')) {
                 if (!regulars.Colors && $.isReg(sender) || !subscribers.Colors && $.isSubv3(sender, event.getTags())) {
                     return;
@@ -434,8 +424,20 @@
                 return;
             }
 
+            emotesObject = $.patternDetector.getNumberOfEmotes(event);
+
+            if (emotesToggle && emotesObject.matches > emotesLimit) {
+                if (!regulars.Emotes && $.isReg(sender) || !subscribers.Emotes && $.isSubv3(sender, event.getTags())) {
+                    return;
+                }
+                timeout(sender, warningTime.Emotes, timeoutTime.Emotes);
+                sendMessage(sender, emotesMessage, silentTimeout.Emotes);
+                $.logEvent('chatModerator.js', 313, sender + ' was timed out for overusing emotes.');
+                return;
+            }
+
             if (capsToggle && messageLength > capsTriggerLength) {
-                emotesObject = $.patternDetector.getNumberOfEmotes(event);
+                $.consoleLn(parseFloat($.patternDetector.getNumberOfCaps(event) - (emotesObject.length + emotesObject.matches)) / messageLength * 100)
                 if (((parseFloat($.patternDetector.getNumberOfCaps(event) - (emotesObject.length + emotesObject.matches)) / messageLength) * 100) > capsLimitPercent) {
                     if (!regulars.Caps && $.isReg(sender) || !subscribers.Caps && $.isSubv3(sender, event.getTags())) {
                         return;
