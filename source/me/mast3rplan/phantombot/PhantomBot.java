@@ -162,7 +162,7 @@ public class PhantomBot implements Listener {
     public static boolean interactive;
     public static boolean webenabled = false;
     public static boolean musicenabled = false;
-    public static String twitchCacheReady;
+    public static String twitchCacheReady = "false";
     private boolean exiting = false;
     private static PhantomBot instance;
 

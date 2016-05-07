@@ -32,8 +32,8 @@ $.lang.register('twitter.set.message.online.usage', 'usage: !twitter set message
 $.lang.register('twitter.set.message.online.success', 'Set Twitter auto-post online message to $1');
 $.lang.register('twitter.set.message.gamechange.usage', 'usage: !twitter set message gamechange [message]. Tags: (game) (twitchurl). Currently: $1');
 $.lang.register('twitter.set.message.gamechange.success', 'Set Twitter auto-post game change message to $1');
-$.lang.register('twitter.set.message.update.usage', 'usage: !twitter set message gamechange [message]. Tags: (game) (twitchurl). Currently: $1');
-$.lang.register('twitter.set.message.update.success', 'Set Twitter auto-post game change message to $1');
+$.lang.register('twitter.set.message.update.usage', 'usage: !twitter set message update [message]. Tags: (game) (twitchurl) (uptime). Currently: $1');
+$.lang.register('twitter.set.message.update.success', 'Set Twitter auto-post update message to $1');
 $.lang.register('twitter.set.updatetimer.usage', 'usage: !twitter set updatetimer [minutes]. Minimum allowed is 60 minutes to attempt to offset duplicate post rejection from Twitter.');
 $.lang.register('twitter.set.updatetimer.toosmall', 'The minimum allowed value is 60 minutes to attempt to offset duplicate post rejection from Twitter.');
 $.lang.register('twitter.set.updatetimer.success', 'Set Twitter updatetimer to $1 minutes.');
