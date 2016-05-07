@@ -208,6 +208,7 @@
 
     // Export to HTML
     $.twitterOnMessage = onMessage;
+    $.twitterDoQuery = doQuery;
     $.toggleTwitter = toggleTwitter;
     $.postTweet = postTweet;
     $.updateDataTwitter = updateDataTwitter;

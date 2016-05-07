@@ -240,6 +240,7 @@ logMsg("updateraidmsg");
 
     // Export to HTML
     $.hostraidOnMessage = onMessage;
+    $.hostraidDoQuery = doQuery;
     $.hostChannel = hostChannel;
     $.raidChannel = raidChannel;
     $.raiderChannel = raiderChannel;

@@ -237,6 +237,7 @@
 
     // Export functions - Needed when calling from HTML.
     $.timeOnMessage = onMessage;
+    $.timeDoQuery = doQuery;
     $.toggleTimeMode = toggleTimeMode;
     $.setTimePromotion = setTimePromotion;
     $.setTimeZone = setTimeZone;

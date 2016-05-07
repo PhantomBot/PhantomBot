@@ -154,6 +154,7 @@
 
     // Export to HTML
     $.keywordsOnMessage = onMessage;
+    $.keywordsDoQuery = doQuery;
     $.addKeyword = addKeyword;
     $.deleteKeyword = deleteKeyword;
     $.updateKeyword = updateKeyword;

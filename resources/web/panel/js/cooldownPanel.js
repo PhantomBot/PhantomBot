@@ -192,6 +192,7 @@
 
     // Export functions - Needed when calling from HTML.
     $.cooldownOnMessage = onMessage;
+    $.cooldownDoQuery = doQuery;
     $.addCooldown = addCooldown;
     $.deleteCooldown = deleteCooldown;
     $.toggleGlobalCooldown = toggleGlobalCooldown;

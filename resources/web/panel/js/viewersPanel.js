@@ -303,4 +303,5 @@
 
     // Export functions - Needed when calling from HTML.
     $.viewersOnMessage = onMessage;
+    $.viewersDoQuery = doQuery;
 })();
