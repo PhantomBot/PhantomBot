@@ -42,6 +42,9 @@
  *
  * // Delete from DB
  * { "dbdelkey" : "query_id", "delkey" : { "table" : "table_name", "key" : "key_name" } }
+ *
+ * // Replace the Audio Hooks DB Entries
+ * { "audio_hooks" : [ "name" : "audio hook name", "desc" : "audio hook description" ] }
  * 
  * ---------------------------------------------------------------------------
  *
@@ -66,6 +69,9 @@
  *
  * // Return when DB key has been deleted.
  * { "query_id" : "query_id" }
+ *
+ * // Request an audio byte to play.
+ * { "audio_panel_hook" : "audio hook name" }
  */
 
 /*
@@ -209,6 +215,8 @@ public class PanelSocketServer extends WebSocketServer {
                 String table = jsonObject.getJSONObject("delkey").getString("table");
                 String key = jsonObject.getJSONObject("delkey").getString("key");
                 doDBDelKey(webSocket, uniqueID, table, key);
+            } else if (jsonObject.has("audio_hooks") && !sessionData.isReadOnly()) {
+                doAudioHooksUpdate(jsonObject);
             } else {
                 com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
                 return;
@@ -237,6 +245,15 @@ public class PanelSocketServer extends WebSocketServer {
 
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
         com.gmt2001.Console.debug.println("PanelSocketServer::Closing WebSocket Initiated");
+    }
+
+    public void sendToAll(String text) {
+        Collection<WebSocket> con = connections();
+        synchronized (con) {
+            for (WebSocket c : con) {
+                c.send(text);
+            }
+        }
     }
 
     private void doVersion(WebSocket webSocket, String id) {
@@ -284,6 +301,22 @@ public class PanelSocketServer extends WebSocketServer {
         PhantomBot.instance().getDataStore().del(table, key);
         jsonObject.object().key("query_id").value(id).endObject();
         webSocket.send(jsonObject.toString());
+    }
+
+    public void triggerAudioPanel(String audioHook) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("audio_panel_hook").value(audioHook).endObject();
+        debugMsg("triggerAudioPanel(" + audioHook + ")");
+        sendToAll(jsonObject.toString());
+    }
+
+    private void doAudioHooksUpdate(JSONObject jsonObject) {
+        JSONArray jsonArray = jsonObject.getJSONArray("audio_hooks");
+        PhantomBot.instance().getDataStore().RemoveFile("audio_hooks");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            jsonArray.getJSONObject(i).getString("name");
+            PhantomBot.instance().getDataStore().set("audio_hooks", jsonArray.getJSONObject(i).getString("name"), jsonArray.getJSONObject(i).getString("name"));
+        }
     }
 
     private void debugMsg(String message) {

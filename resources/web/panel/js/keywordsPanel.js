@@ -74,6 +74,7 @@
                 }
                 html += '</table>';
                 $('#keywordsList').html(html);
+                handleInputFocus();
             }
         }
     }
@@ -145,7 +146,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
-        if (active == 11 && isConnected) {
+        if (active == 11 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Keyword Data', 'success', 1000);
             doQuery();
         }

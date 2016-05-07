@@ -10,7 +10,7 @@ $.lang.register('pointsystem.user.success', ' $1 currently has $2.');
 $.lang.register('pointsystem.makeitrain.error.invalid', 'Sorry, but it\'s not possible to rain $1 at the moment.');
 $.lang.register('pointsystem.makeitrain.error.needpoints', 'You can not afford to make it rain $1.');
 $.lang.register('pointsystem.makeitrain.error.negative', 'You can not make it rain negative $1.');
-$.lang.register('pointsystem.makeitrain.success', 'A rainstorm\'s incoming! $1 is throwing $2 in the air! $3');
+$.lang.register('pointsystem.makeitrain.success', 'A rainstorm\'s incoming! $1 just tossed a total of $2 $3 in the air!');
 $.lang.register('pointsystem.makeitrain.usage', 'Usage: "!makeitrain [amount]"');
 $.lang.register('pointsystem.modpermtoggle.success', 'Users in the group $1 or higher are now able to use point management commands.');
 $.lang.register('pointsystem.set.bonus.error.negative', 'You can not set the bonus per group level to negative $1.');

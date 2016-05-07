@@ -232,7 +232,7 @@ logMsg("updateraidmsg");
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
-        if (active == 13 && isConnected) {
+        if (active == 13 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Hosts/Raids Data', 'success', 1000);
             doQuery();
         }

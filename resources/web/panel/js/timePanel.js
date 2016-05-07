@@ -105,6 +105,7 @@
                 }
                 html += "</table>";
                 $("#userTimeTable").html(html);
+                handleInputFocus();
             }
         }
     }
@@ -228,7 +229,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 3 && isConnected) {
+        if (active == 3 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Time Data', 'success', 1000);
             doQuery();
         }

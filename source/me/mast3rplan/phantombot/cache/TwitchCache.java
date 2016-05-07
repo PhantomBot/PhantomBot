@@ -138,6 +138,7 @@ public class TwitchCache implements Runnable {
      * sends events when appropriate.
      */
     private void updateCache() throws Exception {
+        Boolean success = true;
         Boolean isOnline = false;
         Boolean sentTwitchOnlineEvent = false;
         String  gameTitle = "Some Game";
@@ -146,6 +147,8 @@ public class TwitchCache implements Runnable {
         Date    streamCreatedDate = new Date();
         Date    currentDate = new Date();
         long    streamUptimeSeconds = 0L;
+
+        com.gmt2001.Console.debug.println("TwitchCache::updateCache");
 
         /* Retrieve Stream Information */
         try {
@@ -175,13 +178,43 @@ public class TwitchCache implements Runnable {
                         this.streamUptimeSeconds = streamUptimeSeconds;
                         this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
                     } catch (Exception ex) {
+                        success = false;
                         com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" +
                                                          streamObj.getJSONObject("stream").getString("created_at") + ")");
                     }
 
-                    /* Determine the game being streamed. */
-                    gameTitle = streamObj.getJSONObject("stream").getString("game");
+                    /* Determine the preview link. */
+                    previewLink = streamObj.getJSONObject("stream").getJSONObject("preview").getString("medium");
+                    this.previewLink = previewLink;
 
+                    /* Get the viewer count. */
+                    viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
+                    this.viewerCount = viewerCount;
+
+                } else {
+                    streamUptimeSeconds = 0L;
+                    this.streamUptimeSeconds = streamUptimeSeconds;
+                    this.previewLink = "";
+                    this.streamCreatedAt = "";
+                    this.viewerCount = 0;
+                }
+
+            } else {
+                success = false;
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
+            success = false;
+        }
+
+        try {
+            JSONObject streamObj = TwitchAPIv3.instance().GetChannel(this.channel);
+
+            if (streamObj.getBoolean("_success")) {
+
+                /* Get the game being streamed. */
+                if (streamObj.has("game")) {
+                    gameTitle = streamObj.getString("game");
                     if (!forcedGameTitleUpdate && !this.gameTitle.equals(gameTitle)) {
                         /* Send an event if we did not just send a TwitchOnlineEvent. */
                         if (!sentTwitchOnlineEvent) {
@@ -194,31 +227,29 @@ public class TwitchCache implements Runnable {
                     if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitle)) {
                         forcedGameTitleUpdate = false;
                     }
-
-                    /* Determine the stream title (status). */
-                    streamTitle = streamObj.getJSONObject("stream").getJSONObject("channel").getString("status");
-                    this.streamTitle = streamTitle;
-
-                    /* Determine the preview link. */
-                    previewLink = streamObj.getJSONObject("stream").getJSONObject("preview").getString("medium");
-
-                    /* Get the viewer count. */
-                    viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
-                    
                 } else {
-                    streamUptimeSeconds = 0L;
-                    this.streamUptimeSeconds = streamUptimeSeconds;
-                    this.previewLink = "";
-                    this.streamCreatedAt = "";
-                    this.viewerCount = 0;
+                    success = false;
                 }
 
-                if (PhantomBot.instance().twitchCacheReady.equals("false")) {
-                    PhantomBot.instance().setTwitchCacheReady("true");
+                /* Get the title. */
+                if (streamObj.has("status")) {
+                    streamTitle = streamObj.getString("status");
+                    this.streamTitle = streamTitle;
+                } else {
+                    success = false;
                 }
+
+            } else {
+                success = false;
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
+            success = false;
+        }
+
+        if (PhantomBot.instance().twitchCacheReady.equals("false") && success) {
+            com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
+            PhantomBot.instance().setTwitchCacheReady("true");
         }
     }
 

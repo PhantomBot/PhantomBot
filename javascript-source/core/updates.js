@@ -171,6 +171,24 @@
         $.inidb.set('updates', 'installedv2.0.7.2', 'true');
     }
 
+    if (!$.inidb.exists('updates', 'installedv2.0.8') || $.inidb.get('updates', 'installedv2.0.8') != 'true') {
+        $.consoleLn('Starting PhantomBot version 2.0.8 updates...');
+
+        var newDefaultDisabledModules = [
+            './handlers/twitterHandler.js',
+            './systems/audioPanelSystem.js',
+            './systems/queueSystem.js',
+        ]; //ADD NEW MODULES IN 2.0.8 TO BE DISABLED PLEASE.
+
+        $.consoleLn('Disabling new default modules...');
+        for (i in newDefaultDisabledModules) {
+            $.inidb.set('modules', newDefaultDisabledModules[i], 'false');
+        }
+
+        $.consoleLn('PhantomBot v2.0.8 updates completed!');
+        $.inidb.set('updates', 'installedv2.0.8', 'true');
+    }
+
     /**
      * @function getTableContents
      * @param {string} tableName

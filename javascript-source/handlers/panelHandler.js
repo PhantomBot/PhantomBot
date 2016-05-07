@@ -113,6 +113,7 @@
             if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
                 alreadyStarted = true;
                 $.inidb.set('panelstats', 'enabled', 'true');
+                $.setIniDbBoolean('panelstats', 'streamOnline', $.isOnline($.channelName));
                 updateAll();
                 setInterval(function() { updateAll(); }, 3e4, 'panelHandler');
             } else {

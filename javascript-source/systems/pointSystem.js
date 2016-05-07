@@ -433,6 +433,10 @@
          * @commandpath makeitrain [amount] - Send a random amount of points to each user in the channel
          */
         if (command.equalsIgnoreCase('makeitrain')) {
+            var lastAmount = 0,
+                amount = 0,
+                totalAmount = 0;
+
             if (!$.isAdmin(sender)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
@@ -450,16 +454,15 @@
             }
 
             for (i in $.users) {
-                var amount = $.randRange(1, action);
-                temp = [];
+                do {
+                    amount = $.randRange(1, action);
+                } while (amount == lastAmount);
+                totalAmount += amount;
                 $.inidb.incr('points', $.users[i][0].toLowerCase(), amount);
-                if (!$.users[i][0].equalsIgnoreCase($.botName)) {
-                    temp.push($.username.resolve($.users[i][0]) + ': ' + $.getPointsString(amount));
-                }
             }
 
-            if (temp.length > 0) {
-                $.say($.lang.get('pointsystem.makeitrain.success', username, pointNameMultiple, temp.join(', ')));
+            if (totalAmount > 0) {
+                $.say($.lang.get('pointsystem.makeitrain.success', username, totalAmount, pointNameMultiple));
             }
         }
 

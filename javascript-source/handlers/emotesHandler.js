@@ -71,17 +71,26 @@
      */
     function getEmotesMatchCount(checkString) {
         var matches = 0,
-            sequences;
+            length = 0,
+            sequences,
+            retObject = {};
 
         if (!emotesLoaded()) {
-            return 0;
+            retObject = { "matches" : 0, "length" : 0 };
+            return retObject;
         }
 
         for (var i = 0; i < emotesRegExpList.length; i++) {
             sequences = checkString.match(emotesRegExpList[i]);
-            matches += (sequences == null ? 0 : sequences.length);
+            if (sequences !== null) {
+                matches += sequences.length;
+                for (var j = 0; j < sequences.length; j++) {
+                    length += sequences[j].length;
+              }
+            }
         }
-        return matches;
+        retObject = { "matches" : matches, "length" : length };
+        return retObject;
     }
 
     /**

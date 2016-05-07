@@ -7,12 +7,14 @@
  * 
  */
 (function() {
-    var moduleStarted = false;
+    var moduleStarted = false,
+        randPrev = 0;
+ 
 
     /* Set default values for all configuration items. */
     $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
     $.getSetIniDbString('twitter', 'message_gamechange', 'Changing game over to (game) (twitchurl)');
-    $.getSetIniDbString('twitter', 'message_update', 'Still streaming (game) (twitchurl)');
+    $.getSetIniDbString('twitter', 'message_update', 'Still streaming (game) [(uptime)] (twitchurl)');
 
     $.getSetIniDbNumber('twitter', 'polldelay_mentions', 60);
     $.getSetIniDbNumber('twitter', 'polldelay_retweets', 60);
@@ -26,7 +28,7 @@
     $.getSetIniDbBoolean('twitter', 'poll_usertimeline', false);
     $.getSetIniDbBoolean('twitter', 'post_online', false);
     $.getSetIniDbBoolean('twitter', 'post_gamechange', false);
-
+    $.getSetIniDbBoolean('twitter', 'post_update', false);
 
     /**
      * @event twitter
@@ -35,7 +37,7 @@
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
-        $.say($.lang.get('twitter.tweet', event.getTweet));
+        $.say($.lang.get('twitter.tweet', event.getTweet()));
     });
 
     /**
@@ -46,9 +48,14 @@
             return;
         }
         if ($.getIniDbBoolean('twitter', 'post_online', false)) {
+            var randNum;
+            do {
+                randNum = $.randRange(1, 9999);
+            } while (randNum == randPrev);
+            randPrev = randNum;
             $.twitter.updateStatus($.getIniDbString('twitter', 'message_online').
                                        replace('(game)', $.twitchcache.getGameTitle()).
-                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName));
+                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum));
         }
     });
 
@@ -60,9 +67,14 @@
             return;
         }
         if ($.getIniDbBoolean('twitter', 'post_gamechange', false)) {
+            var randNum;
+            do {
+                randNum = $.randRange(1, 9999);
+            } while (randNum == randPrev);
+            randPrev = randNum;
             $.twitter.updateStatus($.getIniDbString('twitter', 'message_gamechange').
                                        replace('(game)', $.twitchcache.getGameTitle()).
-                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName));
+                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum));
         }
     });
 
@@ -186,9 +198,9 @@
                     /**
                      * @commandpath twitter set post online [on/off] - Automatically post when the stream is detected as going online.
                      * @commandpath twitter set post gamechange [on/off] - Automatically post when a game change is peformed via the !game command.
-                     * @commandpath twitter set post updates [on/off] - Automatically post an update to Twitter on a timed interval (!twitter set updatetimer).
+                     * @commandpath twitter set post update [on/off] - Automatically post an update to Twitter on a timed interval (!twitter set updatetimer).
                      */
-                    if (!setCommandArg.equalsIgnoreCase('online') && !setCommandArg.equalsIgnoreCase('gamechange')) {
+                    if (!setCommandArg.equalsIgnoreCase('online') && !setCommandArg.equalsIgnoreCase('gamechange') && !setCommandArg.equalsIgnoreCase('update')) {
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.post.usage'));
                         return;
                     }
@@ -214,10 +226,7 @@
                  * @commandpath twitter set updatetimer [minutes] - Twitter automatic post timer. Posts updates about the stream in progress.
                  */
                 if (subCommandArg.equalsIgnoreCase('updatetimer')) {
-                    if (setCommandArg === undefined) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.usage'));
-                        return;
-                    }
+                    setCommandVal = setCommandArg;
                     if (setCommandVal == undefined) {
                         setCommandVal = $.getIniDbNumber('twitter', 'postdelay_update');
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.usage', setCommandVal));
@@ -229,7 +238,7 @@
                         return;
                     }
                     if (parseInt(setCommandVal) < 60) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.toosmall'));
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.toosmall') + setCommandVal);
                         return;
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.success', setCommandVal));
@@ -335,18 +344,35 @@
          * the moment a stream comes online an additional Tweet is not sent out.
          */
         if (!$.isOnline($.channelName)) {
-            $.setIniDbNumber('twitter', 'last_autoupdate', $.systemTime());
+            $.inidb.set('twitter', 'last_autoupdate', $.systemTime());
             return;
         }
 
-        if ($.getIniDbBoolean('twitter', 'postdelay_update', false)) {
+        if ($.getIniDbBoolean('twitter', 'post_update', false)) {
             var lastUpdateTime = $.getSetIniDbNumber('twitter', 'last_autoupdate', $.systemTime());
 
             if (($.systemTime() - lastUpdateTime) >= ($.getIniDbNumber('twitter', 'postdelay_update', 60) * 6e4)) {
-                $.setIniDbNumber('twitter', 'last_autoupdate', $.systemTime());
-                $.twitter.updateStatus($.getIniDbString('twitter', 'message_update').
-                                           replace('(game)', $.twitchcache.getGameTitle()).
-                                           replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName));
+                var DownloadHTTP = Packages.com.illusionaryone.ImgDownload;
+                var success = DownloadHTTP.downloadHTTP($.twitchcache.getPreviewLink(), 'twitch-preview.jpg'),
+                    uptimeSec = $.getStreamUptimeSeconds($.channelName),
+                    hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
+                    min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
+
+                $.inidb.set('twitter', 'last_autoupdate', $.systemTime());
+
+                if (success.equals('true')) {
+                    $.twitter.updateStatus($.getIniDbString('twitter', 'message_update').
+                                               replace('(game)', $.twitchcache.getGameTitle()).
+                                               replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + uptimeSec).
+                                               replace('(uptime)', hrs + ':' + min),
+                                           './addons/downloadHTTP/twitch-preview.jpg');
+                } else {
+                    $.twitter.updateStatus($.getIniDbString('twitter', 'message_update').
+                                               replace('(game)', $.twitchcache.getGameTitle()).
+                                               replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + uptimeSec).
+                                               replace('(uptime)', hrs + ':' + min));
+                }
+                $.logEvent('twitterHandler.js', 352, 'Sent Auto Update to Twitter');
             }
         }
     }

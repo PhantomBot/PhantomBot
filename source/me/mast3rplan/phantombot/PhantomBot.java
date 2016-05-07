@@ -72,6 +72,7 @@ import me.mast3rplan.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
+import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
@@ -161,7 +162,7 @@ public class PhantomBot implements Listener {
     public static boolean interactive;
     public static boolean webenabled = false;
     public static boolean musicenabled = false;
-    public static String twitchCacheReady;
+    public static String twitchCacheReady = "false";
     private boolean exiting = false;
     private static PhantomBot instance;
 
@@ -599,6 +600,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("channelStatus", channelStatus, 0);
         Script.global.defineProperty("musicplayer", musicsocketserver, 0);
         Script.global.defineProperty("ytplayer", ytsocketserver, 0);
+        Script.global.defineProperty("panelsocketserver", panelsocketserver, 0);
         Script.global.defineProperty("random", rng, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("pollResults", pollResults, 0);
@@ -811,6 +813,12 @@ public class PhantomBot implements Listener {
         boolean changed = false;
 
         if (message == null) {
+            return;
+        }
+
+        if (message.equals("testonline")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testonline");
+            EventBus.instance().post(new TwitchOnlineEvent(PhantomBot.instance().getChannel("#" + this.channel)));
             return;
         }
 

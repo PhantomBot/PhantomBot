@@ -176,6 +176,7 @@
                 $('#gameWispSongRequests').html(songRequestHtml);
                 $('#gameWispBonusPoints').html(bonusPointsHtml);
                 $('#gameWispSubBonusPoints').html(subBonusPointsHtml);
+                handleInputFocus();
             }
         }
     }
@@ -295,7 +296,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
-        if (active == 7 && isConnected) {
+        if (active == 7 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Greeting Data', 'success', 1000);
             doQuery();
         }

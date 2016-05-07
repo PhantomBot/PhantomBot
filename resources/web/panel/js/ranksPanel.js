@@ -87,6 +87,7 @@
                     html = "<i>There are no ranks presently defined</i>";
                 }
                 $("#ranksMapping").html(html);
+                handleInputFocus();
             }
 
             if (panelCheckQuery(msgObject, 'ranks_customranks')) {
@@ -118,6 +119,7 @@
                     html = "<i>There are no users with custom ranks</i>";
                 }
                 $("#ranksCustom").html(html);
+                handleInputFocus();
             }
         }
     }
@@ -254,7 +256,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
-        if (active == 6 && isConnected) {
+        if (active == 6 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Ranks Data', 'success', 1000);
             doQuery();
         }

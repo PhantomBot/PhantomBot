@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.ArrayList;
+import java.lang.ArrayIndexOutOfBoundsException;
 
 public class Logger implements Runnable {
 
@@ -143,6 +144,8 @@ public class Logger implements Runnable {
                     ex.printStackTrace(System.err);
                 } catch (SecurityException ex) {
                     ex.printStackTrace(System.err);
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    /* At shutdown queue.remove(0) throws an exception sometimes, it is expected, do not clutter the console/error logs. */
                 }
             } else {
                 try {
