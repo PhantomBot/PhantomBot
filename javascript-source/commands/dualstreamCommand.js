@@ -18,7 +18,7 @@
                     messageCount = 0;
                 }
             }
-        }, timerInterval * 60 *1000, 'dualStreamTimer');
+        }, timerInterval * 60 * 1000, 'dualStreamTimer');
     };
 
     $.bind('ircChannelMessage', function() {
@@ -41,7 +41,7 @@
          */
         if (command.equalsIgnoreCase('multi')) {
             if (!action) {
-                if (otherChannels != null) {
+                if (otherChannels != 'Channel-1 Channel-2') {
                     $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
                     return;
                 } else {
