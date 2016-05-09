@@ -73,6 +73,7 @@ import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
 import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
+import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
@@ -819,6 +820,12 @@ public class PhantomBot implements Listener {
         if (message.equals("testonline")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testonline");
             EventBus.instance().post(new TwitchOnlineEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            return;
+        }
+
+        if (message.equals("testoffline")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testoffline");
+            EventBus.instance().post(new TwitchOfflineEvent(PhantomBot.instance().getChannel("#" + this.channel)));
             return;
         }
 
