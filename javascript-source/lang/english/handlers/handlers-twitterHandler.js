@@ -4,9 +4,9 @@ $.lang.register('twitter.set.usage', 'usage: !twitter set [polldelay | poll | po
 $.lang.register('twitter.set.polldelay.usage', 'usage: !twitter set polldelay [mentions | retweets | hometimeline | usertimeline]');
 $.lang.register('twitter.set.polldelay.minerror', 'Too small of a poll delay, minimum is $1 for this setting.');
 $.lang.register('twitter.set.polldelay.mentions.usage', 'usage: !twitter set polldelay mentions [seconds]. Minimum is 60. Currently $1.');
-$.lang.register('twitter.set.polldelay.retweets.usage', 'usage: !twitter set polldelay mentions [seconds]. Minimum is 60. Currently $1.');
-$.lang.register('twitter.set.polldelay.hometimeline.usage', 'usage: !twitter set polldelay mentions [seconds]. Minimum is 60. Currently $1.');
-$.lang.register('twitter.set.polldelay.usertimeline.usage', 'usage: !twitter set polldelay mentions [seconds]. Minimum is 60. Currently $1.');
+$.lang.register('twitter.set.polldelay.retweets.usage', 'usage: !twitter set polldelay rewteets [seconds]. Minimum is 60. Currently $1.');
+$.lang.register('twitter.set.polldelay.hometimeline.usage', 'usage: !twitter set polldelay hometimeline [seconds]. Minimum is 60. Currently $1.');
+$.lang.register('twitter.set.polldelay.usertimeline.usage', 'usage: !twitter set polldelay usertimeline [seconds]. Minimum is 15. Currently $1.');
 $.lang.register('twitter.set.polldelay.mentions.success', 'Set Twitter polldelay mentions to $1 seconds.');
 $.lang.register('twitter.set.polldelay.retweets.success', 'Set Twitter polldelay retweets to $1 seconds.');
 $.lang.register('twitter.set.polldelay.hometimeline.success', 'Set Twitter polldelay hometimeline to $1 seconds.');
