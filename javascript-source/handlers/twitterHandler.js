@@ -284,7 +284,8 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.usage'));
                     return;
                 }
-                if ($.twitter.updateStatus(args.splice(1).join(' '))) {
+                var retval = $.twitter.updateStatus(args.splice(1).join(' ')) + '';
+                if (retval.equals('true')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.sent', args.splice(0).join(' ')));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.failed'));
