@@ -17,13 +17,18 @@
 package me.mast3rplan.phantombot.script;
 
 import com.google.common.collect.Lists;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
 import org.apache.commons.io.FileUtils;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptableObject;
+
+import me.mast3rplan.phantombot.PhantomBot;
 
 public class Script {
 
@@ -38,7 +43,16 @@ public class Script {
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public Script(File file) {
-        this.fileWatcher = new ScriptFileWatcher(this);
+
+        if (PhantomBot.instance().reloadScripts) {
+            this.fileWatcher = new ScriptFileWatcher(this);
+        } else {
+            if (file.getPath().indexOf("/lang/") != -1) {
+                this.fileWatcher = new ScriptFileWatcher(this);
+            } else {
+                this.fileWatcher = null;
+            }
+        }
         this.file = file;
 
         if (!file.getName().endsWith(".js")) {
@@ -47,7 +61,9 @@ public class Script {
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
-        new Thread(fileWatcher).start();
+        if (this.fileWatcher != null) {
+            new Thread(fileWatcher).start();
+        }
     }
 
     @SuppressWarnings("rawtypes")
