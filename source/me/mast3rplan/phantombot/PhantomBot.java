@@ -74,6 +74,7 @@ import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
 import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
 import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
+import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
@@ -811,11 +812,32 @@ public class PhantomBot implements Listener {
 
     @Subscribe
     public void onConsoleMessage(ConsoleInputEvent msg) {
-        String message = msg.getMsg();
         boolean changed = false;
+        String  message = msg.getMsg();
+        int     followCount = 0;
 
         if (message == null) {
             return;
+        }
+
+        if (message.equals("testfollow")) {
+            String randomUser = generateRandomString(10);
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testfollow (User: " + randomUser + ")");
+            EventBus.instance().post(new TwitchFollowEvent(randomUser, PhantomBot.instance().getChannel("#" + this.channel)));
+        }
+
+        if (message.startsWith("testfollows")) {
+            String[] messageSplit = message.split(" ", 2);
+            if (messageSplit.length != 2) {
+                followCount = 1;
+            } else {
+                followCount = Integer.parseInt(messageSplit[1]);
+            }
+            String randomUser = generateRandomString(10);
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testfollows (Count: " + followCount + ", User: " + randomUser + ")");
+            for (int i = 0; i < followCount; i++) {
+                EventBus.instance().post(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.instance().getChannel("#" + this.channel)));
+            }
         }
 
         if (message.equals("testonline")) {
@@ -1770,6 +1792,19 @@ public class PhantomBot implements Listener {
         char[] randomBuffer;
 
         randomBuffer = new char[30];
+        SecureRandom random = new SecureRandom();
+        for (int i = 0; i < randomBuffer.length; i++) {
+           randomBuffer[i] = randomChars[random.nextInt(randomChars.length)];
+        }
+        return new String(randomBuffer);
+    }
+
+    private static String generateRandomString(int length) {
+        String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        char[] randomChars = randomAllowed.toCharArray();
+        char[] randomBuffer;
+
+        randomBuffer = new char[length];
         SecureRandom random = new SecureRandom();
         for (int i = 0; i < randomBuffer.length; i++) {
            randomBuffer[i] = randomChars[random.nextInt(randomChars.length)];
