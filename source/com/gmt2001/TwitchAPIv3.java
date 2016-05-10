@@ -30,11 +30,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONString;
+import org.json.JSONStringer;
 
 /**
  * Communicates with Twitch Kraken server using the version 3 API
  *
  * @author gmt2001
+ * @author illusionaryone
  */
 public class TwitchAPIv3 {
 
@@ -510,5 +512,90 @@ public class TwitchAPIv3 {
     public JSONObject GetEmotes()
     {
         return GetData(request_type.GET, base_url + "/chat/emoticons", false);
+    }
+
+    /**
+     * Gets the list of VODs from Twitch
+     *
+     * @param   String  The channel requesting data for
+     * @param   String  The type of data: current, highlights, archives
+     * @return  String  List of Twitch VOD URLs (as a JSON String) or empty String in failure.
+     */
+    public String GetChannelVODs(String channel, String type) {
+        JSONStringer jsonOutput = new JSONStringer();
+        JSONObject   jsonInput;
+        JSONArray    jsonArray;
+
+        if (type.equals("current")) {
+            jsonInput = GetData(request_type.GET, base_url + "/channels/" + channel + "/videos?broadcasts=true&limit=1", false);
+            if (jsonInput.has("videos")) {
+                jsonArray = jsonInput.getJSONArray("videos");
+                if (jsonArray.length() > 0) {
+                    if (jsonArray.getJSONObject(0).has("status")) {
+                        if (jsonArray.getJSONObject(0).getString("status").equals("recording")) {
+                            jsonOutput.object().key("videos").array().object();
+                            jsonOutput.key("url").value(jsonArray.getJSONObject(0).getString("url"));
+                            jsonOutput.key("recorded_at").value(jsonArray.getJSONObject(0).getString("recorded_at"));
+                            jsonOutput.key("length").value(jsonArray.getJSONObject(0).getInt("length"));
+                            jsonOutput.endObject().endArray().endObject();
+                        }
+                        com.gmt2001.Console.debug.println("TwitchAPIv3::GetChannelVODs: " + jsonOutput.toString());
+                        if (jsonOutput.toString() == null) {
+                            return new String("");
+                        }
+                        return jsonOutput.toString();
+                    }
+                }
+            }
+        }
+
+        if (type.equals("highlights")) {
+            jsonInput = GetData(request_type.GET, base_url + "/channels/" + channel + "/videos?limit=5", false);
+            if (jsonInput.has("videos")) {
+                jsonArray = jsonInput.getJSONArray("videos");
+                if (jsonArray.length() > 0) {
+                    jsonOutput.object().key("videos").array();
+                    for (int idx = 0; idx < jsonArray.length(); idx++) {
+                        jsonOutput.object();
+                        jsonOutput.key("url").value(jsonArray.getJSONObject(idx).getString("url"));
+                        jsonOutput.key("recorded_at").value(jsonArray.getJSONObject(idx).getString("recorded_at"));
+                        jsonOutput.key("length").value(jsonArray.getJSONObject(idx).getInt("length"));
+                        jsonOutput.endObject();
+                    }
+                    jsonOutput.endArray().endObject();
+                    com.gmt2001.Console.debug.println("TwitchAPIv3::GetChannelVODs: " + jsonOutput.toString());
+                    if (jsonOutput.toString() == null) {
+                        return new String("");
+                    }
+                    return jsonOutput.toString();
+                }
+            }
+        }
+
+        if (type.equals("archives")) {
+            jsonInput = GetData(request_type.GET, base_url + "/channels/" + channel + "/videos?broadcasts=true&limit=5", false);
+            if (jsonInput.has("videos")) {
+                jsonArray = jsonInput.getJSONArray("videos");
+                if (jsonArray.length() > 0) {
+                    jsonOutput.object().key("videos").array();
+                    for (int idx = 0; idx < jsonArray.length(); idx++) {
+                        jsonOutput.object();
+                        jsonOutput.key("url").value(jsonArray.getJSONObject(idx).getString("url"));
+                        jsonOutput.key("recorded_at").value(jsonArray.getJSONObject(idx).getString("recorded_at"));
+                        jsonOutput.key("length").value(jsonArray.getJSONObject(idx).getInt("length"));
+                        jsonOutput.endObject();
+                    }
+                    jsonOutput.endArray().endObject();
+                    com.gmt2001.Console.debug.println("TwitchAPIv3::GetChannelVODs: " + jsonOutput.toString());
+                    if (jsonOutput.toString() == null) {
+                        return new String("");
+                    }
+                    return jsonOutput.toString();
+                }
+            }
+        }
+
+        /* Just return an empty string. */
+        return new String("");
     }
 }
