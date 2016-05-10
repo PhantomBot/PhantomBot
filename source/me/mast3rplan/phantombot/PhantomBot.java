@@ -163,6 +163,7 @@ public class PhantomBot implements Listener {
     public static boolean interactive;
     public static boolean webenabled = false;
     public static boolean musicenabled = false;
+    public static boolean reloadScripts = false;
     public static String twitchCacheReady = "false";
     private boolean exiting = false;
     private static PhantomBot instance;
@@ -1245,6 +1246,10 @@ public class PhantomBot implements Listener {
                 String[] lines = data.replaceAll("\\r", "").split("\\n");
 
                 for (String line : lines) {
+                    if (line.startsWith("reloadscripts")) {
+                        com.gmt2001.Console.out.println("Enabling Script Reloading");
+                        PhantomBot.reloadScripts = true;
+                    }
                     if (line.startsWith("debugon")) {
                         com.gmt2001.Console.out.println("Debug Mode Enabled via botlogin.txt");
                         PhantomBot.enableDebugging = true;
