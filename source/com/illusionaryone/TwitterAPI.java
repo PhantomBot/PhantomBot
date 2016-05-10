@@ -151,33 +151,33 @@ public class TwitterAPI {
      * other status update on Twitter.  If there is an error posting, an exception is logged.
      *
      * @param   statusString  The string that will be posted on Twitter.
-     * @return  Boolean       true on success and false on failure
+     * @return  String        'true' on success and 'false' on failure
      */
-    public Boolean updateStatus(String statusString) {
+    public String updateStatus(String statusString) {
         if (accessToken == null) {
-            return false;
+            return "false";
         }
 
         try {
             Status status = twitter.updateStatus(statusString);
             com.gmt2001.Console.debug.println("TwitterAPI::updateStatus: Success");
-            return true;
+            return "true";
         } catch (TwitterException ex) {
             com.gmt2001.Console.err.println("TwitterAPI::updateStatus: Failed: " + ex.getMessage());
-            return false;
+            return "false";
         }
     }
 
     /*
      * Posts a Tweet on Twitter and includes a media file.
      *
-     * @param  statusString  The string that will be posted on Twitter.
-     * @param  filename      The filename to read as media and post to Twitter.
-     * @param  Boolean       true on success and false on failure
+     * @param   statusString  The string that will be posted on Twitter.
+     * @param   filename      The filename to read as media and post to Twitter.
+     * @return  String        'true' on success and 'false' on failure
      */
-    public Boolean updateStatus(String statusString, String filename) {
+    public String updateStatus(String statusString, String filename) {
         if (accessToken == null) {
-            return false;
+            return "false";
         }
 
         try {
@@ -185,10 +185,10 @@ public class TwitterAPI {
             statusUpdate.setMedia(new File(filename));
             Status status = twitter.updateStatus(statusUpdate);
             com.gmt2001.Console.debug.println("TwitterAPI::updateStatus: Success");
-            return true;
+            return "true";
         } catch (TwitterException ex) {
             com.gmt2001.Console.err.println("TwitterAPI::updateStatus: Failed: " + ex.getMessage());
-            return false;
+            return "false";
         }
     }
 
