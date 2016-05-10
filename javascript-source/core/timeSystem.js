@@ -392,12 +392,12 @@
 
                     $.setUserGroupById(username, regularsGroupId);
 
-                    $.say($.whisperPrefix(username) + $.lang.get(
+                    $.say($.lang.get(
                         'timesystem.autolevel.promoted',
                         $.username.resolve(username),
                         $.getGroupNameById(regularsGroupId).toLowerCase(),
                         hoursForLevelUp
-                    ));
+                    )); //No whisper mode needed here.
                 }
             }
         }
