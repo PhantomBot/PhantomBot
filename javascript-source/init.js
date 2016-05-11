@@ -318,7 +318,7 @@
          * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
          */
 
-         if (command.equalsIgnoreCase($.botName)) {
+         if (command.equalsIgnoreCase($.botName.toLowerCase())) {
             if (!$.isAdmin(sender)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
@@ -1020,7 +1020,7 @@
         $.registerChatCommand('./init.js', 'module', 1);
         $.registerChatCommand('./init.js', 'reconnect');
         $.registerChatCommand('./init.js', 'disconnect');
-        $.registerChatCommand('./init.js', $.botName, 1);
+        $.registerChatCommand('./init.js', $.botName.toLowerCase(), 1);
 
         // emit initReady event
         callHook('initReady', null, true);
