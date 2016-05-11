@@ -66,7 +66,7 @@
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
-        if ($.getIniDbBoolean('twitter', 'post_gamechange', false)) {
+        if ($.getIniDbBoolean('twitter', 'post_gamechange', false) && $.isOnline($.channelName)) {
             var randNum;
             do {
                 randNum = $.randRange(1, 9999);
@@ -258,7 +258,7 @@
                     /**
                      * @commandpath twitter set message online [message] - Configures message that is sent out when stream goes online. Tags: (game) (twitchurl)
                      * @commandpath twitter set message gamechange [message] - Configures message that is sent out on game change. Tags: (game) (twitchurl)
-                     * @commandpath twitter set message update [message] - Configures message that is sent out on an interval basis. Tags: (game) (twitchurl)
+                     * @commandpath twitter set message update [message] - Configures message that is sent out on an interval basis. Tags: (game) (twitchurl) (uptime)
                      */
                     if (!setCommandArg.equalsIgnoreCase('online') && !setCommandArg.equalsIgnoreCase('gamechange') && !setCommandArg.equalsIgnoreCase('update')) {
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.message.usage'));
