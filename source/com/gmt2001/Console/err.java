@@ -40,13 +40,8 @@ public class err {
     }
 
     public static void print(Object o) {
-        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
-        datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-        String timestamp = datefmt.format(new Date());
-
-        Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + o.toString());
-        System.err.print("[" + timestamp + "] [ERROR] " + o);
+        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + o.toString());
+        System.err.print("[" + logTimestamp.log() + "] [ERROR] " + o);
     }
 
     public static void println() {
@@ -54,14 +49,9 @@ public class err {
     }
 
     public static void println(Object o) {
-        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
-        datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-        String timestamp = datefmt.format(new Date());
-
-        Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + o.toString());
+        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
-        System.err.println("[" + timestamp + "] [ERROR] " + o);
+        System.err.println("[" + logTimestamp.log() + "] [ERROR] " + o);
     }
 
     public static void printStackTrace(Throwable e) {
@@ -75,12 +65,7 @@ public class err {
 
         e.printStackTrace(ptrace);
 
-        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
-        datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-        String timestamp = datefmt.format(new Date());
-
-        Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + trace.toString());
+        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + trace.toString());
         Logger.instance().log(Logger.LogType.Error, "");
     }
 }

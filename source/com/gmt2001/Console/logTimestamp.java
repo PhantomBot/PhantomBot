@@ -22,39 +22,10 @@ import java.util.Date;
 import java.util.TimeZone;
 import me.mast3rplan.phantombot.PhantomBot;
 
-/**
- *
- * @author Gary Tekulsky
- */
-public class out {
-
-    private static final out instance = new out();
-
-    public static out instance() {
-        return instance;
-    }
-
-    private out() {
-    }
-
-    public static void print(Object o) {
-        if (PhantomBot.enableDebugging) {
-            Logger.instance().log(Logger.LogType.Output, logTimestamp.log() + " " + o.toString());
-        }
-
-        System.out.print(o);
-    }
-
-    public static void println() {
-        System.out.println();
-    }
-
-    public static void println(Object o) {
-        if (PhantomBot.enableDebugging) {
-            Logger.instance().log(Logger.LogType.Output, logTimestamp.log() + " " + o.toString());
-            Logger.instance().log(Logger.LogType.Output, "");
-        }
-
-        System.out.println("[" + logTimestamp.log() + "] " + o);
+public class logTimestamp {
+    public static String log() {
+        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
+        datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.instance().log_timezone));
+        return datefmt.format(new Date());
     }
 }
