@@ -168,6 +168,7 @@ public class PhantomBot implements Listener {
     public static String twitchCacheReady = "false";
     private boolean exiting = false;
     private static PhantomBot instance;
+    public static String log_timezone = "GMT";
 
     public static PhantomBot instance() {
         return instance;
@@ -188,7 +189,7 @@ public class PhantomBot implements Listener {
                       String keystorepassword, String keypassword, String twitchalertskey,
                       int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
                       String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword,
-                      String twitter_username, String twitter_access_token, String twitter_secret_token) {
+                      String twitter_username, String twitter_access_token, String twitter_secret_token, String log_timezone) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -222,6 +223,12 @@ public class PhantomBot implements Listener {
         this.twitter_access_token = twitter_access_token;
         this.twitter_secret_token = twitter_secret_token;
         
+        if (log_timezone.isEmpty()) {
+            this.log_timezone = "GMT";
+        } else {
+            this.log_timezone = log_timezone;
+        }
+
         if (!youtubekey.isEmpty()) {
             YouTubeAPIv3.instance().SetAPIKey(youtubekey);
         }
@@ -1042,6 +1049,10 @@ public class PhantomBot implements Listener {
                 data += "paneluser=" + paneluser + "\r\n";
                 data += "panelpassword=" + panelpassword + "\r\n";
 
+                if (!log_timezone.isEmpty()) {
+                    data += "logtimezone=" + log_timezone + "\r\n";
+                }
+
                 Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                             StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
@@ -1253,6 +1264,7 @@ public class PhantomBot implements Listener {
         String keystorepath = "";
         String keystorepassword = "";
         String keypassword = "";
+        String log_timezone = "";
 
         String twitter_username = "";
         String twitter_access_token = "";
@@ -1268,6 +1280,9 @@ public class PhantomBot implements Listener {
                 String[] lines = data.replaceAll("\\r", "").split("\\n");
 
                 for (String line : lines) {
+                    if (line.startsWith("logtimezone=") && line.length() >= 15) {
+                        log_timezone = line.substring(12);
+                    }
                     if (line.startsWith("reloadscripts")) {
                         com.gmt2001.Console.out.println("Enabling Script Reloading");
                         PhantomBot.reloadScripts = true;
@@ -1729,6 +1744,9 @@ public class PhantomBot implements Listener {
             data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
             data += "paneluser=" + paneluser + "\r\n";
             data += "panelpassword=" + panelpassword + "\r\n";
+            if (!log_timezone.isEmpty()) {
+                data += "logtimezone=" + log_timezone + "\r\n";
+            }
 
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -1737,7 +1755,7 @@ public class PhantomBot implements Listener {
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable,
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
                                              webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
-                                             twitter_username, twitter_access_token, twitter_secret_token);
+                                             twitter_username, twitter_access_token, twitter_secret_token, log_timezone);
     }
 
     public void updateGameWispTokens(String[] newTokens) {
@@ -1772,6 +1790,9 @@ public class PhantomBot implements Listener {
         data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
         data += "paneluser=" + paneluser + "\r\n";
         data += "panelpassword=" + panelpassword + "\r\n";
+        if (!log_timezone.isEmpty()) {
+            data += "logtimezone=" + log_timezone + "\r\n";
+        }
 
         try {
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),

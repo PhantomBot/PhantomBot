@@ -42,13 +42,9 @@ public class debug {
 
     private debug(Object o) {
         if (PhantomBot.enableDebugging) {
-            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
-            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-            String timestamp = datefmt.format(new Date());
-
-            Logger.instance().log(Logger.LogType.Debug, timestamp + "Z " + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
-            System.out.println("[" + timestamp + "] [DEBUG] " + o);
+            System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + o);
         }
     }
 
@@ -60,13 +56,9 @@ public class debug {
 
     public static void println(Object o) {
         if (PhantomBot.enableDebugging) {
-            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
-            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-            String timestamp = datefmt.format(new Date());
-
-            Logger.instance().log(Logger.LogType.Debug, timestamp + "Z " + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
-            System.out.println("[" + timestamp + "] [DEBUG] " + o);
+            System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + o);
         }
     }
 
@@ -84,12 +76,7 @@ public class debug {
     
             e.printStackTrace(ptrace);
     
-            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS");
-            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-    
-            String timestamp = datefmt.format(new Date());
-    
-            Logger.instance().log(Logger.LogType.Debug, timestamp + "Z " + trace.toString());
+            Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + trace.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
         }
     }
