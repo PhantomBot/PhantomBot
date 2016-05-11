@@ -21,7 +21,7 @@
 <div>
     <form role="form">
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="linkPermit">Permit A User</label>
+            <label for="linkPermit">Permit User to Post a Link</label>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.permitUserCommand()">Permit</button>
             <input type="text" class="form-control" id="permitUserInput" placeholder="username" data-toggle="tooltip" title="Permit a user to post a link in chat without getting timed out."/>
         </div>
@@ -156,7 +156,7 @@
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="linksMessage">Links protection message</label>
+                <label for="linksMessage">Links Protection Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#linksMessageInput', 'linksMessage')">Submit</button>
                 <input type="text" class="form-control" id="linksMessageInput" placeholder="Loading..."
@@ -165,7 +165,7 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="linkPermitTime">Links permit time (seconds)</label>
+                <label for="linkPermitTime">Links Permit Time (Seconds)</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#linkPermitTimeInput', 'linkPermitTime')">Submit</button>
                 <input type="number" min="0" class="form-control" id="linkPermitTimeInput" placeholder="Loading..."
@@ -174,48 +174,48 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="warningTimeLinks">Warning time duration</label>
+                <label for="warningTimeLinks">Warning Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#warningTimeLinks', 'warningTimeLinks')">Submit</button>
                 <input type="number" min="1" class="form-control" id="warningTimeLinks" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when posting a link on there first offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when posting a link on their first offence." />
             </div>
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="timeoutTimeLinks">Timeout time duration</label>
+                <label for="timeoutTimeLinks">Timeout Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#timeoutTimeLinks', 'timeoutTimeLinks')">Submit</button>
                 <input type="number" min="1" class="form-control" id="timeoutTimeLinks" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when posting a link on there second and last offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when posting a link on their second and last offence." />
             </div>
         </form>
     </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleModerationLinks" onclick="$.toggleModerations('Links', 'linksToggle')">Moderate links
+                    <input type="checkbox" id="toggleModerationLinks" onclick="$.toggleModerations('Links', 'linksToggle')">Moderate Links
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleRegularLinks" onclick="$.toggleRegular('Links')">Exclude regulars
+                    <input type="checkbox" id="toggleRegularLinks" onclick="$.toggleRegular('Links')">Exclude Regulars
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSubscriberLinks" onclick="$.toggleSubscriber('Links')">Exclude subscribers
+                    <input type="checkbox" id="toggleSubscriberLinks" onclick="$.toggleSubscriber('Links')">Exclude Subscribers
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSilentTimeoutLinks" onclick="$.toggleSilentTimeout('Links')">Silent timeout
+                    <input type="checkbox" id="toggleSilentTimeoutLinks" onclick="$.toggleSilentTimeout('Links')">Silent Timeout
                 </label>
             </div>
         </form>
@@ -235,7 +235,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="symbolsLimitPercent">Symbols limit percent</label>
+                <label for="symbolsLimitPercent">Symbols Limit Percent</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#symbolsLimitPercentInput', 'symbolsLimitPercent')">Submit</button>
                 <input type="number" min="0" max="100" class="form-control" id="symbolsLimitPercentInput" placeholder="Loading..."
@@ -245,7 +245,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="symbolsGroupLimit">Symbols group limit</label>
+                <label for="symbolsGroupLimit">Symbols Group Limit</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#symbolsGroupLimitInput', 'symbolsGroupLimit')">Submit</button>
                 <input type="number" min="0" class="form-control" id="symbolsGroupLimitInput" placeholder="Loading..."
@@ -255,7 +255,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="symbolsTriggerLength">Symbols trigger length</label>
+                <label for="symbolsTriggerLength">Symbols Trigger Length</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#symbolsTriggerLengthInput', 'symbolsTriggerLength')">Submit</button>
                 <input type="number" min="0" class="form-control" id="symbolsTriggerLengthInput" placeholder="Loading..."
@@ -266,48 +266,48 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="warningTimeSymbols">Warning time duration</label>
+                <label for="warningTimeSymbols">Warning Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#warningTimeSymbols', 'warningTimeSymbols')">Submit</button>
                 <input type="number" min="1" class="form-control" id="warningTimeSymbols" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when over-using symbols on there first offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when over-using symbols on their first offence." />
             </div>
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="timeoutTimeSymbols">Timeout time duration</label>
+                <label for="timeoutTimeSymbols">Timeout Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#timeoutTimeSymbols', 'timeoutTimeSymbols')">Submit</button>
                 <input type="number" min="1" class="form-control" id="timeoutTimeSymbols" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when over-using symbols on there second and last offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when over-using symbols on their second and last offence." />
             </div>
         </form>
     </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleModerationSymbols" onclick="$.toggleModerations('Symbols', 'symbolsToggle')">Moderate symbols
+                    <input type="checkbox" id="toggleModerationSymbols" onclick="$.toggleModerations('Symbols', 'symbolsToggle')">Moderate Symbols
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleRegularSymbols" onclick="$.toggleRegular('Symbols')">Exclude regulars
+                    <input type="checkbox" id="toggleRegularSymbols" onclick="$.toggleRegular('Symbols')">Exclude Regulars
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSubscriberSymbols" onclick="$.toggleSubscriber('Symbols')">Exclude subscribers
+                    <input type="checkbox" id="toggleSubscriberSymbols" onclick="$.toggleSubscriber('Symbols')">Exclude Subscribers
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSilentTimeoutSymbols" onclick="$.toggleSilentTimeout('Symbols')">Silent timeout
+                    <input type="checkbox" id="toggleSilentTimeoutSymbols" onclick="$.toggleSilentTimeout('Symbols')">Silent Timeout
                 </label>
             </div>
         </form>
@@ -317,7 +317,7 @@
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="capsMessage">Caps protection message</label>
+                <label for="capsMessage">Caps Protection Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#capsMessageInput', 'capsMessage')">Submit</button>
                 <input type="text" class="form-control" id="capsMessageInput" placeholder="Loading..."
@@ -327,7 +327,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="capsLimitPercent">Caps limit percent</label>
+                <label for="capsLimitPercent">Caps Limit Percent</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#capsLimitPercentInput', 'capsLimitPercent')">Submit</button>
                 <input type="number" min="0" max="100" class="form-control" id="capsLimitPercentInput" placeholder="Loading..."
@@ -337,7 +337,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="capsTriggerLength">Caps trigger length</label>
+                <label for="capsTriggerLength">Caps Trigger Length</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#capsTriggerLengthInput', 'capsTriggerLength')">Submit</button>
                 <input type="number" min="0" class="form-control" id="capsTriggerLengthInput" placeholder="Loading..."
@@ -348,41 +348,41 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="warningTimeCaps">Warning time duration</label>
+                <label for="warningTimeCaps">Warning Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#warningTimeCaps', 'warningTimeCaps')">Submit</button>
                 <input type="number" min="1" class="form-control" id="warningTimeCaps" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when over-using caps on there first offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when over-using caps on their first offence." />
             </div>
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="timeoutTimeCaps">Timeout time duration</label>
+                <label for="timeoutTimeCaps">Timeout Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#timeoutTimeCaps', 'timeoutTimeCaps')">Submit</button>
                 <input type="number" min="1" class="form-control" id="timeoutTimeCaps" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when over-using caps on there second and last offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when over-using caps on their second and last offence." />
             </div>
         </form>
     </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleModerationCaps" onclick="$.toggleModerations('Caps', 'capsToggle')">Moderate caps
+                    <input type="checkbox" id="toggleModerationCaps" onclick="$.toggleModerations('Caps', 'capsToggle')">Moderate Caps
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleRegularCaps" onclick="$.toggleRegular('Caps')">Exclude regulars
+                    <input type="checkbox" id="toggleRegularCaps" onclick="$.toggleRegular('Caps')">Exclude Regulars
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSubscriberCaps" onclick="$.toggleSubscriber('Caps')">Exclude subscribers
+                    <input type="checkbox" id="toggleSubscriberCaps" onclick="$.toggleSubscriber('Caps')">Exclude Subscribers
                 </label>
             </div>
         </form>
@@ -399,7 +399,7 @@
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="spamMessage">Spam protection message</label>
+                <label for="spamMessage">Spam Protection Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#spamMessageInput', 'spamMessage')">Submit</button>
                 <input type="text" class="form-control" id="spamMessageInput" placeholder="Loading..."
@@ -409,7 +409,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="spamLimit">Spam limit</label>
+                <label for="spamLimit">Spam Limit</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#spamLimitInput', 'spamLimit')">Submit</button>
                 <input type="number" min="2" class="form-control" id="spamLimitInput" placeholder="Loading..."
@@ -420,48 +420,48 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="warningTimeSpam">Warning time duration</label>
+                <label for="warningTimeSpam">Warning Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#warningTimeSpam', 'warningTimeSpam')">Submit</button>
                 <input type="number" min="1" class="form-control" id="warningTimeSpam" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when spamming on there first offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when spamming on their first offence." />
             </div>
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="timeoutTimeSpam">Timeout time duration</label>
+                <label for="timeoutTimeSpam">Timeout Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#timeoutTimeSpam', 'timeoutTimeSpam')">Submit</button>
                 <input type="number" min="1" class="form-control" id="timeoutTimeSpam" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when spamming on there second and last offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when spamming on their second and last offence." />
             </div>
         </form>
     </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleModerationSpam" onclick="$.toggleModerations('Spam', 'spamToggle')">Moderate spam
+                    <input type="checkbox" id="toggleModerationSpam" onclick="$.toggleModerations('Spam', 'spamToggle')">Moderate Spam
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleRegularSpam" onclick="$.toggleRegular('Spam')">Exclude regulars
+                    <input type="checkbox" id="toggleRegularSpam" onclick="$.toggleRegular('Spam')">Exclude Regulars
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSubscriberSpam" onclick="$.toggleSubscriber('Spam')">Exclude subscribers
+                    <input type="checkbox" id="toggleSubscriberSpam" onclick="$.toggleSubscriber('Spam')">Exclude Subscribers
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSilentTimeoutSpam" onclick="$.toggleSilentTimeout('Spam')">Silent timeout
+                    <input type="checkbox" id="toggleSilentTimeoutSpam" onclick="$.toggleSilentTimeout('Spam')">Silent Timeout
                 </label>
             </div>
         </form>
@@ -491,48 +491,48 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="warningTimeEmotes">Warning time duration</label>
+                <label for="warningTimeEmotes">Warning Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#warningTimeEmotes', 'warningTimeEmotes')">Submit</button>
                 <input type="number" min="1" class="form-control" id="warningTimeEmotes" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when spamming emotes on there first offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when spamming emotes on their first offence." />
             </div>
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="timeoutTimeEmotes">Timeout time duration</label>
+                <label for="timeoutTimeEmotes">Timeout Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#timeoutTimeEmotes', 'timeoutTimeEmotes')">Submit</button>
                 <input type="number" min="1" class="form-control" id="timeoutTimeEmotes" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when spamming emotes on there second and last offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when spamming emotes on their second and last offence." />
             </div>
         </form>
     </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleModerationEmotes" onclick="$.toggleModerations('Emotes', 'emotesToggle')">Moderate emotes
+                    <input type="checkbox" id="toggleModerationEmotes" onclick="$.toggleModerations('Emotes', 'emotesToggle')">Moderate Emotes
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleRegularEmotes" onclick="$.toggleRegular('Emotes')">Exclude regulars
+                    <input type="checkbox" id="toggleRegularEmotes" onclick="$.toggleRegular('Emotes')">Exclude Regulars
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSubscriberEmotes" onclick="$.toggleSubscriber('Emotes')">Exclude subscribers
+                    <input type="checkbox" id="toggleSubscriberEmotes" onclick="$.toggleSubscriber('Emotes')">Exclude Subscribers
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSilentTimeoutEmotes" onclick="$.toggleSilentTimeout('Emotes')">Silent timeout
+                    <input type="checkbox" id="toggleSilentTimeoutEmotes" onclick="$.toggleSilentTimeout('Emotes')">Silent Timeout
                 </label>
             </div>
         </form>
@@ -542,7 +542,7 @@
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="colorsMessage">Colors (/me) protection message</label>
+                <label for="colorsMessage">Colors (/me) Protection Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#colorsMessageInput', 'colorsMessage')">Submit</button>
                 <input type="text" class="form-control" id="colorsMessageInput" placeholder="Loading..."
@@ -551,48 +551,48 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="warningTimeColors">Warning time duration</label>
+                <label for="warningTimeColors">Warning Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#warningTimeColors', 'warningTimeColors')">Submit</button>
                 <input type="number" min="1" class="form-control" id="warningTimeColors" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when using /me on there first offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when using /me on their first offence." />
             </div>
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="timeoutTimeColors">Timeout time duration</label>
+                <label for="timeoutTimeColors">Timeout Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#timeoutTimeColors', 'timeoutTimeColors')">Submit</button>
                 <input type="number" min="1" class="form-control" id="timeoutTimeColors" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when using /me on there second and last offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when using /me on their second and last offence." />
             </div>
         </form>
     </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleModerationColors" onclick="$.toggleModerations('Colors', 'colorsToggle')">Moderate colors
+                    <input type="checkbox" id="toggleModerationColors" onclick="$.toggleModerations('Colors', 'colorsToggle')">Moderate Colors
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleRegularColors" onclick="$.toggleRegular('Colors')">Exclude regulars
+                    <input type="checkbox" id="toggleRegularColors" onclick="$.toggleRegular('Colors')">Exclude Regulars
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSubscriberColors" onclick="$.toggleSubscriber('Colors')">Exclude subscribers
+                    <input type="checkbox" id="toggleSubscriberColors" onclick="$.toggleSubscriber('Colors')">Exclude Subscribers
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSilentTimeoutColors" onclick="$.toggleSilentTimeout('Colors')">Silent timeout
+                    <input type="checkbox" id="toggleSilentTimeoutColors" onclick="$.toggleSilentTimeout('Colors')">Silent Timeout
                 </label>
             </div>
         </form>
@@ -602,7 +602,7 @@
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="longMessageMessage">Long message protection message</label>
+                <label for="longMessageMessage">Long Message Protection Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#longMessageMessageInput', 'longMessageMessage')">Submit</button>
                 <input type="text" class="form-control" id="longMessageMessageInput" placeholder="Loading..."
@@ -612,7 +612,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="longMessageLimit">Long message limit</label>
+                <label for="longMessageLimit">Long Message Limit</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#longMessageLimitInput', 'longMessageLimit')">Submit</button>
                 <input type="number" min="10" max="1400" class="form-control" id="longMessageLimitInput" placeholder="Loading..."
@@ -623,54 +623,54 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="warningTimeLongMsg">Warning time duration</label>
+                <label for="warningTimeLongMsg">Warning Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#warningTimeLongMsg', 'warningTimeLongMsg')">Submit</button>
                 <input type="number" min="1" class="form-control" id="warningTimeLongMsg" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when posting a long message on there first offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when posting a long message on their first offence." />
             </div>
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="timeoutTimeLongMsg">Timeout time duration</label>
+                <label for="timeoutTimeLongMsg">Timeout Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#timeoutTimeLongMsg', 'timeoutTimeLongMsg')">Submit</button>
                 <input type="number" min="1" class="form-control" id="timeoutTimeLongMsg" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when posting a long message on there second and last offence." />
+                     data-toggle="tooltip" title="Set how long a user will get timed out (in seconds) when posting a long message on their second and last offence." />
             </div>
         </form>
     </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleModerationLongMsg" onclick="$.toggleModerations('LongMsg', 'longMessageToggle')">Moderate long messages
+                    <input type="checkbox" id="toggleModerationLongMsg" onclick="$.toggleModerations('LongMsg', 'longMessageToggle')">Moderate Long Messages
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleRegularLongMsg" onclick="$.toggleRegular('LongMsg')">Exclude regulars
+                    <input type="checkbox" id="toggleRegularLongMsg" onclick="$.toggleRegular('LongMsg')">Exclude Regulars
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSubscriberLongMsg" onclick="$.toggleSubscriber('LongMsg')">Exclude subscribers
+                    <input type="checkbox" id="toggleSubscriberLongMsg" onclick="$.toggleSubscriber('LongMsg')">Exclude Subscribers
                 </label>
             </div>
         </form>
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSilentTimeoutLongMsg" onclick="$.toggleSilentTimeout('LongMsg')">Silent timeout
+                    <input type="checkbox" id="toggleSilentTimeoutLongMsg" onclick="$.toggleSilentTimeout('LongMsg')">Silent Timeout
                 </label>
             </div>
         </form>
     </div>
 
-    <h3>Blacklist</h3>
+    <h3>Manage Blacklisted Words</h3>
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
@@ -682,7 +682,7 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="blacklistMessage">Blacklist protection message</label>
+                <label for="blacklistMessage">Blacklist Protection Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#blacklistMessage', 'blacklistMessage')">Submit</button>
                 <input type="text" class="form-control" id="blacklistMessage" placeholder="Loading..."
@@ -691,7 +691,7 @@
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="blacklistTimeoutTime">Timeout time duration</label>
+                <label for="blacklistTimeoutTime">Timeout Time Duration</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#blacklistTimeoutTime', 'blacklistTimeoutTime')">Submit</button>
                 <input type="number" min="1" class="form-control" id="blacklistTimeoutTime" placeholder="Loading..."
@@ -701,7 +701,7 @@
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleSilentTimeoutBlacklist" onclick="$.toggleSilentTimeout('Blacklist')">Silent timeout
+                    <input type="checkbox" id="toggleSilentTimeoutBlacklist" onclick="$.toggleSilentTimeout('Blacklist')">Silent Timeout
                 </label>
             </div>
         </form>
@@ -710,7 +710,7 @@
         <div id="blacklistModSettings" style="height: 200px; overflow: auto;" />
     </div>
 
-    <h3>Whitelist</h3>
+    <h3>Manage Whitelisted Links</h3>
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
