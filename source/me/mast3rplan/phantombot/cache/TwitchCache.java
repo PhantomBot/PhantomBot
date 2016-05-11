@@ -62,6 +62,7 @@ public class TwitchCache implements Runnable {
     /* Cached data */
     private Boolean isOnline = false;
     private Boolean forcedGameTitleUpdate = false;
+    private Boolean forcedStreamTitleUpdate = false;
     private String streamCreatedAt = "";
     private String gameTitle = "Some Game";
     private String streamTitle = "Some Title";
@@ -114,6 +115,17 @@ public class TwitchCache implements Runnable {
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
 
+        /* Check the DB for a previous Game and Stream Title */
+        String gameTitle = getDBString("game");
+        String streamTitle = getDBString("title");
+
+        if (gameTitle != null) {
+            this.gameTitle = gameTitle;
+        }
+        if (streamTitle != null) {
+            this.streamTitle = streamTitle;
+        }
+
         while (!killed) {
             try {
                 try {
@@ -141,8 +153,8 @@ public class TwitchCache implements Runnable {
         Boolean success = true;
         Boolean isOnline = false;
         Boolean sentTwitchOnlineEvent = false;
-        String  gameTitle = "Some Game";
-        String  streamTitle = "Some Title";
+        String  gameTitle = "";
+        String  streamTitle = "";
         String  previewLink = "";
         Date    streamCreatedDate = new Date();
         Date    currentDate = new Date();
@@ -216,6 +228,7 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("game")) {
                     gameTitle = streamObj.getString("game");
                     if (!forcedGameTitleUpdate && !this.gameTitle.equals(gameTitle)) {
+                        setDBString("game", gameTitle);
                         /* Send an event if we did not just send a TwitchOnlineEvent. */
                         if (!sentTwitchOnlineEvent) {
                             this.gameTitle = gameTitle;
@@ -234,7 +247,15 @@ public class TwitchCache implements Runnable {
                 /* Get the title. */
                 if (streamObj.has("status")) {
                     streamTitle = streamObj.getString("status");
-                    this.streamTitle = streamTitle;
+
+                    if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitle)) {
+                        setDBString("title", streamTitle);
+                        this.streamTitle = streamTitle;
+                    }
+
+                    if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitle)) {
+                        forcedStreamTitleUpdate = false;
+                    }
                 } else {
                     success = false;
                 }
@@ -320,6 +341,7 @@ public class TwitchCache implements Runnable {
      * Sets the title (status) of the stream.  Useful for when !title is used.
      */
     public void setStreamStatus(String streamTitle) {
+        forcedStreamTitleUpdate = true;
         this.streamTitle = streamTitle;
     }
 
@@ -351,5 +373,26 @@ public class TwitchCache implements Runnable {
         for (Entry<String, TwitchCache> instance : instances.entrySet()) {
             instance.getValue().kill();
         }
+    }
+
+    /*
+     * Gets a string from the database. Simply a wrapper around the PhantomBot instance.
+     * 
+     * @param   String  The database key to search for in the streamInfo table.
+     * @return  String  Returns the found value or null.
+     */
+    private String getDBString(String dbKey) {
+        return PhantomBot.instance().getDataStore().GetString("streamInfo", "", dbKey);
+    }
+
+    /*
+     * Sets a string into the database.  Simply a wrapper around the PhantomBot instance.
+     * 
+     * @param   String  The database key to use for inserting the value into the streamInfo table.
+     * @param   String  The value to insert.
+     * @return  String  Returns the found value or null.
+     */
+    private void setDBString(String dbKey, String dbValue) {
+        PhantomBot.instance().getDataStore().SetString("streamInfo", "", dbKey, dbValue);
     }
 }
