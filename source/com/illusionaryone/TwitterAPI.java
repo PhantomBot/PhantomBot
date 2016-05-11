@@ -362,4 +362,13 @@ public class TwitterAPI {
     public String getTwitterURLFromId(long id) {
         return new String("https://twitter.com/" + username + "/status/" + Long.toString(id));
     }
+
+    /*
+     * Returns the configured Twitter username.
+     *
+     * @return  String  Twitter username.
+     */
+    public String getUsername() {
+        return this.username;
+    }
 }
