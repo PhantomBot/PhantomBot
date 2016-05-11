@@ -37,7 +37,7 @@
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
-        $.say($.lang.get('twitter.tweet', event.getTweet()));
+        $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
     });
 
     /**
@@ -332,6 +332,14 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('twitter.lastretweet.disabled'));
                 return;
             }
+
+            /**
+             * @commandpath twitter id - Display the configured Twitter ID for the caster
+             */
+            if (commandArg.equalsIgnoreCase('id')) {
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.twitter.getUsername() + ''));
+                return;
+            }
         } /* if (command.equalsIgnoreCase('twitter')) */
     }); /* @event command */
 
@@ -389,6 +397,7 @@
             $.registerChatSubcommand('twitter', 'lasttweet', 7);
             $.registerChatSubcommand('twitter', 'lastmention', 7);
             $.registerChatSubcommand('twitter', 'lastretweet', 7);
+            $.registerChatSubcommand('twitter', 'id', 7);
 
             if (!moduleStarted) {
                 moduleStarted = true;
