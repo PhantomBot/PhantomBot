@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.ArrayList;
 import java.lang.ArrayIndexOutOfBoundsException;
+import me.mast3rplan.phantombot.PhantomBot;
 
 public class Logger implements Runnable {
 
@@ -85,7 +86,7 @@ public class Logger implements Runnable {
                         psDebug.close();
                         psDebug = null;
                     }
-                    logTimestamp = timestamp;
+                    logTimestamp = logTimestamp();
                 }
 
                 try {
@@ -198,4 +199,11 @@ public class Logger implements Runnable {
     public void log(LogType t, String s) {
         this.queue.add(new LogItem(t, s));
     }
+
+    public String logTimestamp() {
+        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
+        datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.instance().log_timezone));
+        return datefmt.format(new Date());
+    }
+
 }

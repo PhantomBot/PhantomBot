@@ -284,7 +284,7 @@ $.consoleDebug('checkGameWispSub(' + username + '): handler complete');
             }
 
             /*
-             * @comamndpath gamewisp togglemessage [on/off] - Toggle/show the setting for showing GameWisp sub and resub messages.
+             * @commandpath gamewisp togglemessage [on/off] - Toggle/show the setting for showing GameWisp sub and resub messages.
              */
             if (args[0].equalsIgnoreCase('togglemessage')) {
                 if (args.length < 2) {
@@ -321,7 +321,7 @@ $.consoleDebug('checkGameWispSub(' + username + '): handler complete');
             }
 
             /*
-             * @comamndpath gamewisp resubreward [points] - Set/show base points given for a resubscriber. Tiers can add onto this.
+             * @commandpath gamewisp resubreward [points] - Set/show base points given for a resubscriber. Tiers can add onto this.
              */
             if (args[0].equalsIgnoreCase('resubreward')) {
                 if (args.length < 2) {
@@ -355,7 +355,7 @@ $.consoleDebug('checkGameWispSub(' + username + '): handler complete');
             /*
              * @commandpath gamewisptier songrequest [tier] [number] - Set/view number of additional song requests per tier.
              * @commandpath gamewisptier bonuspoints [tier] [points] - Set/view point percentage bonus, use whole numbers (30 = 30%).
-             * @comamndpath gamewisptier subbonuspoints [tier] [points] - Set/view bonus points to give for sub or resubbing per tier.
+             * @commandpath gamewisptier subbonuspoints [tier] [points] - Set/view bonus points to give for sub or resubbing per tier.
              *
              * NOTE: When adding more options, ensure that the primary key of tierData and the database key and lang file entries
              * match the subcommand. This function will then take care of all of the rest for you.

@@ -74,6 +74,7 @@ import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
 import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
 import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
+import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
@@ -163,9 +164,11 @@ public class PhantomBot implements Listener {
     public static boolean interactive;
     public static boolean webenabled = false;
     public static boolean musicenabled = false;
+    public static boolean reloadScripts = false;
     public static String twitchCacheReady = "false";
     private boolean exiting = false;
     private static PhantomBot instance;
+    public static String log_timezone = "GMT";
 
     public static PhantomBot instance() {
         return instance;
@@ -186,7 +189,7 @@ public class PhantomBot implements Listener {
                       String keystorepassword, String keypassword, String twitchalertskey,
                       int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
                       String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword,
-                      String twitter_username, String twitter_access_token, String twitter_secret_token) {
+                      String twitter_username, String twitter_access_token, String twitter_secret_token, String log_timezone) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -220,6 +223,12 @@ public class PhantomBot implements Listener {
         this.twitter_access_token = twitter_access_token;
         this.twitter_secret_token = twitter_secret_token;
         
+        if (log_timezone.isEmpty()) {
+            this.log_timezone = "GMT";
+        } else {
+            this.log_timezone = log_timezone;
+        }
+
         if (!youtubekey.isEmpty()) {
             YouTubeAPIv3.instance().SetAPIKey(youtubekey);
         }
@@ -810,11 +819,32 @@ public class PhantomBot implements Listener {
 
     @Subscribe
     public void onConsoleMessage(ConsoleInputEvent msg) {
-        String message = msg.getMsg();
         boolean changed = false;
+        String  message = msg.getMsg();
+        int     followCount = 0;
 
         if (message == null) {
             return;
+        }
+
+        if (message.equals("testfollow")) {
+            String randomUser = generateRandomString(10);
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testfollow (User: " + randomUser + ")");
+            EventBus.instance().post(new TwitchFollowEvent(randomUser, PhantomBot.instance().getChannel("#" + this.channel)));
+        }
+
+        if (message.startsWith("testfollows")) {
+            String[] messageSplit = message.split(" ", 2);
+            if (messageSplit.length != 2) {
+                followCount = 1;
+            } else {
+                followCount = Integer.parseInt(messageSplit[1]);
+            }
+            String randomUser = generateRandomString(10);
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testfollows (Count: " + followCount + ", User: " + randomUser + ")");
+            for (int i = 0; i < followCount; i++) {
+                EventBus.instance().post(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.instance().getChannel("#" + this.channel)));
+            }
         }
 
         if (message.equals("testonline")) {
@@ -1018,6 +1048,10 @@ public class PhantomBot implements Listener {
                 data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
                 data += "paneluser=" + paneluser + "\r\n";
                 data += "panelpassword=" + panelpassword + "\r\n";
+
+                if (!log_timezone.isEmpty()) {
+                    data += "logtimezone=" + log_timezone + "\r\n";
+                }
 
                 Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                             StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -1230,6 +1264,7 @@ public class PhantomBot implements Listener {
         String keystorepath = "";
         String keystorepassword = "";
         String keypassword = "";
+        String log_timezone = "";
 
         String twitter_username = "";
         String twitter_access_token = "";
@@ -1245,6 +1280,13 @@ public class PhantomBot implements Listener {
                 String[] lines = data.replaceAll("\\r", "").split("\\n");
 
                 for (String line : lines) {
+                    if (line.startsWith("logtimezone=") && line.length() >= 15) {
+                        log_timezone = line.substring(12);
+                    }
+                    if (line.startsWith("reloadscripts")) {
+                        com.gmt2001.Console.out.println("Enabling Script Reloading");
+                        PhantomBot.reloadScripts = true;
+                    }
                     if (line.startsWith("debugon")) {
                         com.gmt2001.Console.out.println("Debug Mode Enabled via botlogin.txt");
                         PhantomBot.enableDebugging = true;
@@ -1702,6 +1744,9 @@ public class PhantomBot implements Listener {
             data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
             data += "paneluser=" + paneluser + "\r\n";
             data += "panelpassword=" + panelpassword + "\r\n";
+            if (!log_timezone.isEmpty()) {
+                data += "logtimezone=" + log_timezone + "\r\n";
+            }
 
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -1710,7 +1755,7 @@ public class PhantomBot implements Listener {
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable,
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
                                              webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
-                                             twitter_username, twitter_access_token, twitter_secret_token);
+                                             twitter_username, twitter_access_token, twitter_secret_token, log_timezone);
     }
 
     public void updateGameWispTokens(String[] newTokens) {
@@ -1745,6 +1790,9 @@ public class PhantomBot implements Listener {
         data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
         data += "paneluser=" + paneluser + "\r\n";
         data += "panelpassword=" + panelpassword + "\r\n";
+        if (!log_timezone.isEmpty()) {
+            data += "logtimezone=" + log_timezone + "\r\n";
+        }
 
         try {
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
@@ -1765,6 +1813,19 @@ public class PhantomBot implements Listener {
         char[] randomBuffer;
 
         randomBuffer = new char[30];
+        SecureRandom random = new SecureRandom();
+        for (int i = 0; i < randomBuffer.length; i++) {
+           randomBuffer[i] = randomChars[random.nextInt(randomChars.length)];
+        }
+        return new String(randomBuffer);
+    }
+
+    private static String generateRandomString(int length) {
+        String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        char[] randomChars = randomAllowed.toCharArray();
+        char[] randomBuffer;
+
+        randomBuffer = new char[length];
         SecureRandom random = new SecureRandom();
         for (int i = 0; i < randomBuffer.length; i++) {
            randomBuffer[i] = randomChars[random.nextInt(randomChars.length)];

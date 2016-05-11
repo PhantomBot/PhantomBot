@@ -18,7 +18,7 @@ package me.mast3rplan.phantombot;
 
 public class RepoVersion {
 
-    private static final String repoVersion = "aba9bd9";
+    private static final String repoVersion = "@repository.version@";
 
     private RepoVersion() {
     }
