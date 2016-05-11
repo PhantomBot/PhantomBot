@@ -37,7 +37,7 @@
     <div>
         <div id="twitterPollTable" style="height: 120px; overflow: auto;" />
         <small><i>
-        Please note that if Poll Home Timeline is enabled that PhantomBot will not poll any other data from Twitter.
+        Please note that if Poll Home Timeline is enabled then PhantomBot will not poll any other data from Twitter.
         The other options are not automatically marked as disabled, but PhantomBot will not perform the poll.
         </i></small>
         <br><br>
@@ -87,7 +87,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="postOnlineTweet">Stream Online Tweet</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('message_online')">Update</button>
-                <input type="text" maxlength="140" class="form-control" id="message_onlineTweetInput" placeholder="Tweet Text">
+                <input type="text" maxlength="140" class="form-control" id="message_onlineTweetInput" placeholder="Tweet Text"
+                       data-toggle="tooltip" title="Tags: (game) (twitchurl)">
             </div>
         </form>
     
@@ -95,7 +96,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="postGameChangeTweet">Game Change Tweet</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('message_gamechange')">Update</button>
-                <input type="text" maxlength="140" class="form-control" id="message_gamechangeTweetInput" placeholder="Tweet Text">
+                <input type="text" maxlength="140" class="form-control" id="message_gamechangeTweetInput" placeholder="Tweet Text"
+                       data-toggle="tooltip" title="Tags: (game) (twitchurl)">
             </div>
         </form>
     
@@ -103,7 +105,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="postAutoUpdateTweet">Auto-Tweet Stream Status Tweet</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('message_update')">Update</button>
-                <input type="text" maxlength="140" class="form-control" id="message_updateTweetInput" placeholder="Tweet Text">
+                <input type="text" maxlength="140" class="form-control" id="message_updateTweetInput" placeholder="Tweet Text"
+                       data-toggle="tooltip" title="Tags: (game) (twitchurl) (uptime)">
             </div>
         </form>
 
