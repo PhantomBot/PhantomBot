@@ -153,6 +153,12 @@
             if (panelMatch(module, './handlers/twitterHandler.js')) {
                 handlePanel('./handlers/twitterHandler.js', '#_twitterPanel', moduleEnabled);
             }
+            if (panelMatch(module, './games/slotMachine.js')) {
+                handlePanel('./games/slotMachine.js', '#_slotPanel', moduleEnabled);
+            }
+            if (panelMatch(module, './games/roll.js')) {
+                handlePanel('./games/roll.js', '#_rollPanel', moduleEnabled);
+            }
         }            
     }
 
