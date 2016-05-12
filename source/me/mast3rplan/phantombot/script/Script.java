@@ -21,7 +21,6 @@ import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import me.mast3rplan.phantombot.script.ScriptContextFactory;
 import org.apache.commons.io.FileUtils;
 import org.mozilla.javascript.*;
 import me.mast3rplan.phantombot.PhantomBot;
