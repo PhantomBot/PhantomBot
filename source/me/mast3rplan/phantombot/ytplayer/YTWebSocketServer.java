@@ -55,7 +55,9 @@
  *
  * // Add a song request
  * { "command" : "songrequest", "search" : "search string" }
- * 
+ *
+ * // Toggle playlist randomizer
+ * { "command" : "togglerandom" }
  *
  * -------------------------------------------------------------------------------------------------------------
  *
@@ -239,7 +241,9 @@ public class YTWebSocketServer extends WebSocketServer {
             dataString = jsonObject.getString("deletepl");
             EventBus.instance().postAsync(new YTPlayerDeletePlaylistByIDEvent(dataString));
         } else if (jsonObject.has("command") && sessionData.isPlayer()) {
-            if (jsonObject.getString("command").equals("skipsong")) {
+            if (jsonObject.getString("command").equals("togglerandom")) {
+                EventBus.instance().postAsync(new YTPlayerRandomizeEvent());
+            } else if (jsonObject.getString("command").equals("skipsong")) {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             } else if (jsonObject.getString("command").equals("stealsong")) {
                 if (jsonObject.has("youTubeID")) {
