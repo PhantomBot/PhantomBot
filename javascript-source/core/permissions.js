@@ -537,6 +537,25 @@
     });
 
     /**
+     * @event ircChannelMessage
+     * As the ircChannelJoin event can take a little while to come
+     * from Twitch, this ensures that once a person at least
+     * types in chat, that they are added to the $.users object.
+     */
+    $.bind('ircChannelMessage', function(event) {
+        var username = event.getSender().toLowerCase();
+        if (!$.user.isKnown(username)) {
+            $.setIniDbBoolean('visited', username, true);
+        }
+
+        lastJoinPart = $.systemTime();
+        if (!$.userExists(username)) {
+            users.push([username, $.systemTime()]);
+            $.checkGameWispSub(username);
+        }
+    });
+    
+    /**
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function(event) {
