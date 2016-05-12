@@ -47,6 +47,18 @@
                    $('#adventure' + msgObject['results'][idx]['key'] + 'Input').attr('placeholder', msgObject['results'][idx]['value']);
                 }
             }
+
+            if (panelCheckQuery(msgObject, 'games_slotmachine')) {
+                for (idx in msgObject['results']) {
+                    $('#slotRewards' + idx + 'Input').val(msgObject['results'][idx]['value']);
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'games_rollprizes')) {
+                for (idx in msgObject['results']) {
+                    $('#rollRewards' + idx + 'Input').val(msgObject['results'][idx]['value']);
+                }
+            }
         }
     }
 
@@ -56,6 +68,41 @@
     function doQuery() {
         sendDBQuery('games_roulette', 'roulette', 'timeoutTime');
         sendDBKeys('games_adventure', 'adventureSettings');
+        sendDBKeys('games_slotmachine', 'slotmachine');
+        sendDBKeys('games_rollprizes', 'rollprizes');
+    }
+
+    /**
+     * @function setRollRewards() {
+     */
+    function setRollRewards() {
+        var val0 = $('#rollRewards0Input').val(),
+            val1 = $('#rollRewards1Input').val(),
+            val2 = $('#rollRewards2Input').val(),
+            val3 = $('#rollRewards3Input').val(),
+            val4 = $('#rollRewards4Input').val(),
+            val5 = $('#rollRewards5Input').val();
+
+        if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0 && val5.length > 0) {
+            sendCommand('roll rewards ' + val0 + ' ' + val1 + ' ' + val2 + ' ' + val3 + ' ' + val4 + ' ' + val5);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /**
+     * @function setSlotRewards() {
+     */
+    function setSlotRewards() {
+        var val0 = $('#slotRewards0Input').val(),
+            val1 = $('#slotRewards1Input').val(),
+            val2 = $('#slotRewards2Input').val(),
+            val3 = $('#slotRewards3Input').val(),
+            val4 = $('#slotRewards4Input').val();
+         
+        if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0) {
+            sendCommand('slot rewards ' + val0 + ' ' + val1 + ' ' + val2 + ' ' + val3 + ' ' + val4);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
     }
 
     /**
@@ -125,4 +172,6 @@
     $.rouletteTimeout = rouletteTimeout;
     $.adventureStart = adventureStart;
     $.adventureUpdateSetting = adventureUpdateSetting;
+    $.setSlotRewards = setSlotRewards;
+    $.setRollRewards = setRollRewards;
 })();
