@@ -38,8 +38,8 @@
     $.bind('command', function(event) {
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
-            argsString = event.getArguments().trim(),
             args = event.getArgs(),
+            argsString,
             uptime,
             twitchVODtime,
             vodJsonStr,
@@ -66,7 +66,8 @@
         }
 
         /**
-         * @commandpath game [game title] - Announce Twitch game title, and play time or set the game title.
+         * @commandpath game - Announce Twitch game title and play time if online.
+         * @commandpath game set [game title] - Set Twitch game title
          */
         if (command.equalsIgnoreCase('game')) {
             if (args.length == 0) {
@@ -77,30 +78,44 @@
                 }
                 return;
             } else {
-                if (!$.isAdmin(sender)) {
-                    $.say($.whisperPrefix(sender) + $.adminMsg);
+                if (args[0].equalsIgnoreCase('set')) {
+                    if (args.length == 1) {
+                        $.say($.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
+                        return;
+                    }
+                    argsString = args.splice(1).join(' ');
+                    $.updateGame($.channelName, argsString, sender);
+                    return;
+                } else {
+                    $.say($.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
                     return;
                 }
-                $.updateGame($.channelName, argsString, sender);
-                return;
             }
         }
 
         /**
-         * @commandpath title [stream title] - Announce Twitch stream title or set the stream title
+         * @commandpath title - Announce Twitch stream title
+         * @commandpath title set [stream title] - Set Twitch stream title
          */
         if (command.equalsIgnoreCase('title')) {
             if (args.length == 0) {
                 $.say($.lang.get('streamcommand.title', $.getStatus($.channelName)));
                 return;
             } else {
-                if (!$.isAdmin(sender)) {
-                    $.say($.whisperPrefix(sender) + $.adminMsg);
+                if (args[0].equalsIgnoreCase('set')) {
+                    if (args.length == 1) {
+                        $.say($.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
+                        return;
+                    }
+                    argsString = args.splice(1).join(' ');
+                    $.updateStatus($.channelName, argsString, sender);
+                    return;
+                } else {
+                    $.say($.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
                     return;
                 }
-                $.updateStatus($.channelName, argsString, sender);
-                return;
             }
+            
         }
 
         /**
@@ -157,6 +172,9 @@
             $.registerChatCommand('./commands/streamCommand.js', 'title', 7);
             $.registerChatCommand('./commands/streamCommand.js', 'playtime', 7);
             $.registerChatCommand('./commands/streamCommand.js', 'vod', 7);
+
+            $.registerChatSubcommand('game', 'set', 1);
+            $.registerChatSubcommand('title', 'set', 1);
         }
     });
 })();

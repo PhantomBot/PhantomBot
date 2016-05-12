@@ -293,7 +293,7 @@
 
         if (http.getBoolean('_success')) {
             if (http.getInt('_http') == 200) {
-                $.twitchcache.setStreamStatus(http.getString('game'));
+                $.twitchcache.setStreamStatus(http.getString('status'));
                 $.inidb.set('streamInfo', 'title', http.getString('status'));
                 $.say('Changed the title to "' + http.getString('status') + '"!');
                 $.logEvent('streamCommand.js', 54, sender + ' changed the current status to ' + http.getString('status'));
