@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import me.mast3rplan.phantombot.PhantomBot;
+
 /**
  *
  * @author Gary Tekulsky
@@ -55,7 +57,9 @@ public class err {
     }
 
     public static void printStackTrace(Throwable e) {
-        e.printStackTrace(System.err);
+        if (PhantomBot.enableDebugging) {
+            e.printStackTrace(System.err);
+        }
         logStackTrace(e);
     }
 

@@ -198,8 +198,9 @@ function handlePlay(id, title, duration, requester) {
                                "<table class=\"controlTable\">" +
                                "    <tr><td />" +
                                "        <td><div id=\"playPauseDiv\" class=\"button\" onclick=\"handlePause()\"></div></td>" +
-                               "        <td colspan=\"3\"><div id=\"songProgressBar\"></div></td>" +
+                               "        <td colspan=\"2\"><div id=\"songProgressBar\"></div></td>" +
                                "        <td><div class=\"button\" onclick=\"skipSong()\"><i class=\"fa fa-step-forward\" /></div></td>" +
+                               "        <td><div id=\"tooltip-random\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Toggle Randomized Playlist\" class=\"button\" onclick=\"randomizePlaylist()\"><i class=\"fa fa-random\" /></div></td>" +
                                "    <td /></tr>" +
                                "    <tr><td />" +
                                "        <td><div id=\"mutedDiv\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Mute/Unmute\" class=\"button\" onclick=\"handleMute()\"></div></td>" +
@@ -212,6 +213,7 @@ function handlePlay(id, title, duration, requester) {
                                "<div id=\"songRequestDiv\"</div>");
 
         songRequestDiv();
+        $("#tooltip-random").tooltip();
         $("#tooltip-steal").tooltip();
         $("#tooltip-chat").tooltip();
         $("#tooltip-sr").tooltip();
@@ -290,6 +292,14 @@ function toggleChat() {
         showChat = true;
         $(".chatFrame").show();
     }
+}
+
+function randomizePlaylist(d) {
+    debugMsg("randomizePlaylist()");
+    var jsonObject = {};
+    jsonObject["command"] = "togglerandom";
+    connection.send(JSON.stringify(jsonObject));
+    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
 function skipSong(d) {

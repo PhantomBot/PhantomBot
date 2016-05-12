@@ -96,8 +96,60 @@
         </form>
     </div>    
     </div>    
+
+    <h3>Slot Machine Configuration</h3>
+    <div>
+    <div id="_slotPanelDisabled" />
+    <div id="_slotPanel">
+        <div><strong>Slot Rewards</strong></div><br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setSlotRewards()">Submit</button>
+                <input style="width: 10%" type="number" min="0" id="slotRewards0Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for First Value">
+                <input style="width: 10%" type="number" min="0" id="slotRewards1Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Second Value">
+                <input style="width: 10%" type="number" min="0" id="slotRewards2Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Third Value">
+                <input style="width: 10%" type="number" min="0" id="slotRewards3Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Fourth Value">
+                <input style="width: 10%" type="number" min="0" id="slotRewards4Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Fifth Value">
+            </div>
+        </form>
+    </div>
+    </div>
+
+    <h3>Dice Roll Configuration</h3>
+    <div>
+    <div id="_rollPanelDisabled" />
+    <div id="_rollPanel">
+        <div><strong>Roll Rewards</strong></div><br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setRollRewards()">Submit</button>
+                <input style="width: 10%" type="number" min="0" id="rollRewards0Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 1's">
+                <input style="width: 10%" type="number" min="0" id="rollRewards1Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 2's">
+                <input style="width: 10%" type="number" min="0" id="rollRewards2Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 3's">
+                <input style="width: 10%" type="number" min="0" id="rollRewards3Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 4's">
+                <input style="width: 10%" type="number" min="0" id="rollRewards4Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 5's">
+                <input style="width: 10%" type="number" min="0" id="rollRewards5Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 6's">
+            </div>
+        </form>
+    </div>
+    </div>
+
 </div>
 
 <!-- Run the Acordion -->
 <script>$("#gamesAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
 <script>handleInputFocus();</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
