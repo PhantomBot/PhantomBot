@@ -17,6 +17,7 @@
 package com.gmt2001.Console;
 
 import com.gmt2001.Logger;
+import java.lang.StackTraceElement;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -24,10 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import me.mast3rplan.phantombot.PhantomBot;
-
-/**
-* println degub
-*/
 
 public class debug {
 
@@ -42,9 +39,18 @@ public class debug {
 
     private debug(Object o) {
         if (PhantomBot.enableDebugging) {
+            String stackInfo = "";
+            String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
+            String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
+            int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+
+            stackInfo = "[" + className + "." + methodName + "(" + fileName + ":" + lineNumber + ")] ";
+
             Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
-            System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + o);
+            System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
         }
     }
 
@@ -54,11 +60,28 @@ public class debug {
       }
     }
 
-    public static void println(Object o) {
+    public static void printlnRhino(Object o) {
         if (PhantomBot.enableDebugging) {
             Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
             System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + o);
+        }
+    }
+
+    public static void println(Object o) {
+        if (PhantomBot.enableDebugging) {
+            String stackInfo = "";
+            String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
+            String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
+            int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+
+            Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "");
+
+            stackInfo = "[" + className + "." + methodName + "(" + fileName + ":" + lineNumber + ")] ";
+            System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
         }
     }
 

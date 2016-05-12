@@ -21,13 +21,9 @@ import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
+import me.mast3rplan.phantombot.script.ScriptContextFactory;
 import org.apache.commons.io.FileUtils;
-
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.ScriptableObject;
-
+import org.mozilla.javascript.*;
 import me.mast3rplan.phantombot.PhantomBot;
 
 public class Script {
@@ -90,7 +86,22 @@ public class Script {
             return;
         }
 
-        context = Context.enter();
+        /* Enable Error() in JS to provide an object with fileName and lineNumber. */
+        final ContextFactory ctxFactory = new ContextFactory() {
+            @Override
+            protected boolean hasFeature(Context cx, int featureIndex) {
+                switch (featureIndex) {
+                case Context.FEATURE_LOCATION_INFORMATION_IN_ERROR:
+                    return true;
+                default:
+                    return super.hasFeature(cx, featureIndex);
+                }
+            }
+        };
+        RhinoException.setStackStyle(StackStyle.V8);
+
+        context = ctxFactory.enterContext();
+
         ScriptableObject scope = context.initStandardObjects(global, false);
         scope.defineProperty("$", global, 0);
         scope.defineProperty("$api", ScriptApi.instance(), 0);

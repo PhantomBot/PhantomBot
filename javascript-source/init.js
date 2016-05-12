@@ -60,7 +60,14 @@
      * @param {string} message
      */
     function consoleDebug(message) {
-        Packages.com.gmt2001.Console.debug.println(java.util.Objects.toString(message));
+        if (Packages.me.mast3rplan.phantombot.PhantomBot.enableDebugging) {
+            try {
+                throw new Error('debug');
+            } catch (e) {
+                var stackData = e.stack.split('\n')[2].substring(7);
+                Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + stackData + '] ' + message));
+            }
+        }
     };
 
     /**
@@ -651,7 +658,7 @@
 
             command = event.getCommand().toLowerCase();
             if (!$.commandExists(command)) {
-                consoleDebug('[ERROR] Command: !' + command + ' does not exists.');
+                consoleDebug('Command: !' + command + ' does not exist');
                 return;
             }
 
