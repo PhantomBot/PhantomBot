@@ -327,7 +327,7 @@
     function setStreamTitle() {
         var newTitle = $("#streamTitleInput").val();
         if (newTitle.length > 0) {
-            sendCommand("title " + newTitle);
+            sendCommand("title set " + newTitle);
             $("#streamTitleInput").val('')
             $("#streamTitleInput").attr("placeholder", newTitle).blur();
         }
@@ -339,7 +339,7 @@
     function setGameTitle() {
         var newGame = $("#gameTitleInput").val();
         if (newGame.length > 0) {
-            sendCommand("game " + newGame);
+            sendCommand("game set " + newGame);
             $("#gameTitleInput").val('')
             $("#gameTitleInput").attr("placeholder", newGame).blur();
             gameTitle = newGame;
