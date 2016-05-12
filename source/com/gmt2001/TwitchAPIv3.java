@@ -157,10 +157,10 @@ public class TwitchAPIv3 {
                 j.put("_exceptionMessage", "");
                 j.put("_content", rawcontent);
             } else {
-                com.gmt2001.Console.err.logStackTrace(ex);
+                com.gmt2001.Console.err.println("TwitchAPIv3::GetData::Exception: " + ex.getMessage());
             }
         } catch (NullPointerException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+            com.gmt2001.Console.err.println("TwitchAPIv3::GetData::Exception: " + ex.getMessage());
         } catch (MalformedURLException ex) {
             j.put("_success", false);
             j.put("_type", type.name());
