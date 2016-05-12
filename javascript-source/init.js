@@ -961,6 +961,13 @@
         });
 
         /**
+         * @event api-yTPlayerRandomizeEvent
+         */
+        $api.on($script, 'yTPlayerRandomize', function(event) {
+            callHook('yTPlayerRandomize', event, false);
+        });
+
+        /**
          * @event api-gameWispChangeEvent
          */
         $api.on($script, 'gameWispChange', function(event) {
