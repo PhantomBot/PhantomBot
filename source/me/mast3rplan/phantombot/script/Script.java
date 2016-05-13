@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.mozilla.javascript.*;
@@ -35,6 +36,7 @@ public class Script {
     private final File file;
     private Context context;
     private boolean killed = false;
+    private int fileNotFoundCount = 0;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public Script(File file) {
@@ -68,11 +70,29 @@ public class Script {
         }
 
         doDestroyables();
-        load();
-        if (file.getPath().endsWith("init.js")) {
-            com.gmt2001.Console.out.println("Reloaded module: init.js");
-        } else {
-            com.gmt2001.Console.out.println("Reloaded module: " + file.getPath().replace("./scripts/./", ""));
+        try {
+            load();
+            if (file.getPath().endsWith("init.js")) {
+                com.gmt2001.Console.out.println("Reloaded module: init.js");
+            } else {
+                com.gmt2001.Console.out.println("Reloaded module: " + file.getPath().replace("./scripts/./", ""));
+            }
+            fileNotFoundCount = 0;
+        } catch (Exception ex) {
+            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+                fileNotFoundCount++;
+                if (fileNotFoundCount == 1) {
+                    return;
+                }
+            } else {
+                fileNotFoundCount = 0;
+            }
+
+            if (file.getPath().endsWith("init.js")) {
+                com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
+            } else {
+                com.gmt2001.Console.err.println("Failed to reload module: " + file.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
+            }
         }
     }
 
@@ -97,7 +117,7 @@ public class Script {
                 }
             }
         };
-        RhinoException.setStackStyle(StackStyle.V8);
+        RhinoException.setStackStyle(StackStyle.MOZILLA);
 
         context = ctxFactory.enterContext();
 
@@ -107,7 +127,17 @@ public class Script {
         scope.defineProperty("$script", this, 0);
         scope.defineProperty("$var", vars, 0);
 
-        context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);
+        try {
+            com.gmt2001.Console.debug.println("Loading: " + file.getName());
+            context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);
+            com.gmt2001.Console.debug.println("Done Loading: " + file.getName());
+        } catch (FileNotFoundException ex) {
+            throw new IOException("File not found. This could be a caching issue, will retry.");
+        } catch (EvaluatorException ex) {
+            throw new IOException("JavaScript Error: " + ex.getMessage());
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
     }
 
     @SuppressWarnings("rawtypes")

@@ -46,7 +46,7 @@ public class debug {
             String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
             int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
 
-            stackInfo = "[" + className + "." + methodName + "(" + fileName + ":" + lineNumber + ")] ";
+            stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
             Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
@@ -80,7 +80,7 @@ public class debug {
             Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
 
-            stackInfo = "[" + className + "." + methodName + "(" + fileName + ":" + lineNumber + ")] ";
+            stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
             System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
         }
     }
