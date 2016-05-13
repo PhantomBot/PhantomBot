@@ -64,7 +64,7 @@
             try {
                 throw new Error('debug');
             } catch (e) {
-                var stackData = e.stack.split('\n')[2].substring(7);
+                var stackData = e.stack.split('\n')[1];
                 Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + stackData + '] ' + message));
             }
         }
@@ -576,6 +576,11 @@
         // Load all other modules
         loadScriptRecursive('.');
 
+        // Register custom commands, command aliases and shortcuts.
+        $.addComRegisterCommands();
+        $.addComRegisterAliases();
+        $.addComRegisterShortcuts();
+
         // Bind all $api events
 
         /**
@@ -645,7 +650,12 @@
                 command,
                 subCommand,
                 cooldown,
-                permComCheck;
+                permComCheck,
+                idx,
+                shortcut,
+                shortcutList = [],
+                shortcutCmd,
+                shortcutParams;
 
             if (!$.isModv3(sender, event.getTags()) && $.commandPause.isPaused()) {
                 consoleDebug($.lang.get('commandpause.isactive'))
@@ -654,6 +664,30 @@
 
             if ($.inidb.exists('aliases', origCommand)) {
                 event.setCommand($.inidb.get('aliases', origCommand));
+            }
+
+            if ($.inidb.exists('shortcuts', origCommand)) {
+                var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
+                    CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+
+                shortcut = $.getIniDbString('shortcuts', origCommand);
+                if (shortcut.indexOf(';') === -1) {
+                    shortcutCmd = shortcut.split(' ')[0];
+                    shortcutParams = shortcut.substring(shortcut.indexOf(' ') + 1);
+                    EventBus.instance().postCommand(new CommandEvent(sender, shortcutCmd, shortcutParams + ' ' + args.join(' ')));
+                } else {
+                    shortcutList = shortcut.split(';');
+                    for (idx in shortcutList) {
+                        shortcutCmd = shortcutList[idx].split(' ')[0];
+                        shortcutParams = shortcutList[idx].substring(shortcutList[idx].indexOf(' ') + 1);
+                        if (idx == (shortcutList.length - 1)) {
+                            EventBus.instance().postCommand(new CommandEvent(sender, shortcutCmd, shortcutParams + ' ' + args.join(' ')));
+                        } else {
+                            EventBus.instance().postCommand(new CommandEvent(sender, shortcutCmd, shortcutParams));
+                        }
+                    }
+                }
+                return;
             }
 
             command = event.getCommand().toLowerCase();
