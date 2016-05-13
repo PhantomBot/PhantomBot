@@ -110,6 +110,8 @@
                 }
             }
         }
+
+        $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
     };
 
     /**
