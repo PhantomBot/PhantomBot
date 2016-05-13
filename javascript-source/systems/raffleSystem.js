@@ -66,6 +66,7 @@
         $.registerChatCommand('./systems/raffleSystem.js', key, 7);
         entries = [];
         $.inidb.RemoveFile('raffleList');
+        $.inidb.set('raffleresults', 'raffleEntries', 0);
         raffleStatus = true;
 
         if (timer > 0) {
@@ -120,6 +121,7 @@
 
         if (noRepickSame) {
             $.inidb.del('raffleList', Winner);
+            $.inidb.decr('raffleresults', 'raffleEntries', 1);
             for (var i in entries) {
                 if (entries[i].equalsIgnoreCase(Winner)) {
                     entries.splice(i, 1);
@@ -171,6 +173,7 @@
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
             if (!$.inidb.exists('raffleList', user)) {
                 $.inidb.set('raffleList', user, 'entered');
+                $.inidb.incr('raffleresults', 'raffleEntries', 1);
             }
         }
     };
