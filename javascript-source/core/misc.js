@@ -244,13 +244,13 @@
                 }
             } else {
                 if (request.httpCode == 0) {
-                    $.logError('misc.js', 478, 'Failed to use random.org: ' + request.exception);
+                    $.log.error('Failed to use random.org: ' + request.exception);
                 } else {
-                    $.logError('misc.js', 480, 'Failed to use random.org: HTTP' + request.httpCode + ' ' + request.content);
+                    $.log.error('Failed to use random.org: HTTP' + request.httpCode + ' ' + request.content);
                 }
             }
         } catch (error) {
-            $.logError('misc.js', 484, 'Failed to use random.org: ' + error);
+            $.log.error('Failed to use random.org: ' + error);
         }
 
         return $.randRange(min, max);

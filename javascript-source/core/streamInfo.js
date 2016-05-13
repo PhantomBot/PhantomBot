@@ -264,7 +264,7 @@
                 $.twitchcache.setGameTitle(http.getString('game'));
                 $.inidb.set('streamInfo', 'game', http.getString('game'));
                 $.say('Changed the game to "' + http.getString('game') + '"!');
-                $.logEvent('streamCommand.js', 25, $.username.resolve(sender) + ' changed the current game to ' + http.getString('game'));
+                $.log.event($.username.resolve(sender) + ' changed the current game to ' + http.getString('game'));
 
                 if ($.bot.isModuleEnabled('./commands/deathctrCommand.js')) {
                     $.deathUpdateFile(game);
@@ -272,12 +272,12 @@
             } else {
                 $.say($.whisperPrefix(sender) + 'Failed to change the game. TwitchAPI must be having issues');
                 $.consoleDebug(http.getString('message'));
-                $.logError('streamCommand.js', 29, http.getString('message'));
+                $.log.error(http.getString('message'));
             }
         } else {
             $.say('Failed to change the game. TwitchAPI must be having issues');
             $.consoleDebug(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
-            $.logError('streamCommand.js', 34, http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
+            $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
     };
 
@@ -296,16 +296,16 @@
                 $.twitchcache.setStreamStatus(http.getString('status'));
                 $.inidb.set('streamInfo', 'title', http.getString('status'));
                 $.say('Changed the title to "' + http.getString('status') + '"!');
-                $.logEvent('streamCommand.js', 54, sender + ' changed the current status to ' + http.getString('status'));
+                $.log.event(sender + ' changed the current status to ' + http.getString('status'));
             } else {
                 $.say($.whisperPrefix(sender) + 'Failed to change the status. TwitchAPI must be having issues');
                 $.consoleDebug(http.getString('message'));
-                $.logError('streamCommand.js', 58, http.getString('message'));
+                $.log.error(http.getString('message'));
             }
         } else {
             $.say($.whisperPrefix(sender) + 'Failed to change the status. TwitchAPI must be having issues');
             $.consoleDebug(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
-            $.logError('streamCommand.js', 63, http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
+            $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
     };
 

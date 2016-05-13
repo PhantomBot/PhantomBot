@@ -44,7 +44,7 @@
                 }
 
                 $.inidb.del('visited', visited[i]);
-                $.log(logName, $.username.resolve(visited[i]) + ' Time: ' + time + ', Points: ' + points, '');
+                $.log.file(logName, $.username.resolve(visited[i]) + ' Time: ' + time + ', Points: ' + points, '');
             }
 
             if ($.getPercentage(i, visited.length) % 10 == 0) {

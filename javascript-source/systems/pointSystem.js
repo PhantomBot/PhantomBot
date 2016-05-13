@@ -129,7 +129,7 @@
             $.inidb.incr('points', username, amount);
             uUsers.push(username + '(' + amount + ')');
         }
-        $.log('pointSystem', 'Executed ' + pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
+        $.log.file('pointSystem', 'Executed ' + pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
 
         lastPayout = now;
     };

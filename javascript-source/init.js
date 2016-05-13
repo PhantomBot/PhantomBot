@@ -139,7 +139,7 @@
             } catch (e) {
                 consoleLn('Failed loading "' + scriptFile + '": ' + e);
                 if (isModuleLoaded('./core/logging.js')) {
-                    $.logError('init.js', 70, '(loadScript, ' + scriptFile + ') ' + e);
+                    $.log.error('(loadScript, ' + scriptFile + ') ' + e);
                 }
             }
         }
@@ -286,7 +286,7 @@
                 try {
                     hooks[i].handler(event);
                 } catch (e) {
-                    $.logError('init.js', 265, '(hook.call, ' + hook + ', ' + hooks[i].scriptFile + ') ' + e);
+                    $.log.error('(hook.call, ' + hook + ', ' + hooks[i].scriptFile + ') ' + e);
                 }
             }
         } else {
@@ -295,7 +295,7 @@
                     try {
                         hooks[i].handler(event);
                     } catch (e) {
-                        $.logError('init.js', 274, '(hook.call, ' + hook + ', ' + hooks[i].scriptFile + ') ' + e);
+                        $.log.error('(hook.call, ' + hook + ', ' + hooks[i].scriptFile + ') ' + e);
                     }
                 }
             }
@@ -338,14 +338,14 @@
 
             if (action.equalsIgnoreCase('reconnect') || action.equalsIgnoreCase('rejoin')) {
                 $.say($.lang.get('init.reconnect', $.hostname));
-                $.logEvent('init.js', 354, username + ' requested a reconnect!');
+                $.log.event(username + ' requested a reconnect!');
                 $.connmgr.reconnectSession($.hostname);
                 return;
             }
 
             if (action.equalsIgnoreCase('disconnect') || action.equalsIgnoreCase('remove')) {
                 $.say($.lang.get('init.disconnect', $.hostname));
-                $.logEvent('init.js', 354, username + ' removed the bot from chat!');
+                $.log.event(username + ' removed the bot from chat!');
                 java.lang.System.exit(0);
                 return;
             }
@@ -442,7 +442,7 @@
                 index = getModuleIndex(temp);
 
                 if (index > -1) {
-                    $.logEvent('init.js', 393, username + ' enabled module "' + modules[index].scriptFile + '"');
+                    $.log.event(username + ' enabled module "' + modules[index].scriptFile + '"');
                     modules[index].enabled = true;
                     $.setIniDbBoolean('modules', modules[index].scriptFile, true);
                     loadScript(modules[index].scriptFile);
@@ -454,7 +454,7 @@
                         }
                         $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
                     } catch (e) {
-                        $.logError('init.js', 394, 'Unable to call initReady for enabled module (' + modules[index].scriptFile +'): ' + e);
+                        $.log.error('Unable to call initReady for enabled module (' + modules[index].scriptFile +'): ' + e);
                         $.say($.whisperPrefix(sender) + $.lang.get('init.module.error', modules[index].getModuleName()));
                     }
 
@@ -481,7 +481,7 @@
                 index = getModuleIndex(temp);
 
                 if (index > -1) {
-                    $.logEvent('init.js', 393, username + ' disabled module "' + modules[index].scriptFile + '"');
+                    $.log.event(username + ' disabled module "' + modules[index].scriptFile + '"');
                     modules[index].enabled = false;
                     $.setIniDbBoolean('modules', modules[index].scriptFile, false);
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', modules[index].getModuleName()));
@@ -496,7 +496,7 @@
                         for (var i = 0; i < pointsRelatedModules.length; i++) {
                             index = getModuleIndex(pointsRelatedModules[i]);
                             if (index > -1) {
-                                $.logEvent('init.js', 393, username + ' auto-disabled module "' + modules[index].scriptFile + '"');
+                                $.log.event(username + ' auto-disabled module "' + modules[index].scriptFile + '"');
                                 modules[index].enabled = false;
                                 $.setIniDbBoolean('modules', modules[index].scriptFile, false);
                             }
@@ -571,7 +571,7 @@
         loadScript('./core/streamInfo.js');
         loadScript('./core/timeSystem.js');
 
-        $.logEvent('init.js', 285, 'Core loaded, initializing bot...');
+        $.log.event('Core loaded, initializing bot...');
 
         // Load all other modules
         loadScriptRecursive('.');
@@ -1053,7 +1053,7 @@
             callHook('twitchGameChange', event, false);
         });
 
-        $.logEvent('init.js', 553, 'Bot locked & loaded!');
+        $.log.event('Bot locked & loaded!');
         consoleDebug('Bot locked & loaded!');
         consoleLn('');
 

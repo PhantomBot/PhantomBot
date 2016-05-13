@@ -70,7 +70,7 @@
         }
 
         if ($.commandExists(command)) {
-            $.logError('commandRegister.js', 38, 'Failed to register command as already registered: ' + command + ' Script: ' + script + ' Original Script: ' + commandScriptTable[command]);
+            $.log.error('Failed to register command as already registered: ' + command + ' Script: ' + script + ' Original Script: ' + commandScriptTable[command]);
             return;
         }
 

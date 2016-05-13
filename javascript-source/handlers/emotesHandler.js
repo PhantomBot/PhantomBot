@@ -51,7 +51,7 @@
         }
         emotesRegExpList = newEmotesRegExpList;
         $.consoleDebug("Built " + emotesRegExpList.length + " regular expressions for emote handling.");
-        $.logEvent('emotesHandler.js', 54, "Built " + emotesRegExpList.length + " regular expressions for emote handling.");
+        $.log.event("Built " + emotesRegExpList.length + " regular expressions for emote handling.");
     }
 
     /**
