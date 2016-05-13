@@ -197,7 +197,11 @@ public class Logger implements Runnable {
     }
 
     public void log(LogType t, String s) {
-        this.queue.add(new LogItem(t, s));
+        try {
+            this.queue.add(new LogItem(t, s));
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            /* At shutdown this throws an exception. */
+        }
     }
 
     public String logTimestamp() {
