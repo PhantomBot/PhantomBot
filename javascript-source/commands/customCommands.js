@@ -273,34 +273,16 @@
      * @function addComRegisterAliases
      */
     function addComRegisterAliases() {
-        var commands = $.inidb.GetKeyList('aliases', ''),
-            ownerCommand,
+        var aliases = $.inidb.GetKeyList('aliases', ''),
             i;
-        for (i in commands) {
-            if (!$.commandExists(commands[i])) {
-                ownerCommand = $.inidb.get('aliases', commands[i]);
-                $.registerChatCommand('./commands/customCommands.js', commands[i], $.getCommandGroup(ownerCommand));
+        for (i in aliases) {
+            if (!$.commandExists(aliases[i])) {
+                $.registerChatCommand('./commands/customCommands.js', aliases[i], $.getIniDbNumber('permcom', aliases[i], 7));
             } else {
-                $.logError('customCommands.js', 746, 'Cannot add alias, command already exists: ' + commands[i]);
-            }
-        }
-    };
-
-    /**
-     * @function addComRegisterShortcuts
-     */
-    function addComRegisterShortcuts() {
-        var shortcuts = $.inidb.GetKeyList('shortcuts', ''),
-            i;
-        for (i in shortcuts) {
-            if (!$.commandExists(shortcuts[i])) {
-                $.registerChatCommand('./commands/customCommands.js', shortcuts[i], 7);
-            } else {
-                $.logError('customCommands.js', 744, 'Cannot add shortcut, command already exists: ' + shortcuts[i]);
+                $.logError('customCommands.js', 744, 'Cannot add alias, command already exists: ' + aliases[i]);
             }
         }
     } 
-    
 
     /**
      * @event command
@@ -312,7 +294,8 @@
             args = event.getArgs(),
             argString = event.getArguments(),
             action = args[0],
-            subAction = args[1];
+            subAction = args[1],
+            aliasArgs;
 
         /**
          * @commandpath addcom [command] [command text] - Add a custom command (see !listtags)
@@ -404,7 +387,7 @@
         }
 
         /**
-         * @commandpath aliascom [existing command] [alias] - Create an alias to any command
+         * @commandpath aliascom [alias] [existing command] [parameters] - Create an alias to any command, optionally with parameters
          */
         if (command.equalsIgnoreCase('aliascom')) {
             if (!$.isModv3(sender, event.getTags())) {
@@ -417,8 +400,14 @@
                 return;
             }
 
-            action = args[0].replace('!', '').toLowerCase();
-            subAction = args[1].replace('!', '').toLowerCase();
+            action = args[1].replace('!', '').toLowerCase();
+            subAction = args[0].replace('!', '').toLowerCase();
+            if (args.length >= 2) {
+                aliasArgs = ' ' + args.splice(2).join(' ');
+                aliasArgs = aliasArgs.replace('; ', ';').replace(';\!', ';');
+            } else {
+                aliasArgs = '';
+            }
 
             if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404'));
@@ -430,15 +419,15 @@
                 return;
             }
 
-            if ($.commandExists(subAction)) {
+            if ($.commandExists(subAction.split(' ')[0])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
                 return;
             }
 
-            $.inidb.set('aliases', subAction, action);
+            $.inidb.set('aliases', subAction, action + aliasArgs);
             $.registerChatCommand('./commands/customCommands.js', subAction);
-            $.logEvent('customCommands.js', 59, sender + ' added alias "!' + subAction + '" for "!' + action + '"');
-            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.success', action, subAction));
+            $.logEvent('customCommands.js', 59, sender + ' added alias "!' + subAction + '" for "!' + action + aliasArgs + '"');
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.success', action + aliasArgs, subAction));
         }
 
         /**
@@ -678,7 +667,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.add.command.noexists', cCommand));
                     return;
                 }
-                $.inidb.set('shortcuts', sCommand, cCommand + ' ' + parameters);
+                $.inidb.set('aliases', sCommand, cCommand + ' ' + parameters);
                 $.registerChatCommand('./commands/customCommands.js', sCommand, 7);
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.add.success', sCommand, cCommand, parameters));
                 return;
@@ -693,13 +682,13 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.del.noexists', sCommand));
                     return;
                 }
-                $.inidb.del('shortcuts', sCommand);
+                $.inidb.del('aliases', sCommand);
                 $.unregisterChatCommand(sCommand);
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.del.success', sCommand));
                 return;
             }
             if (args[0].equalsIgnoreCase('list')) {
-                var shortcutList = $.inidb.GetKeyList('shortcuts', '');
+                var shortcutList = $.inidb.GetKeyList('aliases', '');
                 if (shortcutList.length > 0) {
                     $.paginateArray(shortcutList, 'customcommands.shortcut.list', ', ', true, sender);
                 } else {
@@ -744,7 +733,6 @@
     /** Export functions to API */
     $.addComRegisterCommands = addComRegisterCommands;
     $.addComRegisterAliases = addComRegisterAliases;
-    $.addComRegisterShortcuts = addComRegisterShortcuts;
     $.returnCommandCost = returnCommandCost;
     $.replaceCommandTags = replaceCommandTags;
     $.permCom = permCom;

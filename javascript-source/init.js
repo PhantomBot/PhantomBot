@@ -576,10 +576,9 @@
         // Load all other modules
         loadScriptRecursive('.');
 
-        // Register custom commands, command aliases and shortcuts.
+        // Register custom commands and aliases.
         $.addComRegisterCommands();
         $.addComRegisterAliases();
-        $.addComRegisterShortcuts();
 
         // Bind all $api events
 
@@ -652,38 +651,35 @@
                 cooldown,
                 permComCheck,
                 idx,
-                shortcut,
-                shortcutList = [],
-                shortcutCmd,
-                shortcutParams;
+                alias,
+                aliasList = [],
+                aliasCmd,
+                aliasParams;
 
             if (!$.isModv3(sender, event.getTags()) && $.commandPause.isPaused()) {
                 consoleDebug($.lang.get('commandpause.isactive'))
                 return;
             }
 
+            /* Handle aliases */
             if ($.inidb.exists('aliases', origCommand)) {
-                event.setCommand($.inidb.get('aliases', origCommand));
-            }
-
-            if ($.inidb.exists('shortcuts', origCommand)) {
                 var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
                     CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
 
-                shortcut = $.getIniDbString('shortcuts', origCommand);
-                if (shortcut.indexOf(';') === -1) {
-                    shortcutCmd = shortcut.split(' ')[0];
-                    shortcutParams = shortcut.substring(shortcut.indexOf(' ') + 1);
-                    EventBus.instance().postCommand(new CommandEvent(sender, shortcutCmd, shortcutParams + ' ' + args.join(' ')));
+                alias = $.getIniDbString('aliases', origCommand);
+                if (alias.indexOf(';') === -1) {
+                    aliasCmd = alias.split(' ')[0];
+                    aliasParams = alias.substring(alias.indexOf(' ') + 1);
+                    EventBus.instance().postCommand(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                 } else {
-                    shortcutList = shortcut.split(';');
-                    for (idx in shortcutList) {
-                        shortcutCmd = shortcutList[idx].split(' ')[0];
-                        shortcutParams = shortcutList[idx].substring(shortcutList[idx].indexOf(' ') + 1);
-                        if (idx == (shortcutList.length - 1)) {
-                            EventBus.instance().postCommand(new CommandEvent(sender, shortcutCmd, shortcutParams + ' ' + args.join(' ')));
+                    aliasList = alias.split(';');
+                    for (idx in aliasList) {
+                        aliasCmd = aliasList[idx].split(' ')[0];
+                        aliasParams = aliasList[idx].substring(aliasList[idx].indexOf(' ') + 1);
+                        if (idx == (aliasList.length - 1)) {
+                            EventBus.instance().postCommand(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                         } else {
-                            EventBus.instance().postCommand(new CommandEvent(sender, shortcutCmd, shortcutParams));
+                            EventBus.instance().postCommand(new CommandEvent(sender, aliasCmd, aliasParams));
                         }
                     }
                 }
