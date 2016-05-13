@@ -214,7 +214,7 @@
             }
 
             if (!action) {
-                $.say($.whisperPrefix(sender) + 'Usage: !log [files / errors / events]');
+                $.say($.whisperPrefix(sender) + $.lang.get('logging.usage'));
                 return;
             }
 
