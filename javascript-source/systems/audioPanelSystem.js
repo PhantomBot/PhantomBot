@@ -50,19 +50,8 @@
             }
 
             if (subCommand.equalsIgnoreCase('list')) {
-                audioHookListStr = '';
-                for (idx in hookKeys) {
-                    audioHookListStr += hookKeys[idx];
-                    if (audioHookListStr.length >= 450) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('audiohook.list', audioHookListStr));
-                        audioHookListStr = '';
-                    } else {
-                        if (idx < hookKeys.length - 1) {
-                            audioHookListStr += ', ';
-                        }
-                    }
-                }
-                $.say($.whisperPrefix(sender) + $.lang.get('audiohook.list', audioHookListStr));
+                $.paginateArray(hookKeys, 'audiohook.list', ', ', true, sender);
+                return;
             }
         }
     });

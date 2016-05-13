@@ -137,6 +137,6 @@
      * Warn the user if the points system is disabled and this is enabled.
      */
     if ($.bot.isModuleEnabled('./games/slotMachine.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
-        $.logError('slotMachine.js', 88, "Disabled. ./systems/pointSystem.js is not enabled.");
+        $.log.error("Disabled. ./systems/pointSystem.js is not enabled.");
     }
 })();

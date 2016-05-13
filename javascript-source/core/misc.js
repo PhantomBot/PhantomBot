@@ -244,13 +244,13 @@
                 }
             } else {
                 if (request.httpCode == 0) {
-                    $.logError('misc.js', 478, 'Failed to use random.org: ' + request.exception);
+                    $.log.error('Failed to use random.org: ' + request.exception);
                 } else {
-                    $.logError('misc.js', 480, 'Failed to use random.org: HTTP' + request.httpCode + ' ' + request.content);
+                    $.log.error('Failed to use random.org: HTTP' + request.httpCode + ' ' + request.content);
                 }
             }
         } catch (error) {
-            $.logError('misc.js', 484, 'Failed to use random.org: ' + error);
+            $.log.error('Failed to use random.org: ' + error);
         }
 
         return $.randRange(min, max);
@@ -453,7 +453,42 @@
         }
     }
 
+    /**
+     * @function paginateArray
+     * @export $
+     * @param {Array}   Input array of data to paginate
+     * @param {String}  Key in the $.lang system
+     * @param {String}  Seperator to use between items
+     * @param {boolean} Use $.whisperPrefix(sender) ?
+     * @param {String}  Value of sender for $.whisperPrefix
+     */
+    function paginateArray(array, langKey, sep, whisper, sender) {
+        var idx,
+            output = '',
+            maxlen;
 
+        maxlen = 460 - $.lang.get(langKey).length;
+        for (idx in array) {
+            output += array[idx];
+            if (output.length >= maxlen) {
+                if (whisper) {
+                    $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
+                } else {
+                    $.say($.lang.get(langKey, output));
+                }
+                output = '';
+            } else {
+                if (idx < array.length - 1) {
+                    output += sep;
+                }
+            }
+        }
+        if (whisper) {
+            $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
+        } else {
+            $.say($.lang.get(langKey, output));
+        }
+    }
 
     /** Export functions to API */
     $.list = {
@@ -489,4 +524,5 @@
     $.trueRand = trueRand;
     $.trueRandElement = trueRandElement;
     $.trueRandRange = trueRandRange;
+    $.paginateArray = paginateArray;
 })();

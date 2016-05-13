@@ -37,13 +37,31 @@
     };
 
     /**
-     * @function log
+     * @function getLogEntryTimeDateString
+     * @export $.logging
+     * @param {Date}
+     */
+    function getLogEntryTimeDateString(now) {
+        var timezone = now.toString().match(/\((\w+)\)/)[1],
+            pad = function(i) {
+                return (i < 10 ? '0' + i : i);
+            }; 
+            padms = function(i) {
+                return (i < 10 ? '00' + i : i < 100 ? '0' + i : i);
+            }; 
+        return pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + '-' + now.getFullYear() + ' @ ' +
+                   pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':'  + pad(now.getSeconds()) + '.' + padms(now.getMilliseconds()) + 
+                   ' ' + timezone;
+    }
+
+    /**
+     * @function logfile
      * @export $
      * @param {string} filePrefix
      * @param {string} message
      * @param {string} [sender]
      */
-    function log(filePrefix, message, sender) {
+    function logfile(filePrefix, message, sender) {
         if (!$.bot.isModuleEnabled('./core/fileSystem.js') || !loggingEnabled || (sender && sender.equalsIgnoreCase($.botName)) || message.equalsIgnoreCase('.mods')) {
             return;
         }
@@ -52,17 +70,17 @@
             $.mkDir('./logs/' + filePrefix);
         }
 
-        $.writeToFile(getLogTimeString() + ' > ' + message, './logs/' + filePrefix + '/' + getLogDateString() + '.txt', true);
+        var now = new Date();
+        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] ' + message,
+                          './logs/' + filePrefix + '/' + getLogDateString() + '.txt', true);
     };
 
     /**
      * @function logEvent
      * @export $
-     * @param {string} sourceFile
-     * @param {Number} lineNumber
      * @param {string} message
      */
-    function logEvent(sourceFile, lineNumber, message) {
+    function logEvent(message) {
         if (!$.bot.isModuleEnabled('./core/fileSystem.js') || !loggingEnabled) {
             return;
         }
@@ -75,19 +93,23 @@
             $.touchFile('./logs/event/' + getLogDateString() + '.txt');
         }
 
+        try {
+            throw new Error('eventlog');
+        } catch (e) {
+            sourceFile = e.stack.split('\n')[1].split('@')[1];
+        }
+
         var now = new Date();
-        $.writeToFile(now.toDateString() + ' ' + now.toTimeString() + '[' + sourceFile + '#' + lineNumber + '] ' + message,
-            './logs/event/' + getLogDateString() + '.txt', true);
+        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,
+                          './logs/event/' + getLogDateString() + '.txt', true);
     };
 
     /**
      * @function logError
      * @export $
-     * @param {string} sourceFile
-     * @param {Number} lineNumber
      * @param {string} message
      */
-    function logError(sourceFile, lineNumber, message) {
+    function logError(message) {
         if (!$.bot.isModuleEnabled('./core/fileSystem.js')) {
             return;
         }
@@ -96,16 +118,22 @@
             $.mkDir('./logs/error');
         }
 
+        try {
+            throw new Error('eventlog');
+        } catch (e) {
+            sourceFile = e.stack.split('\n')[1].split('@')[1];
+        }
+
         var now = new Date();
-        $.writeToFile(now.toDateString() + ' ' + now.toTimeString() + '[' + sourceFile + '#' + lineNumber + '] ' + message,
-            './logs/error/' + getLogDateString() + '.txt', true);
+        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,
+                          './logs/error/' + getLogDateString() + '.txt', true);
     };
 
     /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
-        $.log('chat', '' + event.getSender() + ': ' + event.getMessage());
+        $.log.file('chat', '' + event.getSender() + ': ' + event.getMessage());
     });
 
     /**
@@ -116,40 +144,40 @@
             message = event.getMessage();
 
         if (message.toLowerCase().indexOf('moderators if this room') == -1) {
-            $.logEvent('privMsg', $.username.resolve(sender) + ': ' + message, sender);
+            $.log.event('privMsg ' + ' ' + $.username.resolve(sender) + ': ' + message + ' ' + sender);
         }
         $.consoleDebug($.lang.get('console.received.irsprivmsg', sender, message));
 
         message = message.toLowerCase();
         if (sender.equalsIgnoreCase('jtv')) {
             if (message.equalsIgnoreCase('clearchat')) {
-                $.logEvent('misc.js', 126, $.lang.get('console.received.clearchat'));
+                $.log.event($.lang.get('console.received.clearchat'));
             } else if (message.indexOf('clearchat') != -1) {
-                $.logEvent('misc.js', 128, $.lang.get('console.received.purgetimeoutban', message.substring(10)));
+                $.log.event($.lang.get('console.received.purgetimeoutban', message.substring(10)));
             }
 
             if (message.indexOf('now in slow mode') != -1) {
-                $.logEvent('misc.js', 132, $.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
+                $.log.event($.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
             }
 
             if (message.indexOf('no longer in slow mode') != -1) {
-                $.logEvent('misc.js', 136, $.lang.get('console.received.slowmode.end'));
+                $.log.event($.lang.get('console.received.slowmode.end'));
             }
 
             if (message.indexOf('now in subscribers-only') != -1) {
-                $.logEvent('misc.js', 140, $.lang.get('console.received.subscriberonly.start'));
+                $.log.event($.lang.get('console.received.subscriberonly.start'));
             }
 
             if (message.indexOf('no longer in subscribers-only') != -1) {
-                $.logEvent('misc.js', 144, $.lang.get('console.received.subscriberonly.end'));
+                $.log.event($.lang.get('console.received.subscriberonly.end'));
             }
 
             if (message.indexOf('now in r9k') != -1) {
-                $.logEvent('misc.js', 148, $.lang.get('console.received.r9k.start'));
+                $.log.event($.lang.get('console.received.r9k.start'));
             }
 
             if (message.indexOf('no longer in r9k') != -1) {
-                $.logEvent('misc.js', 152, $.lang.get('console.received.r9k.end'));
+                $.log.event($.lang.get('console.received.r9k.end'));
             }
 
             if (message.indexOf('hosting') != -1) {
@@ -157,10 +185,10 @@
 
                 if (target.equalsIgnoreCase('-')) {
                     $.bot.channelIsHosting = null;
-                    $.logEvent('misc.js', 160, $.lang.get('console.received.host.end'));
+                    $.log.event($.lang.get('console.received.host.end'));
                 } else {
                     $.bot.channelIsHosting = target;
-                    $.logEvent('misc.js', 163, $.lang.get('console.received.host.start', target));
+                    $.log.event($.lang.get('console.received.host.start', target));
                 }
             }
         }
@@ -200,7 +228,7 @@
             if (action.equalsIgnoreCase('enable')) {
                 loggingEnabled = true;
                 $.setIniDbBoolean('settings', 'loggingEnabled', loggingEnabled);
-                $.logEvent('misc.js', 203, username + ' enabled logging');
+                $.logEvent(username + ' enabled logging');
                 $.say($.whisperPrefix(sender) + $.lang.get('logging.enabled'));
             }
 
@@ -210,7 +238,7 @@
             if (action.equalsIgnoreCase('disable')) {
                 loggingEnabled = false;
                 $.setIniDbBoolean('settings', 'loggingEnabled', loggingEnabled);
-                $.logEvent('misc.js', 213, username + ' disabled logging');
+                $.logEvent(username + ' disabled logging');
                 $.say($.whisperPrefix(sender) + $.lang.get('logging.disabled'));
             }
         }
@@ -232,7 +260,9 @@
         getLogTimeString: getLogTimeString,
     };
 
-    $.log = log;
-    $.logEvent = logEvent;
-    $.logError = logError;
+    $.log = {
+        file: logfile,
+        event: logEvent,
+        error: logError,
+    };
 })();

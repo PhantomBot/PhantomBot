@@ -7,7 +7,7 @@ $.lang.register('customcommands.alias.delete.usage', 'usage: !delalias (alias na
 $.lang.register('customcommands.alias.error', 'An alias already exists for !$1. Delete it first.');
 $.lang.register('customcommands.alias.error.target404', 'the target command does not exist!');
 $.lang.register('customcommands.alias.success', 'the command !$1 was successfully aliased to !$2');
-$.lang.register('customcommands.alias.usage', 'usage: !aliascom (existing command) (alias name)');
+$.lang.register('customcommands.alias.usage', 'usage: !aliascom (alias name) (existing command) [optional parameters]');
 $.lang.register('customcommands.delete.success', 'command !$1 has been removed!');
 $.lang.register('customcommands.delete.usage', 'usage: !delcom (command)');
 $.lang.register('customcommands.edit.404', 'you cannot overwrite a default command.');

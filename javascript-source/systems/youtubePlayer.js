@@ -199,7 +199,7 @@
                             $.inidb.set(playlistDbPrefix + listName, importCount, youtubeVideo.getVideoId());
                             importCount++;
                         } catch (ex) {
-                            $.logError("youtubePlayer.js", 182, "importPlaylistFile::skipped [" + importedList[i] + "]: " + ex);
+                            $.log.error("importPlaylistFile::skipped [" + importedList[i] + "]: " + ex);
                             failCount++;
                         }
                     }
@@ -406,7 +406,7 @@
                 try {
                     currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playlistPosition), $.ownerName);
                 } catch (ex) {
-                    $.logError("youtubePlayer.js", 233, "YoutubeVideo::exception: " + ex);
+                    $.log.error("YoutubeVideo::exception: " + ex);
                     return false;
                 }
                 connectedPlayerClient.play(currentVideo);
@@ -463,7 +463,7 @@
                     var playListIndex = defaultPlaylist.shift();                    
                     currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
                 } catch (ex) {
-                    $.logError("youtubePlayer.js", 277, "YoutubeVideo::exception: " + ex);
+                    $.log.error("YoutubeVideo::exception: " + ex);
                     this.nextVideo();
                 }
 
@@ -553,7 +553,7 @@
                 var youtubeVideo = new YoutubeVideo(searchQuery, requestOwner);
             } catch (ex) {
                 requestFailReason = $.lang.get('ytplayer.requestsong.error.yterror', ex);
-                $.logError("youtubePlayer.js", 315, "YoutubeVideo::exception: " + ex);
+                $.log.error("YoutubeVideo::exception: " + ex);
                 return null;
             }
 
@@ -1132,7 +1132,7 @@
                     try {
                         var youtubeVideo = new YoutubeVideo(actionArgs.join(' '), sender);
                     } catch (ex) {
-                        $.logError("youtubePlayer.js", 641, "YoutubeVideo::exception: " + ex);
+                        $.log.error("YoutubeVideo::exception: " + ex);
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.add.failed', ex));
                         return;
                     }
@@ -1472,14 +1472,14 @@
                     try {
                         currentPlaylist.addToPlaylist(new YoutubeVideo('gotxnim9h8w', $.botName));
                     } catch (ex) {
-                        $.logError("youtubePlayer.js", 839, "YoutubeVideo::exception: " + ex);
+                        $.log.error("YoutubeVideo::exception: " + ex);
                     }
     
                     /** Different Heaven & Eh!de - My Heart (Outertone 001 - Zero Release) */
                     try {
                         currentPlaylist.addToPlaylist(new YoutubeVideo('WFqO9DoZZjA', $.botName));
                     } catch (ex) {
-                        $.logError("youtubePlayer.js", 846, "YoutubeVideo::exception: " + ex);
+                        $.log.error("YoutubeVideo::exception: " + ex);
                     }
     
     
@@ -1487,7 +1487,7 @@
                     try {
                         currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
                     } catch (ex) {
-                        $.logError("youtubePlayer.js", 855, "YoutubeVideo::exception: " + ex);
+                        $.log.error("YoutubeVideo::exception: " + ex);
                     }
                 }
             }

@@ -10,7 +10,6 @@
         offlineGain = $.getSetIniDbNumber('pointSettings', 'offlineGain', 1),
         onlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'onlinePayoutInterval', 10),
         offlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'offlinePayoutInterval',  0),
-        modPointsPermToggle = $.getSetIniDbBoolean('pointSettings', 'modPointsPermToggle', false),
         lastPayout = 0,
 
         /** @export $ */
@@ -42,24 +41,6 @@
             return points + ' ' + pointNameSingle;
         }
         return points + ' ' + pointNameMultiple;
-    };
-
-    /**
-     * @function hasPerm
-     * @param {Object} event
-     * @returns {boolean}
-     */
-    function hasPerm(event) {
-        if (modPointsPermToggle) {
-            if (!$.isModv3(event.getSender().toLowerCase(), event.getTags())) {
-                $.say($.whisperPrefix(event.getSender().toLowerCase()) + $.modMsg);
-                return false;
-            }
-        } else if (!$.isAdmin(event.getSender().toLowerCase())) {
-            $.say($.whisperPrefix(event.getSender().toLowerCase()) + $.adminMsg);
-            return false;
-        }
-        return true;
     };
 
     /**
@@ -148,7 +129,7 @@
             $.inidb.incr('points', username, amount);
             uUsers.push(username + '(' + amount + ')');
         }
-        $.log('pointSystem', 'Executed ' + pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
+        $.log.file('pointSystem', 'Executed ' + pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
 
         lastPayout = now;
     };
@@ -417,11 +398,6 @@
                     offlinePayoutInterval = actionArg1;
                     $.inidb.set('pointSettings', 'offlinePayoutInterval', offlinePayoutInterval);
                     $.say($.whisperPrefix(sender) + $.lang.get("pointsystem.set.interval.offline.success", pointNameSingle, offlinePayoutInterval));
-                } else if (action.equalsIgnoreCase('modpermtoggle')) {
-                    modPointsPermToggle = !modPointsPermToggle;
-                    $.setIniDbBoolean('pointSettings', 'modPointsPermToggle', modPointsPermToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.modpermtoggle.success',
-                        (modPointsPermToggle ? 'moderator' : 'administrator')));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get("pointsystem.usage.invalid", "!" + command));
                 }

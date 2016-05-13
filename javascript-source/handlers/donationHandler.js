@@ -34,7 +34,7 @@
         }
 
         $.consoleLn(">> Enabling Twitch Alerts donation announcements");
-        $.logEvent('donationHandler.js', 25, 'Donation announcements enabled');
+        $.log.event('Donation announcements enabled');
         announceDonations = true;
     });
 
@@ -146,12 +146,12 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.announce.disable'));
                     announceDonations = false;
                     $.inidb.set('donations', 'announce', 'false');
-                    $.logEvent('donationHandler.js', 140, sender + ' disabled donation announcements');
+                    $.log.event(sender + ' disabled donation announcements');
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.announce.enable'));
                     announceDonations = true;
                     $.inidb.set('donations', 'announce', 'true');
-                    $.logEvent('donationHandler.js', 145, sender + ' enabled donation announcements');
+                    $.log.event(sender + ' enabled donation announcements');
                 }
                 return;
             }
@@ -172,7 +172,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.reward.success', args[1], (args[1] == "1" ? $.pointNameSingle : $.pointNameMultiple).toLowerCase()));
                 $.inidb.set('donations', 'reward', args[1]);
                 donationReward = parseFloat(args[1]);
-                $.logEvent('donationHandler.js', 166, sender + ' changed donation reward to ' + args[1]);
+                $.log.event(sender + ' changed donation reward to ' + args[1]);
                 return;
             }
 
@@ -200,7 +200,7 @@
                 donationLastMsg = $.getIniDbString('donations', 'lastmessage');
 
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.' + comArg + '.success', message));
-                $.logEvent('donationHandler.js', 191, sender + ' set the donation message to ' + message);
+                $.log.event(sender + ' set the donation message to ' + message);
             }
         }
     });
