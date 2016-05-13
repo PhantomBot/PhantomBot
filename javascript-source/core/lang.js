@@ -48,7 +48,7 @@
         var string = data[key.toLowerCase()],
             i;
         if (!string) {
-            $.logError('./core/lang.js', 21, 'Language string missing for "' + key + '"');
+            $.log.error('Language string missing for "' + key + '"');
             $.consoleLn('[lang.js] Missing string "' + key + '"');
             return 'Could not find string for "' + key + '"';
         }

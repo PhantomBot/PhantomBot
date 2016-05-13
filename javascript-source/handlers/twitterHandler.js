@@ -381,7 +381,7 @@
                                                replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + uptimeSec).
                                                replace('(uptime)', hrs + ':' + min));
                 }
-                $.logEvent('twitterHandler.js', 352, 'Sent Auto Update to Twitter');
+                $.log.event('Sent Auto Update to Twitter');
             }
         }
     }
