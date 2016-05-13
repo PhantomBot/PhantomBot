@@ -37,6 +37,7 @@
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
         raffleStatus = true;
         $.inidb.RemoveFile('ticketsList');
+        $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
         entries = [];
     };
 
@@ -109,6 +110,7 @@
 
         $.inidb.decr('points', user, (times * cost));
         $.inidb.incr('ticketsList', user, times);
+        $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
         if (msgToggle) {
             $.say($.lang.get('ticketrafflesystem.entered', $.username.resolve(user), times));
         }
@@ -188,7 +190,7 @@
         /**
          * @commandpath tickets [amount] - Buy tickets to enter the ticket raffle.
          */
-        if (command.equalsIgnoreCase('tickets')) {
+        if (command.equalsIgnoreCase('tickets') || command.equalsIgnoreCase('ticket')) {
             if (!action && msgToggle && raffleStatus) {
                 $.say('@' + sender + ' ' + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
                 return;
@@ -204,6 +206,7 @@
         if ($.bot.isModuleEnabled('./systems/ticketRaffleSystem.js')) {
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'traffle', 2);
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'tickets', 7);
+            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'ticket', 7);
         }
     });
 })();
