@@ -9,7 +9,7 @@
         noticeInterval = $.getSetIniDbNumber('noticeSettings', 'interval', 10),
         noticeToggle = $.getSetIniDbBoolean('noticeSettings', 'noticetoggle', false),
         numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
-        noticeOffline = $.getSetIniDbBoolean('noticeSettings', 'noticeOffline', true),
+        noticeOffline = $.getSetIniDbBoolean('noticeSettings', 'noticeOfflineToggle', false),
         messageCount = 0,
         RandomNotice = 0;
 
@@ -63,15 +63,15 @@
     function reloadNoticeSettings() {
         noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages');
         noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle');
-        noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOffline');
+        noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle');
 
         // Only update noticeInterval if it changed and then reset the timer.
         if (noticeInterval != $.getIniDbNumber('noticeSettings', 'interval')) {
             noticeInterval = $.getIniDbNumber('noticeSettings', 'interval');
             setInterval(function() {
                 if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
-                    if (messageCount >= noticeReqMessages) {
-                        if (noticeOffline && $.isOnline($.channelName)) {
+                    if (noticeReqMessages < 0 || messageCount >= noticeReqMessages) {
+                        if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
                             sendNotice();
                             messageCount = 0;
                         }
@@ -186,7 +186,7 @@
              * @commandpath notice interval [minutes] - Sets the notice interval in minutes
              */
             if (action.equalsIgnoreCase('interval')) {
-                if (args.length < 2) {
+                if (args.length < 5) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-interval-usage'));
                     return;
                 } else if (parseInt(args[1]) < 2) {
@@ -199,8 +199,8 @@
 
                     setInterval(function() {
                         if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
-                            if (messageCount >= noticeReqMessages) {
-                                if (noticeOffline && $.isOnline($.channelName)) {
+                            if (noticeReqMessages < 0 || messageCount >= noticeReqMessages) {
+                                if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
                                     sendNotice();
                                     messageCount = 0;
                                 }
@@ -218,15 +218,12 @@
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-usage'));
                     return;
-                } else if (parseInt(args[1]) < 1) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-404'));
-                    return;
-                } else {
-                    $.inidb.set('noticeSettings', 'reqmessages', args[1]);
-                    noticeReqMessages = parseInt(args[1]);
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-success'));
-                    return;
-                }
+                } 
+
+                $.inidb.set('noticeSettings', 'reqmessages', args[1]);
+                noticeReqMessages = parseInt(args[1]);
+                $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-success'));
+                return;
             }
 
             /**
@@ -258,11 +255,11 @@
             if (action.equalsIgnoreCase('toggleoffline')) {
                 if (noticeOffline) {
                     noticeOffline = false;
-                    $.inidb.set('noticeSettings', 'noticeOffline', 'false');
+                    $.inidb.set('noticeSettings', 'noticeOfflineToggle', 'false');
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-disabled.offline'));
                 } else {
                     noticeOffline = true;
-                    $.inidb.set('noticeSettings', 'noticeOffline', 'true');
+                    $.inidb.set('noticeSettings', 'noticeOfflineToggle', 'true');
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-enabled.offline'));
                 }
             }
@@ -279,7 +276,7 @@
     // Set the interval to announce
     setInterval(function() {
         if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
-            if (messageCount >= noticeReqMessages) {
+            if (noticeReqMessages < 0 || messageCount >= noticeReqMessages) {
                 if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
                     sendNotice();
                     messageCount = 0;
