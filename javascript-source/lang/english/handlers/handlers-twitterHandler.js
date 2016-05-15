@@ -1,6 +1,7 @@
 $.lang.register('twitter.tweet', '[Twitter @(twitterid)] $1');
 $.lang.register('twitter.usage', 'usage: !twitter [lasttweet | lastmention | lastretweet | set | post | id]');
-$.lang.register('twitter.id', 'Caster Twitter ID is @$1');
+$.lang.register('twitter.id', '$1 is on Twitter @$2 [twitter.com/$2]');
+$.lang.register('twitter.usage.id', '(!twitter usage for usage)');
 $.lang.register('twitter.set.usage', 'usage: !twitter set [polldelay | poll | post | updatetimer]');
 $.lang.register('twitter.set.polldelay.usage', 'usage: !twitter set polldelay [mentions | retweets | hometimeline | usertimeline]');
 $.lang.register('twitter.set.polldelay.minerror', 'Too small of a poll delay, minimum is $1 for this setting.');
