@@ -62,7 +62,7 @@
                     if (panelMatch(msgObject['results'][idx]['key'], 'noticetoggle')) {
                         $('#chatNoticeMode').html(modeIcon[msgObject['results'][idx]['value']]);
                     }
-                    if (panelMatch(msgObject['results'][idx]['key'], 'noticeOffline')) {
+                    if (panelMatch(msgObject['results'][idx]['key'], 'noticeOfflineToggle')) {
                         $('#chatOfflineNoticeMode').html(modeIcon[msgObject['results'][idx]['value']]);
                     }
                 }
