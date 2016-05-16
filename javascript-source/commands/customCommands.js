@@ -25,6 +25,7 @@
      * @returns {string}
      */
     function getCustomAPIValue(url) {
+$.consoleLn("getCustomApiValue: " + url);
         var HttpResponse = Packages.com.gmt2001.HttpResponse;
         var HttpRequest = Packages.com.gmt2001.HttpRequest;
         var HashMap = Packages.java.util.HashMap;
@@ -89,6 +90,10 @@
 
         if (message.indexOf('(count)') != -1) {
             $.inidb.incr('commandCount', command, 1);
+        }
+
+        if (message.match(reSenderTag)) {
+            message = message.replace(reSenderTag, $.username.resolve(event.getSender()));
         }
         
         if (message.indexOf('(1)') != -1) {
@@ -332,6 +337,19 @@
             if ($.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.error'));
                 return;
+            }
+
+            if (argString.indexOf('(command ') !== -1) {
+                if (argString.indexOf('(command ') !== 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.commandtag.notfirst'));
+                    return;
+                } else {
+                    var checkCmd = argString.match(reCommandTag)[1];
+                    if (!$.commandExists(checkCmd)) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.commandtag.invalid', checkCmd));
+                        return;
+                    }
+                }
             }
 
             $.inidb.set('command', action, argString);

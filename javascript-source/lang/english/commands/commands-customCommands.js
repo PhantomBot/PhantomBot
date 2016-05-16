@@ -1,6 +1,8 @@
 $.lang.register('customcommands.add.error', 'that command already exists');
 $.lang.register('customcommands.add.success', 'command !$1 has been created!');
 $.lang.register('customcommands.add.usage', 'usage: !addcom (command) (message)');
+$.lang.register('customcommands.add.commandtag.notfirst', '(command) tag must be the first tag when being used.');
+$.lang.register('customcommands.add.commandtag.invalid', '(command) tag command does not exist: $1');
 $.lang.register('customcommands.alias.delete.error.alias.404', 'Alias does not exist: !$1');
 $.lang.register('customcommands.alias.delete.success', '$1, the alias !$2 was successfully deleted!');
 $.lang.register('customcommands.alias.delete.usage', 'usage: !delalias (alias name)');
