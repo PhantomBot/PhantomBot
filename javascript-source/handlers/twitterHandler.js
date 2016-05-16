@@ -97,6 +97,14 @@
          */
         if (command.equalsIgnoreCase('twitter')) {
             if (commandArg === undefined) {
+               $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + '') + ' ' + $.lang.get('twitter.usage.id'));
+               return;
+            }
+
+            /**
+             * @commandpath twitter usage - Display the Twitter usage
+             */
+            if (commandArg.equalsIgnoreCase('usage')) {
                $.say($.whisperPrefix(sender) + $.lang.get('twitter.usage'));
                return;
             }
@@ -337,7 +345,7 @@
              * @commandpath twitter id - Display the configured Twitter ID for the caster
              */
             if (commandArg.equalsIgnoreCase('id')) {
-                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.twitter.getUsername() + ''));
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + ''));
                 return;
             }
         } /* if (command.equalsIgnoreCase('twitter')) */
