@@ -25,7 +25,6 @@
      * @returns {string}
      */
     function getCustomAPIValue(url) {
-$.consoleLn("getCustomApiValue: " + url);
         var HttpResponse = Packages.com.gmt2001.HttpResponse;
         var HttpRequest = Packages.com.gmt2001.HttpRequest;
         var HashMap = Packages.java.util.HashMap;
@@ -92,10 +91,6 @@ $.consoleLn("getCustomApiValue: " + url);
             $.inidb.incr('commandCount', command, 1);
         }
 
-        if (message.match(reSenderTag)) {
-            message = message.replace(reSenderTag, $.username.resolve(event.getSender()));
-        }
-        
         if (message.indexOf('(1)') != -1) {
             for (var i = 0; i < args.length; i++) {
                 message = message.replace('(' + (i + 1) + ')', args[i]);
