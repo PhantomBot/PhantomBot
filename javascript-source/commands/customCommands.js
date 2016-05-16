@@ -16,7 +16,8 @@
         reStatusTag = new RegExp(/\(status\)/g),
         reFollowsTag = new RegExp(/\(follows\)/g),
         reCountTag = new RegExp(/\(count\)/g),
-        rePriceTag = new RegExp(/\(price\)/g);
+        rePriceTag = new RegExp(/\(price\)/g),
+        reCommandTag = new RegExp(/\(command\s([\w]+)\)/);
 
     /**
      * @function getCustomAPIValue
@@ -70,6 +71,7 @@
             jsonItems,
             jsonCheckList,
             message = message + '',
+            commandToExec = '',
             sender = event.getSender(),
             args = event.getArgs();
 
@@ -195,12 +197,17 @@
             }
         }
 
+        if (message.match(reCommandTag)) {
+            commandToExec = message.match(reCommandTag)[1];
+            message = message.replace(reCommandTag, '');
+        }
+
         // This needs to be improved, we can loose up to 500ms with all of the replace() methods when
         // there is nothing to replace.  This is a quick fix to just not even attempt to perform the
         // replace when we don't appear to see tags.
         //
-        if (message.match(reCheckTags))
-            return message.replace(reSenderTag, $.username.resolve(event.getSender()))
+        if (message.match(reCheckTags)) {
+            message = message.replace(reSenderTag, $.username.resolve(event.getSender()))
                 .replace(reTouserTag, $.username.resolve(touser))
                 .replace(reATSenderTag, '@' + $.username.resolve(event.getSender()))
                 .replace(reBaresenderTag, event.getSender())
@@ -214,6 +221,14 @@
                 .replace(rePriceTag, price)
                 .replace(reCustomAPI, customAPIReturnString)
                 .replace(reCustomAPIJson, customAPIReturnString);
+        }
+
+        if (commandToExec.length > 0) {
+            var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
+                CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+            EventBus.instance().postCommand(new CommandEvent(sender, commandToExec, message));
+            return '';
+        }
 
         return message;
     };
@@ -553,7 +568,7 @@
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
             }
-            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (uptime), (game), (status), (follows), (count), (touser), (price), (pointname), (customapi) (customjsonapi)');
+            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (uptime), (game), (status), (follows), (count), (touser), (price), (pointname), (customapi) (customjsonapi) (command command_name). (command command_name) must be the first item if used. Do not include the !');
         }
 
         /**
@@ -700,7 +715,10 @@
 
         if ($.inidb.exists('command', command.toLowerCase())) {
             subAction = $.inidb.get('command', command.toLowerCase());
-            $.say(replaceCommandTags(subAction, event, command.toLowerCase()));
+            var customCommandString = replaceCommandTags(subAction, event, command.toLowerCase());
+            if (customCommandString.length > 0) {
+                $.say(customCommandString);
+            }
         }
     });
 
