@@ -409,6 +409,7 @@
 
             $.inidb.del('command', action);
             $.inidb.del('permcom', action);
+            $.inidb.del('pricecom', action);
             $.unregisterChatCommand(action);
             $.log.event(sender + ' deleted the command !' + action);
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delete.success', action));
