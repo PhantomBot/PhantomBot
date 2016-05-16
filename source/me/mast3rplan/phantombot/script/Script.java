@@ -128,9 +128,7 @@ public class Script {
         scope.defineProperty("$var", vars, 0);
 
         try {
-            com.gmt2001.Console.debug.println("Loading: " + file.getName());
             context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);
-            com.gmt2001.Console.debug.println("Done Loading: " + file.getName());
         } catch (FileNotFoundException ex) {
             throw new IOException("File not found. This could be a caching issue, will retry.");
         } catch (EvaluatorException ex) {
