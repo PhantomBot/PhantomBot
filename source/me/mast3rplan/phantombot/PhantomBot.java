@@ -1289,6 +1289,50 @@ public class PhantomBot implements Listener {
 
         boolean changed = false;
 
+        if (args.length > 0) {
+            for (String arg : args) {
+                if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
+                    System.out.println("\r\nUsage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [options]\r\n\r\n"
+                                     + "Options:\r\n"
+                                     + "    [printlogin]\r\n"
+                                     + "    [user=<bot username>]\r\n"
+                                     + "    [oauth=<bot irc oauth>]\r\n"
+                                     + "    [apioauth=<editor oauth>]\r\n"
+                                     + "    [clientid=<oauth clientid>]\r\n"
+                                     + "    [channel=<channel to join>]\r\n"
+                                     + "    [owner=<bot owner username>]\r\n"
+                                     + "    [baseport=<bot webserver port>]\r\n"
+                                     + "    [hostname=<custom irc server>]\r\n"
+                                     + "    [port=<custom irc port>]\r\n"
+                                     + "    [msglimit30=<message limit per 30 seconds>]\r\n"
+                                     + "    [whisperlimit60=<whisper limit per 60 seconds>]\r\n"
+                                     + "    [youtubekey=<youtube api key>]\r\n"
+                                     + "    [webenable=<true | false>]\r\n"
+                                     + "    [musicenable=<true | false>]\r\n"
+                                     + "    [twitchalertskey=<twitch alerts key>]\r\n"
+                                     + "    [twitchalertslimit=<limit>]\r\n"
+                                     + "    [gamewispauth=<gamewisp oauth>]\r\n"
+                                     + "    [gamewisprefresh=<gamewisp refresh key>]\r\n"
+                                     + "    [paneluser=<username>]\r\n"
+                                     + "    [panelpassword=<password>]\r\n"
+                                     + "    [datastore=<IniStore|TempStore|SqliteStore>] \r\n"
+                                     + "    [datastoreconfig=<IniStore Folder Name|SqliteStore config file>]\r\n\r\n"
+            
+                                     + "DataStore Types:\r\n"
+                                     + "    IniStore: .ini files stored in inifiles directory\r\n"
+                                     + "    TempStore: Memory store, lost on shutdown\r\n"
+                                     + "    SqliteStore: Default. SQLite3 database\r\n\r\n"
+                                
+                                     + "Ports:\r\n"
+                                     + "    EventWebSocketServer <baseport> + 2\r\n"
+                                     + "    YouTubeSocketServer  <baseport> + 3\r\n"
+                                     + "    PanelWebSocketServer <baseport> + 4\r\n"
+                                     + "    NEW HTTP Server      <baseport> + 5");
+                    return;
+                }
+            }
+        }
+
         com.gmt2001.Console.out.println("The working directory is: " + System.getProperty("user.dir"));
 
         try {
@@ -1711,46 +1755,6 @@ public class PhantomBot implements Listener {
                             twitchalertslimit = 5;
                         }
                     }
-                }
-                if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
-                    com.gmt2001.Console.out.println("\r\nUsage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar\r\n\r\n"
-                                                    + "Options:\r\n"
-                                                    + "    [printlogin]\r\n"
-                                                    + "    [user=<bot username>]\r\n"
-                                                    + "    [oauth=<bot irc oauth>]\r\n"
-                                                    + "    [apioauth=<editor oauth>]\r\n"
-                                                    + "    [clientid=<oauth clientid>]\r\n"
-                                                    + "    [channel=<channel to join>]\r\n"
-                                                    + "    [owner=<bot owner username>]\r\n"
-                                                    + "    [baseport=<bot webserver port>]\r\n"
-                                                    + "    [hostname=<custom irc server>]\r\n"
-                                                    + "    [port=<custom irc port>]\r\n"
-                                                    + "    [msglimit30=<message limit per 30 seconds>]\r\n"
-                                                    + "    [whisperlimit60=<whisper limit per 60 seconds>]\r\n"
-                                                    + "    [youtubekey=<youtube api key>]\r\n"
-                                                    + "    [webenable=<true | false>]\r\n"
-                                                    + "    [musicenable=<true | false>]\r\n"
-                                                    + "    [twitchalertskey=<twitch alerts key>]\r\n"
-                                                    + "    [twitchalertslimit=<limit>]\r\n"
-                                                    + "    [gamewispauth=<gamewisp oauth>]\r\n"
-                                                    + "    [gamewisprefresh=<gamewisp refresh key>]\r\n"
-                                                    + "    [paneluser=<username>]\r\n"
-                                                    + "    [panelpassword=<password>]\r\n"
-                                                    + "    [datastore=<IniStore|TempStore|SqliteStore>] \r\n"
-                                                    + "    [datastoreconfig=<IniStore Folder Name|SqliteStore config file>]\r\n\r\n"
-
-                                                    + "DataStore Types:\r\n"
-                                                    + "    IniStore: .ini files stored in inifiles directory\r\n"
-                                                    + "    TempStore: Memory store, lost on shutdown\r\n"
-                                                    + "    SqliteStore: Default. SQLite3 database\r\n\r\n"
-                                               
-                                                    + "Ports:\r\n"
-                                                    + "    EventWebSocketServer <baseport> + 2\r\n"
-                                                    + "    YouTubeSocketServer  <baseport> + 3\r\n"
-                                                    + "    PanelWebSocketServer <baseport> + 4\r\n"
-                                                    + "    NEW HTTP Server      <baseport> + 5"
-                                                   );
-                    return;
                 }
             }
         }
