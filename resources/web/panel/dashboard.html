@@ -97,18 +97,31 @@
     <div>
         <table>
             <tr class="textList">
-                <td>Logging</td>
-                <td style="width: 25px"><div id="loggingMode" /></td>
+                <td>Event Logging</td>
+                <td style="width: 25px"><div id="logEvent" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Enable" class="button"
-                         onclick="$.changeLoggingStatus('enable');"><i class="fa fa-circle" />
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleLog('logEvent', 'log events');"><i class="fa fa-refresh" />
                      </div>
+                    <div>
                 </td>
+                <td>Error Logging</td>
+                <td style="width: 25px"><div id="logError" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Disable" class="button"
-                         onclick="$.changeLoggingStatus('disable');"><i class="fa fa-circle-o" />
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleLog('logError', 'log errors');"><i class="fa fa-refresh" />
                      </div>
-                </td>
+                     </div>
+                <div>
+                    </td>
+                    <td>File Logging</td>
+                    <td style="width: 25px"><div id="logFile" /></td>
+                    <td style="width: 25px">
+                        <div data-toggle="tooltip" title="Toggle" class="button"
+                             onclick="$.toggleLog('logFile', 'log files');"><i class="fa fa-refresh" />
+                         </div>
+                    </td>
+                </div>
             </tr>
         </table>
     </div>
