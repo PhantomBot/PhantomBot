@@ -6,6 +6,9 @@
  * Use the $.logging API for getting log-like date and time strings
  */
 (function() {
+
+    $.getSetIniDbNumber('settings', 'log_rotate_days', 90);
+
     var logs = {
         file: $.getSetIniDbBoolean('settings', 'log.file', true),
         event: $.getSetIniDbBoolean('settings', 'log.event', true),
@@ -132,6 +135,40 @@
     };
 
     /**
+     * @function logRotate
+     */
+    function logRotate() {
+        var logFiles,
+            idx,
+            logFileDate,
+            logDirs = [ 'chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages' ],
+            logDirIdx,
+            datefmt = new java.text.SimpleDateFormat('dd-MM-yyyy'),
+            date,
+            rotateDays = $.getIniDbNumber('settings', 'log_rotate_days') * 24 * 60 * 6e4,
+            checkDate = $.systemTime() - rotateDays;
+
+        if (rotateDays === 0) {
+            $.log.event('Log Rotation is Disabled');
+            return;
+        }
+
+        $.log.event('Starting Log Rotation');
+        for (logDirIdx = 0; logDirIdx < logDirs.length; logDirIdx++) {
+            logFiles = $.findFiles('./logs/' + logDirs[logDirIdx], 'txt');
+            for (idx = 0; idx < logFiles.length; idx++) {
+                logFileDate = logFiles[idx].match(/(\d{2}-\d{2}-\d{4})/)[1];
+                date = datefmt.parse(logFileDate);
+                if (date.getTime() < checkDate) {
+                    $.log.event('Log Rotate: Deleted ./logs/' + logDirs[logDirIdx] + '/' + logFiles[idx]);
+                    $.deleteFile('./logs/' + logDirs[logDirIdx] + '/' + logFiles[idx], true);
+                }
+            }
+        }
+        $.log.event('Finished Log Rotation');
+    };
+
+    /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
@@ -220,6 +257,27 @@
             }
 
             /**
+             * @commandpath log rotatedays [days] - Display or set number of days to rotate the logs. 0 to disable log rotation.
+             */
+            if (action.equalsIgnoreCase('rotatedays')) {
+                if (args[1] === undefined) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('logging.rotatedays.usage', $.getIniDbNumber('settings', 'log_rotate_days')));
+                    return;
+                }
+                if (isNaN(args[1])) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('logging.rotatedays.usage', $.getIniDbNumber('settings', 'log_rotate_days')));
+                    return;
+                }
+                if (parseInt(args[1]) === 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('logging.rotatedays.success.off'));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('logging.rotatedays.success', args[1]));
+                }
+                $.inidb.set('settings', 'log_rotate_days', args[1]);
+                return;
+            }
+
+            /**
              * @commandpath log files - Toggle the logging of files
              */
             if (action.equalsIgnoreCase('files')) {
@@ -228,7 +286,7 @@
                 } else {
                     logs.file = true;
                 }
-                $.setIniDbBoolean('settings', 'logs.file', logs.file);
+                $.setIniDbBoolean('settings', 'log.file', logs.file);
                 logEvent(sender + ' toggled logging for files');
                 $.say($.whisperPrefix(sender) + (logs.file ? $.lang.get('logging.enabled.files') : $.lang.get('logging.disabled.files')));
             }
@@ -242,7 +300,7 @@
                 } else {
                     logs.event = true;
                 }
-                $.setIniDbBoolean('settings', 'logs.event', logs.event);
+                $.setIniDbBoolean('settings', 'log.event', logs.event);
                 logEvent(sender + ' toggled logging for event');
                 $.say($.whisperPrefix(sender) + (logs.event ? $.lang.get('logging.enabled.event') : $.lang.get('logging.disabled.event')));
             }
@@ -256,7 +314,7 @@
                 } else {
                     logs.error = true;
                 }
-                $.setIniDbBoolean('settings', 'logs.error', logs.error);
+                $.setIniDbBoolean('settings', 'log.error', logs.error);
                 logEvent(sender + ' toggled logging for error');
                 $.say($.whisperPrefix(sender) + (logs.error ? $.lang.get('logging.enabled.error') : $.lang.get('logging.disabled.error')));
             }
@@ -269,6 +327,9 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./core/logging.js')) {
             $.registerChatCommand('./core/logging.js', 'log', 1);
+
+            logRotate();
+            setInterval(function() { logRotate(); }, 24 * 60 * 6e4, 'logRotate');
         }
     });
 
