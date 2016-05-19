@@ -226,19 +226,21 @@ public class TwitchCache implements Runnable {
 
                 /* Get the game being streamed. */
                 if (streamObj.has("game")) {
-                    gameTitle = streamObj.getString("game");
-                    if (!forcedGameTitleUpdate && !this.gameTitle.equals(gameTitle)) {
-                        setDBString("game", gameTitle);
-                        /* Send an event if we did not just send a TwitchOnlineEvent. */
-                        if (!sentTwitchOnlineEvent) {
+                    if (!streamObj.isNull("game")) {
+                        gameTitle = streamObj.getString("game");
+                        if (!forcedGameTitleUpdate && !this.gameTitle.equals(gameTitle)) {
+                            setDBString("game", gameTitle);
+                            /* Send an event if we did not just send a TwitchOnlineEvent. */
+                            if (!sentTwitchOnlineEvent) {
+                                this.gameTitle = gameTitle;
+                                EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
+                            }
                             this.gameTitle = gameTitle;
-                            EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
                         }
-                        this.gameTitle = gameTitle;
-                    }
-
-                    if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitle)) {
-                        forcedGameTitleUpdate = false;
+    
+                        if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitle)) {
+                            forcedGameTitleUpdate = false;
+                        }
                     }
                 } else {
                     success = false;
@@ -246,15 +248,17 @@ public class TwitchCache implements Runnable {
 
                 /* Get the title. */
                 if (streamObj.has("status")) {
-                    streamTitle = streamObj.getString("status");
+                    if (!streamObj.isNull("status")) {
+                        streamTitle = streamObj.getString("status");
 
-                    if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitle)) {
-                        setDBString("title", streamTitle);
-                        this.streamTitle = streamTitle;
-                    }
+                        if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitle)) {
+                            setDBString("title", streamTitle);
+                            this.streamTitle = streamTitle;
+                        }
 
-                    if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitle)) {
-                        forcedStreamTitleUpdate = false;
+                        if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitle)) {
+                            forcedStreamTitleUpdate = false;
+                        }
                     }
                 } else {
                     success = false;
