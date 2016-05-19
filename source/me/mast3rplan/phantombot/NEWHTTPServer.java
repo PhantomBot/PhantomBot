@@ -424,7 +424,7 @@ public class NEWHTTPServer {
           outputStream.write(data);
           outputStream.close();
       } catch (IOException ex) {
-          sendHTMLError(500, "Server Error", exchange);
+          sendHTMLErrorNoHeader(500, "Server Error", exchange);
           com.gmt2001.Console.err.println("HTTP Server: sendData(): " + ex.getMessage());
           com.gmt2001.Console.err.logStackTrace(ex);
       }
@@ -445,6 +445,17 @@ public class NEWHTTPServer {
       }
   }
 
+  private void sendHTMLErrorNoHeader(int error, String message, HttpExchange exchange) {
+      try { 
+          OutputStream outputStream = exchange.getResponseBody();
+          outputStream.write(message.getBytes());
+          outputStream.close();
+      } catch (IOException ex) {
+          // Do not generate another HTML error, as we are already in sendHTMLError which failed.
+          com.gmt2001.Console.err.println("HTTP Server: sendHTMLError(" + error + "): " + ex.getMessage());
+          com.gmt2001.Console.err.logStackTrace(ex);
+      }
+  }
   private static String inferContentType(String path) {
       if (path.endsWith(".html") || path.endsWith(".htm")) {
           return "text/html";
