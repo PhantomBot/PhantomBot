@@ -93,7 +93,7 @@
         </table>
     </div>
 
-    <h3>Enable/Disable Logging</h3>
+    <h3>Logging Configuration</h3>
     <div>
         <table>
             <tr class="textList">
@@ -124,6 +124,15 @@
                 </div>
             </tr>
         </table>
+        <br>
+        <form role="form">
+             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="logRotate">Number of Days to Keep Logs</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.setLogRotate()">Submit</button>
+                <input type="number" min="0" class="form-control" id="logRotateInput" placeholder="Days" 
+                       data-toggle="tooltip" title="Days to keep logs, 0 means do not delete logs."/>
+            </div>
+        </form>
     </div>
 
     <h3>Modules</h3>
