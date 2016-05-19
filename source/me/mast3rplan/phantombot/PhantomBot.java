@@ -94,6 +94,9 @@ import me.mast3rplan.phantombot.panel.PanelSocketServer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+// import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
+// import java.net.URI;
+
 public class PhantomBot implements Listener {
 
     private String twitchalertskey = null;
@@ -152,7 +155,6 @@ public class PhantomBot implements Listener {
     private EmotesCache emotesCache;
     private TwitterCache twitterCache;
     private TwitchCache twitchCache;
-    private MusicWebSocketServer musicsocketserver;
     private YTWebSocketServer  ytsocketserver;
     private HTTPServer httpserver;
     private NEWHTTPServer NEWhttpserver;
@@ -169,6 +171,8 @@ public class PhantomBot implements Listener {
     private boolean exiting = false;
     private static PhantomBot instance;
     public static String log_timezone = "GMT";
+
+    // private TwitchWSIRC twitchWSIRC;
 
     public static PhantomBot instance() {
         return instance;
@@ -367,7 +371,15 @@ public class PhantomBot implements Listener {
         // com.gmt2001.Console.out.println("Sending to Extra connection");
         // this.hostSession = hostConnectionManager.requestConnection(this.hostname, this.port, casterOauth);
         // this.hostSession.addIRCEventListener(new IrcHostHandler());
-        
+
+/*
+        try {
+            this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), this.channelName, this.username, oauth);
+            twitchWSIRC.connectWSS();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
+        }
+ */       
     }
 
     public static void setDebugging(boolean debug) {
@@ -418,14 +430,12 @@ public class PhantomBot implements Listener {
             if (usehttps) {
                 httpserver = new HTTPServer(baseport, oauth);
                 if (musicenable) {
-                    musicsocketserver = new MusicWebSocketSecureServer(baseport + 1, keystorepath, keystorepassword, keypassword);
                     ytsocketserver = new YTWebSocketServer(baseport + 3, ytauth, ytauthro);
                 }
                 eventsocketserver = new EventWebSocketSecureServer(baseport + 2, keystorepath, keystorepassword, keypassword);
             } else {
                 httpserver = new HTTPServer(baseport, oauth);
                 if (musicenable) {
-                    musicsocketserver = new MusicWebSocketServer(baseport + 1);
                     ytsocketserver = new YTWebSocketServer(baseport + 3, ytauth, ytauthro);
                 }
                 eventsocketserver = new EventWebSocketServer(baseport + 2);
@@ -434,11 +444,7 @@ public class PhantomBot implements Listener {
             httpserver.start();
 
             if (musicenable) {
-                musicenabled = true;
-                musicsocketserver.start();
                 ytsocketserver.start();
-                int musicport = baseport + 1;
-                com.gmt2001.Console.out.println("MusicSocketServer accepting connections on port " + musicport);
                 com.gmt2001.Console.out.println("YouTubeSocketServer accepting connections on port " + (baseport + 3));
             }
 
@@ -454,8 +460,8 @@ public class PhantomBot implements Listener {
             NEWhttpserver = new NEWHTTPServer(baseport + 5, oauth, webauth, paneluser, panelpassword);
             com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 5));
 
-            // NEWhttpsServer = new NEWHTTPSServer(baseport + 1443, oauth, webauth);
-            // com.gmt2001.Console.out.println("NEW HTTPS Server accepting connections on port " + (baseport + 1443));
+            // NEWhttpsServer = new NEWHTTPSServer(baseport + 6, oauth, webauth, paneluser, panelpassword);
+            // com.gmt2001.Console.out.println("NEW HTTPS Server accepting connections on port " + (baseport + 6));
 
             if (gamewispauth.length() > 0) {
                 GameWispAPIv1.instance().SetAccessToken(gamewispauth);
@@ -608,7 +614,6 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("channelStatus", channelStatus, 0);
-        Script.global.defineProperty("musicplayer", musicsocketserver, 0);
         Script.global.defineProperty("ytplayer", ytsocketserver, 0);
         Script.global.defineProperty("panelsocketserver", panelsocketserver, 0);
         Script.global.defineProperty("random", rng, 0);
@@ -654,7 +659,6 @@ public class PhantomBot implements Listener {
 
         if (musicenabled) {
             com.gmt2001.Console.out.println("[SHUTDOWN] Terminating music server...");
-            musicsocketserver.dispose();
             ytsocketserver.dispose();
         }
 

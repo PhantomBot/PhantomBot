@@ -50,6 +50,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.BasicAuthenticator;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
@@ -62,9 +64,9 @@ public class NEWHTTPSServer {
   private String     serverWebAuth;
   private int        serverPort;
 
-  public NEWHTTPSServer(int myPort, String myPassword, String myWebAuth) {
+  public NEWHTTPSServer(int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword) {
       serverPort = myPort;
-      serverPassword = myPassword;
+      serverPassword = myPassword.replace("oauth:", "");
       serverWebAuth = myWebAuth;
 
       Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -106,6 +108,19 @@ public class NEWHTTPSServer {
           });
 
           server.createContext("/", new HTTPSServerHandler());
+
+          HttpContext panelContext = server.createContext("/panel", new PanelHandler());
+          HttpContext ytContext = server.createContext("/ytplayer", new YTPHandler());
+
+          BasicAuthenticator auth = new BasicAuthenticator("PhantomBot Web Utilities") {
+              @Override
+              public boolean checkCredentials(String user, String pwd) {
+                  return user.equals(panelUser) && pwd.equals(panelPassword);
+              }
+          };
+          ytContext.setAuthenticator(auth);
+          panelContext.setAuthenticator(auth);
+
           server.start();
       } catch (IOException ex) {
           com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
@@ -121,6 +136,55 @@ public class NEWHTTPSServer {
       server.stop(2);
       com.gmt2001.Console.out.println("HTTPS Server stopped on port " + serverPort);
   }
+
+  class YTPHandler implements HttpHandler {
+      public void handle(HttpExchange httpExchange) throws IOException {
+          HttpsExchange exchange = (HttpsExchange) httpExchange;
+          URI uriData = exchange.getRequestURI();
+          String uriPath = uriData.getPath();
+
+          // Get the Request Method (GET/PUT)
+          String requestMethod = exchange.getRequestMethod();
+
+          // Get any data from the body, although, we just discard it, this is required
+          InputStream inputStream = exchange.getRequestBody();
+          while (inputStream.read() != -1) { inputStream.skip(0x10000); }
+          inputStream.close();
+
+          if (requestMethod.equals("GET")) {
+              if (uriPath.equals("/ytplayer")) {
+                  handleFile("/web/ytplayer/index.html", exchange, false, false);
+              } else {
+                  handleFile("/web/" + uriPath, exchange, false, false);
+              }
+           }
+      }
+  }
+
+  class PanelHandler implements HttpHandler {
+      public void handle(HttpExchange httpExchange) throws IOException {
+          HttpsExchange exchange = (HttpsExchange) httpExchange;
+          URI uriData = exchange.getRequestURI();
+          String uriPath = uriData.getPath();
+
+          // Get the Request Method (GET/PUT)
+          String requestMethod = exchange.getRequestMethod();
+
+          // Get any data from the body, although, we just discard it, this is required
+          InputStream inputStream = exchange.getRequestBody();
+          while (inputStream.read() != -1) { inputStream.skip(0x10000); }
+          inputStream.close();
+
+          if (requestMethod.equals("GET")) {
+              if (uriPath.equals("/panel")) {
+                  handleFile("/web/panel/index.html", exchange, false, false);
+              } else {
+                  handleFile("/web/" + uriPath, exchange, false, false);
+              }
+           }
+      }
+  }
+
 
   class HTTPSServerHandler implements HttpHandler {
       public void handle(HttpExchange httpExchange) throws IOException {
@@ -153,8 +217,7 @@ public class NEWHTTPSServer {
 
           if (headers.containsKey("password")) {
               myPassword = headers.getFirst("password");
-              myPassword.replace("oauth:", "");
-              if (myPassword.equals(serverPassword)) {
+              if (myPassword.equals(serverPassword) || myPassword.equals("oauth:" + serverPassword)) {
                   hasPassword = true;
               }
           }
@@ -178,6 +241,8 @@ public class NEWHTTPSServer {
                   handleDBQuery(uriPath, uriQueryList, exchange, hasPassword);
               } else if (uriPath.startsWith("/addons") || uriPath.startsWith("/logs")) {
                   handleFile(uriPath, exchange, hasPassword, true);
+              } else if (uriPath.equals("/playlist")) {
+                  handleFile("/web/playlist/index.html", exchange, hasPassword, false);
               } else if (uriPath.equals("/")) {
                   handleFile("/web/index.html", exchange, hasPassword, false);
               } else {
@@ -388,18 +453,19 @@ public class NEWHTTPSServer {
   }
 
   private void handlePutRequest(String user, String message, HttpExchange exchange, Boolean hasPassword) {
-    if (!hasPassword) {
-        sendHTMLError(403, "Access Denied", exchange);
-        return;
-    }
+      if (!hasPassword) {
+          sendHTMLError(403, "Access Denied", exchange);
+          return;
+      }
 
-    if (user == "" || message == "") {
-        sendHTMLError(400, "Missing Parameter", exchange);
-        return;
-    }
+      if (user == "" || message == "") {
+          sendHTMLError(400, "Missing Parameter", exchange);
+          return;
+      }
 
-    EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(),
-                             user, message, PhantomBot.instance().getChannel())); 
+      EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(),
+                               user, message, PhantomBot.instance().getChannel())); 
+      sendData("text/text", "event posted", exchange);
   }
 
   private void sendData(String contentType, String data, HttpExchange exchange) {
