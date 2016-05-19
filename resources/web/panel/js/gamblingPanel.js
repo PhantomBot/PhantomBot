@@ -106,6 +106,22 @@
                 }
             }
 
+            if (panelCheckQuery(msgObject, 'gambling_rafflelistentries')) {
+                amount = msgObject['results']['raffleEntries'];
+                if (amount === null || amount === undefined || amount === 0) {
+                    $("#traffleentries").html("0");
+                }
+                $("#traffleentries").html(msgObject['results']['raffleEntries']);
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_trafflelistentries')) {
+                amount = msgObject['results']['ticketRaffleEntries'];
+                if (amount === null || amount === undefined || amount === 0) {
+                    $("#traffleentries").html("0");
+                }
+                $("#traffleentries").html(msgObject['results']['ticketRaffleEntries']);
+            }
+
             if (panelCheckQuery(msgObject, 'gambling_rafflelist')) {
                 var raffleList = msgObject['results'],
                     html = "",
@@ -158,6 +174,8 @@
         sendDBKeys('gambling_trafflelist', 'ticketsList');
         sendDBQuery('gambling_norepicksame', 'settings', 'noRepickSame');
         sendDBQuery('gambling_rafflemsgtoggle', 'settings', 'raffleMSGToggle');
+        sendDBQuery('gambling_rafflelistentries', 'raffleresults', 'raffleEntries');
+        sendDBQuery('gambling_trafflelistentries', 'raffleresults', 'ticketRaffleEntries');
     }
 
     /**
