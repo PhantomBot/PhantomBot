@@ -121,13 +121,14 @@
         }
 
         try {
-            throw new Error('eventlog');
+            throw new Error('errorlog');
         } catch (e) {
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
         var now = new Date();
         $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/error/' + getLogDateString() + '.txt', true);
+        Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile + '] ' + message));
     };
 
     /**

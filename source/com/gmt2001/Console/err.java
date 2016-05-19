@@ -42,18 +42,39 @@ public class err {
     }
 
     public static void print(Object o) {
-        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + o.toString());
-        System.err.print("[" + logTimestamp.log() + "] [ERROR] " + o);
+        String stackInfo = "";
+        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
+        String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
+        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+        stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+
+        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + stackInfo + o.toString());
+        System.err.print("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
     }
 
     public static void println() {
         System.err.println();
     }
 
+    public static void printlnRhino(Object o) {
+        // Do not write to a log file as the JS Rhino files already do this. //
+        System.out.println("[" + logTimestamp.log() + "] [ERROR] " + o);
+    }
+
     public static void println(Object o) {
-        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + o.toString());
+        String stackInfo = "";
+        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
+        String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
+        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+        stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+
+        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
-        System.err.println("[" + logTimestamp.log() + "] [ERROR] " + o);
+        System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
     }
 
     public static void printStackTrace(Throwable e) {

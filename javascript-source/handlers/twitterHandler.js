@@ -8,9 +8,9 @@
  */
 (function() {
     var moduleStarted = false,
-        randPrev = 0;
+        randPrev = 0,
+        onlinePostDelay = 10 * 6e4; // 10 minutes must pass between Online Posts. This should take care of Twitch/OBS issues.
  
-
     /* Set default values for all configuration items. */
     $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
     $.getSetIniDbString('twitter', 'message_gamechange', 'Changing game over to (game) (twitchurl)');
@@ -44,18 +44,23 @@
      * @event twitchOnline
      */
     $.bind('twitchOnline', function(event) {
+        var randNum,
+            now = $.systemTime();
+
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
         if ($.getIniDbBoolean('twitter', 'post_online', false)) {
-            var randNum;
-            do {
-                randNum = $.randRange(1, 9999);
-            } while (randNum == randPrev);
-            randPrev = randNum;
-            $.twitter.updateStatus($.getIniDbString('twitter', 'message_online').
-                                       replace('(game)', $.twitchcache.getGameTitle()).
-                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum));
+            if (now > $.getIniDbNumber('twitter', 'last_onlinepost', 0) + onlinePostDelay) {
+                $.inidb.set('twitter', 'last_onlinepost', now + onlinePostDelay);
+                do {
+                    randNum = $.randRange(1, 9999);
+                } while (randNum == randPrev);
+                randPrev = randNum;
+                $.twitter.updateStatus($.getIniDbString('twitter', 'message_online').
+                                           replace('(game)', $.twitchcache.getGameTitle()).
+                                           replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum));
+            }
         }
     });
 

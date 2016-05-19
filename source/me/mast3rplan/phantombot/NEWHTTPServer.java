@@ -396,19 +396,19 @@ public class NEWHTTPServer {
   }
 
   private void handlePutRequest(String user, String message, HttpExchange exchange, Boolean hasPassword) {
-    if (!hasPassword) {
-        sendHTMLError(403, "Access Denied", exchange);
-        return;
-    }
-
-    if (user == "" || message == "") {
-        sendHTMLError(400, "Missing Parameter", exchange);
-        return;
-    }
-
-    EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(),
-                             user, message, PhantomBot.instance().getChannel())); 
-    sendData("text/text", "event posted", exchange);
+      if (!hasPassword) {
+          sendHTMLError(403, "Access Denied", exchange);
+          return;
+      }
+  
+      if (user == "" || message == "") {
+          sendHTMLError(400, "Missing Parameter", exchange);
+          return;
+      }
+  
+      EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(),
+                               user, message, PhantomBot.instance().getChannel())); 
+      sendData("text/text", "event posted", exchange);
   }
 
   private void sendData(String contentType, String data, HttpExchange exchange) {
