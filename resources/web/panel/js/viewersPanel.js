@@ -104,6 +104,10 @@
                     var key = msgObject['results'][idx]['key'],
                         value = msgObject['results'][idx]['value'];
 
+                    if (usernameData[key] === undefined) {
+                        usernameData.push(key)
+                    }
+
                     if (panelCheckQuery(msgObject, 'viewers_groups')) {
                         groupData[key] = value;
                         if (value.indexOf("0") == 0) groupData[key] = "1";
@@ -114,7 +118,6 @@
                         if (value.indexOf("7") == 0) countViewer++; // Not written to the bot all the time.
                     }
                     if (panelCheckQuery(msgObject, 'viewers_time')) {
-                        usernameData.push(key);
                         timeData[key] = value;
                     }
                     if (panelCheckQuery(msgObject, 'viewers_points')) {
@@ -159,6 +162,7 @@
                     if (!panelIsDefined(timeoutData[user])) timeoutData[user] = "0";
                     if (!panelIsDefined(chatData[user])) chatData[user] = "0";
                     if (!panelIsDefined(followedData[user])) followedData[user] = 'false';
+                    if (!panelIsDefined(timeData[user])) timeData[user] = "0";
 
                     viewerData[user] = {
                         group: groupData[user],
@@ -260,6 +264,7 @@
         sendDBKeys("viewers_time", "time");
         sendDBKeys("viewers_points", "points");
         sendDBKeys("viewers_followed", "followed");
+        sendDBKeys("viewers_visited", "visited");
         if (panelStatsEnabled) {
             sendDBKeys("viewers_timeout", "panelmoduserstats");
             sendDBKeys("viewers_chat", "panelchatuserstats");
