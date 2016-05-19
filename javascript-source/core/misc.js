@@ -95,18 +95,24 @@
      * @param {string} message
      */
     function say(message) {
-        $.consoleLn('[CHAT] ' + message);
         if ($.channel) {
             if (message.substr(0, 1).equals('.')) {
                 $.channel.say(message);
-                return;
+                $.consoleLn('[CHAT] ' + message);
             }
-
-            if ($.getIniDbBoolean('settings', 'response_@chat')) {
-                if ($.getIniDbBoolean('settings', 'response_action') && !message.substr(0, 2).equals('/w')) {
-                    $.channel.say('/me ' + message);
-                } else {
+    
+            if (!message.substr(0, 1).equals('.')) {
+                if ($.getIniDbBoolean('settings', 'response_@chat') && (!$.getIniDbBoolean('settings', 'response_action') || message.substr(0, 2).equals('/w'))) {
+                    $.consoleLn('[CHAT] ' + message);
                     $.channel.say(message);
+                } else {
+                    if ($.getIniDbBoolean('settings', 'response_@chat') && $.getIniDbBoolean('settings', 'response_action')) {
+                        $.consoleLn('[COLOR CHAT] ' + message);
+                        $.channel.say('/me ' + message);
+                    }
+                    if (!$.getIniDbBoolean('settings', 'response_@chat')) {
+                        $.consoleLn('[MUTED] ' + message);
+                    }
                 }
             }
         }
