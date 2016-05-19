@@ -44,6 +44,8 @@
         settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
         settingIcon['true'] = "<i class=\"fa fa-circle\" />";
 
+        var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />';
+
 
     /*
      * @function onMessage
@@ -194,9 +196,19 @@
                 sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
             }
  
-            if (panelCheckQuery(msgObject, 'dashboard_loggingMode')) {
-                loggingMode = (panelMatch(msgObject['results']['loggingEnabled'], 'true'));
-                $("#loggingMode").html(modeIcon[loggingMode]);
+            if (panelCheckQuery(msgObject, 'dashboard_loggingModeEvent')) {
+                loggingMode = (panelMatch(msgObject['results']['log.event'], 'true'));
+                $("#logEvent").html(modeIcon[loggingMode]);
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_loggingModeFile')) {
+                loggingMode = (panelMatch(msgObject['results']['log.file'], 'true'));
+                $("#logFile").html(modeIcon[loggingMode]);
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_loggingModeErr')) {
+                loggingMode = (panelMatch(msgObject['results']['log.error'], 'true'));
+                $("#logError").html(modeIcon[loggingMode]);
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
@@ -239,7 +251,9 @@
     function doQuery() {
         sendDBQuery("dashboard_streamTitle", "streamInfo", "title");
         sendDBQuery("dashboard_gameTitle", "streamInfo", "game");
-        sendDBQuery("dashboard_loggingMode", "settings", "loggingEnabled");
+        sendDBQuery("dashboard_loggingModeEvent", "settings", "log.event");
+        sendDBQuery("dashboard_loggingModeFile", "settings", "log.file");
+        sendDBQuery("dashboard_loggingModeErr", "settings", "log.error");
         sendDBQuery("dashboard_dsChannels", "dualStreamCommand", "otherChannels");
         sendDBQuery("dashboard_dsInterval", "dualStreamCommand", "timerInterval");
         sendDBQuery("dashboard_dsReqMsgs", "dualStreamCommand", "reqMessages");
@@ -296,13 +310,13 @@
     }
 
     /**
-     * @function changeLoggingStatus
+     * @function toggleLog
      * @param {String} mode
      */
-    function changeLoggingStatus(mode) {
-        $("#loggingMode").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("log " + mode);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function toggleLog(type, command) {
+        $('#'+ type).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin" />');
+        sendCommand(command);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
@@ -541,7 +555,7 @@
     $.toggleCommand = toggleCommand;
     $.toggleTwitchChat = toggleTwitchChat;
     $.toggleTwitchChatRollup = toggleTwitchChatRollup;
-    $.changeLoggingStatus = changeLoggingStatus;
+    $.toggleLog = toggleLog;
     $.enableModule = enableModule;
     $.disableModule = disableModule;
     $.adjustDeathCounter = adjustDeathCounter;
