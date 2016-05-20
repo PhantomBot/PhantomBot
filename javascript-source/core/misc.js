@@ -498,6 +498,23 @@
         }
     }
 
+    /**
+     * @function replace
+     * @export $
+     * @param {string}
+     */
+    function replace(string, find, replace) {
+        if (find.equals(replace)) {
+            return string;
+        }
+    
+        while (string.indexOf(find) >= 0) {
+            string = string.replace(find, replace);
+        }
+    
+        return string;
+    };
+
     /** Export functions to API */
     $.list = {
         contains: contains,
@@ -533,4 +550,5 @@
     $.trueRandElement = trueRandElement;
     $.trueRandRange = trueRandRange;
     $.paginateArray = paginateArray;
+    $.replace = replace;
 })();
