@@ -211,7 +211,7 @@
             if (commandToExec.length > 0) {
                 var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
                 var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
-                EventBus.instance().postCommand(new CommandEvent(event.getSender(), commandToExec, ' '));
+                EventBus.instance().postCommand(new CommandEvent(event.getSender(), commandToExec, message.replace(reCommandTag, '')));
                 return '';
             }
         }
@@ -655,64 +655,6 @@
             $.log.event(sender + ' re-enabled command !' + command);
         }
 
-        /**
-         * @commandpath shortcut [add] [shortcut] [command] [parameters] - Creates a shortcut to a command with parameters.
-         * @commandpath shortcut [del] [shortcut] - Deletes a shortcut.
-         * @commandpath shortcut [list] - Lists the shortcuts.
-         */
-        if (command.equalsIgnoreCase('shortcut')) {
-            if (args[0] === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.usage'));
-                return;
-            }
-            if (args[0].equalsIgnoreCase('add')) {
-                if (args.length < 4) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.add.usage'));
-                    return;
-                }
-                var sCommand = args[1],
-                    cCommand = args[2],
-                    parameters = args.splice(3).join(' ');
-
-                if ($.commandExists(sCommand)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.add.shortcut.exists', sCommand));
-                    return;
-                }
-                if (!$.commandExists(cCommand)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.add.command.noexists', cCommand));
-                    return;
-                }
-                $.inidb.set('aliases', sCommand, cCommand + ' ' + parameters);
-                $.registerChatCommand('./commands/customCommands.js', sCommand, 7);
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.add.success', sCommand, cCommand, parameters));
-                return;
-            } 
-            if (args[0].equalsIgnoreCase('del')) {
-                if (args[1] === undefined) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.del.usage'));
-                    return;
-                }
-                var sCommand = args[1];
-                if (!$.inidb.exists('shortcuts', sCommand)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.del.noexists', sCommand));
-                    return;
-                }
-                $.inidb.del('aliases', sCommand);
-                $.unregisterChatCommand(sCommand);
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.del.success', sCommand));
-                return;
-            }
-            if (args[0].equalsIgnoreCase('list')) {
-                var shortcutList = $.inidb.GetKeyList('aliases', '');
-                if (shortcutList.length > 0) {
-                    $.paginateArray(shortcutList, 'customcommands.shortcut.list', ', ', true, sender);
-                } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.shortcut.list.empty'));
-                }
-                return;
-            }    
-        }
-
         if ($.inidb.exists('command', command)) {
             var tag = tags(event, $.inidb.get('command', command));
             if (tag != '') {
@@ -739,11 +681,6 @@
             $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'botcommands');
-            $.registerChatCommand('./commands/customCommands.js', 'shortcut', 7);
-
-            $.registerChatCommand('shortcut', 'add', 2);
-            $.registerChatCommand('shortcut', 'del', 2);
-            $.registerChatCommand('shortcut', 'list', 7);
         }
     });
 
@@ -751,7 +688,6 @@
     $.addComRegisterCommands = addComRegisterCommands;
     $.addComRegisterAliases = addComRegisterAliases;
     $.returnCommandCost = returnCommandCost;
-    $.replaceCommandTags = replaceCommandTags;
     $.permCom = permCom;
     $.getCommandPrice = getCommandPrice;
 })();
