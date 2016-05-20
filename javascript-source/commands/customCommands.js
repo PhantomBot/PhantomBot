@@ -4,19 +4,6 @@
     var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&]+)\)/), // URL[1]
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
-        reCheckTags = new RegExp(/\(customapi|\(sender\)|\(touser\)|\(@sender\)|\(baresender\)|\(random\)|\(pointname\)|\(uptime\)|\(game\)|\(status\)|\(follows\)|\(count\)|\(price\)/),
-        reSenderTag = new RegExp(/\(sender\)/g),
-        reTouserTag = new RegExp(/\(touser\)/g),
-        reATSenderTag = new RegExp(/\(@sender\)/g),
-        reBaresenderTag = new RegExp(/\(baresender\)/g),
-        reRandomTag = new RegExp(/\(random\)/g),
-        rePointnameTag = new RegExp(/\(pointname\)/g),
-        reUptimeTag = new RegExp(/\(uptime\)/g),
-        reGameTag = new RegExp(/\(game\)/g),
-        reStatusTag = new RegExp(/\(status\)/g),
-        reFollowsTag = new RegExp(/\(follows\)/g),
-        reCountTag = new RegExp(/\(count\)/g),
-        rePriceTag = new RegExp(/\(price\)/g),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/);
 
     /**
@@ -49,56 +36,87 @@
         }
     };
 
+    function tags(event, message) {
+        if (message.match(/\(1\)/g)) {
+            for (var i = 0; i < event.getArgs().length; i++) {
+                message = $.replace(message, '(' + (i + 1) + ')', event.getArgs()[i]);
+            }
+        }
+
+        if (message.match(/\(sender\)/g)) {
+            message = $.replace(message, '(sender)', $.username.resolve(event.getSender()));
+        }
+
+        if (message.match(/\(@sender\)/g)) {
+            message = $.replace(message, '(@sender)', '@' + $.username.resolve(event.getSender()));
+        }
+
+        if (message.match(/\(baresender\)/g)) {
+            message = $.replace(message, '(baresender)', event.getSender());
+        }
+
+        if (message.match(/\(game\)/g)) {
+            message = $.replace(message, '(game)', $.getGame($.channelName));
+        }
+
+        if (message.match(/\(status\)/g)) {
+            message = $.replace(message, '(status)', $.getStatus($.channelName));
+        }
+
+        if (message.match(/\(count\)/g)) {
+            $.inidb.incr('commandCount', event.getCommand(), 1);
+            message = $.replace(message, '(count)', $.inidb.get('commandCount', event.getCommand()));
+        }
+
+        if (message.match(/\(uptime\)/g)) {
+            message = $.replace(message, '(uptime)', $.getStreamUptime($.channelName));
+        }
+
+        if (message.match(/\(random\)/g)) {
+            message = $.replace(message, '(random)', $.randElement($.users)[0]);
+        }
+
+        if (message.match(/\(pointname\)/g)) {
+            message = $.replace(message, '(pointname)', $.pointNameMultiple);
+        }
+
+        if (message.match(/\(price\)/g)) {
+            message = $.replace(message, '(price)', ($.inidb.exists('pricecom', event.getCommand()) ? $.inidb.get('pricecom', event.getCommand()) : 0));
+        }
+
+        if (message.match(/\(touser\)/g)) {
+            message = $.replace(message, '(touser)', (!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]));
+        }
+
+        if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
+            message = apiTags(event, message);
+        }
+        return message;
+    };
+
     /**
-     * @function replaceCommandTags
+     * @function apiTags
      * @export $
      * @param {string} message
      * @param {Object} event
-     * @param {Array} [tagList]
-     * @param {Array} [tagReplacements]
      * @returns {string}
      */
-    function replaceCommandTags(message, event, command, tagList, tagReplacements) {
+    function apiTags(event, message) {
         var JSONObject = Packages.org.json.JSONObject,
-            jsonObject,
-            touser,
-            price,
-            customAPIResponse = '',
+            command = event.getCommand(),
+            args = event.getArgs(),
             origCustomAPIResponse = '',
             customAPIReturnString = '',
+            message = message + '',
+            customAPIResponse = '',
             customJSONStringTag = '',
+            commandToExec = 0,
+            jsonObject,
             regExCheck,
             jsonItems,
-            jsonCheckList,
-            message = message + '',
-            commandToExec = '',
-            sender = event.getSender(),
-            args = event.getArgs();
-
-        if (message.indexOf('(touser)') != -1) {
-            touser = (!args[0] ? sender : args[0]);
-        }
-
-        if (message.indexOf('(price)') != -1) {
-            if ($.inidb.get('pricecom', command) == null) {
-                price = 0;
-            } else {
-                price = $.inidb.get('pricecom', command);
-            }
-        }
-
-        if (message.indexOf('(count)') != -1) {
-            $.inidb.incr('commandCount', command, 1);
-        }
-
-        if (message.indexOf('(1)') != -1) {
-            for (var i = 0; i < args.length; i++) {
-                message = message.replace('(' + (i + 1) + ')', args[i]);
-            }
-        }
+            jsonCheckList;
 
         // Get the URL for a customapi, if applicable, and process $1 - $9.  See below about that.
-        //
         if ((regExCheck = message.match(reCustomAPI))) {
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
@@ -119,9 +137,7 @@
         // support parsing of arrays, especially walking arrays.  If that needs to be done, please write
         // a custom JavaScript.  We limit $1 - $9 as well; 10 or more arguments being passed by users to an
         // API seems like overkill.  Even 9 does, to be honest.
-        // 
         if ((regExCheck = message.match(reCustomAPIJson))) {
-            // Check for and process $1 - $9 in the URL.
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
                     if (regExCheck[1].indexOf('$' + i) != -1) {
@@ -190,47 +206,17 @@
             }
         }
 
-        if (tagList) {
-            for (i in tagList) {
-                var regex = new RegExp('/' + tagList[i].replace(/([\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|])/g, '\\$&') + '/', 'ig');
-                message = message.replace(regex, tagReplacements[i]);
+        if (message.match(reCommandTag)) {
+            commandToExec = message.match(reCommandTag)[1];
+            if (commandToExec.length > 0) {
+                var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
+                var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+                EventBus.instance().postCommand(new CommandEvent(event.getSender(), commandToExec, ' '));
+                return '';
             }
         }
 
-        if (message.match(reCommandTag)) {
-            commandToExec = message.match(reCommandTag)[1];
-            message = message.replace(reCommandTag, '');
-        }
-
-        // This needs to be improved, we can loose up to 500ms with all of the replace() methods when
-        // there is nothing to replace.  This is a quick fix to just not even attempt to perform the
-        // replace when we don't appear to see tags.
-        //
-        if (message.match(reCheckTags)) {
-            message = message.replace(reSenderTag, $.username.resolve(event.getSender()))
-                .replace(reTouserTag, $.username.resolve(touser))
-                .replace(reATSenderTag, '@' + $.username.resolve(event.getSender()))
-                .replace(reBaresenderTag, event.getSender())
-                .replace(reRandomTag, $.username.resolve($.randElement($.users)[0]))
-                .replace(rePointnameTag, $.pointNameMultiple)
-                .replace(reUptimeTag, $.getStreamUptime($.channelName))
-                .replace(reGameTag, $.getGame($.channelName))
-                .replace(reStatusTag, $.getStatus($.channelName))
-                .replace(reFollowsTag, $.getFollows($.channelName))
-                .replace(reCountTag, $.inidb.get('commandCount', command))
-                .replace(rePriceTag, price)
-                .replace(reCustomAPI, customAPIReturnString)
-                .replace(reCustomAPIJson, customAPIReturnString);
-        }
-
-        if (commandToExec.length > 0) {
-            var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
-                CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
-            EventBus.instance().postCommand(new CommandEvent(sender, commandToExec, message));
-            return '';
-        }
-
-        return message;
+        return message.replace(reCustomAPI, customAPIReturnString).replace(reCustomAPIJson, customAPIReturnString);
     };
 
     /**
@@ -727,11 +713,10 @@
             }    
         }
 
-        if ($.inidb.exists('command', command.toLowerCase())) {
-            subAction = $.inidb.get('command', command.toLowerCase());
-            var customCommandString = replaceCommandTags(subAction, event, command.toLowerCase());
-            if (customCommandString.length > 0) {
-                $.say(customCommandString);
+        if ($.inidb.exists('command', command)) {
+            var tag = tags(event, $.inidb.get('command', command));
+            if (tag != '') {
+                $.say(tag);
             }
         }
     });
