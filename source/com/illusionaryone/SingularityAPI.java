@@ -20,6 +20,7 @@ package com.illusionaryone;
 
 import com.gmt2001.UncaughtExceptionHandler;
 
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
@@ -67,13 +68,13 @@ public class SingularityAPI {
 
     private static final String apiURL = "https://singularity.gamewisp.com";
     private static final String devKey = "32e01468d8bbc250721fe3b0d38c090a8ac589e";
-    private static final String devSec = "470651f241fec8972d94cdca5cbfdd5b9ec45ce";
 
     private Socket webSocket;
 
     private boolean Authenticated = false;
     private boolean ChannelConnected = false;
     private String AccessToken = "";
+    private String SessionID = "";
 
     public static SingularityAPI instance() {
         return instance;
@@ -113,14 +114,15 @@ public class SingularityAPI {
                 @Override
                 public void call(Object... args) {
                     com.gmt2001.Console.debug.println("SingularityWS: Connected to Singularity");
-                    webSocket.emit("authentication", new JSONObject().put("key", devKey).put("secret", devSec));
+                    webSocket.emit("authentication", new JSONObject().put("key", devKey).put("access_token", AccessToken));
                 }
             });
 
             webSocket.on("unauthorized", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.err.println("SingularityWS: Authorization failed, please check Access Token");
+                    JSONObject jsonObject = new JSONObject(args[0].toString());
+                    com.gmt2001.Console.err.println("SingularityWS: Authorization Failed: " + jsonObject.getString("message"));
                 }
             });
 
@@ -128,16 +130,31 @@ public class SingularityAPI {
                 @Override
                 public void call(Object... args) {
                     com.gmt2001.Console.debug.println("SingularityWS: Authenticated");
+                    JSONObject jsonObject = new JSONObject(args[0].toString());
+                    if (!jsonObject.has("session")) {
+                        com.gmt2001.Console.err.println("SingularityWS: Missing Session in Authenticated Return JSON");
+                        Authenticated = false;
+                        return;
+                    }
+                    SessionID = jsonObject.getString("session");
                     Authenticated = true;
-                    webSocket.emit("channel-connect", new JSONObject().put("access_token", AccessToken));
                 }
             });
 
             webSocket.on("app-channel-connected", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS: Connected to Channel");
-                    ChannelConnected = true;
+                    if (Authenticated) {
+                        if (PhantomBot.enableDebugging) {
+                            com.gmt2001.Console.debug.println("SingularityWS: Connected to Channel");
+                        } else {
+                            com.gmt2001.Console.out.println("SingularityWS: Connected and Ready for Requests");
+                        }
+                        ChannelConnected = true;
+                    } else {
+                        com.gmt2001.Console.debug.println("SingularityWS: Connected to Channel; Missing Session ID; Unusable Session");
+                        ChannelConnected = false;
+                    }
                 }
             });
 
