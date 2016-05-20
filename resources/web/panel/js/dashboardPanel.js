@@ -242,6 +242,10 @@
                     $('#multiLinkReqMsgsInput').attr('placeholder', 'Message Count');
                 }
             }
+
+            if (panelCheckQuery(msgObject, 'dashboard_logRotate')) {
+                $('#logRotateInput').val(msgObject['results']['log_rotate_days']);
+            }
         }
     }
 
@@ -254,6 +258,7 @@
         sendDBQuery("dashboard_loggingModeEvent", "settings", "log.event");
         sendDBQuery("dashboard_loggingModeFile", "settings", "log.file");
         sendDBQuery("dashboard_loggingModeErr", "settings", "log.error");
+        sendDBQuery('dashboard_logRotate', 'settings', 'log_rotate_days');
         sendDBQuery("dashboard_dsChannels", "dualStreamCommand", "otherChannels");
         sendDBQuery("dashboard_dsInterval", "dualStreamCommand", "timerInterval");
         sendDBQuery("dashboard_dsReqMsgs", "dualStreamCommand", "reqMessages");
@@ -266,6 +271,18 @@
         } else {
             sendDBKeys("dashboard_chatCount", "panelchatstats");
             sendDBKeys("dashboard_modCount", "panelmodstats");
+        }
+    }
+
+    /**
+     * @function setLogRotate
+     */
+    function setLogRotate() {
+        var value = $('#logRotateInput').val();
+
+        if (value.length > 0) {
+            sendDBUpdate('dashboard_updateLogRotate', 'settings', 'log_rotate_days', value);
+            setTimeout(function() { sendDBQuery('dashboard_logRotate', 'settings', 'log_rotate_days'); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -563,4 +580,5 @@
     $.disconnect = disconnect;
     $.queueCMD = queueCMD;
     $.queueCMDNext = queueCMDNext;
+    $.setLogRotate = setLogRotate;
 })();

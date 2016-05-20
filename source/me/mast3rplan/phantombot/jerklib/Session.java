@@ -65,14 +65,10 @@ public class Session extends RequestGenerator {
     private final List<ModeAdjustment> userModes = new ArrayList<>();
     private final Map<String, Channel> channelMap = new HashMap<>();
     private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<WhisperMessage> whisperMessages = new ConcurrentLinkedQueue<>();
     private int retries = 0;
     public boolean isClosing = false;
     private final Timer sayTimer = new Timer();
-
-    public enum MessageQueueType {
-        NORMAL,
-        WHISPER
-    }
 
     public enum State {
 
@@ -90,12 +86,10 @@ public class Session extends RequestGenerator {
 
         public Channel channel;
         public String message;
-        public MessageQueueType type;
 
-        public Message(Channel channel, String message, MessageQueueType type) {
+        public Message(Channel channel, String message) {
             this.channel = channel;
             this.message = message;
-            this.type = type;
         }
     }
 
@@ -122,18 +116,54 @@ public class Session extends RequestGenerator {
             if (now - lastMessage >= PhantomBot.instance().getMessageInterval()) {
                 Message msg = s.messages.poll();
                 if (msg != null) {
-                    if (msg.channel.getAllowSendMessages()) {
-                        if (msg.type == MessageQueueType.NORMAL) {
-                            s.sayChannelReal(msg.channel, msg.message);
-                        } else {
-                            s.sayRaw(msg.message);
-                        }
-                    }
+                    s.sayChannelReal(msg.channel, msg.message);
                     lastMessage = now;
                 }
             }
         }
     }
+
+    class WhisperMessage {
+
+        public Channel channel;
+        public String message;
+
+        public WhisperMessage(Channel channel, String message) {
+            this.channel = channel;
+            this.message = message;
+        }
+    }
+
+    class WhisperMessageTask extends TimerTask {
+
+        private final Session s;
+        private long lastMessage = 0;
+
+        public WhisperMessageTask(Session s) {
+            super();
+
+            this.s = s;
+
+            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        }
+
+        @Override
+        public void run() {
+            if (PhantomBot.instance().isExiting()) {
+                return;
+            }
+
+            long now = System.currentTimeMillis();
+            if (now - lastMessage >= PhantomBot.instance().getWhisperInterval()) {
+                WhisperMessage msg = s.whisperMessages.poll();
+                if (msg != null) {
+                    s.sayRaw(msg.message);
+                    lastMessage = now;
+                }
+            }
+        }
+    }
+
 
     /**
      * @param rCon
@@ -148,6 +178,7 @@ public class Session extends RequestGenerator {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         sayTimer.schedule(new MessageTask(this), 300, 100);
+        sayTimer.schedule(new WhisperMessageTask(this), 300, 100);
     }
 
     /**
@@ -282,22 +313,20 @@ public class Session extends RequestGenerator {
         } else {
             if (msg.startsWith("/w ")) {
                 msg = msg.replace("/w ", "PRIVMSG #jtv :/w ");
-                //me.mast3rplan.phantombot.PhantomBot.tgcSession.sayRaw(msg);
-                //this.sayRaw(msg);
-                messages.add(new Message(channel, msg, MessageQueueType.WHISPER));
+                whisperMessages.add(new WhisperMessage(channel, msg));
                 return;
             }
             if (msg.length() + 14 + channel.getName().length() < 512) {
-                messages.add(new Message(channel, msg, MessageQueueType.NORMAL));
+                messages.add(new Message(channel, msg));
             } else {
                 int maxlen = 512 - 14 - channel.getName().length();
                 int pos = 0;
 
                 while (pos < msg.length()) {
                     if (pos + maxlen >= msg.length()) {
-                        messages.add(new Message(channel, msg.substring(pos), MessageQueueType.NORMAL));
+                        messages.add(new Message(channel, msg.substring(pos)));
                     } else {
-                        messages.add(new Message(channel, msg.substring(pos, pos + maxlen), MessageQueueType.NORMAL));
+                        messages.add(new Message(channel, msg.substring(pos, pos + maxlen)));
                     }
 
                     pos += maxlen;
