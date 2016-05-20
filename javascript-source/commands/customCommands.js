@@ -36,6 +36,12 @@
         }
     };
 
+    /**
+     * @function tags
+     * @param {string} event
+     * @param {string} message
+     * @return {string}
+     */
     function tags(event, message) {
         if (message.match(/\(1\)/g)) {
             for (var i = 0; i < event.getArgs().length; i++) {
@@ -68,12 +74,8 @@
             message = $.replace(message, '(count)', $.inidb.get('commandCount', event.getCommand()));
         }
 
-        if (message.match(/\(uptime\)/g)) {
-            message = $.replace(message, '(uptime)', $.getStreamUptime($.channelName));
-        }
-
         if (message.match(/\(random\)/g)) {
-            message = $.replace(message, '(random)', $.randElement($.users)[0]);
+            message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)[0]));
         }
 
         if (message.match(/\(pointname\)/g)) {
@@ -81,7 +83,23 @@
         }
 
         if (message.match(/\(price\)/g)) {
-            message = $.replace(message, '(price)', ($.inidb.exists('pricecom', event.getCommand()) ? $.inidb.get('pricecom', event.getCommand()) : 0));
+            message = $.replace(message, '(price)', String($.inidb.exists('pricecom', event.getCommand()) ? $.inidb.get('pricecom', event.getCommand()) : 0));
+        }
+
+        if (message.match(/\(#\)/g)) {
+            message = $.replace(message, '(#)', String($.randRange(1, 100)));
+        }
+
+        if (message.match(/\(uptime\)/g)) {
+            message = $.replace(message, '(uptime)', String($.getStreamUptime($.channelName)));
+        }
+
+        if (message.match(/\(viewers\)/g)) {
+            message = $.replace(message, '(viewers)', String($.getViewers($.channelName)));
+        }
+
+        if (message.match(/\(follows\)/g)) {
+            message = $.replace(message, '(follows)', String($.getFollows($.channelName)));
         }
 
         if (message.match(/\(touser\)/g)) {
@@ -568,7 +586,7 @@
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
             }
-            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (uptime), (game), (status), (follows), (count), (touser), (price), (pointname), (customapi) (customjsonapi) (command command_name). (command command_name) must be the first item if used. Do not include the !');
+            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (#), (uptime), (game), (status), (follows), (count), (touser), (price), (viewers), (pointname), (customapi) (customjsonapi) (command command_name). (command command_name) must be the first item if used. Do not include the !');
         }
 
         /**
@@ -599,9 +617,6 @@
          * @commandpath botcommands - Links you to the bot commands site
          */
         if (command.equalsIgnoreCase('botcommands')) {
-            if (!$.isOwner(sender)) {
-                return;
-            }
             $.say('https://phantombot.net/commands');
         }
 
@@ -680,7 +695,7 @@
             $.registerChatCommand('./commands/customCommands.js', 'commands', 7);
             $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
-            $.registerChatCommand('./commands/customCommands.js', 'botcommands');
+            $.registerChatCommand('./commands/customCommands.js', 'botcommands', 0);
         }
     });
 
