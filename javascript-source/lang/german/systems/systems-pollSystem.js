@@ -1,0 +1,17 @@
+$.lang.register('pollsystem.vote.nopoll', 'Es gibt zur Zeit keine Umfragen.');
+$.lang.register('pollsystem.vote.already', 'Du hast bereits abgestimmt!');
+$.lang.register('pollsystem.vote.invalid', '"$1" ist keine gültige Option!');
+$.lang.register('pollsystem.vote.success', 'You have voted "$1" on "$2".');
+$.lang.register('pollsystem.poll.started', '$1 started a poll for $2 seconds (minimum votes: $3): $4! Use "!vote [option]" to vote. Options: $5');
+$.lang.register('pollsystem.poll.running', 'There is a poll running for "$1". Use "!vote [option]" to vote. The options are "$2".');
+$.lang.register('pollsystem.poll.usage', 'Verwendung: !poll [open | results | close]');
+$.lang.register('pollsystem.results.lastpoll', '[Letzte Umfrage]  - [Frage: "$1"] - [Insgesamte Stimmen: $2] - [Ergebnis: "$3"] - [Optionen: "$4"] [Stimmen: $5]');
+$.lang.register('pollsystem.results.running', 'Es gibt zur Zeit eine Umfrage!');
+$.lang.register('pollsystem.results.404', 'Es gibt keine letzte Umfrage um die Ergebnisse davon zu erhalten!');
+$.lang.register('pollsystem.open.usage', 'Verwendung: !poll open "Frage" "option1, option2, ..." [Sekunden] [min Stimmen].  wenn Sekunden 0 sind, wird der Standard 60 verwendet.');
+$.lang.register('pollsystem.open.moreoptions', 'Es ist mehr als 1 Option für eine Umfrage nötig.');
+$.lang.register('pollsystem.runpoll.novotes', 'The poll on "$1" has ended! Not enough votes were cast!');
+$.lang.register('pollsystem.runpoll.winner', 'The poll on "$1" has ended! The winner is "$2"!');
+$.lang.register('pollsystem.runpoll.tie', 'The poll on "$1" has ended in a tie! Check !poll results.');
+$.lang.register('pollsystem.runpoll.started', 'Umfrage gestartet! Benutze "!poll close" um die Umfrage manuell zu beenden');
+$.lang.register('pollsystem.close.nopoll', 'Es gibt zur Zeit keine Umfragen.');

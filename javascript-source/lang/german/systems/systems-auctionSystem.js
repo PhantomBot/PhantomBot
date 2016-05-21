@@ -1,0 +1,14 @@
+$.lang.register('auctionsystem.usage', 'Usage: !auction open (increments) (minimum bid) (auto close timer)');
+$.lang.register('auctionsystem.err.opened', 'Es läuft bereits eine Auktion.');
+$.lang.register('auctionsystem.opened', 'Auction is now opened! You can bid in increments of $1. Minimum bid allowed is $2! Start biding with !bid (amount)');
+$.lang.register('auctionsystem.auto.timer.msg', 'Auktion wird automatisch in $1 Sekunden beendet!');
+$.lang.register('auctionsystem.err.closed', 'Es gibt zur Zeit kein Gebot.');
+$.lang.register('auctionsystem.err.no.bids', 'Auktion beendet! Keiner hat ein Gebot abgegeben.');
+$.lang.register('auctionsystem.closed', 'Auction closed! Winner of this auction is $1 with $2!');
+$.lang.register('auctionsystem.warn.force', 'The auction is about to close! Current top bider is $1 with $2! Do we have $3?');
+$.lang.register('auctionsystem.warn', 'Aktuell Höchstbietender ist $1 mit $2!');
+$.lang.register('auctionsystem.bid.usage', 'Verwendung: !bid (Wert)');
+$.lang.register('auctionsystem.err.bid.minimum', 'You can not bid under $1!');
+$.lang.register('auctionsystem.err.points', 'You don\'t have that many $1 to auction.');
+$.lang.register('auctionsystem.err.increments', 'This auction is in increments of $1!');
+$.lang.register('auctionsystem.bid', '$1 just bid $2! Do we have $3?');
