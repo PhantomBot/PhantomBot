@@ -314,6 +314,8 @@
             argsString = event.getArguments().trim(),
             args = event.getArgs(),
             action = args[0],
+            subAction = args[1],
+            actionArgs = args[2],
             pointsRelatedModules = [],
             temp,
             index;
@@ -323,6 +325,7 @@
          * @commandpath YourBotName disconnect - Removes the bot from chat
          * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel
          * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
+         * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist
          */
 
          if (command.equalsIgnoreCase($.botName.toLowerCase())) {
@@ -332,7 +335,7 @@
             }
 
             if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('init.usage', $.botName));
+                $.say($.whisperPrefix(sender) + $.lang.get('init.usage', $.botName.toLowerCase()));
                 return;
             }
 
@@ -352,19 +355,54 @@
 
             if (action.equalsIgnoreCase('connectmessage') || action.equalsIgnoreCase('setconnectmessage')) {
                 if (!args[1]) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg.usage', $.botName));
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg.usage', $.botName.toLowerCase()));
                     return;
                 }
 
                 var msg = argsString.replace(action, '').trim();
                 $.inidb.set('settings', 'connectedMsg', msg);
                 $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg', msg));
+                $.log.event(sender + ' set a connect message!');
                 return;
             }
 
             if (action.equalsIgnoreCase('removeconnectmessage')) {
                 $.inidb.del('settings', 'connectedMsg');
                 $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg.removed'));
+                $.log.event(sender + ' removed the connect message!');
+                return;
+            }
+
+            if (action.equalsIgnoreCase('blacklist')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.usage', $.botName.toLowerCase()));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('add')) {
+                    if (!actionArgs) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.add.usage', $.botName.toLowerCase()));
+                        return;
+                    }
+
+                    $.inidb.set('botBlackList', actionArgs, 'true');
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.added', actionArgs));
+                    $.log.event(sender + ' added ' + actionArgs + ' to the bot blacklist.');
+                }
+
+                if (subAction.equalsIgnoreCase('remove')) {
+                    if (!actionArgs) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.remove.usage', $.botName.toLowerCase()));
+                        return;
+                    } else if (!$.inidb.exists('botBlackList', actionArgs)) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.err'));
+                        return;
+                    }
+
+                    $.inidb.del('botBlackList', actionArgs);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.removed', actionArgs));
+                    $.log.event(sender + ' removed ' + actionArgs + ' to the bot blacklist.');
+                }
             }
         }
 
@@ -692,11 +730,10 @@
                 return;
             }
 
-            if ($.inidb.exists('disabledCommands', command)) {
-                if ($.getIniDbBoolean('disabledCommands', command)) {
-                    consoleDebug('[DISABLED COMMAND] Command: !' + command + ' was not sent because its disabled.');
-                    return;
-                }
+            if (($.inidb.exists('disabledCommands', command) && $.getIniDbBoolean('disabledCommands', command)) || 
+                ($.inidb.exists('botBlackList', sender) && $.inidb.get('botBlackList', sender).equalsIgnoreCase('true'))) {
+                consoleDebug('[DISABLED COMMAND] Command: !' + command + ' was not sent because its disabled or the user is blacklisted.');
+                return;
             }
             
             if (parseInt($.coolDown.get(command, sender)) > 0) {
