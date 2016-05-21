@@ -26,3 +26,5 @@ $.lang.register('betsystem.set.timer', 'bet auto close timer set to $1 seconds!'
 $.lang.register('betsystem.auto.close.warn', 'Bet is about to close !bet for $1!');
 $.lang.register('betsystem.auto.close', 'Bet is now closed! Now waiting on wining option.');
 $.lang.register('betsystem.close.refund', 'Bet is now closed! And all $1 have been refunded.');
+$.lang.register('betsystem.toggle.on', 'bet enter messages have been enabled.');
+$.lang.register('betsystem.toggle.off', 'bet enter messages have been disabled.');

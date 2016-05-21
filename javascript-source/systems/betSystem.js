@@ -1,6 +1,7 @@
 (function() {
     var betMinimum = $.getSetIniDbNumber('betSettings', 'betMinimum', 1),
         betMaximum = $.getSetIniDbNumber('betSettings', 'betMaximum', 1000),
+        betMessageToggle = $.getSetIniDbBoolean('betSettings', 'betMessageToggle', true),
         time = 0,
         betStatus = false,
         betTimerStatus = false,
@@ -278,6 +279,26 @@
                 return;
 
                 /**
+                 * @commandpath togglebetmessage - Toggles the bet enter message
+                 */
+            } else if (action.equalsIgnoreCase('togglebetmessage')) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.whisperPrefix(sender) + $.modMsg);
+                    return;
+                }
+
+                if (betMessageToggle) {
+                    betMessageToggle = false;
+                    $.inidb.set('betSettings', 'betMessageToggle', false);
+                    $.say($.whisperPrefix(sender) + $.lang.get('betsystem.toggle.off'));
+                } else if (!betMessageToggle) {
+                    betMessageToggle = true;
+                    $.inidb.set('betSettings', 'betMessageToggle', true);
+                    $.say($.whisperPrefix(sender) + $.lang.get('betsystem.toggle.on'));
+                }
+                return;
+
+                /**
                  * @commandpath bet [ [option amount] | [amount option] ]- Places a bet on option, betting an amount of points.
                  */
             } else {
@@ -344,7 +365,9 @@
                     option: betOption
                 };
 
-                $.say($.lang.get('betsystem.bet.updated', sender, $.getPointsString(betWager), betOption, $.getPointsString(betPot)));
+                if (betMessageToggle) {
+                    $.say($.lang.get('betsystem.bet.updated', sender, $.getPointsString(betWager), betOption, $.getPointsString(betPot)));
+                }
             }
         }
     });

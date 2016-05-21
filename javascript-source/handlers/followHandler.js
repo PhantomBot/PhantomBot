@@ -247,6 +247,11 @@
             $.log.event(sender + ' shouted out streamer ' + streamer);
         }
 
+        /**
+         * @commandpath followage [user] - Tells you how long someone has been following the channel for
+         * @commandpath followage [user] [channel] - Tells you how long someone has been following that channel for
+         * @commandpath followage - Tells you how long you have been following the channel
+         */
         if (command.equalsIgnoreCase('followage')) {
             if (args.length > 0) {
                 username = $.username.resolve(args[0]);
@@ -264,6 +269,26 @@
             $.say($.lang.get('followhandler.follow.age.err.404', username, channel));
             //No need to log this command event.
         }
+
+        /**
+         * @commandpath fixfollow [user] - Will force add a user to the followed list to the bot, and will add a heart next to the name on the panel
+         */
+        if (command.equalsIgnoreCase('fixfollow')) {
+            if (!comArg) {
+                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.usage'));
+                return;
+            } else if ($.inidb.exists('followed', comArg)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.error', comArg));
+                return;
+            } else if ($.twitch.GetUserFollowsChannel(comArg, $.channelName).getInt('_http') != 200) {
+                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.error.404', comArg));
+                return;
+            }
+
+            $.inidb.set('followed', comArg, 'true');
+            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.added', comArg));
+            $.log.event(sender + ' added ' + comArg + ' to the followed list.');
+        }
     });
 
     /**
@@ -272,6 +297,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./handlers/followHandler.js')) {
             $.registerChatCommand('./handlers/followHandler.js', 'followreward', 1);
+            $.registerChatCommand('./handlers/followHandler.js', 'fixfollow', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followtoggle', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followtraintoggle', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
