@@ -28,7 +28,6 @@
             message = deobfuscateLinks(message, (aggressive));
 
             lastFoundLink = patterns.link.exec(message)[0];
-            $.log.file('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + lastFoundLink);
             return true;
         } catch (e) {
             return false;
@@ -42,7 +41,15 @@
      */
     function getLastFoundLink() {
         return lastFoundLink;
-    }
+    };
+
+    /**
+     * @function logLastLink
+     * @export $.patternDetector
+     */
+    function logLastLink(event) {
+        $.log.file('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + lastFoundLink);
+    };
 
     /**
      * @function deobfuscateLinks
@@ -159,5 +166,6 @@
         getLastFoundLink: getLastFoundLink,
         getNumberOfEmotes: getNumberOfEmotes,
         getNumberOfCaps: getNumberOfCaps,
+        logLastLink: logLastLink,
     };
 })();
