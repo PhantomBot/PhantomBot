@@ -54,14 +54,14 @@
             followers = true;
             a = $.lang.get('rafflesystem.msg.need.to.be.follwing');
         }
-        openRaffle(key, cost, followers, timer, a);
+        openRaffle(key, cost, followers, timer, a, user);
     };
 
     /**
      * @function openRaffle
      * @returns {opens raffle}
      */
-    function openRaffle(key, cost, followers, timer, a) {
+    function openRaffle(key, cost, followers, timer, a, user) {
         $.say($.lang.get('rafflesystem.raffle.opened', $.getPointsString(cost), key, a));
         $.registerChatCommand('./systems/raffleSystem.js', key, 7);
         entries = [];
@@ -81,6 +81,8 @@
                 }
             }, timer * 1000);
         }
+
+        $.log.event(user + ' opened a raffle with the keyword !' + key);
     };
 
     /**
@@ -98,6 +100,7 @@
 
         $.say($.lang.get('rafflesystem.raffle.closed'));
         winner();
+        $.log.event(user + ' closed a raffle with the keyword !' + key);
     };
 
     /**
@@ -128,6 +131,8 @@
                 }
             }
         }
+
+        $.log.event('Winner for raffle with keyword !' + keyword + ' was ' + Winner);
     };
 
     /**
@@ -243,10 +248,12 @@
                     msgToggle = false;
                     $.inidb.set('settings', 'raffleMSGToggle', msgToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.msg.disabled'));
+                    $.log.event(sender + ' disabled the raffle enter message');
                 } else {
                     msgToggle = true;
                     $.inidb.set('settings', 'raffleMSGToggle', msgToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.msg.enabled'));
+                    $.log.event(sender + ' enabled the raffle enter message');
                 }
             }
 
@@ -258,10 +265,12 @@
                     noRepickSame = false;
                     $.inidb.set('settings', 'noRepickSame', noRepickSame);
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.no.repick.true'));
+                    $.log.event(sender + ' enabled no repick same for the raffle.');
                 } else {
                     noRepickSame = true;
                     $.inidb.set('settings', 'noRepickSame', noRepickSame);
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.no.repick.false'));
+                    $.log.event(sender + ' disabled no repick same for the raffle.');
                 }
             }
         }

@@ -119,6 +119,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.404'));
             }
 
+            $.log.event(sender + ' edited quote #' + quote);
         }
 
         /**
@@ -137,6 +138,7 @@
 
             quote = args.splice(0).join(' ');
             $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
+            $.log.event(sender + ' added a quote "' + quote + '".');
         }
 
         /**
@@ -155,6 +157,8 @@
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.404', args[0]));
             }
+
+            $.log.event(sender + ' removed quote with id: ' + args[0]);
         }
 
         /**
@@ -187,6 +191,7 @@
             quoteStr = args.splice(0).join(' ');
             $.inidb.set('settings', 'quoteMessage', quoteStr);
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.quotemessage.success'));
+            $.log.event(sender + ' changed the quote message to: ' + quoteStr);
         }
     });
 

@@ -56,6 +56,8 @@
                 }
             }, betTimer * 1000);
         }
+
+        $.log.event(sender + ' opened a bet with options: "' + string + '"');
     };
 
     function resetBet() {
@@ -177,6 +179,7 @@
 
         $.say($.lang.get('betsystem.closed', betWinning, $.getPointsString(betPot * betWinPercent)));
         resetBet();
+        $.log.event(sender + ' closed a bet.');
     };
 
     $.bind('command', function(event) {
@@ -238,6 +241,7 @@
                 betMinimum = parseInt(subAction);
                 $.inidb.set('betSettings', 'betMinimum', betMinimum);
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.min', betMinimum, $.pointNameMultiple));
+                $.log.event(sender + ' set the bet minimum to ' + betMinimum);
                 return;
 
                 /**
@@ -257,6 +261,7 @@
                 betMaximum = parseInt(subAction);
                 $.inidb.set('betSettings', 'betMaximum', betMaximum);
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.max', betMaximum, $.pointNameMultiple));
+                $.log.event(sender + ' set the bet maximum to ' + betMaximum);
                 return;
 
                 /**
@@ -276,6 +281,7 @@
                 betTimer = parseInt(subAction);
                 $.inidb.set('betSettings', 'betTimer', betTimer);
                 $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.timer', betTimer));
+                $.log.event(sender + ' set the bet timer to ' + betTimer + ' seconds.');
                 return;
 
                 /**
@@ -291,10 +297,12 @@
                     betMessageToggle = false;
                     $.inidb.set('betSettings', 'betMessageToggle', false);
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.toggle.off'));
+                    $.log.event(sender + ' disabled the bet messages');
                 } else if (!betMessageToggle) {
                     betMessageToggle = true;
                     $.inidb.set('betSettings', 'betMessageToggle', true);
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.toggle.on'));
+                    $.log.event(sender + ' enabled the bet messages');
                 }
                 return;
 
