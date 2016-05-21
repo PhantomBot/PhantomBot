@@ -19,11 +19,16 @@ package me.mast3rplan.phantombot;
 public class RepoVersion {
 
     private static final String repoVersion = "@repository.version@";
+    private static final String nightlyBuild = "@nightly.build@";
 
     private RepoVersion() {
     }
 
     public static String getRepoVersion() {
         return repoVersion;
+    }
+
+    public static String getNightlyBuild() {
+        return nightlyBuild;
     }
 }

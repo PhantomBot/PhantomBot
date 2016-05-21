@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="dist">
 
+    <!-- To specify a Nightly Build run as ant -Dnightly=nightly_build -->
+
     <property environment="env" />
     <property name="project.base.dir" value="." />
     <property name="name" value="PhantomBot" />
@@ -29,6 +31,13 @@
             <include name="*.jar" />
         </fileset>
     </path>
+
+    <condition property="nightly_build" value="${nightly}" else="not_nightly">
+        <and>
+            <isset property="nightly" />
+            <length string="${nightly}" trim="yes" length="0" when="greater" />
+        </and>
+    </condition>
     
     <available file=".git" type="dir" property="git.present"/>
 
@@ -65,10 +74,15 @@
     </target>
 
     <target depends="init,git.revision" name="pre.compile">
+        <echo>${nightly_build}</echo>
         <replace
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
             token="@repository.version@"
             value="${repository.version}" />
+        <replace
+            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            token="@nightly.build@"
+            value="${nightly_build}" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -109,6 +123,10 @@
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
             token="${repository.version}"
             value="@repository.version@" />
+        <replace 
+            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            token="${nightly_build}"
+            value="@nightly.build@" />
     </target>
 
     <target depends="compile.src,post.compile" name="jar">
