@@ -375,6 +375,7 @@
                 timeout(sender, warningTime.Links, timeoutTime.Links);
                 sendMessage(sender, linksMessage, silentTimeout.Links);
                 $.log.event(sender + ' was timed out for linking.');
+                $.patternDetector.logLastLink(event);
                 return;
             }
 
