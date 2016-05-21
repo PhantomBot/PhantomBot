@@ -30,15 +30,16 @@
             followers = true;
             a = $.lang.get('ticketrafflesystem.msg.need.to.be.follwing');
         }
-        openRaffle(maxEntries, followers, cost, a);
+        openRaffle(maxEntries, followers, cost, a, user);
     };
 
-    function openRaffle(maxEntries, followers, cost, a) {
+    function openRaffle(maxEntries, followers, cost, a, user) {
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
         raffleStatus = true;
         $.inidb.RemoveFile('ticketsList');
         $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
         entries = [];
+        $.log.event(user + ' opened a ticket raffle.');
     };
 
     function closeRaffle(user) {
@@ -55,6 +56,7 @@
 
         $.say($.lang.get('ticketrafflesystem.raffle.closed'));
         winner();
+        $.log.event(user + ' closed a ticket raffle.');
     };
 
     function winner(force) {
@@ -71,6 +73,7 @@
         var Winner = $.randElement(entries);
         $.inidb.set('traffleresults', 'winner', $.username.resolve(Winner));
         $.say($.lang.get('ticketrafflesystem.winner', $.username.resolve(Winner)));
+        $.log.event('Winner of the ticket raffle was ' + Winner);
     };
 
     function enterRaffle(user, times) {
