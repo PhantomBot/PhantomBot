@@ -59,10 +59,10 @@
         }
 
         /**
-         * @commandpath wordcounter count [word] - Tells you how many times that word as been said in chat.
+         * @commandpath count [word] - Tells you how many times that word as been said in chat.
          */
         if (command.equalsIgnoreCase('count')) {
-            if (!$.inidb.exists('wordCounter', action.toLowerCase())) {
+            if (!action || !$.inidb.exists('wordCounter', action.toLowerCase())) {
                 $.say($.whisperPrefix(sender) + $.lang.get('wordcounter.err.404'));
                 return;
             }
@@ -84,9 +84,8 @@
         if ($.bot.isModuleEnabled('./handlers/wordCounter.js')) {
             for (i in keys) {
                 key = keys[i].toLowerCase();
-                word = new RegExp('\\b' + key + '\\b', 'g');
+                word = new RegExp('\\b' + key + '\\b', 'ig');
                 if (word.exec(message)) {
-                    $.consoleDebug('inidb incr' + key + ' 1 in word counter');
                     $.inidb.incr('wordCounter', key, 1);
                     break;
                 }
