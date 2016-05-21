@@ -434,6 +434,25 @@
         }
     };
 
+    function getGroupList() {
+        var keys = $.inidb.GetKeyList('groups', ''),
+            groups = [],
+            temp = [],
+            i;
+
+        for (i in keys) {
+            groups.push({
+                id: keys[i],
+                group: $.inidb.get('groups', keys[i])
+            });
+        }
+
+        for (i in groups) {
+            temp.push('Group ID: ' + groups[i].id + ' (' + groups[i].group + ')');
+        }
+        return temp.join(', ');
+    };
+
     /**
      * @function generateDefaultGroupPoints
      */
@@ -747,7 +766,6 @@
          * @commandpath grouppoints [groupId] [online|offline] [points] - Show/set the points gained for each group. -1 defaults to the global configuration.
          */
         if (command.equalsIgnoreCase('grouppoints')) {
-
             var groupId,
                 channelStatus,
                 points;
@@ -810,6 +828,12 @@
             }
         }
 
+        /**
+         * @commandpath groups - Give's you all the groups with there id's
+         */
+        if (command.equalsIgnoreCase('groups') || command.equalsIgnoreCase('grouplist')) {
+            $.say(getGroupList());
+        }
     });
 
     // Load groups and generate default groups if they don't exist
@@ -834,6 +858,8 @@
      */
     $.bind('initReady', function() {
         $.registerChatCommand('./core/permissions.js', 'group', 7);
+        $.registerChatCommand('./core/permissions.js', 'groups', 1);
+        $.registerChatCommand('./core/permissions.js', 'grouplist', 1);
         $.registerChatCommand('./core/permissions.js', 'grouppoints', 1);
         $.registerChatCommand('./core/permissions.js', 'users', 7);
         $.registerChatCommand('./core/permissions.js', 'mods', 7);
