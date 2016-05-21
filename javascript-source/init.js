@@ -1068,6 +1068,16 @@
 
         // emit initReady event
         callHook('initReady', null, true);
+
+        if ($.isNightly.equals('true')) {
+            consoleLn('PhantomBot Nightly Build - No Support is Provided');
+            consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
+            consoleLn('https://community.phantombot.net/category/23/bug-reports');
+        } else {
+            consoleLn('Please report bugs to:');
+            consoleLn('https://community.phantombot.net/category/7/bug-reports');
+        }
+        consoleLn('');
     }
 
     /** Export functions to API */

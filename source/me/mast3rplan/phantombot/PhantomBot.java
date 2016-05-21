@@ -199,7 +199,11 @@ public class PhantomBot implements Listener {
 
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println(botVersion());
-        com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
+        if (isNightlyBuild()) {
+            com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion() + "-NIGHTLY");
+        } else {
+            com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
+        }
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, scaniaTV, Zelakto, IllusionaryOne, & SimeonF");
         com.gmt2001.Console.out.println("https://phantombot.net/");
@@ -387,6 +391,22 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
         }
  */       
+    }
+
+    public boolean isNightlyBuild() {
+        if (RepoVersion.getNightlyBuild().equals("nightly_build")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String isNightlyBuildString() {
+        if (RepoVersion.getNightlyBuild().equals("nightly_build")) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
     public static void setDebugging(boolean debug) {
@@ -637,6 +657,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
+        Script.global.defineProperty("isNightly", isNightlyBuildString(), 0);
 
         Thread t = new Thread(new Runnable() {
             @Override
