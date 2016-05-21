@@ -249,7 +249,7 @@
 
         /**
          * @commandpath followage [user] - Tells you how long someone has been following the channel for
-         * @commandpath shoutout [user] [channel] - Tells you how long someone has been following that channel for
+         * @commandpath followage [user] [channel] - Tells you how long someone has been following that channel for
          * @commandpath followage - Tells you how long you have been following the channel
          */
         if (command.equalsIgnoreCase('followage')) {
