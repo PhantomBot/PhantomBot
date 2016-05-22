@@ -94,16 +94,6 @@
         warning = '',
         i;
 
-        if (warningResetTime < 30) {
-            $.inidb.set('chatModerator', 'warningResetTime', 30);
-            warningResetTime = 30;
-        }
-
-        if (msgCooldownSec < 10) {
-            $.inidb.set('chatModerator', 'msgCooldownSec', 10);
-            msgCooldownSec = 10;
-        }
-
     /**
      * @function reloadModeration
      * To be called by the panel to update the chatmod settings after updating the DB directly.
@@ -195,16 +185,6 @@
         warningResetTime = $.getIniDbNumber('chatModerator', 'warningResetTime');
         msgCooldownSec = $.getIniDbNumber('chatModerator', 'msgCooldownSec');
         resetTime = (warningResetTime * 60 * 1000) + $.systemTime();
-
-        if (warningResetTime < 30) {
-            $.inidb.set('chatModerator', 'msgCooldownSec', 30);
-            warningResetTime = 30;
-        }
-
-        if (msgCooldownSec < 10) {
-            $.inidb.set('chatModerator', 'msgCooldownSec', 10);
-            msgCooldownSec = 10;
-        }
 
         loadBlackList();
         loadWhiteList();
