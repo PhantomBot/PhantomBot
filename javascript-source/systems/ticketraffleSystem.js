@@ -111,12 +111,14 @@
             }
         }
 
-        $.inidb.decr('points', user, (times * cost));
-        $.inidb.incr('ticketsList', user, times);
-        $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
         if (msgToggle) {
             $.say($.lang.get('ticketrafflesystem.entered', $.username.resolve(user), times));
         }
+
+        $.inidb.decr('points', user, (times * cost));
+        $.inidb.incr('ticketsList', $.username.resolve(user), times);
+        $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
+
         for (var i = 0; i < times; i++) {
             entries.push(user);
         }
