@@ -10,7 +10,7 @@
     $.getSetIniDbNumber('settings', 'log_rotate_days', 90);
 
     var logs = {
-        file: $.getSetIniDbBoolean('settings', 'log.file', true),
+        file: $.getSetIniDbBoolean('settings', 'log.file', false),
         event: $.getSetIniDbBoolean('settings', 'log.event', true),
         error: $.getSetIniDbBoolean('settings', 'log.error', true),
     };
