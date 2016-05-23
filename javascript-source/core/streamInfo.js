@@ -145,7 +145,7 @@
         if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
             var uptime = $.twitchcache.getStreamUptimeSeconds();
 
-            if (now === 0) {
+            if (uptime === 0) {
                 return 'Stream is offline';
             }
             return $.getTimeString(uptime);
