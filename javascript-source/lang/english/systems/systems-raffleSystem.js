@@ -9,7 +9,7 @@ $.lang.register('rafflesystem.raffle.repick', 'New winner is: $1!');
 $.lang.register('rafflesystem.winner', 'The Winner of this raffle is: $1!');
 $.lang.register('rafflesystem.err.not.following', 'you need to be following to enter.');
 $.lang.register('rafflesystem.err.points', 'you don\'t have enough $1 to enter.');
-$.lang.register('rafflesystem.entered', '$1 entered the raffle!');
+$.lang.register('rafflesystem.entered', '$1 entries added to the raffle!');
 $.lang.register('rafflesystem.usage', 'Usage: !raffle open (keyword) (cost) (timer in seconds. use 0 if you don\'t want a timer) (-followers)');
 $.lang.register('rafflesystem.msg.enabled', 'Raffle message\'s have been enabled.');
 $.lang.register('rafflesystem.msg.disabled', 'Raffle message\'s have been disabled.');

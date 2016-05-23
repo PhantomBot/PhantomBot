@@ -7,6 +7,8 @@
         msgToggle = $.getSetIniDbBoolean('settings', 'raffleMSGToggle', true),
         noRepickSame = $.getSetIniDbBoolean('settings', 'noRepickSame', true),
         timer = 0,
+        totalEntries = 0,
+        lastTotalEntries = 0,
         a = '';
 
     function reloadRaffle() {
@@ -82,6 +84,15 @@
             }, timer * 1000);
         }
 
+        if (msgToggle) {
+            setInterval(function () {
+                if (totalEntries > lastTotalEntries) {
+                    $.say($.lang.get('rafflesystem.entered', totalEntries));
+                    lastTotalEntries = totalEntries;
+                }
+            }, 6e4, 'raffleTimer');
+        }
+
         $.log.event(user + ' opened a raffle with the keyword !' + key);
     };
 
@@ -94,6 +105,8 @@
             $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.not.opened'));
             return;
         }
+
+        clearInterval('raffleTimer');
 
         resetRaffle();
         $.unregisterChatCommand(key);
@@ -166,9 +179,7 @@
             }
         }
 
-        if (msgToggle) {
-            $.say($.lang.get('rafflesystem.entered', user)); //Removed $.username.resolve() to not abuse the api in a big channel.
-        }
+        totalEntries++;
 
         entries.push(user);
         raffleListPush(user);
@@ -177,7 +188,7 @@
     function raffleListPush(user) {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
             if (!$.inidb.exists('raffleList', user)) {
-                $.inidb.set('raffleList', user, 'entered');
+                $.inidb.set('raffleList', $.username.resolve(user), 'entered');
                 $.inidb.incr('raffleresults', 'raffleEntries', 1);
             }
         }
@@ -193,6 +204,8 @@
         cost = 0;
         timer = 0;
         a = '';
+        totalEntries = 0;
+        lastTotalEntries = 0;
     };
 
     /**
