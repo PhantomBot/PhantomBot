@@ -5,6 +5,9 @@
         followers = false,
         raffleStatus = false,
         msgToggle = ($.inidb.exists('settings', 'tRaffleMSGToggle') ? $.getIniDbBoolean('settings', 'tRaffleMSGToggle') : true),
+        totalEntries = 0,
+        lastTotalEntries = 0,
+        totalTickets = 0,
         a = '';
 
     function checkArgs(user, max, price, followersOnly) {
@@ -39,6 +42,16 @@
         $.inidb.RemoveFile('ticketsList');
         $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
         entries = [];
+
+        if (msgToggle) {
+            setInterval(function () {
+                if (totalEntries > lastTotalEntries) {
+                    $.say($.lang.get('ticketrafflesystem.entered', totalEntries, totalTickets));
+                    lastTotalEntries = totalEntries;
+                }
+            }, 6e4, 'traffleTimer');
+        }
+
         $.log.event(user + ' opened a ticket raffle.');
     };
 
@@ -48,11 +61,16 @@
             return;
         }
 
+        clearInterval('traffleTimer');
+
         raffleStatus = false;
         followers = false;
         maxEntries = 0;
         cost = 0;
         a = '';
+        totalEntries = 0;
+        lastTotalEntries = 0;
+        totalTickets = 0;
 
         $.say($.lang.get('ticketrafflesystem.raffle.closed'));
         winner();
@@ -111,10 +129,8 @@
             }
         }
 
-        if (msgToggle) {
-            $.say($.lang.get('ticketrafflesystem.entered', $.username.resolve(user), times));
-        }
-
+        totalEntries++;
+        totalTickets+= times;
         $.inidb.decr('points', user, (times * cost));
         $.inidb.incr('ticketsList', $.username.resolve(user), times);
         $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
