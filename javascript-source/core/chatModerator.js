@@ -563,6 +563,15 @@
     };
 
     /**
+     * @event ircClearchat
+     */
+    $.bind('ircClearchat', function(event) {
+        var username = event.getUser(),
+            duration = event.getDuration(), // Note that duration is a String
+            reason = event.getReason();
+    });
+
+    /**
      * @event command
      */
     $.bind('command', function(event) {

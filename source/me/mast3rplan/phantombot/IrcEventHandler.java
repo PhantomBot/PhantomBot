@@ -28,11 +28,13 @@ import me.mast3rplan.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcModerationEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
+import me.mast3rplan.phantombot.event.irc.clearchat.IrcClearchatEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.ModeAdjustment;
 import me.mast3rplan.phantombot.jerklib.Session;
 import me.mast3rplan.phantombot.jerklib.events.*;
 import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
+import me.mast3rplan.phantombot.cache.UsernameCache;
 
 public class IrcEventHandler implements IRCEventListener {
 
@@ -86,6 +88,10 @@ public class IrcEventHandler implements IRCEventListener {
                 for (Map.Entry<String, String> tag : cmessageTags.entrySet()) {
                     com.gmt2001.Console.debug.println("    " + tag.getKey() + " = " + tag.getValue());
                 }
+            }
+
+            if (cmessageTags.containsKey("display-name")) {
+                PhantomBot.instance().getUsernameCache().addUser(cusername, cmessageTags.get("display-name"));
             }
 
             if (cmessageTags.containsKey("subscriber")) {
@@ -219,6 +225,23 @@ public class IrcEventHandler implements IRCEventListener {
             eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage(), ((NoticeEvent) event).tags()));
             break;
         case DEFAULT:
+            if (event.command().equalsIgnoreCase("CLEARCHAT")) {
+                Map<String, String> ceventTags = event.tags();
+                String username = event.arg(1);
+                String ban_duration = "";
+                String ban_reason = "";
+
+                if (ceventTags.containsKey("ban-duration")) {
+                    ban_duration = ceventTags.get("ban-duration");
+                }
+                if (ceventTags.containsKey("ban-reason")) {
+                    ban_reason = ceventTags.get("ban-reason");
+                }
+
+                eventBus.postAsync(new IrcClearchatEvent(session, session.getChannel(event.arg(0)), username, ban_reason.replaceAll("\\\\s", " "), ban_duration));
+            }
+               
+
             if (event.command().equalsIgnoreCase("USERSTATE")) {
                 Map<String, String> ceventTags = event.tags();
 
