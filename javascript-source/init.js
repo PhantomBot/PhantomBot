@@ -881,6 +881,13 @@
         });
 
         /**
+         * @event api-ircClearchat
+         */
+        $api.on($script, 'ircClearchat', function(event) {
+            callHook('ircClearchat', event, false);
+        });
+
+        /**
          * @event api-musicPlayerConnect
          */
         $api.on($script, 'musicPlayerConnect', function(event) {
@@ -1111,8 +1118,8 @@
             consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
             consoleLn('https://community.phantombot.net/category/23/bug-reports');
         } else {
-            consoleLn('Please report bugs to:');
-            consoleLn('https://community.phantombot.net/category/7/bug-reports');
+            consoleLn('For support please visit:');
+            consoleLn('https://community.phantombot.net');
         }
         consoleLn('');
     }

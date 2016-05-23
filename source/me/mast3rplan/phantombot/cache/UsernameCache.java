@@ -54,11 +54,6 @@ public class UsernameCache {
         } else {
             if (tags.containsKey("display-name") && tags.get("display-name").equalsIgnoreCase(lusername)) {
                 cache.put(lusername, tags.get("display-name"));
-
-                if (PhantomBot.enableDebugging) {
-                    com.gmt2001.Console.out.println("UsernameCache.resolve: Detected using v3: " + tags.get("display-name"));
-                }
-
                 return tags.get("display-name");
             }
 
@@ -88,7 +83,6 @@ public class UsernameCache {
                                                 + (user.has("message") && !user.isNull("message") ? "message=" + user.getString("message") : "content=" + user.getString("_content")));
                         } catch (Exception e) {
                               com.gmt2001.Console.debug.println("UsernameCache.updateCache: Failed to get username: " + e.getMessage());
-
                               return username;
                         }
                     }
@@ -117,6 +111,12 @@ public class UsernameCache {
                 com.gmt2001.Console.err.printStackTrace(e);
                 return username;
             }
+        }
+    }
+
+    public void addUser(String userName, String displayName) {
+        if (!cache.containsKey(userName)) {
+            cache.put(userName, displayName);
         }
     }
 }

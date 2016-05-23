@@ -172,6 +172,7 @@ public class PhantomBot implements Listener {
     private boolean exiting = false;
     private static PhantomBot instance;
     public static String log_timezone = "GMT";
+    private UsernameCache usernameCache;
 
     // private TwitchWSIRC twitchWSIRC;
 
@@ -378,6 +379,8 @@ public class PhantomBot implements Listener {
 
         this.session.addIRCEventListener(new IrcEventHandler());
 
+        usernameCache = UsernameCache.instance();
+
         /* Connect caster to Twitch IRC for host monitoring - disabled for now. */
         // com.gmt2001.Console.out.println("Sending to Extra connection");
         // this.hostSession = hostConnectionManager.requestConnection(this.hostname, this.port, casterOauth);
@@ -415,6 +418,10 @@ public class PhantomBot implements Listener {
 
     public String getBotName() {
         return this.username;
+    }
+ 
+    public UsernameCache getUsernameCache() {
+        return usernameCache;
     }
 
     public DataStore getDataStore() {
