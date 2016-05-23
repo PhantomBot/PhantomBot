@@ -60,12 +60,12 @@
                     }
 
                     $.say($.whisperPrefix(sender) + $.lang.get('roll.rewards.success'));
-                    $.inidb.set('slotmachine', 'prizes_0', args[1]);
-                    $.inidb.set('slotmachine', 'prizes_1', args[2]);
-                    $.inidb.set('slotmachine', 'prizes_2', args[3]);
-                    $.inidb.set('slotmachine', 'prizes_3', args[4]);
-                    $.inidb.set('slotmachine', 'prizes_4', args[5]);
-                    $.inidb.set('slotmachine', 'prizes_5', args[6]);
+                    $.inidb.set('rollprizes', 'prizes_0', args[1]);
+                    $.inidb.set('rollprizes', 'prizes_1', args[2]);
+                    $.inidb.set('rollprizes', 'prizes_2', args[3]);
+                    $.inidb.set('rollprizes', 'prizes_3', args[4]);
+                    $.inidb.set('rollprizes', 'prizes_4', args[5]);
+                    $.inidb.set('rollprizes', 'prizes_5', args[6]);
                     return;
                 }
             }
@@ -76,24 +76,24 @@
 
             if (dice1 == dice2) {
                 loadPrizes();
-                switch (total) {
+                switch (dice1) {
+                    case 1:
+                        resultMessage += $.lang.get('roll.doubleone', $.getPointsString(prizes[dice1 - 1]));
+                        break;
                     case 2:
-                        resultMessage += $.lang.get('roll.doubleone', $.getPointsString(price));
+                        resultMessage += $.lang.get('roll.doubletwo', $.getPointsString(prizes[dice1 - 1]));
+                        break;
+                    case 3:
+                        resultMessage += $.lang.get('roll.doublethree', $.getPointsString(prizes[dice1 - 1]));
                         break;
                     case 4:
-                        resultMessage += $.lang.get('roll.doubletwo', $.getPointsString(price));
+                        resultMessage += $.lang.get('roll.doublefour', $.getPointsString(prizes[dice1 - 1]));
+                        break;
+                    case 5:
+                        resultMessage += $.lang.get('roll.doublefive', $.getPointsString(prizes[dice1 - 1]));
                         break;
                     case 6:
-                        resultMessage += $.lang.get('roll.doublethree', $.getPointsString(price));
-                        break;
-                    case 8:
-                        resultMessage += $.lang.get('roll.doublefour', $.getPointsString(price));
-                        break;
-                    case 10:
-                        resultMessage += $.lang.get('roll.doublefive', $.getPointsString(price));
-                        break;
-                    case 12:
-                        resultMessage += $.lang.get('roll.doublesix', $.getPointsString(price));
+                        resultMessage += $.lang.get('roll.doublesix', $.getPointsString(prizes[dice1 - 1]));
                         break;
                 }
 
