@@ -11,7 +11,7 @@ $.lang.register('ticketrafflesystem.only, buy.amount', 'you can only buy $1 tick
 $.lang.register('ticketrafflesystem.litmi.hit', 'you\'re only allowed to buy $1 ticket(s)');
 $.lang.register('ticketrafflesystem.err.not.following', 'you need to be following to enter.');
 $.lang.register('ticketrafflesystem.err.points', 'you don\'t have enough $1 to enter.');
-$.lang.register('ticketrafflesystem.entered', '$1 people entered the ticket raffle with a total of $2 tickets!');
+$.lang.register('ticketrafflesystem.entered', '$1 entries added to the ticket raffle! ($2 tickets in total)');
 $.lang.register('ticketrafflesystem.usage', 'Usage: !traffle open (max tickets) (ticket cost) (-followers)');
 $.lang.register('ticketrafflesystem.msg.enabled', 'Ticket raffle message\'s have been enabled.');
 $.lang.register('ticketrafflesystem.msg.disabled', 'Ticket raffle message\'s have been disabled.');
