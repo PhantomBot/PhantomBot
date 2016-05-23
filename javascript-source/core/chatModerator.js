@@ -428,7 +428,7 @@
                 }
             }
         }
-    }
+    };
 
     /**
      * @function blacklistAndWhitelistCommands()
@@ -560,33 +560,6 @@
                 $.say($.whisperPrefix(sender) + $.inidb.get('whiteList', 'link_' + parseInt(subAction)));
             }
         }
-    };
-
-    /**
-     * @event ircClearchat
-     */
-    $.bind('ircClearchat', function(event) {
-        setTimeout(function () {        
-            $.log.event(event.getUser() + ' has been timed out for ' + String(event.getDuration()) + ' seconds. Reason: ' + event.getReason());
-        }, 2000, event.getUser());
-    });
-
-    /**
-     * @event command
-     */
-    $.bind('command', function(event) {
-        var sender = event.getSender(),
-            command = event.getCommand(),
-            argString = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
-
-
-        /**
-         * Handle !blacklist and !whitelist command
-         */
-        blacklistAndWhitelistCommands(event);
 
         /**
          * @commandpath permit [user] - Permit someone to post a link for a configured period of time
@@ -611,6 +584,39 @@
             $.log.event(action + ' was permited by ' + sender);
             return;
         }
+
+        /**
+         * Used by the panel, no commandpath given. 
+         */
+        if (command.equalsIgnoreCase('reloadmod')) {
+            reloadModeration();
+        }
+    };
+
+    /**
+     * @event ircClearchat
+     */
+    $.bind('ircClearchat', function(event) {
+        setTimeout(function () {        
+            $.log.event(event.getUser() + ' has been timed out for ' + String(event.getDuration()) + ' seconds. Reason: ' + event.getReason());
+        }, 2000, event.getUser());
+    });
+
+    /**
+     * @event command
+     */
+    $.bind('command', function(event) {
+        var sender = event.getSender(),
+            command = event.getCommand(),
+            argString = event.getArguments(),
+            args = event.getArgs(),
+            action = args[0],
+            subAction = args[1];
+            
+        /**
+         * Handle !blacklist and !whitelist command
+         */
+        blacklistAndWhitelistCommands(event);
 
         /**
          * @commandpath moderation - Shows usage for the various chat moderation options
@@ -1060,6 +1066,31 @@
                         $.log.event(sender + ' changed silent timeout moderation for long messages to ' + args[2]);
                         return;
                     }
+                } else if (subAction.equalsIgnoreCase('all')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.usage.all'));
+                        return;
+                    }
+
+                    if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
+                        silentTimeout.Links = args[2].equalsIgnoreCase('true');
+                        silentTimeout.Caps = args[2].equalsIgnoreCase('true');
+                        silentTimeout.Symbols = args[2].equalsIgnoreCase('true');
+                        silentTimeout.Spam = args[2].equalsIgnoreCase('true');
+                        silentTimeout.Colors = args[2].equalsIgnoreCase('true');
+                        silentTimeout.LongMsg = args[2].equalsIgnoreCase('true');
+                        silentTimeout.Blacklist = args[2].equalsIgnoreCase('true');
+                        silentTimeout.Emotes = args[2].equalsIgnoreCase('true');
+                        $.inidb.set('chatModerator', 'silentTimeoutLinks', silentTimeout.Links);
+                        $.inidb.set('chatModerator', 'silentTimeoutCaps', silentTimeout.Caps);
+                        $.inidb.set('chatModerator', 'silentTimeoutSymbols', silentTimeout.Symbols);
+                        $.inidb.set('chatModerator', 'silentTimeoutSpam', silentTimeout.Spam);
+                        $.inidb.set('chatModerator', 'silentTimeoutEmotes', silentTimeout.Emotes);
+                        $.inidb.set('chatModerator', 'silentTimeoutBlacklist', silentTimeout.Blacklist);
+                        $.inidb.set('chatModerator', 'silentTimeoutLongMsg', silentTimeout.LongMsg);
+                        $.inidb.set('chatModerator', 'silentTimeoutColors', silentTimeout.Colors);
+                        $.say($.whisperPrefix(sender) + (args[0] ? $.lang.get('chatmoderator.silenttimeout.true') : $.lang.get('chatmoderator.silenttimeout.false')))
+                    }
                 }
             }
 
@@ -1449,7 +1480,6 @@
                 emotesLimit = parseInt(subAction);
                 $.inidb.set('chatModerator', 'emotesLimit', emotesLimit);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.emotes.limit.set', emotesLimit));
-                $.log.event(sender + ' changed the emote limit to ' + emotesLimit);
                 return;
             }
 
@@ -1464,7 +1494,6 @@
                 longMessageLimit = parseInt(subAction);
                 $.inidb.set('chatModerator', 'longMessageLimit', longMessageLimit);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.message.limit.set', longMessageLimit));
-                $.log.event(sender + ' changed the max characters per message limit to ' + longMessageLimit);
                 return;
             }
 
@@ -1479,7 +1508,6 @@
                 msgCooldownSec = parseInt(subAction);
                 $.inidb.set('chatModerator', 'msgCooldownSec', msgCooldownSec);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.msgcooldown.set', msgCooldownSec));
-                $.log.event(sender + ' changed the timeout message cooldown to ' + msgCooldownSec + ' seconds');
             }
 
             /**
@@ -1493,7 +1521,6 @@
                 warningResetTime = parseInt(subAction);
                 $.inidb.set('chatModerator', 'warningResetTime', warningResetTime);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningresettime.set', warningResetTime));
-                $.log.event(sender + ' changed the warning reset time to ' + warningResetTime + ' seconds');
             }
 
             /**
@@ -1507,15 +1534,7 @@
                 blacklistTimeoutTime = parseInt(subAction);
                 $.inidb.set('chatModerator', 'blacklistTimeoutTime', blacklistTimeoutTime);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklisttimeouttime.set', blacklistTimeoutTime));
-                $.log.event(sender + ' changed the blacklist timeout time to ' + blacklistTimeoutTime + ' seconds');
             }
-        }
-
-        /**
-         * Used by the panel, no commandpath given. 
-         */
-        if (command.equalsIgnoreCase('reloadmod')) {
-            reloadModeration();
         }
     });
 
