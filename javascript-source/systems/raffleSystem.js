@@ -167,7 +167,7 @@
         }
 
         if (msgToggle) {
-            $.say($.lang.get('rafflesystem.entered', user)); //Removed $.username.resolve() to not abuse the api in a big channel.
+            $.say($.lang.get('rafflesystem.entered', $.username.resolve(user))); 
         }
 
         entries.push(user);
@@ -177,7 +177,7 @@
     function raffleListPush(user) {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
             if (!$.inidb.exists('raffleList', user)) {
-                $.inidb.set('raffleList', user, 'entered');
+                $.inidb.set('raffleList', $.username.resolve(user), 'entered');
                 $.inidb.incr('raffleresults', 'raffleEntries', 1);
             }
         }
