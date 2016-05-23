@@ -188,7 +188,7 @@
 
         loadBlackList();
         loadWhiteList();
-    }
+    };
 
     /**
      * @function loadBlackList
@@ -213,36 +213,43 @@
     /**
      * @function timeoutUserFor
      */
-    function timeoutUserFor(user, time) {
-        $.say('.timeout ' + user + ' ' + time);
-        setTimeout(function() {
+    function timeoutUserFor(user, time, silent, reason) {
+        if (!silent) {
             $.say('.timeout ' + user + ' ' + time);
-        }, 1000);
+            setTimeout(function() {
+                $.say('.timeout ' + user + ' ' + time);
+            }, 1050);
+        } else {
+            $.say('.timeout ' + user + ' ' + time + ' ' + reason);
+            setTimeout(function() {
+                $.say('.timeout ' + user + ' ' + time + ' ' + reason);
+            }, 1050);
+        }
     };
 
     /**
      * @function timeout
      */
-    function timeout(user, warningT, timeoutT) {
+    function timeout(user, warningT, timeoutT, silent, reason) {
         if (timeouts[user] !== undefined) {
             var time = timeouts[user] - $.systemTime();
             if (time > 0) {
-                timeoutUserFor(user, timeoutT);
+                timeoutUserFor(user, timeoutT, silent, reason);
                 timeouts[user] = resetTime;
-                panelLog(user);
                 warning = $.lang.get('chatmoderator.timeout');
-            } else {
-                timeoutUserFor(user, warningT);
-                timeouts[user] = resetTime;
                 panelLog(user);
+            } else {
+                timeoutUserFor(user, warningT, silent, reason);
+                timeouts[user] = resetTime;
                 warning = $.lang.get('chatmoderator.warning');
+                panelLog(user);
             }
             return;
         }
-        timeoutUserFor(user, warningT);
+        timeoutUserFor(user, warningT, silent, reason);
         timeouts[user] = resetTime;
-        panelLog(user);
         warning = $.lang.get('chatmoderator.warning');
+        panelLog(user);
     };
 
     /**
@@ -259,10 +266,10 @@
      */
     function sendMessage(user, message, filter) {
         var messageReset = messageTime - $.systemTime();
-        if (messageReset <= 0 && !filter) {
+        if (!filter && messageReset <= 0) {
             $.say('@' + $.username.resolve(user) + ', ' + message + ' ' + warning);
             messageTime = (msgCooldownSec * 1000) + $.systemTime();
-        }
+        } 
     };
 
     /**
@@ -302,7 +309,7 @@
     function checkBlackList(sender, message) {
         for (i in blackList) {
             if (message.contains(blackList[i])) {
-                timeoutUser(sender, blacklistTimeoutTime);
+                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.Blacklist, blacklistMessage);
                 warning = $.lang.get('chatmoderator.timeout');
                 sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
                 return true;
@@ -352,9 +359,8 @@
                     return;
                 }
 
-                timeout(sender, warningTime.Links, timeoutTime.Links);
+                timeout(sender, warningTime.Links, timeoutTime.Links, silentTimeout.Links, linksMessage);
                 sendMessage(sender, linksMessage, silentTimeout.Links);
-                $.log.event(sender + ' was timed out for linking.');
                 $.patternDetector.logLastLink(event);
                 return;
             }
@@ -364,9 +370,8 @@
                     if (!regulars.Symbols && $.isReg(sender) || !subscribers.Symbols && $.isSubv3(sender, event.getTags())) {
                         return;
                     }
-                    timeout(sender, warningTime.Symbols, timeoutTime.Symbols);
+                    timeout(sender, warningTime.Symbols, timeoutTime.Symbols, silentTimeout.Symbols, symbolsMessage);
                     sendMessage(sender, symbolsMessage, silentTimeout.Symbols);
-                    $.log.event(sender + ' was timed out for overusing symbols.');
                     return;
                 }
             }
@@ -375,9 +380,8 @@
                 if (!regulars.Spam && $.isReg(sender) || !subscribers.Spam && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
-                timeout(sender, warningTime.Spam, timeoutTime.Spam);
+                timeout(sender, warningTime.Spam, timeoutTime.Spam, silentTimeout.Spam, spamMessage);
                 sendMessage(sender, spamMessage, silentTimeout.Spam);
-                $.log.event(sender + ' was timed out for spamming.');
                 return;
             }
 
@@ -385,9 +389,8 @@
                 if (!regulars.Colors && $.isReg(sender) || !subscribers.Colors && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
-                timeout(sender, warningTime.Colors, timeoutTime.Colors);
+                timeout(sender, warningTime.Colors, timeoutTime.Colors, silentTimeout.Colors, colorsMessage);
                 sendMessage(sender, colorsMessage, silentTimeout.Colors);
-                $.log.event(sender + ' was timed out for using /me');
                 return;
             }
 
@@ -395,9 +398,8 @@
                 if (!regulars.LongMsg && $.isReg(sender) || !subscribers.LongMsg && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
-                timeout(sender, warningTime.LongMsg, timeoutTime.LongMsg);
+                timeout(sender, warningTime.LongMsg, timeoutTime.LongMsg, silentTimeout.LongMsg, longMessageMessage);
                 sendMessage(sender, longMessageMessage, silentTimeout.LongMsg);
-                $.log.event(sender + ' was timed out for posting a long message.');
                 return;
             }
 
@@ -411,9 +413,8 @@
                 if (!regulars.Emotes && $.isReg(sender) || !subscribers.Emotes && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
-                timeout(sender, warningTime.Emotes, timeoutTime.Emotes);
+                timeout(sender, warningTime.Emotes, timeoutTime.Emotes, silentTimeout.Emotes, emotesMessage);
                 sendMessage(sender, emotesMessage, silentTimeout.Emotes);
-                $.log.event(sender + ' was timed out for overusing emotes.');
                 return;
             }
 
@@ -422,9 +423,8 @@
                     if (!regulars.Caps && $.isReg(sender) || !subscribers.Caps && $.isSubv3(sender, event.getTags())) {
                         return;
                     }
-                    timeout(sender, warningTime.Caps, timeoutTime.Caps);
+                    timeout(sender, warningTime.Caps, timeoutTime.Caps, silentTimeout.Caps, capsMessage);
                     sendMessage(sender, capsMessage, silentTimeout.Caps);
-                    $.log.event(sender + ' was timed out for overusing caps.');
                 }
             }
         }
@@ -566,9 +566,9 @@
      * @event ircClearchat
      */
     $.bind('ircClearchat', function(event) {
-        var username = event.getUser(),
-            duration = event.getDuration(), // Note that duration is a String
-            reason = event.getReason();
+        setTimeout(function () {        
+            $.log.event(event.getUser() + ' has been timed out for ' + String(event.getDuration()) + ' seconds. Reason: ' + event.getReason());
+        }, 2000, event.getUser());
     });
 
     /**
