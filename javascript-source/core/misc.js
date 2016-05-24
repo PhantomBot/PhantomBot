@@ -95,7 +95,7 @@
      * @param {string} message
      */
     function say(message) {
-        if ($.channel) {
+        if ($.channel !== null) {
             if (message.substr(0, 1).equals('.')) {
                 $.channel.say(message);
                 $.consoleLn('[CHAT] ' + message);

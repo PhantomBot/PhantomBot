@@ -87,7 +87,10 @@
      * @returns {boolean}
      */
     function isModv3(username, tags) {
-        return $.isAdmin(username) || (tags != null && tags != '{}' && tags.get('user-type').equalsIgnoreCase('mod')) || $.isMod(username);
+        if (tags != null && tags != '{}' && tags.get('user-type').equalsIgnoreCase('mod'))
+          return true;
+        
+        return $.isAdmin(username) || $.isMod(username);
     };
 
     /**

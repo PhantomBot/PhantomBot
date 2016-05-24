@@ -31,7 +31,17 @@ public class ScriptManager {
 
         Script script = new Script(scriptFile);
         scripts.put(scriptFile.toPath().toString(), script);
-        script.load();
+        try {
+            script.load();
+        } catch (Exception ex) {
+             if (scriptFile.getPath().endsWith("init.js")) {
+                com.gmt2001.Console.err.println("Failed to load module: init.js: " + ex.getMessage());
+            } else {
+                com.gmt2001.Console.err.println("Failed to load module: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
+            }
+            com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
+            System.exit(0);
+        }
     }
 
     public static Script loadScriptR(File scriptFile) throws IOException {
