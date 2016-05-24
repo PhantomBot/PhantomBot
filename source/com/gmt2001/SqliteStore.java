@@ -35,7 +35,7 @@ import org.sqlite.SQLiteConfig;
 public class SqliteStore extends DataStore {
 
     private String dbname = "phantombot.db";
-    private int cache_size = -20000;
+    private int cache_size = -50000;
     private boolean safe_write = false;
     private boolean journal = true;
     private Connection connection = null;
@@ -78,7 +78,7 @@ public class SqliteStore extends DataStore {
         }
 
         String dbname = "phantombot.db";
-        int cache_size = -20000;
+        int cache_size = -50000;
         boolean safe_write = false;
         boolean journal = true;
         Connection connection = null;
