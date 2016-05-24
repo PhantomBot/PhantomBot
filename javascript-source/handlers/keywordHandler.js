@@ -13,6 +13,7 @@
             for (var i in keys) {
                 if (message.contains(keys[i])) {
                     key = keys[i];
+                    break;
                 }
             }
 
