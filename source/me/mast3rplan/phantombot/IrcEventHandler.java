@@ -81,6 +81,7 @@ public class IrcEventHandler implements IRCEventListener {
             com.gmt2001.Console.debug.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
             eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel));
 
+/*
             if (PhantomBot.enableDebugging) {
                 com.gmt2001.Console.debug.println("Channel Message Tags");
                 com.gmt2001.Console.debug.println("    Raw: " + cmessageEvent.tagsString());
@@ -89,10 +90,13 @@ public class IrcEventHandler implements IRCEventListener {
                     com.gmt2001.Console.debug.println("    " + tag.getKey() + " = " + tag.getValue());
                 }
             }
+*/
 
             if (cmessageTags.containsKey("display-name")) {
                 PhantomBot.instance().getUsernameCache().addUser(cusername, cmessageTags.get("display-name"));
             }
+
+            eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
 
             if (cmessageTags.containsKey("subscriber")) {
                 if (cmessageTags.get("subscriber").equalsIgnoreCase("1")) {
@@ -125,7 +129,6 @@ public class IrcEventHandler implements IRCEventListener {
                 }
             }
 
-            eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
             break;
         case CTCP_EVENT:
             CtcpEvent ctcmessageEvent = (CtcpEvent) event;

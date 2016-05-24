@@ -229,9 +229,9 @@ public final class ConnectionManager {
      */
     public synchronized void quit(String quitMsg) {
 
-        loopTimer.cancel();
-
-        dispatchTimer.cancel();
+        runLoopTaskRunnable = false;
+        runRelayEventsTaskRunnable = false;
+        runWritersTaskRunnable = false;
 
         for (Session session : new ArrayList<>(sessionMap.values())) {
             session.close(quitMsg);
@@ -357,35 +357,74 @@ public final class ConnectionManager {
     }
 
     /**
-     * Starts a Thread for IO/Parsing/Checking-Making Connections Start another
-     * Thread for relaying events
+     * Thread for handling the loop tasks.
      */
-    void startMainLoop() {
-        dispatchTimer = new Timer();
-
-        loopTimer = new Timer();
-
-        TimerTask dispatchTask = new TimerTask() {
-            @Override
-            public void run() {
-                relayEvents();
-                notifyWriteListeners();
-            }
-        };
-
-        TimerTask loopTask = new TimerTask() {
-            @Override
-            public void run() {
+    private boolean runLoopTaskRunnable = true;
+    Runnable loopTaskRunnable = new Runnable() {
+        public void run() {
+            while (runLoopTaskRunnable) {
                 makeConnections();
                 doNetworkIO();
                 parseEvents();
                 checkServerConnections();
+
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.debug.println(ex.getMessage());
+                }
             }
-        };
+        }
+    };
 
-        loopTimer.schedule(loopTask, 0, 200);
+    /**
+     * Thread for handling relayEvents.
+     */
+    private boolean runRelayEventsTaskRunnable = true;
+    Runnable relayEventsTaskRunnable = new Runnable() {
+        public void run() {
+            while (runRelayEventsTaskRunnable) {
+                relayEvents();
 
-        dispatchTimer.schedule(dispatchTask, 0, 200);
+                try { 
+                    Thread.sleep(2);
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.debug.println(ex.getMessage());
+                }
+            }
+        }
+    };
+
+    /**
+     * Thread for writing data.
+     */
+    private boolean runWritersTaskRunnable = true;
+    Runnable writersTaskRunnable = new Runnable() {
+        public void run() {
+            while (runWritersTaskRunnable) {
+                notifyWriteListeners();
+
+                try { 
+                    Thread.sleep(2);
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.debug.println(ex.getMessage());
+                }
+            }
+        }
+    };
+
+    /**
+     * Starts the IO threads.
+     */
+    void startMainLoop() {
+        Thread loopTaskThread = new Thread(loopTaskRunnable);
+        loopTaskThread.start();
+
+        Thread writersTaskThread = new Thread(writersTaskRunnable);
+        writersTaskThread.start();
+
+        Thread relayEventsTaskThread = new Thread(relayEventsTaskRunnable);
+        relayEventsTaskThread.start();
     }
 
     /**
@@ -512,6 +551,22 @@ public final class ConnectionManager {
     }
 
     /**
+     * Thread for receiveEvent
+     */
+    public class ReceiveEventRunnable implements Runnable {
+        private IRCEventListener listener;
+        private IRCEvent event;
+
+        public ReceiveEventRunnable(IRCEventListener listener, IRCEvent event) {
+            this.listener = listener;
+            this.event = event;
+        }
+        public void run() {
+            listener.receiveEvent(event);
+        }
+    }
+
+    /**
      * Relay events to Listeners/Tasks
      */
     void relayEvents() {
@@ -554,7 +609,9 @@ public final class ConnectionManager {
 
             for (IRCEventListener listener : templisteners) {
                 try {
-                    listener.receiveEvent(event);
+                    //listener.receiveEvent(event);
+                    ReceiveEventRunnable receiveEventRunnable = new ReceiveEventRunnable(listener, event);
+                    new Thread(receiveEventRunnable).start();
                 } catch (Exception e) {
                     com.gmt2001.Console.err.printStackTrace(e);
                 }
