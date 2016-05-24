@@ -8,6 +8,8 @@
         JFileInputStream = java.io.FileInputStream,
         JFileOutputStream = java.io.FileOutputStream;
 
+    var fileHandles = {};
+
     /**
      * @function readFile
      * @export $
@@ -88,11 +90,24 @@
      * @param {boolean} append
      */
     function writeToFile(line, path, append) {
+        var fos,
+            ps;
+
+        if (fileHandles.path !== undefined) {
+            fos = fileHandles.path.fos;
+            ps = fileHandles.path.ps;
+        } else {
+            fos = new JFileOutputStream(path, append);
+            ps = new java.io.PrintStream(fos);
+            fileHandles[path] = { 
+                fos: fos,
+                ps: ps
+            };
+        }
+    
         try {
-            var fos = new JFileOutputStream(path, append);
-            var ps = new java.io.PrintStream(fos);
             ps.println(line);
-            fos.close();
+            fos.flush();
         } catch (e) {
             $.consoleLn('Failed to write to \'' + path + '\': ' + e);
         }

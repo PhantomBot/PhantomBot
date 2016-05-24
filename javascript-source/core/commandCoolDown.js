@@ -52,10 +52,11 @@
     };
 
     function get(command, user) {
-        var cool,
+        var coolDownExists = $.inidb.exists('cooldown', command),
+            cool,
             i;
 
-        if (globalCooldown && !$.inidb.exists('cooldown', command)) {
+        if (globalCooldown && !coolDownExists) {
             for (i in cooldown) {
                 if (cooldown[i].command.equalsIgnoreCase(command)) {
                     cool = cooldown[i].time - $.systemTime();
@@ -73,7 +74,7 @@
             return;
         }
 
-        if (perUserCooldown && $.inidb.exists('cooldown', command)) {
+        if (perUserCooldown && coolDownExists) {
             for (i in cooldown) {
                 if (cooldown[i].command.equalsIgnoreCase(command) && cooldown[i].user.equalsIgnoreCase(user)) {
                     cool = cooldown[i].time - $.systemTime();
