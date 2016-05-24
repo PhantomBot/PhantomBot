@@ -828,6 +828,8 @@ public class PhantomBot implements Listener {
         String message = event.getMessage();
         String sender = event.getSender();
 
+        com.gmt2001.Console.out.println(usernameCache.resolve(event.getSender().toLowerCase(), event.getTags()) + ": " + event.getMessage());
+
         if (message.startsWith("!")) {
             String commandString = message.substring(1);
             handleCommand(sender, commandString);

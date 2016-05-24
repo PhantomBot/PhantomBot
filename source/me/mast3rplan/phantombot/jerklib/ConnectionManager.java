@@ -231,7 +231,6 @@ public final class ConnectionManager {
 
         runLoopTaskRunnable = false;
         runRelayEventsTaskRunnable = false;
-        runWritersTaskRunnable = false;
 
         for (Session session : new ArrayList<>(sessionMap.values())) {
             session.close(quitMsg);
@@ -385,23 +384,6 @@ public final class ConnectionManager {
         public void run() {
             while (runRelayEventsTaskRunnable) {
                 relayEvents();
-
-                try { 
-                    Thread.sleep(2);
-                } catch (InterruptedException ex) {
-                    com.gmt2001.Console.debug.println(ex.getMessage());
-                }
-            }
-        }
-    };
-
-    /**
-     * Thread for writing data.
-     */
-    private boolean runWritersTaskRunnable = true;
-    Runnable writersTaskRunnable = new Runnable() {
-        public void run() {
-            while (runWritersTaskRunnable) {
                 notifyWriteListeners();
 
                 try { 
@@ -419,9 +401,6 @@ public final class ConnectionManager {
     void startMainLoop() {
         Thread loopTaskThread = new Thread(loopTaskRunnable);
         loopTaskThread.start();
-
-        Thread writersTaskThread = new Thread(writersTaskRunnable);
-        writersTaskThread.start();
 
         Thread relayEventsTaskThread = new Thread(relayEventsTaskRunnable);
         relayEventsTaskThread.start();

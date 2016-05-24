@@ -631,8 +631,6 @@
          * @event api-ircChannelMessage
          */
         $api.on($script, 'ircChannelMessage', function(event) {
-            consoleLn($.username.resolve(event.getSender().toLowerCase(), event.getTags()) + ': ' + event.getMessage());
-
             if (event.getSender().equalsIgnoreCase('jtv') || event.getSender().equalsIgnoreCase('twitchnotify')) {
                 callHook('ircPrivateMessage', event, false);
             } else {
