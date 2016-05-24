@@ -35,8 +35,9 @@ import org.sqlite.SQLiteConfig;
 public class SqliteStore extends DataStore {
 
     private String dbname = "phantombot.db";
-    private int cache_size = 2000;
+    private int cache_size = -50000;
     private boolean safe_write = false;
+    private boolean journal = true;
     private Connection connection = null;
     private static final SqliteStore instance = new SqliteStore();
 
@@ -56,7 +57,8 @@ public class SqliteStore extends DataStore {
         dbname = (String) o[0];
         cache_size = (int) o[1];
         safe_write = (boolean) o[2];
-        connection = (Connection) o[3];
+        journal = (boolean) o[3];
+        connection = (Connection) o[4];
     }
 
     @Override
@@ -66,7 +68,8 @@ public class SqliteStore extends DataStore {
         dbname = (String) o[0];
         cache_size = (int) o[1];
         safe_write = (boolean) o[2];
-        connection = (Connection) o[3];
+        journal = (boolean) o[3];
+        connection = (Connection) o[4];
     }
 
     private static Object[] LoadConfigReal(String configStr) {
@@ -75,8 +78,9 @@ public class SqliteStore extends DataStore {
         }
 
         String dbname = "phantombot.db";
-        int cache_size = 2000;
+        int cache_size = -50000;
         boolean safe_write = false;
+        boolean journal = true;
         Connection connection = null;
 
         try {
@@ -96,26 +100,31 @@ public class SqliteStore extends DataStore {
                     if (line.startsWith("safewrite=") && line.length() > 11) {
                         safe_write = line.substring(10).equalsIgnoreCase("true") || line.substring(10).equalsIgnoreCase("1");
                     }
+                    if (line.startsWith("journal=") && line.length() > 9) {
+                        journal = line.substring(8).equalsIgnoreCase("true");
+                    }
                 }
 
-                connection = CreateConnection(dbname, cache_size, safe_write);
+                connection = CreateConnection(dbname, cache_size, safe_write, journal);
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
         return new Object[] {
-                   dbname, cache_size, safe_write, connection
+                   dbname, cache_size, safe_write, journal, connection
                };
     }
 
-    private static Connection CreateConnection(String dbname, int cache_size, boolean safe_write) {
+    private static Connection CreateConnection(String dbname, int cache_size, boolean safe_write, boolean journal) {
         Connection connection = null;
 
         try {
             SQLiteConfig config = new SQLiteConfig();
             config.setCacheSize(cache_size);
             config.setSynchronous(safe_write ? SQLiteConfig.SynchronousMode.FULL : SQLiteConfig.SynchronousMode.NORMAL);
+            config.setTempStore(SQLiteConfig.TempStore.MEMORY);
+            config.setJournalMode(journal ? SQLiteConfig.JournalMode.TRUNCATE : SQLiteConfig.JournalMode.OFF);
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbname.replaceAll("\\\\", "/"), config.toProperties());
             connection.setAutoCommit(true);
         } catch (SQLException ex) {
@@ -143,7 +152,7 @@ public class SqliteStore extends DataStore {
     private void CheckConnection() {
         try {
             if (connection == null || connection.isClosed() || !connection.isValid(10)) {
-                connection = CreateConnection(dbname, cache_size, safe_write);
+                connection = CreateConnection(dbname, cache_size, safe_write, journal);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -300,22 +309,41 @@ public class SqliteStore extends DataStore {
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;")) {
-                statement.setQueryTimeout(10);
-                statement.setString(1, section);
-
-                try (ResultSet rs = statement.executeQuery()) {
-
-                    ArrayList<String> s = new ArrayList<>();
-
-                    while (rs.next()) {
-                        s.add(rs.getString("variable"));
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+    
+                    try (ResultSet rs = statement.executeQuery()) {
+    
+                        ArrayList<String> s = new ArrayList<>();
+    
+                        while (rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+    
+                        return s.toArray(new String[s.size()]);
                     }
-
-                    return s.toArray(new String[s.size()]);
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
-            } catch (SQLException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + ";")) {
+                    statement.setQueryTimeout(10);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+
+                        ArrayList<String> s = new ArrayList<>();
+
+                        while (rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
         }
 
@@ -333,19 +361,35 @@ public class SqliteStore extends DataStore {
             return false;
         }
 
-        try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
-            statement.setQueryTimeout(10);
-            statement.setString(1, section);
-            statement.setString(2, key);
-
-            try (ResultSet rs = statement.executeQuery()) {
-
-                if (rs.next()) {
-                    return true;
+        if (section.length() > 0) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+                statement.setQueryTimeout(10);
+                statement.setString(1, section);
+                statement.setString(2, key);
+    
+                try (ResultSet rs = statement.executeQuery()) {
+    
+                    if (rs.next()) {
+                        return true;
+                    }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+       } else {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
+                statement.setQueryTimeout(10);
+                statement.setString(1, key);
+    
+                try (ResultSet rs = statement.executeQuery()) {
+    
+                    if (rs.next()) {
+                        return true;
+                    }
+                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
 
         return false;
@@ -363,21 +407,37 @@ public class SqliteStore extends DataStore {
             return result;
         }
 
-        try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
-            statement.setQueryTimeout(10);
-            statement.setString(1, section);
-            statement.setString(2, key);
-
-            try (ResultSet rs = statement.executeQuery()) {
-
-                if (rs.next()) {
-                    result = rs.getString("value");
+        if (section.length() > 0) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+                statement.setQueryTimeout(10);
+                statement.setString(1, section);
+                statement.setString(2, key);
+    
+                try (ResultSet rs = statement.executeQuery()) {
+    
+                    if (rs.next()) {
+                        result = rs.getString("value");
+                    }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+        } else {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
+                statement.setQueryTimeout(10);
+                statement.setString(1, key);
 
+                try (ResultSet rs = statement.executeQuery()) {
+
+                    if (rs.next()) {
+                        result = rs.getString("value");
+                    }
+                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+    
         return result;
     }
 
@@ -411,4 +471,20 @@ public class SqliteStore extends DataStore {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
+
+    @Override
+    public void CreateIndexes() {
+        CheckConnection();
+        String[] tableNames = GetFileList();
+        for (String tableName : tableNames) {
+            tableName = validateFname(tableName);
+            com.gmt2001.Console.out.println("    Indexing Table: " + tableName);
+            try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (variable);")) {
+                statement.execute();
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+    }
+
 }
