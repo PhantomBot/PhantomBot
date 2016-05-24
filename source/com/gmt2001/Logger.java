@@ -44,7 +44,7 @@ public class Logger implements Runnable {
     private PrintStream psCore = null;
     private PrintStream psError = null;
     private PrintStream psDebug = null;
-    private String logTimestamp = "";
+    private String curLogTimestamp = "";
 
     @Override
     @SuppressWarnings("SleepWhileInLoop")
@@ -73,20 +73,20 @@ public class Logger implements Runnable {
 
                 // New date, close all open streams.  Java spec says that closing the PrintStream closes the
                 // underlying streams automatically (FileOutputStream).
-                if (!timestamp.equals(logTimestamp)) {
-                    if (psCore != null) {
-                        psCore.close();
-                        psCore = null;
+                if (!timestamp.equals(this.curLogTimestamp)) {
+                    if (this.psCore != null) {
+                        this.psCore.close();
+                        this.psCore = null;
                     }
                     if (psError != null) {
-                        psError.close();
-                        psError = null;
+                        this.psError.close();
+                        this.psError = null;
                     }
-                    if (psDebug != null) {
-                        psDebug.close();
-                        psDebug = null;
+                    if (this.psDebug != null) {
+                        this.psDebug.close();
+                        this.psDebug = null;
                     }
-                    logTimestamp = logTimestamp();
+                    this.curLogTimestamp = timestamp;
                 }
 
                 try {
@@ -96,48 +96,48 @@ public class Logger implements Runnable {
 
                         switch (i.t) {
                         case Output:
-                            if (psCore == null) {
-                                fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt");
-                                psCore = new PrintStream(fosCore);
+                            if (this.psCore == null) {
+                                this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
+                                this.psCore = new PrintStream(this.fosCore);
                             }
-                            psCore.println(">>" + i.s);
-                            psCore.flush();
+                            this.psCore.println(">>" + i.s);
+                            this.psCore.flush();
                             break;
 
                         case Input:
-                            if (psCore == null) {
-                                fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt");
-                                psCore = new PrintStream(fosCore);
+                            if (this.psCore == null) {
+                                this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
+                                this.psCore = new PrintStream(this.fosCore);
                             }
-                            psCore.println("<<" + i.s);
-                            psCore.flush();
+                            this.psCore.println("<<" + i.s);
+                            this.psCore.flush();
                             break;
 
                         case Error:
-                            if (psError == null) {
-                                fosError = new FileOutputStream("./logs/core-error/" + timestamp + ".txt");
-                                psError = new PrintStream(fosError);
+                            if (this.psError == null) {
+                                this.fosError = new FileOutputStream("./logs/core-error/" + timestamp + ".txt", true);
+                                this.psError = new PrintStream(this.fosError);
                             }
-                            psError.println(i.s);
-                            psError.flush();
+                            this.psError.println(i.s);
+                            this.psError.flush();
                             break;
 
                         case Debug:
-                            if (psDebug == null) {
-                                fosDebug = new FileOutputStream("./logs/core-debug/" + timestamp + ".txt");
-                                psDebug = new PrintStream(fosDebug);
+                            if (this.psDebug == null) {
+                                this.fosDebug = new FileOutputStream("./logs/core-debug/" + timestamp + ".txt", true);
+                                this.psDebug = new PrintStream(this.fosDebug);
                             }
-                            psDebug.println(i.s);
-                            psDebug.flush();
+                            this.psDebug.println(i.s);
+                            this.psDebug.flush();
                             break;
 
                         default:
-                            if (psCore == null) {
-                                fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt");
-                                psCore = new PrintStream(fosCore);
+                            if (this.psCore == null) {
+                                this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
+                                this.psCore = new PrintStream(this.fosCore);
                             } 
-                            psCore.println("??" + i.s);
-                            psCore.flush();
+                            this.psCore.println("??" + i.s);
+                            this.psCore.flush();
                             break;
                         }
                     }
@@ -147,7 +147,7 @@ public class Logger implements Runnable {
                     ex.printStackTrace(System.err);
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     /* At shutdown queue.remove(0) throws an exception sometimes, it is expected, do not clutter the console/error logs. */
-                }
+                } 
             } else {
                 try {
                     Thread.sleep(500);
@@ -181,7 +181,8 @@ public class Logger implements Runnable {
         Output,
         Input,
         Error,
-        Debug
+        Debug,
+        
     }
 
     public static Logger instance() {
