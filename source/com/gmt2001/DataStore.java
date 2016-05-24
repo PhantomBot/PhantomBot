@@ -188,4 +188,7 @@ public class DataStore {
 
         SetInteger(fName, "", key, ival);
     }
+
+    public void CreateIndexes() {
+    }
 }
