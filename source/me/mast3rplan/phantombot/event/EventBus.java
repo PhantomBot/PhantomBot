@@ -48,8 +48,8 @@ public class EventBus {
         listeners.remove(listener);
         eventBus.unregister(listener);
         aeventBus.unregister(listener);
-        ceventBus.register(listener);
-        meventBus.register(listener);
+        ceventBus.unregister(listener);
+        meventBus.unregister(listener);
     }
 
     public void post(Event event) {
