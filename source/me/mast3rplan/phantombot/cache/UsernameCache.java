@@ -115,8 +115,10 @@ public class UsernameCache {
     }
 
     public void addUser(String userName, String displayName) {
-        if (!cache.containsKey(userName)) {
-            cache.put(userName, displayName);
+        if (displayName.length() > 0) {
+            if (!cache.containsKey(userName)) {
+                cache.put(userName, displayName);
+            }
         }
     }
 }

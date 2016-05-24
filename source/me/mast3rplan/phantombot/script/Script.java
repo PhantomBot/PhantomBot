@@ -120,6 +120,7 @@ public class Script {
         RhinoException.setStackStyle(StackStyle.MOZILLA);
 
         context = ctxFactory.enterContext();
+        context.setOptimizationLevel(9);
 
         ScriptableObject scope = context.initStandardObjects(global, false);
         scope.defineProperty("$", global, 0);

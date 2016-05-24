@@ -214,16 +214,15 @@
      * @function timeoutUserFor
      */
     function timeoutUserFor(user, time, silent, reason) {
+        $.say('.timeout ' + user + ' ' + time);
         if (!silent) {
-            $.say('.timeout ' + user + ' ' + time);
             setTimeout(function() {
                 $.say('.timeout ' + user + ' ' + time);
-            }, 1050);
+            }, 1100);
         } else {
-            $.say('.timeout ' + user + ' ' + time + ' ' + reason);
             setTimeout(function() {
                 $.say('.timeout ' + user + ' ' + time + ' ' + reason);
-            }, 1050);
+            }, 1100);
         }
     };
 

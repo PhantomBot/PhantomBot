@@ -41,6 +41,30 @@ public class IrcEventHandler implements IRCEventListener {
     private final ArrayList<String> mods = new ArrayList<>();
     private boolean nomodwarn = true;
 
+    /**
+     * Thread for starting the moderation event in the background.
+     */
+    public class ModerationRunnable implements Runnable {
+        private Map<String, String> cmessageTags;
+        private Channel cchannel;
+        private String cusername;
+        private String cmessage;
+        private Session session;
+        private EventBus eventBus;
+
+        public ModerationRunnable(EventBus eventBus, Session session, String cusername, String cmessage, Channel cchannel, Map<String, String> cmessageTags) {
+            this.eventBus = eventBus;
+            this.session = session;
+            this.cusername = cusername;
+            this.cmessage = cmessage;
+            this.cchannel = cchannel;
+            this.cmessageTags = cmessageTags;
+        }
+        public void run() {
+            eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
+        }
+    }
+      
     @Override
     public void receiveEvent(IRCEvent event) {
         if (PhantomBot.instance().isExiting()) {
@@ -79,7 +103,12 @@ public class IrcEventHandler implements IRCEventListener {
             String cmessage = cmessageEvent.getMessage();
 
             com.gmt2001.Console.debug.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
-            eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel));
+            try {
+                ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, cusername, cmessage, cchannel, cmessageTags);
+                new Thread(moderationRunnable).start();
+            } catch (Exception ex) {
+                eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
+            }
 
             if (PhantomBot.enableDebugging) {
                 com.gmt2001.Console.debug.println("Channel Message Tags");
@@ -89,10 +118,11 @@ public class IrcEventHandler implements IRCEventListener {
                     com.gmt2001.Console.debug.println("    " + tag.getKey() + " = " + tag.getValue());
                 }
             }
-
             if (cmessageTags.containsKey("display-name")) {
                 PhantomBot.instance().getUsernameCache().addUser(cusername, cmessageTags.get("display-name"));
             }
+
+            eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
 
             if (cmessageTags.containsKey("subscriber")) {
                 if (cmessageTags.get("subscriber").equalsIgnoreCase("1")) {
@@ -125,7 +155,6 @@ public class IrcEventHandler implements IRCEventListener {
                 }
             }
 
-            eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
             break;
         case CTCP_EVENT:
             CtcpEvent ctcmessageEvent = (CtcpEvent) event;
@@ -134,11 +163,16 @@ public class IrcEventHandler implements IRCEventListener {
                 Channel ctcchannel = ctcmessageEvent.getChannel();
                 String ctcusername = ctcmessageEvent.getNick();
                 String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");
+                Map<String, String> ctcmessageTags = ctcmessageEvent.tags();
 
                 com.gmt2001.Console.debug.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
-                eventBus.postModeration(new IrcModerationEvent(session, ctcusername, ctcmessage, ctcchannel));
-
-                Map<String, String> ctcmessageTags = ctcmessageEvent.tags();
+                try {
+                    ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags);
+                    new Thread(moderationRunnable).start();
+                } catch (Exception ex) {
+                    eventBus.postModeration(new IrcModerationEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
+                }
+                eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
 
                 if (ctcmessageTags.containsKey("subscriber")) {
                     if (ctcmessageTags.get("subscriber").equalsIgnoreCase("1")) {
@@ -171,8 +205,6 @@ public class IrcEventHandler implements IRCEventListener {
                     }
                 }
 
-                //Don't change this to postAsync. It cannot be processed in async or messages will be delayed
-                eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
             }
             break;
         case PRIVATE_MESSAGE:

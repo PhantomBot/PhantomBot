@@ -631,8 +631,6 @@
          * @event api-ircChannelMessage
          */
         $api.on($script, 'ircChannelMessage', function(event) {
-            consoleLn($.username.resolve(event.getSender().toLowerCase(), event.getTags()) + ': ' + event.getMessage());
-
             if (event.getSender().equalsIgnoreCase('jtv') || event.getSender().equalsIgnoreCase('twitchnotify')) {
                 callHook('ircPrivateMessage', event, false);
             } else {
@@ -683,35 +681,33 @@
         $api.on($script, 'command', function(event) {
             var sender = event.getSender(),
                 args = event.getArgs(),
-                origCommand = event.getCommand(),
-                command,
+                command = event.getCommand().toLowerCase(),
                 subCommand,
                 cooldown,
                 permComCheck,
-                idx,
-                alias,
-                aliasList = [],
-                aliasCmd,
-                aliasParams;
+                senderIsMod = $.isModv3(sender, event.getTags());
 
-            if (!$.isModv3(sender, event.getTags()) && $.commandPause.isPaused()) {
+            if (!senderIsMod && $.commandPause.isPaused()) {
                 consoleDebug($.lang.get('commandpause.isactive'))
                 return;
             }
 
             /* Handle aliases */
-            if ($.inidb.exists('aliases', origCommand)) {
+            if ($.inidb.exists('aliases', command)) {
                 var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
                     CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
 
-                alias = $.getIniDbString('aliases', origCommand);
+                var alias = $.getIniDbString('aliases', command),
+                    aliasCmd,
+                    aliasParams;
+
                 if (alias.indexOf(';') === -1) {
                     aliasCmd = alias.split(' ')[0];
                     aliasParams = alias.substring(alias.indexOf(' ') + 1);
                     EventBus.instance().postCommand(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                 } else {
-                    aliasList = alias.split(';');
-                    for (idx in aliasList) {
+                    var aliasList = alias.split(';');
+                    for (var idx in aliasList) {
                         aliasCmd = aliasList[idx].split(' ')[0];
                         aliasParams = aliasList[idx].substring(aliasList[idx].indexOf(' ') + 1);
                         if (idx == (aliasList.length - 1)) {
@@ -724,18 +720,16 @@
                 return;
             }
 
-            command = event.getCommand().toLowerCase();
             if (!$.commandExists(command)) {
                 consoleDebug('Command: !' + command + ' does not exist');
                 return;
             }
 
-            if (($.inidb.exists('disabledCommands', command) && $.getIniDbBoolean('disabledCommands', command)) || 
-                ($.inidb.exists('botBlackList', sender) && $.inidb.get('botBlackList', sender).equalsIgnoreCase('true'))) {
+            if ($.getIniDbBoolean('disabledCommands', command, false) || $.getIniDbBoolean('botBlackList', sender, false)) {
                 consoleDebug('[DISABLED COMMAND] Command: !' + command + ' was not sent because its disabled or the user is blacklisted.');
                 return;
             }
-            
+
             if (parseInt($.coolDown.get(command, sender)) > 0) {
                 consoleLn('[COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
                 return;
@@ -755,7 +749,7 @@
                 return;
             }
 
-            if (isModuleEnabled('./systems/pointSystem.js') && !$.isModv3(sender, event.getTags()) && $.inidb.exists('pricecom', command)) {
+            if (isModuleEnabled('./systems/pointSystem.js') && !senderIsMod && $.inidb.exists('pricecom', command)) {
                 if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
                     return;

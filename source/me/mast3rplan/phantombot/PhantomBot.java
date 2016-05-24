@@ -317,6 +317,12 @@ public class PhantomBot implements Listener {
             dataStoreObj = IniStore.instance();
         } else {
             dataStoreObj = SqliteStore.instance();
+            if (!dataStoreObj.exists("settings", "tables_indexed")) {
+                com.gmt2001.Console.out.println("Creating SQLite3 Indexes, Please Wait...");
+                dataStoreObj.CreateIndexes();
+                com.gmt2001.Console.out.println("Completed Creating SQLite3 Indexes");
+                dataStoreObj.set("settings", "tables_indexed", "true");
+            }
         }
 
         if (datastore.isEmpty() && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0) {
@@ -827,6 +833,8 @@ public class PhantomBot implements Listener {
     public void onIRCChannelMessage(IrcChannelMessageEvent event) {
         String message = event.getMessage();
         String sender = event.getSender();
+
+        com.gmt2001.Console.out.println(usernameCache.resolve(event.getSender().toLowerCase(), event.getTags()) + ": " + event.getMessage());
 
         if (message.startsWith("!")) {
             String commandString = message.substring(1);
