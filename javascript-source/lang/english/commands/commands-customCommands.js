@@ -37,3 +37,6 @@ $.lang.register('customcommands.enable.usage', 'Usage: !enablecom (command)');
 $.lang.register('customcommands.enable.404', 'that command does not exists.');
 $.lang.register('customcommands.enable.err', 'that command is not disabled.');
 $.lang.register('customcommands.enable.success', 'command !$1 has been re-enabled.');
+$.lang.register('customcommands.botcommands', 'Commands: $1');
+$.lang.register('customcommands.botcommands.error', 'Provide a number to find a page.');
+$.lang.register('customcommands.botcommands.total', 'Total Pages: $1 [See also: https://phantombot.net/commands]');
