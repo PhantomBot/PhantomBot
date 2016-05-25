@@ -590,26 +590,15 @@
         }
 
         /**
-         * @commandpath commands - Provides a list of all available commands.
+         * @commandpath commands - Provides a list of all available custom commands.
          */
         if (command.equalsIgnoreCase('commands')) {
-            var cmds = $.inidb.GetKeyList('command', ''),
-                cmd = '',
-                i;
+            var cmds = $.inidb.GetKeyList('command', '');
 
-            for (i in cmds) {
-                cmd += '!';
-                cmd += cmds[i];
-                cmd += ', ';
-            }
-
-            if (cmd.length != 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.cmds', cmd.slice(0, -2)));
+            if (cmds.length > 0) {
+                $.paginateArray(cmds, 'customcommands.cmds', ', ', true, sender);
             } else {
-                if ($.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.404.no.commands'));
-                    return;
-                }
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.404.no.commands'));
             }
         }
 
