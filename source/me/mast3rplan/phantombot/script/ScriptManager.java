@@ -16,6 +16,7 @@
  */
 package me.mast3rplan.phantombot.script;
 
+import me.mast3rplan.phantombot.PhantomBot;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,8 +40,11 @@ public class ScriptManager {
             } else {
                 com.gmt2001.Console.err.println("Failed to load module: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
             }
-            com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
-            System.exit(0);
+            if (!PhantomBot.reloadScripts) {
+                com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
+                System.exit(0);
+            }
+            throw new IOException(ex.getMessage());
         }
     }
 
