@@ -590,34 +590,46 @@
         }
 
         /**
-         * @commandpath commands - Provides a list of all available commands.
+         * @commandpath commands - Provides a list of all available custom commands.
          */
         if (command.equalsIgnoreCase('commands')) {
-            var cmds = $.inidb.GetKeyList('command', ''),
-                cmd = '',
-                i;
+            var cmds = $.inidb.GetKeyList('command', '');
 
-            for (i in cmds) {
-                cmd += '!';
-                cmd += cmds[i];
-                cmd += ', ';
-            }
-
-            if (cmd.length != 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.cmds', cmd.slice(0, -2)));
+            if (cmds.length > 0) {
+                $.paginateArray(cmds, 'customcommands.cmds', ', ', true, sender);
             } else {
-                if ($.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.404.no.commands'));
-                    return;
-                }
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.404.no.commands'));
             }
         }
 
         /**
-         * @commandpath botcommands - Links you to the bot commands site
+         * @commandpath botcommands - Links you to the bot commands site and provides a list of all commands in the bot.
          */
         if (command.equalsIgnoreCase('botcommands')) {
-            $.say('https://phantombot.net/commands');
+            var cmds = $.inidb.GetKeyList('permcom', ''),
+                idx,
+                totalPages,
+                cmdList = [];
+
+            for (idx in cmds) {
+                if (cmds[idx].indexOf(' ') !== -1) {
+                    continue;
+                }
+                if (permCom(sender, cmds[idx], '') === 0) {
+                    cmdList.push(cmds[idx]);
+                }
+            }
+
+            if (action === undefined) {
+                totalPages = $.paginateArray(cmdList, 'customcommands.botcommands', ', ', true, sender, 1);
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.botcommands.total', totalPages));
+                return;
+            } 
+            if (!isNaN(action)) {
+                totalPages = $.paginateArray(cmdList, 'customcommands.botcommands', ', ', true, sender, parseInt(action));
+                return;
+            } 
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.botcommands.error'));
         }
 
         /**

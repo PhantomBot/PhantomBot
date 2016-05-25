@@ -227,7 +227,8 @@ $.lang.register('init.module.auto-disabled', 'Modules related to pointSystem hav
 $.lang.register('init.module.disabled', 'Module "$1" disabled!');
 $.lang.register('init.module.enabled', 'Module "$1" enabled!');
 $.lang.register('init.module.error', 'Module "$1" enabled but did not initialize! Check error logs!');
-$.lang.register('init.module.list', '$1 registered modules: $2');
+$.lang.register('init.module.list', 'Modules: $1');
+$.lang.register('init.module.list.total', 'Total Pages: $1');
 $.lang.register('init.module.usage', 'Usage: !module list, !module enable [module name], !module disable [module name], !module status [module name]');
 $.lang.register('init.reconnect', 'Reconnecting to $1');
 $.lang.register('init.disconnect', 'Disconnecting from $1');

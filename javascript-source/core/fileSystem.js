@@ -83,6 +83,18 @@
     };
 
     /**
+     * @function closeOpenFiles
+     */
+    function closeOpenFiles() {
+        for (key in fileHandles) {
+            if (fileHandles[key].lastWrite + 36e5 >= $.systemTime()) { 
+                fileHandles[key].fos.close();
+                delete fileHandles[key];
+            }
+        }
+    }
+
+    /**
      * @function writeToFile
      * @export $
      * @param {string} line
@@ -93,15 +105,19 @@
         var fos,
             ps;
 
+        closeOpenFiles();
+
         if (fileHandles.path !== undefined) {
             fos = fileHandles.path.fos;
             ps = fileHandles.path.ps;
+            fileHandles[path].lastWrite = $.systemTime();
         } else {
             fos = new JFileOutputStream(path, append);
             ps = new java.io.PrintStream(fos);
             fileHandles[path] = { 
                 fos: fos,
-                ps: ps
+                ps: ps,
+                lastWrite: $.systemTime()
             };
         }
     

@@ -469,20 +469,31 @@
      * @param {String}  Seperator to use between items
      * @param {boolean} Use $.whisperPrefix(sender) ?
      * @param {String}  Value of sender for $.whisperPrefix
+     * @param {Number}  Page to display, 0 for ALL
+     * @return {Number} Total number of pages.
+     * 
      */
-    function paginateArray(array, langKey, sep, whisper, sender) {
+    function paginateArray(array, langKey, sep, whisper, sender, display_page) {
         var idx,
             output = '',
-            maxlen;
+            maxlen,
+            pageCount = 0;
 
-        maxlen = 460 - $.lang.get(langKey).length;
+        if (display_page === undefined) {
+            display_page = 0;
+        }
+
+        maxlen = 440 - $.lang.get(langKey).length;
         for (idx in array) {
             output += array[idx];
             if (output.length >= maxlen) {
-                if (whisper) {
-                    $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
-                } else {
-                    $.say($.lang.get(langKey, output));
+                pageCount++;
+                if (display_page === 0 || display_page === pageCount) {
+                    if (whisper) {
+                        $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
+                    } else {
+                        $.say($.lang.get(langKey, output));
+                    }
                 }
                 output = '';
             } else {
@@ -491,11 +502,15 @@
                 }
             }
         }
-        if (whisper) {
-            $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
-        } else {
-            $.say($.lang.get(langKey, output));
+        pageCount++;
+        if (display_page === 0 || display_page === pageCount) {
+            if (whisper) {
+                $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
+            } else {
+                $.say($.lang.get(langKey, output));
+            }
         }
+        return pageCount;
     }
 
     /**
