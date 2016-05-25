@@ -23,7 +23,7 @@
                 keyword = $.inidb.get('keywords', key);
 
                 if ($.coolDown.get(key, event.getSender()) > 0) {
-                    $.consoleDebug('[COOLDOWN] Keyword ' + key + ' not sent because its on a cooldown.');
+                    $.consoleDebug('[COOLDOWN] Keyword ' + key + ' was not sent because its on a cooldown.');
                     return;
                 }
 
@@ -132,7 +132,7 @@
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('keywords', subAction)) {
+                } else if (!$.inidb.exists('keywords', subAction.toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.404'));
                     return;
                 }
