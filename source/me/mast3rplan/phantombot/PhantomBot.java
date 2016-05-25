@@ -1197,7 +1197,9 @@ public class PhantomBot implements Listener {
         }
 
         //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
-        EventBus.instance().postCommand(new CommandEvent(sender, command, arguments));
+        //EventBus.instance().postCommand(new CommandEvent(sender, command, arguments));
+
+        ScriptEventManager.instance().runDirect(new CommandEvent(sender, command, arguments));
     }
 
     private static void ini2sqlite(boolean delete) {

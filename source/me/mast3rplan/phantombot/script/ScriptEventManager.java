@@ -70,6 +70,24 @@ public class ScriptEventManager implements Listener {
     }
     private final List<EventHandlerEntry> entries = Lists.newCopyOnWriteArrayList();
 
+    public void runDirect(Event event) {
+        if (PhantomBot.instance().isExiting()) {
+            return;
+        }
+
+        try {
+            for (EventHandlerEntry entry : entries) {
+                if (event.getClass().isAssignableFrom(entry.eventClass)) {
+                    com.gmt2001.Console.debug.println("Direct event " + entry.eventClass.getName());
+                    entry.handler.handle(event);
+                }
+            }
+        } catch (Exception e) {
+            com.gmt2001.Console.err.println("Failed to direct event " + event.getClass().getName());
+            com.gmt2001.Console.err.printStackTrace(e);
+        }
+    }
+
     @Subscribe
     public void onEvent(Event event) {
         if (PhantomBot.instance().isExiting()) {
