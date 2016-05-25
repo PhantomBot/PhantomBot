@@ -603,10 +603,33 @@
         }
 
         /**
-         * @commandpath botcommands - Links you to the bot commands site
+         * @commandpath botcommands - Links you to the bot commands site and provides a list of all commands in the bot.
          */
         if (command.equalsIgnoreCase('botcommands')) {
-            $.say('https://phantombot.net/commands');
+            var cmds = $.inidb.GetKeyList('permcom', ''),
+                idx,
+                totalPages,
+                cmdList = [];
+
+            for (idx in cmds) {
+                if (cmds[idx].indexOf(' ') !== -1) {
+                    continue;
+                }
+                if (permCom(sender, cmds[idx], '') === 0) {
+                    cmdList.push(cmds[idx]);
+                }
+            }
+
+            if (action === undefined) {
+                totalPages = $.paginateArray(cmdList, 'customcommands.botcommands', ', ', true, sender, 1);
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.botcommands.total', totalPages));
+                return;
+            } 
+            if (!isNaN(action)) {
+                totalPages = $.paginateArray(cmdList, 'customcommands.botcommands', ', ', true, sender, parseInt(action));
+                return;
+            } 
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.botcommands.error'));
         }
 
         /**
