@@ -16,6 +16,7 @@
  */
 package me.mast3rplan.phantombot;
 
+import com.gmt2001.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -254,6 +255,28 @@ public class IrcEventHandler implements IRCEventListener {
             }
             break;
         case NOTICE:
+            String noticeMessage = ((NoticeEvent) event).getNoticeMessage();
+            if (noticeMessage.startsWith("Error logging in") || noticeMessage.startsWith("Login unsuccessful")) {
+                com.gmt2001.Console.out.println("");
+                com.gmt2001.Console.out.println("Twitch Indicates the OAUTH Password is Incorrect. Please ensure that");
+                com.gmt2001.Console.out.println("you generated an OAUTH for your bot account. This OAUTH value is to");
+                com.gmt2001.Console.out.println("be placed in botlogin.txt as follows: oauth=oauth:your_oauth_key");
+                com.gmt2001.Console.out.println("");
+                com.gmt2001.Console.out.println("Login to Twitch using your bot account and then proceed to");
+                com.gmt2001.Console.out.println("https://twitchapps.com/tmi/ to acquire the OAUTH token.");
+                com.gmt2001.Console.out.println("");
+                com.gmt2001.Console.out.println("Terminating PhantomBot");
+                com.gmt2001.Console.out.println("");
+
+                Logger.instance().log(Logger.LogType.Error, "\r\n" +
+                                      "Twitch Indicates the OAUTH Password is Incorrect. Please ensure that\r\n" +
+                                      "you generated an OAUTH for your bot account. This OAUTH value is to\r\n" +
+                                      "be placed in botlogin.txt as follows: oauth=oauth:your_oauth_key\r\n\r\n" +
+                                      "Login to Twitch using your bot account and then proceed to\r\n" +
+                                      "https://twitchapps.com/tmi/ to acquire the OAUTH token.\r\n\r\n");
+                System.exit(0);
+            }
+
             eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage(), ((NoticeEvent) event).tags()));
             break;
         case DEFAULT:
