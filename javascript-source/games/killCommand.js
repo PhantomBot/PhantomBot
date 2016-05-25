@@ -7,6 +7,8 @@
     var selfMessageCount = 0,
         otherMessageCount = 0,
         lastRandom = -1,
+        jailTimeout = $.getSetIniDbNumber('settings', 'killTimeoutTime', 60),
+        lang,
         rand;
 
     /**
@@ -35,7 +37,18 @@
         do {
             rand = $.randRange(1, otherMessageCount);
         } while (rand == lastRandom);
-        $.say($.lang.get('killcommand.other.' + rand, $.resolveRank(sender), $.resolveRank(user)));
+        lang = $.lang.get('killcommand.other.' + rand, $.resolveRank(sender), $.resolveRank(user), jailTimeout, $.botName);
+        if (lang.startsWith('(jail)')) {
+            lang = $.replace(lang, '(jail)', '');
+            $.say(lang);
+            if (!$.isMod(sender) && jailTimeout > 0) {
+                setTimeout(function () {
+                    $.say('.timeout ' + sender + ' ' + jailTimeout);
+                }, 1500);
+            }
+        } else {
+            $.say(lang);
+        }
         lastRandom = rand;
     };
 
@@ -57,6 +70,20 @@
                 kill(sender, args[0]);
             }
         }
+
+        /**
+         * @commandpath jailtimeouttime [amount in seconds] - Set the timeout time for jail time on the kill command.
+         */
+        if (command.equalsIgnoreCase('jailtimeouttime')) {
+            if (args.length == 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('killcommand.jail.timeout.usage'));
+                return;
+            }
+
+            jailTimeout = args[0];
+            $.inidb.set('settings', 'killTimeoutTime', args[0]);
+            $.say($.whisperPrefix(sender) + $.lang.get('killcommand.jail.timeout.set', jailTimeout));
+        }
     });
 
     /**
@@ -65,9 +92,10 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./games/killCommand.js')) {
             if (selfMessageCount == 0 && otherMessageCount == 0) {
-              loadResponses();
+               loadResponses();
             }
             $.registerChatCommand('./games/killCommand.js', 'kill', 7);
+            $.registerChatCommand('./games/killCommand.js', 'jailtimeouttime', 1);
         }
     });
 })();

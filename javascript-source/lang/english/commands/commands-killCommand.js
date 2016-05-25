@@ -59,4 +59,13 @@ $.lang.register('killcommand.other.26', '$2 was attacked by $1 behind a Taco Bel
 $.lang.register('killcommand.other.27', '$1 went back in time to prevent himself from killing $2, apparently the time machine landed on $2 when $1 jumped back in time.');
 $.lang.register('killcommand.other.28', '$1 rekt $2 by 30-4 doing a 360 no-scope');
 
+/** Add "(jail)" at the start of the lang for the user to get timed out for the jailTime you set. You can also use $3 for the jail timeout time to be displayed. $4 = botname. */
+$.lang.register('killcommand.other.29', '(jail) $1 tried to kill $2 with a unicorn\'s horn, but a cop showed up before he had time.');
+$.lang.register('killcommand.other.30', '(jail) $1 tried to kill $2 with a spork, but a cop showed up before he had time.');
+$.lang.register('killcommand.other.31', '(jail) $1 was going to hit $2 with a hammer. But $2 was a undercover cop!');
+$.lang.register('killcommand.other.32', '(jail) $1 was paid by $4 to kill $2. But $2 was a cop.');
+
+$.lang.register('killcommand.jail.timeout.usage', 'usage: !jailtimeouttime (amount in seconds)');
+$.lang.register('killcommand.jail.timeout.set', 'jail timeout time set to: $1 seconds.');
+
 $.lang.register('killcommand.console.loaded', 'Found kill command messages: $1 self, $2 other.');

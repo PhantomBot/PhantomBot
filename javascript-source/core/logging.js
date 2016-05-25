@@ -87,7 +87,7 @@
      * @param {string} message
      */
     function logEvent(message) {
-        if (!logs.event) {
+        if (!logs.event || message.indexOf('specialuser') != -1) {
             return;
         }
 
