@@ -17,22 +17,47 @@
 package me.mast3rplan.phantombot.event.emotes;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
+import org.json.JSONObject;
 
 public class EmotesGetEvent extends EmotesEvent {
 
-    private final String emotes;
+    private final JSONObject twitchEmotes;
+    private final JSONObject bttvEmotes;
+    private final JSONObject bttvLocalEmotes;
+    private final JSONObject ffzEmotes;
+    private final JSONObject ffzLocalEmotes;
 
-    public EmotesGetEvent(String emotes) {
-        this.emotes = emotes;
+    public EmotesGetEvent(JSONObject twitchEmotes, JSONObject bttvEmotes, JSONObject bttvLocalEmotes, JSONObject ffzEmotes, JSONObject ffzLocalEmotes) {
+        this.twitchEmotes = twitchEmotes;
+        this.bttvEmotes = bttvEmotes;
+        this.bttvLocalEmotes = bttvLocalEmotes;
+        this.ffzEmotes = ffzEmotes;
+        this.ffzLocalEmotes = ffzLocalEmotes;
     }
 
-    public EmotesGetEvent(String emotes, Channel channel) {
+    public EmotesGetEvent(JSONObject twitchEmotes, JSONObject bttvEmotes, JSONObject bttvLocalEmotes, JSONObject ffzEmotes, JSONObject ffzLocalEmotes, Channel channel) {
         super(channel);
-        this.emotes = emotes;
+        this.twitchEmotes = twitchEmotes;
+        this.bttvEmotes = bttvEmotes;
+        this.bttvLocalEmotes = bttvLocalEmotes;
+        this.ffzEmotes = ffzEmotes;
+        this.ffzLocalEmotes = ffzLocalEmotes;
     }
 
-    public String getEmotes() {
-        return emotes;
+    public JSONObject getTwitchEmotes() {
+        return twitchEmotes;
+    }
+    public JSONObject getBttvEmotes() {
+        return bttvEmotes;
+    }
+    public JSONObject getBttvLocalEmotes() {
+        return bttvLocalEmotes;
+    }
+    public JSONObject getFfzEmotes() {
+        return ffzEmotes;
+    }
+    public JSONObject getFfzLocalEmotes() {
+        return ffzLocalEmotes;
     }
 }
 

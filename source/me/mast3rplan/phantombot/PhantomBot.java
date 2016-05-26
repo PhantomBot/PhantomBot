@@ -785,6 +785,7 @@ public class PhantomBot implements Listener {
         //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
         session.sayChannel(this.channel, ".mods");
 
+        this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
         this.followersCache = FollowersCache.instance(this.channel.getName().toLowerCase());
         this.hostCache = ChannelHostCache.instance(this.channel.getName().toLowerCase());
         this.subscribersCache = SubscribersCache.instance(this.channel.getName().toLowerCase());
@@ -792,7 +793,6 @@ public class PhantomBot implements Listener {
         if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
             this.donationsCache = DonationsCache.instance(this.channel.getName().toLowerCase());
         }
-        this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
         this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
 
         if (this.twitter_username.length() > 0 &&
