@@ -7,19 +7,18 @@
         var message = event.getMessage().toLowerCase(),
             keys = $.inidb.GetKeyList('keywords', ''),
             keyword,
-            key;
+            key,
+            i;
             
         if ($.bot.isModuleEnabled('./handlers/keywordHandler.js')) {
-            for (var i in keys) {
-                if (message.contains(keys[i])) {
+            for (i in keys) {
+                if (message.match(keys[i])) {
                     key = keys[i];
                     break;
                 }
             }
 
-            var check = new RegExp('\\b' + key + '\\b', 'i');
-
-            if (check.exec(message)) {
+            if (message.match('\\b' + key + '\\b') && !message.match(/!keyword/)) {
                 keyword = $.inidb.get('keywords', key);
 
                 if ($.coolDown.get(key, event.getSender()) > 0) {
@@ -76,8 +75,6 @@
                     keyword = $.replace(keyword, '(follows)', String($.getFollows($.channelName)));
                 }
                 $.say(keyword);
-            } else {
-                return;
             }
         }
     });
