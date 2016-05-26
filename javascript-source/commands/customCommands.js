@@ -43,6 +43,10 @@
      * @return {string}
      */
     function tags(event, message) {
+        if (String(event.getArgs()[0]).startsWith('@') && $.isMod(event.getSender())) {
+            return event.getArgs()[0] + ' -> ' + message;
+        }
+
         if (message.match(/\(1\)/g)) {
             for (var i = 0; i < event.getArgs().length; i++) {
                 message = $.replace(message, '(' + (i + 1) + ')', event.getArgs()[i]);
