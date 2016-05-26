@@ -6,8 +6,9 @@
 (function() {
     var emotesRegExpList = [];
 
-    // Load an existing emote RegExp cache.
-    loadEmoteCache();
+    // Load an existing emote RegExp cache.  Wait to see if there was a problem that needs us to load
+    // from cache before doing so.  This saves CPU cycles and memory.
+    setTimeout(function() { if (emotesRegExpList.length === 0) { loadEmoteCache(); } }, 120e3, 'emoteCheck');
 
     /**
      * @event emotesGet
