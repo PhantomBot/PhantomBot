@@ -173,6 +173,7 @@ public class PhantomBot implements Listener {
     private static PhantomBot instance;
     public static String log_timezone = "GMT";
     private UsernameCache usernameCache;
+    private ScriptEventManager scriptEventManager;
 
     // private TwitchWSIRC twitchWSIRC;
 
@@ -433,6 +434,10 @@ public class PhantomBot implements Listener {
     public DataStore getDataStore() {
         return dataStoreObj;
     }
+ 
+    public ScriptEventManager getScriptEventManagerInstance() {
+        return scriptEventManager;
+   }
 
     public Session getSession() {
         return session;
@@ -646,6 +651,7 @@ public class PhantomBot implements Listener {
 
         EventBus.instance().register(this);
         EventBus.instance().register(ScriptEventManager.instance());
+        scriptEventManager = ScriptEventManager.instance();
 
         dataStoreObj.LoadConfig(datastoreconfig);
 
