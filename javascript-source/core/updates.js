@@ -189,6 +189,16 @@
         $.inidb.set('updates', 'installedv2.0.8', 'true');
     }
 
+    if (!$.inidb.exists('updates', 'installedv2.0.9') || $.inidb.get('updates', 'installedv2.0.9') != 'true') {
+        $.consoleLn('Starting PhantomBot version 2.0.9 updates...');
+
+        $.consoleLn('Deleting old emotes cache...');
+        $.inidb.del('emotescache', 'emotes');
+
+        $.consoleLn('PhantomBot v2.0.9 updates completed!');
+        $.inidb.set('updates', 'installedv2.0.9', 'true');
+    }
+
     /**
      * @function getTableContents
      * @param {string} tableName
