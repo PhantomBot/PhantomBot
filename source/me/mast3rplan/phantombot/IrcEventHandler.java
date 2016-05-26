@@ -62,7 +62,7 @@ public class IrcEventHandler implements IRCEventListener {
             this.cmessageTags = cmessageTags;
         }
         public void run() {
-            eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
+            PhantomBot.instance().getScriptEventManagerInstance().runDirect(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
         }
     }
       
@@ -144,7 +144,7 @@ public class IrcEventHandler implements IRCEventListener {
                 ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, cusername, cmessage, cchannel, cmessageTags);
                 new Thread(moderationRunnable).start();
             } catch (Exception ex) {
-                eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
+                PhantomBot.instance().getScriptEventManagerInstance().runDirect(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
             }
 
             eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
@@ -196,7 +196,7 @@ public class IrcEventHandler implements IRCEventListener {
                     ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags);
                     new Thread(moderationRunnable).start();
                 } catch (Exception ex) {
-                    eventBus.postModeration(new IrcModerationEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
+                    PhantomBot.instance().getScriptEventManagerInstance().runDirect(new IrcModerationEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
                 }
                 
                 eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
