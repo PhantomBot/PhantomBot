@@ -316,6 +316,15 @@
             subAction = args[1],
             aliasArgs;
 
+        /** Used for custom commands */
+        if ($.inidb.exists('command', command)) {
+            var tag = tags(event, $.inidb.get('command', command));
+            if (tag != '') {
+                $.say(tag);
+            }
+            return;
+        }
+
         /**
          * @commandpath addcom [command] [command text] - Add a custom command (see !listtags)
          */
@@ -616,7 +625,7 @@
                     continue;
                 }
                 if (permCom(sender, cmds[idx], '') === 0) {
-                    cmdList.push(cmds[idx]);
+                    cmdList.push('!' + cmds[idx]);
                 }
             }
 
@@ -681,13 +690,6 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.success', action));
             $.log.event(sender + ' re-enabled command !' + command);
         }
-
-        if ($.inidb.exists('command', command)) {
-            var tag = tags(event, $.inidb.get('command', command));
-            if (tag != '') {
-                $.say(tag);
-            }
-        }
     });
 
     /**
@@ -707,7 +709,7 @@
             $.registerChatCommand('./commands/customCommands.js', 'commands', 7);
             $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
-            $.registerChatCommand('./commands/customCommands.js', 'botcommands', 0);
+            $.registerChatCommand('./commands/customCommands.js', 'botcommands', 2);
         }
     });
 
