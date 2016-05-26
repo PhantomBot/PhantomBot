@@ -104,12 +104,6 @@ public class IrcEventHandler implements IRCEventListener {
             String cmessage = cmessageEvent.getMessage();
 
             com.gmt2001.Console.debug.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
-            try {
-                ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, cusername, cmessage, cchannel, cmessageTags);
-                new Thread(moderationRunnable).start();
-            } catch (Exception ex) {
-                eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
-            }
 
             if (PhantomBot.enableDebugging) {
                 com.gmt2001.Console.debug.println("Channel Message Tags");
@@ -122,8 +116,6 @@ public class IrcEventHandler implements IRCEventListener {
             if (cmessageTags.containsKey("display-name")) {
                 PhantomBot.instance().getUsernameCache().addUser(cusername, cmessageTags.get("display-name"));
             }
-
-            eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
 
             if (cmessageTags.containsKey("subscriber")) {
                 if (cmessageTags.get("subscriber").equalsIgnoreCase("1")) {
@@ -148,6 +140,15 @@ public class IrcEventHandler implements IRCEventListener {
                 }
             }
 
+            try {
+                ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, cusername, cmessage, cchannel, cmessageTags);
+                new Thread(moderationRunnable).start();
+            } catch (Exception ex) {
+                eventBus.postModeration(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
+            }
+
+            eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
+
             if (cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick())) {
                 if (!mods.contains(cmessageEvent.getNick().toLowerCase())) {
                     mods.add(cmessageEvent.getNick().toLowerCase());
@@ -167,13 +168,6 @@ public class IrcEventHandler implements IRCEventListener {
                 Map<String, String> ctcmessageTags = ctcmessageEvent.tags();
 
                 com.gmt2001.Console.debug.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
-                try {
-                    ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags);
-                    new Thread(moderationRunnable).start();
-                } catch (Exception ex) {
-                    eventBus.postModeration(new IrcModerationEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
-                }
-                eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
 
                 if (ctcmessageTags.containsKey("subscriber")) {
                     if (ctcmessageTags.get("subscriber").equalsIgnoreCase("1")) {
@@ -197,6 +191,15 @@ public class IrcEventHandler implements IRCEventListener {
                         }
                     }
                 }
+
+                try {
+                    ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags);
+                    new Thread(moderationRunnable).start();
+                } catch (Exception ex) {
+                    eventBus.postModeration(new IrcModerationEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
+                }
+                
+                eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
 
                 if (ctcmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(ctcmessageEvent.getNick())) {
                     if (!mods.contains(ctcmessageEvent.getNick().toLowerCase())) {
