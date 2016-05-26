@@ -13,7 +13,8 @@
         gwSubUsers = [];
         modListUsers = [],
         users = [],
-        lastJoinPart = $.systemTime();
+        lastJoinPart = $.systemTime(),
+        modInterval = 10 * 60 * 1000;
 
     /**
      * @function userExists
@@ -88,7 +89,7 @@
      */
     function isModv3(username, tags) {
         if (tags != null && tags != '{}' && tags.get('user-type').equalsIgnoreCase('mod'))
-          return true;
+            return true;
         
         return $.isAdmin(username) || $.isMod(username);
     };
@@ -838,6 +839,10 @@
             $.say(getGroupList());
         }
     });
+
+    setInterval(function () {
+        $.say('.mods');
+    }, modInterval, 'modcheck');
 
     // Load groups and generate default groups if they don't exist
     reloadGroups();
