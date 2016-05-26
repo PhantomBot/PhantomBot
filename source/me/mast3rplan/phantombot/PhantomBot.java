@@ -173,6 +173,7 @@ public class PhantomBot implements Listener {
     private static PhantomBot instance;
     public static String log_timezone = "GMT";
     private UsernameCache usernameCache;
+    private ScriptEventManager scriptEventManager;
 
     // private TwitchWSIRC twitchWSIRC;
 
@@ -433,6 +434,10 @@ public class PhantomBot implements Listener {
     public DataStore getDataStore() {
         return dataStoreObj;
     }
+ 
+    public ScriptEventManager getScriptEventManagerInstance() {
+        return scriptEventManager;
+   }
 
     public Session getSession() {
         return session;
@@ -646,6 +651,7 @@ public class PhantomBot implements Listener {
 
         EventBus.instance().register(this);
         EventBus.instance().register(ScriptEventManager.instance());
+        scriptEventManager = ScriptEventManager.instance();
 
         dataStoreObj.LoadConfig(datastoreconfig);
 
@@ -779,6 +785,7 @@ public class PhantomBot implements Listener {
         //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
         session.sayChannel(this.channel, ".mods");
 
+        this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
         this.followersCache = FollowersCache.instance(this.channel.getName().toLowerCase());
         this.hostCache = ChannelHostCache.instance(this.channel.getName().toLowerCase());
         this.subscribersCache = SubscribersCache.instance(this.channel.getName().toLowerCase());
@@ -786,7 +793,6 @@ public class PhantomBot implements Listener {
         if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
             this.donationsCache = DonationsCache.instance(this.channel.getName().toLowerCase());
         }
-        this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
         this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
 
         if (this.twitter_username.length() > 0 &&
