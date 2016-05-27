@@ -636,6 +636,7 @@
          */
         $api.on($script, 'ircChannelMessage', function(event) {
             if (event.getSender().equalsIgnoreCase('jtv') || event.getSender().equalsIgnoreCase('twitchnotify')) {
+                $.checkForSubs(event);
                 callHook('ircPrivateMessage', event, false);
             } else {
                 callHook('ircChannelMessage', event, false);

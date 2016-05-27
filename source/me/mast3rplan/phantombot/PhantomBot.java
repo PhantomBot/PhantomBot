@@ -936,13 +936,13 @@ public class PhantomBot implements Listener {
       
         if (message.equals("testsub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testsub");
-            EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "twitchnotify", "testuser just subscribed!"));
+            EventBus.instance().post(new IrcChannelMessageEvent(session, "twitchnotify", "testuser just subscribed!", this.channel));
             return;
         }
 
         if (message.equals("testresub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testresub");
-            EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "twitchnotify", "testuser just subscribed for 2 months in a row!"));
+            EventBus.instance().post(new IrcChannelMessageEvent(session, "twitchnotify", "testuser just subscribed for 2 months in a row!", this.channel));
             return;
         }
 

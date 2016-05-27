@@ -226,40 +226,45 @@
         }
     });
 
-    /**
-     * @event ircPrivateMessage
-     */
-    $.bind('ircPrivateMessage', function(event) {
-        var sender = event.getSender(),
-            message = event.getMessage(),
-            sub = message.substring(0, message.indexOf(' ', 1)).toString(),
-            s,
-            r;
+    function checkForSubs(event) {
+        subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage');
+        if (event.getSender().equalsIgnoreCase('twitchnotify')) {
+            if (subWelcomeToggle && event.getMessage().match(/just subscribed!/g)) {
+                if (subMessage.match(/\(name\)/g)) {
+                    subMessage = $.replace(subMessage, '(name)', String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1))));
+                }
 
-        s = subMessage + '';
-        r = reSubMessage + '';
+                if (subMessage.match(/\(reward\)/g)) {
+                    subMessage = $.replace(subMessage, '(reward)', String(subReward));
+                }
 
-        if (sender.equalsIgnoreCase('twitchnotify')) {
-            if (subWelcomeToggle && message.contains('just subscribed!')) {
-                s = s.replace(/\(name\)/ig, sub);
-                s = s.replace(/\(reward\)/ig, subReward.toString());
-                $.say(s);
-                $.addSubUsersList(sub);
-                $.restoreSubscriberStatus(sub, true);
-                $.log.event(sub + ' subscribed.');
+                $.say(subMessage);
+                $.addSubUsersList(String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
                 return;
             }
 
-            if (reSubWelcomeToggle && message.contains('months in a row!') && message.contains('subscribed for')) {
-                var months = message.substring(message.indexOf('months') - 3, message.indexOf('months') - 1).toString();
-                r = r.replace(/\(name\)/ig, sub);
-                r = r.replace(/\(months\)/ig, months);
-                r = r.replace(/\(reward\)/ig, subReward.toString());
-                $.say(r);
-                $.log.event(sub + ' re-subscribed for ' + months + ' months.');
+            reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage');
+
+            if (reSubWelcomeToggle && event.getMessage().match(/subscribed for/g)) {
+                if (reSubMessage.match(/\(name\)/g)) {
+                    reSubMessage = $.replace(reSubMessage, '(name)', String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1))));
+                }
+
+                if (reSubMessage.match(/\(months\)/g)) {
+                    reSubMessage = $.replace(reSubMessage, '(months)', String(event.getMessage().substring(event.getMessage().indexOf('months') - 3, event.getMessage().indexOf('months') - 1)));
+                }
+
+                if (reSubMessage.match(/\(reward\)/g)) {
+                    reSubMessage = $.replace(reSubMessage, '(reward)', String(subReward));
+                }
+
+                $.say(reSubMessage);
+                $.restoreSubscriberStatus(String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)), true);
             }
         }
-    });
+    };
+
+    $.checkForSubs = checkForSubs;
 
     /**
      * @event initReady

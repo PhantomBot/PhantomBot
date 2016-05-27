@@ -33,6 +33,7 @@ public class EventBus {
     private final com.google.common.eventbus.AsyncEventBus ceventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(64), new ExceptionHandler());
     private final com.google.common.eventbus.EventBus meventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
     private final com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
+    private final com.google.common.eventbus.EventBus peventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
 
     private final Set<Listener> listeners = Sets.newHashSet();
 
@@ -42,6 +43,7 @@ public class EventBus {
         aeventBus.register(listener);
         ceventBus.register(listener);
         meventBus.register(listener);
+        peventBus.register(listener);
     }
 
     public void unregister(Listener listener) {
@@ -50,6 +52,7 @@ public class EventBus {
         aeventBus.unregister(listener);
         ceventBus.unregister(listener);
         meventBus.unregister(listener);
+        peventBus.unregister(listener);
     }
 
     public void post(Event event) {
@@ -84,4 +87,11 @@ public class EventBus {
         meventBus.post(event);
     }
 
+    public void postPVMSG(Event event) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
+            return;
+        }
+
+        peventBus.post(event);
+    }
 }
