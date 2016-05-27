@@ -208,7 +208,6 @@ public class IrcEventHandler implements IRCEventListener {
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, ctcmessageEvent.getChannel(), ctcmessageEvent.getNick(), "O", true));
                     }
                 }
-
             }
             break;
         case PRIVATE_MESSAGE:
@@ -216,7 +215,7 @@ public class IrcEventHandler implements IRCEventListener {
             String pusername = pmessageEvent.getNick();
             String pmessage = pmessageEvent.getMessage();
 
-            eventBus.postAsync(new IrcPrivateMessageEvent(session, pusername, pmessage, pmessageEvent.tags()));
+            eventBus.postPVMSG(new IrcPrivateMessageEvent(session, pusername, pmessage, pmessageEvent.tags()));
             break;
         case MODE_EVENT:
             ModeEvent modeEvent = (ModeEvent) event;
@@ -280,7 +279,7 @@ public class IrcEventHandler implements IRCEventListener {
                 System.exit(0);
             }
 
-            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage(), ((NoticeEvent) event).tags()));
+            eventBus.postPVMSG(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage(), ((NoticeEvent) event).tags()));
             break;
         case DEFAULT:
             if (event.command().equalsIgnoreCase("CLEARCHAT")) {
