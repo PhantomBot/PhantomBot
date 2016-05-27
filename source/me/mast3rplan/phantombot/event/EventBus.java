@@ -29,9 +29,7 @@ public class EventBus {
         return instance;
     }
 
-    private final com.google.common.eventbus.AsyncEventBus aeventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(8), new ExceptionHandler());
-    private final com.google.common.eventbus.AsyncEventBus ceventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(64), new ExceptionHandler());
-    private final com.google.common.eventbus.EventBus meventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
+    private final com.google.common.eventbus.AsyncEventBus aeventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(16), new ExceptionHandler());
     private final com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
     private final com.google.common.eventbus.EventBus peventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
 
@@ -41,8 +39,6 @@ public class EventBus {
         listeners.add(listener);
         eventBus.register(listener);
         aeventBus.register(listener);
-        ceventBus.register(listener);
-        meventBus.register(listener);
         peventBus.register(listener);
     }
 
@@ -50,8 +46,6 @@ public class EventBus {
         listeners.remove(listener);
         eventBus.unregister(listener);
         aeventBus.unregister(listener);
-        ceventBus.unregister(listener);
-        meventBus.unregister(listener);
         peventBus.unregister(listener);
     }
 
@@ -69,22 +63,6 @@ public class EventBus {
         }
 
         aeventBus.post(event);
-    }
-
-    public void postCommand(Event event) {
-        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
-            return;
-        }
-
-        ceventBus.post(event);
-    }
-
-    public void postModeration(Event event) {
-        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
-            return;
-        }
-
-        meventBus.post(event);
     }
 
     public void postPVMSG(Event event) {

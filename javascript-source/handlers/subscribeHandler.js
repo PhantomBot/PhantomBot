@@ -239,7 +239,8 @@
                 }
 
                 $.say(subMessage);
-                $.addSubUsersList(String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
+                var sub = String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
+                $.addSubUsersList(sub);
                 return;
             }
 
@@ -259,7 +260,8 @@
                 }
 
                 $.say(reSubMessage);
-                $.restoreSubscriberStatus(String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)), true);
+                var sub = String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
+                $.restoreSubscriberStatus(sub, true);
             }
         }
     };
