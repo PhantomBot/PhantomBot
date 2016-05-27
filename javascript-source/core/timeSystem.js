@@ -362,13 +362,7 @@
         }
 
         if (command.equalsIgnoreCase('uptime')) {
-            var name = $.username.resolve($.channelName);
-            var uptime = $.getStreamUptime($.channelName);
-            if (!$.isOnline($.channelName)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('timesystem.uptime.offline', name));
-                return;
-            }
-            $.say($.lang.get('timesystem.uptime', name, uptime));
+            $.say(($.getStreamUptime($.channelName) ? $.lang.get('timesystem.uptime', $.username.resolve($.channelName), $.getStreamUptime($.channelName)) : $.lang.get('timesystem.uptime.offline', $.username.resolve($.channelName))));
         }
     });
 
