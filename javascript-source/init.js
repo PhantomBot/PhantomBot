@@ -453,7 +453,7 @@
                     if (modules[index].scriptFile.indexOf('./core/') != -1 || modules[index].scriptFile.indexOf('./lang/') != -1) {
                         continue;
                     }
-                    modulesList.push(modules[index].scriptFile + (modules[index].enabled ? '(E)' : ' (D)'));
+                    modulesList.push(modules[index].scriptFile + (modules[index].enabled ? '' : ' (*)'));
                 }
                 if (args[1] === undefined) {
                     totalPages = $.paginateArray(modulesList, 'init.module.list', ', ', true, sender, 1);
