@@ -4,12 +4,11 @@
  * Register new subscribers and unsubscribers in the channel
  */
 (function() {
-    var subMessage =  $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
+    var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
         reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
-        subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
-        customemote;
+        subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0);
 
     /**
      * @function updateSubscribeConfig
