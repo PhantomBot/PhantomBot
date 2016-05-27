@@ -146,7 +146,7 @@
             var uptime = $.twitchcache.getStreamUptimeSeconds();
 
             if (uptime === 0) {
-                return 'Stream is offline';
+                return false;
             }
             return $.getTimeString(uptime);
         } else {
@@ -156,7 +156,7 @@
                 time;
     
             if (stream.isNull('stream')) {
-                return 'Stream is offline';
+                return false;
             }
     
             createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
@@ -164,7 +164,7 @@
                 time = now - createdAtDate;
                 return $.getTimeString(time / 1000);
             } else {
-                return 'Stream is offline';
+                return false;
             }
         }
     };
