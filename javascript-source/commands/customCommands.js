@@ -567,7 +567,10 @@
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.usage'));
                 return;
-            } else if (!$.commandExists(action)) {
+            }
+
+            action = args[0].replace('!', '').toLowerCase();
+            if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.error.404'));
                 return;
             } else if (isNaN(parseInt(subAction)) || parseInt(subAction) < 0) {
@@ -575,7 +578,6 @@
                 return;
             }
 
-            action = args[0].replace('!', '').toLowerCase();
 
             $.inidb.set('pricecom', action, subAction);
             list = $.inidb.GetKeyList('aliases', '');
