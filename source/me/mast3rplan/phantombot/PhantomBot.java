@@ -325,7 +325,7 @@ public class PhantomBot implements Listener {
             dataStoreObj = TempStore.instance();
         } else if (datastore.equalsIgnoreCase("IniStore")) {
             dataStoreObj = IniStore.instance();
-        } else if (datastore.equalsIgnoreCase("MySQL")) {
+        } else if (datastore.equalsIgnoreCase("MySQLStore")) {
             dataStoreObj = MySQLStore.instance();
             dataStoreObj.CreateConnection(this.mysql_db_conn, this.mysql_db_user, this.mysql_db_pass);
         } else {

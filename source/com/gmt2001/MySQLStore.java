@@ -108,7 +108,7 @@ public class MySQLStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
 
-                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section LONGTEXT, variable LONGTEXT as PRIMARY KEY, value LONGTEXT);");
+                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (variable));");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -176,7 +176,7 @@ public class MySQLStore extends DataStore {
         try (Statement statement = connection.createStatement()) {
             statement.setQueryTimeout(10);
 
-            try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='phantombot_" + fName + "';")) {
+            try (ResultSet rs = statement.executeQuery("SHOW TABLES LIKE 'phantombot_" + fName + "';")) {
 
                 return rs.next();
             }
@@ -194,12 +194,13 @@ public class MySQLStore extends DataStore {
         try (Statement statement = connection.createStatement()) {
             statement.setQueryTimeout(10);
 
-            try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';")) {
+/* TODO: This function does not work at present.  Must determine how to capture the data back from the query. */
+            try (ResultSet rs = statement.executeQuery("SHOW TABLES LIKE 'phantombot_%';")) {
 
                 ArrayList<String> s = new ArrayList<>();
 
                 while (rs.next()) {
-                    s.add(rs.getString("name").substring(11));
+                    s.add(rs.getString("Tables_in_phantombot"));
                 }
 
                 return s.toArray(new String[s.size()]);
