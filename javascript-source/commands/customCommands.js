@@ -567,7 +567,10 @@
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.usage'));
                 return;
-            } else if (!$.commandExists(action)) {
+            }
+
+            action = args[0].replace('!', '').toLowerCase();
+            if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.error.404'));
                 return;
             } else if (isNaN(parseInt(subAction)) || parseInt(subAction) < 0) {
@@ -575,7 +578,6 @@
                 return;
             }
 
-            action = args[0].replace('!', '').toLowerCase();
 
             $.inidb.set('pricecom', action, subAction);
             list = $.inidb.GetKeyList('aliases', '');
@@ -606,10 +608,16 @@
          * @commandpath commands - Provides a list of all available custom commands.
          */
         if (command.equalsIgnoreCase('commands')) {
-            var cmds = $.inidb.GetKeyList('command', '');
+            var cmds = $.inidb.GetKeyList('command', ''),
+                cmdList = [];
 
-            if (cmds.length > 0) {
-                $.paginateArray(cmds, 'customcommands.cmds', ', ', true, sender);
+            for (idx in cmds) {
+                if (permCom(sender, cmds[idx], '') === 0) {
+                    cmdList.push('!' + cmds[idx]);
+                }
+            }
+            if (cmdList.length > 0) {
+                $.paginateArray(cmdList, 'customcommands.cmds', ', ', true, sender);
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.404.no.commands'));
             }
