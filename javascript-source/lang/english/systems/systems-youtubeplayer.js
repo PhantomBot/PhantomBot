@@ -61,3 +61,9 @@ $.lang.register('ytplayer.command.importpl.file.success', 'Import Complete! Succ
 $.lang.register('ytplayer.command.importpl.file.404', 'Could not find file $1');
 $.lang.register('ytplayer.command.importpl.file.registry404', 'List $1 was not created in DB, try again.');
 $.lang.register('ytplayer.command.importpl.file.usage', 'usage: !importpl file [playlist name] [filename]');
+$.lang.register('ytplayer.blacklisted', 'you have been blacklisted from using the songrequest feature.');
+$.lang.register('ytplayer.blacklist.usage', 'usage: !ytp blacklist [add / remove]');
+$.lang.register('ytplayer.blacklist.add.usage', 'usage: !ytp blacklist add [username]');
+$.lang.register('ytplayer.blacklist.add.success', '$1 has been blacklisted from using the songrequests feature.');
+$.lang.register('ytplayer.blacklist.remove.usage', 'usage: !ytp blacklist remove [username]');
+$.lang.register('ytplayer.blacklist.remove.success', '$1 has been un-blacklisted from using the songrequests feature.');
