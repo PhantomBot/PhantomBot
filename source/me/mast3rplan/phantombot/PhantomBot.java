@@ -20,6 +20,7 @@ import com.gmt2001.DataStore;
 import com.gmt2001.IniStore;
 import com.gmt2001.SqliteStore;
 import com.gmt2001.TempStore;
+import com.gmt2001.MySQLStore;
 import com.gmt2001.TwitchAPIv3;
 import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
@@ -99,6 +100,9 @@ import org.apache.commons.lang3.SystemUtils;
 
 public class PhantomBot implements Listener {
 
+    private String mysql_db_conn;
+    private String mysql_db_user;
+    private String mysql_db_pass;
     private String twitchalertskey = null;
     private int twitchalertslimit;
     public final String username;
@@ -182,7 +186,7 @@ public class PhantomBot implements Listener {
     }
 
     public String botVersion() {
-        return "PhantomBot Version 2.0.8";
+        return "PhantomBot Version 2.0.9";
     }
 
     public String getBotInfo() {
@@ -196,7 +200,8 @@ public class PhantomBot implements Listener {
                       String keystorepassword, String keypassword, String twitchalertskey,
                       int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
                       String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword,
-                      String twitter_username, String twitter_access_token, String twitter_secret_token, String log_timezone) {
+                      String twitter_username, String twitter_access_token, String twitter_secret_token, String log_timezone,
+                      String mysql_db_conn, String mysql_db_user, String mysql_db_pass) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -233,6 +238,10 @@ public class PhantomBot implements Listener {
         this.twitter_username = twitter_username;
         this.twitter_access_token = twitter_access_token;
         this.twitter_secret_token = twitter_secret_token;
+
+        this.mysql_db_conn = mysql_db_conn;
+        this.mysql_db_user = mysql_db_user;
+        this.mysql_db_pass = mysql_db_pass;
         
         if (log_timezone.isEmpty()) {
             this.log_timezone = "GMT";
@@ -316,6 +325,9 @@ public class PhantomBot implements Listener {
             dataStoreObj = TempStore.instance();
         } else if (datastore.equalsIgnoreCase("IniStore")) {
             dataStoreObj = IniStore.instance();
+        } else if (datastore.equalsIgnoreCase("MySQLStore")) {
+            dataStoreObj = MySQLStore.instance();
+            dataStoreObj.CreateConnection(this.mysql_db_conn, this.mysql_db_user, this.mysql_db_pass);
         } else {
             dataStoreObj = SqliteStore.instance();
             if (!dataStoreObj.exists("settings", "tables_indexed")) {
@@ -1106,6 +1118,9 @@ public class PhantomBot implements Listener {
                 data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
                 data += "paneluser=" + paneluser + "\r\n";
                 data += "panelpassword=" + panelpassword + "\r\n";
+                data += "mysqlconn=" + mysql_db_conn + "\r\n";
+                data += "mysqluser=" + mysql_db_user + "\r\n";
+                data += "mysqlpass=" + mysql_db_pass + "\r\n";
 
                 if (!log_timezone.isEmpty()) {
                     data += "logtimezone=" + log_timezone + "\r\n";
@@ -1293,6 +1308,9 @@ public class PhantomBot implements Listener {
     }
 
     public static void main(String[] args) throws IOException {
+        String mysql_db_conn = "";
+        String mysql_db_user = "";
+        String mysql_db_pass = "";
         String user = "";
         String oauth = "";
         String webauth = "";
@@ -1359,12 +1377,16 @@ public class PhantomBot implements Listener {
                                      + "    [gamewisprefresh=<gamewisp refresh key>]\r\n"
                                      + "    [paneluser=<username>]\r\n"
                                      + "    [panelpassword=<password>]\r\n"
-                                     + "    [datastore=<IniStore|TempStore|SqliteStore>] \r\n"
+                                     + "    [mysqldb=<MySQL connection string>]\r\n"
+                                     + "    [mysqluser=<MySQL username>]\r\n"
+                                     + "    [mysqlpass=<MySQL password>]\r\n"
+                                     + "    [datastore=<IniStore|TempStore|SqliteStore|MySQLStore>] \r\n"
                                      + "    [datastoreconfig=<IniStore Folder Name|SqliteStore config file>]\r\n\r\n"
             
                                      + "DataStore Types:\r\n"
                                      + "    IniStore: .ini files stored in inifiles directory\r\n"
                                      + "    TempStore: Memory store, lost on shutdown\r\n"
+                                     + "    MySQLStore: MySQL Database\r\n"
                                      + "    SqliteStore: Default. SQLite3 database\r\n\r\n"
                                 
                                      + "Ports:\r\n"
@@ -1410,6 +1432,15 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("panelpassword=") && line.length() > 16) {
                         panelpassword = line.substring(14);
+                    }
+                    if (line.startsWith("mysqlconn=") && line.length() > 11) {
+                        mysql_db_conn = line.substring(10);
+                    }
+                    if (line.startsWith("mysqluser=") && line.length() > 11) {
+                        mysql_db_user = line.substring(10);
+                    }
+                    if (line.startsWith("mysqlpass=") && line.length() > 11) {
+                        mysql_db_pass = line.substring(10);
                     }
                     if (line.startsWith("ytauth=") && line.length() > 8) {
                         ytauth = line.substring(7);
@@ -1618,7 +1649,6 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("twitchalertslimit='" + twitchalertslimit + "'");
                     com.gmt2001.Console.out.println("paneluser='" + paneluser + "'");
                     com.gmt2001.Console.out.println("panelpassword='" + panelpassword + "'");
- 
                 }
                 if (arg.equalsIgnoreCase("debugon")) {
                     com.gmt2001.Console.out.println("Debug Mode Enabled via command line");
@@ -1658,6 +1688,24 @@ public class PhantomBot implements Listener {
                 if (arg.toLowerCase().startsWith("panelpassword=") && arg.length() > 16) {
                     if (!panelpassword.equals(arg.substring(14))) {
                         panelpassword = arg.substring(14);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("mysqlconn=") && arg.length() > 11) {
+                    if (!mysql_db_conn.equals(arg.substring(10))) {
+                         mysql_db_conn = arg.substring(10);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("mysqluser=") && arg.length() > 11) {
+                    if (!mysql_db_user.equals(arg.substring(14))) {
+                        mysql_db_user = arg.substring(10);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("mysqlpass=") && arg.length() > 11) {
+                    if (!mysql_db_pass.equals(arg.substring(10))) {
+                        mysql_db_pass = arg.substring(10);
                         changed = true;
                     }
                 }
@@ -1836,6 +1884,9 @@ public class PhantomBot implements Listener {
             data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
             data += "paneluser=" + paneluser + "\r\n";
             data += "panelpassword=" + panelpassword + "\r\n";
+            data += "mysqlconn=" + mysql_db_conn + "\r\n";
+            data += "mysqluser=" + mysql_db_user + "\r\n";
+            data += "mysqlpass=" + mysql_db_pass + "\r\n";
             if (!log_timezone.isEmpty()) {
                 data += "logtimezone=" + log_timezone + "\r\n";
             }
@@ -1848,7 +1899,8 @@ public class PhantomBot implements Listener {
                                              whisperlimit60, datastore, datastoreconfig, youtubekey, webenable, musicenable,
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
                                              webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
-                                             twitter_username, twitter_access_token, twitter_secret_token, log_timezone);
+                                             twitter_username, twitter_access_token, twitter_secret_token, log_timezone,
+                                             mysql_db_conn, mysql_db_user, mysql_db_pass);
     }
 
     public void updateGameWispTokens(String[] newTokens) {
@@ -1884,6 +1936,9 @@ public class PhantomBot implements Listener {
         data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
         data += "paneluser=" + paneluser + "\r\n";
         data += "panelpassword=" + panelpassword + "\r\n";
+        data += "mysqlconn=" + mysql_db_conn + "\r\n";
+        data += "mysqluser=" + mysql_db_user + "\r\n";
+        data += "mysqlpass=" + mysql_db_pass + "\r\n";
         if (!log_timezone.isEmpty()) {
             data += "logtimezone=" + log_timezone + "\r\n";
         }

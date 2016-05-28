@@ -1105,6 +1105,36 @@
                 $.say($.lang.get('ytplayer.command.ytp.setmaxvidlength.success', songRequestsMaxSecondsforVideo));
                 return;
             }
+
+            /**
+             * @commandpath ytp blacklist [add / remove] [username] - Blacklist a user from using the songrequest features.
+             */
+            if (action.equalsIgnoreCase('blacklist')) {
+                if (!args[1]) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.usage'));
+                    return;
+                }
+
+                if (args[1].equalsIgnoreCase('add')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.add.usage'));
+                        return;
+                    }
+
+                    $.inidb.set('ytpBlacklist', args[2].toLowerCase(), 'true');
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.add.success', args[2]));
+                }
+
+                if (args[1].equalsIgnoreCase('remove')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.remove.usage'));
+                        return;
+                    }
+
+                    $.inidb.del('ytpBlacklist', args[2].toLowerCase());
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.remove.success', args[2]));
+                }
+            }
         }
 
         /**
@@ -1291,10 +1321,16 @@
          * @commandpath songrequest [YouTube ID | YouTube link | search string] - Request a song!
          */
         if (command.equalsIgnoreCase('songrequest') || command.equalsIgnoreCase('addsong')) {
+            if ($.getIniDbBoolean('ytpBlacklist', sender, false)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklisted'));
+                return;
+            }
+
             if (args.length == 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.usage'));
                 return;
             }
+
             var request = currentPlaylist.requestSong(event.getArguments(), sender);
             if (request != null) {
                 $.say($.lang.get(
