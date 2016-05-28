@@ -282,6 +282,7 @@ $.lang.register('timesystem.autolevel.disabled', 'Users will no longer be promot
 $.lang.register('timesystem.autolevel.enabled', 'Users will now be promoted to $1 when they have been in the chat for $2 hour(s).');
 $.lang.register('timesystem.autolevel.promoted', '$1 has been promoted to $2 by being in the chat for $3 hour(s). Congratulations!');
 $.lang.register('timesystem.get.other', '$1 currently spent $2 in the chat.');
+$.lang.register('timesystem.get.self', 'you currently have spent $2 in the chat.');
 $.lang.register('timesystem.modpermtoggle.success', 'Users in the group $1 or higher are now able to use time management commands.');
 $.lang.register('timesystem.offlinetime.disabled', 'Offline time will not longer be counted towards the time.');
 $.lang.register('timesystem.offlinetime.enabled', 'Offline time will now be counted towards the time.');
@@ -302,5 +303,5 @@ $.lang.register('whisper.whispers.disabled', '[Whisper Mode] has been disabled.'
 $.lang.register('whisper.whispers.enabled', '[Whisper Mode] has been enabled.');
 $.lang.register('pausecommands.usage', 'usage: !pausecommands [seconds | clear]');
 $.lang.register('common.hours', ' hours, ');
-$.lang.register('common.minutes', ' minutes, and ');
+$.lang.register('common.minutes', ' minutes and ');
 $.lang.register('common.seconds', ' seconds');
