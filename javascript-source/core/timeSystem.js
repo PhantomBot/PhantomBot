@@ -409,5 +409,4 @@
     $.getCurLocalTimeString = getCurLocalTimeString;
     $.getLocalTimeString = getLocalTimeString;
     $.getLongTimeString = getLongTimeString;
-    $.getAge = getAge;
 })();
