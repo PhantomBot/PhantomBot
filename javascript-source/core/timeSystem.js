@@ -130,28 +130,20 @@
      * @param {Number} time
      * @returns {string}
      */
-    function getLongTimeString(time) {
-        var d = Math.abs(time - new Date().getTime()) / 1000,
-            v = '',
-            r = {},
-            s = {
-                months: 2592000,
-                days: 86400,
-                hours: 3600,
-                minutes: 60,
-                seconds: 1
-            },
-            followage = '';
+    function getLongTimeString(time, short) {
+        time = Math.abs((time - $.systemTime()) / 1000);
 
-        Object.keys(s).forEach(function(key){
-            v = Math.floor(d / s[key]);
-            if (v > 0) {
-                followage = followage + v + ' ' + key + ', ';
-                r[key] = Math.floor(d / s[key]);
-                d -= r[key] * s[key];
-            }
-        });
-        return followage.slice(0, -2);
+        var months = Math.floor(time / 2592000),
+            days = Math.floor(time / 86400),
+            hours = Math.floor((time % 86400) / 3600),
+            minutes = Math.floor(((time % 86400) % 3600) / 60),
+            seconds = Math.floor(((time % 86400) % 3600) % 60);
+
+        if (short) {
+            return days + ' days, ' + hours + ' hours, ' + minutes + ' minutes and ' + seconds + ' seconds.';
+        } else {
+            return months + ' months, ' + days + ' days, ' + hours + ' hours, ' + minutes + ' minutes and ' + seconds + ' seconds.';
+        }
     };
 
     /**
