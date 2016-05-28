@@ -27,8 +27,8 @@ These are the people who will provide help for specific things related to the bo
 
 ###TravisCI
 The Java sources are tested against:
-- OracleJDK 8
-- OracleJDK 7
-- OpenJDK 7
-- 
--[![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot)
+  - OracleJDK 8
+  - OracleJDK 7
+  - OpenJDK 7
+ -
+ -[![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot)
