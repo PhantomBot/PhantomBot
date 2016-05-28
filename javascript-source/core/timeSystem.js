@@ -140,9 +140,9 @@
             seconds = Math.floor(((time % 86400) % 3600) % 60);
 
         if (short) {
-            return days + ' days, ' + hours + ' hours, ' + minutes + ' minutes and ' + seconds + ' seconds';
+            return days + ' days, ' + hours + ' hours, ' + minutes + ' minutes and ' + seconds + ' seconds.';
         } else {
-            return months + ' months, ' + days + ' days, ' + hours + ' hours, ' + minutes + ' minutes and ' + seconds + ' seconds';
+            return months + ' months, ' + days + ' days, ' + hours + ' hours, ' + minutes + ' minutes and ' + seconds + ' seconds.';
         }
     };
 
