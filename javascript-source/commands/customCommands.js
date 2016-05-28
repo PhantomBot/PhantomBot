@@ -47,6 +47,11 @@
             return event.getArgs()[0] + ' -> ' + message;
         }
 
+        if (message.match(/\(age\)/g)) {
+            $.getChannelAge(event);
+            return '';
+        }
+
         if (message.match(/\(1\)/g)) {
             for (var i = 0; i < event.getArgs().length; i++) {
                 message = $.replace(message, '(' + (i + 1) + ')', event.getArgs()[i]);
@@ -605,7 +610,7 @@
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
             }
-            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (#), (uptime), (game), (status), (follows), (count), (touser), (price), (viewers), (pointname), (customapi), (echo), (customjsonapi), (command command_name). (command command_name) must be the first item if used. Do not include the !');
+            $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (#), (uptime), (game), (status), (follows), (count), (touser), (price), (viewers), (pointname), (customapi), (echo), (customjsonapi), (age), (command command_name). (command command_name) must be the first item if used. Do not include the !');
         }
 
         /**
