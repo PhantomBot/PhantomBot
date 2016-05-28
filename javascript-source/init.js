@@ -577,12 +577,14 @@
 
         /**
          * @commandpath chat [message] - In the console, can be used to chat as the bot. Also used by the webpanel to communicate with chat
+         * @commandpath echo [message] - In the console, can be used to chat as the bot. Also used by the webpanel to communicate with chat
          */
-        if (command.equalsIgnoreCase('chat')) {
+        if (command.equalsIgnoreCase('chat') || command.equalsIgnoreCase('echo')) {
             if (!$.isAdmin(sender)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
             }
+
             $.say(event.getArguments());
         }
     }
@@ -1096,8 +1098,8 @@
             callHook('twitchGameChange', event, false);
         });
 
-        $.log.event('Bot locked & loaded!');
-        consoleDebug('Bot locked & loaded!');
+        $.log.event('init.js api\'s loaded.');
+        consoleDebug('init.js api\'s loaded.');
         consoleLn('');
 
         /**
@@ -1105,8 +1107,9 @@
          */
         $.registerChatCommand('./init.js', 'chat', 1);
         $.registerChatCommand('./init.js', 'module', 1);
-        $.registerChatCommand('./init.js', 'reconnect');
-        $.registerChatCommand('./init.js', 'disconnect');
+        $.registerChatCommand('./init.js', 'echo', 1);
+        $.registerChatCommand('./init.js', 'reconnect', 1);
+        $.registerChatCommand('./init.js', 'disconnect', 1);
         $.registerChatCommand('./init.js', $.botName.toLowerCase(), 1);
 
         // emit initReady event
