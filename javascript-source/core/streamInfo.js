@@ -250,6 +250,22 @@
     }
 
     /**
+     * @function getChannelAge
+     * @export $
+     * @param event
+     * @returns {Number}
+     */
+    function getChannelAge(event) {
+        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : event.getArgs()[0])),
+            created_at = new Date(channelData.getString('created_at')),
+            time = $.getLongTimeString(created_at, true);
+
+        if (channelData) {
+            $.say((!event.getArgs()[0] ? $.username.resolve(event.getSender()) : $.username.resolve(event.getArgs()[0])) + ' has been on Twitch for ' + time + '. Joined (' + $.dateToString(created_at) + ')');
+        }
+    };
+
+    /**
      * @function updateGame
      * @export $
      * @param {string} channelName
@@ -330,4 +346,5 @@
     $.updateGame = updateGame;
     $.updateStatus = updateStatus;
     $.getFollowAge = getFollowAge;
+    $.getChannelAge = getChannelAge;
 })();
