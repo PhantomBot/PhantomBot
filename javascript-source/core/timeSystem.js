@@ -183,7 +183,9 @@
          */
         if (command.equalsIgnoreCase('time')) {
             if (!hasPerm(event) || !action) {
-                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(sender), $.getUserTimeString(sender)));
+                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), $.getUserTimeString(sender)));
+            } else if (action && $.inidb.exists('time', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), $.getUserTimeString(action)));
             } else {
                 subject = args[1];
                 timeArg = parseInt(args[2]);
