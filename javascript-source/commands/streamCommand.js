@@ -126,7 +126,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.playtime.offline', $.channelName));
                 return;
             }
-            $.say($.lang.get('streamcommand.playtime.online', $.username.resolve($.channelName), $.getPlayTimeGame() + $.getPlayTime()));
+            $.say($.lang.get('streamcommand.playtime.online', $.username.resolve($.channelName), $.getPlayTimeGame(), $.getPlayTime()));
             return;
         }
 
