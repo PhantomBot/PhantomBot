@@ -18,7 +18,7 @@
             return;
         }
 
-        currentGame = $.twitchcache.getGameTitle() + '';
+        currentGame = $.getGame($.channelName);
 
         if (currentGame != null && lastGame != currentGame) {
             lastGame = currentGame;
