@@ -1488,7 +1488,7 @@ public class PhantomBot implements Listener {
                         msglimit30 = Double.parseDouble(line.substring(11));
                     }
                     if (line.startsWith("whisperlimit60=") && line.length() > 16) {
-                        msglimit30 = Double.parseDouble(line.substring(15));
+                        whisperlimit60 = Double.parseDouble(line.substring(15));
                     }
                     if (line.startsWith("datastore=") && line.length() > 11) {
                         datastore = line.substring(10);
