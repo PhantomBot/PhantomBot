@@ -718,9 +718,9 @@
                         aliasCmd = aliasList[idx].split(' ')[0];
                         aliasParams = aliasList[idx].substring(aliasList[idx].indexOf(' ') + 1);
                         if (idx == (aliasList.length - 1)) {
-                            EventBus.instance().postCommand(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
+                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));//Don't use postCommand it got removed.
                         } else {
-                            EventBus.instance().postCommand(new CommandEvent(sender, aliasCmd, aliasParams));
+                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams));//Don't use postCommand it got removed.
                         }
                     }
                 }
