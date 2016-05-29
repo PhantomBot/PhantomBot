@@ -596,9 +596,7 @@
      * @event ircClearchat
      */
     $.bind('ircClearchat', function(event) {
-        setTimeout(function () {        
-            $.log.event(event.getUser() + ' has been timed out for ' + String(event.getDuration()) + ' seconds. Reason: ' + event.getReason());
-        }, 2000, event.getUser());
+        $.log.event(event.getUser() + ' has been timed out for ' + String(event.getDuration()) + ' seconds. Reason: ' + event.getReason());
     });
 
     /**
