@@ -22,6 +22,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -176,8 +178,8 @@ public class MySQLStore extends DataStore {
         try (Statement statement = connection.createStatement()) {
             statement.setQueryTimeout(10);
 
-            try (ResultSet rs = statement.executeQuery("SHOW TABLES LIKE 'phantombot_" + fName + "';")) {
-
+            DatabaseMetaData md = connection.getMetaData();
+            try (ResultSet rs = md.getTables(null, null, "phantombot_" + fName, null)) {
                 return rs.next();
             }
         } catch (SQLException ex) {
@@ -194,15 +196,12 @@ public class MySQLStore extends DataStore {
         try (Statement statement = connection.createStatement()) {
             statement.setQueryTimeout(10);
 
-/* TODO: This function does not work at present.  Must determine how to capture the data back from the query. */
-            try (ResultSet rs = statement.executeQuery("SHOW TABLES LIKE 'phantombot_%';")) {
-
+            DatabaseMetaData md = connection.getMetaData();
+            try (ResultSet rs = md.getTables(null, null, "%", null)) {
                 ArrayList<String> s = new ArrayList<>();
-
                 while (rs.next()) {
-                    s.add(rs.getString("Tables_in_phantombot"));
+                    s.add(rs.getString(3));
                 }
-
                 return s.toArray(new String[s.size()]);
             }
         } catch (SQLException ex) {
