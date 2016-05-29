@@ -13,8 +13,7 @@
         gwSubUsers = [];
         modListUsers = [],
         users = [],
-        lastJoinPart = $.systemTime(),
-        modInterval = 10 * 60 * 1000;
+        lastJoinPart = $.systemTime();
 
     /**
      * @function userExists
@@ -36,7 +35,6 @@
         return username.equalsIgnoreCase($.botName);
     };
 
-
     /**
      * @function isOwner
      * @export $
@@ -46,7 +44,6 @@
     function isOwner(username) {
         return username.equalsIgnoreCase($.ownerName) || username.equalsIgnoreCase($.botName);
     };
-
 
     /**
      * @function isCaster
@@ -68,7 +65,6 @@
         return $.getUserGroupId(username) <= 1 || $.isOwner(username) || $.isBot(username);
     };
 
-
     /**
      * @function isMod
      * @export $
@@ -78,7 +74,6 @@
     function isMod(username) {
         return $.getUserGroupId(username) <= 2 || $.isOwner(username) || $.isBot(username);
     };
-
 
     /**
      * @function isOwner
@@ -842,7 +837,8 @@
 
     setInterval(function () {
         $.say('.mods');
-    }, modInterval, 'modcheck');
+        $.log.event('mod check done @ ' + $.systemTime());
+    }, 60 * 60 * 1000, 'modCheck');
 
     // Load groups and generate default groups if they don't exist
     reloadGroups();
