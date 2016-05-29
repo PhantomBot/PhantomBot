@@ -242,7 +242,7 @@
             if (commandToExec.length > 0) {
                 var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
                 var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
-                EventBus.instance().postCommand(new CommandEvent(event.getSender(), commandToExec, message.replace(reCommandTag, '')));
+                EventBus.instance().post(new CommandEvent(event.getSender(), commandToExec, message.replace(reCommandTag, '')));//Don't use postCommand. it got removed.
                 return '';
             }
         }

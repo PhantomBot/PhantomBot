@@ -51,7 +51,7 @@
 
         if (notice.startsWith('command:')) {
             notice = notice.substring(8);
-            EventBus.instance().postCommand(new CommandEvent($.botName, notice, ' '));
+            EventBus.instance().post(new CommandEvent($.botName, notice, ' '));//Don't use postCommand. it got removed.
         } else {
             $.say(notice);
         }
