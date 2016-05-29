@@ -12,6 +12,7 @@
  */
 (function() {
     if (!$.inidb.exists('updates', 'installedv2') || $.inidb.get('updates', 'installedv2') != 'true') {
+        $.consoleLn('Starting PhantomBot version 2.0 updates...');
         var tableNamesList = $.inidb.GetFileList(),
             commandsBackup,
             timeBackup,
@@ -42,8 +43,7 @@
                 './systems/youtubePlayer.js',
             ];
 
-        if ($.inidb.FileExists('settings')) {
-            $.consoleLn('Starting PhantomBot version 2.0 updates...');
+        if ($.inidb.FileExists('points') || $.inidb.FileExists('command') || $.inidb.FileExists('time')) {
             $.consoleLn('Backing up commands...');
             commandsBackup = getTableContents('command');
 
@@ -54,7 +54,6 @@
             pointsBackup = getTableContents('points');
 
             $.consoleLn('Backup completed.');
-
             $.consoleLn('Deleting old files...');
             for (i in tableNamesList) {
                 $.inidb.RemoveFile(tableNamesList[i]);
