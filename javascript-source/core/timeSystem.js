@@ -362,34 +362,35 @@
 
     // Set an interval for increasing all current users logged time
     setInterval(function() {
-        var i;
+        var i,
+            username;
         if (!$.bot.isModuleEnabled('./core/timeSystem.js')) {
             return;
         }
 
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
             for (i in $.users) {
-                $.inidb.incr('time', $.users[i][0].toLowerCase(), 61);
+                $.inidb.incr('time', $.users[i][0].toLowerCase(), 60);
             }
         }
 
         if (levelWithTime) {
             for (i in $.users) {
-                var username = $.users[i][0].toLowerCase();
-                if (!$.isMod(username) && !$.isAdmin(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp && parseInt($.getUserGroupId(username)) > regularsGroupId) {
-
-                    $.setUserGroupById(username, regularsGroupId);
-
-                    $.say($.lang.get(
-                        'timesystem.autolevel.promoted',
-                        $.username.resolve(username),
-                        $.getGroupNameById(regularsGroupId).toLowerCase(),
-                        hoursForLevelUp
-                    )); //No whisper mode needed here.
+                username = $.users[i][0].toLowerCase();
+                if (!$.isMod(username) && !$.isAdmin(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp &&  parseInt($.getUserGroupId(username)) > regularsGroupId) {
+                    if ($.inidb.exists('group', username) && $.inidb.get('group', username) > 6) { // Added a second check here to be 100% sure the user is not a mod.
+                        $.setUserGroupById(username, regularsGroupId);
+                        $.say($.lang.get(
+                            'timesystem.autolevel.promoted',
+                            $.username.resolve(username),
+                            $.getGroupNameById(regularsGroupId).toLowerCase(),
+                            hoursForLevelUp
+                        )); //No whisper mode needed here.
+                    }
                 }
             }
         }
-    }, 6e4);
+    }, 6e4, 'autoPromoteTimer');
 
     /**
      * @event initReady
