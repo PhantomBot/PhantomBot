@@ -129,7 +129,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./games/slotMachine.js')) {
             $.registerChatCommand('./games/slotMachine.js', 'slot', 7);
-            $.registerChatSubcommand('slot', 'reward', 1);
+            $.registerChatSubcommand('slot', 'rewards', 1);
         }
     });
 
