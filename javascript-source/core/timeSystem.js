@@ -163,7 +163,16 @@
      * @returns {string}
      */
     function getUserTimeString(username) {
-        return $.getTimeString($.getUserTime(username));
+        var floor = Math.floor,
+            time = $.getUserTime(username),
+            cHours = time / 3600,
+            cMins = cHours % 1 * 60;
+
+        if (floor(cHours) > 0) {
+            return ((floor(cHours) + ' hours, ' + floor(~~cMins) + ' minutes'));
+        } else {
+            return (floor(~~cMins) + ' minutes');
+        }
     };
 
     /**
