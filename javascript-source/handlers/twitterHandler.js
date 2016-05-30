@@ -7,8 +7,7 @@
  * 
  */
 (function() {
-    var moduleStarted = false,
-        randPrev = 0,
+    var randPrev = 0,
         onlinePostDelay = 10 * 6e4; // 10 minutes must pass between Online Posts. This should take care of Twitch/OBS issues.
  
     /* Set default values for all configuration items. */
@@ -399,6 +398,10 @@
         }
     }
 
+    setInterval(function() { 
+        checkAutoUpdate(); 
+    }, 6e4, 'checkAutoUpdate');
+
     /**
      * @event initReady
      */
@@ -411,12 +414,6 @@
             $.registerChatSubcommand('twitter', 'lastmention', 7);
             $.registerChatSubcommand('twitter', 'lastretweet', 7);
             $.registerChatSubcommand('twitter', 'id', 7);
-
-            if (!moduleStarted) {
-                moduleStarted = true;
-                setInterval(function() { checkAutoUpdate(); }, 6e4, 'checkAutoUpdate');
-            }
         }
     });
-
 })();
