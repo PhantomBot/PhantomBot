@@ -111,7 +111,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./games/roll.js')) {
             $.registerChatCommand('./games/roll.js', 'roll');
-            $.registerChatSubcommand('roll', 'reward', 1);
+            $.registerChatSubcommand('roll', 'rewards', 1);
         }
     });
 
