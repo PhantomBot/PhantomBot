@@ -711,7 +711,7 @@
                 if (alias.indexOf(';') === -1) {
                     aliasCmd = alias.split(' ')[0];
                     aliasParams = alias.substring(alias.indexOf(' ') + 1);
-                    EventBus.instance().postCommand(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
+                    EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                 } else {
                     var aliasList = alias.split(';');
                     for (var idx in aliasList) {
