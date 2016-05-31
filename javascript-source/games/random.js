@@ -33,7 +33,7 @@
                 rand = $.randRange(1, randomsCount);
             } while (rand == lastRandom);
             lastRandom = rand;
-            $.say($.replaceCommandTags($.lang.get('randomcommand.' + rand), event));
+            $.say($.tags(event, $.lang.get('randomcommand.' + rand), false));
         }
     });
 

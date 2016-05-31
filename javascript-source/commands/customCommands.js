@@ -42,8 +42,8 @@
      * @param {string} message
      * @return {string}
      */
-    function tags(event, message) {
-        if (String(event.getArgs()[0]).startsWith('@') && $.isMod(event.getSender())) {
+    function tags(event, message, atEnabled) {
+        if (atEnabled && String(event.getArgs()[0]).startsWith('@') && $.isMod(event.getSender())) {
             return event.getArgs()[0] + ' -> ' + message;
         }
 
@@ -331,7 +331,7 @@
 
         /** Used for custom commands */
         if ($.inidb.exists('command', command)) {
-            var tag = tags(event, $.inidb.get('command', command));
+            var tag = tags(event, $.inidb.get('command', command), true);
             if (tag != '') {
                 $.say(tag);
             }
@@ -740,4 +740,5 @@
     $.returnCommandCost = returnCommandCost;
     $.permCom = permCom;
     $.getCommandPrice = getCommandPrice;
+    $.tags = tags;
 })();
