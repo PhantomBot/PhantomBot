@@ -22,7 +22,12 @@
      * @returns {boolean}
      */
     function userExists(username) {
-        return $.list.contains(users, username, 0);
+        for (var i in users) {
+            if (users[i][0].equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
     };
 
     /**
