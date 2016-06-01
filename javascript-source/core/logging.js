@@ -186,8 +186,6 @@
             logfile('private-messages', '' + $.username.resolve(sender) + ': ' + message);
         }
 
-        $.consoleDebug($.lang.get('console.received.irsprivmsg', sender, message));
-
         if (sender.equalsIgnoreCase('jtv')) {
             if (message.equalsIgnoreCase('clearchat')) {
                 logfile('private-messages', '' + $.lang.get('console.received.clearchat'));
