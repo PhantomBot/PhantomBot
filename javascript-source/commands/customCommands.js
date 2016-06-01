@@ -587,19 +587,17 @@
                 return;
             }
 
-
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action, subAction, $.pointNameMultiple));
             $.inidb.set('pricecom', action, subAction);
-            list = $.inidb.GetKeyList('aliases', '');
+            var list = $.inidb.GetKeyList('aliases', ''),
+                i;
 
             for (i in list) {
-                for (i in list) {
-                    if ($.inidb.get('aliases', list[i]).equalsIgnoreCase(action)) {
-                        $.inidb.set('pricecom', list[i], subAction);
-                    }
+                if (list[i].equalsIgnoreCase(action)) {
+                    $.inidb.set('pricecom', $.inidb.get('aliases', list[i]), parseInt(subAction));
                 }
             }
             $.log.event(sender + ' set price on command !' + action + ' to ' + subAction + ' ' + $.pointNameMultiple);
-            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action, subAction, $.pointNameMultiple));
         }
 
         /**
