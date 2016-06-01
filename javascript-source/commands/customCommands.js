@@ -595,6 +595,9 @@
             for (i in list) {
                 if (list[i].equalsIgnoreCase(action)) {
                     $.inidb.set('pricecom', $.inidb.get('aliases', list[i]), parseInt(subAction));
+                } 
+                if ($.inidb.get('aliases', list[i]).contains(action)) {
+                    $.inidb.set('pricecom', list[i], parseInt(subAction));
                 }
             }
             $.log.event(sender + ' set price on command !' + action + ' to ' + subAction + ' ' + $.pointNameMultiple);
