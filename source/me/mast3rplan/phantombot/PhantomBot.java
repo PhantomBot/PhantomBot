@@ -832,7 +832,7 @@ public class PhantomBot implements Listener {
         if (event.getSender().equalsIgnoreCase("jtv")) {
             String message = event.getMessage().toLowerCase();
             
-            com.gmt2001.Console.debug.println("Whisper: " + event.getSender() + ": " + event.getMessage());
+            com.gmt2001.Console.debug.println("Message From jtv: " + event.getSender() + ": " + event.getMessage());
 
             if (message.startsWith("the moderators of this room are: ")) {
                 String[] spl = message.substring(33).split(", ");
