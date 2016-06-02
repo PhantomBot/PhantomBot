@@ -70,7 +70,9 @@
                     }
                 }
             }
-            set(command, globalCooldownTime);
+            if (!command.equalsIgnoreCase('adventure')) {
+                set(command, globalCooldownTime);
+            }
             return;
         }
 
@@ -88,7 +90,9 @@
                     }
                 }
             }
-            set(command, parseInt($.inidb.get('cooldown', command)), user);
+            if (!command.equalsIgnoreCase('adventure')) {
+                set(command, parseInt($.inidb.get('cooldown', command)), user);
+            }
             return;
         }
 
@@ -105,7 +109,9 @@
                 }
             }
         }
-        set(command, parseInt($.inidb.get('cooldown', command)));
+        if (coolDownExists) {
+            set(command, parseInt($.inidb.get('cooldown', command)));
+        }
     };
 
     function clear(command) {
@@ -140,6 +146,10 @@
             if (!cmd || !time) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set.usage'));
                 return;
+            }
+
+            if (cmd.startsWith('!')) {
+                cmd = cmd.substring(1);
             }
 
             if (time == -1) {
