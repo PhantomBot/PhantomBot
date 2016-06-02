@@ -70,7 +70,9 @@
                     }
                 }
             }
-            set(command, globalCooldownTime);
+            if (!command.equalsIgnoreCase('adventure')) {
+                set(command, globalCooldownTime);
+            }
             return;
         }
 
@@ -88,7 +90,9 @@
                     }
                 }
             }
-            set(command, parseInt($.inidb.get('cooldown', command)), user);
+            if (!command.equalsIgnoreCase('adventure')) {
+                set(command, parseInt($.inidb.get('cooldown', command)), user);
+            }
             return;
         }
 
@@ -105,7 +109,9 @@
                 }
             }
         }
-        set(command, parseInt($.inidb.get('cooldown', command)));
+        if (coolDownExists) {
+            set(command, parseInt($.inidb.get('cooldown', command)));
+        }
     };
 
     function clear(command) {
