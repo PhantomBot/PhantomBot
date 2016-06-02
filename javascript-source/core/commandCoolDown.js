@@ -148,6 +148,10 @@
                 return;
             }
 
+            if (cmd.startsWith('!')) {
+                cmd = cmd.substring(1);
+            }
+
             if (time == -1) {
                 $.inidb.del('cooldown', cmd);
                 clear(cmd);
