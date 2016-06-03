@@ -541,9 +541,19 @@
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action, $.getGroupNameById(group)));
+                var list = $.inidb.GetKeyList('aliases', ''),
+                    i;
+
+                for (i in list) {
+                    if (list[i].equalsIgnoreCase(action)) {
+                        $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
+                        $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
+                    } 
+                }
                 $.inidb.set('permcom', action, group);
                 $.log.event(sender + ' set permission on command !' + action + ' to group ' + group);
                 $.updateCommandGroup(action, group);
+                return;
             }
 
             var subcommand = args[1];
