@@ -234,18 +234,18 @@
                         return;
                     }
 
-                    if ($.user.isKnown(sender)) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', username));
+                    if (!$.user.isKnown(subject)) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', subject));
                     }
 
-                    if (timeArg > $.getUserTime(sender)) {
-                        $.say($.whisperPrefix(sender) + $.lang.get("timesystem.take.error.toomuch", username));
+                    if (timeArg > $.getUserTime(subject)) {
+                        $.say($.whisperPrefix(sender) + $.lang.get("timesystem.take.error.toomuch", subject));
                         return;
                     }
 
                     $.inidb.decr('time', subject, timeArg);
                     $.say($.whisperPrefix(sender) + $.lang.get('timesystem.take.success',
-                        $.getTimeString(timeArg), $.username.resolve(subject), $.getUserTimeString(sender)))
+                        $.getTimeString(timeArg), $.username.resolve(subject), $.getUserTimeString(subject)))
                 }
 
                 if (action.equalsIgnoreCase('set')) {
