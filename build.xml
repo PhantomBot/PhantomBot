@@ -83,6 +83,10 @@
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
             token="@nightly.build@"
             value="${nightly_build}" />
+        <replace
+            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            token="@phantombot.version@"
+            value="${version}" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -127,6 +131,10 @@
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
             token="${nightly_build}"
             value="@nightly.build@" />
+        <replace 
+            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            token="${version}"
+            value="@phantombot.version@" />
     </target>
 
     <target depends="compile.src,post.compile" name="jar">
