@@ -11,6 +11,68 @@
  * PhantomBot v2.0
  */
 (function() {
+    var modules,
+        versions,
+        i;
+
+    /** New setup */
+    if ($.changed == true && $.changed != null && $.changed != undefined) {
+        $.consoleLn('Initializing PhantomBot Version ' + $.version + ' For The First Time...');
+
+        modules = [
+        './commands/topCommand.js',
+        './commands/highlightCommand.js',
+        './commands/deathctrCommand.js',
+        './games/8ball.js',
+        './games/adventureSystem.js',
+        './games/killCommand.js',
+        './games/random.js',
+        './games/roll.js',
+        './games/roulette.js',
+        './games/slotMachine.js',
+        './handlers/followHandler.js',
+        './handlers/hostHandler.js',
+        './handlers/subscribeHandler.js',
+        './handlers/donationHandler.js',
+        './handlers/wordCounter.js',
+        './handlers/gameWispHandler.js',
+        './handlers/keywordHandler.js',
+        './handlers/twitterHandler.js',
+        './systems/cleanupSystem.js',
+        './systems/greetingSystem.js',
+        './systems/pointSystem.js',
+        './systems/noticeSystem.js',
+        './systems/pollSystem.js',
+        './systems/quoteSystem.js',
+        './systems/raffleSystem.js',
+        './systems/ticketraffleSystem.js',
+        './systems/raidSystem.js',
+        './systems/youtubePlayer.js',
+        './systems/betSystem.js',
+        './systems/ranksSystem.js',
+        './systems/auctionSystem.js',
+        './systems/audioPanelSystem.js',
+        './systems/queueSystem.js',
+        ];
+
+        $.consoleLn('Disabling default modules...');
+        for (i in modules) {
+            $.inidb.set('modules', modules[i], 'false');
+        }
+
+        $.consoleLn('Installing old updates...');
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9'];
+        for (i in versions) {
+            $.inidb.set('updates', versions[i], 'true');
+        }
+
+        $.consoleLn('Initializing completed!');
+        modules = [];
+        versions = [];
+        $.changed = false;
+    }
+
+    /** Version 2.0 updates */
     if (!$.inidb.exists('updates', 'installedv2') || $.inidb.get('updates', 'installedv2') != 'true') {
         $.consoleLn('Starting PhantomBot version 2.0 updates...');
         var tableNamesList = $.inidb.GetFileList(),
@@ -78,6 +140,7 @@
         $.inidb.set('updates', 'installedv2', 'true');
     }
 
+    /** Version 2.0.5 updates */
     if (!$.inidb.exists('updates', 'installedv2.0.5') || $.inidb.get('updates', 'installedv2.0.5') != 'true') {
         var newDefaultDisabledModules = [
             './systems/betSystem.js',
@@ -113,6 +176,7 @@
         $.inidb.set('updates', 'installedv2.0.6', 'true');
     }
 
+    /** Version 2.0.7 updates */
     if (!$.inidb.exists('updates', 'installedv2.0.7') || $.inidb.get('updates', 'installedv2.0.7') != 'true') {
         $.consoleLn('Starting PhantomBot version 2.0.7 updates...');
 
@@ -157,6 +221,7 @@
         $.inidb.set('updates', 'installedv2.0.7', 'true');
     }
 
+    /** Version 2.0.7.2 updates */
     if (!$.inidb.exists('updates', 'installedv2.0.7.2') || $.inidb.get('updates', 'installedv2.0.7.2') != 'true') {
         $.consoleLn('Starting PhantomBot version 2.0.7.2 updates...');
 
@@ -170,6 +235,7 @@
         $.inidb.set('updates', 'installedv2.0.7.2', 'true');
     }
 
+    /** Version 2.0.8 updates */
     if (!$.inidb.exists('updates', 'installedv2.0.8') || $.inidb.get('updates', 'installedv2.0.8') != 'true') {
         $.consoleLn('Starting PhantomBot version 2.0.8 updates...');
 
@@ -188,6 +254,7 @@
         $.inidb.set('updates', 'installedv2.0.8', 'true');
     }
 
+    /** Version 2.0.9 updates */
     if (!$.inidb.exists('updates', 'installedv2.0.9') || $.inidb.get('updates', 'installedv2.0.9') != 'true') {
         $.consoleLn('Starting PhantomBot version 2.0.9 updates...');
 

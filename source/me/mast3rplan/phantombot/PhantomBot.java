@@ -105,6 +105,7 @@ public class PhantomBot implements Listener {
     private String mysql_db_pass;
     private String twitchalertskey = null;
     private int twitchalertslimit;
+    private static boolean newSetup = false;
     public final String username;
     private String panelpassword;
     private String paneluser;
@@ -689,6 +690,8 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightlyBuildString(), 0);
+        Script.global.defineProperty("version", botVersion(), 0);
+        Script.global.defineProperty("changed", newSetup, 0);
 
         Thread t = new Thread(new Runnable() {
             @Override
@@ -1555,57 +1558,61 @@ public class PhantomBot implements Listener {
 
         if (webauth.isEmpty()) {
             webauth = generateWebAuth();
-            com.gmt2001.Console.out.println("New webauth key has been generated for botlogin.txt");
+            com.gmt2001.Console.debug.println("New webauth key has been generated for botlogin.txt");
             changed = true;
         }
         if (webauthro.isEmpty()) {
             webauthro = generateWebAuth();
-            com.gmt2001.Console.out.println("New webauth read-only key has been generated for botlogin.txt");
+            com.gmt2001.Console.debug.println("New webauth read-only key has been generated for botlogin.txt");
             changed = true;
         }
         if (paneluser.isEmpty()) {
-            com.gmt2001.Console.out.println("No Panel Username, using default value of 'panel' for Control Panel and YouTube Player");
+            com.gmt2001.Console.debug.println("No Panel Username, using default value of 'panel' for Control Panel and YouTube Player");
             paneluser = "panel";
             changed = true;
         }
         if (panelpassword.isEmpty()) {
-            com.gmt2001.Console.out.println("No Panel Password, using default value of 'panel' for Control Panel and YouTube Player");
+            com.gmt2001.Console.debug.println("No Panel Password, using default value of 'panel' for Control Panel and YouTube Player");
             panelpassword = "panel";
             changed = true;
         }
         if (ytauth.isEmpty()) {
             ytauth = generateWebAuth();
-            com.gmt2001.Console.out.println("New YouTube websocket key has been generated for botlogin.txt");
+            com.gmt2001.Console.debug.println("New YouTube websocket key has been generated for botlogin.txt");
             changed = true;
         }
         if (ytauthro.isEmpty()) {
             ytauthro = generateWebAuth();
-            com.gmt2001.Console.out.println("New YouTube read-only websocket key has been generated for botlogin.txt");
+            com.gmt2001.Console.debug.println("New YouTube read-only websocket key has been generated for botlogin.txt");
             changed = true;
         }
 
         if (user.isEmpty() || oauth.isEmpty() || channel.isEmpty()) {
             try {
-                com.gmt2001.Console.out.println("Login details for bot not found");
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("No login details were found.");
+                com.gmt2001.Console.out.println();
 
                 com.gmt2001.Console.out.print("Please enter the bot's twitch username: ");
                 user = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.println("Visit https://twitchapps.com/tmi/ to generate an oAuth token (including 'oauth:') & type it below.");
-                com.gmt2001.Console.out.println("IMPORTANT: This MUST be done while logged in as the bot account!" + "\n");
-                com.gmt2001.Console.out.println("Please enter the bot's tmi oauth token: ");
+                com.gmt2001.Console.out.print("Please enter the bot's tmi oauth token generated from https://twitchapps.com/tmi/: ");
                 oauth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join (not the link, just the name): ");
+                com.gmt2001.Console.out.print("Please enter your oauth token generated from https://phantombot.net/oauth/: ");
+                apioauth = System.console().readLine().trim();
+
+                com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join: ");
                 channel = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a panel username to replace the default value: ");
+                com.gmt2001.Console.out.print("Please enter a username for the web panel: ");
                 paneluser = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a panel password to replace the default value: ");
+                com.gmt2001.Console.out.print("Please enter a password for the web panel: ");
                 panelpassword = System.console().readLine().trim();
 
                 changed = true;
+                newSetup = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -1613,7 +1620,16 @@ public class PhantomBot implements Listener {
 
         if (owner.isEmpty()) {
             owner = channel;
+            changed = true;
+        }
 
+        if (!oauth.startsWith("oauth:") && !oauth.isEmpty()) {
+            oauth = "oauth:" + oauth;
+            changed = true;
+        }
+
+        if (!apioauth.startsWith("oauth:") && !apioauth.isEmpty()) {
+            apioauth = "oauth:" + apioauth;
             changed = true;
         }
 
@@ -1652,6 +1668,7 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("paneluser='" + paneluser + "'");
                     com.gmt2001.Console.out.println("panelpassword='" + panelpassword + "'");
                 }
+
                 if (arg.equalsIgnoreCase("debugon")) {
                     com.gmt2001.Console.out.println("Debug Mode Enabled via command line");
                     PhantomBot.enableDebugging = true;
