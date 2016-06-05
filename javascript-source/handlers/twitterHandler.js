@@ -8,7 +8,7 @@
  */
 (function() {
     var randPrev = 0,
-        onlinePostDelay = 10 * 6e4; // 10 minutes must pass between Online Posts. This should take care of Twitch/OBS issues.
+        onlinePostDelay = 60 * 6e4; // 10 minutes must pass between Online Posts. This should take care of Twitch/OBS issues.
  
     /* Set default values for all configuration items. */
     $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
