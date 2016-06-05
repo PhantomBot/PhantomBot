@@ -11,7 +11,8 @@
     var connected = false,
         modeO = false,
         modules = [],
-        hooks = [];
+        hooks = [],
+        pricecomMods = ($.inidb.exists('settings', 'pricecomMods') ? $.inidb.get('settings', 'pricecomMods') : false);
 
     /**
      * @class
@@ -326,6 +327,7 @@
          * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel
          * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
          * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist
+         * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands
          */
 
          if (command.equalsIgnoreCase($.botName.toLowerCase())) {
@@ -402,6 +404,18 @@
                     $.inidb.del('botBlackList', actionArgs);
                     $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.removed', actionArgs));
                     $.log.event(sender + ' removed ' + actionArgs + ' to the bot blacklist.');
+                }
+            }
+
+            if (action.equalsIgnoreCase('togglepricecommods')) {
+                if (pricecomMods) {
+                    pricecomMods = false;
+                    $.inidb.set('settings', 'pricecomMods', false);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.mod.toggle.off.pay'));
+                } else {
+                    pricecomMods = true;
+                    $.inidb.set('settings', 'pricecomMods', true);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.mod.toggle.on.pay'));
                 }
             }
         }
@@ -756,7 +770,7 @@
                 return;
             }
 
-            if (isModuleEnabled('./systems/pointSystem.js') && !senderIsMod && $.inidb.exists('pricecom', command)) {
+            if (isModuleEnabled('./systems/pointSystem.js') && (senderIsMod && pricecomMods) && $.inidb.exists('pricecom', command)) {
                 if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
                     return;
