@@ -800,7 +800,7 @@
         var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
             CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
 
-        EventBus.instance().postCommand(new CommandEvent($.botName, 'ytp', 'togglerandom'));
+        EventBus.instance().post(new CommandEvent($.botName, 'ytp', 'togglerandom'));
     });
 
     /**
