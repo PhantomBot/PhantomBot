@@ -242,6 +242,8 @@ $.lang.register('init.blacklist.added', 'added $1 to the bot blacklist!');
 $.lang.register('init.blacklist.remove.usage', 'Usage: !$1 blacklist remove (username)');
 $.lang.register('init.blacklist.err', 'that user is not in the blacklist.');
 $.lang.register('init.blacklist.removed', 'removed $1 from the bot blacklist!');
+$.lang.register('init.mod.toggle.on.pay', 'moderators+ will now pay for commands.');
+$.lang.register('init.mod.toggle.off.pay', 'moderators+ will no longer pay for commands.');
 $.lang.register('lang.curlang', 'The current language is $1!');
 $.lang.register('lang.lang.404', 'That language file does not exist!');
 $.lang.register('lang.lang.changed', 'Changed language to $1!');
