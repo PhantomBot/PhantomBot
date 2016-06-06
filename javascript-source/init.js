@@ -387,7 +387,7 @@
                         return;
                     }
 
-                    $.inidb.set('botBlackList', actionArgs, 'true');
+                    $.inidb.set('botBlackList', actionArgs.toLowerCase(), 'true');
                     $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.added', actionArgs));
                     $.log.event(sender + ' added ' + actionArgs + ' to the bot blacklist.');
                 }
@@ -746,7 +746,7 @@
                 return;
             }
 
-            if ($.getIniDbBoolean('disabledCommands', command, false) || $.getIniDbBoolean('botBlackList', sender, false)) {
+            if ($.getIniDbBoolean('disabledCommands', command, false) || $.getIniDbBoolean('botBlackList', sender.toLowerCase(), false)) {
                 consoleDebug('[DISABLED COMMAND] Command: !' + command + ' was not sent because its disabled or the user is blacklisted.');
                 return;
             }
