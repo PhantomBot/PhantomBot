@@ -396,12 +396,12 @@
                     if (!actionArgs) {
                         $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.remove.usage', $.botName.toLowerCase()));
                         return;
-                    } else if (!$.inidb.exists('botBlackList', actionArgs)) {
+                    } else if (!$.inidb.exists('botBlackList', actionArgs.toLowerCase())) {
                         $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.err'));
                         return;
                     }
 
-                    $.inidb.del('botBlackList', actionArgs);
+                    $.inidb.del('botBlackList', actionArgs.toLowerCase());
                     $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.removed', actionArgs));
                     $.log.event(sender + ' removed ' + actionArgs + ' to the bot blacklist.');
                 }
