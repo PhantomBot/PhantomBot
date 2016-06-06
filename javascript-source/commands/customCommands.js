@@ -70,6 +70,10 @@
             message = $.replace(message, '(baresender)', event.getSender());
         }
 
+        if (message.match(/\(whisper\)/g)) {
+            message = $.replace(message, '(whisper)', '/w ' + event.getSender());
+        }
+
         if (message.match(/\(game\)/g)) {
             message = $.replace(message, '(game)', $.getGame($.channelName));
         }
