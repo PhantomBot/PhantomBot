@@ -186,10 +186,10 @@
              * @commandpath notice interval [minutes] - Sets the notice interval in minutes
              */
             if (action.equalsIgnoreCase('interval')) {
-                if (args.length < 5) {
+                if (args.length == 0) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-interval-usage'));
                     return;
-                } else if (parseInt(args[1]) < 2) {
+                } else if (parseInt(args[1]) < 5) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-interval-404'));
                     return;
                 } else {
