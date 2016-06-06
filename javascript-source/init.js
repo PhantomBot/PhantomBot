@@ -770,7 +770,7 @@
                 return;
             }
 
-            if (isModuleEnabled('./systems/pointSystem.js') && (senderIsMod && pricecomMods) && $.inidb.exists('pricecom', command)) {
+            if (isModuleEnabled('./systems/pointSystem.js') && (senderIsMod && pricecomMods && !$.isBot(sender)) && $.inidb.exists('pricecom', command)) {
                 if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
                     return;
@@ -893,6 +893,7 @@
          */
         $api.on($script, 'ircPrivateMessage', function(event) {
             callHook('ircPrivateMessage', event, false);
+            $.whisperCommands(event);
         });
 
         /**
