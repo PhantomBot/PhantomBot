@@ -30,6 +30,32 @@
     }
 
     /**
+     * @function whisperCommands
+     */
+    function whisperCommands(event) {
+        if (!event.getSender().equalsIgnoreCase('jtv') || !event.getSender().equalsIgnoreCase('twitchnotify')) {
+            if (event.getMessage().startsWith('!') && $.isMod(event.getSender()) && $.list.contains($.users, event.getSender(), 0)) {
+                var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
+                    CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
+                    commandString = event.getMessage().substring(1),
+                    split = commandString.indexOf(' '),
+                    arguments,
+                    command;
+                if (split == -1) {
+                    command = commandString;
+                    arguments = '';
+                } else {
+                    command = commandString.substring(0, split);
+                    arguments = commandString.substring(split + 1);
+                }
+                EventBus.instance().post(new CommandEvent(event.getSender(), command, arguments));
+                $.log.file('whispers', '' + event.getSender() + ': ' + event.getMessage());
+            }
+        }
+        return;
+    };
+
+    /**
      * @event command
      */
     $.bind('command', function(event) {
@@ -67,4 +93,5 @@
     /** Export functions to API */
     $.whisperPrefix = whisperPrefix;
     $.getBotWhisperMode = getBotWhisperMode;
+    $.whisperCommands = whisperCommands;
 })();
