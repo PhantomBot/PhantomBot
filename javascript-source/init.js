@@ -387,7 +387,7 @@
                         return;
                     }
 
-                    $.inidb.set('botBlackList', actionArgs, 'true');
+                    $.inidb.set('botBlackList', actionArgs.toLowerCase(), 'true');
                     $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.added', actionArgs));
                     $.log.event(sender + ' added ' + actionArgs + ' to the bot blacklist.');
                 }
@@ -396,12 +396,12 @@
                     if (!actionArgs) {
                         $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.remove.usage', $.botName.toLowerCase()));
                         return;
-                    } else if (!$.inidb.exists('botBlackList', actionArgs)) {
+                    } else if (!$.inidb.exists('botBlackList', actionArgs.toLowerCase())) {
                         $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.err'));
                         return;
                     }
 
-                    $.inidb.del('botBlackList', actionArgs);
+                    $.inidb.del('botBlackList', actionArgs.toLowerCase());
                     $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.removed', actionArgs));
                     $.log.event(sender + ' removed ' + actionArgs + ' to the bot blacklist.');
                 }
@@ -746,7 +746,7 @@
                 return;
             }
 
-            if ($.getIniDbBoolean('disabledCommands', command, false) || $.getIniDbBoolean('botBlackList', sender, false)) {
+            if ($.getIniDbBoolean('disabledCommands', command, false) || $.getIniDbBoolean('botBlackList', sender.toLowerCase(), false)) {
                 consoleDebug('[DISABLED COMMAND] Command: !' + command + ' was not sent because its disabled or the user is blacklisted.');
                 return;
             }
@@ -770,7 +770,7 @@
                 return;
             }
 
-            if (isModuleEnabled('./systems/pointSystem.js') && (senderIsMod && pricecomMods) && $.inidb.exists('pricecom', command)) {
+            if (isModuleEnabled('./systems/pointSystem.js') && (senderIsMod && pricecomMods && !$.isBot(sender)) && $.inidb.exists('pricecom', command)) {
                 if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
                     return;
@@ -893,6 +893,7 @@
          */
         $api.on($script, 'ircPrivateMessage', function(event) {
             callHook('ircPrivateMessage', event, false);
+            $.whisperCommands(event);
         });
 
         /**

@@ -527,6 +527,15 @@
     };
 
     /**
+     * @function modCheck
+     */
+    function modCheck() {
+        if ($.channel !== undefined) {
+            $.channel.say('.mods');
+        }
+    }
+
+    /**
      * @event ircJoinComplete
      */
     $.bind('ircJoinComplete', function(event) {
@@ -841,9 +850,8 @@
     });
 
     setInterval(function () {
-        $.say('.mods');
-        $.log.event('mod check done @ ' + $.systemTime());
-    }, 60 * 60 * 1000, 'modCheck');
+        modCheck();
+    }, 120 * 60 * 1000, 'modCheck');
 
     // Load groups and generate default groups if they don't exist
     reloadGroups();
