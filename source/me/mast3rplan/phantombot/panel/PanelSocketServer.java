@@ -48,7 +48,7 @@
  * 
  * ---------------------------------------------------------------------------
  *
- * Websocket pushes the following to the Player Interface
+ * Websocket pushes the following to the Panel Interface
  *
  * // Return authorization result.
  * { "authresult" : true/false }
@@ -72,6 +72,9 @@
  *
  * // Request an audio byte to play.
  * { "audio_panel_hook" : "audio hook name" }
+ *
+ * // Request an alert image to be displayed.
+ * { "alert_image" : "filename[,duration_in_seconds]" }
  */
 
 /*
@@ -317,6 +320,13 @@ public class PanelSocketServer extends WebSocketServer {
             jsonArray.getJSONObject(i).getString("name");
             PhantomBot.instance().getDataStore().set("audio_hooks", jsonArray.getJSONObject(i).getString("name"), jsonArray.getJSONObject(i).getString("name"));
         }
+    }
+
+    public void alertImage(String imageInfo) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("alert_image").value(imageInfo).endObject();
+        debugMsg("alertImage(" + imageInfo +")");
+        sendToAll(jsonObject.toString());
     }
 
     private void debugMsg(String message) {

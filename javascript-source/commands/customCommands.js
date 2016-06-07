@@ -70,10 +70,6 @@
             message = $.replace(message, '(baresender)', event.getSender());
         }
 
-        if (message.match(/\(whisper\)/g)) {
-            message = $.replace(message, '(whisper)', '/w ' + event.getSender());
-        }
-
         if (message.match(/\(game\)/g)) {
             message = $.replace(message, '(game)', $.getGame($.channelName));
         }
@@ -121,6 +117,12 @@
 
         if (message.match(/\(echo\)/g)) {
             message = $.replace(message, '(echo)', event.getArguments());
+        }
+
+        if (message.match(/\(alert [,.\w]+\)/)) {
+            var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
+            $.panelsocketserver.alertImage(filename);
+            message = message.replaceFirst('\\(alert [,.\\w]+\\)', '');
         }
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
