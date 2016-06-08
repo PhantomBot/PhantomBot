@@ -21,7 +21,7 @@
         }
 
         if ($.isDirectory('./scripts/lang/custom')) {
-            $.bot.loadScriptRecursive('./lang/custom', true);
+            $.bot.loadScriptRecursive('./lang/custom', false);
         }
 
         // Set "response_@chat" to true if it hasn't been set yet, so the bot isn't muted when using a fresh install
@@ -40,6 +40,9 @@
         if (key && string) {
             data[key] = string;
         }
+        if (key && string.length === 0) {
+            data[key] = '<<EMPTY_PLACEHOLDER>>';
+        }
     }
 
     /**
@@ -55,6 +58,9 @@
             $.log.error('Language string missing for "' + key + '"');
             $.consoleLn('[lang.js] Missing string "' + key + '"');
             return 'Could not find string for "' + key + '"';
+        }
+        if (string.equals('<<EMPTY_PLACEHOLDER>>')) {
+            return '';
         }
         for (i = 1; i < arguments.length; i++) {
             while (string.indexOf("$" + i) >= 0) {
