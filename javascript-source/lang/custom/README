@@ -1,0 +1,6 @@
+You may copy any of the lang files into this directory, matching
+the subdirectories if you desire, or just placing all of the files
+in this directory.  You may then edit the files and PhantomBot will
+override the default language settings with the ones you provide
+here.  This allows you to customize your language settings and
+not have them overwritten during a release.
