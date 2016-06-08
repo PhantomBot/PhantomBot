@@ -21,7 +21,7 @@
         }
 
         if ($.isDirectory('./scripts/lang/custom')) {
-            $.bot.loadScriptRecursive('./lang/custom', false);
+            $.bot.loadScriptRecursive('./lang/custom', true);
         }
 
         // Set "response_@chat" to true if it hasn't been set yet, so the bot isn't muted when using a fresh install
