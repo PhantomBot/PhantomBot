@@ -59,6 +59,8 @@
                 for (var idx in msgObject['results']) {
                     id = msgObject['results'][idx]['key'];
                     quoteData = JSON.parse(msgObject['results'][idx]['value']);
+                    quoteDataClean = JSON.parse(msgObject['results'][idx]['value']);
+                    quoteDataClean[1] = quoteDataClean[1].replace(',', '%2C');
                     html += '<tr style="textList">' +
                             '    <td rowspan="2" style="width: 25px">' +
                             '        <div id="deleteQuote_' + id + '" class="button"' +
@@ -79,7 +81,7 @@
                             '            <input type="text" id="inlineQuoteEdit_user_' + id + '"' +
                             '                   value="' + quoteData[0] + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
-                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteData + '\', \'user\')">' +
+                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'user\')">' +
                             '                <i class="fa fa-pencil" />' +
                             '            </button>' +
                             '        </form>' +
@@ -91,7 +93,7 @@
                             '            <input type="text" id="inlineQuoteEdit_game_' + id + '"' +
                             '                   value="' + (quoteData.length == 4 ? quoteData[3] : 'Some Game') + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
-                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteData + '\', \'game\')">' +
+                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'game\')">' +
                             '                <i class="fa fa-pencil" />' +
                             '            </button>' +
                             '        </form>' +
@@ -105,7 +107,7 @@
                             '            <input style="width: 89%" type="text" id="inlineQuoteEdit_quote_' + id + '"' +
                             '                   value="' + quoteData[1] + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
-                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteData + '\', \'quote\')">' +
+                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'quote\')">' +
                             '                <i class="fa fa-pencil" />' +
                             '            </button>' +
                             '        </form>' +
@@ -163,9 +165,11 @@
                 quoteArray[1] = value;
             }
             if (panelMatch(field, 'game')) {
+                quoteArray[1] = quoteArray[1].replace('%2C', ',');
                 quoteArray[3] = value;
             }
             if (panelMatch(field, 'user')) {
+                quoteArray[1] = quoteArray[1].replace('%2C', ',');
                 quoteArray[0] = value;
             }
             sendDBUpdate('quotes_update', 'quotes', id, JSON.stringify(quoteArray));

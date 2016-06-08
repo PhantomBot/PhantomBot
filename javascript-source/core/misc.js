@@ -96,6 +96,10 @@
      */
     function say(message) {
         if ($.channel !== null) {
+            if (message.length === 0) {
+                return;
+            }
+
             if (message.substr(0, 1).equals('.')) {
                 $.channel.say(message);
                 $.consoleLn('[CHAT] ' + message);

@@ -333,7 +333,7 @@
      * @function checkYoutubePlayer
      */
     function checkYoutubePlayer(message) {
-        if ($.youtubePlayerConnected && message.contains('youtube.com') || message.contains('youtu.be')) {
+        if ($.youtubePlayerConnected && (message.contains('youtube.com') || message.contains('youtu.be'))) {
             return true;
         }
         return false;
