@@ -10,12 +10,7 @@
      */
     function whisperPrefix(username, force) {
         if (whisperMode || force) {
-            if (username == $.botName) {
-                return '/w ' + $.ownerName + ' ';
-            } else {
-                return '/w ' + username + ' ';
-            }
-
+            return '/w ' + username + ' ';
         }
         return '@' + $.username.resolve(username) + ', ';
     };
