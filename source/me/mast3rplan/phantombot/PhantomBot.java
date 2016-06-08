@@ -1596,10 +1596,10 @@ public class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("Please enter the bot's twitch username: ");
                 user = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the bot's tmi oauth token generated from https://twitchapps.com/tmi/: ");
+                com.gmt2001.Console.out.print("Please enter the bot's tmi oauth token generated from https://twitchapps.com/tmi/ while logged in as the bot: ");
                 oauth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter your oauth token generated from https://phantombot.net/oauth/: ");
+                com.gmt2001.Console.out.print("Please enter your oauth token generated from https://phantombot.net/oauth/ while logged in as the caster: ");
                 apioauth = System.console().readLine().trim();
 
                 com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join: ");
