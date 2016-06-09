@@ -155,8 +155,11 @@
             if (cmd.equalsIgnoreCase('adventure')) {
                 if (time == -1) {
                     $.inidb.set('adventureSettings', 'coolDown', 0);
+                    clear(cmd);
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.removed', cmd));
                 } else {
                     $.inidb.set('adventureSettings', 'coolDown', time);
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set', cmd, time));
                 }
             } else {
                 if (time == -1) {
