@@ -770,7 +770,7 @@
                 return;
             }
 
-            if (isModuleEnabled('./systems/pointSystem.js') && (senderIsMod && pricecomMods && !$.isBot(sender)) && $.inidb.exists('pricecom', command)) {
+            if (isModuleEnabled('./systems/pointSystem.js') && (((senderIsMod && pricecomMods && !$.isBot(sender)) || !senderIsMod)) && $.inidb.exists('pricecom', command)) {
                 if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
                     return;
@@ -778,7 +778,8 @@
                 if (parseInt($.inidb.get('pricecom', command)) > 0) {
                     $.inidb.decr('points', sender, $.inidb.get('pricecom', command));
                 }
-            }
+            } 
+
             callHook('command', event, false);
             handleInitCommands(event);
         });
