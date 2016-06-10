@@ -724,7 +724,7 @@
 
                 if (alias.indexOf(';') === -1) {
                     aliasCmd = alias.split(' ')[0];
-                    if (aliasList[idx].split(' ').length > 1) {
+                    if (alias.split(' ').length > 1) {
                         aliasParams = alias.substring(alias.indexOf(' ') + 1);
                     } else {
                         aliasParams = ' ';
