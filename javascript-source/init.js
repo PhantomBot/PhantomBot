@@ -724,17 +724,25 @@
 
                 if (alias.indexOf(';') === -1) {
                     aliasCmd = alias.split(' ')[0];
-                    aliasParams = alias.substring(alias.indexOf(' ') + 1);
+                    if (aliasList[idx].split(' ').length > 1) {
+                        aliasParams = alias.substring(alias.indexOf(' ') + 1);
+                    } else {
+                        aliasParams = ' ';
+                    }
                     EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                 } else {
                     var aliasList = alias.split(';');
                     for (var idx in aliasList) {
                         aliasCmd = aliasList[idx].split(' ')[0];
-                        aliasParams = aliasList[idx].substring(aliasList[idx].indexOf(' ') + 1);
-                        if (idx == (aliasList.length - 1)) {
-                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));//Don't use postCommand it got removed.
+                        if (aliasList[idx].split(' ').length > 1) {
+                            aliasParams = aliasList[idx].substring(aliasList[idx].indexOf(' ') + 1);
                         } else {
-                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams));//Don't use postCommand it got removed.
+                            aliasParams = ' ';
+                        }
+                        if (idx == (aliasList.length - 1)) {
+                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
+                        } else {
+                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams));
                         }
                     }
                 }
