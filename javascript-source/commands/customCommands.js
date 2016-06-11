@@ -394,12 +394,14 @@
                 return;
             }
 
-            action = args[0].replace('!', '').toLowerCase();
-
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.usage'));
                 return;
-            } else if (!$.commandExists(action)) {
+            } 
+
+            action = args[0].replace('!', '').toLowerCase();
+            
+            if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', action));
                 return;
             } else if ($.commandExists(action) && !$.inidb.exists('command', action)) {
