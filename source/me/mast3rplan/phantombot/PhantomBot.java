@@ -101,6 +101,9 @@ import org.apache.commons.lang3.SystemUtils;
 public class PhantomBot implements Listener {
 
     private String mysql_db_conn;
+    private String mysql_db_host;
+    private String mysql_db_port;
+    private String mysql_db_name;
     private String mysql_db_user;
     private String mysql_db_pass;
     private String twitchalertskey = null;
@@ -202,7 +205,7 @@ public class PhantomBot implements Listener {
                       int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
                       String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword,
                       String twitter_username, String twitter_access_token, String twitter_secret_token, String log_timezone,
-                      String mysql_db_conn, String mysql_db_user, String mysql_db_pass) {
+                      String mysql_db_host, String mysql_db_port, String mysql_db_name, String mysql_db_user, String mysql_db_pass) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -240,7 +243,9 @@ public class PhantomBot implements Listener {
         this.twitter_access_token = twitter_access_token;
         this.twitter_secret_token = twitter_secret_token;
 
-        this.mysql_db_conn = mysql_db_conn;
+        this.mysql_db_host = mysql_db_host;
+        this.mysql_db_port = mysql_db_port;
+        this.mysql_db_name = mysql_db_name;
         this.mysql_db_user = mysql_db_user;
         this.mysql_db_pass = mysql_db_pass;
         
@@ -328,7 +333,14 @@ public class PhantomBot implements Listener {
             dataStoreObj = IniStore.instance();
         } else if (datastore.equalsIgnoreCase("MySQLStore")) {
             dataStoreObj = MySQLStore.instance();
-            dataStoreObj.CreateConnection(this.mysql_db_conn, this.mysql_db_user, this.mysql_db_pass);
+            if (this.mysql_db_port.length() > 0) {
+                this.mysql_db_conn = "jdbc:mysql://" + this.mysql_db_host + ":" + this.mysql_db_port + "/" + this.mysql_db_name + "?useSSL=false";
+            } else {
+                this.mysql_db_conn = "jdbc:mysql://" + this.mysql_db_host + "/" + this.mysql_db_name + "?useSSL=false";
+            }
+            if (dataStoreObj.CreateConnection(this.mysql_db_conn, this.mysql_db_user, this.mysql_db_pass) == null) {
+                System.exit(0);
+            }
         } else {
             dataStoreObj = SqliteStore.instance();
             if (!dataStoreObj.exists("settings", "tables_indexed")) {
@@ -341,6 +353,15 @@ public class PhantomBot implements Listener {
 
         if (datastore.isEmpty() && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0) {
             ini2sqlite(true);
+        }
+
+        if (datastore.equalsIgnoreCase("MySQLStore")) {
+            if (IniStore.instance().GetFileList().length > 0) {
+                ini2mysql(true);
+            }
+            if (SqliteStore.instance().GetFileList().length > 0) {
+                sqlite2mysql();
+            }
         }
 
         this.init();
@@ -1123,7 +1144,9 @@ public class PhantomBot implements Listener {
                 data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
                 data += "paneluser=" + paneluser + "\r\n";
                 data += "panelpassword=" + panelpassword + "\r\n";
-                data += "mysqlconn=" + mysql_db_conn + "\r\n";
+                data += "mysqlhost=" + mysql_db_host + "\r\n";
+                data += "mysqlport=" + mysql_db_port + "\r\n";
+                data += "mysqlname=" + mysql_db_name + "\r\n";
                 data += "mysqluser=" + mysql_db_user + "\r\n";
                 data += "mysqlpass=" + mysql_db_pass + "\r\n";
 
@@ -1228,6 +1251,123 @@ public class PhantomBot implements Listener {
         ScriptEventManager.instance().runDirect(new CommandEvent(sender, command, arguments));
     }
 
+    private static void sqlite2mysql() {
+        com.gmt2001.Console.out.println("Performing SQLite to MySQL Conversion...");
+        MySQLStore mysql = MySQLStore.instance();
+        SqliteStore sqlite = SqliteStore.instance();
+
+        com.gmt2001.Console.out.println("  Wiping Existing MySQL Tables...");
+        String[] deltables = mysql.GetFileList();
+        for (String table : deltables) {
+            mysql.RemoveFile(table);
+        }
+
+        com.gmt2001.Console.out.println("  Converting SQLite to MySQL...");
+        String[] tables = sqlite.GetFileList();
+        for (String table : tables) {
+            com.gmt2001.Console.out.println("    Converting Table: " + table);
+            String[] sections = sqlite.GetCategoryList(table);
+            for (String section : sections) {
+                String[] keys = sqlite.GetKeyList(table, section);
+                for (String key : keys) {
+                    String value = sqlite.GetString(table, section, key);
+                    mysql.SetString(table, section, key, value);
+                }
+            }
+        }
+        com.gmt2001.Console.out.println("  Finished Converting Tables.");
+
+        com.gmt2001.Console.out.println("  Moving phantombot.db to phantombot.db.backup");
+        try {
+            FileUtils.moveFile(new java.io.File("phantombot.db"), new java.io.File("phantombot.db.backup"));
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.println("Failed to move phantombot.db to phantombot.db.backup: " + ex.getMessage());
+        }
+
+        com.gmt2001.Console.out.println("SQLite to MySQL Conversion is Complete");
+        
+    }
+
+    private static void ini2mysql(boolean delete) {
+        com.gmt2001.Console.out.println("Performing INI to MySQL Conversion...");
+        IniStore ini = IniStore.instance();
+        MySQLStore mysql = MySQLStore.instance();
+
+        com.gmt2001.Console.out.println("  Wiping Existing MySQL Tables...");
+        String[] deltables = mysql.GetFileList();
+        for (String table : deltables) {
+            mysql.RemoveFile(table);
+        }
+
+        com.gmt2001.Console.out.println("  Converting IniStore to MySQL...");
+        String[] files = ini.GetFileList();
+        int i = 0;
+        String str;
+        int maxlen = 0;
+        int num;
+        for (String file : files) {
+            str = " " + i + " / " + files.length;
+            num = maxlen - str.length();
+            for (int n = 0; n < num; n++) {
+                str += " ";
+            }
+            maxlen = Math.max(maxlen, str.length());
+            com.gmt2001.Console.out.println("\r  Converting File: " + file);
+            mysql.AddFile(file);
+
+            String[] sections = ini.GetCategoryList(file);
+            int b = 0;
+            for (String section : sections) {
+                str = " " + i + " / " + files.length
+                      + " [" + b + " / " + sections.length + "]";
+                num = maxlen - str.length();
+                for (int n = 0; n < num; n++) {
+                    str += " ";
+                }
+                maxlen = Math.max(maxlen, str.length());
+
+                String[] keys = ini.GetKeyList(file, section);
+                int k = 0;
+                for (String key : keys) {
+                    str = " " + i + " / " + files.length
+                          + " [" + b + " / " + sections.length + "] <" + k + " / " + keys.length + ">";
+                    num = maxlen - str.length();
+                    for (int n = 0; n < num; n++) {
+                        str += " ";
+                    }
+                    maxlen = Math.max(maxlen, str.length());
+
+                    String value = ini.GetString(file, section, key);
+                    mysql.SetString(file, section, key, value);
+
+                    k++;
+                }
+
+                b++;
+            }
+
+            i++;
+        }
+
+        str = "";
+        for (i = 0; i < maxlen - 4; i++) {
+            str += " ";
+        }
+        com.gmt2001.Console.out.println("\r  Conversion from IniStore to MySQL is Complete" + str);
+
+        if (delete) {
+            com.gmt2001.Console.out.print("  Deleting IniStore folder...");
+            for (String file : files) {
+                ini.RemoveFile(file);
+            }
+
+            File f = new File("./inistore");
+            if (f.delete()) {
+                com.gmt2001.Console.out.println("Process is Done");
+            }
+        }
+    }
+
     private static void ini2sqlite(boolean delete) {
         com.gmt2001.Console.out.print("Performing INI 2 SQLite Upgrade");
         IniStore ini = IniStore.instance();
@@ -1313,7 +1453,9 @@ public class PhantomBot implements Listener {
     }
 
     public static void main(String[] args) throws IOException {
-        String mysql_db_conn = "";
+        String mysql_db_host = "";
+        String mysql_db_port = "";
+        String mysql_db_name = "";
         String mysql_db_user = "";
         String mysql_db_pass = "";
         String user = "";
@@ -1382,7 +1524,9 @@ public class PhantomBot implements Listener {
                                      + "    [gamewisprefresh=<gamewisp refresh key>]\r\n"
                                      + "    [paneluser=<username>]\r\n"
                                      + "    [panelpassword=<password>]\r\n"
-                                     + "    [mysqldb=<MySQL connection string>]\r\n"
+                                     + "    [mysqlhost=<MySQL server hostname>]\r\n"
+                                     + "    [mysqlport=<MySQL server port>]\r\n"
+                                     + "    [mysqlname=<MySQL database name>]\r\n"
                                      + "    [mysqluser=<MySQL username>]\r\n"
                                      + "    [mysqlpass=<MySQL password>]\r\n"
                                      + "    [datastore=<IniStore|TempStore|SqliteStore|MySQLStore>] \r\n"
@@ -1438,8 +1582,14 @@ public class PhantomBot implements Listener {
                     if (line.startsWith("panelpassword=") && line.length() > 16) {
                         panelpassword = line.substring(14);
                     }
-                    if (line.startsWith("mysqlconn=") && line.length() > 11) {
-                        mysql_db_conn = line.substring(10);
+                    if (line.startsWith("mysqlhost=") && line.length() > 11) {
+                        mysql_db_host = line.substring(10);
+                    }
+                    if (line.startsWith("mysqlport=") && line.length() > 11) {
+                        mysql_db_port = line.substring(10);
+                    }
+                    if (line.startsWith("mysqlname=") && line.length() > 11) {
+                        mysql_db_name = line.substring(10);
                     }
                     if (line.startsWith("mysqluser=") && line.length() > 11) {
                         mysql_db_user = line.substring(10);
@@ -1710,9 +1860,21 @@ public class PhantomBot implements Listener {
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("mysqlconn=") && arg.length() > 11) {
-                    if (!mysql_db_conn.equals(arg.substring(10))) {
-                         mysql_db_conn = arg.substring(10);
+                if (arg.toLowerCase().startsWith("mysqlhost=") && arg.length() > 11) {
+                    if (!mysql_db_host.equals(arg.substring(10))) {
+                         mysql_db_host = arg.substring(10);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("mysqlport=") && arg.length() > 11) {
+                    if (!mysql_db_port.equals(arg.substring(10))) {
+                         mysql_db_port = arg.substring(10);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("mysqlname=") && arg.length() > 11) {
+                    if (!mysql_db_name.equals(arg.substring(10))) {
+                         mysql_db_name = arg.substring(10);
                         changed = true;
                     }
                 }
@@ -1903,7 +2065,9 @@ public class PhantomBot implements Listener {
             data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
             data += "paneluser=" + paneluser + "\r\n";
             data += "panelpassword=" + panelpassword + "\r\n";
-            data += "mysqlconn=" + mysql_db_conn + "\r\n";
+            data += "mysqlhost=" + mysql_db_host + "\r\n";
+            data += "mysqlport=" + mysql_db_port + "\r\n";
+            data += "mysqlname=" + mysql_db_name + "\r\n";
             data += "mysqluser=" + mysql_db_user + "\r\n";
             data += "mysqlpass=" + mysql_db_pass + "\r\n";
             if (!log_timezone.isEmpty()) {
@@ -1919,7 +2083,7 @@ public class PhantomBot implements Listener {
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
                                              webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
                                              twitter_username, twitter_access_token, twitter_secret_token, log_timezone,
-                                             mysql_db_conn, mysql_db_user, mysql_db_pass);
+                                             mysql_db_host, mysql_db_port, mysql_db_name, mysql_db_user, mysql_db_pass);
     }
 
     public void updateGameWispTokens(String[] newTokens) {
@@ -1955,7 +2119,9 @@ public class PhantomBot implements Listener {
         data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
         data += "paneluser=" + paneluser + "\r\n";
         data += "panelpassword=" + panelpassword + "\r\n";
-        data += "mysqlconn=" + mysql_db_conn + "\r\n";
+        data += "mysqlhost=" + mysql_db_host + "\r\n";
+        data += "mysqlport=" + mysql_db_port + "\r\n";
+        data += "mysqlname=" + mysql_db_name + "\r\n";
         data += "mysqluser=" + mysql_db_user + "\r\n";
         data += "mysqlpass=" + mysql_db_pass + "\r\n";
         if (!log_timezone.isEmpty()) {

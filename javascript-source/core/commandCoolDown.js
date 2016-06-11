@@ -151,16 +151,25 @@
             if (cmd.startsWith('!')) {
                 cmd = cmd.substring(1);
             }
-
-            if (time == -1) {
-                $.inidb.del('cooldown', cmd);
-                clear(cmd);
-                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.removed', cmd));
-                return;
+            
+            if (cmd.equalsIgnoreCase('adventure')) {
+                if (time == -1) {
+                    $.inidb.set('adventureSettings', 'coolDown', 0);
+                    clear(cmd);
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.removed', cmd));
+                } else {
+                    $.inidb.set('adventureSettings', 'coolDown', time);
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set', cmd, time));
+                }
             } else {
-                $.inidb.set('cooldown', cmd, time);
-                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set', cmd, time));
-                return;
+                if (time == -1) {
+                    $.inidb.del('cooldown', cmd);
+                    clear(cmd);
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.removed', cmd));
+                } else {
+                    $.inidb.set('cooldown', cmd, time);
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set', cmd, time));
+                }
             }
         }
 

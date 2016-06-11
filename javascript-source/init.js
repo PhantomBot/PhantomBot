@@ -724,17 +724,25 @@
 
                 if (alias.indexOf(';') === -1) {
                     aliasCmd = alias.split(' ')[0];
-                    aliasParams = alias.substring(alias.indexOf(' ') + 1);
+                    if (alias.split(' ').length > 1) {
+                        aliasParams = alias.substring(alias.indexOf(' ') + 1);
+                    } else {
+                        aliasParams = ' ';
+                    }
                     EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                 } else {
                     var aliasList = alias.split(';');
                     for (var idx in aliasList) {
                         aliasCmd = aliasList[idx].split(' ')[0];
-                        aliasParams = aliasList[idx].substring(aliasList[idx].indexOf(' ') + 1);
-                        if (idx == (aliasList.length - 1)) {
-                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));//Don't use postCommand it got removed.
+                        if (aliasList[idx].split(' ').length > 1) {
+                            aliasParams = aliasList[idx].substring(aliasList[idx].indexOf(' ') + 1);
                         } else {
-                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams));//Don't use postCommand it got removed.
+                            aliasParams = ' ';
+                        }
+                        if (idx == (aliasList.length - 1)) {
+                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
+                        } else {
+                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams));
                         }
                     }
                 }
@@ -770,7 +778,7 @@
                 return;
             }
 
-            if (isModuleEnabled('./systems/pointSystem.js') && (senderIsMod && pricecomMods && !$.isBot(sender)) && $.inidb.exists('pricecom', command)) {
+            if (isModuleEnabled('./systems/pointSystem.js') && (((senderIsMod && pricecomMods && !$.isBot(sender)) || !senderIsMod)) && $.inidb.exists('pricecom', command)) {
                 if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
                     return;
@@ -778,7 +786,8 @@
                 if (parseInt($.inidb.get('pricecom', command)) > 0) {
                     $.inidb.decr('points', sender, $.inidb.get('pricecom', command));
                 }
-            }
+            } 
+
             callHook('command', event, false);
             handleInitCommands(event);
         });
