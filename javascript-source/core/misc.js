@@ -101,7 +101,7 @@
                 $.consoleLn('[CHAT] ' + message);
             }
 
-            if (message.length === 0) {
+            if (message.startsWith('@') && message.endsWith(', ')) {
                 return;
             }
     
