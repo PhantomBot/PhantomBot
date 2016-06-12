@@ -15,7 +15,7 @@
         cooldown = [];
 
     function set(command, time, user) {
-        if (time == null || time == 0 || isNaN(time)) {
+        if (time == null || time == 0 || time == 1 || isNaN(time)) {
             return;
         }
 
