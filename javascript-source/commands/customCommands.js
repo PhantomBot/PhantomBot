@@ -4,7 +4,8 @@
     var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&]+)\)/), // URL[1]
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
-        reCommandTag = new RegExp(/\(command\s([\w]+)\)/);
+        reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
+        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)/);
 
     /**
      * @function getCustomAPIValue
@@ -44,7 +45,9 @@
      */
     function tags(event, message, atEnabled) {
         if (atEnabled && String(event.getArgs()[0]).startsWith('@') && $.isMod(event.getSender())) {
-            return event.getArgs()[0] + ' -> ' + message;
+            if (!message.match(tagCheck)) {
+                return event.getArgs()[0] + ' -> ' + message;
+            }
         }
 
         if (message.match(/\(age\)/g)) {
