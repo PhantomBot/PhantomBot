@@ -298,14 +298,16 @@
     /**
      * @function addComRegisterCommands
      */
-    function addComRegisterCommands() {
+    function addComRegisterCommands(silent) {
         var commands = $.inidb.GetKeyList('command', ''),
             i;
         for (i in commands) {
             if (!$.commandExists(commands[i])) {
                 $.registerChatCommand('./commands/customCommands.js', commands[i], 7);
             } else {
-                $.log.error('Cannot add custom command, command already exists: ' + commands[i]);
+                if (!silent) {
+                    $.log.error('Cannot add custom command, command already exists: ' + commands[i]);
+                }
             }
         }
     };
@@ -313,17 +315,28 @@
     /**
      * @function addComRegisterAliases
      */
-    function addComRegisterAliases() {
+    function addComRegisterAliases(silent) {
         var aliases = $.inidb.GetKeyList('aliases', ''),
             i;
         for (i in aliases) {
             if (!$.commandExists(aliases[i])) {
                 $.registerChatCommand('./commands/customCommands.js', aliases[i], $.getIniDbNumber('permcom', aliases[i], 7));
             } else {
-                $.log.error('Cannot add alias, command already exists: ' + aliases[i]);
+                if (!silent) {
+                    $.log.error('Cannot add alias, command already exists: ' + aliases[i]);
+                }
             }
         }
-    } 
+    }
+
+    /**
+     * @function reloadCommands
+     * Useed for the panel
+     */
+    function reloadCommands() {
+        addComRegisterAliases(true);
+        addComRegisterCommands(true);
+    };
 
     /**
      * @event command
@@ -516,7 +529,7 @@
                 return;
             }
 
-            $.say($.whisperPrefix(sender) + $.lang.get("customcommands.delete.success", action));
+            $.say($.whisperPrefix(sender) + $.lang.get("customcommands.alias.delete.success", action));
             $.unregisterChatCommand(action);
             $.inidb.del('aliases', action);
             $.log.event(sender + ' deleted alias !' + action);
@@ -733,6 +746,13 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.success', action));
             $.log.event(sender + ' re-enabled command !' + command);
         }
+
+        /**
+         * used for the panel
+         */
+        if (command.equalsIgnoreCase('reloadcommand')) {
+            reloadCommands();
+        }
     });
 
     /**
@@ -753,6 +773,7 @@
             $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'botcommands', 2);
+            $.registerChatCommand('./commands/customCommands.js', 'reloadcommand', 1);
         }
     });
 
