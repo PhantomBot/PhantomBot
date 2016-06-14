@@ -26,6 +26,10 @@
 (function() {
     var modeIcon = [],
         groupIcons = [],
+        globalCooldown = "",
+        modCooldown = "",
+        perUserCooldown = "",
+        globalCooldownTime = "",
         disabledCommands = [];
 
         modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
@@ -57,10 +61,6 @@
                 commandValue = "",
                 html = "<table>",
                 time = "",
-                globalCooldown = "",
-                globalCooldownTime = "",
-                perUserCooldown = "",
-                modCooldown = "",
                 foundData = false;
 
             if (panelCheckQuery(msgObject, 'commands_cooldown')) {
@@ -114,21 +114,27 @@
                     $('#customCommandsList').html('<i>There are no custom commands defined.</i>');
                     return;
                 }
-                for (idx in msgObject['results']) {
+
+                html = '<table>';
+                for (var idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
-                    html += "<tr class=\"textList\">" +
-                            "    <td padding=\"5px\">" +
-                            "        <div id=\"deleteCommand_" + commandName + "\" class=\"button\" " +
-                            "             onclick=\"$.deleteCommand('" + commandName + "')\"><i class=\"fa fa-trash\" />" +
-                            "        </div>" +
-                            "    </td>" +
-                            "    <td><strong>" + commandName + "</strong></td>" +
-                            "    <td>" + commandValue + "</td>" +
-                            "</tr>";
+                    html += '<tr style="textList">' +
+                            '    <td style="vertical-align: middle: width: 60%">!' + commandName + '</td>' +
+                            '    <td style="vertical-align: middle">' +
+                            '        <form onkeypress="return event.keyCode != 13">' +
+                            '            <input style="width: 90%" type="text" id="editCommand_' + commandName + '"' +
+                            '                   value="' + commandValue + '" />' +
+                            '              <td type="button" onclick="$.editCustomCommand(\'' + commandName + '\')"><i class="fa fa-pencil" /> </td> ' +
+                            '</form>' +
+                            '            <td  type="button" id="deleteCommand_' + commandName + '" onclick="$.deleteCommand(\'' + commandName + '\')"><i class="fa fa-trash" /> </td>' +
+                            '        </form>' +
+                            '    </td>' +
+                            '</tr>';
                 }
-                html += "</table>";
-                $("#customCommandsList").html(html);
+                html += '</table>';
+                $('#customCommandsList').html(html);
+                handleInputFocus();
             }
 
             if (panelCheckQuery(msgObject, 'commands_aliases')) {
@@ -166,7 +172,7 @@
                             "<td style=\"vertical-align: middle\">" + commandValue + "</td>" +
                             "<td style=\"vertical-align: middle\">" +
                             "    <form onkeypress=\"return event.keyCode != 13\">" +
-                            "        <input type=\"number\" min=\"0\" id=\"inlineCommandPrice_"+commandName+"\" placeholder=\"new_price\" />" +
+                            "        <input type=\"number\" min=\"0\" id=\"inlineCommandPrice_"+commandName+"\" placeholder=\"new price\" />" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
                             "                onclick=\"$.updateCommandPrice('" + commandName + "')\"><i class=\"fa fa-pencil\" /></button>" +
                             "    </form>" +
@@ -275,35 +281,73 @@
      * @function addCustomCommand
      */
     function addCustomCommand() {
-        var value = $("#addCommandInput").val();
-        if (value.length == 0) {
-            $("#addCommandInput").val("Please enter a value");
-            setTimeout(function() { $("#addCommandInput").val(""); }, TIMEOUT_WAIT_TIME);
-        } else {
-            sendCommand("addcom " + $("#addCommandInput").val());
-            $("#addCommandInput").val("Submitted");
-            setTimeout(function() { $("#addCommandInput").val(""); }, TIMEOUT_WAIT_TIME);
-            doQuery();
+    var name = $('#addCommandCommand').val();
+    var commandtext = $('#addCommandText').val();
+
+        if (name.length == 0) {
+            $("#addCommandCommand").val("Please enter a value");
+            setTimeout(function() { $("#addCommandCommand").val(""); }, TIMEOUT_WAIT_TIME * 2);
         }
+
+        if (commandtext.length == 0) {
+            $("#addCommandText").val("Please enter a value");
+            setTimeout(function() { $("#addCommandText").val(""); }, TIMEOUT_WAIT_TIME * 2);
+        }
+
+        if (name.startsWith('!')) {
+            name = name.replace('!', '');
+        }
+
+        sendDBUpdate("addCustomCommand", "command", name.toLowerCase(), commandtext);
+        $('#addCommandCommand').val(""),
+        $('#addCommandText').val("");
+        setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
+        doQuery();
     }
 
     /**
      * @function editCustomCommand
      */
-    function editCustomCommand() {
-        sendCommand("editcom " + $("#editCommandInput").val());
-        $("#editCommandInput").val("Submitted");
-        setTimeout(function() { $("#editCommandInput").val(""); }, TIMEOUT_WAIT_TIME);
-        doQuery();
+    function editCustomCommand(id) {
+    var value = $('#editCommand_' + id).val();
+        if (value.length > 0) {
+            sendDBUpdate("addCustomCommand", "command", id.toLowerCase(), value);
+            doQuery();
+            setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
+        }
     }
 
     /** 
      * @function aliasCommand
      */
     function aliasCommand() {
-        sendCommand("aliascom " + $("#aliasCommandInput").val());
-        $("#aliasCommandInput").val("Submitted");
-        setTimeout(function() { $("#aliasCommandInput").val(""); }, TIMEOUT_WAIT_TIME);
+        var main = $('#aliasCommandInput').val();
+        var alias = $('#aliasCommandInputAlias').val();
+        console.log(main);
+        console.log(alias);
+
+        if (main.length == 0) {
+            $("#aliasCommandInput").val("Please enter a value");
+            setTimeout(function() { $("#aliasCommandInput").val(""); }, TIMEOUT_WAIT_TIME * 2);
+        }
+
+        if (alias.length == 0) {
+            $("#aliasCommandInputAlias").val("Please enter a value");
+            setTimeout(function() { $("#aliasCommandInputAlias").val(""); }, TIMEOUT_WAIT_TIME * 2);
+        }
+
+        if (main.startsWith('!')) {
+            main = main.replace('!', '');
+        }
+
+        if (alias.startsWith('!')) {
+            alias = alias.replace('!', '');
+        }
+
+        sendDBUpdate("addCommandAlias", "aliases", main.toLowerCase(), alias.toLowerCase());
+        $('#aliasCommandInput').val(""),
+        $('#aliasCommandInputAlias').val("");
+        setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
         doQuery();
     }
 
@@ -313,9 +357,11 @@
      */
     function deleteAlias(command) {
         $("#deleteAlias_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        // sendDBDelete("commands_delalias_" + command, "aliases", command);
-        sendCommand("delalias " + command);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        if (command.length != 0) {
+            sendDBDelete("commands_delalias_" + command, "aliases", command);
+        }
+        doQuery();
+        setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -323,27 +369,43 @@
      */
     function commandPermission(command, group) {
         $("#commandsList_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("permcom " + command + " " + group);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        if (command.length != 0 && group.length != 0) {
+            sendDBUpdate("commands_permcom", "permcom", command.toLowerCase(), String(group));
+        }
+        doQuery();
+        setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
     }
 
     /**
      * @function setCommandPrice
      */
     function setCommandPrice() {
-        sendCommand("pricecom " + $("#setCommandPriceInput").val());
-        $("#setCommandPriceInput").val("Submitted");
-        setTimeout(function() { $("#setCommandPriceInput").val(""); }, TIMEOUT_WAIT_TIME);
-        doQuery();
+        var price = $("#setCommandPriceInput").val();
+        var com = $("#setCommandPriceInputCommand").val();
+
+        if (com.startsWith('!')) {
+            com = com.replace('!', '');
+        }
+
+        if (price.length != 0 && com.length != 0) {
+            sendDBUpdate("commandPrice", "pricecom", com.toLowerCase(), price);
+            $("#setCommandPriceInput").val("");
+            $("#setCommandPriceInputCommand").val("");
+            doQuery();
+        }
     }
 
     /**
      * @function updateCommandPrice
      */
     function updateCommandPrice(command) {
-        sendCommand("pricecom " + command + " " + $("#inlineCommandPrice_" + command).val());
+        var price = $("#inlineCommandPrice_" + command).val();
+        if (command.length != 0 && price.length != 0) {
+            sendDBUpdate("commands_pricecom", "pricecom", command.toLowerCase(), price);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
+        }
         setTimeout(function() { $("#inlineCommandPrice_" + command).val(""); }, TIMEOUT_WAIT_TIME);
-        doQuery();
     }
 
     /**
@@ -351,8 +413,16 @@
      */
     function toggleGlobalCooldown() {
         $("#toggleGlobalCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("toggleglobalcooldown");
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() {
+            if (globalCooldown == "true") {
+                sendDBUpdate("commands_cooldown", "cooldown", "globalCooldown", "false");
+            } 
+            if (globalCooldown == "false") {
+                sendDBUpdate("commands_cooldown", "cooldown", "globalCooldown", "true");
+            }
+        }, 300);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        setTimeout(function() { sendCommand("reloadcooldown"); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
@@ -360,8 +430,16 @@
      */
     function toggleModCooldown() {
         $("#toggleModCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("togglemodcooldown");
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() {
+            if (modCooldown == "true") {
+                sendDBUpdate("commands_cooldown", "cooldown", "modCooldown", "false");
+            } 
+            if (modCooldown == "false") {
+                sendDBUpdate("commands_cooldown", "cooldown", "modCooldown", "true");
+            }
+        }, 300);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        setTimeout(function() { sendCommand("reloadcooldown"); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
@@ -369,8 +447,16 @@
      */
     function togglePerUserCooldown() {
         $("#togglePerUserCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("toggleperusercooldown");
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() {
+            if (perUserCooldown == "true") {
+                sendDBUpdate("commands_cooldown", "cooldown", "perUserCooldown", "false");
+            } 
+            if (perUserCooldown == "false") {
+                sendDBUpdate("commands_cooldown", "cooldown", "perUserCooldown", "true");
+            }
+        }, 300);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        setTimeout(function() { sendCommand("reloadcooldown"); }, TIMEOUT_WAIT_TIME * 2);
     }
 
 
@@ -380,9 +466,11 @@
     function setGlobalCooldownTime() {
         var newValue = $("#globalCooldownTimeInput").val();
         if (newValue.length > 0) {
-            sendCommand("globalcooldowntime " + newValue);
+            sendDBUpdate("commands_cooldown", "cooldown", "globalCooldownTime", String(newValue));
             $("#globalCooldownTimeInput").val('');
             $("#globalCooldownTimeInput").attr('placeholder', newValue).blur();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+            setTimeout(function() { sendCommand("reloadcooldown"); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
@@ -392,7 +480,7 @@
      */
     function deleteCooldown(command) {
         $("#deleteCooldown_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("cooldown " + command + " -1");
+        sendDBDelete("commands_cooldown", "cooldown", command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -401,10 +489,14 @@
      */
     function addCooldown() {
         var input = $("#cooldownCmdInput").val();
-        if (input.length > 0) {
+        var command = $("#cooldownCmdInputCommand").val();
+        if (input.length > 0 && command.length != 0) {
             sendCommand("cooldown " + input);
+            sendDBUpdate("commands_cooldown", "cooldown", String(command), String(input));
             $("#cooldownCmdInput").val("Submitted");
-            setTimeout(function() { $("#cooldownCmdInput").val(""); doQuery(); }, TIMEOUT_WAIT_TIME);
+            $("#cooldownCmdInputCommand").val("Submitted");
+            setTimeout(function() { $("#cooldownCmdInput").val(""); doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+            setTimeout(function() { $("#cooldownCmdInputCommand").val(""); doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
