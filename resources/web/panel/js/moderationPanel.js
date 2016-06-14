@@ -613,9 +613,9 @@
      */
     function updateRedrawModSetting(tagId, tableKey) {
         var newValue = $(tagId).val();
-        if (newValue.length > 0) {
+        if (newValue.length > 0 && newValue > 1) {
             sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
-            $(tagId).val('')
+            $(tagId).val('');
             $(tagId).attr("placeholder", newValue).blur();
             setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
         }
