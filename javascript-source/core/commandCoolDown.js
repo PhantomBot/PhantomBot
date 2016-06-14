@@ -14,6 +14,13 @@
         modCooldown = $.getSetIniDbBoolean('cooldown', 'modCooldown', false),
         cooldown = [];
 
+    function reloadCooldown () {
+        globalCooldown = $.getIniDbBoolean('cooldown', 'globalCooldown');
+        perUserCooldown = $.getIniDbBoolean('cooldown', 'perUserCooldown');
+        modCooldown = $.getIniDbBoolean('cooldown', 'modCooldown');
+        globalCooldownTime = $.getIniDbNumber('cooldown', 'globalCooldownTime');
+    };
+
     function set(command, time, user) {
         if (time == null || time == 0 || time == 1 || isNaN(time)) {
             return;
@@ -232,6 +239,13 @@
             $.setIniDbBoolean('cooldown', 'modCooldown', modCooldown);
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set.togglemodcooldown', (modCooldown ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
         }
+
+        /**
+        * Used for the panel
+        */
+        if (command.equalsIgnoreCase('reloadcooldown')) {
+            reloadCooldown();
+        }
     });
 
     /**
@@ -245,6 +259,7 @@
             $.registerChatCommand('./core/commandCoolDown.js', 'toggleglobalcooldown', 1);
             $.registerChatCommand('./core/commandCoolDown.js', 'toggleperusercooldown', 1);
             $.registerChatCommand('./core/commandCoolDown.js', 'togglemodcooldown', 1);
+            $.registerChatCommand('./core/commandCoolDown.js', 'reloadcooldown', 1);
         }
     });
     /** EXPORT TO $. API*/

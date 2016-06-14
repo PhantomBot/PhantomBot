@@ -22,9 +22,9 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="customCommandsAccordion">
-    <h3>Add/Edit Custom Command and Aliases</h3>
+    <h3>Commands</h3>
     <div>
-    <div id="_editCustomCommandsPanelDisabled" />
+        <div id="_editCustomCommandsPanelDisabled" />
     <div id="_editCustomCommandsPanel">
 
         <div id="tagHelpDialog" title="Custom Command Tags" style="font-size: 90%">
@@ -69,56 +69,62 @@
         </script>
 
         <div>
-            Add and edit custom commands from here, custom commands may use tags.
             <button type="button" class="btn btn-primary btn-xs inline pull-right"
-                     onclick="$('#tagHelpDialog').dialog('open')"><small>Tag Help</small></button>
+                     onclick="$('#tagHelpDialog').dialog('open')"><small>Command variables</small></button>
             <br><br>
         </div>
-
+    </div>
+    
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="addCommand">Add Command</label>
+                <label for="addCustomCommand">Add a command</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCustomCommand()">Submit</button>
-                <input type="text" class="form-control" id="addCommandInput" placeholder="command_name response of command" />
+                <input type="text" class="form-control" id="addCommandCommand" placeholder="command name" />
+                <input type="text" class="form-control" id="addCommandText" placeholder="command response" />
             </div>
         </form>
-        <br>
-        
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="editCommand">Edit Command</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.editCustomCommand()">Submit</button>
-                <input type="text" class="form-control" id="editCommandInput" placeholder="command_name response of command" />
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="aliasCommand">Create Alias</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.aliasCommand()">Submit</button>
-                <input type="text" class="form-control" id="aliasCommandInput" placeholder="alias_command existing_command [optional parameters]" />
-            </div>
-        </form>
-    </div>
-    </div>
-
-    <h3>View/Delete Custom Commands</h3>
-    <div>
+        <label for="addCustomCommand">Command list</label>
     <div id="_viewCustomCommandsPanelDisabled" />
     <div id="_viewCustomCommandsPanel">
-        <div id="customCommandsList" style="height: 300px; overflow: auto;" />
+        <div id="customCommandsList" style="height: 200px; overflow: auto;" />
     </div>
     </div>
 
-    <h3>View/Delete Command Aliases</h3>
+    <h3>Aliases</h3>
     <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addCustomCommand">Add a alias</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.aliasCommand()">Submit</button>
+                <input type="text" class="form-control" id="aliasCommandInputAlias" placeholder="Default command name" />
+                <input type="text" class="form-control" id="aliasCommandInput" placeholder="Alias name" />
+            </div>
+        </form>
     <div id="_viewCommandAliasesPanelDisabled" />
     <div id="_viewCommandAliasesPanel">
-        <div id="aliasCommandsList" style="height: 300px; overflow: auto;" />
+        <div id="aliasCommandsList" style="height: 200px; overflow: auto;" />
     </div>
     </div>
 
-    <h3>Enable/Disable and Manage Command Permissions</h3>
+    <h3>Cost</h3>
+    <div>
+    <div id="_commandPricesPanelDisabled" />
+    <div id="_commandPricesPanel">
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="setCommandPrice">Add a new price</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPrice()">Submit</button>
+                <input type="text" class="form-control" id="setCommandPriceInputCommand" placeholder="command name" />
+                <input type="text" class="form-control" id="setCommandPriceInput" placeholder="price" />
+            </div>
+        </form>
+
+        <strong>Current Command Prices</strong><br><br>
+        <div id="priceCommandsList" style="height: 200px; overflow: auto;" />
+    </div>
+    </div>
+
+    <h3>Permissions</h3>
     <div>
     <div id="_commandPermissionPanelDisabled" />
     <div id="_commandPermissionPanel">
@@ -126,28 +132,11 @@
     </div>
     </div>
 
-    <h3>View/Set Command Prices</h3>
+    <h3>Cooldown</h3>
     <div>
-    <div id="_commandPricesPanelDisabled" />
-    <div id="_commandPricesPanel">
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="setCommandPrice">Add New Command Price</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPrice()">Submit</button>
-                <input type="text" class="form-control" id="setCommandPriceInput" placeholder="command_name price" />
-            </div>
-        </form>
-
-        <strong>Current Command Prices</strong><br><br>
-        <div id="priceCommandsList" style="height: 300px; overflow: auto;" />
-    </div>
-    </div>
-
-    <h3>Global Cooldown Settings</h3>
-    <div style="height: 220px;">
         <table>
             <tr class="textList">
-                <td>Global Cooldown</td>
+                <td>Global cooldown</td>
                 <td style="width: 25px"><div id="toggleGlobalCooldown" /></td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
@@ -156,7 +145,7 @@
                 </td>
             </tr>
             <tr class="textList">
-                <td>Per-User Cooldown</td>
+                <td>Per-user cooldown</td>
                 <td style="width: 25px"><div id="togglePerUserCooldown" /></td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
@@ -165,7 +154,7 @@
                 </td>
             </tr>
             <tr class="textList">
-                <td>Mod Cooldown</td>
+                <td>Mod cooldown</td>
                 <td style="width: 25px"><div id="toggleModCooldown" /></td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
@@ -178,27 +167,25 @@
         <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="globalCooldownTime">Global Cooldown Time</label>
+                <label for="globalCooldownTime">Global cooldown time</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.setGlobalCooldownTime()">Submit</button>
                 <input type="number" min="0" class="form-control" id="globalCooldownTimeInput" placeholder="seconds" />
             </div>
         </form>
-    </div>
 
-    <h3>Command Cooldowns</h3>
-    <div>
+        <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="cooldownCmd">Cooldown Command</label>
+                <label for="cooldownCmd">Command cooldown</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldown()">Submit</button>
-                <input type="text" class="form-control" id="cooldownCmdInput" placeholder="command_name seconds" />
+                <input type="text" class="form-control" id="cooldownCmdInputCommand" placeholder="command name" />
+                <input type="number" min="0" class="form-control" id="cooldownCmdInput" placeholder="seconds" />
             </div>
         </form>
-
+        <br>
         <strong>Commands with Cooldowns</strong>
-        <div id="cooldownList" style="height: 300px; overflow: auto;" />
+        <div id="cooldownList" style="height: 200px; overflow: auto;" />
     </div>
-
 </div>
 
 <!-- Run the Acordion -->
