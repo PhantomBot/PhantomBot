@@ -4,7 +4,7 @@
         keyword = '',
         followers = false,
         raffleStatus = false,
-        msgToggle = $.getSetIniDbBoolean('settings', 'raffleMSGToggle', true),
+        msgToggle = $.getSetIniDbBoolean('settings', 'raffleMSGToggle', false),
         noRepickSame = $.getSetIniDbBoolean('settings', 'noRepickSame', true),
         timer = 0,
         totalEntries = 0,
@@ -154,26 +154,34 @@
      */
     function enterRaffle(user, cost) {
         if (!raffleStatus) {
-            $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.not.opened'));
-            return;
-        }
-
-        if (followers) {
-            if (!$.user.isFollower(user)) {
-                $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.not.following'));
+            if (msgToggle) {
+                $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.not.opened'));
                 return;
             }
         }
 
+        if (followers) {
+            if (!$.user.isFollower(user)) {
+                if (msgToggle) {
+                    $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.not.following'));
+                    return;
+                }
+            }
+        }
+
         if ($.list.contains(entries, user)) {
-            $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.enter.error.alreadyentered'));
-            return;
+            if (msgToggle) {
+                $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.enter.error.alreadyentered'));
+                return;
+            }
         }
 
         if (cost > 0) {
             if (cost > $.getUserPoints(user)) {
-                $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.points', $.pointNameMultiple));
-                return;
+                if (msgToggle) {
+                    $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.points', $.pointNameMultiple));
+                    return;
+                }
             } else {
                 $.inidb.decr('points', user, cost);
             }
