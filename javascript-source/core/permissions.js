@@ -745,9 +745,9 @@
         }
 
         /**
-         * @commandpath group [username] [groupId] - Get your current group or optionally set the usergroup for a user.
+         * @commandpath permission [username] [groupId] - Get your current permission or optionally set the user permission for a user.
          */
-        if (command.equalsIgnoreCase('group')) {
+        if (command.equalsIgnoreCase('permission')) {
             if (!$.isModv3(sender, event.getTags()) || !args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.self.current', $.getUserGroupName(sender)));
                 return;
@@ -776,9 +776,9 @@
         }
 
         /**
-         * @commandpath grouppoints [groupId] [online|offline] [points] - Show/set the points gained for each group. -1 defaults to the global configuration.
+         * @commandpath permissionpoints [permissionID] [online|offline] [points] - Show/set the points gained for each permissions. -1 defaults to the global configuration.
          */
-        if (command.equalsIgnoreCase('grouppoints')) {
+        if (command.equalsIgnoreCase('permissionpoints')) {
             var groupId,
                 channelStatus,
                 points;
@@ -842,9 +842,9 @@
         }
 
         /**
-         * @commandpath groups - Give's you all the groups with there id's
+         * @commandpath permission   - Give's you all the ppermissions with there id's
          */
-        if (command.equalsIgnoreCase('groups') || command.equalsIgnoreCase('grouplist')) {
+        if (command.equalsIgnoreCase('permissions') || command.equalsIgnoreCase('permissionlist')) {
             $.say(getGroupList());
         }
     });
@@ -874,10 +874,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/permissions.js', 'group', 7);
-        $.registerChatCommand('./core/permissions.js', 'groups', 1);
-        $.registerChatCommand('./core/permissions.js', 'grouplist', 1);
-        $.registerChatCommand('./core/permissions.js', 'grouppoints', 1);
+        $.registerChatCommand('./core/permissions.js', 'permission', 7);
+        $.registerChatCommand('./core/permissions.js', 'permissions', 1);
+        $.registerChatCommand('./core/permissions.js', 'permissionlist', 1);
+        $.registerChatCommand('./core/permissions.js', 'permissionpoints', 1);
         $.registerChatCommand('./core/permissions.js', 'users', 7);
         $.registerChatCommand('./core/permissions.js', 'mods', 7);
     });
