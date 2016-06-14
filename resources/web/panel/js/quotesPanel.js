@@ -60,7 +60,7 @@
                     id = msgObject['results'][idx]['key'];
                     quoteData = JSON.parse(msgObject['results'][idx]['value']);
                     quoteDataClean = JSON.parse(msgObject['results'][idx]['value']);
-                    quoteDataClean[1] = quoteDataClean[1].replace(',', '%2C');
+                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C');
                     html += '<tr style="textList">' +
                             '    <td rowspan="2" style="width: 25px">' +
                             '        <div id="deleteQuote_' + id + '" class="button"' +
@@ -165,11 +165,11 @@
                 quoteArray[1] = value;
             }
             if (panelMatch(field, 'game')) {
-                quoteArray[1] = quoteArray[1].replace('%2C', ',');
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',');
                 quoteArray[3] = value;
             }
             if (panelMatch(field, 'user')) {
-                quoteArray[1] = quoteArray[1].replace('%2C', ',');
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',');
                 quoteArray[0] = value;
             }
             sendDBUpdate('quotes_update', 'quotes', id, JSON.stringify(quoteArray));
