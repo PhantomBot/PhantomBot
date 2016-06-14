@@ -4,11 +4,15 @@
         maxEntries = 0,
         followers = false,
         raffleStatus = false,
-        msgToggle = ($.inidb.exists('settings', 'tRaffleMSGToggle') ? $.getIniDbBoolean('settings', 'tRaffleMSGToggle') : true),
+        msgToggle = $.getSetIniDbBoolean('settings', 'tRaffleMSGToggle', false),
         totalEntries = 0,
         lastTotalEntries = 0,
         totalTickets = 0,
         a = '';
+
+    function reloadRaffle() {
+        msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
+    }
 
     function checkArgs(user, max, price, followersOnly) {
         if (raffleStatus) {
@@ -96,36 +100,46 @@
 
     function enterRaffle(user, times) {
         if (!raffleStatus) {
-            $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
-            return;
+            if (msgToggle) {
+                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
+                return;
+            }
         }
 
         if (times > maxEntries || times == 0) {
-            $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only, buy.amount', maxEntries));
-            return;
+            if (msgToggle) {
+                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only, buy.amount', maxEntries));
+                return;
+            }
         }
 
         for (var i = 0, t = 0; i < entries.length; i++) {
             if (entries[i].equalsIgnoreCase(user)) {
                 t++;
                 if ((t + times) > maxEntries) {
-                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.litmi.hit', maxEntries));
-                    return;
+                    if (msgToggle) {
+                        $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.litmi.hit', maxEntries));
+                        return;
+                    }
                 }
             }
         }
 
         if (followers) {
             if (!$.user.isFollower(user)) {
-                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.not.following'));
-                return;
+                if (msgToggle) {
+                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.not.following'));
+                    return;
+                }
             }
         }
 
         if (cost > 0) {
             if ((times * cost) > $.getUserPoints(user)) {
-                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.points', $.pointNameMultiple));
-                return;
+                if (msgToggle) {
+                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.points', $.pointNameMultiple));
+                    return;
+                }
             }
         }
 
@@ -212,11 +226,20 @@
          * @commandpath tickets [amount] - Buy tickets to enter the ticket raffle.
          */
         if (command.equalsIgnoreCase('tickets') || command.equalsIgnoreCase('ticket')) {
-            if (!action && msgToggle && raffleStatus) {
-                $.say('@' + sender + ' ' + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
-                return;
+            if (!action) {
+                if (msgToggle && raffleStatus) {
+                    $.say('@' + sender + ' ' + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
+                    return;
+                }
             }
             enterRaffle(sender, parseInt(action));
+        }
+
+        /**
+        * Used for the panel
+        */
+        if (command.equalsIgnoreCase('reloadtraffle')) {
+            reloadRaffle();
         }
     });
 
@@ -228,6 +251,7 @@
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'traffle', 2);
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'tickets', 7);
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'ticket', 7);
+            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'reloadtraffle', 1);
         }
     });
 })();
