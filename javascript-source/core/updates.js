@@ -16,7 +16,7 @@
         i;
 
     /** New setup */
-    if ($.changed == true && $.changed != null && $.changed != undefined) {
+    if ($.changed == true && $.changed != null && $.changed != undefined && !$.inidb.exists('updates', 'installedNewBot') && $.inidb.get('updates', 'installedNewBot') != 'true') {
         $.consoleLn('Initializing PhantomBot Version ' + $.version + ' For The First Time...');
 
         modules = [
@@ -61,7 +61,7 @@
         }
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -70,6 +70,7 @@
         modules = [];
         versions = [];
         $.changed = false;
+        $.inidb.set('updates', 'installedNewBot', 'true');
     }
 
     /** Version 2.0 updates */
@@ -263,6 +264,24 @@
 
         $.consoleLn('PhantomBot v2.0.9 updates completed!');
         $.inidb.set('updates', 'installedv2.0.9', 'true');
+    }
+
+    /** Version 2.1/2.0.10 updates */
+    if (!$.inidb.exists('updates', 'installedv2.1') || $.inidb.get('updates', 'installedv2.1') != 'true') {
+        $.consoleLn('Starting ' + $.version + ' updates...');
+
+        $.consoleLn('Aliasing !permission to !group...');
+        $.inidb.set('aliases', 'group', 'permission');
+
+        $.consoleLn('Aliasing !permissionpoints to !grouppoints...');
+        $.inidb.set('aliases', 'grouppoints', 'permissionpoints');
+
+        $.consoleLn('Aliasing !permissions to !groups...');
+        $.inidb.set('aliases', 'groups', 'permissions');
+
+        $.consoleLn($.version + ' updates completed!');
+        $.inidb.set('updates', 'installedv2.1', 'true');
+        $.inidb.set('updates', 'installedNewBot', 'true');//If bot login is deleted after updates were installed we don't want to reset the modules.
     }
 
     /**
