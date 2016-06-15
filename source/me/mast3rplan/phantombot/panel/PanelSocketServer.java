@@ -40,6 +40,12 @@
  * // Update DB
  * { "dbupdate" : "query_id", "update" : { "table" : "table_name", "key" : "key_name", "value" : "new_value" } }
  *
+ * // Increment data in DB
+ * { "dbincr" : "query_id", "incr" : { "table" : "table_name", "key" : "key_name", "value" : "incr_value" } }
+ *
+ * // Decrement data in DB
+ * { "dbdecr" : "query_id", "decr" : { "table" : "table_name", "key" : "key_name", "value" : "decr_value" } }
+ *
  * // Delete from DB
  * { "dbdelkey" : "query_id", "delkey" : { "table" : "table_name", "key" : "key_name" } }
  *
@@ -213,6 +219,18 @@ public class PanelSocketServer extends WebSocketServer {
                 String key = jsonObject.getJSONObject("update").getString("key");
                 String value = jsonObject.getJSONObject("update").getString("value");
                 doDBUpdate(webSocket, uniqueID, table, key, value);
+            } else if (jsonObject.has("dbincr") && !sessionData.isReadOnly()) {
+                uniqueID = jsonObject.getString("dbincr");
+                String table = jsonObject.getJSONObject("incr").getString("table");
+                String key = jsonObject.getJSONObject("incr").getString("key");
+                String value = jsonObject.getJSONObject("incr").getString("value");
+                doDBIncr(webSocket, uniqueID, table, key, value);
+            } else if (jsonObject.has("dbdecr") && !sessionData.isReadOnly()) {
+                uniqueID = jsonObject.getString("dbdecr");
+                String table = jsonObject.getJSONObject("decr").getString("table");
+                String key = jsonObject.getJSONObject("decr").getString("key");
+                String value = jsonObject.getJSONObject("decr").getString("value");
+                doDBDecr(webSocket, uniqueID, table, key, value);
             } else if (jsonObject.has("dbdelkey") && !sessionData.isReadOnly()) {
                 uniqueID = jsonObject.getString("dbdelkey");
                 String table = jsonObject.getJSONObject("delkey").getString("table");
@@ -295,6 +313,20 @@ public class PanelSocketServer extends WebSocketServer {
     private void doDBUpdate(WebSocket webSocket, String id, String table, String key, String value) {
         JSONStringer jsonObject = new JSONStringer();
         PhantomBot.instance().getDataStore().set(table, key, value);
+        jsonObject.object().key("query_id").value(id).endObject();
+        webSocket.send(jsonObject.toString());
+    }
+
+    private void doDBIncr(WebSocket webSocket, String id, String table, String key, String value) {
+        JSONStringer jsonObject = new JSONStringer();
+        PhantomBot.instance().getDataStore().incr(table, key, Integer.parseInt(value));
+        jsonObject.object().key("query_id").value(id).endObject();
+        webSocket.send(jsonObject.toString());
+    }
+
+    private void doDBDecr(WebSocket webSocket, String id, String table, String key, String value) {
+        JSONStringer jsonObject = new JSONStringer();
+        PhantomBot.instance().getDataStore().decr(table, key, Integer.parseInt(value));
         jsonObject.object().key("query_id").value(id).endObject();
         webSocket.send(jsonObject.toString());
     }

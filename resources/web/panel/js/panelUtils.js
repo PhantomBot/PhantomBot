@@ -207,6 +207,33 @@ function sendDBUpdate(unique_id, table, key, value) {
 }
 
 /**
+ * @function sendDBIncr
+ * @param {String} unique_id
+ * @param {String} table
+ * @param {String} key
+ * @param {String} value
+ */
+function sendDBIncr(unique_id, table, key, value) {
+    jsonObject = {};
+    jsonObject["dbincr"] = unique_id;
+    jsonObject["incr"] = { "table" : table, "key" : key, "value" : value };
+    connection.send(JSON.stringify(jsonObject));
+}
+/**
+ * @function sendDBDecr
+ * @param {String} unique_id
+ * @param {String} table
+ * @param {String} key
+ * @param {String} value
+ */
+function sendDBDecr(unique_id, table, key, value) {
+    jsonObject = {};
+    jsonObject["dbdecr"] = unique_id;
+    jsonObject["decr"] = { "table" : table, "key" : key, "value" : value };
+    connection.send(JSON.stringify(jsonObject));
+}
+
+/**
  * @function sendDBDelete
  * @param {String} unique_id
  * @param {String} table
