@@ -27,8 +27,8 @@
 
     var sortType = 'alpha_asc',
         modeIcon = [];
-        modeIcon['false'] = "<i class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
 
     /*
      * onMessage
@@ -255,18 +255,24 @@
         var singleName = $("#setPointNameInput").val(),
             pluralName = $("#setPointsNameInput").val();
 
-        if (singleName.length > 0 && pluralName.length > 0) {
-            sendCommand("points setname single " + singleName);
-            sendCommand("points setname multiple " + pluralName);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        if (singleName.length != 0) {
+            sendDBUpdate("points_settings", "pointSettings", "pointNameSingle", singleName);
         }
+
+        if (pluralName.length != 0) {
+            sendDBUpdate("points_settings", "pointSettings", "pointNameMultiple", pluralName);
+        }
+
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
     }
 
     /**
      * @function clearPointName
      */
     function clearPointName() {
-        sendCommand("points setname delete");
+        sendDBUpdate("points_settings", "pointSettings", "pointNameMultiple", "points");
+        sendDBUpdate("points_settings", "pointSettings", "pointNameSingle", "point");
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -276,11 +282,31 @@
      */
     function setPointGain(action) {
         var value = $("#setPointGainInput_" + action).val();
-        if (value.length > 0) {
-            $("#setPointGainInput_" + action).val('');
-            sendCommand("points " + action + " " + value);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+
+        if (action == "setgain") {
+            if (action.length != 0) {
+                sendDBUpdate("points_settings", "pointSettings", "onlineGain", value);
+            }
         }
+
+        if (action == "setofflinegain") {
+            if (action.length != 0) {
+                sendDBUpdate("points_settings", "pointSettings", "offlineGain", value);
+            }
+        }
+
+        if (action == "setinterval") {
+            if (action.length != 0) {
+                sendDBUpdate("points_settings", "pointSettings", "onlinePayoutInterval", value);
+            }
+        }
+
+        if (action == "setofflineinterval") {
+            if (action.length != 0) {
+                sendDBUpdate("points_settings", "pointSettings", "offlinePayoutInterval", value);
+            }
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
  
     /**
@@ -291,12 +317,26 @@
         var username = $("#adjustUserPointsNameInput").val(),
             points = $("#adjustUserPointsInput").val();
 
-        if (username.length > 0 && points.length > 0) {
-            sendCommand("points " + action + " "  + username + " " + points);
-            $("#adjustUserPointsNameInput").val('');
-            $("#adjustUserPointsInput").val('');
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        if (action == "take") {
+            if (username.length > 0 && points.length > 0) {
+                sendDBDecr("points", "points", username, points);
+            }
         }
+
+        if (action == "add") {
+            if (username.length > 0 && points.length > 0) {
+                sendDBIncr("points", "points", username, points);
+            }
+        }
+
+        if (action == "set") {
+            if (username.length > 0 && points.length != 0) {
+                sendDBUpdate("points", "points", username, points);
+            }
+        }
+        $("#adjustUserPointsNameInput").val('');
+        $("#adjustUserPointsInput").val('');
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**

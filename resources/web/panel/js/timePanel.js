@@ -261,7 +261,13 @@
                 sendDBUpdate("times", "time", username, timeAdjust);
             }
         }
+        $("#adjustUserTimeNameInput").val("Submitting");
+        $("#adjustUserTimeSecsInput").val("Submitting");
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() {
+            $("#adjustUserTimeNameInput").val("");
+            $("#adjustUserTimeSecsInput").val("");
+        }, TIMEOUT_WAIT_TIME);
     }
 
     /**
