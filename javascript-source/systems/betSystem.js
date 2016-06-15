@@ -310,7 +310,7 @@
                  * @commandpath bet [ [option amount] | [amount option] ]- Places a bet on option, betting an amount of points.
                  */
             } else {
-                if (!betStatus) {
+                if (!betStatus || !betTimerStatus) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.bet.closed'));
                     return;
                 }
