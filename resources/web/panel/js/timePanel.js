@@ -26,9 +26,13 @@
 (function() {
 
     var sortType = 'alpha_asc',
+        timeLevel = "",
+        keepTimeWhenOffline = "",
+        modTimePermToggle = "",
+        commandName = "",
         modeIcon = [];
-        modeIcon['false'] = "<i class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
 
     /*
      * onMessage
@@ -55,16 +59,37 @@
 
             if (panelCheckQuery(msgObject, 'time_settings')) {
                 for (idx in msgObject['results']) {
+                    commandName = msgObject['results'][idx]['key'];
+                    if (panelMatch(commandName, 'timeLevel')) {
+                        timeLevel = msgObject['results'][idx]['value'];
+                        $("#timeLevel").html(modeIcon[timeLevel]);
+                        continue;
+                    }
+
+                    if (panelMatch(commandName, 'keepTimeWhenOffline')) {
+                        keepTimeWhenOffline = msgObject['results'][idx]['value'];
+                        $("#keepTimeWhenOffline").html(modeIcon[keepTimeWhenOffline]);
+                        continue;
+                    }
+
+                    if (panelMatch(commandName, 'modTimePermToggle')) {
+                        modTimePermToggle = msgObject['results'][idx]['value'];
+                        $("#modTimePermToggle").html(modeIcon[modTimePermToggle]);
+                        continue;
+                    }
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'time_settings2')) {
+                for (idx in msgObject['results']) {
                     var key = "",
                         value = "";
-    
+
                     key = msgObject['results'][idx]['key'];
                     value = msgObject['results'][idx]['value'];
     
                     if (panelMatch(key, 'timePromoteHours')) {
                         $("#setTimePromotionInput").attr("placeholder", value).blur();
-                    } else {
-                        $("#" + key).html(modeIcon[value]);
                     }
                 }
             }
@@ -115,6 +140,7 @@
      */
     function doQuery() {
         sendDBQuery("time_timezone", "settings", "timezone");
+        sendDBKeys("time_settings2", "timeSettings");
         sendDBKeys("time_settings", "timeSettings");
         sendDBKeys("time_timetable", "time");
     }
@@ -157,7 +183,30 @@
      */
     function toggleTimeMode(divId, setting) {
         $("#" + divId).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("time " + setting);
+        if (setting == "modTimePermToggle") {
+            if (modTimePermToggle == "false") {
+                sendDBUpdate("time_toggles", "timeSettings", setting, "true");
+            } else {
+                sendDBUpdate("time_toggles", "timeSettings", setting, "false");
+            }
+        }
+
+        if (setting == "keepTimeWhenOffline") {
+            if (keepTimeWhenOffline == "false") {
+                sendDBUpdate("time_toggles", "timeSettings", setting, "true");
+            } else {
+                sendDBUpdate("time_toggles", "timeSettings", setting, "false");
+            }
+        }
+
+        if (setting == "timeLevel") {
+            if (timeLevel == "false") {
+                sendDBUpdate("time_toggles", "timeSettings", setting, "true");
+            } else {
+                sendDBUpdate("time_toggles", "timeSettings", setting, "false");
+            }
+        }
+        setTimeout(function() { sendCommand("updatetimesettings"); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -167,7 +216,7 @@
     function setTimePromotion() {
         var newTimePromotion = $("#setTimePromotionInput").val();
         if (newTimePromotion.length > 0) {
-            sendCommand("time promotehours " + newTimePromotion);
+            sendDBUpdate("time_toggles", "timeSettings", "timePromoteHours", newTimePromotion);
             $("#setTimePromtionInput").val('');
             $("#setTimePromotionInput").attr("placeholder", "Submitting").blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -180,7 +229,7 @@
     function setTimeZone() {
         var newTimeZone = $("#setTimeZoneInput").val();
         if (newTimeZone.length > 0) {
-            sendCommand("timezone " + newTimeZone);
+            sendDBUpdate("time_toggles", "settings", "timezone", newTimeZone);
             $("#setTimeZoneInput").val('');
             $("#setTimeZoneInput").attr("placeholder", "Submitting").blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -195,12 +244,24 @@
         var username = $("#adjustUserTimeNameInput").val(),
             timeAdjust = $("#adjustUserTimeSecsInput").val();
 
-        if (username.length > 0 && timeAdjust.length > 0) {
-            sendCommand("time " + action + " "  + username + " " + timeAdjust);
-            $("#adjustUserTimeNameInput").val('');
-            $("#adjustUserTimeSecsInput").val('');
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        if (action == "take") {
+            if (username.length > 0 && timeAdjust.length > 0) {
+                sendDBDecr("times", "time", username, timeAdjust);
+            }
         }
+
+        if (action == "add") {
+            if (username.length > 0 && timeAdjust.length > 0) {
+                sendDBIncr("times", "time", username, timeAdjust);
+            }
+        }
+
+        if (action == "set") {
+            if (username.length > 0 && timeAdjust.length > 0) {
+                sendDBUpdate("times", "time", username, timeAdjust);
+            }
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**

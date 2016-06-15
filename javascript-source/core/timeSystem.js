@@ -13,6 +13,16 @@
         regularsGroupId = 6;
 
     /**
+     * @function updateTimeSettings
+     */
+    function updateTimeSettings () {
+        levelWithTime = $.getIniDbBoolean('timeSettings', 'timeLevel');
+        keepTimeWhenOffline = $.getIniDbBoolean('timeSettings', 'keepTimeWhenOffline');
+        modTimePermToggle = $.getIniDbBoolean('timeSettings', 'modTimePermToggle');
+        hoursForLevelUp = $.getIniDbNumber('timeSettings', 'timePromoteHours');
+    };
+
+    /**
      * @function hasPerm
      * @param {Object} event
      * @returns {boolean}
@@ -367,6 +377,10 @@
         if (command.equalsIgnoreCase('uptime')) {
             $.say(($.getStreamUptime($.channelName) ? $.lang.get('timesystem.uptime', $.username.resolve($.channelName), $.getStreamUptime($.channelName)) : $.lang.get('timesystem.uptime.offline', $.username.resolve($.channelName))));
         }
+
+        if (command.equalsIgnoreCase('updatetimesettings')) {
+            updateTimeSettings();
+        }
     });
 
     // Set an interval for increasing all current users logged time
@@ -410,6 +424,7 @@
             $.registerChatCommand('./core/timeSystem.js', 'streamertime');
             $.registerChatCommand('./core/timeSystem.js', 'uptime');
             $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
+            $.registerChatCommand('./core/timeSystem.js', 'updatetimesettings', 1);
         }
     });
 
