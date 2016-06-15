@@ -17,6 +17,20 @@
         pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'points');
 
     /**
+     * @function updateSettings
+     */
+    function updateSettings() {
+        pointsTimedGain = $.getIniDbBoolean('pointSettings', 'pointsTimedGain');
+        onlineGain = $.getIniDbNumber('pointSettings', 'onlineGain');
+        offlineGain = $.getIniDbNumber('pointSettings', 'offlineGain');
+        onlinePayoutInterval = $.getIniDbNumber('pointSettings', 'onlinePayoutInterval');
+        offlinePayoutInterval = $.getIniDbNumber('pointSettings', 'offlinePayoutInterval');
+        pointNameSingle = $.getIniDbString('pointSettings', 'pointNameSingle');
+        pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
+        registerPointCommands();
+    };
+
+    /**
      * @function getUserPoints
      * @export $
      * @param {string} username
@@ -470,6 +484,10 @@
             $.inidb.decr('points', sender, parseInt(args[1]));
             $.say($.lang.get('pointsystem.gift.success', $.username.resolve(sender), getPointsString(parseInt(args[1])), $.username.resolve(args[0])));
         }
+
+        if (command.equalsIgnoreCase('reloadpoints')) {
+            updateSettings();
+        }
     });
 
     // Set the timer for the points payouts
@@ -486,6 +504,7 @@
             $.registerChatCommand('./systems/pointSystem.js', 'points', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'point', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'gift', 7);
+            $.registerChatCommand('./systems/pointSystem.js', 'reloadpoints', 1);
 
             $.registerChatSubcommand('points', 'add', 1);
             $.registerChatSubcommand('points', 'take', 1);
