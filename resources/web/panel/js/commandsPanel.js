@@ -490,8 +490,12 @@
     function addCooldown() {
         var input = $("#cooldownCmdInput").val();
         var command = $("#cooldownCmdInputCommand").val();
+
+        if (command.startsWith('!')) {
+            command = command.replace('!', '');
+        }
+        
         if (input.length > 0 && command.length != 0) {
-            sendCommand("cooldown " + input);
             sendDBUpdate("commands_cooldown", "cooldown", String(command), String(input));
             $("#cooldownCmdInput").val("Submitted");
             $("#cooldownCmdInputCommand").val("Submitted");
