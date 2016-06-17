@@ -181,9 +181,9 @@
 
             if (panelCheckQuery(msgObject, 'dashboard_streamTitle')) {
                 if (msgObject['results']['title'] === undefined || msgObject['results']['title'] === null) {
-                    $('#streamTitleInput').attr('placeholder', 'Title').blur();
+                    $('#streamTitleInput').val('Title');
                 } else {
-                    $('#streamTitleInput').attr('placeholder', msgObject['results']['title']).blur();
+                    $('#streamTitleInput').val(msgObject['results']['title']);
                 }
             }
  
@@ -192,7 +192,7 @@
                 if (gameTitle === undefined || gameTitle === null) {
                     gameTitle = "Game";
                 }
-                $('#gameTitleInput').attr('placeholder', gameTitle).blur();
+                $('#gameTitleInput').val(gameTitle);
                 sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
             }
  
@@ -214,14 +214,14 @@
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
                 amount = msgObject['results'][gameTitle];
                 if (gameTitle === undefined || gameTitle === null || amount === null || amount === undefined || amount === 0) {
-                    $("#deathCounterValue").html("0");
+                    $("#deathCounterValue").val("0");
                 }
                 $("#deathCounterValue").html(msgObject['results'][gameTitle]);
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_dsChannels')) {
                 if (msgObject['results']['otherChannels'] !== undefined && msgObject['results']['otherChannels'] !== null) {
-                    $('#multiLinkInput').attr('placeholder', msgObject['results']['otherChannels'].replace(/\//g, ' '));
+                    $('#multiLinkInput').val(msgObject['results']['otherChannels'].replace(/\//g, ' '));
                 } else {
                     $('#multiLinkInput').attr('placeholder', 'Channel-1 Channel-2');
                 }
@@ -358,9 +358,8 @@
     function setStreamTitle() {
         var newTitle = $("#streamTitleInput").val();
         if (newTitle.length > 0) {
-            sendCommand("title set " + newTitle);
-            $("#streamTitleInput").val('')
-            $("#streamTitleInput").attr("placeholder", newTitle).blur();
+            sendCommand("title setsilent " + newTitle);
+            $("#streamTitleInput").val(newTitle);
         }
     }
 
@@ -370,9 +369,8 @@
     function setGameTitle() {
         var newGame = $("#gameTitleInput").val();
         if (newGame.length > 0) {
-            sendCommand("game set " + newGame);
-            $("#gameTitleInput").val('')
-            $("#gameTitleInput").attr("placeholder", newGame).blur();
+            sendCommand("game setsilent " + newGame);
+            $("#gameTitleInput").val(newGame);
             gameTitle = newGame;
         }
     }

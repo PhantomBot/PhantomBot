@@ -86,6 +86,10 @@
                     argsString = args.splice(1).join(' ');
                     $.updateGame($.channelName, argsString, sender);
                     return;
+                } else if (args[0].equalsIgnoreCase('setsilent')) {
+                    argsString = args.splice(1).join(' ');
+                    $.updateGame($.channelName, argsString, sender, true);
+                    return;
                 } else {
                     $.say($.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
                     return;
@@ -109,6 +113,10 @@
                     }
                     argsString = args.splice(1).join(' ');
                     $.updateStatus($.channelName, argsString, sender);
+                    return;
+                } else if (args[0].equalsIgnoreCase('setsilent')) {
+                    argsString = args.splice(1).join(' ');
+                    $.updateStatus($.channelName, argsString, sender, true); // used for the panel.
                     return;
                 } else {
                     $.say($.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
@@ -175,6 +183,8 @@
 
             $.registerChatSubcommand('game', 'set', 1);
             $.registerChatSubcommand('title', 'set', 1);
+            $.registerChatSubcommand('title', 'setsilent', 1);
+            $.registerChatSubcommand('game', 'setsilent', 1);
         }
     });
 })();

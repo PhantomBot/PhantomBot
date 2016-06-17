@@ -272,14 +272,16 @@
      * @param {string} game
      * @param {string} sender
      */
-    function updateGame(channelName, game, sender) {
+    function updateGame(channelName, game, sender, silent) {
         var http = $.twitch.UpdateChannel(channelName, '', game);
 
         if (http.getBoolean('_success')) {
             if (http.getInt('_http') == 200) {
                 $.twitchcache.setGameTitle(http.getString('game'));
                 $.inidb.set('streamInfo', 'game', http.getString('game'));
-                $.say('Changed the game to "' + http.getString('game') + '"!');
+                if (!silent) {
+                    $.say('Changed the game to "' + http.getString('game') + '"!');
+                }
                 $.log.event($.username.resolve(sender) + ' changed the current game to ' + http.getString('game'));
 
                 if ($.bot.isModuleEnabled('./commands/deathctrCommand.js')) {
@@ -304,14 +306,16 @@
      * @param {string} status
      * @param {string} sender
      */
-    function updateStatus(channelName, status, sender) {
+    function updateStatus(channelName, status, sender, silent) {
         var http = $.twitch.UpdateChannel(channelName, status, '');
 
         if (http.getBoolean('_success')) {
             if (http.getInt('_http') == 200) {
                 $.twitchcache.setStreamStatus(http.getString('status'));
                 $.inidb.set('streamInfo', 'title', http.getString('status'));
-                $.say('Changed the title to "' + http.getString('status') + '"!');
+                if (!silent) {
+                    $.say('Changed the title to "' + http.getString('status') + '"!');
+                }
                 $.log.event(sender + ' changed the current status to ' + http.getString('status'));
             } else {
                 $.say($.whisperPrefix(sender) + 'Failed to change the status. Make sure you have your api oauth code set. https://phantombot.net/oauth');
