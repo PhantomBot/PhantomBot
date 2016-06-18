@@ -301,6 +301,10 @@ $.lang.register('timesystem.streamertime', 'It is currently $1 where $2 is locat
 $.lang.register('timesystem.take.error.toomuch', 'You can not take more than what $1 has in time.');
 $.lang.register('timesystem.take.success', 'Taken $1 from $2. New balance is $3.');
 $.lang.register('timesystem.take.usage', 'Usage: "!time take [name] [amount]"');
+$.lang.register('get.long.time.string.short', ' $1 days, $2 hours, $3 minutes and $4 seconds.');
+$.lang.register('get.long.time.string.long', '$1 months, $2 hours, $3 minutes and $4 seconds.');
+$.lang.register('user.time.string.hours', ' $1 hours and $2 minutes');
+$.lang.register('user.time.string.minutes', ' $1 minutes');
 $.lang.register('whisper.whispers.disabled', '[Whisper Mode] has been disabled.');
 $.lang.register('whisper.whispers.enabled', '[Whisper Mode] has been enabled.');
 $.lang.register('pausecommands.usage', 'usage: !pausecommands [seconds | clear]');
