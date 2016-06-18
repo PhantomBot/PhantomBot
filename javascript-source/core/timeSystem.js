@@ -143,16 +143,20 @@
     function getLongTimeString(time, short) {
         time = Math.abs((time - $.systemTime()) / 1000);
 
-        var months = Math.floor(time / 2592000),
-            days = Math.floor(time / 86400),
-            hours = Math.floor((time % 86400) / 3600),
-            minutes = Math.floor(((time % 86400) % 3600) / 60),
-            seconds = Math.floor(((time % 86400) % 3600) % 60);
+        var floor = Math.floor,
+            months = (time / 2592000),
+            days = (time / 86400),
+            hours = ((time % 86400) / 3600),
+            minutes = ((time % 86400) % 3600) / 60,
+            seconds = ((time % 86400) % 3600) % 60;
 
         if (short) {
-            return days + ' days, ' + hours + ' hours, ' + minutes + ' minutes and ' + seconds + ' seconds.';
+            return ($.lang.get('get.long.time.string.short', floor(days), floor(hours), floor(minutes), floor(seconds)));
         } else {
-            return months + ' months, ' + days + ' days, ' + hours + ' hours, ' + minutes + ' minutes and ' + seconds + ' seconds.';
+            if (months >= 1) {
+                return ($.lang.get('get.long.time.string.long', floor(months), floor(hours), floor(minutes), floor(seconds)));
+            }
+            return ($.lang.get('get.long.time.string.short', floor(days), floor(hours), floor(minutes), floor(seconds)));
         }
     };
 
@@ -179,9 +183,9 @@
             cMins = cHours % 1 * 60;
 
         if (floor(cHours) > 0) {
-            return ((floor(cHours) + ' hours, ' + floor(~~cMins) + ' minutes'));
+            return ($.lang.get('user.time.string.hours', floor(cHours), floor(~~cMins)));
         } else {
-            return (floor(~~cMins) + ' minutes');
+            return ($.lang.get('user.time.string.minutes', floor(~~cMins)));
         }
     };
 
