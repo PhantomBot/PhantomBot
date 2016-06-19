@@ -63,6 +63,11 @@
             cool,
             i;
 
+        if (command.equalsIgnoreCase('bet') || command.equalsIgnoreCase('ticket') || command.equalsIgnoreCase('tickets') 
+            || command.equalsIgnoreCase('bid') || command.equalsIgnoreCase($.inidb.get('raffle', 'command'))) {
+            return;
+        }
+
         if (globalCooldown && !coolDownExists) {
             for (i in cooldown) {
                 if (cooldown[i].command.equalsIgnoreCase(command)) {
