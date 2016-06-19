@@ -229,8 +229,8 @@
             if (!action) {
                 if (msgToggle && raffleStatus) {
                     $.say('@' + sender + ' ' + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
-                    return;
                 }
+                return;
             }
             enterRaffle(sender, parseInt(action));
         }
