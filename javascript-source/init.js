@@ -519,6 +519,42 @@
                 }
             }
 
+            /** Used for the panel */
+            if (action.equalsIgnoreCase('enablesilent')) {
+                temp = args[1];
+
+                if (!temp) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+                    return;
+                }
+
+                if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
+                    return;
+                }
+
+                index = getModuleIndex(temp);
+
+                if (index > -1) {
+                    $.log.event(username + ' enabled module "' + modules[index].scriptFile + '"');
+                    modules[index].enabled = true;
+                    $.setIniDbBoolean('modules', modules[index].scriptFile, true);
+                    loadScript(modules[index].scriptFile);
+
+                    var hookIdx = getHookIndex(modules[index].scriptFile, 'initReady');
+                    try {
+                        if (hookIdx !== -1) {
+                            hooks[hookIdx].handler(null);
+                        }
+                        //$.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
+                    } catch (e) {
+                        $.log.error('Unable to call initReady for enabled module (' + modules[index].scriptFile +'): ' + e);
+                        //$.say($.whisperPrefix(sender) + $.lang.get('init.module.error', modules[index].getModuleName()));
+                    }
+                } else {
+                    //$.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
+                }
+            }
+
             /**
              * @commandpath module disable [./path/module] - Disable a module using the path and name of the module
              */
@@ -561,6 +597,49 @@
                     }
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
+                }
+            }
+
+            /** Used for the panel */
+            if (action.equalsIgnoreCase('disablesilent')) {
+                temp = args[1];
+
+                if (!temp) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+                    return;
+                }
+
+                if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
+                    return;
+                }
+
+                index = getModuleIndex(temp);
+
+                if (index > -1) {
+                    $.log.event(username + ' disabled module "' + modules[index].scriptFile + '"');
+                    modules[index].enabled = false;
+                    $.setIniDbBoolean('modules', modules[index].scriptFile, false);
+                    //$.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', modules[index].getModuleName()));
+
+                    if (modules[index].scriptFile == './systems/pointSystem.js') {
+                        pointsRelatedModules.push('./games/adventureSystem.js');
+                        pointsRelatedModules.push('./games/roll.js');
+                        pointsRelatedModules.push('./games/slotMachine.js');
+                        pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
+                        pointsRelatedModules.push('./systems/raffleSystem.js');
+
+                        for (var i = 0; i < pointsRelatedModules.length; i++) {
+                            index = getModuleIndex(pointsRelatedModules[i]);
+                            if (index > -1) {
+                                $.log.event(username + ' auto-disabled module "' + modules[index].scriptFile + '"');
+                                modules[index].enabled = false;
+                                $.setIniDbBoolean('modules', modules[index].scriptFile, false);
+                            }
+                        }
+                        //$.say($.whisperPrefix(sender) + $.lang.get('init.module.auto-disabled'));
+                    }
+                } else {
+                    //$.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
                 }
             }
 
