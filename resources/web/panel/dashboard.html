@@ -97,28 +97,32 @@
     <div>
         <table>
             <tr class="textList">
-                <td>Event Logging</td>
+                <td>Event logging</td>
                 <td style="width: 25px"><div id="logEvent" /></td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
-                         onclick="$.toggleLog('logEvent', 'log events');"><i class="fa fa-refresh" />
+                         onclick="$.toggleLog('logEvent');"><i class="fa fa-refresh" />
                      </div>
                     <div>
                 </td>
-                <td>Error Logging</td>
+            </tr>
+            <tr class="textlist">
+                <td>Error logging</td>
                 <td style="width: 25px"><div id="logError" /></td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
-                         onclick="$.toggleLog('logError', 'log errors');"><i class="fa fa-refresh" />
+                         onclick="$.toggleLog('logError');"><i class="fa fa-refresh" />
                      </div>
                      </div>
                 <div>
                     </td>
-                    <td>File Logging</td>
+                </tr>
+                <tr class="textList">
+                    <td>File & chat logging</td>
                     <td style="width: 25px"><div id="logFile" /></td>
                     <td style="width: 25px">
                         <div data-toggle="tooltip" title="Toggle" class="button"
-                             onclick="$.toggleLog('logFile', 'log files');"><i class="fa fa-refresh" />
+                             onclick="$.toggleLog('logFile');"><i class="fa fa-refresh" />
                          </div>
                     </td>
                 </div>

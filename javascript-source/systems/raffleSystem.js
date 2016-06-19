@@ -69,6 +69,7 @@
         entries = [];
         $.inidb.RemoveFile('raffleList');
         $.inidb.set('raffleresults', 'raffleEntries', 0);
+        $.inidb.set('raffle', 'command', key);
         raffleStatus = true;
 
         if (timer > 0) {
@@ -105,6 +106,7 @@
             $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.not.opened'));
             return;
         }
+        $.inidb.del('raffle', 'command');
 
         clearInterval('raffleTimer');
 

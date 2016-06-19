@@ -16,6 +16,19 @@
     };
 
     /**
+    * function reloadLogs()
+    */
+    function reloadLogs() {
+        $.getIniDbNumber('settings', 'log_rotate_days');
+
+        logs = {
+            file: $.getIniDbBoolean('settings', 'log.file'),
+            event: $.getIniDbBoolean('settings', 'log.event'),
+            error: $.getIniDbBoolean('settings', 'log.error'),
+        };
+    };
+
+    /**
      * @function getLogDateString
      * @export $.logging
      * @param {Number} [timeStamp]
@@ -317,6 +330,10 @@
                 $.say($.whisperPrefix(sender) + (logs.error ? $.lang.get('logging.enabled.error') : $.lang.get('logging.disabled.error')));
             }
         }
+
+        if (command.equalsIgnoreCase('reloadlogs')) {
+            reloadLogs();
+        }
     });
 
     /**
@@ -325,6 +342,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./core/logging.js')) {
             $.registerChatCommand('./core/logging.js', 'log', 1);
+            $.registerChatCommand('./core/logging.js', 'reloadlogs', 1);
 
             logRotate();
             setInterval(function() { logRotate(); }, 24 * 60 * 6e4, 'logRotate');

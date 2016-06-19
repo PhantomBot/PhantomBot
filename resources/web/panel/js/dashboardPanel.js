@@ -33,7 +33,9 @@
         pauseMode = false,
         toutGraphData = [],
         chatGraphData = [],
-        loggingMode = false,
+        loggingModeEvent = false,
+        loggingModeError = false,
+        loggingModeFile = false,
         modeIcon = [],
         settingIcon = [];
         gameTitle = '__not_loaded__';
@@ -197,18 +199,18 @@
             }
  
             if (panelCheckQuery(msgObject, 'dashboard_loggingModeEvent')) {
-                loggingMode = (panelMatch(msgObject['results']['log.event'], 'true'));
-                $("#logEvent").html(modeIcon[loggingMode]);
+                loggingModeEvent = msgObject['results']['log.event'];
+                $("#logEvent").html(modeIcon[loggingModeEvent]);
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_loggingModeFile')) {
-                loggingMode = (panelMatch(msgObject['results']['log.file'], 'true'));
-                $("#logFile").html(modeIcon[loggingMode]);
+                loggingModeFile = msgObject['results']['log.file'];
+                $("#logFile").html(modeIcon[loggingModeFile]);
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_loggingModeErr')) {
-                loggingMode = (panelMatch(msgObject['results']['log.error'], 'true'));
-                $("#logError").html(modeIcon[loggingMode]);
+                loggingModeError = msgObject['results']['log.error'];
+                $("#logError").html(modeIcon[loggingModeError]);
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
@@ -312,7 +314,7 @@
      */
     function enableModule(module, idx) {
         $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("module enable " + module);
+        sendCommand("module enablesilent " + module);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -322,7 +324,7 @@
      */
     function disableModule(module, idx) {
         $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("module disable " + module);
+        sendCommand("module disablesilent " + module);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -330,10 +332,34 @@
      * @function toggleLog
      * @param {String} mode
      */
-    function toggleLog(type, command) {
+    function toggleLog(type) {
         $('#'+ type).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin" />');
-        sendCommand(command);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        if (type == "logFile") {
+            console.log(type)
+            if (loggingModeFile == 'true') {
+                sendDBUpdate('dashboard_loggingModeFile', 'settings', 'log.file', 'false');
+            } else {
+                sendDBUpdate('dashboard_loggingModeFile', 'settings', 'log.file', 'true');
+            }
+        }
+
+        if (type == "logError") {
+            if (loggingModeError == 'true') {
+                sendDBUpdate('dashboard_loggingModeFile', 'settings', 'log.error', 'false');
+            } else {
+                sendDBUpdate('dashboard_loggingModeFile', 'settings', 'log.error', 'true');
+            }
+        }
+
+        if (type == "logEvent") {
+            if (loggingModeEvent == 'true') {
+                sendDBUpdate('dashboard_loggingModeFile', 'settings', 'log.event', 'false');
+            } else {
+                sendDBUpdate('dashboard_loggingModeFile', 'settings', 'log.event', 'true');
+            }
+        }
+        sendCommand('reloadlogs');
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -528,6 +554,7 @@
         } else {
             sendCommand("queue " + cmd + " 1");
         }
+        $('#amountQueue').val('');
     }
  
     // Import the HTML file for this panel.
