@@ -123,11 +123,11 @@
                             '    <td style="vertical-align: middle: width: 60%">!' + commandName + '</td>' +
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input style="width: 90%" type="text" id="editCommand_' + commandName + '"' +
+                            '            <input style="width: 85%" type="text" id="editCommand_' + commandName + '"' +
                             '                   value="' + commandValue + '" />' +
-                            '              <td type="button" onclick="$.editCustomCommand(\'' + commandName + '\')"><i class="fa fa-pencil" /> </td> ' +
-                            '</form>' +
-                            '            <td  type="button" id="deleteCommand_' + commandName + '" onclick="$.deleteCommand(\'' + commandName + '\')"><i class="fa fa-trash" /> </td>' +
+                            '              <button type="button" class="btn btn-default btn-xs" onclick="$.editCustomCommand(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
+                            '              <button type="button" class="btn btn-default btn-xs" id="deleteCommand_' + commandName + '" onclick="$.deleteCommand(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
+                            '             </form>' +
                             '        </form>' +
                             '    </td>' +
                             '</tr>';
@@ -272,9 +272,9 @@
      */
     function deleteCommand(command) {
         $("#deleteCommand_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        // sendDBDelete("commands_delcom_" + command, "command", command);
-        sendCommand("delcom " + command);
+        sendDBDelete("commands_delcom_" + command, "command", command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
     }
 
     /**
