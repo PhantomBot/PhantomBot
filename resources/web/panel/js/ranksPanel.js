@@ -151,7 +151,7 @@
 
         if (time.length > 0) {
             $("#customRankTimeInput").val(time);
-            sendCommand("rankedit settime " + time);
+            sendDBUpdate('rank_time', 'settings', 'rankEligableTime', time);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
@@ -164,7 +164,7 @@
 
         if (cost.length > 0) {
             $("#customRankCostInput").val(cost);
-            sendCommand("rankedit setcost " + cost);
+            sendDBUpdate('rank_time', 'settings', 'rankEligableCost', cost);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
