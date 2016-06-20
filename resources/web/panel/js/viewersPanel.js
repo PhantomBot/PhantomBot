@@ -278,10 +278,71 @@
      */
     function sortUsersTable_alpha_desc(a, b) {
         return panelStrcmp(b, a);
-    }
+    };
     function sortUsersTable_alpha_asc(a, b) {
         return panelStrcmp(a, b);
-    }
+    };
+
+    /**
+     * @function updateUserPerm
+     */
+    function updateUserPerm (perm) {
+        var username = $("#promoteUser" + perm).val();
+        if (username.length != 0) {
+            if (perm == 'Admin') {
+                sendDBUpdate('user_perm', 'group', username.toLowerCase(), '1');
+            }
+    
+            if (perm == 'Mod') {
+                sendDBUpdate('user_perm', 'group', username.toLowerCase(), '2');
+            }
+    
+            if (perm == 'Sub') {
+                sendDBUpdate('user_perm', 'group', username.toLowerCase(), '3');
+            }
+    
+            /*
+            ** Will enabled once we use these groups.
+            if (perm == 'Donator') {
+                sendDBUpdate('user_perm', 'group', username.toLowerCase(), '4');
+            }
+    
+            if (perm == 'Hoster') {
+                sendDBUpdate('user_perm', 'group', username.toLowerCase(), '5');
+            }*/
+    
+            if (perm == 'Reg') {
+                sendDBUpdate('user_perm', 'group', username.toLowerCase(), '6');
+            }
+        }
+
+        $("#promoteUser" + perm).val('');
+        doQuery();
+    };
+
+    /**
+     * @function updateUserPerm
+     */
+    function demoteUser (perm) {
+        var username = $("#unPromoteUser" + perm).val();
+        if (username.length != 0) {
+            sendDBDelete('user_perm', 'group', username.toLowerCase());
+        }
+        $("#unPromoteUser" + perm).val('');
+        doQuery();
+    };
+
+    /**
+     * @function fixFollower
+     */
+    function fixFollower () {
+        var username = $("#fixFollower").val();
+        if (username.length != 0) {
+            sendDBUpdate('user_follows', 'followed', username.toLowerCase(), 'true');
+        }
+        $("#fixFollower").val('');
+        doQuery();
+    };
 
     // Import the HTML file for this panel.
     $("#viewersPanel").load("/panel/viewers.html");
@@ -309,4 +370,7 @@
     // Export functions - Needed when calling from HTML.
     $.viewersOnMessage = onMessage;
     $.viewersDoQuery = doQuery;
+    $.updateUserPerm = updateUserPerm;
+    $.demoteUser = demoteUser;
+    $.fixFollower = fixFollower;
 })();
