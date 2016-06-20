@@ -115,7 +115,7 @@
         }
 
         if (message.match(/\(touser\)/g)) {
-            message = $.replace(message, '(touser)', (!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]));
+            message = $.replace(message, '(touser)', (!event.getArgs()[0] ? $.username.resolve(event.getSender()) : $.username.resolve(event.getArgs()[0])));
         }
 
         if (message.match(/\(echo\)/g)) {
