@@ -159,6 +159,9 @@
             if (panelMatch(module, './games/roll.js')) {
                 handlePanel('./games/roll.js', '#_rollPanel', moduleEnabled);
             }
+            if (panelMatch(module, './games/gambling.js')) {
+                handlePanel('./games/gambling.js', '#_gamlbingPanel', moduleEnabled);
+            }
         }            
     }
 

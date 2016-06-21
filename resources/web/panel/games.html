@@ -37,7 +37,7 @@
     </div>
     </div>
 
-    <h3>Start an Adventure / Adventure Configuration</h3>
+    <h3>Adventure Configuration</h3>
     <div>
     <div id="_adventurePanelDisabled" />
     <div id="_advnturePanel">
@@ -147,6 +147,43 @@
     </div>
     </div>
 
+    <h3>Gambling Configuration</h3>
+    <div>
+    <div id="_gamlbingPanelDisabled" />
+    <div id="_gamlbingPanel">
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamblingMax2">Maximum Gambling Amount</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.gambling('Max')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamblingMax" placeholder="Amount">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamblingMin2">Minimum Gambling Amount</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.gambling('Min')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamblingMin" placeholder="Amount">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamblingWinPercent2">Winning Percent</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.gambling('WinPercent')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamblingWinPercent" placeholder="Amount">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamblingWinRange2">Winning Range</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.gambling('WinRange')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamblingWinRange" placeholder="Amount">
+            </div>
+        </form>
+    </div>
+</div>
 </div>
 
 <!-- Run the Acordion -->

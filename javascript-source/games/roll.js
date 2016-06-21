@@ -103,6 +103,10 @@
                 $.say(resultMessage + $.gameMessages.getLose(sender));
             }
         }
+
+        if (command.equalsIgnoreCase('loadprizesroll')) {
+            loadPrizes();
+        }
     });
 
     /**
@@ -111,6 +115,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./games/roll.js')) {
             $.registerChatCommand('./games/roll.js', 'roll');
+            $.registerChatCommand('./games/roll.js', 'loadprizesroll');
             $.registerChatSubcommand('roll', 'rewards', 1);
         }
     });

@@ -28,6 +28,14 @@
         moduleLoaded = false;
 
 
+    function reloadAdventure () {
+        joinTime = $.getIniDbNumber('adventureSettings', 'joinTime');
+        coolDown = $.getIniDbNumber('adventureSettings', 'coolDown');
+        gainPercent = $.getIniDbNumber('adventureSettings', 'gainPercent');
+        minBet = $.getIniDbNumber('adventureSettings', 'minBet');
+        maxBet = $.getIniDbNumber('adventureSettings', 'maxBet');
+    };
+
     /**
      * @function loadStories
      */
@@ -396,6 +404,10 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.success', actionArg1, actionArg2));
             }
         }
+
+        if (command.equalsIgnoreCase('reloadadventure')) {
+            reloadAdventure();
+        }
     });
 
     /**
@@ -409,6 +421,7 @@
                 moduleLoaded = true;
             }
             $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
+            $.registerChatCommand('./games/adventureSystem.js', 'reloadadventure', 1);
         }
     });
 

@@ -11,6 +11,10 @@
         },
         lastRandom = 0;
 
+    function reloadRoulette () {
+        timeoutTime = $.getIniDbNumber('roulette', 'timeoutTime');
+    };
+
     /**
      * @function loadResponses
      */
@@ -93,6 +97,8 @@
             $.inidb.set('roulette', 'timeoutTime', timeoutTime);
             $.say($.whisperPrefix(sender) + $.lang.get('roulette.set.timeouttime.success', timeoutTime));
         }
+
+        if (command.equalsIgnoreCase('reloadroulette'))
     });
 
     /**
@@ -105,6 +111,7 @@
             }
             $.registerChatCommand('./games/roulette.js', 'roulette', 7);
             $.registerChatCommand('./games/roulette.js', 'roulettetimeouttime', 1);
+            $.registerChatCommand('./games/roulette.js', 'reloadroulette', 1);
         }
     });
 })();
