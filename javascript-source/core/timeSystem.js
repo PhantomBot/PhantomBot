@@ -107,7 +107,7 @@
         if (timeOnly) {
             return hours + ':' + minutes;
         } else {
-            return day + '-' + month + '-' + year + ' ' + hours + ':' + minutes;
+            return day + '-' + month + '-' + year + ' @ ' + hours + ':' + minutes;
         }
     };
 

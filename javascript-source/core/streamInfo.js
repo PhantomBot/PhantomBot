@@ -261,7 +261,8 @@
             time = $.getLongTimeString(created_at, true);
 
         if (channelData) {
-            $.say((!event.getArgs()[0] ? $.username.resolve(event.getSender()) : $.username.resolve(event.getArgs()[0])) + ' has been on Twitch for ' + time + '. Joined (' + $.dateToString(created_at) + ')');
+            var user = (!event.getArgs()[0] ? $.username.resolve(event.getSender()) : $.username.resolve(event.getArgs()[0]));
+            $.say($.lang.get('common.get.age', user, time, $.dateToString(created_at)));
         }
     };
 
