@@ -121,6 +121,9 @@
             calculateResult(sender);
         }
 
+        if (command.equalsIgnoreCase('loadprizes')) {
+            loadPrizes();
+        }
     });
 
     /**
@@ -130,6 +133,7 @@
         if ($.bot.isModuleEnabled('./games/slotMachine.js')) {
             $.registerChatCommand('./games/slotMachine.js', 'slot', 7);
             $.registerChatSubcommand('slot', 'rewards', 1);
+            $.registerChatCommand('./games/slotMachine.js', 'loadprizes', 7);
         }
     });
 
