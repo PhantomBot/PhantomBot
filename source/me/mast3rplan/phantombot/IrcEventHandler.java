@@ -294,13 +294,13 @@ public class IrcEventHandler implements IRCEventListener {
                 if (ceventTags.containsKey("system-msg")) {
                     system_msg = ceventTags.get("system-msg");
                 }
-                if (ceventTags.containsKey("display-name")) {
-                    username = ceventTags.get("display-name");
+                if (ceventTags.containsKey("login")) {
+                    username = ceventTags.get("login");
                 }
                 if (ceventTags.containsKey("msg-param-months")) {
                     months = ceventTags.get("msg-param-months");
                 }
-                eventBus.postAsync(new IrcChannelMessageEvent(session, "twitchnotify", username + " just subscribed for " + months + " in a row!", PhantomBot.instance().getChannel()));
+                eventBus.post(new IrcChannelMessageEvent(session, "twitchnotify", username + " just subscribed for " + months + " months in a row!", PhantomBot.instance().getChannel()));
             }
 
             if (event.command().equalsIgnoreCase("CLEARCHAT")) {
