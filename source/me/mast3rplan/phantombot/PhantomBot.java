@@ -176,6 +176,7 @@ public class PhantomBot implements Listener {
     public static boolean webenabled = false;
     public static boolean musicenabled = false;
     public static boolean reloadScripts = false;
+    public static boolean resetLoging = false;
     public static String twitchCacheReady = "false";
     private boolean exiting = false;
     private static PhantomBot instance;
@@ -1013,13 +1014,22 @@ public class PhantomBot implements Listener {
             return;
         }
 
-        if (message.equals("apioauth")) {
-            com.gmt2001.Console.out.print("Please enter the bot owner's api oauth string: ");
-            String newoauth = System.console().readLine().trim();
+        if (message.equals("reset")) {
+            com.gmt2001.Console.out.println("Type 'yes' to confirm that you want to reset your bot login information. Type 'no' if you do not want to processed.");
+            String check = System.console().readLine().trim();
+            if (check.equals("yes") || check.equals("y")) {
+                resetLoging = true;
+                changed = true;
+            } else {
+                com.gmt2001.Console.out.println("No changes where made.");
+            }
+        }
 
+        if (message.equals("apioauth")) {
+            com.gmt2001.Console.out.print("Please enter you're oauth token that you generated from https://phantomnot.net/oauth while logged as the caster: ");
+            String newoauth = System.console().readLine().trim();
             TwitchAPIv3.instance().SetOAuth(newoauth);
             apioauth = newoauth;
-
             changed = true;
         }
 
@@ -1053,14 +1063,14 @@ public class PhantomBot implements Listener {
         }
 
         if (message.equals("paneluser")) {
-            com.gmt2001.Console.out.print("Please enter a new Panel Username (requires a restart): ");
+            com.gmt2001.Console.out.print("Please enter a new panel username: ");
             String newpaneluser = System.console().readLine().trim();
             paneluser = newpaneluser;
             changed = true;
         }
 
         if (message.equals("panelpassword")) {
-            com.gmt2001.Console.out.print("Please enter a new Panel Password (requires a restart): ");
+            com.gmt2001.Console.out.print("Please enter a new panel password: ");
             String newpanelpassword = System.console().readLine().trim();
             panelpassword = newpanelpassword;
             changed = true;
@@ -1087,7 +1097,7 @@ public class PhantomBot implements Listener {
         }
 
         if (message.equals("twitchalertskey")) {
-            com.gmt2001.Console.out.print("Please enter Twitch Alerts key: ");
+            com.gmt2001.Console.out.print("Please enter your twitch alerts key generated from https://phantombot.net/twitchalerts/ while logged in as the caster: ");
             String newtwitchalertskey = System.console().readLine().trim();
 
             TwitchAlertsAPIv1.instance().SetAccessToken(newtwitchalertskey);
@@ -1113,59 +1123,55 @@ public class PhantomBot implements Listener {
         if (changed) {
             try {
                 String data = "";
-                data += "user=" + username + "\r\n";
-                data += "oauth=" + oauth + "\r\n";
-                data += "apioauth=" + apioauth + "\r\n";
-                data += "webauth=" + webauth + "\r\n";
-                data += "webauthro=" + webauthro + "\r\n";
-                data += "clientid=" + clientid + "\r\n";
-                data += "channel=" + channel.getName().replace("#", "") + "\r\n";
-                data += "owner=" + ownerName + "\r\n";
-                data += "baseport=" + baseport + "\r\n";
-                data += "hostname=" + hostname + "\r\n";
-                data += "port=" + port + "\r\n";
-                //data += "groupChat=" + groupChat + "\r\n";
-                //data += "groupChatPort=" + groupChatPort + "\r\n";
-                data += "msglimit30=" + msglimit30 + "\r\n";
-                data += "whisperlimit60=" + whisperlimit60 + "\r\n";
-                data += "datastore=" + datastore + "\r\n";
-                data += "youtubekey=" + youtubekey + "\r\n";
-                data += "webenable=" + webenable + "\r\n";
-                data += "musicenable=" + musicenable + "\r\n";
-                data += "ytauth=" + ytauth + "\r\n";
-                data += "ytauthro=" + ytauthro + "\r\n";
-                data += "usehttps=" + usehttps + "\r\n";
-                data += "keystorepath=" + keystorepath + "\r\n";
-                data += "keystorepassword=" + keystorepassword + "\r\n";
-                data += "keypassword=" + keypassword + "\r\n";
-                data += "twitchalertskey=" + twitchalertskey + "\r\n";
-                data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
-                data += "gamewispauth=" + gamewispauth + "\r\n";
-                data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
-                data += "paneluser=" + paneluser + "\r\n";
-                data += "panelpassword=" + panelpassword + "\r\n";
-                data += "mysqlhost=" + mysql_db_host + "\r\n";
-                data += "mysqlport=" + mysql_db_port + "\r\n";
-                data += "mysqlname=" + mysql_db_name + "\r\n";
-                data += "mysqluser=" + mysql_db_user + "\r\n";
-                data += "mysqlpass=" + mysql_db_pass + "\r\n";
+                if (!resetLoging) {
+                    data += "user=" + username + "\r\n";
+                    data += "oauth=" + oauth + "\r\n";
+                    data += "apioauth=" + apioauth + "\r\n";
+                    data += "paneluser=" + paneluser + "\r\n";
+                    data += "panelpassword=" + panelpassword + "\r\n";
+                    data += "channel=" + channel.getName().replace("#", "") + "\r\n";
+                    data += "webauth=" + webauth + "\r\n";
+                    data += "webauthro=" + webauthro + "\r\n";
+                    data += "clientid=" + clientid + "\r\n";
+                    data += "owner=" + ownerName + "\r\n";
+                    data += "baseport=" + baseport + "\r\n";
+                    data += "hostname=" + hostname + "\r\n";
+                    data += "port=" + port + "\r\n";
+                    data += "msglimit30=" + msglimit30 + "\r\n";
+                    data += "whisperlimit60=" + whisperlimit60 + "\r\n";
+                    data += "datastore=" + datastore + "\r\n";
+                    data += "youtubekey=" + youtubekey + "\r\n";
+                    data += "webenable=" + webenable + "\r\n";
+                    data += "musicenable=" + musicenable + "\r\n";
+                    data += "ytauth=" + ytauth + "\r\n";
+                    data += "ytauthro=" + ytauthro + "\r\n";
+                    data += "usehttps=" + usehttps + "\r\n";
+                    data += "keystorepath=" + keystorepath + "\r\n";
+                    data += "keystorepassword=" + keystorepassword + "\r\n";
+                    data += "keypassword=" + keypassword + "\r\n";
+                    data += "twitchalertskey=" + twitchalertskey + "\r\n";
+                    data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
+                    data += "gamewispauth=" + gamewispauth + "\r\n";
+                    data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
+                    data += "mysqlhost=" + mysql_db_host + "\r\n";
+                    data += "mysqlport=" + mysql_db_port + "\r\n";
+                    data += "mysqlname=" + mysql_db_name + "\r\n";
+                    data += "mysqluser=" + mysql_db_user + "\r\n";
+                    data += "mysqlpass=" + mysql_db_pass + "\r\n";
 
-                if (!log_timezone.isEmpty()) {
-                    data += "logtimezone=" + log_timezone + "\r\n";
+                    if (!log_timezone.isEmpty()) {
+                        data += "logtimezone=" + log_timezone + "\r\n";
+                    }
                 }
 
-                Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
-                            StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-
-                //Commented out since you need to restart the bot for port changes anyway
-                /*
-                 * if(webenabled) { httpserver.dispose(); httpserver = new
-                 * HTTPServer(baseport); httpserver.start(); } if(musicenabled)
-                 * { if(webenabled) { musicsocketserver.dispose();
-                 * musicsocketserver = new MusicWebSocketServer(baseport + 1); }
-                 * }
-                 */
-                com.gmt2001.Console.out.println("Changes have been saved. For web and music server settings to take effect you must restart the bot.");
+                Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+                dataStoreObj.SaveChangedNow();
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Changes have been saved.");
+                com.gmt2001.Console.out.println("Now exiting...");
+                com.gmt2001.Console.out.println();
+                resetLoging = false;
+                System.exit(0);
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
