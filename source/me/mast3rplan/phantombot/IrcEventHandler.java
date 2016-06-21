@@ -294,8 +294,8 @@ public class IrcEventHandler implements IRCEventListener {
                 if (ceventTags.containsKey("system-msg")) {
                     system_msg = ceventTags.get("system-msg");
                 }
-                if (ceventTags.containsKey("display-name")) {
-                    username = ceventTags.get("display-name");
+                if (ceventTags.containsKey("login")) {
+                    username = ceventTags.get("login");
                 }
                 if (ceventTags.containsKey("msg-param-months")) {
                     months = ceventTags.get("msg-param-months");
