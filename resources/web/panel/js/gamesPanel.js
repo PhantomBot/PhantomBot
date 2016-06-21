@@ -29,7 +29,7 @@
      * @function onMessage
      */
     function onMessage(message) {
-        var msgObject;
+        var msgObject = JSON.parse(message.data);
 
         try {
             msgObject = JSON.parse(message.data);
@@ -59,6 +59,22 @@
                     $('#rollRewards' + idx + 'Input').val(msgObject['results'][idx]['value']);
                 }
             }
+
+            if (panelCheckQuery(msgObject, 'games_gambling_range')) {
+                $('#gamblingWinRange').val(msgObject['results']['winRange']);
+            }
+
+            if (panelCheckQuery(msgObject, 'games_gambling_percent')) {
+                $('#gamblingWinPercent').val(msgObject['results']['winGainPercent']);
+            }
+
+            if (panelCheckQuery(msgObject, 'games_gambling_max')) {
+                $('#gamblingMax').val(msgObject['results']['max']);
+            }
+
+            if (panelCheckQuery(msgObject, 'games_gambling_min')) {
+                $('#gamblingMin').val(msgObject['results']['min']);
+            }
         }
     }
 
@@ -70,6 +86,10 @@
         sendDBKeys('games_adventure', 'adventureSettings');
         sendDBKeys('games_slotmachine', 'slotmachine');
         sendDBKeys('games_rollprizes', 'rollprizes');
+        sendDBQuery('games_gambling_range', 'gambling', 'winRange');
+        sendDBQuery('games_gambling_percent', 'gambling', 'winGainPercent');
+        sendDBQuery('games_gambling_max', 'gambling', 'max');
+        sendDBQuery('games_gambling_min', 'gambling', 'min');
     }
 
     /**
@@ -84,8 +104,14 @@
             val5 = $('#rollRewards5Input').val();
 
         if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0 && val5.length > 0) {
-            sendCommand('roll rewards ' + val0 + ' ' + val1 + ' ' + val2 + ' ' + val3 + ' ' + val4 + ' ' + val5);
+            sendDBUpdate('rollRewards0', 'rollprizes', 'prizes_0', val0);
+            sendDBUpdate('rollRewards1', 'rollprizes', 'prizes_1', val1);
+            sendDBUpdate('rollRewards2', 'rollprizes', 'prizes_2', val2);
+            sendDBUpdate('rollRewards3', 'rollprizes', 'prizes_3', val3);
+            sendDBUpdate('rollRewards4', 'rollprizes', 'prizes_4', val4);
+            sendDBUpdate('rollRewards5', 'rollprizes', 'prizes_5', val5);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { sendCommand('loadprizesroll'); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -100,8 +126,13 @@
             val4 = $('#slotRewards4Input').val();
          
         if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0) {
-            sendCommand('slot rewards ' + val0 + ' ' + val1 + ' ' + val2 + ' ' + val3 + ' ' + val4);
+            sendDBUpdate('slotRewards0', 'slotmachine', 'prizes_0', val0);
+            sendDBUpdate('slotRewards1', 'slotmachine', 'prizes_1', val1);
+            sendDBUpdate('slotRewards2', 'slotmachine', 'prizes_2', val2);
+            sendDBUpdate('slotRewards3', 'slotmachine', 'prizes_3', val3);
+            sendDBUpdate('slotRewards4', 'slotmachine', 'prizes_4', val4);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { sendCommand('loadprizes'); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -113,8 +144,9 @@
 
         if (time.length > 0) {
             $('#rouletteTimeoutInput').val(time);
-            sendCommand('roulettetimeouttime ' + time);
+            sendDBUpdate('games_roulette', 'roulette', 'timeoutTime', time);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { sendCommand('reloadroulette'); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -136,11 +168,57 @@
      */
     function adventureUpdateSetting(setting) {
         var value = $('#adventure' + setting + 'Input').val();
+        var setting = 'adventure' + setting;
         if (value.length > 0) {
-           sendCommand('adventure set ' + setting + ' ' + value);
+            if (setting == 'joinTime') {
+                sendDBUpdate('games_adventure', 'adventureSettings', setting, value);
+            }
+
+            if (setting == 'coolDown') {
+                sendDBUpdate('games_adventure', 'adventureSettings', setting, value);
+            }
+
+            if (setting == 'gainPercent') {
+                sendDBUpdate('games_adventure', 'adventureSettings', setting, value);
+            }
+
+            if (setting == 'minBet') {
+                sendDBUpdate('games_adventure', 'adventureSettings', setting, value);
+            }
+
+            if (setting == 'maxBet') {
+                sendDBUpdate('games_adventure', 'adventureSettings', setting, value);
+            }
            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+           setTimeout(function() { sendCommand('reloadadventure') }, TIMEOUT_WAIT_TIME);
         }
     }
+
+    /**
+     * @function gambling
+     * @param {String} argument
+     */
+    function gambling (argument) {
+        var value = $('#gambling' + argument).val();
+
+        if (value.length != 0) {
+            if (argument == 'Max') {
+                sendDBUpdate('games_gambling_max', 'gambling', 'max', value);
+            }
+            if (argument == 'Min') {
+                sendDBUpdate('games_gambling_min', 'gambling', 'min', value);
+            }
+            if (argument == 'WinRange') {
+                sendDBUpdate('games_gambling_range', 'gambling', 'winRange', value);
+            }
+            if (argument == 'WinPercent') {
+                sendDBUpdate('games_gambling_percent', 'gambling', 'winGainPercent', value);
+            }
+        }
+        $('#gambling' + argument).val(value);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand('reloadgamble') }, TIMEOUT_WAIT_TIME);
+    };
 
     // Import the HTML file for this panel.
     $("#gamesPanel").load("/panel/games.html");
@@ -149,7 +227,7 @@
     var interval = setInterval(function() {
         if (isConnected && TABS_INITIALIZED) {
             var active = $("#tabs").tabs("option", "active");
-            if (active == 15) {
+            if (active == 0) {
                 doQuery();
                 clearInterval(interval);
             }
@@ -174,4 +252,5 @@
     $.adventureUpdateSetting = adventureUpdateSetting;
     $.setSlotRewards = setSlotRewards;
     $.setRollRewards = setRollRewards;
+    $.gambling = gambling;
 })();
