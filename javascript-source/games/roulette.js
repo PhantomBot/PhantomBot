@@ -98,7 +98,9 @@
             $.say($.whisperPrefix(sender) + $.lang.get('roulette.set.timeouttime.success', timeoutTime));
         }
 
-        if (command.equalsIgnoreCase('reloadroulette'))
+        if (command.equalsIgnoreCase('reloadroulette')) {
+            reloadRoulette();
+        }
     });
 
     /**
