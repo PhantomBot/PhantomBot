@@ -311,3 +311,4 @@ $.lang.register('pausecommands.usage', 'usage: !pausecommands [seconds | clear]'
 $.lang.register('common.hours', ' hours, ');
 $.lang.register('common.minutes', ' minutes and ');
 $.lang.register('common.seconds', ' seconds');
+$.lang.register('common.get.age', '$1 has been on Twitch for $2 Joined ($3)');
