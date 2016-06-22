@@ -29,7 +29,6 @@
         pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
 
         if (!$.inidb.get('pointSettings', 'pointNameMultiple').equalsIgnoreCase('points') && !$.inidb.get('pointSettings', 'pointNameSingle').equalsIgnoreCase('point')) {
-            $.consoleLn('new')
             $.inidb.set('temp', 'pointsname', pointNameMultiple);
             $.inidb.set('temp', 'pointsname2', pointNameSingle);
         }
@@ -37,11 +36,9 @@
         if (pointNameMultiple.equalsIgnoreCase('points') && pointNameSingle.equalsIgnoreCase('point')) {
             defaultPoints(true, false);
             registerPointCommands($.inidb.get('temp', 'pointsname'), $.inidb.get('temp', 'pointsname2'), false);
-            $.consoleLn('1')
         } else {
             registerPointCommands($.inidb.get('temp', 'pointsname'), $.inidb.get('temp', 'pointsname2'), true);
             defaultPoints(false, true);
-            $.consoleLn('2')
         }
     };
 
@@ -608,7 +605,7 @@
             $.registerChatSubcommand('points', 'user', 7);
             $.registerChatSubcommand('points', 'check', 7);
 
-            registerPointCommands();
+            updateSettings()
         }
     });
 
