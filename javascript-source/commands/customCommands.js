@@ -662,11 +662,18 @@
          */
         if (command.equalsIgnoreCase('commands')) {
             var cmds = $.inidb.GetKeyList('command', ''),
+                aliases = $.inidb.GetKeyList('aliases', ''),
                 cmdList = [];
 
             for (idx in cmds) {
                 if (permCom(sender, cmds[idx], '') === 0) {
                     cmdList.push('!' + cmds[idx]);
+                }
+            }
+
+            for (idx in aliases) {
+                if (permCom(sender, $.inidb.get('aliases', aliases[idx]), '') === 0) {
+                    cmdList.push('!' + aliases[idx]);
                 }
             }
             if (cmdList.length > 0) {
