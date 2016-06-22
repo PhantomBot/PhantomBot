@@ -100,6 +100,8 @@
             delete commands[command];
             delete commandScriptTable[command];
         }
+
+        $.inidb.del('permcom', command);
     };
 
     /**
@@ -112,6 +114,8 @@
         if (commandExists(command)) {
             delete commands[command].subcommands[subcommand];
         }
+
+        $.inidb.del('permcom', command + ' ' + subcommand);
     }
 
     /**
