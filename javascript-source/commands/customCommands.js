@@ -662,7 +662,7 @@
          */
         if (command.equalsIgnoreCase('commands')) {
             var cmds = $.inidb.GetKeyList('command', ''),
-                aliases = $.inidb.GetKeyList('aliases', '')
+                aliases = $.inidb.GetKeyList('aliases', ''),
                 cmdList = [];
 
             for (idx in cmds) {
