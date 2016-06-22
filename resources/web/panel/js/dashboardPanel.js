@@ -193,6 +193,7 @@
                 if (gameTitle === undefined || gameTitle === null) {
                     gameTitle = "Game";
                 }
+
                 $('#gameTitleInput').val(gameTitle);
                 sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
             }
@@ -214,8 +215,9 @@
 
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
                 amount = msgObject['results'][gameTitle];
-                if (gameTitle === undefined || gameTitle === null || amount === null || amount === undefined || amount === 0) {
-                    $("#deathCounterValue").val("0");
+                if (gameTitle === undefined || gameTitle === null || amount === null || amount === undefined) {
+                    sendDBUpdate('dashboard_deathctr', 'deaths', gameTitle, "0");
+                    $("#deathCounterValue").html(msgObject['results'][gameTitle]);
                 }
                 $("#deathCounterValue").html(msgObject['results'][gameTitle]);
             }
@@ -605,5 +607,4 @@
     $.queueCMD = queueCMD;
     $.queueCMDNext = queueCMDNext;
     $.setLogRotate = setLogRotate;
-    $.games = [];
 })();
