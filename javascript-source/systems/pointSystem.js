@@ -44,7 +44,6 @@
 
     function defaultPoints (register, unregister) {
         if (register) {
-            $.consoleLn('reg')
             $.registerChatCommand('./systems/pointSystem.js', 'points', 7);
             $.registerChatSubcommand('points', 'add', 1);
             $.registerChatSubcommand('points', 'take', 1);
@@ -71,7 +70,6 @@
         }
 
         if (unregister) {
-            $.consoleLn('un')
             $.unregisterChatCommand('points', 7);
             $.unregisterChatSubcommand('points', 'add', 1);
             $.unregisterChatSubcommand('points', 'take', 1);
