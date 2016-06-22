@@ -30,6 +30,7 @@
         './games/roll.js',
         './games/roulette.js',
         './games/slotMachine.js',
+        './games/gambling.js',
         './handlers/followHandler.js',
         './handlers/hostHandler.js',
         './handlers/subscribeHandler.js',
@@ -278,6 +279,9 @@
 
         $.consoleLn('Aliasing !permissions to !groups...');
         $.inidb.set('aliases', 'groups', 'permissions');
+
+        $.consoleLn('Disabling new modules...');
+        $.inidb.set('modules', './games/gambling.js', 'false');
 
         $.consoleLn($.version + ' updates completed!');
         $.inidb.set('updates', 'installedv2.1', 'true');
