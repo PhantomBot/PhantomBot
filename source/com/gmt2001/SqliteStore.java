@@ -442,6 +442,46 @@ public class SqliteStore extends DataStore {
     }
 
     @Override
+    public void SetBatchString(String fName, String section, String[] keys, String[] values) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+        AddFile(fName);
+
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement("REPLACE INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
+                statement.setQueryTimeout(10);
+                for (int idx = 0; idx < keys.length; idx++) {
+                    statement.setString(1, values[idx]);
+                    statement.setString(2, section);
+                    statement.setString(3, keys[idx]);
+                    statement.addBatch();
+
+                    if (idx % 500 == 0) {
+                        statement.executeBatch();
+                        statement.clearBatch();
+                    }
+                }
+                statement.executeBatch();
+                statement.clearBatch();
+                connection.commit();
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.println(ex);
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        try {
+            connection.setAutoCommit(true);
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.println(ex);
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
     public void SetString(String fName, String section, String key, String value) {
         CheckConnection();
 

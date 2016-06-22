@@ -339,6 +339,28 @@ public class IniStore extends DataStore implements ActionListener {
     }
 
     @Override
+    public void SetBatchString(String fName, String section, String[] keys, String[] values) {
+        fName = validatefName(fName);
+
+        LoadFile(fName, false);
+
+        section = validateSection(section);
+
+        if (!files.get(fName).data.containsKey(section)) {
+            files.get(fName).data.put(section, new HashMap<String, String>());
+        }
+
+        for (int idx = 0; idx < keys.length; idx++) {
+            String key = validateKey(keys[idx]);
+            files.get(fName).data.get(section).put(key, values[idx]);
+        }
+
+        changed.put(fName, new Date());
+
+        t2.start();
+    }
+
+    @Override
     public void SetString(String fName, String section, String key, String value) {
         fName = validatefName(fName);
 

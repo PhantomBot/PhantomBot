@@ -677,7 +677,8 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        
+        // Load the games list configuration.
+        loadGameList(dataStoreObj);
 
         if (interactive) {
             ConsoleInputListener cil = new ConsoleInputListener();
@@ -2205,4 +2206,23 @@ public class PhantomBot implements Listener {
         this.twitchCacheReady = twitchCacheReady;
         Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
     }
+
+    public void loadGameList(DataStore dataStore) {
+        try {
+            if (new File("./conf/game_list.txt").exists()) {
+                long lastModified = new File("./conf/game_list.txt").lastModified();
+                long dbLastModified = dataStore.GetLong("settings", "", "gameListModified");
+                if (lastModified > dbLastModified) {
+                    com.gmt2001.Console.out.println("Loading Game List...");
+                    String data = FileUtils.readFileToString(new File("./conf/game_list.txt"));
+                    String[] lines = data.replaceAll("\\r", "").split("\\n");
+                    dataStore.setbatch("gamelist", lines, lines);
+                    dataStore.SetLong("settings", "", "gameListModified", lastModified);
+                }
+            }
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
 }

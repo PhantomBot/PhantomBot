@@ -40,7 +40,7 @@
 		} else {
 			winSpot = (range - winRange + 1); 
             winnings = Math.floor(amount + ((amount + winSpot) * gain));
-			$.say($.lang.get('gambling.won', $.username.resolve(sender), range, $.getPointsString(winnings)));
+			$.say($.lang.get('gambling.won', $.username.resolve(sender), range, $.getPointsString(winnings - amount)));
 			$.inidb.decr('points', sender, amount);
 			$.inidb.incr('points', sender, winnings);
 		}

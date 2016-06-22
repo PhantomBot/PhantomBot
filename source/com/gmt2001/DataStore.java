@@ -67,12 +67,31 @@ public class DataStore {
     public void SetString(String fName, String section, String key, String value) {
     }
 
+    public void SetBatchString(String fName, String section, String[] key, String[] value) {
+    }
+
     public Object GetObject(String fName, String section, String key) {
         throw new UnsupportedOperationException();
     }
 
     public void SetObject(String fName, String section, String key, Object value) {
         throw new UnsupportedOperationException();
+    }
+
+    public long GetLong(String fName, String section, String key) {
+        String sval = GetString(fName, section, key);
+
+        try {
+            return Long.parseLong(sval);
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+
+    public void SetLong(String fName, String section, String key, long value) {
+        String sval = Long.toString(value);
+
+        SetString(fName, section, key, sval);
     }
 
     public int GetInteger(String fName, String section, String key) {
@@ -169,6 +188,10 @@ public class DataStore {
 
     public void set(String fName, String key, String value) {
         SetString(fName, "", key, value);
+    }
+
+    public void setbatch(String fName, String[] keys, String[] values) {
+        SetBatchString(fName, "", keys, values);
     }
 
     public void del(String fName, String key) {

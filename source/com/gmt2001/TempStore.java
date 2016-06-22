@@ -131,6 +131,13 @@ public class TempStore extends DataStore {
     }
 
     @Override
+    public void SetBatchString(String fName, String section, String[] keys, String[] values) {
+        for (int idx = 0; idx < keys.length; idx++) {
+            SetObject(fName, section, keys[idx], values[idx]);
+        }
+    }
+
+    @Override
     public void SetString(String fName, String section, String key, String value) {
         SetObject(fName, section, key, value);
     }
