@@ -676,10 +676,12 @@ public class PhantomBot implements Listener {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-
+        
+        /*
         // Load the games list configuration.
         loadGameList(dataStoreObj);
-
+        */
+        
         if (interactive) {
             ConsoleInputListener cil = new ConsoleInputListener();
             cil.start();
@@ -2207,6 +2209,8 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
     }
 
+    /*
+    * Will have a file for this, wont need to let the users do it.
     public void loadGameList(DataStore dataStore) {
         try {
             if (new File("./conf/game_list.txt").exists()) {
@@ -2218,11 +2222,25 @@ public class PhantomBot implements Listener {
                     String[] lines = data.replaceAll("\\r", "").split("\\n");
                     dataStore.setbatch("gamelist", lines, lines);
                     dataStore.SetLong("settings", "", "gameListModified", lastModified);
+                    com.gmt2001.Console.out.println("Pushing game list to a array... \r\n This make take time, so do not shut down the bot.");
+                    String string = "$.gamesList = [";
+        
+                    for (String line : lines) {
+                        string += "'" + line.replace("'", "") + "', \r\n";
+                    }
+
+                    string += "];";
+                    com.gmt2001.Console.out.println("Done.");
+                    if (!new File ("./web/panel/js/games.js").exists()) {
+                        new File ("./web/panel/js").mkdirs();
+                    }
+        
+                    Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8),
+                                StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
                 }
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-    }
-
+    }*/
 }
