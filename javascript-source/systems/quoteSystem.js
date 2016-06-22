@@ -1,210 +1,223 @@
-/**
- * quoteSystem.js
+/*
+ * Copyright (C) 2016 www.phantombot.net
  *
- * Have the bot remember the most epic/derpy oneliners
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* 
+ * @author IllusionaryOne
+ */
+
+/*
+ * quotesPanel.js
+ */
+
 (function() {
 
+    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />';
+
     /**
-     * @function updateQuote
-     * @param {Number} quoteid
-     * @param {Array} quote data
+     * @function onMessage
      */
-    function updateQuote(quoteid, quote) {
-        // Specify String() for objects as they were being treated as an object rather than a String on stringify().
-        $.inidb.set('quotes', quoteid, JSON.stringify([String(quote[0]), String(quote[1]), String(quote[2]), String(quote[3])]));
+    function onMessage(message) {
+        var msgObject,
+            html = '',
+            id = '',
+            quoteData = [];
+
+        try {
+            msgObject = JSON.parse(message.data);
+        } catch (ex) {
+            return;
+        }
+
+        if (panelHasQuery(msgObject)) {
+            if (panelCheckQuery(msgObject, 'quotes_quotemessage')) {
+                if (msgObject['results']['quoteMessage'] !== null) {
+                    $('#quoteMessageInput').val(msgObject['results']['quoteMessage']);
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'quotes_quotes')) {
+                if (msgObject['results'].length === 0) {
+                    $('#quoteList').html('<i>No Quotes Are Defined</i>');
+                    return;
+                }
+
+                html = '<table>';
+                for (var idx in msgObject['results']) {
+                    id = msgObject['results'][idx]['key'];
+                    quoteData = JSON.parse(msgObject['results'][idx]['value']);
+                    quoteDataClean = JSON.parse(msgObject['results'][idx]['value']);
+                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C');
+                    html += '<tr style="textList">' +
+                            '    <td rowspan="2" style="width: 25px">' +
+                            '        <div id="deleteQuote_' + id + '" class="button"' +
+                            '             onclick="$.deleteQuote(\'' + id + '\')"><i class="fa fa-trash" />' +
+                            '        </div>' +
+                            '    </td>' +
+
+                            // ID and Date
+                            '    <td>ID: ' + id + '</td>' +
+                            '    <td style="vertical-align: middle">' + 
+                            '        Date: ' + $.format.date(parseInt(quoteData[2]), 'MM.dd.yy') +
+                            '    </td>' +
+
+
+                            // User
+                            '    <td style="vertical-align: middle">' +
+                            '        <form onkeypress="return event.keyCode != 13">' +
+                            '            <input type="text" id="inlineQuoteEdit_user_' + id + '"' +
+                            '                   value="' + quoteData[0] + '" />' +
+                            '            <button type="button" class="btn btn-default btn-xs"' +
+                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'user\')">' +
+                            '                <i class="fa fa-pencil" />' +
+                            '            </button>' +
+                            '        </form>' +
+                            '    </td>' +
+
+                            // Game
+                            '    <td style="vertical-align: middle">' +
+                            '        <form onkeypress="return event.keyCode != 13">' +
+                            '            <input type="text" id="inlineQuoteEdit_game_' + id + '"' +
+                            '                   value="' + (quoteData.length == 4 ? quoteData[3] : 'Some Game') + '" />' +
+                            '            <button type="button" class="btn btn-default btn-xs"' +
+                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'game\')">' +
+                            '                <i class="fa fa-pencil" />' +
+                            '            </button>' +
+                            '        </form>' +
+                            '    </td>' +
+                            '</tr>' +
+
+                            // Quote
+                            '<tr style="textList">' +
+                            '    <td colspan="4" style="vertical-align">' +
+                            '        <form onkeypress="return event.keyCode != 13">' +
+                            '            <input style="width: 89%" type="text" id="inlineQuoteEdit_quote_' + id + '"' +
+                            '                   value="' + quoteData[1] + '" />' +
+                            '            <button type="button" class="btn btn-default btn-xs"' +
+                            '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'quote\')">' +
+                            '                <i class="fa fa-pencil" />' +
+                            '            </button>' +
+                            '        </form>' +
+                            '    </td>' +
+                            '</tr>';
+                }
+                html += '</table>';
+                $('#quoteList').html(html);
+                handleInputFocus();
+            }
+        }
+    }
+ 
+    /**
+     * @function doQuery
+     */
+    function doQuery() {
+        sendDBKeys('quotes_quotes', 'quotes');
+        sendDBQuery('quotes_quotemessage', 'settings', 'quoteMessage');
     }
 
     /**
-     * @function saveQuote
-     * @param {string} username
-     * @param {string} quote
-     * @returns {Number}
+     * @function setQuoteMessage
      */
-    function saveQuote(username, quote) {
-        var newKey = $.inidb.GetKeyList('quotes', '').length,
-            game = ($.getGame($.channelName) != '' ? $.getGame($.channelName) : "Some Game");
-
-        $.inidb.set('quotes', newKey, JSON.stringify([username, quote, $.systemTime(), game + '']));
-        return newKey;
-    };
+    function setQuoteMessage() {
+        var value = $('#quoteMessageInput').val();
+        if (value.length > 0) {
+            $('#quoteMessageInput').val('Updating...');
+            sendDBUpdate('quotes_quotemessage', 'settings', 'quoteMessage', value);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
 
     /**
      * @function deleteQuote
-     * @param {Number} quoteId
-     * @returns {Number}
+     * @param {String} id
      */
-    function deleteQuote(quoteId) {
-        var quoteKeys,
-            quotes = [],
-            i;
-
-        if ($.inidb.exists('quotes', quoteId)) {
-            $.inidb.del('quotes', quoteId);
-            quoteKeys = $.inidb.GetKeyList('quotes', '');
-
-            for (i in quoteKeys) {
-                quotes.push($.inidb.get('quotes', quoteKeys[i]));
-                $.inidb.del('quotes', quoteKeys[i]);
-            }
-
-            for (i in quotes) {
-                $.inidb.set('quotes', i, quotes[i]);
-            }
-
-            return (quotes.length ? quotes.length : 0);
-        } else {
-            return -1;
-        }
-    };
+    function deleteQuote(id) {
+        $('#deleteQuote_' + id).html(spinIcon);
+        sendCommand('delquotesilent ' + id);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 4);
+    }
 
     /**
-     * @function getQuote
-     * @param {Number} quoteId
-     * @returns {Array}
+     * @function updateQuote
+     * @param {String} id
+     * @param {Object} quoteData
+     * @param {String} field
      */
-    function getQuote(quoteId) {
-        var quote;
-
-        if (!quoteId || isNaN(quoteId)) {
-            quoteId = $.rand($.inidb.GetKeyList('quotes', '').length - 1);
+    function updateQuote(id, quoteData, field) {
+        var value = $('#inlineQuoteEdit_' + field + '_' + id).val(),
+            quoteArray = quoteData.split(',');
+        if (value.length > 0) {
+            if (panelMatch(field, 'quote')) {
+                quoteArray[1] = value;
+            }
+            if (panelMatch(field, 'game')) {
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',');
+                quoteArray[3] = value;
+            }
+            if (panelMatch(field, 'user')) {
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',');
+                quoteArray[0] = value;
+            }
+            sendDBUpdate('quotes_update', 'quotes', id, JSON.stringify(quoteArray));
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
-
-        if ($.inidb.exists('quotes', quoteId)) {
-            quote = JSON.parse($.inidb.get('quotes', quoteId));
-            quote.push(quoteId);
-            return quote;
-        } else {
-            return [];
-        }
-    };
+    }
 
     /**
-     * @event command
+     * @function addQuote
      */
-    $.bind('command', function(event) {
-        var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            quote,
-            quoteStr;
-
-        /**
-         * @commandpath editquote [id] [user|game|quote] [text]
-         */
-        if (command.equalsIgnoreCase("editquote")) {
-            if (args.length < 3) {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.usage'));
-                return;
-            }
-
-            quote = getQuote(args[0]);
-            if (quote.length > 0) {
-                if (args[1].equalsIgnoreCase("user")) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.user.success', args[0], args[2]));
-                    quote[0] = args[2];
-                    updateQuote(args[0], quote);
-                } else if (args[1].equalsIgnoreCase("game")) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.game.success', args[0], args.splice(2).join(' ')));
-                    quote[3] = args.splice(2).join(' ');
-                    updateQuote(args[0], quote);
-                } else if (args[1].equalsIgnoreCase("quote")) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.quote.success', args[0], args.splice(2).join(' ')));
-                    quote[1] = args.splice(2).join(' ');
-                    updateQuote(args[0], quote);
-                } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.usage'));
-                }
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.404'));
-            }
-
-            $.log.event(sender + ' edited quote #' + quote);
+    function addQuote() {
+        var value = $('#addQuoteInput').val();
+        if (value.length > 0) {
+            $('#addQuoteInput').val('Adding...').blur();
+            sendCommand('addquotesilent ' + value);
+            setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 4);
         }
+    }
+    
 
-        /**
-         * @commandpath addquote [quote text] - Save a quote
-         */
-        if (command.equalsIgnoreCase('addquote')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-            
-            if (args.length < 1) {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage'));
-                return;
-            }
+    // Import the HTML file for this panel.
+    $("#quotesPanel").load("/panel/quotes.html");
 
-            quote = args.splice(0).join(' ');
-            $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
-            $.log.event(sender + ' added a quote "' + quote + '".');
-        }
-
-        /**
-         * @commandpath delquote [quoteId] - Delete a quote
-         */
-        if (command.equalsIgnoreCase('delquote')) {
-            if (!args[0] || isNaN(args[0])) {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.usage'));
-                return;
-            }
-
-            var newCount;
-
-            if ((newCount = deleteQuote(args[0])) >= 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.success', args[0], newCount));
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.404', args[0]));
-            }
-
-            $.log.event(sender + ' removed quote with id: ' + args[0]);
-        }
-
-        /**
-         * @commandpath quote [quoteId] - Announce a quote by its Id, omit the id parameter to get a random quote
-         */
-        if (command.equalsIgnoreCase('quote')) {
-            quote = getQuote(args[0]);
-            if (quote.length > 0) {
-                quoteStr = ($.inidb.exists('settings', 'quoteMessage') ? $.inidb.get('settings', 'quoteMessage') : $.lang.get('quotesystem.get.success'));
-                quoteStr = quoteStr.replace('(id)', (quote.length == 5 ? quote[4].toString() : quote[3].toString())).
-                replace('(quote)', quote[1]).
-                replace('(user)', $.resolveRank(quote[0])).
-                replace('(game)', (quote.length == 5 ? quote[3] : "Some Game")).
-                replace('(date)', $.getLocalTimeString('dd-MM-yyyy', parseInt(quote[2])));
-                $.say(quoteStr);
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.get.404', (typeof args[0] != 'undefined' ? args[0] : '')));
+    // Load the DB items for this panel, wait to ensure that we are connected.
+    var interval = setInterval(function() {
+        if (isConnected && TABS_INITIALIZED) {
+            var active = $('#tabs').tabs('option', 'active');
+            if (active == 10) {
+                doQuery();
+                clearInterval(interval);
             }
         }
+    }, INITIAL_WAIT_TIME);
 
-        /**
-         * @commandpath quotemessage [message] - Sets the quote string with tags: (id) (quote) (user) (game) (date)
-         */
-        if (command.equalsIgnoreCase('quotemessage')) {
-            if (!args[0]) {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.quotemessage.usage'));
-                return;
-            }
-
-            quoteStr = args.splice(0).join(' ');
-            $.inidb.set('settings', 'quoteMessage', quoteStr);
-            $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.quotemessage.success'));
-            $.log.event(sender + ' changed the quote message to: ' + quoteStr);
+    // Query the DB every 30 seconds for updates.
+    setInterval(function() {
+        var active = $('#tabs').tabs('option', 'active');
+        if (active == 10 && isConnected && !isInputFocus()) {
+            newPanelAlert('Refreshing Quotes Data', 'success', 1000);
+            doQuery();
         }
-    });
+    }, 3e4);
 
-    /**
-     * @event initReady
-     */
-    $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/quoteSystem.js')) {
-            $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'quote');
-            $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);
-        }
-    });
+    // Export to HTML
+    $.quotesOnMessage = onMessage;
+    $.quotesDoQuery = doQuery;
+    $.deleteQuote = deleteQuote;
+    $.updateQuote = updateQuote;
+    $.addQuote = addQuote;
+    $.setQuoteMessage = setQuoteMessage;
 })();
