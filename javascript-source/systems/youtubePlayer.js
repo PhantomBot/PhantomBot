@@ -32,6 +32,12 @@
         /* @type {BotPlayList} */
         currentPlaylist = null;
 
+    function reloadyt() {
+        songRequestsMaxParallel = $.getIniDbNumber('ytSettings', 'songRequestsMaxParallel');
+        songRequestsMaxSecondsforVideo = $.getIniDbNumber('ytSettings', 'songRequestsMaxSecondsforVideo');
+        playlistDJname = $.getIniDbString('ytSettings', 'playlistDJname');
+    };
+
     /**
      * @class
      * @description This class holds information about a youtube video.
@@ -1479,6 +1485,10 @@
                 }
             }
         }
+
+        if (command.equalsIgnoreCase('reloadyt')) {
+            reloadyt();
+        }
     });
 
     $.bind('initReady', function() {
@@ -1490,6 +1500,7 @@
             $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 1);
             $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', 1);
             $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
+            $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
             $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
             $.registerChatCommand('./systems/youtubePlayer.js', 'addsong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
