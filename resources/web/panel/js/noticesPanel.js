@@ -36,6 +36,9 @@
        settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
        settingIcon['true'] = "<i class=\"fa fa-circle\" />";
 
+    var noticeOnlineToggle = false,
+        noticeOfflineToggle = false;
+
     /**
      * @function onMessage
      */
@@ -60,9 +63,11 @@
                         $('#noticeIntervalInput').attr('placeholder', msgObject['results'][idx]['value']).blur();
                     }
                     if (panelMatch(msgObject['results'][idx]['key'], 'noticetoggle')) {
+                        noticeOnlineToggle = msgObject['results'][idx]['value'];
                         $('#chatNoticeMode').html(modeIcon[msgObject['results'][idx]['value']]);
                     }
                     if (panelMatch(msgObject['results'][idx]['key'], 'noticeOfflineToggle')) {
+                        noticeOfflineToggle = msgObject['results'][idx]['value'];
                         $('#chatOfflineNoticeMode').html(modeIcon[msgObject['results'][idx]['value']]);
                     }
                 }
@@ -114,7 +119,12 @@
      */
     function toggleChatNotice() {
         $('#chatNoticeMode').html(spinIcon);
-        sendCommand('notice toggle');
+        if (noticeOnlineToggle == "true") {
+            sendDBUpdate('notices_settings', 'noticeSettings', 'noticetoggle', 'false');
+        } else {
+            sendDBUpdate('notices_settings', 'noticeSettings', 'noticetoggle', 'true');
+        }
+        setTimeout(function() { sendCommand("reloadnotice"); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -123,7 +133,12 @@
      */
     function toggleChatOfflineNotice() {
         $('#chatOfflineNoticeMode').html(spinIcon);
-        sendCommand('notice toggleoffline');
+        if (noticeOfflineToggle == "true") {
+            sendDBUpdate('notices_settings', 'noticeSettings', 'noticeOfflineToggle', 'false');
+        } else {
+            sendDBUpdate('notices_settings', 'noticeSettings', 'noticeOfflineToggle', 'true');
+        }
+        setTimeout(function() { sendCommand("reloadnotice"); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -159,7 +174,7 @@
     function addNotice() {
         var value = $('#addNoticeInput').val();
         if (value.length > 0) {
-            sendCommand('notice add ' + value);
+            sendCommand('notice addsilent ' + value);
             $('#addNoticeInput').val('');
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);    
         }
@@ -170,7 +185,7 @@
      * @param {String} id
      */
     function deleteNotice(id) {
-        sendCommand('notice remove ' + id);
+        sendCommand('notice removesilent ' + id);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
 
@@ -182,7 +197,7 @@
         var value = $('#inlineNoticeEdit_' + id).val();
         if (value.length > 0) {
             $('#inlineNoticeEdit_' + id).val(value).blur();
-            sendCommand('notice edit ' + id + ' ' + value);
+            sendCommand('notice editsilent ' + id + ' ' + value);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
