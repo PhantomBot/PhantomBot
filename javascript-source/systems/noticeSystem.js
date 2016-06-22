@@ -148,6 +148,25 @@
             }
 
             /**
+             * USED FOR THE PANEL
+             */
+            if (action.equalsIgnoreCase('editsilent')) {
+                if (args.length < 3) {
+                    //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-usage', numberOfNotices));
+                    return;
+                } else if (!$.inidb.exists('notices', 'message_' + args[1])) {
+                    //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
+                    return;
+                } else {
+                    argsString = argsString.replace(action + ' ' + args[1], '').trim();
+                    $.inidb.set('notices', 'message_' + args[1], argsString);
+                    //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-success'));
+                    return;
+                }
+            }
+
+
+            /**
              * @commandpath notice remove [id] - Removes the notice related to the given ID
              */
             if (action.equalsIgnoreCase('remove')) {
@@ -167,6 +186,25 @@
             }
 
             /**
+             * USED BY THE PANEL
+             */
+            if (action.equalsIgnoreCase('removesilent')) {
+                if (args.length < 2) {
+                    //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-remove-usage', numberOfNotices));
+                    return;
+                } else if (!$.inidb.exists('notices', 'message_' + args[1])) {
+                    //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
+                    return;
+                } else {
+                    $.inidb.del('notices', 'message_' + args[1]);
+                    numberOfNotices--;
+                    reloadNotices();
+                    //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-remove-success'));
+                    return;
+                }
+            }
+
+            /**
              * @commandpath notice add [message or command] - Adds a notice, with a custom message, or a command ex: !notice add command:COMMANDS_NAME
              */
             if (action.equalsIgnoreCase('add')) {
@@ -178,6 +216,22 @@
                     $.inidb.set('notices', 'message_' + numberOfNotices, argsString);
                     numberOfNotices++;
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-success'));
+                    return;
+                }
+            }
+
+            /**
+             * USED BY THE PANEL
+             */
+            if (action.equalsIgnoreCase('addsilent')) {
+                if (args.length < 2) {
+                    //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-usage'));
+                    return;
+                } else {
+                    argsString = argsString.replace(action + '', '').trim();
+                    $.inidb.set('notices', 'message_' + numberOfNotices, argsString);
+                    numberOfNotices++;
+                    //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-success'));
                     return;
                 }
             }
