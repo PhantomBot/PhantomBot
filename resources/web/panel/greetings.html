@@ -22,7 +22,7 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="greetingsAccordion">
-    <h3>Greetings</h3>
+    <h3>Greeting Settings</h3>
     <div>
     <div id="_globalGreetingsPanelDisabled" />
     <div id="_globalGreetingsPanel">
@@ -43,23 +43,23 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="greetingCooldown">Greeting Cooldown (Seconds)</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('greetingCooldownInput', 'greeting', 'cooldown')">Submit</button>
+                        onclick="$.updateGreetingData('greetingCooldownInput', 'cooldown')">Submit</button>
                 <input type="number" min="0" class="form-control" id="greetingCooldownInput" placeholder="Seconds" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="greetingDefault">Default Greeting</label>
+                <label for="greetingDefault">Greeting Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('greetingDefaultInput', 'greeting', 'defaultJoin')">Submit</button>
+                        onclick="$.updateGreetingData('greetingDefaultInput', 'defaultJoin')">Submit</button>
                 <input type="text" class="form-control" id="greetingDefaultInput" placeholder="Greeting Message" />
             </div>
         </form>
     </div>
     </div>
 
-    <h3>Follow Alerts and Rewards</h3>
+    <h3>Follow Alert Settings</h3>
     <div>
     <div id="_followAlertsPanelDisabled" />
     <div id="_followAlertsPanel"> 
@@ -78,7 +78,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="followerGreeting">Follower Announcement</label>
+                <label for="followerGreeting">Follower Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateGreetingData('followerGreetingInput', 'settings', 'followMessage')">Submit</button>
                 <input type="text" class="form-control" id="followerGreetingInput" placeholder="Greeting Message"
@@ -97,7 +97,7 @@
     </div>
     </div>
 
-    <h3>Donation Alert and Rewards</h3>
+    <h3>Donation Alert Settings</h3>
     <div>
     <div id="_donationAlertsPanelDisabled" />
     <div id="_donationAlertsPanel">
@@ -116,7 +116,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="donateReward">Donation Multiplier Reward</label>
+                <label for="donateReward">Multiplier Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateGreetingData('donateRewardInput', 'donations', 'reward')">Submit</button>
                 <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
@@ -126,7 +126,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="donateGreeting">Donation Announcement</label>
+                <label for="donateGreeting">Donation Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('donateGreetingInput', 'donations', 'message')">Submit</button>
                 <input type="text" class="form-control" id="donateGreetingInput" placeholder="Greeting Message" 
@@ -146,7 +146,7 @@
     </div>
     </div>
 
-    <h3>Twitch Subscriber Alerts and Rewards</h3>
+    <h3>Subscriber Alert Settings</h3>
     <div>
     <div id="_twitchSubPanelDisabled" />
     <div id="_twitchSubPanel">
@@ -174,7 +174,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subReward">Twitch Subscription/Resubscription Reward</label>
+                <label for="subReward">Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Submit</button>
                 <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Points" />
@@ -183,7 +183,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subGreeting">Twitch Subscriber Announcement</label>
+                <label for="subGreeting">Subscriber Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateGreetingData('subGreetingInput', 'subscribeHandler', 'subscribeMessage')">Submit</button>
                 <input type="text" class="form-control" id="subGreetingInput" placeholder="Greeting Message" 
@@ -193,7 +193,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="resubGreeting">Twitch Resubscriber Announcement</label>
+                <label for="resubGreeting">Resubscriber Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"  
                         onclick="$.updateGreetingData('resubGreetingInput', 'subscribeHandler', 'reSubscribeMessage')">Submit</button>
                 <input type="text" class="form-control" id="resubGreetingInput" placeholder="Greeting Message"
@@ -204,22 +204,17 @@
     </div>
     </div>
 
-    <h3>GameWisp Subscriber Alerts and Rewards</h3>
+    <h3>GameWisp Alert Settings</h3>
     <div>
     <div id="_gwSubPanelDisabled" />
     <div id="_gwSubPanel">
         <table>
             <tr class="textList">
-                <td>Enable/Disable Subscription Alerts</td>
+                <td>Toggle Subscription Alert</td>
                 <td style="width: 25px"><div id="gameWispGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Enable" class="button"
-                         onclick="$.toggleGreetings('gameWispSubHandler', 'subscriberShowMessages_on');"><i class="fa fa-circle" />
-                     </div>
-                </td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Disable" class="button"
-                         onclick="$.toggleGreetings('gameWispSubHandler', 'subscriberShowMessages_off');"><i class="fa fa-circle-o" />
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('gameWispSubHandler', 'showSubscribeMessage');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
@@ -228,7 +223,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwSubGreeting">GameWisp Subscriber Announcement</label>
+                <label for="gwSubGreeting">Subscriber Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateGreetingData('gwSubGreetingInput', 'gameWispSubHandler', 'subscribeMessage')">Submit</button>
                 <input type="text" class="form-control" id="gwSubGreetingInput" placeholder="Greeting Message" 
@@ -238,7 +233,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwResubGreeting">GameWisp Resubscriber Announcement</label>
+                <label for="gwResubGreeting">Resubscriber Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateGreetingData('gwResubGreetingInput', 'gameWispSubHandler', 'reSubscribeMessage')">Submit</button>
                 <input type="text" class="form-control" id="gwResubGreetingInput" placeholder="Greeting Message"
@@ -248,7 +243,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwTierupGreeting">GameWisp Tier Up Announcement</label>
+                <label for="gwTierupGreeting">Tier Up Announcement</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateGreetingData('gwTierupGreetingInput', 'gameWispSubHandler', 'tierUpMessage')">Submit</button>
                 <input type="text" class="form-control" id="gwTierupGreetingInput" placeholder="Greeting Message"
@@ -258,7 +253,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwSubReward">GameWisp Subscription Reward</label>
+                <label for="gwSubReward">Subscription Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('gwSubRewardInput', 'gameWispSubHandler', 'subscribeReward')">Submit</button>
                 <input type="number" min="0" class="form-control" id="gwSubRewardInput" placeholder="Points" />
@@ -267,7 +262,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwResubReward">GameWisp Resubscription Reward</label>
+                <label for="gwResubReward">Resubscription Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('gwResubRewardInput', 'gameWispSubHandler', 'reSubscribeReward')">Submit</button>
                 <input type="number" min="0" class="form-control" id="gwResubRewardInput" placeholder="Points" />
@@ -282,11 +277,11 @@
     <div id="_gwTierPanel">
         <table style="background: transparent">
             <tr>
-                <td> <strong>Song Request Perks</strong> <div id="gameWispSongRequests" style="height: 180px; overflow: auto;" /> </td>
-                <td> <strong>Subscription Bonus Points Perks</strong> <div id="gameWispBonusPoints" style="height: 180px; overflow: auto;" /> </td>
+                <td> <strong>Song Request Perks</strong> <div id="gameWispSongRequests" style="height: 200px; overflow: auto;" /> </td>
+                <td> <strong>Subscription Bonus Points Perks</strong> <div id="gameWispBonusPoints" style="height: 200px; overflow: auto;" /> </td>
             </tr>
             <tr>
-                <td> <strong>Resubscription Bonus Points Perks</strong> <div id="gameWispSubBonusPoints" style="height: 180px; overflow: auto;" /> </td>
+                <td> <strong>Resubscription Bonus Points Perks</strong> <div id="gameWispSubBonusPoints" style="height: 200px; overflow: auto;" /> </td>
             </tr>
         </table>
     </div>

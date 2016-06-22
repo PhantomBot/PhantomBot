@@ -142,6 +142,26 @@
         }
 
         /**
+         * USED BY THE PANEL
+         */
+        if (command.equalsIgnoreCase('addquotesilent')) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.whisperPrefix(sender) + $.modMsg);
+                return;
+            }
+            
+            if (args.length < 1) {
+                //$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage'));
+                return;
+            }
+
+            quote = args.splice(0).join(' ');
+            saveQuote(String($.username.resolve(sender)), quote);
+            //$.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
+            //$.log.event(sender + ' added a quote "' + quote + '".');
+        }
+
+        /**
          * @commandpath delquote [quoteId] - Delete a quote
          */
         if (command.equalsIgnoreCase('delquote')) {
@@ -159,6 +179,26 @@
             }
 
             $.log.event(sender + ' removed quote with id: ' + args[0]);
+        }
+
+        /**
+         * USED BY THE PANEL
+         */
+        if (command.equalsIgnoreCase('delquote')) {
+            if (!args[0] || isNaN(args[0])) {
+                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.usage'));
+                return;
+            }
+
+            var newCount;
+
+            if ((newCount = deleteQuote(args[0])) >= 0) {
+                //$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.success', args[0], newCount));
+            } else {
+                //$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.404', args[0]));
+            }
+
+            //$.log.event(sender + ' removed quote with id: ' + args[0]);
         }
 
         /**
@@ -201,7 +241,9 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/quoteSystem.js')) {
             $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
+            $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', 1);
             $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
+            $.registerChatCommand('./systems/quoteSystem.js', 'delquotesilent', 1);
             $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
             $.registerChatCommand('./systems/quoteSystem.js', 'quote');
             $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);

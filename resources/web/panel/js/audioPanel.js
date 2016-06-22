@@ -216,7 +216,8 @@
         var value = $('#ytpDJNameInput').val();
         if (value.length > 0) {
             $('#ytpDJNameInput').val('Updating...');
-            sendCommand('ytp djname ' + value);
+            sendDBUpdate('audio_setting', 'ytSettings', 'playlistDJname', value);
+            sendCommand('reloadyt');
             setTimeout(function() { doQuery(); $('#ytpDJNameInput').val('') }, TIMEOUT_WAIT_TIME * 2);
         }
     }
@@ -229,7 +230,8 @@
         if (value.length > 0) {
             $('#ytpMaxReqsInput').val('');
             $('#ytpMaxReqsInput').attr('placeholder', value);
-            sendCommand('ytp setrequestmax ' + value);
+            sendDBUpdate('audio_setting', 'ytSettings', 'songRequestsMaxParallel', value);
+            sendCommand('reloadyt');
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
@@ -242,7 +244,8 @@
         if (value.length > 0) {
             $('#ytpMaxLengthInput').val('');
             $('#ytpMaxLengthInput').attr('placeholder', value);
-            sendCommand('ytp setmaxvidlength ' + value);
+            sendDBUpdate('audio_setting', 'ytSettings', 'songRequestsMaxSecondsforVideo', value);
+            sendCommand('reloadyt');
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
     }

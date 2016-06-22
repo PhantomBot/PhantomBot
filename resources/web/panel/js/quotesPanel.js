@@ -136,7 +136,7 @@
         var value = $('#quoteMessageInput').val();
         if (value.length > 0) {
             $('#quoteMessageInput').val('Updating...');
-            sendCommand('quotemessage ' + value);
+            sendDBUpdate('quotes_quotemessage', 'settings', 'quoteMessage', value);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
@@ -147,7 +147,7 @@
      */
     function deleteQuote(id) {
         $('#deleteQuote_' + id).html(spinIcon);
-        sendCommand('delquote ' + id);
+        sendCommand('delquotesilent ' + id);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 4);
     }
 
@@ -184,7 +184,7 @@
         var value = $('#addQuoteInput').val();
         if (value.length > 0) {
             $('#addQuoteInput').val('Adding...').blur();
-            sendCommand('addquote ' + value);
+            sendCommand('addquotesilent ' + value);
             setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 4);
         }
     }

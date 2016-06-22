@@ -22,7 +22,7 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="noticesAccordion">
-    <h3>Notice Configuration</h3>
+    <h3>Notices & Settings</h3>
     <div>
     <div id="_noticeConfigPanelDisabled" />
     <div id="_noticeConfigPanel">
@@ -72,13 +72,12 @@
                     data-toggle="tooltip" title="Set the amount of messages required before a notice gets triggered." />
             </div>
         </form>
-    </div>
-    </div>
+        <br>
 
-    <h3>Notices</h3>
-    <div>
-    <div id="_noticesPanelDisabled" />
-    <div id="_noticesPanel">
+        Notices are timed chat announcements that are said randomly with the interval you have set. It is a great feature to promote your social media.<br><br>
+
+        <div id="_noticesPanelDisabled" />
+        <div id="_noticesPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="addNotice">Add New Notice</label>
@@ -91,6 +90,7 @@
 
         Current Notices
         <div id="noticeList" style="height: 200px; overflow: auto;" />
+    </div>
     </div>
     </div>
 </div>
