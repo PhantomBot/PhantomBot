@@ -274,6 +274,7 @@
         sendDBUpdate("points_settings", "pointSettings", "pointNameMultiple", "points");
         sendDBUpdate("points_settings", "pointSettings", "pointNameSingle", "point");
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
     }
 
     /**
