@@ -27,8 +27,78 @@
         offlinePayoutInterval = $.getIniDbNumber('pointSettings', 'offlinePayoutInterval');
         pointNameSingle = $.getIniDbString('pointSettings', 'pointNameSingle');
         pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
-        registerPointCommands();
+
+        if (!$.inidb.get('pointSettings', 'pointNameMultiple').equalsIgnoreCase('points') && !$.inidb.get('pointSettings', 'pointNameSingle').equalsIgnoreCase('point')) {
+            $.consoleLn('new')
+            $.inidb.set('temp', 'pointsname', pointNameMultiple);
+            $.inidb.set('temp', 'pointsname2', pointNameSingle);
+        }
+
+        if (pointNameMultiple.equalsIgnoreCase('points') && pointNameSingle.equalsIgnoreCase('point')) {
+            defaultPoints(true, false);
+            registerPointCommands($.inidb.get('temp', 'pointsname'), $.inidb.get('temp', 'pointsname2'), false);
+            $.consoleLn('1')
+        } else {
+            registerPointCommands($.inidb.get('temp', 'pointsname'), $.inidb.get('temp', 'pointsname2'), true);
+            defaultPoints(false, true);
+            $.consoleLn('2')
+        }
     };
+
+    function defaultPoints (register, unregister) {
+        if (register) {
+            $.consoleLn('reg')
+            $.registerChatCommand('./systems/pointSystem.js', 'points', 7);
+            $.registerChatSubcommand('points', 'add', 1);
+            $.registerChatSubcommand('points', 'take', 1);
+            $.registerChatSubcommand('points', 'set', 1);
+            $.registerChatSubcommand('points', 'all', 1);
+            $.registerChatSubcommand('points', 'setname', 1);
+            $.registerChatSubcommand('points', 'setgain', 1);
+            $.registerChatSubcommand('points', 'setofflinegain', 1);
+            $.registerChatSubcommand('points', 'setinterval', 1);
+            $.registerChatSubcommand('points', 'user', 7);
+            $.registerChatSubcommand('points', 'check', 7);
+            $.registerChatCommand('./systems/pointSystem.js', 'point', 7);
+            $.registerChatSubcommand('point', 'add', 1);
+            $.registerChatSubcommand('point', 'take', 1);
+            $.registerChatSubcommand('point', 'set', 1);
+            $.registerChatSubcommand('point', 'all', 1);
+            $.registerChatSubcommand('point', 'setname', 1);
+            $.registerChatSubcommand('point', 'setgain', 1);
+            $.registerChatSubcommand('point', 'setofflinegain', 1);
+            $.registerChatSubcommand('point', 'setinterval', 1);
+            $.registerChatSubcommand('point', 'user', 7);
+            $.registerChatSubcommand('point', 'check', 7);
+            return;
+        }
+
+        if (unregister) {
+            $.consoleLn('un')
+            $.unregisterChatCommand('points', 7);
+            $.unregisterChatSubcommand('points', 'add', 1);
+            $.unregisterChatSubcommand('points', 'take', 1);
+            $.unregisterChatSubcommand('points', 'set', 1);
+            $.unregisterChatSubcommand('points', 'all', 1);
+            $.unregisterChatSubcommand('points', 'setname', 1);
+            $.unregisterChatSubcommand('points', 'setgain', 1);
+            $.unregisterChatSubcommand('points', 'setofflinegain', 1);
+            $.unregisterChatSubcommand('points', 'setinterval', 1);
+            $.unregisterChatSubcommand('points', 'user', 7);
+            $.unregisterChatSubcommand('points', 'check', 7);
+            $.unregisterChatCommand('point', 7);
+            $.unregisterChatSubcommand('point', 'add', 1);
+            $.unregisterChatSubcommand('point', 'take', 1);
+            $.unregisterChatSubcommand('point', 'set', 1);
+            $.unregisterChatSubcommand('point', 'all', 1);
+            $.unregisterChatSubcommand('point', 'setname', 1);
+            $.unregisterChatSubcommand('point', 'setgain', 1);
+            $.unregisterChatSubcommand('point', 'setofflinegain', 1);
+            $.unregisterChatSubcommand('point', 'setinterval', 1);
+            $.unregisterChatSubcommand('point', 'user', 7);
+            $.unregisterChatSubcommand('point', 'check', 7);
+        }
+    }
 
     /**
      * @function getUserPoints
@@ -61,35 +131,59 @@
      * @function registerPointCommands
      * @param {string} [oldName]
      */
-    function registerPointCommands(oldName) {
-        if (oldName && $.commandExists(oldName.toLowerCase()) && (oldName.toLowerCase() != "points" && oldName.toLowerCase() != "point")) {
-            $.unregisterChatCommand(oldName.toLowerCase());
+    function registerPointCommands(newname, newname2, neww) {
+        if (newname && neww) {
+            $.registerChatCommand('./systems/pointSystem.js', newname.toLowerCase(), 7);
+            $.registerChatSubcommand(newname.toLowerCase(), 'add', 1);
+            $.registerChatSubcommand(newname.toLowerCase(), 'take', 1);
+            $.registerChatSubcommand(newname.toLowerCase(), 'set', 1);
+            $.registerChatSubcommand(newname.toLowerCase(), 'all', 1);
+            $.registerChatSubcommand(newname.toLowerCase(), 'setname', 1);
+            $.registerChatSubcommand(newname.toLowerCase(), 'setgain', 1);
+            $.registerChatSubcommand(newname.toLowerCase(), 'setofflinegain', 1);
+            $.registerChatSubcommand(newname.toLowerCase(), 'setinterval', 1);
+            $.registerChatSubcommand(newname.toLowerCase(), 'user', 7);
+            $.registerChatSubcommand(newname.toLowerCase(), 'check', 7);
+        } 
+        if (newname2 && neww) {
+            $.registerChatCommand('./systems/pointSystem.js', newname2.toLowerCase(), 7);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'add', 1);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'take', 1);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'set', 1);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'all', 1);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'setname', 1);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'setgain', 1);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'setofflinegain', 1);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'setinterval', 1);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'user', 7);
+            $.registerChatSubcommand(newname2.toLowerCase(), 'check', 7);
         }
-        if (!$.commandExists(pointNameSingle.toLowerCase()) && !oldName) {
-            $.registerChatCommand('./systems/pointSystem.js', pointNameSingle.toLowerCase(), 7);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'add', 1);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'take', 1);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'set', 1);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'all', 1);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'setname', 1);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'setgain', 1);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'setofflinegain', 1);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'setinterval', 1);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'user', 7);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'check', 7);
-        }
-        if (!$.commandExists(pointNameMultiple.toLowerCase()) && !oldName) {
-            $.registerChatCommand('./systems/pointSystem.js', pointNameMultiple.toLowerCase(), 7);
-            $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'add', 1);
-            $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'take', 1);
-            $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'set', 1);
-            $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'all', 1);
-            $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'setname', 1);
-            $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'setgain', 1);
-            $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'setofflinegain', 1);
-            $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'setinterval', 1);
-            $.registerChatSubcommand(pointNameMultiple.toLowerCase(), 'user', 7);
-            $.registerChatSubcommand(pointNameSingle.toLowerCase(), 'check', 7);
+
+        if (newname && !neww) {
+            $.unregisterChatCommand('./systems/pointSystem.js', newname.toLowerCase(), 7);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'add', 1);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'take', 1);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'set', 1);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'all', 1);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'setname', 1);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'setgain', 1);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'setofflinegain', 1);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'setinterval', 1);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'user', 7);
+            $.unregisterChatSubcommand(newname.toLowerCase(), 'check', 7);
+        } 
+        if (newname2 && !neww) {
+            $.unregisterChatCommand('./systems/pointSystem.js', newname2.toLowerCase(), 7);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'add', 1);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'take', 1);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'set', 1);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'all', 1);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'setname', 1);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'setgain', 1);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'setofflinegain', 1);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'setinterval', 1);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'user', 7);
+            $.unregisterChatSubcommand(newname2.toLowerCase(), 'check', 7);
         }
     };
 
@@ -306,8 +400,7 @@
                         temp = pointNameSingle;
                         pointNameSingle = actionArg2;
                         $.inidb.set('pointSettings', 'pointNameSingle', pointNameSingle);
-                        registerPointCommands(temp);
-                        registerPointCommands();
+                        updateSettings();
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.single.success', temp, pointNameSingle));
                         return;
                     }
@@ -315,16 +408,14 @@
                         temp = pointNameMultiple;
                         pointNameMultiple = actionArg2;
                         $.inidb.set('pointSettings', 'pointNameMultiple', pointNameMultiple);
-                        registerPointCommands(temp);
-                        registerPointCommands();
+                        updateSettings();
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.multiple.success', temp, pointNameMultiple));
                         return;
                     }
                     if (actionArg1.equalsIgnoreCase('delete')) {
                         $.inidb.del('pointSettings', 'pointNameSingle');
                         $.inidb.del('pointSettings', 'pointNameMultiple');
-                        registerPointCommands(pointNameSingle);
-                        registerPointCommands(pointNameMultiple);
+                        updateSettings();
                         pointNameSingle = "point";
                         pointNameMultiple = "points";
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.delete'));
