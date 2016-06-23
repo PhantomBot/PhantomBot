@@ -323,9 +323,13 @@
     function aliasCommand() {
         var main = $('#aliasCommandInput').val();
         var alias = $('#aliasCommandInputAlias').val();
-        console.log(main);
-        console.log(alias);
 
+        if (main.match(/;/) || main.match(/-/) || main.match(/ /)) {
+            $("#aliasCommandInputAlias").val("Error: alias name can not contain special symbols.");
+            $("#aliasCommandInput").val("");
+            setTimeout(function() { $('#aliasCommandInputAlias').val(""); }, TIMEOUT_WAIT_TIME * 10);
+            return;
+        }
         if (main.length == 0) {
             $("#aliasCommandInput").val("Please enter a value");
             setTimeout(function() { $("#aliasCommandInput").val(""); }, TIMEOUT_WAIT_TIME * 2);
