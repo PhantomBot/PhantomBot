@@ -901,9 +901,7 @@
                     currentPlaylist.nextVideo();
                 }
                
-                if (state == playerStateEnum.NEWPAUSE) {
-                    connectedPlayerClient.togglePause();
-                } else {
+                if (state != playerStateEnum.NEWPAUSE) {
                     if (songRequestsEnabled) {
                         $.say($.lang.get('ytplayer.songrequests.enabled'));
                     }
