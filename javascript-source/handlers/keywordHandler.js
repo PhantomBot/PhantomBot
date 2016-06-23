@@ -1,4 +1,6 @@
 (function() {
+    var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
+    var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
 
     /**
      * @event ircChannelMessage
@@ -23,6 +25,11 @@
 
                 if ($.coolDown.get(key, event.getSender()) > 0) {
                     $.consoleDebug('[COOLDOWN] Keyword ' + key + ' was not sent because its on a cooldown.');
+                    return;
+                }
+
+                if (keyword.match(/command:/g)) {
+                    EventBus.instance().post(new CommandEvent($.botName, keyword.substring(8), ' '));
                     return;
                 }
 
@@ -74,6 +81,7 @@
                 if (keyword.match(/\(follows\)/g)) {
                     keyword = $.replace(keyword, '(follows)', String($.getFollows($.channelName)));
                 }
+
                 $.say(keyword);
             }
         }
