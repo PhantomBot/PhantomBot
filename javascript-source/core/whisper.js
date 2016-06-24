@@ -12,7 +12,7 @@
         if (whisperMode || force) {
             return '/w ' + username + ' ';
         }
-        return '@' + $.username.resolve(username) + ', ';
+        return $.userPrefix(username, true);
     };
 
     /**
@@ -22,7 +22,7 @@
      */
     function getBotWhisperMode() {
         return whisperMode;
-    }
+    };
 
     /**
      * @function whisperCommands
@@ -61,11 +61,6 @@
          * @commandpath togglewhispermode - Toggle whisper mode
          */
         if (command.equalsIgnoreCase('togglewhispermode')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender, true) + $.lang.get('cmd.adminonly'));
-                return;
-            }
-
             if (whisperMode) {
                 $.inidb.set('settings', 'whisperMode', 'false');
                 whisperMode = false;
