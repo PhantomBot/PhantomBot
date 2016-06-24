@@ -350,7 +350,7 @@
 
         if (points.length > 0) {
             if (panelMatch(action, 'all')) {
-                command = "points all " + points;
+                command = "pointsallpanel " + points;
             }
             if (panelMatch(action, 'makeitrain')) {
                 command = "makeitrain " + points;
