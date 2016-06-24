@@ -168,7 +168,7 @@
      */
     function adventureUpdateSetting(setting) {
         var value = $('#adventure' + setting + 'Input').val();
-        var setting = 'adventure' + setting;
+
         if (value.length > 0) {
             if (setting == 'joinTime') {
                 sendDBUpdate('games_adventure', 'adventureSettings', setting, value);
