@@ -534,6 +534,18 @@
         return string;
     };
 
+    /**
+     * @function userPrefix
+     * @export $
+     * @param {username}
+     */
+    function userPrefix(username, comma) {
+        if (!comma) {
+            return '@' + $.username.resolve(username) + ' ';
+        } 
+        return '@' + $.username.resolve(username) + ', ';
+    };
+
     /** Export functions to API */
     $.list = {
         contains: contains,
@@ -570,4 +582,5 @@
     $.trueRandRange = trueRandRange;
     $.paginateArray = paginateArray;
     $.replace = replace;
+    $.userPrefix = userPrefix;
 })();
