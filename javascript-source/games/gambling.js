@@ -20,7 +20,7 @@
 		    range = $.randRange(0, 100);
 
 		if ($.getUserPoints(sender) < amount) {
-			$.say($.whisperPrefix(sender) + $.lang.get('gambling.need.points'));
+			$.say($.whisperPrefix(sender) + $.lang.get('gambling.need.points', $.pointNameMultiple));
 			return;
 		}
 
@@ -35,12 +35,12 @@
 		}
 
 		if (range <= winRange) {
-			$.say($.lang.get('gambling.lost', $.username.resolve(sender), range, $.getPointsString(amount)));
+			$.say($.lang.get('gambling.lost', $.userPrefix(sender), range, $.getPointsString(amount), $.getPointsString($.getUserPoints(sender))));
 			$.inidb.decr('points', sender, amount);
 		} else {
 			winSpot = (range - winRange + 1); 
             winnings = Math.floor(amount + ((amount + winSpot) * gain));
-			$.say($.lang.get('gambling.won', $.username.resolve(sender), range, $.getPointsString(winnings - amount)));
+			$.say($.lang.get('gambling.won', $.userPrefix(sender), range, $.getPointsString(winnings - amount), $.getPointsString($.getUserPoints(sender))));
 			$.inidb.decr('points', sender, amount);
 			$.inidb.incr('points', sender, winnings);
 		}

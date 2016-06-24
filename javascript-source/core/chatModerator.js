@@ -266,7 +266,7 @@
     function sendMessage(user, message, filter) {
         var messageReset = messageTime - $.systemTime();
         if (!filter && messageReset <= 0) {
-            $.say('@' + $.username.resolve(user) + ', ' + message + ' ' + warning);
+            $.say($.userPrefix(user, true) + message + ' ' + warning);
             messageTime = (msgCooldownSec * 1000) + $.systemTime();
         } 
     };
@@ -444,11 +444,6 @@
          * @commandpath blacklist - Show usage of command to manipulate the blacklist of words in chat
          */
         if (command.equalsIgnoreCase('blacklist')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.usage'));
                 return;
@@ -504,11 +499,6 @@
          * @commandpath whitelist - Shows usage of command to manipulate the whitelist links
          */
         if (command.equalsIgnoreCase('whiteList')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.usage'));
                 return;
@@ -564,11 +554,6 @@
          * @commandpath permit [user] - Permit someone to post a link for a configured period of time
          */
         if (command.equalsIgnoreCase('permit')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-
             if (!linksToggle) {
                 return;
             }
@@ -619,11 +604,6 @@
          * @commandpath moderation - Shows usage for the various chat moderation options
          */
         if (command.equalsIgnoreCase('moderation') || command.equalsIgnoreCase('mod')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.usage.toggles'));
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.usage.messages'));

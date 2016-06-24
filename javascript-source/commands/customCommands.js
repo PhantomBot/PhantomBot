@@ -66,7 +66,7 @@
         }
 
         if (message.match(/\(@sender\)/g)) {
-            message = $.replace(message, '(@sender)', '@' + $.username.resolve(event.getSender()));
+            message = $.replace(message, '(@sender)', $.userPrefix(event.getSender()));
         }
 
         if (message.match(/\(baresender\)/g)) {
@@ -373,11 +373,6 @@
          * @commandpath addcom [command] [command text] - Add a custom command (see !listtags)
          */
         if (command.equalsIgnoreCase('addcom')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.usage'));
                 return;
@@ -414,11 +409,6 @@
          * @commandpath editcom [command] [command text] - Replaces the given custom command
          */
         if (command.equalsIgnoreCase('editcom')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.usage'));
                 return;
@@ -446,11 +436,6 @@
          * @commandpath delcom [command] - Delete a custom command
          */
         if (command.equalsIgnoreCase('delcom')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-
             if (!args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delete.usage'));
                 return;
@@ -478,11 +463,6 @@
          * @commandpath aliascom [alias] [existing command] [parameters] - Create an alias to any command, optionally with parameters
          */
         if (command.equalsIgnoreCase('aliascom')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.usage'));
                 return;
@@ -522,11 +502,6 @@
          * @commandpath delalias [alias] - Delete an alias
          */
         if (command.equalsIgnoreCase('delalias')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.delete.usage'));
                 return;
@@ -549,11 +524,6 @@
          * @commandpath permcom [command] [subcommand] [groupId] - Set the permissions for a subcommand
          */
         if (command.equalsIgnoreCase('permcom')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.usage'));
                 return;
@@ -611,11 +581,6 @@
          * @commandpath pricecom [command] [amount] - Set the amount of points a command should cost
          */
         if (command.equalsIgnoreCase('pricecom')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.usage'));
                 return;
@@ -650,10 +615,6 @@
          * @commandpath listtags - Displays a list of tags that may be used in custom commands
          */
         if (command.equalsIgnoreCase('listtags')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
             $.say($.whisperPrefix(sender) + 'Command tags: (sender), (@sender), (baresender), (random), (#), (uptime), (game), (status), (follows), (count), (touser), (price), (viewers), (pointname), (customapi), (echo), (customjsonapi), (age), (command command_name). (command command_name) must be the first item if used. Do not include the !');
         }
 
@@ -776,7 +737,6 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
-
             $.registerChatCommand('./commands/customCommands.js', 'addcom', 2);
             $.registerChatCommand('./commands/customCommands.js', 'pricecom', 2);
             $.registerChatCommand('./commands/customCommands.js', 'aliascom', 2);
