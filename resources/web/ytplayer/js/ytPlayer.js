@@ -61,7 +61,7 @@ function onPlayerReady(event) {
     connection.send(JSON.stringify(jsonObject));
     debugMsg("onPlayerReady::connection.send(" + JSON.stringify(jsonObject)+")");
 
-    readyEvent()
+    readyEvent();
     playerObject.setVolume(5); // Be safe with the caster
 }
 
@@ -79,6 +79,13 @@ function readyEvent() {
 
 function onPlayerStateChange(event) {
     debugMsg("onPlayerStateChange(" + event.data + ")");
+
+    if (event.data === 1 && startPaused) {
+        playerPaused = true;
+        playerObject.pauseVideo();
+        startPaused = false;
+    }
+
     var jsonObject = {};
     jsonObject["status"] = { "state" : event.data };
     connection.send(JSON.stringify(jsonObject));
