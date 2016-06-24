@@ -239,6 +239,12 @@
             return;
         }
 
+        if (currentAdventure.gameState == 0) {
+            startHeist(username);
+        } else {
+            $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.success', $.getPointsString(bet)));
+        }
+
         currentAdventure.users.push({
             username: username,
             bet: parseInt(bet),
@@ -246,12 +252,6 @@
 
         $.inidb.decr('points', username, bet);
         inviteTamagotchi(username, bet);
-
-        if (currentAdventure.gameState == 0) {
-            startHeist(username);
-        } else {
-            $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.success', $.getPointsString(bet)));
-        }
         return true;
     };
 
@@ -287,6 +287,8 @@
      */
     function endHeist() {
         var i, pay;
+        var temp = [];
+
         for (i in currentAdventure.survivors) {
             if (currentAdventure.survivors[i].tgOwner) {
                 currentAdventure.survivors[i].username = currentAdventure.survivors[i].tgOwner;
@@ -296,7 +298,11 @@
             $.inidb.incr('points', currentAdventure.survivors[i].username, currentAdventure.survivors[i].bet + pay);
         }
 
-        $.say($.lang.get('adventuresystem.completed', currentAdventure.survivors.length, currentAdventure.caught.length));
+        for (i in currentAdventure.survivors) {
+            temp.push(currentAdventure.survivors[i].username + ' (+' + $.getPointsString($.inidb.get('adventurePayouts', currentAdventure.survivors[i].username)) + ')');// Do no include the amount they put in.
+        }
+
+        $.say($.lang.get('adventuresystem.completed', temp.join(', ')));
         clearCurrentAdventure();
         $.coolDown.set('adventure', coolDown);
     };
