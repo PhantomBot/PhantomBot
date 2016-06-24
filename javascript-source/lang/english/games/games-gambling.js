@@ -1,8 +1,8 @@
-$.lang.register('gambling.need.points', 'you don\'t have that many points.');
+$.lang.register('gambling.need.points', 'you don\'t have that many $1.');
 $.lang.register('gambling.error.max', 'you\'re only allowed to gamble a maximum of $1.');
 $.lang.register('gambling.error.min', 'you\'re only allowed to gamble a minumum of $1.');
-$.lang.register('gambling.lost', '@$1 rolled $2. Lost $3.');
-$.lang.register('gambling.won', '@$1 rolled $2. Won $3!');
+$.lang.register('gambling.lost', '$1 rolled $2. Lost $3.'); //Use $4 for the points the user has renaming
+$.lang.register('gambling.won', '$1 rolled $2. Won $3!'); //Use $4 for the points the user has renaming
 $.lang.register('gambling.usage', 'usage: !gamble (amount)');
 $.lang.register('gambling.set.max.usage', 'usage: !gamblesetmax (amount)');
 $.lang.register('gambling.set.max', 'set max gambling to $1!');
