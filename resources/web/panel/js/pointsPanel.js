@@ -361,6 +361,24 @@
     }
 
     /**
+     * @function giftChatPoints
+     * @param {String} action
+     */
+    function penaltyUser() {
+        var user = $("#penaltyUser").val(),
+            time = $("#penaltyUserTime").val();
+
+        if (time.length != 0 && user.length != 0) {
+            sendCommand('penalty ' + user + ' ' + time);
+            $("#penaltyUser").val(user + ' wont gain points for ' + time + ' minutes.');
+        } else {
+            $("#penaltyUser").val('Error.');
+        }
+        $("#penaltyUserTime").val('');
+        setTimeout(function () { $("#penaltyUser").val(''); }, TIMEOUT_WAIT_TIME * 10);
+    };
+
+    /**
      * @function setPointsSort
      * @param {String} type
      */
@@ -387,7 +405,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 4 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Time Data', 'success', 1000);
+            newPanelAlert('Refreshing Points Data', 'success', 1000);
             doQuery();
         }
     }, 3e4);
@@ -403,4 +421,5 @@
     $.modifyUserPoints = modifyUserPoints;
     $.updateUserPoints = updateUserPoints;
     $.setPointsSort = setPointsSort;
+    $.penaltyUser = penaltyUser;
 })();

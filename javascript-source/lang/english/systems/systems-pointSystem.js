@@ -43,3 +43,5 @@ $.lang.register('pointsystem.gift.404', 'Sorry! That user does not seem to be re
 $.lang.register('pointsystem.gift.success', '$1 has sent a gift of $2 to $3.');
 $.lang.register('pointsystem.usage.invalid', 'Invalid option passed to $1 command');
 $.lang.register('pointsystem.err.negative', 'you can not gift less then 0 $1');
+$.lang.register('pointsystem.err.penalty', 'Usage: !penalty (user) (time in minutes)');
+$.lang.register('pointsystem.penalty.set', 'User: $1 will not gain points for te next $2.');
