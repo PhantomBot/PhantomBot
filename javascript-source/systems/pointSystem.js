@@ -11,6 +11,7 @@
         onlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'onlinePayoutInterval', 10),
         offlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'offlinePayoutInterval',  0),
         lastPayout = 0,
+        penaltys = [],
 
         /** @export $ */
         pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'point'),
@@ -209,6 +210,7 @@
             }
         }
 
+
         for (i in $.users) {
             username = $.users[i][0].toLowerCase();
             if ($.isOnline($.channelName)) {
@@ -228,13 +230,60 @@
                     amount += Math.floor(amount * ($.getTierData(username, 'bonuspoints') / 100));
                 }
             }
-            
-            $.inidb.incr('points', username, amount);
-            uUsers.push(username + '(' + amount + ')');
+
+            if (getUserPenalty(username) == true) {
+                for (i in penaltys) {
+                    var time = penaltys[i].time - now;
+                    if (time <= 0) {
+                        penaltys.splice(i, 1);
+                    }
+                }
+            }
+
+            if (getUserPenalty(username) != true) {
+                $.inidb.incr('points', username, amount);
+                uUsers.push(username + '(' + amount + ')');
+            }
         }
         $.log.file('pointSystem', 'Executed ' + pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
 
         lastPayout = now;
+    };
+
+    /**
+    * @function setPenalty
+    */
+    function setPenalty(sender, user, time, silent) {
+        if (!user || !time) {
+            if (!silent) {
+                $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.err.penalty'));
+            }
+            return;
+        }
+
+        var newTime = (time * 6e4) + $.systemTime();
+
+        penaltys.push({
+            user: user,
+            time: newTime,
+        });
+
+        if (!silent) {
+            time = $.getTimeString((time * 6e4) / 1000);
+            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.penalty.set', user, time));
+        }
+    };
+
+    /**
+    * @function getUserPenalty
+    */
+    function getUserPenalty(user) {
+        for (var i in penaltys) {
+            if (penaltys[i].user.equalsIgnoreCase(user)) {
+                return true;
+            }
+        }
+        return false;
     };
 
     /**
@@ -571,6 +620,17 @@
             $.say($.lang.get('pointsystem.gift.success', $.username.resolve(sender), getPointsString(parseInt(args[1])), $.username.resolve(args[0])));
         }
 
+        /**
+         * @commandpath penalty [user] [time] - Stop a user from gaining points for X amount of minutes.
+         */
+        if (command.equalsIgnoreCase('penalty')) {
+            if (sender.equalsIgnoreCase($.botName)) { // Used for the panel.
+                setPenalty(sender, action.toLowerCase(), parseInt(actionArg1), true);
+                return;
+            }
+            setPenalty(sender, action.toLowerCase(), parseInt(actionArg1));
+        }
+
         if (command.equalsIgnoreCase('pointsallpanel')) {
             for (i in $.users) {
                 $.inidb.incr('points', $.users[i][0].toLowerCase(), parseInt(action));
@@ -597,8 +657,12 @@
             $.registerChatCommand('./systems/pointSystem.js', 'points', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'point', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'gift', 7);
+            $.registerChatCommand('./systems/pointSystem.js', 'penalty', 2);
+
+            /** Panel commands*/
             $.registerChatCommand('./systems/pointSystem.js', 'reloadpoints', 1);
             $.registerChatCommand('./systems/pointSystem.js', 'pointsallpanel', 1);
+            /** Panel commands */
 
             $.registerChatSubcommand('points', 'add', 1);
             $.registerChatSubcommand('points', 'take', 1);
