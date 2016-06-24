@@ -571,6 +571,13 @@
             $.say($.lang.get('pointsystem.gift.success', $.username.resolve(sender), getPointsString(parseInt(args[1])), $.username.resolve(args[0])));
         }
 
+        if (command.equalsIgnoreCase('pointsallpanel')) {
+            for (i in $.users) {
+                $.inidb.incr('points', $.users[i][0].toLowerCase(), parseInt(action));
+            }
+            $.say($.lang.get('pointsystem.add.all.success', $.getPointsString(parseInt(action))));
+        }
+
         if (command.equalsIgnoreCase('reloadpoints')) {
             updateSettings();
         }
@@ -591,6 +598,7 @@
             $.registerChatCommand('./systems/pointSystem.js', 'point', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'gift', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'reloadpoints', 1);
+            $.registerChatCommand('./systems/pointSystem.js', 'pointsallpanel', 1);
 
             $.registerChatSubcommand('points', 'add', 1);
             $.registerChatSubcommand('points', 'take', 1);
@@ -603,7 +611,9 @@
             $.registerChatSubcommand('points', 'user', 7);
             $.registerChatSubcommand('points', 'check', 7);
 
-            updateSettings()
+            if (pointNameSingle != 'point' && pointNameMultiple != 'points') {
+               updateSettings(); 
+            }
         }
     });
 
