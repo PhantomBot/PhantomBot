@@ -43,23 +43,19 @@
             if (!action) {
                 if (otherChannels != 'Channel-1 Channel-2') {
                     $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + '/' +  otherChannels.replace(' ', '/'));
-                    return;
                 } else {
                     if ($.isModv3(sender, event.getTags())) {
                         $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.usage'));
-                        return;
                     }
                 }
+                return;
             }
 
             /**
              * @commandpath multi set [channels] - Adds a space-delimited list of channels to the multi-link (local channel already added)
              */
             if (action.equalsIgnoreCase('set')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                } else if (!subAction) {
+                if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.set.usage'));
                     return;
                 }
@@ -78,10 +74,6 @@
              * @commandpath multi clear - Clears the multi-links and disables the timer
              */
             if (action.equalsIgnoreCase('clear')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                }
                 otherChannels = 'Channel-1 Channel-2';
                 timerToggle = false;
                 $.inidb.del('dualStreamCommand', 'otherChannels');
@@ -95,10 +87,7 @@
              * @commandpath multi timer [on / off] - Enable/Disable the multi-links timer
              */
             if (action.equalsIgnoreCase('timer')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                } else if (!subAction) {
+                if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timer.usage'));
                     return;
                 }
@@ -125,10 +114,7 @@
              * @commandpath multi timerinterval [time in minutes] - Set the interval for the multi-links timer
              */
             if (action.equalsIgnoreCase('timerinterval')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                } else if (!subAction) {
+                if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timerinterval.usage'));
                     return;
                 } else if (parseInt(subAction) < 5) {
@@ -155,10 +141,7 @@
              * @commandpath multi reqmessage [amount of messages] - Set the amount of message required before triggering the dual stream link
              */
             if (action.equalsIgnoreCase('reqmessage')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                } else if (!subAction) {
+                if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.req.usage'));
                     return;
                 }
@@ -188,6 +171,11 @@
         if ($.bot.isModuleEnabled('./commands/dualstreamCommand.js')) {
             $.registerChatCommand('./commands/dualstreamCommand.js', 'multi', 7);
             $.registerChatCommand('./commands/dualstreamCommand.js', 'reloadmulti', 1);
+            $.registerChatSubcommand('multi', 'set', 2);
+            $.registerChatSubcommand('multi', 'clear', 2);
+            $.registerChatSubcommand('multi', 'timer', 2);
+            $.registerChatSubcommand('multi', 'timerinterval', 1);
+            $.registerChatSubcommand('multi', 'reqmessage', 1);
         }
     });
 })();
