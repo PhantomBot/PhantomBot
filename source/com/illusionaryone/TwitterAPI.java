@@ -69,11 +69,10 @@ public class TwitterAPI {
     private String username;
     private String oauthAccessToken;
     private String oauthAccessSecret;
+    private String consumerKey;
+    private String consumerSecret;
     private AccessToken accessToken = null;
     private Twitter twitter = null;
-
-    private final String consumerKey = "tNuyxOX6kCnLdBhYBmyBqG6zr";
-    private final String consumerSecret = "0lQIKeaRWKG9CQkfr2a2pwrqQBxl0IK0FqDwgfmIZdVybHnXeX";
 
     /*
      * Instance method for Twitter API.
@@ -117,6 +116,24 @@ public class TwitterAPI {
     }
 
     /*
+     * Stores the secret token used for authenticating the user to Twitter.
+     *
+     * @param  secretToken  Twitter provided OAuth consumer secret key.
+     */
+    public void setSecretKey(String secretKey) {
+        this.consumerSecret = secretKey;
+    }
+
+    /*
+     * Stores the secret token used for authenticating the user to Twitter.
+     *
+     * @param  secretToken  Twitter provided OAuth consumer key.
+     */
+    public void setKey(String key) {
+        this.consumerKey = key;
+    }
+
+    /*
      * Authenticates with Twitter using the OAuth method.  Twitter may throw an exception which is
      * captured and reported to the error logs.  If an error does occur, accessToken is set to null
      * so that other methods know not to try to interact with Twitter.
@@ -127,9 +144,13 @@ public class TwitterAPI {
         com.gmt2001.Console.debug.println("TwitterAPI::authenticate()");
         try {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            com.gmt2001.Console.out.println("consumerKey::"+consumerKey);
             configurationBuilder.setOAuthConsumerKey(consumerKey);
+            com.gmt2001.Console.out.println("consumerSecret::"+consumerSecret);
             configurationBuilder.setOAuthConsumerSecret(consumerSecret);
+            com.gmt2001.Console.out.println("oauthAccessToken::"+oauthAccessToken);
             configurationBuilder.setOAuthAccessToken(oauthAccessToken);
+            com.gmt2001.Console.out.println("oauthAccessSecret::"+oauthAccessSecret);
             configurationBuilder.setOAuthAccessTokenSecret(oauthAccessSecret);
 
             TwitterFactory twitterFactory = new TwitterFactory(configurationBuilder.build());
