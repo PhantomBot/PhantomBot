@@ -134,6 +134,25 @@
         }
     };
 
+    /**
+     * @function getTimeStringMinutes
+     * @export $
+     * @param {Number} time
+     * @param {boolean} [hoursOnly]
+     * @returns {string}
+     */
+    function getTimeStringMinutes(time) {
+        var floor = Math.floor,
+            cHours = time / 3600,
+            cMins = cHours % 1 * 60;
+
+        if (cHours == 0) {
+            return (floor(~~cMins) + $.lang.get('common.minutes2'));
+        } else {
+            return (floor(cHours) + $.lang.get('common.hours2') + floor(~~cMins) + $.lang.get('common.minutes2'));
+        }
+    };
+
      /**
      * @function getLongTimeString
      * @export $
@@ -147,16 +166,15 @@
             months = (time / 2592000),
             days = (time / 86400),
             hours = ((time % 86400) / 3600),
-            minutes = ((time % 86400) % 3600) / 60,
-            seconds = ((time % 86400) % 3600) % 60;
+            minutes = ((time % 86400) % 3600) / 60;
 
         if (short) {
-            return ($.lang.get('get.long.time.string.short', floor(days), floor(hours), floor(minutes), floor(seconds)));
+            return ($.lang.get('get.long.time.string.short', floor(days), floor(hours), floor(minutes)));
         } else {
             if (months >= 1) {
-                return ($.lang.get('get.long.time.string.long', floor(months), floor(hours), floor(minutes), floor(seconds)));
+                return ($.lang.get('get.long.time.string.long', floor(months), floor(hours), floor(minutes)));
             }
-            return ($.lang.get('get.long.time.string.short', floor(days), floor(hours), floor(minutes), floor(seconds)));
+            return ($.lang.get('get.long.time.string.short', floor(days), floor(hours), floor(minutes)));
         }
     };
 
@@ -440,4 +458,5 @@
     $.getCurLocalTimeString = getCurLocalTimeString;
     $.getLocalTimeString = getLocalTimeString;
     $.getLongTimeString = getLongTimeString;
+    $.getTimeStringMinutes = getTimeStringMinutes;
 })();
