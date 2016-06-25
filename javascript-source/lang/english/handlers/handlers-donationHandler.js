@@ -17,3 +17,7 @@ $.lang.register('donationhandler.donations.lastmessage.no-name', 'A (name) tag w
 $.lang.register('donationhandler.donations.message.success', 'Updated the message for tips when rewards are disabled.');
 $.lang.register('donationhandler.donations.rewardmessage.success', 'Updated the message for tips with rewards enabled.');
 $.lang.register('donationhandler.donations.lastmessage.success', 'Updates the message for !lasttip command.');
+$.lang.register('donationhandler.enabled.donators', 'The donators group has been enabled.');
+$.lang.register('donationhandler.disabled.donators', 'The donators group has been disabled.');
+$.lang.register('donationhandler.donators.min', 'The minimum before being promoted to a Donator was set to $1');
+$.lang.register('donationhandler.donators.min.usage', 'usage: !tip minmumbeforepromotion (amount)');
