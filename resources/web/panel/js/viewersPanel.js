@@ -13,6 +13,7 @@
         groupMapping[1] = "Admin";
         groupMapping[2] = "Moderator";
         groupMapping[3] = "Subscriber";
+        groupMapping[4] = "Donator";
         groupMapping[6] = "Regular";
         groupMapping[7] = "Viewer";
 
