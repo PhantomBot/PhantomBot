@@ -77,8 +77,7 @@
         </form>
     </div>
 
-    <!-- <h3>Donators</h3>
-    ** We will only unlock this once we use the Donator and Hoster group.
+    <h3>Donators</h3>
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
@@ -90,9 +89,14 @@
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.demoteUser('Donator')">Demote</button>
                 <input type="text" class="form-control" id="unPromoteUserDonator" placeholder="Username" />
             </div>
+            <div>
+                <div id="viewersDonatorList" style="height: 250px; overflow: auto;" />
+            </div>
         </form>
     </div>
 
+    <!--
+    ** We will only unlock this once we use the Donator and Hoster group.
     <h3>Hosters</h3>
     <div>
        <form role="form">

@@ -36,8 +36,9 @@
         modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
 
         groupIcons['0'] = "<i class=\"fa fa-television\" />";
-        groupIcons['1'] = "<i class=\"fa fa-laptop\" />";
+        groupIcons['1'] = "<i class=\"fa fa-cog\" />";
         groupIcons['2'] = "<i class=\"fa fa-shield\" />";
+        groupIcons['4'] = "<i class=\"fa fa-dollar\" />";
         groupIcons['3'] = "<i class=\"fa fa-credit-card\" />";
         groupIcons['6'] = "<i class=\"fa fa-clock-o\" />";
         groupIcons['7'] = "<i class=\"fa fa-user\" /></div>";
@@ -223,10 +224,13 @@
                             "    <i class=\"fa fa-television\" /></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Admin\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 1);\">" +
-                            "    <i class=\"fa fa-laptop\" /></div></td>" +
+                            "    <i class=\"fa fa-cog\" /></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Mod\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 2);\">" +
                             "    <i class=\"fa fa-shield\" /></div></td>" +
+
+                            "<td><div data-toggle=\"tooltip\" title=\"Set Donator\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 4);\">" +
+                            "    <i class=\"fa fa-dollar\" /></div></td>" +
 
                             "<td><div data-toggle=\"tooltip\" title=\"Set Sub\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 3);\">" +
                             "    <i class=\"fa fa-credit-card\" /></div></td>" +
@@ -287,11 +291,13 @@
         if (name.length == 0) {
             $("#addCommandCommand").val("Please enter a value");
             setTimeout(function() { $("#addCommandCommand").val(""); }, TIMEOUT_WAIT_TIME * 2);
+            return;
         }
 
         if (commandtext.length == 0) {
             $("#addCommandText").val("Please enter a value");
             setTimeout(function() { $("#addCommandText").val(""); }, TIMEOUT_WAIT_TIME * 2);
+            return;
         }
 
         if (name.startsWith('!')) {
@@ -325,19 +331,22 @@
         var alias = $('#aliasCommandInputAlias').val();
 
         if (main.match(/;/) || main.match(/-/) || main.match(/ /)) {
-            $("#aliasCommandInputAlias").val("Error: alias name can not contain special symbols.");
+            $("#aliasCommandInputAlias").val("Error: alias name can not contain special symbols, or spaces.");
             $("#aliasCommandInput").val("");
             setTimeout(function() { $('#aliasCommandInputAlias').val(""); }, TIMEOUT_WAIT_TIME * 10);
             return;
-        }
-        if (main.length == 0) {
-            $("#aliasCommandInput").val("Please enter a value");
-            setTimeout(function() { $("#aliasCommandInput").val(""); }, TIMEOUT_WAIT_TIME * 2);
         }
 
         if (alias.length == 0) {
             $("#aliasCommandInputAlias").val("Please enter a value");
             setTimeout(function() { $("#aliasCommandInputAlias").val(""); }, TIMEOUT_WAIT_TIME * 2);
+            return;
+        }
+
+        if (main.length == 0) {
+            $("#aliasCommandInput").val("Please enter a value");
+            setTimeout(function() { $("#aliasCommandInput").val(""); }, TIMEOUT_WAIT_TIME * 2);
+            return;
         }
 
         if (main.startsWith('!')) {

@@ -111,6 +111,16 @@
                      </div>
                 </td>
             </tr>
+
+            <tr class="textList">
+                <td>Toggle Donator Promotion</td>
+                <td style="width: 25px"><div id="donationGroup" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('donationGroup', 'donationGroup');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
         </table>
         <br>
 
@@ -126,10 +136,20 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="donationGroupMin">Donation Promote Amount</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('donationGroupMin', 'donations', 'donationGroupMin')">Submit</button>
+                <input type="text" class="form-control" id="donationGroupMin" placeholder="Amount" 
+                       data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="donateGreeting">Donation Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('donateGreetingInput', 'donations', 'message')">Submit</button>
-                <input type="text" class="form-control" id="donateGreetingInput" placeholder="Greeting Message" 
+                <input type="text" class="form-control" id="donateGreetingInput" placeholder="Donation Message" 
                        data-toggle="tooltip" title="Tags: (name) (amount) (points) (pointname) (message) (currency)"/>
             </div>
         </form>

@@ -627,15 +627,19 @@
                 cmdList = [];
 
             for (idx in cmds) {
-                if (permCom(sender, cmds[idx], '') === 0) {
-                    cmdList.push('!' + cmds[idx]);
+                if (!$.inidb.exists('disabledCommands', cmds[idx])) {
+                    if (permCom(sender, cmds[idx], '') === 0) {
+                        cmdList.push('!' + cmds[idx]);
+                    }
                 }
             }
 
             for (idx in aliases) {
-                if (permCom(sender, $.inidb.get('aliases', aliases[idx]), '') === 0) {
-                    cmdList.push('!' + aliases[idx]);
-                }
+                //if (!$.inidb.exists('disabledCommands', $.inidb.get('aliases', aliases[idx]))) { Did not add it here in case someone disables a command to only use the alias.
+                    if (permCom(sender, $.inidb.get('aliases', aliases[idx]), '') === 0) {
+                        cmdList.push('!' + aliases[idx]);
+                    }
+                //}
             }
             if (cmdList.length > 0) {
                 $.paginateArray(cmdList, 'customcommands.cmds', ', ', true, sender);
@@ -645,7 +649,7 @@
         }
 
         /**
-         * @commandpath botcommands - Links you to the bot commands site and provides a list of all commands in the bot.
+         * @commandpath botcommands - Will show you all of the bots commands
          */
         if (command.equalsIgnoreCase('botcommands')) {
             var cmds = $.inidb.GetKeyList('permcom', ''),

@@ -8,6 +8,8 @@
         donationReward = $.getSetIniDbFloat('donations', 'reward', 0),
         donationMessage = $.getSetIniDbString('donations', 'message', $.lang.get('donationhandler.donation.new')),
         donationLastMsg = $.getSetIniDbString('donations', 'lastmessage', $.lang.get('donationhandler.lastdonation.success')),
+        donationGroup = $.getSetIniDbBoolean('donations', 'donationGroup', false),
+        donationGroupMin = $.getSetIniDbNumber('donations', 'donationGroupMin', 5),
         donationAddonDir = "./addons/donationHandler";
 
     /**
@@ -18,7 +20,9 @@
         donationReward = $.getIniDbFloat('donations', 'reward');
         donationMessage = $.getIniDbString('donations', 'message');
         donationLastMsg = $.getIniDbString('donations', 'lastmessage');
-    }
+        donationGroup = $.getIniDbBoolean('donations', 'donationGroup');
+        donationGroupMin = $.getIniDbNumber('donations', 'donationGroupMin');
+    };
 
     /**
      * @event twitchAlertsDonationsInitialized
@@ -57,6 +61,7 @@
             donationUsername = donationJson.getString("name"),
             donationMsg = donationJson.getString("message");
 
+
         if ($.inidb.exists('donations', donationID)) {
             return;
         }
@@ -76,6 +81,15 @@
             donationSay = donationSay.replace('(currency)', donationCurrency);
             donationSay = donationSay.replace('(message)', donationMsg);
             $.say(donationSay);
+        }
+
+        if (donationGroup) { // if the Donation group is enabled.
+            $.inidb.incr('donations', donationUsername.toLowerCase(), donationAmount.toFixed(2));
+            if ($.inidb.exists('donations', donationUsername.toLowerCase()) && $.inidb.get('donations', donationUsername.toLowerCase()) >= donationGroupMin) { // Check if the donator donated enough in total before promoting him.
+                if ($.getUserGroupId(donationUsername.toLowerCase()) > 3) { // Check if the user is not a mod, or admin, or sub.
+                    $.setUserGroupById(donationUsername.toLowerCase(), '4'); // Set user as a Donator
+                }
+            }
         }
 
         if ($.inidb.exists('points', donationUsername.toLowerCase()) && rewardPoints > 0) {
@@ -136,6 +150,37 @@
             if (!args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.usage'));
                 return;
+            }
+
+            /**
+             * @commandpath tip toggledonators - Toggles the Donator's group.
+             */
+            if (args[0].equalsIgnoreCase('toggledonators')) {
+                if (donationGroup) {
+                    donationGroup = false;
+                    $.inidb.set('donations', 'donationGroup', false);
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.disabled.donators'));
+                    $.log.event(sender + ' disabled donation Donator group.');
+                } else {
+                    donationGroup = true;
+                    $.inidb.set('donations', 'donationGroup', true);
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.enabled.donators'));
+                    $.log.event(sender + ' enabled donation Donator group.');
+                }
+            }
+
+            /**
+             * @commandpath tip minmumbeforepromotion - Set the minimum before people get promoted to a Donator
+             */
+            if (args[0].equalsIgnoreCase('minmumbeforepromotion')) {
+                if (!args[1]) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donators.min.usage'));
+                    return;
+                }
+                donationGroupMin = args[1];
+                $.inidb.set('donations', 'donationGroupMin', args[1]);
+                $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donators.min', args[1]));
+                $.log.event(sender + ' set the minimum before being promoted to a Donator was set to ' + args[1]);
             }
 
             /**
