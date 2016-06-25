@@ -48,7 +48,7 @@
     function getPlayTime() { 
         if (playTime != null) {
             var time = $.systemTime() - playTime;
-            return $.getTimeString(time / 1000);
+            return $.getTimeStringMinutes(time / 1000);
         } else {
             return '0 seconds'; //Put this here, but it should never happen.
         }
