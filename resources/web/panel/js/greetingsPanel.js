@@ -35,7 +35,8 @@
         followerToggle = false,
         subToggle = false,
         reSubToggle = false,
-        donationTOggle = false,           
+        donationTOggle = false,
+        donationGroup = false,         
         gameWhispToggle = false;
 
     /*
@@ -94,6 +95,13 @@
                     if (panelMatch(key, 'announce')) {
                         donationTOggle = value;
                         $('#donationGreetings').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'donationGroup')) {
+                        donationGroup = value;
+                        $('#donationGroup').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'donationGroupMin')) {
+                        $('#donationGroupMin').attr('placeholder', value);
                     }
                     if (panelMatch(key, 'reward')) {
                         $('#donateRewardInput').attr('placeholder', value);
@@ -254,6 +262,16 @@
                 sendCommand('donationpanelupdate');
             } else {
                 sendDBUpdate('greetings_greeting', 'donations', 'announce', 'true');
+                sendCommand('donationpanelupdate');
+            }
+        }
+        if (panelMatch(table, 'donationGroup')) {
+            $('#donationGroup').html(spinIcon);
+            if (donationGroup == "true") {
+                sendDBUpdate('greetings_greeting', 'donations', 'donationGroup', 'false');
+                sendCommand('donationpanelupdate');
+            } else {
+                sendDBUpdate('greetings_greeting', 'donations', 'donationGroup', 'true');
                 sendCommand('donationpanelupdate');
             }
         }
