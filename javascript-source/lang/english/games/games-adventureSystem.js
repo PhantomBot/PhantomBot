@@ -2,9 +2,11 @@ $.lang.register('adventuresystem.adventure.cooldown', 'The adventure is still co
 $.lang.register('adventuresystem.adventure.usage', 'Usage: !adventure [$1].');
 $.lang.register('adventuresystem.alreadyjoined', 'You have already joined the adventure!');
 $.lang.register('adventuresystem.completed', 'The adventure ended! Survivors are: $1.');
+$.lang.register('adventuresystem.completed.no.win', 'The adventure ended! There are no survivors.');
+$.lang.register('adventuresystem.completed.win.total', 'The adventure ended with $1 survivor(s) and $2 death(s).');
 $.lang.register('adventuresystem.join.bettoohigh', 'You can not join with $1, the maximum is $2.');
 $.lang.register('adventuresystem.join.bettoolow', 'You can not join with $1, the minimum is $2.');
-$.lang.register('adventuresystem.join.needpoints', 'You can not join with $1, you only have $2..');
+$.lang.register('adventuresystem.join.needpoints', 'You can not join with $1, you only have $2.');
 $.lang.register('adventuresystem.join.notpossible', 'You can not join now.');
 $.lang.register('adventuresystem.join.success', 'You have joined the adventure with $1!');
 $.lang.register('adventuresystem.loaded', 'Loaded adventure stories (found $1).');
