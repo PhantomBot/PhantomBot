@@ -56,6 +56,12 @@
 
         <br>
         <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="topListAmountTime">Top Time List Amount</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.topListTime()">Update</button>
+            <input type="number" min="0" class="form-control" id="topListAmountTime" placeholder="Amount" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
             <label for="setTimePromotion">Hours to Regular Promotion</label>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.setTimePromotion()">Update</button>
             <input type="number" min="0" class="form-control" id="setTimePromotionInput" placeholder="Hours" />
