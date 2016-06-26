@@ -286,7 +286,7 @@
      * @function endHeist
      */
     function endHeist() {
-        var i, pay;
+        var i, pay, username;
         var temp = [];
 
         for (i in currentAdventure.survivors) {
@@ -295,15 +295,25 @@
             }
             pay = (currentAdventure.survivors[i].bet * (gainPercent / 100));
             $.inidb.incr('adventurePayouts', currentAdventure.survivors[i].username, pay);
+            $.inidb.incr('adventurePayoutsTEMP', currentAdventure.survivors[i].username, pay);
             $.inidb.incr('points', currentAdventure.survivors[i].username, currentAdventure.survivors[i].bet + pay);
         }
 
         for (i in currentAdventure.survivors) {
-            temp.push(currentAdventure.survivors[i].username + ' (+' + $.getPointsString($.inidb.get('adventurePayouts', currentAdventure.survivors[i].username)) + ')');// Do no include the amount they put in.
+            username = currentAdventure.survivors[i].username;
+            temp.push($.username.resolve(username) + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
         }
 
-        $.say($.lang.get('adventuresystem.completed', temp.join(', ')));
+        if (temp.length == 0) {
+            $.say($.lang.get('adventuresystem.completed.no.win'));
+        } else if (currentAdventure.survivors.length > 50) {
+            $.say($.lang.get('adventuresystem.completed.win.total', currentAdventure.survivors.length, currentAdventure.caught.length)); //in case too many people enter.
+        } else {
+            $.say($.lang.get('adventuresystem.completed', temp.join(', ')));
+        }
+
         clearCurrentAdventure();
+        temp = "";
         $.coolDown.set('adventure', coolDown);
     };
 
@@ -318,6 +328,7 @@
             survivors: [],
             caught: [],
         }
+        $.inidb.RemoveFile('adventurePayoutsTEMP');
     };
 
     /**
