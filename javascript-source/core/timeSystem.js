@@ -124,7 +124,7 @@
             cMins = cHours % 1 * 60;
 
         if (hoursOnly) {
-            return floor(cHours) + $.lang.get('common.hours');
+            return floor(cHours) + $.lang.get('common.hours3');
         } else {
             if (floor(cHours) > 0) {
                 return ((floor(cHours) + $.lang.get('common.hours') + floor(~~cMins) + $.lang.get('common.minutes') + floor(cMins % 1 * 60) + $.lang.get('common.seconds')));
