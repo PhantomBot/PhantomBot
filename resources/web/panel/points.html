@@ -22,61 +22,6 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="pointsAccordion">
-    <h3>Points Configuration</h3>
-    <div>
-    <div id="_pointsConfigPanelDisabled" />
-    <div id="_pointsConfigPanel">
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Alternate Point Name</label>
-            <button type="button" class="btn btn-danger inline pull-right" onclick="$.clearPointName()">Delete Names</button>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointName()">Update</button>
-            <input type="text" data-toggle="tooltip" title="Name given to a single point." class="form-control"
-                   id="setPointNameInput" placeholder="Singular Point Name" />
-            <input type="text" data-toggle="tooltip" title="Name given to zero and two or more points." class="form-control"
-                   id="setPointsNameInput" placeholder="Plural Point Name" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Online Points Gain</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setgain')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setgain" placeholder="Points" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Offline Points Gain</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflinegain')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflinegain" placeholder="Points" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Online Points Payout Interval (Minutes)</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setinterval')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setinterval" placeholder="Points" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Offline Points Payout Interval (Minutes)</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflineinterval')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflineinterval" placeholder="Points" />
-        </div>
-    </div>
-    </div>
-
-    <h3>Group Point Configuration</h3>
-    <div>
-    <div id="_groupPointConfigPanelDisabled" />
-    <div id="_groupPointConfigPanel">
-        The settings defined here override the global settings. Note that a value of "-1" indicates that the global
-        setting is to be used.<br><br>
-        <strong>Group Point Configuration - Online</strong><br>
-        <div id="groupPointsTable" style="height: 225px; overflow: auto;" />
-        <br>
-
-        <strong>Group Point Configuration - Offline</strong><br>
-        <div id="groupPointsOfflineTable" style="height: 225px; overflow: auto;" />
-    </div>
-    </div>
-
     <h3>Modify User Points</h3>
     <div>
     <div id="_userPointConfigPanelDisabled" />
@@ -123,7 +68,68 @@
             </button>
         </div>
         <br>
-        <div id="userPointsTable" style="height: 400px; overflow: auto;" />
+        <div id="userPointsTable" style="height: 250px; overflow: auto;" />
+    </div>
+</div>
+
+    <h3>Points Configuration</h3>
+    <div>
+    <div id="_pointsConfigPanelDisabled" />
+    <div id="_pointsConfigPanel">
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Alternate Point Name</label>
+            <button type="button" class="btn btn-danger inline pull-right" onclick="$.clearPointName()">Delete Names</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointName()">Update</button>
+            <input type="text" data-toggle="tooltip" title="Name given to a single point." class="form-control"
+                   id="setPointNameInput" placeholder="Singular Point Name" />
+            <input type="text" data-toggle="tooltip" title="Name given to zero and two or more points." class="form-control"
+                   id="setPointsNameInput" placeholder="Plural Point Name" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Online Points Gain</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setgain')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setgain" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Offline Points Gain</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflinegain')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflinegain" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Online Points Payout Interval (Minutes)</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setinterval')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setinterval" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Offline Points Payout Interval (Minutes)</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflineinterval')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflineinterval" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="topListAmountPoints">Top Points List Amount</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.topListPoints()">Update</button>
+            <input type="number" min="0" class="form-control" id="topListAmountPoints" placeholder="Amount" />
+        </div>
+    </div>
+    </div>
+
+    <h3>Group Point Configuration</h3>
+    <div>
+    <div id="_groupPointConfigPanelDisabled" />
+    <div id="_groupPointConfigPanel">
+        The settings defined here override the global settings. Note that a value of "-1" indicates that the global
+        setting is to be used.<br><br>
+        <strong>Group Point Configuration - Online</strong><br>
+        <div id="groupPointsTable" style="height: 225px; overflow: auto;" />
+        <br>
+
+        <strong>Group Point Configuration - Offline</strong><br>
+        <div id="groupPointsOfflineTable" style="height: 225px; overflow: auto;" />
     </div>
     </div>
 </div>
