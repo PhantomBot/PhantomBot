@@ -54,6 +54,18 @@
                 }
             }
 
+            if (panelCheckQuery(msgObject, 'games_slotmachineemotes')) {
+                for (idx in msgObject['results']) {
+                    $('#slotEmotes' + idx + 'Input').val(msgObject['results'][idx]['value']);
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'games_slotmachine')) {
+                for (idx in msgObject['results']) {
+                    $('#slotEmotes' + idx + 'Input').val(msgObject['results'][idx]['value']);
+                }
+            }
+
             if (panelCheckQuery(msgObject, 'games_rollprizes')) {
                 for (idx in msgObject['results']) {
                     $('#rollRewards' + idx + 'Input').val(msgObject['results'][idx]['value']);
@@ -85,6 +97,7 @@
         sendDBQuery('games_roulette', 'roulette', 'timeoutTime');
         sendDBKeys('games_adventure', 'adventureSettings');
         sendDBKeys('games_slotmachine', 'slotmachine');
+        sendDBKeys('games_slotmachineemotes', 'slotmachineemotes');
         sendDBKeys('games_rollprizes', 'rollprizes');
         sendDBQuery('games_gambling_range', 'gambling', 'winRange');
         sendDBQuery('games_gambling_percent', 'gambling', 'winGainPercent');
@@ -133,6 +146,26 @@
             sendDBUpdate('slotRewards4', 'slotmachine', 'prizes_4', val4);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { sendCommand('loadprizes'); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /**
+     * @function setSlotemotes() {
+     */
+    function setSlotEmotes() {
+        var val0 = $('#slotEmotes0Input').val(),
+            val1 = $('#slotEmotes1Input').val(),
+            val2 = $('#slotEmotes2Input').val(),
+            val3 = $('#slotEmotes3Input').val(),
+            val4 = $('#slotEmotes4Input').val();
+         
+        if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0) {
+            sendDBUpdate('slotEmotes0', 'slotmachineemotes', 'emote_0', val0);
+            sendDBUpdate('slotEmotes1', 'slotmachineemotes', 'emote_1', val1);
+            sendDBUpdate('slotEmotes2', 'slotmachineemotes', 'emote_2', val2);
+            sendDBUpdate('slotEmotes3', 'slotmachineemotes', 'emote_3', val3);
+            sendDBUpdate('slotEmotes4', 'slotmachineemotes', 'emote_4', val4);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -253,4 +286,5 @@
     $.setSlotRewards = setSlotRewards;
     $.setRollRewards = setRollRewards;
     $.gambling = gambling;
+    $.setSlotEmotes = setSlotEmotes;
 })();
