@@ -310,6 +310,7 @@ $.lang.register('whisper.whispers.enabled', '[Whisper Mode] has been enabled.');
 $.lang.register('pausecommands.usage', 'usage: !pausecommands [seconds | clear]');
 $.lang.register('common.hours', ' hours, ');
 $.lang.register('common.hours2', ' hours, ');
+$.lang.register('common.hours3', ' hours');
 $.lang.register('common.minutes', ' minutes and ');
 $.lang.register('common.minutes2', ' minutes.');
 $.lang.register('common.seconds', ' seconds');
