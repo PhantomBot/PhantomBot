@@ -6,25 +6,41 @@
  * The amount of points; corresponding to the output, will be added to the user's balance.
  */
 (function() {
-    var emotes = ['Kappa', 'KappaPride', 'BloodTrail', 'ResidentSleeper', 'deIlluminati'],
-        prizes = [];
+    var prizes = [],
+        emoteList = [];
 
-    /* Set default prizes in the DB for the Panel */
+    /* Set default prizes and emotes in the DB for the Panel */
     $.getSetIniDbNumber('slotmachine', 'prizes_0', 75);
     $.getSetIniDbNumber('slotmachine', 'prizes_1', 150);
     $.getSetIniDbNumber('slotmachine', 'prizes_2', 300);
     $.getSetIniDbNumber('slotmachine', 'prizes_3', 450);
     $.getSetIniDbNumber('slotmachine', 'prizes_4', 1000);
+    $.getSetIniDbString('slotmachineemotes', 'emote_0', 'Kappa');
+    $.getSetIniDbString('slotmachineemotes', 'emote_1', 'KappaPride');
+    $.getSetIniDbString('slotmachineemotes', 'emote_2', 'BloodTrail');
+    $.getSetIniDbString('slotmachineemotes', 'emote_3', 'ResidentSleeper');
+    $.getSetIniDbString('slotmachineemotes', 'emote_4', 'deIlluminati');
+
+    /**
+     * @function loadEmotes
+     */
+    function loadEmotes() {
+        emoteList[0] = $.getIniDbString('slotmachineemotes', 'emote_0');
+        emoteList[1] = $.getIniDbString('slotmachineemotes', 'emote_1');
+        emoteList[2] = $.getIniDbString('slotmachineemotes', 'emote_2');
+        emoteList[3] = $.getIniDbString('slotmachineemotes', 'emote_3');
+        emoteList[4] = $.getIniDbString('slotmachineemotes', 'emote_4');
+    };
         
     /**
      * @function loadPrizes
      */
     function loadPrizes() {
-        prizes[0] = $.getSetIniDbNumber('slotmachine', 'prizes_0', 75);
-        prizes[1] = $.getSetIniDbNumber('slotmachine', 'prizes_1', 150);
-        prizes[2] = $.getSetIniDbNumber('slotmachine', 'prizes_2', 300);
-        prizes[3] = $.getSetIniDbNumber('slotmachine', 'prizes_3', 450);
-        prizes[4] = $.getSetIniDbNumber('slotmachine', 'prizes_4', 1000);
+        prizes[0] = $.getIniDbNumber('slotmachine', 'prizes_0');
+        prizes[1] = $.getIniDbNumber('slotmachine', 'prizes_1');
+        prizes[2] = $.getIniDbNumber('slotmachine', 'prizes_2');
+        prizes[3] = $.getIniDbNumber('slotmachine', 'prizes_3');
+        prizes[4] = $.getIniDbNumber('slotmachine', 'prizes_4');
     }
 
     /**
@@ -33,6 +49,7 @@
      */
     function getEmoteKey() {
         var rand = $.randRange(1, 1000);
+        loadEmotes();
         if (rand <= 75) {
             return 4;
         }
@@ -58,7 +75,7 @@
         var e1 = getEmoteKey(),
             e2 = getEmoteKey(),
             e3 = getEmoteKey(),
-            message = $.lang.get('slotmachine.result.start', $.username.resolve(sender), emotes[e1], emotes[e2], emotes[e3]);
+            message = $.lang.get('slotmachine.result.start', $.username.resolve(sender), emoteList[e1], emoteList[e2], emoteList[e3]);
 
         loadPrizes();
 
@@ -115,6 +132,31 @@
                     $.inidb.set('slotmachine', 'prizes_4', args[5]);
                     return;
                 }
+
+                /**
+                 * @commandpath slot emotes [emote1] [emote2] [emote3] [emote4] [emote5] - Set the emotes for the slots.
+                 */
+                if (args[0].equalsIgnoreCase('emotes')) {
+                    if (args.length != 6) {
+                        loadEmotes();
+                        $.say($.whisperPrefix(sender) + $.lang.get('slotmachine.emote.usage', emoteList.join(' ')));
+                        return;
+                    }
+
+                    if (isNaN(args[1]) || isNaN(args[2]) || isNaN(args[3]) || isNaN(args[4]) || isNaN(args[5])) {
+                        loadEmotes();
+                        $.say($.whisperPrefix(sender) + $.lang.get('slotmachine.emote.usage', emoteList.join(' ')));
+                        return;
+                    }
+
+                    $.say($.whisperPrefix(sender) + $.lang.get('slotmachine.emote.success'));
+                    $.inidb.set('slotmachineemotes', 'emote_0', args[1]);
+                    $.inidb.set('slotmachineemotes', 'emote_1', args[2]);
+                    $.inidb.set('slotmachineemotes', 'emote_2', args[3]);
+                    $.inidb.set('slotmachineemotes', 'emote_3', args[4]);
+                    $.inidb.set('slotmachineemotes', 'emote_4', args[5]);
+                    return;
+                }
             }
 
             /* Slot machine */
@@ -133,6 +175,7 @@
         if ($.bot.isModuleEnabled('./games/slotMachine.js')) {
             $.registerChatCommand('./games/slotMachine.js', 'slot', 7);
             $.registerChatSubcommand('slot', 'rewards', 1);
+            $.registerChatSubcommand('slot', 'emotes', 1);
             $.registerChatCommand('./games/slotMachine.js', 'loadprizes', 7);
         }
     });
