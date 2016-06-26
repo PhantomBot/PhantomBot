@@ -46,6 +46,9 @@
         }
 
         if (panelHasQuery(msgObject)) {
+            if (panelCheckQuery(msgObject, 'points_toplist')) {
+                $("#topListAmountPoints").attr("placeholder", msgObject['results']['topListAmountPoints']).blur();
+            }
             if (panelCheckQuery(msgObject, 'points_settings')) {
                 for (idx in msgObject['results']) {
                     var key = "",
@@ -196,9 +199,10 @@
     function doQuery() {
         sendDBKeys("points_settings", "pointSettings");
         sendDBKeys("points_pointstable", "points");
+        sendDBQuery("points_toplist", "settings", "topListAmountPoints");
         sendDBKeys("points_grouppoints", "grouppoints");
         sendDBKeys("points_grouppointsoffline", "grouppointsoffline");
-    }
+    };
 
     /**
      * @function sortPointsTable
@@ -387,6 +391,18 @@
         doQuery();
     }
 
+    /**
+     * @function topListPoints
+     */
+    function topListPoints() {
+        var val = $("#topListAmountPoints").val();
+        if (val.length != 0) {
+            sendDBUpdate("points_toplist", "settings", "topListAmountPoints", val);
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand('reloadtop'); }, TIMEOUT_WAIT_TIME);
+    };
+
     // Import the HTML file for this panel.
     $("#pointsPanel").load("/panel/points.html");
 
@@ -422,4 +438,5 @@
     $.updateUserPoints = updateUserPoints;
     $.setPointsSort = setPointsSort;
     $.penaltyUser = penaltyUser;
+    $.topListPoints = topListPoints;
 })();

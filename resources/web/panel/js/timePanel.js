@@ -49,6 +49,10 @@
         }
 
         if (panelHasQuery(msgObject)) {
+
+            if (panelCheckQuery(msgObject, 'time_toplist')) {
+                $("#topListAmountTime").attr("placeholder", msgObject['results']['topListAmountTime']).blur();
+            }
  
             if (panelCheckQuery(msgObject, 'time_timezone')) {
                 if (msgObject['results']['timezone'] != undefined) {
@@ -140,6 +144,7 @@
      */
     function doQuery() {
         sendDBQuery("time_timezone", "settings", "timezone");
+        sendDBQuery("time_toplist", "settings", "topListAmountTime");
         sendDBKeys("time_settings2", "timeSettings");
         sendDBKeys("time_settings", "timeSettings");
         sendDBKeys("time_timetable", "time");
@@ -206,6 +211,7 @@
                 sendDBUpdate("time_toggles", "timeSettings", setting, "false");
             }
         }
+
         setTimeout(function() { sendCommand("updatetimesettings"); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -279,6 +285,18 @@
         doQuery();
     }
 
+    /**
+     * @function topListTime
+     */
+    function topListTime() {
+        var val = $("#topListAmountTime").val();
+        if (val.length != 0) {
+            sendDBUpdate("time_toplist", "settings", "topListAmountTime", val);
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand('reloadtop'); }, TIMEOUT_WAIT_TIME);
+    };
+
     // Import the HTML file for this panel.
     $("#timePanel").load("/panel/time.html");
 
@@ -311,4 +329,5 @@
     $.modifyUserTime = modifyUserTime;
     $.updateUserTime = updateUserTime;
     $.setTimeSort = setTimeSort;
+    $.topListTime = topListTime;
 })();
