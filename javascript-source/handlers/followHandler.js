@@ -77,6 +77,8 @@
             $.inidb.set('lastseen', follower, $.systemTime());
         }
 
+        $.inidb.set('streamInfo', 'lastFollow', follower);
+
         if ($.bot.isModuleEnabled('./handlers/followHandler.js')) {
             if (!$.inidb.exists('followed', follower)) {
                 if (followToggle && announceFollows) {
@@ -90,6 +92,7 @@
                 }
                 /** Don't use $.username.resolve() here, because it will abuse the api when this module is enabled for the first time.*/
                 $.setIniDbBoolean('followed', follower, true);
+                $.inidb.set('streamInfo', 'lastFollow', $.username.resolve(follower));
                 if (followReward > 0) {
                     $.inidb.incr('points', follower, followReward);
                 }

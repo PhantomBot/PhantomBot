@@ -241,6 +241,7 @@
                 $.say(subMessage);
                 var sub = String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
                 $.addSubUsersList(sub);
+                $.inidb.set('streamInfo', 'lastSub', $.username.resolve(sub));
                 return;
             }
 
@@ -262,6 +263,7 @@
                 $.say(reSubMessage);
                 var sub = String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
                 $.restoreSubscriberStatus(sub, true);
+                $.inidb.set('streamInfo', 'lastReSub', $.username.resolve(sub));
             }
         }
     };

@@ -187,6 +187,22 @@
                     $('#streamTitleInput').val(msgObject['results']['title']);
                 }
             }
+
+            if (panelCheckQuery(msgObject, 'dashboard_streamlastfollow')) {
+                $("#lastFollow").html("<spam class=\"purplePill\">Latest Follow: " + msgObject['results']['lastFollow'] + "</spam>");
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_streamlastresub')) {
+                $("#lastReSub").html("<spam class=\"purplePill\">Latest ReSub: " + msgObject['results']['lastReSub'] + "</spam>");
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_streamlastsub')) {
+                $("#lastSub").html("<spam class=\"purplePill\">Latest Sub: " + msgObject['results']['lastSub'] + "</spam>");
+            }
+
+            if (panelCheckQuery(msgObject, 'dashboard_streamlastdonator')) {
+                $("#lastDonator").html("<spam class=\"purplePill\">Latest Donator: " + msgObject['results']['lastDonator'] + "</spam>");
+            }
  
             if (panelCheckQuery(msgObject, 'dashboard_gameTitle')) {
                 gameTitle = msgObject['results']['game'];
@@ -256,6 +272,10 @@
      */
     function doQuery() {
         sendDBQuery("dashboard_streamTitle", "streamInfo", "title");
+        sendDBQuery("dashboard_streamlastfollow", "streamInfo", "lastFollow");
+        sendDBQuery("dashboard_streamlastresub", "streamInfo", "lastReSub");
+        sendDBQuery("dashboard_streamlastsub", "streamInfo", "lastSub");
+        sendDBQuery("dashboard_streamlastdonator", "streamInfo", "lastDonator");
         sendDBQuery("dashboard_gameTitle", "streamInfo", "game");
         sendDBQuery("dashboard_loggingModeEvent", "settings", "log.event");
         sendDBQuery("dashboard_loggingModeFile", "settings", "log.file");

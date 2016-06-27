@@ -24,6 +24,16 @@
 <div id="dashboardAccordion">
     <h3>Twitch</h3>
     <div>
+        <table>
+            <tr style="background-color: transparent">
+                <td style="width: 130px">
+                   <span align="char" id="lastFollow" placeholder="-" />
+                   <span align="char" id="lastSub" placeholder="-" />
+                   <span align="char" id="lastReSub" placeholder="-" />
+                   <span align="char" id="lastDonator" placeholder="-" />
+            </td>
+        </table>
+        <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="streamTitle">Stream Title</label>
