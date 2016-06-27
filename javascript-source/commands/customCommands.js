@@ -729,6 +729,41 @@
         }
 
         /**
+         *  Used by the panel
+         */
+        if (command.equalsIgnoreCase('permcomsilent')) {
+            if (args.length == 2) {
+                var group = args[1];
+
+                if (isNaN(parseInt(group))) {
+                    group = $.getGroupIdByName(group);
+                }
+
+                var list = $.inidb.GetKeyList('aliases', ''),
+                    i;
+
+                for (i in list) {
+                    if (list[i].equalsIgnoreCase(action)) {
+                        $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
+                        $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
+                    } 
+                }
+                $.inidb.set('permcom', action, group);
+                $.updateCommandGroup(action, group);
+                return;
+            }
+
+            var subcommand = args[1];
+            var group = args[2];
+
+            if (isNaN(parseInt(group))) {
+                group = $.getGroupIdByName(group);
+            }
+            $.inidb.set('permcom', action + " " + subcommand, group);
+            $.updateSubcommandGroup(action, subcommand, group);
+        }
+
+        /**
          * used for the panel
          */
         if (command.equalsIgnoreCase('reloadcommand')) {
@@ -754,6 +789,7 @@
             $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'botcommands', 2);
             $.registerChatCommand('./commands/customCommands.js', 'reloadcommand', 1);
+            $.registerChatCommand('./commands/customCommands.js', 'permcomsilent', 1);
         }
     });
 
