@@ -403,7 +403,8 @@
     function commandPermission(command, group) {
         $("#commandsList_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         if (command.length != 0 && group.length != 0) {
-            sendDBUpdate("commands_permcom", "permcom", command.toLowerCase(), String(group));
+            sendCommand('permcomsilent ' + command.toLowerCase() + ' ' String(group))
+            //sendDBUpdate("commands_permcom", "permcom", command.toLowerCase(), String(group));
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
