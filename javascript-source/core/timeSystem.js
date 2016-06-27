@@ -146,7 +146,7 @@
             cHours = time / 3600,
             cMins = cHours % 1 * 60;
 
-        if (cHours == 0) {
+        if (cHours == 0 || cHours < 1) {
             return (floor(~~cMins) + $.lang.get('common.minutes2'));
         } else {
             return (floor(cHours) + $.lang.get('common.hours2') + floor(~~cMins) + $.lang.get('common.minutes2'));

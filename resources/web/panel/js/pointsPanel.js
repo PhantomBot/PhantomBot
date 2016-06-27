@@ -359,6 +359,9 @@
             if (panelMatch(action, 'makeitrain')) {
                 command = "makeitrain " + points;
             }
+            if (panelMatch(action, 'bonus')) {
+                command = "pointsbonuspanel " + points;
+            }
             $("#giftChatPointsInput").val('');
             sendCommand(command);
         }
