@@ -184,7 +184,7 @@
         /**
          * USED BY THE PANEL
          */
-        if (command.equalsIgnoreCase('delquote')) {
+        if (command.equalsIgnoreCase('delquotesilent')) {
             if (!args[0] || isNaN(args[0])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.usage'));
                 return;

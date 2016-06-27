@@ -60,10 +60,10 @@
                     id = msgObject['results'][idx]['key'];
                     quoteData = JSON.parse(msgObject['results'][idx]['value']);
                     quoteDataClean = JSON.parse(msgObject['results'][idx]['value']);
-                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C');
+                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C').replace(/'/g, '%27');
                     html += '<tr style="textList">' +
                             '    <td rowspan="2" style="width: 25px">' +
-                            '        <div id="deleteQuote_' + id + '" class="button"' +
+                            '        <div id="deleteQuote_' + id + '" type=\"button\" class=\"btn btn-default btn-xs\"' +
                             '             onclick="$.deleteQuote(\'' + id + '\')"><i class="fa fa-trash" />' +
                             '        </div>' +
                             '    </td>' +
@@ -148,7 +148,7 @@
     function deleteQuote(id) {
         $('#deleteQuote_' + id).html(spinIcon);
         sendCommand('delquotesilent ' + id);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 4);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -162,7 +162,7 @@
             quoteArray = quoteData.split(',');
         if (value.length > 0) {
             if (panelMatch(field, 'quote')) {
-                quoteArray[1] = value;
+                quoteArray[1] = value.replace("'", "\'");
             }
             if (panelMatch(field, 'game')) {
                 quoteArray[1] = quoteArray[1].replace(/%2C/g, ',');
