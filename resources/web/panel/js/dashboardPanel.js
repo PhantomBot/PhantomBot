@@ -189,19 +189,35 @@
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_streamlastfollow')) {
-                $("#lastFollow").html("<spam class=\"purplePill\">Latest Follow: " + msgObject['results']['lastFollow'] + "</spam>");
+                if (msgObject['results']['lastFollow'] == null) {
+                    $("#lastFollow").html("");
+                } else {
+                    $("#lastFollow").html("<spam class=\"purplePill\">Latest Follow: " + msgObject['results']['lastFollow'] + "</spam>");
+                }
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_streamlastresub')) {
-                $("#lastReSub").html("<spam class=\"purplePill\">Latest ReSub: " + msgObject['results']['lastReSub'] + "</spam>");
+                if (msgObject['results']['lastReSub'] == null) {
+                    $("#lastReSub").html("");
+                } else {
+                    $("#lastReSub").html("<spam class=\"purplePill\">Latest ReSub: " + msgObject['results']['lastReSub'] + "</spam>");
+                }
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_streamlastsub')) {
-                $("#lastSub").html("<spam class=\"purplePill\">Latest Sub: " + msgObject['results']['lastSub'] + "</spam>");
+                if (msgObject['results']['lastSub'] == null) {
+                    $("#lastSub").html("");
+                } else {
+                    $("#lastSub").html("<spam class=\"purplePill\">Latest Sub: " + msgObject['results']['lastSub'] + "</spam>");
+                }
             }
 
             if (panelCheckQuery(msgObject, 'dashboard_streamlastdonator')) {
-                $("#lastDonator").html("<spam class=\"purplePill\">Latest Donator: " + msgObject['results']['lastDonator'] + "</spam>");
+                if (msgObject['results']['lastDonator'] == null) {
+                    $("#lastDonator").html("");
+                } else {
+                    $("#lastDonator").html("<spam class=\"purplePill\">Latest Donator: " + msgObject['results']['lastDonator'] + "</spam>");
+                }
             }
  
             if (panelCheckQuery(msgObject, 'dashboard_gameTitle')) {
