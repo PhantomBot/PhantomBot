@@ -298,7 +298,12 @@
             pointsBonusAmount = 0;
         }, newTime, 'pointsBonus');
 
-        newTime = $.getTimeStringMinutes((time * 6e4) / 1000);
+        if (time >= 60) {
+            newTime = $.getTimeString((time * 6e4) / 1000, true);
+        } else {
+            newTime = $.getTimeStringMinutes((time * 6e4) / 1000);
+        }
+
         $.say('For the next ' + newTime + ' I will be giving out ' + pointsBonusAmount + ' extra ' + pointNameMultiple + ' at each payouts!');
     };
 
