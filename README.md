@@ -21,9 +21,9 @@ Get support via our [forums](https://community.phantombot.net/)!
 These are the people who will provide help for specific things related to the bot.
 - **@PhantomIndex**: JavaScript modules & General bot use 
 - **@Kojitsari**: JavaScript modules & General bot use 
-- **@scaniaTV**: Bot core, JavaScript modules & General bot use
+- **@scaniaTV**: Web panel, Bot core, JavaScript modules & General bot use
 - **@Zelakto**: Website & General bot use
-- **@IllusionaryOne**: Bot core, Javascript modules & General bot use
+- **@IllusionaryOne**: Web panel, Bot core, Javascript modules & General bot use
 
 ###TravisCI
 The Java sources are tested against:
