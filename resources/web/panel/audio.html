@@ -74,6 +74,25 @@
             </div>
         </form>
 
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="blacklistedSongs">Blacklist a Song</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.blacklistSong()">Blacklist</button>
+                <input type="text" class="form-control" id="songBlacklist" placeholder="Song Name or Keyword">
+            </div>
+            <div id="ytplayerBSong" style="height: 100px; overflow: auto;" />
+            <br>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="blacklistedusers">Blacklist a Username</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.blacklistUser()">Blacklist</button>
+                <input type="text" class="form-control" id="userBlacklist" placeholder="Username">
+            </div>
+            <div id="ytplayerBUser" style="height: 100px; overflow: auto;" />
+        </form>
+
         <div id="youTubePlayerIframe" />
         <script>$('#youTubePlayerIframe').hide();</script>
     </div>
