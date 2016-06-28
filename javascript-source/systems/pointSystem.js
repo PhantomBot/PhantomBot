@@ -30,19 +30,23 @@
         offlinePayoutInterval = $.getIniDbNumber('pointSettings', 'offlinePayoutInterval');
         pointNameSingle = $.getIniDbString('pointSettings', 'pointNameSingle');
         pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
+        $.consoleLn(pointNameMultiple);
 
-        if (!$.inidb.get('pointSettings', 'pointNameMultiple').equalsIgnoreCase('points') && !$.inidb.get('pointSettings', 'pointNameSingle').equalsIgnoreCase('point')) {
-            $.inidb.set('temp', 'pointsname', pointNameMultiple);
-            $.inidb.set('temp', 'pointsname2', pointNameSingle);
+        if (!pointNameMultiple.equalsIgnoreCase('points') || !pointNameSingle.equalsIgnoreCase('point')) {
+            $.inidb.set('temppoints', 'pointsname', pointNameMultiple);
+            $.inidb.set('temppoints', 'pointsname2', pointNameSingle);
         }
 
         if (pointNameMultiple.equalsIgnoreCase('points') && pointNameSingle.equalsIgnoreCase('point')) {
             defaultPointsName(true);
-            registerNewPointsCommands($.inidb.get('temp', 'pointsname'), $.inidb.get('temp', 'pointsname2'), false);
+            registerNewPointsCommands($.inidb.get('temppoints', 'pointsname'), $.inidb.get('temppoints', 'pointsname2'), false);
         } else {
             defaultPointsName(false);
-            registerNewPointsCommands($.inidb.get('temp', 'pointsname'), $.inidb.get('temp', 'pointsname2'), true);
+            registerNewPointsCommands($.inidb.get('temppoints', 'pointsname'), $.inidb.get('temppoints', 'pointsname2'), true);
         }
+        setTimeout(function () {
+            $.inidb.RemoveFile('temppoints');
+        }, 9000, 'pointsnamereset');
     };
 
     /**
@@ -456,25 +460,25 @@
                         temp = pointNameSingle;
                         pointNameSingle = actionArg2;
                         $.inidb.set('pointSettings', 'pointNameSingle', pointNameSingle);
-                        updateSettings();
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.single.success', temp, pointNameSingle));
+                        updateSettings();
                         return;
                     }
                     if (actionArg1.equalsIgnoreCase('multiple') && actionArg2) {
                         temp = pointNameMultiple;
                         pointNameMultiple = actionArg2;
                         $.inidb.set('pointSettings', 'pointNameMultiple', pointNameMultiple);
-                        updateSettings();
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.multiple.success', temp, pointNameMultiple));
+                        updateSettings();
                         return;
                     }
                     if (actionArg1.equalsIgnoreCase('delete')) {
                         $.inidb.del('pointSettings', 'pointNameSingle');
                         $.inidb.del('pointSettings', 'pointNameMultiple');
-                        updateSettings();
                         pointNameSingle = "point";
                         pointNameMultiple = "points";
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.delete'));
+                        updateSettings();
                         return;
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.usage'));
