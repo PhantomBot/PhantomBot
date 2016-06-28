@@ -619,7 +619,7 @@
             }
 
             if (totalAmount > 0) {
-                $.say($.lang.get('pointsystem.makeitrain.success', username, totalAmount, pointNameMultiple));
+                $.say($.lang.get('pointsystem.makeitrain.success', username, action, pointNameMultiple));
             }
         }
 
