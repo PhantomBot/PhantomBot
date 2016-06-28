@@ -120,6 +120,46 @@
         if (msgObject['audio_panel_hook'] !== undefined) {
             playIonSound(msgObject['audio_panel_hook']);
         }
+
+        if (panelCheckQuery(msgObject, 'audio_songblacklist')) {
+            if (msgObject['results'].length === 0) {
+                $('#ytplayerBSong').html('<i>There are no blacklisted songs.</i>');
+                return;
+            }
+            var html = '<table>';
+            for (var idx in msgObject['results']) {
+                 var name = msgObject['results'][idx]['key'];
+                html += '<tr style="textList">' +
+                        '    <td style="vertical-align: middle: width: 50%">' + name + '</td>' +
+                        '    <td style="width: 1%">' +
+                        '        <button type="button" class="btn btn-default btn-xs" id="deleteBSong_' + name + '" onclick="$.deleteBSong(\'' + name + '\')"><i class="fa fa-trash" /> </button>' +
+                        '    </td>' +
+                        '</tr>';
+            }
+            html += '</table>';
+            $('#ytplayerBSong').html(html);
+            handleInputFocus();
+        }
+
+        if (panelCheckQuery(msgObject, 'audio_userblacklist')) {
+            if (msgObject['results'].length === 0) {
+                $('#ytplayerBUser').html('<i>There are no blacklisted users.</i>');
+                return;
+            }
+            html = '<table>';
+            for (var idx in msgObject['results']) {
+                 var name = msgObject['results'][idx]['key'];
+                html += '<tr style="textList">' +
+                        '    <td style="vertical-align: middle: width: 50%">' + name + '</td>' +
+                        '    <td style="width: 1%">' +
+                        '        <button type="button" class="btn btn-default btn-xs" id="deleteUser_' + name + '" onclick="$.deleteUser(\'' + name + '\')"><i class="fa fa-trash" /> </button>' +
+                        '    </td>' +
+                        '</tr>';
+            }
+            html += '</table>';
+            $('#ytplayerBUser').html(html);
+            handleInputFocus();
+        }
     }
 
     /**
@@ -138,7 +178,53 @@
         sendDBQuery('audio_ytpMaxReqs', 'ytSettings', 'songRequestsMaxParallel');
         sendDBQuery('audio_ytpMaxLength', 'ytSettings', 'songRequestsMaxSecondsforVideo');
         sendDBQuery('audio_ytpDJName', 'ytSettings', 'playlistDJname');
+        sendDBKeys('audio_songblacklist', 'ytpBlacklistedSong');
+        sendDBKeys('audio_userblacklist', 'ytpBlacklist');
     }
+
+    /** 
+     * @function deleteBSong
+     * @param {String} song
+     */
+    function deleteBSong(song) {
+        $("#deleteBSong_" + song).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        sendDBDelete("audio_bsong_" + song, "ytpBlacklistedSong", song);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    };
+
+    /** 
+     * @function blacklistSong
+     */
+    function blacklistSong() {
+        var song = $("#songBlacklist").val();
+        if (song.length != 0) {
+            sendDBUpdate("audio_song_" + song, "ytpBlacklistedSong", song.toLowerCase(), 'true');
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+        setTimeout(function() { $("#songBlacklist").val(''); }, TIMEOUT_WAIT_TIME);
+    };
+
+    /** 
+     * @function deleteUser
+     * @param {String} user
+     */
+    function deleteUser(user) {
+        $("#deleteBUser_" + user).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        sendDBDelete("audio_user_" + user, "ytpBlacklist", user);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    };
+
+    /** 
+     * @function blacklistUser
+     */
+    function blacklistUser() {
+        var user = $("#userBlacklist").val();
+        if (user.length != 0) {
+            sendDBUpdate("audio_user_" + user, "ytpBlacklist", user.toLowerCase(), 'true');
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+        setTimeout(function() { $("#userBlacklist").val(''); }, TIMEOUT_WAIT_TIME);
+    };
 
     /**
      * @function loadAudioPanel
@@ -315,4 +401,8 @@
     $.setYouTubePlayerMaxLength = setYouTubePlayerMaxLength;
     $.fillYouTubePlayerIframe = fillYouTubePlayerIframe;
     $.launchYouTubePlayer = launchYouTubePlayer;
+    $.deleteBSong = deleteBSong;
+    $.blacklistSong = blacklistSong;
+    $.blacklistUser = blacklistUser;
+    $.deleteUser = deleteUser;
 })();
