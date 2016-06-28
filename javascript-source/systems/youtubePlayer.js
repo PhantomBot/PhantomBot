@@ -546,6 +546,7 @@
          * @return {YoutubeVideo}
          */
         this.requestSong = function(searchQuery, requestOwner) {
+            var keys = $.inidb.GetKeyList('ytpBlacklistedSong', '');
             if (!$.isAdmin(requestOwner) && (!songRequestsEnabled || this.senderReachedRequestMax(requestOwner))) {
                 if (this.senderReachedRequestMax(requestOwner)) {
                     requestFailReason = $.lang.get('ytplayer.requestsong.error.maxrequests');
@@ -571,6 +572,13 @@
             if (this.videoLengthExceedsMax(youtubeVideo) && !$.isAdmin(requestOwner)) {
                 requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength', youtubeVideo.getVideoLengthMMSS());
                 return null;
+            }
+
+            for (var i in keys) {
+                if (youtubeVideo.getVideoTitle().toLowerCase().contains(keys[i])) {
+                    requestFailReason = $.lang.get('ytplayer.blacklist.404');
+                    return null;
+                }
             }
 
             requests.push(youtubeVideo);
@@ -1111,9 +1119,9 @@
             }
 
             /**
-             * @commandpath ytp blacklist [add / remove] [username] - Blacklist a user from using the songrequest features.
+             * @commandpath ytp blacklistuser [add / remove] [user] - Blacklist a user from using the songrequest features.
              */
-            if (action.equalsIgnoreCase('blacklist')) {
+            if (action.equalsIgnoreCase('blacklistuser')) {
                 if (!args[1]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.usage'));
                     return;
@@ -1137,6 +1145,39 @@
 
                     $.inidb.del('ytpBlacklist', args[2].toLowerCase());
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.remove.success', args[2]));
+                    return;
+                }
+            }
+
+            /**
+             * @commandpath ytp blacklist [add / remove] [name contained in the video] - Blacklist a song name from being requested.
+             */
+            if (action.equalsIgnoreCase('blacklist')) {
+                if (!args[1]) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.usage.song'));
+                    return;
+                }
+
+                if (args[1].equalsIgnoreCase('add')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.add.usage.song'));
+                        return;
+                    }
+
+                    $.inidb.set('ytpBlacklistedSong', args[2].toLowerCase(), 'true');
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.add.success.song', args[2]));
+                    return;
+                }
+
+                if (args[1].equalsIgnoreCase('remove')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.remove.usage.song'));
+                        return;
+                    }
+
+                    $.inidb.del('ytpBlacklistedSong', args[2].toLowerCase());
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.remove.success.song', args[2]));
+                    return;
                 }
             }
         }
