@@ -4,13 +4,15 @@
  */
 
 (function() {
-    var alreadyStarted = false;
+    var alreadyStarted = false,
+        lastStream = 0;
 
     /**
      * @event twitchOnline
      */
     $.bind('twitchOnline', function(event) {
         $.setIniDbBoolean('panelstats', 'streamOnline', true);
+        lastStream = 0;
     });
 
     /**
@@ -18,6 +20,8 @@
      */
     $.bind('twitchOffline', function(event) {
         $.setIniDbBoolean('panelstats', 'streamOnline', false);
+        $.setIniDbNumber('streamInfo', 'downtime', $.systemTime());
+        lastStream = $.getIniDbNumber('streamInfo', 'downtime', $.systemTime());
     });
 
     /**
@@ -129,4 +133,5 @@
         updateChatLinesDB: updateChatLinesDB,
         updateModLinesDB: updateModLinesDB,
     };
+    $.getDownTime = lastStream;
 })();
