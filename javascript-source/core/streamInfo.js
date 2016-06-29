@@ -170,6 +170,23 @@
     };
 
     /**
+     * @function getStreamDownTime
+     * @export $
+     * @returns {string}
+     */
+    function getStreamDownTime() {
+        var now = $.systemTime(),
+            down = $.getDownTime,
+            time;
+
+        if (down > 0) {
+            time = now - down;
+            return getTimeString(time / 1000);
+        }
+        return 0;
+    }
+
+    /**
      * @function getStreamStartedAt
      * @export $
      * @param channelName
@@ -352,4 +369,5 @@
     $.updateStatus = updateStatus;
     $.getFollowAge = getFollowAge;
     $.getChannelAge = getChannelAge;
+    $.getStreamDownTime = getStreamDownTime;
 })();
