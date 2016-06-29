@@ -119,9 +119,11 @@ public class PhantomBot implements Listener {
     private final String gamewispauth;
     private final String gamewisprefresh;
     private final String oauth;
-    private final String twitter_username;
-    private final String twitter_access_token;
-    private final String twitter_secret_token;
+    private String twitterUser;
+    private String twitter_access_token;
+    private String twitter_secret_token;
+    private String twitter_consumer_secret;
+    private String twitter_consumer_key;
     private String apioauth;
     private String clientid;
     private final String channelName;
@@ -205,7 +207,7 @@ public class PhantomBot implements Listener {
                       String keystorepassword, String keypassword, String twitchalertskey,
                       int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
                       String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword,
-                      String twitter_username, String twitter_access_token, String twitter_secret_token, String log_timezone,
+                      String twitterUser, String twitter_access_token, String twitter_secret_token, String twitter_consumer_key, String twitter_consumer_secret, String log_timezone,
                       String mysql_db_host, String mysql_db_port, String mysql_db_name, String mysql_db_user, String mysql_db_pass) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
@@ -240,9 +242,11 @@ public class PhantomBot implements Listener {
         this.datastoreconfig = datastoreconfig;
         this.youtubekey = youtubekey;
 
-        this.twitter_username = twitter_username;
+        this.twitterUser = twitterUser;
         this.twitter_access_token = twitter_access_token;
         this.twitter_secret_token = twitter_secret_token;
+        this.twitter_consumer_key = twitter_consumer_key;
+        this.twitter_consumer_secret = twitter_consumer_secret;
 
         this.mysql_db_host = mysql_db_host;
         this.mysql_db_port = mysql_db_port;
@@ -556,12 +560,14 @@ public class PhantomBot implements Listener {
             }
 
             // Connect to Twitter API
-            if (twitter_username.length() > 0 &&
-                twitter_access_token.length() > 0 && twitter_secret_token.length() > 0)
+            if (twitterUser.length() > 0 &&
+                twitter_access_token.length() > 0 && twitter_secret_token.length() > 0 && twitter_consumer_key.length() > 0 && twitter_consumer_secret.length() > 0)
             {
-                TwitterAPI.instance().setUsername(twitter_username);
+                TwitterAPI.instance().setUsername(twitterUser);
                 TwitterAPI.instance().setAccessToken(twitter_access_token);
                 TwitterAPI.instance().setSecretToken(twitter_secret_token);
+                TwitterAPI.instance().setConsumerKey(twitter_consumer_key);
+                TwitterAPI.instance().setConsumerSecret(twitter_consumer_secret);
                 this.twitterAuthenticated = TwitterAPI.instance().authenticate();
             }
         }
@@ -835,8 +841,8 @@ public class PhantomBot implements Listener {
         }
         this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
 
-        if (this.twitter_username.length() > 0 &&
-            this.twitter_access_token.length() > 0 && this.twitter_secret_token.length() > 0) 
+        if (this.twitterUser.length() > 0 &&
+            this.twitter_access_token.length() > 0 && this.twitter_secret_token.length() > 0 && this.twitter_consumer_key.length() > 0 && this.twitter_consumer_secret.length() > 0) 
         {
             if (this.twitterAuthenticated) {
                 this.twitterCache = TwitterCache.instance(this.channel.getName().toLowerCase());
@@ -984,7 +990,7 @@ public class PhantomBot implements Listener {
 
         if (message.equals("testresub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testresub");
-            EventBus.instance().post(new IrcChannelMessageEvent(session, "twitchnotify", "testuser just subscribed for 2 months in a row!", this.channel));
+            EventBus.instance().post(new IrcChannelMessageEvent(session, "twitchnotify", "testuser subscribed for 2 months in a row!", this.channel));
             return;
         }
 
@@ -1123,6 +1129,45 @@ public class PhantomBot implements Listener {
             changed = true;
         }
 
+        if (message.equals("twittersetup")) {
+            try {
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("PhantomBot Twitter setup. Get your 4 Twitter keys from: https://apps.twitter.com/");
+                com.gmt2001.Console.out.println();
+
+                com.gmt2001.Console.out.print("Please enter your Twitter username: ");
+                String newUser = System.console().readLine().trim();
+                twitterUser = newUser;
+
+                com.gmt2001.Console.out.print("Please enter your consumer key: ");
+                String newConsumerKey = System.console().readLine().trim();
+                twitter_consumer_key = newConsumerKey;
+
+                com.gmt2001.Console.out.print("Please enter your consumer secret: ");
+                String newConsumerSecret = System.console().readLine().trim();
+                twitter_consumer_secret = newConsumerSecret;
+
+                com.gmt2001.Console.out.print("Please enter your access token: ");
+                String newAccess = System.console().readLine().trim();
+                twitter_access_token = newAccess;
+
+                com.gmt2001.Console.out.print("Please enter your access token secret: ");
+                String newSecretAccess = System.console().readLine().trim();
+                twitter_secret_token = newSecretAccess;
+
+                try {
+                    File f = new File("./twitter.txt"); 
+                    f.delete();
+                } catch (NullPointerException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
         if (changed) {
             try {
                 String data = "";
@@ -1161,7 +1206,12 @@ public class PhantomBot implements Listener {
                     data += "mysqlname=" + mysql_db_name + "\r\n";
                     data += "mysqluser=" + mysql_db_user + "\r\n";
                     data += "mysqlpass=" + mysql_db_pass + "\r\n";
-
+                    data += "twitterUser=" + twitterUser + "\r\n";
+                    data += "twitter_consumer_key=" + twitter_consumer_key + "\r\n";
+                    data += "twitter_consumer_secret=" + twitter_consumer_secret + "\r\n";
+                    data += "twitter_access_token=" + twitter_access_token + "\r\n";
+                    data += "twitter_secret_token=" + twitter_secret_token + "\r\n";
+                    
                     if (!log_timezone.isEmpty()) {
                         data += "logtimezone=" + log_timezone + "\r\n";
                     }
@@ -1501,9 +1551,12 @@ public class PhantomBot implements Listener {
         String keypassword = "";
         String log_timezone = "";
 
-        String twitter_username = "";
+        String twitterUser = "";
         String twitter_access_token = "";
         String twitter_secret_token = "";
+        String twitter_consumer_key = "";
+        String twitter_consumer_secret = "";
+
 
         boolean changed = false;
 
@@ -1688,26 +1741,20 @@ public class PhantomBot implements Listener {
                             twitchalertslimit = 5;
                         }
                     }
-                }
-            }
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-
-        try {
-            if (new File("./twitter.txt").exists()) {
-                String data = FileUtils.readFileToString(new File("./twitter.txt"));
-                String[] lines = data.replaceAll("\\r", "").split("\\n");
-
-                for (String line : lines) {
-                    if (line.startsWith("twitter_username=") && line.length() > 18) {
-                        twitter_username = line.substring(17);
+                    if (line.startsWith("twitterUser=") && line.length() > 13) {
+                        twitterUser = line.substring(12);
                     }
                     if (line.startsWith("twitter_access_token=") && line.length() > 22) {
                         twitter_access_token = line.substring(21);
                     }
                     if (line.startsWith("twitter_secret_token=") && line.length() > 22) {
                         twitter_secret_token = line.substring(21);
+                    }
+                    if (line.startsWith("twitter_consumer_secret=") && line.length() > 25) {
+                        twitter_consumer_secret = line.substring(24);
+                    }
+                    if (line.startsWith("twitter_consumer_key=") && line.length() > 22) {
+                        twitter_consumer_key = line.substring(21);
                     }
                 }
             }
@@ -1826,6 +1873,11 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("twitchalertslimit='" + twitchalertslimit + "'");
                     com.gmt2001.Console.out.println("paneluser='" + paneluser + "'");
                     com.gmt2001.Console.out.println("panelpassword='" + panelpassword + "'");
+                    com.gmt2001.Console.out.println("twitterUser='" + twitterUser + "'");
+                    com.gmt2001.Console.out.println("twitter_consumer_secret='" + twitter_consumer_secret + "'");
+                    com.gmt2001.Console.out.println("twitter_consumer_key='" + twitter_consumer_key + "'");
+                    com.gmt2001.Console.out.println("twitter_access_token='" + twitter_access_token + "'");
+                    com.gmt2001.Console.out.println("twitter_secret_token='" + twitter_secret_token + "'");
                 }
 
                 if (arg.equalsIgnoreCase("debugon")) {
@@ -2038,6 +2090,36 @@ public class PhantomBot implements Listener {
                         }
                     }
                 }
+                if (arg.toLowerCase().startsWith("twitterUser=") && arg.length() > 13) {
+                    if (!twitterUser.equals(arg.substring(12))) {
+                        twitterUser = arg.substring(12);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("twitter_secret_token=") && arg.length() > 22) {
+                    if (!twitter_secret_token.equals(arg.substring(21))) {
+                        twitter_secret_token = arg.substring(21);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("twitter_access_token=") && arg.length() > 22) {
+                    if (!twitter_access_token.equals(arg.substring(21))) {
+                        twitter_access_token = arg.substring(21);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("twitter_consumer_secret=") && arg.length() > 25) {
+                    if (!twitter_consumer_secret.equals(arg.substring(24))) {
+                        twitter_consumer_secret = arg.substring(24);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("twitter_consumer_key=") && arg.length() > 22) {
+                    if (!twitter_consumer_key.equals(arg.substring(21))) {
+                        twitter_consumer_key = arg.substring(21);
+                        changed = true;
+                    }
+                }
             }
         }
 
@@ -2079,6 +2161,11 @@ public class PhantomBot implements Listener {
             data += "mysqlname=" + mysql_db_name + "\r\n";
             data += "mysqluser=" + mysql_db_user + "\r\n";
             data += "mysqlpass=" + mysql_db_pass + "\r\n";
+            data += "twitterUser=" + twitterUser + "\r\n";
+            data += "twitter_consumer_secret=" + twitter_consumer_secret + "\r\n";
+            data += "twitter_consumer_key=" + twitter_consumer_key + "\r\n";
+            data += "twitter_access_token=" + twitter_access_token + "\r\n";
+            data += "twitter_secret_token=" + twitter_secret_token + "\r\n";
             if (!log_timezone.isEmpty()) {
                 data += "logtimezone=" + log_timezone + "\r\n";
             }
@@ -2091,7 +2178,7 @@ public class PhantomBot implements Listener {
                                              whisperlimit60, datastore, datastoreconfig, youtubekey, webenable, musicenable,
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
                                              webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
-                                             twitter_username, twitter_access_token, twitter_secret_token, log_timezone,
+                                             twitterUser, twitter_access_token, twitter_secret_token, twitter_consumer_key, twitter_consumer_secret, log_timezone,
                                              mysql_db_host, mysql_db_port, mysql_db_name, mysql_db_user, mysql_db_pass);
     }
 
@@ -2133,6 +2220,11 @@ public class PhantomBot implements Listener {
         data += "mysqlname=" + mysql_db_name + "\r\n";
         data += "mysqluser=" + mysql_db_user + "\r\n";
         data += "mysqlpass=" + mysql_db_pass + "\r\n";
+        data += "twitterUser=" + twitterUser + "\r\n";
+        data += "twitter_consumer_secret=" + twitter_consumer_secret + "\r\n";
+        data += "twitter_consumer_key=" + twitter_consumer_key + "\r\n";
+        data += "twitter_access_token=" + twitter_access_token + "\r\n";
+        data += "twitter_secret_token=" + twitter_secret_token + "\r\n";
         if (!log_timezone.isEmpty()) {
             data += "logtimezone=" + log_timezone + "\r\n";
         }

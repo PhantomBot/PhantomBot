@@ -69,11 +69,10 @@ public class TwitterAPI {
     private String username;
     private String oauthAccessToken;
     private String oauthAccessSecret;
+    private String consumerKey;
+    private String consumerSecret;
     private AccessToken accessToken = null;
     private Twitter twitter = null;
-
-    private final String consumerKey = "tNuyxOX6kCnLdBhYBmyBqG6zr";
-    private final String consumerSecret = "0lQIKeaRWKG9CQkfr2a2pwrqQBxl0IK0FqDwgfmIZdVybHnXeX";
 
     /*
      * Instance method for Twitter API.
@@ -114,6 +113,24 @@ public class TwitterAPI {
      */
     public void setSecretToken(String secretToken) {
         this.oauthAccessSecret = secretToken;
+    }
+
+    /*
+     * Stores the secret token used for authenticating the user to Twitter.
+     *
+     * @param  setConsumerKey  Twitter provided OAuth secret token.
+     */
+    public void setConsumerKey(String consumerKey) {
+        this.consumerKey = consumerKey;
+    }
+
+    /*
+     * Stores the secret token used for authenticating the user to Twitter.
+     *
+     * @param  setConsumerSecret  Twitter provided OAuth secret token.
+     */
+    public void setConsumerSecret(String consumerSecret) {
+        this.consumerSecret = consumerSecret;
     }
 
     /*
