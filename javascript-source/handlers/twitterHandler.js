@@ -58,7 +58,7 @@
         }
 
         if (message.contains('@')) {
-            $.consoleLn('Not @ mentions allowed for the auto online poster.');
+            $.consoleLn('No @ mentions allowed for the auto online poster.');
             return;
         }
 
