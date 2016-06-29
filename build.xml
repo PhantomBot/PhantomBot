@@ -19,9 +19,6 @@
     <property name="res.dir" value="${build.dir}" />
     <property name="lib.dir" value="${build.dir}/lib" />
 
-    <property name="twittertokens.src" value="${project.base.dir}/genTwitterTokens" />
-    <property name="twittertokens.classes" value="${project.base.dir}/genTwitterTokens/classes" />
-
     <path id="classpath">
         <fileset dir="${lib.dir}" includes="**/*.jar" />
     </path>
@@ -96,11 +93,6 @@
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />
         </javac>
-        <javac target="1.7" source="1.7" debug="on" destdir="${twittertokens.classes}" srcdir="${twittertokens.src}" includeantruntime="false" >
-            <compilerarg value="-Xlint:unchecked" />
-            <compilerarg value="-Xlint:-options" />
-            <classpath refid="reference.class.path" />
-        </javac>
     </target>
     
     <target depends="pre.compile" name="clean.build.test">
@@ -111,11 +103,6 @@
     
     <target depends="clean.build.test" name="compile.src.test">
         <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
-            <compilerarg value="-Xlint:all" />
-            <compilerarg value="-Xlint:-options" />
-            <classpath refid="reference.class.path" />
-        </javac>
-        <javac target="1.7" source="1.7" debug="on" destdir="${twittertokens.classes}" srcdir="${twittertokens.src}" includeantruntime="false" >
             <compilerarg value="-Xlint:all" />
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />
@@ -149,19 +136,6 @@
                 <attribute name="Implementation-URL" value="http://www.phantombot.net" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
                 <attribute name="Main-Class" value="me.mast3rplan.phantombot.Main" />
-            </manifest>
-        </jar>
-        <jar destfile="${build.dir}/GenerateTwitterTokens.jar">
-            <fileset dir="${twittertokens.classes}" />
-            <manifest>
-                <attribute name="Bundle-Name" value="${project.name}" />           
-                <attribute name="Bundle-Version" value="${version.num}" />
-                <attribute name="Bundle-Date" value="${NOW}" />
-                <attribute name="Implementation-Title" value="${project.name}" />
-                <attribute name="Implementation-Version" value="${version.num}" />
-                <attribute name="Implementation-URL" value="http://www.phantombot.net" />
-                <attribute name="Class-Path" value="${mf.classpath}" />
-                <attribute name="Main-Class" value="generatetwittertokens.GenerateTwitterTokens" />
             </manifest>
         </jar>
             
