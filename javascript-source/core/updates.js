@@ -62,7 +62,7 @@
         }
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -268,7 +268,7 @@
     }
 
     /** Version 2.1/2.0.10 updates */
-    if (!$.inidb.exists('updates', 'installedv2.1') || $.inidb.get('updates', 'installedv2.1') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv2.1.0') || $.inidb.get('updates', 'installedv2.1.0') != 'true') {
         $.consoleLn('Starting ' + $.version + ' updates...');
 
         $.consoleLn('Aliasing !permission to !group...');
@@ -283,8 +283,11 @@
         $.consoleLn('Disabling new modules...');
         $.inidb.set('modules', './games/gambling.js', 'false');
 
+        $.consoleLn('Setting up the new Twitter post delay...');
+        $.inidb.set('twitter', 'postdelay_update', 180);
+
         $.consoleLn($.version + ' updates completed!');
-        $.inidb.set('updates', 'installedv2.1', 'true');
+        $.inidb.set('updates', 'installedv2.1.0', 'true');
         $.inidb.set('updates', 'installedNewBot', 'true');//If bot login is deleted after updates were installed we don't want to reset the modules.
     }
 
