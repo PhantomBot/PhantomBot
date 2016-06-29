@@ -5,7 +5,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=/);
+        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)/);
 
     /**
      * @function getCustomAPIValue
@@ -71,14 +71,16 @@
 
         if (message.match(/\(countdown=[^)]+\)/g)) {
             var t = message.match(/\([^)]+\)/)[0],
-                down,
+                countdown,
                 time;
 
-            down = t.replace('(countdown=', '').replace(')', '');
-
-            time = (Date.parse(down) - Date.parse(new Date()));
-
+            countdown = t.replace('(countdown=', '').replace(')', '');
+            time = (Date.parse(countdown) - Date.parse(new Date()));
             message = $.replace(message, t, $.getTimeString(time / 1000));
+        }
+
+        if (message.match(/\(downtime\)/g)) {
+            message = $.replace(message, '(downtime)', String($.getStreamDownTime()));
         }
 
         if (message.match(/\(sender\)/g)) {
