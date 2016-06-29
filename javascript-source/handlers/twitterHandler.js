@@ -6,9 +6,15 @@
  * DB for configuration, there is not a need for local variables in this module.
  * 
  */
+
+
+ /**
+ * Anything you modify or remove in this script is at your own risk with Twitter.
+ */
 (function() {
     var randPrev = 0,
-        onlinePostDelay = 60 * 6e4; // 10 minutes must pass between Online Posts. This should take care of Twitch/OBS issues.
+        onlinePostDelay = 360 * 6e4, // 6 hour cooldown
+        gameChangeDelay = 60 * 6e4; // 1 hour cooldown
  
     /* Set default values for all configuration items. */
     $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
@@ -19,7 +25,7 @@
     $.getSetIniDbNumber('twitter', 'polldelay_retweets', 60);
     $.getSetIniDbNumber('twitter', 'polldelay_hometimeline', 60);
     $.getSetIniDbNumber('twitter', 'polldelay_usertimeline', 15);
-    $.getSetIniDbNumber('twitter', 'postdelay_update', 60);
+    $.getSetIniDbNumber('twitter', 'postdelay_update', 180);
 
     $.getSetIniDbBoolean('twitter', 'poll_mentions', false);
     $.getSetIniDbBoolean('twitter', 'poll_retweets', false);
@@ -44,11 +50,18 @@
      */
     $.bind('twitchOnline', function(event) {
         var randNum,
-            now = $.systemTime();
+            now = $.systemTime(),
+            message = $.getIniDbString('twitter', 'message_online');
 
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
+
+        if (message.contains('@')) {
+            $.consoleLn('Not @ mentions allowed for the auto online poster.');
+            return;
+        }
+
         if ($.getIniDbBoolean('twitter', 'post_online', false)) {
             if (now > $.getIniDbNumber('twitter', 'last_onlinepost', 0) + onlinePostDelay) {
                 $.inidb.set('twitter', 'last_onlinepost', now + onlinePostDelay);
@@ -67,18 +80,29 @@
      * @event twitchGameChange
      */
     $.bind('twitchGameChange', function(event) {
+        var now = $.systemTime(),
+            message = $.getIniDbString('twitter', 'message_gamechange');
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
+
+        if (message.contains('@')) {
+            $.consoleLn('No @ mentions allowed in the game change message');
+            return;
+        }
+
         if ($.getIniDbBoolean('twitter', 'post_gamechange', false) && $.isOnline($.channelName)) {
-            var randNum;
-            do {
-                randNum = $.randRange(1, 9999);
-            } while (randNum == randPrev);
-            randPrev = randNum;
-            $.twitter.updateStatus($.getIniDbString('twitter', 'message_gamechange').
+            if (now > $.getIniDbNumber('twitter', 'last_gamechange', 0) + gameChangeDelay) {
+                $.inidb.set('twitter', 'last_gamechange', now + gameChangeDelay);
+                var randNum;
+                do {
+                    randNum = $.randRange(1, 9999);
+                } while (randNum == randPrev);
+                randPrev = randNum;
+                $.twitter.updateStatus($.getIniDbString('twitter', 'message_gamechange').
                                        replace('(game)', $.twitchcache.getGameTitle()).
                                        replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum));
+            }
         }
     });
 
@@ -249,7 +273,7 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.usage', setCommandVal));
                         return;
                     }
-                    if (parseInt(setCommandVal) < 60) {
+                    if (parseInt(setCommandVal) =< 180) {
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.toosmall') + setCommandVal);
                         return;
                     }
@@ -359,6 +383,7 @@
      * @function checkAutoUpdate
      */
     function checkAutoUpdate() {
+        var message = $.getIniDbString('twitter', 'message_update');
 
         /* 
          * If not online, nothing to do. The last_autoupdate is reset to ensure that
@@ -369,10 +394,15 @@
             return;
         }
 
+        if (message.contains('@')) {
+            $.consoleLn('No @ mentions allowed in the update tweet.');
+            return;
+        }
+
         if ($.getIniDbBoolean('twitter', 'post_update', false)) {
             var lastUpdateTime = $.getSetIniDbNumber('twitter', 'last_autoupdate', $.systemTime());
 
-            if (($.systemTime() - lastUpdateTime) >= ($.getIniDbNumber('twitter', 'postdelay_update', 60) * 6e4)) {
+            if (($.systemTime() - lastUpdateTime) >= ($.getIniDbNumber('twitter', 'postdelay_update', 180) * 6e4)) { // 3 hour cooldown
                 var DownloadHTTP = Packages.com.illusionaryone.ImgDownload;
                 var success = DownloadHTTP.downloadHTTP($.twitchcache.getPreviewLink(), 'twitch-preview.jpg'),
                     uptimeSec = $.getStreamUptimeSeconds($.channelName),
