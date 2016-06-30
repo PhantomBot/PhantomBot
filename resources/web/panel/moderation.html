@@ -36,7 +36,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="msgCooldownSec">Message cooldown</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                     onclick="$.updateRedrawModSetting('#msgCooldownSec', 'msgCooldownSec')">Submit</button>
+                     onclick="$.updateRedrawModSetting('#msgCooldownSec', 'msgCooldownSecs')">Submit</button>
                 <input type="number" min="1" class="form-control" id="msgCooldownSec" placeholder="seconds"
                      data-toggle="tooltip" title="Set a cooldown in seconds on the punishment messages." />
             </div>
@@ -162,6 +162,14 @@
                 <input type="text" class="form-control" id="linksMessageInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Message said in chat when a user is punished for linking." />
             </div>
+
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="LinkMessageReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#LinkMessageReason', 'LinkMessage')">Submit</button>
+                <input type="text" class="form-control" id="LinkMessageReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
+            </div>
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
@@ -230,6 +238,13 @@
                      onclick="$.updateRedrawModSetting('#symbolsMessageInput', 'symbolsMessage')">Submit</button>
                 <input type="text" class="form-control" id="symbolsMessageInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Message said in chat when a user is punished for symbols." />
+            </div>
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="SymbolMessageReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#SymbolMessageReason', 'SymbolMessage')">Submit</button>
+                <input type="text" class="form-control" id="SymbolMessageReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
             </div>
         </form>
 
@@ -321,6 +336,13 @@
                 <input type="text" class="form-control" id="capsMessageInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Message said in chat when a user is punished for caps." />
             </div>
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="CapMessageReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#CapMessageReason', 'CapMessage')">Submit</button>
+                <input type="text" class="form-control" id="CapMessageReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
+            </div>
         </form>
 
         <form role="form">
@@ -401,6 +423,13 @@
                 <input type="text" class="form-control" id="spamMessageInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Message said in chat when a user get punished for spam." />
             </div>
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="SpamMessageReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#SpamMessageReason', 'SpamMessage')">Submit</button>
+                <input type="text" class="form-control" id="SpamMessageReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
+            </div>
         </form>
 
         <form role="form">
@@ -470,6 +499,13 @@
                      onclick="$.updateRedrawModSetting('#emotesMessageInput', 'emotesMessage')">Submit</button>
                 <input type="text" class="form-control" id="emotesMessageInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Message said in chat when a user is punished for emotes." />
+            </div>
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="EmoteMessageReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#EmoteMessageReason', 'EmoteMessage')">Submit</button>
+                <input type="text" class="form-control" id="EmoteMessageReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
             </div>
         </form>
 
@@ -541,6 +577,13 @@
                 <input type="text" class="form-control" id="colorsMessageInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Message said in chat when a user is punished for using /me." />
             </div>
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="ColorMessageReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#ColorMessageReason', 'ColorMessage')">Submit</button>
+                <input type="text" class="form-control" id="ColorMessageReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
+            </div>
         </form>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
@@ -600,6 +643,13 @@
                      onclick="$.updateRedrawModSetting('#longMessageMessageInput', 'longMessageMessage')">Submit</button>
                 <input type="text" class="form-control" id="longMessageMessageInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Message said in chat when a user is punished for posting a long message." />
+            </div>
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="LongMessageReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#LongMessageReason', 'LongMessage')">Submit</button>
+                <input type="text" class="form-control" id="LongMessageReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
             </div>
         </form>
 
@@ -666,7 +716,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="addModBlacklist">Phrase</label>
-                <button type="button" class="btn btn-warning inline pull-right" onclick="$.addModBlacklist()">Add</button>
+                <button type="button" class="btn btn-warning inline pull-right" onclick="$.addModBlacklist()">Blacklist</button>
                 <input type="text" class="form-control" id="addModBlacklistInput" placeholder="Phrase or Word" 
                     data-toggle="tooltip" title="Adding a blacklist word or phrase will timeout anyone who uses that phrase in chat." />
             </div>
@@ -678,6 +728,13 @@
                      onclick="$.updateRedrawModSetting('#blacklistMessage', 'blacklistMessage')">Submit</button>
                 <input type="text" class="form-control" id="blacklistMessage" placeholder="Loading..."
                      data-toggle="tooltip" title="Message said in chat when a user is punished for using a blacklisted phrase" />
+            </div>
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="BlacklistMessageReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#BlacklistMessageReason', 'BlacklistMessage')">Submit</button>
+                <input type="text" class="form-control" id="BlacklistMessageReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
             </div>
         </form>
         <form role="form">
@@ -698,7 +755,7 @@
         </form>
 
         <strong>Blacklist</strong>
-        <div id="blacklistModSettings" style="height: 200px; overflow: auto;" />
+        <div id="blacklistModSettings" style="height: 150px; overflow: auto;" />
     </div>
 
     <h3>Whitelist</h3>
@@ -706,14 +763,14 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="addModWhitelist">URL</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addModWhitelist()">Add</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addModWhitelist()">Whitelist</button>
                 <input type="text" class="form-control" id="addModWhitelistInput" placeholder="Link or URL"
                     data-toggle="tooltip" title="Add a url that users will no be punished for saying in chat." />
             </div>
         </form>
 
         <strong>Whitelist</strong>
-        <div id="whitelistModSettings" style="height: 200px; overflow: auto;" />
+        <div id="whitelistModSettings" style="height: 150px; overflow: auto;" />
     </div>
 
 </div>

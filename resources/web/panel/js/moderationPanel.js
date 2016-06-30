@@ -245,7 +245,39 @@
                         $("#blacklistMessage").attr("placeholder", modValue).blur();
                     }
 
-                    if (panelMatch(modSetting, 'msgCooldownSec')) {
+                    if (panelMatch(modSetting, 'silentLinkMessage')) {
+                        $("#LinkMessageReason").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'silentSymbolsMessage')) {
+                        $("#SymbolMessageReason").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'silentCapMessage')) {
+                        $("#CapMessageReason").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'silentSpamMessage')) {
+                        $("#SpamMessageReason").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'silentLongMessage')) {
+                        $("#LongMessageReason").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'silentColorMessage')) {
+                        $("#ColorMessageReason").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'silentEmoteMessage')) {
+                        $("#EmoteMessageReason").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'silentBlacklistMessage')) {
+                        $("#BlacklistMessageReason").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'msgCooldownSecs')) {
                         $("#msgCooldownSec").attr("placeholder", modValue).blur();
                     }
 
@@ -613,6 +645,27 @@
      */
     function updateRedrawModSetting(tagId, tableKey) {
         var newValue = $(tagId).val();
+
+        if (tableKey == 'msgCooldownSecs') {
+            if (newValue >= 45) {
+                sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
+                setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+                setTimeout(function() { $(tagId).val(''); }, TIMEOUT_WAIT_TIME * 2);
+                setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
+            }
+            return;
+        }
+
+        if (tableKey == 'warningResetTime') {
+            if (newValue >= 60) {
+                sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
+                $(tagId).val('');
+                $(tagId).attr("placeholder", newValue).blur();
+                setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
+            }
+            return;
+        }
+
         if (newValue.length > 0 && newValue > 1) {
             sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
             $(tagId).val('');
@@ -682,6 +735,21 @@
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
 
+    /**
+     * @function toggleModerations()
+     * @param {String} id
+     * @param {String} table
+     */
+    function banReason(id, table) {
+        var value = $(id).val();
+
+        if (value.length != 0) {
+            sendDBUpdate("moderation_chatmod_reason", "chatModerator", 'silent' + table, value);
+            setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
     // Import the HTML file for this panel.
     $("#moderationPanel").load("/panel/moderation.html");
 
@@ -720,4 +788,5 @@
     $.toggleSubscriber = toggleSubscriber;
     $.toggleSilentTimeout = toggleSilentTimeout;
     $.toggleModerations = toggleModerations;
+    $.banReason = banReason;
 })();
