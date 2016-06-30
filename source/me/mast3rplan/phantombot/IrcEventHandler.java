@@ -279,7 +279,7 @@ public class IrcEventHandler implements IRCEventListener {
                 System.exit(0);
             }
 
-            eventBus.postPVMSG(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage(), ((NoticeEvent) event).tags()));
+            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage(), ((NoticeEvent) event).tags()));
             break;
         case DEFAULT:
             if (event.command().equalsIgnoreCase("USERNOTICE")) {
@@ -357,7 +357,7 @@ public class IrcEventHandler implements IRCEventListener {
                 Map<String, String> weventTags = event.tags();
                 String wusername = event.getNick();
                 String message = event.arg(1);
-                eventBus.postAsync(new IrcPrivateMessageEvent(session, wusername, message, weventTags));
+                eventBus.postPVMSG(new IrcPrivateMessageEvent(session, wusername, message, weventTags));
             }
             break;
         }
