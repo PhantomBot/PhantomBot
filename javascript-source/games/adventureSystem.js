@@ -260,12 +260,18 @@
      */
     function runStory() {
         var progress = 0,
-            story = $.randElement(stories),
+            story,
             line,
+            lastStory,
             t;
 
         currentAdventure.gameState = 2;
         calculateResult();
+
+        do {
+            story = $.trueRandElement(stories);
+        } while (story == lastStory);
+
         $.say($.lang.get('adventuresystem.runstory', story.title, currentAdventure.users.length));
 
         t = setInterval(function() {
