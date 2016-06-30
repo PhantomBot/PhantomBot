@@ -463,7 +463,7 @@
             sendDBUpdate("moderation_addBlacklist", "blackList", "phrase_" + value, value);
             $("#addModBlacklistInput").val("Submitted");
             setTimeout(function() { $("#addModBlacklistInput").val(""); }, TIMEOUT_WAIT_TIME);
-            doQuery();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
         }
     }
@@ -477,7 +477,7 @@
             sendDBUpdate("moderation_addWhitelist", "whiteList", "link_" + value, value);
             $("#addModWhitelistInput").val("Submitted");
             setTimeout(function() { $("#addModWhitelistInput").val(""); }, TIMEOUT_WAIT_TIME);
-            doQuery();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
         }
     }
