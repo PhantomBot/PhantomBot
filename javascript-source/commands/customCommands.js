@@ -32,7 +32,6 @@
         if ($.inidb.exists('pricecom', command) && parseInt($.inidb.get('pricecom', command)) > 0) {
             if (!$.isMod(sender)) {
                 $.inidb.incr('points', sender, $.inidb.get('pricecom', command));
-                $.inidb.SaveAll();
             }
         }
     };
