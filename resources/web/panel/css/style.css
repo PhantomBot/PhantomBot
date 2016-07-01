@@ -143,6 +143,8 @@ td {
     vertical-align: middle;
     padding-top: 5px;
     padding-bottom: 5px;
+    position: fixed;
+    bottom: 0;
 }
 
 .soundButton {
