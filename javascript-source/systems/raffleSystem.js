@@ -158,32 +158,32 @@
         if (!raffleStatus) {
             if (msgToggle) {
                 $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.raffle.not.opened'));
-                return;
             }
+            return;
         }
 
         if (followers) {
             if (!$.user.isFollower(user)) {
                 if (msgToggle) {
                     $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.not.following'));
-                    return;
                 }
+                return;
             }
         }
 
         if ($.list.contains(entries, user)) {
             if (msgToggle) {
                 $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.enter.error.alreadyentered'));
-                return;
             }
+            return;
         }
 
         if (cost > 0) {
             if (cost > $.getUserPoints(user)) {
                 if (msgToggle) {
                     $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.err.points', $.pointNameMultiple));
-                    return;
                 }
+                return;
             } else {
                 $.inidb.decr('points', user, cost);
             }
