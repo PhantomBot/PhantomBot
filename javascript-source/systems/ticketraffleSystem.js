@@ -102,15 +102,15 @@
         if (!raffleStatus) {
             if (msgToggle) {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
-                return;
             }
+            return;
         }
 
         if (times > maxEntries || times == 0) {
             if (msgToggle) {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only, buy.amount', maxEntries));
-                return;
             }
+            return;
         }
 
         for (var i = 0, t = 0; i < entries.length; i++) {
@@ -119,8 +119,8 @@
                 if ((t + times) > maxEntries) {
                     if (msgToggle) {
                         $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.litmi.hit', maxEntries));
-                        return;
                     }
+                    return;
                 }
             }
         }
@@ -129,8 +129,8 @@
             if (!$.user.isFollower(user)) {
                 if (msgToggle) {
                     $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.not.following'));
-                    return;
                 }
+                return;
             }
         }
 
@@ -138,13 +138,13 @@
             if ((times * cost) > $.getUserPoints(user)) {
                 if (msgToggle) {
                     $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.points', $.pointNameMultiple));
-                    return;
                 }
+                return;
             }
         }
 
         totalEntries++;
-        totalTickets+= times;
+        totalTickets += times;
         $.inidb.decr('points', user, (times * cost));
         $.inidb.incr('ticketsList', $.username.resolve(user), times);
         $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
