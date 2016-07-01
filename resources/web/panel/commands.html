@@ -69,6 +69,13 @@
                     <td>(downtime) </td><td> Time since the last stream.<td>
                     </tr><tr>
                     <td>(readfile filename.txt) </td><td> Reads what is in the file. The file must be in the bots addons folder.<td>
+                    </tr><tr>
+                    <td>(customapijson URL key | {literal string} ...) </td>
+                    <td> Call a remote URL that returns JSON. key or object.key or object.object.key to access JSON data.
+                    </tr><tr>
+                    <td>(command [command_name]) </td><td> Call a command. Must be first item in custom command. Do not include ! before command_name</td>
+                    </tr><tr>
+                    <td>(customapi [requesturl]) </td><td> Call a remote URL<td>
                 </tr>
             </table>
         </div>
