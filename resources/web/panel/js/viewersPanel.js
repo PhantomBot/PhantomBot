@@ -36,6 +36,7 @@
         countMod = 0,
         countSub = 0,
         countReg = 0,
+        countDonator = 0,
         countViewer = 0,
         viewersInDB = false;
 
@@ -115,6 +116,7 @@
                         if (value.indexOf("0") == 0 || value.indexOf("1") == 0) countAdmin++;
                         if (value.indexOf("2") == 0) countMod++;
                         if (value.indexOf("3") == 0) countSub++;
+                        if (value.indexOf("4") == 0) countDonator++;
                         if (value.indexOf("6") == 0) countReg++;
                         if (value.indexOf("7") == 0) countViewer++; // Not written to the bot all the time.
                     }
@@ -181,6 +183,7 @@
                              "<th><i class=\"fa fa-ban\" /></th><th><i class=\"fa fa-heart\" /></th></tr>";
                 htmlData["1"] = htmlHeader;
                 htmlData["2"] = htmlHeader;
+                htmlData["4"] = htmlHeader;
                 htmlData["3"] = htmlHeader;
                 htmlData["6"] = htmlHeader;
                 htmlData["7"] = htmlHeader;                
@@ -212,6 +215,7 @@
                 htmlData["1"] += "</table>";
                 htmlData["2"] += "</table>";
                 htmlData["3"] += "</table>";
+                htmlData["4"] += "</table>";
                 htmlData["6"] += "</table>";
                 htmlData["7"] += "</table>";                
 
@@ -220,6 +224,9 @@
 
                 $("#viewersModList").html(htmlData["2"]);
                 $("#viewersModCount").html("(Count: " + countMod + ")");
+
+                $("#viewersDonatorList").html(htmlData["4"]);
+                $("#viewersDonatorCount").html("(Count: " + countDonator + ")");
 
                 $("#viewersSubList").html(htmlData["3"]);
                 $("#viewersSubCount").html("(Count: " + countSub + ")");
@@ -250,6 +257,7 @@
                 countMod = 0;
                 countSub = 0;
                 countReg = 0;
+                countDonator = 0;
                 countViewer = 0;
                 viewersInDB = false;
             }
@@ -302,12 +310,11 @@
                 sendDBUpdate('user_perm', 'group', username.toLowerCase(), '3');
             }
     
-            /*
-            ** Will enabled once we use these groups.
             if (perm == 'Donator') {
                 sendDBUpdate('user_perm', 'group', username.toLowerCase(), '4');
             }
-    
+
+            /*
             if (perm == 'Hoster') {
                 sendDBUpdate('user_perm', 'group', username.toLowerCase(), '5');
             }*/

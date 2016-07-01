@@ -55,22 +55,17 @@
                     keyword = msgObject['results'][idx]['key'];
                     keywordMap[idx] = keyword;
                     html += '<tr style="textList">' +
-                            '    <td style="width: 25px">' +
-                            '        <div id="deleteKeyword_' + idx + '" class="button"' +
-                            '             onclick="$.deleteKeyword(\'' + idx + '\')"><i class="fa fa-trash" />' +
-                            '        </div>' +
-                            '    </td>' +
-                            '    <td style="vertical-align: middle">' + keyword + '</td>' +
-                            '    <td style="vertical-align: middle">' +
-                            '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input style="width: 90%" type="text" id="inlineKeywordEdit_' + idx + '"' +
-                            '                   value="' + msgObject['results'][idx]['value'] + '" />' +
-                            '            <button type="button" class="btn btn-default btn-xs"' +
-                            '                    onclick="$.updateKeyword(\'' + idx + '\')"><i class="fa fa-pencil" />' +
-                            '            </button>' +
-                            '        </form>' +
-                            '    </td>' +
-                            '</tr>';
+                    '    <td style="width: 10%">' + keyword + '</td>' +
+                    '    <td style="vertical-align: middle">' +
+                    '        <form onkeypress="return event.keyCode != 13">' +
+                    '            <input style="width: 80%" type="text" id="inlineKeywordEdit_' + idx + '"' +
+                    '                   value="' + msgObject['results'][idx]['value'] + '" />' +
+                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateKeyword(\'' + idx + '\')"><i class="fa fa-pencil" /> </button> ' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteKeyword_' + idx + '" onclick="$.deleteKeyword(\'' + idx + '\')"><i class="fa fa-trash" /> </button>' +
+                    '             </form>' +
+                    '        </form>' +
+                    '    </td>' +
+                    '</tr>';
                 }
                 html += '</table>';
                 $('#keywordsList').html(html);

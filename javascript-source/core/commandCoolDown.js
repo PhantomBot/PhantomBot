@@ -150,11 +150,6 @@
          * @commandpath coolcom [command or keyword] [seconds] - Sets a cooldown in seconds for a command or a keyword. Use -1 for seconds to remove it. This also applies for the per-user cooldown.
          */
         if (command.equalsIgnoreCase('coolcom') || command.equalsIgnoreCase('cooldown')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!cmd || !time) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set.usage'));
                 return;
@@ -189,11 +184,6 @@
          * @commandpath toggleglobalcooldown - Enables/Disables the global command cooldown.
          */
         if (command.equalsIgnoreCase('toggleglobalcooldown')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             globalCooldown = !globalCooldown;
             $.setIniDbBoolean('cooldown', 'globalCooldown', globalCooldown);
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.global.toggle', (globalCooldown ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -203,11 +193,6 @@
          * @commandpath toggleperusercooldown - Enables/Disables the per-user command cooldown.
          */
         if (command.equalsIgnoreCase('toggleperusercooldown')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             perUserCooldown = !perUserCooldown;
             $.setIniDbBoolean('cooldown', 'perUserCooldown', perUserCooldown);
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.per.user.toggle', (perUserCooldown ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -217,11 +202,6 @@
          * @commandpath globalcooldowntime [seconds] - Sets the global cooldown time in seconds.
          */
         if (command.equalsIgnoreCase('globalcooldowntime')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!cmd) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.global.usage'));
                 return;
@@ -235,11 +215,6 @@
          * @commandpath togglemodcooldown - Enable/Disable mods being affected by cooldowns
          */
         if (command.equalsIgnoreCase('togglemodcooldown')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             modCooldown = !modCooldown;
             $.setIniDbBoolean('cooldown', 'modCooldown', modCooldown);
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set.togglemodcooldown', (modCooldown ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));

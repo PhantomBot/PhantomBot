@@ -62,7 +62,7 @@
 
         if (message.match(/\(1=[^)]+\)/g)) { //ALPHA TAG, THIS MIGHT NOT WORK CORRECTLY.
             if (event.getArgs()[0]) {
-                var t = message.match(/\([^)]+\)/)[0];
+                var t = message.match(/\(1=[^)]+\)/)[0];
                 message = $.replace(message, t, event.getArgs()[0]);
             }
             message = $.replace(message, '(1=', '(');

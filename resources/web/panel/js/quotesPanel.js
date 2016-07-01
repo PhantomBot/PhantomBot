@@ -162,14 +162,14 @@
             quoteArray = quoteData.split(',');
         if (value.length > 0) {
             if (panelMatch(field, 'quote')) {
-                quoteArray[1] = value.replace("'", "\'");
+                quoteArray[1] = value
             }
             if (panelMatch(field, 'game')) {
-                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',');
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'');
                 quoteArray[3] = value;
             }
             if (panelMatch(field, 'user')) {
-                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',');
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'');
                 quoteArray[0] = value;
             }
             sendDBUpdate('quotes_update', 'quotes', id, JSON.stringify(quoteArray));

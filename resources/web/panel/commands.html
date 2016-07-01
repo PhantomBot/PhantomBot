@@ -30,42 +30,51 @@
         <div id="tagHelpDialog" title="Custom Command Tags" style="font-size: 90%">
             <table>
                 <tr>
-                    <td>(sender) </td><td> User that ran the command<td>
-                </tr><tr>
-                    <td>(@sender) </td><td> User that ran the command, prefixed with '@'<td>
-                </tr><tr>
-                    <td>(baresender) </td><td> User that ran the command, all lowercase<td>
-                </tr><tr>
-                    <td>(touser) </td><td> Returns first parameter passed to the command<td>
-                </tr><tr>
-                    <td>(count) </td><td> Number of times command ran<td>
-                </tr><tr>
-                    <td>(random) </td><td> Chooses a random person in the channel<td>
-                </tr><tr>
-                    <td>(pointname) </td><td> Display pointname<td>
-                </tr><tr>
-                    <td>(uptime) </td><td> Display stream uptime<td>
-                </tr><tr>
-                    <td>(game) </td><td> Display game<td>
-                </tr><tr>
-                    <td>(status) </td><td> Display the status (title of stream)<td>
-                </tr><tr>
-                    <td>(follows) </td><td> Display number of followers<td>
-                </tr><tr>
-                    <td>(price) </td><td> Display price of the command<td>
-                </tr><tr>
-                    <td>(customapi [requesturl]) </td><td> Call a remote URL<td>
-                </tr><tr>
-                    <td>(customapijson URL key | {literal string} ...) </td>
-                    <td> Call a remote URL that returns JSON. key or object.key or object.object.key to access JSON data.
-                </tr><tr>
-                    <td>(command [command_name]) </td><td> Call a command. Must be first item in custom command. Do not include ! before command_name</td>
+                    <td>(sender) </td><td> User who triggered the command.<td>
+                    </tr><tr>
+                    <td>(@sender) </td><td> User who triggered the command and adds a @ symbol to his name.<td>
+                    </tr><tr>
+                    <td>(baresender) </td><td> User who triggered the command in lower case.<td>
+                    </tr><tr>
+                    <td>(touser) </td><td> Replaces with the argument you say after the command. If nothing is said after its the user who triggered the command.<td>
+                    </tr><tr>
+                    <td>(#) </td><td> Random number<td>
+                    </tr><tr>
+                    <td>(1), (2), (3) etc </td><td> Command arguments.<td>
+                    </tr><tr>
+                    <td>(age) </td><td> Tells you how long you have been on twitch for.<td>
+                    </tr><tr>
+                    <td>(random) </td><td> Random person in chat.<td>
+                    </tr><tr>
+                    <td>(pointname) </td><td> Current point name.<td>
+                    </tr><tr>
+                    <td>(uptime) </td><td> Current stream uptime.<td>
+                    </tr><tr>
+                    <td>(game) </td><td> Current game set on twitch.<td>
+                    </tr><tr>
+                    <td>(status) </td><td> Current title set on twitch.<td>
+                    </tr><tr>
+                    <td>(price) </td><td> Current command price.<td>
+                    </tr><tr>
+                    <td>(viewers) </td><td> Current viewer count.<td>
+                    </tr><tr>
+                    <td>(count) </td><td> Amount of time the command has been used.<td>
+                    </tr><tr>
+                    <td>(echo) </td><td> Will say any message as the bot.<td>
+                    </tr><tr>
+                    <td>(1=) </td><td> Argument 1. Add a the tag name of your choice after the = for if the argument is empty.<td>
+                    </tr><tr>
+                    <td>(countdown=) </td><td> Add the date you want to count down too. Ex (countdown=July 2 2016 7:00).<td>
+                    </tr><tr>
+                    <td>(downtime) </td><td> Time since the last stream.<td>
+                    </tr><tr>
+                    <td>(readfile filename.txt) </td><td> Reads what is in the file. The file must be in the bots addons folder.<td>
                 </tr>
             </table>
         </div>
 
         <script>
-            $("#tagHelpDialog").dialog({ autoOpen: false, maxHeight: 400, maxWidth: 400 });
+            $("#tagHelpDialog").dialog({ autoOpen: false, maxHeight: 500, maxWidth: 500 });
         </script>
 
         <div>
@@ -86,7 +95,7 @@
         <label for="addCustomCommand">Command list</label>
     <div id="_viewCustomCommandsPanelDisabled" />
     <div id="_viewCustomCommandsPanel">
-        <div id="customCommandsList" style="height: 200px; overflow: auto;" />
+        <div id="customCommandsList" style="height: 250px; overflow: auto;" />
     </div>
     </div>
 
