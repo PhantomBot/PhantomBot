@@ -30,7 +30,6 @@
         offlinePayoutInterval = $.getIniDbNumber('pointSettings', 'offlinePayoutInterval');
         pointNameSingle = $.getIniDbString('pointSettings', 'pointNameSingle');
         pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
-        $.consoleLn(pointNameMultiple);
 
         if (!pointNameMultiple.equalsIgnoreCase('points') || !pointNameSingle.equalsIgnoreCase('point')) {
             $.inidb.set('temppoints', 'pointsname', pointNameMultiple);
