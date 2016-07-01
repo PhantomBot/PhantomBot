@@ -90,7 +90,7 @@
 
                     foundData = true;
                     html += '<tr style="textList">' +
-                    '    <td style="vertical-align: middle: width: 70%">!' + commandName + '</td>' +
+                    '    <td style="width: 10%">!' + commandName + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
                     '            <input style="width: 60%" type="text" id="editCommandCooldown_' + commandName + '"' +
@@ -126,7 +126,7 @@
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
                     html += '<tr style="textList">' +
-                            '    <td style="vertical-align: middle: width: 60%">!' + commandName + '</td>' +
+                            '    <td style="width: 15%">!' + commandName + '</td>' +
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
                             '            <input style="width: 85%" type="text" id="editCommand_' + commandName + '"' +
@@ -152,7 +152,7 @@
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
                     html += "<tr class=\"textList\">" +
-                            "    <td padding=\"5px\">" +
+                            "    <td style=\"width: 5%\">" +
                             "        <div id=\"deleteAlias_" + commandName + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
                             "             onclick=\"$.deleteAlias('" + commandName + "')\"><i class=\"fa fa-trash\" />" +
                             "        </div>" +
@@ -176,7 +176,7 @@
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
                     html += '<tr style="textList">' +
-                    '    <td style="vertical-align: middle: width: 70%">!' + commandName + '</td>' +
+                    '    <td style="width: 10%">!' + commandName + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
                     '            <input style="width: 60%" type="text" id="editCommandPrice_' + commandName + '"' +
