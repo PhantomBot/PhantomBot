@@ -437,7 +437,7 @@
 
                     if (panelMatch(modSetting, 'silentTimeoutBlacklist')) {
                         if (panelMatch(modValue, 'true')) {
-                            $('#toggleSilentTimeoutBlackList').attr('checked', 'checked');
+                            $('#toggleSilentTimeoutBlacklist').attr('checked', 'checked');
                         }
                     }
                 }
