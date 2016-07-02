@@ -57,11 +57,6 @@
             return;
         }
 
-        if (message.contains('@')) {
-            $.consoleLn('No @ mentions allowed for the auto online poster.');
-            return;
-        }
-
         if ($.getIniDbBoolean('twitter', 'post_online', false)) {
             if (now > $.getIniDbNumber('twitter', 'last_onlinepost', 0) + onlinePostDelay) {
                 $.inidb.set('twitter', 'last_onlinepost', now + onlinePostDelay);
@@ -83,11 +78,6 @@
         var now = $.systemTime(),
             message = $.getIniDbString('twitter', 'message_gamechange');
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
-            return;
-        }
-
-        if (message.contains('@')) {
-            $.consoleLn('No @ mentions allowed in the game change message');
             return;
         }
 
@@ -391,11 +381,6 @@
          */
         if (!$.isOnline($.channelName)) {
             $.inidb.set('twitter', 'last_autoupdate', $.systemTime());
-            return;
-        }
-
-        if (message.contains('@')) {
-            $.consoleLn('No @ mentions allowed in the update tweet.');
             return;
         }
 
