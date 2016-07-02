@@ -45,3 +45,4 @@ $.lang.register('pointsystem.usage.invalid', 'Invalid option passed to $1 comman
 $.lang.register('pointsystem.err.negative', 'you can not gift less then 0 $1');
 $.lang.register('pointsystem.err.penalty', 'Usage: !penalty (user) (time in minutes)');
 $.lang.register('pointsystem.penalty.set', 'User: $1 will not gain points for te next $2.');
+$.lang.register('pointsystem.reset.all', 'All points were deleted.');

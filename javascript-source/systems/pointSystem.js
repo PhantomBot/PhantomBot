@@ -66,6 +66,7 @@
             $.registerChatSubcommand('points', 'user', 7);
             $.registerChatSubcommand('points', 'check', 7);
             $.registerChatSubcommand('points', 'bonus', 1);
+            $.registerChatSubcommand('points', 'resetall', 1);
         } else {
             $.unregisterChatCommand('points', 7);
             $.unregisterChatSubcommand('points', 'add', 1);
@@ -79,6 +80,7 @@
             $.unregisterChatSubcommand('points', 'user', 7);
             $.unregisterChatSubcommand('points', 'check', 7);
             $.unregisterChatSubcommand('points', 'bonus', 1);
+            $.unregisterChatSubcommand('points', 'resetall', 1);
         }
     }
 
@@ -102,6 +104,7 @@
             $.registerChatSubcommand(newName, 'user', 7);
             $.registerChatSubcommand(newName, 'check', 7);
             $.registerChatSubcommand(newName, 'bonus', 1);
+            $.registerChatSubcommand(newName, 'resetall', 1);
         } 
         if (newName2 && boolean) {
             $.registerChatCommand('./systems/pointSystem.js', newName2, 7);
@@ -116,6 +119,7 @@
             $.registerChatSubcommand(newName2, 'user', 7);
             $.registerChatSubcommand(newName2, 'check', 7);
             $.registerChatSubcommand(newName2, 'bonus', 1);
+            $.registerChatSubcommand(newName2, 'resetall', 1);
         }
 
         if (newName && !boolean) {
@@ -131,6 +135,7 @@
             $.unregisterChatSubcommand(newName, 'user', 7);
             $.unregisterChatSubcommand(newName, 'check', 7);
             $.unregisterChatSubcommand(newName, 'bonus', 1);
+            $.unregisterChatSubcommand(newName, 'resetall', 1);
         } 
         if (newName2 && !boolean) {
             $.unregisterChatCommand('./systems/pointSystem.js', newName2, 7);
@@ -145,6 +150,7 @@
             $.unregisterChatSubcommand(newName2, 'user', 7);
             $.unregisterChatSubcommand(newName2, 'check', 7);
             $.unregisterChatSubcommand(newName2, 'bonus', 1);
+            $.unregisterChatSubcommand(newName2, 'resetall', 1);
         }
     };
 
@@ -578,6 +584,14 @@
                         return;
                     }
                     setTempBonus(actionArg1, actionArg2);
+                } 
+
+                /**
+                 * @commandpath points resetall - Deletes everyones points
+                 */
+                else if (action.equalsIgnoreCase('resetall')) {
+                    $.inidb.RemoveFile('points'); 
+                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.reset.all'));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get("pointsystem.usage.invalid", "!" + command));
                 } 
@@ -711,6 +725,7 @@
             $.registerChatSubcommand('points', 'user', 7);
             $.registerChatSubcommand('points', 'check', 7);
             $.registerChatSubcommand('points', 'bonus', 1);
+            $.registerChatSubcommand('points', 'resetall', 1);
 
             if (pointNameSingle != 'point' && pointNameMultiple != 'points') {
                updateSettings(); 
