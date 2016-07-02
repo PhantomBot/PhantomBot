@@ -77,8 +77,6 @@
             $.inidb.set('lastseen', follower, $.systemTime());
         }
 
-        $.inidb.set('streamInfo', 'lastFollow', follower);
-
         if ($.bot.isModuleEnabled('./handlers/followHandler.js')) {
             if (!$.inidb.exists('followed', follower)) {
                 if (followToggle && announceFollows) {

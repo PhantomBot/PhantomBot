@@ -66,7 +66,7 @@
             return;
         }
 
-        $.inidb.set('streamInfo', 'lastDonator', $.username.resolve(donationID));
+        $.inidb.set('streamInfo', 'lastDonator', $.username.resolve(donationUsername));
         $.inidb.set('donations', donationID, donationJson);
         $.inidb.set('donations', 'last_donation', donationID);
 
