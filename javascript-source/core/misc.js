@@ -107,12 +107,12 @@
     
             if (!message.substr(0, 1).equals('.')) {
                 if ($.getIniDbBoolean('settings', 'response_@chat') && (!$.getIniDbBoolean('settings', 'response_action') || message.substr(0, 2).equals('/w'))) {
-                    $.consoleLn('[CHAT] ' + message);
                     $.channel.say(message);
+                    $.consoleLn('[CHAT] ' + message);
                 } else {
                     if ($.getIniDbBoolean('settings', 'response_@chat') && $.getIniDbBoolean('settings', 'response_action')) {
-                        $.consoleLn('[COLOR CHAT] ' + message);
                         $.channel.say('/me ' + message);
+                        $.consoleLn('[COLOR CHAT] ' + message);
                     }
                     if (!$.getIniDbBoolean('settings', 'response_@chat')) {
                         $.consoleLn('[MUTED] ' + message);
