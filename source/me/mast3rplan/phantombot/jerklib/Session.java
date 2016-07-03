@@ -307,11 +307,10 @@ public class Session extends RequestGenerator {
      * @see me.mast3rplan.phantombot.jerklib.Channel#say(String)
      */
     public void sayChannel(Channel channel, String msg) {
-        if (msg.startsWith(".timeout ") || msg.startsWith(".ban ")
-                || msg.startsWith(".unban ") || msg.equals(".clear") || msg.equals(".mods")) {
-            this.sayChannelReal(channel, msg);
+        if (msg.substring(0, 1).equals(".")) {
+            super.sayChannel(msg, channel);
         } else {
-            if (msg.startsWith("/w ")) {
+            if (msg.substring(0, 2).equals("/w ")) {
                 msg = msg.replace("/w ", "PRIVMSG #jtv :/w ");
                 whisperMessages.add(new WhisperMessage(channel, msg));
                 return;
