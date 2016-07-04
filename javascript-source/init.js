@@ -13,7 +13,7 @@
         modules = [],
         hooks = [],
         pricecomMods = ($.inidb.exists('settings', 'pricecomMods') ? $.inidb.get('settings', 'pricecomMods') : false),
-        permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : false);
+        permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : true);
 
     /**
      * @class
@@ -869,7 +869,7 @@
                         permMsg = $.getCommandGroupName(command);
                     }
                 }
-                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', false)) {
+                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', permMsg));
                 }
                 return;
