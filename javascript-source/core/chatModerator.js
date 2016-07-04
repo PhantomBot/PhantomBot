@@ -173,7 +173,7 @@
             ColorMessage: $.getIniDbString('chatModerator', 'silentColorMessage'),
             EmoteMessage: $.getIniDbString('chatModerator', 'silentEmoteMessage'),
             LongMessage: $.getIniDbString('chatModerator', 'silentLongMessage'),
-            BlacklistMessage: $.getIniDbString('chatModerator', 'silentLongMessage'),
+            BlacklistMessage: $.getIniDbString('chatModerator', 'silentBlacklistMessage'),
         };
 
         warningTime = {
@@ -317,11 +317,21 @@
      */
     function checkBlackList(sender, message) {
         for (i in blackList) {
-            if (message.contains(blackList[i])) {
-                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                warning = $.lang.get('chatmoderator.timeout');
-                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                return true;
+            if (blackList[i].startsWith('regex:')) {
+                var regex = new RegExp(blackList[i].substr(0, 6), 'g');
+                if (message.exec(regex)) {
+                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
+                    warning = $.lang.get('chatmoderator.timeout');
+                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
+                    return true;
+                }
+            } else {
+                if (message.contains(blackList[i])) {
+                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
+                    warning = $.lang.get('chatmoderator.timeout');
+                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
+                    return true;
+                }
             }
         }
         return false;
