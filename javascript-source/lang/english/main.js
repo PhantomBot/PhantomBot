@@ -315,3 +315,5 @@ $.lang.register('common.minutes', ' minutes and ');
 $.lang.register('common.minutes2', ' minutes.');
 $.lang.register('common.seconds', ' seconds');
 $.lang.register('common.get.age', '$1 has been on Twitch for $2 Joined ($3)');
+$.lang.register('init.mod.toggle.perm.msg.off', 'No permission messages have been disabled.');
+$.lang.register('init.mod.toggle.perm.msg.on', 'No permission messages have been enabled.');

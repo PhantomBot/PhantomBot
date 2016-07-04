@@ -12,7 +12,8 @@
         modeO = false,
         modules = [],
         hooks = [],
-        pricecomMods = ($.inidb.exists('settings', 'pricecomMods') ? $.inidb.get('settings', 'pricecomMods') : false);
+        pricecomMods = ($.inidb.exists('settings', 'pricecomMods') ? $.inidb.get('settings', 'pricecomMods') : false),
+        permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : true);
 
     /**
      * @class
@@ -328,6 +329,7 @@
          * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
          * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist
          * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands
+         * @commandpath YourBotName togglepermcommessage - Toggles the no permission message
          */
 
          if (command.equalsIgnoreCase($.botName.toLowerCase())) {
@@ -416,6 +418,18 @@
                     pricecomMods = true;
                     $.inidb.set('settings', 'pricecomMods', true);
                     $.say($.whisperPrefix(sender) + $.lang.get('init.mod.toggle.on.pay'));
+                }
+            }
+
+            if (action.equalsIgnoreCase('togglepermcommessage')) {
+                if (permComMsgEnabled) {
+                    permComMsgEnabled = false;
+                    $.inidb.set('settings', 'permComMsgEnabled', false);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.mod.toggle.perm.msg.off'));
+                } else {
+                    permComMsgEnabled = true;
+                    $.inidb.set('settings', 'permComMsgEnabled', true);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.mod.toggle.perm.msg.on'));
                 }
             }
         }
@@ -785,6 +799,7 @@
                 subCommand,
                 cooldown,
                 permComCheck,
+                permMsg,
                 senderIsMod = $.isModv3(sender, event.getTags());
 
             if (!senderIsMod && $.commandPause.isPaused()) {
@@ -846,13 +861,16 @@
             subCommand = (args[0] ? args[0] : '');
             if ((permComCheck = $.permCom(sender, command, subCommand)) != 0) {
                 if (permComCheck == 1) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command)));
+                    permMsg = $.getCommandGroupName(command);
                 } else {
                     if ($.subCommandExists(command, subCommand)) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getSubCommandGroupName(command, subCommand)));
+                        permMsg = $.getSubCommandGroupName(command, subCommand)
                     } else {
-                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command)));
+                        permMsg = $.getCommandGroupName(command);
                     }
+                }
+                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', permMsg));
                 }
                 return;
             }
