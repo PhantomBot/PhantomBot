@@ -211,16 +211,32 @@
         for (i in $.users) {
             username = $.users[i][0].toLowerCase();
             if ($.isOnline($.channelName)) {
-                if ($.inidb.exists('grouppoints', $.getUserGroupName(username))) {
-                    amount = (parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))) < 0 ?
-                        onlineGain : parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))));
+                if ($.isMod(username) && $.isSub(username) || $.isAdmin(username) && $.isSub(username)) {
+                    if (parseInt($.inidb.get('grouppoints', 'Subscriber')) > 0) {
+                        amount = parseInt($.inidb.get('grouppoints', 'Subscriber'));
+                    } else {
+                        amount = offlineGain;
+                    }
+                } else {
+                    if ($.inidb.exists('grouppointsoffline', $.getUserGroupName(username))) {
+                        amount = (parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))) < 0 ? offlineGain : parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))));
+                    }
                 }
             } else {
-                if ($.inidb.exists('grouppointsoffline', $.getUserGroupName(username))) {
-                    amount = (parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))) < 0 ?
-                        offlineGain : parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))));
+                if ($.isMod(username) && $.isSub(username) || $.isAdmin(username) && $.isSub(username)) {
+                    if (parseInt($.inidb.get('grouppointsoffline', 'Subscriber')) > 0) {
+                        amount = parseInt($.inidb.get('grouppointsoffline', 'Subscriber'));
+                    } else {
+                        amount = offlineGain;
+                    }
+                } else {
+                    if ($.inidb.exists('grouppointsoffline', $.getUserGroupName(username))) {
+                        amount = (parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))) < 0 ? offlineGain : parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))));
+                    }
                 }
             }
+
+            //$.consoleLn(username + '::' + amount);
 
             if ($.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
                 if ($.getTierData(username, 'bonuspoints') != 0) {
