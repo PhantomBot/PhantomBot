@@ -64,13 +64,13 @@
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
             Blacklist: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutBlacklist', false),
             LinkMessage: $.getSetIniDbString('chatModerator', 'silentLinkMessage', 'Posting a link without permission. (Automated by ' + $.botName + ')'),
-            SpamMessage: $.getSetIniDbString('chatModerator', 'silentSpamMessage', 'Excessive repeating characters. (Automated by ' + $.botName + ')'),
-            CapMessage: $.getSetIniDbString('chatModerator', 'silentCapMessage', 'Excessive cap use. (Automated by ' + $.botName + ')'),
-            SymbolMessage: $.getSetIniDbString('chatModerator', 'silentSymbolsMessage', 'Excessive symbol use. (Automated by ' + $.botName + ')'),
+            SpamMessage: $.getSetIniDbString('chatModerator', 'silentSpamMessage', 'Spamming repeated characters. (Automated by ' + $.botName + ')'),
+            CapMessage: $.getSetIniDbString('chatModerator', 'silentCapMessage', 'Excess cap use. (Automated by ' + $.botName + ')'),
+            SymbolMessage: $.getSetIniDbString('chatModerator', 'silentSymbolsMessage', 'Excess symbol use. (Automated by ' + $.botName + ')'),
             ColorMessage: $.getSetIniDbString('chatModerator', 'silentColorMessage', 'Using "/me". (Automated by ' + $.botName + ')'),
-            EmoteMessage: $.getSetIniDbString('chatModerator', 'silentEmoteMessage', 'Excessive emote use. (Automated by ' + $.botName + ')'),
-            LongMessage: $.getSetIniDbString('chatModerator', 'silentLongMessage', 'Excessive message length. (Automated by ' + $.botName + ')'),
-            BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted word or phrase. (Automated by ' + $.botName + ')'),
+            EmoteMessage: $.getSetIniDbString('chatModerator', 'silentEmoteMessage', 'Excess emote use. (Automated by ' + $.botName + ')'),
+            LongMessage: $.getSetIniDbString('chatModerator', 'silentLongMessage', 'Excess message length. (Automated by ' + $.botName + ')'),
+            BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Usage a blacklisted word or phrase. (Automated by ' + $.botName + ')'),
         },
 
         warningTime = {
@@ -317,21 +317,11 @@
      */
     function checkBlackList(sender, message) {
         for (i in blackList) {
-            if (blackList[i].startsWith('regex:')) {
-                var regex = new RegExp(blackList[i].substr(0, 6), 'g');
-                if (message.exec(regex)) {
-                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                    warning = $.lang.get('chatmoderator.timeout');
-                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                    return true;
-                }
-            } else {
-                if (message.contains(blackList[i])) {
-                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                    warning = $.lang.get('chatmoderator.timeout');
-                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                    return true;
-                }
+            if (message.contains(blackList[i])) {
+                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
+                warning = $.lang.get('chatmoderator.timeout');
+                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
+                return true;
             }
         }
         return false;
