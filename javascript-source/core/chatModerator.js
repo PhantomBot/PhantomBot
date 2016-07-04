@@ -70,7 +70,7 @@
             ColorMessage: $.getSetIniDbString('chatModerator', 'silentColorMessage', 'Using "/me". (Automated by ' + $.botName + ')'),
             EmoteMessage: $.getSetIniDbString('chatModerator', 'silentEmoteMessage', 'Excess emote use. (Automated by ' + $.botName + ')'),
             LongMessage: $.getSetIniDbString('chatModerator', 'silentLongMessage', 'Excess message length. (Automated by ' + $.botName + ')'),
-            BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Usage a blacklisted word or phrase. (Automated by ' + $.botName + ')'),
+            BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted word or phrase. (Automated by ' + $.botName + ')'),
         },
 
         warningTime = {
