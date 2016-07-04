@@ -176,12 +176,12 @@
      */
     function getStreamDownTime() {
         var now = $.systemTime(),
-            down = $.getDownTime,
+            down = $.inidb.get('streamInfo', 'downtime'),
             time;
 
         if (down > 0) {
             time = now - down;
-            return getTimeString(time / 1000);
+            return $.getTimeString(time / 1000);
         }
         return 0;
     }
