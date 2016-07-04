@@ -329,7 +329,7 @@
          * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
          * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist
          * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands
-         * @commandpath YourBotName togglepermcommessage - Toggles if the no permission message
+         * @commandpath YourBotName togglepermcommessage - Toggles the no permission message
          */
 
          if (command.equalsIgnoreCase($.botName.toLowerCase())) {
