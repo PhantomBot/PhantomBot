@@ -415,7 +415,8 @@
 
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
             for (i in $.users) {
-                $.inidb.incr('time', $.users[i][0].toLowerCase(), 60);
+                username = $.users[i][0].toLowerCase();
+                $.inidb.incr('time', username, 61);
             }
         }
 
