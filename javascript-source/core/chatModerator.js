@@ -173,7 +173,7 @@
             ColorMessage: $.getIniDbString('chatModerator', 'silentColorMessage'),
             EmoteMessage: $.getIniDbString('chatModerator', 'silentEmoteMessage'),
             LongMessage: $.getIniDbString('chatModerator', 'silentLongMessage'),
-            BlacklistMessage: $.getIniDbString('chatModerator', 'silentLongMessage'),
+            BlacklistMessage: $.getIniDbString('chatModerator', 'silentBlacklistMessage'),
         };
 
         warningTime = {
