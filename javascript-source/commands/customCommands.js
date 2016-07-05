@@ -329,14 +329,16 @@
      * @function addComRegisterCommands
      */
     function addComRegisterCommands(silent) {
-        var commands = $.inidb.GetKeyList('command', ''),
-            i;
-        for (i in commands) {
-            if (!$.commandExists(commands[i])) {
-                $.registerChatCommand('./commands/customCommands.js', commands[i], 7);
-            } else {
-                if (!silent) {
-                    $.log.error('Cannot add custom command, command already exists: ' + commands[i]);
+        if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
+            var commands = $.inidb.GetKeyList('command', ''),
+                i;
+            for (i in commands) {
+                if (!$.commandExists(commands[i])) {
+                    $.registerChatCommand('./commands/customCommands.js', commands[i], 7);
+                } else {
+                    if (!silent) {
+                        $.log.error('Cannot add custom command, command already exists: ' + commands[i]);
+                    }
                 }
             }
         }
@@ -346,14 +348,16 @@
      * @function addComRegisterAliases
      */
     function addComRegisterAliases(silent) {
-        var aliases = $.inidb.GetKeyList('aliases', ''),
-            i;
-        for (i in aliases) {
-            if (!$.commandExists(aliases[i])) {
-                $.registerChatCommand('./commands/customCommands.js', aliases[i], $.getIniDbNumber('permcom', aliases[i], 7));
-            } else {
-                if (!silent) {
-                    $.log.error('Cannot add alias, command already exists: ' + aliases[i]);
+        if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
+            var aliases = $.inidb.GetKeyList('aliases', ''),
+                i;
+            for (i in aliases) {
+                if (!$.commandExists(aliases[i])) {
+                    $.registerChatCommand('./commands/customCommands.js', aliases[i], $.getIniDbNumber('permcom', aliases[i], 7));
+                } else {
+                    if (!silent) {
+                        $.log.error('Cannot add alias, command already exists: ' + aliases[i]);
+                    }
                 }
             }
         }
