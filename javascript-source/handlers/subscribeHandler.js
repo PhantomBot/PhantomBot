@@ -227,43 +227,45 @@
     });
 
     function checkForSubs(event) {
-        subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage');
-        if (event.getSender().equalsIgnoreCase('twitchnotify')) {
-            if (subWelcomeToggle && event.getMessage().match(/just subscribed!/g)) {
-                if (subMessage.match(/\(name\)/g)) {
-                    subMessage = $.replace(subMessage, '(name)', String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1))));
+        if ($.bot.isModuleEnabled('./handlers/subscribehandler.js')) {
+            subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage');
+            if (event.getSender().equalsIgnoreCase('twitchnotify')) {
+                if (subWelcomeToggle && event.getMessage().match(/just subscribed!/g)) {
+                    if (subMessage.match(/\(name\)/g)) {
+                        subMessage = $.replace(subMessage, '(name)', String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1))));
+                    }
+    
+                    if (subMessage.match(/\(reward\)/g)) {
+                        subMessage = $.replace(subMessage, '(reward)', String(subReward));
+                    }
+    
+                    $.say(subMessage);
+                    var sub = String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
+                    $.addSubUsersList(sub);
+                    $.inidb.set('streamInfo', 'lastSub', $.username.resolve(sub));
+                    return;
                 }
-
-                if (subMessage.match(/\(reward\)/g)) {
-                    subMessage = $.replace(subMessage, '(reward)', String(subReward));
+    
+                reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage');
+    
+                if (reSubWelcomeToggle && event.getMessage().match(/subscribed for/g)) {
+                    if (reSubMessage.match(/\(name\)/g)) {
+                        reSubMessage = $.replace(reSubMessage, '(name)', String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1))));
+                    }
+    
+                    if (reSubMessage.match(/\(months\)/g)) {
+                        reSubMessage = $.replace(reSubMessage, '(months)', String(event.getMessage().substring(event.getMessage().indexOf('months') - 3, event.getMessage().indexOf('months') - 1)));
+                    }
+    
+                    if (reSubMessage.match(/\(reward\)/g)) {
+                        reSubMessage = $.replace(reSubMessage, '(reward)', String(subReward));
+                    }
+    
+                    $.say(reSubMessage);
+                    var sub = String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
+                    $.restoreSubscriberStatus(sub, true);
+                    $.inidb.set('streamInfo', 'lastReSub', $.username.resolve(sub));
                 }
-
-                $.say(subMessage);
-                var sub = String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
-                $.addSubUsersList(sub);
-                $.inidb.set('streamInfo', 'lastSub', $.username.resolve(sub));
-                return;
-            }
-
-            reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage');
-
-            if (reSubWelcomeToggle && event.getMessage().match(/subscribed for/g)) {
-                if (reSubMessage.match(/\(name\)/g)) {
-                    reSubMessage = $.replace(reSubMessage, '(name)', String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1))));
-                }
-
-                if (reSubMessage.match(/\(months\)/g)) {
-                    reSubMessage = $.replace(reSubMessage, '(months)', String(event.getMessage().substring(event.getMessage().indexOf('months') - 3, event.getMessage().indexOf('months') - 1)));
-                }
-
-                if (reSubMessage.match(/\(reward\)/g)) {
-                    reSubMessage = $.replace(reSubMessage, '(reward)', String(subReward));
-                }
-
-                $.say(reSubMessage);
-                var sub = String(event.getMessage().substring(0, event.getMessage().indexOf(' ', 1)));
-                $.restoreSubscriberStatus(sub, true);
-                $.inidb.set('streamInfo', 'lastReSub', $.username.resolve(sub));
             }
         }
     };
