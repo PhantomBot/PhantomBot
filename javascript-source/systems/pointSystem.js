@@ -656,7 +656,7 @@
          * @commandpath gift [user] [amount] - Give points to a friend.
          */
         if (command.equalsIgnoreCase('gift')) {
-            if (!args[0] || !args[1]) {
+            if (!args[0] || !parseInt(args[1])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.gift.usage'));
                 return;
             }
