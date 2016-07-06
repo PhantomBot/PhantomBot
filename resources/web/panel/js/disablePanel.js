@@ -74,6 +74,7 @@
                 handlePanel('./commands/customCommands.js', '#_viewCommandAliasesPanel', moduleEnabled);
                 handlePanel('./commands/customCommands.js', '#_commandPermissionPanel', moduleEnabled);
                 handlePanel('./commands/customCommands.js', '#_commandPricesPanel', moduleEnabled);
+                handlePanel('./commands/customCommands.js', '#_commandPayPanel', moduleEnabled);
             }
             if (panelMatch(module, './systems/pointSystem.js')) {
                 handlePanel('./systems/pointSystem.js', '#_pointsConfigPanel', moduleEnabled);
