@@ -109,9 +109,9 @@
             if (panelCheckQuery(msgObject, 'gambling_rafflelistentries')) {
                 amount = msgObject['results']['raffleEntries'];
                 if (amount === null || amount === undefined || amount === 0) {
-                    $("#traffleentries").html("0");
+                    $("#raffleentries").html("0");
                 }
-                $("#traffleentries").html(msgObject['results']['raffleEntries']);
+                $("#raffleentries").html(msgObject['results']['raffleEntries']);
             }
 
             if (panelCheckQuery(msgObject, 'gambling_trafflelistentries')) {
