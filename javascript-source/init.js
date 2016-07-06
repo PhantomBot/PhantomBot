@@ -793,26 +793,22 @@
          * @event api-command
          */
         $api.on($script, 'command', function(event) {
-            var sender = event.getSender(),
-                args = event.getArgs(),
+            var sender = event.getSender().toLowerCase(),
                 command = event.getCommand().toLowerCase(),
-                subCommand,
-                cooldown,
-                permComCheck,
-                permMsg,
-                senderIsMod = $.isModv3(sender, event.getTags());
+                args = event.getArgs(),
+                subCommand = (args[0] ? args[0] : ''),
+                permComCheck = $.permCom(sender, command, subCommand),
+                isModv3 = $.isModv3(sender, event.getTags());
 
-            if (!senderIsMod && $.commandPause.isPaused()) {
+            if (!isModv3 && $.commandPause.isPaused()) {
                 consoleDebug($.lang.get('commandpause.isactive'))
                 return;
             }
 
-            /* Handle aliases */
             if ($.inidb.exists('aliases', command)) {
-                var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
-                    CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
-
-                var alias = $.getIniDbString('aliases', command),
+                var ScriptEventManager = Packages.me.mast3rplan.phantombot.script.ScriptEventManager,
+                    CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
+                    alias = $.getIniDbString('aliases', command),
                     aliasCmd,
                     aliasParams;
 
@@ -823,7 +819,7 @@
                     } else {
                         aliasParams = ' ';
                     }
-                    EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
+                    ScriptEventManager.instance().runDirect(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                 } else {
                     var aliasList = alias.split(';');
                     for (var idx in aliasList) {
@@ -834,37 +830,32 @@
                             aliasParams = ' ';
                         }
                         if (idx == (aliasList.length - 1)) {
-                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
+                            ScriptEventManager.instance().runDirect(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                         } else {
-                            EventBus.instance().post(new CommandEvent(sender, aliasCmd, aliasParams));
+                            ScriptEventManager.instance().runDirect(new CommandEvent(sender, aliasCmd, aliasParams));
                         }
                     }
                 }
                 return;
             }
 
-            if (!$.commandExists(command)) {
-                consoleDebug('Command: !' + command + ' does not exist');
+            if ($.inidb.exists('disabledCommands', command) || $.inidb.exists('botBlackList', sender)) {
+                consoleLn('[COMMAND NOT SENT] Command: !' + command + ' was not sent because its disabled or because the user is blacklisted.');
                 return;
             }
 
-            if ($.getIniDbBoolean('disabledCommands', command, false) || $.getIniDbBoolean('botBlackList', sender.toLowerCase(), false)) {
-                consoleDebug('[DISABLED COMMAND] Command: !' + command + ' was not sent because its disabled or the user is blacklisted.');
+            if ($.coolDown.get(command, sender) > 0) {
+                consoleLn('[COMMAND COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
                 return;
             }
 
-            if (parseInt($.coolDown.get(command, sender)) > 0) {
-                consoleLn('[COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
-                return;
-            }
-
-            subCommand = (args[0] ? args[0] : '');
-            if ((permComCheck = $.permCom(sender, command, subCommand)) != 0) {
+            if (!$.isAdmin(sender) && permComCheck != 0) {
+                var permMsg;
                 if (permComCheck == 1) {
                     permMsg = $.getCommandGroupName(command);
                 } else {
                     if ($.subCommandExists(command, subCommand)) {
-                        permMsg = $.getSubCommandGroupName(command, subCommand)
+                        permMsg = $.getSubCommandGroupName(command, subCommand);
                     } else {
                         permMsg = $.getCommandGroupName(command);
                     }
@@ -875,17 +866,25 @@
                 return;
             }
 
-            if (isModuleEnabled('./systems/pointSystem.js') && (((senderIsMod && pricecomMods && !$.isBot(sender)) || !senderIsMod)) && $.inidb.exists('pricecom', command)) {
-                if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
-                    return;
+            if ($.inidb.exists('pricecom', command) && (((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
+                if (isModuleEnabled('./systems/pointSystem.js')) {
+                    if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
+                        return;
+                    }
                 }
-                if (parseInt($.inidb.get('pricecom', command)) > 0) {
+            }
+        
+            callHook('command', event, false);
+
+            if (isModuleEnabled('./systems/pointSystem.js')) {
+                if (parseInt($.inidb.get('paycom', command)) > 0) {
+                    $.inidb.incr('points', sender, $.inidb.get('paycom', command));
+                }
+                if ($.inidb.exists('pricecom', command) && parseInt($.inidb.get('pricecom', command)) > 0) {
                     $.inidb.decr('points', sender, $.inidb.get('pricecom', command));
                 }
-            } 
-
-            callHook('command', event, false);
+            }
             handleInitCommands(event);
         });
 

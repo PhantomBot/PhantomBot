@@ -28,6 +28,7 @@
     <div id="_quotesPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <button type="button" class="btn btn-danger inline pull-right" onclick="$.delQuoteMsg()">Delete Quote Message</button>
                 <label for="quoteMessage">Set Quote Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.setQuoteMessage()">Submit</button>

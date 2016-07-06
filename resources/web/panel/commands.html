@@ -56,6 +56,10 @@
                     </tr><tr>
                     <td>(price) </td><td> Current command price.<td>
                     </tr><tr>
+                    <td>(pay) </td><td> Payment of the command.<td>
+                    </tr><tr>
+                    <td>(onlineonly) </td><td> Will make the command work when the stream is online.<td>
+                    </tr><tr>
                     <td>(viewers) </td><td> Current viewer count.<td>
                     </tr><tr>
                     <td>(count) </td><td> Amount of time the command has been used.<td>
@@ -137,6 +141,24 @@
 
         <strong>Current Command Prices</strong><br><br>
         <div id="priceCommandsList" style="height: 200px; overflow: auto;" />
+    </div>
+    </div>
+
+    <h3>Payment</h3>
+    <div>
+    <div id="_commandPayPanelDisabled" />
+    <div id="_commandPayPanel">
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="setCommandPay">Add a new payment</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPay()">Submit</button>
+                <input type="text" class="form-control" id="setCommandPayInputCommand" placeholder="Command name" />
+                <input type="text" class="form-control" id="setCommandPayInput" placeholder="Payment" />
+            </div>
+        </form>
+
+        <strong>Current Command Payments</strong><br><br>
+        <div id="payCommandsList" style="height: 200px; overflow: auto;" />
     </div>
     </div>
 
