@@ -590,9 +590,11 @@
     /**
      * @event ircClearchat
      */
+    /* Removed this for now because sometimes it fails and  it fails to send the moderation timeout and message because of it.
     $.bind('ircClearchat', function(event) {
         $.log.event(event.getUser() + ' has been timed out for ' + String(event.getDuration()) + ' seconds. Reason: ' + event.getReason());
     });
+    */
 
     /**
      * @event command
