@@ -168,8 +168,9 @@
      * @function addNotice
      */
     function addNotice() {
-        var value = $('#addNoticeInput').val();
+        var value = $('#addNoticeInput').val().replace(/\"/g, '%22');
         if (value.length > 0) {
+            value = value.replace(/%22/g, '\'\'');
             sendCommand('notice addsilent ' + value);
             $('#addNoticeInput').val('');
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);    
