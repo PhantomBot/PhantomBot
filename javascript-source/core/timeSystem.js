@@ -424,7 +424,7 @@
             for (i in $.users) {
                 username = $.users[i][0].toLowerCase();
                 if (!$.isMod(username) && !$.isAdmin(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp &&  parseInt($.getUserGroupId(username)) > regularsGroupId) {
-                    if (!$.isModv3(username, event.getTags()) && $.getUserGroupId(username) > 6) { // Added a second check here to be 100% sure the user is not a mod.
+                    if (!$.hasModeO(username) && $.getUserGroupId(username) > 6) { // Added a second check here to be 100% sure the user is not a mod.
                         $.setUserGroupById(username, regularsGroupId);
                         $.say($.lang.get(
                             'timesystem.autolevel.promoted',
