@@ -5,7 +5,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)/);
+        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)/);
 
     /**
      * @function getCustomAPIValue
@@ -82,6 +82,13 @@
             message = $.replace(message, '(downtime)', String($.getStreamDownTime()));
         }
 
+        if (message.match(/\(onlineonly\)/g)) {
+            if (!$.isOnline($.channelName)) {
+                return '';
+            }
+            message = $.replace(message, '(onlineonly)', '');
+        }
+
         if (message.match(/\(sender\)/g)) {
             message = $.replace(message, '(sender)', $.username.resolve(event.getSender()));
         }
@@ -117,6 +124,10 @@
 
         if (message.match(/\(price\)/g)) {
             message = $.replace(message, '(price)', String($.inidb.exists('pricecom', event.getCommand()) ? $.inidb.get('pricecom', event.getCommand()) : 0));
+        }
+
+        if (message.match(/\(pay\)/g)) {
+            message = $.replace(message, '(rewardcom)', String($.inidb.exists('paycom', event.getCommand()) ? $.inidb.get('paycom', event.getCommand()) : 0));
         }
 
         if (message.match(/\(#\)/g)) {
@@ -637,6 +648,40 @@
         }
 
         /**
+         * @commandpath paycom [command] [amount] - Set the amount of points a command should pay a viewer
+         */
+        if (command.equalsIgnoreCase('paycom')) {
+            if (!action || !subAction) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.pay.usage'));
+                return;
+            }
+
+            action = args[0].replace('!', '').toLowerCase();
+            if (!$.commandExists(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.pay.error.404'));
+                return;
+            } else if (isNaN(parseInt(subAction)) || parseInt(subAction) < 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.pay.error.invalid'));
+                return;
+            }
+
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.pay.success', action, subAction, $.pointNameMultiple));
+            $.inidb.set('paycom', action, subAction);
+            var list = $.inidb.GetKeyList('aliases', ''),
+                i;
+
+            for (i in list) {
+                if (list[i].equalsIgnoreCase(action)) {
+                    $.inidb.set('paycom', $.inidb.get('aliases', list[i]), parseInt(subAction));
+                }
+                if ($.inidb.get('aliases', list[i]).contains(action)) {
+                    $.inidb.set('paycom', list[i], parseInt(subAction));
+                }
+            }
+            $.log.event(sender + ' set payment on command !' + action + ' to ' + subAction + ' ' + $.pointNameMultiple);
+        }
+
+        /**
          * @commandpath listtags - Displays a list of tags that may be used in custom commands
          */
         if (command.equalsIgnoreCase('listtags')) {
@@ -803,6 +848,7 @@
         if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
             $.registerChatCommand('./commands/customCommands.js', 'addcom', 2);
             $.registerChatCommand('./commands/customCommands.js', 'pricecom', 2);
+            $.registerChatCommand('./commands/customCommands.js', 'paycom', 2);
             $.registerChatCommand('./commands/customCommands.js', 'aliascom', 2);
             $.registerChatCommand('./commands/customCommands.js', 'delalias', 2);
             $.registerChatCommand('./commands/customCommands.js', 'delcom', 2);

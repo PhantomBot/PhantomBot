@@ -78,6 +78,20 @@
     <div>
     <div id="_pointsConfigPanelDisabled" />
     <div id="_pointsConfigPanel">
+        <table>
+            <tr class="textList">
+                <td>Make Moderators & Administrator pay for commands</td>
+                <td style="width: 25px"><div id="priceComMods" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleModPriceCom();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+
         <div class="form-group" onkeypress="return event.keyCode != 13">
             <label for="setPointName">Set Alternate Point Name</label>
             <button type="button" class="btn btn-danger inline pull-right" onclick="$.clearPointName()">Delete Names</button>

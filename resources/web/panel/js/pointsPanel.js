@@ -26,6 +26,7 @@
 (function() {
 
     var sortType = 'alpha_asc',
+        priceComMods = false,
         modeIcon = [];
         modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
         modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
@@ -109,6 +110,15 @@
                 html += "</table>";
                 $("#userPointsTable").html(html);
                 handleInputFocus();
+            }
+
+            if (panelCheckQuery(msgObject, 'points_pricecommods')) {
+                var value = msgObject['results']['pricecomMods'];
+                if (value == null || value == undefined) {
+                    value = "false";
+                }
+                priceComMods = value;
+                $("#priceComMods").html(modeIcon[value]);
             }
 
             if (panelCheckQuery(msgObject, 'points_grouppoints')) {
@@ -201,6 +211,7 @@
         sendDBKeys("points_pointstable", "points");
         sendDBQuery("points_toplist", "settings", "topListAmountPoints");
         sendDBKeys("points_grouppoints", "grouppoints");
+        sendDBQuery("points_pricecommods", "settings", "pricecomMods");
         sendDBKeys("points_grouppointsoffline", "grouppointsoffline");
     };
 
@@ -406,6 +417,19 @@
         setTimeout(function() { sendCommand('reloadtop'); }, TIMEOUT_WAIT_TIME);
     };
 
+    /**
+     * @function toggleModPriceCom
+     */
+    function toggleModPriceCom() {
+        $("#priceComMods").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        if (priceComMods == "true") {
+            sendDBUpdate("points_modprice", "settings", "pricecomMods", "false");
+        } else {
+            sendDBUpdate("points_modprice", "settings", "pricecomMods", "true");
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    };
+
     // Import the HTML file for this panel.
     $("#pointsPanel").load("/panel/points.html");
 
@@ -442,4 +466,5 @@
     $.setPointsSort = setPointsSort;
     $.penaltyUser = penaltyUser;
     $.topListPoints = topListPoints;
+    $.toggleModPriceCom = toggleModPriceCom;
 })();

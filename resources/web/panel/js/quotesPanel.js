@@ -188,8 +188,16 @@
             setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 4);
         }
     }
-    
 
+    /**
+     * @function delQuoteMsg
+     */
+    function delQuoteMsg() {
+        sendDBDelete('quotes_quotemessage', 'settings', 'quoteMessage');
+        $('#quoteMessageInput').val('');
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 4);
+    }
+    
     // Import the HTML file for this panel.
     $("#quotesPanel").load("/panel/quotes.html");
 
@@ -220,4 +228,5 @@
     $.updateQuote = updateQuote;
     $.addQuote = addQuote;
     $.setQuoteMessage = setQuoteMessage;
+    $.delQuoteMsg = delQuoteMsg;
 })();

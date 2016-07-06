@@ -22,8 +22,10 @@
      * @returns {boolean}
      */
     function userExists(username) {
-        for (var i in users) {
-            if (users[i][0].equalsIgnoreCase(username)) {
+        var i;
+        username = username.toLowerCase();
+        for (i in users) {
+            if (users[i][0].equals(username)) {
                 return true;
             }
         }
@@ -540,12 +542,16 @@
      */
     $.bind('ircJoinComplete', function(event) {
         var usersIterator = event.getChannel().getNicks().iterator(),
-            username;
+            username,
+            userPushed;
 
         lastJoinPart = $.systemTime();
+
         while (usersIterator.hasNext()) {
             username = usersIterator.next().toLowerCase();
-            if (!$.userExists(username)) {
+            userPushed = userExists(username);
+            //$.consoleLn("JoinComplete::" + username + "::" + userPushed + "::Pushed::" + (!userPushed));
+            if (userPushed == false) {
                 users.push([username, $.systemTime()]);
                 $.checkGameWispSub(username);
             }
@@ -556,13 +562,17 @@
      * @event ircChannelJoinUpdate
      */
     $.bind('ircChannelJoinUpdate', function(event) {
-        var username = event.getUser().toLowerCase();
+        var username = event.getUser().toLowerCase(),
+            userPushed = userExists(username);
+
         if (!$.user.isKnown(username)) {
             $.setIniDbBoolean('visited', username, true);
         }
 
         lastJoinPart = $.systemTime();
-        if (!$.userExists(username)) {
+        //$.consoleLn("JoinUpdateEvent::" + username + "::Joined::" + userPushed + "::Pushed::" + (!userPushed));
+
+        if (userPushed == false) {
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }
@@ -574,30 +584,35 @@
      * from Twitch, this ensures that once a person at least
      * types in chat, that they are added to the $.users object.
      */
+    /* 
+    ** Removed this because it never worked in the first place cause is was using event.getUser(). And it slows down the bot when working.
     $.bind('ircChannelMessage', function(event) {
-        var username = event.getSender().toLowerCase();
-        if (!$.user.isKnown(username)) {
-            $.setIniDbBoolean('visited', username, true);
-        }
+        var username = event.getSender().toLowerCase(),
+            userPushed = userExists(username);
 
         lastJoinPart = $.systemTime();
-        if (!$.userExists(username)) {
+
+        if (userPushed == false) {
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }
-    });
+    });*/
     
     /**
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function(event) {
-        var username = event.getUser().toLowerCase();
+        var username = event.getUser().toLowerCase(),
+            userPushed = userExists(username);
+
         if (!$.user.isKnown(username)) {
             $.setIniDbBoolean('visited', username, true);
         }
 
         lastJoinPart = $.systemTime();
-        if (!$.userExists(username)) {
+        //$.consoleLn("JoinEvent::" + username + "::Joined::" + userPushed + "::Pushed::" + (!userPushed));
+
+        if (userPushed == false) {
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }
@@ -611,7 +626,7 @@
             i;
 
         for (i in users) {
-            if (users[i][0].equalsIgnoreCase(username)) {
+            if (users[i][0].equals(username)) {
                 users.splice(i, 1);
                 restoreSubscriberStatus(username, true);
             }

@@ -193,6 +193,32 @@
                 handleInputFocus();
             }
 
+            if (panelCheckQuery(msgObject, 'commands_payment')) {
+                if (msgObject['results'].length === 0) {
+                    $('#payCommandsList').html('<i>There are no commands with payments defined.</i>');
+                    return;
+                }
+                for (idx in msgObject['results']) {
+                    commandName = msgObject['results'][idx]['key'];
+                    commandValue = msgObject['results'][idx]['value'];
+                    html += '<tr style="textList">' +
+                    '    <td style="width: 10%">!' + commandName + '</td>' +
+                    '    <td style="vertical-align: middle">' +
+                    '        <form onkeypress="return event.keyCode != 13">' +
+                    '            <input style="width: 60%" type="text" id="editCommandPay_' + commandName + '"' +
+                    '                   value="' + commandValue + '" />' +
+                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateCommandPay(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCommandPay_' + commandName + '" onclick="$.deleteCommandPay(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
+                    '             </form>' +
+                    '        </form>' +
+                    '    </td>' +
+                    '</tr>';
+                }
+                html += "</table>";
+                $("#payCommandsList").html(html);
+                handleInputFocus();
+            }
+
             if (panelCheckQuery(msgObject, 'commands_disabled')) {
                 disabledCommands = [];
                 for (idx in msgObject['results']) {
@@ -265,6 +291,7 @@
         sendDBKeys("commands_commands", "command");
         sendDBKeys("commands_aliases", "aliases");
         sendDBKeys("commands_pricecom", "pricecom");
+        sendDBKeys("commands_payment", "paycom");
         sendDBKeys("commands_cooldown", "cooldown");
         sendDBKeys("commands_disabled", "disabledCommands");
     };
@@ -296,6 +323,17 @@
     function deleteCommandPrice(command) {
         $("#deleteCommandPrice_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delcomprice_" + command, "pricecom", command);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
+    };
+
+    /** 
+     * @function deleteCommandPay
+     * @param {String} command
+     */
+    function deleteCommandPay(command) {
+        $("#deleteCommandPay_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        sendDBDelete("commands_delcompay_" + command, "paycom", command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
     };
@@ -430,6 +468,25 @@
     };
 
     /**
+     * @function setCommandPay
+     */
+    function setCommandPay() {
+        var price = $("#setCommandPayInput").val();
+        var com = $("#setCommandPayInputCommand").val();
+
+        if (com.startsWith('!')) {
+            com = com.replace('!', '');
+        }
+
+        if (price.length != 0 && com.length != 0) {
+            sendDBUpdate("commandPay", "paycom", com.toLowerCase(), price);
+            $("#setCommandPayInput").val("");
+            $("#setCommandPayInputCommand").val("");
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    };
+
+    /**
      * @function updateCommandPrice
      */
     function updateCommandPrice(command) {
@@ -437,6 +494,19 @@
         $('#editCommandPrice_' + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         if (val.length > 0) {
             sendDBUpdate("commands_editprice_" + command, "pricecom", command.toLowerCase(), val);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
+        }
+    };
+
+    /**
+     * @function updateCommandPay
+     */
+    function updateCommandPay(command) {
+        var val = $('#editCommandPay_' + command).val();
+        $('#editCommandPay_' + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        if (val.length > 0) {
+            sendDBUpdate("commands_editpay_" + command, "paycom", command.toLowerCase(), val);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
         }
@@ -582,7 +652,9 @@
     $.deleteAlias = deleteAlias;
     $.commandPermission = commandPermission;
     $.setCommandPrice = setCommandPrice;
+    $.setCommandPay = setCommandPay;
     $.updateCommandPrice = updateCommandPrice;
+    $.updateCommandPay = updateCommandPay;
     $.addCooldown = addCooldown;
     $.deleteCooldown = deleteCooldown;
     $.toggleGlobalCooldown = toggleGlobalCooldown;
@@ -591,5 +663,6 @@
     $.setGlobalCooldownTime = setGlobalCooldownTime;
     $.commandEnable = commandEnable;
     $.deleteCommandPrice = deleteCommandPrice;
+    $.deleteCommandPay = deleteCommandPay;
     $.editCooldown = editCooldown;
 })();
