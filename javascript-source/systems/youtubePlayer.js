@@ -36,6 +36,7 @@
         songRequestsMaxParallel = $.getIniDbNumber('ytSettings', 'songRequestsMaxParallel');
         songRequestsMaxSecondsforVideo = $.getIniDbNumber('ytSettings', 'songRequestsMaxSecondsforVideo');
         playlistDJname = $.getIniDbString('ytSettings', 'playlistDJname');
+        announceInChat = $.getIniDbBoolean('ytSettings', 'announceInChat');
     };
 
     /**
@@ -958,6 +959,14 @@
             pActions,
             action,
             actionArgs;
+        
+        /** 
+        * Used by the panel
+        */
+        if (command.equalsIgnoreCase('reloadyt')) {
+            reloadyt();
+            return;
+        }
 
         /**
          * @commandpath ytp - Base command to manage YouTube player settings
@@ -1523,10 +1532,6 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.range', displayString));
                 }
             }
-        }
-
-        if (command.equalsIgnoreCase('reloadyt')) {
-            reloadyt();
         }
     });
 
