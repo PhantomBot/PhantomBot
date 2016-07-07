@@ -177,7 +177,7 @@
         $.inidb.set('betresults', 'winners', betWinners);
         $.inidb.set('betresults', 'amount', (betPot * betWinPercent));
 
-        $.say($.lang.get('betsystem.closed', betWinning, $.getPointsString(betPot * betWinPercent)));
+        $.say($.lang.get('betsystem.closed', betWinning, $.pointNameMultiple));
         resetBet();
         $.log.event(sender + ' closed a bet.');
     };
