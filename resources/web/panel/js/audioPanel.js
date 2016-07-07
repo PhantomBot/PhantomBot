@@ -32,47 +32,48 @@
      * desc is used to generate the buttons for the audio panel.
      */
     var sounds = [
-        { name: "beer_can_opening",	desc: "Beer Can Opening" },
-        { name: "bell_ring",		desc: "Bell Ring" },
-        { name: "branch_break",		desc: "Branch Break" },
-        { name: "button_click",		desc: "Button Click" },
-        { name: "button_click_on",	desc: "Button Click On" },
-        { name: "button_push",		desc: "Button Push" },
-        { name: "button_tiny",		desc: "Button Tiny" },
-        { name: "camera_flashing",	desc: "Camera Flashing" },
-        { name: "camera_flashing_2",	desc: "Camera Flashing 2" },
-        { name: "cd_tray",		desc: "CD Tray" },
-        { name: "computer_error",	desc: "Computer Error" },
-        { name: "door_bell",		desc: "Door Bell" },
-        { name: "door_bump",		desc: "Door Bump" },
-        { name: "glass",		desc: "Glass" },
-        { name: "keyboard_desk",	desc: "Keyboard Desk" },
-        { name: "light_bulb_breaking",	desc: "Light Bulb Breaking" },
-        { name: "metal_plate",		desc: "Metal Plate" },
-        { name: "metal_plate_2",	desc: "Metal Plate 2" },
-        { name: "pop_cork",		desc: "Pop Cork" },
-        { name: "snap",			desc: "Snap" },
-        { name: "staple_gun",		desc: "Staple Gun" },
-        { name: "tap",			desc: "Tap" },
-        { name: "water_droplet_2",	desc: "Water Droplet 2" },
-        { name: "water_droplet_3",	desc: "Water Droplet 3" },
-        { name: "water_droplet",	desc: "Water Droplet" },
-        { name: "sweetcrap",		desc: "Sweet Merciful Crap" },
-        { name: "badumtiss",		desc: "Ba-Dum-Tiss!" },
-        { name: "whaawhaa",		desc: "Whaa Whaa Whaa" },
-        { name: "nobodycares",		desc: "Nobody Cares" },
-        { name: "johncena",		desc: "John Cena" },
-        { name: "tutturuu",		desc: "Tutturuu" },
-        { name: "wilhelmscream",	desc: "Wilhelm Scream" },
-        { name: "airhorn",		desc: "Airhorn" },
-        { name: "crickets",		desc: "Crickets" },
-        { name: "drumroll",		desc: "Drum Roll" },
-        { name: "splat",		desc: "Splat" },
-        { name: "applause",		desc: "Applause" },
-        { name: "r2d2",			desc: "R2D2" },
-        { name: "yesyes",		desc: "M.Bison Yes Yes" },
-        { name: "goodgood",		desc: "Good Good" }
+        { name: "beer_can_opening", desc: "Beer Can Opening" },
+        { name: "bell_ring",        desc: "Bell Ring" },
+        { name: "branch_break",     desc: "Branch Break" },
+        { name: "button_click",     desc: "Button Click" },
+        { name: "button_click_on",  desc: "Button Click On" },
+        { name: "button_push",      desc: "Button Push" },
+        { name: "button_tiny",      desc: "Button Tiny" },
+        { name: "camera_flashing",  desc: "Camera Flashing" },
+        { name: "camera_flashing_2",    desc: "Camera Flashing 2" },
+        { name: "cd_tray",      desc: "CD Tray" },
+        { name: "computer_error",   desc: "Computer Error" },
+        { name: "door_bell",        desc: "Door Bell" },
+        { name: "door_bump",        desc: "Door Bump" },
+        { name: "glass",        desc: "Glass" },
+        { name: "keyboard_desk",    desc: "Keyboard Desk" },
+        { name: "light_bulb_breaking",  desc: "Light Bulb Breaking" },
+        { name: "metal_plate",      desc: "Metal Plate" },
+        { name: "metal_plate_2",    desc: "Metal Plate 2" },
+        { name: "pop_cork",     desc: "Pop Cork" },
+        { name: "snap",         desc: "Snap" },
+        { name: "staple_gun",       desc: "Staple Gun" },
+        { name: "tap",          desc: "Tap" },
+        { name: "water_droplet_2",  desc: "Water Droplet 2" },
+        { name: "water_droplet_3",  desc: "Water Droplet 3" },
+        { name: "water_droplet",    desc: "Water Droplet" },
+        { name: "sweetcrap",        desc: "Sweet Merciful Crap" },
+        { name: "badumtiss",        desc: "Ba-Dum-Tiss!" },
+        { name: "whaawhaa",     desc: "Whaa Whaa Whaa" },
+        { name: "nobodycares",      desc: "Nobody Cares" },
+        { name: "johncena",     desc: "John Cena" },
+        { name: "tutturuu",     desc: "Tutturuu" },
+        { name: "wilhelmscream",    desc: "Wilhelm Scream" },
+        { name: "airhorn",      desc: "Airhorn" },
+        { name: "crickets",     desc: "Crickets" },
+        { name: "drumroll",     desc: "Drum Roll" },
+        { name: "splat",        desc: "Splat" },
+        { name: "applause",     desc: "Applause" },
+        { name: "r2d2",         desc: "R2D2" },
+        { name: "yesyes",       desc: "M.Bison Yes Yes" },
+        { name: "goodgood",     desc: "Good Good" }
     ];
+    var announceInChat = false;
 
     // Configure the sound panel.
     $(document).ready(function() {
@@ -141,6 +142,15 @@
             handleInputFocus();
         }
 
+        if (panelCheckQuery(msgObject, 'audio_ytptoggle1')) {
+            if (msgObject['results']['announceInChat'] == "true") {
+                announceInChat = "true";
+            }
+            if (msgObject['results']['announceInChat'] == "false") {
+                announceInChat = "false";
+            }
+        }
+
         if (panelCheckQuery(msgObject, 'audio_userblacklist')) {
             if (msgObject['results'].length === 0) {
                 $('#ytplayerBUser').html('<i>There are no blacklisted users.</i>');
@@ -177,6 +187,7 @@
     function doQuery(message) {
         sendDBQuery('audio_ytpMaxReqs', 'ytSettings', 'songRequestsMaxParallel');
         sendDBQuery('audio_ytpMaxLength', 'ytSettings', 'songRequestsMaxSecondsforVideo');
+        sendDBQuery('audio_ytptoggle1', 'ytSettings', 'announceInChat');
         sendDBQuery('audio_ytpDJName', 'ytSettings', 'playlistDJname');
         sendDBKeys('audio_songblacklist', 'ytpBlacklistedSong');
         sendDBKeys('audio_userblacklist', 'ytpBlacklist');
@@ -292,7 +303,12 @@
      * @function toggleYouTubePlayerNotify
      */
     function toggleYouTubePlayerNotify() {
-        sendCommand('ytp togglenotify');
+        if (announceInChat == "true") {
+            sendDBUpdate('audio_setting', 'ytSettings', 'announceInChat', "false");
+        } else {
+            sendDBUpdate('audio_setting', 'ytSettings', 'announceInChat', "true");
+        }
+        setTimeout(function() { doQuery(); sendCommand('reloadyt'); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
@@ -303,8 +319,7 @@
         if (value.length > 0) {
             $('#ytpDJNameInput').val('Updating...');
             sendDBUpdate('audio_setting', 'ytSettings', 'playlistDJname', value);
-            sendCommand('reloadyt');
-            setTimeout(function() { doQuery(); $('#ytpDJNameInput').val('') }, TIMEOUT_WAIT_TIME * 2);
+            setTimeout(function() { doQuery(); $('#ytpDJNameInput').val(''); sendCommand('reloadyt'); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
