@@ -225,8 +225,8 @@
         if (command.equalsIgnoreCase('time')) {
             if (!hasPerm(event) || !action) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), $.getUserTimeString(sender)));
-            } else if (action && $.inidb.exists('time', action)) {
-                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), $.getUserTimeString(action)));
+            } else if (action && $.inidb.exists('time', action.toLowerCase())) {
+                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), $.getUserTimeString(action.toLowerCase())));
             } else {
                 subject = args[1];
                 timeArg = parseInt(args[2]);

@@ -73,7 +73,8 @@
         { name: "yesyes",       desc: "M.Bison Yes Yes" },
         { name: "goodgood",     desc: "Good Good" }
     ];
-    var announceInChat = false;
+    var announceInChat = false,
+        playlists = [];
 
     // Configure the sound panel.
     $(document).ready(function() {
@@ -142,6 +143,18 @@
             handleInputFocus();
         }
 
+        if (panelCheckQuery(msgObject, 'audio_ytplaylists')) {
+            if (msgObject['results'].length === 0) {
+                return;
+            }
+
+            playlists.splice(0);
+
+            for (var idx in msgObject['results']) {
+                playlists.push(msgObject['results'][idx]['value']);
+            } 
+        }
+
         if (panelCheckQuery(msgObject, 'audio_ytptoggle1')) {
             if (msgObject['results']['announceInChat'] == "true") {
                 announceInChat = "true";
@@ -191,6 +204,7 @@
         sendDBQuery('audio_ytpDJName', 'ytSettings', 'playlistDJname');
         sendDBKeys('audio_songblacklist', 'ytpBlacklistedSong');
         sendDBKeys('audio_userblacklist', 'ytpBlacklist');
+        sendDBKeys('audio_ytplaylists', 'ytPanelPlaylist');
     }
 
     /** 
@@ -352,6 +366,18 @@
     }
 
     /**
+     * @function loadYtplaylist
+     */
+    function loadYtplaylist() {
+        var value = $('#playlistImput').val();
+        if (value.length > 0) {
+            $('#playlistImput').val('Loading...');
+            sendCommand('playlist playlistloadpanel ' + value);
+            setTimeout(function() { doQuery(); $('#playlistImput').val(''); }, TIMEOUT_WAIT_TIME * 4);
+        }
+    }
+
+    /**
      * @function fillYouTubePlayerIframe
      */
     function fillYouTubePlayerIframe() {
@@ -420,4 +446,6 @@
     $.blacklistSong = blacklistSong;
     $.blacklistUser = blacklistUser;
     $.deleteUser = deleteUser;
+    $.playlists = playlists;
+    $.loadYtplaylist = loadYtplaylist;
 })();
