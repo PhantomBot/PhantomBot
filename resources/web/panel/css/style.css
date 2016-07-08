@@ -737,6 +737,13 @@ input, textarea {
     outline: none !important;
 }
 
+.ui-autocomplete {
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-right: 20px;
+} 
+
 ::-webkit-scrollbar {
    width: 13px;
 }
