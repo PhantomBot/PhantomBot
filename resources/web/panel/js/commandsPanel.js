@@ -30,7 +30,8 @@
         modCooldown = "",
         perUserCooldown = "",
         globalCooldownTime = "",
-        disabledCommands = [];
+        disabledCommands = [],
+        commands = [];
 
         modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
         modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
@@ -122,9 +123,11 @@
                 }
 
                 html = '<table>';
+                commands.splice(0);
                 for (var idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
+                    commands.push(commandName);
                     html += '<tr style="textList">' +
                             '    <td style="width: 15%">!' + commandName + '</td>' +
                             '    <td style="vertical-align: middle">' +
@@ -619,6 +622,22 @@
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
+    /**
+     * @function runCommand
+     */
+    function runCommand() {
+        var val = $('#commandImput').val();
+
+        if (val.length == 0) {
+            $('#commandImput').val('');
+            return;
+        }
+
+        sendCommand(val);
+        $('#commandImput').val('command sent!');
+        setTimeout(function() { $('#commandImput').val('') }, TIMEOUT_WAIT_TIME);
+    }
+
     // Import the HTML file for this panel.
     $("#commandsPanel").load("/panel/commands.html");
 
@@ -665,4 +684,6 @@
     $.deleteCommandPrice = deleteCommandPrice;
     $.deleteCommandPay = deleteCommandPay;
     $.editCooldown = editCooldown;
+    $.commands = commands;
+    $.runCommand = runCommand;
 })();

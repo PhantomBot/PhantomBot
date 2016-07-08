@@ -84,17 +84,22 @@
             </table>
         </div>
 
-        <script>
-            $("#tagHelpDialog").dialog({ autoOpen: false, maxHeight: 500, maxWidth: 500 });
-        </script>
-
         <div>
             <button type="button" class="btn btn-primary btn-xs inline pull-right"
                      onclick="$('#tagHelpDialog').dialog('open')"><small>Command variables</small></button>
             <br><br>
         </div>
     </div>
-    
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="runCustomCommand">Run a command</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.runCommand()">Run</button>
+                <input type="text" class="form-control" id="commandImput" placeholder="Command name" />
+            </div>
+        </form>
+        <br>
+
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="addCustomCommand">Add a command</label>
@@ -229,4 +234,6 @@
 <!-- Run the Acordion -->
 <script>$("#customCommandsAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
 <script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
+<script>$(function() {var command = $.commands; $("#commandImput").autocomplete({source: command});});</script>
+<script>$("#tagHelpDialog").dialog({ autoOpen: false, maxHeight: 500, maxWidth: 500 });</script>
 <script>handleInputFocus();</script>

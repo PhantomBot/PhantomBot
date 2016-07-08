@@ -49,6 +49,14 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="playlistName">Load Playlist</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.loadYtplaylist()">Load</button>
+                <input type="text" class="form-control" id="playlistImput" placeholder="Playlist Name" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="ytpDJName">Set Playlist DJ Name</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.setYouTubePlayerDJName()">Submit</button>
@@ -102,4 +110,5 @@
 
 <!-- Run the Acordion -->
 <script>$("#audioAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
+<script>$(function() {var playlist = $.playlists; $("#playlistImput").autocomplete({source: playlist, minLength:2});});</script>
 <script>handleInputFocus();</script>
