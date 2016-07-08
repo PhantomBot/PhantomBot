@@ -62,13 +62,19 @@
         directory on the bot host:<br>
         <pre>&lt;bot directory&gt;/web/panel/js/ion-sound/sounds/</pre>
 
-        Then, modify the following file on the bot host:<br>
+        (New Way) Now once you have added your sound to the file, you can go back to the audio panel on the web panel, 
+        and add the sound name and the sound description. The sound name needs to be the same as the sound file. 
+        This can only be undone manualy. Once you have it, it will be there and ready to use! <br>
+
+        (Old Way, only do this if you're not using the new way above) Then, modify the following file on the bot host:<br>
         <pre>&lt;bot directory&gt;/web/panel/js/audioPanel.js</pre>
 
         Modify the <i>sounds</i> array in the file, you will need to enter the base file <i>name</i> to let the engine
         know which file to look for, note that this does not include .mp3 or .ogg or .aac - simply provide the base of 
         the file name without an extension.  You must also provide a <i>desc</i>ription to be be displayed on the Audio
         Panel page. Simply create a new line in the format, as shown below:<br>
+        
+        <br>
         <pre>{ name: "sound_file",    desc: "A Random Sound" },</pre>
         Once you have added your sound, or sounds, restart the PhantomBot Control Panel.
     </div>
