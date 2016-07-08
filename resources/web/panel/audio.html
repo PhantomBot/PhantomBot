@@ -26,8 +26,16 @@
         Audio Panel
         <span id="ionSoundLoaded"><span style="float: right" class="redPill-sm">Initalizing</span></span>
     </h3>
+
     <div>
         <table>
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="soundName">Add a Sound</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.addSound()">Add</button>
+            <input type="text" class="form-control" id="soundImput" placeholder="sound name" />
+            <input type="text" class="form-control" id="soundImputDesc" placeholder="sound description" />
+        </div>
+        <br>
             <tr style="background: transparent">
               <td><div id="audioPanelButtons" /></td>
               <td style="width: 30px; float: right"><div id="ionSoundPlaying"><i class="fa fa-volume-up fa-3x" /></div></td>
