@@ -31,64 +31,9 @@
      * name is used by Ion.Sound to find files to play.
      * desc is used to generate the buttons for the audio panel.
      */
-    var sounds = [
-        { name: "beer_can_opening", desc: "Beer Can Opening" },
-        { name: "bell_ring",        desc: "Bell Ring" },
-        { name: "branch_break",     desc: "Branch Break" },
-        { name: "button_click",     desc: "Button Click" },
-        { name: "button_click_on",  desc: "Button Click On" },
-        { name: "button_push",      desc: "Button Push" },
-        { name: "button_tiny",      desc: "Button Tiny" },
-        { name: "camera_flashing",  desc: "Camera Flashing" },
-        { name: "camera_flashing_2",    desc: "Camera Flashing 2" },
-        { name: "cd_tray",      desc: "CD Tray" },
-        { name: "computer_error",   desc: "Computer Error" },
-        { name: "door_bell",        desc: "Door Bell" },
-        { name: "door_bump",        desc: "Door Bump" },
-        { name: "glass",        desc: "Glass" },
-        { name: "keyboard_desk",    desc: "Keyboard Desk" },
-        { name: "light_bulb_breaking",  desc: "Light Bulb Breaking" },
-        { name: "metal_plate",      desc: "Metal Plate" },
-        { name: "metal_plate_2",    desc: "Metal Plate 2" },
-        { name: "pop_cork",     desc: "Pop Cork" },
-        { name: "snap",         desc: "Snap" },
-        { name: "staple_gun",       desc: "Staple Gun" },
-        { name: "tap",          desc: "Tap" },
-        { name: "water_droplet_2",  desc: "Water Droplet 2" },
-        { name: "water_droplet_3",  desc: "Water Droplet 3" },
-        { name: "water_droplet",    desc: "Water Droplet" },
-        { name: "sweetcrap",        desc: "Sweet Merciful Crap" },
-        { name: "badumtiss",        desc: "Ba-Dum-Tiss!" },
-        { name: "whaawhaa",     desc: "Whaa Whaa Whaa" },
-        { name: "nobodycares",      desc: "Nobody Cares" },
-        { name: "johncena",     desc: "John Cena" },
-        { name: "tutturuu",     desc: "Tutturuu" },
-        { name: "wilhelmscream",    desc: "Wilhelm Scream" },
-        { name: "airhorn",      desc: "Airhorn" },
-        { name: "crickets",     desc: "Crickets" },
-        { name: "drumroll",     desc: "Drum Roll" },
-        { name: "splat",        desc: "Splat" },
-        { name: "applause",     desc: "Applause" },
-        { name: "r2d2",         desc: "R2D2" },
-        { name: "yesyes",       desc: "M.Bison Yes Yes" },
-        { name: "goodgood",     desc: "Good Good" },
-    ];
     var announceInChat = false,
-        playlists = [];
-
-    // Configure the sound panel.
-    $(document).ready(function() {
-        ion.sound({
-            sounds: sounds,
-            path: "/panel/js/ion-sound/sounds/",
-            preload: true,
-            volume: 1.0,
-            ready_callback: ionSoundLoaded,
-            ended_callback: clearIonSoundPlaying 
-        });
-
-        sendAudioHooksToCore();
-    });
+        playlists = [],
+        sounds = [];
 
     /**
      * @function onMessage
@@ -144,54 +89,25 @@
         }
 
         if (panelCheckQuery(msgObject, 'audio_hook')) {
+            var html = "<table>";
             sounds.splice(0);
-            sounds = [
-                { name: "beer_can_opening", desc: "Beer Can Opening" },
-                { name: "bell_ring",        desc: "Bell Ring" },
-                { name: "branch_break",     desc: "Branch Break" },
-                { name: "button_click",     desc: "Button Click" },
-                { name: "button_click_on",  desc: "Button Click On" },
-                { name: "button_push",      desc: "Button Push" },
-                { name: "button_tiny",      desc: "Button Tiny" },
-                { name: "camera_flashing",  desc: "Camera Flashing" },
-                { name: "camera_flashing_2",    desc: "Camera Flashing 2" },
-                { name: "cd_tray",      desc: "CD Tray" },
-                { name: "computer_error",   desc: "Computer Error" },
-                { name: "door_bell",        desc: "Door Bell" },
-                { name: "door_bump",        desc: "Door Bump" },
-                { name: "glass",        desc: "Glass" },
-                { name: "keyboard_desk",    desc: "Keyboard Desk" },
-                { name: "light_bulb_breaking",  desc: "Light Bulb Breaking" },
-                { name: "metal_plate",      desc: "Metal Plate" },
-                { name: "metal_plate_2",    desc: "Metal Plate 2" },
-                { name: "pop_cork",     desc: "Pop Cork" },
-                { name: "snap",         desc: "Snap" },
-                { name: "staple_gun",       desc: "Staple Gun" },
-                { name: "tap",          desc: "Tap" },
-                { name: "water_droplet_2",  desc: "Water Droplet 2" },
-                { name: "water_droplet_3",  desc: "Water Droplet 3" },
-                { name: "water_droplet",    desc: "Water Droplet" },
-                { name: "sweetcrap",        desc: "Sweet Merciful Crap" },
-                { name: "badumtiss",        desc: "Ba-Dum-Tiss!" },
-                { name: "whaawhaa",     desc: "Whaa Whaa Whaa" },
-                { name: "nobodycares",      desc: "Nobody Cares" },
-                { name: "johncena",     desc: "John Cena" },
-                { name: "tutturuu",     desc: "Tutturuu" },
-                { name: "wilhelmscream",    desc: "Wilhelm Scream" },
-                { name: "airhorn",      desc: "Airhorn" },
-                { name: "crickets",     desc: "Crickets" },
-                { name: "drumroll",     desc: "Drum Roll" },
-                { name: "splat",        desc: "Splat" },
-                { name: "applause",     desc: "Applause" },
-                { name: "r2d2",           desc: "R2D2" },
-                { name: "yesyes",     desc: "M.Bison Yes Yes" },
-                { name: "goodgood",       desc: "Good Good" },
-            ];
+
             for (var idx in msgObject['results']) {
-                var a = msgObject['results'][idx]['value'];
-                var b = msgObject['results'][idx]['key'];
-                sounds.push({name: a, desc: b});
+
+                sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
+
+                html += "<tr class=\"textList\">" +
+                    "    <td style=\"width: 5%\">" +
+                    "        <div id=\"deleteAudio_" + msgObject['results'][idx]['key'] + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
+                    "             onclick=\"$.deleteAudio('" + msgObject['results'][idx]['key'] + "')\"><i class=\"fa fa-trash\" />" +
+                    "        </div>" +
+                    "    </td>" +
+                    "    <td>" + msgObject['results'][idx]['value'] + "</td>" +
+                    "</tr>";
             }
+            html += "</table>";
+            $('#audioHooks').html(html);
+            handleInputFocus();
 
             setTimeout(function () {
                 $(document).ready(function() {
@@ -270,7 +186,7 @@
         sendDBKeys('audio_songblacklist', 'ytpBlacklistedSong');
         sendDBKeys('audio_userblacklist', 'ytpBlacklist');
         sendDBKeys('audio_ytplaylists', 'ytPanelPlaylist');
-        sendDBKeys('audio_hook', 'audioHook');
+        sendDBKeys('audio_hook', 'audio_hooks');
     }
 
     /** 
@@ -281,12 +197,23 @@
         var desc = $('#soundImputDesc').val();
 
         if (name.length && desc.length != 0) {
-            sendDBUpdate('audio_hook_add', 'audioHook', desc, name);
+            sendDBUpdate('audio_hook_add', 'audio_hooks', name, desc);
         }
 
         $('#soundImput').val('');
         $('#soundImputDesc').val('');
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    };
+
+    /** 
+     * @function addSound
+     */
+    function deleteAudio(audio) {
+        if (audio.length != 0) {
+            $("#deleteAudio_" + audio).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+            sendDBDelete('deleteAudio_' + audio, 'audio_hooks', audio);
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     };
 
     /** 
@@ -531,4 +458,5 @@
     $.playlists = playlists;
     $.loadYtplaylist = loadYtplaylist;
     $.addSound = addSound;
+    $.deleteAudio = deleteAudio;
 })();
