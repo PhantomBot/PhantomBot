@@ -8,7 +8,8 @@
         totalEntries = 0,
         lastTotalEntries = 0,
         totalTickets = 0,
-        a = '';
+        a = '',
+        interval;
 
     function reloadRaffle() {
         msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
@@ -48,12 +49,12 @@
         entries = [];
 
         if (msgToggle) {
-            setInterval(function () {
+            interval = setInterval(function () {
                 if (totalEntries > lastTotalEntries) {
                     $.say($.lang.get('ticketrafflesystem.entered', totalEntries, totalTickets));
                     lastTotalEntries = totalEntries;
                 }
-            }, 6e4, 'traffleTimer');
+            }, 6e4);
         }
 
         $.log.event(user + ' opened a ticket raffle.');
@@ -65,7 +66,7 @@
             return;
         }
 
-        clearInterval('traffleTimer');
+        clearInterval(interval);
 
         raffleStatus = false;
         followers = false;

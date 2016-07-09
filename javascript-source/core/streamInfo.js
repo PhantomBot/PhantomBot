@@ -3,6 +3,7 @@
     var playTime = null;
     var lastGame = null;
     var currentGame = null;
+    var interval;
 
     /**
      * @function updatePlayTime()
@@ -45,12 +46,13 @@
      * @function getPlayTime()
      * @export $
      */
-    function getPlayTime() { 
-        if (playTime != null) {
+    function getPlayTime() {
+        var t = $.inidb.get('panelstats', 'playTimeStart');
+        if (t != 0) {
             var time = $.systemTime() - playTime;
             return $.getTimeStringMinutes(time / 1000);
         } else {
-            return '0 seconds'; //Put this here, but it should never happen.
+            return getStreamUptime($.channelName);
         }
     };
 
@@ -146,8 +148,20 @@
             var uptime = $.twitchcache.getStreamUptimeSeconds();
 
             if (uptime === 0) {
-                return false;
+                var stream = $.twitch.GetStream(channelName),
+                    now = new Date(),
+                    createdAtDate,
+                    time;
+    
+                if (stream.isNull('stream')) {
+                    return false;
+                }
+
+                createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
+                time = now - createdAtDate;
+                return $.getTimeString(time / 1000);
             }
+
             return $.getTimeString(uptime);
         } else {
             var stream = $.twitch.GetStream(channelName),
@@ -350,9 +364,9 @@
     /**
      * Execute the updatePlayTime function.
      */
-    setInterval(function() {
+    interval = setInterval(function() {
         updatePlayTime();
-    }, 6e4, 'updatePlayTime');
+    }, 6e4);
 
     /** Export functions to API */
     $.getPlayTime = getPlayTime;

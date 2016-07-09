@@ -80,7 +80,7 @@
             } else {
                 if (args[0].equalsIgnoreCase('set')) {
                     if (args.length == 1) {
-                        $.say($.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
                         return;
                     }
                     argsString = args.splice(1).join(' ');
@@ -91,7 +91,7 @@
                     $.updateGame($.channelName, argsString, sender, true);
                     return;
                 } else {
-                    $.say($.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
                     return;
                 }
             }
@@ -108,7 +108,7 @@
             } else {
                 if (args[0].equalsIgnoreCase('set')) {
                     if (args.length == 1) {
-                        $.say($.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
                         return;
                     }
                     argsString = args.splice(1).join(' ');
@@ -119,7 +119,7 @@
                     $.updateStatus($.channelName, argsString, sender, true); // used for the panel.
                     return;
                 } else {
-                    $.say($.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
                     return;
                 }
             }

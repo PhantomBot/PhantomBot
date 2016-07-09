@@ -30,6 +30,8 @@ import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcModerationEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import me.mast3rplan.phantombot.event.irc.clearchat.IrcClearchatEvent;
+import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
+import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.ModeAdjustment;
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -104,6 +106,11 @@ public class IrcEventHandler implements IRCEventListener {
             String cmessage = cmessageEvent.getMessage();
 
             com.gmt2001.Console.debug.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
+
+            if (cusername.toLowerCase().equals("twitchnotify") && cmessage.contains("subscribed!")) {
+                String sub = cmessage.substring(0, cmessage.indexOf(" ", 1));
+                PhantomBot.instance().getScriptEventManagerInstance().runDirect(new NewSubscriberEvent(session, cchannel, sub));
+            }
 
             if (PhantomBot.enableDebugging) {
                 com.gmt2001.Console.debug.println("Channel Message Tags");
@@ -285,22 +292,17 @@ public class IrcEventHandler implements IRCEventListener {
             if (event.command().equalsIgnoreCase("USERNOTICE")) {
                 Map<String, String> ceventTags = event.tags();
                 String username = "";
-                String system_msg = "";
                 String months = "";
 
-                // Captures the user defined message, we using aren't this yet, but adding the code for it.
-                // Note that Twitch sends \s as spaces and this would need to be transformed to spaces.
-                //
-                if (ceventTags.containsKey("system-msg")) {
-                    system_msg = ceventTags.get("system-msg");
-                }
                 if (ceventTags.containsKey("login")) {
                     username = ceventTags.get("login");
                 }
+
                 if (ceventTags.containsKey("msg-param-months")) {
                     months = ceventTags.get("msg-param-months");
                 }
-                eventBus.post(new IrcChannelMessageEvent(session, "twitchnotify", username + " just subscribed for " + months + " months in a row!", PhantomBot.instance().getChannel()));
+
+                PhantomBot.instance().getScriptEventManagerInstance().runDirect(new NewReSubscriberEvent(session, session.getChannel(event.arg(0)), username, months));
             }
 
             if (event.command().equalsIgnoreCase("CLEARCHAT")) {

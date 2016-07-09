@@ -4,11 +4,12 @@
  * Pull down emotes from Twitch, BetterTTV and FrankerZ.
  */
 (function() {
-    var emotesRegExpList = [];
+    var emotesRegExpList = [],
+        timeout;
 
     // Load an existing emote RegExp cache.  Wait to see if there was a problem that needs us to load
     // from cache before doing so.  This saves CPU cycles and memory.
-    setTimeout(function() { if (emotesRegExpList.length === 0) { loadEmoteCache(); } }, 120e3, 'emoteCheck');
+    timeout = setTimeout(function() { if (emotesRegExpList.length === 0) { loadEmoteCache(); } clearTimeout(timeout); }, 120e3);
 
     /**
      * @event emotesGet

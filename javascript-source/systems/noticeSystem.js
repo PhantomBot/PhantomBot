@@ -11,7 +11,8 @@
         numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
         noticeOffline = $.getSetIniDbBoolean('noticeSettings', 'noticeOfflineToggle', false),
         messageCount = 0,
-        RandomNotice = 0;
+        RandomNotice = 0,
+        interval;
 
     /**
      /* @function reloadNotices
@@ -68,7 +69,8 @@
         // Only update noticeInterval if it changed and then reset the timer.
         if (noticeInterval != $.getIniDbNumber('noticeSettings', 'interval')) {
             noticeInterval = $.getIniDbNumber('noticeSettings', 'interval');
-            setInterval(function() {
+            clearInterval(interval);
+            interval = setInterval(function() {
                 if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
                     if (noticeReqMessages < 0 || messageCount >= noticeReqMessages) {
                         if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
@@ -77,7 +79,7 @@
                         }
                     }
                 }
-            }, noticeInterval * 60 * 1000, 'noticeTimer');
+            }, noticeInterval * 6e4);
         }
     };
 
@@ -250,17 +252,7 @@
                     $.inidb.set('noticeSettings', 'interval', args[1]);
                     noticeInterval = parseInt(args[1]);
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-inteval-success'));
-
-                    setInterval(function() {
-                        if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
-                            if (noticeReqMessages < 0 || messageCount >= noticeReqMessages) {
-                                if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
-                                    sendNotice();
-                                    messageCount = 0;
-                                }
-                            }
-                        }
-                    }, noticeInterval * 60 * 1000, 'noticeTimer');
+                    reloadNoticeSettings()
                     return;
                 }
             }
@@ -328,7 +320,7 @@
     });
 
     // Set the interval to announce
-    setInterval(function() {
+    interval = setInterval(function() {
         if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
             if (noticeReqMessages < 0 || messageCount >= noticeReqMessages) {
                 if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
@@ -337,7 +329,7 @@
                 }
             }
         }
-    }, noticeInterval * 60 * 1000, 'noticeTimer');
+    }, noticeInterval * 6e4);
 
     /**
      * @event initReady

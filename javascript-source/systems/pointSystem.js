@@ -43,9 +43,9 @@
             defaultPointsName(false);
             registerNewPointsCommands($.inidb.get('temppoints', 'pointsname'), $.inidb.get('temppoints', 'pointsname2'), true);
         }
-        setTimeout(function () {
+        var timeout = setTimeout(function () {
             $.inidb.RemoveFile('temppoints');
-        }, 9000, 'pointsnamereset');
+        }, 9000);
     };
 
     /**
@@ -709,7 +709,7 @@
     });
 
     // Set the timer for the points payouts
-    setInterval(function() {
+    var interval = setInterval(function() {
         runPointsPayout();
     }, 6e4);
 
