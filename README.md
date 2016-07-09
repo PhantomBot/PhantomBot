@@ -1,6 +1,7 @@
 # PhantomBot  
 
 #### *PhantomBot is a multi-purpose, cross-platform, user-hosted chat bot for Twitch.TV*
+ [ ![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot) 
  [<img src="https://discordapp.com/api/servers/107910097937682432/widget.png?style=banner5?style=banner5">](https://discord.gg/0bN1J1JWPFGCxOFM)  
   
 Dowload your copy over on our [website](https://phantombot.net/downloads)!
@@ -31,4 +32,3 @@ The Java sources are tested against:
   - OracleJDK 7
   - OpenJDK 7
  
-[ ![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot) 
