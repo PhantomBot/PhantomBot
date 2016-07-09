@@ -10,7 +10,8 @@
         keepTimeWhenOffline = $.getSetIniDbBoolean('timeSettings', 'keepTimeWhenOffline', false),
         modTimePermToggle = $.getSetIniDbBoolean('timeSettings', 'modTimePermToggle', false),
         hoursForLevelUp = $.getSetIniDbNumber('timeSettings', 'timePromoteHours', 50),
-        regularsGroupId = 6;
+        regularsGroupId = 6, 
+        interval;
 
     /**
      * @function updateTimeSettings
@@ -226,7 +227,7 @@
             if (!hasPerm(event) || !action) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), $.getUserTimeString(sender)));
             } else if (action && $.inidb.exists('time', action.toLowerCase())) {
-                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), $.getUserTimeString(action.toLowerCase())));
+                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), $.getUserTimeString(action)));
             } else {
                 subject = args[1];
                 timeArg = parseInt(args[2]);
@@ -397,7 +398,7 @@
         }
 
         if (command.equalsIgnoreCase('uptime')) {
-            $.say(($.getStreamUptime($.channelName) ? $.lang.get('timesystem.uptime', $.username.resolve($.channelName), $.getStreamUptime($.channelName)) : $.lang.get('timesystem.uptime.offline', $.username.resolve($.channelName))));
+            $.say(($.getStreamUptime($.channelName) ? $.lang.get('timesystem.uptime', $.channelName, $.getStreamUptime($.channelName)) : $.lang.get('timesystem.uptime.offline', $.username.resolve($.channelName))));
         }
 
         if (command.equalsIgnoreCase('updatetimesettings')) {
@@ -406,7 +407,7 @@
     });
 
     // Set an interval for increasing all current users logged time
-    setInterval(function() {
+    interval = setInterval(function() {
         var i,
             username;
         if (!$.bot.isModuleEnabled('./core/timeSystem.js')) {
@@ -436,7 +437,7 @@
                 }
             }
         }
-    }, 6e4, 'autoPromoteTimer');
+    }, 6e4);
 
     /**
      * @event initReady

@@ -13,7 +13,8 @@
         gwSubUsers = [];
         modListUsers = [],
         users = [],
-        lastJoinPart = $.systemTime();
+        lastJoinPart = $.systemTime(),
+        interval;
 
     /**
      * @function userExists
@@ -864,9 +865,9 @@
         }
     });
 
-    setInterval(function () {
+    interval = setInterval(function () {
         modCheck();
-    }, 120 * 60 * 1000, 'modCheck');
+    }, 120 * 6e4);
 
     // Load groups and generate default groups if they don't exist
     reloadGroups();

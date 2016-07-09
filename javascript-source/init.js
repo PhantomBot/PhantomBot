@@ -745,14 +745,13 @@
          */
         $api.on($script, 'ircChannelMessage', function(event) {
             if (event.getSender().equalsIgnoreCase('jtv') || event.getSender().equalsIgnoreCase('twitchnotify')) {
-                $.checkForSubs(event);
                 callHook('ircPrivateMessage', event, false);
             } else {
                 callHook('ircChannelMessage', event, false);
 
                 if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
                     $.panelDB.updateChatLinesDB(event.getSender().toLowerCase());
-                } 
+                }
             }
         });
 
@@ -1216,6 +1215,21 @@
          */
         $api.on($script, 'twitchGameChange', function(event) {
             callHook('twitchGameChange', event, false);
+        });
+
+        /**
+         * @event api-NewSubscriberEvent
+         */
+        $api.on($script, 'NewSubscriber', function(event) {
+            callHook('NewSubscriber', event, false);
+        });
+
+        /**
+         * @event api-NewReSubscriberEvent
+         */
+
+        $api.on($script, 'NewReSubscriber', function(event) {
+            callHook('NewReSubscriber', event, false);
         });
 
         $.log.event('init.js api\'s loaded.');

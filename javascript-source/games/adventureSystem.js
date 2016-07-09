@@ -25,7 +25,8 @@
         tgFoodDecr = 0.25,
         currentAdventure = 1,
         stories = [],
-        moduleLoaded = false;
+        moduleLoaded = false,
+        lastStory;
 
 
     function reloadAdventure () {
@@ -262,7 +263,6 @@
         var progress = 0,
             story,
             line,
-            lastStory,
             t;
 
         currentAdventure.gameState = 2;

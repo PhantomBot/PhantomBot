@@ -97,7 +97,7 @@
         blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase'),
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
         warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
-        resetTime = (warningResetTime * 60 * 1000) + $.systemTime(),
+        resetTime = (warningResetTime * 6e4),
         messageTime = 0,
         warning = '',
         i;
@@ -200,7 +200,7 @@
         blacklistMessage = $.getIniDbString('chatModerator', 'blacklistMessage');
         warningResetTime = $.getIniDbNumber('chatModerator', 'warningResetTime');
         msgCooldownSec = $.getIniDbNumber('chatModerator', 'msgCooldownSec');
-        resetTime = (warningResetTime * 60 * 1000) + $.systemTime();
+        resetTime = (warningResetTime * 6e4);
 
         loadBlackList();
         loadWhiteList();
@@ -233,7 +233,7 @@
         $.say('.timeout ' + user + ' ' + time + ' ' + reason);
         setTimeout(function() {
             $.say('.timeout ' + user + ' ' + time + ' ' + reason);
-        }, 1100);
+        }, 1000);
     };
 
     /**
@@ -244,19 +244,19 @@
             var time = timeouts[user] - $.systemTime();
             if (time > 0) {
                 timeoutUserFor(user, timeoutT, silent, reason);
-                timeouts[user] = resetTime;
+                timeouts[user] = resetTime + $.systemTime();
                 warning = $.lang.get('chatmoderator.timeout');
                 panelLog(user);
             } else {
                 timeoutUserFor(user, warningT, silent, reason);
-                timeouts[user] = resetTime;
+                timeouts[user] = resetTime + $.systemTime();
                 warning = $.lang.get('chatmoderator.warning');
                 panelLog(user);
             }
             return;
         }
         timeoutUserFor(user, warningT, silent, reason);
-        timeouts[user] = resetTime;
+        timeouts[user] = resetTime + $.systemTime();
         warning = $.lang.get('chatmoderator.warning');
         panelLog(user);
     };

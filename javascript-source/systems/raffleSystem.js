@@ -9,7 +9,8 @@
         timer = 0,
         totalEntries = 0,
         lastTotalEntries = 0,
-        a = '';
+        a = '', 
+        interval;
 
     function reloadRaffle() {
         noRepickSame = $.getIniDbBoolean('settings', 'noRepickSame');
@@ -73,25 +74,21 @@
         raffleStatus = true;
 
         if (timer > 0) {
-            setTimeout(function() {
-                if (raffleStatus) {
-                    $.say($.lang.get('rafflesystem.warn', key));
-                }
+            var timeout = setTimeout(function() {
+                $.say($.lang.get('rafflesystem.warn', key));
             }, (timer / 2) * 1000);
-            setTimeout(function() {
-                if (raffleStatus) {
-                    closeRaffle();
-                }
+            timeout = setTimeout(function() {
+                closeRaffle();
             }, timer * 1000);
         }
 
         if (msgToggle) {
-            setInterval(function () {
+            interval = setInterval(function() {
                 if (totalEntries > lastTotalEntries) {
                     $.say($.lang.get('rafflesystem.entered', totalEntries));
                     lastTotalEntries = totalEntries;
                 }
-            }, 6e4, 'raffleTimer');
+            }, 6e4);
         }
 
         $.log.event(user + ' opened a raffle with the keyword !' + key);
@@ -108,7 +105,8 @@
         }
         $.inidb.del('raffle', 'command');
 
-        clearInterval('raffleTimer');
+        clearInterval(interval);
+        clearTimeout(timeout);
 
         resetRaffle();
         $.unregisterChatCommand(key);

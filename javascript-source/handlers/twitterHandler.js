@@ -14,7 +14,8 @@
 (function() {
     var randPrev = 0,
         onlinePostDelay = 360 * 6e4, // 6 hour cooldown
-        gameChangeDelay = 60 * 6e4; // 1 hour cooldown
+        gameChangeDelay = 60 * 6e4, // 1 hour cooldown
+        interval;
  
     /* Set default values for all configuration items. */
     $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
@@ -413,9 +414,9 @@
         }
     }
 
-    setInterval(function() { 
+    interval = setInterval(function() { 
         checkAutoUpdate(); 
-    }, 6e4, 'checkAutoUpdate');
+    }, 6e4);
 
     /**
      * @event initReady

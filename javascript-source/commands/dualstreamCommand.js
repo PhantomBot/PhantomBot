@@ -3,22 +3,24 @@
         timerToggle = $.getSetIniDbBoolean('dualStreamCommand', 'timerToggle', false),
         timerInterval = $.getSetIniDbNumber('dualStreamCommand', 'timerInterval', 20),
         reqMessages = $.getSetIniDbNumber('dualStreamCommand', 'reqMessages', 10),
-        messageCount = 0;
+        messageCount = 0,
+        interval;
 
     function reloadMulti() {
         otherChannels = $.getIniDbString('dualStreamCommand', 'otherChannels');
         timerToggle = $.getIniDbBoolean('dualStreamCommand', 'timerToggle');
         timerInterval = $.getIniDbNumber('dualStreamCommand', 'timerInterval');
         reqMessages = $.getIniDbNumber('dualStreamCommand', 'reqMessages');
+        clearInterval(interval);
 
-        setInterval(function() {
+        interval = setInterval(function() {
             if (timerToggle && otherChannels != 'Channel-1 Channel-2') {
                 if ($.isOnline($.channelName) && messageCount >= reqMessages) {
                     $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + '/' + otherChannels.replace(' ', '/'));
                     messageCount = 0;
                 }
             }
-        }, timerInterval * 60 * 1000, 'dualStreamTimer');
+        }, timerInterval * 6e4);
     };
 
     $.bind('ircChannelMessage', function() {
@@ -125,16 +127,7 @@
                 $.inidb.set('dualStreamCommand', 'timerInterval', timerInterval);
                 $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timerinterval.set', timerInterval));
                 $.log.event(sender + ' changed the multi timer interval to ' + timerInterval + ' seconds');
-
-                setInterval(function() {
-                    if (timerToggle && otherChannels != 'Channel-1 Channel-2') {
-                        if ($.isOnline($.channelName) && messageCount >= reqMessages) {
-                            $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + otherChannels);
-                            messageCount = 0;
-                        }
-                    }
-                }, timerInterval * 60 * 1000, 'dualStreamTimer');
-                return;
+                reloadMulti();
             }
 
             /**
@@ -158,14 +151,14 @@
         }
     });
 
-    setInterval(function() {
+    interval = setInterval(function() {
         if (timerToggle && otherChannels != 'Channel-1 Channel-2') {
             if ($.isOnline($.channelName) && messageCount >= reqMessages) {
                 $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + '/' + otherChannels.replace(' ', '/'));
                 messageCount = 0;
             }
         }
-    }, timerInterval * 60 * 1000, 'dualStreamTimer');
+    }, timerInterval * 6e4);
 
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./commands/dualstreamCommand.js')) {
