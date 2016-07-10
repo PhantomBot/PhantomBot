@@ -133,7 +133,10 @@
                             "</tr>";
                 }
                 html += "</table>";
-                $("#userTimeTable").html(html);
+
+                setTimeout(function () {
+                    $("#userTimeTable").html(html);
+                }, 500);
                 handleInputFocus();
             }
         }
