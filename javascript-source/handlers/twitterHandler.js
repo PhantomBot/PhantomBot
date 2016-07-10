@@ -13,7 +13,7 @@
  */
 (function() {
     var randPrev = 0,
-        onlinePostDelay = 360 * 6e4, // 6 hour cooldown
+        onlinePostDelay = 480 * 6e4, // 8 hour cooldown
         gameChangeDelay = 60 * 6e4, // 1 hour cooldown
         interval;
  
@@ -416,7 +416,7 @@
 
     interval = setInterval(function() { 
         checkAutoUpdate(); 
-    }, 6e4);
+    }, 8e4);
 
     /**
      * @event initReady
