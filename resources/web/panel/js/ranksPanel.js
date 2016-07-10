@@ -59,25 +59,22 @@
             }
 
             if (panelCheckQuery(msgObject, 'ranks_ranksmapping')) {
-                html = "<br><table><tr><th /><th>Hours in Chat</th><th>Rank Name</th></tr>";
+                html = "<br><table><th>&nbsp;&nbsp;&nbsp; Hours &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rank Name</th></tr>";
                 ranksData = msgObject['results'];
                 ranksData.sort(sortRanks);
                 for (idx = 0; idx < ranksData.length; idx++) {
                     hours = ranksData[idx]['key'];
                     rank = ranksData[idx]['value'];
-
                     html += "<tr class=\"textList\">" +
-                            "    <td style=\"width: 15px\">" +
-                            "        <div id=\"deleteRankIcon_" + hours + "\" class=\"button\"" +
-                            "             onclick=\"$.deleteRank('" + hours + "')\"><i class=\"fa fa-trash\" />" +
-                            "        </div>" + 
-                            "    </td>" +
-                            "    <td style=\"width: 8em\">" + hours + "</td>" +
                             "    <td><form onkeypress=\"return event.keyCode != 13\">" +
+                            "        <input type=\"text\" id=\"inlineRankHoursEdit_" + hours + "\"" +
+                            "               value=\"" + hours + "\" style=\"width: 10%\"/>" +
                             "        <input type=\"text\" id=\"inlineRankNameEdit_" + hours + "\"" +
-                            "               value=\"" + rank + "\" style=\"width: 80%\"/>" +
+                            "               value=\"" + rank + "\" style=\"width: 50%\"/>" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" + 
                             "                onclick=\"$.updateRank('" + hours + "')\"><i class=\"fa fa-pencil\" />" +
+                            "        <button type=\"button\" class=\"btn btn-default btn-xs\" id=\"deleteRank_" + hours + "\"" + 
+                            "                onclick=\"$.deleteRank('" + hours + "')\"><i class=\"fa fa-trash\" />" +
                             "        </button>" +
                             "    </form></td>" +
                             "</tr>";
@@ -225,8 +222,12 @@
      */
     function updateRank(rankKey) {
         var rankName = $("#inlineRankNameEdit_" + rankKey).val();
-        sendDBUpdate("ranks_ranksUpdate", "ranksMapping", rankKey, rankName);
+        var rankHours = $("#inlineRankHoursEdit_" + rankKey).val();
+        sendDBDelete("ranks_ranksUpdate", "ranksMapping", rankKey);
+        sendDBUpdate("ranks_ranksUpdate", "ranksMapping", rankHours, rankName);
         $("#inlineRankNameEdit_" + rankKey).val(rankName);
+        $("#inlineRankHoursEdit_" + rankKey).val(rankHours);
+        setTimeout(function() { doQuery(); sendCommand('rankreloadtable'); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -234,9 +235,9 @@
      * @param {String} rankKey
      */
     function deleteRank(rankKey) {
-        $("#deleteRankIcon_" + rankKey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteRank_" + rankKey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("ranks_ranksDelete", "ranksMapping", rankKey);
-        setTimeout(function() { doQuery() }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); sendCommand('rankreloadtable'); }, TIMEOUT_WAIT_TIME);
     }
 
     // Import the HTML file for this panel.
