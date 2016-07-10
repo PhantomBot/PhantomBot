@@ -108,7 +108,9 @@
                             "</tr>";
                 }
                 html += "</table>";
-                $("#userPointsTable").html(html);
+                setTimeout(function () {
+                    $("#userPointsTable").html(html);
+                }, 500);
                 handleInputFocus();
             }
 
