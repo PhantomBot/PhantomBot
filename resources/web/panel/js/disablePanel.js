@@ -115,6 +115,9 @@
             if (panelMatch(module, './systems/pollSystem.js')) {
                 handlePanel('./systems/pollSystem.js', '#_pollPanel', moduleEnabled);
             }
+            if (panelMatch(module, './systems/queueSystem.js')) {
+                handlePanel('./systems/queueSystem.js', '#_queuePanel', moduleEnabled);
+            }
             if (panelMatch(module, './handlers/hostHandler.js')) {
                 handlePanel('./handlers/hostHandler.js', '#_hostChannelPanel', moduleEnabled);
                 handlePanel('./handlers/hostHandler.js', '#_hostAlertsPanel', moduleEnabled);
