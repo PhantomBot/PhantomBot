@@ -25,9 +25,7 @@
             lastGame = currentGame;
             playTime = $.systemTime();
 
-            if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-                $.inidb.set('panelstats', 'playTimeStart', playTime);
-            }
+            $.inidb.set('panelstats', 'playTimeStart', playTime);
         }
     };
 
@@ -47,8 +45,8 @@
      * @export $
      */
     function getPlayTime() {
-        var t = $.inidb.get('panelstats', 'playTimeStart');
-        if (t != 0) {
+        var t = parseInt($.inidb.get('panelstats', 'playTimeStart'));
+        if (t != 0 && t != null) {
             var time = $.systemTime() - playTime;
             return $.getTimeStringMinutes(time / 1000);
         } else {
