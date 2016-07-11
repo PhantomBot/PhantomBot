@@ -119,7 +119,7 @@
      * @returns {string}
      */
     function resolveRank(username) {
-        return (getRank(username.toLowerCase()) + ' ' + $.username.resolve(username.toLowerCase())).trim();
+        return (getRank(username.toLowerCase()) + ' ' + $.username.resolve(username)).trim();
     }
 
     /**
