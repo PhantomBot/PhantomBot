@@ -1811,10 +1811,10 @@ public class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join: ");
                 channel = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a username for the web panel: ");
+                com.gmt2001.Console.out.print("Please enter a custom username for the web panel: ");
                 paneluser = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a password for the web panel: ");
+                com.gmt2001.Console.out.print("Please enter a custom password for the web panel: ");
                 panelpassword = System.console().readLine().trim();
 
                 changed = true;
