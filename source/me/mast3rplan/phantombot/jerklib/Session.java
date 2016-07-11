@@ -308,7 +308,7 @@ public class Session extends RequestGenerator {
      */
     public void sayChannel(Channel channel, String msg) {
         if (msg.substring(0, 1).equals(".")) {
-            super.sayChannel(msg, channel);
+            this.sayChannelReal(channel, msg);
         } else {
             if (msg.substring(0, 2).equals("/w ")) {
                 msg = msg.replace("/w ", "PRIVMSG #jtv :/w ");
