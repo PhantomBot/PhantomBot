@@ -190,6 +190,7 @@
             username,
             amount,
             i;
+
         if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
             return;
         }
@@ -215,11 +216,11 @@
                     if (parseInt($.inidb.get('grouppoints', 'Subscriber')) > 0) {
                         amount = parseInt($.inidb.get('grouppoints', 'Subscriber'));
                     } else {
-                        amount = offlineGain;
+                        amount = onlineGain;
                     }
                 } else {
                     if ($.inidb.exists('grouppointsoffline', $.getUserGroupName(username))) {
-                        amount = (parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))) < 0 ? offlineGain : parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))));
+                        amount = (parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))) < 0 ? onlineGain : parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))));
                     }
                 }
             } else {
@@ -235,8 +236,6 @@
                     }
                 }
             }
-
-            //$.consoleLn(username + '::' + amount);
 
             if ($.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
                 if ($.getTierData(username, 'bonuspoints') != 0) {
