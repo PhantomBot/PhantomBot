@@ -67,7 +67,8 @@
                 randPrev = randNum;
                 $.twitter.updateStatus($.getIniDbString('twitter', 'message_online').
                                            replace('(game)', $.twitchcache.getGameTitle()).
-                                           replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum));
+                                           replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum).
+                                           replace('#', ''));
             }
         }
     });
@@ -92,7 +93,8 @@
                 randPrev = randNum;
                 $.twitter.updateStatus($.getIniDbString('twitter', 'message_gamechange').
                                        replace('(game)', $.twitchcache.getGameTitle()).
-                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum));
+                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum).
+                                       replace('#', ''));
             }
         }
     });
@@ -401,13 +403,14 @@
                     $.twitter.updateStatus($.getIniDbString('twitter', 'message_update').
                                                replace('(game)', $.twitchcache.getGameTitle()).
                                                replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + uptimeSec).
+                                               replace('#', '').
                                                replace('(uptime)', hrs + ':' + min),
                                            './addons/downloadHTTP/twitch-preview.jpg');
                 } else {
                     $.twitter.updateStatus($.getIniDbString('twitter', 'message_update').
                                                replace('(game)', $.twitchcache.getGameTitle()).
                                                replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + uptimeSec).
-                                               replace('(uptime)', hrs + ':' + min));
+                                               replace('(uptime)', hrs + ':' + min).replace('#', ''));
                 }
                 $.log.event('Sent Auto Update to Twitter');
             }
