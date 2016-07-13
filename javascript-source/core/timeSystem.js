@@ -186,7 +186,7 @@
      * @returns {number}
      */
     function getUserTime(username) {
-        return ($.inidb.exists('time', username) ? $.inidb.get('time', username) : 0);
+        return ($.inidb.exists('time', username.toLowerCase()) ? $.inidb.get('time', username.toLowerCase()) : 0);
     };
 
     /**
@@ -197,7 +197,7 @@
      */
     function getUserTimeString(username) {
         var floor = Math.floor,
-            time = $.getUserTime(username),
+            time = $.getUserTime(username.toLowerCase()),
             cHours = time / 3600,
             cMins = cHours % 1 * 60;
 
@@ -225,9 +225,9 @@
          */
         if (command.equalsIgnoreCase('time')) {
             if (!hasPerm(event) || !action) {
-                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), $.getUserTimeString(sender)));
+                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), getUserTimeString(sender)));
             } else if (action && $.inidb.exists('time', action.toLowerCase())) {
-                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), $.getUserTimeString(action.toLowerCase())));
+                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), getUserTimeString(action)));
             } else {
                 subject = args[1];
                 timeArg = parseInt(args[2]);
@@ -252,7 +252,7 @@
                     if ($.user.isKnown(subject)) {
                         $.inidb.incr('time', subject, timeArg);
                         $.say($.whisperPrefix(sender) + $.lang.get("timesystem.add.success",
-                            $.getTimeString(timeArg), $.username.resolve(subject), $.getUserTimeString(subject)));
+                            getTimeString(timeArg), $.username.resolve(subject), getUserTimeString(subject)));
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', $.username.resolve(subject)));
                     }
@@ -279,7 +279,7 @@
 
                     $.inidb.decr('time', subject, timeArg);
                     $.say($.whisperPrefix(sender) + $.lang.get('timesystem.take.success',
-                        $.getTimeString(timeArg), $.username.resolve(subject), $.getUserTimeString(subject)))
+                        $.getTimeString(timeArg), $.username.resolve(subject), getUserTimeString(subject)))
                 }
 
                 if (action.equalsIgnoreCase('set')) {
@@ -427,7 +427,7 @@
             for (i in $.users) {
                 username = $.users[i][0].toLowerCase();
                 if (!$.isMod(username) && !$.isAdmin(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp &&  parseInt($.getUserGroupId(username)) > regularsGroupId) {
-                    if (!$.hasModList(username) && $.getUserGroupId(username) > 6) { // Added a second check here to be 100% sure the user is not a mod.
+                    if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
                         $.setUserGroupById(username, regularsGroupId);
                         $.say($.lang.get(
                             'timesystem.autolevel.promoted',

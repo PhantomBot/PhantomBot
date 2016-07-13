@@ -161,6 +161,7 @@
      * @returns {*}
      */
     function getUserPoints(username) {
+        username = username.toLowerCase();
         if ($.inidb.exists('points', username)) {
             return parseInt($.inidb.get('points', username));
         } else {
@@ -268,8 +269,8 @@
     /**
     * @function setPenalty
     */
-    function setPenalty(sender, user, time, silent) {
-        if (!user || !time) {
+    function setPenalty(sender, username, time, silent) {
+        if (!username || !time) {
             if (!silent) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.err.penalty'));
             }
@@ -277,24 +278,26 @@
         }
 
         var newTime = (time * 6e4) + $.systemTime();
+        username = username.toLowerCase();
 
         penaltys.push({
-            user: user,
+            user: username,
             time: newTime,
         });
 
         if (!silent) {
             time = $.getTimeStringMinutes((time * 6e4) / 1000);
-            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.penalty.set', user, time));
+            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.penalty.set', username, time));
         }
     };
 
     /**
     * @function getUserPenalty
+    * @param username
     */
-    function getUserPenalty(user) {
+    function getUserPenalty(username) {
         for (var i in penaltys) {
-            if (penaltys[i].user.equalsIgnoreCase(user)) {
+            if (penaltys[i].user.equalsIgnoreCase(username)) {
                 return true;
             }
         }
@@ -303,9 +306,11 @@
 
     /**
     * @function setTempBonus
+    * @param {Number} amount
+    * @param {Number} time
     */
     function setTempBonus(amount, time) {
-        var newTime = time * 6e4;
+        var newTime = (time * 6e4);
         if (!amount || !time) {
             return;
         }
@@ -350,7 +355,7 @@
                 if ($.getUserPoints(sender) == 0) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.nopoints', pointNameMultiple));
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.withtime', ($.hasRank(sender) ? "the " + $.getRank(sender) : ""), $.getPointsString($.getUserPoints(sender)), $.getUserTimeString(sender)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.withtime', ($.hasRank(sender) ? "the " + $.getRank(sender) : ""), getPointsString($.getUserPoints(sender)), $.getUserTimeString(sender)));
                 }
             } else {
 
@@ -369,7 +374,7 @@
                         return;
                     }
 
-                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.resolveRank(user), $.getPointsString($.getUserPoints(user))));
+                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.resolveRank(user), getPointsString(getUserPoints(user))));
                 }
 
                 /**
@@ -396,7 +401,7 @@
                     if ($.user.isKnown(actionArg1)) {
                         $.inidb.incr('points', actionArg1, actionArg2);
                         $.say($.lang.get('pointsystem.add.success',
-                            $.getPointsString(actionArg2), $.username.resolve(actionArg1), $.getPointsString($.getUserPoints(actionArg1))));
+                            $.getPointsString(actionArg2), $.username.resolve(actionArg1), getPointsString(getUserPoints(actionArg1))));
                     }
                 }
 
@@ -423,7 +428,7 @@
 
                     $.inidb.decr('points', actionArg1, actionArg2);
                     $.say($.lang.get('pointsystem.take.success',
-                        $.getPointsString(actionArg2), $.username.resolve(actionArg1), $.getPointsString($.getUserPoints(actionArg1))))
+                        $.getPointsString(actionArg2), $.username.resolve(actionArg1), getPointsString(getUserPoints(actionArg1))))
                 }
 
                 /**
@@ -449,7 +454,7 @@
 
                     $.inidb.set('points', actionArg1, actionArg2);
                     $.say($.lang.get('pointsystem.setbalance.success',
-                        pointNameSingle, $.username.resolve(actionArg1), $.getPointsString($.getUserPoints(actionArg1))));
+                        pointNameSingle, $.username.resolve(actionArg1), getPointsString(getUserPoints(actionArg1))));
                 }
 
                 /**
@@ -469,7 +474,7 @@
                     for (i in $.users) {
                         $.inidb.incr('points', $.users[i][0].toLowerCase(), actionArg1);
                     }
-                    $.say($.lang.get('pointsystem.add.all.success', $.getPointsString(actionArg1)));
+                    $.say($.lang.get('pointsystem.add.all.success', getPointsString(actionArg1)));
                 }
 
                 /**
@@ -526,7 +531,7 @@
 
                     onlineGain = actionArg1;
                     $.inidb.set('pointSettings', 'onlineGain', onlineGain);
-                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.gain.success', pointNameSingle, $.getPointsString(onlineGain), onlinePayoutInterval));
+                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.gain.success', pointNameSingle, getPointsString(onlineGain), onlinePayoutInterval));
                 }
 
                 /**
@@ -695,7 +700,7 @@
             for (i in $.users) {
                 $.inidb.incr('points', $.users[i][0].toLowerCase(), parseInt(action));
             }
-            $.say($.lang.get('pointsystem.add.all.success', $.getPointsString(parseInt(action))));
+            $.say($.lang.get('pointsystem.add.all.success', getPointsString(parseInt(action))));
         }
 
         if (command.equalsIgnoreCase('pointsbonuspanel')) {

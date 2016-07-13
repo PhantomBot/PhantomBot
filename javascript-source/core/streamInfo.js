@@ -1,5 +1,4 @@
 (function() {
-
     var playTime = null;
     var lastGame = null;
     var currentGame = null;
@@ -47,7 +46,7 @@
     function getPlayTime() {
         var t = parseInt($.inidb.get('panelstats', 'playTimeStart'));
         if (t != 0 && t != null) {
-            var time = $.systemTime() - playTime;
+            var time = ($.systemTime() - playTime);
             return $.getTimeStringMinutes(time / 1000);
         } else {
             return getStreamUptime($.channelName);
@@ -61,7 +60,7 @@
      * @returns {boolean}
      */
     function isOnline(channelName) {
-        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+        if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
             return $.twitchcache.isStreamOnlineString().equals('true');
         } else {
             return !$.twitch.GetStream(channelName).isNull('stream');
@@ -75,8 +74,8 @@
      * @returns {string}
      */
     function getStatus(channelName) {
-        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
-            return $.twitchcache.getStreamStatus() + '';
+        if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
+            return ($.twitchcache.getStreamStatus() + '');
         } else {
             var channelData = $.twitch.GetChannel(channelName);
 
@@ -94,8 +93,8 @@
      * @returns {string}
      */
     function getGame(channelName) {
-        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
-            return $.twitchcache.getGameTitle() + '';
+        if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
+            return ($.twitchcache.getGameTitle() + '');
         } else {
             var channelData = $.twitch.GetChannel(channelName);
 
@@ -113,7 +112,7 @@
      * @returns {number}
      */
     function getStreamUptimeSeconds(channelName) {
-        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+        if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
             return $.twitchcache.getStreamUptimeSeconds();
         } else {
             var stream = $.twitch.GetStream(channelName),
@@ -127,7 +126,7 @@
 
             createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
             if (createdAtDate) {
-                time = now - createdAtDate;
+                time = (now - createdAtDate);
                 return Math.floor(time / 1000);
             } else {
                 return 0;
@@ -142,7 +141,7 @@
      * @returns {string}
      */
     function getStreamUptime(channelName) {
-        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+        if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
             var uptime = $.twitchcache.getStreamUptimeSeconds();
 
             if (uptime === 0) {
@@ -156,7 +155,7 @@
                 }
 
                 createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
-                time = now - createdAtDate;
+                time = (now - createdAtDate);
                 return $.getTimeString(time / 1000);
             }
 
@@ -192,7 +191,7 @@
             time;
 
         if (down > 0) {
-            time = now - down;
+            time = (now - down);
             return $.getTimeString(time / 1000);
         }
         return 0;
@@ -205,7 +204,7 @@
      * @returns {string}
      */
     function getStreamStartedAt(channelName) {
-        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+        if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
             if ($.twitchcache.getStreamOnlineString === 'false') {
                 return 'Stream is offline';
             }
@@ -231,13 +230,13 @@
      * @returns {Number}
      */
     function getViewers(channelName) {
-        if ($.twitchCacheReady.equals('true') && channelName.equals($.channelName)) {
+        if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
             return $.twitchcache.getViewerCount();
         } else {
             var stream = $.twitch.GetStream(channelName);
 
             if (!stream.isNull('stream')) {
-                return stream.getJSONObject('stream').getInt('viewers');
+                return parseInt(stream.getJSONObject('stream').getInt('viewers'));
             } else {
                 return 0;
             }
@@ -254,7 +253,7 @@
         var channel = $.twitch.GetChannel(channelName);
 
         if (!channel.isNull('followers')) {
-            return channel.getInt('followers');
+            return parseInt(channel.getInt('followers'));
         } else {
             return 0;
         }
@@ -263,18 +262,19 @@
     /**
      * @function getFollowAge
      * @export $
+     * @param username
      * @param channelName
      * @returns {Number}
      */
-    function getFollowAge (sender, channelName) {
-        var username = $.twitch.GetUserFollowsChannel(sender, channelName),
-            followedAt = new Date(username.getString('created_at')),
+    function getFollowAge (username, channelName) {
+        var user = $.twitch.GetUserFollowsChannel(username, channelName),
+            followedAt = new Date(user.getString('created_at')),
             now = new Date(followedAt).getTime();
 
         if (followedAt) {
-            return $.getLongTimeString(now);
+            return parseInt($.getLongTimeString(now));
         } else {
-            return sender + ' is not following';
+            return username + ' is not following';
         }
     }
 
@@ -301,6 +301,7 @@
      * @param {string} channelName
      * @param {string} game
      * @param {string} sender
+     * @param {boolean} silent
      */
     function updateGame(channelName, game, sender, silent) {
         var http = $.twitch.UpdateChannel(channelName, '', game);
@@ -335,6 +336,7 @@
      * @param {string} channelName
      * @param {string} status
      * @param {string} sender
+     * @param {boolean} silent
      */
     function updateStatus(channelName, status, sender, silent) {
         var http = $.twitch.UpdateChannel(channelName, status, '');

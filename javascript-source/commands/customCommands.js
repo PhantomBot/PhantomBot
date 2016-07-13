@@ -303,12 +303,13 @@
     /**
      * @function permCom
      * @export $
-     * @param {string} user
+     * @param {string} username
      * @param {string} command
      * @param {sub} subcommand
      * @returns 0 = good, 1 = command perm bad, 2 = subcommand perm bad
      */
-    function permCom(user, command, subcommand) {
+    function permCom(username, command, subcommand) {
+        username = username.toLowerCase();
         if ($.isAdmin(user)) {
             return 0;
         }
@@ -333,11 +334,13 @@
      * @returns {Number}
      */
     function getCommandPrice(command) {
+        command = command.toLowerCase();
         return parseInt($.inidb.exists('pricecom', command) ? $.inidb.get('pricecom', command) : 0);
     };
 
     /**
      * @function addComRegisterCommands
+     * @param {boolean} silent
      */
     function addComRegisterCommands(silent) {
         if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
@@ -357,6 +360,7 @@
 
     /**
      * @function addComRegisterAliases
+     * @param {boolean} silent
      */
     function addComRegisterAliases(silent) {
         if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
@@ -389,7 +393,7 @@
     $.bind('command', function(event) {
         var sender = event.getSender().toLowerCase(),
             username = $.username.resolve(sender, event.getTags()),
-            command = event.getCommand(),
+            command = event.getCommand().toLowerCase(),
             args = event.getArgs(),
             argString = event.getArguments(),
             action = args[0],
@@ -436,7 +440,7 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.success', action));
-            $.inidb.set('command', action, argString);
+            $.inidb.set('command', action.toLowerCase(), argString);
             $.registerChatCommand('./commands/customCommands.js', action);
             $.log.event(sender + ' added command !' + action + ' with the message "' + argString + '"');
         }
@@ -463,7 +467,7 @@
             argString = argString.substring(argString.indexOf(args[0]) + args[0].length() + 1);
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.success', action));
-            $.inidb.set('command', action, argString);
+            $.inidb.set('command', action.toLowerCase(), argString);
             $.registerChatCommand('./commands/customCommands.js', action);
             $.log.event(sender + ' edited the command !' + action + ' with the message "' + argString + '"');
         }
@@ -550,8 +554,8 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get("customcommands.alias.delete.success", action));
-            $.unregisterChatCommand(action);
-            $.inidb.del('aliases', action);
+            $.unregisterChatCommand(action.toLowerCase());
+            $.inidb.del('aliases', action.toLowerCase());
             $.log.event(sender + ' deleted alias !' + action);
         }
 

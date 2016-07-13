@@ -10,8 +10,7 @@
      * @param  twitchUptime
      * @return twitchVODTime
      */
-    function makeTwitchVODTime(twitchUptime)
-    {
+    function makeTwitchVODTime(twitchUptime) {
         var twitchVODTime,
             match = [];
 
