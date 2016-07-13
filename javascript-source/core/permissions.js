@@ -634,19 +634,20 @@
         var username = event.getUser().toLowerCase(),
             i;
 
+            $.consoleLn('mode');
         if (event.getMode().equalsIgnoreCase('o')) {
             if (event.getAdd().toString().equals('true')) {
                 if (!$.hasModeO(username)) {
                     if ($.isOwner(username)) {
                         modeOUsers.push([username, 0]);
-                        setUserGroupById(username, 0);
+                        $.inidb.set('group', username, '0');
                     } else {
                         if ($.isAdmin(username)) {
                             modeOUsers.push([username, 1]);
-                            setUserGroupById(username, 1);
+                            $.inidb.set('group', username, '1');
                         } else {
                             modeOUsers.push([username, 2]);
-                            setUserGroupById(username, 2);
+                            $.inidb.set('group', username, '2');
                         }
                     }
                 }
@@ -662,9 +663,9 @@
                     modeOUsers = newmodeOUsers;
 
                     if (isSub(username)) {
-                        setUserGroupById(username, 3); // Subscriber, return to that group.
+                        $.inidb.set('group', username, '3'); // Subscriber, return to that group.
                     } else {
-                        setUserGroupById(username, 6); // Assume user that was a mod was a regular.
+                        $.inidb.set('group', username, '6'); // Assume user that was a mod was a regular.
                     }
                 }
             }
