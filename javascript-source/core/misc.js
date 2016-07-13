@@ -43,10 +43,11 @@
      */
     function isFollower(username) {
         var userFollowsCheck;
+        username = username.toLowerCase();
         if ($.inidb.exists('followed', username)) {
             return true;
         } else {
-            userFollowsCheck = $.twitch.GetUserFollowsChannel($.username.resolve(username.toLowerCase()), $.channelName);
+            userFollowsCheck = $.twitch.GetUserFollowsChannel($.username.resolve(username), $.channelName);
             if (userFollowsCheck.getInt('_http') == 200) {
                 return true;
             }
@@ -60,7 +61,7 @@
      * @returns {string}
      */
     function getCurrentHostTarget() {
-        return currentHostTarget
+        return currentHostTarget.toLowerCase();
     }
 
     /**

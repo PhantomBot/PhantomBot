@@ -47,6 +47,8 @@
     function hasRank(username) {
         var userTime;
 
+        username = username.toLowerCase();
+
         // Has a custom rank.
         if ($.inidb.exists('viewerRanks', username.toLowerCase())) {
             return true;
@@ -83,6 +85,8 @@
     function getRank(username) {
         var userTime,
             userLevel;
+
+        username = username.toLowerCase();
 
         if (!hasRank(username)) {
             return '';

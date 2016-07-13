@@ -26,7 +26,9 @@
             return;
         }
 
-        time = (time * 1000) + $.systemTime();
+        time = ((time * 1000) + $.systemTime());
+        command = command.toLowerCase();
+        user = user.toLowerCase();
 
         if (!command.equalsIgnoreCase('adventure')) {
             if (globalCooldown && !$.inidb.exists('cooldown', command)) {
@@ -62,6 +64,9 @@
         var coolDownExists = $.inidb.exists('cooldown', command),
             cool,
             i;
+
+        command = command.toLowerCase();
+        user = user.toLowerCase();
 
         if (command.equalsIgnoreCase('bet') || command.equalsIgnoreCase('ticket') || command.equalsIgnoreCase('tickets') 
             || command.equalsIgnoreCase('bid') || command.equalsIgnoreCase($.inidb.get('raffle', 'command'))) {
@@ -242,6 +247,7 @@
             $.registerChatCommand('./core/commandCoolDown.js', 'reloadcooldown', 1);
         }
     });
+    
     /** EXPORT TO $. API*/
     $.coolDown = {
         set: set,
