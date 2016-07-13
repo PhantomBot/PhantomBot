@@ -37,7 +37,7 @@
             return;
         }
 
-        if (key.contains('!')) {
+        if (key.includes('!')) {
             key = key.replace('!', '');
         }
 

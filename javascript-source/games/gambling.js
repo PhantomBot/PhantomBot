@@ -94,7 +94,7 @@
 		 * @commandpath gamblesetwinningrange [range] - Set the winning range from 0-100.
 		 */
 		if (command.equalsIgnoreCase('gamblesetwinningrange')) {
-			if (!action || action.contains('-')) {
+			if (!action || action.includes('-')) {
 				$.say($.whisperPrefix(sender) + $.lang.get('gambling.win.range.usage'));
 				return;
 			}

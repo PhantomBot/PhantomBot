@@ -317,7 +317,7 @@
      */
     function checkBlackList(sender, message) {
         for (i in blackList) {
-            if (message.contains(blackList[i])) {
+            if (message.includes(blackList[i])) {
                 timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
                 warning = $.lang.get('chatmoderator.timeout');
                 sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
@@ -332,7 +332,7 @@
      */
     function checkWhiteList(message) {
         for (i in whiteList) {
-            if (message.contains(whiteList[i])) {
+            if (message.includes(whiteList[i])) {
                 return true;
             }
         }
@@ -343,7 +343,7 @@
      * @function checkYoutubePlayer
      */
     function checkYoutubePlayer(message) {
-        if ($.youtubePlayerConnected && (message.contains('youtube.com') || message.contains('youtu.be'))) {
+        if ($.youtubePlayerConnected && (message.includes('youtube.com') || message.includes('youtu.be'))) {
             return true;
         }
         return false;
