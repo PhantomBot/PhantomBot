@@ -78,25 +78,30 @@ public class IrcEventHandler implements IRCEventListener {
         Session session = event.getSession();
 
         switch (event.getType()) {
+
         case CONNECT_COMPLETE:
             com.gmt2001.Console.out.println("Connected to IRC " + session.getNick() + "@" + session.getConnectedHostName());
             eventBus.postAsync(new IrcConnectCompleteEvent(session));
             break;
+
         case JOIN_COMPLETE:
             com.gmt2001.Console.out.println("Channel Joined [" + ((JoinCompleteEvent) event).getChannel().getName() + "]");
             eventBus.postAsync(new IrcJoinCompleteEvent(session, ((JoinCompleteEvent) event).getChannel()));
             break;
+
         case JOIN:
             JoinEvent joinEvent = (JoinEvent) event;
             com.gmt2001.Console.debug.println("User Joined Channel [" + joinEvent.getChannelName() + "] " + joinEvent.getNick());
             eventBus.postAsync(new IrcChannelJoinEvent(session, joinEvent.getChannel(), joinEvent.getNick()));
             break;
+
         case PART:
             PartEvent partEvent = (PartEvent) event;
             mods.remove(partEvent.getNick().toLowerCase());
             com.gmt2001.Console.debug.println("User Left Channel [" + partEvent.getChannelName() + "] " + partEvent.getNick());
             eventBus.postAsync(new IrcChannelLeaveEvent(session, partEvent.getChannel(), partEvent.getNick(), partEvent.getPartMessage()));
             break;
+
         case CHANNEL_MESSAGE:
             MessageEvent cmessageEvent = (MessageEvent) event;
             Map<String, String> cmessageTags = cmessageEvent.tags();
@@ -113,12 +118,11 @@ public class IrcEventHandler implements IRCEventListener {
             }
 
             if (PhantomBot.enableDebugging) {
-                com.gmt2001.Console.debug.println("Channel Message Tags");
-                com.gmt2001.Console.debug.println("    Raw: " + cmessageEvent.tagsString());
-
+                String rawTags = "IRCv3 Tags [Raw: " + cmessageEvent.tagsString() + "]";
                 for (Map.Entry<String, String> tag : cmessageTags.entrySet()) {
-                    com.gmt2001.Console.debug.println("    " + tag.getKey() + " = " + tag.getValue());
+                    rawTags += " [" + tag.getKey() + " = " + tag.getValue() + "]";
                 }
+                com.gmt2001.Console.debug.println(rawTags);
             }
             if (cmessageTags.containsKey("display-name")) {
                 PhantomBot.instance().getUsernameCache().addUser(cusername, cmessageTags.get("display-name"));
@@ -131,18 +135,25 @@ public class IrcEventHandler implements IRCEventListener {
             }
 
             if (cmessageTags.containsKey("user-type")) {
-                if (cmessageTags.get("user-type").length() > 0
-                        || cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick())) {
+                if (cmessageTags.get("user-type").length() > 0) {
                     if (!mods.contains(cmessageEvent.getNick().toLowerCase())) {
                         mods.add(cmessageEvent.getNick().toLowerCase());
-                        com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD)" + cmessageEvent.getNick());
+                        com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD): " + cmessageEvent.getNick());
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
                     }
                 } else {
                     if (mods.contains(cmessageEvent.getNick().toLowerCase())) {
                         mods.remove(cmessageEvent.getNick().toLowerCase());
-                        com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(NOT MOD)" + cmessageEvent.getNick());
+                        com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(UNMOD): " + cmessageEvent.getNick());
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", false));
+                    }
+                }
+            } else {
+                if (cmessageEvent.getChannel().getName().equalsIgnoreCase("#" + cmessageEvent.getNick())) {
+                    if (!mods.contains(cmessageEvent.getNick().toLowerCase())) {
+                        mods.add(cmessageEvent.getNick().toLowerCase());
+                        com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD): " + cmessageEvent.getNick());
+                        eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
                     }
                 }
             }
@@ -156,15 +167,9 @@ public class IrcEventHandler implements IRCEventListener {
 
             eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
 
-            if (cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick())) {
-                if (!mods.contains(cmessageEvent.getNick().toLowerCase())) {
-                    mods.add(cmessageEvent.getNick().toLowerCase());
-                    com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD)" + cmessageEvent.getNick());
-                    eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
-                }
-            }
 
             break;
+
         case CTCP_EVENT:
             CtcpEvent ctcmessageEvent = (CtcpEvent) event;
 
@@ -183,21 +188,29 @@ public class IrcEventHandler implements IRCEventListener {
                 }
 
                 if (ctcmessageTags.containsKey("user-type")) {
-                    if (ctcmessageTags.get("user-type").length() > 0
-                            || ctcmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(ctcmessageEvent.getNick())) {
+                    if (ctcmessageTags.get("user-type").length() > 0) {
                         if (!mods.contains(ctcmessageEvent.getNick().toLowerCase())) {
                             mods.add(ctcmessageEvent.getNick().toLowerCase());
-                            com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD)" + ctcmessageEvent.getNick());
+                            com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD): " + ctcmessageEvent.getNick());
                             eventBus.postAsync(new IrcChannelUserModeEvent(session, ctcmessageEvent.getChannel(), ctcmessageEvent.getNick(), "O", true));
                         }
                     } else {
                         if (mods.contains(ctcmessageEvent.getNick().toLowerCase())) {
                             mods.remove(ctcmessageEvent.getNick().toLowerCase());
-                            com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(NOTMOD)" + ctcmessageEvent.getNick());
+                            com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(UNMOD): " + ctcmessageEvent.getNick());
                             eventBus.postAsync(new IrcChannelUserModeEvent(session, ctcmessageEvent.getChannel(), ctcmessageEvent.getNick(), "O", false));
                         }
                     }
+                } else {
+                    if (ctcmessageEvent.getChannel().getName().equalsIgnoreCase("#" + ctcmessageEvent.getNick())) {
+                        if (!mods.contains(ctcmessageEvent.getNick().toLowerCase())) {
+                            mods.add(ctcmessageEvent.getNick().toLowerCase());
+                            com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD): " + ctcmessageEvent.getNick());
+                            eventBus.postAsync(new IrcChannelUserModeEvent(session, ctcmessageEvent.getChannel(), ctcmessageEvent.getNick(), "O", true));
+                        }
+                    }
                 }
+                    
 
                 try {
                     ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags);
@@ -207,62 +220,20 @@ public class IrcEventHandler implements IRCEventListener {
                 }
                 
                 eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
-
-                if (ctcmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(ctcmessageEvent.getNick())) {
-                    if (!mods.contains(ctcmessageEvent.getNick().toLowerCase())) {
-                        mods.add(ctcmessageEvent.getNick().toLowerCase());
-                        com.gmt2001.Console.debug.println("IrcChannelUserModeEvent(MOD)" + ctcmessageEvent.getNick());
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, ctcmessageEvent.getChannel(), ctcmessageEvent.getNick(), "O", true));
-                    }
-                }
             }
             break;
+
         case PRIVATE_MESSAGE:
             MessageEvent pmessageEvent = (MessageEvent) event;
             String pusername = pmessageEvent.getNick();
             String pmessage = pmessageEvent.getMessage();
-
             eventBus.postPVMSG(new IrcPrivateMessageEvent(session, pusername, pmessage, pmessageEvent.tags()));
             break;
+
         case MODE_EVENT:
             ModeEvent modeEvent = (ModeEvent) event;
-
-            if (modeEvent.getChannel() != null && modeEvent.getChannel().getName().length() > 1
-                    && modeEvent.getModeType() == ModeEvent.ModeType.CHANNEL) {
-                List<ModeAdjustment> l = modeEvent.getModeAdjustments();
-                for (ModeAdjustment adj : l) {
-                    com.gmt2001.Console.out.println("MODE [" + modeEvent.getChannel().getName() + "] " + adj.toString());
-
-                    if (adj.getArgument().length() > 0) {
-                        if (String.valueOf(adj.getMode()).equalsIgnoreCase("O")) {
-                            if (adj.getAction() == ModeAdjustment.Action.PLUS) {
-                                mods.add(adj.getArgument().toLowerCase());
-                            } else {
-                                mods.remove(adj.getArgument().toLowerCase());
-                            }
-                        }
-                        // Twitch seems to send a +o and -o, even when modded, disabling this method of determining mod
-                        // status for now, rather the user-type will be used.
-                        // 
-                        // [03-06-2016 @ 06:45:50.052] ircChannelUserMode illusionarybot | o | true | true
-                        // [03-06-2016 @ 06:45:50.052] ircChannelUserMode notillusionaryone | o | true | true
-                        // [03-06-2016 @ 06:46:45.812] MODE [#notillusionaryone] +o illusionaryone
-                        // [03-06-2016 @ 06:46:45.813] ircChannelUserMode illusionaryone | o | true | true
-                        // ** User is still a mod here, but reported with -o (not a mod)
-                        // [03-06-2016 @ 06:48:39.851] MODE [#notillusionaryone] -o illusionaryone
-                        // [03-06-2016 @ 06:48:39.852] ircChannelUserMode illusionaryone | o | false | false
-                        // [03-06-2016 @ 06:51:45.518] MODE [#notillusionaryone] +o illusionaryone
-                        // [03-06-2016 @ 06:51:45.519] ircChannelUserMode illusionaryone | o | true | true
-                        // [03-06-2016 @ 06:53:06.548] IrcChannelUserModeEvent(NOT MOD)illusionaryone
-                        // [03-06-2016 @ 06:53:06.552] ircChannelUserMode illusionaryone | O | false | false
-                        //
-                        // com.gmt2001.Console.out.println("IrcChannelUserModeEvent()" + adj.getArgument() + " " + (adj.getAction() == ModeAdjustment.Action.PLUS));
-                        // eventBus.postAsync(new IrcChannelUserModeEvent(session, modeEvent.getChannel(), adj.getArgument(),
-                        //                 String.valueOf(adj.getMode()), adj.getAction() == ModeAdjustment.Action.PLUS));
-                    }
-                }
-            }
             break;
+
         case NOTICE:
             String noticeMessage = ((NoticeEvent) event).getNoticeMessage();
             if (noticeMessage.startsWith("Error logging in") || noticeMessage.startsWith("Login unsuccessful")) {
@@ -288,6 +259,7 @@ public class IrcEventHandler implements IRCEventListener {
 
             eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage(), ((NoticeEvent) event).tags()));
             break;
+
         case DEFAULT:
             if (event.command().equalsIgnoreCase("USERNOTICE")) {
                 Map<String, String> ceventTags = event.tags();
@@ -326,10 +298,10 @@ public class IrcEventHandler implements IRCEventListener {
                 Map<String, String> ceventTags = event.tags();
 
                 if (ceventTags.containsKey("user-type")) {
-                    if (ceventTags.get("user-type").length() > 0
-                            || session.getChannel(event.arg(0)).getName().replaceAll("#", "").equalsIgnoreCase(PhantomBot.instance().getSession().getNick())) {
+                    if (ceventTags.get("user-type").length() > 0) {
                         if (!mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase())) {
                             mods.add(PhantomBot.instance().getSession().getNick().toLowerCase());
+                            com.gmt2001.Console.debug.println("Userstate marked bot Moderator (Broadcaster)");
                             eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
                         }
                     } else {
@@ -345,13 +317,13 @@ public class IrcEventHandler implements IRCEventListener {
                             eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", false));
                         }
                     }
-                }
-
-                if (event.arg(0).replaceAll("#", "").equalsIgnoreCase(PhantomBot.instance().getSession().getNick())) {
-                    if (!mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase())) {
-                        mods.add(PhantomBot.instance().getSession().getNick().toLowerCase());
-                        com.gmt2001.Console.debug.println("Userstate marked bot Moderator (Broadcaster)");
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
+                } else {
+                    if (event.arg(0).equalsIgnoreCase("#" + PhantomBot.instance().getSession().getNick())) {
+                        if (!mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase())) {
+                            mods.add(PhantomBot.instance().getSession().getNick().toLowerCase());
+                            com.gmt2001.Console.debug.println("Userstate marked bot Moderator (Broadcaster)");
+                            eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
+                        }
                     }
                 }
             }

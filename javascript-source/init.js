@@ -768,6 +768,7 @@
          * @event api-ircChannelUserMode
          */
         $api.on($script, 'ircChannelUserMode', function(event) {
+            callHook('ircChannelUserMode', event, true);
             if (!connected) {
                 return;
             }
@@ -969,13 +970,6 @@
          */
         $api.on($script, 'ircChannelLeave', function(event) {
             callHook('ircChannelLeave', event, true);
-        });
-
-        /**
-         * @event api-ircChannelUserMode
-         */
-        $api.on($script, 'ircChannelUserMode', function(event) {
-            callHook('ircChannelUserMode', event, true);
         });
 
         /**
