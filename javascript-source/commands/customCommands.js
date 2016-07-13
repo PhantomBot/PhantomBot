@@ -640,7 +640,7 @@
                 if (list[i].equalsIgnoreCase(action)) {
                     $.inidb.set('pricecom', $.inidb.get('aliases', list[i]), parseInt(subAction));
                 } 
-                if ($.inidb.get('aliases', list[i]).contains(action)) {
+                if ($.inidb.get('aliases', list[i]).includes(action)) {
                     $.inidb.set('pricecom', list[i], parseInt(subAction));
                 }
             }
@@ -674,7 +674,7 @@
                 if (list[i].equalsIgnoreCase(action)) {
                     $.inidb.set('paycom', $.inidb.get('aliases', list[i]), parseInt(subAction));
                 }
-                if ($.inidb.get('aliases', list[i]).contains(action)) {
+                if ($.inidb.get('aliases', list[i]).includes(action)) {
                     $.inidb.set('paycom', list[i], parseInt(subAction));
                 }
             }

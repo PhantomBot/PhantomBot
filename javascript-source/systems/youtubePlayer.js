@@ -593,7 +593,7 @@
             }
 
             for (var i in keys) {
-                if (youtubeVideo.getVideoTitle().toLowerCase().contains(keys[i])) {
+                if (youtubeVideo.getVideoTitle().toLowerCase().includes(keys[i])) {
                     requestFailReason = $.lang.get('ytplayer.blacklist.404');
                     return null;
                 }
