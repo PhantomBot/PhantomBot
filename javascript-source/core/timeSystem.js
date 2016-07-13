@@ -227,7 +227,7 @@
             if (!hasPerm(event) || !action) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), $.getUserTimeString(sender)));
             } else if (action && $.inidb.exists('time', action.toLowerCase())) {
-                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), $.getUserTimeString(action)));
+                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), $.getUserTimeString(action.toLowerCase())));
             } else {
                 subject = args[1];
                 timeArg = parseInt(args[2]);
@@ -267,6 +267,7 @@
                         return;
                     }
 
+                    subject = subject.toLowerCase();
                     if (!$.user.isKnown(subject)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', subject));
                     }
@@ -293,10 +294,11 @@
                     }
 
 
-                    if ($.user.isKnown(subject.toLowerCase())) {
+                    subject = subject.toLowerCase();
+                    if ($.user.isKnown(subject)) {
                         $.inidb.set('time', subject, timeArg);
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.settime.success',
-                            $.username.resolve(subject), $.getUserTimeString(subject.toLowerCase())));
+                            $.username.resolve(subject), $.getUserTimeString(subject)));
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', subject));
                     }
