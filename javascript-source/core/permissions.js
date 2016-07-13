@@ -634,7 +634,6 @@
         var username = event.getUser().toLowerCase(),
             i;
 
-            $.consoleLn('mode');
         if (event.getMode().equalsIgnoreCase('o')) {
             if (event.getAdd().toString().equals('true')) {
                 if (!$.hasModeO(username)) {
