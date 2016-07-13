@@ -310,17 +310,17 @@
      */
     function permCom(username, command, subcommand) {
         username = username.toLowerCase();
-        if ($.isAdmin(user)) {
+        if ($.isAdmin(username)) {
             return 0;
         }
         if (subcommand == '') {
-            if ($.getCommandGroup(command) >= $.getUserGroupId(user)) {
+            if ($.getCommandGroup(command) >= $.getUserGroupId(username)) {
                 return 0;
             } else {
                 return 1;
             }
         }
-        if ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(user)) {
+        if ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(username)) {
             return 0;
         } else {
             return 2;
