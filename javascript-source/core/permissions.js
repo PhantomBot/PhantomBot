@@ -79,7 +79,7 @@
      */
     function isMod(username) {
         username = username.toLowerCase();
-        return $.getUserGroupId(username) <= 2 || hasModList(username) $.isOwner(username) || $.isBot(username);
+        return $.getUserGroupId(username) <= 2 || hasModList(username) || $.isOwner(username) || $.isBot(username);
     };
 
     /**
