@@ -314,9 +314,14 @@
      */
     function deleteCommand(command) {
         $("#deleteCommand_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        command = command.toLowerCase();
         sendDBDelete("commands_delcom_" + command, "command", command);
+        sendDBDelete("commands_delcompermcom_" + command, "permcom", command);
+        sendDBDelete("commands_delcompricecom_" + command, "pricecom", command);
+        sendDBDelete("commands_delcompermcom_" + command, "permcom", command);
+        sendDBDelete("commands_delcomalias_" + command, "aliases", command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-        setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadcommand " + command); }, TIMEOUT_WAIT_TIME);
     };
 
     /** 

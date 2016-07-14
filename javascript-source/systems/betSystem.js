@@ -67,6 +67,7 @@
         betOptions = [];
         betTable = [];
         betStatus = false;
+        betTimerStatus = false;
     }
 
     function betClose(sender, event, subAction) {
@@ -91,7 +92,7 @@
         }
 
         if (subAction && subAction.equalsIgnoreCase('refundall')) {
-            betStatus = false;
+            betStatus = false;// Have this here in case it takes longer for the loop to end. 
             for (i in betTable) {
                 bet = betTable[i];
                 $.inidb.incr('points', i, bet.amount);

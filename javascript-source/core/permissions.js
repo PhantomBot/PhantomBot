@@ -10,7 +10,7 @@
     var userGroups = [],
         modeOUsers = [],
         subUsers = [],
-        gwSubUsers = [];
+        gwSubUsers = [],
         modListUsers = [],
         users = [],
         lastJoinPart = $.systemTime();
@@ -24,7 +24,7 @@
     function userExists(username) {
         var i;
         for (i in users) {
-            if (users[i][0].equalsIgnoreCase(username.toLowerCase())) {
+            if (users[i][0].equalsIgnoreCase(username)) {
                 return true;
             }
         }
@@ -68,7 +68,7 @@
      * @returns {boolean}
      */
     function isAdmin(username) {
-        return $.getUserGroupId(username) <= 1 || $.isOwner(username) || $.isBot(username);
+        return $.getUserGroupId(username.toLowerCase()) <= 1 || $.isOwner(username) || $.isBot(username);
     };
 
     /**
@@ -78,8 +78,7 @@
      * @returns {boolean}
      */
     function isMod(username) {
-        username = username.toLowerCase();
-        return $.getUserGroupId(username) <= 2 || hasModList(username) || $.isOwner(username) || $.isBot(username);
+        return $.getUserGroupId(username.toLowerCase()) <= 2 || $.isOwner(username) || $.isBot(username);
     };
 
     /**
@@ -90,9 +89,10 @@
      * @returns {boolean}
      */
     function isModv3(username, tags) {
-        username = username.toLowerCase();
-        if (tags != null && tags != '{}' && tags.get('user-type').equalsIgnoreCase('mod')) return true;
-        return $.isAdmin(username) || $.isMod(username);
+        if (tags != null && tags != '{}' && tags.get('user-type').equalsIgnoreCase('mod')) 
+            return true;
+        
+        return ($.isAdmin(username) || $.isMod(username));
     };
 
     /**
@@ -103,7 +103,6 @@
      */
     function isSub(username) {
         var i;
-        username = username.toLowerCase();
         for (i in subUsers) {
             if (subUsers[i][0].equalsIgnoreCase(username)) {
                 return true;
@@ -121,8 +120,9 @@
      * @returns {Boolean}
      */
     function isTwitchSub(username) {
-        for (var i in subUsers) {
-            if (subUsers[i][0].equalsIgnoreCase(username.toLowerCase())) {
+        var i;
+        for (i in subUsers) {
+            if (subUsers[i][0].equalsIgnoreCase(username)) {
                 return true;
             }
         }
@@ -135,7 +135,7 @@
      * @returns {Boolean}
      */
     function isGWSub(username) {
-        return username in gwSubUsers;
+        return (username in gwSubUsers);
     }
 
     /**
@@ -186,8 +186,7 @@
      * @returns {boolean}
      */
     function isReg(username) {
-        username = username.toLowerCase();
-        return $.getUserGroupId(username) <= 6 || $.isOwner(username) || $.isBot(username);
+        return $.getUserGroupId(username.toLowerCase()) <= 6 || $.isOwner(username) || $.isBot(username);
     };
 
     /**
@@ -217,9 +216,8 @@
      * @returns {Number}
      */
     function getUserGroupId(username) {
-        username = username.toLowerCase();
-        if ($.inidb.exists('group', username)) {
-            return parseInt($.inidb.get('group', username));
+        if ($.inidb.exists('group', username.toLowerCase())) {
+            return parseInt($.inidb.get('group', username.toLowerCase()));
         } else {
             return 7;
         }
@@ -283,7 +281,7 @@
      * @param {Number} id
      */
     function setUserGroupById(username, id) {
-        if ($.userExists(username.toLowerCase())) {
+        if ($.user.isKnown(username.toLowerCase())) {
             $.inidb.set('group', username.toLowerCase(), id);
         }
     };
@@ -337,7 +335,7 @@
      */
     function getGWTier(username) {
         if (username.toLowerCase() in gwSubUsers) {
-            return gwSubUsers[username].toLowerCase();
+            return gwSubUsers[username];
         }
         return 0;
     }
@@ -480,7 +478,7 @@
         $.getSetIniDbString('grouppointsoffline', 'Regular', '-1');
         $.getSetIniDbString('grouppoints', 'Viewer', '-1');
         $.getSetIniDbString('grouppointsoffline', 'Viewer', '-1');
-    }
+    };
 
     /**
      * @function generateDefaultGroups
@@ -527,16 +525,8 @@
         }
 
         $.inidb.set('group', $.ownerName.toLowerCase(), 0);
+        $.inidb.set('group', $.botName.toLowerCase(), 0);
     };
-
-    /**
-     * @function modCheck
-     */
-    function modCheck() {
-        if ($.channel !== undefined) {
-            $.channel.say('.mods');
-        }
-    }
 
     /**
      * @event ircJoinComplete
@@ -549,7 +539,7 @@
 
         while (usersIterator.hasNext()) {
             username = usersIterator.next().toLowerCase();
-            if (userExists(username.toLowerCase())) {
+            if (!userExists(username.toLowerCase())) {
                 users.push([username, $.systemTime()]);
                 $.checkGameWispSub(username);
             }
@@ -568,7 +558,7 @@
 
         lastJoinPart = $.systemTime();
 
-        if (userExists(username.toLowerCase())) {
+        if (!userExists(username.toLowerCase())) {
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }
@@ -583,12 +573,11 @@
     /* 
     ** Removed this because it never worked in the first place cause is was using event.getUser(). And it slows down the bot when working.
     $.bind('ircChannelMessage', function(event) {
-        var username = event.getSender().toLowerCase(),
-            userPushed = userExists(username);
+        var username = event.getSender().toLowerCase();
 
         lastJoinPart = $.systemTime();
 
-        if (userPushed == false) {
+        if (!userExists(username)) {
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }
@@ -606,7 +595,7 @@
 
         lastJoinPart = $.systemTime();
 
-        if (userExists(username.toLowerCase())) {
+        if (!userExists(username.toLowerCase())) {
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }
@@ -659,6 +648,7 @@
                             newmodeOUsers.push([modeOUsers[i][0], modeOUsers[i][1]]);
                         }
                     }
+
                     modeOUsers = newmodeOUsers;
 
                     if (isSub(username)) {
@@ -851,7 +841,7 @@
         }
 
         /**
-         * @commandpath permission   - Give's you all the ppermissions with there id's
+         * @commandpath permission - Give's you all the ppermissions with there id's
          */
         if (command.equalsIgnoreCase('permissions') || command.equalsIgnoreCase('permissionlist')) {
             $.say(getGroupList());

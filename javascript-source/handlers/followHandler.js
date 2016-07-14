@@ -234,8 +234,8 @@
                 streamerGame = $.getGame(streamer),
                 streamerURL = 'https://twitch.tv/' + streamer;
 
-            if (streamerGame == null || streamerGame == '') {
-                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.404', args[0]));
+            if (streamerGame == null || streamerGame.length == 0) {
+                $.say($.lang.get('followhandler.shoutout.no.game', streamer, streamerURL));
                 return;
             }
 

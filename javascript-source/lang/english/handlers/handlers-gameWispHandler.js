@@ -1,9 +1,9 @@
 $.lang.register('gamewisp.usage', 'usage: !gamewisp [ $1 ]');
-$.lang.register('gamewisp.submessage.usage', 'usage: !gamewisp submessage [message] (Currently: $1) Tags: (user) (tier) (reward)');
+$.lang.register('gamewisp.submessage.usage', 'usage: !gamewisp submessage [message] (Currently: $1) Tags: (name) (tier) (reward)');
 $.lang.register('gamewisp.submessage.success', 'Set GameWisp subscriber message to: $1');
-$.lang.register('gamewisp.resubmessage.usage', 'usage: !gamewisp resubmessage [message] (Currently: $1) Tags: (user) (tier) (reward) (months)');
+$.lang.register('gamewisp.resubmessage.usage', 'usage: !gamewisp resubmessage [message] (Currently: $1) Tags: (name) (tier) (reward) (months)');
 $.lang.register('gamewisp.resubmessage.success', 'Set GameWisp resubscriber message to: $1');
-$.lang.register('gamewisp.tierupmessage.usage', 'usage: !gamewisp tierupmessage [message] (Currently: $1) Tags: (user) (tier)');
+$.lang.register('gamewisp.tierupmessage.usage', 'usage: !gamewisp tierupmessage [message] (Currently: $1) Tags: (name) (tier)');
 $.lang.register('gamewisp.tierupmessage.success', 'Set GameWisp tier upgrade message to: $1');
 $.lang.register('gamewisp.togglemessage.usage', 'usage: !gamewisp togglemessage [on/off] (Currently: $1)');
 $.lang.register('gamewisp.togglemessage.success', 'Set GameWisp sub, resub and tier up message alerts to $1');

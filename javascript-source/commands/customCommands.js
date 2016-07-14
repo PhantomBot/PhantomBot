@@ -5,7 +5,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)/);
+        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=/);
 
     /**
      * @function getCustomAPIValue
@@ -89,6 +89,13 @@
             message = $.replace(message, '(onlineonly)', '');
         }
 
+        if (message.match(/\(offlineonly\)/g)) {
+            if ($.isOnline($.channelName)) {
+                return '';
+            }
+            message = $.replace(message, '(offlineonly)', '');
+        }
+
         if (message.match(/\(sender\)/g)) {
             message = $.replace(message, '(sender)', $.username.resolve(event.getSender()));
         }
@@ -123,11 +130,11 @@
         }
 
         if (message.match(/\(price\)/g)) {
-            message = $.replace(message, '(price)', String($.inidb.exists('pricecom', event.getCommand()) ? $.inidb.get('pricecom', event.getCommand()) : 0));
+            message = $.replace(message, '(price)', String($.inidb.exists('pricecom', event.getCommand()) ? $.getPointsString($.inidb.get('pricecom', event.getCommand())) : $.getPointsString(0)));
         }
 
         if (message.match(/\(pay\)/g)) {
-            message = $.replace(message, '(rewardcom)', String($.inidb.exists('paycom', event.getCommand()) ? $.inidb.get('paycom', event.getCommand()) : 0));
+            message = $.replace(message, '(pay)', String($.inidb.exists('paycom', event.getCommand()) ? $.getPointsString($.inidb.get('paycom', event.getCommand())) : $.getPointsString(0)));
         }
 
         if (message.match(/\(#\)/g)) {
@@ -152,6 +159,18 @@
 
         if (message.match(/\(echo\)/g)) {
             message = $.replace(message, '(echo)', event.getArguments());
+        }
+
+        if (message.match(/\(code=/g)) {
+            var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+                length = message.substr(6).replace(')', '');
+                text = '',
+                i;
+
+            for (i = 0; i < length; i++) {
+                text += code.charAt(Math.floor(Math.random() * code.length));
+            }
+            message = $.replace(message, '(code=' + length +')', String(text));
         }
 
         if (message.match(/\(alert [,.\w]+\)/g)) {
@@ -380,11 +399,14 @@
 
     /**
      * @function reloadCommands
-     * Useed for the panel
+     * Used for the panel
      */
-    function reloadCommands() {
+    function reloadCommands(command) {
         addComRegisterAliases(true);
         addComRegisterCommands(true);
+        if (command) {
+            $.unregisterChatCommand(command);
+        }
     };
 
     /**
@@ -495,6 +517,7 @@
             $.inidb.del('command', action);
             $.inidb.del('permcom', action);
             $.inidb.del('pricecom', action);
+            $.inidb.del('aliases', action);
             $.unregisterChatCommand(action);
             $.log.event(sender + ' deleted the command !' + action);
         }
@@ -841,7 +864,7 @@
          * used for the panel
          */
         if (command.equalsIgnoreCase('reloadcommand')) {
-            reloadCommands();
+            reloadCommands(args[0]);
         }
     });
 
