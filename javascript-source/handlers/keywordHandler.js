@@ -33,56 +33,7 @@
                     return;
                 }
 
-                if (keyword.match(/\(sender\)/g)) {
-                    keyword = $.replace(keyword, '(sender)', $.username.resolve(event.getSender()));
-                }
-        
-                if (keyword.match(/\(@sender\)/g)) {
-                    keyword = $.replace(keyword, '(@sender)', '@' + $.username.resolve(event.getSender()));
-                }
-        
-                if (keyword.match(/\(baresender\)/g)) {
-                    keyword = $.replace(keyword, '(baresender)', event.getSender());
-                }
-        
-                if (keyword.match(/\(game\)/g)) {
-                    keyword = $.replace(keyword, '(game)', $.getGame($.channelName));
-                }
-        
-                if (keyword.match(/\(status\)/g)) {
-                    keyword = $.replace(keyword, '(status)', $.getStatus($.channelName));
-                }
-        
-                if (keyword.match(/\(count\)/g)) {
-                    $.inidb.incr('keywordCount', keyword, 1);
-                    keyword = $.replace(keyword, '(count)', $.inidb.get('keywordCount', keyword));
-                }
-        
-                if (keyword.match(/\(random\)/g)) {
-                    keyword = $.replace(keyword, '(random)', $.username.resolve($.randElement($.users)[0]));
-                }
-        
-                if (keyword.match(/\(pointname\)/g)) {
-                    keyword = $.replace(keyword, '(pointname)', $.pointNameMultiple);
-                }
-        
-                if (keyword.match(/\(#\)/g)) {
-                    keyword = $.replace(keyword, '(#)', String($.randRange(1, 100)));
-                }
-        
-                if (keyword.match(/\(uptime\)/g)) {
-                    keyword = $.replace(keyword, '(uptime)', String($.getStreamUptime($.channelName)));
-                }
-        
-                if (keyword.match(/\(viewers\)/g)) {
-                    keyword = $.replace(keyword, '(viewers)', String($.getViewers($.channelName)));
-                }
-        
-                if (keyword.match(/\(follows\)/g)) {
-                    keyword = $.replace(keyword, '(follows)', String($.getFollows($.channelName)));
-                }
-
-                $.say(keyword);
+                $.say($.tags(event, keyword, false));
             }
         }
     });

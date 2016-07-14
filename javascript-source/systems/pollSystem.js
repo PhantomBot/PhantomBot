@@ -63,7 +63,7 @@
 
         $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
         if (poll.time) {
-            setTimeout(function() { endPoll(); }, poll.time, 'pollSystem');
+            var timeout = setTimeout(function() { endPoll(); }, poll.time);
         }
 
         return true;
@@ -110,7 +110,7 @@
             return;
         }
 
-        clearTimeout(lookupTimeoutID('pollSystem'));
+        clearTimeout(timeout);
 
         if (poll.minVotes > 0 && poll.votes.length < poll.minVotes) {
             poll.result = '';

@@ -774,11 +774,11 @@
             }
             if (event.getChannel().getName().equalsIgnoreCase($.channel.getName())) {
                 if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
-                    if (event.getAdd()) {
+                    if (event.getAdd().toString().equals('true')) {
                         if (!modeO && !$.inidb.exists('settings', 'connectedMsg')) {
                             consoleLn($.username.resolve($.botName) + ' ready!');
                         } else {
-                            if (!modeO && $.inidb.exists('settings', 'connectedMsg') && !connectedMsg) {
+                            if (!modeO && !connectedMsg && $.inidb.exists('settings', 'connectedMsg')) {
                                 $.say($.inidb.get('settings', 'connectedMsg'));
                                 connectedMsg = true;
                             }
@@ -801,7 +801,7 @@
                 isModv3 = $.isModv3(sender, event.getTags());
 
             if (!isModv3 && $.commandPause.isPaused()) {
-                consoleDebug($.lang.get('commandpause.isactive'))
+                consoleDebug($.lang.get('commandpause.isactive'));
                 return;
             }
 
@@ -844,7 +844,7 @@
                 return;
             }
 
-            if ($.coolDown.get(command, sender) > 0) {
+            if (parseInt($.coolDown.get(command, sender)) > 0) {
                 consoleLn('[COMMAND COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
                 return;
             }
