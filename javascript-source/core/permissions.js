@@ -335,7 +335,7 @@
      */
     function getGWTier(username) {
         if (username.toLowerCase() in gwSubUsers) {
-            return gwSubUsers[username].toLowerCase();
+            return gwSubUsers[username];
         }
         return 0;
     }
