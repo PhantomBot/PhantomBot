@@ -236,7 +236,7 @@
             var stream = $.twitch.GetStream(channelName);
 
             if (!stream.isNull('stream')) {
-                return parseInt(stream.getJSONObject('stream').getInt('viewers'));
+                return stream.getJSONObject('stream').getInt('viewers');
             } else {
                 return 0;
             }
@@ -253,7 +253,7 @@
         var channel = $.twitch.GetChannel(channelName);
 
         if (!channel.isNull('followers')) {
-            return parseInt(channel.getInt('followers'));
+            return channel.getInt('followers');
         } else {
             return 0;
         }
@@ -272,7 +272,7 @@
             now = new Date(followedAt).getTime();
 
         if (followedAt) {
-            return parseInt($.getLongTimeString(now));
+            return $.getLongTimeString(now);
         } else {
             return username + ' is not following';
         }
