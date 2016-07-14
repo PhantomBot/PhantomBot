@@ -262,7 +262,7 @@
                 channel = $.username.resolve(args[1]);
             }
 
-            if ($.twitch.GetUserFollowsChannel(username, channel).getInt('_http') == 200) {
+            if ($.twitch.GetUserFollowsChannel(username.toLowerCase(), channel.toLowerCase()).getInt('_http') == 200) {
                 $.say($.lang.get('followhandler.follow.age.time', username, channel, $.getFollowAge(username, channel)));
                 //No need to log this command event.
                 return;
