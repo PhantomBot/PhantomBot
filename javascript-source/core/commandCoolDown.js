@@ -27,8 +27,6 @@
         }
 
         time = ((time * 1000) + $.systemTime());
-        command = command.toLowerCase();
-        user = user.toLowerCase();
 
         if (!command.equalsIgnoreCase('adventure')) {
             if (globalCooldown && !$.inidb.exists('cooldown', command)) {
@@ -61,12 +59,9 @@
     };
 
     function get(command, user) {
-        var coolDownExists = $.inidb.exists('cooldown', command),
+        var coolDownExists = $.inidb.exists('cooldown', command.toLowerCase()),
             cool,
             i;
-
-        command = command.toLowerCase();
-        user = user.toLowerCase();
 
         if (command.equalsIgnoreCase('bet') || command.equalsIgnoreCase('ticket') || command.equalsIgnoreCase('tickets') 
             || command.equalsIgnoreCase('bid') || command.equalsIgnoreCase($.inidb.get('raffle', 'command'))) {
