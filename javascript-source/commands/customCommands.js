@@ -161,6 +161,10 @@
             message = $.replace(message, '(echo)', event.getArguments());
         }
 
+        if (message.match(/\(gamesplayed\)/g)) {
+            message = $.replace(message, '(gamesplayed)', $.getGamesPlayed());
+        }
+
         if (message.match(/\(code=/g)) {
             var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
                 length = message.substr(6).replace(')', '');

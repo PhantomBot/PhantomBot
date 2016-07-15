@@ -4,7 +4,8 @@
  */
 
 (function() {
-    var alreadyStarted = false;
+    var alreadyStarted = false,
+        interval;
 
     /**
      * @event twitchOnline
@@ -117,7 +118,7 @@
                 $.inidb.set('panelstats', 'enabled', 'true');
                 $.setIniDbBoolean('panelstats', 'streamOnline', $.isOnline($.channelName));
                 updateAll();
-                setInterval(function() { updateAll(); }, 3e4, 'panelHandler');
+                interval = setInterval(function() { updateAll(); }, 3e4);
             } else {
                 $.inidb.set('panelstats', 'enabled', 'false');
             }

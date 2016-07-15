@@ -5,7 +5,7 @@ $.lang.register('streamcommand.playtime.offline', '$1 is not streaming right now
 $.lang.register('streamcommand.playtime.online', '$1 has been playing $2 for $3');
 $.lang.register('streamcommand.title', 'Current Status: $1');
 $.lang.register('streamcommand.title.set.usage', 'usage: !title set [stream title]. Currently: $1');
-$.lang.register('streamcommand.game.online', 'Current Game: $1, Playtime: $2');
+$.lang.register('streamcommand.game.online', 'Current Game: $1. Playtime: $2');
 $.lang.register('streamcommand.game.offline', 'Current Game: $1');
 $.lang.register('streamcommand.game.set.usage', 'usage: !game set [game title]. Currently: $1');
 $.lang.register('streamcommand.viewers', 'Currently $1 viewers are watching.');

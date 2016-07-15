@@ -70,7 +70,7 @@
          */
         if (command.equalsIgnoreCase('game')) {
             if (args.length == 0) {
-                if (!$.isOnline($.channelName)) {
+                if ($.isOnline($.channelName) || $.getPlayTime() == null) {
                     $.say($.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
                 } else {
                     $.say($.lang.get('streamcommand.game.online', $.getGame($.channelName), $.getPlayTime()));
@@ -122,7 +122,6 @@
                     return;
                 }
             }
-            
         }
 
         /**
@@ -133,8 +132,13 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.playtime.offline', $.channelName));
                 return;
             }
-            $.say($.lang.get('streamcommand.playtime.online', $.username.resolve($.channelName), $.getPlayTimeGame(), $.getPlayTime()));
-            return;
+
+            if ($.getPlayTime() == null) {
+                $.say($.lang.get('streamcommand.playtime.online', $.username.resolve($.channelName), $.getGame($.channelName), $.getStreamUptime($.channelName)));
+                return;
+            }
+
+            $.say($.lang.get('streamcommand.playtime.online', $.username.resolve($.channelName), $.getGame($.channelName), $.getPlayTime()));
         }
 
         /**

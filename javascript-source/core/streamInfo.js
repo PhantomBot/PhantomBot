@@ -1,42 +1,62 @@
 (function() {
-    var playTime = null;
-    var lastGame = null;
     var currentGame = null;
-    var interval;
+    var count = 1;
+    var gamesPlayed;
 
     /**
-     * @function updatePlayTime()
-     */
-    function updatePlayTime() {
-        if ($.twitchcache.isStreamOnlineString().equals('false')) {
-            playTime = null;
-            currentGame = null;
+    * @event twitchOnline
+    */
+    $.bind('twitchOnline', function(event) {
+        if (($.systemTime() - $.inidb.get('panelstats', 'playTimeStart')) >= (480 * 6e4)) {
+            var hrs = (getStreamUptimeSeconds($.channelName) / 3600), min = ((getStreamUptimeSeconds($.channelName) % 3600) / 60);
+            $.inidb.del('streamInfo', 'gamesPlayed');
+            $.inidb.set('panelstats', 'playTimeStart', $.systemTime());
+            $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + hrs + ':' + min + '='));
+        }
+    });
 
-            if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-                $.inidb.set('panelstats', 'playTimeStart', 0);
+    /**
+    * @event twitchOffline
+    */
+    $.bind('twitchOffline', function(event) {
+        if (($.systemTime() - $.inidb.get('panelstats', 'playTimeStart')) >= (480 * 6e4)) {
+            $.inidb.set('panelstats', 'playTimeStart', 0);
+            $.inidb.del('streamInfo', 'gamesPlayed');
+        }
+    });
+
+    /**
+    * @event twitchGameChange
+    */
+    $.bind('twitchGameChange', function(event) {
+        var hrs = (getStreamUptimeSeconds($.channelName) / 3600), min = ((getStreamUptimeSeconds($.channelName) % 3600) / 60);
+
+        if ($.isOnline($.channelName)) {
+            $.inidb.set('panelstats', 'playTimeStart', $.systemTime());
+            if ($.inidb.exists('streamInfo', 'gamesPlayed')) {
+                count++;
+                gamesPlayed = $.inidb.get('streamInfo', 'gamesPlayed');
+                gamesPlayed += (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + hrs + ':' + min + '=');
+                $.inidb.set('streamInfo', 'gamesPlayed', gamesPlayed);
+            } else {
+                $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + hrs + ':' + min + '='));
             }
-            return;
         }
-
-        currentGame = $.getGame($.channelName);
-
-        if (currentGame != null && lastGame != currentGame) {
-            lastGame = currentGame;
-            playTime = $.systemTime();
-
-            $.inidb.set('panelstats', 'playTimeStart', playTime);
-        }
-    };
+    });
 
     /**
-     * @function getPlayTimeGame()
+     * @function getGamesPlayed()
      * @export $
+     * @return string
      */
-    function getPlayTimeGame() {
-        if (currentGame == null) {
-            return "Some Game";
+    function getGamesPlayed() {
+        if ($.inidb.exists('streamInfo', 'gamesPlayed')) {
+            var games = $.inidb.get('streamInfo', 'gamesPlayed');
+            var string = games.split('=').join(', ');
+
+            return string;
         }
-        return currentGame;
+        return '';
     };
 
     /**
@@ -44,12 +64,13 @@
      * @export $
      */
     function getPlayTime() {
-        var t = parseInt($.inidb.get('panelstats', 'playTimeStart'));
-        if (t != 0 && t != null) {
-            var time = ($.systemTime() - playTime);
+        var playTime = parseInt($.inidb.get('panelstats', 'playTimeStart')),
+            time;
+        if (playTime) {
+            time = ($.systemTime() - playTime);
             return $.getTimeStringMinutes(time / 1000);
         } else {
-            return getStreamUptime($.channelName);
+            return null;
         }
     };
 
@@ -158,7 +179,6 @@
                 time = (now - createdAtDate);
                 return $.getTimeString(time / 1000);
             }
-
             return $.getTimeString(uptime);
         } else {
             var stream = $.twitch.GetStream(channelName),
@@ -215,7 +235,7 @@
                 createdAtDate;
 
             if (stream.isNull('stream')) {
-                return 'Stream is offline';
+                return 0;
             }
     
             createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
@@ -266,7 +286,7 @@
      * @param channelName
      * @returns {Number}
      */
-    function getFollowAge (username, channelName) {
+    function getFollowAge(username, channelName) {
         var user = $.twitch.GetUserFollowsChannel(username, channelName),
             followedAt = new Date(user.getString('created_at')),
             now = new Date(followedAt).getTime();
@@ -274,7 +294,7 @@
         if (followedAt) {
             return $.getLongTimeString(now);
         } else {
-            return username + ' is not following';
+            return false;
         }
     }
 
@@ -361,16 +381,8 @@
         }
     };
 
-    /**
-     * Execute the updatePlayTime function.
-     */
-    interval = setInterval(function() {
-        updatePlayTime();
-    }, 6e4);
-
     /** Export functions to API */
     $.getPlayTime = getPlayTime;
-    $.getPlayTimeGame = getPlayTimeGame;
     $.getFollows = getFollows;
     $.getGame = getGame;
     $.getStatus = getStatus;
@@ -384,4 +396,5 @@
     $.getFollowAge = getFollowAge;
     $.getChannelAge = getChannelAge;
     $.getStreamDownTime = getStreamDownTime;
+    $.getGamesPlayed = getGamesPlayed;
 })();
