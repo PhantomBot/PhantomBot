@@ -59,16 +59,16 @@
     };
 
     function get(command, user) {
-        var coolDownExists = $.inidb.exists('cooldown', command.toLowerCase()),
-            cool,
+        var cool,
             i;
 
-        if (command.equalsIgnoreCase('bet') || command.equalsIgnoreCase('ticket') || command.equalsIgnoreCase('tickets') 
-            || command.equalsIgnoreCase('bid') || command.equalsIgnoreCase($.inidb.get('raffle', 'command'))) {
+        command = command.toLowerCase();
+
+        if (command.equals('bet') || command.equals('ticket') || command.equals('tickets') || command.equals('bid') || command.equals($.inidb.get('raffle', 'command')) || command.equals('adventure')) {
             return;
         }
 
-        if (globalCooldown && !coolDownExists) {
+        if (globalCooldown && !$.inidb.exists('cooldown', command)) {
             for (i in cooldown) {
                 if (cooldown[i].command.equalsIgnoreCase(command)) {
                     cool = cooldown[i].time - $.systemTime();
@@ -82,13 +82,11 @@
                     }
                 }
             }
-            if (!command.equalsIgnoreCase('adventure')) {
-                set(command, globalCooldownTime);
-            }
+            set(command, globalCooldownTime);
             return;
         }
 
-        if (perUserCooldown && coolDownExists) {
+        if (perUserCooldown && $.inidb.exists('cooldown', command)) {
             for (i in cooldown) {
                 if (cooldown[i].command.equalsIgnoreCase(command) && cooldown[i].user.equalsIgnoreCase(user)) {
                     cool = cooldown[i].time - $.systemTime();
@@ -102,9 +100,7 @@
                     }
                 }
             }
-            if (!command.equalsIgnoreCase('adventure')) {
-                set(command, parseInt($.inidb.get('cooldown', command)), user);
-            }
+            set(command, parseInt($.inidb.get('cooldown', command)), user);
             return;
         }
 
@@ -121,7 +117,7 @@
                 }
             }
         }
-        if (coolDownExists) {
+        if ($.inidb.exists('cooldown', command)) {
             set(command, parseInt($.inidb.get('cooldown', command)));
         }
     };
