@@ -76,7 +76,7 @@
                 message = $.replace(message, '(name)', $.username.resolve(subscriber));
             }
             if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', subReward);
+                message = $.replace(message, '(reward)', String(subReward));
             }
             $.say(message);
             $.addSubUsersList(subscriber);
@@ -97,7 +97,7 @@
                 message = $.replace(message, '(months)', months);
             }
             if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', subReward);
+                message = $.replace(message, '(reward)', String(subReward));
             }
             $.say(message);
             $.restoreSubscriberStatus(resubscriber, true);
