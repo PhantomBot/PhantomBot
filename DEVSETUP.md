@@ -37,7 +37,22 @@ DONE! Happy coding <3
 ##Netbeans
 You can get Netbeans [here](https://netbeans.org/downloads/).
 
-Yet to be written.
+1. Open up NetBeans. 
+2. Clone the repository using Team -> Git -> Clone.
+3. Enter the repository url and your GitHub password or select your ssh key.
+4. Choose a destination folder. Next page!
+5. Select the branches you want. Click Next!
+6. Check if everything is okay. Then click Finish!
+7. When the clone process is finished click Create Project. Select 
+  Java -> Java Free-Form Project and click Next. 
+8. Click on the first *"Browse"* button. Select the directory you cloned to and 
+  click *"Open"*. Then enter a project name. Click 2 times next. 
+9. Press the first *"Add Folder"* button and select the *"javascript-source"* folder.
+  Set the *"Source Level"* to *"JDK 1.8"* and the *"Encoding"* to *"UTF-8"*. Next page! 
+10. Click on *"Add JAR/Folder"*, go the `./libraries` folder and select every jar file (Ctrl + A). 
+  Press the "Finish" button and we're finished!
+
+DONE! Happy coding <3
 
 ##Eclipse
 You can get Eclipse [here](https://www.eclipse.org/downloads/).
