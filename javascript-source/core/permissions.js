@@ -355,7 +355,7 @@
      * @param username
      */
     function delGWSubUsersList(username) {
-        delete gwSubUsers[username].toLowerCase();
+        delete gwSubUsers[username];
     }
    
     /**
