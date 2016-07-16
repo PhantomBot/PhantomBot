@@ -249,6 +249,7 @@
         if (points.length > 0) {
             sendDBUpdate("points_updateGroupPoints", dbtable, group, points);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -262,6 +263,7 @@
             $("#inlineUserPoints_" + username).val('');
             sendDBUpdate("points_pointstableUpdate", "points", username, points);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -325,6 +327,7 @@
             }
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
     }
  
     /**
@@ -355,6 +358,7 @@
         $("#adjustUserPointsNameInput").val('');
         $("#adjustUserPointsInput").val('');
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
     }
 
     /**
