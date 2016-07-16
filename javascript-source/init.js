@@ -844,7 +844,7 @@
                 return;
             }
 
-            if (parseInt($.coolDown.get(command, sender)) > 0) {
+            if ($.coolDown.get(command, sender) > 0) {
                 consoleLn('[COMMAND COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
                 return;
             }
