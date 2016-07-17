@@ -75,7 +75,7 @@
             }
 
             /**
-             * @commandpath greeting cooldown [minutes] - Cooldown in minutes before displaying a greeting for a person rejoining chat.
+             * @commandpath greeting cooldown [hours] - Cooldown in hours before displaying a greeting for a person rejoining chat.
              */
             if (action.equalsIgnoreCase('cooldown')) {
                 if (!args[1]) {
