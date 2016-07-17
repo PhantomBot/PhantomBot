@@ -360,7 +360,7 @@
                 nextLevel = parseInt(userLevel) + 1;
                 timeUntilNextRank = parseInt(ranksTimeTable[nextLevel]) - userTime;
                 if (userLevel == -1) {
-                    $.say($.lang.get('ranks.rank.norank.success', username, timeUntilNextRank, $.inidb.get('ranksMapping', timeUntilNextRank)));
+                    $.say($.lang.get('ranks.rank.norank.success', username, timeUntilNextRank, $.inidb.get('ranksMapping', ranksTimeTable[nextLevel].toString())));
                 } else {
                     $.say($.lang.get('ranks.rank.success', username, $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString()), timeUntilNextRank, $.inidb.get('ranksMapping', ranksTimeTable[nextLevel].toString())));
                 }
