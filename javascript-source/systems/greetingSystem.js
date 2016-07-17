@@ -75,7 +75,7 @@
             }
 
             /**
-             * @commandpath greeting cooldown [minutes] - Cooldown in minutes before displaying a greeting for a person rejoining chat.
+             * @commandpath greeting cooldown [hours] - Cooldown in hours before displaying a greeting for a person rejoining chat.
              */
             if (action.equalsIgnoreCase('cooldown')) {
                 if (!args[1]) {
@@ -88,9 +88,9 @@
                     return;
                 }
 
-                greetingCooldown = cooldown * 6e5; // Convert minutes to ms
+                greetingCooldown = cooldown * 36e5; // Convert hours to ms
                 $.inidb.set('greeting', 'cooldown', greetingCooldown);
-                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.success', cooldown, (cooldown / 60).toFixed(2)));
+                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.success', cooldown));
                 return;
             }
 

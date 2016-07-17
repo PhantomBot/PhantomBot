@@ -41,10 +41,10 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="greetingCooldown">Greeting Cooldown (Seconds)</label>
+                <label for="greetingCooldown">Greeting Cooldown (hours)</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('greetingCooldownInput', 'cooldown')">Submit</button>
-                <input type="number" min="0" class="form-control" id="greetingCooldownInput" placeholder="Seconds" />
+                <input type="number" min="0" class="form-control" id="greetingCooldownInput" placeholder="hours" />
             </div>
         </form>
 

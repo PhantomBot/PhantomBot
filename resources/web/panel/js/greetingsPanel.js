@@ -69,7 +69,7 @@
                         $('#greetingDefaultInput').attr('placeholder', value).blur();
                     }
                     if (panelMatch(key, 'cooldown')) {
-                        $('#greetingCooldownInput').attr('placeholder', value).blur();
+                        $('#greetingCooldownInput').attr('placeholder', (value / 36e5)).blur();
                     }
                 }
             }
@@ -314,9 +314,17 @@
      * @param {String} table
      * @param {String} key
      */
-    function updateGreetingData(inputId, table, key)
-    {
+    function updateGreetingData(inputId, table, key) {
         var value = $('#' + inputId).val();
+
+        if (inputId == "greetingCooldownInput") {
+            if (value.length > 0) {
+                value = String(value * 36e5);
+                sendDBUpdate('greetings_update', 'greeting', 'cooldown', value);
+                setTimeout(function() { doQuery(); sendCommand('greetingspanelupdate'); }, TIMEOUT_WAIT_TIME);
+                return;
+            }
+        }
 
         if (value.length > 0) {
             sendDBUpdate('greetings_update', table, key, value);

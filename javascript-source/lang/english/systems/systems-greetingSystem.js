@@ -7,5 +7,5 @@ $.lang.register('greetingsystem.set.personal.success', 'Changed your personal gr
 $.lang.register('greetingsystem.remove.personal.success', 'Successfully removed your personal greeting message.');
 $.lang.register('greetingsystem.generalusage.admin', 'Usage: !greeting toggledefault, !greeting setdefault [message], !greeting enable [message], !greeting disable.');
 $.lang.register('greetingsystem.generalusage.other', 'Use "!greeting enable [message]" to have the bot greet you when you enter the chat. Use "!greeting disable" to disable your greeting.');
-$.lang.register('greetingsystem.cooldown.usage', 'usage: !greeting cooldown [minutes]');
-$.lang.register('greetingsystem.cooldown.success', 'Greetings cooldown set to $1 minutes ($2 hours).');
+$.lang.register('greetingsystem.cooldown.usage', 'usage: !greeting cooldown [hours]');
+$.lang.register('greetingsystem.cooldown.success', 'Greetings cooldown set to $1 hours.');
