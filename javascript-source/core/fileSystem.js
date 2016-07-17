@@ -26,7 +26,7 @@
             }
             fis.close();
         } catch (e) {
-            $.consoleLn('Failed to open \'' + path + '\': ' + e);
+            $.log.error('Failed to open \'' + path + '\': ' + e);
         }
         return lines;
     };
@@ -56,7 +56,7 @@
             try {
                 org.apache.commons.io.FileUtils.moveFileToDirectory(fileO, pathO, true);
             } catch (ex) {
-                $.logError("fileSystem.js", 57, "moveFile(" + file + ", " + path + ") failed: " + ex);
+                $.log.error("moveFile(" + file + ", " + path + ") failed: " + ex);
             }
         }
     };
@@ -78,7 +78,7 @@
             }
             fos.close();
         } catch (e) {
-            $.consoleLn('Failed to write to \'' + path + '\': ' + e);
+            $.log.error('Failed to write to \'' + path + '\': ' + e);
         }
     };
 
@@ -92,7 +92,7 @@
                 delete fileHandles[key];
             }
         }
-    }
+    };
 
     /**
      * @function writeToFile
@@ -125,7 +125,7 @@
             ps.println(line);
             fos.flush();
         } catch (e) {
-            $.consoleLn('Failed to write to \'' + path + '\': ' + e);
+            $.log.error('Failed to write to \'' + path + '\': ' + e);
         }
     };
 
@@ -139,7 +139,7 @@
             var fos = new JFileOutputStream(path, true);
             fos.close();
         } catch (e) {
-            $.consoleLn('Failed to touch \'' + path + '\': ' + e);
+            $.log.error('Failed to touch \'' + path + '\': ' + e);
         }
     };
 
@@ -158,7 +158,7 @@
                 f.deleteOnExit();
             }
         } catch (e) {
-            $.consoleLn('Failed to delete \'' + path + '\': ' + e)
+            $.log.error('Failed to delete \'' + path + '\': ' + e);
         }
     };
 
@@ -198,7 +198,7 @@
                 return ret;
             }
         } catch (e) {
-            $.consoleLn('Failed to search in \'' + directory + '\': ' + e)
+            $.log.error('Failed to search in \'' + directory + '\': ' + e);
         }
         return [];
     };

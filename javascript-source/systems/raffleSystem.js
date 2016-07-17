@@ -169,7 +169,7 @@
             }
         }
 
-        if ($.list.contains(entries, user)) {
+        if ($.list.hasKey(entries, user)) {
             if (msgToggle) {
                 $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.enter.error.alreadyentered'));
             }

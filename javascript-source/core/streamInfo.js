@@ -215,7 +215,7 @@
             return $.getTimeString(time / 1000);
         }
         return 0;
-    }
+    };
 
     /**
      * @function getStreamStartedAt

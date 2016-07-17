@@ -24,22 +24,6 @@
     };
 
     /**
-     * @function hasPerm
-     * @param {Object} event
-     * @returns {boolean}
-     */
-    function hasPerm(event) {
-        if (modTimePermToggle) {
-            if (!$.isModv3(event.getSender().toLowerCase(), event.getTags())) {
-                return false;
-            }
-        } else if (!$.isAdmin(event.getSender().toLowerCase())) {
-            return false;
-        }
-        return true;
-    };
-
-    /**
      * @function getCurLocalTimeString
      * @export $
      * @param {String} timeformat
@@ -76,7 +60,7 @@
         var dateFormat = new java.text.SimpleDateFormat(format);
         dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
         return dateFormat.format(new java.util.Date());
-    }
+    };
 
     /**
      * @function getLocalTimeString
@@ -89,7 +73,7 @@
         var dateFormat = new java.text.SimpleDateFormat(format);
         dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
         return dateFormat.format(new java.util.Date(utc_secs));
-    }
+    };
 
     /**
      * @function dateToString
@@ -224,7 +208,7 @@
          * @commandpath time - Announce amount of time spent in channel
          */
         if (command.equalsIgnoreCase('time')) {
-            if (!hasPerm(event) || !action) {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), getUserTimeString(sender)));
             } else if (action && $.inidb.exists('time', action.toLowerCase())) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), getUserTimeString(action)));
@@ -355,15 +339,6 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.offlinetime.disabled'));
                     }
                 }
-
-                /**
-                 * @commandpath time modpermtoggle - Toggle permissions for changing user's logged time between admin/mod
-                 */
-                if (action.equalsIgnoreCase('modpermtoggle')) {
-                    modTimePermToggle = !modTimePermToggle;
-                    $.setIniDbBoolean('timeSettings', 'modTimePermToggle', modTimePermToggle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('timesystem.modpermtoggle.success', (modTimePermToggle ? 'Moderator' : 'Administrator')));
-                }
             }
         }
 
@@ -446,11 +421,17 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./core/timeSystem.js')) {
-            $.registerChatCommand('./core/timeSystem.js', 'time');
             $.registerChatCommand('./core/timeSystem.js', 'streamertime');
             $.registerChatCommand('./core/timeSystem.js', 'uptime');
             $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
             $.registerChatCommand('./core/timeSystem.js', 'updatetimesettings', 1);
+            $.registerChatCommand('./core/timeSystem.js', 'time');
+            $.registerChatSubcommand('time', 'add', 1);
+            $.registerChatSubcommand('time', 'take', 1);
+            $.registerChatSubcommand('time', 'set', 1);
+            $.registerChatSubcommand('time', 'autolevel', 1);
+            $.registerChatSubcommand('time', 'promotehours', 1);
+            $.registerChatSubcommand('time', 'timelevel', 1);
         }
     });
 

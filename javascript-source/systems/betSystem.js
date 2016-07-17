@@ -102,7 +102,7 @@
             return;
         }
 
-        if (!$.list.contains(betOptions, betWinning)) {
+        if (!$.list.hasKey(betOptions, betWinning)) {
             $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
             return;
         }
@@ -337,7 +337,7 @@
                     betOption = subAction;
                 }
 
-                if (!$.list.contains(betOptions, betOption.toLowerCase())) {
+                if (!$.list.hasKey(betOptions, betOption.toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
                     return;
                 } else if (betWager < 1) {

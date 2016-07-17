@@ -22,13 +22,7 @@
      * @returns {boolean}
      */
     function userExists(username) {
-        var i;
-        for (i in users) {
-            if (users[i][0].equalsIgnoreCase(username)) {
-                return true;
-            }
-        }
-        return false;
+        return $.list.hasKey(users, username, 0);
     };
 
     /**
@@ -58,7 +52,7 @@
      * @returns {boolean}
      */
     function isCaster(username) {
-        return $.getUserGroupId(username) == 0 || $.isOwner(username) || $.isBot(username);
+        return getUserGroupId(username.toLowerCase()) == 0 || isOwner(username) || isBot(username);
     };
 
     /**
@@ -68,7 +62,7 @@
      * @returns {boolean}
      */
     function isAdmin(username) {
-        return $.getUserGroupId(username.toLowerCase()) <= 1 || $.isOwner(username) || $.isBot(username);
+        return getUserGroupId(username.toLowerCase()) <= 1 || isOwner(username) || isBot(username);
     };
 
     /**
@@ -78,7 +72,7 @@
      * @returns {boolean}
      */
     function isMod(username) {
-        return $.getUserGroupId(username.toLowerCase()) <= 2 || $.isOwner(username) || $.isBot(username);
+        return getUserGroupId(username.toLowerCase()) <= 2 || isOwner(username) || isBot(username);
     };
 
     /**
@@ -89,10 +83,7 @@
      * @returns {boolean}
      */
     function isModv3(username, tags) {
-        if (tags != null && tags != '{}' && tags.get('user-type').equalsIgnoreCase('mod')) 
-            return true;
-        
-        return ($.isAdmin(username) || $.isMod(username));
+        return (tags != null && tags != '{}' && tags.get('user-type').equalsIgnoreCase('mod')) || isMod(username.toLowerCase());
     };
 
     /**
@@ -100,34 +91,11 @@
      * @export $
      * @param {string} username
      * @returns {boolean}
+     * @info this also included gamewisp subs and twitch subs.
      */
     function isSub(username) {
-        var i;
-        for (i in subUsers) {
-            if (subUsers[i][0].equalsIgnoreCase(username)) {
-                return true;
-            }
-        }
-        if (username in gwSubUsers) {
-            return true;
-        }
-        return false;
+        return $.list.hasKey(subUsers, username, 0) || isGWSub(username.toLowerCase());
     };
-
-    /**
-     * @function isTwitchSub
-     * @param {String}
-     * @returns {Boolean}
-     */
-    function isTwitchSub(username) {
-        var i;
-        for (i in subUsers) {
-            if (subUsers[i][0].equalsIgnoreCase(username)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * @function isGWSub
@@ -135,8 +103,8 @@
      * @returns {Boolean}
      */
     function isGWSub(username) {
-        return (username in gwSubUsers);
-    }
+        return (username.toLowerCase() in gwSubUsers);
+    };
 
     /**
      * @function isSubv3
@@ -144,19 +112,20 @@
      * @param {string} username
      * @param {Object} tags
      * @returns {boolean}
+     * @info this also included gamewisp subs.
      */
     function isSubv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || $.isSub(username.toLowerCase());
+        return (tags != null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || isSub(username.toLowerCase()) || isGWSub(username.toLowerCase());
     };
 
     /**
      * @function isTurbo
      * @export $
-     * @param {Object} userTags
+     * @param {Object} tags
      * @returns {boolean}
      */
-    function isTurbo(userTags) {
-        return (userTags != null && userTags != '{}' && userTags.get('turbo').equalsIgnoreCase('1')) || false;
+    function isTurbo(tags) {
+        return (tags != null && tags != '{}' && tags.get('turbo').equalsIgnoreCase('1')) || false;
     };
 
     /**
@@ -166,7 +135,7 @@
      * @returns {boolean}
      */
     function isDonator(username) {
-        return $.getUserGroupId(username.toLowerCase()) == 4;
+        return getUserGroupId(username.toLowerCase()) == 4;
     };
 
     /**
@@ -176,7 +145,7 @@
      * @returns {boolean}
      */
     function isHoster(username) {
-        return $.getUserGroupId(username.toLowerCase()) == 5;
+        return getUserGroupId(username.toLowerCase()) == 5;
     };
 
     /**
@@ -186,7 +155,7 @@
      * @returns {boolean}
      */
     function isReg(username) {
-        return $.getUserGroupId(username.toLowerCase()) <= 6 || $.isOwner(username) || $.isBot(username);
+        return getUserGroupId(username.toLowerCase()) <= 6 || isOwner(username) || isBot(username);
     };
 
     /**
@@ -196,7 +165,7 @@
      * @returns {boolean}
      */
     function hasModeO(username) {
-        return $.list.contains(modeOUsers, username.toLowerCase(), 0);
+        return $.list.hasKey(modeOUsers, username.toLowerCase(), 0);
     };
 
     /**
@@ -206,7 +175,16 @@
      * @returns {boolean}
      */
     function hasModList(username) {
-        return $.list.contains(modListUsers, username.toLowerCase());
+        return $.list.hasKey(modListUsers, username.toLowerCase());
+    };
+
+    /**
+     * @function isTwitchSub
+     * @param {String}
+     * @returns {Boolean}
+     */
+    function isTwitchSub(username) {
+        return $.list.hasKey(subUsers, username, 0);
     };
 
     /**
@@ -230,7 +208,7 @@
      * @returns {string}
      */
     function getUserGroupName(username) {
-        return $.getGroupNameById($.getUserGroupId(username.toLowerCase()));
+        return getGroupNameById(getUserGroupId(username.toLowerCase()));
     };
 
     /**
@@ -271,7 +249,7 @@
      * @returns {Number}
      */
     function getGroupPointMultiplier(username) {
-        return parseInt($.inidb.get('grouppoints', $.getUserGroupName(username.toLowerCase())));
+        return parseInt($.inidb.get('grouppoints', getUserGroupName(username.toLowerCase())));
     };
 
     /**
@@ -281,9 +259,7 @@
      * @param {Number} id
      */
     function setUserGroupById(username, id) {
-        if ($.user.isKnown(username.toLowerCase())) {
-            $.inidb.set('group', username.toLowerCase(), id);
-        }
+        $.inidb.set('group', username.toLowerCase(), id);
     };
 
     /**
@@ -293,7 +269,7 @@
      * @param groupName
      */
     function setUserGroupByName(username, groupName) {
-        $.setUserGroupById(username.toLowerCase(), $.getGroupIdByName(groupName.toLowerCase()));
+        setUserGroupById(username.toLowerCase(), getGroupIdByName(groupName.toLowerCase()));
     };
 
     /**
@@ -338,7 +314,7 @@
             return gwSubUsers[username];
         }
         return 0;
-    }
+    };
 
     /**
      * @function addGWSubUsersList
@@ -347,7 +323,7 @@
      */
     function addGWSubUsersList(username, tier) {
         gwSubUsers[username] = tier;
-    }
+    };
 
     /**
      * @function delGWSubUsersList
@@ -356,7 +332,7 @@
      */
     function delGWSubUsersList(username) {
         delete gwSubUsers[username];
-    }
+    };
    
     /**
      * @function addSubUsersList
@@ -371,7 +347,7 @@
             }
         }
         subUsers.push([username, $.systemTime() + 1e4]);
-    }
+    };
 
     /**
      * @function delSubUsersList
@@ -388,7 +364,7 @@
             }
         }
         subUsers = newSubUsers;
-    }
+    };
 
     /**
      * @function restoreSubscriberStatus
@@ -401,7 +377,7 @@
         if ($.bot.isModuleEnabled('./handlers/subscribeHandler.js') ||
             $.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
 
-            if ($.isMod(username) || $.isAdmin(username)) {
+            if (isMod(username) || isAdmin(username)) {
                 return;
             }
 
@@ -488,42 +464,34 @@
             userGroups[0] = 'Caster';
             $.inidb.set('groups', '0', 'Caster');
         }
-
         if (!userGroups[1] || userGroups[1] != 'Administrator') {
             userGroups[1] = 'Administrator';
             $.inidb.set('groups', '1', 'Administrator');
         }
-
         if (!userGroups[2] || userGroups[2] != 'Moderator') {
             userGroups[2] = 'Moderator';
             $.inidb.set('groups', '2', 'Moderator');
         }
-
         if (!userGroups[3] || userGroups[3] != 'Subscriber') {
             userGroups[3] = 'Subscriber';
             $.inidb.set('groups', '3', 'Subscriber');
         }
-
         if (!userGroups[4] || userGroups[4] != 'Donator') {
             userGroups[4] = 'Donator';
             $.inidb.set('groups', '4', 'Donator');
         }
-
         if (!userGroups[5] || userGroups[5] != 'Hoster') {
             userGroups[5] = 'Hoster';
             $.inidb.set('groups', '5', 'Hoster');
         }
-
         if (!userGroups[6] || userGroups[6] != 'Regular') {
             userGroups[6] = 'Regular';
             $.inidb.set('groups', '6', 'Regular');
         }
-
         if (!userGroups[7] || userGroups[7] != 'Viewer') {
             userGroups[7] = 'Viewer';
             $.inidb.set('groups', '7', 'Viewer');
         }
-
         $.inidb.set('group', $.ownerName.toLowerCase(), 0);
         $.inidb.set('group', $.botName.toLowerCase(), 0);
     };
@@ -563,25 +531,6 @@
             $.checkGameWispSub(username);
         }
     });
-
-    /**
-     * @event ircChannelMessage
-     * As the ircChannelJoin event can take a little while to come
-     * from Twitch, this ensures that once a person at least
-     * types in chat, that they are added to the $.users object.
-     */
-    /* 
-    ** Removed this because it never worked in the first place cause is was using event.getUser(). And it slows down the bot when working.
-    $.bind('ircChannelMessage', function(event) {
-        var username = event.getSender().toLowerCase();
-
-        lastJoinPart = $.systemTime();
-
-        if (!userExists(username)) {
-            users.push([username, $.systemTime()]);
-            $.checkGameWispSub(username);
-        }
-    });*/
     
     /**
      * @event ircChannelJoin
@@ -625,12 +574,12 @@
 
         if (event.getMode().equalsIgnoreCase('o')) {
             if (event.getAdd().toString().equals('true')) {
-                if (!$.hasModeO(username)) {
-                    if ($.isOwner(username)) {
+                if (!hasModeO(username)) {
+                    if (isOwner(username)) {
                         modeOUsers.push([username, 0]);
                         $.inidb.set('group', username, '0');
                     } else {
-                        if ($.isAdmin(username)) {
+                        if (isAdmin(username)) {
                             modeOUsers.push([username, 1]);
                             $.inidb.set('group', username, '1');
                         } else {
@@ -640,7 +589,7 @@
                     }
                 }
             } else {
-                if ($.hasModeO(username)) {
+                if (hasModeO(username)) {
                     var newmodeOUsers = [];
 
                     for (i in modeOUsers) {
@@ -760,12 +709,12 @@
                 return;
             }
 
-            if (!$.isOwner(sender) && groupId < $.getUserGroupId(sender)) {
+            if (!isOwner(sender) && groupId < getUserGroupId(sender)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.error.abovegroup'));
                 return;
             }
 
-            if (!$.isOwner(sender) && groupId == $.getUserGroupId(sender)) {
+            if (!isOwner(sender) && groupId == getUserGroupId(sender)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.error.samegroup'));
                 return;
             }
@@ -794,7 +743,7 @@
             }
 
             if (!args[1]) {
-                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup', groupId,
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup', getGroupNameById(groupId),
                     ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'),
                     $.pointNameMultiple,
                     ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
@@ -803,18 +752,18 @@
             }
 
             channelStatus = args[1];
-            if (channelStatus.toLowerCase() != 'online' && channelStatus.toLowerCase() != 'offline') {
+            if (!channelStatus.equalsIgnoreCase('online') && !channelStatus.equalsIgnoreCase('offline')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.usage'));
                 return;
             }
 
             if (!args[2]) {
-                if (channelStatus.toLowerCase() == 'online') {
-                    $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.online', groupId,
+                if (channelStatus.equalsIgnoreCase('online')) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.online', getGroupNameById(groupId),
                         ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'),
                         $.pointNameMultiple));
-                } else if (channelStatus.toLowerCase() == 'offline') {
-                    $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.offline', groupId,
+                } else if (channelStatus.equalsIgnoreCase('offline')) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.offline', getGroupNameById(groupId),
                         ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
                         $.pointNameMultiple));
                 }
@@ -831,11 +780,11 @@
                 points = -1;
             }
 
-            if (channelStatus.toLowerCase() == 'online') {
-                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.online', groupId, points, $.pointNameMultiple));
+            if (channelStatus.equalsIgnoreCase('online')) {
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.online', getGroupNameById(groupId), points, $.pointNameMultiple));
                 $.inidb.set('grouppoints', getGroupNameById(groupId), points);
-            } else if (channelStatus.toLowerCase() == 'offline') {
-                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.offline', groupId, points, $.pointNameMultiple));
+            } else if (channelStatus.equalsIgnoreCase('offline')) {
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.offline', getGroupNameById(groupId), points, $.pointNameMultiple));
                 $.inidb.set('grouppointsoffline', getGroupNameById(groupId), points);
             }
         }
@@ -848,22 +797,19 @@
         }
     });
 
-    // Load groups and generate default groups if they don't exist
-    reloadGroups();
-    generateDefaultGroups();
-    generateDefaultGroupPoints();
-
-    // Not needed!?
-    //
-    //setInterval(function () {
-    //  var len = subUsers.length,
-    //      now = $.systemTime();
-    //  while (len--) {
-    //    if (subUsers[len][1] < now) {
-    //      subUsers.splice(len, 1);
-    //    }
-    //  }
-    //}, checkSubscribersInterval);
+    /**
+    * Not needed!?
+    *
+    * setInterval(function () {
+    *   var len = subUsers.length,
+    *       now = $.systemTime();
+    *   while (len--) {
+    *     if (subUsers[len][1] < now) {
+    *       subUsers.splice(len, 1);
+    *     }
+    *   }
+    * }, checkSubscribersInterval);
+    */
 
     /**
      * @event initReady
@@ -873,8 +819,13 @@
         $.registerChatCommand('./core/permissions.js', 'permissions', 1);
         $.registerChatCommand('./core/permissions.js', 'permissionlist', 1);
         $.registerChatCommand('./core/permissions.js', 'permissionpoints', 1);
-        $.registerChatCommand('./core/permissions.js', 'users', 7);
-        $.registerChatCommand('./core/permissions.js', 'mods', 7);
+        $.registerChatCommand('./core/permissions.js', 'users', 2);
+        $.registerChatCommand('./core/permissions.js', 'mods', 2);
+
+        /** Load groups and generate default groups if they don't exist */
+        reloadGroups();
+        generateDefaultGroups();
+        generateDefaultGroupPoints();
     });
 
     /** Export functions to API */
