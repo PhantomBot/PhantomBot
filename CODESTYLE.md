@@ -19,19 +19,13 @@ The scriptset is split up into the following top-level directories.
 - **handlers**: Modules that handle automation like follow alerts or point payouts on hosts
 - **systems**: Modules that may act like API for other modules, but are not necessary for the bot to work proper.
 
-###./resources/scripts
-This directory is a mirror of ./javascript-source, but contains the minified production scripts.
-To have the source automatically compiled in JetBrains IntelliJ or PhpStorm, import `watchers.xml` from ./development-resources into your `file watchers`.
-Use these in your bot so the bot doesn't have to cope with prettyprint code and comments.
-
 ##Module File Setup
 In ./development-resources there's a template (module-template.js) wich you can copy to instantly get started with the new code style!  
 This file should give you enough insight on the general layout of the modules code.
 
 ##Code specific rules
 
-- 2 space indents.
-- 4 space indents on line continuation (spliting a single line of code into two).
+- 4 space indents.
 - Encapsulate all code in `(function(){ /* Your code */ })();` and export globally needed code to $ by function assignment.
 - Do not assign variables and functions to the `$` global.
 - If a function or variable needs to be global, assign it at the end of your module like `$.functionName = functionName;`.
