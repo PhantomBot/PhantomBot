@@ -2,22 +2,25 @@
     var currentHostTarget = '';
 
     /**
-     * @function contains
+     * @function hasKey
      * @export $.list
      * @param {Array} list
      * @param {*} value
      * @param {Number} [subIndex]
      * @returns {boolean}
      */
-    function contains(list, value, subIndex) {
+    function hasKey(list, value, subIndex) {
         var i;
-        for (i in list) {
-            if (subIndex > -1) {
-                if (list[i][subIndex] == value) {
+
+        if (subIndex > -1) {
+            for (i in list) {
+                if (list[i][subIndex].equalsIgnoreCase(value)) {
                     return true;
                 }
-            } else {
-                if (list[i] == value) {
+            }
+        } else {
+            for (i in list) {
+                if (list[i].equalsIgnoreCase(value)) {
                     return true;
                 }
             }
@@ -32,7 +35,7 @@
      * @returns {boolean}
      */
     function isKnown(username) {
-        return $.inidb.exists('visited', username);
+        return $.inidb.exists('visited', username.toLowerCase());
     };
 
     /**
@@ -43,11 +46,11 @@
      */
     function isFollower(username) {
         var userFollowsCheck;
-        username = username.toLowerCase();
-        if ($.inidb.exists('followed', username)) {
+
+        if ($.inidb.exists('followed', username.toLowerCase())) {
             return true;
         } else {
-            userFollowsCheck = $.twitch.GetUserFollowsChannel($.username.resolve(username), $.channelName);
+            userFollowsCheck = $.twitch.GetUserFollowsChannel(username.toLowerCase(), $.channelName.toLowerCase());
             if (userFollowsCheck.getInt('_http') == 200) {
                 return true;
             }
@@ -62,7 +65,7 @@
      */
     function getCurrentHostTarget() {
         return currentHostTarget.toLowerCase();
-    }
+    };
 
     /**
      * @function strlen
@@ -145,7 +148,7 @@
             return max;
         }
         $.random = new java.security.SecureRandom();
-        return Math.abs($.random.nextInt()) % max;
+        return (Math.abs($.random.nextInt()) % max);
     };
 
     /**
@@ -159,7 +162,7 @@
         if (min == max) {
             return min;
         }
-        return $.rand(max) + min;
+        return (rand(max) + min);
     };
 
     /**
@@ -172,7 +175,7 @@
         if (array == null) {
             return null;
         }
-        return array[$.randRange(0, array.length - 1)];
+        return array[randRange(0, array.length - 1)];
     };
 
     /**
@@ -188,7 +191,7 @@
             array[j] = temp;
         }
         return array;
-    }
+    };
 
     /**
      * @function randInterval
@@ -220,7 +223,7 @@
                 json = new JSONObject('{}'),
                 parameters = new JSONObject('{}'),
                 header = new HashMap(1),
-                id = $.rand(65535),
+                id = rand(65535),
                 request;
 
             header.put('Content-Type', 'application/json-rpc');
@@ -266,7 +269,7 @@
             $.log.error('Failed to use random.org: ' + error);
         }
 
-        return $.randRange(min, max);
+        return randRange(min, max);
     };
 
     /**
@@ -279,7 +282,7 @@
         if (array == null) {
             return null;
         }
-        return array[$.trueRand(array.length - 1)];
+        return array[trueRand(array.length - 1)];
     };
 
     /**
@@ -289,7 +292,7 @@
      * @returns {Number}
      */
     function trueRand(max) {
-        return $.trueRandRange(0, max);
+        return trueRandRange(0, max);
     };
 
     /**
@@ -313,7 +316,7 @@
     function getOrdinal(number) {
         var s = ["th", "st", "nd", "rd"],
             v = number % 100;
-        return number + (s[(v - 20) % 10] || s[v] || s[0]);
+        return (number + (s[(v - 20) % 10] || s[v] || s[0]));
     };
 
     /**
@@ -549,7 +552,7 @@
 
     /** Export functions to API */
     $.list = {
-        contains: contains,
+        hasKey: hasKey,
     };
 
     $.user = {

@@ -18,7 +18,7 @@
      */
     function getCommandScript(command) {
         return commandScriptTable[command];
-    }
+    };
 
     /**
      * @function registerChatSubcommand
@@ -34,7 +34,7 @@
             groupId = $.getGroupIdByName(groupId);
         }
 
-        if (!$.commandExists(command)) {
+        if (!commandExists(command)) {
             return;
         }
 
@@ -52,7 +52,7 @@
         commands[command].subcommands[subcommand] = {
             groupId: groupId
         }
-    }
+    };
 
     /**
      * @function registerChatCommand
@@ -116,7 +116,7 @@
         }
 
         $.inidb.del('permcom', command + ' ' + subcommand);
-    }
+    };
 
     /**
      * @function commandExists
@@ -140,7 +140,7 @@
             return (commands[command].subcommands[subcommand] ? true : false);
         }
         return false;
-    }
+    };
 
     /**
      * @function getCommandGroup
@@ -158,7 +158,7 @@
 
 
     /**
-     * @function getCommandGroup
+     * @function getCommandGroupName
      * @export $
      * @param command
      * @returns {name}
@@ -168,7 +168,7 @@
 
         if (commandExists(command)) {
             if (commands[command].groupId == 0) {
-                group = "Caster";
+                group = 'Caster';
             } else if (commands[command].groupId == 1) {
                 group = 'Administrator';
             } else if (commands[command].groupId == 2) {
@@ -186,6 +186,7 @@
             }
             return group;
         }
+        return 'Viewer';
     };
 
     /**
@@ -215,11 +216,11 @@
      *
      */
     function getSubCommandGroupName(command, subcommand) {
-        var group = "";
+        var group = '';
 
         if (subCommandExists(command, subcommand)) {
            if (commands[command].subcommands[subcommand].groupId == 0) {
-                group = "Caster";
+                group = 'Caster';
             } else if (commands[command].subcommands[subcommand].groupId == 1) {
                 group = 'Administrator';
             } else if (commands[command].subcommands[subcommand].groupId == 2) {
@@ -237,8 +238,8 @@
             }
             return group;
         }
-    }
-
+        return 'Viewer';
+    };
 
     /**
      * @function updateCommandGroup
@@ -250,7 +251,7 @@
         if (commandExists(command)) {
             commands[command].groupId = groupId;
         }
-    }
+    };
 
     /**
      * @function updateSubcommandGroup
@@ -263,7 +264,7 @@
         if (subCommandExists(command, subcommand)) {
             commands[command].subcommands[subcommand].groupId = groupId;
         }
-    }
+    };
 
     /** Export functions to API */
     $.registerChatCommand = registerChatCommand;

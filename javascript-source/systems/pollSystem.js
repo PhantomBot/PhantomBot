@@ -81,7 +81,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.nopoll'));
         }
 
-        if ($.list.contains(poll.voters, sender.toLowerCase())) {
+        if ($.list.hasKey(poll.voters, sender.toLowerCase())) {
             $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.already'));
             return;
         }

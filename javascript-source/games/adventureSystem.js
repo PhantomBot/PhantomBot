@@ -320,7 +320,7 @@
 
         clearCurrentAdventure();
         temp = "";
-        $.coolDown.set('adventure', coolDown);
+        $.coolDown.set('adventure', true, coolDown);
     };
 
     /**

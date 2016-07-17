@@ -6,8 +6,8 @@
  * Use the $.logging API for getting log-like date and time strings
  */
 (function() {
-
-    $.getSetIniDbNumber('settings', 'log_rotate_days', 90);
+    var interval,
+        logDays = $.getSetIniDbNumber('settings', 'log_rotate_days', 90);
 
     var logs = {
         file: $.getSetIniDbBoolean('settings', 'log.file', false),
@@ -336,6 +336,10 @@
         }
     });
 
+    interval = setInterval(function() { 
+        logRotate(); 
+    }, 24 * 60 * 6e4);
+
     /**
      * @event initReady
      */
@@ -343,9 +347,7 @@
         if ($.bot.isModuleEnabled('./core/logging.js')) {
             $.registerChatCommand('./core/logging.js', 'log', 1);
             $.registerChatCommand('./core/logging.js', 'reloadlogs', 1);
-
             logRotate();
-            setInterval(function() { logRotate(); }, 24 * 60 * 6e4, 'logRotate');
         }
     });
 

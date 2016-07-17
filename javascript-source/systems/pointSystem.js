@@ -161,12 +161,7 @@
      * @returns {*}
      */
     function getUserPoints(username) {
-        username = username.toLowerCase();
-        if ($.inidb.exists('points', username)) {
-            return parseInt($.inidb.get('points', username));
-        } else {
-            return 0;
-        }
+        return ($.inidb.exists('points', username.toLowerCase()) ? parseInt($.inidb.get('points', username.toLowerCase())) : 0);
     };
 
     /**
@@ -280,10 +275,7 @@
         var newTime = (time * 6e4) + $.systemTime();
         username = username.toLowerCase();
 
-        penaltys.push({
-            user: username,
-            time: newTime,
-        });
+        penaltys.push({user: username, time: newTime});
 
         if (!silent) {
             time = $.getTimeStringMinutes((time * 6e4) / 1000);
@@ -358,23 +350,8 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.withtime', ($.hasRank(sender) ? "the " + $.getRank(sender) : ""), getPointsString(getUserPoints(sender)), $.getUserTimeString(sender)));
                 }
             } else {
-
-                /**
-                 * @commandpath points user [username] - Check the points of the user given by username
-                 */
-                if (action.equalsIgnoreCase('user') || action.equalsIgnoreCase('check')) {
-                    if (!actionArg1) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.usage'));
-                        return;
-                    }
-
-                    user = (actionArg1 + '').toLowerCase();
-                    if (!$.user.isKnown(user)) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', user));
-                        return;
-                    }
-
-                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.resolveRank(user), getPointsString(getUserPoints(user))));
+                if (action && getUserPoints(action.toLowerCase()) != 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.username.resolve(action), getPointsString(getUserPoints(action.toLowerCase()))));
                 }
 
                 /**

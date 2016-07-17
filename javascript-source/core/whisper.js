@@ -12,7 +12,7 @@
         if (whisperMode || force) {
             return '/w ' + username + ' ';
         }
-        return $.userPrefix(username, true);
+        return '@' + $.username.resolve(username) + ', ';
     };
 
     /**
@@ -29,7 +29,7 @@
      */
     function whisperCommands(event) {
         if (!event.getSender().equalsIgnoreCase('jtv') || !event.getSender().equalsIgnoreCase('twitchnotify')) {
-            if (event.getMessage().startsWith('!') && $.isMod(event.getSender()) && $.list.contains($.users, event.getSender(), 0)) {
+            if (event.getMessage().startsWith('!') && $.isMod(event.getSender()) && $.list.hasKey($.users, event.getSender(), 0)) {
                 var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
                     CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
                     commandString = event.getMessage().substring(1),

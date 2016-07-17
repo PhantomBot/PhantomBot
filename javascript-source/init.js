@@ -800,7 +800,7 @@
                 permComCheck = $.permCom(sender, command, subCommand),
                 isModv3 = $.isModv3(sender, event.getTags());
 
-            if (!isModv3 && $.commandPause.isPaused()) {
+            if (!isModv3 && $.commandPause.isPaused() || !$.commandExists(command)) {
                 consoleDebug($.lang.get('commandpause.isactive'));
                 return;
             }
