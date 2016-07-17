@@ -88,9 +88,9 @@
                     return;
                 }
 
-                greetingCooldown = cooldown * 6e5; // Convert minutes to ms
+                greetingCooldown = cooldown * 36e5; // Convert hours to ms
                 $.inidb.set('greeting', 'cooldown', greetingCooldown);
-                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.success', cooldown, (cooldown / 60).toFixed(2)));
+                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.success', cooldown));
                 return;
             }
 
