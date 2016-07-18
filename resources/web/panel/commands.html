@@ -171,6 +171,18 @@
 
     <h3>Permissions</h3>
     <div>
+        <table>
+            <tr class="textList">
+                <td>No permission warning message</td>
+                <td style="width: 25px"><div id="permcomMsg" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.togglePermcomMsg();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
     <div id="_commandPermissionPanelDisabled" />
     <div id="_commandPermissionPanel">
         <div id="permCommandsList" style="height: 300px; overflow: auto;" />
@@ -204,6 +216,15 @@
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
                          onclick="$.toggleModCooldown();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Cooldown warning message</td>
+                <td style="width: 25px"><div id="cooldownMsg" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleCooldownMsg();"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>

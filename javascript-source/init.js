@@ -13,6 +13,7 @@
         modules = [],
         hooks = [],
         pricecomMods = ($.inidb.exists('settings', 'pricecomMods') ? $.inidb.get('settings', 'pricecomMods') : false),
+        coolDownMsgEnabled = ($.inidb.exists('settings', 'coolDownMsgEnabled') ? $.inidb.get('settings', 'coolDownMsgEnabled') : false),
         permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : true);
 
     /**
@@ -330,6 +331,7 @@
          * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist
          * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands
          * @commandpath YourBotName togglepermcommessage - Toggles the no permission message
+         * @commandpath YourBotName togglecooldownmessage - Toggles the on command cooldown message
          */
 
          if (command.equalsIgnoreCase($.botName.toLowerCase())) {
@@ -432,6 +434,18 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('init.mod.toggle.perm.msg.on'));
                 }
             }
+
+            if (action.equalsIgnoreCase('togglecooldownmessage')) {
+                if (coolDownMsgEnabled) {
+                    coolDownMsgEnabled = false;
+                    $.inidb.set('settings', 'coolDownMsgEnabled', false);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.toggle.cooldown.msg.off'));
+                } else {
+                    coolDownMsgEnabled = true;
+                    $.inidb.set('settings', 'coolDownMsgEnabled', true);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.toggle.cooldown.msg.on'));
+                }
+            }
         }
 
         /* Used for the panel, no command path needed*/
@@ -527,7 +541,6 @@
                         $.log.error('Unable to call initReady for enabled module (' + modules[index].scriptFile +'): ' + e);
                         $.say($.whisperPrefix(sender) + $.lang.get('init.module.error', modules[index].getModuleName()));
                     }
-
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
                 }
@@ -536,11 +549,6 @@
             /** Used for the panel */
             if (action.equalsIgnoreCase('enablesilent')) {
                 temp = args[1];
-
-                if (!temp) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-                    return;
-                }
 
                 if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
                     return;
@@ -559,13 +567,9 @@
                         if (hookIdx !== -1) {
                             hooks[hookIdx].handler(null);
                         }
-                        //$.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', modules[index].getModuleName()));
                     } catch (e) {
                         $.log.error('Unable to call initReady for enabled module (' + modules[index].scriptFile +'): ' + e);
-                        //$.say($.whisperPrefix(sender) + $.lang.get('init.module.error', modules[index].getModuleName()));
                     }
-                } else {
-                    //$.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
                 }
             }
 
@@ -618,11 +622,6 @@
             if (action.equalsIgnoreCase('disablesilent')) {
                 temp = args[1];
 
-                if (!temp) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-                    return;
-                }
-
                 if (temp.indexOf('./core/') > -1 || temp.indexOf('./lang/') > -1) {
                     return;
                 }
@@ -633,7 +632,6 @@
                     $.log.event(username + ' disabled module "' + modules[index].scriptFile + '"');
                     modules[index].enabled = false;
                     $.setIniDbBoolean('modules', modules[index].scriptFile, false);
-                    //$.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', modules[index].getModuleName()));
 
                     if (modules[index].scriptFile == './systems/pointSystem.js') {
                         pointsRelatedModules.push('./games/adventureSystem.js');
@@ -650,10 +648,7 @@
                                 $.setIniDbBoolean('modules', modules[index].scriptFile, false);
                             }
                         }
-                        //$.say($.whisperPrefix(sender) + $.lang.get('init.module.auto-disabled'));
                     }
-                } else {
-                    //$.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
                 }
             }
 
@@ -845,7 +840,11 @@
             }
 
             if ($.coolDown.get(command, sender) > 0) {
-                consoleLn('[COMMAND COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
+                if ($.getIniDbBoolean('settings', 'coolDownMsgEnabled', false)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
+                } else {
+                    consoleLn('[COMMAND COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
+                }
                 return;
             }
 
