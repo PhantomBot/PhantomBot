@@ -30,6 +30,8 @@
         modCooldown = "",
         perUserCooldown = "",
         globalCooldownTime = "",
+        cooldownMsg = "false",
+        permcomMsg = "true",
         disabledCommands = [],
         commands = [];
 
@@ -115,6 +117,21 @@
                 $("#toggleModCooldown").html(modeIcon[modCooldown]);
                 $('#globalCooldownTimeInput').attr('placeholder', globalCooldownTime).blur();
             }
+
+            if (panelCheckQuery(msgObject, 'commands_cooldownmsg')) {
+                if (msgObject['results']['coolDownMsgEnabled'] != null && msgObject['results']['coolDownMsgEnabled'] != undefined) {
+                    cooldownMsg = msgObject['results']['coolDownMsgEnabled'];
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'commands_permcommsg')) {
+                if (msgObject['results']['permComMsgEnabled'] != null && msgObject['results']['permComMsgEnabled'] != undefined) {
+                    permcomMsg = msgObject['results']['permComMsgEnabled'];
+                }
+            }
+
+            $("#cooldownMsg").html(modeIcon[cooldownMsg]);
+            $("#permcomMsg").html(modeIcon[permcomMsg]);
 
             if (panelCheckQuery(msgObject, 'commands_commands')) {
                 if (msgObject['results'].length === 0) {
@@ -297,6 +314,8 @@
         sendDBKeys("commands_payment", "paycom");
         sendDBKeys("commands_cooldown", "cooldown");
         sendDBKeys("commands_disabled", "disabledCommands");
+        sendDBQuery("commands_cooldownmsg", "settings", "coolDownMsgEnabled");
+        sendDBQuery("commands_permcommsg", "settings", "permComMsgEnabled");
     };
 
     /**
@@ -320,6 +339,7 @@
         sendDBDelete("commands_delcompricecom_" + command, "pricecom", command);
         sendDBDelete("commands_delcompermcom_" + command, "permcom", command);
         sendDBDelete("commands_delcomalias_" + command, "aliases", command);
+        sendDBDelete("commands_delcomcooldown_" + command, "cooldown", command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadcommand " + command); }, TIMEOUT_WAIT_TIME);
     };
@@ -535,6 +555,32 @@
     };
 
     /**
+     * @function toggleCooldownMsg
+     */
+    function toggleCooldownMsg() {
+        $("#cooldownMsg").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        if (cooldownMsg == "true") {
+            sendDBUpdate("commands_cooldownmsg", "settings", "coolDownMsgEnabled", "false");
+        } else if (cooldownMsg == "false") {
+            sendDBUpdate("commands_cooldownmsg", "settings", "coolDownMsgEnabled", "true");
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+    };
+
+    /**
+     * @function togglePermcomMsg
+     */
+    function togglePermcomMsg() {
+        $("#permcomMsg").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        if (permcomMsg == "true") {
+            sendDBUpdate("commands_permcommsg", "settings", "permComMsgEnabled", "false");
+        } else if (permcomMsg == "false") {
+            sendDBUpdate("commands_permcommsg", "settings", "permComMsgEnabled", "true");
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+    };
+
+    /**
      * @function toggleModCooldown
      */
     function toggleModCooldown() {
@@ -691,4 +737,6 @@
     $.editCooldown = editCooldown;
     $.commands = commands;
     $.runCommand = runCommand;
+    $.toggleCooldownMsg = toggleCooldownMsg;
+    $.togglePermcomMsg = togglePermcomMsg;
 })();
