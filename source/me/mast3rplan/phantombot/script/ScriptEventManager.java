@@ -34,6 +34,8 @@ public class ScriptEventManager implements Listener {
     }
     private static final String[] eventPackages = new String[] {
         "me.mast3rplan.phantombot.event.command",
+        "me.mast3rplan.phantombot.event.irc.message",
+        "me.mast3rplan.phantombot.event.irc",
         "me.mast3rplan.phantombot.event.console",
         "me.mast3rplan.phantombot.event.twitch.follower",
         "me.mast3rplan.phantombot.event.twitch.host",
@@ -42,10 +44,8 @@ public class ScriptEventManager implements Listener {
         "me.mast3rplan.phantombot.event.twitch.online",
         "me.mast3rplan.phantombot.event.twitch.offline",
         "me.mast3rplan.phantombot.event.twitch.gamechange",
-        "me.mast3rplan.phantombot.event.irc",
         "me.mast3rplan.phantombot.event.irc.channel",
         "me.mast3rplan.phantombot.event.irc.complete",
-        "me.mast3rplan.phantombot.event.irc.message",
         "me.mast3rplan.phantombot.event.irc.clearchat",
         "me.mast3rplan.phantombot.event.musicplayer",
         "me.mast3rplan.phantombot.event.ytplayer",
