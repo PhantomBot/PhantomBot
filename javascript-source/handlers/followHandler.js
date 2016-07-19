@@ -210,7 +210,7 @@
          * @commandpath followdelay [message] - Set the delay in seconds between follow announcements
          */
         if (command.equalsIgnoreCase('followdelay')) {
-            if (!comArg || comArg <= 0) {
+            if (!comArg) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followdelay.usage'));
                 return;
             }
