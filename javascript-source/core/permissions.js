@@ -549,6 +549,24 @@
             $.checkGameWispSub(username);
         }
     });
+    
+    /**
+     * @event ircChannelMessage
+     */
+    $.bind('ircChannelMessage', function(event) {
+        var username = event.getSender().toLowerCase();
+        
+        if (!$.user.isKnown(username)) {
+            $.setIniDbBoolean('visited', username, true);
+        }
+  
+        lastJoinPart = $.systemTime();
+        
+        if (!userExists(username)) {
+            users.push([username, $.systemTime()]);
+            $.checkGameWispSub(username);
+        }
+    });
 
     /**
      * @event ircChannelLeave
