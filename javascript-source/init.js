@@ -348,14 +348,15 @@
             if (action.equalsIgnoreCase('reconnect') || action.equalsIgnoreCase('rejoin')) {
                 $.say($.lang.get('init.reconnect', $.hostname));
                 $.log.event(username + ' requested a reconnect!');
-                $.connmgr.reconnectSession($.hostname);
+                setTimeout(function () { $.connmgr.reconnectSession($.hostname); }, 100);
+                setTimeout(function () { $.say($.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully re-connected!')) }, 30000);
                 return;
             }
 
             if (action.equalsIgnoreCase('disconnect') || action.equalsIgnoreCase('remove')) {
                 $.say($.lang.get('init.disconnect', $.hostname));
                 $.log.event(username + ' removed the bot from chat!');
-                java.lang.System.exit(0);
+                setTimeout(function () { java.lang.System.exit(0); }, 100);
                 return;
             }
 
@@ -453,6 +454,7 @@
             if (!$.isBot(sender)) {
                 return;
             }
+            $.log.event(username + ' requested a reconnect!');
             $.connmgr.reconnectSession($.hostname);
         }
 
@@ -461,6 +463,7 @@
             if (!$.isBot(sender)) {
                 return;
             }
+            $.log.event(username + ' removed the bot from chat!');
             java.lang.System.exit(0);
         }
 
