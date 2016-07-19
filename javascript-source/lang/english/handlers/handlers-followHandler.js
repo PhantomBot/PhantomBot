@@ -27,3 +27,5 @@ $.lang.register('followhandler.fixfollow.usage', 'Usage: !fixfollow (username)')
 $.lang.register('followhandler.fixfollow.error', '$1 is already in the followed list.');
 $.lang.register('followhandler.fixfollow.error.404', '$1 is not following your channel.');
 $.lang.register('followhandler.fixfollow.added', 'added $1 to the followed list!');
+$.lang.register('followhandler.set.followdelay.usage', 'usage: !followdelay [amount in seconds]');
+$.lang.register('followhandler.set.followdelay.success', 'follow delay set to $1 seconds.');

@@ -32,7 +32,7 @@
          */
         if (command.equalsIgnoreCase('8ball')) {
             if (!args[0]) {
-                $.say($.whisperPrefix(sender) + $.lang.get('8ball.usage'));
+                $.say($.resolveRank(sender) + $.lang.get('8ball.usage'));
                 return
             }
 

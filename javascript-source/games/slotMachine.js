@@ -75,7 +75,7 @@
         var e1 = getEmoteKey(),
             e2 = getEmoteKey(),
             e3 = getEmoteKey(),
-            message = $.lang.get('slotmachine.result.start', $.username.resolve(sender), emoteList[e1], emoteList[e2], emoteList[e3]);
+            message = $.lang.get('slotmachine.result.start', $.resolveRank(sender), emoteList[e1], emoteList[e2], emoteList[e3]);
 
         loadPrizes();
 
