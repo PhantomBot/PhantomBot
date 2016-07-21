@@ -327,7 +327,7 @@
         var jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, 0, true);
 
         if (jsonObject.getInt('_http') != 200) {
-            return '';
+            return 0;
         }
 
         var pages = jsonObject['_total'],
