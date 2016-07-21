@@ -319,6 +319,31 @@
     };
 
     /**
+     * @function getSubscriberCount
+     * @export $
+     * @return {number} count
+     */
+    function getSubscriberCount() {
+        var jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, 0, true);
+
+        if (jsonObject.getInt('_http') != 200) {
+            return '';
+        }
+
+        var pages = jsonObject['_total'],
+            count = 0;
+
+        if (pages == 1) {
+            count = jsonObject.getJSONArray('subscriptions').length();
+        } else {
+            jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, 0, true);
+            count = (pages - 1) * 100 + jsonObject.getJSONArray('subscriptions').length();
+        }
+
+        return count;
+    };
+
+    /**
      * @function updateGame
      * @export $
      * @param {string} channelName
@@ -400,4 +425,5 @@
     $.getChannelAge = getChannelAge;
     $.getStreamDownTime = getStreamDownTime;
     $.getGamesPlayed = getGamesPlayed;
+    $.getSubscriberCount = getSubscriberCount;
 })();

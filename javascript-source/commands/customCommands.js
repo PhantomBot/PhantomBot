@@ -165,6 +165,10 @@
             message = $.replace(message, '(follows)', String($.getFollows($.channelName)));
         }
 
+        if (message.match(/\(subscribers\)/g)) {
+            message = $.replace(message, '(subscribers)', String($.getSubscriberCount()));
+        }
+
         if (message.match(/\(touser\)/g)) {
             message = $.replace(message, '(touser)', (!event.getArgs()[0] ? $.username.resolve(event.getSender()) : $.username.resolve(event.getArgs()[0])));
         }
