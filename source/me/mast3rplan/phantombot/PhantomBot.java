@@ -912,33 +912,6 @@ public class PhantomBot implements Listener {
     }
 
     @Subscribe
-    public void onIRCChannelMessage(IrcChannelMessageEvent event) {
-        String message = event.getMessage();
-        String sender = event.getSender();
-
-        com.gmt2001.Console.out.println(usernameCache.resolve(event.getSender().toLowerCase(), event.getTags()) + ": " + event.getMessage());
-
-        if (message.startsWith("!")) {
-            String commandString = message.substring(1);
-            handleCommand(sender, commandString);
-        }
-
-        if (sender.equalsIgnoreCase("jtv")) {
-            message = message.toLowerCase();
-
-            if (message.startsWith("the moderators of this room are: ")) {
-                String[] spl = message.substring(33).split(", ");
-
-                for (String spl1 : spl) {
-                    if (spl1.equalsIgnoreCase(this.username)) {
-                        channel.setAllowSendMessages(true);
-                    }
-                }
-            }
-        }
-    }
-
-    @Subscribe
     public void onIRCChannelUserMode(IrcChannelUserModeEvent event) {
         if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
                 && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName())) {
@@ -1312,7 +1285,6 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing exit");
             System.exit(0);
         }
-
         handleCommand(username, message);
     }
 
@@ -1327,50 +1299,6 @@ public class PhantomBot implements Listener {
             command = commandString.substring(0, split);
             arguments = commandString.substring(split + 1);
         }
-
-        if (command.equalsIgnoreCase("save")) {
-            dataStoreObj.SaveAll(true);
-        }
-
-        if (command.equalsIgnoreCase("d")) {
-            if (debugD) {
-                com.gmt2001.Console.out.println("Got !d");
-            }
-
-            String d = sender.toLowerCase();
-            String validityCheck = this.ownerName.toLowerCase();
-
-            if (debugD) {
-                com.gmt2001.Console.out.println("d=" + d);
-                com.gmt2001.Console.out.println("t=" + validityCheck);
-            }
-
-            if (d.equalsIgnoreCase(validityCheck) && arguments.startsWith("!")) {
-                com.gmt2001.Console.out.println("!d command accepted");
-
-                split = arguments.indexOf(' ');
-
-                if (split == -1) {
-                    command = arguments.substring(1);
-                    arguments = "";
-                } else {
-                    command = arguments.substring(1, split);
-                    arguments = arguments.substring(split + 1);
-                }
-
-                sender = username;
-
-                com.gmt2001.Console.out.println("Issuing command as " + username + " [" + command + "] " + arguments);
-
-                if (command.equalsIgnoreCase("exit")) {
-                    dataStoreObj.SaveAll(true);
-                    System.exit(0);
-                }
-            }
-        }
-
-        //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
-        //EventBus.instance().postCommand(new CommandEvent(sender, command, arguments));
 
         ScriptEventManager.instance().runDirect(new CommandEvent(sender, command, arguments));
     }
