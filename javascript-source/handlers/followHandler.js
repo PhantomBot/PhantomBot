@@ -167,8 +167,7 @@
             args = event.getArgs(),
             argString = event.getArguments(),
             comArg = args[0],
-            channel = $.username.resolve($.channelName),
-            username = $.username.resolve(sender);
+            channel = $.channelName;
 
         /* Do not show command on the command list, for the panel only. */
         if (command.equalsIgnoreCase('followerpanelupdate')) {
@@ -316,20 +315,18 @@
          */
         if (command.equalsIgnoreCase('followage')) {
             if (args.length > 0) {
-                username = $.username.resolve(args[0]);
+                sender = args[0];
             }
 
             if (args.length > 1) {
-                channel = $.username.resolve(args[1]);
+                channel = args[1];
             }
 
-            if ($.twitch.GetUserFollowsChannel(username.toLowerCase(), channel.toLowerCase()).getInt('_http') == 200) {
-                $.say($.lang.get('followhandler.follow.age.time', username, channel, $.getFollowAge(username, channel)));
-                //No need to log this command event.
-                return;
+            if ($.twitch.GetUserFollowsChannel(sender.toLowerCase(), channel.toLowerCase()).getInt('_http') == 200) {
+                $.getFollowAge(event.getSender(), sender, channel);
+            } else {
+                $.say($.lang.get('followhandler.follow.age.err.404', $.userPrefix(event.getSender(), true), sender, channel));
             }
-            $.say($.lang.get('followhandler.follow.age.err.404', username, channel));
-            //No need to log this command event.
         }
 
         /**
