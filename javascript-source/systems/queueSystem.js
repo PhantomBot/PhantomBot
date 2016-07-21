@@ -34,11 +34,13 @@
 		}
 
 		queue.push({user: user, gamertag: gamertag});
+        $.inidb.set('queueList', user, 'true');
 		$.say($.whisperPrefix(user) + $.lang.get('queuesystem.added.queue'));
 	};
 
 	function clearQueue(user, notify) {
 		queue = [];
+        $.inidb.RemoveFile('queueList');
 		if (notify) {
 		    $.say($.whisperPrefix(user) + $.lang.get('queuesystem.queue.cleared'));
 		}
@@ -73,7 +75,6 @@
 
 		return temp.join(', ');
 	};
-
 
     /**
      * @event command

@@ -35,12 +35,12 @@
 		}
 
 		if (range <= winRange) {
-			$.say($.lang.get('gambling.lost', $.userPrefix(sender), range, $.getPointsString(amount), $.getPointsString($.getUserPoints(sender))));
+			$.say($.lang.get('gambling.lost', $.resolveRank(sender), range, $.getPointsString(amount), $.getPointsString($.getUserPoints(sender))));
 			$.inidb.decr('points', sender, amount);
 		} else {
 			winSpot = (range - winRange + 1); 
             winnings = Math.floor(amount + ((amount + winSpot) * gain));
-			$.say($.lang.get('gambling.won', $.userPrefix(sender), range, $.getPointsString(winnings - amount), $.getPointsString($.getUserPoints(sender))));
+			$.say($.lang.get('gambling.won', $.resolveRank(sender), range, $.getPointsString(winnings - amount), $.getPointsString($.getUserPoints(sender))));
 			$.inidb.decr('points', sender, amount);
 			$.inidb.incr('points', sender, winnings);
 		}

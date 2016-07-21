@@ -28,6 +28,7 @@ import de.simeonf.EventWebSocketSecureServer;
 import de.simeonf.EventWebSocketServer;
 import de.simeonf.MusicWebSocketSecureServer;
 import com.illusionaryone.TwitchAlertsAPIv1;
+import com.illusionaryone.StreamTipAPI;
 import com.illusionaryone.SingularityAPI;
 import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.TwitterAPI;
@@ -59,6 +60,7 @@ import me.mast3rplan.phantombot.cache.FollowersCache;
 import me.mast3rplan.phantombot.cache.SubscribersCache;
 import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.cache.DonationsCache;
+import me.mast3rplan.phantombot.cache.StreamTipCache;
 import me.mast3rplan.phantombot.cache.EmotesCache;
 import me.mast3rplan.phantombot.cache.TwitterCache;
 import me.mast3rplan.phantombot.cache.TwitchCache;
@@ -76,6 +78,7 @@ import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
 import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
 import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
+import me.mast3rplan.phantombot.event.streamtip.donate.StreamTipDonationEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
@@ -108,6 +111,9 @@ public class PhantomBot implements Listener {
     private String mysql_db_pass;
     private String twitchalertskey = null;
     private int twitchalertslimit;
+    private String streamtipkey = null;
+    private int streamtiplimit;
+    private String streamtipid;
     private static boolean newSetup = false;
     public final String username;
     private String panelpassword;
@@ -163,6 +169,7 @@ public class PhantomBot implements Listener {
     private SubscribersCache subscribersCache;
     private ChannelUsersCache channelUsersCache;
     private DonationsCache donationsCache;
+    private StreamTipCache streamTipCache;
     private EmotesCache emotesCache;
     private TwitterCache twitterCache;
     private TwitchCache twitchCache;
@@ -204,11 +211,11 @@ public class PhantomBot implements Listener {
                       String owner, int baseport, String hostname, int port,
                       double msglimit30, double whisperlimit60, String datastore, String datastoreconfig, String youtubekey,
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
-                      String keystorepassword, String keypassword, String twitchalertskey,
+                      String keystorepassword, String keypassword, String twitchalertskey, 
                       int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
                       String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword,
                       String twitterUser, String twitter_access_token, String twitter_secret_token, String twitter_consumer_key, String twitter_consumer_secret, String log_timezone,
-                      String mysql_db_host, String mysql_db_port, String mysql_db_name, String mysql_db_user, String mysql_db_pass) {
+                      String mysql_db_host, String mysql_db_port, String mysql_db_name, String mysql_db_user, String mysql_db_pass, String streamtipkey, String streamtipid, int streamtiplimit) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
@@ -285,6 +292,10 @@ public class PhantomBot implements Listener {
 
         this.twitchalertskey = twitchalertskey;
         this.twitchalertslimit = twitchalertslimit;
+
+        this.streamtipid = streamtipid;
+        this.streamtipkey = streamtipkey;
+        this.streamtiplimit = streamtiplimit;
 
         Profile profile = new Profile(username.toLowerCase());
         this.connectionManager = new ConnectionManager(profile);
@@ -422,6 +433,10 @@ public class PhantomBot implements Listener {
 
         TwitchAlertsAPIv1.instance().SetAccessToken(twitchalertskey);
         TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchalertslimit);
+
+        StreamTipAPI.instance().SetAccessToken(streamtipkey);
+        StreamTipAPI.instance().SetDonationPullLimit(streamtiplimit);
+        StreamTipAPI.instance().SetClientId(streamtipid);
 
         this.session.addIRCEventListener(new IrcEventHandler());
 
@@ -777,6 +792,10 @@ public class PhantomBot implements Listener {
         FollowersCache.killall();
         SubscribersCache.killall();
 
+        com.gmt2001.Console.out.println("[SHUTDOWN] Terminating caches...");
+        DonationsCache.killall();
+        StreamTipCache.killall();
+
         com.gmt2001.Console.out.println("[SHUTDOWN] Terminating pending timers...");
         ScriptApi.instance().kill();
 
@@ -839,6 +858,11 @@ public class PhantomBot implements Listener {
         if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
             this.donationsCache = DonationsCache.instance(this.channel.getName().toLowerCase());
         }
+
+        if (this.streamtipkey != null && this.streamtipkey.length() > 1) {
+            this.streamTipCache = StreamTipCache.instance(this.channel.getName().toLowerCase());
+        }
+
         this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
 
         if (this.twitterUser.length() > 0 &&
@@ -858,6 +882,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("subscribers", this.subscribersCache, 0);
         Script.global.defineProperty("channelUsers", this.channelUsersCache, 0);
         Script.global.defineProperty("donations", this.donationsCache, 0);
+        Script.global.defineProperty("streamtip", this.streamTipCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
     }
 
@@ -1129,6 +1154,40 @@ public class PhantomBot implements Listener {
             changed = true;
         }
 
+        if (message.equals("streamtipkey")) {
+            com.gmt2001.Console.out.print("Please enter your stream tip key:");
+            String newstreamtipkey = System.console().readLine().trim();
+
+            StreamTipAPI.instance().SetAccessToken(newstreamtipkey);
+            streamtipkey = newstreamtipkey;
+
+            changed = true;
+        }
+
+        if (message.equals("streamtipid")) {
+            com.gmt2001.Console.out.print("Please enter your stream tip client id key:");
+            String newstreamtipid = System.console().readLine().trim();
+
+            StreamTipAPI.instance().SetClientId(newstreamtipid);
+            streamtipid = newstreamtipid;
+
+            changed = true;
+        }
+
+        if (message.equals("streamtiplimit")) {
+            com.gmt2001.Console.out.print("Please enter Twitch Alerts pull limit: ");
+            int newstreamtiplimit;
+            try {
+                newstreamtiplimit = Integer.parseInt(System.console().readLine().trim());
+            } catch (NumberFormatException nfe) {
+                com.gmt2001.Console.out.println("Bad integer, defaulting to 5.");
+                newstreamtiplimit = 5;
+            }
+            StreamTipAPI.instance().SetDonationPullLimit(newstreamtiplimit);
+
+            changed = true;
+        }
+
         if (message.equals("twittersetup")) {
             try {
                 com.gmt2001.Console.out.println();
@@ -1199,6 +1258,9 @@ public class PhantomBot implements Listener {
                     data += "keypassword=" + keypassword + "\r\n";
                     data += "twitchalertskey=" + twitchalertskey + "\r\n";
                     data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
+                    data += "streamtipkey=" + streamtipkey + "\r\n";
+                    data += "streamtiplimit=" + streamtiplimit + "\r\n";
+                    data += "streamtipid=" + streamtipid + "\r\n";
                     data += "gamewispauth=" + gamewispauth + "\r\n";
                     data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
                     data += "mysqlhost=" + mysql_db_host + "\r\n";
@@ -1529,6 +1591,9 @@ public class PhantomBot implements Listener {
         String gamewisprefresh = "";
         String twitchalertskey = "";
         int twitchalertslimit = 5;
+        String streamtipkey = "";
+        String streamtipid = "";
+        int streamtiplimit = 1;
         String apioauth = "";
         String clientid = "";
         String channel = "";
@@ -1582,6 +1647,8 @@ public class PhantomBot implements Listener {
                                      + "    [musicenable=<true | false>]\r\n"
                                      + "    [twitchalertskey=<twitch alerts key>]\r\n"
                                      + "    [twitchalertslimit=<limit>]\r\n"
+                                     + "    [streamtipkey=<stream tip key>]\r\n"
+                                     + "    [streamtiplimit=<limit>]\r\n"
                                      + "    [gamewispauth=<gamewisp oauth>]\r\n"
                                      + "    [gamewisprefresh=<gamewisp refresh key>]\r\n"
                                      + "    [paneluser=<username>]\r\n"
@@ -1741,6 +1808,19 @@ public class PhantomBot implements Listener {
                             twitchalertslimit = 5;
                         }
                     }
+                    if (line.startsWith("streamtipkey=") && line.length() > 14) {
+                        streamtipkey = line.substring(13);
+                    }
+                    if (line.startsWith("streamtipid=") && line.length() > 13) {
+                        streamtipid = line.substring(12);
+                    }
+                    if (line.startsWith("streamtiplimit=") && line.length() > 16) {
+                        try {
+                            streamtiplimit = Integer.parseInt(line.substring(15));
+                        } catch (NumberFormatException nfe) {
+                            streamtiplimit = 5;
+                        }
+                    }
                     if (line.startsWith("twitterUser=") && line.length() > 13) {
                         twitterUser = line.substring(12);
                     }
@@ -1871,6 +1951,9 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("keypassword='" + keypassword + "'");
                     com.gmt2001.Console.out.println("twitchalertskey='" + twitchalertskey + "'");
                     com.gmt2001.Console.out.println("twitchalertslimit='" + twitchalertslimit + "'");
+                    com.gmt2001.Console.out.println("streamtipkey='" + streamtipkey + "'");
+                    com.gmt2001.Console.out.println("streamtipid='" + streamtipid + "'");
+                    com.gmt2001.Console.out.println("streamtiplimit='" + streamtiplimit + "'");
                     com.gmt2001.Console.out.println("paneluser='" + paneluser + "'");
                     com.gmt2001.Console.out.println("panelpassword='" + panelpassword + "'");
                     com.gmt2001.Console.out.println("twitterUser='" + twitterUser + "'");
@@ -2090,6 +2173,28 @@ public class PhantomBot implements Listener {
                         }
                     }
                 }
+                if (arg.toLowerCase().startsWith("streamtipkey=") && arg.length() > 14) {
+                    if (!streamtipkey.equals(arg.substring(13))) {
+                        streamtipkey = arg.substring(13);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("streamtipid=") && arg.length() > 13) {
+                    if (!streamtipid.equals(arg.substring(12))) {
+                        streamtipid = arg.substring(12);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("streamtiplimit=") && arg.length() > 16) {
+                    if (streamtiplimit != Integer.parseInt(arg.substring(15))) {
+                        try {
+                            streamtiplimit = Integer.parseInt(arg.substring(15));
+                            changed = true;
+                        } catch (NumberFormatException nfe) {
+                            streamtiplimit = 5;
+                        }
+                    }
+                }
                 if (arg.toLowerCase().startsWith("twitterUser=") && arg.length() > 13) {
                     if (!twitterUser.equals(arg.substring(12))) {
                         twitterUser = arg.substring(12);
@@ -2179,7 +2284,7 @@ public class PhantomBot implements Listener {
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
                                              webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
                                              twitterUser, twitter_access_token, twitter_secret_token, twitter_consumer_key, twitter_consumer_secret, log_timezone,
-                                             mysql_db_host, mysql_db_port, mysql_db_name, mysql_db_user, mysql_db_pass);
+                                             mysql_db_host, mysql_db_port, mysql_db_name, mysql_db_user, mysql_db_pass, streamtipkey, streamtipid, streamtiplimit);
     }
 
     public void updateGameWispTokens(String[] newTokens) {
@@ -2213,6 +2318,9 @@ public class PhantomBot implements Listener {
         data += "keypassword=" + keypassword + "\r\n";
         data += "twitchalertskey=" + twitchalertskey + "\r\n";
         data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
+        data += "streamtipkey=" + streamtipkey + "\r\n";
+        data += "streamtiplimit=" + streamtiplimit + "\r\n";
+        data += "streamtipid=" + streamtipid + "\r\n";
         data += "paneluser=" + paneluser + "\r\n";
         data += "panelpassword=" + panelpassword + "\r\n";
         data += "mysqlhost=" + mysql_db_host + "\r\n";

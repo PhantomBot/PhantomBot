@@ -100,6 +100,10 @@
             message = $.replace(message, '(sender)', $.username.resolve(event.getSender()));
         }
 
+        if (message.match(/\(senderrank\)/g)) {
+            message = $.replace(message, '(senderrank)', $.resolveRank(event.getSender()));
+        }
+
         if (message.match(/\(@sender\)/g)) {
             message = $.replace(message, '(@sender)', $.userPrefix(event.getSender()));
         }
@@ -123,6 +127,10 @@
 
         if (message.match(/\(random\)/g)) {
             message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)[0]));
+        }
+
+        if (message.match(/\(randomrank\)/g)) {
+            message = $.replace(message, '(randomrank)', $.resolveRank($.randElement($.users)[0]));
         }
 
         if (message.match(/\(pointname\)/g)) {

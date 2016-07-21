@@ -280,6 +280,23 @@
             if (panelCheckQuery(msgObject, 'dashboard_logRotate')) {
                 $('#logRotateInput').val(msgObject['results']['log_rotate_days']);
             }
+
+            if (panelCheckQuery(msgObject, 'dashboard_queuelist')) {
+                var queueList = msgObject['results'],
+                    html = "",
+                    username = "";
+
+                html = "<table>";
+                for (var idx = 0; idx < queueList.length; idx++) {
+                    username = queueList[idx]['key'];
+                    html += "<tr class=\"textList\">" +
+                            "    <td style=\"vertical-align: middle; width: 50%\">" + username + "</td>" +
+                            "    <td style=\"vertical-align: middle width: 25%\">" +
+                            "</tr>";
+                }
+                html += "</table>";
+                $("#queueList").html(html);
+            }
         }
     }
 
@@ -303,6 +320,7 @@
         sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
         sendDBKeys("dashboard_highlights", "highlights");
         sendDBKeys("dashboard_modules", "modules");
+        sendDBKeys("dashboard_queuelist", "queueList");
 
         if (!panelStatsEnabled) {
             sendDBQuery("dashboard_panelStatsEnabled", "panelstats", "enabled");

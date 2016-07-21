@@ -36,7 +36,9 @@
         subToggle = false,
         reSubToggle = false,
         donationTOggle = false,
-        donationGroup = false,         
+        streamtipdonationTOggle = false,
+        donationGroup = false,  
+        streamtipdonationGroup = false,         
         gameWhispToggle = false;
 
     /*
@@ -87,6 +89,10 @@
                 $('#followerGreetings').html(settingIcon[msgObject['results']['followToggle']]);
             }
 
+            if (panelCheckQuery(msgObject, 'greetings_followDelay')) {
+                $('#followDelay').attr('placeholder', msgObject['results']['followDelay']).blur();
+            }
+
             if (panelCheckQuery(msgObject, 'greetings_donation')) {
                 for (idx in msgObject['results']) {
                     key = msgObject['results'][idx]['key'];
@@ -111,6 +117,34 @@
                     }
                     if (panelMatch(key, 'lastmessage')) {
                         $('#donateLastMsgInput').attr('placeholder', value);
+                    }
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'greetings_donationstreamtip')) {
+                for (idx in msgObject['results']) {
+                    key = msgObject['results'][idx]['key'];
+                    value = msgObject['results'][idx]['value'];
+
+                    if (panelMatch(key, 'announce')) {
+                        streamtipdonationTOggle = value;
+                        $('#streamtipGreetings').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'donationGroup')) {
+                        streamtipdonationGroup = value;
+                        $('#streamtipdonationGroup').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'donationGroupMin')) {
+                        $('#streamtipdonationGroupMin').attr('placeholder', value);
+                    }
+                    if (panelMatch(key, 'reward')) {
+                        $('#streamtipdonateRewardInput').attr('placeholder', value);
+                    }
+                    if (panelMatch(key, 'message')) {
+                        $('#streamtipdonateGreetingInput').attr('placeholder', value);
+                    }
+                    if (panelMatch(key, 'lastmessage')) {
+                        $('#streamtipdonateLastMsgInput').attr('placeholder', value);
                     }
                 }
             }
@@ -210,7 +244,9 @@
         sendDBQuery('greetings_followReward', 'settings', 'followReward');
         sendDBQuery('greetings_followMessage', 'settings', 'followMessage');
         sendDBQuery('greetings_followToggle', 'settings', 'followToggle');
+        sendDBQuery('greetings_followDelay', 'settings', 'followDelay');
         sendDBKeys('greetings_donation', 'donations');
+        sendDBKeys('greetings_donationstreamtip', 'streamtip');
         sendDBKeys('greetings_subscribers', 'subscribeHandler');
         sendDBKeys('greetings_gamewisp', 'gameWispSubHandler');
         sendDBKeys('greetings_gamewispTiers', 'gameWispTiers');
@@ -265,6 +301,16 @@
                 sendCommand('donationpanelupdate');
             }
         }
+        if (panelMatch(table, 'streamtip')) {
+            $('#streamtipGreetings').html(spinIcon);
+            if (streamtipdonationTOggle == "true") {
+                sendDBUpdate('greetings_greeting', 'streamtip', 'announce', 'false');
+                sendCommand('donationpanelupdatestreamtip');
+            } else {
+                sendDBUpdate('greetings_greeting', 'streamtip', 'announce', 'true');
+                sendCommand('donationpanelupdatestreamtip');
+            } 
+        }
         if (panelMatch(table, 'donationGroup')) {
             $('#donationGroup').html(spinIcon);
             if (donationGroup == "true") {
@@ -273,6 +319,16 @@
             } else {
                 sendDBUpdate('greetings_greeting', 'donations', 'donationGroup', 'true');
                 sendCommand('donationpanelupdate');
+            }
+        }
+        if (panelMatch(table, 'streamtipdonationGroup')) {
+            $('#streamtipdonationGroup').html(spinIcon);
+            if (streamtipdonationGroup == "true") {
+                sendDBUpdate('greetings_greeting', 'streamtip', 'donationGroup', 'false');
+                sendCommand('donationpanelupdatestreamtip');
+            } else {
+                sendDBUpdate('greetings_greeting', 'streamtip', 'donationGroup', 'true');
+                sendCommand('donationpanelupdatestreamtip');
             }
         }
         if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'subscriberWelcomeToggle')) { 
@@ -337,6 +393,9 @@
             }
             if (panelMatch(table, 'donations')) {
                 sendCommand('donationpanelupdate');
+            }
+            if (panelMatch(table, 'streamtip')) {
+                sendCommand('donationpanelupdatestreamtip');
             }
             if (panelMatch(table, 'subscribeHandler')) {
                 sendCommand('subscriberpanelupdate');

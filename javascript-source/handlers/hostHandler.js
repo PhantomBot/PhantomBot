@@ -71,20 +71,22 @@
             jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : 0 }; // Add viewers as placeholder.
             $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
         }
-
     });
 
     /**
      * @event twitchUnhosted
      */
-    $.bind('twitchUnhosted', function(event) {
-        if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
-            return;
-        }
-
-        var hoster = event.getHoster();
-        delete hostList[hoster];
-    });
+    /**
+     * Having this lets the user unhost, get deleted from the array and host again. So that host cooldown is useless with this...
+     *
+     * $.bind('twitchUnhosted', function(event) {
+     *   if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
+     *       return;
+     *   }
+     *  var hoster = event.getHoster();
+     *  delete hostList[hoster];
+     *});
+     */
 
     /**
      * @event command

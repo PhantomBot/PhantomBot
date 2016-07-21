@@ -3,14 +3,14 @@ $.lang.register('donationhandler.donation.newreward', 'Thank you very much (name
 $.lang.register('donationhandler.lastdonation.no-donations', 'There are presently no tips.');
 $.lang.register('donationhandler.lastdonation.404', 'Cannot find last tip!');
 $.lang.register('donationhandler.lastdonation.success', 'The last tip was from (name) in the amount of $(amount) (currency).');
-$.lang.register('donationhandler.donations.usage', 'usage: !tip (announce | rewardmultiplier n.n | message | lastmessage)');
+$.lang.register('donationhandler.donations.usage', 'usage: !twitchalerts (announce | rewardmultiplier n.n | message | lastmessage)');
 $.lang.register('donationhandler.donations.announce.disable', 'Tips will no longer be announced.');
 $.lang.register('donationhandler.donations.announce.enable', 'Tips will now be announced.');
-$.lang.register('donationhandler.donations.reward.usage', 'usage: !tip rewardmultiplier n.n  Set to 0 to disable');
+$.lang.register('donationhandler.donations.reward.usage', 'usage: !twitchalerts rewardmultiplier n.n  Set to 0 to disable');
 $.lang.register('donationhandler.donations.reward.success', 'The reward for tips has been set to $1 $2 per whole amount of currency donated.');
-$.lang.register('donationhandler.donations.message.usage', 'usage: !tip message [message...] Tags: (name) (amount) (currency) (message)');
-$.lang.register('donationhandler.donations.rewardmessage.usage', 'usage: !tip rewardmessage [message...] Tags: (name) (amount) (currency) (points) (pointname) (message)');
-$.lang.register('donationhandler.donations.lastmessage.usage', 'usage: !tip lastmessage [message...] Tags: (name) (amount) (currency)');
+$.lang.register('donationhandler.donations.message.usage', 'usage: !twitchalerts message [message...] Tags: (name) (amount) (currency) (message)');
+$.lang.register('donationhandler.donations.rewardmessage.usage', 'usage: !twitchalerts rewardmessage [message...] Tags: (name) (amount) (currency) (points) (pointname) (message)');
+$.lang.register('donationhandler.donations.lastmessage.usage', 'usage: !twitchalerts lastmessage [message...] Tags: (name) (amount) (currency)');
 $.lang.register('donationhandler.donations.message.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (message)');
 $.lang.register('donationhandler.donations.rewardmessage.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (points) (pointname) (message)');
 $.lang.register('donationhandler.donations.lastmessage.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency)');
@@ -20,4 +20,4 @@ $.lang.register('donationhandler.donations.lastmessage.success', 'Updates the me
 $.lang.register('donationhandler.enabled.donators', 'The donators group has been enabled.');
 $.lang.register('donationhandler.disabled.donators', 'The donators group has been disabled.');
 $.lang.register('donationhandler.donators.min', 'The minimum before being promoted to a Donator was set to $1');
-$.lang.register('donationhandler.donators.min.usage', 'usage: !tip minmumbeforepromotion (amount)');
+$.lang.register('donationhandler.donators.min.usage', 'usage: !twitchalerts minmumbeforepromotion (amount)');

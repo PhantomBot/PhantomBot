@@ -17,15 +17,22 @@
         followReward = $.getSetIniDbNumber('settings', 'followReward', 0),
         followMessage = $.getSetIniDbString('settings', 'followMessage', $.lang.get('followhandler.follow.message')),
         followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false),
-        followTrainToggle = $.getSetIniDbBoolean('settings', 'followTrainToggle', false);
+        followTrainToggle = $.getSetIniDbBoolean('settings', 'followTrainToggle', false),
+        followDelay = $.getSetIniDbNumber('settings', 'followDelay', 0),
+        follows = [],
+        lastFollow = 0,
+        timer = false,
+        running = false,
+        interval;
 
     /**
      * @function updateFollowConfig
      */
     function updateFollowConfig() {
-        followReward = $.getIniDbNumber('settings', 'followReward'),
-        followMessage = $.getIniDbString('settings', 'followMessage'),
+        followReward = $.getIniDbNumber('settings', 'followReward');
+        followMessage = $.getIniDbString('settings', 'followMessage');
         followToggle = $.getIniDbBoolean('settings', 'followToggle');
+        followDelay = $.getIniDbNumber('settings', 'followDelay');
     };
 
     /**
@@ -51,6 +58,45 @@
             followTrain = 1;
         }
         lastFollowTime = $.systemTime();
+    };
+
+    /**
+     * @function runFollow
+     */
+    function runFollow(message) {
+        if (!timer && (followDelay == 0 || ($.systemTime() - lastFollow) > (followDelay * 1e3))) {
+            $.say(message);
+            lastFollow = $.systemTime();
+        } else {
+            follows.push(message);
+            if (!timer) {
+                timer = true;
+                setTimeout(function() { interval = setInterval(function() { run(); }, 3e2); }, 1e2);
+            }
+        }
+    };
+
+    /**
+     * @function run
+     */
+    function run() {
+        var i, s;
+        if (follows.length == 0) {
+            clearInterval(interval);
+            lastFollow = 0;
+            timer = false;
+            return;
+        }
+
+        for (i in follows) {
+            if (!running && ($.systemTime() - lastFollow) > (followDelay * 1e3)) {
+                running = true;
+                $.say(follows[i]);
+                lastFollow = $.systemTime();
+                follows.splice(i, 1);
+                running = false;
+            }
+        }
     };
 
     /**
@@ -83,7 +129,7 @@
                     s = followMessage;
                     s = s.replace('(name)', $.username.resolve(follower));
                     s = s.replace('(reward)', $.getPointsString(followReward));
-                    $.say(s);
+                    runFollow(s);
                     if (followTrainToggle) {
                         checkFollowTrain();
                     }
@@ -94,7 +140,7 @@
                 if (followReward > 0) {
                     $.inidb.incr('points', follower, followReward);
                 }
-                $.writeToFile(follower, './addons/followHandler/latestFollower.txt', false);
+                $.writeToFile($.username.resolve(follower), './addons/followHandler/latestFollower.txt', false);
             }
         }
     });
@@ -105,7 +151,7 @@
         }
 
         var follower = event.getFollows().toLowerCase(),
-            followed = $.getIniDbBoolean('followed', follower);
+            followed = $.getIniDbBoolean('followed', follower, false);
 
         if (followed) {
             $.setIniDbBoolean('followed', follower, false);
@@ -158,6 +204,21 @@
             $.inidb.set('settings', 'followMessage', followMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessage.success', followMessage));
             $.log.event(sender + ' set the follow message to ' + followMessage);
+        }
+
+        /**
+         * @commandpath followdelay [message] - Set the delay in seconds between follow announcements
+         */
+        if (command.equalsIgnoreCase('followdelay')) {
+            if (!comArg) {
+                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followdelay.usage'));
+                return;
+            }
+
+            followDelay = parseInt(args[0]);
+            $.inidb.set('settings', 'followDelay', followDelay);
+            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followdelay.success', followDelay));
+            $.log.event(sender + ' set the follow delay to ' + followDelay + ' seconds.');
         }
 
         /**
@@ -301,6 +362,7 @@
             $.registerChatCommand('./handlers/followHandler.js', 'fixfollow', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followtoggle', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followtraintoggle', 1);
+            $.registerChatCommand('./handlers/followHandler.js', 'followdelay', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
             $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
             $.registerChatCommand('./handlers/followHandler.js', 'followers', 7);

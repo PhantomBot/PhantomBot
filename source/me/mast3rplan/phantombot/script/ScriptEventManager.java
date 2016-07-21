@@ -50,6 +50,7 @@ public class ScriptEventManager implements Listener {
         "me.mast3rplan.phantombot.event.musicplayer",
         "me.mast3rplan.phantombot.event.ytplayer",
         "me.mast3rplan.phantombot.event.twitchalerts.donate",
+        "me.mast3rplan.phantombot.event.streamtip.donate",
         "me.mast3rplan.phantombot.event.emotes",
         "me.mast3rplan.phantombot.event.gamewisp",
         "me.mast3rplan.phantombot.event.twitter"
