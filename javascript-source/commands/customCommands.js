@@ -55,8 +55,12 @@
         }
 
         if (message.match(/\(1\)/g)) {
-            for (var i = 0; i < event.getArgs().length; i++) {
-                message = $.replace(message, '(' + (i + 1) + ')', event.getArgs()[i]);
+            for (var i = 1; i < 10; i++) {
+                if (message.includes('(' + i + ')')) {
+                    message = $.replace(message, '(' + i + ')', (event.getArgs()[i - 1] !== undefined ? event.getArgs()[i - 1] : ''));
+                } else {
+                    break;
+                }
             }
         }
 
