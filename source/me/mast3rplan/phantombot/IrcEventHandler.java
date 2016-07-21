@@ -129,9 +129,10 @@ public class IrcEventHandler implements IRCEventListener {
 
             com.gmt2001.Console.out.println(usernameCache.resolve(cusername, cmessageTags) + ": " + cmessage);
 
-            if (cusername.toLowerCase().equals("twitchnotify") && cmessage.contains("subscribed!")) {
-                String sub = cmessage.substring(0, cmessage.indexOf(" ", 1));
-                scriptEventManager.runDirect(new NewSubscriberEvent(session, cchannel, sub));
+            if (cmessage.endsWith("subscribed!")) {
+                if (cusername.equalsIgnoreCase("twitchnotify")) {
+                    scriptEventManager.runDirect(new NewSubscriberEvent(session, cchannel, cmessage.substring(0, cmessage.indexOf(" ", 1))));
+                }
             }
 
             if (PhantomBot.enableDebugging) {
@@ -141,6 +142,7 @@ public class IrcEventHandler implements IRCEventListener {
                 }
                 com.gmt2001.Console.debug.println(rawTags);
             }
+            
             if (cmessageTags.containsKey("display-name")) {
                 usernameCache.addUser(cusername, cmessageTags.get("display-name"));
             }
