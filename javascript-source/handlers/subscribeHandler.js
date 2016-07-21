@@ -123,11 +123,6 @@
          * @commandpath subwelcometoggle - Enable or disable subscription alerts
          */
         if (command.equalsIgnoreCase('subwelcometoggle')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (subWelcomeToggle) {
                 $.inidb.set('subscribeHandler', 'subscriberWelcomeToggle', false);
                 subWelcomeToggle = false;
@@ -147,10 +142,6 @@
          * @commandpath resubwelcometoggle - Eenable or disable resubsciption alerts
          */
         if (command.equalsIgnoreCase('resubwelcometoggle')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
             if (subWelcomeToggle) {
                 $.inidb.set('subscribeHandler', 'reSubscriberWelcomeToggle', false);
                 subWelcomeToggle = false;
@@ -170,10 +161,7 @@
          * @commandpath submessage [message] - Set a welcome message for new subscribers when a reward is given
          */
         if (command.equalsIgnoreCase('submessage')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            } else if (args.length == 0) {
+            if (args.length == 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.usage'));
                 return;
             }
@@ -188,10 +176,7 @@
          * @commandpath resubmessage [message] - Set a message for resubscribers when a reward is given
          */
         if (command.equalsIgnoreCase('resubmessage')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            } else if (args.length == 0) {
+            if (args.length == 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.usage'));
                 return;
             }
@@ -206,10 +191,7 @@
          * @commandpath subscribereward [points] - Set an award for subscribers
          */
         if (command.equalsIgnoreCase('subscribereward')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            } else if (args.length == 0) {
+            if (args.length == 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.reward.usage'));
                 return;
             }
@@ -220,33 +202,11 @@
             return;
         }
 
-        /**
-         * @commandpath subscribercount - Provide the number of subscribers
-         */
-        if (command.equalsIgnoreCase('subscribercount')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
-            var keys = $.inidb.GetKeyList('subscribed', ''),
-                subs = 0,
-                i;
-
-            for (i = 0; i < keys.length; i++) {
-                subs++;
-            }
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.count', subs));
-        }
 
         /**
          * @commandpath subscribers - Enables subscription only chat mode
          */
         if (command.equalsIgnoreCase('subscribers')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
             $.say('.subscribers');
             $.log.event(sender + ' enabled subscriber only mode');
         }
@@ -255,10 +215,6 @@
          * @commandpath subscribersoff - Disables subscription only chat mode
          */
         if (command.equalsIgnoreCase('subscribersoff')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
             $.say('.subscribersoff');
             $.log.event(sender + ' disabled subscriber only mode');
         }
@@ -272,7 +228,6 @@
             $.registerChatCommand('./handlers/subscribehandler.js', 'subwelcometoggle', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubwelcometoggle', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 2);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'subscribercount', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribers', 2);

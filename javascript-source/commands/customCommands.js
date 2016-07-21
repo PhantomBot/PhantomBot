@@ -150,7 +150,7 @@
         }
 
         if (message.match(/\(#\)/g)) {
-            message = $.replace(message, '(#)', String($.randRange(1, 100)));
+            message = $.replace(message, '(#)', String($.randRange(1, 100) + ' '));
         }
 
         if (message.match(/\(uptime\)/g)) {
@@ -158,11 +158,15 @@
         }
 
         if (message.match(/\(viewers\)/g)) {
-            message = $.replace(message, '(viewers)', String($.getViewers($.channelName)));
+            message = $.replace(message, '(viewers)', String($.getViewers($.channelName) + ' '));
         }
 
         if (message.match(/\(follows\)/g)) {
-            message = $.replace(message, '(follows)', String($.getFollows($.channelName)));
+            message = $.replace(message, '(follows)', String($.getFollows($.channelName) + ' '));
+        }
+
+        if (message.match(/\(subscribers\)/g)) {
+            message = $.replace(message, '(subscribers)', String($.getSubscriberCount() + ' '));
         }
 
         if (message.match(/\(touser\)/g)) {
