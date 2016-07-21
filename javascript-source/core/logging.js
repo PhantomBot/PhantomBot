@@ -196,7 +196,7 @@
             message = event.getMessage().toLowerCase();
 
         if (message.toLowerCase().indexOf('moderators if this room') == -1) {
-            logfile('private-messages', '' + $.username.resolve(sender) + ': ' + message);
+            logfile('private-messages', '' + sender + ': ' + message);
         }
 
         if (sender.equalsIgnoreCase('jtv')) {
@@ -231,7 +231,7 @@
             }
 
             if (message.indexOf('hosting') != -1) {
-                var target = message.substring(11, message.indexOf('.', 12)).trim();
+                var target = String(message).replace(/now hosting /ig, '').replace(/\./ig, '');
 
                 if (target.equalsIgnoreCase('-')) {
                     $.bot.channelIsHosting = null;
