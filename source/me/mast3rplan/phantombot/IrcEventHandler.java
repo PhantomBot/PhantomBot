@@ -32,17 +32,34 @@ import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import me.mast3rplan.phantombot.event.irc.clearchat.IrcClearchatEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
+import me.mast3rplan.phantombot.event.command.CommandEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.ModeAdjustment;
 import me.mast3rplan.phantombot.jerklib.Session;
 import me.mast3rplan.phantombot.jerklib.events.*;
 import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
 import me.mast3rplan.phantombot.cache.UsernameCache;
+import me.mast3rplan.phantombot.script.ScriptEventManager;
 
 public class IrcEventHandler implements IRCEventListener {
 
     private final ArrayList<String> mods = new ArrayList<>();
-    private boolean nomodwarn = true;
+    private final ScriptEventManager scriptEventManager = ScriptEventManager.instance();
+    private final UsernameCache usernameCache = UsernameCache.instance();
+    private final EventBus eventBus = EventBus.instance();
+
+    public void handleCommand(String username, String command) {
+        String commandString;
+        String arguments = "";
+
+        if (command.indexOf(" ") != -1) {
+            commandString = command;
+            command = commandString.substring(0, commandString.indexOf(" "));
+            arguments = commandString.substring(commandString.indexOf(" ") + 1);
+        }
+
+        scriptEventManager.runDirect(new CommandEvent(username, command, arguments));
+    }
 
     /**
      * Thread for starting the moderation event in the background.
@@ -63,8 +80,9 @@ public class IrcEventHandler implements IRCEventListener {
             this.cchannel = cchannel;
             this.cmessageTags = cmessageTags;
         }
+
         public void run() {
-            PhantomBot.instance().getScriptEventManagerInstance().runDirect(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
+            scriptEventManager.runDirect(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
         }
     }
       
@@ -74,7 +92,6 @@ public class IrcEventHandler implements IRCEventListener {
             return;
         }
 
-        EventBus eventBus = EventBus.instance();
         Session session = event.getSession();
 
         switch (event.getType()) {
@@ -110,11 +127,12 @@ public class IrcEventHandler implements IRCEventListener {
             String cusername = cmessageEvent.getNick();
             String cmessage = cmessageEvent.getMessage();
 
-            com.gmt2001.Console.debug.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
+            com.gmt2001.Console.out.println(usernameCache.resolve(cusername, cmessageTags) + ": " + cmessage);
 
-            if (cusername.toLowerCase().equals("twitchnotify") && cmessage.contains("subscribed!")) {
-                String sub = cmessage.substring(0, cmessage.indexOf(" ", 1));
-                PhantomBot.instance().getScriptEventManagerInstance().runDirect(new NewSubscriberEvent(session, cchannel, sub));
+            if (cmessage.endsWith("subscribed!")) {
+                if (cusername.equalsIgnoreCase("twitchnotify")) {
+                    scriptEventManager.runDirect(new NewSubscriberEvent(session, cchannel, cmessage.substring(0, cmessage.indexOf(" ", 1))));
+                }
             }
 
             if (PhantomBot.enableDebugging) {
@@ -124,8 +142,9 @@ public class IrcEventHandler implements IRCEventListener {
                 }
                 com.gmt2001.Console.debug.println(rawTags);
             }
+            
             if (cmessageTags.containsKey("display-name")) {
-                PhantomBot.instance().getUsernameCache().addUser(cusername, cmessageTags.get("display-name"));
+                usernameCache.addUser(cusername, cmessageTags.get("display-name"));
             }
 
             if (cmessageTags.containsKey("subscriber")) {
@@ -162,11 +181,14 @@ public class IrcEventHandler implements IRCEventListener {
                 ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, cusername, cmessage, cchannel, cmessageTags);
                 new Thread(moderationRunnable).start();
             } catch (Exception ex) {
-                PhantomBot.instance().getScriptEventManagerInstance().runDirect(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
+                scriptEventManager.runDirect(new IrcModerationEvent(session, cusername, cmessage, cchannel, cmessageTags));
+            }
+
+            if (cmessage.startsWith("!")) {
+                handleCommand(cusername, cmessage.substring(1));
             }
 
             eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
-
 
             break;
 
@@ -179,7 +201,7 @@ public class IrcEventHandler implements IRCEventListener {
                 String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");
                 Map<String, String> ctcmessageTags = ctcmessageEvent.tags();
 
-                com.gmt2001.Console.debug.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
+                com.gmt2001.Console.out.println(usernameCache.resolve(ctcusername, ctcmessageTags) + ": " + ctcmessage);
 
                 if (ctcmessageTags.containsKey("subscriber")) {
                     if (ctcmessageTags.get("subscriber").equalsIgnoreCase("1")) {
@@ -210,13 +232,12 @@ public class IrcEventHandler implements IRCEventListener {
                         }
                     }
                 }
-                    
 
                 try {
                     ModerationRunnable moderationRunnable = new ModerationRunnable(eventBus, session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags);
                     new Thread(moderationRunnable).start();
                 } catch (Exception ex) {
-                    PhantomBot.instance().getScriptEventManagerInstance().runDirect(new IrcModerationEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
+                    scriptEventManager.runDirect(new IrcModerationEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
                 }
                 
                 eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
@@ -227,7 +248,9 @@ public class IrcEventHandler implements IRCEventListener {
             MessageEvent pmessageEvent = (MessageEvent) event;
             String pusername = pmessageEvent.getNick();
             String pmessage = pmessageEvent.getMessage();
-            eventBus.postPVMSG(new IrcPrivateMessageEvent(session, pusername, pmessage, pmessageEvent.tags()));
+
+            eventBus.postAsync(new IrcPrivateMessageEvent(session, pusername, pmessage, pmessageEvent.tags()));
+
             break;
 
         case MODE_EVENT:
@@ -274,7 +297,7 @@ public class IrcEventHandler implements IRCEventListener {
                     months = ceventTags.get("msg-param-months");
                 }
 
-                PhantomBot.instance().getScriptEventManagerInstance().runDirect(new NewReSubscriberEvent(session, session.getChannel(event.arg(0)), username, months));
+                scriptEventManager.runDirect(new NewReSubscriberEvent(session, session.getChannel(event.arg(0)), username, months));
             }
 
             if (event.command().equalsIgnoreCase("CLEARCHAT")) {
@@ -305,12 +328,11 @@ public class IrcEventHandler implements IRCEventListener {
                             eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
                         }
                     } else {
-                        if (nomodwarn) {
-                            nomodwarn = false;
-                            com.gmt2001.Console.err.println(PhantomBot.instance().getSession().getNick().toUpperCase() + " IS NOT DETECTED AS A MODERATOR!");
-                            com.gmt2001.Console.err.println("IF " + PhantomBot.instance().getSession().getNick().toUpperCase() + " IS NOT A MODERATOR IT WILL NOT RESPOND TO COMMANDS!");
-                            com.gmt2001.Console.err.println("MAKE SURE TO ADD " + PhantomBot.instance().getSession().getNick().toUpperCase() + " AS A MODERATOR BY TYPING /mod " + PhantomBot.instance().getSession().getNick());
-                        }
+                        com.gmt2001.Console.err.println(PhantomBot.instance().getSession().getNick().toUpperCase() + " IS NOT DETECTED AS A MODERATOR!");
+                        com.gmt2001.Console.err.println("IF " + PhantomBot.instance().getSession().getNick().toUpperCase() + " IS NOT A MODERATOR IT WILL NOT RESPOND TO COMMANDS!");
+                        com.gmt2001.Console.err.println("MAKE SURE TO ADD " + PhantomBot.instance().getSession().getNick().toUpperCase() + " AS A MODERATOR BY TYPING /mod " + PhantomBot.instance().getSession().getNick());
+                        com.gmt2001.Console.err.println("NOW SHUTTING DOWN...");
+                        System.exit(0);
 
                         if (mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase())) {
                             mods.remove(PhantomBot.instance().getSession().getNick().toLowerCase());
