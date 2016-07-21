@@ -1046,6 +1046,27 @@
         });
 
         /**
+         * @event api-twitchAlertsDonationInitialized
+         */
+        $api.on($script, 'twitchAlertsDonationInitialized', function(event) {
+            callHook('twitchAlertsDonationInitialized', event, true);
+        });
+
+        /**
+         * @event api-streamTipDonation
+         */
+        $api.on($script, 'streamTipDonation', function(event) {
+            callHook('streamTipDonation', event, true);
+        });
+
+        /**
+         * @event api-streamTipDonationInitialized
+         */
+        $api.on($script, 'streamTipDonationInitialized', function(event) {
+            callHook('streamTipDonationInitialized', event, true);
+        });
+
+        /**
          * @event api-getEmotes
          */
         $api.on($script, 'emotesGet', function(event) {

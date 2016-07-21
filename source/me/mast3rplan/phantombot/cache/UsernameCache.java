@@ -66,7 +66,7 @@ public class UsernameCache {
 
                 if (user.getBoolean("_success")) {
                     if (user.getInt("_http") == 200) {
-                        String displayName = user.getString("display_name");
+                        String displayName = user.getString("display_name").replaceAll("\\\\s", " ");
                         cache.put(lusername, displayName);
 
                         return displayName;
@@ -117,7 +117,7 @@ public class UsernameCache {
     public void addUser(String userName, String displayName) {
         if (displayName.length() > 0) {
             if (!cache.containsKey(userName)) {
-                cache.put(userName, displayName);
+                cache.put(userName, displayName.replaceAll("\\\\s", " "));
             }
         }
     }

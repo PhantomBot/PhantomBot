@@ -509,8 +509,7 @@ public class TwitchAPIv3 {
      *
      * @return
      */
-    public JSONObject GetEmotes()
-    {
+    public JSONObject GetEmotes() {
         return GetData(request_type.GET, base_url + "/chat/emoticons", false);
     }
 

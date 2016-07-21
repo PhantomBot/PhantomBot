@@ -66,6 +66,7 @@
                 } while (randNum == randPrev);
                 randPrev = randNum;
                 $.twitter.updateStatus($.getIniDbString('twitter', 'message_online').replace('#', '').
+                                           replace('(title)', $.twitchcache.getStreamStatus()).
                                            replace('(game)', $.twitchcache.getGameTitle()).
                                            replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum));
             }
@@ -91,6 +92,7 @@
                 } while (randNum == randPrev);
                 randPrev = randNum;
                 $.twitter.updateStatus($.getIniDbString('twitter', 'message_gamechange').replace('#', '').
+                                       replace('(title)', $.twitchcache.getStreamStatus()).
                                        replace('(game)', $.twitchcache.getGameTitle()).
                                        replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + randNum));
             }
@@ -399,12 +401,14 @@
 
                 if (success.equals('true')) {
                     $.twitter.updateStatus($.getIniDbString('twitter', 'message_update').replace('#', '').
+                                               replace('(title)', $.twitchcache.getStreamStatus()).
                                                replace('(game)', $.twitchcache.getGameTitle()).
                                                replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + uptimeSec).
                                                replace('(uptime)', hrs + ':' + min),
                                            './addons/downloadHTTP/twitch-preview.jpg');
                 } else {
                     $.twitter.updateStatus($.getIniDbString('twitter', 'message_update').replace('#', '').
+                                               replace('(title)', $.twitchcache.getStreamStatus()).
                                                replace('(game)', $.twitchcache.getGameTitle()).
                                                replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '#' + uptimeSec).
                                                replace('(uptime)', hrs + ':' + min));

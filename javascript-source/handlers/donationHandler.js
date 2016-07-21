@@ -27,7 +27,7 @@
     /**
      * @event twitchAlertsDonationsInitialized
      */
-    $.bind('twitchAlertsDonationInitialized', function() {
+    $.bind('twitchAlertsDonationInitialized', function(event) {
         if (!$.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             return;
         }
@@ -145,16 +145,16 @@
         }
 
         /**
-         * @commandpath tip - Controls various options for donation handling
+         * @commandpath twitchalerts - Controls various options for donation handling
          */
-        if (command.equalsIgnoreCase('donations') || command.equalsIgnoreCase('tip')) {
+        if (command.equalsIgnoreCase('twitchalerts')) {
             if (!args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.usage'));
                 return;
             }
 
             /**
-             * @commandpath tip toggledonators - Toggles the Donator's group.
+             * @commandpath twitchalerts toggledonators - Toggles the Donator's group.
              */
             if (args[0].equalsIgnoreCase('toggledonators')) {
                 if (donationGroup) {
@@ -171,7 +171,7 @@
             }
 
             /**
-             * @commandpath tip minmumbeforepromotion - Set the minimum before people get promoted to a Donator
+             * @commandpath twitchalerts minmumbeforepromotion - Set the minimum before people get promoted to a Donator
              */
             if (args[0].equalsIgnoreCase('minmumbeforepromotion')) {
                 if (!args[1]) {
@@ -185,7 +185,7 @@
             }
 
             /**
-             * @commandpath tip announce - Toggles announcements for donations off and on
+             * @commandpath twitchalerts announce - Toggles announcements for donations off and on
              */
             if (args[0].equalsIgnoreCase('announce')) {
                 if (announceDonations) {
@@ -203,7 +203,7 @@
             }
 
             /**
-             * @commandpath tip rewardmultiplier [n.n] - Set a reward multiplier for donations.
+             * @commandpath twitchalerts rewardmultiplier [n.n] - Set a reward multiplier for donations.
              */
             if (args[0].equalsIgnoreCase('rewardmultiplier')) {
                 if (!args[1]) {
@@ -223,8 +223,8 @@
             }
 
             /**
-             * @commandpath tip message [message text] - Set the donation message. Tags: (name), (amount), (points), (pointname), (message) and (currency)
-             * @commandpath tip lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
+             * @commandpath twitchalerts message [message text] - Set the donation message. Tags: (name), (amount), (points), (pointname), (message) and (currency)
+             * @commandpath twitchalerts lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
              */
             if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('lastmessage')) {
                 var comArg = args[0].toLowerCase();
@@ -258,8 +258,7 @@
         if ($.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             $.registerChatCommand('./handlers/donationHandler.js', 'lastdonation', 7);
             $.registerChatCommand('./handlers/donationHandler.js', 'lasttip', 7);
-            $.registerChatCommand('./handlers/donationHandler.js', 'donations', 1);
-            $.registerChatCommand('./handlers/donationHandler.js', 'tip', 1);
+            $.registerChatCommand('./handlers/donationHandler.js', 'twitchalerts', 1);
             $.registerChatCommand('./handlers/donationHandler.js', 'donationpanelupdate', 1);
         }
     });
