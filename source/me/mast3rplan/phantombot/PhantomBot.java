@@ -32,6 +32,7 @@ import com.illusionaryone.StreamTipAPI;
 import com.illusionaryone.SingularityAPI;
 import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.TwitterAPI;
+import com.illusionaryone.GitHubAPIv3;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -753,6 +754,8 @@ public class PhantomBot implements Listener {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        doCheckPhantomBotUpdate();
     }
 
     @SuppressWarnings("SleepWhileInLoop")
@@ -2402,6 +2405,33 @@ public class PhantomBot implements Listener {
                 }
             }
         }, 0, 1, TimeUnit.DAYS);
+    }
+
+    /*
+     * doCheckPhantomBotUpdate
+     */
+    private void doCheckPhantomBotUpdate() {
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
+                if (newVersionInfo != null) {
+                    com.gmt2001.Console.out.println();
+                    com.gmt2001.Console.out.println("New PhantomBot Release Detected: " + newVersionInfo[0]);
+                    com.gmt2001.Console.out.println("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
+                    com.gmt2001.Console.out.println("Download Link: " + newVersionInfo[1]);
+                    com.gmt2001.Console.out.println("A reminder will be provided in 24 hours!");
+                    com.gmt2001.Console.out.println();
+
+                    if (webenabled) {
+                        dataStoreObj.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                    }
+                } else {
+                    dataStoreObj.del("settings", "newrelease_info");
+                }
+            }
+        }, 0, 24, TimeUnit.HOURS);
     }
 
     public void setTwitchCacheReady(String twitchCacheReady) {
