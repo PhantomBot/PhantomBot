@@ -318,4 +318,5 @@ $.lang.register('common.hours3', ' hours');
 $.lang.register('common.minutes', ' minutes and ');
 $.lang.register('common.minutes2', ' minutes.');
 $.lang.register('common.seconds', ' seconds');
-$.lang.register('common.get.age', '$1 has been on Twitch for $2 Joined ($3)');
+$.lang.register('common.get.age.days', '$1 $2 has been on Twitch since $3. (Joined $4 days ago)');
+$.lang.register('common.get.age', '$1 $2 has been on Twitch since $3.');

@@ -138,31 +138,6 @@
         }
     };
 
-     /**
-     * @function getLongTimeString
-     * @export $
-     * @param {Number} time
-     * @returns {string}
-     */
-    function getLongTimeString(time, short) {
-        time = Math.abs((time - $.systemTime()) / 1000);
-
-        var floor = Math.floor,
-            months = (time / 2592000),
-            days = (time / 86400),
-            hours = ((time % 86400) / 3600),
-            minutes = ((time % 86400) % 3600) / 60;
-
-        if (short) {
-            return ($.lang.get('get.long.time.string.short', floor(days), floor(hours), floor(minutes)));
-        } else {
-            if (months >= 1) {
-                return ($.lang.get('get.long.time.string.long', floor(months), floor(hours), floor(minutes)));
-            }
-            return ($.lang.get('get.long.time.string.short', floor(days), floor(hours), floor(minutes)));
-        }
-    };
-
     /**
      * @function getUserTime
      * @export $
@@ -442,6 +417,5 @@
     $.getUserTimeString = getUserTimeString;
     $.getCurLocalTimeString = getCurLocalTimeString;
     $.getLocalTimeString = getLocalTimeString;
-    $.getLongTimeString = getLongTimeString;
     $.getTimeStringMinutes = getTimeStringMinutes;
 })();

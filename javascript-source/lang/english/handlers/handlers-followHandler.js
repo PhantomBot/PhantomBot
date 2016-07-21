@@ -21,11 +21,12 @@ $.lang.register('followhandler.followtoggle.on', 'Announcements are enabled for 
 $.lang.register('followhandler.followtoggle.off', 'Announcements are disabled for new followers.');
 $.lang.register('followhandler.followtraintoggle.on', 'Follow train announcements are now enabled.');
 $.lang.register('followhandler.followtraintoggle.off', 'Follow train announcements are now disabled.');
-$.lang.register('followhandler.follow.age.err.404', '$1 is not following channel $2');
-$.lang.register('followhandler.follow.age.time', '$1 has been following channel $2 for $3');
 $.lang.register('followhandler.fixfollow.usage', 'Usage: !fixfollow (username)');
 $.lang.register('followhandler.fixfollow.error', '$1 is already in the followed list.');
 $.lang.register('followhandler.fixfollow.error.404', '$1 is not following your channel.');
 $.lang.register('followhandler.fixfollow.added', 'added $1 to the followed list!');
 $.lang.register('followhandler.set.followdelay.usage', 'usage: !followdelay [amount in seconds]');
 $.lang.register('followhandler.set.followdelay.success', 'follow delay set to $1 seconds.');
+$.lang.register('followhandler.follow.age.err.404', '$1 $2 is not following channel $3');
+$.lang.register('followhandler.follow.age.time.days', '$1 $2 has been following channel $3 since $4. ($5 days)');
+$.lang.register('followhandler.follow.age.time', '$1 $2 has been following channel $3 since $4.');
