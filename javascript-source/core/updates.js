@@ -41,6 +41,7 @@
         './handlers/gameWispHandler.js',
         './handlers/keywordHandler.js',
         './handlers/twitterHandler.js',
+        './handlers/streamTipHandler.js',
         './systems/cleanupSystem.js',
         './systems/greetingSystem.js',
         './systems/pointSystem.js',
@@ -112,7 +113,7 @@
         }
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -319,7 +320,7 @@
 
     /** Version 2.1/2.0.10 updates */
     if (!$.inidb.exists('updates', 'installedv2.1.0') || $.inidb.get('updates', 'installedv2.1.0') != 'true') {
-        $.consoleLn('Starting ' + $.version + ' updates...');
+        $.consoleLn('Starting PhantomBot version 2.1 updates...');
 
         $.consoleLn('Aliasing !permission to !group...');
         $.inidb.set('aliases', 'group', 'permission');
@@ -388,6 +389,17 @@
         $.consoleLn($.version + ' updates completed!');
         $.inidb.set('updates', 'installedv2.1.0', 'true');
         $.inidb.set('updates', 'installedNewBot', 'true');//If bot login is deleted after updates were installed we don't want to reset the modules.
+    }
+
+    /** Version 2.1.1 updates */
+    if (!$.inidb.exists('updates', 'installedv2.1.1') || $.inidb.get('updates', 'installedv2.1.1') != 'true') {
+        $.consoleLn('Starting ' + $.version + ' updates...');
+
+        $.consoleLn('Disabling new modules...');
+        $.inidb.set('modules', './handlers/streamTipHandler.js', 'false');
+
+        $.consoleLn($.version + ' updates completed!');
+        $.inidb.set('updates', 'installedv2.1.1', 'true');
     }
 
     /**

@@ -95,6 +95,10 @@
                 handlePanel('./handlers/donationHandler.js', '#_donationAlertsPanel', moduleEnabled);
                 handlePanel('./handlers/donationHandler.js', '#_donationsPanel', moduleEnabled);
             }
+            if (panelMatch(module, './handlers/streamTipHandler.js')) {
+                handlePanel('./handlers/streamTipHandler.js', '#_streamtipdonationAlertsPanel', moduleEnabled);
+                handlePanel('./handlers/streamTipHandler.js', '#_streamtipdonationsPanel', moduleEnabled);
+            }
             if (panelMatch(module, './handlers/subscribeHandler.js')) {
                 handlePanel('./handlers/subscribeHandler.js', '#_twitchSubPanel', moduleEnabled);
             }
