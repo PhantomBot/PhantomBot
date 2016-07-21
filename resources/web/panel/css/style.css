@@ -176,6 +176,21 @@ td {
     outline: none !important;
 }
 
+.yellowPill {
+    font-family: "Roboto", arial;
+    display: inline;
+    background-color: rgb(255, 235, 0);
+    color: black;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+    padding-left: 8px;
+    padding-right: 8px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
 .purplePill {
     font-family: "Roboto", arial;
     display: inline;
