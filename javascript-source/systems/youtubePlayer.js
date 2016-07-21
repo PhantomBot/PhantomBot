@@ -1513,11 +1513,11 @@
                 maxRange;
 
             if (!args[0]) {
-                if (currentPlaylist.getRequestAtIndex(1) == null) {
+                if (currentPlaylist.getRequestAtIndex(0) == null) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.404'));
                     return;
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.single', currentPlaylist.getRequestAtIndex(1).getVideoTitle()));
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.single', currentPlaylist.getRequestAtIndex(0).getVideoTitle()));
                     return;
                 }
             } else {
