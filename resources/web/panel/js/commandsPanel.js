@@ -145,6 +145,7 @@
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
                     commands.push(commandName);
+                    commandValue = commandValue.replace(/"/g, "''");
                     html += '<tr style="textList">' +
                             '    <td style="width: 15%">!' + commandName + '</td>' +
                             '    <td style="vertical-align: middle">' +
@@ -398,6 +399,7 @@
      */
     function editCustomCommand(command) {
     var value = $('#editCommand_' + command).val();
+    value = value.replace(/''/g, '"');
         if (value.length > 0) {
             sendDBUpdate("addCustomCommand", "command", command.toLowerCase(), value);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
