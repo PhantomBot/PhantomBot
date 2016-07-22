@@ -49,11 +49,10 @@ public class IrcEventHandler implements IRCEventListener {
     private final EventBus eventBus = EventBus.instance();
 
     public void handleCommand(String username, String command) {
-        String commandString;
         String arguments = "";
 
-        if (command.indexOf(" ") != -1) {
-            commandString = command;
+        if (command.contains(" ")) {
+            String commandString = command;
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
