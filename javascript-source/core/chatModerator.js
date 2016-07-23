@@ -3,6 +3,7 @@
         timeouts = [],
         whiteList = [],
         blackList = [],
+        spamTracker = [],
 
         linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', true),
         linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking'),
@@ -32,7 +33,12 @@
         longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 300),
 
         colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
-        colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using /me.'),
+        colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using colored text'),
+
+        spamTrackerToggle = $.getSetIniDbBoolean('chatModerator', 'spamTrackerToggle', false),
+        spamTrackerMessage = $.getSetIniDbString('chatModerator', 'spamTrackerMessage',  'you were timed out for spamming chat'),
+        spamTrackerTime = $.getSetIniDbNumber('chatModerator', 'spamTrackerTime', 30),
+        spamTrackerLimit = $.getSetIniDbNumber('chatModerator', 'spamTrackerLimit', 6),
 
         subscribers = {
             Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', true),
@@ -42,6 +48,7 @@
             Emotes: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateEmotes', true),
             Colors: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateColors', true),
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLongMsg', true),
+            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'subscribersSpamTracker', true),
         },
 
         regulars = {
@@ -52,6 +59,7 @@
             Emotes: $.getSetIniDbBoolean('chatModerator', 'regularsModerateEmotes', true),
             Colors: $.getSetIniDbBoolean('chatModerator', 'regularsModerateColors', true),
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'regularsModerateLongMsg', true),
+            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'regularsSpamTracker', true),
         },
 
         silentTimeout = {
@@ -63,6 +71,7 @@
             Colors: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutColors', false),
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
             Blacklist: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutBlacklist', false),
+            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'silentSpamTracker', false),
             LinkMessage: $.getSetIniDbString('chatModerator', 'silentLinkMessage', 'Posting a link without permission. (Automated by ' + $.botName + ')'),
             SpamMessage: $.getSetIniDbString('chatModerator', 'silentSpamMessage', 'Excessive repeating characters. (Automated by ' + $.botName + ')'),
             CapMessage: $.getSetIniDbString('chatModerator', 'silentCapMessage', 'Excessive cap use. (Automated by ' + $.botName + ')'),
@@ -71,6 +80,7 @@
             EmoteMessage: $.getSetIniDbString('chatModerator', 'silentEmoteMessage', 'Excessive emote use. (Automated by ' + $.botName + ')'),
             LongMessage: $.getSetIniDbString('chatModerator', 'silentLongMessage', 'Excessive message length. (Automated by ' + $.botName + ')'),
             BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted word or phrase. (Automated by ' + $.botName + ')'),
+            SpamTrackerMessage: $.getSetIniDbString('chatModerator', 'silentSpamTrackerMessage', 'Spamming chat. (Automated by ' + $.botName + ')'),
         },
 
         warningTime = {
@@ -81,6 +91,7 @@
             Emotes: $.getSetIniDbNumber('chatModerator', 'warningTimeEmotes', 5),
             Colors: $.getSetIniDbNumber('chatModerator', 'warningTimeColors', 5),
             LongMsg: $.getSetIniDbNumber('chatModerator', 'warningTimeLongMsg', 5),
+            SpamTracker: $.getSetIniDbNumber('chatModerator', 'warningSpamTracker', 30),
         },
 
         timeoutTime = {
@@ -91,6 +102,7 @@
             Emotes: $.getSetIniDbNumber('chatModerator', 'timeoutTimeEmotes', 600),
             Colors: $.getSetIniDbNumber('chatModerator', 'timeoutTimeColors', 600),
             LongMsg: $.getSetIniDbNumber('chatModerator', 'timeoutTimeLongMsg', 600),
+            SpamTracker: $.getSetIniDbNumber('chatModerator', 'timeoutSpamTracker', 600),
         },
 
         blacklistTimeoutTime = $.getSetIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
@@ -98,6 +110,7 @@
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
         warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
         resetTime = (warningResetTime * 6e4),
+        spamTrackerLastMsg = 0,
         messageTime = 0,
         warning = '',
         i;
@@ -137,6 +150,11 @@
         colorsToggle = $.getIniDbBoolean('chatModerator', 'colorsToggle');
         colorsMessage = $.getIniDbString('chatModerator', 'colorsMessage');
 
+        spamTrackerToggle = $.getIniDbBoolean('chatModerator', 'spamTrackerToggle');
+        spamTrackerMessage = $.getIniDbString('chatModerator', 'spamTrackerMessage');
+        spamTrackerTime = $.getIniDbNumber('chatModerator', 'spamTrackerTime');
+        spamTrackerLimit = $.getIniDbNumber('chatModerator', 'spamTrackerLimit');
+
         subscribers = {
             Links: $.getIniDbBoolean('chatModerator', 'subscribersModerateLinks'),
             Caps: $.getIniDbBoolean('chatModerator', 'subscribersModerateCaps'),
@@ -145,6 +163,7 @@
             Emotes: $.getIniDbBoolean('chatModerator', 'subscribersModerateEmotes'),
             Colors: $.getIniDbBoolean('chatModerator', 'subscribersModerateColors'),
             LongMsg: $.getIniDbBoolean('chatModerator', 'subscribersModerateLongMsg'),
+            SpamTracker: $.getIniDbBoolean('chatModerator', 'subscribersSpamTracker'),
         };
 
         regulars = {
@@ -155,6 +174,7 @@
             Emotes: $.getIniDbBoolean('chatModerator', 'regularsModerateEmotes'),
             Colors: $.getIniDbBoolean('chatModerator', 'regularsModerateColors'),
             LongMsg: $.getIniDbBoolean('chatModerator', 'regularsModerateLongMsg'),
+            SpamTracker: $.getIniDbBoolean('chatModerator', 'regularsSpamTracker'),
         };
 
         silentTimeout = {
@@ -166,6 +186,7 @@
             Colors: $.getIniDbBoolean('chatModerator', 'silentTimeoutColors'),
             LongMsg: $.getIniDbBoolean('chatModerator', 'silentTimeoutLongMsg'),
             Blacklist: $.getIniDbBoolean('chatModerator', 'silentTimeoutBlacklist'),
+            SpamTracker: $.getIniDbBoolean('chatModerator', 'silentSpamTracker'),
             LinkMessage: $.getIniDbString('chatModerator', 'silentLinkMessage'),
             SpamMessage: $.getIniDbString('chatModerator', 'silentSpamMessage'),
             CapMessage: $.getIniDbString('chatModerator', 'silentCapMessage'),
@@ -174,6 +195,7 @@
             EmoteMessage: $.getIniDbString('chatModerator', 'silentEmoteMessage'),
             LongMessage: $.getIniDbString('chatModerator', 'silentLongMessage'),
             BlacklistMessage: $.getIniDbString('chatModerator', 'silentBlacklistMessage'),
+            SpamTrackerMessage: $.getIniDbString('chatModerator', 'silentSpamTrackerMessage'),
         };
 
         warningTime = {
@@ -184,6 +206,7 @@
             Emotes: $.getIniDbNumber('chatModerator', 'warningTimeEmotes'),
             Colors: $.getIniDbNumber('chatModerator', 'warningTimeColors'),
             LongMsg: $.getIniDbNumber('chatModerator', 'warningTimeLongMsg'),
+            SpamTracker: $.getIniDbNumber('chatModerator', 'warningSpamTracker'),
         };
 
         timeoutTime = {
@@ -194,6 +217,7 @@
             Emotes: $.getIniDbNumber('chatModerator', 'timeoutTimeEmotes'),
             Colors: $.getIniDbNumber('chatModerator', 'timeoutTimeColors'),
             LongMsg: $.getIniDbNumber('chatModerator', 'timeoutTimeLongMsg'),
+            SpamTracker: $.getIniDbNumber('chatModerator', 'timeoutSpamTracker'),
         };
 
         blacklistTimeoutTime = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime');
@@ -205,6 +229,19 @@
         loadBlackList();
         loadWhiteList();
     };
+
+    /**
+     * @interval
+     * Check to see if no one has chatted in 5 minutes. If so clear the array.
+     */
+    setInterval(function() {
+        if (spamTracker.length != 0) {
+            if (spamTrackerLastMsg - $.systemTime() <= 0) {
+                spamTracker = "";
+                spamTracker = [];
+            }
+        }
+    }, 8e4);
 
     /**
      * @function loadBlackList
@@ -434,7 +471,28 @@
                     }
                     timeout(sender, warningTime.Caps, timeoutTime.Caps, silentTimeout.CapMessage);
                     sendMessage(sender, capsMessage, silentTimeout.Caps);
+                    return;
                 }
+            }
+
+            if (spamTrackerToggle) {
+                if (!regulars.SpamTracker && $.isReg(sender) || !subscribers.SpamTracker && $.isSubv3(sender, event.getTags())) {
+                    return;
+                }
+                if (spamTracker[sender] !== undefined) {
+                    if (spamTracker[sender].time - $.systemTime() <= 0) {
+                        spamTracker[sender] = {count: 0, time: ($.systemTime() + (spamTrackerTime * 1e3))};
+                    }
+                    spamTracker[sender].count++;
+                    spamTracker[sender].time = ($.systemTime() + (spamTrackerTime * 1e3));
+                } else {
+                    spamTracker[sender] = {count: 1, time: ($.systemTime() + (spamTrackerTime * 1e3))};
+                }
+                if (spamTracker[sender].count > spamTrackerLimit) {
+                    timeout(sender, warningTime.SpamTracker, timeoutTime.SpamTracker, silentTimeout.SpamTrackerMessage);
+                    sendMessage(sender, spamTrackerMessage, silentTimeout.SpamTracker);
+                }
+                spamTrackerLastMsg = ($.systemTime() + 3e5);
             }
         }
     };
