@@ -310,6 +310,11 @@ public class Channel {
      * @param message - what to say
      */
     public void say(String message) {
+        if (!allowSendMessages) {
+            com.gmt2001.Console.err.println(session.getNick().toUpperCase() + " IS NOT DETECTED AS A MODERATOR!");
+            com.gmt2001.Console.err.println("PLEASE ADD " + session.getNick().toUpperCase() + " AS A CHANNEL MODERATOR OR IT WILL NOT REPLY TO COMMANDS.");
+            return;
+        }
         session.sayChannel(this, message);
     }
 
