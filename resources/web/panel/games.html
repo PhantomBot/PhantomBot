@@ -22,6 +22,60 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="gamesAccordion">
+  <h3>Bet</h3>
+  <div>
+  <div id="_betPanelDisabled" />
+  <div id="_betPanel">
+      <form role="form">
+          <div class="form-group" onkeypress="return event.keyCode != 13">
+              <label for="betOpen">Start a Bet </label>
+              <button type="button" class="btn btn-primary inline pull-right"
+                      onclick="$.betHandler('open', 'betOpenInput')">Open</button>
+              <input type="text" class="form-control" id="betOpenInput" placeholder="Option1 Option2 ...">
+          </div>
+      </form>
+
+      <form role="form">
+          <div class="form-group" onkeypress="return event.keyCode != 13">
+              <label for="betClose">Close a Bet </label>
+              <button type="button" class="btn btn-primary inline pull-right"
+                      onclick="$.betHandler('close', 'betCloseInput')">Close</button>
+              <input type="text" class="form-control" id="betCloseInput" placeholder="Winning Option"
+                     data-toggle="tooltip" title="User refundall for winning option if you want to refund all points." />
+          </div>
+      </form>
+
+
+      <form role="form">
+          <div class="form-group" onkeypress="return event.keyCode != 13">
+              <label for="betSetMinimum">Set Minimum Bet</label>
+              <button type="button" class="btn btn-primary inline pull-right"
+                      onclick="$.betHandler('setminimum', 'betMinimumInput')">Submit</button>
+              <input type="number" min="1" class="form-control" id="betMinimumInput" placeholder="Points">
+          </div>
+      </form>
+
+      <form role="form">
+          <div class="form-group" onkeypress="return event.keyCode != 13">
+              <label for="betSetMaximum">Set Maximum Bet</label>
+              <button type="button" class="btn btn-primary inline pull-right"
+                      onclick="$.betHandler('setmaximum', 'betMaximumInput')">Submit</button>
+              <input type="number" min="1" class="form-control" id="betMaximumInput" placeholder="Points">
+          </div>
+      </form>
+
+      <form role="form">
+          <div class="form-group" onkeypress="return event.keyCode != 13">
+              <label for="betSetTimer">Set Bet Timer (seconds)</label>
+              <button type="button" class="btn btn-primary inline pull-right"
+                      onclick="$.betHandler('settimer', 'betTimerInput')">Submit</button>
+              <input type="number" min="0" class="form-control" id="betTimerInput" placeholder="amount in seconds">
+          </div>
+      </form>
+
+      <div id="betResults" />
+  </div>
+  </div>
     <h3>Roulette Configuration</h3>
     <div>
     <div id="_roulettePanelDisabled" />
