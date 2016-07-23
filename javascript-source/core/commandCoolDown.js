@@ -156,6 +156,16 @@
     };
 
     /**
+     * @function clearAll
+     */
+    function clearAll() {
+        var i;
+        for (i in cooldown) {
+            cooldown.splice(i, 1);
+        }
+    };
+
+    /**
      * @event command
      */
     $.bind('command', function(event) {
@@ -193,6 +203,7 @@
                     clear(cmd);
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.removed', cmd));
                 } else {
+                    clear(cmd);
                     $.inidb.set('cooldown', cmd, time);
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set', cmd, time));
                 }
@@ -204,6 +215,7 @@
          */
         if (command.equalsIgnoreCase('toggleglobalcooldown')) {
             globalCooldown = !globalCooldown;
+            clearAll();
             $.setIniDbBoolean('cooldown', 'globalCooldown', globalCooldown);
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.global.toggle', (globalCooldown ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
         }
@@ -213,6 +225,7 @@
          */
         if (command.equalsIgnoreCase('toggleperusercooldown')) {
             perUserCooldown = !perUserCooldown;
+            clearAll();
             $.setIniDbBoolean('cooldown', 'perUserCooldown', perUserCooldown);
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.per.user.toggle', (perUserCooldown ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
         }
@@ -225,7 +238,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.global.usage'));
                 return;
             }
-
+            clearAll();
             $.inidb.set('cooldown', 'globalCooldownTime', parseInt(cmd));
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.global.set', cmd));
         }
