@@ -14,7 +14,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+ 
  @author IllusionaryOne
 -->
 
@@ -29,7 +29,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="rouletteTimeout">Roulette Timeout (Seconds)</label>
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.rouletteTimeout()">Submit</button>
                 <input type="number" min="0" class="form-control" id="rouletteTimeoutInput" placeholder="Seconds">
             </div>
@@ -44,7 +44,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="adventureStart">Start an Adventure - Provide Points to Start</label>
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.adventureStart()">Start</button>
                 <input type="number" min="0" class="form-control" id="adventureStartInput" placeholder="Points to Start Adventure">
             </div>
@@ -53,7 +53,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="adventureJoinTime">Time to Join an Adventure (Seconds)</label>
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.adventureUpdateSetting('joinTime')">Submit</button>
                 <input type="number" min="0" class="form-control" id="adventurejoinTimeInput" placeholder="Seconds">
             </div>
@@ -62,7 +62,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="adventureCooldown">Cooldown Time Between Adventures (Seconds)</label>
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.adventureUpdateSetting('coolDown')">Submit</button>
                 <input type="number" min="0" class="form-control" id="adventurecoolDownInput" placeholder="Seconds">
             </div>
@@ -71,7 +71,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="adventureGainPct">Gain Percent Applied to Winning an Adventure</label>
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.adventureUpdateSetting('gainPercent')">Submit</button>
                 <input type="number" min="1" class="form-control" id="adventuregainPercentInput" placeholder="Number Value">
             </div>
@@ -80,7 +80,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="adventureMinBet">Minimum Bet to Start an Adventure</label>
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.adventureUpdateSetting('minBet')">Submit</button>
                 <input type="number" min="1" class="form-control" id="adventureminBetInput" placeholder="Number Value">
             </div>
@@ -89,13 +89,13 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="adventureMaxBet">Maximum Bet to Start an Adventure</label>
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.adventureUpdateSetting('maxBet')">Submit</button>
                 <input type="number" min="1" class="form-control" id="adventuremaxBetInput" placeholder="Number Value">
             </div>
         </form>
-    </div>
-    </div>
+    </div>    
+    </div>    
 
     <h3>Slot Machine Configuration</h3>
     <div>
@@ -104,7 +104,7 @@
         <div><strong>Slot Rewards</strong></div><br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.setSlotRewards()">Submit</button>
                 <input style="width: 10%" type="number" min="0" id="slotRewards0Input" placeholder="Points"
                        data-toggle="tooltip" title="Points for First Value">
@@ -121,7 +121,7 @@
     <div><strong>Slot Emotes</strong></div><br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.setSlotEmotes()">Submit</button>
                 <input style="width: auto" type="text" id="slotEmotes0Input" placeholder="Emote"
                        data-toggle="tooltip" title="Emote for First Value">
@@ -145,7 +145,7 @@
         <div><strong>Roll Rewards</strong></div><br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <button type="button" class="btn btn-primary inline pull-right"
+                <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.setRollRewards()">Submit</button>
                 <input style="width: 10%" type="number" min="0" id="rollRewards0Input" placeholder="Points"
                        data-toggle="tooltip" title="Points for Double 1's">
@@ -161,61 +161,6 @@
                        data-toggle="tooltip" title="Points for Double 6's">
             </div>
         </form>
-    </div>
-    </div>
-
-    <h3>Bet Configuration</h3>
-    <div>
-    <div id="_betPanelDisabled" />
-    <div id="_betPanel">
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="betOpen">Start a Bet </label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.betHandler('open', 'betOpenInput')">Open</button>
-                <input type="text" class="form-control" id="betOpenInput" placeholder="Option1 Option2 ...">
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="betClose">Close a Bet </label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.betHandler('close', 'betCloseInput')">Close</button>
-                <input type="text" class="form-control" id="betCloseInput" placeholder="Winning Option"
-                       data-toggle="tooltip" title="User refundall for winning option if you want to refund all points." />
-            </div>
-        </form>
-
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="betSetMinimum">Set Minimum Bet</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.betHandler('setminimum', 'betMinimumInput')">Submit</button>
-                <input type="number" min="1" class="form-control" id="betMinimumInput" placeholder="Points">
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="betSetMaximum">Set Maximum Bet</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.betHandler('setmaximum', 'betMaximumInput')">Submit</button>
-                <input type="number" min="1" class="form-control" id="betMaximumInput" placeholder="Points">
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="betSetTimer">Set Bet Timer (seconds)</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.betHandler('settimer', 'betTimerInput')">Submit</button>
-                <input type="number" min="0" class="form-control" id="betTimerInput" placeholder="amount in seconds">
-            </div>
-        </form>
-
-        <div id="betResults" />
     </div>
     </div>
 
