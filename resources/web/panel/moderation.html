@@ -710,6 +710,95 @@
         </form>
     </div>
 
+
+    <h3>Spam tracker settings</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="spamTrackerMessage">Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#spamTrackerMessageInput', 'spamTrackerMessage')">Submit</button>
+                <input type="text" class="form-control" id="spamTrackerMessageInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message said in chat when a user is punished for posting a spamming message." />
+            </div>
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="SpamTrackerReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#SpamTrackerReason', 'SpamTracker')">Submit</button>
+                <input type="text" class="form-control" id="SpamTrackerReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="spamTrackerLimit">Message limit</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#spamTrackerLimitInput', 'spamTrackerLimit')">Submit</button>
+                <input type="number" min="5" max="1400" class="form-control" id="spamTrackerLimitInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Set the amount of messages allowed in X amount of seconds." />
+            </div>
+        </form>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="spamTrackerLimit">Time</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#spamTrackerLimitInput', 'spamTrackerTime')">Submit</button>
+                <input type="number" min="10" max="1400" class="form-control" id="spamTrackerTimeInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Set the the amount of time in seconds people can send messages in. Used for the message limit." />
+            </div>
+        </form>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="warningTimeSpamTracker">Warning duration</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#warningTimeSpamTracker', 'warningTimeSpamTracker')">Submit</button>
+                <input type="text" min="1" class="form-control" id="warningTimeSpamTracker" placeholder="Loading..."
+                     data-toggle="tooltip" title="Set how long a user will get timed out in seconds, when spamming on their first offence." />
+            </div>
+        </form>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="timeoutTimeSpamTracker">Timeout duration</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#timeoutTimeSpamTracker', 'timeoutTimeSpamTracker')">Submit</button>
+                <input type="text" min="1" class="form-control" id="timeoutTimeSpamTracker" placeholder="Loading..."
+                     data-toggle="tooltip" title="Set how long a user will get timed out in seconds, when spamming on their last offence." />
+            </div>
+        </form>
+    </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleModerationSpamTracker" onclick="$.toggleModerations('SpamTracker', 'spamTrackerToggle')">Moderate spam
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleRegularSpamTracker" onclick="$.toggleRegular('SpamTracker')">Exclude regulars
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSubscriberSpamTracker" onclick="$.toggleSubscriber('SpamTracker')">Exclude subscribers
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutSpamTracker" onclick="$.toggleSilentTimeout('SpamTracker')">Silent mode
+                </label>
+            </div>
+        </form>
+    </div>
+
+
+
     <h3>Blacklist</h3>
     <div>
         <form role="form">
