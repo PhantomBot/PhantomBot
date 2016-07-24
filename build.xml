@@ -19,6 +19,10 @@
     <property name="res.dir" value="${build.dir}" />
     <property name="lib.dir" value="${build.dir}/lib" />
 
+    <tstamp>
+        <format property="NOW" pattern="MMM dd yyyy HH:mm:ss zzz" timezone="GMT" />
+    </tstamp>
+
     <path id="classpath">
         <fileset dir="${lib.dir}" includes="**/*.jar" />
     </path>
@@ -124,15 +128,17 @@
             value="@phantombot.version@" />
     </target>
 
-    <target depends="compile.src,post.compile" name="jar">
+    <target depends="compile.src,post.compile,git.revision" name="jar">
         <jar destfile="${build.dir}/PhantomBot.jar">
             <fileset dir="${classes}" />
             <manifest>
-                <attribute name="Bundle-Name" value="${project.name}" />           
-                <attribute name="Bundle-Version" value="${version.num}" />
+                <attribute name="Bundle-Name" value="${name}" />
+                <attribute name="Bundle-Version" value="${version}" />
+                <attribute name="Bundle-Revision" value="${git.revision}" />
                 <attribute name="Bundle-Date" value="${NOW}" />
-                <attribute name="Implementation-Title" value="${project.name}" />
-                <attribute name="Implementation-Version" value="${version.num}" />
+                <attribute name="Implementation-Title" value="${name}" />
+                <attribute name="Implementation-Version" value="${version}" />
+                <attribute name="Implementation-Revision" value="${git.revision}" />
                 <attribute name="Implementation-URL" value="http://www.phantombot.net" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
                 <attribute name="Main-Class" value="me.mast3rplan.phantombot.Main" />
