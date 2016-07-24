@@ -3,6 +3,7 @@
         timeouts = [],
         whiteList = [],
         blackList = [],
+        spamTracker = [],
 
         linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', true),
         linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking'),
@@ -32,7 +33,12 @@
         longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 300),
 
         colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
-        colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using /me.'),
+        colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using colored text'),
+
+        spamTrackerToggle = $.getSetIniDbBoolean('chatModerator', 'spamTrackerToggle', false),
+        spamTrackerMessage = $.getSetIniDbString('chatModerator', 'spamTrackerMessage',  'you were timed out for spamming chat'),
+        spamTrackerTime = $.getSetIniDbNumber('chatModerator', 'spamTrackerTime', 30),
+        spamTrackerLimit = $.getSetIniDbNumber('chatModerator', 'spamTrackerLimit', 6),
 
         subscribers = {
             Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', true),
@@ -42,6 +48,7 @@
             Emotes: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateEmotes', true),
             Colors: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateColors', true),
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLongMsg', true),
+            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSpamTracker', true),
         },
 
         regulars = {
@@ -52,6 +59,7 @@
             Emotes: $.getSetIniDbBoolean('chatModerator', 'regularsModerateEmotes', true),
             Colors: $.getSetIniDbBoolean('chatModerator', 'regularsModerateColors', true),
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'regularsModerateLongMsg', true),
+            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSpamTracker', true),
         },
 
         silentTimeout = {
@@ -63,6 +71,7 @@
             Colors: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutColors', false),
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
             Blacklist: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutBlacklist', false),
+            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSpamTracker', false),
             LinkMessage: $.getSetIniDbString('chatModerator', 'silentLinkMessage', 'Posting a link without permission. (Automated by ' + $.botName + ')'),
             SpamMessage: $.getSetIniDbString('chatModerator', 'silentSpamMessage', 'Excessive repeating characters. (Automated by ' + $.botName + ')'),
             CapMessage: $.getSetIniDbString('chatModerator', 'silentCapMessage', 'Excessive cap use. (Automated by ' + $.botName + ')'),
@@ -71,6 +80,7 @@
             EmoteMessage: $.getSetIniDbString('chatModerator', 'silentEmoteMessage', 'Excessive emote use. (Automated by ' + $.botName + ')'),
             LongMessage: $.getSetIniDbString('chatModerator', 'silentLongMessage', 'Excessive message length. (Automated by ' + $.botName + ')'),
             BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted word or phrase. (Automated by ' + $.botName + ')'),
+            SpamTrackerMessage: $.getSetIniDbString('chatModerator', 'silentSpamTrackerMessage', 'Spamming chat. (Automated by ' + $.botName + ')'),
         },
 
         warningTime = {
@@ -81,6 +91,7 @@
             Emotes: $.getSetIniDbNumber('chatModerator', 'warningTimeEmotes', 5),
             Colors: $.getSetIniDbNumber('chatModerator', 'warningTimeColors', 5),
             LongMsg: $.getSetIniDbNumber('chatModerator', 'warningTimeLongMsg', 5),
+            SpamTracker: $.getSetIniDbNumber('chatModerator', 'warningSpamTracker', 30),
         },
 
         timeoutTime = {
@@ -91,6 +102,7 @@
             Emotes: $.getSetIniDbNumber('chatModerator', 'timeoutTimeEmotes', 600),
             Colors: $.getSetIniDbNumber('chatModerator', 'timeoutTimeColors', 600),
             LongMsg: $.getSetIniDbNumber('chatModerator', 'timeoutTimeLongMsg', 600),
+            SpamTracker: $.getSetIniDbNumber('chatModerator', 'timeoutSpamTracker', 600),
         },
 
         blacklistTimeoutTime = $.getSetIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
@@ -98,6 +110,7 @@
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
         warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
         resetTime = (warningResetTime * 6e4),
+        spamTrackerLastMsg = 0,
         messageTime = 0,
         warning = '',
         i;
@@ -137,6 +150,11 @@
         colorsToggle = $.getIniDbBoolean('chatModerator', 'colorsToggle');
         colorsMessage = $.getIniDbString('chatModerator', 'colorsMessage');
 
+        spamTrackerToggle = $.getIniDbBoolean('chatModerator', 'spamTrackerToggle');
+        spamTrackerMessage = $.getIniDbString('chatModerator', 'spamTrackerMessage');
+        spamTrackerTime = $.getIniDbNumber('chatModerator', 'spamTrackerTime');
+        spamTrackerLimit = $.getIniDbNumber('chatModerator', 'spamTrackerLimit');
+
         subscribers = {
             Links: $.getIniDbBoolean('chatModerator', 'subscribersModerateLinks'),
             Caps: $.getIniDbBoolean('chatModerator', 'subscribersModerateCaps'),
@@ -145,6 +163,7 @@
             Emotes: $.getIniDbBoolean('chatModerator', 'subscribersModerateEmotes'),
             Colors: $.getIniDbBoolean('chatModerator', 'subscribersModerateColors'),
             LongMsg: $.getIniDbBoolean('chatModerator', 'subscribersModerateLongMsg'),
+            SpamTracker: $.getIniDbBoolean('chatModerator', 'subscribersModerateSpamTracker'),
         };
 
         regulars = {
@@ -155,6 +174,7 @@
             Emotes: $.getIniDbBoolean('chatModerator', 'regularsModerateEmotes'),
             Colors: $.getIniDbBoolean('chatModerator', 'regularsModerateColors'),
             LongMsg: $.getIniDbBoolean('chatModerator', 'regularsModerateLongMsg'),
+            SpamTracker: $.getIniDbBoolean('chatModerator', 'regularsModerateSpamTracker'),
         };
 
         silentTimeout = {
@@ -166,6 +186,7 @@
             Colors: $.getIniDbBoolean('chatModerator', 'silentTimeoutColors'),
             LongMsg: $.getIniDbBoolean('chatModerator', 'silentTimeoutLongMsg'),
             Blacklist: $.getIniDbBoolean('chatModerator', 'silentTimeoutBlacklist'),
+            SpamTracker: $.getIniDbBoolean('chatModerator', 'silentSpamTracker'),
             LinkMessage: $.getIniDbString('chatModerator', 'silentLinkMessage'),
             SpamMessage: $.getIniDbString('chatModerator', 'silentSpamMessage'),
             CapMessage: $.getIniDbString('chatModerator', 'silentCapMessage'),
@@ -174,6 +195,7 @@
             EmoteMessage: $.getIniDbString('chatModerator', 'silentEmoteMessage'),
             LongMessage: $.getIniDbString('chatModerator', 'silentLongMessage'),
             BlacklistMessage: $.getIniDbString('chatModerator', 'silentBlacklistMessage'),
+            SpamTrackerMessage: $.getIniDbString('chatModerator', 'silentSpamTrackerMessage'),
         };
 
         warningTime = {
@@ -184,6 +206,7 @@
             Emotes: $.getIniDbNumber('chatModerator', 'warningTimeEmotes'),
             Colors: $.getIniDbNumber('chatModerator', 'warningTimeColors'),
             LongMsg: $.getIniDbNumber('chatModerator', 'warningTimeLongMsg'),
+            SpamTracker: $.getIniDbNumber('chatModerator', 'warningSpamTracker'),
         };
 
         timeoutTime = {
@@ -194,6 +217,7 @@
             Emotes: $.getIniDbNumber('chatModerator', 'timeoutTimeEmotes'),
             Colors: $.getIniDbNumber('chatModerator', 'timeoutTimeColors'),
             LongMsg: $.getIniDbNumber('chatModerator', 'timeoutTimeLongMsg'),
+            SpamTracker: $.getIniDbNumber('chatModerator', 'timeoutSpamTracker'),
         };
 
         blacklistTimeoutTime = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime');
@@ -205,6 +229,19 @@
         loadBlackList();
         loadWhiteList();
     };
+
+    /**
+     * @interval
+     * Check to see if no one has chatted in 5 minutes. If so clear the array.
+     */
+    setInterval(function() {
+        if (spamTracker.length != 0) {
+            if (spamTrackerLastMsg - $.systemTime() <= 0) {
+                spamTracker = "";
+                spamTracker = [];
+            }
+        }
+    }, 8e4);
 
     /**
      * @function loadBlackList
@@ -434,21 +471,195 @@
                     }
                     timeout(sender, warningTime.Caps, timeoutTime.Caps, silentTimeout.CapMessage);
                     sendMessage(sender, capsMessage, silentTimeout.Caps);
+                    return;
                 }
+            }
+
+            if (spamTrackerToggle) {
+                if (!regulars.SpamTracker && $.isReg(sender) || !subscribers.SpamTracker && $.isSubv3(sender, event.getTags())) {
+                    return;
+                }
+                if (spamTracker[sender] !== undefined) {
+                    if (spamTracker[sender].time - $.systemTime() <= 0) {
+                        spamTracker[sender] = {count: 0, time: ($.systemTime() + (spamTrackerTime * 1e3))};
+                    }
+                    spamTracker[sender].count++;
+                    spamTracker[sender].time = ($.systemTime() + (spamTrackerTime * 1e3));
+                } else {
+                    spamTracker[sender] = {count: 1, time: ($.systemTime() + (spamTrackerTime * 1e3))};
+                }
+                if (spamTracker[sender].count > spamTrackerLimit) {
+                    timeout(sender, warningTime.SpamTracker, timeoutTime.SpamTracker, silentTimeout.SpamTrackerMessage);
+                    sendMessage(sender, spamTrackerMessage, silentTimeout.SpamTracker);
+                }
+                spamTrackerLastMsg = ($.systemTime() + 3e5);
             }
         }
     };
 
     /**
-     * @function blacklistAndWhitelistCommands()
+     * @function extraCommands
+     * Handles the commands that the normal function can't.
      */
-    function blacklistAndWhitelistCommands(event) {
+    function extraCommands(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
             argString = event.getArguments(),
             args = event.getArgs(),
             action = args[0],
             subAction = args[1];
+
+        if (command.equalsIgnoreCase('moderation') || command.equalsIgnoreCase('mod')) { // js can't handle anymore commands in the default function.
+
+            /**
+             * @commandpath moderation spamtracker [on / off] - Enable/Disable the spam tracker. This limits how many messages a user can sent in 30 seconds by default
+             */
+            if (action.equalsIgnoreCase('spamtracker')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spamtracker.usage', getModerationFilterStatus(spamTrackerToggle, true)));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('on') || subAction.equalsIgnoreCase('off')) {
+                    spamTrackerToggle = subAction.equalsIgnoreCase('on');
+                    $.inidb.set('chatModerator', 'spamTrackerToggle', spamTrackerToggle);
+                    $.say($.whisperPrefix(sender) + (spamTrackerToggle ? $.lang.get('chatmoderator.spamtracker.filter.enabled') : $.lang.get('chatmoderator.spamtracker.filter.disabled'))); 
+                    $.log.event('spam tracker filter was turned ' + subAction + ' by ' + sender);
+                    return;
+                }
+            }
+
+            /**
+             * @commandpath moderation spamtrackerlimit [amount of messages] - Sets how many messages a user can sent in 30 seconds by default
+             */
+            if (action.equalsIgnoreCase('spamtrackerlimit')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spamtracker.limit.usage'));
+                    return;
+                }
+                spamTrackerLimit = parseInt(subAction);
+                $.inidb.set('chatModerator', 'spamTrackerLimit', spamTrackerLimit);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spamtracker.limit.set', spamTrackerLimit));
+                $.log.event(sender + ' changed the spam tracker limit to ' + spamTrackerLimit);
+                return;
+            }
+
+            /**
+             * @commandpath moderation spamtrackertime [amount in seconds] - Sets how many messages a user can sent in 30 seconds by default
+             */
+            if (action.equalsIgnoreCase('spamtrackertime')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spamtracker.time.usage'));
+                    return;
+                }
+
+                spamTrackerTime = parseInt(subAction);
+                $.inidb.set('chatModerator', 'spamTrackerTime', spamTrackerTime);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spamtracker.time.set', spamTrackerTime));
+                $.log.event(sender + ' changed the spam tracker time to ' + spamTrackerTime);
+                return;
+            }
+
+            /**
+             * @commandpath moderation spamtrackermessage [message] - Sets the spam tracker warning message
+             */
+            if (action.equalsIgnoreCase('spamtrackermessage')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spamtracker.message.usage'));
+                    return;
+                }
+                spamTrackerMessage = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'spamTrackerMessage', spamTrackerMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.spamtracker.message.set', spamTrackerMessage));
+                $.log.event(sender + ' changed the spam tracker warning message to "' + spamTrackerMessage + '"');
+                return;
+            }
+
+            if (action.equalsIgnoreCase('regulars')) {
+                if (subAction && subAction.equalsIgnoreCase('spamtracker')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.spamtracker', getModerationFilterStatus(regulars.SpamTracker)));
+                        return;
+                    }
+
+                    if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
+                        regulars.SpamTracker = subAction.equalsIgnoreCase('true');
+                        $.inidb.set('chatModerator', 'regularsModerateSpamTracker', regulars.SpamTracker);
+                        $.say($.whisperPrefix(sender) + (regulars.SpamTracker ? $.lang.get('chatmoderator.regulars.spamtracker.allowed') : $.lang.get('chatmoderator.regulars.spamtracker.not.allowed')));
+                        $.log.event(sender + ' changed regulars moderation for spam tracker to ' + args[2]);
+                        return;
+                    }
+                }
+            }
+
+            if (action.equalsIgnoreCase('subscribers')) {
+                if (subAction && subAction.equalsIgnoreCase('spamtracker')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.spamtracker', getModerationFilterStatus(subscribers.SpamTracker)));
+                        return;
+                    }
+
+                    if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
+                        subscribers.SpamTracker = subAction.equalsIgnoreCase('true');
+                        $.inidb.set('chatModerator', 'subscribersModerateSpamTracker', subscribers.SpamTracker);
+                        $.say($.whisperPrefix(sender) + (subscribers.SpamTracker ? $.lang.get('chatmoderator.subscribers.spamtracker.allowed') : $.lang.get('chatmoderator.subscribers.spamtracker.not.allowed')));
+                        $.log.event(sender + ' changed subscribers moderation for spam tracker to ' + args[2]);
+                        return;
+                    }
+                }
+            }
+
+            if (action.equalsIgnoreCase('silenttimeout')) {
+                if (subAction && subAction.equalsIgnoreCase('spamtracker')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.spamtracker', getModerationFilterStatus(silentTimeout.SpamTracker, true)));
+                        return;
+                    }
+
+                    if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
+                        silentTimeout.SpamTracker = args[2].equalsIgnoreCase('true');
+                        $.inidb.set('chatModerator', 'silentTimeoutLinks', silentTimeout.SpamTracker);
+                        $.say($.whisperPrefix(sender) + (silentTimeout.SpamTracker ? $.lang.get('chatmoderator.silenttimeout.spamtracker.true') : $.lang.get('chatmoderator.silenttimeout.spamtracker.false')));
+                        $.log.event(sender + ' changed silent timeout moderation for spam tracker to ' + args[2]);
+                        return;
+                    }
+                }
+            }
+
+            if (action.equalsIgnoreCase('warningtime')) {
+                if (subAction && subAction.equalsIgnoreCase('spamtracker')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.spamtracker.usage', warningTime.SpamTracker));
+                        return;
+                    }
+                    if (args[2] < spamTrackerTime) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.err'));
+                        return;
+                    }
+                    warningTime.SpamTracker = parseInt(args[2]);
+                    $.inidb.set('chatModerator', 'warningTimeSpamTracker', warningTime.SpamTracker);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.spamtracker', warningTime.SpamTracker));
+                    $.log.event(sender + ' changed warning time for spam tracker to: ' + warningTime.SpamTracker);
+                }
+            }
+
+            if (action.equalsIgnoreCase('timeouttime')) {
+                if (subAction && subAction.equalsIgnoreCase('spamtracker')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.spamtracker.usage', timeoutTime.SpamTracker));
+                        return;
+                    }
+                    if (args[2] < spamTrackerTime) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.err'));
+                        return;
+                    }
+                    timeoutTime.SpamTracker = parseInt(args[2]);
+                    $.inidb.set('chatModerator', 'timeoutTimeSpamTracker', timeoutTime.SpamTracker);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.spamtracker', timeoutTime.SpamTracker));
+                    $.log.event(sender + ' changed timeout time for spam tracker to: ' + timeoutTime.SpamTracker);
+                }
+            }
+        }
 
         /**
          * @commandpath blacklist - Show usage of command to manipulate the blacklist of words in chat
@@ -608,9 +819,9 @@
             subAction = args[1];
             
         /**
-         * Handle !blacklist and !whitelist command
+         * Handle extra commands
          */
-        blacklistAndWhitelistCommands(event);
+        extraCommands(event);
 
         /**
          * @commandpath moderation - Shows usage for the various chat moderation options
@@ -750,7 +961,7 @@
             }
 
             /**
-             * @commandpath moderation regulars [links / caps / symbols / spam / emotes / colors / longmessages] [true / false] - Enable or disable if regulars get moderated by that filter
+             * @commandpath moderation regulars [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker] [true / false] - Enable or disable if regulars get moderated by that filter
              */
             if (action.equalsIgnoreCase('regulars')) {
                 if (!subAction) {
@@ -853,7 +1064,7 @@
             }
 
             /**
-             * @commandpath moderation subscribers [links / caps / symbols / spam / emotes / colors / longmessages] [true / false] - Enable or disable if subscribers get moderated by that filter
+             * @commandpath moderation subscribers [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker] [true / false] - Enable or disable if subscribers get moderated by that filter
              */
             if (action.equalsIgnoreCase('subscribers')) {
                 if (!subAction) {
@@ -956,7 +1167,7 @@
             }
 
             /**
-             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / blacklist / all] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
+             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / blacklist / spamtracker/ all] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
              */
             if (action.equalsIgnoreCase('silenttimeout')) {
                 if (!subAction) {
@@ -1070,6 +1281,7 @@
                         silentTimeout.LongMsg = args[2].equalsIgnoreCase('true');
                         silentTimeout.Blacklist = args[2].equalsIgnoreCase('true');
                         silentTimeout.Emotes = args[2].equalsIgnoreCase('true');
+                        silentTimeout.SpamTracker = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'silentTimeoutLinks', silentTimeout.Links);
                         $.inidb.set('chatModerator', 'silentTimeoutCaps', silentTimeout.Caps);
                         $.inidb.set('chatModerator', 'silentTimeoutSymbols', silentTimeout.Symbols);
@@ -1078,13 +1290,14 @@
                         $.inidb.set('chatModerator', 'silentTimeoutBlacklist', silentTimeout.Blacklist);
                         $.inidb.set('chatModerator', 'silentTimeoutLongMsg', silentTimeout.LongMsg);
                         $.inidb.set('chatModerator', 'silentTimeoutColors', silentTimeout.Colors);
+                        $.inidb.set('chatModerator', 'silentTimeoutSpamTacker', silentTimeout.SpamTracker);
                         $.say($.whisperPrefix(sender) + (args[0] ? $.lang.get('chatmoderator.silenttimeout.true') : $.lang.get('chatmoderator.silenttimeout.false')))
                     }
                 }
             }
 
             /**
-             * @commandpath moderation warningtime [links / caps / symbols / spam / emotes / colors / longmessages] [time in seconds] - Sets a warning time for a filter. This is when the user gets timed out for the first time
+             * @commandpath moderation warningtime [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker] [time in seconds] - Sets a warning time for a filter. This is when the user gets timed out for the first time
              */
             if (action.equalsIgnoreCase('warningtime')) {
                 if (!subAction) {
@@ -1159,7 +1372,7 @@
             }
 
             /**
-             * @commandpath moderation timeouttime [links / caps / symbols / spam / emotes / colors / longmessages] [time in seconds] - Sets a timeout time for a filter. This is when a user gets timed out the for the second time
+             * @commandpath moderation timeouttime [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker] [time in seconds] - Sets a timeout time for a filter. This is when a user gets timed out the for the second time
              */
             if (action.equalsIgnoreCase('timeouttime')) {
                 if (!subAction) {

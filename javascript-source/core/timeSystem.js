@@ -11,7 +11,8 @@
         modTimePermToggle = $.getSetIniDbBoolean('timeSettings', 'modTimePermToggle', false),
         hoursForLevelUp = $.getSetIniDbNumber('timeSettings', 'timePromoteHours', 50),
         regularsGroupId = 6, 
-        interval;
+        interval,
+        inter;
 
     /**
      * @function updateTimeSettings
@@ -360,11 +361,8 @@
 
     // Set an interval for increasing all current users logged time
     interval = setInterval(function() {
-        var i,
-            username;
-        if (!$.bot.isModuleEnabled('./core/timeSystem.js')) {
-            return;
-        }
+        var username, 
+            i;
 
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
             for (i in $.users) {
@@ -372,7 +370,12 @@
                 $.inidb.incr('time', username, 61);
             }
         }
+    }, 6e4);
 
+    inter = setInterval(function() {
+        var username, 
+            i;
+            
         if (levelWithTime) {
             for (i in $.users) {
                 username = $.users[i][0].toLowerCase();
@@ -389,7 +392,7 @@
                 }
             }
         }
-    }, 6e4);
+    }, 9e5);
 
     /**
      * @event initReady

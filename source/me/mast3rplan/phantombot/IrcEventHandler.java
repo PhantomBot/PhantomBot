@@ -42,7 +42,8 @@ import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 
 public class IrcEventHandler implements IRCEventListener {
-
+    
+    private Boolean modwarn = false;
     private final ArrayList<String> mods = new ArrayList<>();
     private final ScriptEventManager scriptEventManager = ScriptEventManager.instance();
     private final UsernameCache usernameCache = UsernameCache.instance();
@@ -141,7 +142,6 @@ public class IrcEventHandler implements IRCEventListener {
                 }
                 com.gmt2001.Console.debug.println(rawTags);
             }
-            
             if (cmessageTags.containsKey("display-name")) {
                 usernameCache.addUser(cusername, cmessageTags.get("display-name"));
             }
@@ -327,11 +327,11 @@ public class IrcEventHandler implements IRCEventListener {
                             eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
                         }
                     } else {
-                        com.gmt2001.Console.err.println(PhantomBot.instance().getSession().getNick().toUpperCase() + " IS NOT DETECTED AS A MODERATOR!");
-                        com.gmt2001.Console.err.println("IF " + PhantomBot.instance().getSession().getNick().toUpperCase() + " IS NOT A MODERATOR IT WILL NOT RESPOND TO COMMANDS!");
-                        com.gmt2001.Console.err.println("MAKE SURE TO ADD " + PhantomBot.instance().getSession().getNick().toUpperCase() + " AS A MODERATOR BY TYPING /mod " + PhantomBot.instance().getSession().getNick());
-                        com.gmt2001.Console.err.println("NOW SHUTTING DOWN...");
-                        System.exit(0);
+                        if (!modwarn) {
+                            com.gmt2001.Console.err.println(session.getNick().toUpperCase() + " IS NOT DETECTED AS A MODERATOR!");
+                            com.gmt2001.Console.err.println("PLEASE ADD " + session.getNick().toUpperCase() + " AS A CHANNEL MODERATOR OR IT WILL NOT REPLY TO COMMANDS.");
+                            modwarn = true;
+                        }
 
                         if (mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase())) {
                             mods.remove(PhantomBot.instance().getSession().getNick().toLowerCase());

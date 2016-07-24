@@ -46,6 +46,7 @@
         raffleStatus = true;
         $.inidb.RemoveFile('ticketsList');
         $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
+        entries = "";
         entries = [];
 
         if (msgToggle) {
@@ -147,13 +148,19 @@
         totalEntries++;
         totalTickets += times;
         $.inidb.decr('points', user, (times * cost));
-        $.inidb.incr('ticketsList', $.username.resolve(user), times);
-        $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
+        incr(user, times);
 
         for (var i = 0; i < times; i++) {
             entries.push(user);
         }
     };
+
+    function incr(user, times) {
+        if (!$.inidb.exists('ticketsList', user)) {
+            $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
+        }
+        $.inidb.incr('ticketsList', $.username.resolve(user), times);
+    }
 
     function getTickets(user) {
         if (!$.inidb.exists('ticketsList', user)) {

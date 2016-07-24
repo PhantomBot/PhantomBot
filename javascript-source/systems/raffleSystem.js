@@ -15,7 +15,7 @@
     function reloadRaffle() {
         noRepickSame = $.getIniDbBoolean('settings', 'noRepickSame');
         msgToggle = $.getIniDbBoolean('settings', 'raffleMSGToggle');
-    }
+    };
 
     /**
      * @function checkArgs
@@ -67,6 +67,7 @@
     function openRaffle(key, cost, followers, timer, a, user) {
         $.say($.lang.get('rafflesystem.raffle.opened', $.getPointsString(cost), key, a));
         $.registerChatCommand('./systems/raffleSystem.js', key, 7);
+        entries = "";
         entries = [];
         $.inidb.RemoveFile('raffleList');
         $.inidb.set('raffleresults', 'raffleEntries', 0);

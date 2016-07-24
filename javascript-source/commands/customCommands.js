@@ -201,10 +201,7 @@
 
         if (message.match(/\(readfile/)) {
             if (message.search(/\((readfile ([^)]+)\))/g) >= 0) {
-                message = $.replace(message, RegExp.$1, $.readFile('addons/' + RegExp.$2)[0]);
-                if (message.startsWith('(')) {
-                    message = $.replace(message, '(', '');
-                }
+                message = $.replace(message, '(' + RegExp.$1, $.readFile('addons/' + RegExp.$2)[0]);
             }
         }
 
