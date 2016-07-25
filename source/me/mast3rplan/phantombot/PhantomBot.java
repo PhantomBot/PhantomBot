@@ -84,6 +84,8 @@ import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
+import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
+import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.ConnectionManager;
 import me.mast3rplan.phantombot.jerklib.Profile;
@@ -123,8 +125,8 @@ public class PhantomBot implements Listener {
     private final String webauthro;
     private final String ytauth;
     private final String ytauthro;
-    private final String gamewispauth;
-    private final String gamewisprefresh;
+    private String gamewispauth;
+    private String gamewisprefresh;
     private final String oauth;
     private String twitterUser;
     private String twitter_access_token;
@@ -985,13 +987,13 @@ public class PhantomBot implements Listener {
       
         if (message.equals("testsub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testsub");
-            EventBus.instance().post(new IrcChannelMessageEvent(session, "twitchnotify", "testuser just subscribed!", this.channel));
+            EventBus.instance().post(new NewSubscriberEvent(session, PhantomBot.instance().getChannel("#" + this.channel), this.username));
             return;
         }
 
         if (message.equals("testresub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testresub");
-            EventBus.instance().post(new IrcChannelMessageEvent(session, "twitchnotify", "testuser subscribed for 2 months in a row!", this.channel));
+            EventBus.instance().post(new NewReSubscriberEvent(session, PhantomBot.instance().getChannel("#" + this.channel), this.username, "5"));
             return;
         }
 
@@ -1164,10 +1166,104 @@ public class PhantomBot implements Listener {
             changed = true;
         }
 
+        if (message.equals("mysqlsetup")) {
+            try {
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("PhantomBot MySQL setup.");
+                com.gmt2001.Console.out.println();
+
+                com.gmt2001.Console.out.print("Please enter your MySQL host name: ");
+                String newHost = System.console().readLine().trim();
+                mysql_db_host = newHost;
+
+                com.gmt2001.Console.out.print("Please enter your MySQL port: ");
+                String newPost = System.console().readLine().trim();
+                mysql_db_port = newPost;
+
+                com.gmt2001.Console.out.print("Please enter your MySQL db name: ");
+                String newName = System.console().readLine().trim();
+                mysql_db_name = newName;
+
+                com.gmt2001.Console.out.print("Please enter a username for MySQL: ");
+                String newUser = System.console().readLine().trim();
+                mysql_db_user = newUser;
+
+                com.gmt2001.Console.out.print("Please enter a password for MySQL: ");
+                String newPass = System.console().readLine().trim();
+                mysql_db_pass = newPass;
+
+                datastore = "MySQLStore";
+
+                com.gmt2001.Console.out.println("PhantomBot MySQL setup done.");
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        if (message.equals("gamewispsetup")) {
+            try {
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("PhantomBot GameWisp setup.");
+                com.gmt2001.Console.out.println();
+
+                com.gmt2001.Console.out.print("Please enter your GameWisp OAuth key: ");
+                String newToken = System.console().readLine().trim();
+                gamewispauth = newToken;
+
+                com.gmt2001.Console.out.print("Please enter your GameWisp refresh key: ");
+                String newToken2 = System.console().readLine().trim();
+                gamewisprefresh = newToken2;
+
+                com.gmt2001.Console.out.println("PhantomBot GameWisp setup done.");
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        if (message.equals("twitchalertssetup")) {
+            try {
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("PhantomBot TwitchAlerts setup.");
+                com.gmt2001.Console.out.println();
+
+                com.gmt2001.Console.out.print("Please enter your TwitchAlerts OAuth key: ");
+                String newToken = System.console().readLine().trim();
+                twitchalertskey = newToken;
+
+                com.gmt2001.Console.out.println("PhantomBot TwitchAlerts setup done.");
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        if (message.equals("streamtipsetup")) {
+            try {
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("PhantomBot StreamTip setup.");
+                com.gmt2001.Console.out.println();
+
+                com.gmt2001.Console.out.print("Please enter your StreamTip Api OAuth: ");
+                String newToken = System.console().readLine().trim();
+                streamtipkey = newToken;
+
+                com.gmt2001.Console.out.print("Please enter your StreamTip Client Id: ");
+                String newId = System.console().readLine().trim();
+                streamtipid = newId;
+
+                com.gmt2001.Console.out.println("PhantomBot StreamTip setup done.");
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
         if (message.equals("twittersetup")) {
             try {
                 com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("PhantomBot Twitter setup. Get your 4 Twitter keys from: https://apps.twitter.com/");
+                com.gmt2001.Console.out.println("PhantomBot Twitter setup.");
                 com.gmt2001.Console.out.println();
 
                 com.gmt2001.Console.out.print("Please enter your Twitter username: ");
@@ -1197,6 +1293,7 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
 
+                com.gmt2001.Console.out.println("PhantomBot Twitter setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -1807,19 +1904,23 @@ public class PhantomBot implements Listener {
         if (user.isEmpty() || oauth.isEmpty() || channel.isEmpty()) {
             try {
                 com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("No login details were found.");
+                com.gmt2001.Console.out.println("Welcome to the PhantomBot setup process!");
+                com.gmt2001.Console.out.println("If you have any issues please report them on our forum or tweet at us!");
+                com.gmt2001.Console.out.println("Forum: https://community.phantombot.net/");
+                com.gmt2001.Console.out.println("Twitter: https://twitter.com/phantombotapp/");
+                com.gmt2001.Console.out.println("PhantomBot Knowledgebase: https://docs.phantombot.net/");
                 com.gmt2001.Console.out.println();
 
-                com.gmt2001.Console.out.print("Please enter the bot's twitch username: ");
+                com.gmt2001.Console.out.print("Please enter the bot's Twitch username: ");
                 user = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the bot's tmi oauth token generated from https://twitchapps.com/tmi/ while logged in as the bot: ");
+                com.gmt2001.Console.out.print("Please enter the bot's OAuth token generated from https://twitchapps.com/tmi while logged in as the bot: ");
                 oauth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter your oauth token generated from https://phantombot.net/oauth/ while logged in as the caster: ");
+                com.gmt2001.Console.out.print("Please enter your OAuth token generated from https://phantombot.net/oauth while logged in as the caster: ");
                 apioauth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join: ");
+                com.gmt2001.Console.out.print("Please enter the name of the Twitch channel the bot should join: ");
                 channel = System.console().readLine().trim();
 
                 com.gmt2001.Console.out.print("Please enter a custom username for the web panel: ");
@@ -1847,6 +1948,11 @@ public class PhantomBot implements Listener {
 
         if (!apioauth.startsWith("oauth:") && !apioauth.isEmpty()) {
             apioauth = "oauth:" + apioauth;
+            changed = true;
+        }
+
+        if (channel.startsWith("#")) {
+            channel = channel.substring(1);
             changed = true;
         }
 
