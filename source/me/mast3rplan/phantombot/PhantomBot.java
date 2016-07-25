@@ -1194,7 +1194,7 @@ public class PhantomBot implements Listener {
 
                 datastore = "MySQLStore";
 
-                com.gmt2001.Console.out.println("PhantomBot GameWisp setup done.");
+                com.gmt2001.Console.out.println("PhantomBot MySQL setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
