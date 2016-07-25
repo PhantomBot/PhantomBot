@@ -12,6 +12,33 @@
         a = '', 
         interval;
 
+
+    /** 
+     * @function hasKey
+     * @param {Array} list
+     * @param {*} value
+     * @param {Number} [subIndex]
+     * @returns {boolean}
+     */
+    function hasKey(list, value, subIndex) {
+        var i;
+
+        if (subIndex > -1) {
+            for (i in list) {
+                if (list[i][subIndex].equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        } else {
+            for (i in list) {
+                if (list[i].equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
     function reloadRaffle() {
         noRepickSame = $.getIniDbBoolean('settings', 'noRepickSame');
         msgToggle = $.getIniDbBoolean('settings', 'raffleMSGToggle');
@@ -170,7 +197,7 @@
             }
         }
 
-        if ($.list.hasKey(entries, user)) {
+        if (hasKey(entries, user)) {
             if (msgToggle) {
                 $.say($.whisperPrefix(user) + $.lang.get('rafflesystem.enter.error.alreadyentered'));
             }

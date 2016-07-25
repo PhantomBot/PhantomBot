@@ -1,6 +1,32 @@
 (function() {
     var whisperMode = $.getSetIniDbBoolean('settings', 'whisperMode', false);
 
+    /** 
+     * @function hasKey
+     * @param {Array} list
+     * @param {*} value
+     * @param {Number} [subIndex]
+     * @returns {boolean}
+     */
+    function hasKey(list, value, subIndex) {
+        var i;
+
+        if (subIndex > -1) {
+            for (i in list) {
+                if (list[i][subIndex].equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        } else {
+            for (i in list) {
+                if (list[i].equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
     /**
      * @function whisperPrefix
      * @export $
@@ -29,7 +55,7 @@
      */
     function whisperCommands(event) {
         if (!event.getSender().equalsIgnoreCase('jtv') || !event.getSender().equalsIgnoreCase('twitchnotify')) {
-            if (event.getMessage().startsWith('!') && $.isMod(event.getSender()) && $.list.hasKey($.users, event.getSender(), 0)) {
+            if (event.getMessage().startsWith('!') && $.isMod(event.getSender()) && hasKey($.users, event.getSender(), 0)) {
                 var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
                     CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
                     commandString = event.getMessage().substring(1),

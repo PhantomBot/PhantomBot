@@ -2,6 +2,7 @@
     var currentHostTarget = '';
 
     /**
+    ** This function sometimes does not work. So only use it for stuff that people dont use much
      * @function hasKey
      * @export $.list
      * @param {Array} list
