@@ -10,6 +10,35 @@
         betOptions = [],
         betTable = [];
 
+    /** 
+     * @function hasKey
+     * @param {Array} list
+     * @param {*} value
+     * @param {Number} [subIndex]
+     * @returns {boolean}
+     */
+    function hasKey(list, value, subIndex) {
+        var i;
+
+        if (subIndex > -1) {
+            for (i in list) {
+                if (list[i][subIndex].equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        } else {
+            for (i in list) {
+                if (list[i].equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    /**
+    * @function betOpen
+    */
     function betOpen(event, bet, timer) {
         var sender = event.getSender(),
             args = event.getArgs(),
@@ -60,6 +89,9 @@
         $.log.event(sender + ' opened a bet with options: "' + string + '"');
     };
 
+    /**
+    * @function resetBet
+    */
     function resetBet() {
         betPot = 0;
         betTotal = 0;
@@ -70,6 +102,9 @@
         betTimerStatus = false;
     }
 
+    /**
+    * @function betClose
+    */
     function betClose(sender, event, subAction) {
         var args = event.getArgs(),
             betWinning = subAction,
@@ -102,7 +137,7 @@
             return;
         }
 
-        if (!$.list.hasKey(betOptions, betWinning)) {
+        if (!hasKey(betOptions, betWinning)) {
             $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
             return;
         }
@@ -337,7 +372,7 @@
                     betOption = subAction;
                 }
 
-                if (!$.list.hasKey(betOptions, betOption.toLowerCase())) {
+                if (!hasKey(betOptions, betOption.toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.option.404'));
                     return;
                 } else if (betWager < 1) {

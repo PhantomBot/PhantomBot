@@ -15,6 +15,33 @@
         users = [],
         lastJoinPart = $.systemTime();
 
+
+    /** 
+     * @function hasKey
+     * @param {Array} list
+     * @param {*} value
+     * @param {Number} [subIndex]
+     * @returns {boolean}
+     */
+    function hasKey(list, value, subIndex) {
+        var i;
+
+        if (subIndex > -1) {
+            for (i in list) {
+                if (list[i][subIndex].equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        } else {
+            for (i in list) {
+                if (list[i].equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    
     /**
      * @function userExists
      * @export $
@@ -22,7 +49,12 @@
      * @returns {boolean}
      */
     function userExists(username) {
-        return $.list.hasKey(users, username, 0);
+        for (var i in users) {
+            if (users[i][0].equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
     };
 
     /**
@@ -94,7 +126,7 @@
      * @info this also included gamewisp subs and twitch subs.
      */
     function isSub(username) {
-        return $.list.hasKey(subUsers, username, 0) || isGWSub(username.toLowerCase());
+        return hasKey(subUsers, username, 0) || isGWSub(username.toLowerCase());
     };
 
     /**
@@ -165,7 +197,7 @@
      * @returns {boolean}
      */
     function hasModeO(username) {
-        return $.list.hasKey(modeOUsers, username.toLowerCase(), 0);
+        return hasKey(modeOUsers, username.toLowerCase(), 0);
     };
 
     /**
@@ -175,7 +207,7 @@
      * @returns {boolean}
      */
     function hasModList(username) {
-        return $.list.hasKey(modListUsers, username.toLowerCase());
+        return hasKey(modListUsers, username.toLowerCase());
     };
 
     /**
@@ -184,7 +216,7 @@
      * @returns {Boolean}
      */
     function isTwitchSub(username) {
-        return $.list.hasKey(subUsers, username, 0);
+        return hasKey(subUsers, username, 0);
     };
 
     /**
