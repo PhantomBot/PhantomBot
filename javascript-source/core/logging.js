@@ -62,8 +62,22 @@
      * @param {Date}
      */
     function getLogEntryTimeDateString(now) {
-        var timezone = now.toString().match(/\((\w+)\)/)[1],
-            pad = function(i) {
+        var timezone,
+            timezoneMatch;
+
+        timezoneMatch = now.toString().match(/\((\w+)\)/);
+        if (timezoneMatch === null) {
+            timezoneMatch = now.toString().match(/\((\w+-\d+)\)/);
+            if (timezoneMatch == null) {
+                timezone = '';
+            } else {
+                timezone = ' ' + timezoneMatch[1];
+            }
+        } else {
+            timezone = ' ' + timezoneMatch[1];
+        }
+
+        var pad = function(i) {
                 return (i < 10 ? '0' + i : i);
             }; 
             padms = function(i) {
@@ -71,7 +85,7 @@
             }; 
         return pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + '-' + now.getFullYear() + ' @ ' +
                    pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':'  + pad(now.getSeconds()) + '.' + padms(now.getMilliseconds()) + 
-                   ' ' + timezone;
+                   timezone;
     }
 
     /**
