@@ -68,7 +68,7 @@
         timezoneMatch = now.toString().match(/\((\w+)\)/);
         if (timezoneMatch === null) {
             timezoneMatch = now.toString().match(/\((\w+-\d+)\)/);
-            if (timezoneMatch == null) {
+            if (timezoneMatch === null) {
                 timezone = '';
             } else {
                 timezone = ' ' + timezoneMatch[1];
