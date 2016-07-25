@@ -138,9 +138,6 @@ public class PhantomBot implements Listener {
     private final String channelName;
     private final String ownerName;
     private final String hostname;
-    //*Removed this because we can handle whispers in one irc server now.
-    //private final String groupChat;
-    //private int groupChatPort;
     private int port;
     private int baseport;
     private double msglimit30;
@@ -324,15 +321,6 @@ public class PhantomBot implements Listener {
             this.hostname = hostname;
             this.port = port;
         }
-
-        //*Removed this because we can handle whispers in one irc server now.
-        /*if (groupChat.isEmpty()) {
-            this.groupChat = "group.tmi.twitch.tv";
-            this.groupChatPort = 6667;
-        } else {
-            this.groupChat = groupChat;
-            this.groupChatPort = groupChatPort;
-        }*/
 
         if (msglimit30 > 0) {
             this.msglimit30 = msglimit30;
@@ -523,13 +511,6 @@ public class PhantomBot implements Listener {
     public HashMap<String, Channel> getChannels() {
         return channels;
     }
-
-    /**Removed this because we can handle whispers in one irc server now */
-    /*private void TwitchGroupChatHandler(String oauth, ConnectionManager connManager) {
-
-        tgcSession = connManager.requestConnection(groupChat, groupChatPort, oauth);
-        tgcSession.addIRCEventListener(new IrcEventHandler());
-    }*/
 
     public final void init() {
         if (webenable) {
@@ -1629,8 +1610,6 @@ public class PhantomBot implements Listener {
         String hostname = "";
         int baseport = 25000;
         int port = 0;
-        String groupChat = "";
-        int groupChatPort = 0;
         double msglimit30 = 0;
         double whisperlimit60 = 0;
         String datastore = "";
@@ -1789,12 +1768,6 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("port=") && line.length() > 6) {
                         port = Integer.parseInt(line.substring(5));
-                    }
-                    if (line.startsWith("groupChat=") && line.length() > 11) {
-                        groupChat = line.substring(10);
-                    }
-                    if (line.startsWith("groupChatPort=") && line.length() > 7) {
-                        groupChatPort = Integer.parseInt(line.substring(14));
                     }
                     if (line.startsWith("msglimit30=") && line.length() > 12) {
                         msglimit30 = Double.parseDouble(line.substring(11));
@@ -1970,8 +1943,6 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("baseport='" + baseport + "'");
                     com.gmt2001.Console.out.println("hostname='" + hostname + "'");
                     com.gmt2001.Console.out.println("port='" + port + "'");
-                    com.gmt2001.Console.out.println("groupChat='" + groupChat + "'");
-                    com.gmt2001.Console.out.println("groupChatPort='" + groupChatPort + "'");
                     com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
                     com.gmt2001.Console.out.println("whisperlimit60='" + whisperlimit60 + "'");
                     com.gmt2001.Console.out.println("datastore='" + datastore + "'");
@@ -2116,18 +2087,6 @@ public class PhantomBot implements Listener {
                 if (arg.toLowerCase().startsWith("port=") && arg.length() > 6) {
                     if (port != Integer.parseInt(arg.substring(5))) {
                         port = Integer.parseInt(arg.substring(5));
-                        changed = true;
-                    }
-                }
-                if (arg.toLowerCase().startsWith("groupChat=") && arg.length() > 11) {
-                    if (!groupChat.equals(arg.substring(10))) {
-                        groupChat = arg.substring(10);
-                        changed = true;
-                    }
-                }
-                if (arg.toLowerCase().startsWith("groupChatPort=") && arg.length() > 15) {
-                    if (groupChatPort != Integer.parseInt(arg.substring(14))) {
-                        groupChatPort = Integer.parseInt(arg.substring(14));
                         changed = true;
                     }
                 }
@@ -2278,8 +2237,6 @@ public class PhantomBot implements Listener {
             data += "baseport=" + baseport + "\r\n";
             data += "hostname=" + hostname + "\r\n";
             data += "port=" + port + "\r\n";
-            data += "groupChat=" + groupChat + "\r\n";
-            data += "groupChatPort=" + groupChatPort + "\r\n";
             data += "msglimit30=" + msglimit30 + "\r\n";
             data += "whisperlimit60=" + whisperlimit60 + "\r\n";
             data += "datastore=" + datastore + "\r\n";
@@ -2337,8 +2294,6 @@ public class PhantomBot implements Listener {
         data += "baseport=" + baseport + "\r\n";
         data += "hostname=" + hostname + "\r\n";
         data += "port=" + port + "\r\n";
-        //data += "groupChat=" + groupChat + "\r\n";
-        //data += "groupChatPort=" + groupChatPort + "\r\n";
         data += "msglimit30=" + msglimit30 + "\r\n";
         data += "whisperlimit60=" + whisperlimit60 + "\r\n";
         data += "datastore=" + datastore + "\r\n";
