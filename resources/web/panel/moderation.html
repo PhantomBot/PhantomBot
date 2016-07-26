@@ -743,7 +743,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="spamTrackerLimit">Time</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                     onclick="$.updateRedrawModSetting('#spamTrackerLimitInput', 'spamTrackerTime')">Submit</button>
+                     onclick="$.updateRedrawModSetting('#spamTrackerTimeInput', 'spamTrackerTime')">Submit</button>
                 <input type="number" min="10" max="1400" class="form-control" id="spamTrackerTimeInput" placeholder="Loading..."
                      data-toggle="tooltip" title="Set the the amount of time in seconds people can send messages in. Used for the message limit." />
             </div>
@@ -770,7 +770,7 @@
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleModerationSpamTracker" onclick="$.toggleModerations('SpamTracker', 'spamTrackerToggle')">Moderate spam
+                    <input type="checkbox" id="toggleModerationSpamTracker" onclick="$.toggleModerations('SpamTracker', 'spamTrackerToggle')">Moderate chat spam
                 </label>
             </div>
         </form>
