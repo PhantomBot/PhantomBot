@@ -9,8 +9,11 @@
         timer = 0,
         totalEntries = 0,
         lastTotalEntries = 0,
-        a = '', 
-        interval;
+        a = '',
+        costLang = '', 
+        interval,
+        timeout,
+        timeout1;
 
 
     /** 
@@ -74,6 +77,9 @@
 
         if (price) {
             cost = parseInt(price);
+            if (cost != 0) {
+                costLang = $.lang.get('rafflesystem.cost.lang', $.getPointsString(cost));  
+            }
         }
 
         if (t) {
@@ -92,7 +98,7 @@
      * @returns {opens raffle}
      */
     function openRaffle(key, cost, followers, timer, a, user) {
-        $.say($.lang.get('rafflesystem.raffle.opened', $.getPointsString(cost), key, a));
+        $.say($.lang.get('rafflesystem.raffle.opened', costLang, key, a));
         $.registerChatCommand('./systems/raffleSystem.js', key, 7);
         entries = "";
         entries = [];
@@ -102,10 +108,10 @@
         raffleStatus = true;
 
         if (timer > 0) {
-            var timeout = setTimeout(function() {
+            timeout = setTimeout(function() {
                 $.say($.lang.get('rafflesystem.warn', key));
             }, (timer / 2) * 1000);
-            timeout = setTimeout(function() {
+            timeout1 = setTimeout(function() {
                 closeRaffle();
             }, timer * 1000);
         }
@@ -134,7 +140,8 @@
         $.inidb.del('raffle', 'command');
 
         clearInterval(interval);
-        clearTimeout(timeout);
+        clearInterval(timeout);
+        clearInterval(timeout1);
 
         resetRaffle();
         $.unregisterChatCommand(key);
