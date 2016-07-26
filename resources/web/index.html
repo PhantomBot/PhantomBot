@@ -38,10 +38,10 @@
                     var urlInfo = window.location.host.split(":");
                     var url = urlInfo[0];
                     var port;
-                    if (urlInfo[1].endsWith("0")) {
+                    if (typeof urlInfo[1] !== 'undefined' && urlInfo[1].endsWith("0")) {
                        port = (parseInt(urlInfo[1]) + 5);
                     } else {
-                       port = urlInfo[1];
+                       port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
                     }
                     document.write('<a target="_blank" style="color: white;" href="http://' + urlInfo[0] + ':' + port + '/ytplayer">');
                 </script>
@@ -59,10 +59,10 @@
                     var urlInfo = window.location.host.split(":");
                     var url = urlInfo[0];
                     var port;
-                    if (urlInfo[1].endsWith("0")) {
+                    if (typeof urlInfo[1] !== 'undefined' && urlInfo[1].endsWith("0")) {
                        port = (parseInt(urlInfo[1]) + 5);
                     } else {
-                       port = urlInfo[1];
+                       port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
                     }
                     document.write('<a target="_blank" style="color: white;" href="http://' + urlInfo[0] + ':' + port + '/panel">');
                 </script>
@@ -80,10 +80,10 @@
                     var urlInfo = window.location.host.split(":");
                     var url = urlInfo[0];
                     var port;
-                    if (urlInfo[1].endsWith("0")) {
+                    if (typeof urlInfo[1] !== 'undefined' && urlInfo[1].endsWith("0")) {
                        port = (parseInt(urlInfo[1]) + 5);
                     } else {
-                       port = urlInfo[1];
+                       port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
                     }
                     document.write('<a target="_blank" style="color: white;" href="http://' + urlInfo[0] + ':' + port + '/playlist">');
                 </script>
