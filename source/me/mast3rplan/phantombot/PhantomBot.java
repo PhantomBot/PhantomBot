@@ -101,8 +101,8 @@ import me.mast3rplan.phantombot.panel.PanelSocketServer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-// import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
-// import java.net.URI;
+import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
+import java.net.URI;
 
 public class PhantomBot implements Listener {
 
@@ -193,7 +193,7 @@ public class PhantomBot implements Listener {
     private UsernameCache usernameCache;
     private ScriptEventManager scriptEventManager;
 
-    // private TwitchWSIRC twitchWSIRC;
+    private TwitchWSIRC twitchWSIRC;
 
     public static PhantomBot instance() {
         return instance;
@@ -429,7 +429,7 @@ public class PhantomBot implements Listener {
         StreamTipAPI.instance().SetDonationPullLimit(streamtiplimit);
         StreamTipAPI.instance().SetClientId(streamtipid);
 
-        this.session.addIRCEventListener(new IrcEventHandler());
+       // this.session.addIRCEventListener(new IrcEventHandler());
 
         usernameCache = UsernameCache.instance();
 
@@ -438,14 +438,13 @@ public class PhantomBot implements Listener {
         // this.hostSession = hostConnectionManager.requestConnection(this.hostname, this.port, casterOauth);
         // this.hostSession.addIRCEventListener(new IrcHostHandler());
 
-/*
+
         try {
             this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), this.channelName, this.username, oauth);
             twitchWSIRC.connectWSS();
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
-        }
- */       
+        }      
     }
 
     public boolean isNightlyBuild() {
@@ -804,7 +803,7 @@ public class PhantomBot implements Listener {
 
     @Subscribe
     public void onIRCConnectComplete(IrcConnectCompleteEvent event) {
-        if (event.getSession().equals(this.session)) {
+        /*if (event.getSession().equals(this.session)) {
             this.session.sayRaw("CAP REQ :twitch.tv/tags");
             this.session.sayRaw("CAP REQ :twitch.tv/commands");
             this.session.sayRaw("CAP REQ :twitch.tv/membership");
@@ -822,7 +821,7 @@ public class PhantomBot implements Listener {
             tgcSession.sayRaw("CAP REQ :twitch.tv/tags");
             tgcSession.sayRaw("CAP REQ :twitch.tv/commands");
             tgcSession.sayRaw("CAP REQ :twitch.tv/membership");
-        }
+        }*/
 
         //com.gmt2001.Console.out.println("Connected to server\nJoining channel #" + channelName.toLowerCase());
     }
@@ -834,7 +833,7 @@ public class PhantomBot implements Listener {
         this.channels.put(this.channel.getName(), this.channel);
 
         //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
-        session.sayChannel(this.channel, ".mods");
+        //session.sayChannel(this.channel, ".mods");
 
         this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
         this.followersCache = FollowersCache.instance(this.channel.getName().toLowerCase());
@@ -896,14 +895,14 @@ public class PhantomBot implements Listener {
 
     @Subscribe
     public void onIRCChannelUserMode(IrcChannelUserModeEvent event) {
-        if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
+        /*if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
                 && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName())) {
             if (!event.getAdd()) {
                 session.sayChannel(this.channel, ".mods");
             }
 
             channel.setAllowSendMessages(event.getAdd());
-        }
+        }*/
     }
 
     @Subscribe
@@ -2406,12 +2405,12 @@ public class PhantomBot implements Listener {
             public void run() {
                 String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
                 if (newVersionInfo != null) {
-                    com.gmt2001.Console.out.println();
+                    /*com.gmt2001.Console.out.println();
                     com.gmt2001.Console.out.println("New PhantomBot Release Detected: " + newVersionInfo[0]);
                     com.gmt2001.Console.out.println("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
                     com.gmt2001.Console.out.println("Download Link: " + newVersionInfo[1]);
                     com.gmt2001.Console.out.println("A reminder will be provided in 24 hours!");
-                    com.gmt2001.Console.out.println();
+                    com.gmt2001.Console.out.println();*/
 
                     if (webenabled) {
                         dataStoreObj.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
