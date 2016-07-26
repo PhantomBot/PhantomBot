@@ -1,7 +1,8 @@
 $.lang.register('rafflesystem.err.raffle.opened', 'A raffle is already opened.');
 $.lang.register('rafflesystem.err.missing.syntax', 'Usage: !raffle open (keyword) (cost) (-followers) (timer in seconds)');
 $.lang.register('rafflesystem.msg.need.to.be.follwing', 'You need to be following to enter.');
-$.lang.register('rafflesystem.raffle.opened', 'Raffle is now open! Entering cost $1 Enter by saying !$2 $3');
+$.lang.register('rafflesystem.raffle.opened', 'Raffle is now open! $1 Enter by saying !$2 $3');
+$.lang.register('rafflesystem.cost.lang', 'Entering cost $1.');
 $.lang.register('rafflesystem.err.raffle.not.opened', 'There is no raffle opened.');
 $.lang.register('rafflesystem.raffle.closed', 'The raffle is now closed.');
 $.lang.register('rafflesystem.raffle.close.err', 'The raffle ended. No one entered.');
