@@ -16,7 +16,7 @@
  */
 
 /*
- * Twitch WS-IRC Client
+ * Connection.java
  * @author: scaniatv
  */
 package me.mast3rplan.phantombot.twitchwsirc;
