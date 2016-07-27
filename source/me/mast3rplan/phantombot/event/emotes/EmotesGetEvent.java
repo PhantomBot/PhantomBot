@@ -16,7 +16,7 @@
  */
 package me.mast3rplan.phantombot.event.emotes;
 
-import me.mast3rplan.phantombot.jerklib.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import org.json.JSONObject;
 
 public class EmotesGetEvent extends EmotesEvent {

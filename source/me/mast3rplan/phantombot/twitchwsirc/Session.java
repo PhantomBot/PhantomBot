@@ -35,6 +35,7 @@ import java.net.URI;
 public class Session {
 
     private static final Map<String, Session> instances = Maps.newHashMap();
+    public static Session session;
     private TwitchWSIRC twitchWSIRC;
     private Channel channel;
     private String channelName;
@@ -51,8 +52,10 @@ public class Session {
         if (instance == null) {
             instance = new Session(channelName, botName, oAuth);
             instances.put(botName, instance);
+            session = instance;
             return instance;
         }
+        com.gmt2001.Console.out.println(instance);
         return instance;
     }
 
@@ -84,6 +87,14 @@ public class Session {
      */
     public String getNick() {
         return this.botName;
+    }
+
+    /*
+     *
+     * @return  Session  Returns the session
+     */
+    public Session getSession() {
+        return session;
     }
 
     /* Returns the Channel object related to this Session.

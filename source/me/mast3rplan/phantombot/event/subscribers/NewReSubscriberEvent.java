@@ -17,8 +17,8 @@
 
 package me.mast3rplan.phantombot.event.subscribers;
 
-import me.mast3rplan.phantombot.jerklib.Channel;
-import me.mast3rplan.phantombot.jerklib.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class NewReSubscriberEvent extends SubscriberEvent {
 
@@ -30,7 +30,7 @@ public class NewReSubscriberEvent extends SubscriberEvent {
         this.months = months;
     }
 
-    public NewReSubscriberEvent(Session session, Channel channel, String resubscriber, String months) {
+    public NewReSubscriberEvent(Session session, String channel, String resubscriber, String months) {
         super(channel, session);
         this.resubscriber = resubscriber;
         this.months = months;

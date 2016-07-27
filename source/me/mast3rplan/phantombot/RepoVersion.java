@@ -19,7 +19,7 @@ package me.mast3rplan.phantombot;
 public class RepoVersion {
 
     private static final String phantomBotVersion = "@phantombot.version@";
-    private static final String repoVersion = "@repository.version@";
+    private static final String repoVersion = "${repository.version}";
     private static final String nightlyBuild = "@nightly.build@";
 
     private RepoVersion() {
