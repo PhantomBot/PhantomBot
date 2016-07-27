@@ -21,14 +21,14 @@ import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class IrcJoinCompleteEvent extends IrcCompleteEvent {
 
-    private final String channel;
+    private final Channel channel;
 
-    public IrcJoinCompleteEvent(Session session, String channel) {
+    public IrcJoinCompleteEvent(Session session, Channel channel) {
         super(session);
         this.channel = channel;
     }
 
-    public String getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 }

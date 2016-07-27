@@ -33,21 +33,24 @@ import java.net.URI;
 public class Channel {
 
     private static final Map<String, Channel> instances = Maps.newHashMap();
-    private WebSocket webSocket;
+    //private final String[] users;
+    public static Channel channel;
     private Boolean sendMessages = false;
     private String channelName;
+    private String botName;
 
     /*
      * Creates an instance for a channel.
      *
-     * @param  channelName  Twitch Channel
-     * @param  webSocket    WebSocket object for writing data to
+     * @param  channel  Twitch Channel
      */
-    public static Channel instance(String channelName, WebSocket webSocket) {
+    public static Channel instance(String channelName, String botName) {
         Channel instance = instances.get(channelName);
+
         if (instance == null) {
-            instance = new Channel(channelName, webSocket);
+            instance = new Channel(channelName, botName);
             instances.put(channelName, instance);
+            channel = instance;
             return instance;
         }
         return instance;
@@ -59,9 +62,9 @@ public class Channel {
      * @param  channelName  Twitch Channel
      * @param  webSocket    WebSocket object for writing data to
      */
-    private Channel(String channelName, WebSocket webSocket) {
+    private Channel(String channelName, String botName) {
         this.channelName = channelName;
-        this.webSocket = webSocket;
+        this.botName = botName;
     }
 
     /*
@@ -92,15 +95,50 @@ public class Channel {
     }
 
     /*
-     * Sends a message to the channel if the bot is a moderator (well, not yet, right now just log...)
+     * Returns the the Channel.
+     *
+     * @return  Channel  channel.
+     */
+    public Channel getChannel() {
+        return channel;
+    }
+
+
+    /*
+     * Adds the user from the users array. When you connect to the channel, Twitch sends a list with all the current users in the channel.
+     *
+     * @param username 
+     */
+    /*public void addUser(String username) { // this is addNick in the old jerklib.
+        if (!users.containsKey(username)) {
+            users.put(username);
+        }
+    }*/
+
+    /*
+     * Removes the user from the users array.
+     *
+     * @param username 
+     */
+    /*public void removeUser(String username) {
+        users.remove(username);
+    }*/
+
+    /*
+     * Returs the users to permission.js
+     *
+     * @return array 
+     */
+    /*public List<String> getUsers() { // this is .getNicks in the permission.js atm.
+        return users;
+    }*/
+
+    /*
+     * Sends a message to the channel (well, not yet, right now just log...)
      *
      * @param  String  what to say? 
      */
     public void say(String message) {
-        if (sendMessages) {
-            com.gmt2001.Console.out.println("WSIRC::Channel::say(" + message + ")");
-            return;
-        }
-        com.gmt2001.Console.out.println("WSIRC::Channel::say:notAllowed(" + message + ")");
+        com.gmt2001.Console.out.println("WSIRC::Channel::say:(" + message + ")");
     }
 }

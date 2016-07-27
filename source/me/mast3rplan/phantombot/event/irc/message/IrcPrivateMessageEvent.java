@@ -34,7 +34,7 @@ public class IrcPrivateMessageEvent extends IrcMessageEvent {
         super(session, sender, message, tags, null);
     }
 
-    public IrcPrivateMessageEvent(Session session, String sender, String message, Map<String, String> tags, String channel) {
+    public IrcPrivateMessageEvent(Session session, String sender, String message, Map<String, String> tags, Channel channel) {
         super(session, sender, message, tags, channel);
     }
 }

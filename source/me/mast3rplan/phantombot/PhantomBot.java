@@ -100,6 +100,7 @@ import org.apache.commons.lang3.SystemUtils;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Connection;
 import java.net.URI;
 
 public class PhantomBot implements Listener {
@@ -159,7 +160,7 @@ public class PhantomBot implements Listener {
     private final Session session;
     // private final Session hostSession; // new HostHandler
     public static Session tgcSession;
-    private String channel;
+    private Channel channel;
     private final HashMap<String, Channel> channels;
     private FollowersCache followersCache;
     private ChannelHostCache hostCache;
@@ -189,8 +190,7 @@ public class PhantomBot implements Listener {
     public static String log_timezone = "GMT";
     private UsernameCache usernameCache;
     private ScriptEventManager scriptEventManager;
-    private Channel ch;
-
+    private Connection connection;
     private TwitchWSIRC twitchWSIRC;
 
     public static PhantomBot instance() {
@@ -412,7 +412,11 @@ public class PhantomBot implements Listener {
         channels = new HashMap<>();
 
         //this.session = connectionManager.requestConnection(this.channelName, this.username, oauth);
-        this.session = Session.instance(this.channelName, this.username, oauth);
+        //com.gmt2001.Console.out.println("PhantomBot.java::session::" + this.session);
+        this.channel = Channel.instance(channelName, this.username);
+        this.session = Session.instance(this.channel, this.channelName, this.username, this.oauth);
+        this.connection = Connection.instance(this.channel, this.channelName, this.username, this.oauth, this.session, EventBus.instance());
+
        // this.session = new Session(this.channelName, this.username, oauth);
 
         //*Removed this because we can handle whispers in one irc server now.
@@ -428,7 +432,7 @@ public class PhantomBot implements Listener {
         StreamTipAPI.instance().SetDonationPullLimit(streamtiplimit);
         StreamTipAPI.instance().SetClientId(streamtipid);
 
-       // this.session.addIRCEventListener(new IrcEventHandler());
+        //this.session.addIRCEventListener(new IrcEventHandler());
 
         usernameCache = UsernameCache.instance();
 
@@ -490,12 +494,8 @@ public class PhantomBot implements Listener {
         return exiting;
     }
 
-    public String getChannel() {
+    public Channel getChannel() {
         return channel;
-    }
-
-    public Channel getCh() {
-        return ch;
     }
 
     public long getMessageInterval() {
@@ -805,61 +805,27 @@ public class PhantomBot implements Listener {
     }
 
     @Subscribe
-    public void onIRCConnectComplete(IrcConnectCompleteEvent event) {
-        /*if (event.getSession().equals(this.session)) {
-            this.session.sayRaw("CAP REQ :twitch.tv/tags");
-            this.session.sayRaw("CAP REQ :twitch.tv/commands");
-            this.session.sayRaw("CAP REQ :twitch.tv/membership");
-
-            if (channelName.toLowerCase().contains(",")) {
-                String[] c = channelName.toLowerCase().split(",");
-
-                for (String ch : c) {
-                    this.session.join("#" + ch);
-                }
-            } else {
-                this.session.join("#" + channelName.toLowerCase());
-            }
-        } else {
-            tgcSession.sayRaw("CAP REQ :twitch.tv/tags");
-            tgcSession.sayRaw("CAP REQ :twitch.tv/commands");
-            tgcSession.sayRaw("CAP REQ :twitch.tv/membership");
-        }*/
-
-        //com.gmt2001.Console.out.println("Connected to server\nJoining channel #" + channelName.toLowerCase());
-    }
-
-    @Subscribe
     public void onIRCJoinComplete(IrcJoinCompleteEvent event) {
-        com.gmt2001.Console.out.println("1");
-        com.gmt2001.Console.out.println("join done." + event.getChannel());
-        this.channel = event.getChannel();
+        event.getChannel().say(".mods");
 
-        //this.channels.put(this.channel, this.channel);
+        this.emotesCache = EmotesCache.instance(this.channelName);
+        this.followersCache = FollowersCache.instance(this.channelName);
+        this.hostCache = ChannelHostCache.instance(this.channelName);
+        this.subscribersCache = SubscribersCache.instance(this.channelName);
+        this.twitchCache = TwitchCache.instance(this.channelName);
+        this.channelUsersCache = ChannelUsersCache.instance(this.channelName);
 
-        //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
-        //session.sayChannel(this.channel, ".mods");
-
-        this.emotesCache = EmotesCache.instance(this.channel.toLowerCase());
-        this.followersCache = FollowersCache.instance(this.channel.toLowerCase());
-        this.hostCache = ChannelHostCache.instance(this.channel.toLowerCase());
-        this.subscribersCache = SubscribersCache.instance(this.channel.toLowerCase());
-        this.twitchCache = TwitchCache.instance(this.channel.toLowerCase());
         if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
-            this.donationsCache = DonationsCache.instance(this.channel.toLowerCase());
+            this.donationsCache = DonationsCache.instance(this.channelName);
         }
 
         if (this.streamtipkey != null && this.streamtipkey.length() > 1) {
-            this.streamTipCache = StreamTipCache.instance(this.channel.toLowerCase());
+            this.streamTipCache = StreamTipCache.instance(this.channelName);
         }
 
-        this.channelUsersCache = ChannelUsersCache.instance(this.channel.toLowerCase());
-
-        if (this.twitterUser.length() > 0 &&
-            this.twitter_access_token.length() > 0 && this.twitter_secret_token.length() > 0 && this.twitter_consumer_key.length() > 0 && this.twitter_consumer_secret.length() > 0) 
-        {
+        if (this.twitterUser.length() > 0 && this.twitter_access_token.length() > 0 && this.twitter_secret_token.length() > 0 && this.twitter_consumer_key.length() > 0 && this.twitter_consumer_secret.length() > 0) {
             if (this.twitterAuthenticated) {
-                this.twitterCache = TwitterCache.instance(this.channel.toLowerCase());
+                this.twitterCache = TwitterCache.instance(this.channelName);
             } else {
                 com.gmt2001.Console.out.println("Disabling Twitter Features. Correct Authentication Issues and Restart.");
             }
@@ -888,7 +854,7 @@ public class PhantomBot implements Listener {
 
                 for (String spl1 : spl) {
                     if (spl1.equalsIgnoreCase(this.username)) {
-                        ch.setAllowSendMessages(true);
+                        channel.setAllowSendMessages(true);
                     }
                 }
             }
@@ -900,14 +866,14 @@ public class PhantomBot implements Listener {
 
     @Subscribe
     public void onIRCChannelUserMode(IrcChannelUserModeEvent event) {
-        /*if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
+        if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
                 && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName())) {
             if (!event.getAdd()) {
-                session.sayChannel(this.channel, ".mods");
+                channel.say(".mods");
             }
 
             channel.setAllowSendMessages(event.getAdd());
-        }*/
+        }
     }
 
     @Subscribe
@@ -1294,7 +1260,7 @@ public class PhantomBot implements Listener {
                     data += "apioauth=" + apioauth + "\r\n";
                     data += "paneluser=" + paneluser + "\r\n";
                     data += "panelpassword=" + panelpassword + "\r\n";
-                    data += "channel=" + channel.replace("#", "") + "\r\n";
+                    data += "channel=" + channelName.replace("#", "") + "\r\n";
                     data += "webauth=" + webauth + "\r\n";
                     data += "webauthro=" + webauthro + "\r\n";
                     data += "clientid=" + clientid + "\r\n";

@@ -70,8 +70,10 @@ public class TwitchWSIRCParser {
     private Map<String, TwitchWSIRCCommand> parserMap = new HashMap<String, TwitchWSIRCCommand>();
     private ArrayList<String> moderators = new ArrayList<>();
     private WebSocket webSocket;
-    private String channel;
-    private EventBus eventBus = EventBus.instance();
+    private String channelName;
+    private Channel channel;
+    private Session session;
+    private EventBus eventBus;
 
     /**
      * Constructor for TwitchWSIRCParser object.  Performs construction
@@ -79,13 +81,22 @@ public class TwitchWSIRCParser {
      *
      * @param  WebSocket  The WebSocket object that can be read/written from/to.
      */
-    public TwitchWSIRCParser(WebSocket webSocket, String channel) {
+    public TwitchWSIRCParser(WebSocket webSocket, String channelName, Channel channel, Session session, EventBus eventBus) {
         this.webSocket = webSocket;
+        this.channelName = channelName;
         this.channel = channel;
+        this.session = session;
+        this.eventBus = eventBus;
 
         parserMap.put("001", new TwitchWSIRCCommand() {
             public void exec(String message, String username, Map<String, String> tagsMap) {
                 joinChannel();
+            }
+        });
+
+        parserMap.put("366", new TwitchWSIRCCommand() {
+            public void exec(String message, String username, Map<String, String> tagsMap) {
+                userAdd(message);
             }
         });
 
@@ -230,9 +241,9 @@ public class TwitchWSIRCParser {
         webSocket.send("CAP REQ :twitch.tv/membership");
         webSocket.send("CAP REQ :twitch.tv/commands");
         webSocket.send("CAP REQ :twitch.tv/tags");
-        webSocket.send("JOIN #" + this.channel);
-        com.gmt2001.Console.out.println("Channel Joined [#" + this.channel + "]");
-        eventBus.postAsync(new IrcJoinCompleteEvent(PhantomBot.instance().getSession(), this.channel));
+        webSocket.send("JOIN #" + this.channelName);
+        com.gmt2001.Console.out.println("Channel Joined [#" + this.channelName + "]");
+        eventBus.postAsync(new IrcJoinCompleteEvent(this.session, this.channel));
     }
 
     /*
@@ -266,11 +277,7 @@ public class TwitchWSIRCParser {
      * Handles the PRIVMSG event from IRC.
      */
     private void privMsg(String message, String username, Map<String, String> tagsMap) {
-        if (message.startsWith("ACTION")) { // This is for messages that use actions. Like: "/me <text>"
-            message = message.replace("ACTION", "/me").replace("", "");
-        }
-
-        com.gmt2001.Console.out.println(PhantomBot.instance().getUsernameCache().resolve(username, tagsMap) + ": " + message);
+        com.gmt2001.Console.out.println(username + ": " + message);
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
 
         if (tagsMap.containsKey("display-name")) {
@@ -280,15 +287,14 @@ public class TwitchWSIRCParser {
         if (message.endsWith("subscribed!")) {
             if (username.equalsIgnoreCase("twitchnotify")) {
                 com.gmt2001.Console.debug.println(message.substring(0, message.indexOf(" ", 1)) + " just subscribed!");
-                eventBus.post(new NewSubscriberEvent(PhantomBot.instance().getSession(), channel, message.substring(0, message.indexOf(" ", 1))));
+                eventBus.post(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
             }
         }
 
         if (tagsMap.containsKey("subscriber")) {
             if (tagsMap.get("subscriber").equals("1")) {
                 com.gmt2001.Console.debug.println("Subscriber::" + username + "::true");
-                eventBus.postAsync(new IrcPrivateMessageEvent(PhantomBot.instance().getSession(), "jtv", "SPECIALUSER " + username + " subscriber", tagsMap)); 
-                //also username might be jtv but im not sure of that. it was .getNick() before. That needs to be the subs name.
+                eventBus.postAsync(new IrcPrivateMessageEvent(this.session, "jtv", "SPECIALUSER " + username + " subscriber", tagsMap)); 
             }
         }
 
@@ -297,28 +303,44 @@ public class TwitchWSIRCParser {
                 if (!moderators.contains(username.toLowerCase())) {
                     moderators.add(username.toLowerCase());
                     com.gmt2001.Console.debug.println("Moderator::" + username + "::true");
-                    eventBus.postAsync(new IrcChannelUserModeEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getCh(), username, "O", true));
+                    eventBus.postAsync(new IrcChannelUserModeEvent(this.session, this.channel, username, "O", true));
                 }
             } else {
-                if (this.channel.equalsIgnoreCase(username)) {
+                if (this.channelName.equalsIgnoreCase(username)) {
                     if (!moderators.contains(username.toLowerCase())) {
                         moderators.add(username.toLowerCase());
                         com.gmt2001.Console.debug.println("Broadcaster::" + username + "::true");
-                        eventBus.postAsync(new IrcChannelUserModeEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getCh(), username, "O", true));
+                        eventBus.postAsync(new IrcChannelUserModeEvent(this.session, this.channel, username, "O", true));
                     }
                 } else {
                     if (moderators.contains(username.toLowerCase())) {
                         moderators.remove(username.toLowerCase());
                         com.gmt2001.Console.debug.println("Moderator::" + username + "::false");
-                        eventBus.postAsync(new IrcChannelUserModeEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getCh(), username, "O", false));
+                        eventBus.postAsync(new IrcChannelUserModeEvent(this.session, this.channel, username, "O", false));
                     }
                 }
             }
         }
 
-        PhantomBot.instance().getScriptEventManagerInstance().runDirect(new IrcModerationEvent(PhantomBot.instance().getSession(), username, message, this.channel, tagsMap));
+        PhantomBot.instance().getScriptEventManagerInstance().runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
         commandEvent(message, username);
-        eventBus.post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), username, message, this.channel, tagsMap));
+        eventBus.post(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
+    }
+
+    /*
+     * Handles the JOIN: Opening event from IRC.
+     * This sends a list of all the users in the channel, as of right now it only sends ":End of /NAMES list", so its removing all the users.
+     *
+     * @param username
+     */
+    private void userAdd(String username) {
+        String[] users = username.split("\\s+");
+
+        for (String user : users) {
+            if (user != null) {
+                //this.channel.addUser(user); ** THis is done in Channel.Java. it sends all the users to the permissions.js script after. There will be a error for now with this.
+            }
+        }
     }
 
     /*
@@ -326,7 +348,7 @@ public class TwitchWSIRCParser {
      */
     private void clearChat(String username, Map<String, String> tagsMap) {
         com.gmt2001.Console.debug.println(username + " has been timed out for " + tagsMap.get("ban-duration") + " seconds. Reason: " + tagsMap.get("ban-reason").replaceAll("\\\\s", " "));
-        //eventBus.postAsync(new IrcClearchatEvent(PhantomBot.instance().getSession(), this.channel, username, tagsMap.get("ban-reason").replaceAll("\\\\s", " "), tagsMap.get("ban-duration")));
+        eventBus.postAsync(new IrcClearchatEvent(this.session, this.channel, username, tagsMap.get("ban-reason").replaceAll("\\\\s", " "), tagsMap.get("ban-duration")));
     }
 
     /*
@@ -334,7 +356,7 @@ public class TwitchWSIRCParser {
      */
     private void whisperMessage(String message, String username, Map<String, String> tagsMap) {
         com.gmt2001.Console.out.println("Whisper: " + PhantomBot.instance().getUsernameCache().resolve(username, tagsMap) + ": " + message);
-        //eventBus.postAsync(new IrcPrivateMessageEvent(PhantomBot.instance().getSession(), username, message, tagsMap));
+        eventBus.postAsync(new IrcPrivateMessageEvent(this.session, username, message, tagsMap));
     }
 
     /*
@@ -355,7 +377,7 @@ public class TwitchWSIRCParser {
      */
     private void joinUser(String message, String username, Map<String, String> tagMaps) {
         com.gmt2001.Console.debug.println("User Joined Channel [" + username + "#" + this.channel + "]");
-        //eventBus.postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), this.channel, username));
+        eventBus.postAsync(new IrcChannelJoinEvent(this.session, this.channel, username));
     }
 
     /*
@@ -363,6 +385,6 @@ public class TwitchWSIRCParser {
      */
     private void partUser(String message, String username, Map<String, String> tagMaps) {
         com.gmt2001.Console.debug.println("User Left Channel [" + username + "#" + this.channel + "]");
-        //eventBus.postAsync(new IrcChannelLeaveEvent(PhantomBot.instance().getSession(), this.channel, username));
+        eventBus.postAsync(new IrcChannelLeaveEvent(this.session, this.channel, username, message));
     }
 }

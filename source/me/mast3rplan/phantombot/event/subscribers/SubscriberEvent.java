@@ -23,7 +23,7 @@ import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class SubscriberEvent extends Event {
 
-	private final String channel;
+	private final Channel channel;
 	private final Session session;
 
 	protected SubscriberEvent() {
@@ -31,12 +31,12 @@ public class SubscriberEvent extends Event {
 		this.session = null;
 	}
 
-	protected SubscriberEvent(String channel, Session session) {
+	protected SubscriberEvent(Channel channel, Session session) {
 		this.channel = channel;
 		this.session = session;
 	}
 
-	public String getChannel() {
+	public Channel getChannel() {
 		return this.channel;
 	}
 
