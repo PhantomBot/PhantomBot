@@ -17,7 +17,7 @@
 package me.mast3rplan.phantombot.event.streamtip.donate;
 
 import me.mast3rplan.phantombot.event.streamtip.StreamTipEvent;
-import me.mast3rplan.phantombot.jerklib.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 
 public class StreamTipDonationInitializedEvent extends StreamTipEvent {
 

@@ -19,8 +19,8 @@ package me.mast3rplan.phantombot.event.irc.message;
 import java.util.HashMap;
 import java.util.Map;
 import me.mast3rplan.phantombot.event.irc.IrcEvent;
-import me.mast3rplan.phantombot.jerklib.Channel;
-import me.mast3rplan.phantombot.jerklib.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
 import org.apache.commons.lang3.CharUtils;
 
 public abstract class IrcMessageEvent extends IrcEvent {
@@ -28,7 +28,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
     private final String sender;
     private final String message;
     private final Map<String, String> tags;
-    private final Channel channel;
+    private final String channel;
 
     protected IrcMessageEvent(Session session, String sender, String message) {
         super(session);
@@ -51,7 +51,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
         }
     }
 
-    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags, Channel channel) {
+    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags, String channel) {
         super(session);
         this.sender = sender;
         this.message = message;
@@ -86,7 +86,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
         return count;
     }
 
-    public Channel getChannel() {
+    public String getChannel() {
         return channel;
     }
 }

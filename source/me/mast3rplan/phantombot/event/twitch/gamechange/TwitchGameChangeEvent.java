@@ -17,7 +17,7 @@
 package me.mast3rplan.phantombot.event.twitch.gamechange;
 
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
-import me.mast3rplan.phantombot.jerklib.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 
 public class TwitchGameChangeEvent extends TwitchEvent {
 

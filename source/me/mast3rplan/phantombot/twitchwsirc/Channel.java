@@ -92,9 +92,15 @@ public class Channel {
     }
 
     /*
-     * Sends a message to the channel (well, not yet, right now just log...)
+     * Sends a message to the channel if the bot is a moderator (well, not yet, right now just log...)
+     *
+     * @param  String  what to say? 
      */
     public void say(String message) {
-        com.gmt2001.Console.out.println("WSIRC::Channel::say(" + message + ")");
+        if (sendMessages) {
+            com.gmt2001.Console.out.println("WSIRC::Channel::say(" + message + ")");
+            return;
+        }
+        com.gmt2001.Console.out.println("WSIRC::Channel::say:notAllowed(" + message + ")");
     }
 }

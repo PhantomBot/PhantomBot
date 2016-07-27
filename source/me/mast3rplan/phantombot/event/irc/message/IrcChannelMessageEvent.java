@@ -17,16 +17,16 @@
 package me.mast3rplan.phantombot.event.irc.message;
 
 import java.util.Map;
-import me.mast3rplan.phantombot.jerklib.Channel;
-import me.mast3rplan.phantombot.jerklib.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class IrcChannelMessageEvent extends IrcMessageEvent {
 
-    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel) {
+    public IrcChannelMessageEvent(Session session, String sender, String message, String channel) {
         super(session, sender, message, null, channel);
     }
 
-    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel, Map<String, String> tags) {
+    public IrcChannelMessageEvent(Session session, String sender, String message, String channel, Map<String, String> tags) {
         super(session, sender, message, tags, channel);
     }
 }

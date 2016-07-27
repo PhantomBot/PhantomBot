@@ -17,8 +17,8 @@
 
 package me.mast3rplan.phantombot.event.subscribers;
 
-import me.mast3rplan.phantombot.jerklib.Channel;
-import me.mast3rplan.phantombot.jerklib.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class NewSubscriberEvent extends SubscriberEvent {
 
@@ -28,7 +28,7 @@ public class NewSubscriberEvent extends SubscriberEvent {
         this.subscriber = subscriber;
     }
 
-    public NewSubscriberEvent(Session session, Channel channel, String subscriber) {
+    public NewSubscriberEvent(Session session, String channel, String subscriber) {
         super(channel, session);
         this.subscriber = subscriber;
     }

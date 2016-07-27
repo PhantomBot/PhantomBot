@@ -17,7 +17,7 @@
 package me.mast3rplan.phantombot.event.twitch.subscriber;
 
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
-import me.mast3rplan.phantombot.jerklib.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 
 public class TwitchSubscribesInitializedEvent extends TwitchEvent {
 
