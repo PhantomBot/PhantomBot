@@ -28,7 +28,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
     private final String sender;
     private final String message;
     private final Map<String, String> tags;
-    private final String channel;
+    private final Channel channel;
 
     protected IrcMessageEvent(Session session, String sender, String message) {
         super(session);
@@ -51,7 +51,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
         }
     }
 
-    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags, String channel) {
+    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags, Channel channel) {
         super(session);
         this.sender = sender;
         this.message = message;
@@ -86,7 +86,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
         return count;
     }
 
-    public String getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 }

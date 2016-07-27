@@ -22,11 +22,11 @@ import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class IrcChannelMessageEvent extends IrcMessageEvent {
 
-    public IrcChannelMessageEvent(Session session, String sender, String message, String channel) {
+    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel) {
         super(session, sender, message, null, channel);
     }
 
-    public IrcChannelMessageEvent(Session session, String sender, String message, String channel, Map<String, String> tags) {
+    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel, Map<String, String> tags) {
         super(session, sender, message, tags, channel);
     }
 }

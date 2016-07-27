@@ -28,7 +28,7 @@ public class NewSubscriberEvent extends SubscriberEvent {
         this.subscriber = subscriber;
     }
 
-    public NewSubscriberEvent(Session session, String channel, String subscriber) {
+    public NewSubscriberEvent(Session session, Channel channel, String subscriber) {
         super(channel, session);
         this.subscriber = subscriber;
     }

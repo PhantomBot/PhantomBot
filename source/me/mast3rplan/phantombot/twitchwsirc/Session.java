@@ -24,6 +24,7 @@ package me.mast3rplan.phantombot.twitchwsirc;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
 
+import org.java_websocket.WebSocket;
 import com.google.common.collect.Maps;
 
 import java.util.HashMap;
@@ -47,15 +48,14 @@ public class Session {
      *
      * @param  botName  The name of the PhantomBot instance
      */
-    public static Session instance(String channelName, String botName, String oAuth) {
+    public static Session instance(Channel channel, String channelName, String botName, String oAuth) {
         Session instance = instances.get(botName);
         if (instance == null) {
-            instance = new Session(channelName, botName, oAuth);
+            instance = new Session(channel, channelName, botName, oAuth);
             instances.put(botName, instance);
             session = instance;
             return instance;
         }
-        com.gmt2001.Console.out.println(instance);
         return instance;
     }
 
@@ -66,18 +66,11 @@ public class Session {
      * @param  botName      Botname and name of the instance
      * @param  oAuth        OAUTH login
      */
-    private Session(String channelName, String botName, String oAuth) {
+    private Session(Channel channel, String channelName, String botName, String oAuth) {
         this.channelName = channelName;
         this.botName = botName;
         this.oAuth = oAuth;
-
-        try {
-            this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth);
-            twitchWSIRC.connectWSS();
-            this.channel = Channel.instance(channelName, twitchWSIRC.getConnection());
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
-        }
+        this.channel = channel;
     }
 
     /*

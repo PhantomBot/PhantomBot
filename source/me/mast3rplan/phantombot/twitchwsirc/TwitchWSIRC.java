@@ -22,6 +22,8 @@
 package me.mast3rplan.phantombot.twitchwsirc;
 
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRCParser;
+import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
+import me.mast3rplan.phantombot.event.EventBus;
 
 import com.google.common.collect.Maps;
 
@@ -50,11 +52,14 @@ import org.java_websocket.handshake.ServerHandshake;
 public class TwitchWSIRC extends WebSocketClient {
 
     private static final Map<String, TwitchWSIRC> instances = Maps.newHashMap();
-    private final String channel;
+    private final String channelName;
     private final String login;
-    private final String oauth;
+    private final String oAuth;
     private final URI uri;
     private TwitchWSIRCParser ircParser;
+    private EventBus eventBus;
+    private Session session;
+    private Channel channel;
 
     /*
      * Creates an instance for a channel.
@@ -63,11 +68,11 @@ public class TwitchWSIRC extends WebSocketClient {
      * @param  login    User ID to login with.
      * @param  oauth    OAuth key to use for authentication.
      */
-    public static TwitchWSIRC instance(URI uri, String channel, String login, String oauth) {
-        TwitchWSIRC instance = instances.get(channel);
+    public static TwitchWSIRC instance(URI uri, String channelName, String login, String oAuth, Channel channel, Session session, EventBus eventBus) {
+        TwitchWSIRC instance = instances.get(channelName);
         if (instance == null) {
-            instance = new TwitchWSIRC(uri, channel, login, oauth);
-            instances.put(channel, instance);
+            instance = new TwitchWSIRC(uri, channelName, login, oAuth, channel, session, eventBus);
+            instances.put(channelName, instance);
             return instance;
         }
         return instance;
@@ -80,16 +85,19 @@ public class TwitchWSIRC extends WebSocketClient {
      * @param  login    User ID to login with.
      * @param  oauth    OAuth key to use for authentication.
      */
-    private TwitchWSIRC(URI uri, String channel, String login, String oauth) {
+    private TwitchWSIRC(URI uri, String channelName, String login, String oAuth, Channel channel, Session session, EventBus eventBus) {
         super(uri, new Draft_17(), null, 5000);
-        if (channel.startsWith("#")) {
-            channel = channel.substring(1);
+        if (channelName.startsWith("#")) {
+            channelName = channelName.substring(1);
         }
 
-        this.channel = channel;
+        this.channelName = channelName;
         this.login = login;
-        this.oauth = oauth;
+        this.oAuth = oAuth;
         this.uri = uri;
+        this.eventBus = eventBus;
+        this.channel = channel;
+        this.session = session;
     }
 
     /*
@@ -104,7 +112,7 @@ public class TwitchWSIRC extends WebSocketClient {
             sslContext.init(null, null, null);
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
             this.setSocket(sslSocketFactory.createSocket());
-            this.ircParser = new TwitchWSIRCParser(this.getConnection(), channel);
+            this.ircParser = new TwitchWSIRCParser(this.getConnection(), channelName, channel, session, eventBus);
             this.connect();
             return true;
         } catch (Exception ex) {
@@ -122,9 +130,9 @@ public class TwitchWSIRC extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         com.gmt2001.Console.out.println("Connected to Twitch WS-IRC Server [" + this.uri.getHost() + ":" + this.uri.getPort() + "]");
-        this.send("PASS " + oauth);
+        this.send("PASS " + oAuth);
         this.send("NICK " + login);
-        //eventBus.postAsync(new IrcConnectCompleteEvent(session)); session? 
+        eventBus.postAsync(new IrcConnectCompleteEvent(session));
     }
 
     /*

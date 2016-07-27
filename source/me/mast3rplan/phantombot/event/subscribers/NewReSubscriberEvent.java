@@ -30,7 +30,7 @@ public class NewReSubscriberEvent extends SubscriberEvent {
         this.months = months;
     }
 
-    public NewReSubscriberEvent(Session session, String channel, String resubscriber, String months) {
+    public NewReSubscriberEvent(Session session, Channel channel, String resubscriber, String months) {
         super(channel, session);
         this.resubscriber = resubscriber;
         this.months = months;
