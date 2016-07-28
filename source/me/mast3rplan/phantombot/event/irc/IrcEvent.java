@@ -17,7 +17,7 @@
 package me.mast3rplan.phantombot.event.irc;
 
 import me.mast3rplan.phantombot.event.Event;
-import me.mast3rplan.phantombot.jerklib.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public abstract class IrcEvent extends Event {
 

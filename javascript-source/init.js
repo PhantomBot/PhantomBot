@@ -34,7 +34,7 @@
         this.getModuleName = function() {
             return this.scriptFile.replace(/([a-z]+)\.js$/i, '$1');
         }
-    };
+    }
 
     /**
      * @class
@@ -46,7 +46,7 @@
         this.scriptFile = scriptFile;
         this.hook = hook;
         this.handler = handler;
-    };
+    }
 
     /**
      * @function consoleLn
@@ -108,7 +108,7 @@
                 $[name] = $api[name];
             }
         }
-    };
+    }
 
     /**
      * @function loadScript
@@ -324,7 +324,7 @@
             index;
 
         /**
-         * @commandpath YourBotName reconnect - Tell the bot to reconnect to Twitch chat and the various APIs
+         * @commandpath YourBotName rejoin - Reconnects to the channel
          * @commandpath YourBotName disconnect - Removes the bot from chat
          * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel
          * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
@@ -345,16 +345,16 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('reconnect') || action.equalsIgnoreCase('rejoin')) {
-                $.say($.lang.get('init.reconnect', $.hostname));
+            if (action.equalsIgnoreCase('rejoin')) {
+                $.say($.lang.get('init.rejoin', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' requested a reconnect!');
-                setTimeout(function () { $.connmgr.reconnectSession($.hostname); }, 100);
-                setTimeout(function () { $.say($.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully re-connected!')) }, 30000);
+                setTimeout(function () { $.session.reconnect(); }, 100);
+                setTimeout(function () { $.say($.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully rejoined!')) }, 1000);
                 return;
             }
 
             if (action.equalsIgnoreCase('disconnect') || action.equalsIgnoreCase('remove')) {
-                $.say($.lang.get('init.disconnect', $.hostname));
+                $.say($.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' removed the bot from chat!');
                 setTimeout(function () { java.lang.System.exit(0); }, 100);
                 return;
@@ -455,7 +455,7 @@
                 return;
             }
             $.log.event(username + ' requested a reconnect!');
-            $.connmgr.reconnectSession($.hostname);
+            $.session.rejoin();
         }
 
         /* Used for the panel, no command path needed*/
@@ -692,7 +692,7 @@
 
             $.say(event.getArguments());
         }
-    };
+    }
 
 
     /**
@@ -759,6 +759,7 @@
         $api.on($script, 'ircJoinComplete', function(event) {
             connected = true;
             $.channel = event.getChannel();
+            $.session = event.getSession();
             connectedMsg = false;
         });
 
@@ -770,6 +771,7 @@
             if (!connected) {
                 return;
             }
+
             if (event.getChannel().getName().equalsIgnoreCase($.channel.getName())) {
                 if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
                     if (event.getAdd().toString().equals('true')) {
