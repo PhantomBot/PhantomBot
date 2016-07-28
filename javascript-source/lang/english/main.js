@@ -253,6 +253,7 @@ $.lang.register('init.module.list', 'Modules (* are disabled): $1');
 $.lang.register('init.module.list.total', 'Total Pages: $1');
 $.lang.register('init.module.usage', 'Usage: !module list, !module enable [module name], !module disable [module name], !module status [module name]');
 $.lang.register('init.reconnect', 'Reconnecting to $1');
+$.lang.register('init.rejoin', 'Rejoining the channel.');
 $.lang.register('init.disconnect', 'Disconnecting from $1');
 $.lang.register('init.usage', '!$1 [reconnect / disconnect / connectmessage / removeconnectmessage / blacklist]');
 $.lang.register('init.connected.msg', 'Connect message set to: $1');
