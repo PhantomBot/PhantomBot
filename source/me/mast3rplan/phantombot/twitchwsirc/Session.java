@@ -23,6 +23,7 @@ package me.mast3rplan.phantombot.twitchwsirc;
 
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
+import me.mast3rplan.phantombot.event.EventBus;
 
 import org.java_websocket.WebSocket;
 import com.google.common.collect.Maps;
@@ -38,6 +39,7 @@ public class Session {
     private static final Map<String, Session> instances = Maps.newHashMap();
     public static Session session;
     private TwitchWSIRC twitchWSIRC;
+    private EventBus eventBus;
     private Channel channel;
     private String channelName;
     private String botName;
@@ -47,11 +49,15 @@ public class Session {
      * Creates an instance for a Session
      *
      * @param  botName  The name of the PhantomBot instance
+     * @param  botName      Botname and name of the instance
+     * @param  oAuth        OAUTH login
+     * @param  Channel      Channel instance  
+     * @param  eventBus     Eventbus
      */
-    public static Session instance(Channel channel, String channelName, String botName, String oAuth) {
+    public static Session instance(Channel channel, String channelName, String botName, String oAuth, EventBus eventBus) {
         Session instance = instances.get(botName);
         if (instance == null) {
-            instance = new Session(channel, channelName, botName, oAuth);
+            instance = new Session(channel, channelName, botName, oAuth, eventBus);
             instances.put(botName, instance);
             session = instance;
             return instance;
@@ -65,12 +71,22 @@ public class Session {
      * @param  channelName  Twitch Channel
      * @param  botName      Botname and name of the instance
      * @param  oAuth        OAUTH login
-     */
-    private Session(Channel channel, String channelName, String botName, String oAuth) {
+     * @param  Channel      Channel instance  
+     * @param  eventBus     Eventbus
+     */ 
+    private Session(Channel channel, String channelName, String botName, String oAuth, EventBus eventBus) {
         this.channelName = channelName;
+        this.eventBus = eventBus;
+        this.channel = channel;
         this.botName = botName;
         this.oAuth = oAuth;
-        this.channel = channel;
+
+        try {
+            this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
+            twitchWSIRC.connectWSS();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
+        }
     }
 
     /*
