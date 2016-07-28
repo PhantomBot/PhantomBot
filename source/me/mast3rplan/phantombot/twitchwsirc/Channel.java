@@ -110,43 +110,4 @@ public class Channel {
     public Channel getChannel() {
         return channel;
     }
-
-
-    /*
-     * Adds the user from the users array. When you connect to the channel, Twitch sends a list with all the current users in the channel.
-     *
-     * @param username 
-     */
-    /*public void addUser(String username) { // this is addNick in the old jerklib.
-        if (!users.containsKey(username)) {
-            users.put(username);
-        }
-    }*/
-
-    /*
-     * Removes the user from the users array.
-     *
-     * @param username 
-     */
-    /*public void removeUser(String username) {
-        users.remove(username);
-    }*/
-
-    /*
-     * Returs the users to permission.js
-     *
-     * @return array 
-     */
-    /*public List<String> getUsers() { // this is .getNicks in the permission.js atm.
-        return users;
-    }*/
-
-    /*
-     * Sends a message to the channel (well, not yet, right now just log...)
-     *
-     * @param  String  what to say? 
-     */
-    public void say(String message) {
-        com.gmt2001.Console.out.println("WSIRC::Channel::say:(" + message + ")");
-    }
 }

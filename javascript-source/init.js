@@ -759,6 +759,7 @@
         $api.on($script, 'ircJoinComplete', function(event) {
             connected = true;
             $.channel = event.getChannel();
+            $.session = event.getSession();
             connectedMsg = false;
         });
 

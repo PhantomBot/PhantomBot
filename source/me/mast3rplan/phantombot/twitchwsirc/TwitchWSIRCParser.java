@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelJoinEvent;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelLeaveEvent;
-import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
@@ -94,12 +93,6 @@ public class TwitchWSIRCParser {
             }
         });
 
-        parserMap.put("366", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tagsMap) {
-                userAdd(message);
-            }
-        });
-
         parserMap.put("PRIVMSG", new TwitchWSIRCCommand() {
             public void exec(String message, String username, Map<String, String> tagsMap) {
                 privMsg(message, username, tagsMap);
@@ -136,19 +129,17 @@ public class TwitchWSIRCParser {
             }
         });
 
-/*
         parserMap.put("RECONNECT", new TwitchWSIRCCommand() {
             public void exec(String message, String username, Map<String, String> tagsMap) {
-                reconnect();
+                //reconnect();
             }
         });
 
         parserMap.put("USERSTATE", new TwitchWSIRCCommand() {
             public void exec(String message, String username, Map<String, String> tagsMap) {
-                userState(message, username, tagsMap);
+                //userState(message, username, tagsMap);
             }
         });
-*/
     }
 
     /**
@@ -275,10 +266,13 @@ public class TwitchWSIRCParser {
 
     /*
      * Handles the PRIVMSG event from IRC.
+     *
+     * @param String message
+     * @param String username
+     * @param Map<String, String> tagsMap
      */
     private void privMsg(String message, String username, Map<String, String> tagsMap) {
         com.gmt2001.Console.out.println(username + ": " + message);
-        com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
 
         if (tagsMap.containsKey("display-name")) {
             PhantomBot.instance().getUsernameCache().addUser(username, tagsMap.get("display-name"));
@@ -298,7 +292,11 @@ public class TwitchWSIRCParser {
             }
         }
 
-        if (tagsMap.containsKey("user-type")) { // All of this is really low. About 5+ms before it makes it to the caster part.
+        if (message.startsWith("The moderators of this room are:")) {
+            eventBus.postAsync(new IrcPrivateMessageEvent(this.session, "jtv", message, tagsMap)); 
+        }
+
+        if (tagsMap.containsKey("user-type")) {
             if (tagsMap.get("user-type").length() > 0) {
                 if (!moderators.contains(username.toLowerCase())) {
                     moderators.add(username.toLowerCase());
@@ -328,23 +326,10 @@ public class TwitchWSIRCParser {
     }
 
     /*
-     * Handles the JOIN: Opening event from IRC.
-     * This sends a list of all the users in the channel, as of right now it only sends ":End of /NAMES list", so its removing all the users.
-     *
-     * @param username
-     */
-    private void userAdd(String username) {
-        String[] users = username.split("\\s+");
-
-        for (String user : users) {
-            if (user != null) {
-                //this.channel.addUser(user); ** THis is done in Channel.Java. it sends all the users to the permissions.js script after. There will be a error for now with this.
-            }
-        }
-    }
-
-    /*
      * Handles the CLEARCHAT event from IRC.
+     *
+     * @param String username
+     * @param Map<String, String> tagsMap
      */
     private void clearChat(String username, Map<String, String> tagsMap) {
         com.gmt2001.Console.debug.println(username + " has been timed out for " + tagsMap.get("ban-duration") + " seconds. Reason: " + tagsMap.get("ban-reason").replaceAll("\\\\s", " "));
@@ -353,6 +338,10 @@ public class TwitchWSIRCParser {
 
     /*
      * Handles the WHISPER event from IRC.
+     *
+     * @param String message
+     * @param String username
+     * @param Map<String, String> tagsMap
      */
     private void whisperMessage(String message, String username, Map<String, String> tagsMap) {
         com.gmt2001.Console.out.println("Whisper: " + PhantomBot.instance().getUsernameCache().resolve(username, tagsMap) + ": " + message);
@@ -361,12 +350,17 @@ public class TwitchWSIRCParser {
 
     /*
      * Handles the NOTICE event from IRC.
+     *
+     * @param String message
+     * @param String username
+     * @param Map<String, String> tagsMap
      */
     private void noticeMessage(String message, String username, Map<String, String> tagsMap) {
         if (message.equals("Error logging in")) {
+            com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
             com.gmt2001.Console.out.println("Exiting PhantomBot");
-            com.gmt2001.Console.out.println("");
+            com.gmt2001.Console.out.println();
             System.exit(0);
             return;
         }
@@ -374,6 +368,10 @@ public class TwitchWSIRCParser {
 
     /*
      * Handles the JOIN event from IRC.
+     *
+     * @param String message
+     * @param String username
+     * @param Map<String, String> tagsMap
      */
     private void joinUser(String message, String username, Map<String, String> tagMaps) {
         com.gmt2001.Console.debug.println("User Joined Channel [" + username + "#" + this.channel + "]");
@@ -382,6 +380,10 @@ public class TwitchWSIRCParser {
 
     /*
      * Handles the PART event from IRC.
+     *
+     * @param String message
+     * @param String username
+     * @param Map<String, String> tagsMap
      */
     private void partUser(String message, String username, Map<String, String> tagMaps) {
         com.gmt2001.Console.debug.println("User Left Channel [" + username + "#" + this.channel + "]");
