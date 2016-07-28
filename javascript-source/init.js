@@ -34,7 +34,7 @@
         this.getModuleName = function() {
             return this.scriptFile.replace(/([a-z]+)\.js$/i, '$1');
         }
-    };
+    }
 
     /**
      * @class
@@ -46,7 +46,7 @@
         this.scriptFile = scriptFile;
         this.hook = hook;
         this.handler = handler;
-    };
+    }
 
     /**
      * @function consoleLn
@@ -108,7 +108,7 @@
                 $[name] = $api[name];
             }
         }
-    };
+    }
 
     /**
      * @function loadScript
@@ -346,15 +346,15 @@
             }
 
             if (action.equalsIgnoreCase('reconnect') || action.equalsIgnoreCase('rejoin')) {
-                $.say($.lang.get('init.reconnect', $.hostname));
+                $.say($.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' requested a reconnect!');
-                setTimeout(function () { $.connmgr.reconnectSession($.hostname); }, 100);
+                setTimeout(function () { $.session.reconnect(); }, 100);
                 setTimeout(function () { $.say($.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully re-connected!')) }, 30000);
                 return;
             }
 
             if (action.equalsIgnoreCase('disconnect') || action.equalsIgnoreCase('remove')) {
-                $.say($.lang.get('init.disconnect', $.hostname));
+                $.say($.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' removed the bot from chat!');
                 setTimeout(function () { java.lang.System.exit(0); }, 100);
                 return;
@@ -455,7 +455,7 @@
                 return;
             }
             $.log.event(username + ' requested a reconnect!');
-            $.connmgr.reconnectSession($.hostname);
+            $.session.reconnect();
         }
 
         /* Used for the panel, no command path needed*/
@@ -692,7 +692,7 @@
 
             $.say(event.getArguments());
         }
-    };
+    }
 
 
     /**
@@ -771,6 +771,7 @@
             if (!connected) {
                 return;
             }
+
             if (event.getChannel().getName().equalsIgnoreCase($.channel.getName())) {
                 if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
                     if (event.getAdd().toString().equals('true')) {
