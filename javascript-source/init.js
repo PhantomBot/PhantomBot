@@ -324,7 +324,7 @@
             index;
 
         /**
-         * @commandpath YourBotName reconnect - Tell the bot to reconnect to Twitch chat and the various APIs
+         * @commandpath YourBotName rejoin - Reconnects to the channel
          * @commandpath YourBotName disconnect - Removes the bot from chat
          * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel
          * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
@@ -345,11 +345,11 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('reconnect') || action.equalsIgnoreCase('rejoin')) {
-                $.say($.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
+            if (action.equalsIgnoreCase('rejoin')) {
+                $.say($.lang.get('init.rejoin', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' requested a reconnect!');
                 setTimeout(function () { $.session.reconnect(); }, 100);
-                setTimeout(function () { $.say($.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully re-connected!')) }, 30000);
+                setTimeout(function () { $.say($.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully rejoined!')) }, 1000);
                 return;
             }
 
@@ -455,7 +455,7 @@
                 return;
             }
             $.log.event(username + ' requested a reconnect!');
-            $.session.reconnect();
+            $.session.rejoin();
         }
 
         /* Used for the panel, no command path needed*/
