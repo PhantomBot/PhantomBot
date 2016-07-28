@@ -36,7 +36,6 @@ public class Channel {
 
     private static final Map<String, Channel> instances = Maps.newHashMap();
     public static Channel channel;
-    private Boolean sendMessages = false;
     private TwitchWSIRC twitchWSIRC;
     private EventBus eventBus;
     private String channelName;
@@ -73,24 +72,6 @@ public class Channel {
         this.oAuth = oAuth;
 
         session = Session.instance(this, channelName, botName, oAuth, eventBus);
-    }
-
-    /*
-     * Set if messages are allowed to be sent to Twitch WSIRC.
-     *
-     * @param  Boolean  Are messages allowed to be sent?
-     */
-    public void setAllowSendMessages(Boolean sendMessages) {
-        this.sendMessages = sendMessages;
-    }
-
-    /*
-     * Can messages be sent to WSIRC?
-     *
-     * @return  Boolean  Are messages allowed to be sent?
-     */
-    public Boolean getAllowSendMessages() {
-        return sendMessages;
     }
 
     /*
