@@ -706,7 +706,8 @@ public class PhantomBot implements Listener {
     public void onExit() {
         com.gmt2001.Console.out.println("[SHUTDOWN] Bot shutting down...");
 
-        com.gmt2001.Console.out.println("[SHUTDOWN] Stopping event & message dispatching...");
+        com.gmt2001.Console.out.println("[SHUTDOWN] Stopping events & message dispatching...");
+        this.session.setAllowSendMessages(false);
         exiting = true;
 
         if (webenabled) {
@@ -765,7 +766,7 @@ public class PhantomBot implements Listener {
     public void onIRCJoinComplete(IrcJoinCompleteEvent event) {
         this.session = event.getSession();
 
-        event.getSession().say(".mods");
+        event.getSession().saySilent(".mods");
 
         this.emotesCache = EmotesCache.instance(this.channelName);
         this.followersCache = FollowersCache.instance(this.channelName);
@@ -805,33 +806,26 @@ public class PhantomBot implements Listener {
     public void onIRCPrivateMessage(IrcPrivateMessageEvent event) {
         if (event.getSender().equalsIgnoreCase("jtv")) {
             String message = event.getMessage().toLowerCase();
-            
-            com.gmt2001.Console.debug.println("Message From jtv: " + event.getSender() + ": " + event.getMessage());
 
             if (message.startsWith("the moderators of this room are: ")) {
                 String[] spl = message.substring(33).split(", ");
 
                 for (String spl1 : spl) {
                     if (spl1.equalsIgnoreCase(this.username)) {
-                        channel.setAllowSendMessages(true);
+                        session.setAllowSendMessages(true);
                     }
                 }
             }
-        }
-        if (!event.getSender().equalsIgnoreCase("jtv") && !event.getSender().equalsIgnoreCase("twitchnotify")) {
-            com.gmt2001.Console.out.println("Whisper: " + usernameCache.resolve(event.getSender().toLowerCase(), event.getTags()) + ": " + event.getMessage());
         }
     }
 
     @Subscribe
     public void onIRCChannelUserMode(IrcChannelUserModeEvent event) {
-        if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
-                && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName())) {
+        if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o") && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName())) {
             if (!event.getAdd()) {
-                event.getSession().say(".mods");
+                event.getSession().saySilent(".mods");
             }
-
-            channel.setAllowSendMessages(event.getAdd());
+            session.setAllowSendMessages(event.getAdd());
         }
     }
 
@@ -1164,6 +1158,28 @@ public class PhantomBot implements Listener {
                 streamtipid = newId;
 
                 com.gmt2001.Console.out.println("PhantomBot StreamTip setup done.");
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        if (message.equals("panelsetup")) {
+            try {
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("PhantomBot Web Panel setup.");
+                com.gmt2001.Console.out.println("Note: Do not use any ascii characters in your username of password.");
+                com.gmt2001.Console.out.println();
+
+                com.gmt2001.Console.out.print("Please enter a username of your choice: ");
+                String newUser = System.console().readLine().trim();
+                paneluser = newUser;
+
+                com.gmt2001.Console.out.print("Please enter a password of your choice: ");
+                String newPass = System.console().readLine().trim();
+                panelpassword = newPass;
+
+                com.gmt2001.Console.out.println("PhantomBot Web Panel setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);

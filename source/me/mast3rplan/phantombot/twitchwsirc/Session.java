@@ -34,6 +34,10 @@ import java.util.TimerTask;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.channels.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -43,17 +47,20 @@ public class Session {
 
     private static final Map<String, Session> instances = Maps.newHashMap();
     public static Session session;
+    private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Message> sendQueue = new ConcurrentLinkedQueue<>();
+    private final Timer sayTimer = new Timer();
+    private final int maxBurst = 19; //max messages we can send in 30 seconds. and the bursts if we hit the limit.
+    private Long lastWrite = System.currentTimeMillis(); //last time a message was sent.
+    private Long nextWrite = System.currentTimeMillis(); //next time that we are allowed to write.
+    private int burst = 1; //current messages being sent in 2.5 seconds.
+    private Boolean sendMessages = false;
     private TwitchWSIRC twitchWSIRC;
     private EventBus eventBus;
     private Channel channel;
     private String channelName;
     private String botName;
     private String oAuth;
-
-    /* Message Queues for Throttling */
-    private final Timer sayTimer = new Timer();
-    private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedQueue<Message> sendQueue = new ConcurrentLinkedQueue<>();  // this would be the final queue
 
     /*
      * Creates an instance for a Session
@@ -85,7 +92,7 @@ public class Session {
      * @param  eventBus     Eventbus
      */ 
     private Session(Channel channel, String channelName, String botName, String oAuth, EventBus eventBus) {
-        this.channelName = channelName;
+        this.channelName = channelName.toLowerCase();
         this.eventBus = eventBus;
         this.channel = channel;
         this.botName = botName;
@@ -94,11 +101,19 @@ public class Session {
         try {
             this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
             twitchWSIRC.connectWSS();
-            sayTimer.schedule(new MessageTask(this), 100, 1);
-            /* Create a timer for the final queue that sends data */
+            sayTimer.schedule(new MessageTask(this), 100, 1); // start a timer queue for normal messages.
+            sayTimer.schedule(new SendMsg(), 100, 1); // start a timer for the final queue for the timeouts and messages.
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
         }
+    }
+
+    /*
+     * Reconnects to the server and rejoins the channel. used with $.session in init.js and for the RECONNECT event from Twitch.
+     *
+     */
+    public void reconnect() {
+        //need a way to reconnect
     }
 
     /*
@@ -107,7 +122,7 @@ public class Session {
      * @return  String  The name of the PhantomBot instance, also the Twitch login ID.
      */
     public String getNick() {
-        return this.botName;
+        return this.botName.toLowerCase();
     }
 
     /*
@@ -119,27 +134,71 @@ public class Session {
     }
 
     /*
-     * Chat in the channel
+     * Set if messages are allowed to be sent to Twitch WSIRC.
      *
-     * @param say
+     * @param  Boolean  Are messages allowed to be sent?
      */
-    public void say(String message) {
-        /* Here, would want to add directly to a queue that is throttled like doWrites() for .timeout. */
-        messages.add(new Message(message));
+    public void setAllowSendMessages(Boolean sendMessages) {
+        this.sendMessages = sendMessages;
     }
 
-    /* Would want a function here called sendMessageQueue() or something for putting .timeouts in and the
-     * regular messages.  This would call sendMessage() in the end and implement the logic from doWrites().
+    /*
+     * Can messages be sent to WSIRC?
+     *
+     * @return  Boolean  Are messages allowed to be sent?
      */
+    public Boolean getAllowSendMessages() {
+        return sendMessages;
+    }
+
+    /*
+     * Chat in the channel
+     *
+     * @param message
+     */
+    public void say(String message) {
+        if (message.startsWith(".")) { //check if the message starts with a "." for timeouts. ".timeout <user>".
+            sendQueue.add(new Message(message));
+        } else {
+            messages.add(new Message(message));
+        }
+    }
+
+    /*
+     * Chat in the channel without anything showing in the console. used for .mods atm.
+     *
+     * @param message
+     */
+    public void saySilent(String message) {
+        twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
+    }
 
     /*
      * Send a message over WSIRC
      *
      * @param  String  Message to send
      */
-    public void sendMessage(String message) {
-        twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
-        com.gmt2001.Console.out.println("[CHAT] " + message);
+    public void sendMessages() {
+        if (sendQueue.isEmpty() || nextWrite > System.currentTimeMillis()) { // check to make sure the queue is not empty, and make sure we are not sending too many messages too fast.
+            return;
+        }
+        if (System.currentTimeMillis() - lastWrite < 2500) { // Only thing that could trigger this are timeouts. Normal messages wont even come close to this limit.
+            if (burst == maxBurst) {
+                nextWrite = System.currentTimeMillis() + 30500; // wait 30.5 seconds in case we ever hit 19 messages. then burst them out at a max of 19 in 30 seconds.
+                burst = 1;
+                return;
+            }
+            burst++;//add messages being sent in 2.5 seconds.
+        } else {
+            burst = 1;
+            lastWrite = System.currentTimeMillis();
+        }
+
+        Message message = session.sendQueue.poll();
+        if (message != null || sendMessages) { //make sure the message is not null, and make sure we are allowed to send messages.
+            twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message.message);// send the message to Twitch.
+            com.gmt2001.Console.out.println("[CHAT] " + message.message);//print the message in the console once its sent to Twitch.
+        }
     }
 
     /* Returns the Channel object related to this Session.
@@ -150,7 +209,16 @@ public class Session {
         return this.channel; 
     }
 
-    /* Would implement another thread for processing the sendMessageQueue() queue. */
+    /* 
+     * Send the messages that are in the current queue. or return if the queue is empty.
+     *
+     */
+    class SendMsg extends TimerTask {
+        @Override
+        public void run() {
+            sendMessages();
+        }
+    }
 
     /* Message Throttling.  The following classes implement timers which work to ensure that PhantomBot
      * does not send messages too quickly.
@@ -175,15 +243,11 @@ public class Session {
 
         @Override
         public void run() {
-            if (PhantomBot.instance().isExiting()) {
-                return;
-            }
-
             long now = System.currentTimeMillis();
             if (now - lastMessage >= PhantomBot.instance().getMessageInterval()) {
                 Message message = session.messages.poll();
                 if (message != null) {
-                    session.sendMessage(message.message);  // this would actually move the message object to the final send queue 
+                    session.sendQueue.add(new Message(message.message)); //add the message in the final queue, to make sure timeouts are not limiting us.
                     lastMessage = now;
                 }
             }

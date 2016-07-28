@@ -37,11 +37,9 @@
                 <script>
                     var urlInfo = window.location.host.split(":");
                     var url = urlInfo[0];
-                    var port;
-                    if (urlInfo[1].endsWith("0")) {
-                       port = (parseInt(urlInfo[1]) + 5);
-                    } else {
-                       port = urlInfo[1];
+                    var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
+                    if (port.endsWith("0") && port !== '80') {
+                       port = (parseInt(port) + 5);
                     }
                     document.write('<a target="_blank" style="color: white;" href="http://' + urlInfo[0] + ':' + port + '/ytplayer">');
                 </script>
@@ -58,11 +56,9 @@
                 <script>
                     var urlInfo = window.location.host.split(":");
                     var url = urlInfo[0];
-                    var port;
-                    if (urlInfo[1].endsWith("0")) {
-                       port = (parseInt(urlInfo[1]) + 5);
-                    } else {
-                       port = urlInfo[1];
+                    var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
+                    if (port.endsWith("0") && port !== '80') {
+                       port = (parseInt(port) + 5);
                     }
                     document.write('<a target="_blank" style="color: white;" href="http://' + urlInfo[0] + ':' + port + '/panel">');
                 </script>
@@ -79,11 +75,9 @@
                 <script>
                     var urlInfo = window.location.host.split(":");
                     var url = urlInfo[0];
-                    var port;
-                    if (urlInfo[1].endsWith("0")) {
-                       port = (parseInt(urlInfo[1]) + 5);
-                    } else {
-                       port = urlInfo[1];
+                    var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
+                    if (port.endsWith("0") && port !== '80') {
+                       port = (parseInt(port) + 5);
                     }
                     document.write('<a target="_blank" style="color: white;" href="http://' + urlInfo[0] + ':' + port + '/playlist">');
                 </script>
