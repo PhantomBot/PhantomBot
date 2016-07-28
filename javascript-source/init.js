@@ -34,7 +34,7 @@
         this.getModuleName = function() {
             return this.scriptFile.replace(/([a-z]+)\.js$/i, '$1');
         }
-    }
+    };
 
     /**
      * @class
@@ -46,7 +46,7 @@
         this.scriptFile = scriptFile;
         this.hook = hook;
         this.handler = handler;
-    }
+    };
 
     /**
      * @function consoleLn
@@ -108,7 +108,7 @@
                 $[name] = $api[name];
             }
         }
-    }
+    };
 
     /**
      * @function loadScript
@@ -692,7 +692,7 @@
 
             $.say(event.getArguments());
         }
-    }
+    };
 
 
     /**

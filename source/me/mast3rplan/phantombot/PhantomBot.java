@@ -1170,6 +1170,28 @@ public class PhantomBot implements Listener {
             }
         }
 
+        if (message.equals("panelsetup")) {
+            try {
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("PhantomBot Web Panel setup.");
+                com.gmt2001.Console.out.println("Note: Do not use any ascii characters in your username of password.");
+                com.gmt2001.Console.out.println();
+
+                com.gmt2001.Console.out.print("Please enter a username of your choice: ");
+                String newUser = System.console().readLine().trim();
+                paneluser = newUser;
+
+                com.gmt2001.Console.out.print("Please enter a password of your choice: ");
+                String newPass = System.console().readLine().trim();
+                panelpassword = newPass;
+
+                com.gmt2001.Console.out.println("PhantomBot Web Panel setup done.");
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
         if (message.equals("twittersetup")) {
             try {
                 com.gmt2001.Console.out.println();
