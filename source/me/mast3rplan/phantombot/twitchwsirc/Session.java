@@ -21,6 +21,7 @@
  */
 package me.mast3rplan.phantombot.twitchwsirc;
 
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
 import me.mast3rplan.phantombot.event.EventBus;
@@ -28,9 +29,13 @@ import me.mast3rplan.phantombot.event.EventBus;
 import org.java_websocket.WebSocket;
 import com.google.common.collect.Maps;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import java.net.URI;
 
@@ -44,6 +49,11 @@ public class Session {
     private String channelName;
     private String botName;
     private String oAuth;
+
+    /* Message Queues for Throttling */
+    private final Timer sayTimer = new Timer();
+    private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Message> sendQueue = new ConcurrentLinkedQueue<>();  // this would be the final queue
 
     /*
      * Creates an instance for a Session
@@ -84,6 +94,8 @@ public class Session {
         try {
             this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
             twitchWSIRC.connectWSS();
+            sayTimer.schedule(new MessageTask(this), 100, 1);
+            /* Create a timer for the final queue that sends data */
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
         }
@@ -112,6 +124,20 @@ public class Session {
      * @param say
      */
     public void say(String message) {
+        /* Here, would want to add directly to a queue that is throttled like doWrites() for .timeout. */
+        messages.add(new Message(message));
+    }
+
+    /* Would want a function here called sendMessageQueue() or something for putting .timeouts in and the
+     * regular messages.  This would call sendMessage() in the end and implement the logic from doWrites().
+     */
+
+    /*
+     * Send a message over WSIRC
+     *
+     * @param  String  Message to send
+     */
+    public void sendMessage(String message) {
         twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
         com.gmt2001.Console.out.println("[CHAT] " + message);
     }
@@ -122,5 +148,45 @@ public class Session {
      */
     public Channel getChannel(String dummy) {
         return this.channel; 
+    }
+
+    /* Would implement another thread for processing the sendMessageQueue() queue. */
+
+    /* Message Throttling.  The following classes implement timers which work to ensure that PhantomBot
+     * does not send messages too quickly.
+     */
+    class Message {
+        public String message;
+
+        public Message(String message) {
+            this.message = message;
+        }
+    }
+     
+    class MessageTask extends TimerTask {
+        private final Session session;
+        private long lastMessage = 0;
+
+        public MessageTask(Session session) {
+            super();
+            this.session = session;
+            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        }
+
+        @Override
+        public void run() {
+            if (PhantomBot.instance().isExiting()) {
+                return;
+            }
+
+            long now = System.currentTimeMillis();
+            if (now - lastMessage >= PhantomBot.instance().getMessageInterval()) {
+                Message message = session.messages.poll();
+                if (message != null) {
+                    session.sendMessage(message.message);  // this would actually move the message object to the final send queue 
+                    lastMessage = now;
+                }
+            }
+        }
     }
 }
