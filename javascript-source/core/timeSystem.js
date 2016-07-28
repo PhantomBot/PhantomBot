@@ -351,7 +351,7 @@
         }
 
         if (command.equalsIgnoreCase('uptime')) {
-            $.say($.userPrefix(sender, true) + ($.getStreamUptime($.channelName) ? $.lang.get('timesystem.uptime', $.channelName, $.getStreamUptime($.channelName)) : $.lang.get('timesystem.uptime.offline', $.channelName)));
+            $.say(($.getStreamUptime($.channelName) ? $.lang.get('timesystem.uptime', $.channelName, $.getStreamUptime($.channelName)) : $.lang.get('timesystem.uptime.offline', $.username.resolve($.channelName))));
         }
 
         if (command.equalsIgnoreCase('updatetimesettings')) {

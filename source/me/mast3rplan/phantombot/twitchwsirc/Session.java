@@ -106,6 +106,16 @@ public class Session {
         return session;
     }
 
+    /*
+     * Chat in the channel
+     *
+     * @param say
+     */
+    public void say(String message) {
+        twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
+        com.gmt2001.Console.out.println("[CHAT] " + message);
+    }
+
     /* Returns the Channel object related to this Session.
      *
      * @return  Channel      The related Channel object.

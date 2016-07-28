@@ -532,12 +532,6 @@
      * @event ircJoinComplete
      */
     $.bind('ircJoinComplete', function(event) {
-        $.consoleLn('');
-        $.consoleLn('');
-        $.consoleLn('The next error here is normal. Its comming from permission.js line #353');
-        $.consoleLn('Please see Channel.java #111 and TwitchWSIRCParser.java #336 for more information');
-        $.consoleLn('');
-        $.consoleLn('');
         var usersIterator = event.getChannel().getNicks().iterator(),
             username;
 

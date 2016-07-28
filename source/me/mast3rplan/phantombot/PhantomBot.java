@@ -765,7 +765,7 @@ public class PhantomBot implements Listener {
     public void onIRCJoinComplete(IrcJoinCompleteEvent event) {
         this.session = event.getSession();
 
-        event.getChannel().say(".mods");
+        event.getSession().say(".mods");
 
         this.emotesCache = EmotesCache.instance(this.channelName);
         this.followersCache = FollowersCache.instance(this.channelName);
@@ -828,7 +828,7 @@ public class PhantomBot implements Listener {
         if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
                 && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName())) {
             if (!event.getAdd()) {
-                channel.say(".mods");
+                event.getSession().say(".mods");
             }
 
             channel.setAllowSendMessages(event.getAdd());

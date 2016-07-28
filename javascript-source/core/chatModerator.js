@@ -38,7 +38,7 @@
         spamTrackerToggle = $.getSetIniDbBoolean('chatModerator', 'spamTrackerToggle', false),
         spamTrackerMessage = $.getSetIniDbString('chatModerator', 'spamTrackerMessage',  'you were timed out for spamming chat'),
         spamTrackerTime = $.getSetIniDbNumber('chatModerator', 'spamTrackerTime', 30),
-        spamTrackerLimit = $.getSetIniDbNumber('chatModerator', 'spamTrackerLimit', 10),
+        spamTrackerLimit = $.getSetIniDbNumber('chatModerator', 'spamTrackerLimit', 6),
 
         subscribers = {
             Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', true),
@@ -237,6 +237,7 @@
     setInterval(function() {
         if (spamTracker.length != 0) {
             if (spamTrackerLastMsg - $.systemTime() <= 0) {
+                spamTracker = "";
                 spamTracker = [];
             }
         }
@@ -264,10 +265,6 @@
 
     /**
      * @function timeoutUserFor
-     *
-     * @param {string} user
-     * @param {number} time
-     * @param {string} reason
      */
     function timeoutUserFor(user, time, reason) {
         $.say('.timeout ' + user + ' ' + time + ' ' + reason);
@@ -278,12 +275,6 @@
 
     /**
      * @function timeout
-     *
-     * @param {string} user
-     * @param {number} warningT
-     * @param {number} timeoutT
-     * @param {boolean} silent
-     * @param {string} reason
      */
     function timeout(user, warningT, timeoutT, silent, reason) {
         if (timeouts[user] !== undefined) {
@@ -309,8 +300,6 @@
 
     /**
      * @function panelLog
-     *
-     * @param {string} user
      */
     function panelLog(user) {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
@@ -320,10 +309,6 @@
 
     /**
      * @function sendMessage
-     *
-     * @param {string} user
-     * @param {string} message
-     * @param {boolean} filter
      */
     function sendMessage(user, message, filter) {
         var messageReset = messageTime - $.systemTime();
@@ -335,8 +320,6 @@
 
     /**
      * @function permitUser
-     *
-     * @param {string} user
      */
     function permitUser(user) {
         permitList[user] = (linkPermitTime * 1000) + $.systemTime();
@@ -344,9 +327,6 @@
 
     /**
      * @function getModerationFilterStatus
-     *
-     * @param {string} filter
-     * @param {boolean} toggle
      */
     function getModerationFilterStatus(filter, toggle) {
         if (toggle) {
@@ -358,8 +338,6 @@
 
     /**
      * @function checkPermitList
-     *
-     * @param {string} user
      */
     function checkPermitList(user) {
         if (permitList[user] !== undefined) {
@@ -373,9 +351,6 @@
 
     /**
      * @function checkBlackList
-     *
-     * @param {string} sender
-     * @param {string} message
      */
     function checkBlackList(sender, message) {
         for (i in blackList) {
@@ -391,8 +366,6 @@
 
     /**
      * @function checkWhiteList
-     *
-     * @param {string} message
      */
     function checkWhiteList(message) {
         for (i in whiteList) {
@@ -405,8 +378,6 @@
 
     /**
      * @function checkYoutubePlayer
-     *
-     * @param {string} message
      */
     function checkYoutubePlayer(message) {
         if ($.youtubePlayerConnected && (message.includes('youtube.com') || message.includes('youtu.be'))) {

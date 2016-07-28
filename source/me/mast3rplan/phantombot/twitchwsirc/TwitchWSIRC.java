@@ -159,10 +159,10 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onMessage(String message) {
-
         if (message.startsWith("PING")) {
             sendPong();
         }
+        
         if (message.startsWith(":") || message.startsWith("@")) {
             ircParser.parseData(message);
         }
