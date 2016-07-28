@@ -16,7 +16,7 @@
  */
 package me.mast3rplan.phantombot.event.ytplayer;
 
-import me.mast3rplan.phantombot.jerklib.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.ytplayer.YTPlayerState;
 
 public class YTPlayerStateEvent extends YTPlayerEvent {

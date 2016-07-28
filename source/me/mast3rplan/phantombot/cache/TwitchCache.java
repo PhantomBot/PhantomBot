@@ -40,7 +40,7 @@ import org.json.JSONObject;
 import com.gmt2001.TwitchAPIv3;
 
 import me.mast3rplan.phantombot.PhantomBot;
-import me.mast3rplan.phantombot.jerklib.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
 import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;

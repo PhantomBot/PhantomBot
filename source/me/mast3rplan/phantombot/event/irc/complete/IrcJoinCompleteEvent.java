@@ -16,19 +16,19 @@
  */
 package me.mast3rplan.phantombot.event.irc.complete;
 
-import me.mast3rplan.phantombot.jerklib.Channel;
-import me.mast3rplan.phantombot.jerklib.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class IrcJoinCompleteEvent extends IrcCompleteEvent {
 
-    private final Channel channel;
+    private final String channel;
 
-    public IrcJoinCompleteEvent(Session session, Channel channel) {
+    public IrcJoinCompleteEvent(Session session, String channel) {
         super(session);
         this.channel = channel;
     }
 
-    public Channel getChannel() {
+    public String getChannel() {
         return channel;
     }
 }

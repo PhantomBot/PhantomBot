@@ -39,7 +39,7 @@ import twitter4j.Status;
 import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitter.TwitterEvent;
-import me.mast3rplan.phantombot.jerklib.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 
 /*
  * TwitterCache Class
