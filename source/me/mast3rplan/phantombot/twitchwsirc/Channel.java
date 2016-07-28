@@ -20,6 +20,8 @@
  * @author: illusionaryone
  */
 package me.mast3rplan.phantombot.twitchwsirc;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
+import me.mast3rplan.phantombot.event.EventBus;
 
 import org.java_websocket.WebSocket;
 import com.google.common.collect.Maps;
@@ -33,22 +35,24 @@ import java.net.URI;
 public class Channel {
 
     private static final Map<String, Channel> instances = Maps.newHashMap();
-    //private final String[] users;
     public static Channel channel;
     private Boolean sendMessages = false;
+    private TwitchWSIRC twitchWSIRC;
+    private EventBus eventBus;
     private String channelName;
     private String botName;
+    private String oAuth;
+    private Session session;
 
     /*
      * Creates an instance for a channel.
      *
      * @param  channel  Twitch Channel
      */
-    public static Channel instance(String channelName, String botName) {
+    public static Channel instance(String channelName, String botName, String oAuth, EventBus eventBus) {
         Channel instance = instances.get(channelName);
-
         if (instance == null) {
-            instance = new Channel(channelName, botName);
+            instance = new Channel(channelName, botName, oAuth, eventBus);
             instances.put(channelName, instance);
             channel = instance;
             return instance;
@@ -62,9 +66,13 @@ public class Channel {
      * @param  channelName  Twitch Channel
      * @param  webSocket    WebSocket object for writing data to
      */
-    private Channel(String channelName, String botName) {
+    private Channel(String channelName, String botName, String oAuth, EventBus eventBus) {
         this.channelName = channelName;
+        this.eventBus = eventBus;
         this.botName = botName;
+        this.oAuth = oAuth;
+
+        session = Session.instance(this, channelName, botName, oAuth, eventBus);
     }
 
     /*
