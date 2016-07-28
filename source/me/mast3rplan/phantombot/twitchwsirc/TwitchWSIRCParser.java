@@ -131,7 +131,7 @@ public class TwitchWSIRCParser {
 
         parserMap.put("RECONNECT", new TwitchWSIRCCommand() {
             public void exec(String message, String username, Map<String, String> tagsMap) {
-                reconnect();
+                //reconnect();
             }
         });
 
