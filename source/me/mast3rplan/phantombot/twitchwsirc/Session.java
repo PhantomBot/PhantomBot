@@ -109,11 +109,29 @@ public class Session {
     }
 
     /*
-     * Reconnects to the server and rejoins the channel. used with $.session in init.js and for the RECONNECT event from Twitch.
+     * leaves the channel.
      *
      */
-    public void reconnect() {
-        //need a way to reconnect
+    public void leave() {
+        twitchWSIRC.send("PART #" + channelName.toLowerCase());
+    }
+
+    /*
+     * joins the channel.
+     *
+     */
+    public void leave() {
+        twitchWSIRC.send("JOIN #" + channelName.toLowerCase());
+    }
+
+    /*
+     * rejoins the channel. used with $.session in init.js and for the RECONNECT event from Twitch.
+     *
+     */
+    public void rejoin() {
+        leave();
+        join();
+        com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");
     }
 
     /*
