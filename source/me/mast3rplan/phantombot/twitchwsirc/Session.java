@@ -48,6 +48,7 @@ public class Session {
     private static final Map<String, Session> instances = Maps.newHashMap();
     public static Session session;
     private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Message> whispers = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<Message> sendQueue = new ConcurrentLinkedQueue<>();
     private final Timer sayTimer = new Timer();
     private final int maxBurst = 19; //max messages we can send in 30 seconds. and the bursts if we hit the limit.
@@ -101,11 +102,18 @@ public class Session {
         try {
             this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
             twitchWSIRC.connectWSS();
-            sayTimer.schedule(new MessageTask(this), 100, 1); // start a timer queue for normal messages.
-            sayTimer.schedule(new SendMsg(), 100, 1); // start a timer for the final queue for the timeouts and messages.
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
         }
+    }
+
+     /*
+     * Starts the timers.
+     *
+     */
+    public void startTimers() {
+        sayTimer.schedule(new MessageTask(this), 100, 5); // start a timer queue for normal messages.
+        sayTimer.schedule(new SendMsg(), 100, 1); // start a timer for the final queue for the timeouts and messages.
     }
 
     /*
@@ -177,6 +185,8 @@ public class Session {
     public void say(String message) {
         if (message.startsWith(".")) { //check if the message starts with a "." for timeouts. ".timeout <user>".
             sendQueue.add(new Message(message));
+        } else if (message.startsWith("/w")) {
+            whispers.add(new Message(message));
         } else {
             messages.add(new Message(message));
         }
@@ -213,7 +223,7 @@ public class Session {
         }
 
         Message message = session.sendQueue.poll();
-        if (message != null || sendMessages) { //make sure the message is not null, and make sure we are allowed to send messages.
+        if (message != null && sendMessages) { //make sure the message is not null, and make sure we are allowed to send messages.
             twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message.message);// send the message to Twitch.
             com.gmt2001.Console.out.println("[CHAT] " + message.message);//print the message in the console once its sent to Twitch.
         }
@@ -251,7 +261,10 @@ public class Session {
      
     class MessageTask extends TimerTask {
         private final Session session;
+        private final double messageLimit = PhantomBot.instance().getMessageInterval();
+        private final double whisperLimit = PhantomBot.instance().getWhisperInterval();
         private long lastMessage = 0;
+        private long lastWhisper = 0;
 
         public MessageTask(Session session) {
             super();
@@ -261,12 +274,19 @@ public class Session {
 
         @Override
         public void run() {
-            long now = System.currentTimeMillis();
-            if (now - lastMessage >= PhantomBot.instance().getMessageInterval()) {
+            if ((System.currentTimeMillis() - lastWhisper) >= whisperLimit) {
+                Message message = session.whispers.poll();
+                if (message != null) {
+                    session.sendQueue.add(new Message(message.message)); //add whispers to the final queue, to make sure timeouts are not limiting us.
+                    lastWhisper = System.currentTimeMillis();
+                }
+            }
+
+            if ((System.currentTimeMillis() - lastMessage) >= messageLimit) {
                 Message message = session.messages.poll();
                 if (message != null) {
                     session.sendQueue.add(new Message(message.message)); //add the message in the final queue, to make sure timeouts are not limiting us.
-                    lastMessage = now;
+                    lastMessage = System.currentTimeMillis();
                 }
             }
         }

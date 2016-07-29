@@ -50,6 +50,7 @@ import me.mast3rplan.phantombot.event.irc.clearchat.IrcClearchatEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
 import me.mast3rplan.phantombot.event.command.CommandEvent;
+import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.event.EventBus;
 
 import org.java_websocket.WebSocket;
@@ -67,6 +68,7 @@ interface TwitchWSIRCCommand {
 public class TwitchWSIRCParser {
 
     private Map<String, TwitchWSIRCCommand> parserMap = new HashMap<String, TwitchWSIRCCommand>();
+    private ScriptEventManager scriptEventManager = ScriptEventManager.instance();
     private ArrayList<String> moderators = new ArrayList<>();
     private WebSocket webSocket;
     private String channelName;
@@ -260,7 +262,7 @@ public class TwitchWSIRCParser {
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
 
-        PhantomBot.instance().getScriptEventManagerInstance().runDirect(new CommandEvent(username, command, arguments));
+        scriptEventManager.runDirect(new CommandEvent(username, command, arguments));
     }
 
     /*
@@ -286,7 +288,7 @@ public class TwitchWSIRCParser {
 
         if (message.endsWith("subscribed!")) {
             if (username.equalsIgnoreCase("twitchnotify")) {
-                PhantomBot.instance().getScriptEventManagerInstance().runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
+                scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
                 com.gmt2001.Console.debug.println(message.substring(0, message.indexOf(" ", 1)) + " just subscribed!");
             }
         }
@@ -322,7 +324,7 @@ public class TwitchWSIRCParser {
             }
         }
 
-        PhantomBot.instance().getScriptEventManagerInstance().runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
+        scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
         commandEvent(message, username);
         eventBus.post(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
     }
@@ -346,7 +348,7 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void whisperMessage(String message, String username, Map<String, String> tagsMap) {
-        com.gmt2001.Console.out.println("Whisper: " + PhantomBot.instance().getUsernameCache().resolve(username, tagsMap) + ": " + message);
+        com.gmt2001.Console.out.println("Whisper: " + username + ": " + message);
         eventBus.postAsync(new IrcPrivateMessageEvent(this.session, username, message, tagsMap));
     }
 
@@ -404,7 +406,7 @@ public class TwitchWSIRCParser {
      */
     private void userNotice(String message, String username, Map<String, String> tagMaps) {
         if (tagMaps.containsKey("login") && tagMaps.containsKey("msg-param-months")) {
-            PhantomBot.instance().getScriptEventManagerInstance().runDirect(new NewReSubscriberEvent(this.session, this.channel, tagMaps.get("login"), tagMaps.get("msg-param-months")));
+            scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, tagMaps.get("login"), tagMaps.get("msg-param-months")));
             com.gmt2001.Console.debug.println(tagMaps.get("login") + " just subscribed for " + tagMaps.get("msg-param-months") + " months in a row!");
         }
     }
