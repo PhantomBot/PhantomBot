@@ -113,6 +113,7 @@ public class TwitchWSIRC extends WebSocketClient {
     public void delete() {
         if (instances.containsKey(this.channelName)) {
             instances.remove(this.channelName);
+            this.close(9999, "Destroyed Instance");
         }
     }
 
@@ -166,15 +167,17 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onClose(int code, String reason, boolean remote) {
+        if (reason.equals("Destroyed Instance")) {
+            return;
+        }
+
         if (remote) {
             com.gmt2001.Console.out.println("Disconnected from Twitch WS-IRC Server due to Remote Hangup.");
         } else {
             com.gmt2001.Console.out.println("Disconnected from Twitch WS-IRC Server.");
         }
         com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-        if (remote) {
-            session.reconnect();
-        }
+        session.reconnect();
     }
 
     /*
