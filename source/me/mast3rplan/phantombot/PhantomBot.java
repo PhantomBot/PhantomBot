@@ -183,6 +183,7 @@ public class PhantomBot implements Listener {
     public static String log_timezone = "GMT";
     private UsernameCache usernameCache;
     private ScriptEventManager scriptEventManager;
+    private boolean timers = false;
 
     public static PhantomBot instance() {
         return instance;
@@ -754,6 +755,11 @@ public class PhantomBot implements Listener {
         this.session = event.getSession();
 
         event.getSession().saySilent(".mods");
+        
+        if (!timers) {
+            event.getSession().startTimers();
+            timers = true;
+        }
 
         this.emotesCache = EmotesCache.instance(this.channelName);
         this.followersCache = FollowersCache.instance(this.channelName);
