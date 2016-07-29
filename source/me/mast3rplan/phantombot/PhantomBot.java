@@ -134,8 +134,6 @@ public class PhantomBot implements Listener {
     private String clientid;
     private final String channelName;
     private final String ownerName;
-    private final String hostname;
-    private int port;
     private int baseport;
     private double msglimit30;
     private double whisperlimit60;
@@ -199,8 +197,7 @@ public class PhantomBot implements Listener {
     }
 
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel,
-                      String owner, int baseport, String hostname, int port,
-                      double msglimit30, double whisperlimit60, String datastore, String datastoreconfig, String youtubekey,
+                      String owner, int baseport, double msglimit30, double whisperlimit60, String datastore, String datastoreconfig, String youtubekey,
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
                       String keystorepassword, String keypassword, String twitchalertskey, 
                       int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
@@ -297,14 +294,6 @@ public class PhantomBot implements Listener {
         rng = new SecureRandom();
         pollResults = new TreeMap<>();
         voters = new TreeSet<>();
-
-        if (hostname.isEmpty()) {
-            this.hostname = "wss://irc-ws.chat.twitch.tv";
-            this.port = -1;
-        } else {
-            this.hostname = hostname;
-            this.port = port;
-        }
 
         if (msglimit30 > 0) {
             this.msglimit30 = msglimit30;
@@ -675,8 +664,6 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("pollResults", pollResults, 0);
         Script.global.defineProperty("pollVoters", voters, 0);
-        //Script.global.defineProperty("connmgr", connectionManager, 0);
-        Script.global.defineProperty("hostname", hostname, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
@@ -855,25 +842,25 @@ public class PhantomBot implements Listener {
             String randomUser = generateRandomString(10);
             com.gmt2001.Console.out.println("[CONSOLE] Executing testfollows (Count: " + followCount + ", User: " + randomUser + ")");
             for (int i = 0; i < followCount; i++) {
-                EventBus.instance().post(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.instance().getChannel("#" + this.channel)));
+                EventBus.instance().post(new TwitchFollowEvent(randomUser + "_" + i, this.channel));
             }
         }
 
         if (message.equals("testonline")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testonline");
-            EventBus.instance().post(new TwitchOnlineEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchOnlineEvent(this.channel));
             return;
         }
 
         if (message.equals("testoffline")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testoffline");
-            EventBus.instance().post(new TwitchOfflineEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchOfflineEvent(this.channel));
             return;
         }
 
         if (message.equals("testhost")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testhost");
-            EventBus.instance().post(new TwitchHostedEvent(this.username, PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchHostedEvent(this.username, this.channel));
             return;
         }
 
@@ -891,13 +878,13 @@ public class PhantomBot implements Listener {
       
         if (message.equals("testsub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testsub");
-            //EventBus.instance().post(new NewSubscriberEvent(session, PhantomBot.instance().getChannel("#" + this.channel), this.username));
+            EventBus.instance().post(new NewSubscriberEvent(session, this.channel, this.username));
             return;
         }
 
         if (message.equals("testresub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testresub");
-           // EventBus.instance().post(new NewReSubscriberEvent(session, PhantomBot.instance().getChannel("#" + this.channel), this.username, "5"));
+            EventBus.instance().post(new NewReSubscriberEvent(session, this.channel, this.username, "5"));
             return;
         }
 
@@ -1241,8 +1228,6 @@ public class PhantomBot implements Listener {
                     data += "clientid=" + clientid + "\r\n";
                     data += "owner=" + ownerName + "\r\n";
                     data += "baseport=" + baseport + "\r\n";
-                    data += "hostname=" + hostname + "\r\n";
-                    data += "port=" + port + "\r\n";
                     data += "msglimit30=" + msglimit30 + "\r\n";
                     data += "whisperlimit60=" + whisperlimit60 + "\r\n";
                     data += "datastore=" + datastore + "\r\n";
@@ -1552,9 +1537,7 @@ public class PhantomBot implements Listener {
         String clientid = "";
         String channel = "";
         String owner = "";
-        String hostname = "";
         int baseport = 25000;
-        int port = 0;
         double msglimit30 = 0;
         double whisperlimit60 = 0;
         String datastore = "";
@@ -1590,8 +1573,6 @@ public class PhantomBot implements Listener {
                                      + "    [channel=<channel to join>]\r\n"
                                      + "    [owner=<bot owner username>]\r\n"
                                      + "    [baseport=<bot webserver port>]\r\n"
-                                     + "    [hostname=<custom irc server>]\r\n"
-                                     + "    [port=<custom irc port>]\r\n"
                                      + "    [msglimit30=<message limit per 30 seconds>]\r\n"
                                      + "    [whisperlimit60=<whisper limit per 60 seconds>]\r\n"
                                      + "    [youtubekey=<youtube api key>]\r\n"
@@ -1707,12 +1688,6 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("baseport=") && line.length() > 10) {
                         baseport = Integer.parseInt(line.substring(9));
-                    }
-                    if (line.startsWith("hostname=") && line.length() > 10) {
-                        hostname = line.substring(9);
-                    }
-                    if (line.startsWith("port=") && line.length() > 6) {
-                        port = Integer.parseInt(line.substring(5));
                     }
                     if (line.startsWith("msglimit30=") && line.length() > 12) {
                         msglimit30 = Double.parseDouble(line.substring(11));
@@ -1886,8 +1861,6 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("channel='" + channel + "'");
                     com.gmt2001.Console.out.println("owner='" + owner + "'");
                     com.gmt2001.Console.out.println("baseport='" + baseport + "'");
-                    com.gmt2001.Console.out.println("hostname='" + hostname + "'");
-                    com.gmt2001.Console.out.println("port='" + port + "'");
                     com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
                     com.gmt2001.Console.out.println("whisperlimit60='" + whisperlimit60 + "'");
                     com.gmt2001.Console.out.println("datastore='" + datastore + "'");
@@ -2020,18 +1993,6 @@ public class PhantomBot implements Listener {
                 if (arg.toLowerCase().startsWith("baseport=") && arg.length() > 10) {
                     if (baseport != Integer.parseInt(arg.substring(9))) {
                         baseport = Integer.parseInt(arg.substring(9));
-                        changed = true;
-                    }
-                }
-                if (arg.toLowerCase().startsWith("hostname=") && arg.length() > 10) {
-                    if (!hostname.equals(arg.substring(9))) {
-                        hostname = arg.substring(9);
-                        changed = true;
-                    }
-                }
-                if (arg.toLowerCase().startsWith("port=") && arg.length() > 6) {
-                    if (port != Integer.parseInt(arg.substring(5))) {
-                        port = Integer.parseInt(arg.substring(5));
                         changed = true;
                     }
                 }
@@ -2180,8 +2141,6 @@ public class PhantomBot implements Listener {
             data += "channel=" + channel + "\r\n";
             data += "owner=" + owner + "\r\n";
             data += "baseport=" + baseport + "\r\n";
-            data += "hostname=" + hostname + "\r\n";
-            data += "port=" + port + "\r\n";
             data += "msglimit30=" + msglimit30 + "\r\n";
             data += "whisperlimit60=" + whisperlimit60 + "\r\n";
             data += "datastore=" + datastore + "\r\n";
@@ -2218,7 +2177,7 @@ public class PhantomBot implements Listener {
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30,
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, msglimit30,
                                              whisperlimit60, datastore, datastoreconfig, youtubekey, webenable, musicenable,
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
                                              webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
@@ -2237,8 +2196,6 @@ public class PhantomBot implements Listener {
         data += "channel=" + this.channelName + "\r\n";
         data += "owner=" + ownerName + "\r\n";
         data += "baseport=" + baseport + "\r\n";
-        data += "hostname=" + hostname + "\r\n";
-        data += "port=" + port + "\r\n";
         data += "msglimit30=" + msglimit30 + "\r\n";
         data += "whisperlimit60=" + whisperlimit60 + "\r\n";
         data += "datastore=" + datastore + "\r\n";

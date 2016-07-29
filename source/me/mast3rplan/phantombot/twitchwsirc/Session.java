@@ -112,7 +112,7 @@ public class Session {
      * leaves the channel.
      *
      */
-    public void leave() {
+    private void leave() {
         twitchWSIRC.send("PART #" + channelName.toLowerCase());
     }
 
@@ -120,7 +120,7 @@ public class Session {
      * joins the channel.
      *
      */
-    public void leave() {
+    private void join() {
         twitchWSIRC.send("JOIN #" + channelName.toLowerCase());
     }
 
