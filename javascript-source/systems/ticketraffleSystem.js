@@ -45,6 +45,7 @@
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
         raffleStatus = true;
         $.inidb.RemoveFile('ticketsList');
+        $.inidb.RemoveFile('entered');
         $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
         entries = "";
         entries = [];
@@ -148,7 +149,7 @@
         totalEntries++;
         totalTickets += times;
         $.inidb.decr('points', user, (times * cost));
-        incr(user, times);
+        incr(user.toLowerCase(), times);
 
         for (var i = 0; i < times; i++) {
             entries.push(user);
@@ -156,7 +157,8 @@
     };
 
     function incr(user, times) {
-        if (!$.inidb.exists('ticketsList', user)) {
+        if (!$.inidb.exists('entered', user)) {
+            $.inidb.set('entered', user, 'true');
             $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
         }
         $.inidb.incr('ticketsList', $.username.resolve(user), times);
