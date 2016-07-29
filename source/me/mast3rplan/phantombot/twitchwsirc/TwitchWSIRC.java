@@ -56,7 +56,7 @@ public class TwitchWSIRC extends WebSocketClient {
     private final String login;
     private final String oAuth;
     private final URI uri;
-    private TwitchWSIRCParser ircParser;
+    private TwitchWSIRCParser twitchWSIRCParser;
     private EventBus eventBus;
     private Session session;
     private Channel channel;
@@ -101,18 +101,40 @@ public class TwitchWSIRC extends WebSocketClient {
     }
 
     /*
+     * Delete an instance of TwitchWSIRC.
+     *
+     * @param  channel Name of the Twitch Channel that relates to an instance to delete.
+     */
+    public void delete(String channelName) {
+        if (instances.containsKey(channelName)) {
+            instances.remove(channelName);
+        }
+    }
+    public void delete() {
+        if (instances.containsKey(this.channelName)) {
+            instances.remove(this.channelName);
+        }
+    }
+
+    /*
      * Connect via WSS. This provides a secure connection to Twitch.
+     *
+     * @param   boolean  true if reconnecting
      *
      * @return  boolean  true on success and false on failure
      */
-    public boolean connectWSS() {
+    public boolean connectWSS(boolean reconnect) {
         try {
-            com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
+            if (reconnect) {
+                com.gmt2001.Console.out.println("Reconnecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
+            } else {
+                com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
+            }
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, null, null);
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
             this.setSocket(sslSocketFactory.createSocket());
-            this.ircParser = new TwitchWSIRCParser(this.getConnection(), channelName, channel, session, eventBus);
+            this.twitchWSIRCParser = new TwitchWSIRCParser(this.getConnection(), channelName, channel, session, eventBus);
             this.connect();
             return true;
         } catch (Exception ex) {
@@ -144,12 +166,15 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        com.gmt2001.Console.out.println("Disconnected from Twitch WS-IRC Server.");
+        if (remote) {
+            com.gmt2001.Console.out.println("Disconnected from Twitch WS-IRC Server due to Remote Hangup.");
+        } else {
+            com.gmt2001.Console.out.println("Disconnected from Twitch WS-IRC Server.");
+        }
         com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
         if (remote) {
-            com.gmt2001.Console.out.println("Attempting to Reconnect to Twitch WS-IRC Server...");
-            connectWSS();
-        } 
+            session.reconnect();
+        }
     }
 
     /*
@@ -164,7 +189,7 @@ public class TwitchWSIRC extends WebSocketClient {
         }
         
         if (message.startsWith(":") || message.startsWith("@")) {
-            ircParser.parseData(message);
+            twitchWSIRCParser.parseData(message);
         }
     }
 

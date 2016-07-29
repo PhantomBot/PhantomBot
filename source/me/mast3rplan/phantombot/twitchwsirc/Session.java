@@ -101,13 +101,50 @@ public class Session {
 
         try {
             this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
-            twitchWSIRC.connectWSS();
+            if (!twitchWSIRC.connectWSS(false)) {
+                com.gmt2001.Console.err.println("Unable to login to Twitch. PhantomBot will exit.");
+                System.exit(0);
+            }
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
+            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed, PhantomBot will exit: " + ex.getMessage());
+            System.exit(0);
         }
     }
 
-     /*
+    /*
+     * Attempts to reconnect to Twitch after a failure.
+     */
+    public void reconnect() {
+        Boolean reconnected = false;
+        int     reconnectCtr = 0;
+        int     sleepTime = 5000;
+        int     maxAttempts = 50;
+
+        while (reconnectCtr != maxAttempts && !reconnected) {
+            reconnectCtr++;
+            try {
+                this.twitchWSIRC.delete();
+                this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.println("TwitchWSIRC URI Failed, PhantomBot will exit: " + ex.getMessage());
+                System.exit(0);
+            }
+            reconnected = twitchWSIRC.connectWSS(true);
+            if (!reconnected) {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.err.println("Sleep failed during reconnect: " + ex.getMessage());
+                }
+            }
+        }
+        if (reconnectCtr == maxAttempts) {
+            com.gmt2001.Console.out.println("Unable to reconnect to Twitch WS-IRC after " + maxAttempts + " attempts, bot will shutdown.");
+            System.exit(0);
+        }
+    }
+
+    /*
      * Starts the timers.
      *
      */
@@ -175,6 +212,13 @@ public class Session {
      */
     public Boolean getAllowSendMessages() {
         return sendMessages;
+    }
+
+    /*
+     * Close the connection to WSIRC.
+     */
+    public void close() {
+        this.twitchWSIRC.close();
     }
 
     /*
