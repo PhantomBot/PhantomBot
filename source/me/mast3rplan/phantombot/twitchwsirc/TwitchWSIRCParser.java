@@ -280,6 +280,10 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void privMsg(String message, String username, Map<String, String> tagsMap) {
+        if (message.startsWith("\001ACTION")) {
+            message = message.replaceAll("\001", "").replace("ACTION", "/me");
+        }
+        
         com.gmt2001.Console.out.println(username + ": " + message);
 
         if (tagsMap.containsKey("display-name")) {
@@ -438,7 +442,7 @@ public class TwitchWSIRCParser {
             if (this.channelName.equalsIgnoreCase(session.getNick())) {
                 if (!moderators.contains(session.getNick())) {
                     moderators.add(session.getNick());
-                    com.gmt2001.Console.debug.println("Bot::" + session.getNick() + "::Moderator::true");
+                    com.gmt2001.Console.debug.println("Caster::Bot::" + session.getNick() + "::Moderator::true");
                     eventBus.postAsync(new IrcChannelUserModeEvent(session, this.channel, session.getNick(), "O", true));
                 }
             }
