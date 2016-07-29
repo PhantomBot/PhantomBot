@@ -107,7 +107,7 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     public boolean connectWSS() {
         try {
-            com.gmt2001.Console.out.println("Connecting to " + this.login + "@" + this.uri.getHost() + " (SSL)");
+            com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, null, null);
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
@@ -144,10 +144,10 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        com.gmt2001.Console.out.println("Disconnected from irc-ws.chat.twitch.tv.");
+        com.gmt2001.Console.out.println("Disconnected from Twitch WS-IRC Server.");
         com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
         if (remote) {
-            com.gmt2001.Console.out.println("Attempting to Reconnect to irc-ws.chat.twitch.tv...");
+            com.gmt2001.Console.out.println("Attempting to Reconnect to Twitch WS-IRC Server...");
             connectWSS();
         } 
     }
