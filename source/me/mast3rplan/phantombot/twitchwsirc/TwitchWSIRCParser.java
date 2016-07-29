@@ -442,12 +442,4 @@ public class TwitchWSIRCParser {
             }
         }
     }
-
-    /*
-     * Handles the RECONNECT event from IRC.
-     *
-     */
-    public void reconnect() {
-        session.reconnect();
-    }
 }
