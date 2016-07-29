@@ -17,7 +17,7 @@
 package me.mast3rplan.phantombot.event.twitchalerts.donate;
 
 import me.mast3rplan.phantombot.event.twitchalerts.TwitchAlertsEvent;
-import me.mast3rplan.phantombot.jerklib.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 
 public class TwitchAlertsDonationInitializedEvent extends TwitchAlertsEvent {
 

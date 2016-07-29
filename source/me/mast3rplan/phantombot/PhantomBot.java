@@ -86,10 +86,6 @@ import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
-import me.mast3rplan.phantombot.jerklib.Channel;
-import me.mast3rplan.phantombot.jerklib.ConnectionManager;
-import me.mast3rplan.phantombot.jerklib.Profile;
-import me.mast3rplan.phantombot.jerklib.Session;
 import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
 import me.mast3rplan.phantombot.ytplayer.YTWebSocketServer;
 import me.mast3rplan.phantombot.script.Script;
@@ -101,11 +97,12 @@ import me.mast3rplan.phantombot.panel.PanelSocketServer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-// import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
-// import java.net.URI;
+import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
+import java.net.URI;
 
 public class PhantomBot implements Listener {
-
     private String mysql_db_conn;
     private String mysql_db_host;
     private String mysql_db_port;
@@ -137,8 +134,6 @@ public class PhantomBot implements Listener {
     private String clientid;
     private final String channelName;
     private final String ownerName;
-    private final String hostname;
-    private int port;
     private int baseport;
     private double msglimit30;
     private double whisperlimit60;
@@ -157,11 +152,7 @@ public class PhantomBot implements Listener {
     private SecureRandom rng;
     private TreeMap<String, Integer> pollResults;
     private TreeSet<String> voters;
-    private ConnectionManager connectionManager;
-    // private ConnectionManager hostConnectionManager; // new hostHandler
-    private final Session session;
-    // private final Session hostSession; // new HostHandler
-    public static Session tgcSession;
+    private Session session;
     private Channel channel;
     private final HashMap<String, Channel> channels;
     private FollowersCache followersCache;
@@ -192,8 +183,7 @@ public class PhantomBot implements Listener {
     public static String log_timezone = "GMT";
     private UsernameCache usernameCache;
     private ScriptEventManager scriptEventManager;
-
-    // private TwitchWSIRC twitchWSIRC;
+    private boolean timers = false;
 
     public static PhantomBot instance() {
         return instance;
@@ -208,8 +198,7 @@ public class PhantomBot implements Listener {
     }
 
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel,
-                      String owner, int baseport, String hostname, int port,
-                      double msglimit30, double whisperlimit60, String datastore, String datastoreconfig, String youtubekey,
+                      String owner, int baseport, double msglimit30, double whisperlimit60, String datastore, String datastoreconfig, String youtubekey,
                       boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
                       String keystorepassword, String keypassword, String twitchalertskey, 
                       int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
@@ -297,13 +286,6 @@ public class PhantomBot implements Listener {
         this.streamtipkey = streamtipkey;
         this.streamtiplimit = streamtiplimit;
 
-        Profile profile = new Profile(username.toLowerCase());
-        this.connectionManager = new ConnectionManager(profile);
-
-        // Profile hostProfile = new Profile(owner.toLowerCase()); // new hosted method 
-        // this.hostConnectionManager = new ConnectionManager(hostProfile); // new hosted method
-       
-
         if (clientid.length() == 0) {
             this.clientid = "rp2uhin43rvpr70nzwnh07417x2gck0";
         } else {
@@ -313,14 +295,6 @@ public class PhantomBot implements Listener {
         rng = new SecureRandom();
         pollResults = new TreeMap<>();
         voters = new TreeSet<>();
-
-        if (hostname.isEmpty()) {
-            this.hostname = "irc.chat.twitch.tv";
-            this.port = 6667;
-        } else {
-            this.hostname = hostname;
-            this.port = port;
-        }
 
         if (msglimit30 > 0) {
             this.msglimit30 = msglimit30;
@@ -373,9 +347,6 @@ public class PhantomBot implements Listener {
 
         this.init();
 
-        /*
-         * try { Thread.sleep(3000); } catch (InterruptedException ex) { }
-         */
         if (SystemUtils.IS_OS_LINUX && !interactive) {
             try {
                 java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
@@ -411,13 +382,10 @@ public class PhantomBot implements Listener {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
+        
+        this.channel = Channel.instance(this.channelName, this.username, oauth, EventBus.instance());
 
         channels = new HashMap<>();
-
-        this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
-
-        //*Removed this because we can handle whispers in one irc server now.
-        //TwitchGroupChatHandler(this.oauth, this.connectionManager);
 
         TwitchAPIv3.instance().SetClientID(this.clientid);
         TwitchAPIv3.instance().SetOAuth(apioauth);
@@ -429,23 +397,7 @@ public class PhantomBot implements Listener {
         StreamTipAPI.instance().SetDonationPullLimit(streamtiplimit);
         StreamTipAPI.instance().SetClientId(streamtipid);
 
-        this.session.addIRCEventListener(new IrcEventHandler());
-
         usernameCache = UsernameCache.instance();
-
-        /* Connect caster to Twitch IRC for host monitoring - disabled for now. */
-        // com.gmt2001.Console.out.println("Sending to Extra connection");
-        // this.hostSession = hostConnectionManager.requestConnection(this.hostname, this.port, casterOauth);
-        // this.hostSession.addIRCEventListener(new IrcHostHandler());
-
-/*
-        try {
-            this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), this.channelName, this.username, oauth);
-            twitchWSIRC.connectWSS();
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed: " + ex.getMessage());
-        }
- */       
     }
 
     public boolean isNightlyBuild() {
@@ -485,7 +437,7 @@ public class PhantomBot implements Listener {
    }
 
     public Session getSession() {
-        return session;
+        return this.session;
     }
 
     public boolean isExiting() {
@@ -713,9 +665,6 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("pollResults", pollResults, 0);
         Script.global.defineProperty("pollVoters", voters, 0);
-        Script.global.defineProperty("connmgr", connectionManager, 0);
-        Script.global.defineProperty("hostname", hostname, 0);
-        //Script.global.defineProperty("groupChat", groupChat, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
@@ -745,7 +694,8 @@ public class PhantomBot implements Listener {
     public void onExit() {
         com.gmt2001.Console.out.println("[SHUTDOWN] Bot shutting down...");
 
-        com.gmt2001.Console.out.println("[SHUTDOWN] Stopping event & message dispatching...");
+        com.gmt2001.Console.out.println("[SHUTDOWN] Stopping events & message dispatching...");
+        this.session.setAllowSendMessages(false);
         exiting = true;
 
         if (webenabled) {
@@ -796,66 +746,39 @@ public class PhantomBot implements Listener {
         dataStoreObj.SaveAll(true);
 
         com.gmt2001.Console.out.println("[SHUTDOWN] Disconnecting from Twitch IRC...");
-        connectionManager.quit();
-        // hostConnectionManager.quit(); // new hostHandler
 
         com.gmt2001.Console.out.println("[SHUTDOWN] Waiting for JVM to exit...");
     }
 
     @Subscribe
-    public void onIRCConnectComplete(IrcConnectCompleteEvent event) {
-        if (event.getSession().equals(this.session)) {
-            this.session.sayRaw("CAP REQ :twitch.tv/tags");
-            this.session.sayRaw("CAP REQ :twitch.tv/commands");
-            this.session.sayRaw("CAP REQ :twitch.tv/membership");
+    public void onIRCJoinComplete(IrcJoinCompleteEvent event) {
+        this.session = event.getSession();
 
-            if (channelName.toLowerCase().contains(",")) {
-                String[] c = channelName.toLowerCase().split(",");
-
-                for (String ch : c) {
-                    this.session.join("#" + ch);
-                }
-            } else {
-                this.session.join("#" + channelName.toLowerCase());
-            }
-        } else {
-            tgcSession.sayRaw("CAP REQ :twitch.tv/tags");
-            tgcSession.sayRaw("CAP REQ :twitch.tv/commands");
-            tgcSession.sayRaw("CAP REQ :twitch.tv/membership");
+        event.getSession().saySilent(".mods");
+        
+        if (!timers) {
+            event.getSession().startTimers();
+            timers = true;
         }
 
-        //com.gmt2001.Console.out.println("Connected to server\nJoining channel #" + channelName.toLowerCase());
-    }
+        this.emotesCache = EmotesCache.instance(this.channelName);
+        this.followersCache = FollowersCache.instance(this.channelName);
+        this.hostCache = ChannelHostCache.instance(this.channelName);
+        this.subscribersCache = SubscribersCache.instance(this.channelName);
+        this.twitchCache = TwitchCache.instance(this.channelName);
+        this.channelUsersCache = ChannelUsersCache.instance(this.channelName);
 
-    @Subscribe
-    public void onIRCJoinComplete(IrcJoinCompleteEvent event) {
-        this.channel = event.getChannel();
-
-        this.channels.put(this.channel.getName(), this.channel);
-
-        //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
-        session.sayChannel(this.channel, ".mods");
-
-        this.emotesCache = EmotesCache.instance(this.channel.getName().toLowerCase());
-        this.followersCache = FollowersCache.instance(this.channel.getName().toLowerCase());
-        this.hostCache = ChannelHostCache.instance(this.channel.getName().toLowerCase());
-        this.subscribersCache = SubscribersCache.instance(this.channel.getName().toLowerCase());
-        this.twitchCache = TwitchCache.instance(this.channel.getName().toLowerCase());
         if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
-            this.donationsCache = DonationsCache.instance(this.channel.getName().toLowerCase());
+            this.donationsCache = DonationsCache.instance(this.channelName);
         }
 
         if (this.streamtipkey != null && this.streamtipkey.length() > 1) {
-            this.streamTipCache = StreamTipCache.instance(this.channel.getName().toLowerCase());
+            this.streamTipCache = StreamTipCache.instance(this.channelName);
         }
 
-        this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
-
-        if (this.twitterUser.length() > 0 &&
-            this.twitter_access_token.length() > 0 && this.twitter_secret_token.length() > 0 && this.twitter_consumer_key.length() > 0 && this.twitter_consumer_secret.length() > 0) 
-        {
+        if (this.twitterUser.length() > 0 && this.twitter_access_token.length() > 0 && this.twitter_secret_token.length() > 0 && this.twitter_consumer_key.length() > 0 && this.twitter_consumer_secret.length() > 0) {
             if (this.twitterAuthenticated) {
-                this.twitterCache = TwitterCache.instance(this.channel.getName().toLowerCase());
+                this.twitterCache = TwitterCache.instance(this.channelName);
             } else {
                 com.gmt2001.Console.out.println("Disabling Twitter Features. Correct Authentication Issues and Restart.");
             }
@@ -876,33 +799,26 @@ public class PhantomBot implements Listener {
     public void onIRCPrivateMessage(IrcPrivateMessageEvent event) {
         if (event.getSender().equalsIgnoreCase("jtv")) {
             String message = event.getMessage().toLowerCase();
-            
-            com.gmt2001.Console.debug.println("Message From jtv: " + event.getSender() + ": " + event.getMessage());
 
             if (message.startsWith("the moderators of this room are: ")) {
                 String[] spl = message.substring(33).split(", ");
 
                 for (String spl1 : spl) {
                     if (spl1.equalsIgnoreCase(this.username)) {
-                        channel.setAllowSendMessages(true);
+                        session.setAllowSendMessages(true);
                     }
                 }
             }
-        }
-        if (!event.getSender().equalsIgnoreCase("jtv") && !event.getSender().equalsIgnoreCase("twitchnotify")) {
-            com.gmt2001.Console.out.println("Whisper: " + usernameCache.resolve(event.getSender().toLowerCase(), event.getTags()) + ": " + event.getMessage());
         }
     }
 
     @Subscribe
     public void onIRCChannelUserMode(IrcChannelUserModeEvent event) {
-        if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
-                && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName())) {
+        if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o") && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName())) {
             if (!event.getAdd()) {
-                session.sayChannel(this.channel, ".mods");
+                event.getSession().saySilent(".mods");
             }
-
-            channel.setAllowSendMessages(event.getAdd());
+            session.setAllowSendMessages(event.getAdd());
         }
     }
 
@@ -932,25 +848,25 @@ public class PhantomBot implements Listener {
             String randomUser = generateRandomString(10);
             com.gmt2001.Console.out.println("[CONSOLE] Executing testfollows (Count: " + followCount + ", User: " + randomUser + ")");
             for (int i = 0; i < followCount; i++) {
-                EventBus.instance().post(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.instance().getChannel("#" + this.channel)));
+                EventBus.instance().post(new TwitchFollowEvent(randomUser + "_" + i, this.channel));
             }
         }
 
         if (message.equals("testonline")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testonline");
-            EventBus.instance().post(new TwitchOnlineEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchOnlineEvent(this.channel));
             return;
         }
 
         if (message.equals("testoffline")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testoffline");
-            EventBus.instance().post(new TwitchOfflineEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchOfflineEvent(this.channel));
             return;
         }
 
         if (message.equals("testhost")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testhost");
-            EventBus.instance().post(new TwitchHostedEvent(this.username, PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchHostedEvent(this.username, this.channel));
             return;
         }
 
@@ -968,13 +884,13 @@ public class PhantomBot implements Listener {
       
         if (message.equals("testsub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testsub");
-            EventBus.instance().post(new NewSubscriberEvent(session, PhantomBot.instance().getChannel("#" + this.channel), this.username));
+            EventBus.instance().post(new NewSubscriberEvent(session, this.channel, this.username));
             return;
         }
 
         if (message.equals("testresub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testresub");
-            EventBus.instance().post(new NewReSubscriberEvent(session, PhantomBot.instance().getChannel("#" + this.channel), this.username, "5"));
+            EventBus.instance().post(new NewReSubscriberEvent(session, this.channel, this.username, "5"));
             return;
         }
 
@@ -1312,14 +1228,12 @@ public class PhantomBot implements Listener {
                     data += "apioauth=" + apioauth + "\r\n";
                     data += "paneluser=" + paneluser + "\r\n";
                     data += "panelpassword=" + panelpassword + "\r\n";
-                    data += "channel=" + channel.getName().replace("#", "") + "\r\n";
+                    data += "channel=" + channelName.replace("#", "") + "\r\n";
                     data += "webauth=" + webauth + "\r\n";
                     data += "webauthro=" + webauthro + "\r\n";
                     data += "clientid=" + clientid + "\r\n";
                     data += "owner=" + ownerName + "\r\n";
                     data += "baseport=" + baseport + "\r\n";
-                    data += "hostname=" + hostname + "\r\n";
-                    data += "port=" + port + "\r\n";
                     data += "msglimit30=" + msglimit30 + "\r\n";
                     data += "whisperlimit60=" + whisperlimit60 + "\r\n";
                     data += "datastore=" + datastore + "\r\n";
@@ -1629,9 +1543,7 @@ public class PhantomBot implements Listener {
         String clientid = "";
         String channel = "";
         String owner = "";
-        String hostname = "";
         int baseport = 25000;
-        int port = 0;
         double msglimit30 = 0;
         double whisperlimit60 = 0;
         String datastore = "";
@@ -1667,8 +1579,6 @@ public class PhantomBot implements Listener {
                                      + "    [channel=<channel to join>]\r\n"
                                      + "    [owner=<bot owner username>]\r\n"
                                      + "    [baseport=<bot webserver port>]\r\n"
-                                     + "    [hostname=<custom irc server>]\r\n"
-                                     + "    [port=<custom irc port>]\r\n"
                                      + "    [msglimit30=<message limit per 30 seconds>]\r\n"
                                      + "    [whisperlimit60=<whisper limit per 60 seconds>]\r\n"
                                      + "    [youtubekey=<youtube api key>]\r\n"
@@ -1784,12 +1694,6 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("baseport=") && line.length() > 10) {
                         baseport = Integer.parseInt(line.substring(9));
-                    }
-                    if (line.startsWith("hostname=") && line.length() > 10) {
-                        hostname = line.substring(9);
-                    }
-                    if (line.startsWith("port=") && line.length() > 6) {
-                        port = Integer.parseInt(line.substring(5));
                     }
                     if (line.startsWith("msglimit30=") && line.length() > 12) {
                         msglimit30 = Double.parseDouble(line.substring(11));
@@ -1963,8 +1867,6 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.out.println("channel='" + channel + "'");
                     com.gmt2001.Console.out.println("owner='" + owner + "'");
                     com.gmt2001.Console.out.println("baseport='" + baseport + "'");
-                    com.gmt2001.Console.out.println("hostname='" + hostname + "'");
-                    com.gmt2001.Console.out.println("port='" + port + "'");
                     com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
                     com.gmt2001.Console.out.println("whisperlimit60='" + whisperlimit60 + "'");
                     com.gmt2001.Console.out.println("datastore='" + datastore + "'");
@@ -2097,18 +1999,6 @@ public class PhantomBot implements Listener {
                 if (arg.toLowerCase().startsWith("baseport=") && arg.length() > 10) {
                     if (baseport != Integer.parseInt(arg.substring(9))) {
                         baseport = Integer.parseInt(arg.substring(9));
-                        changed = true;
-                    }
-                }
-                if (arg.toLowerCase().startsWith("hostname=") && arg.length() > 10) {
-                    if (!hostname.equals(arg.substring(9))) {
-                        hostname = arg.substring(9);
-                        changed = true;
-                    }
-                }
-                if (arg.toLowerCase().startsWith("port=") && arg.length() > 6) {
-                    if (port != Integer.parseInt(arg.substring(5))) {
-                        port = Integer.parseInt(arg.substring(5));
                         changed = true;
                     }
                 }
@@ -2257,8 +2147,6 @@ public class PhantomBot implements Listener {
             data += "channel=" + channel + "\r\n";
             data += "owner=" + owner + "\r\n";
             data += "baseport=" + baseport + "\r\n";
-            data += "hostname=" + hostname + "\r\n";
-            data += "port=" + port + "\r\n";
             data += "msglimit30=" + msglimit30 + "\r\n";
             data += "whisperlimit60=" + whisperlimit60 + "\r\n";
             data += "datastore=" + datastore + "\r\n";
@@ -2295,7 +2183,7 @@ public class PhantomBot implements Listener {
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30,
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, msglimit30,
                                              whisperlimit60, datastore, datastoreconfig, youtubekey, webenable, musicenable,
                                              usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
                                              webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
@@ -2314,8 +2202,6 @@ public class PhantomBot implements Listener {
         data += "channel=" + this.channelName + "\r\n";
         data += "owner=" + ownerName + "\r\n";
         data += "baseport=" + baseport + "\r\n";
-        data += "hostname=" + hostname + "\r\n";
-        data += "port=" + port + "\r\n";
         data += "msglimit30=" + msglimit30 + "\r\n";
         data += "whisperlimit60=" + whisperlimit60 + "\r\n";
         data += "datastore=" + datastore + "\r\n";
@@ -2428,12 +2314,17 @@ public class PhantomBot implements Listener {
             public void run() {
                 String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
                 if (newVersionInfo != null) {
-                    com.gmt2001.Console.out.println();
-                    com.gmt2001.Console.out.println("New PhantomBot Release Detected: " + newVersionInfo[0]);
-                    com.gmt2001.Console.out.println("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
-                    com.gmt2001.Console.out.println("Download Link: " + newVersionInfo[1]);
-                    com.gmt2001.Console.out.println("A reminder will be provided in 24 hours!");
-                    com.gmt2001.Console.out.println();
+                    try {
+                        Thread.sleep(4000); 
+                        com.gmt2001.Console.out.println();
+                        com.gmt2001.Console.out.println("New PhantomBot Release Detected: " + newVersionInfo[0]);
+                        com.gmt2001.Console.out.println("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
+                        com.gmt2001.Console.out.println("Download Link: " + newVersionInfo[1]);
+                        com.gmt2001.Console.out.println("A reminder will be provided in 24 hours!");
+                        com.gmt2001.Console.out.println();
+                    } catch (InterruptedException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
 
                     if (webenabled) {
                         dataStoreObj.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);

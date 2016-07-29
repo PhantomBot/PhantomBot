@@ -529,24 +529,6 @@
     };
 
     /**
-     * @event ircJoinComplete
-     */
-    $.bind('ircJoinComplete', function(event) {
-        var usersIterator = event.getChannel().getNicks().iterator(),
-            username;
-
-        lastJoinPart = $.systemTime();
-
-        while (usersIterator.hasNext()) {
-            username = usersIterator.next().toLowerCase();
-            if (!userExists(username.toLowerCase())) {
-                users.push([username, $.systemTime()]);
-                $.checkGameWispSub(username);
-            }
-        }
-    });
-
-    /**
      * @event ircChannelJoinUpdate
      */
     $.bind('ircChannelJoinUpdate', function(event) {

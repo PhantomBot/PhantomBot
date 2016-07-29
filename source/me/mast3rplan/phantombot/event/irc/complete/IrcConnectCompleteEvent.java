@@ -16,7 +16,7 @@
  */
 package me.mast3rplan.phantombot.event.irc.complete;
 
-import me.mast3rplan.phantombot.jerklib.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class IrcConnectCompleteEvent extends IrcCompleteEvent {
 
