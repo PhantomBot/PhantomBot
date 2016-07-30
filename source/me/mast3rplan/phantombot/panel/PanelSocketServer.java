@@ -148,6 +148,15 @@ public class PanelSocketServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket webSocket, String jsonString) {
+        try {
+            MessageRunnable messageRunnable = new MessageRunnable(webSocket, jsonString);
+            new Thread(messageRunnable).start();
+        } catch (Exception ex) {
+            handleMessage(webSocket, jsonString);
+        }
+    }
+
+    private void handleMessage(WebSocket webSocket, String jsonString) {
         JSONObject jsonObject;
         JSONArray  jsonArray;
         wsSession  sessionData;
@@ -369,7 +378,9 @@ public class PanelSocketServer extends WebSocketServer {
         return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
     }
 
+    // -----------------------------------------------------------------------
     // Class for storing Session data.
+    // -----------------------------------------------------------------------
     private class wsSession {
         Boolean authenticated;
         Boolean readonly;
@@ -403,4 +414,20 @@ public class PanelSocketServer extends WebSocketServer {
         }
     }
 
+    // -----------------------------------------------------------------------
+    // Class for handling threads for the execution of received data.
+    // -----------------------------------------------------------------------
+    public class MessageRunnable implements Runnable {
+        private WebSocket webSocket;
+        private String jsonString;
+
+        public MessageRunnable(WebSocket webSocket, String jsonString) {
+            this.webSocket = webSocket;
+            this.jsonString = jsonString;
+        }
+
+        public void run() {
+            handleMessage(webSocket, jsonString);
+        }
+    }
 }
