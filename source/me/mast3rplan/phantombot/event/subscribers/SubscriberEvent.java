@@ -18,8 +18,8 @@
 package me.mast3rplan.phantombot.event.subscribers;
 
 import me.mast3rplan.phantombot.event.Event;
-import me.mast3rplan.phantombot.jerklib.Channel;
-import me.mast3rplan.phantombot.jerklib.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class SubscriberEvent extends Event {
 

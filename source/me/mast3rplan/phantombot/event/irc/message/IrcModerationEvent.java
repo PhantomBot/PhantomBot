@@ -17,8 +17,8 @@
 package me.mast3rplan.phantombot.event.irc.message;
 
 import java.util.Map;
-import me.mast3rplan.phantombot.jerklib.Channel;
-import me.mast3rplan.phantombot.jerklib.Session;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Session;
 
 public class IrcModerationEvent extends IrcMessageEvent {
 

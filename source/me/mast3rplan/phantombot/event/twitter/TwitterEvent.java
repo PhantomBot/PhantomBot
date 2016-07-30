@@ -17,7 +17,7 @@
 package me.mast3rplan.phantombot.event.twitter;
 
 import me.mast3rplan.phantombot.event.Event;
-import me.mast3rplan.phantombot.jerklib.Channel;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 
 public class TwitterEvent extends Event {
 

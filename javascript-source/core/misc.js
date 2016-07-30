@@ -102,8 +102,7 @@
     function say(message) {
         if ($.channel !== null) {
             if (message.startsWith('.')) {
-                $.channel.say(message);
-                $.consoleLn('[CHAT] ' + message);
+                $.session.say(message);
             }
 
             if (message.startsWith('@') && message.endsWith(',')) {
@@ -112,12 +111,10 @@
     
             if (!message.startsWith('.')) {
                 if (getIniDbBoolean('settings', 'response_@chat', true) && (!getIniDbBoolean('settings', 'response_action', false) || message.startsWith('/w'))) {
-                    $.channel.say(message);
-                    $.consoleLn('[CHAT] ' + message);
+                    $.session.say(message);
                 } else {
                     if (getIniDbBoolean('settings', 'response_@chat', true) && getIniDbBoolean('settings', 'response_action', false)) {
-                        $.channel.say('/me ' + message);
-                        $.consoleLn('[COLOR CHAT] ' + message);
+                        $.session.say('/me ' + message);
                     }
                     if (!getIniDbBoolean('settings', 'response_@chat')) {
                         $.consoleLn('[MUTED] ' + message);
