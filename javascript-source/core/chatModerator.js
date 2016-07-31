@@ -1757,7 +1757,7 @@
             /**
              * @commandpath moderation blacklisttimeouttime [seconds] - Sets the timeout time for the blacklist
              */
-            if (command.equalsIgnoreCase('blacklisttimeouttime')) {
+            if (action.equalsIgnoreCase('blacklisttimeouttime')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklisttimeouttime.usage', blacklistTimeoutTime));
                     return;
