@@ -50,7 +50,15 @@
             }
 
             if (subCommand.equalsIgnoreCase('list')) {
-                $.paginateArray(hookKeys, 'audiohook.list', ', ', true, sender);
+                if (args[1] === undefined) {
+                    var totalPages = $.paginateArray(hookKeys, 'audiohook.list', ', ', true, sender, 1);
+                    $.say($.whisperPrefix(sender) + $.lang.get('audiohook.list.total', totalPages));
+                } else if (isNaN(args[1])) {
+                    var totalPages = $.paginateArray(hookKeys, 'audiohook.list', ', ', true, sender, 1);
+                    $.say($.whisperPrefix(sender) + $.lang.get('audiohook.list.total', totalPages));
+                } else {
+                    $.paginateArray(hookKeys, 'audiohook.list', ', ', true, sender, parseInt(args[1]));
+                }
                 return;
             }
         }
