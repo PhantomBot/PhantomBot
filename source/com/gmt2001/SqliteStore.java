@@ -138,6 +138,7 @@ public class SqliteStore extends DataStore {
         try {
             if (connection != null) {
                 connection.close();
+                connection = null;
             }
         } catch (SQLException ex) {
            com.gmt2001.Console.err.printStackTrace(ex);
