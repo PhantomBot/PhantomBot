@@ -83,13 +83,13 @@
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('take')">Take</button>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('add')">Add</button>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('set')">Set</button>
-            <input type="text" class="form-control" id="adjustUserTimeNameInput" placeholder="Username" />
+            <input type="text" class="form-control" id="adjustUserTimeNameInput" placeholder="Username or click a row below" />
             <input type="number" min="0" class="form-control" id="adjustUserTimeSecsInput" placeholder="Seconds" />
         </div>
         <br>
 
         <div>
-            User Time Table
+            <span id="userTimeTableTitle">User Time Table</span>
             <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setTimeSort('time_desc')">
                 <i class="fa fa-clock-o" /><i class="fa fa-arrow-down" />
             </button>
@@ -104,7 +104,7 @@
             </button>
         </div>
         <br>
-        <div id="userTimeTable" style="height: 400px; overflow: auto;" />
+        <div id="userTimeTable" style="height: 470px; overflow: auto;" />
     </div>
 </div>
 
