@@ -228,12 +228,7 @@ public class TwitchWSIRCParser {
 
         /* Execute the event parser if a parser exists. */
         if (parserMap.containsKey(eventCode)) {
-            try {
-                CommandRunnable commandRunnable = new CommandRunnable(eventCode, message, userName, tagsMap);
-                new Thread(commandRunnable).start();
-            } catch (Exception ex) {
-                parserMap.get(eventCode).exec(message, userName, tagsMap);
-            }
+            parserMap.get(eventCode).exec(message, userName, tagsMap);
         }
     }
 
@@ -451,27 +446,6 @@ public class TwitchWSIRCParser {
                     eventBus.postAsync(new IrcChannelUserModeEvent(session, this.channel, session.getNick(), "O", true));
                 }
             }
-        }
-    }
-
-    /*
-     * Class for startin threads in the background for received events.
-     */
-    public class CommandRunnable implements Runnable {
-        private String eventCode;
-        private String message;
-        private String userName;
-        private Map<String, String> tagsMap;
-
-        public CommandRunnable(String eventCode, String message, String userName, Map<String, String> tagsMap) {
-            this.eventCode = eventCode;
-            this.message = message;
-            this.userName = userName;
-            this.tagsMap = tagsMap;
-        }
-
-        public void run() {
-            parserMap.get(eventCode).exec(message, userName, tagsMap);
         }
     }
 }
