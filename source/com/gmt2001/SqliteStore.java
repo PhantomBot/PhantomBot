@@ -134,6 +134,16 @@ public class SqliteStore extends DataStore {
         return connection;
     }
 
+    public void CloseConnection() {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException ex) {
+           com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
