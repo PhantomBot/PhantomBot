@@ -37,6 +37,7 @@ import com.illusionaryone.GitHubAPIv3;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -95,6 +96,7 @@ import me.mast3rplan.phantombot.script.ScriptManager;
 import me.mast3rplan.phantombot.panel.PanelSocketServer;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.lang3.SystemUtils;
 
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
@@ -1322,6 +1324,13 @@ public class PhantomBot implements Listener {
         MySQLStore mysql = MySQLStore.instance();
         SqliteStore sqlite = SqliteStore.instance();
 
+        File backupFile = new File("phantombot.db.backup");
+        if (backupFile.exists()) {
+            com.gmt2001.Console.out.println("A phantombot.db.backup file already exists. Please rename or remove this file first.");
+            com.gmt2001.Console.out.println("Exiting PhantomBot");
+            System.exit(0);
+        }
+
         com.gmt2001.Console.out.println("  Wiping Existing MySQL Tables...");
         String[] deltables = mysql.GetFileList();
         for (String table : deltables) {
@@ -1341,9 +1350,11 @@ public class PhantomBot implements Listener {
                 }
             }
         }
+        sqlite.CloseConnection();
         com.gmt2001.Console.out.println("  Finished Converting Tables.");
 
         com.gmt2001.Console.out.println("  Moving phantombot.db to phantombot.db.backup");
+
         try {
             FileUtils.moveFile(new java.io.File("phantombot.db"), new java.io.File("phantombot.db.backup"));
         } catch (IOException ex) {
