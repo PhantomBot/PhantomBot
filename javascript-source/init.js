@@ -345,8 +345,8 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('rejoin')) {
-                $.say($.lang.get('init.rejoin', 'irc-ws.chat.twitch.tv'));
+            if (action.equalsIgnoreCase('rejoin') || action.equalsIgnoreCase('reconnect')) {
+                $.say($.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' requested a reconnect!');
                 setTimeout(function () { $.session.reconnect(); }, 100);
                 setTimeout(function () { $.say($.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully rejoined!')) }, 1000);
@@ -455,7 +455,7 @@
                 return;
             }
             $.log.event(username + ' requested a reconnect!');
-            $.session.rejoin();
+            $.session.reconnect();
         }
 
         /* Used for the panel, no command path needed*/
