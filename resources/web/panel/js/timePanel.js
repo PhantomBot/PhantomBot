@@ -25,8 +25,7 @@
  */
 (function() {
 
-    var sortType = 'alpha_asc',
-        timeLevel = "",
+    var timeLevel = "",
         keepTimeWhenOffline = "",
         modTimePermToggle = "",
         commandName = "",
@@ -103,38 +102,38 @@
                     username = "",
                     timeValue = "",
                     hrsValue = "",
-                    html = "";
+                    html = "",
+                    pad = function(i) { return (i < 10 ? '0' + i : i) };
 
                 $("#userTimeTableTitle").html("User Time Table (Refreshing <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>)");
-                if (panelMatch(sortType, 'time_asc')) {
-                    timeTableData.sort(sortTimeTable_time_asc);
-                } else if (panelMatch(sortType, 'time_desc')) {
-                    timeTableData.sort(sortTimeTable_time_desc);
-                } else if (panelMatch(sortType, 'alpha_asc')) {
-                    timeTableData.sort(sortTimeTable_alpha_asc);
-                } else if (panelMatch(sortType, 'alpha_desc')) {
-                    timeTableData.sort(sortTimeTable_alpha_desc);
-                }
-
+                timeTableData.sort(sortTimeTable_alpha_asc);
                 
-                html += "<table class='table' data-paging='true' data-paging-size='8'" +
+                html  = "<table class='tableTime' data-paging='true' data-paging-size='8'" +
                         "       data-filtering='true' data-filter-delay='200'" +
-                        "       data-paging-count-format='Rows {PF}-{PL} / {TR}' data-show-header='false'>";
-                html += "<thead><tr><th data-breakpoints='xs'>Username</th><th data-filterable='false'>Time</th></tr></thead><tbody>";
+                        "       data-sorting='true'" +
+                        "       data-paging-count-format='Rows {PF}-{PL} / {TR}' data-show-header='true'>";
+                html += "<thead><tr>" +
+                        "    <th data-breakpoints='xs'>Username</th>" +
+                        "    <th data-filterable='false' data-type='number'>Time (Secs)</th>" +
+                        "    <th data-filterable='false' data-type='number'>Time (Hrs)</th>" +
+                        "</tr></thead><tbody>";
+
                 for (var idx = 0; idx < timeTableData.length; idx++) {
                     username = timeTableData[idx]['key'];
                     timeValue = timeTableData[idx]['value'];
-                    hrsValue = "(" + Math.floor(timeValue / 3600) + " hrs)";
+                    hrsValue = (Math.floor(timeValue / 3600));
+                
                     html += "<tr onclick='$.copyUserTime(\""+username+"\", \""+timeValue+"\")' class=\"textList\">" +
                             "    <td style='width: 50%'>" + username + "</td>" +
-                            "    <td style='width: 50%'>" + timeValue + " " + hrsValue + "</td>" +
+                            "    <td style='width: 25%'>" + timeValue + "</td>" +
+                            "    <td style='width: 25%'>" + hrsValue + "</td>" +
                             "</tr>";
                 }
                 html += "</tbody></table>";
                 
                 setTimeout(function() { 
                     $('#userTimeTable').html(html);
-                    $('.table').footable({
+                    $('.tableTime').footable({
                         'on': { 'postdraw.ft.table': function(e, ft) { $("#userTimeTableTitle").html("User Time Table"); } }
                     });
                 }, TIMEOUT_WAIT_TIME);
@@ -179,17 +178,8 @@
      * @param {Object} a
      * @param {Object} b
      */
-    function sortTimeTable_alpha_desc(a, b) {
-        return panelStrcmp(b.key, a.key);
-    }
     function sortTimeTable_alpha_asc(a, b) {
         return panelStrcmp(a.key, b.key);
-    }
-    function sortTimeTable_time_asc(a, b) {
-        return parseInt(a.value) - parseInt(b.value);
-    }
-    function sortTimeTable_time_desc(a, b) {
-        return parseInt(b.value) - parseInt(a.value);
     }
 
     /**
@@ -287,15 +277,6 @@
     }
 
     /**
-     * @function setTimeSort
-     * @param {String} type
-     */
-    function setTimeSort(type) {
-        sortType = type;
-        doQuery();
-    }
-
-    /**
      * @function topListTime
      */
     function topListTime() {
@@ -338,6 +319,5 @@
     $.setTimeZone = setTimeZone;
     $.modifyUserTime = modifyUserTime;
     $.copyUserTime = copyUserTime;
-    $.setTimeSort = setTimeSort;
     $.topListTime = topListTime;
 })();

@@ -1,1 +1,0 @@
-Delete this text and put your bot token here without quotes.
