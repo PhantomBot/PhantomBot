@@ -54,20 +54,27 @@
             days = 0,
             hours = 0,
             minutes = 0,
-            durationStr = "";
+            durationStr = "",
+            pad = function(i) { return (i < 10 ? '0' + i : i) };
 
         if (seconds > 86400) {    // Day: 60 * 60 * 24
             days = seconds / 86400;
             seconds = seconds % 86400;
-            durationStr += Math.floor(days) + " days ";
+            durationStr += pad(Math.floor(days)) + ":";
+        } else {
+            durationStr += "00:";
         }
+
         if (seconds > 3600) {     // Minutes: 60 * 60
             hours = seconds / 3600;
             seconds = seconds % 3600;
-            durationStr += Math.floor(hours) + " hrs ";
+            durationStr += pad(Math.floor(hours)) + ":";
+        } else {
+            durationStr += "00:";
         }
+
         minutes = seconds / 60;
-        durationStr += Math.floor(minutes) + " mins";
+        durationStr += pad(Math.floor(minutes));
         return durationStr;
     }
 
@@ -178,15 +185,27 @@
                     };
                 }
  
-                htmlHeader = "<table><tr class=\"textList\"><th>User</th><th>Last Seen</th><th>Time in Chat</th>" +
-                             "<th><i class=\"fa fa-money\" /></th><th><i class=\"fa fa-comment\" /></th>" +
-                             "<th><i class=\"fa fa-ban\" /></th><th><i class=\"fa fa-heart\" /></th></tr>";
-                htmlData["1"] = htmlHeader;
-                htmlData["2"] = htmlHeader;
-                htmlData["4"] = htmlHeader;
-                htmlData["3"] = htmlHeader;
-                htmlData["6"] = htmlHeader;
-                htmlData["7"] = htmlHeader;                
+                htmlHeader = "<table class='CLASS_STRING' data-paging='true' data-paging-size='8'" +
+                             "       data-filtering='true' data-filter-delay='200'" +
+                             "       data-sorting='true'" +
+                             "       data-paging-count-format='Rows {PF}-{PL} / {TR}' data-show-header='true'>" +
+                             "<thead><tr>" +
+                             "    <th data-breakpoints='xs'>User</th>" +
+                             "    <th data-type='Date'>Last Seen</th>" +
+                             "    <th data-type='Date'>Time in Chat</th>" +
+                             "    <th data-type='number'><i class='fa fa-money' /></th>" +
+                             "    <th data-type='number'><i class='fa fa-comment' /></th>" +
+                             "    <th data-type='number'><i class='fa fa-ban' /></th>" +
+                             "    <th>&hearts;</th>" +
+                             "</tr></thead><tbody>";
+
+
+                htmlData["1"] = htmlHeader.replace('CLASS_STRING', 'table_1');
+                htmlData["2"] = htmlHeader.replace('CLASS_STRING', 'table_2');
+                htmlData["3"] = htmlHeader.replace('CLASS_STRING', 'table_3');
+                htmlData["4"] = htmlHeader.replace('CLASS_STRING', 'table_4');
+                htmlData["6"] = htmlHeader.replace('CLASS_STRING', 'table_6');
+                htmlData["7"] = htmlHeader.replace('CLASS_STRING', 'table_7'); 
 
                 for (var user in viewerData) {
                     htmlData[viewerData[user].group.toString()] +=
@@ -200,41 +219,52 @@
                         htmlData[viewerData[user].group.toString()] +=
                             "    <td>" + viewerData[user].chat + "</td>" +
                             "    <td>" + viewerData[user].timeout + "</td>";
-                    }
-                    if (panelStrcmp(viewerData[user].followed, 'true') === 0) {
-                        htmlData[viewerData[user].group.toString()] +=
-                            "    <td><i class=\"fa fa-heart\" /></td>";
                     } else {
                         htmlData[viewerData[user].group.toString()] +=
-                            "    <td><i class=\"fa fa-heart-o\" /></td>";
+                            "    <td>0</td>" +
+                            "    <td>0</td>";
+                    }
+
+                    if (panelStrcmp(viewerData[user].followed, 'true') === 0) {
+                        htmlData[viewerData[user].group.toString()] +=
+                            "    <td>&hearts;</td>";
+                    } else {
+                        htmlData[viewerData[user].group.toString()] +=
+                            "    <td>&nbsp;</td>";
                     }
     
                     htmlData[viewerData[user].group.toString()] += "</tr>";
                 }
 
-                htmlData["1"] += "</table>";
-                htmlData["2"] += "</table>";
-                htmlData["3"] += "</table>";
-                htmlData["4"] += "</table>";
-                htmlData["6"] += "</table>";
-                htmlData["7"] += "</table>";                
+                htmlData["1"] += "</tbody></table>";
+                htmlData["2"] += "</tbody></table>";
+                htmlData["3"] += "</tbody></table>";
+                htmlData["4"] += "</tbody></table>";
+                htmlData["6"] += "</tbody></table>";
+                htmlData["7"] += "</tbody></table>";                
 
                 $("#viewersAdminList").html(htmlData["1"]);
+                $('.table_1').footable();
                 $("#viewersAdminCount").html("(Count: " + countAdmin + ")");
 
                 $("#viewersModList").html(htmlData["2"]);
+                $('.table_2').footable();
                 $("#viewersModCount").html("(Count: " + countMod + ")");
 
-                $("#viewersDonatorList").html(htmlData["4"]);
-                $("#viewersDonatorCount").html("(Count: " + countDonator + ")");
-
                 $("#viewersSubList").html(htmlData["3"]);
+                $('.table_3').footable();
                 $("#viewersSubCount").html("(Count: " + countSub + ")");
 
+                $("#viewersDonatorList").html(htmlData["4"]);
+                $('.table_4').footable();
+                $("#viewersDonatorCount").html("(Count: " + countDonator + ")");
+
                 $("#viewersRegList").html(htmlData["6"]);
+                $('.table_6').footable();
                 $("#viewersRegCount").html("(Count: " + countReg + ")");
 
                 $("#viewersViewerList").html(htmlData["7"]);
+                $('.table_7').footable();
                 $("#viewersViewerCount").html("(Count: " + countViewer + ")");
 
                 // Reset everything back now that the data displayed //
@@ -367,6 +397,7 @@
     }, INITIAL_WAIT_TIME);
 
     // Query the DB every 30 seconds for updates.
+/*
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 5 && isConnected && !isInputFocus()) {
@@ -374,6 +405,7 @@
             doQuery();
         }
     }, 3e4);
+*/
 
     // Export functions - Needed when calling from HTML.
     $.viewersOnMessage = onMessage;

@@ -42,7 +42,7 @@
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('take')">Take</button>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('add')">Add</button>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('set')">Set</button>
-            <input type="text" class="form-control" id="adjustUserPointsNameInput" placeholder="Username" />
+            <input type="text" class="form-control" id="adjustUserPointsNameInput" placeholder="Username or click row from user points table" />
             <input type="number" min="0" class="form-control" id="adjustUserPointsInput" placeholder="Points" />
         </div>
 
@@ -55,22 +55,10 @@
         <br>
 
         <div>
-            <strong>User Points Table</strong>
-            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('points_desc')">
-                <i class="fa fa-money" /><i class="fa fa-arrow-down" />
-            </button>
-            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('points_asc')">
-                <i class="fa fa-money" /><i class="fa fa-arrow-up" />
-            </button>
-            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('alpha_desc')">
-                <i class="fa fa-user" /><i class="fa fa-arrow-down" />
-            </button>
-            <button type="button" class="btn btn-default inline pull-right btn-xs" onclick="$.setPointsSort('alpha_asc')">
-                <i class="fa fa-user" /><i class="fa fa-arrow-up" />
-            </button>
+            <span id="userPtsTableTitle">User Time Table</span>
         </div>
         <br>
-        <div id="userPointsTable" style="height: 250px; overflow: auto;" />
+        <div id="userPointsTable" style="height: 510px; overflow: auto;" />
     </div>
 </div>
 
