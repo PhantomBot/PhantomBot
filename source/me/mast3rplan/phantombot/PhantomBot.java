@@ -179,6 +179,7 @@ public class PhantomBot implements Listener {
     public static boolean musicenabled = false;
     public static boolean reloadScripts = false;
     public static boolean resetLoging = false;
+    public static boolean wsIRCAlternateBurst = false;
     public static String twitchCacheReady = "false";
     private boolean exiting = false;
     private static PhantomBot instance;
@@ -347,6 +348,16 @@ public class PhantomBot implements Listener {
             }
         }
 
+        TwitchAPIv3.instance().SetClientID(this.clientid);
+        TwitchAPIv3.instance().SetOAuth(apioauth);
+
+        TwitchAlertsAPIv1.instance().SetAccessToken(twitchalertskey);
+        TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchalertslimit);
+
+        StreamTipAPI.instance().SetAccessToken(streamtipkey);
+        StreamTipAPI.instance().SetDonationPullLimit(streamtiplimit);
+        StreamTipAPI.instance().SetClientId(streamtipid);
+
         this.init();
 
         if (SystemUtils.IS_OS_LINUX && !interactive) {
@@ -388,16 +399,6 @@ public class PhantomBot implements Listener {
         this.channel = Channel.instance(this.channelName, this.username, oauth, EventBus.instance());
 
         channels = new HashMap<>();
-
-        TwitchAPIv3.instance().SetClientID(this.clientid);
-        TwitchAPIv3.instance().SetOAuth(apioauth);
-
-        TwitchAlertsAPIv1.instance().SetAccessToken(twitchalertskey);
-        TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchalertslimit);
-
-        StreamTipAPI.instance().SetAccessToken(streamtipkey);
-        StreamTipAPI.instance().SetDonationPullLimit(streamtiplimit);
-        StreamTipAPI.instance().SetClientId(streamtipid);
 
         usernameCache = UsernameCache.instance();
     }
@@ -1642,6 +1643,10 @@ public class PhantomBot implements Listener {
                         com.gmt2001.Console.out.println("Enabling Script Reloading");
                         PhantomBot.reloadScripts = true;
                     }
+                    if (line.startsWith("wsircburstalt")) {
+                       com.gmt2001.Console.out.println("Using Alternate Burst Method for WS-IRC");
+                       PhantomBot.wsIRCAlternateBurst = true;
+                    }
                     if (line.startsWith("debugon")) {
                         com.gmt2001.Console.out.println("Debug Mode Enabled via botlogin.txt");
                         PhantomBot.enableDebugging = true;
@@ -2149,6 +2154,12 @@ public class PhantomBot implements Listener {
 
         if (changed) {
             String data = "";
+            if (reloadScripts) {
+                data += "reloadscripts\r\n";
+            }
+            if (wsIRCAlternateBurst) {
+                data += "wsircburstalt\r\n";
+            }
             data += "user=" + user + "\r\n";
             data += "webauth=" + webauth + "\r\n";
             data += "webauthro=" + webauthro + "\r\n";
@@ -2204,6 +2215,12 @@ public class PhantomBot implements Listener {
 
     public void updateGameWispTokens(String[] newTokens) {
         String data = "";
+        if (reloadScripts) {
+            data += "reloadscripts\r\n";
+        }
+        if (wsIRCAlternateBurst) {
+            data += "wsircburstalt\r\n";
+        }
         data += "user=" + username + "\r\n";
         data += "webauth=" + webauth + "\r\n";
         data += "webauthro=" + webauthro + "\r\n";
