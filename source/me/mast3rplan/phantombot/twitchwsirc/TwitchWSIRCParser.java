@@ -348,8 +348,25 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void clearChat(String username, Map<String, String> tagsMap) {
-        com.gmt2001.Console.debug.println(username + " has been timed out for " + tagsMap.get("ban-duration") + " seconds. Reason: " + tagsMap.get("ban-reason").replaceAll("\\\\s", " "));
-        eventBus.postAsync(new IrcClearchatEvent(this.session, this.channel, username, tagsMap.get("ban-reason").replaceAll("\\\\s", " "), tagsMap.get("ban-duration")));
+        String banDuration = "unknown";
+        String banReason = "not provided";
+
+        /* This should never happen, but just in case. */
+        if (username == null) {
+            return;
+        }
+
+        if (tagsMap.containsKey("ban-duration")) {
+            banDuration = tagsMap.get("ban-duration");
+        }
+        if (tagsMap.containsKey("ban-reason")) {
+            banReason = tagsMap.get("ban-reason").replaceAll("\\\\s", " ");
+            if (banReason.length() == 0) {
+                banReason = "not provided";
+            }
+        }
+        com.gmt2001.Console.debug.println(username + " has been timed out for " + banDuration + " seconds. Reason: " + banReason);
+        eventBus.postAsync(new IrcClearchatEvent(this.session, this.channel, username, banReason, banDuration));
     }
 
     /*
