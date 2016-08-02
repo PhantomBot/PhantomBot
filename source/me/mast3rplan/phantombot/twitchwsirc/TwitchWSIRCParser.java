@@ -198,6 +198,8 @@ public class TwitchWSIRCParser {
             if (messageParts.length > 2) {
                 messageParts[1] = messageParts[2];
             }
+        } else {
+            tagsMap = new HashMap<>();
         }
 
         /* Cut leading space. */
@@ -228,12 +230,7 @@ public class TwitchWSIRCParser {
 
         /* Execute the event parser if a parser exists. */
         if (parserMap.containsKey(eventCode)) {
-            try {
-                CommandRunnable commandRunnable = new CommandRunnable(eventCode, message, userName, tagsMap);
-                new Thread(commandRunnable).start();
-            } catch (Exception ex) {
-                parserMap.get(eventCode).exec(message, userName, tagsMap);
-            }
+            parserMap.get(eventCode).exec(message, userName, tagsMap);
         }
     }
 
@@ -333,7 +330,13 @@ public class TwitchWSIRCParser {
             }
         }
 
-        scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
+        try {
+            ModerationRunnable moderationRunnable = new ModerationRunnable(this.session, username, message, this.channel, tagsMap);
+            new Thread(moderationRunnable).start();
+        } catch (Exception ex) {
+            scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
+        }
+
         commandEvent(message, username);
         eventBus.post(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
     }
@@ -455,23 +458,25 @@ public class TwitchWSIRCParser {
     }
 
     /*
-     * Class for startin threads in the background for received events.
+     * Class for spawning threads for handling moderation.
      */
-    public class CommandRunnable implements Runnable {
-        private String eventCode;
-        private String message;
-        private String userName;
-        private Map<String, String> tagsMap;
+    private class ModerationRunnable implements Runnable {
+        private final Session session;
+        private final String username;
+        private final String message;
+        private final Channel channel;
+        private final Map<String, String> tagsMap;
 
-        public CommandRunnable(String eventCode, String message, String userName, Map<String, String> tagsMap) {
-            this.eventCode = eventCode;
+        public ModerationRunnable(Session session, String username, String message, Channel channel, Map<String, String> tagsMap) {
+            this.session = session;
+            this.username = username;
             this.message = message;
-            this.userName = userName;
+            this.channel = channel;
             this.tagsMap = tagsMap;
         }
 
         public void run() {
-            parserMap.get(eventCode).exec(message, userName, tagsMap);
+            scriptEventManager.runDirect(new IrcModerationEvent(session, username, message, channel, tagsMap));
         }
     }
 }
