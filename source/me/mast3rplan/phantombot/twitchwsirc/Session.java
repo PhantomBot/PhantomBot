@@ -62,6 +62,7 @@ public class Session {
     private String channelName;
     private String botName;
     private String oAuth;
+    private final Boolean alternateBurst;
 
     /*
      * Creates an instance for a Session
@@ -98,6 +99,7 @@ public class Session {
         this.channel = channel;
         this.botName = botName;
         this.oAuth = oAuth;
+        this.alternateBurst = PhantomBot.wsIRCAlternateBurst;
 
         try {
             this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
@@ -150,7 +152,11 @@ public class Session {
      */
     public void startTimers() {
         sayTimer.schedule(new MessageTask(this), 100, 5); // start a timer queue for normal messages.
-        sayTimer.schedule(new SendMsg(), 100, 1); // start a timer for the final queue for the timeouts and messages.
+        if (alternateBurst) {
+            sayTimer.schedule(new SendMsgAlternate(), 100, 1); // start a timer for the final queue for the timeouts and messages.
+        } else {
+            sayTimer.schedule(new SendMsg(), 100, 1); // start a timer for the final queue for the timeouts and messages.
+        }
     }
 
     /*
@@ -247,10 +253,8 @@ public class Session {
 
     /*
      * Send a message over WSIRC
-     *
-     * @param  String  Message to send
      */
-    public void sendMessages() {
+    public void sendWSMessages() {
         if (sendQueue.isEmpty() || nextWrite > System.currentTimeMillis()) { // check to make sure the queue is not empty, and make sure we are not sending too many messages too fast.
             return;
         }
@@ -273,6 +277,32 @@ public class Session {
         }
     }
 
+    /*
+     * Send a message over WSIRC
+     */
+    private void sendWSMessagesAlternate() {
+        if (sendQueue.isEmpty() || nextWrite > System.currentTimeMillis()) {
+            return;
+        }
+        if (System.currentTimeMillis() - lastWrite < 3000) {
+            if (burst == 5) {
+                nextWrite = System.currentTimeMillis() + 8000;
+                burst = 1;
+                return;
+            }
+            burst++;
+        } else {
+            burst = 1;
+            lastWrite = System.currentTimeMillis();
+        }
+
+        Message message = session.sendQueue.poll();
+        if (message != null && sendMessages) { 
+            twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message.message);
+            com.gmt2001.Console.out.println("[CHAT] " + message.message);
+        }
+    }
+
     /* Returns the Channel object related to this Session.
      *
      * @return  Channel      The related Channel object.
@@ -288,9 +318,21 @@ public class Session {
     class SendMsg extends TimerTask {
         @Override
         public void run() {
-            sendMessages();
+            sendWSMessages();
         }
     }
+
+    /* 
+     * Send the messages that are in the current queue. or return if the queue is empty.
+     *
+     */
+    class SendMsgAlternate extends TimerTask {
+        @Override
+        public void run() {
+            sendWSMessagesAlternate();
+        }
+    }
+
 
     /* Message Throttling.  The following classes implement timers which work to ensure that PhantomBot
      * does not send messages too quickly.
