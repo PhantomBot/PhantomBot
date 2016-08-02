@@ -25,7 +25,8 @@
  */
 (function() {
 
-    var streamOnline = false,
+    var chatHeight = 0,
+        streamOnline = false,
         whisperMode = false,
         responseMode = false,
         meMode = false,
@@ -588,8 +589,11 @@
     function toggleTwitchChatRollup() {
         if ($("#chat").is(":visible")) {
             $(function() { $("#chatsidebar").resizable('disable'); });
+            chatHeight = $("#chatsidebar").height();
             $("#chat").fadeOut(1000);
+            setTimeout(function() { $("#chatsidebar").height(20); }, 1000);
         } else {
+            $("#chatsidebar").height(chatHeight);
             $("#chat").fadeIn(1000);
             $(function() { $("#chatsidebar").resizable('enable'); });
         }
