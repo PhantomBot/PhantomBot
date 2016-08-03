@@ -15,17 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-        // :illusionaryone!illusionaryone@illusionaryone.tmi.twitch.tv PRIVMSG #notillusionaryone :hello
-        // :illusionarybot!illusionarybot@illusionarybot.tmi.twitch.tv JOIN #notillusionaryone
-        // :illusionaryone!illusionaryone@illusionaryone.tmi.twitch.tv PART #notillusionaryone
-        // @badges=moderator/1;color=;display-name=IllusionaryBot;emotes=;mod=1;room-id=90595045;subscriber=0;turbo=0;user-id=106842370;user-type=mod :illusionarybot!illusionarybot@illusionarybot.tmi.twitch.tv PRIVMSG #notillusionaryone :hello
-        // @badges=turbo/1;color=#317D1C;display-name=IllusionaryOne;emotes=;mod=0;room-id=90595045;subscriber=0;turbo=1;user-id=77632323;user-type= :illusionaryone!illusionaryone@illusionaryone.tmi.twitch.tv PRIVMSG #notillusionaryone :test
-       // @badges=;color=#317D1C;display-name=IllusionaryOne;emotes=;message-id=61;thread-id=77632323_106842370;turbo=1;user-id=77632323;user-type= :illusionaryone!illusionaryone@illusionaryone.tmi.twitch.tv WHISPER illusionarybot :test
-
-// @badges=turbo/1;color=#317D1C;display-name=IllusionaryOne;emotes=;mod=0;room-id=90595045;subscriber=0;turbo=1;user-id=77632323;user-type= :illusionaryone!illusionaryone@illusionaryone.tmi.twitch.tv PRIVMSG #notillusionaryone :ACTION jumps in the air
-
-// @ban-duration=5;ban-reason=cuz\sreasons :tmi.twitch.tv CLEARCHAT #notillusionaryone :illusionaryone
-
 /**
  * Twitch WS-IRC Client
  * @author: illusionaryone
@@ -57,7 +46,6 @@ import org.java_websocket.WebSocket;
 
 import me.mast3rplan.phantombot.PhantomBot;
 
-
 /*
  * Create an interface that is used to create event handling methods.
  */
@@ -81,6 +69,10 @@ public class TwitchWSIRCParser {
      * of the object and populates the event handling Map table.
      *
      * @param  WebSocket  The WebSocket object that can be read/written from/to.
+     * @param  String     The name of the channel
+     * @param  Channel    The Channel object, defines information regarding the channel
+     * @param  Session    The Session object, defines information rgarding the session
+     * @param  EventBus   EventBus, the bus for pushing events to
      */
     public TwitchWSIRCParser(WebSocket webSocket, String channelName, Channel channel, Session session, EventBus eventBus) {
         this.webSocket = webSocket;
@@ -330,6 +322,7 @@ public class TwitchWSIRCParser {
             }
         }
 
+        /* Moderate the incoming message. Have it run in the background on a thread. */
         try {
             ModerationRunnable moderationRunnable = new ModerationRunnable(this.session, username, message, this.channel, tagsMap);
             new Thread(moderationRunnable).start();
@@ -348,8 +341,8 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void clearChat(String username, Map<String, String> tagsMap) {
-        String banDuration = "unknown";
-        String banReason = "not provided";
+        String banDuration = "";
+        String banReason = "";
 
         /* This should never happen, but just in case. */
         if (username == null) {
@@ -360,12 +353,14 @@ public class TwitchWSIRCParser {
             banDuration = tagsMap.get("ban-duration");
         }
         if (tagsMap.containsKey("ban-reason")) {
-            banReason = tagsMap.get("ban-reason").replaceAll("\\\\s", " ");
-            if (banReason.length() == 0) {
-                banReason = "not provided";
-            }
+            banReason = "Reason:" + tagsMap.get("ban-reason").replaceAll("\\\\s", " ");
         }
-        com.gmt2001.Console.debug.println(username + " has been timed out for " + banDuration + " seconds. Reason: " + banReason);
+        if (banDuration.isEmpty()) {
+            com.gmt2001.Console.debug.println(username + " has been banned. " + banReason);
+        } else {
+            com.gmt2001.Console.debug.println(username + " has been timed out for " + banDuration + " seconds. " + banReason);
+        }
+
         eventBus.postAsync(new IrcClearchatEvent(this.session, this.channel, username, banReason, banDuration));
     }
 

@@ -290,7 +290,7 @@ public class PhantomBot implements Listener {
         this.streamtiplimit = streamtiplimit;
 
         if (clientid.length() == 0) {
-            this.clientid = "rp2uhin43rvpr70nzwnh07417x2gck0";
+            this.clientid = "7wpchwtqz7pvivc3qbdn1kajz42tdmb";
         } else {
             this.clientid = clientid;
         }
@@ -350,6 +350,11 @@ public class PhantomBot implements Listener {
 
         TwitchAPIv3.instance().SetClientID(this.clientid);
         TwitchAPIv3.instance().SetOAuth(apioauth);
+        if (TwitchAPIv3.instance().TestAPI()) {
+            com.gmt2001.Console.out.println("TwitchAPI has authenticated via Client-ID");
+        } else {
+            com.gmt2001.Console.err.println("TwitchAPI rejected Client-ID. TwitchAPI calls will not function.");
+        }
 
         TwitchAlertsAPIv1.instance().SetAccessToken(twitchalertskey);
         TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchalertslimit);
