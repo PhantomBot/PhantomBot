@@ -45,17 +45,21 @@
             chapterId,
             lines;
 
+        stories = [];
+
         for (storyId; $.lang.exists('adventuresystem.stories.' + storyId + '.title'); storyId++) {
             lines = [];
-            for (chapterId = 1;
-                ($.lang.exists('adventuresystem.stories.' + storyId + '.chapter.' + chapterId)); chapterId++) {
+            for (chapterId = 1; $.lang.exists('adventuresystem.stories.' + storyId + '.chapter.' + chapterId); chapterId++) {
                 lines.push($.lang.get('adventuresystem.stories.' + storyId + '.chapter.' + chapterId));
             }
+
             stories.push({
+                game: ($.lang.exists('adventuresystem.stories.' + storyId + '.game') ? $.lang.get('adventuresystem.stories.' + storyId + '.game') : null),
                 title: $.lang.get('adventuresystem.stories.' + storyId + '.title'),
                 lines: lines,
             });
         }
+
         $.consoleDebug($.lang.get('adventuresystem.loaded', storyId - 1));
     };
 
@@ -261,6 +265,7 @@
      */
     function runStory() {
         var progress = 0,
+            temp = [],
             story,
             line,
             t;
@@ -268,8 +273,20 @@
         currentAdventure.gameState = 2;
         calculateResult();
 
+        for (var i in stories) {
+            if (stories[i].game != null) {
+                if (($.twitchcache.getGameTitle() + '').toLowerCase() == stories[i].game.toLowerCase()) {
+                    //$.consoleLn('gamespec::' + stories[i].title);
+                    temp.push({title: stories[i].title, lines: stories[i].lines});
+                }
+            } else {
+                //$.consoleLn('normal::' + stories[i].title);
+                temp.push({title: stories[i].title, lines: stories[i].lines});
+            }
+        }
+
         do {
-            story = $.trueRandElement(stories);
+            story = $.randElement(temp);
         } while (story == lastStory);
 
         $.say($.lang.get('adventuresystem.runstory', story.title, currentAdventure.users.length));
@@ -278,7 +295,7 @@
             if (progress < story.lines.length) {
                 line = replaceTags(story.lines[progress]);
                 if (line != '') {
-                    $.say(line);
+                    $.say(line.replace(/\(game\)/g, $.twitchcache.getGameTitle() + ''));
                 }
             } else {
                 endHeist();
@@ -454,5 +471,4 @@
     if ($.bot.isModuleEnabled('./games/adventureSystem.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
         $.log.error("Disabled. ./systems/pointSystem.js is not enabled.");
     }
-
 })();
