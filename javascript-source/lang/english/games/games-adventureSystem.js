@@ -51,6 +51,13 @@ $.lang.register('adventuresystem.stories.4.chapter.4', '(survivors) run away. Le
  * - A story can have an unlimited number of chapters, IF you keep their subsequence numbers 1, 2, 3, 4, 5...
  * - Stories are picked at random.
  *
+ ** Game specific story how-to.
+ * - Add $.lang.register('adventuresystem.stories.NUMBER.game', 'GAME NAME IN LOWER CASE'); on top of the story chapter.
+ * Example >
+ * $.lang.register('adventuresystem.stories.5.game', 'gaming talk shows');
+ * $.lang.register('adventuresystem.stories.5.title', 'Talk Shows');
+ * $.lang.register('adventuresystem.stories.5.chapter.1', 'random story...');
+ *
  * Underneath is a template for your first custom story, just remove the preceding slashes.
  */
 
