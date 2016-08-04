@@ -1431,7 +1431,7 @@
             if (request != null) {
                 $.say($.lang.get(
                     'ytplayer.command.songrequest.success',
-                    $.resolveRank(sender),
+                    $.whisperPrefix(sender, true),
                     request.getVideoTitle(),
                     currentPlaylist.getRequestsCount(),
                     request.getVideoId()
@@ -1479,7 +1479,7 @@
          */
         if (command.equalsIgnoreCase('previoussong')) {
             if (currentPlaylist.getPreviousVideo()) {
-                $.say($.lang.get(
+                $.say($.userPrefix(sender, true) + $.lang.get(
                     'ytplayer.command.previoussong',
                     currentPlaylist.getPreviousVideo().getVideoTitle(),
                     currentPlaylist.getPreviousVideo().getOwner(),
@@ -1494,7 +1494,7 @@
          * @commandpath currentsong - Announce the currently playing song in the chat
          */
         if (command.equalsIgnoreCase('currentsong')) {
-            $.say($.lang.get(
+            $.say($.userPrefix(sender, true) + $.lang.get(
                 'ytplayer.command.currentsong',
                 currentPlaylist.getCurrentVideo().getVideoTitle(),
                 currentPlaylist.getCurrentVideo().getOwner(),
