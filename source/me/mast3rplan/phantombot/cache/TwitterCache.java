@@ -24,6 +24,7 @@
 package me.mast3rplan.phantombot.cache;
 
 import com.illusionaryone.TwitterAPI;
+import com.illusionaryone.GoogleURLShortenerAPIv1;
 
 import com.google.common.collect.Maps;
 
@@ -214,7 +215,7 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
+        String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
 
         updateDBLong("lastid_retweets", twitterID);
         updateDBString("last_retweets", tweet);
@@ -242,7 +243,7 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
+        String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
 
         updateDBLong("lastid_mentions", twitterID);
         updateDBString("last_mentions", tweet);
@@ -270,7 +271,7 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
+        String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
 
         updateDBLong("lastid_hometimeline", twitterID);
         updateDBString("last_hometimeline", tweet);
@@ -298,7 +299,7 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
+        String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
 
         updateDBLong("lastid_usertimeline", twitterID);
         updateDBString("last_usertimeline", tweet);
