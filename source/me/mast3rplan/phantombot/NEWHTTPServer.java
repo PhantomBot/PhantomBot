@@ -183,6 +183,19 @@ public class NEWHTTPServer {
                 myHdrMessage = headers.getFirst("message");
             }
 
+            // Check the uriQueryList for the webauth
+            if (uriQuery != null) {
+                for (String query : uriQueryList) {
+                    if (query.startsWith("webauth=")) {
+                        String[] webAuthData = query.split("=");
+                        myPassword = webAuthData[1];
+                        if (myPassword.equals(serverWebAuth)) {
+                            hasPassword = true;
+                        }
+                    }
+                }
+            }
+
             if (requestMethod.equals("GET")) {
                 if (uriPath.startsWith("/inistore")) {
                     handleIniStore(uriPath, exchange, hasPassword);
@@ -235,6 +248,10 @@ public class NEWHTTPServer {
 
         for (String uriQuery : uriQueryList) {
             keyValue = uriQuery.split("=");
+
+            if (keyValue[0].equals("webauth")) {
+                continue;
+            }
 
             if (keyValue[0].equals("table")) {
                 if (keyValue[1] == null) {

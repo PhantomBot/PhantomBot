@@ -6,7 +6,8 @@
     <property environment="env" />
     <property name="project.base.dir" value="." />
     <property name="name" value="PhantomBot" />
-    <property name="version" value="2.1.1" />
+    <property name="version" value="2.2" />
+    <property name="webpanel.version" value="1.1" />
     <property name="java.class.path" value="" />
     <property name="src" value="${project.base.dir}/source" />
     <property name="reference" value="${project.base.dir}/libraries" />
@@ -71,11 +72,11 @@
                 <length string="${git.revision}" trim="yes" length="0" when="greater"/>
             </and>
         </condition>
-        <echo>Building revision ${repository.version}</echo>
     </target>
 
     <target depends="init,git.revision" name="pre.compile">
-        <echo>${nightly_build}</echo>
+        <echo>PhantomBot Version ${version} (${repository.version}) (${nightly_build})</echo>
+        <echo>PhantomBot Control Panel Version ${webpanel.version}</echo>
         <replace
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
             token="@repository.version@"
@@ -91,7 +92,7 @@
     </target>
 
     <target depends="pre.compile" name="compile.src">
-        <echo>Compiling with Java Version ${ant.java.version}</echo>
+        <echo>Compiling with Java Version ${ant.java.version} (${java.version})</echo>
         <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
@@ -157,6 +158,10 @@
         <copy todir="${res.dir}">
             <fileset dir="./resources" />
         </copy>
+        <replace
+            file="${build.dir}/web/panel/js/panelUtils.js"
+            token="@webpanel.version@"
+            value="${webpanel.version}" />
         <echo level="info" message="staging files into distribution folder." />
         <copy todir="${versionfolder}">
             <fileset dir="${build.dir}" />

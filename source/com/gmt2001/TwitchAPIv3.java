@@ -597,4 +597,15 @@ public class TwitchAPIv3 {
         /* Just return an empty string. */
         return new String("");
     }
+
+    /**
+     * Tests the Twitch API to ensure that authentication is good.
+     */
+    public boolean TestAPI() {
+        JSONObject jsonObject = GetData(request_type.GET, base_url, false);
+        if (jsonObject.has("identified")) {
+            return jsonObject.getBoolean("identified");
+        }
+        return false;
+    }
 }

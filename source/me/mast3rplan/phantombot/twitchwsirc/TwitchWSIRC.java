@@ -192,7 +192,12 @@ public class TwitchWSIRC extends WebSocketClient {
         }
         
         if (message.startsWith(":") || message.startsWith("@")) {
-            twitchWSIRCParser.parseData(message);
+            try {
+                MessageRunnable messageRunnable = new MessageRunnable(message);
+                new Thread(messageRunnable).start();
+            } catch (Exception ex) {
+                twitchWSIRCParser.parseData(message);
+            }
         }
     }
 
@@ -213,6 +218,21 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     private void sendPong() {
         this.send("PONG :tmi.twitch.tv");
+    }
+
+    /**
+     * Class for starting threads to handling incoming messages (other than PING)
+     */
+    private class MessageRunnable implements Runnable {
+        private String message;
+
+        public MessageRunnable(String message) {
+            this.message = message;
+        }
+
+        public void run() {
+            twitchWSIRCParser.parseData(message);
+        }
     }
 }
 
