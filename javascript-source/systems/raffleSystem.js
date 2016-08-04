@@ -6,11 +6,10 @@
         raffleStatus = false,
         msgToggle = $.getSetIniDbBoolean('settings', 'raffleMSGToggle', false),
         noRepickSame = $.getSetIniDbBoolean('settings', 'noRepickSame', true),
-        raffleMessage = $.getSetIniDbString('settings', 'raffleMessage', 'A raffle is still opened! Type !(keyword) to enter. (entries) users have enetered so far.'),
-        messageInterval = $.getSetIniDbNumber('settings', 'messageInterval', 0),
+        raffleMessage = $.getSetIniDbString('settings', 'raffleMessage', 'A raffle is still opened! Type !(keyword) to enter. (entries) users have entered so far.'),
+        messageInterval = $.getSetIniDbNumber('settings', 'raffleMessageInterval', 0),
         timer = 0,
         totalEntries = 0,
-        lastTotalEntries = 0,
         a = '',
         costLang = '', 
         interval,
@@ -48,7 +47,7 @@
         noRepickSame = $.getIniDbBoolean('settings', 'noRepickSame');
         msgToggle = $.getIniDbBoolean('settings', 'raffleMSGToggle');
         raffleMessage = $.getSetIniDbString('settings', 'raffleMessage');
-        messageInterval = $.getSetIniDbNumber('settings', 'messageInterval');
+        messageInterval = $.getSetIniDbNumber('settings', 'raffleMessageInterval');
     };
 
     /**
@@ -122,7 +121,7 @@
 
         if (messageInterval != 0) {
             interval = setInterval(function() {
-                $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', totalEntries));
+                $.say(raffleMessage.replace(/\(keyword\)/g, keyword).replace(/\(entries\)/g, totalEntries));
             }, messageInterval * 6e4);
         }
 
@@ -249,7 +248,6 @@
         timer = 0;
         a = '';
         totalEntries = 0;
-        lastTotalEntries = 0;
     };
 
     /**
@@ -356,7 +354,7 @@
                 }
 
                 messageInterval = parseInt(args[1]);
-                $.inidb.set('settings', 'messageInterval', messageInterval);
+                $.inidb.set('settings', 'raffleMessageInterval', messageInterval);
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.auto.msginterval.set', messageInterval));
                 $.log.event(sender + ' changed the auto annouce interval to ' + messageInterval);
             }

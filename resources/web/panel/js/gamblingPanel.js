@@ -94,6 +94,22 @@
                 }
             }
 
+            if (panelCheckQuery(msgObject, 'gambling_rafflemessage')) {
+                $('#raffleMsg').val(msgObject['results']['raffleMessage']);
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_raffletimer')) {
+                $('#raffleTimer').val(msgObject['results']['raffleMessageInterval']);
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_trafflemessage')) {
+                $('#traffleMsg').val(msgObject['results']['traffleMessage']);
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_traffletimer')) {
+                $('#traffleTimer').val(msgObject['results']['traffleMessageInterval']);
+            }
+
             if (panelCheckQuery(msgObject, 'gambling_norepicksame')) {
                 if (panelMatch(msgObject['results']['noRepickSame'], 'false')) {
                     $('#raffleMultipleRepick').attr('checked', 'checked');
@@ -181,6 +197,10 @@
         sendDBQuery('gambling_norepicksame', 'settings', 'noRepickSame');
         sendDBQuery('gambling_rafflemsgtoggle', 'settings', 'raffleMSGToggle');
         sendDBQuery('gambling_trafflemsgtoggle', 'settings', 'tRaffleMSGToggle');
+        sendDBQuery('gambling_raffletimer', 'settings', 'raffleMessageInterval');
+        sendDBQuery('gambling_rafflemessage', 'settings', 'raffleMessage');
+        sendDBQuery('gambling_traffletimer', 'settings', 'traffleMessageInterval');
+        sendDBQuery('gambling_trafflemessage', 'settings', 'traffleMessage');
         sendDBQuery('gambling_rafflelistentries', 'raffleresults', 'raffleEntries');
         sendDBQuery('gambling_trafflelistentries', 'raffleresults', 'ticketRaffleEntries');
     }
@@ -321,12 +341,37 @@
 
     function toggleTRaffleMsg() {
         var value = $('#traffleEnterMsg').attr('checked', 'checked');
-        console.log('1')
 
         if ($('#traffleEnterMsg').is(':checked') === true) {
             sendDBUpdate("gambling_trafflemsgtoggle", "settings", "tRaffleMSGToggle", 'true');
         } else {
             sendDBUpdate("gambling_trafflemsgtoggle", "settings", "tRaffleMSGToggle", 'false');
+        }
+        setTimeout(function() { sendCommand("treloadraffle"); }, TIMEOUT_WAIT_TIME);
+    }
+
+    function updateRaffleSettings(setting) {
+        var value = $('#' + setting).val();
+
+        if (setting == "raffleMsg") {
+            sendDBUpdate('gambling_rafflemessage', 'settings', 'raffleMessage', value);
+        }
+
+        if (setting == "raffleTimer") {
+            sendDBUpdate('gambling_rafflemessage', 'settings', 'raffleMessageInterval', value);
+        }
+        setTimeout(function() { sendCommand("reloadraffle"); }, TIMEOUT_WAIT_TIME);
+    }
+
+    function updateTRaffleSettings(setting) {
+        var value = $('#' + setting).val();
+
+        if (setting == "raffleMsg") {
+            sendDBUpdate('gambling_rafflemessage', 'settings', 'traffleMessage', value);
+        }
+
+        if (setting == "raffleTimer") {
+            sendDBUpdate('gambling_rafflemessage', 'settings', 'traffleMessageInterval', value);
         }
         setTimeout(function() { sendCommand("treloadraffle"); }, TIMEOUT_WAIT_TIME);
     }
@@ -370,4 +415,5 @@
     $.toggleRaffleMultipleRepick = toggleRaffleMultipleRepick;
     $.toggleRaffleMsg = toggleRaffleMsg;
     $.toggleTRaffleMsg = toggleTRaffleMsg;
+    $.updateRaffleSettings = updateRaffleSettings;
 })();

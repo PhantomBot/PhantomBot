@@ -5,6 +5,8 @@
         followers = false,
         raffleStatus = false,
         msgToggle = $.getSetIniDbBoolean('settings', 'tRaffleMSGToggle', false),
+        raffleMessage = $.getSetIniDbString('settings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
+        messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval', 0),
         totalEntries = 0,
         lastTotalEntries = 0,
         totalTickets = 0,
@@ -13,6 +15,8 @@
 
     function reloadRaffle() {
         msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
+        raffleMessage = $.getSetIniDbString('settings', 'traffleMessage');
+        messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval');
     }
 
     function checkArgs(user, max, price, followersOnly) {
@@ -50,14 +54,9 @@
         entries = "";
         entries = [];
 
-        if (msgToggle) {
-            interval = setInterval(function () {
-                if (totalEntries > lastTotalEntries) {
-                    $.say($.lang.get('ticketrafflesystem.entered', totalEntries, totalTickets));
-                    lastTotalEntries = totalEntries;
-                }
-            }, 6e4);
-        }
+        interval = setInterval(function () {
+            $.say(raffleMessage.replace(/\(entries\)/g, totalEntries));
+        }, messageInterval * 6e4);
 
         $.log.event(user + ' opened a ticket raffle.');
     };
@@ -229,6 +228,36 @@
                     $.inidb.set('settings', 'tRaffleMSGToggle', msgToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.msg.enabled'));
                 }
+            }
+
+            /**
+             * @commandpath traffle autoannouncemessage - Sets the auto annouce message for when a raffle is opened
+             */
+            if (action.equalsIgnoreCase('autoannouncemessage')) {
+                if (!args[1]) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.auto.msg.usage'));
+                    return;
+                }
+
+                raffleMessage = argString.replace(action, '').trim();
+                $.inidb.set('settings', 'traffleMessage', raffleMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.auto.msg.set', raffleMessage));
+                $.log.event(sender + ' changed the auto annouce message to ' + raffleMessage);
+            }
+
+            /**
+             * @commandpath traffle autoannounceinterval - Sets the auto annouce message interval. Use 0 to disable it
+             */
+            if (action.equalsIgnoreCase('autoannounceinterval')) {
+                if (!parseInt(args[1])) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.auto.msginterval.usage'));
+                    return;
+                }
+
+                messageInterval = parseInt(args[1]);
+                $.inidb.set('settings', 'traffleMessageInterval', messageInterval);
+                $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.auto.msginterval.set', messageInterval));
+                $.log.event(sender + ' changed the auto annouce interval to ' + messageInterval);
             }
         }
 

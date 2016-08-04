@@ -16,3 +16,7 @@ $.lang.register('ticketrafflesystem.usage', 'Usage: !traffle open (max tickets) 
 $.lang.register('ticketrafflesystem.msg.enabled', 'Ticket raffle message\'s have been enabled.');
 $.lang.register('ticketrafflesystem.msg.disabled', 'Ticket raffle message\'s have been disabled.');
 $.lang.register('ticketrafflesystem.ticket.usage', 'Usage: !tickets (amount) - And you currently have $1 tickets.');
+$.lang.register('ticketrafflesystem.auto.msginterval.set', 'Message interval set to $1 minutes.');
+$.lang.register('ticketrafflesystem.auto.msg.set', 'Message set to $1.');
+$.lang.register('ticketrafflesystem.auto.msg.usage', 'Usage: !raffle autoannouncemessage [amount in minutes]');
+$.lang.register('ticketrafflesystem.auto.msginterval.usage', 'Usage: !raffle autoannounceinterval [amount in minutes]');
