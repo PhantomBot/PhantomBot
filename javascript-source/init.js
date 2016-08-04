@@ -455,7 +455,7 @@
                 return;
             }
             $.log.event(username + ' requested a reconnect!');
-            $.session.reconnect();
+            $.session.close();
         }
 
         /* Used for the panel, no command path needed*/
