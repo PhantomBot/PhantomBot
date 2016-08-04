@@ -94,7 +94,23 @@
                 }
             }
 
-            if (panelCheckQuery(msgObject, 'gambling_rafflenorepicksame')) {
+            if (panelCheckQuery(msgObject, 'gambling_rafflemessage')) {
+                $('#raffleMsg').val(msgObject['results']['raffleMessage']);
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_raffletimer')) {
+                $('#raffleTimer').val(msgObject['results']['raffleMessageInterval']);
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_trafflemessage')) {
+                $('#traffleMsg').val(msgObject['results']['traffleMessage']);
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_traffletimer')) {
+                $('#traffleTimer').val(msgObject['results']['traffleMessageInterval']);
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_norepicksame')) {
                 if (panelMatch(msgObject['results']['noRepickSame'], 'false')) {
                     $('#raffleMultipleRepick').attr('checked', 'checked');
                 }
@@ -103,6 +119,12 @@
             if (panelCheckQuery(msgObject, 'gambling_rafflemsgtoggle')) {
                 if (panelMatch(msgObject['results']['raffleMSGToggle'], 'true')) {
                     $('#raffleEnterMsg').attr('checked', 'checked');
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_trafflemsgtoggle')) {
+                if (panelMatch(msgObject['results']['tRaffleMSGToggle'], 'true')) {
+                    $('#traffleEnterMsg').attr('checked', 'checked');
                 }
             }
 
@@ -174,6 +196,11 @@
         sendDBKeys('gambling_trafflelist', 'ticketsList');
         sendDBQuery('gambling_norepicksame', 'settings', 'noRepickSame');
         sendDBQuery('gambling_rafflemsgtoggle', 'settings', 'raffleMSGToggle');
+        sendDBQuery('gambling_trafflemsgtoggle', 'settings', 'tRaffleMSGToggle');
+        sendDBQuery('gambling_raffletimer', 'settings', 'raffleMessageInterval');
+        sendDBQuery('gambling_rafflemessage', 'settings', 'raffleMessage');
+        sendDBQuery('gambling_traffletimer', 'settings', 'traffleMessageInterval');
+        sendDBQuery('gambling_trafflemessage', 'settings', 'traffleMessage');
         sendDBQuery('gambling_rafflelistentries', 'raffleresults', 'raffleEntries');
         sendDBQuery('gambling_trafflelistentries', 'raffleresults', 'ticketRaffleEntries');
     }
@@ -294,9 +321,9 @@
         var value = $('#raffleMultipleRepick').attr('checked', 'checked');
 
         if ($('#raffleMultipleRepick').is(':checked') === true) {
-            sendDBUpdate("gambling_raffleresults", "settings", "noRepickSame", 'false');
+            sendDBUpdate("gambling_norepicksame", "settings", "noRepickSame", 'false');
         } else {
-            sendDBUpdate("gambling_raffleresults", "settings", "noRepickSame", 'true');
+            sendDBUpdate("gambling_norepicksame", "settings", "noRepickSame", 'true');
         }
         setTimeout(function() { sendCommand("reloadraffle"); }, TIMEOUT_WAIT_TIME);
     }
@@ -305,11 +332,48 @@
         var value = $('#raffleEnterMsg').attr('checked', 'checked');
 
         if ($('#raffleEnterMsg').is(':checked') === true) {
-            sendDBUpdate("gambling_raffleresults", "settings", "raffleMSGToggle", 'true');
+            sendDBUpdate("gambling_rafflemsgtoggle", "settings", "raffleMSGToggle", 'true');
         } else {
-            sendDBUpdate("gambling_raffleresults", "settings", "raffleMSGToggle", 'false');
+            sendDBUpdate("gambling_rafflemsgtoggle", "settings", "raffleMSGToggle", 'false');
         }
         setTimeout(function() { sendCommand("reloadraffle"); }, TIMEOUT_WAIT_TIME);
+    }
+
+    function toggleTRaffleMsg() {
+        var value = $('#traffleEnterMsg').attr('checked', 'checked');
+
+        if ($('#traffleEnterMsg').is(':checked') === true) {
+            sendDBUpdate("gambling_trafflemsgtoggle", "settings", "tRaffleMSGToggle", 'true');
+        } else {
+            sendDBUpdate("gambling_trafflemsgtoggle", "settings", "tRaffleMSGToggle", 'false');
+        }
+        setTimeout(function() { sendCommand("treloadraffle"); }, TIMEOUT_WAIT_TIME);
+    }
+
+    function updateRaffleSettings(setting) {
+        var value = $('#' + setting).val();
+
+        if (setting == "raffleMsg") {
+            sendDBUpdate('gambling_rafflemessage', 'settings', 'raffleMessage', value);
+        }
+
+        if (setting == "raffleTimer") {
+            sendDBUpdate('gambling_rafflemessage', 'settings', 'raffleMessageInterval', value);
+        }
+        setTimeout(function() { sendCommand("reloadraffle"); }, TIMEOUT_WAIT_TIME);
+    }
+
+    function updateTRaffleSettings(setting) {
+        var value = $('#' + setting).val();
+
+        if (setting == "raffleMsg") {
+            sendDBUpdate('gambling_rafflemessage', 'settings', 'traffleMessage', value);
+        }
+
+        if (setting == "raffleTimer") {
+            sendDBUpdate('gambling_rafflemessage', 'settings', 'traffleMessageInterval', value);
+        }
+        setTimeout(function() { sendCommand("treloadraffle"); }, TIMEOUT_WAIT_TIME);
     }
 
     // Import the HTML file for this panel.
@@ -350,4 +414,6 @@
     $.traffleClose = traffleClose;
     $.toggleRaffleMultipleRepick = toggleRaffleMultipleRepick;
     $.toggleRaffleMsg = toggleRaffleMsg;
+    $.toggleTRaffleMsg = toggleTRaffleMsg;
+    $.updateRaffleSettings = updateRaffleSettings;
 })();

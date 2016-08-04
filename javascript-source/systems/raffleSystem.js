@@ -6,9 +6,10 @@
         raffleStatus = false,
         msgToggle = $.getSetIniDbBoolean('settings', 'raffleMSGToggle', false),
         noRepickSame = $.getSetIniDbBoolean('settings', 'noRepickSame', true),
+        raffleMessage = $.getSetIniDbString('settings', 'raffleMessage', 'A raffle is still opened! Type !(keyword) to enter. (entries) users have entered so far.'),
+        messageInterval = $.getSetIniDbNumber('settings', 'raffleMessageInterval', 0),
         timer = 0,
         totalEntries = 0,
-        lastTotalEntries = 0,
         a = '',
         costLang = '', 
         interval,
@@ -45,6 +46,8 @@
     function reloadRaffle() {
         noRepickSame = $.getIniDbBoolean('settings', 'noRepickSame');
         msgToggle = $.getIniDbBoolean('settings', 'raffleMSGToggle');
+        raffleMessage = $.getSetIniDbString('settings', 'raffleMessage');
+        messageInterval = $.getSetIniDbNumber('settings', 'raffleMessageInterval');
     };
 
     /**
@@ -116,13 +119,10 @@
             }, timer * 1000);
         }
 
-        if (msgToggle) {
+        if (messageInterval != 0) {
             interval = setInterval(function() {
-                if (totalEntries > lastTotalEntries) {
-                    $.say($.lang.get('rafflesystem.entered', totalEntries));
-                    lastTotalEntries = totalEntries;
-                }
-            }, 6e4);
+                $.say(raffleMessage.replace(/\(keyword\)/g, keyword).replace(/\(entries\)/g, totalEntries));
+            }, messageInterval * 6e4);
         }
 
         $.log.event(user + ' opened a raffle with the keyword !' + key);
@@ -248,7 +248,6 @@
         timer = 0;
         a = '';
         totalEntries = 0;
-        lastTotalEntries = 0;
     };
 
     /**
@@ -297,7 +296,7 @@
             }
 
             /**
-             * @commandpath raffle messagetoggle - Toggles on and off a message when entering a raffle
+             * @commandpath raffle messagetoggle - Toggles on and off user warning messages
              */
             if (action.equalsIgnoreCase('messagetoggle')) {
                 if (msgToggle) {
@@ -328,6 +327,36 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.no.repick.false'));
                     $.log.event(sender + ' disabled no repick same for the raffle.');
                 }
+            }
+
+            /**
+             * @commandpath raffle autoannouncemessage - Sets the auto annouce message for when a raffle is opened
+             */
+            if (action.equalsIgnoreCase('autoannouncemessage')) {
+                if (!args[1]) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.auto.msg.usage'));
+                    return;
+                }
+
+                raffleMessage = argString.replace(action, '').trim();
+                $.inidb.set('settings', 'raffleMessage', raffleMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.auto.msg.set', raffleMessage));
+                $.log.event(sender + ' changed the auto annouce message to ' + raffleMessage);
+            }
+
+            /**
+             * @commandpath raffle autoannounceinterval - Sets the auto annouce message interval. Use 0 to disable it
+             */
+            if (action.equalsIgnoreCase('autoannounceinterval')) {
+                if (!parseInt(args[1])) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.auto.msginterval.usage'));
+                    return;
+                }
+
+                messageInterval = parseInt(args[1]);
+                $.inidb.set('settings', 'raffleMessageInterval', messageInterval);
+                $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.auto.msginterval.set', messageInterval));
+                $.log.event(sender + ' changed the auto annouce interval to ' + messageInterval);
             }
         }
 

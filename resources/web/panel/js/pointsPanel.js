@@ -375,6 +375,9 @@
             if (panelMatch(action, 'bonus')) {
                 command = "pointsbonuspanel " + points;
             }
+            if (panelMatch(action, 'take')) {
+                command = "pointstakeallpanel " + points;
+            }
             $("#giftChatPointsInput").val('');
             sendCommand(command);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
