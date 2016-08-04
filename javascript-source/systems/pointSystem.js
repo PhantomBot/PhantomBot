@@ -325,6 +325,42 @@
     };
 
     /**
+    * @function giveAll
+    * @param {Number} action
+    */
+    function giveAll(amount) {
+        if (amount < 0) {
+            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.error.negative', pointNameMultiple));
+            return;
+        }
+        
+        for (i in $.users) {
+            $.inidb.incr('points', $.users[i][0].toLowerCase(), amount);
+        }
+
+        $.say($.lang.get('pointsystem.add.all.success', getPointsString(amount)));
+    };
+
+    /**
+    * @function takeAll
+    * @param {Number} action
+    */
+    function takeAll(amount, sender) {
+        if (amount < 0) {
+            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.take.error.negative', pointNameMultiple));
+            return;
+        }
+        
+        for (i in $.users) {
+            if (getUserPoints($.users[i][0].toLowerCase()) > amount) {
+                $.inidb.decr('points', $.users[i][0].toLowerCase(), amount);
+            }
+        }
+
+        $.say($.lang.get('pointsystem.take.all.success', getPointsString(amount)));
+    };
+
+    /**
      * @event command
      */
     $.bind('command', function(event) {
@@ -350,18 +386,23 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.withtime', ($.hasRank(sender) ? "the " + $.getRank(sender) : ""), getPointsString(getUserPoints(sender)), $.getUserTimeString(sender)));
                 }
             } else {
-                if (action && getUserPoints(action.toLowerCase()) != 0) {
+                if (action && getUserPoints(action.toLowerCase()) != 0 && $.user.isKnown(action.toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.username.resolve(action), getPointsString(getUserPoints(action.toLowerCase()))));
                 }
 
                 /**
                  * @commandpath points add [username] [amount] - Add an amount of points to a user's balance
                  */
-                else if (action.equalsIgnoreCase('add')) {
+                else if (action.equalsIgnoreCase('add') || action.equalsIgnoreCase('give')) {
                     actionArg1 = (actionArg1 + '').toLowerCase();
                     actionArg2 = parseInt(actionArg2);
                     if (isNaN(actionArg2)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.usage'));
+                        return;
+                    }
+
+                    if (actionArg1.equalsIgnoreCase('all')) {
+                        giveAll(actionArg2, sender);
                         return;
                     }
 
@@ -385,12 +426,17 @@
                 /**
                  * @commandpath points take [username] [amount] - Take an amount of points from the user's balance
                  */
-                else if (action.equalsIgnoreCase('take')) {
+                else if (action.equalsIgnoreCase('take') || action.equalsIgnoreCase('remove')) {
                     actionArg1 = (actionArg1 + '').toLowerCase();
                     actionArg2 = parseInt(actionArg2);
                     if (isNaN(actionArg2)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.take.usage'));
                         return
+                    }
+
+                    if (actionArg1.equalsIgnoreCase('all')) {
+                        takeAll(actionArg2, sender);
+                        return;
                     }
 
                     if (!actionArg1 || !$.user.isKnown(actionArg1)) {
@@ -438,20 +484,22 @@
                  * @commandpath points all [amount] - Send an amount of points to all users in the chat
                  */
                 else if (action.equalsIgnoreCase('all')) {
-                    if (!actionArg1) {
+                    if (!parseInt(actionArg1)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.all.usage'));
                         return;
                     }
-                    actionArg1 = parseInt(actionArg1);
-                    if (actionArg1 < 0) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.error.negative', pointNameMultiple));
+                    giveAll(actionArg1, sender);
+                }
+
+                /**
+                 * @commandpath points takeall [amount] - Remove an amount of points to all users in the chat
+                 */
+                else if (action.equalsIgnoreCase('takeall')) {
+                    if (!parseInt(actionArg1)) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.take.all.usage'));
                         return;
                     }
-
-                    for (i in $.users) {
-                        $.inidb.incr('points', $.users[i][0].toLowerCase(), actionArg1);
-                    }
-                    $.say($.lang.get('pointsystem.add.all.success', getPointsString(actionArg1)));
+                    takeAll(actionArg1, sender);
                 }
 
                 /**
@@ -680,6 +728,15 @@
             $.say($.lang.get('pointsystem.add.all.success', getPointsString(parseInt(action))));
         }
 
+        if (command.equalsIgnoreCase('pointstakeallpanel')) {
+            for (i in $.users) {
+                if (getUserPoints($.users[i][0].toLowerCase()) > parseInt(action)) {
+                    $.inidb.decr('points', $.users[i][0].toLowerCase(), parseInt(action));
+                }
+            }
+            $.say($.lang.get('pointsystem.take.all.success', getPointsString(parseInt(action))));
+        }
+
         if (command.equalsIgnoreCase('pointsbonuspanel')) {
             setTempBonus(action, actionArg1);
         }
@@ -709,6 +766,7 @@
             $.registerChatCommand('./systems/pointSystem.js', 'reloadpoints', 1);
             $.registerChatCommand('./systems/pointSystem.js', 'pointsallpanel', 1);
             $.registerChatCommand('./systems/pointSystem.js', 'pointsbonuspanel', 1);
+            $.registerChatCommand('./systems/pointSystem.js', 'pointstakeallpanel', 1);
             /** Panel commands */
 
             $.registerChatSubcommand('points', 'add', 1);
