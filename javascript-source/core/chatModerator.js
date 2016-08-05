@@ -232,7 +232,7 @@
 
     /**
      * @interval
-     * Check to see if no one has chatted in 5 minutes. If so clear the array.
+     * Check to see if no one has chatted in 5 minutes. If so clear the array. because this can get big in large channels.
      */
     setInterval(function() {
         if (spamTracker.length != 0) {
