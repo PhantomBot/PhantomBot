@@ -33,6 +33,7 @@ import com.illusionaryone.SingularityAPI;
 import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.GitHubAPIv3;
+import com.illusionaryone.GoogleURLShortenerAPIv1;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -671,6 +672,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("panelsocketserver", panelsocketserver, 0);
         Script.global.defineProperty("random", rng, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
+        Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
         Script.global.defineProperty("pollResults", pollResults, 0);
         Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
