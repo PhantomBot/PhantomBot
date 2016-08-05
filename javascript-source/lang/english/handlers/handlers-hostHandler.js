@@ -9,5 +9,6 @@ $.lang.register('hosthandler.set.hostmessage.success', 'New hoster message set!'
 $.lang.register('hosthandler.set.hostmessage.usage', 'Usage: !hostmessage (message) - Tags: (name) (reward)');
 $.lang.register('hosthandler.set.hostreward.success', 'New hoster reward set to: $1.');
 $.lang.register('hosthandler.set.hostreward.usage', 'Usage: !hostreward [$1]');
-$.lang.register('hosthistory.usage', 'usage: !hosthistory [on/off] (Currently $1)');
+$.lang.register('hosthistory.usage', 'usage: !hosthistory [on / off] (Currently $1)');
 $.lang.register('hosthistory.change', 'Host History is now $1');
+$.lang.register('hosthandler.host.usage', 'Usage: !host (channel)');
