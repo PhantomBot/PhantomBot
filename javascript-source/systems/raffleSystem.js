@@ -121,7 +121,7 @@
 
         if (messageInterval != 0) {
             interval = setInterval(function() {
-                $.say(raffleMessage.replace(/\(keyword\)/g, keyword).replace(/\(entries\)/g, totalEntries));
+                $.say(raffleMessage.replace('(keyword)', String(key)).replace('(entries)', String(totalEntries)));//can't use regex here. why? who knows.
             }, messageInterval * 6e4);
         }
 

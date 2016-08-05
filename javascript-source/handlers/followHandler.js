@@ -23,6 +23,7 @@
         lastFollow = 0,
         timer = false,
         running = false,
+        timeout = false,
         interval;
 
     /**
@@ -38,29 +39,32 @@
     /**
      * @function checkFollowTrain
      */
-    function checkFollowTrain() {
-        if (($.systemTime() - lastFollowTime) > 3e5) {
-            if (followTrain == 3) {
-                $.say($.lang.get('followhandler.followtrain.triple'));
-            } else if (followTrain == 4) {
-                $.say($.lang.get('followhandler.followtrain.quad'));
-            } else if (followTrain == 5) {
-                $.say($.lang.get('followhandler.followtrain.penta'));
-            } else if (followTrain == 20) {
-                $.say($.lang.get('followhandler.followtrain.mega', followTrain));
-            } else if (followTrain == 30) {
-                $.say($.lang.get('followhandler.followtrain.ultra', followTrain));
-            } else if (followTrain == 50) {
-                $.say($.lang.get('followhandler.followtrain.unbelievable', followTrain));
+    function followTrainCheck() {
+        if (followTrainToggle && ($.systemTime() - lastFollowTime) <= 3e5) {
+            if (followTrain > 1) {
+                if (followTrain == 3) {
+                    $.say($.lang.get('followhandler.followtrain.triple'));
+                } else if (followTrain == 4) {
+                    $.say($.lang.get('followhandler.followtrain.quad'));
+                } else if (followTrain == 5) {
+                    $.say($.lang.get('followhandler.followtrain.penta'));
+                } else if (followTrain > 5 && followTrain <= 10) {
+                    $.say($.lang.get('followhandler.followtrain.mega', followTrain));
+                } else if (followTrain > 10 && followTrain <= 20) {
+                    $.say($.lang.get('followhandler.followtrain.ultra', followTrain));
+                } else if (followTrain > 20) {
+                    $.say($.lang.get('followhandler.followtrain.unbelievable', followTrain));
+                }
             }
-            ++followTrain;
-        } else {
-            followTrain = 1;
+            followTrain = 0;
+            lastFollowTime = 0;
+            timeout = false;
         }
-        lastFollowTime = $.systemTime();
     };
 
     /**
+     * Used for the follow delay
+     *
      * @function runFollow
      */
     function runFollow(message) {
@@ -77,6 +81,8 @@
     };
 
     /**
+     * Used for the follow delay
+     *
      * @function run
      */
     function run() {
@@ -130,11 +136,17 @@
                     s = s.replace('(name)', $.username.resolve(follower));
                     s = s.replace('(reward)', $.getPointsString(followReward));
                     runFollow(s);
-                    if (followTrainToggle) {
-                        checkFollowTrain();
+                    followTrain++;
+
+                    if (!timeout) {
+                        timeout = true;
+                        setTimeout(function() {
+                            followTrainCheck();
+                        }, 8e3);
                     }
+                    lastFollowTime = $.systemTime();
                 }
-                /** Don't use $.username.resolve() here, because it will abuse the api when this module is enabled for the first time.*/
+
                 $.setIniDbBoolean('followed', follower, true);
                 $.inidb.set('streamInfo', 'lastFollow', $.username.resolve(follower));
                 if (followReward > 0) {
