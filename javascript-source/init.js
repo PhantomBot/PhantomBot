@@ -348,7 +348,7 @@
             if (action.equalsIgnoreCase('rejoin') || action.equalsIgnoreCase('reconnect')) {
                 $.say($.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' requested a reconnect!');
-                setTimeout(function () { $.session.reconnect(); }, 100);
+                setTimeout(function () { $.session.close(); }, 100);
                 setTimeout(function () { $.say($.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully rejoined!')) }, 1000);
                 return;
             }
@@ -455,7 +455,7 @@
                 return;
             }
             $.log.event(username + ' requested a reconnect!');
-            $.session.reconnect();
+            $.session.close();
         }
 
         /* Used for the panel, no command path needed*/

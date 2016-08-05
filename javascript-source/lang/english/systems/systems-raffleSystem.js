@@ -21,5 +21,5 @@ $.lang.register('rafflesystem.no.repick.false', 'winners can now only be repicke
 $.lang.register('rafflesystem.no.repick.true', 'winners can now be repicked more then once.');
 $.lang.register('rafflesystem.auto.msginterval.set', 'Message interval set to $1 minutes.');
 $.lang.register('rafflesystem.auto.msg.set', 'Message set to $1.');
-$.lang.register('rafflesystem.auto.msg.usage', 'Usage: !traffle autoannouncemessage [amount in minutes]');
-$.lang.register('rafflesystem.auto.msginterval.usage', 'Usage: !traffle autoannounceinterval [amount in minutes]');
+$.lang.register('rafflesystem.auto.msg.usage', 'Usage: !raffle autoannouncemessage [amount in minutes]');
+$.lang.register('rafflesystem.auto.msginterval.usage', 'Usage: !raffle autoannounceinterval [amount in minutes]');
