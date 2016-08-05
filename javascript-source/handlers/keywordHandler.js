@@ -53,11 +53,6 @@
          * @commandpath keyword - Base command for keyword options
          */
         if (command.equalsIgnoreCase('keyword')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.usage'));
                 return;

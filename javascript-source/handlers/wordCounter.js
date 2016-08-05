@@ -14,11 +14,6 @@
          * @commandpath wordcounter - Configures various option for the wordcounter
          */
         if (command.equalsIgnoreCase('wordcounter')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('wordcounter.usage'));
                 return;

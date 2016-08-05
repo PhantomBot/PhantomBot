@@ -103,11 +103,6 @@
          * @commandpath hostreward [amount] - Set the amount of points to reward when a channel starts hosting
          */
         if (command.equalsIgnoreCase('hostreward')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (isNaN(commandArg)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostreward.usage', $.pointNameMultiple));
                 return;
@@ -138,11 +133,6 @@
          * @commandpath unhost - Send the /unhost command to Twitch
          */
         if (command.equalsIgnoreCase('unhost')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             $.say('.unhost');
         }
 
@@ -150,12 +140,12 @@
          * @commandpath host [channel] - Send the /host command to Twitch
          */
         if (command.equalsIgnoreCase('host')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
+            if (!args[0]) {
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.host.usage'));
                 return;
             }
 
-            $.say('.host ' + args[0]);
+            $.say('.host ' + args[0].toLowerCase());
             $.log.event(sender + ' hosted channel ' + args[1]);
         }
 
