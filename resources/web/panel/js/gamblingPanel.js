@@ -390,14 +390,14 @@
         }
     }, INITIAL_WAIT_TIME);
 
-    // Query the DB every 30 seconds for updates.
+    // Query the DB every 20 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 14 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Gambling Data', 'success', 1000);
             doQuery();
         }
-    }, 3e4);
+    }, 2e4);
 
 
     // Export to HTML
