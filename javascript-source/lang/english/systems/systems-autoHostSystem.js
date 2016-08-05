@@ -1,0 +1,17 @@
+$.lang.register('autohost.command.usage', 'autohost [start|force|stop|delay|hosttime|skip|add|del|list]');
+$.lang.register('autohost.force', 'Autohost Enabled in Force Mode (BETA)');
+$.lang.register('autohost.on', 'Autohost Enabled (BETA)');
+$.lang.register('autohost.off', 'Autohost Disabled');
+$.lang.register('autohost.delay.usage', 'autohost delay [minutes] (Currently: $1)');
+$.lang.register('autohost.delay.success', 'Set autohost delay to $1 minutes');
+$.lang.register('autohost.hosttime.usage', 'autohost hosttime [minutes] (0 for infinite) (Curently: $1)');
+$.lang.register('autohost.hosttime.success', 'Set autohost hosttime to $1 minutes');
+$.lang.register('autohost.skip.noautohost', 'Cannot perform skip as not presently in autohost mode');
+$.lang.register('autohost.add.usage', 'autohost add [channel]');
+$.lang.register('autohost.add.duplicate', 'Sorry, that channel already exists in your autohost list!');
+$.lang.register('autohost.add.success', 'Added channel $1 to your autohost list');
+$.lang.register('autohost.del.usage', 'autohost del [channel]');
+$.lang.register('autohost.del.404', 'Sorry, that channel does not exist in your autohost list!');
+$.lang.register('autohost.del.success', 'Deleted channel $1 from your autohost list');
+$.lang.register('autohost.list', 'Autohost Channels: $1');
+$.lang.register('autohost.list.total', 'Total Pages: $1');
