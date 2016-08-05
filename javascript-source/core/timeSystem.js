@@ -365,10 +365,12 @@
             i;
 
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
+            $.inidb.setAutoCommit(false);
             for (i in $.users) {
                 username = $.users[i][0].toLowerCase();
                 $.inidb.incr('time', username, 61);
             }
+            $.inidb.setAutoCommit(true);
         }
     }, 6e4);
 

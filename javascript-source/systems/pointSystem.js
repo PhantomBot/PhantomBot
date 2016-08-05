@@ -205,6 +205,7 @@
             }
         }
 
+        $.inidb.setAutoCommit(false);
         for (i in $.users) {
             username = $.users[i][0].toLowerCase();
             if ($.isOnline($.channelName)) {
@@ -257,6 +258,7 @@
                 uUsers.push(username + '(' + amount + ')');
             }
         }
+        $.inidb.setAutoCommit(true);
         $.log.file('pointSystem', 'Executed ' + pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
         lastPayout = now;
     };

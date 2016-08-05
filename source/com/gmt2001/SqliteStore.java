@@ -538,4 +538,17 @@ public class SqliteStore extends DataStore {
         }
     }
 
+    @Override
+    public void setAutoCommit(boolean mode) {
+        CheckConnection();
+
+        try {
+            connection.setAutoCommit(mode);
+            if (mode == true) {
+                connection.commit();
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
 }
