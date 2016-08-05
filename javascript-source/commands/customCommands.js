@@ -821,7 +821,7 @@
          * @commandpath enablecom [command] - Enable a command thats been disabled from being used in chat
          */
         if (command.equalsIgnoreCase('enablecom')) {
-             if (!action) {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.usage'));
                 return;
             }

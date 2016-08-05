@@ -240,11 +240,6 @@
              * @commandpath bet open [option option option ...] - Opens a bet with options; not allowed to be digits, words only.
              */
             if (action.equalsIgnoreCase('open')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                }
-
                 betOpen(event, bet, betTimer);
                 return;
 
@@ -253,10 +248,6 @@
                  * @commandpath bet close refundall - Closes the bet and refunds all points.
                  */
             } else if (action.equalsIgnoreCase('close')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                }
                 betClose(sender, event, subAction);
                 return;
 
@@ -264,11 +255,6 @@
                  * @commandpath bet setminimum [value] - Set the minimum value of a bet.
                  */
             } else if (action.equalsIgnoreCase('setminimum')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                }
-
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.min.usage'));
                     return;
@@ -284,11 +270,6 @@
                  * @commandpath bet setmaximum [value] - Set the maximum value of a bet.
                  */
             } else if (action.equalsIgnoreCase('setmaximum')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                }
-
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.max.usage'));
                     return;
@@ -304,11 +285,6 @@
                  * @commandpath bet settimer [amount in seconds] - Sets a auto close timer for bets
                  */
             } else if (action.equalsIgnoreCase('settimer')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                }
-
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('betsystem.set.timer.usage'));
                     return;
@@ -324,11 +300,6 @@
                  * @commandpath togglebetmessage - Toggles the bet enter message
                  */
             } else if (action.equalsIgnoreCase('togglebetmessage')) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.whisperPrefix(sender) + $.modMsg);
-                    return;
-                }
-
                 if (betMessageToggle) {
                     betMessageToggle = false;
                     $.inidb.set('betSettings', 'betMessageToggle', false);
@@ -419,6 +390,12 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/betSystem.js')) {
             $.registerChatCommand('./systems/betSystem.js', 'bet', 7);
+            $.registerChatSubcommand('bet', 'open', 2);
+            $.registerChatSubcommand('bet', 'close', 2);
+            $.registerChatSubcommand('bet', 'setmaximum', 2);
+            $.registerChatSubcommand('bet', 'setminimum', 2);
+            $.registerChatSubcommand('bet', 'settimer', 2);
+            $.registerChatSubcommand('bet', 'togglebetmessage', 2);
         }
     });
 })();

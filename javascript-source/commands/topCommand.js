@@ -78,7 +78,8 @@
          */
         if (command.equalsIgnoreCase('top')) {
             if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
-                $.say($.lang.get('top5.points-disabled'));
+                //$.say($.lang.get('top5.points-disabled')); * we don't need to spam.
+                $.log.error('points system disabled.');
                 return;
             }
 
@@ -90,8 +91,9 @@
             }
 
             $.say($.lang.get('top5.default', amountPoints, $.pointNameMultiple, top5.join(', ')));
-            top5 = "";
-            list = "";//Saving memory here.
+            temp = "";
+            top5 = [];
+            list = [];//Saving memory here.
         }
 
         /**
@@ -106,8 +108,9 @@
             }
 
             $.say($.lang.get('top5.default', 'time', amountTime, top5.join(', ')));
-            top5 = "";
-            list = "";//Saving memory here.
+            temp = "";
+            top5 = [];
+            list = [];//Saving memory here.
         }
 
         /**

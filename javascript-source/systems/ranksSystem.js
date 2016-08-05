@@ -291,7 +291,6 @@
          * @commandpath rank del - Deletes customized rank.
          */
         if (command.equalsIgnoreCase('rank')) {
-
             if (args[0]) {
                 if (args[0].equalsIgnoreCase('del')) {
                     if (inidb.exists('viewerRanks', sender.toLowerCase())) {

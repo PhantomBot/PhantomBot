@@ -8,6 +8,14 @@
         status: false,
     };
 
+    /**
+     * @function openAuction
+     *
+     * @param {string} user 
+     * @param {int} increments 
+     * @param {int} minimum 
+     * @param {int} timer 
+     */
     function openAuction(user, increments, minimum, timer) {
         if (auction.status) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.opened'));
@@ -48,6 +56,11 @@
         }
     };
 
+    /**
+     * @function closeAuction
+     *
+     * @param {string} user 
+     */
     function closeAuction(user) {
         if (!auction.status) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.closed'));
@@ -68,6 +81,11 @@
         }, 1000);
     };
 
+    /**
+     * @function warnAuction
+     *
+     * @param {boolean} force 
+     */
     function warnAuction(force) {
         if (!auction.status) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.closed'));
@@ -81,6 +99,12 @@
         }
     };
 
+    /**
+     * @function bid
+     *
+     * @param {string} user 
+     * @param {int} amount 
+     */
     function bid(user, amount) {
         if (!auction.status) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.closed'));
@@ -110,6 +134,9 @@
         $.say($.lang.get('auctionsystem.bid', user, $.getPointsString(amount), $.getPointsString(auction.topPoints + auction.increments)))
     };
 
+    /**
+     * @function resetAuction
+     */
     function resetAuction() {
         auction.increments = 0;
         auction.minimum = 0;
@@ -131,11 +158,6 @@
          * @commandpath auction - Primary auction command
          */
         if (command.equalsIgnoreCase('auction')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.usage'));
                 return;

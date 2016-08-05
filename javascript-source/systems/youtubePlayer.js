@@ -1003,14 +1003,14 @@
              * @commandpath ytp djname [DJ Name] - Name the DJ for playlists
              */
            if (action.equalsIgnoreCase('djname')) {
-               if (actionArgs[0]) {
-                  playlistDJname = actionArgs.join(' ');
-                  $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setdjname.success', playlistDJname));
-                  $.inidb.set('ytSettings', 'playlistDJname', playlistDJname);
-               } else {
-                  $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setdjname.usage'));
-               }
-           }
+                if (actionArgs[0]) {
+                   playlistDJname = actionArgs.join(' ');
+                   $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setdjname.success', playlistDJname));
+                   $.inidb.set('ytSettings', 'playlistDJname', playlistDJname);
+                } else {
+                   $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setdjname.usage'));
+                }
+            }
          
             /**
              * @commandpath ytp delrequest [YouTube ID] - Delete a song that has been requested

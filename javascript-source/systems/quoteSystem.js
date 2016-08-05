@@ -126,11 +126,6 @@
          * @commandpath addquote [quote text] - Save a quote
          */
         if (command.equalsIgnoreCase('addquote')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-            
             if (args.length < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage'));
                 return;
@@ -145,11 +140,9 @@
          * USED BY THE PANEL
          */
         if (command.equalsIgnoreCase('addquotesilent')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
+            if (!$.isBot(sender)) {
                 return;
             }
-            
             if (args.length < 1) {
                 //$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage'));
                 return;
@@ -185,6 +178,9 @@
          * USED BY THE PANEL
          */
         if (command.equalsIgnoreCase('delquotesilent')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
             if (!args[0] || isNaN(args[0])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.usage'));
                 return;
