@@ -1,4 +1,4 @@
-=/**
+/**
  * followHandler.js
  *
  * Register new followers and unfollows in the channel
