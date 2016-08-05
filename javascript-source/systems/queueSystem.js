@@ -95,11 +95,6 @@
         }
 
         if (command.equalsIgnoreCase('queue')) {
-        	if (!$.isModv3(sender, event.getTags())) {
-        		$.say($.whisperPrefix(sender) + $.modMsg);
-        		return;
-        	}
-
         	if (!action) {
         		$.say($.whisperPrefix(sender) + $.lang.get('queuesystem.queue.usage'));
         		return;

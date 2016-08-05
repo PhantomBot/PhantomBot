@@ -105,11 +105,6 @@
          * @commandpath notice - Base command for managing notices
          */
         if (command.equalsIgnoreCase('notice')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (args.length == 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-usage'));
                 return;

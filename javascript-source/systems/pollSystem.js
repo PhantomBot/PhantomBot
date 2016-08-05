@@ -301,7 +301,7 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/pollSystem.js')) {
-            $.registerChatCommand('./systems/pollSystem.js', 'poll', 7);
+            $.registerChatCommand('./systems/pollSystem.js', 'poll', 2);
             $.registerChatCommand('./systems/pollSystem.js', 'vote', 7);
         }
     });

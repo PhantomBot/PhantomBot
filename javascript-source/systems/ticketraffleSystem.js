@@ -184,11 +184,6 @@
          * @commandpath traffle [option] - Displays usage for the command
          */
         if (command.equalsIgnoreCase('traffle')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.usage'));
                 return;

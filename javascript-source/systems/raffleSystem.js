@@ -264,11 +264,6 @@
          * @commandpath raffle [option] - Displays the usage of the raffle command
          */
         if (command.equalsIgnoreCase('raffle')) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.usage'));
                 return;
