@@ -199,12 +199,12 @@
                 }
             } else {
                 if (time == -1) {
-                    $.inidb.del('cooldown', cmd);
+                    $.inidb.del('cooldown', cmd.toLowerCase());
                     clear(cmd);
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.removed', cmd));
                 } else {
                     clear(cmd);
-                    $.inidb.set('cooldown', cmd, time);
+                    $.inidb.set('cooldown', cmd.toLowerCase(), time);
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set', cmd, time));
                 }
             }
