@@ -99,6 +99,10 @@ public class TwitchAPIv3 {
 
             if (!oauth.isEmpty()) {
                 c.addRequestProperty("Authorization", "OAuth " + oauth);
+            } else {
+                if (!this.oauth.isEmpty()) {
+                    c.addRequestProperty("Authorization", "OAuth " + oauth);
+                }
             }
 
             c.setRequestMethod(type.name());
