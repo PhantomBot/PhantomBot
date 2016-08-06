@@ -40,6 +40,7 @@ public class SqliteStore extends DataStore {
     private boolean journal = true;
     private Connection connection = null;
     private static final SqliteStore instance = new SqliteStore();
+    private int autoCommitCtr = 0;
 
     public static SqliteStore instance() {
         return instance;
@@ -543,12 +544,29 @@ public class SqliteStore extends DataStore {
         CheckConnection();
 
         try {
-            connection.setAutoCommit(mode);
             if (mode == true) {
-                connection.commit();
+                decrAutoCommitCtr();
+                if (getAutoCommitCtr() == 0) {
+                    connection.commit();
+                    connection.setAutoCommit(mode);
+                }
+            } else {
+                incrAutoCommitCtr();
+                connection.setAutoCommit(mode);
+                com.gmt2001.Console.debug.println(getAutoCommitCtr());
             }
         } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+            com.gmt2001.Console.debug.println("SQLite commit was attempted too early, will perform later.");
         }
+    }
+
+    private synchronized void incrAutoCommitCtr() {
+        autoCommitCtr++;
+    }
+    private synchronized void decrAutoCommitCtr() {
+        autoCommitCtr--;
+    }
+    private synchronized int getAutoCommitCtr() {
+        return autoCommitCtr;
     }
 }
