@@ -143,6 +143,8 @@
                 commands.splice(0);
                 for (var idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
+                    commandNameSafe = commandName.replace(/\?/g, '__QM__');
+logMsg(commandNameSafe);
                     commandValue = msgObject['results'][idx]['value'];
                     commands.push(commandName);
                     commandValue = commandValue.replace(/"/g, "''");
@@ -150,10 +152,10 @@
                             '    <td style="width: 15%">!' + commandName + '</td>' +
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input style="width: 85%" type="text" id="editCommand_' + commandName + '"' +
+                            '            <input style="width: 85%" type="text" id="editCommand_' + commandNameSafe + '"' +
                             '                   value="' + commandValue + '" />' +
                             '              <button type="button" class="btn btn-default btn-xs" onclick="$.editCustomCommand(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
-                            '              <button type="button" class="btn btn-default btn-xs" id="deleteCommand_' + commandName + '" onclick="$.deleteCommand(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
+                            '              <button type="button" class="btn btn-default btn-xs" id="deleteCommand_' + commandNameSafe + '" onclick="$.deleteCommand(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                             '             </form>' +
                             '        </form>' +
                             '    </td>' +
@@ -398,7 +400,7 @@
      * @param {String} command
      */
     function editCustomCommand(command) {
-    var value = $('#editCommand_' + command).val();
+    var value = $('#editCommand_' + command.replace(/\?/g, '__QM__')).val();
     value = value.replace(/''/g, '"');
         if (value.length > 0) {
             sendDBUpdate("addCustomCommand", "command", command.toLowerCase(), value);
