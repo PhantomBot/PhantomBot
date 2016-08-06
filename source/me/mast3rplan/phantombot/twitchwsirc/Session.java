@@ -48,10 +48,9 @@ public class Session {
     private static final Map<String, Session> instances = Maps.newHashMap();
     public static Session session;
     private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedQueue<Message> whispers = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<Message> sendQueue = new ConcurrentLinkedQueue<>();
     private final Timer sayTimer = new Timer();
-    private final int maxBurst = 19; //max messages we can send in 30 seconds. and the bursts if we hit the limit.
+    private final Boolean alternateBurst;
     private Long lastWrite = System.currentTimeMillis(); //last time a message was sent.
     private Long nextWrite = System.currentTimeMillis(); //next time that we are allowed to write.
     private int burst = 1; //current messages being sent in 2.5 seconds.
@@ -62,7 +61,6 @@ public class Session {
     private String channelName;
     private String botName;
     private String oAuth;
-    private final Boolean alternateBurst;
 
     /*
      * Creates an instance for a Session
@@ -151,7 +149,7 @@ public class Session {
      *
      */
     public void startTimers() {
-        sayTimer.schedule(new MessageTask(this), 100, 5); // start a timer queue for normal messages.
+        sayTimer.schedule(new MessageTask(this), 100, 1); // start a timer queue for normal messages.
         if (alternateBurst) {
             sayTimer.schedule(new SendMsgAlternate(), 100, 1); // start a timer for the final queue for the timeouts and messages.
         } else {
@@ -235,11 +233,9 @@ public class Session {
     public void say(String message) {
         if (message.startsWith(".")) { //check if the message starts with a "." for timeouts. ".timeout <user>".
             sendQueue.add(new Message(message));
-        } else if (message.startsWith("/w")) {
-            whispers.add(new Message(message));
-        } else {
-            messages.add(new Message(message));
+            return;
         }
+        messages.add(new Message(message));
     }
 
     /*
@@ -259,7 +255,7 @@ public class Session {
             return;
         }
         if (System.currentTimeMillis() - lastWrite < 2500) { // Only thing that could trigger this are timeouts. Normal messages wont even come close to this limit.
-            if (burst == maxBurst) {
+            if (burst == 19) {
                 nextWrite = System.currentTimeMillis() + 30500; // wait 30.5 seconds in case we ever hit 19 messages. then burst them out at a max of 19 in 30 seconds.
                 burst = 1;
                 return;
@@ -348,9 +344,7 @@ public class Session {
     class MessageTask extends TimerTask {
         private final Session session;
         private final double messageLimit = PhantomBot.instance().getMessageInterval();
-        private final double whisperLimit = PhantomBot.instance().getWhisperInterval();
         private long lastMessage = 0;
-        private long lastWhisper = 0;
 
         public MessageTask(Session session) {
             super();
@@ -360,15 +354,7 @@ public class Session {
 
         @Override
         public void run() {
-            if ((System.currentTimeMillis() - lastWhisper) >= whisperLimit) {
-                Message message = session.whispers.poll();
-                if (message != null) {
-                    session.sendQueue.add(new Message(message.message)); //add whispers to the final queue, to make sure timeouts are not limiting us.
-                    lastWhisper = System.currentTimeMillis();
-                }
-            }
-
-            if ((System.currentTimeMillis() - lastMessage) >= messageLimit) {
+            if (System.currentTimeMillis() - lastMessage >= messageLimit) {
                 Message message = session.messages.poll();
                 if (message != null) {
                     session.sendQueue.add(new Message(message.message)); //add the message in the final queue, to make sure timeouts are not limiting us.
