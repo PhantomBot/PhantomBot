@@ -539,7 +539,10 @@
             subAction = args[1];
 
         if (command.equalsIgnoreCase('moderation') || command.equalsIgnoreCase('mod')) { // js can't handle anymore commands in the default function.
-
+            if (!action) {
+                return;
+            }
+            
             /**
              * @commandpath moderation spamtracker [on / off] - Enable/Disable the spam tracker. This limits how many messages a user can sent in 30 seconds by default
              */
