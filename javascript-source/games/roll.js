@@ -97,8 +97,8 @@
                         break;
                 }
 
-                $.inidb.incr('points', sender, prizes[dice1 - 1]);
                 $.say(resultMessage + $.gameMessages.getWin(sender));
+                $.inidb.incr('points', sender, prizes[dice1 - 1]);
             } else {
                 $.say(resultMessage + $.gameMessages.getLose(sender));
             }

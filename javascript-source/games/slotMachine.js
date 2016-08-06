@@ -81,15 +81,15 @@
 
         if (e1 == e2 && e2 == e3) {
             message += $.lang.get('slotmachine.result.win', $.getPointsString(prizes[e1]));
-            $.inidb.incr('points', sender, prizes[e1]);
             $.say(message + $.gameMessages.getWin(sender));
+            $.inidb.incr('points', sender, prizes[e1]);
             return;
         }
         
         if (e1 == e2 || e2 == e3 || e3 == e1) {
             message += $.lang.get('slotmachine.result.win', $.getPointsString(Math.floor(prizes[Math.min(e1, e2, e3)] / 3)));
-            $.inidb.incr('points', sender, Math.floor(prizes[Math.min(e1, e2, e3)] / 3));
             $.say(message + $.gameMessages.getWin(sender));
+            $.inidb.incr('points', sender, Math.floor(prizes[Math.min(e1, e2, e3)] / 3));
             return;
         }
         $.say(message + $.gameMessages.getLose(sender));
