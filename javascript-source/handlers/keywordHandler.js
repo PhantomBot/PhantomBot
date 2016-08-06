@@ -10,18 +10,20 @@
             keys = $.inidb.GetKeyList('keywords', ''),
             keyword,
             key,
+            origKey,
             i;
             
         if ($.bot.isModuleEnabled('./handlers/keywordHandler.js')) {
             for (i in keys) {
-                if (message.match(keys[i])) {
-                    key = keys[i];
+                if (message.match(keys[i].toLowerCase())) {
+                    key = keys[i].toLowerCase();
+                    origKey = keys[i];
                     break;
                 }
             }
 
             if (message.match('\\b' + key + '\\b') && !message.match(/!keyword/)) {
-                keyword = $.inidb.get('keywords', key);
+                keyword = $.inidb.get('keywords', origKey);
 
                 if ($.coolDown.get(key, event.getSender()) > 0) {
                     $.consoleDebug('[COOLDOWN] Keyword ' + key + ' was not sent because its on a cooldown.');
