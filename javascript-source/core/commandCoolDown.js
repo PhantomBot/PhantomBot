@@ -204,7 +204,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.removed', cmd));
                 } else {
                     clear(cmd);
-                    $.inidb.set('cooldown', cmd, time.toLowerCase());
+                    $.inidb.set('cooldown', cmd.toLowerCase(), time);
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set', cmd, time));
                 }
             }
