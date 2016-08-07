@@ -54,9 +54,11 @@
         entries = "";
         entries = [];
 
-        interval = setInterval(function() {
-            $.say(raffleMessage.replace('(entries)', String(totalEntries)));//can't use regex here. why? who knows.
-        }, messageInterval * 6e4);
+        if (messageInterval != 0) {
+            interval = setInterval(function() {
+                $.say(raffleMessage.replace('(entries)', String(totalEntries)));//can't use regex here. why? who knows.
+            }, messageInterval * 6e4);
+        }
 
         $.log.event(user + ' opened a ticket raffle.');
     };

@@ -121,7 +121,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('top5.amount.points.usage'));
                 return;
             }
-            if (args[0] > 30) {
+            if (args[0] > 15) {
                 $.say($.whisperPrefix(sender) + $.lang.get('top5.amount.max'));
                 return;
             }
@@ -139,7 +139,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('top5.amount.time.usage'));
                 return;
             }
-            if (args[0] > 30) {
+            if (args[0] > 15) {
                 $.say($.whisperPrefix(sender) + $.lang.get('top5.amount.max'));
                 return;
             }
