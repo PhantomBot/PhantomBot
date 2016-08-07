@@ -407,7 +407,7 @@
      */
     function topListPoints() {
         var val = $("#topListAmountPoints").val();
-        if (val.length != 0) {
+        if (val.length != 0 && val < 15) {
             sendDBUpdate("points_toplist", "settings", "topListAmountPoints", val);
         }
         setTimeout(function() { doLiteQuery(); }, TIMEOUT_WAIT_TIME);
