@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2015 www.phantombot.net
+ * Copyright (C) 2015 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ public class GameWispAPIv1 {
     private static final int iHTTPTimeout = 2 * 1000;
     private static final String devKey = "32e01468d8bbc250721fe3b0d38c090a8ac589e";
     private static final String devSec = "470651f241fec8972d94cdca5cbfdd5b9ec45ce";
-    private static final String devURI = "https://phantombot.net/gamewisp/genauth.php";
+    private static final String devURI = "https://phantombot.tv/gamewisp/genauth.php";
 
     private static String sAccessToken = "";
     private static String sRefreshToken = "";

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 www.phantombot.net
+ * Copyright (C) 2015 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,7 +220,7 @@ public class PhantomBot implements Listener {
         }
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, scaniaTV, Zelakto, & IllusionaryOne");
-        com.gmt2001.Console.out.println("https://phantombot.net/");
+        com.gmt2001.Console.out.println("https://phantombot.tv/");
         com.gmt2001.Console.out.println();
 
         interactive = System.getProperty("interactive") != null;
@@ -1016,7 +1016,7 @@ public class PhantomBot implements Listener {
         }
 
         if (message.equals("twitchalertskey")) {
-            com.gmt2001.Console.out.print("Please enter your twitch alerts key generated from https://phantombot.net/twitchalerts/ while logged in as the caster: ");
+            com.gmt2001.Console.out.print("Please enter your twitch alerts key generated from https://phantombot.tv/twitchalerts/ while logged in as the caster: ");
             String newtwitchalertskey = System.console().readLine().trim();
 
             TwitchAlertsAPIv1.instance().SetAccessToken(newtwitchalertskey);
@@ -1828,9 +1828,9 @@ public class PhantomBot implements Listener {
                 com.gmt2001.Console.out.println();
                 com.gmt2001.Console.out.println("Welcome to the PhantomBot setup process!");
                 com.gmt2001.Console.out.println("If you have any issues please report them on our forum or tweet at us!");
-                com.gmt2001.Console.out.println("Forum: https://community.phantombot.net/");
+                com.gmt2001.Console.out.println("Forum: https://community.phantombot.tv/");
                 com.gmt2001.Console.out.println("Twitter: https://twitter.com/phantombotapp/");
-                com.gmt2001.Console.out.println("PhantomBot Knowledgebase: https://docs.phantombot.net/");
+                com.gmt2001.Console.out.println("PhantomBot Knowledgebase: https://docs.phantombot.tv/");
                 com.gmt2001.Console.out.println();
 
                 com.gmt2001.Console.out.print("Please enter the bot's Twitch username: ");
@@ -1839,7 +1839,7 @@ public class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("Please enter the bot's OAuth token generated from https://twitchapps.com/tmi while logged in as the bot: ");
                 oauth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter your OAuth token generated from https://phantombot.net/oauth while logged in as the caster: ");
+                com.gmt2001.Console.out.print("Please enter your OAuth token generated from https://phantombot.tv/oauth while logged in as the caster: ");
                 apioauth = System.console().readLine().trim();
 
                 com.gmt2001.Console.out.print("Please enter the name of the Twitch channel the bot should join: ");

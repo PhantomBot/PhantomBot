@@ -367,12 +367,12 @@
                     $.deathUpdateFile(game);
                 }
             } else {
-                $.say($.whisperPrefix(sender) + 'Failed to change the game. Make sure you have your api oauth code set. https://phantombot.net/oauth');
+                $.say($.whisperPrefix(sender) + 'Failed to change the game. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
                 $.consoleDebug(http.getString('message'));
                 $.log.error(http.getString('message'));
             }
         } else {
-            $.say($.whisperPrefix(sender) + 'Failed to change the game. Make sure you have your api oauth code set. https://phantombot.net/oauth');
+            $.say($.whisperPrefix(sender) + 'Failed to change the game. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
             $.consoleDebug(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
@@ -398,12 +398,12 @@
                 }
                 $.log.event(sender + ' changed the current status to ' + http.getString('status'));
             } else {
-                $.say($.whisperPrefix(sender) + 'Failed to change the status. Make sure you have your api oauth code set. https://phantombot.net/oauth');
+                $.say($.whisperPrefix(sender) + 'Failed to change the status. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
                 $.consoleDebug(http.getString('message'));
                 $.log.error(http.getString('message'));
             }
         } else {
-            $.say($.whisperPrefix(sender) + 'Failed to change the status. Make sure you have your api oauth code set. https://phantombot.net/oauth');
+            $.say($.whisperPrefix(sender) + 'Failed to change the status. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
             $.consoleDebug(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
