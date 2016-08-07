@@ -281,7 +281,7 @@
      */
     function topListTime() {
         var val = $("#topListAmountTime").val();
-        if (val.length != 0 && val < 15) {
+        if (val.length != 0) {
             sendDBUpdate("time_toplist", "settings", "topListAmountTime", val);
         }
         setTimeout(function() { doLiteQuery(); }, TIMEOUT_WAIT_TIME);

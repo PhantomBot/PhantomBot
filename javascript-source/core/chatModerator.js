@@ -5,40 +5,43 @@
         blackList = [],
         spamTracker = [],
 
-        linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', true),
-        linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking'),
-        linkPermitTime = $.getSetIniDbNumber('chatModerator', 'linkPermitTime', 120),
+        linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', false),
+        linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking.'),
+        linkPermitTime = $.getSetIniDbNumber('chatModerator', 'linkPermitTime', 60),
 
-        capsToggle = $.getSetIniDbBoolean('chatModerator', 'capsToggle', true),
-        capsMessage = $.getSetIniDbString('chatModerator', 'capsMessage', 'you were timed out for overusing caps'),
+        capsToggle = $.getSetIniDbBoolean('chatModerator', 'capsToggle', false),
+        capsMessage = $.getSetIniDbString('chatModerator', 'capsMessage', 'you were timed out for overusing caps.'),
         capsLimitPercent = $.getSetIniDbFloat('chatModerator', 'capsLimitPercent', 50),
         capsTriggerLength = $.getSetIniDbNumber('chatModerator', 'capsTriggerLength', 15),
 
-        spamToggle = $.getSetIniDbBoolean('chatModerator', 'spamToggle', true),
-        spamMessage = $.getSetIniDbString('chatModerator', 'spamMessage', 'you were timed out for spamming repeating characters'),
+        spamToggle = $.getSetIniDbBoolean('chatModerator', 'spamToggle', false),
+        spamMessage = $.getSetIniDbString('chatModerator', 'spamMessage', 'you were timed out for spamming repeating characters.'),
         spamLimit = $.getSetIniDbNumber('chatModerator', 'spamLimit', 15),
 
-        symbolsToggle = $.getSetIniDbBoolean('chatModerator', 'symbolsToggle', true),
-        symbolsMessage = $.getSetIniDbString('chatModerator', 'symbolsMessage', 'you were timed out for overusing symbols'),
+        symbolsToggle = $.getSetIniDbBoolean('chatModerator', 'symbolsToggle', false),
+        symbolsMessage = $.getSetIniDbString('chatModerator', 'symbolsMessage', 'you were timed out for overusing symbols.'),
         symbolsLimitPercent = $.getSetIniDbFloat('chatModerator', 'symbolsLimitPercent', 50),
         symbolsGroupLimit = $.getSetIniDbFloat('chatModerator', 'symbolsGroupLimit', 10),
         symbolsTriggerLength = $.getSetIniDbNumber('chatModerator', 'symbolsTriggerLength', 15),
 
         emotesToggle = $.getSetIniDbBoolean('chatModerator', 'emotesToggle', false),
-        emotesMessage = $.getSetIniDbString('chatModerator', 'emotesMessage', 'you were timed out for overusing emotes'),
-        emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 25),
+        emotesMessage = $.getSetIniDbString('chatModerator', 'emotesMessage', 'you were timed out for overusing emotes.'),
+        emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 10),
 
-        longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', true),
-        longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message'),
+        longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', false),
+        longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message.'),
         longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 300),
 
         colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
-        colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using colored text'),
+        colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using colored text.'),
 
         spamTrackerToggle = $.getSetIniDbBoolean('chatModerator', 'spamTrackerToggle', false),
-        spamTrackerMessage = $.getSetIniDbString('chatModerator', 'spamTrackerMessage',  'you were timed out for spamming chat'),
+        spamTrackerMessage = $.getSetIniDbString('chatModerator', 'spamTrackerMessage',  'you were timed out for spamming chat.'),
         spamTrackerTime = $.getSetIniDbNumber('chatModerator', 'spamTrackerTime', 30),
-        spamTrackerLimit = $.getSetIniDbNumber('chatModerator', 'spamTrackerLimit', 10),
+        spamTrackerLimit = $.getSetIniDbNumber('chatModerator', 'spamTrackerLimit', 30),
+
+        blacklistTimeoutTime = $.getSetIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
+        blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase.'),
 
         subscribers = {
             Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', true),
@@ -72,14 +75,14 @@
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
             Blacklist: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutBlacklist', false),
             SpamTracker: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSpamTracker', false),
-            LinkMessage: $.getSetIniDbString('chatModerator', 'silentLinkMessage', 'Posting a link without permission. (Automated by ' + $.botName + ')'),
-            SpamMessage: $.getSetIniDbString('chatModerator', 'silentSpamMessage', 'Excessive repeating characters. (Automated by ' + $.botName + ')'),
-            CapMessage: $.getSetIniDbString('chatModerator', 'silentCapMessage', 'Excessive cap use. (Automated by ' + $.botName + ')'),
-            SymbolMessage: $.getSetIniDbString('chatModerator', 'silentSymbolsMessage', 'Excessive symbol use. (Automated by ' + $.botName + ')'),
-            ColorMessage: $.getSetIniDbString('chatModerator', 'silentColorMessage', 'Using "/me". (Automated by ' + $.botName + ')'),
-            EmoteMessage: $.getSetIniDbString('chatModerator', 'silentEmoteMessage', 'Excessive emote use. (Automated by ' + $.botName + ')'),
+            LinkMessage: $.getSetIniDbString('chatModerator', 'silentLinkMessage', 'Posting links without permission. (Automated by ' + $.botName + ')'),
+            SpamMessage: $.getSetIniDbString('chatModerator', 'silentSpamMessage', 'Excessive use of repeating characters. (Automated by ' + $.botName + ')'),
+            CapMessage: $.getSetIniDbString('chatModerator', 'silentCapMessage', 'Excessive use of caps. (Automated by ' + $.botName + ')'),
+            SymbolMessage: $.getSetIniDbString('chatModerator', 'silentSymbolsMessage', 'Excessive use of symbols. (Automated by ' + $.botName + ')'),
+            ColorMessage: $.getSetIniDbString('chatModerator', 'silentColorMessage', 'Using colored text. (Automated by ' + $.botName + ')'),
+            EmoteMessage: $.getSetIniDbString('chatModerator', 'silentEmoteMessage', 'Excessive use of emotes. (Automated by ' + $.botName + ')'),
             LongMessage: $.getSetIniDbString('chatModerator', 'silentLongMessage', 'Excessive message length. (Automated by ' + $.botName + ')'),
-            BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted word or phrase. (Automated by ' + $.botName + ')'),
+            BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted phrase. (Automated by ' + $.botName + ')'),
             SpamTrackerMessage: $.getSetIniDbString('chatModerator', 'silentSpamTrackerMessage', 'Spamming chat. (Automated by ' + $.botName + ')'),
         },
 
@@ -91,7 +94,7 @@
             Emotes: $.getSetIniDbNumber('chatModerator', 'warningTimeEmotes', 5),
             Colors: $.getSetIniDbNumber('chatModerator', 'warningTimeColors', 5),
             LongMsg: $.getSetIniDbNumber('chatModerator', 'warningTimeLongMsg', 5),
-            SpamTracker: $.getSetIniDbNumber('chatModerator', 'warningTimeSpamTracker', 30),
+            SpamTracker: $.getSetIniDbNumber('chatModerator', 'warningTimeSpamTracker', 5),
         },
 
         timeoutTime = {
@@ -105,8 +108,6 @@
             SpamTracker: $.getSetIniDbNumber('chatModerator', 'timeoutTimeSpamTracker', 600),
         },
 
-        blacklistTimeoutTime = $.getSetIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
-        blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase'),
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
         warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
         resetTime = (warningResetTime * 6e4),
@@ -651,7 +652,7 @@
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
                         silentTimeout.SpamTracker = args[2].equalsIgnoreCase('true');
-                        $.inidb.set('chatModerator', 'silentTimeoutLinks', silentTimeout.SpamTracker);
+                        $.inidb.set('chatModerator', 'silentTimeoutSpamTracker', silentTimeout.SpamTracker);
                         $.say($.whisperPrefix(sender) + (silentTimeout.SpamTracker ? $.lang.get('chatmoderator.silenttimeout.spamtracker.true') : $.lang.get('chatmoderator.silenttimeout.spamtracker.false')));
                         $.log.event(sender + ' changed silent timeout moderation for spam tracker to ' + args[2]);
                         return;
@@ -665,10 +666,7 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.spamtracker.usage', warningTime.SpamTracker));
                         return;
                     }
-                    if (args[2] < spamTrackerTime) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.err'));
-                        return;
-                    }
+
                     warningTime.SpamTracker = parseInt(args[2]);
                     $.inidb.set('chatModerator', 'warningTimeSpamTracker', warningTime.SpamTracker);
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.spamtracker', warningTime.SpamTracker));
@@ -682,10 +680,7 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.spamtracker.usage', timeoutTime.SpamTracker));
                         return;
                     }
-                    if (args[2] < spamTrackerTime) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.err'));
-                        return;
-                    }
+
                     timeoutTime.SpamTracker = parseInt(args[2]);
                     $.inidb.set('chatModerator', 'timeoutTimeSpamTracker', timeoutTime.SpamTracker);
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.spamtracker', timeoutTime.SpamTracker));

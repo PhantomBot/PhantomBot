@@ -704,41 +704,6 @@
             return;
         }
 
-        if (tableKey == 'warningResetTime') {
-            if (newValue >= 60) {
-                sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
-                $(tagId).val('');
-                $(tagId).attr("placeholder", newValue).blur();
-                setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
-            }
-            return;
-        }
-
-        if (tableKey == 'warningTimeSpamTracker') {
-            if (parseInt(newValue) < parseInt(spamTrackerLimit)) {
-                $("#warningTimeSpamTracker").val("Your wanring time can not be lower then you spam tracker limit.");
-                setTimeout(function() { $(tagId).val(''); }, TIMEOUT_WAIT_TIME * 4);
-                return;
-            }
-            sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
-            $(tagId).val('');
-            $(tagId).attr("placeholder", newValue).blur();
-            setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
-            return;
-        }
-
-        if (tableKey == 'timeoutTimeSpamTracker') {
-            if (parseInt(newValue) < parseInt(spamTrackerLimit)) {
-                $("#timeoutTimeSpamTracker").val("Your timeout time can not be lower then you spam tracker limit.");
-                setTimeout(function() { $(tagId).val(''); }, TIMEOUT_WAIT_TIME * 4);
-                return;
-            }
-            sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
-            $(tagId).val('');
-            $(tagId).attr("placeholder", newValue).blur();
-            setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
-        }
-
         if (newValue.length > 0 && newValue > 1) {
             sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
             $(tagId).val('');

@@ -86,7 +86,7 @@
      *
      * @param {boolean} force 
      */
-    function warnAuction(force) {
+    function warnAuction(force, user) {
         if (!auction.status) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.closed'));
             return;
@@ -111,7 +111,7 @@
             return;
         }
 
-        if (!amount) {
+        if (!parseInt(amount)) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.bid.usage'));
             return;
         } else if (amount < auction.minimum) {
@@ -181,12 +181,12 @@
              * @commandpath auction warn - Shows the top bidder in an auction
              */
             if (action.equalsIgnoreCase('warn')) {
-                warnAuction();
+                warnAuction(sender);
             }
         }
 
         /**
-         * @commandpath bid amount - Amount to bid on the current auction
+         * @commandpath bid [amount] - Amount to bid on the current auction
          */
         if (command.equalsIgnoreCase('bid')) {
             bid(sender, action);

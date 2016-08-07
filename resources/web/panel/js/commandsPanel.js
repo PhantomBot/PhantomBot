@@ -144,7 +144,6 @@
                 for (var idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandNameSafe = commandName.replace(/\?/g, '__QM__');
-logMsg(commandNameSafe);
                     commandValue = msgObject['results'][idx]['value'];
                     commands.push(commandName);
                     commandValue = commandValue.replace(/"/g, "''");
@@ -415,7 +414,7 @@ logMsg(commandNameSafe);
      */
     function editCooldown(command) {
         var value = $('#editCommandCooldown_' + command).val();
-        if (value.length > 0) {
+        if (value > 0) {
             sendDBUpdate("commands_cooldown_edit", "cooldown", command.toLowerCase(), value);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
@@ -510,7 +509,7 @@ logMsg(commandNameSafe);
             com = com.replace('!', '');
         }
 
-        if (price.length != 0 && com.length != 0) {
+        if (price != 0 && com.length != 0) {
             sendDBUpdate("commandPay", "paycom", com.toLowerCase(), price);
             $("#setCommandPayInput").val("");
             $("#setCommandPayInputCommand").val("");
@@ -524,7 +523,7 @@ logMsg(commandNameSafe);
     function updateCommandPrice(command) {
         var val = $('#editCommandPrice_' + command).val();
         $('#editCommandPrice_' + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        if (val.length > 0) {
+        if (val > 0) {
             sendDBUpdate("commands_editprice_" + command, "pricecom", command.toLowerCase(), val);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
