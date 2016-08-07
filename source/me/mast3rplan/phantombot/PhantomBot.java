@@ -945,7 +945,7 @@ public class PhantomBot implements Listener {
         }
 
         if (message.equals("apioauth")) {
-            com.gmt2001.Console.out.print("Please enter you're oauth token that you generated from https://phantomnot.net/oauth while logged as the caster: ");
+            com.gmt2001.Console.out.print("Please enter you're oauth token that you generated from https://phantombot.tv/oauth while logged as the caster: ");
             String newoauth = System.console().readLine().trim();
             TwitchAPIv3.instance().SetOAuth(newoauth);
             apioauth = newoauth;
