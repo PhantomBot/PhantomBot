@@ -144,7 +144,6 @@
                 for (var idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandNameSafe = commandName.replace(/\?/g, '__QM__');
-logMsg(commandNameSafe);
                     commandValue = msgObject['results'][idx]['value'];
                     commands.push(commandName);
                     commandValue = commandValue.replace(/"/g, "''");
