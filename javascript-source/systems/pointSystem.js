@@ -388,7 +388,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.get.self.withtime', ($.hasRank(sender) ? "the " + $.getRank(sender) : ""), getPointsString(getUserPoints(sender)), $.getUserTimeString(sender)));
                 }
             } else {
-                if (action && getUserPoints(action.toLowerCase()) != 0 && $.user.isKnown(action.toLowerCase())) {
+                if (action && $.user.isKnown(action.toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.username.resolve(action), getPointsString(getUserPoints(action.toLowerCase()))));
                 }
 
