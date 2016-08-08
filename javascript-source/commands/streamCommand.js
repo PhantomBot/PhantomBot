@@ -70,7 +70,7 @@
          */
         if (command.equalsIgnoreCase('game')) {
             if (args.length == 0) {
-                if ($.isOnline($.channelName) || $.getPlayTime() == null) {
+                if (!$.isOnline($.channelName) || $.getPlayTime() == null) {
                     $.say($.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
                 } else {
                     $.say($.lang.get('streamcommand.game.online', $.getGame($.channelName), $.getPlayTime()));
