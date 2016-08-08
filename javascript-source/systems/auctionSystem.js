@@ -6,7 +6,9 @@
         topPoints: 0,
         timer: 0,
         status: false,
-    };
+    },
+    a,
+    b;
 
     /**
      * @function openAuction
@@ -45,11 +47,11 @@
 
         if (timer > 0) {
             $.say($.lang.get('auctionsystem.auto.timer.msg', timer));
-            var a = setInterval(function() {
+            a = setTimeout(function() {
                 warnAuction(true);
                 clearInterval(a);
             }, (timer / 2) * 1000);
-            var b = setInterval(function() {
+            b = setTimeout(function() {
                 closeAuction();
                 clearInterval(b);
             }, timer * 1000);
@@ -66,6 +68,9 @@
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.closed'));
             return;
         }
+
+        clearInterval(a);
+        clearInterval(b);
 
         if (!auction.topUser) {
             auction.status = false;
