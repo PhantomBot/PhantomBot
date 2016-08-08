@@ -398,7 +398,7 @@
                 sendCommand('donationpanelupdatestreamtip');
             }
             if (panelMatch(table, 'subscribeHandler')) {
-                sendCommand('subscriberpanelupdate');
+                sendCommand('subscribepanelupdate');
             }
             if (panelMatch(table, 'gameWispSubHandler')) {
                 sendCommand('gamewisppanelupdate');
