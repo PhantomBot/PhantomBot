@@ -1429,9 +1429,8 @@
 
             var request = currentPlaylist.requestSong(event.getArguments(), sender);
             if (request != null) {
-                $.say($.lang.get(
+                $.say($.whisperPrefix(sender) + $.lang.get(
                     'ytplayer.command.songrequest.success',
-                    $.whisperPrefix(sender, true),
                     request.getVideoTitle(),
                     currentPlaylist.getRequestsCount(),
                     request.getVideoId()
