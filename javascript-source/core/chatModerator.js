@@ -510,7 +510,6 @@
                     return;
                 }
                 if (spamTracker[sender] !== undefined) {
-                    $.consoleLn(spamTracker[sender].time - $.systemTime());
                     if (spamTracker[sender].time - $.systemTime() <= 0) {
                         spamTracker[sender] = {count: 0, time: ($.systemTime() + (spamTrackerTime * 1e3))};
                     }
