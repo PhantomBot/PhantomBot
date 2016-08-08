@@ -207,7 +207,7 @@
             Emotes: $.getIniDbNumber('chatModerator', 'warningTimeEmotes'),
             Colors: $.getIniDbNumber('chatModerator', 'warningTimeColors'),
             LongMsg: $.getIniDbNumber('chatModerator', 'warningTimeLongMsg'),
-            SpamTracker: $.getIniDbNumber('chatModerator', 'warningSpamTracker'),
+            SpamTracker: $.getIniDbNumber('chatModerator', 'warningTimeSpamTracker'),
         };
 
         timeoutTime = {
@@ -218,7 +218,7 @@
             Emotes: $.getIniDbNumber('chatModerator', 'timeoutTimeEmotes'),
             Colors: $.getIniDbNumber('chatModerator', 'timeoutTimeColors'),
             LongMsg: $.getIniDbNumber('chatModerator', 'timeoutTimeLongMsg'),
-            SpamTracker: $.getIniDbNumber('chatModerator', 'timeoutSpamTracker'),
+            SpamTracker: $.getIniDbNumber('chatModerator', 'timeoutTimeSpamTracker'),
         };
 
         blacklistTimeoutTime = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime');
@@ -514,11 +514,10 @@
                         spamTracker[sender] = {count: 0, time: ($.systemTime() + (spamTrackerTime * 1e3))};
                     }
                     spamTracker[sender].count++;
-                    spamTracker[sender].time = ($.systemTime() + (spamTrackerTime * 1e3));
                 } else {
                     spamTracker[sender] = {count: 1, time: ($.systemTime() + (spamTrackerTime * 1e3))};
                 }
-                if (spamTracker[sender].count > spamTrackerLimit) {
+                if (spamTracker[sender].count >= spamTrackerLimit) {
                     timeout(sender, warningTime.SpamTracker, timeoutTime.SpamTracker, silentTimeout.SpamTrackerMessage);
                     sendMessage(sender, spamTrackerMessage, silentTimeout.SpamTracker);
                     delete spamTracker[sender];

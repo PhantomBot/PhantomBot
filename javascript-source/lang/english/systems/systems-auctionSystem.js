@@ -1,7 +1,7 @@
 $.lang.register('auctionsystem.usage', 'Usage: !auction open (increments) (minimum bid) (auto close timer)');
 $.lang.register('auctionsystem.err.opened', 'A auction is already running.');
 $.lang.register('auctionsystem.opened', 'Auction is now opened! You can bid in increments of $1. Minimum bid allowed is $2! Start biding with !bid (amount)');
-$.lang.register('auctionsystem.auto.timer.msg', 'Aution will auto close in $1 seconds!');
+$.lang.register('auctionsystem.auto.timer.msg', 'Auction will auto close in $1 seconds!');
 $.lang.register('auctionsystem.err.closed', 'There is no auction currently running.');
 $.lang.register('auctionsystem.err.no.bids', 'Auction closed! No one bided.');
 $.lang.register('auctionsystem.closed', 'Auction closed! Winner of this auction is $1 with $2!');
