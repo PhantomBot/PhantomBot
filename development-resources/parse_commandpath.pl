@@ -66,8 +66,8 @@ foreach $moduleName (sort @fileList) {
       }
 
       print "<tr>\n";
-      print "    <td><div class='tipped' data-title='Click to Copy Module to Clipboard'>$moduleName</div></td>\n";
-      print "    <td><div class='tipped' data-title='Click to Copy Command to Clipboard'>!$commandName</div></td>\n";
+      print "    <td><a href='#' div class='tooltip' data-title='Click to Copy Module to Clipboard'>$moduleName</a></td>\n";
+      print "    <td><a href='#' div class='tooltip' data-title='Click to Copy Command to Clipboard'>!$commandName</a></td>\n";
       if (length($commandOptions) > 0) {
         print "    <td>!$commandName $commandOptions</td>\n";
       } else {
