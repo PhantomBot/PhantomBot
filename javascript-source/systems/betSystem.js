@@ -121,7 +121,7 @@
             return;
         }
 
-        if (!betWinning && !subAction.equalsIgnoreCase('refundall')) {
+        if (!subAction) {
             $.say($.whisperPrefix(sender) + $.lang.get('betsystem.err.win.option'));
             return;
         }
