@@ -404,7 +404,7 @@
 
     /** Version 2.2.1 updates */
     if (!$.inidb.exists('updates', 'installedv2.2.1') || $.inidb.get('updates', 'installedv2.2.1') != 'true') {
-        $.consoleLn('Starting ' $.version ' updates...');
+        $.consoleLn('Starting ' + $.version + ' updates...');
 
         $.consoleLn('Disabling new modules...');
         $.inidb.set('modules', './handlers/bitsHandler.js', 'false');
