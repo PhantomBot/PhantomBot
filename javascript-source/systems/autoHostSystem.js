@@ -162,7 +162,7 @@
                 if (action.equalsIgnoreCase('force')) {
                     $.setIniDbBoolean('autohost_config', 'force', true); 
                     $.say($.whisperPrefix(sender) + $.lang.get('autohost.force'));
-                    $.consoleLn('Autohosting is Enabled');
+                    //$.consoleLn('Autohosting is Enabled');
                     $.inidb.set('autohost_config', 'hosting', 'true');
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('autohost.on'));
@@ -293,7 +293,6 @@
     $.bind('ircJoinComplete', function() {
         setTimeout(function() {
             setInterval(function() {
-                $.consoleLn('autoHost loop');
                 checkAutoHost();
                 if ($.getIniDbBoolean('autohost_config', 'hosting', false)) {
                     doAutoHost(false);
