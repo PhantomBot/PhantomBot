@@ -6,7 +6,7 @@
  *
  * The follow train:
  * Checks if the previous follow was less than 5 minutes ago.
- * It will trigger on 3, 4, 5, 20, 30 and 50 followers, after that it won't announce trains
+ * It will trigger on 3, 4, 5, 10 and 20+ followers.
  * anymore to reduce spam. Unless the 5 minutes have past, then it will start over.
  *
  */
@@ -27,6 +27,8 @@
         interval;
 
     /**
+     * Used by the panel for reloading the script variables.
+     *
      * @function updateFollowConfig
      */
     function updateFollowConfig() {
@@ -37,6 +39,8 @@
     };
 
     /**
+     * Check if we got a follow train going on here.
+     *
      * @function checkFollowTrain
      */
     function followTrainCheck() {
@@ -56,14 +60,14 @@
                     $.say($.lang.get('followhandler.followtrain.unbelievable', followTrain));
                 }
             }
-            followTrain = 0;
-            lastFollowTime = 0;
-            timeout = false;
+            followTrain = 0;//reset the follow train stats
+            lastFollowTime = 0;//reset the follow train stats
+            timeout = false;//reset the follow train stats
         }
     };
 
     /**
-     * Used for the follow delay
+     * Used for the follow delay to stop that chat spam.
      *
      * @function runFollow
      */
@@ -106,6 +110,8 @@
     };
 
     /**
+     * Gets the follow start event from the core
+     *
      * @event twitchFollowsInitialized
      */
     $.bind('twitchFollowsInitialized', function() {
@@ -119,45 +125,61 @@
     });
 
     /**
+     * Gets the new follow events from the core.
+     *
      * @event twitchFollow
      */
     $.bind('twitchFollow', function(event) {
         var follower = event.getFollower(),
             s;
 
+        /** The user was last seen here. If the module is enabled. */
         if ($.bot.isModuleEnabled('./commands/lastseenCommand.js')) {
             $.inidb.set('lastseen', follower, $.systemTime());
         }
 
+        /** Is the follow handler module enabled? */
         if ($.bot.isModuleEnabled('./handlers/followHandler.js')) {
+            /** Did the user unfollow and refollowed? */
             if (!$.inidb.exists('followed', follower)) {
+                /** Are we allowed to announce follows? */
                 if (followToggle && announceFollows) {
+                    /** Replace the message with tags if found */
                     s = followMessage;
                     s = s.replace('(name)', $.username.resolve(follower));
                     s = s.replace('(reward)', $.getPointsString(followReward));
                     runFollow(s);
-                    followTrain++;
+                    followTrain++;//follow train ++ check.
 
+                    /** Follow delay check */
                     if (!timeout) {
                         timeout = true;
-                        setTimeout(function() {
+                        setTimeout(function() {//Set a timeout here, because the follow events take time to all go through.
                             followTrainCheck();
                         }, 8e3);
                     }
-                    lastFollowTime = $.systemTime();
+                    lastFollowTime = $.systemTime();//last follow was here, save this time for later.
                 }
 
-                $.setIniDbBoolean('followed', follower, true);
-                $.inidb.set('streamInfo', 'lastFollow', $.username.resolve(follower));
+                $.setIniDbBoolean('followed', follower, true);//set the follower as followed.
+                $.inidb.set('streamInfo', 'lastFollow', $.username.resolve(follower));//set the follower name in the db for the panel to read.
+                /** Give points to the user if the caster wants to. */
                 if (followReward > 0) {
                     $.inidb.incr('points', follower, followReward);
                 }
+                /** Write the follow name to a file for the caster to use */
                 $.writeToFile($.username.resolve(follower), './addons/followHandler/latestFollower.txt', false);
             }
         }
     });
 
+    /**
+     * Gets the unfollow event from the core.
+     *
+     * @event twitchUnfollow
+     */
     $.bind('twitchUnfollow', function(event) {
+        /** Is the follow handler even on? */
         if (!$.bot.isModuleEnabled('./handlers/followHandler.js')) {
             return;
         }
@@ -165,12 +187,15 @@
         var follower = event.getFollows().toLowerCase(),
             followed = $.getIniDbBoolean('followed', follower, false);
 
+        /** is the user following us? Does the bot know about it? */
         if (followed) {
             $.setIniDbBoolean('followed', follower, false);
         }
     });
 
     /**
+     * Gets the command event from the core.
+     *
      * @event command
      */
     $.bind('command', function(event) {
@@ -178,7 +203,7 @@
             command = event.getCommand(),
             args = event.getArgs(),
             argString = event.getArguments(),
-            comArg = args[0],
+            action = args[0],
             channel = $.channelName;
 
         /* Do not show command on the command list, for the panel only. */
@@ -187,26 +212,29 @@
         }
 
         /**
+         * Set a follow reward for when someone follows.
+         *
          * @commandpath followreward [amount] - Set the points reward for following
          */
         if (command.equalsIgnoreCase('followreward')) {
-            comArg = parseInt(comArg);
-            if (!args[0] || isNaN(comArg)) {
+            if (!parseInt(action) || isNaN(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followreward.usage', $.pointNameMultiple, followReward));
                 return;
             }
 
-            followReward = comArg;
+            followReward = action;
             $.inidb.set('settings', 'followReward', followReward);
             $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followreward.success', $.getPointsString(followReward)));
             $.log.event(sender + ' set the follow reward to ' + followReward);
         }
 
         /**
+         * Set a follow message for when someome follows.
+         *
          * @commandpath followmessage [message] - Set the new follower message when there is a reward
          */
         if (command.equalsIgnoreCase('followmessage')) {
-            if (!comArg || comArg <= 0) {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessage.usage'));
                 return;
             }
@@ -218,10 +246,12 @@
         }
 
         /**
+         * Set a delay between follow announcements to stop chat spam. 
+         *
          * @commandpath followdelay [message] - Set the delay in seconds between follow announcements
          */
         if (command.equalsIgnoreCase('followdelay')) {
-            if (!comArg) {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followdelay.usage'));
                 return;
             }
@@ -233,6 +263,8 @@
         }
 
         /**
+         * Toggles follow announcements.
+         *
          * @commandpath followtoggle - Enable or disable the anouncements for new followers
          */
         if (command.equalsIgnoreCase('followtoggle')) {
@@ -250,6 +282,8 @@
         }
 
         /**
+         * Toggles the follow train messages. This can and will get spammy.
+         *
          * @commandpath followtaintoggle - Enable or disable the follow train anouncements
          */
         if (command.equalsIgnoreCase('followtraintoggle')) {
@@ -267,6 +301,8 @@
         }
 
         /**
+         * Tells you how many followers you currently have.
+         *
          * @commandpath followers - Announce the current amount of followers
          */
         if (command.equalsIgnoreCase('followers')) {
@@ -274,30 +310,32 @@
         }
 
         /**
+         * Check to see if a user is following your channel.
+         *
          * @commandpath checkfollow [username] - Check if a user is following the channel
          */
         if (command.equalsIgnoreCase('checkfollow')) {
-            if (!comArg || comArg == '') {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.check.usage'));
                 return;
             }
 
-            comArg = comArg.toLowerCase();
+            action = action.toLowerCase();
 
-            if ($.user.isFollower(comArg)) {
-                $.say($.lang.get('followhandler.check.follows', $.username.resolve(comArg)));
+            if ($.user.isFollower(action)) {
+                $.say($.lang.get('followhandler.check.follows', $.username.resolve(action)));
             } else {
-                $.say($.lang.get('followhandler.check.notfollows', $.username.resolve(comArg)));
+                $.say($.lang.get('followhandler.check.notfollows', $.username.resolve(action)));
             }
         }
 
         /**
+         * Gives a shoutout to a streamer with the last game they were playing, or are currently playing.
+         *
          * @commandpath follow [streamer] - Give a shout out to a streamer.
-         * @commandpath shoutout [streamer] - Give a shout out to a streamer.
-         * @commandpath caster [streamer] - Give a shout out to a streamer.
          */
         if (command.equalsIgnoreCase('follow') || command.equalsIgnoreCase('shoutout') || command.equalsIgnoreCase('caster')) {
-            if (!comArg || comArg == '') {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.shoutout.usage', command.toLowerCase()));
                 return;
             }
@@ -321,6 +359,8 @@
         }
 
         /**
+         * See how long you have been following a channel, or a user has been following you.
+         *
          * @commandpath followage [user] - Tells you how long someone has been following the channel for
          * @commandpath followage [user] [channel] - Tells you how long someone has been following that channel for
          * @commandpath followage - Tells you how long you have been following the channel
@@ -342,27 +382,31 @@
         }
 
         /**
+         * Sets a user as a follower in the db, this is for the heart on the panel.
+         *
          * @commandpath fixfollow [user] - Will force add a user to the followed list to the bot, and will add a heart next to the name on the panel
          */
         if (command.equalsIgnoreCase('fixfollow')) {
-            if (!comArg) {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.usage'));
                 return;
-            } else if ($.inidb.exists('followed', comArg)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.error', comArg));
+            } else if ($.inidb.exists('followed', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.error', action));
                 return;
-            } else if ($.twitch.GetUserFollowsChannel(comArg, $.channelName).getInt('_http') != 200) {
-                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.error.404', comArg));
+            } else if ($.twitch.GetUserFollowsChannel(action, $.channelName).getInt('_http') != 200) {
+                $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.error.404', action));
                 return;
             }
 
-            $.inidb.set('followed', comArg, 'true');
-            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.added', comArg));
-            $.log.event(sender + ' added ' + comArg + ' to the followed list.');
+            $.inidb.set('followed', action, 'true');
+            $.say($.whisperPrefix(sender) + $.lang.get('followhandler.fixfollow.added', action));
+            $.log.event(sender + ' added ' + action + ' to the followed list.');
         }
     });
 
     /**
+     * Register commands once the bot is fully loaded.
+     *
      * @event initReady
      */
     $.bind('initReady', function() {

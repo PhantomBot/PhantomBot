@@ -12,16 +12,24 @@
         hostList = {},
         announceHosts = false;
 
-
+    /**
+     * Reloads the script variables for when the user edits stuff on the panel 
+     *
+     * @function updateHost
+     */
     function updateHost() {
         hostReward = $.getIniDbNumber('settings', 'hostReward');
         hostMessage = $.getIniDbString('settings', 'hostMessage');
         hostHistory = $.getIniDbBoolean('settings', 'hostHistory');
-    }
+    };
+
     /**
+     * Gets the host start event from the core.
+     *
      * @event twitchHostsInitialized
      */
-    $.bind('twitchHostsInitialized', function() {
+    $.bind('twitchHostsInitialized', function(event) {
+        /** is the module enabled? */
         if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
             return;
         }
@@ -32,9 +40,12 @@
     });
 
     /**
+     * Gets the host event from the core.
+     *
      * @event twitchHosted
      */
     $.bind('twitchHosted', function(event) {
+        /** is the module enabled? */
         if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
             return;
         }
@@ -44,29 +55,39 @@
             msg = hostMessage,
             jsonObject = {};
 
+        /** Are we allowed to announce hosts? */
         if (!announceHosts) {
             return;
         }
 
         $.writeToFile(hoster, "./addons/hostHandler/latestHost.txt", false);
 
+        /** Does the bot know this guy hosted? */
         if (hostList[hoster]) {
+            /** Has this guy been hosting for a while now? */
             if (hostList[hoster].hostTime > now) {
                 return;
             }
             hostList[hoster].hostTime = now + hostTimeout;
         } else {
+            /** This guy never hosted, add him to a array. */
             hostList[hoster] = {
                 hostTime: now + hostTimeout
             };
         }
 
+        /** Replace the tags in the host message */
         msg = msg.replace('(name)', hoster);
         msg = msg.replace('(reward)', hostReward.toString());
         $.say(msg);
 
-        $.inidb.incr('points', hoster.toLowerCase(), hostReward);
+        /** is there a host reward set? */
+        if (hostReward > 0) {
+            /** Give the hoster points */
+            $.inidb.incr('points', hoster.toLowerCase(), hostReward);
+        }
 
+        /** is the host history enabled? */
         if ($.getIniDbBoolean('settings', 'hostHistory', false)) {
             jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : 0 }; // Add viewers as placeholder.
             $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
@@ -74,62 +95,76 @@
     });
 
     /**
+     * Gets the un-host event from the core.
+     *
      * @event twitchUnhosted
      */
-    /**
-     * Having this lets the user unhost, get deleted from the array and host again. So that host cooldown is useless with this...
-     *
-     * $.bind('twitchUnhosted', function(event) {
-     *   if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
-     *       return;
-     *   }
-     *  var hoster = event.getHoster();
-     *  delete hostList[hoster];
-     *});
-     */
+    $.bind('twitchUnhosted', function(event) {
+        if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
+            return;
+        }
 
+        var hoster = event.getHoster();
+
+        /** Does the bot know this guy hosted? */
+        if (hostList[hoster] !== undefined) {
+            /** Has this guy been hosting for a while now? */
+            if (hostList[hoster].hostTime < $.systemTime()) {
+                /** Delete this guy from the host array. */
+                delete hostList[hoster];
+            }
+        }
+    });
+     
     /**
+     * Gets the command event from the core
+     *
      * @event command
      */
     $.bind('command', function(event) {
-        var sender = event.getSender().toLowerCase(),
+        var sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
-            commandArg = parseInt(args[0]),
-            temp = [],
-            i;
+            argsString = event.getArguments(),
+            action = parseInt(args[0]);
 
         /**
+         * Set a reward for when someone hosts the channel.
+         *
          * @commandpath hostreward [amount] - Set the amount of points to reward when a channel starts hosting
          */
         if (command.equalsIgnoreCase('hostreward')) {
-            if (isNaN(commandArg)) {
+            if (!parseInt(action) || isNaN(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostreward.usage', $.pointNameMultiple));
                 return;
             }
 
-            $.inidb.set('settings', 'hostReward', commandArg);
-            hostReward = parseInt(commandArg);
-            $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostreward.success', $.getPointsString(commandArg)));
-            $.log.event(sender + ' changed the host reward to ' + commandArg);
+            $.inidb.set('settings', 'hostReward', action);
+            hostReward = parseInt(action);
+            $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostreward.success', $.getPointsString(action)));
+            $.log.event(sender + ' changed the host reward to ' + action);
         }
 
         /**
+         * Set a message for when someone hosts the channel
+         *
          * @commandpath hostmessage [message] - Set a message given when a channel hosts
          */
         if (command.equalsIgnoreCase('hostmessage')) {
-            if (!args || args.length == 0) {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostmessage.usage'));
                 return;
             }
 
-            hostMessage = event.getArguments();
+            hostMessage = argsString;
             $.inidb.set('settings', 'hostMessage', hostMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostmessage.success'));
             $.log.event(sender + ' changed the host message to ' + hostMessage);
         }
 
         /**
+         * unhost the channel.
+         *
          * @commandpath unhost - Send the /unhost command to Twitch
          */
         if (command.equalsIgnoreCase('unhost')) {
@@ -137,22 +172,29 @@
         }
 
         /**
+         * Host a channel
+         *
          * @commandpath host [channel] - Send the /host command to Twitch
          */
         if (command.equalsIgnoreCase('host')) {
-            if (!args[0]) {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.host.usage'));
                 return;
             }
 
-            $.say('.host ' + args[0].toLowerCase());
-            $.log.event(sender + ' hosted channel ' + args[1]);
+            $.say('.host ' + action);
+            $.log.event(sender + ' hosted channel ' + action);
         }
 
         /**
+         * Check how many people are currently hosting the channel.
+         *
          * @commandpath hostcount - Announce the number of other channels hosting this channel
          */
         if (command.equalsIgnoreCase('hostcount')) {
+            var temp = [],
+                i;
+
             for (i in hostList) {
                 temp.push(i);
             }
@@ -161,13 +203,19 @@
                 $.say($.lang.get('hosthandler.hostcount.404'));
                 return;
             }
+
             $.say($.lang.get('hosthandler.hostcount', temp.length));
         }
 
         /**
+         * Give a list of the current hosters.
+         *
          * @commandpath hostlist - Announce a list of other channels hosting this channel
          */
         if (command.equalsIgnoreCase('hostlist')) {
+            var temp = [],
+                i;
+
             for (i in hostList) {
                 temp.push(i);
             }
@@ -181,17 +229,19 @@
         }
 
         /**
+         * Toggle the host history.
+         *
          * @commandpath hosthistory [on/off] - Enable/disable collection of host history data for the Panel.
          */
         if (command.equalsIgnoreCase('hosthistory')) {
-            if (!args || args.length == 0) {
+            if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
                 return;
             }
-            if (args[0].equalsIgnoreCase('on')) {
+            if (action.equalsIgnoreCase('on')) {
                 $.setIniDbBoolean('settings', 'hostHistory', true);
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.change', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
-            } else if (args[0].equalsIgnoreCase('off')) {
+            } else if (action.equalsIgnoreCase('off')) {
                 $.setIniDbBoolean('settings', 'hostHistory', false);
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.change', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
             } else {
@@ -200,12 +250,19 @@
             }
         }
 
+        /** 
+         * Used for the panel 
+         *
+         * No command path
+         */
         if (command.equalsIgnoreCase('reloadhost')) {
             updateHost();
         }
     });
 
     /**
+     * Loads commands once the bot is fully loaded
+     *
      * @event initReady
      */
     $.bind('initReady', function() {
