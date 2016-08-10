@@ -78,12 +78,12 @@
 			if (toggle) {
 				toggle = false;
 				$.setIniDbBoolean('bitsSettings', 'toggle', toggle);
-				$.say($.whisperPrefix(sender) + 'Bits announcements have been disabled.');
+				$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.toggle.off'));
 				$.log.event(sender + ' disabled bit announcements');
 			} else {
 				toggle = true;
 				$.setIniDbBoolean('bitsSettings', 'toggle', toggle);
-				$.say($.whisperPrefix(sender) + 'Bits announcements have been enabled.');
+				$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.toggle.on'));
 				$.log.event(sender + ' enabled bit announcements');
 			}
 		}
@@ -95,13 +95,13 @@
 		 */
 		if (command.equalsIgnoreCase('bitsmessage')) {
 			if (!action) {
-				$.say($.whisperPrefix(sender) + 'Usage: !bitsmessage (message) - Tags: (name), (amount), (reward)');
+				$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.message.usage'));
 				return;
 			}
 
 			message = argsString;
 			$.setIniDbString('bitsSettings', 'message', message);
-			$.say($.whisperPrefix(sender) + 'Bits message has been set to: ' + message + '.');
+			$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.message.set', message));
 			$.log.event(sender + ' changed the bits message to: ' + message);
 		}
 
@@ -112,13 +112,13 @@
 		 */
 		if (command.equalsIgnoreCase('bitsreward')) {
 			if (!isNaN(action) || !parseInt(action)) {
-				$.say($.whisperPrefix(sender) + 'Usage: !bitsreward (amount)');
+				$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.reward.usage'));
 				return;
 			}
 
 			reward = parseInt(action);
 			$.setIniDbNumber('bitsSettings', 'reward', reward);
-			$.say($.whisperPrefix(sender) + 'Bits reward has been set to ' + $.getPointsString(reward) + '.');
+			$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.reward.set', $.getPointsString(reward)));
 			$.log.event(sender + ' changed the bits reward to: ' + $.getPointsString(reward));
 		}
 
@@ -129,13 +129,13 @@
 		 */
 		if (command.equalsIgnoreCase('bitsminimum')) {
 			if (!isNaN(action) || !parseInt(action)) {
-				$.say($.whisperPrefix(sender) + 'Usage: !bitsminimum (amount)');
+				$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.minimum.usage'));
 				return;
 			}
 
 			minimum = parseInt(action);
 			$.setIniDbNumber('bitsSettings', 'minimum', minimum);
-			$.say($.whisperPrefix(sender) + 'Bits minimum has been set to ' + minimum + ' bits.');
+			$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.minimum.set', minimum));
 			$.log.event(sender + ' changed the bits minimum to: ' + minimum + ' bits.');
 		}
 
