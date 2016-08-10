@@ -88,6 +88,7 @@ import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
+import me.mast3rplan.phantombot.event.bits.BitsEvent;
 import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
 import me.mast3rplan.phantombot.ytplayer.YTWebSocketServer;
 import me.mast3rplan.phantombot.script.Script;
@@ -901,6 +902,12 @@ public class PhantomBot implements Listener {
         if (message.equals("testresub")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing testresub");
             EventBus.instance().post(new NewReSubscriberEvent(session, this.channel, this.username, "5"));
+            return;
+        }
+
+        if (message.equals("testbits")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testbits");
+            EventBus.instance().post(new BitsEvent(session, this.channel, this.username, "100"));
             return;
         }
 

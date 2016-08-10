@@ -99,6 +99,10 @@
                 handlePanel('./handlers/streamTipHandler.js', '#_streamtipdonationAlertsPanel', moduleEnabled);
                 handlePanel('./handlers/streamTipHandler.js', '#_streamtipdonationsPanel', moduleEnabled);
             }
+            if (panelMatch(module, './handlers/bitsHandler.js')) {
+                handlePanel('./handlers/bitsHandler.js', '#_twitchBitsAlertsPanel', moduleEnabled);
+                handlePanel('./handlers/bitsHandler.js', '#_twitchBitsPanel', moduleEnabled);
+            }
             if (panelMatch(module, './handlers/subscribeHandler.js')) {
                 handlePanel('./handlers/subscribeHandler.js', '#_twitchSubPanel', moduleEnabled);
             }
