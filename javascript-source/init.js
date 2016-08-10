@@ -844,7 +844,7 @@
                 return;
             }
 
-            if ($.coolDown.get(command, sender) > 0) {
+            if ($.coolDown.get(command, sender, isModv3) > 0) {
                 if ($.getIniDbBoolean('settings', 'coolDownMsgEnabled', false)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
                 } else {
