@@ -29,8 +29,8 @@
      * @param username
      * @return boolean
      */
-    function permCheck(username) {
-        return (!modCooldown && $.isMod(username)) || $.isAdmin(username);
+    function permCheck(username, isMod) {
+        return (!modCooldown && isMod) || $.isAdmin(username);
     };
 
      /**
@@ -71,19 +71,19 @@
 
         if (!command.equals('adventure')) {
             if (globalCooldown && !hasCooldown) {
-                cooldown.push({command: command, time: time});
+                cooldown[command] = {time: time};
                 $.consoleDebug('Pushed command !' + command + ' to global cooldown.');
                 return;
             } else {
                 if (perUserCooldown) {
-                    cooldown.push({command: command, time: time, username: username});
+                    cooldown[command] = {time: time, username: username};
                     $.consoleDebug('Pushed command !' + command + ' to user cooldown with username: ' + username + '.');
                     return;
                 }
             }
         }
 
-        cooldown.push({command: command, time: time});
+        cooldown[command] = {time: time};
         $.consoleDebug('Pushed command !' + command + ' to cooldown.');
     };
 
@@ -94,50 +94,47 @@
      * @param username
      * @return number
      */
-    function get(command, username) {
-        var hasCooldown = $.inidb.exists('cooldown', command.toLowerCase()),
-            i;
+    function get(command, username, isMod) {
+        var hasCooldown = $.inidb.exists('cooldown', command.toLowerCase());
 
         if (commandCheck(command.toLowerCase())) {
+            if (command.equals('adventure')) {
+                if (cooldown[command] !== undefined) {
+                    if (cooldown[command].time - $.systemTime() >= 0) {
+                        return parseInt(cooldown[command].time - $.systemTime());
+                    }
+                }
+            }
             return 0;
         }
 
         if (globalCooldown && !hasCooldown) {
-            for (i in cooldown) {
-                if (cooldown[i].command.equals(command.toLowerCase())) {
-                    if ((cooldown[i].time - $.systemTime()) > 0) {
-                        if (permCheck(username)) return 0;
-                        return parseInt(cooldown[i].time - $.systemTime());
-                    }
+            if (cooldown[command] !== undefined) {
+                if (cooldown[command].time - $.systemTime() >= 0) {
+                    if (permCheck(username, isMod)) return 0;
+                    return parseInt(cooldown[command].time - $.systemTime());
                 }
             }
-            set(command, hasCooldown, globalCooldownTime);
-            return 0;
-        } else { 
+            set(command, hasCooldown, globalCooldownTime); return 0;
+        } else {
             if (perUserCooldown && hasCooldown) {
-                for (i in cooldown) {
-                    if (cooldown[i].command.equals(command) && cooldown[i].username.equals(username)) {
-                        if ((cooldown[i].time - $.systemTime()) > 0) {
-                            if (permCheck(username)) return 0;
-                            return parseInt(cooldown[i].time - $.systemTime());
-                        }
+                if (cooldown[command] !== undefined && cooldown[command].username.equalsIgnoreCase(username)) {
+                    if (cooldown[command].time - $.systemTime() >= 0) {
+                        if (permCheck(username, isMod)) return 0;
+                        return parseInt(cooldown[command].time - $.systemTime());
                     }
                 }
-                set(command, hasCooldown, getCooldown(command), username);
-                return 0;
+                set(command, hasCooldown, getCooldown(command), username); return 0;
             }
         }
 
-        for (i in cooldown) {
-            if (cooldown[i].command.equals(command.toLowerCase())) {
-                if ((cooldown[i].time - $.systemTime()) > 0) {
-                    if (permCheck(username)) return 0;
-                    return parseInt(cooldown[i].time - $.systemTime());
-                }
+        if (cooldown[command] !== undefined) {
+            if (cooldown[command].time - $.systemTime() >= 0) {
+                if (permCheck(username, isMod)) return 0;
+                return parseInt(cooldown[command].time - $.systemTime());
             }
         }
-        set(command, hasCooldown, getCooldown(command));
-        return 0;
+        set(command, hasCooldown, getCooldown(command)); return 0;
     };
 
     /**
@@ -146,23 +143,14 @@
      * @param command
      */
     function clear(command) {
-        var i;
-        for (i in cooldown) {
-            if (cooldown[i].command.equalsIgnoreCase(command)) {
-                cooldown.splice(i, 1);
-                return;
-            }
-        }
+        delete cooldown[command];
     };
 
     /**
      * @function clearAll
      */
     function clearAll() {
-        var i;
-        for (i in cooldown) {
-            cooldown.splice(i, 1);
-        }
+        cooldown = [];
     };
 
     /**
