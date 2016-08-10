@@ -67,17 +67,18 @@
         // them less than our configured number of allowed hours.  If they are otherwise offline
         // or we have been hosting them long enough, then we fall down into setting up a new host.
         //
-        if ($.getIniDbString('autohost_config', 'currently_hosting').length() > 0 && !force) {
+        if ($.getIniDbString('autohost_config', 'currently_hosting', '') !== '' && !force) {
             if ($.isOnline($.getIniDbString('autohost_config', 'currently_hosting'))) {
                 if ($.getIniDbNumber('autohost_config', 'host_time_minutes') === 0) {
                     return;
                 }
                 if (($.getIniDbNumber('autohost_config', 'last_host_start') +
-                     $.getIniDbNumber('autohost_config', 'host_time_minutes') * 6e4) < $.systemTime()) {
+                    $.getIniDbNumber('autohost_config', 'host_time_minutes') * 6e4) < $.systemTime()) {
                     return;
                 }
             }
         }
+        
         var lastRank = $.getSetIniDbNumber('autohost_config', 'last_rank', 0),
             lastHost = $.getSetIniDbString('autohost_config', 'last_host', ''),
             hostList = $.inidb.GetKeyList('autohost_hosts', ''),
@@ -162,7 +163,7 @@
                 if (action.equalsIgnoreCase('force')) {
                     $.setIniDbBoolean('autohost_config', 'force', true); 
                     $.say($.whisperPrefix(sender) + $.lang.get('autohost.force'));
-                    $.consoleLn('Autohosting is Enabled');
+                    //$.consoleLn('Autohosting is Enabled');
                     $.inidb.set('autohost_config', 'hosting', 'true');
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('autohost.on'));
@@ -293,7 +294,6 @@
     $.bind('ircJoinComplete', function() {
         setTimeout(function() {
             setInterval(function() {
-                $.consoleLn('autoHost loop');
                 checkAutoHost();
                 if ($.getIniDbBoolean('autohost_config', 'hosting', false)) {
                     doAutoHost(false);
