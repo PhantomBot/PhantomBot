@@ -32,11 +32,13 @@ public class ScriptEventManager implements Listener {
     public static ScriptEventManager instance() {
         return instance;
     }
+    
     private static final String[] eventPackages = new String[] {
         "me.mast3rplan.phantombot.event.command",
         "me.mast3rplan.phantombot.event.irc.message",
         "me.mast3rplan.phantombot.event.irc",
         "me.mast3rplan.phantombot.event.subscribers",
+        "me.mast3rplan.phantombot.event.bits",
         "me.mast3rplan.phantombot.event.musicplayer",
         "me.mast3rplan.phantombot.event.ytplayer",
         "me.mast3rplan.phantombot.event.console",

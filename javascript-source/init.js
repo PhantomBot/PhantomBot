@@ -1246,9 +1246,15 @@
         /**
          * @event api-NewReSubscriberEvent
          */
-
         $api.on($script, 'NewReSubscriber', function(event) {
             callHook('NewReSubscriber', event, false);
+        });
+
+        /**
+         * @event api-BitsEvent
+         */
+        $api.on($script, 'Bits', function(event) {
+            callHook('Bits', event, false);
         });
 
         $.log.event('init.js api\'s loaded.');

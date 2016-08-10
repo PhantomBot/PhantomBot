@@ -23,6 +23,9 @@
 package me.mast3rplan.phantombot.twitchwsirc;
 
 import com.google.common.collect.Maps;
+
+import org.java_websocket.WebSocket;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -38,13 +41,11 @@ import me.mast3rplan.phantombot.event.irc.message.IrcModerationEvent;
 import me.mast3rplan.phantombot.event.irc.clearchat.IrcClearchatEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
+import me.mast3rplan.phantombot.event.bits.BitsEvent;
+import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.command.CommandEvent;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
-import me.mast3rplan.phantombot.event.EventBus;
-
-import org.java_websocket.WebSocket;
-
-import me.mast3rplan.phantombot.PhantomBot;
+import me.mast3rplan.phantombot.cache.UsernameCache;
 
 /*
  * Create an interface that is used to create event handling methods.
@@ -57,6 +58,7 @@ public class TwitchWSIRCParser {
 
     private Map<String, TwitchWSIRCCommand> parserMap = new HashMap<String, TwitchWSIRCCommand>();
     private ScriptEventManager scriptEventManager = ScriptEventManager.instance();
+    private UsernameCache usernameCache = UsernameCache.instance();
     private ArrayList<String> moderators = new ArrayList<>();
     private WebSocket webSocket;
     private String channelName;
@@ -125,7 +127,7 @@ public class TwitchWSIRCParser {
 
         parserMap.put("RECONNECT", new TwitchWSIRCCommand() {
             public void exec(String message, String username, Map<String, String> tagsMap) {
-                //reconnect();
+                reconnect();
             }
         });
 
@@ -243,6 +245,7 @@ public class TwitchWSIRCParser {
      * Handles commands.
      */
     private void commandEvent(String message, String username) {
+        /* is this message a command? */
         if (!message.startsWith("!")) {
             return;
         }
@@ -250,6 +253,7 @@ public class TwitchWSIRCParser {
         String arguments = "";
         String command = message.substring(1);
 
+        /** Does the command have arguments? */
         if (command.contains(" ")) {
             String commandString = command;
             command = commandString.substring(0, commandString.indexOf(" "));
@@ -274,16 +278,21 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void privMsg(String message, String username, Map<String, String> tagsMap) {
+        /* Check to see if the user is using a ACTION in the channel. (/me) */
         if (message.startsWith("\001ACTION")) {
             message = message.replaceAll("\001", "").replace("ACTION", "/me");
         }
-        
+
+        /* Print the parsed message in the console. */
         com.gmt2001.Console.out.println(username + ": " + message);
 
+        /* Check to see if the users disaplay name. Used in the scripts. */
         if (tagsMap.containsKey("display-name")) {
-            PhantomBot.instance().getUsernameCache().addUser(username, tagsMap.get("display-name"));
+            usernameCache.addUser(username, tagsMap.get("display-name"));
+            com.gmt2001.Console.debug.println("Username::" + username + "::Display-Name::" + tagsMap.get("display-name"));
         }
 
+        /* Check to see if the user is subscribing to the channel */
         if (message.endsWith("subscribed!")) {
             if (username.equalsIgnoreCase("twitchnotify")) {
                 scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
@@ -291,6 +300,13 @@ public class TwitchWSIRCParser {
             }
         }
 
+        /* Check to see if the user is donating/cheering bits */
+        if (tagsMap.containsKey("bits")) {
+            scriptEventManager.runDirect(new BitsEvent(this.session, channel, username, tagsMap.get("bits")));
+            com.gmt2001.Console.debug.println("Bits::" + username + "::" + tagsMap.get("bits"));
+        }
+
+        /* Check to see if the user is a channel subscriber */
         if (tagsMap.containsKey("subscriber")) {
             if (tagsMap.get("subscriber").equals("1")) {
                 com.gmt2001.Console.debug.println("Subscriber::" + username + "::true");
@@ -298,6 +314,7 @@ public class TwitchWSIRCParser {
             }
         }
 
+        /* Check to see if the user is a moderator */
         if (tagsMap.containsKey("user-type")) {
             if (tagsMap.get("user-type").length() > 0) {
                 if (!moderators.contains(username.toLowerCase())) {
@@ -330,7 +347,9 @@ public class TwitchWSIRCParser {
             scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
         }
 
+        /* Check if the message is a command */
         commandEvent(message, username);
+        /* Send the message to the scripts. */
         eventBus.post(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
     }
 
@@ -466,6 +485,19 @@ public class TwitchWSIRCParser {
                     eventBus.postAsync(new IrcChannelUserModeEvent(session, this.channel, session.getNick(), "O", true));
                 }
             }
+        }
+    }
+
+    /*
+     * Handles the RECONNECT event from IRC.
+     *
+     */
+    private void reconnect() {
+        try {
+            Thread.sleep(30000);// wait 30 seconds to give time to the irc servers to reboot.
+            this.session.reconnect();
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
