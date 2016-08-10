@@ -8,7 +8,7 @@
 	    message = $.getSetIniDbString('bitsSettings', 'message', '(name) just cheered (amount) bits!'),
 	    reward = $.getSetIniDbNumber('bitsSettings', 'reward', 0),
 	    minimum = $.getSetIniDbNumber('bitsSettings', 'minimum', 0),
-	    announceBits = true;
+	    announceBits = false;
 
 	/**
 	 * Used by the panel when someone updates a setting to reload the script vars.
