@@ -1352,6 +1352,7 @@ public class PhantomBot implements Listener {
             mysql.RemoveFile(table);
         }
 
+        mysql.setAutoCommit(false);
         com.gmt2001.Console.out.println("  Converting SQLite to MySQL...");
         String[] tables = sqlite.GetFileList();
         for (String table : tables) {
@@ -1365,6 +1366,7 @@ public class PhantomBot implements Listener {
                 }
             }
         }
+        mysql.setAutoCommit(true);
         sqlite.CloseConnection();
         com.gmt2001.Console.out.println("  Finished Converting Tables.");
 
