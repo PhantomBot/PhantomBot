@@ -44,7 +44,7 @@ public class MySQLStore extends DataStore {
     private String db = "";
     private String user = "";
     private String pass = "";
-   
+    private int autoCommitCtr = 0;
 
     public static MySQLStore instance() {
         return instance;
@@ -466,4 +466,34 @@ public class MySQLStore extends DataStore {
         }
     }
 
+    @Override
+    public void setAutoCommit(boolean mode) {
+        CheckConnection();
+
+        try {
+            if (mode == true) {
+                decrAutoCommitCtr();
+                if (getAutoCommitCtr() == 0) {
+                    connection.commit();
+                    connection.setAutoCommit(mode);
+                }
+            } else {
+                incrAutoCommitCtr();
+                connection.setAutoCommit(mode);
+                com.gmt2001.Console.debug.println(getAutoCommitCtr());
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.debug.println("MySQL commit was attempted too early, will perform later.");
+        }
+    }
+
+    private synchronized void incrAutoCommitCtr() {
+        autoCommitCtr++;
+    }
+    private synchronized void decrAutoCommitCtr() {
+        autoCommitCtr--;
+    }
+    private synchronized int getAutoCommitCtr() {
+        return autoCommitCtr;
+    }
 }
