@@ -78,7 +78,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="followerGreeting">Follower Message</label>
+                <label for="followerGreeting">Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateGreetingData('followerGreetingInput', 'settings', 'followMessage')">Submit</button>
                 <input type="text" class="form-control" id="followerGreetingInput" placeholder="Greeting Message"
@@ -88,7 +88,7 @@
         
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="followerReward">Follower Reward</label>
+                <label for="followerReward">Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('followerRewardInput', 'settings', 'followReward')">Submit</button>
                 <input type="number" min="0" class="form-control" id="followerRewardInput" placeholder="Points" />
@@ -97,7 +97,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="followDelay">Follower Delay (seconds)</label>
+                <label for="followDelay">Delay (seconds)</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('followDelay', 'settings', 'followDelay')">Submit</button>
                 <input type="number" min="0" class="form-control" id="followDelay" placeholder="Delay in seconds" />
@@ -145,7 +145,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="donationGroupMin">Donation Promote Amount</label>
+                <label for="donationGroupMin">Promote Amount</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('donationGroupMin', 'donations', 'donationGroupMin')">Submit</button>
                 <input type="text" class="form-control" id="donationGroupMin" placeholder="Amount" 
@@ -155,7 +155,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="donateGreeting">Donation Message</label>
+                <label for="donateGreeting">Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('donateGreetingInput', 'donations', 'message')">Submit</button>
                 <input type="text" class="form-control" id="donateGreetingInput" placeholder="Donation Message" 
@@ -214,7 +214,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamtipdonationGroupMin">Donation Promote Amount</label>
+                <label for="streamtipdonationGroupMin">Promote Amount</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('streamtipdonationGroupMin', 'streamtip', 'donationGroupMin')">Submit</button>
                 <input type="text" class="form-control" id="streamtipdonationGroupMin" placeholder="Amount" 
@@ -224,7 +224,7 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamtipdonateGreeting">Donation Message</label>
+                <label for="streamtipdonateGreeting">Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('streamtipdonateGreetingInput', 'streamtip', 'message')">Submit</button>
                 <input type="text" class="form-control" id="streamtipdonateGreetingInput" placeholder="Donation Message" 
@@ -243,7 +243,6 @@
         </form>
     </div>
     </div>
-
 
     <h3>Subscriber Alert Settings</h3>
     <div>
@@ -299,9 +298,57 @@
                        data-toggle="tooltip" title="Tags: (name) (reward) (months)" />
             </div>
         </form>
+    </div>
+    </div>
+
+    <h3>Bits Alert Settings</h3>
+    <div>
+    <div id="_twitchBitsAlertsPanelDisabled" />
+    <div id="_twitchBitsPanel">
+        <table>
+            <tr class="textList">
+                <td>Toggle Bits Alerts</td>
+                <td style="width: 25px"><div id="bitsToggle" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('bitsSettings', 'toggle');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="bitsReward">Reward</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.updateGreetingData('bitsReward', 'bitsSettings', 'reward')">Submit</button>
+                <input type="number" min="0" class="form-control" id="bitsReward" placeholder="Points"data-toggle="tooltip" title="Set the reward of points you want to give when someone cheers"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="bitsMessage">Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.updateGreetingData('bitsMessage', 'bitsSettings', 'message')">Submit</button>
+                <input type="text" class="form-control" id="bitsMessage" placeholder="Message" 
+                       data-toggle="tooltip" title="Tags: (name) (reward) (amount)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="bitsMinimum">Minimum</label>
+                <button type="button" class="btn btn-primary inline pull-right"  
+                        onclick="$.updateGreetingData('bitsMinimum', 'bitsSettings', 'minimum')">Submit</button>
+                <input type="number" min="0" class="form-control" id="bitsMinimum" placeholder="Amount" data-toggle="tooltip" title="Set the minimum amount of bits a user needs to cheer before triggering the alert."/>
+            </div>
+        </form>
 
     </div>
     </div>
+
 
     <h3>GameWisp Alert Settings</h3>
     <div>

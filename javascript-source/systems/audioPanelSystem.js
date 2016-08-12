@@ -4,6 +4,7 @@
  * Play audio on the PhantomBot Control Panel Audio Panel
  */
 (function() {
+    var messageToggle = $.getSetIniDbBoolean('settings', 'audiohookmessages', false);
 
     /**
      * @event command
@@ -20,6 +21,7 @@
          * @commandpath audiohook [play | list] - Base command for audio hooks.
          * @commandpath audiohook play [audio_hook] - Sends the audio_hook request to the Panel. 
          * @commandpath audiohook list - Lists the audio hooks.
+         * @commandpath audiohook togglemessages - Enables the success message once a sfx is sent.
          */
         if (command.equalsIgnoreCase('audiohook')) {
             var hookKeys = $.inidb.GetKeyList('audio_hooks', ''),
@@ -46,7 +48,22 @@
                     return;
                 }
                 $.panelsocketserver.triggerAudioPanel(audioHook);
+                if (!messageToggle) {
+                    return;
+                }
                 $.say($.whisperPrefix(sender) + $.lang.get('audiohook.play.success', audioHook));
+            }
+
+            if (subCommand.equalsIgnoreCase('togglemessages')) {
+                if (messageToggle) {
+                    messageToggle = false;
+                    $.inidb.set('settings', 'audiohookmessages', messageToggle);
+                } else {
+                    messageToggle = true;
+                    $.inidb.set('settings', 'audiohookmessages', messageToggle);
+                }
+                $.say($.whisperPrefix(sender) + $.lang.get('audiohook.toggle', messageToggle));
+                return;
             }
 
             if (subCommand.equalsIgnoreCase('list')) {

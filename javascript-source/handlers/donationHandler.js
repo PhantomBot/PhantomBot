@@ -1,18 +1,21 @@
 /**
  * donationHandler.js
  *
- * Detect and report donations.
+ * Detect and report donations from TwitchAlerts.
  */
 (function() {
-    var announceDonations = $.getSetIniDbBoolean('donations', 'announce', true),
+    var announceDonations = $.getSetIniDbBoolean('donations', 'announce', false),
         donationReward = $.getSetIniDbFloat('donations', 'reward', 0),
         donationMessage = $.getSetIniDbString('donations', 'message', $.lang.get('donationhandler.donation.new')),
         donationLastMsg = $.getSetIniDbString('donations', 'lastmessage', $.lang.get('donationhandler.lastdonation.success')),
         donationGroup = $.getSetIniDbBoolean('donations', 'donationGroup', false),
         donationGroupMin = $.getSetIniDbNumber('donations', 'donationGroupMin', 5),
-        donationAddonDir = "./addons/donationHandler";
+        donationAddonDir = "./addons/donationHandler",
+        announceDonationsAllowed = false;
 
     /**
+     * Used for the panel when editing setting to reload the variables in this script.
+     *
      * @function donationpanelupdate
      */
     function donationpanelupdate() {
@@ -25,9 +28,12 @@
     };
 
     /**
+     * Gets the donation ready event from the core.
+     *
      * @event twitchAlertsDonationsInitialized
      */
     $.bind('twitchAlertsDonationInitialized', function(event) {
+        /** Is this module enabled? */
         if (!$.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             return;
         }
@@ -39,13 +45,16 @@
 
         $.consoleLn(">> Enabling Twitch Alerts donation announcements");
         $.log.event('Donation announcements enabled');
-        announceDonations = true;
+        announceDonationsAllowed = true;
     });
 
     /**
+     * Gets the donation event from the core.
+     *
      * @event twitchAlertsDonations
      */
     $.bind('twitchAlertsDonation', function(event) {
+        /** Is this module enabled? */
         if (!$.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             return;
         }
@@ -54,6 +63,7 @@
             JSONObject = Packages.org.json.JSONObject,
             donationJson = new JSONObject(donationJsonStr);
 
+        /** Make the json into variables that we can then use tags with */
         var donationID = donationJson.getString("donation_id"),
             donationCreatedAt = donationJson.getString("created_at"),
             donationCurrency = donationJson.getString("currency"),
@@ -61,20 +71,25 @@
             donationUsername = donationJson.getString("name"),
             donationMsg = donationJson.getString("message");
 
-
+        /** Make sure that donation id has not been said before. Why would this happen? Because we get the last 5 donation from twitch alerts. */
         if ($.inidb.exists('donations', donationID)) {
             return;
         }
 
+        /** Set the last donator name in the db for the panel to read */
         $.inidb.set('streamInfo', 'lastDonator', $.username.resolve(donationUsername));
+        /** Set the donation id with the json we got from twitch alerts */
         $.inidb.set('donations', donationID, donationJson);
+        /** Keep the last donation id in the db */
         $.inidb.set('donations', 'last_donation', donationID);
-
+        /** Write the last donator and amount to a file for the caster to use if needed */
         $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), donationAddonDir + "/latestDonation.txt", false);
 
-        if (announceDonations) {
+        /** Make sure we are allowed to say donation and check if the caster has enabled them */
+        if (announceDonations && announceDonationsAllowed) {
             var rewardPoints = Math.round(donationAmount * donationReward);
             var donationSay = donationMessage;
+            /** Replace the tags if found in the donation message */
             donationSay = donationSay.replace('(name)', donationUsername);
             donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
             donationSay = donationSay.replace('(points)', rewardPoints.toString());
@@ -85,7 +100,7 @@
         }
 
         if (donationGroup) { // if the Donation group is enabled.
-            $.inidb.incr('donations', donationUsername.toLowerCase(), donationAmount.toFixed(2));
+            $.inidb.incr('donations', donationUsername.toLowerCase(), parseInt(donationAmount.toFixed(2)));
             if ($.inidb.exists('donations', donationUsername.toLowerCase()) && $.inidb.get('donations', donationUsername.toLowerCase()) >= donationGroupMin) { // Check if the donator donated enough in total before promoting him.
                 if ($.getUserGroupId(donationUsername.toLowerCase()) > 3) { // Check if the user is not a mod, or admin, or sub.
                     $.setUserGroupById(donationUsername.toLowerCase(), '4'); // Set user as a Donator
@@ -93,12 +108,15 @@
             }
         }
 
-        if ($.inidb.exists('points', donationUsername.toLowerCase()) && rewardPoints > 0) {
+        /** increase the points to the donator if the caster wants too. */
+        if (rewardPoints > 0) {
             $.inidb.incr('points', donationUsername.toLowerCase(), rewardPoints);
         }
     });
 
     /**
+     * Gets the command event from the core.
+     *
      * @event command
      */
     $.bind('command', function(event) {
@@ -112,15 +130,19 @@
         }
 
         /**
+         * Tells the user the last donation that the caster got.
+         *
          * @commandpath lasttip - Display the last donation.
          */
         if (command.equalsIgnoreCase('lastdonation') || command.equalsIgnoreCase('lasttip')) {
+            /** Do we have any donations? */
             if (!$.inidb.exists('donations', 'last_donation')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.lastdonation.no-donations'));
                 return;
             }
 
             var donationID = $.inidb.get('donations', 'last_donation');
+            /** Did we get any donations with a id? */
             if (!$.inidb.exists('donations', donationID)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.lastdonation.404'));
                 return;
@@ -130,6 +152,7 @@
                 JSONObject = Packages.org.json.JSONObject,
                 donationJson = new JSONObject(donationJsonStr);
 
+            /** Make the json into variables that we can then use tags with */
             var donationID = donationJson.getString("donation_id"),
                 donationCreatedAt = donationJson.getString("created_at"),
                 donationCurrency = donationJson.getString("currency"),
@@ -137,6 +160,7 @@
                 donationUsername = donationJson.getString("name"),
                 donationMsg = donationJson.getString("message");
 
+            /** Replace the tags in the message if found */
             var donationSay = donationLastMsg;
             donationSay = donationSay.replace('(name)', donationUsername);
             donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
@@ -145,6 +169,8 @@
         }
 
         /**
+         * Base command for the donation alert settings.
+         *
          * @commandpath twitchalerts - Controls various options for donation handling
          */
         if (command.equalsIgnoreCase('twitchalerts')) {
@@ -154,6 +180,8 @@
             }
 
             /**
+             * Toggles the donators group, if the caster wants to promote people to Donators.
+             *
              * @commandpath twitchalerts toggledonators - Toggles the Donator's group.
              */
             if (args[0].equalsIgnoreCase('toggledonators')) {
@@ -171,6 +199,8 @@
             }
 
             /**
+             * Sets the minimum amount the user needs to donate for him to be promoted to a Donator, if the group is toggled on.
+             *
              * @commandpath twitchalerts minmumbeforepromotion - Set the minimum before people get promoted to a Donator
              */
             if (args[0].equalsIgnoreCase('minmumbeforepromotion')) {
@@ -185,6 +215,8 @@
             }
 
             /**
+             * Toggles the donation announcements if the caster wants them.
+             *
              * @commandpath twitchalerts announce - Toggles announcements for donations off and on
              */
             if (args[0].equalsIgnoreCase('announce')) {
@@ -203,6 +235,8 @@
             }
 
             /**
+             * Reward multiplier for the amount the user donates he will get his amount X the multiplier.
+             *
              * @commandpath twitchalerts rewardmultiplier [n.n] - Set a reward multiplier for donations.
              */
             if (args[0].equalsIgnoreCase('rewardmultiplier')) {
@@ -223,6 +257,8 @@
             }
 
             /**
+             * Sets either the message for when someone donates or for the !lastdonation command.
+             *
              * @commandpath twitchalerts message [message text] - Set the donation message. Tags: (name), (amount), (points), (pointname), (message) and (currency)
              * @commandpath twitchalerts lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
              */
@@ -252,6 +288,8 @@
     });
 
     /**
+     * Registers commands once the bot is fully loaded.
+     *
      * @event initReady
      */
     $.bind('initReady', function() {

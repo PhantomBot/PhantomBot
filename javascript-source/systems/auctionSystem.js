@@ -6,7 +6,9 @@
         topPoints: 0,
         timer: 0,
         status: false,
-    };
+    },
+    a,
+    b;
 
     /**
      * @function openAuction
@@ -45,11 +47,11 @@
 
         if (timer > 0) {
             $.say($.lang.get('auctionsystem.auto.timer.msg', timer));
-            var a = setInterval(function() {
+            a = setTimeout(function() {
                 warnAuction(true);
                 clearInterval(a);
             }, (timer / 2) * 1000);
-            var b = setInterval(function() {
+            b = setTimeout(function() {
                 closeAuction();
                 clearInterval(b);
             }, timer * 1000);
@@ -66,6 +68,9 @@
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.closed'));
             return;
         }
+
+        clearInterval(a);
+        clearInterval(b);
 
         if (!auction.topUser) {
             auction.status = false;
@@ -86,7 +91,7 @@
      *
      * @param {boolean} force 
      */
-    function warnAuction(force) {
+    function warnAuction(force, user) {
         if (!auction.status) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.closed'));
             return;
@@ -111,7 +116,7 @@
             return;
         }
 
-        if (!amount) {
+        if (!parseInt(amount)) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.bid.usage'));
             return;
         } else if (amount < auction.minimum) {
@@ -181,12 +186,12 @@
              * @commandpath auction warn - Shows the top bidder in an auction
              */
             if (action.equalsIgnoreCase('warn')) {
-                warnAuction();
+                warnAuction(sender);
             }
         }
 
         /**
-         * @commandpath bid amount - Amount to bid on the current auction
+         * @commandpath bid [amount] - Amount to bid on the current auction
          */
         if (command.equalsIgnoreCase('bid')) {
             bid(sender, action);

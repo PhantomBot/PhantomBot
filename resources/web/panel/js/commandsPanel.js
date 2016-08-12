@@ -414,7 +414,7 @@
      */
     function editCooldown(command) {
         var value = $('#editCommandCooldown_' + command).val();
-        if (value.length > 0) {
+        if (value > 0) {
             sendDBUpdate("commands_cooldown_edit", "cooldown", command.toLowerCase(), value);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
@@ -509,7 +509,7 @@
             com = com.replace('!', '');
         }
 
-        if (price.length != 0 && com.length != 0) {
+        if (price != 0 && com.length != 0) {
             sendDBUpdate("commandPay", "paycom", com.toLowerCase(), price);
             $("#setCommandPayInput").val("");
             $("#setCommandPayInputCommand").val("");
@@ -523,7 +523,7 @@
     function updateCommandPrice(command) {
         var val = $('#editCommandPrice_' + command).val();
         $('#editCommandPrice_' + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        if (val.length > 0) {
+        if (val > 0) {
             sendDBUpdate("commands_editprice_" + command, "pricecom", command.toLowerCase(), val);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);

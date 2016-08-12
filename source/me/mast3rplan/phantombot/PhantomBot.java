@@ -88,6 +88,7 @@ import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
+import me.mast3rplan.phantombot.event.bits.BitsEvent;
 import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
 import me.mast3rplan.phantombot.ytplayer.YTWebSocketServer;
 import me.mast3rplan.phantombot.script.Script;
@@ -904,6 +905,12 @@ public class PhantomBot implements Listener {
             return;
         }
 
+        if (message.equals("testbits")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing testbits");
+            EventBus.instance().post(new BitsEvent(session, this.channel, this.username, "100"));
+            return;
+        }
+
         if (message.equals("debugon")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing debugon: Enable Debug Mode");
             PhantomBot.setDebugging(true);
@@ -1345,6 +1352,7 @@ public class PhantomBot implements Listener {
             mysql.RemoveFile(table);
         }
 
+        mysql.setAutoCommit(false);
         com.gmt2001.Console.out.println("  Converting SQLite to MySQL...");
         String[] tables = sqlite.GetFileList();
         for (String table : tables) {
@@ -1358,6 +1366,7 @@ public class PhantomBot implements Listener {
                 }
             }
         }
+        mysql.setAutoCommit(true);
         sqlite.CloseConnection();
         com.gmt2001.Console.out.println("  Finished Converting Tables.");
 

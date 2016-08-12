@@ -113,7 +113,7 @@
         }
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -391,15 +391,27 @@
         $.inidb.set('updates', 'installedNewBot', 'true');//If bot login is deleted after updates were installed we don't want to reset the modules.
     }
 
-    /** Version 2.1.1 updates */
+    /** Version 2.2 updates */
     if (!$.inidb.exists('updates', 'installedv2.1.1') || $.inidb.get('updates', 'installedv2.1.1') != 'true') {
-        $.consoleLn('Starting ' + $.version + ' updates...');
+        $.consoleLn('Starting PhantomBot v2.2 updates...');
 
         $.consoleLn('Disabling new modules...');
         $.inidb.set('modules', './handlers/streamTipHandler.js', 'false');
 
-        $.consoleLn($.version + ' updates completed!');
+        $.consoleLn('PhantomBot v2.2 updates completed!');
         $.inidb.set('updates', 'installedv2.1.1', 'true');
+    }
+
+    /** Version 2.2.1 updates */
+    if (!$.inidb.exists('updates', 'installedv2.2.1') || $.inidb.get('updates', 'installedv2.2.1') != 'true') {
+        $.consoleLn('Starting ' + $.version + ' updates...');
+
+        $.consoleLn('Disabling new modules...');
+        $.inidb.set('modules', './handlers/bitsHandler.js', 'false');
+        $.inidb.set('modules', './systems/autoHostSystem.js', 'false');
+
+        $.consoleLn($.version + ' updates completed!');
+        $.inidb.set('updates', 'installedv2.2.1', 'true');
     }
 
     /**

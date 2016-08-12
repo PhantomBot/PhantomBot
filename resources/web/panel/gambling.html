@@ -132,7 +132,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="traffleMsg">Raffle Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateTRaffleSettings('raffleMsg')">Submit</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateTRaffleSettings('traffleMsg')">Submit</button>
                 <input type="text" class="form-control" id="traffleMsg" placeholder="Message" data-toggle="tooltip" title="Auto announce message for the raffle. This will only be applied when a new raffle starts. Tag: (entries)"/>
             </div>
         </form>
@@ -140,7 +140,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="traffleTimer">Message Timer (minutes)</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateTRaffleSettings('raffleTimer')">Submit</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateTRaffleSettings('traffleTimer')">Submit</button>
                 <input type="number" min="0" class="form-control" id="traffleTimer" placeholder="Amount" data-toggle="tooltip" 
                 title="Auto announce timer for the raffle. Use 0 to disable it. This will only be applied when a new raffle starts."/>
             </div>

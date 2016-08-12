@@ -475,7 +475,7 @@
      */
     function setHighlight() {
         $("#showHighlights").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendCommand("highlight " + $("#highlightInput").val());
+        sendCommand("highlightpanel " + $("#highlightInput").val());
         $("#highlightInput").val('');
         setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
     }
@@ -484,7 +484,7 @@
      * @function clearHighlights
      */
     function clearHighlights() {
-        $("#showHighlights").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#showHighlightspanel").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("clearhighlights");
         setTimeout(function() { sendDBKeys("dashboard_highlights", "highlights"); }, TIMEOUT_WAIT_TIME);
     }

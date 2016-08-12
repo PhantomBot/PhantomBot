@@ -347,7 +347,7 @@
         } else {
             sendDBUpdate("gambling_trafflemsgtoggle", "settings", "tRaffleMSGToggle", 'false');
         }
-        setTimeout(function() { sendCommand("treloadraffle"); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadtraffle"); }, TIMEOUT_WAIT_TIME);
     }
 
     function updateRaffleSettings(setting) {
@@ -366,14 +366,14 @@
     function updateTRaffleSettings(setting) {
         var value = $('#' + setting).val();
 
-        if (setting == "raffleMsg") {
-            sendDBUpdate('gambling_rafflemessage', 'settings', 'traffleMessage', value);
+        if (setting == "traffleMsg") {
+            sendDBUpdate('gambling_trafflemessage', 'settings', 'traffleMessage', value);
         }
 
-        if (setting == "raffleTimer") {
-            sendDBUpdate('gambling_rafflemessage', 'settings', 'traffleMessageInterval', value);
+        if (setting == "traffleTimer") {
+            sendDBUpdate('gambling_trafflemessage', 'settings', 'traffleMessageInterval', value);
         }
-        setTimeout(function() { sendCommand("treloadraffle"); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadtraffle"); }, TIMEOUT_WAIT_TIME);
     }
 
     // Import the HTML file for this panel.
@@ -416,4 +416,5 @@
     $.toggleRaffleMsg = toggleRaffleMsg;
     $.toggleTRaffleMsg = toggleTRaffleMsg;
     $.updateRaffleSettings = updateRaffleSettings;
+    $.updateTRaffleSettings = updateTRaffleSettings;
 })();

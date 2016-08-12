@@ -6,8 +6,6 @@
     $.getSetIniDbNumber('autohost_config', 'host_time_minutes', 0);
     $.getSetIniDbNumber('autohost_config', 'delay_time_minutes', 5);
 
-    var streamIsOnline = $.isOnline($.channelName);
-
     /**
      * @function checkAutoHost
      *
@@ -17,7 +15,6 @@
         // If stream is reported as online and force mode is not enabled, disable autohosting.
         //
         if ($.isOnline($.channelName) && !$.getIniDbBoolean('autohost_config', 'force')) {
-            streamIsOnline = true;
             $.inidb.set('autohost_config', 'hosting', 'false');
             $.inidb.set('autohost_config', 'currently_hosting', '');
             return;
@@ -25,24 +22,8 @@
 
         // Stream is already hosting?  This function is done.
         //
-        if ($.getSetIniDbBoolean('autohost_config', 'hosting', false)) {
+        if ($.getIniDbBoolean('autohost_config', 'hosting', false)) {
             return;
-        }
-
-        // Stream is offline now, set the time the stream went offline.
-        //
-        if (streamIsOnline) {
-            streamIsOnline = false;
-            $.inidb.set('autohost_config', 'offline_time', $.systemTime());
-        }
-
-        // If there is a delay time, use that.
-        //
-        if ($.getIniDbNumber('autohost_config', 'delay_time_minutes') > 0) {
-            if ($.getIniDbNumber('autohost_config', 'offline_time') + ($.getIniDbNumber('autohost_config', 'delay_time_minutes') * 6e4) < $.systemTime()) {
-                $.inidb.set('autohost_config', 'hosting', 'false');
-                return;
-            }
         }
 
         // If autohost was forced while Twitch still determined the stream was online and now
@@ -50,9 +31,26 @@
         //
         if (!$.isOnline($.channelName) && $.getIniDbBoolean('autohost_config', 'force')) {
             $.inidb.set('autohost_config', 'force', 'false');
+            return;
         }
 
-        // Enable auto-hosting
+        // Stream is offline now, set the time the stream went offline.
+        //
+        if (!$.isOnline($.channelName) && !$.getIniDbBoolean('autohost_config', 'force')) {
+            $.inidb.set('autohost_config', 'offline_time', $.systemTime());
+
+            // If there is a delay time, use that.
+            //
+            if ($.getIniDbNumber('autohost_config', 'delay_time_minutes') > 0) {
+                if ($.getIniDbNumber('autohost_config', 'offline_time') + ($.getIniDbNumber('autohost_config', 'delay_time_minutes') * 6e4) < $.systemTime()) {
+                    $.consoleDebug('Delay detected, not starting autohost');
+                    $.inidb.set('autohost_config', 'hosting', 'false');
+                    return;
+                }
+            }
+        }
+
+        // Enable auto-hosting, this is also reached if isOnline and autohost_config|force is true.
         //
         $.inidb.set('autohost_config', 'hosting', 'true');
     }
@@ -64,24 +62,23 @@
      * Performs the autohosting of a Twitch Channel
      */
     function doAutoHost(force) {
-
         // If we are currently hosting someone, check to see if they are still online, and if so
         // then if the host_time is 0 keep hosting, otherwise, check to see if we have been hosting
         // them less than our configured number of allowed hours.  If they are otherwise offline
         // or we have been hosting them long enough, then we fall down into setting up a new host.
         //
-        if ($.getIniDbString('autohost_config', 'currently_hosting').length > 0 && !force) {
+        if ($.getIniDbString('autohost_config', 'currently_hosting', '') !== '' && !force) {
             if ($.isOnline($.getIniDbString('autohost_config', 'currently_hosting'))) {
                 if ($.getIniDbNumber('autohost_config', 'host_time_minutes') === 0) {
                     return;
                 }
                 if (($.getIniDbNumber('autohost_config', 'last_host_start') +
-                     $.getIniDbNumber('autohost_config', 'host_time_minutes') * 6e4) < $.systemTime()) {
+                    $.getIniDbNumber('autohost_config', 'host_time_minutes') * 6e4) < $.systemTime()) {
                     return;
                 }
             }
         }
-
+        
         var lastRank = $.getSetIniDbNumber('autohost_config', 'last_rank', 0),
             lastHost = $.getSetIniDbString('autohost_config', 'last_host', ''),
             hostList = $.inidb.GetKeyList('autohost_hosts', ''),
@@ -93,7 +90,7 @@
             return;
         }
 
-        if (lastHost.length === 0) {
+        if (lastHost.length() === 0) {
             foundLastHost = true;
         }
 
@@ -115,7 +112,7 @@
 
         // Start at the head of the list if there was a previous channel being hosted.
         //
-        if (channelToHost.length === 0 && lastHost.length > 0) {
+        if (channelToHost.length() === 0 && lastHost.length() > 0) {
             for (var i in hostList) {
                 if ($.isOnline(hostList[i])) {
                     channelToHost = hostList[i];
@@ -127,9 +124,9 @@
             }
         }
 
-        // Host!
+        // Host, note that we will not host the last person we hosted. 
         //
-        if (channelToHost.length > 0) {
+        if (channelToHost.length() > 0) {
             $.say('.host ' + channelToHost);
             $.inidb.set('autohost_config', 'last_host', channelToHost);
             $.inidb.set('autohost_config', 'currently_hosting', channelToHost);
@@ -166,6 +163,8 @@
                 if (action.equalsIgnoreCase('force')) {
                     $.setIniDbBoolean('autohost_config', 'force', true); 
                     $.say($.whisperPrefix(sender) + $.lang.get('autohost.force'));
+                    //$.consoleLn('Autohosting is Enabled');
+                    $.inidb.set('autohost_config', 'hosting', 'true');
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('autohost.on'));
                 }
@@ -174,6 +173,8 @@
             if (action.equalsIgnoreCase('stop')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('autohost.off'));
                 $.setIniDbBoolean('autohost_config', 'enabled', false);
+                $.inidb.set('autohost_config', 'hosting', 'false');
+                $.inidb.set('autohost_config', 'currently_hosting', '');
                 return;
             }
 
@@ -284,13 +285,20 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/autoHostSystem.js')) {
             $.registerChatCommand('./systems/autoHostSystem.js', 'autohost', 1);
+        }
+    });
 
-            setTimeout(function() {
+    // Need the bot to be connected to Twitch so that the $.say() command to host
+    // will function properly.
+    //
+    $.bind('ircJoinComplete', function() {
+        setTimeout(function() {
+            setInterval(function() {
                 checkAutoHost();
                 if ($.getIniDbBoolean('autohost_config', 'hosting', false)) {
                     doAutoHost(false);
                 }
-            }, 6e3);
-        }
+            }, 6e3); 
+        }, 3e3);
     });
 })();

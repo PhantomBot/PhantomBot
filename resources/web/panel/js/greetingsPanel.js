@@ -35,11 +35,12 @@
         followerToggle = false,
         subToggle = false,
         reSubToggle = false,
-        donationTOggle = false,
-        streamtipdonationTOggle = false,
+        donationToggle = false,
+        streamtipdonationToggle = false,
         donationGroup = false,  
         streamtipdonationGroup = false,         
-        gameWhispToggle = false;
+        gameWhispToggle = false,
+        bitsToggle = false;
 
     /*
      * onMessage
@@ -68,20 +69,20 @@
                         $('#globalGreetings').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'defaultJoin')) {
-                        $('#greetingDefaultInput').attr('placeholder', value).blur();
+                        $('#greetingDefaultInput').val(value);
                     }
                     if (panelMatch(key, 'cooldown')) {
-                        $('#greetingCooldownInput').attr('placeholder', (value / 36e5)).blur();
+                        $('#greetingCooldownInput').val((value / 36e5));
                     }
                 }
             }
 
             if (panelCheckQuery(msgObject, 'greetings_followReward')) {
-                $('#followerRewardInput').attr('placeholder', msgObject['results']['followReward']).blur();
+                $('#followerRewardInput').val(msgObject['results']['followReward']);
             }
 
             if (panelCheckQuery(msgObject, 'greetings_followMessage')) {
-                $('#followerGreetingInput').attr('placeholder', msgObject['results']['followMessage']).blur();
+                $('#followerGreetingInput').val(msgObject['results']['followMessage']);
             }
 
             if (panelCheckQuery(msgObject, 'greetings_followToggle')) {
@@ -90,7 +91,7 @@
             }
 
             if (panelCheckQuery(msgObject, 'greetings_followDelay')) {
-                $('#followDelay').attr('placeholder', msgObject['results']['followDelay']).blur();
+                $('#followDelay').val( msgObject['results']['followDelay']);
             }
 
             if (panelCheckQuery(msgObject, 'greetings_donation')) {
@@ -99,7 +100,7 @@
                     value = msgObject['results'][idx]['value'];
 
                     if (panelMatch(key, 'announce')) {
-                        donationTOggle = value;
+                        donationToggle = value;
                         $('#donationGreetings').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'donationGroup')) {
@@ -107,16 +108,16 @@
                         $('#donationGroup').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'donationGroupMin')) {
-                        $('#donationGroupMin').attr('placeholder', value);
+                        $('#donationGroupMin').val(value);
                     }
                     if (panelMatch(key, 'reward')) {
-                        $('#donateRewardInput').attr('placeholder', value);
+                        $('#donateRewardInput').val(value);
                     }
                     if (panelMatch(key, 'message')) {
-                        $('#donateGreetingInput').attr('placeholder', value);
+                        $('#donateGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'lastmessage')) {
-                        $('#donateLastMsgInput').attr('placeholder', value);
+                        $('#donateLastMsgInput').val(value);
                     }
                 }
             }
@@ -127,7 +128,7 @@
                     value = msgObject['results'][idx]['value'];
 
                     if (panelMatch(key, 'announce')) {
-                        streamtipdonationTOggle = value;
+                        streamtipdonationToggle = value;
                         $('#streamtipGreetings').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'donationGroup')) {
@@ -135,16 +136,16 @@
                         $('#streamtipdonationGroup').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'donationGroupMin')) {
-                        $('#streamtipdonationGroupMin').attr('placeholder', value);
+                        $('#streamtipdonationGroupMin').val(value);
                     }
                     if (panelMatch(key, 'reward')) {
-                        $('#streamtipdonateRewardInput').attr('placeholder', value);
+                        $('#streamtipdonateRewardInput').val(value);
                     }
                     if (panelMatch(key, 'message')) {
-                        $('#streamtipdonateGreetingInput').attr('placeholder', value);
+                        $('#streamtipdonateGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'lastmessage')) {
-                        $('#streamtipdonateLastMsgInput').attr('placeholder', value);
+                        $('#streamtipdonateLastMsgInput').val(value);
                     }
                 }
             }
@@ -155,10 +156,10 @@
                     value = msgObject['results'][idx]['value'];
 
                     if (panelMatch(key, 'subscribeMessage')) {
-                        $('#subGreetingInput').attr('placeholder', value);
+                        $('#subGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'reSubscribeMessage')) {
-                        $('#resubGreetingInput').attr('placeholder', value);
+                        $('#resubGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'subscriberWelcomeToggle')) {
                         subToggle = value;
@@ -169,7 +170,7 @@
                         $('#resubscriptionGreetings').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'subscribeReward')) {
-                        $('#subRewardInput').attr('placeholder', value);
+                        $('#subRewardInput').val(value);
                     }
                 }
             }
@@ -184,19 +185,40 @@
                         $('#gameWispGreetings').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'subscribeMessage')) {
-                        $('#gwSubGreetingInput').attr('placeholder', value);
+                        $('#gwSubGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'reSubscribeMessage')) {
-                        $('#gwResubGreetingInput').attr('placeholder', value);
+                        $('#gwResubGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'tierUpMessage')) {
-                        $('#gwTierupGreetingInput').attr('placeholder', value);
+                        $('#gwTierupGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'subscribeReward')) {
-                        $('#gwSubRewardInput').attr('placeholder', value);
+                        $('#gwSubRewardInput').val(value);
                     }
                     if (panelMatch(key, 'reSubscribeReward')) {
-                        $('#gwResubRewardInput').attr('placeholder', value);
+                        $('#gwResubRewardInput').val(value);
+                    }
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'greetings_bits')) {
+                for (idx in msgObject['results']) {
+                    key = msgObject['results'][idx]['key'];
+                    value = msgObject['results'][idx]['value'];
+
+                    if (panelMatch(key, 'toggle')) {
+                        bitsToggle = value;
+                        $('#bitsToggle').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'message')) {
+                        $('#bitsMessage').val(value);
+                    }
+                    if (panelMatch(key, 'reward')) {
+                        $('#bitsReward').val(value);
+                    }
+                    if (panelMatch(key, 'minimum')) {
+                        $('#bitsMinimum').val(value);
                     }
                 }
             }
@@ -250,6 +272,7 @@
         sendDBKeys('greetings_subscribers', 'subscribeHandler');
         sendDBKeys('greetings_gamewisp', 'gameWispSubHandler');
         sendDBKeys('greetings_gamewispTiers', 'gameWispTiers');
+        sendDBKeys('greetings_bits', 'bitsSettings');
     }
 
     /**
@@ -293,7 +316,7 @@
         }
         if (panelMatch(table, 'donations')) {
             $('#donationGreetings').html(spinIcon);
-            if (donationTOggle == "true") {
+            if (donationToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'donations', 'announce', 'false');
                 sendCommand('donationpanelupdate');
             } else {
@@ -303,7 +326,7 @@
         }
         if (panelMatch(table, 'streamtip')) {
             $('#streamtipGreetings').html(spinIcon);
-            if (streamtipdonationTOggle == "true") {
+            if (streamtipdonationToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'streamtip', 'announce', 'false');
                 sendCommand('donationpanelupdatestreamtip');
             } else {
@@ -349,6 +372,16 @@
             } else {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberWelcomeToggle', 'true');
                 sendCommand('subscriberpanelupdate');
+            }
+        }
+        if (panelMatch(table, 'bitsSettings') && panelMatch(key, 'toggle')) { 
+            $('#bitsToggle').html(spinIcon);
+            if (bitsToggle == "true") {
+                sendDBUpdate('greetings_bits', 'bitsSettings', 'toggle', 'false');
+                sendCommand('reloadbits');
+            } else {
+                sendDBUpdate('greetings_bits', 'bitsSettings', 'toggle', 'true');
+                sendCommand('reloadbits');
             }
         }
         if (panelMatch(table, 'gameWispSubHandler')) { 
@@ -398,7 +431,10 @@
                 sendCommand('donationpanelupdatestreamtip');
             }
             if (panelMatch(table, 'subscribeHandler')) {
-                sendCommand('subscriberpanelupdate');
+                sendCommand('subscribepanelupdate');
+            }
+            if (panelMatch(table, 'bitsSettings')) {
+                sendCommand('reloadbits');
             }
             if (panelMatch(table, 'gameWispSubHandler')) {
                 sendCommand('gamewisppanelupdate');

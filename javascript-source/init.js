@@ -844,7 +844,7 @@
                 return;
             }
 
-            if ($.coolDown.get(command, sender) > 0) {
+            if ($.coolDown.get(command, sender, isModv3) > 0) {
                 if ($.getIniDbBoolean('settings', 'coolDownMsgEnabled', false)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
                 } else {
@@ -1246,9 +1246,15 @@
         /**
          * @event api-NewReSubscriberEvent
          */
-
         $api.on($script, 'NewReSubscriber', function(event) {
             callHook('NewReSubscriber', event, false);
+        });
+
+        /**
+         * @event api-BitsEvent
+         */
+        $api.on($script, 'Bits', function(event) {
+            callHook('Bits', event, false);
         });
 
         $.log.event('init.js api\'s loaded.');
