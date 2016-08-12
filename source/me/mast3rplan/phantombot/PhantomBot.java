@@ -467,6 +467,20 @@ public class PhantomBot implements Listener {
 		/** Set the oauth key in the Twitch api. */
 		TwitchAPIv3.instance().SetOAuth(this.apiOAuth);
 
+		/** Set the TwitchAlerts OAuth key and limiter. */
+		if (!twitchAlertsKey.isEmpty()) {
+			TwitchAlertsAPIv1.instance().SetAccessToken(twitchAlertsKey);
+			TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchAlertsLimit);
+		}
+
+		/** Set the StreamTip OAuth key, Client ID and limiter. */
+		if (!streamTipOAuth.isEmpty() && !streamTipClientId.isEmpty()) {
+			StreamTipAPI.instance().SetAccessToken(streamTipOAuth);
+			StreamTipAPI.instance().SetDonationPullLimit(streamTipLimit);
+			StreamTipAPI.instance().SetClientId(streamTipClientId);
+		}
+
+
 		/** Start things and start loading the scripts. */
 		this.init();
 
