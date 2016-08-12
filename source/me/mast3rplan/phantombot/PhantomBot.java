@@ -35,6 +35,7 @@ import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
+import com.illusionaryone.NoticeTimer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -164,6 +165,9 @@ public class PhantomBot implements Listener {
 	/** GameWisp Information */
 	private String gameWispOAuth;
 	private String gameWispRefresh;
+
+	/** Notice Timer and Handling */
+	private NoticeTimer noticeTimer;
 
 	/** Caches */
 	private FollowersCache followersCache;
@@ -976,6 +980,9 @@ public class PhantomBot implements Listener {
         if (this.twitterAuthenticated) {
         	this.twitterCache = TwitterCache.instance(this.chanName);
         }
+
+	/* Start the notice timer and notice handler. */
+	noticeTimer = NoticeTimer.instance(this.channelName, this.session);
 
         /** Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);

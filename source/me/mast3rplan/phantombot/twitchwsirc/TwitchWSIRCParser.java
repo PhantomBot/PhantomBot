@@ -351,6 +351,9 @@ public class TwitchWSIRCParser {
         commandEvent(message, username);
         /* Send the message to the scripts. */
         eventBus.post(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
+
+        /* Incrememnt the chat lines, this should be the last operation of this function. */
+        this.session.chatLinesIncr();
     }
 
     /*
