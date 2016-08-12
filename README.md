@@ -5,7 +5,7 @@
  [ ![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot) 
  [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/Xdh5SRY)  
 
-[**PhantomBot**](https://phantombot.tv) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more! PhantomBot can also be integrated with many services such as [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), and [TwitchAlerts](https://twitchalerts.com)!
+[**PhantomBot**](https://phantombot.tv) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more! PhantomBot can also be integrated with many services such as [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [StreamTip](https://streamtip.com) and [TwitchAlerts](https://twitchalerts.com)!
 
 Additional functionality is enabled through the use of third-party modules.
 
