@@ -1,4 +1,4 @@
-$.lang.register('quotesystem.add.usage', 'Usage: !addquote [quote...]');
+$.lang.register('quotesystem.add.usage', 'Usage: !addquote [user] [quote...] or !addquote [quote]');
 $.lang.register('quotesystem.add.offline', 'Only moderators may add quotes when the stream is offline.');
 $.lang.register('quotesystem.add.success', 'Added new quote from $1 with id #$2.');
 $.lang.register('quotesystem.del.usage', 'Usage: !delquote [quote id]');
