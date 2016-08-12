@@ -1,8 +1,9 @@
 
+
 # <img alt="PhantomBot" src="https://i.zelakto.tv/7ZSJO3D.png" />
 
  [ ![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot) 
- [<img src="https://discordapp.com/api/servers/107910097937682432/widget.png?style=banner5?style=banner5">](https://discord.gg/0bN1J1JWPFIjRrsG)  
+ [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/Xdh5SRY)  
 
 [**PhantomBot**](https://phantombot.tv) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more! PhantomBot can also be integrated with many services such as [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), and [TwitchAlerts](https://twitchalerts.com)!
 
@@ -16,15 +17,9 @@ Additional functionality is enabled through the use of third-party modules.
 
 ## Screenshots
 
-<img alt="PhantomBot YouTube Player" src="https://i.zelakto.tv/yvvZVbh.png" />
-YouTube Player
-
-<img alt="PhantomBot Control Panel" src="https://i.zelakto.tv/BeuDsnY.png" />
-Control Panel
-
-<img alt="PhantomBot Console" src="https://i.zelakto.tv/VuN7GEp.png" />
-Console
-
+[![](https://i.zelakto.tv/cbD6vV7.png)](https://i.zelakto.tv/OmvE0rY.png)
+[![](https://i.zelakto.tv/l3WNPWK.png)](https://i.zelakto.tv/6h38mvL.png)
+[![](https://i.zelakto.tv/xGoRGJs.png)](https://i.zelakto.tv/VuN7GEp.png)
 
 ## How can I follow along/contribute?
 
