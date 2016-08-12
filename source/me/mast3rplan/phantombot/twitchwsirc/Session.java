@@ -61,6 +61,7 @@ public class Session {
     private String channelName;
     private String botName;
     private String oAuth;
+    private int chatLineCtr = 0;
 
     /*
      * Creates an instance for a Session
@@ -305,6 +306,29 @@ public class Session {
      */
     public Channel getChannel(String dummy) {
         return this.channel; 
+    }
+
+    /*
+     * Increments the chat line counter.
+     */
+    public void chatLinesIncr() {
+        this.chatLineCtr++;
+    }
+
+    /*
+     * Resets the chat line counter.
+     */
+    public void chatLinesReset() {
+        this.chatLineCtr = 0;
+    }
+
+    /*
+     * Retruns the chat line counter.
+     *
+     * @return    int    Number of lines in chat (PRIVMSG)
+     */
+    public int chatLinesGet() {
+        return this.chatLineCtr;
     }
 
     /* 
