@@ -131,8 +131,8 @@
                 return;
             }
 			var target = args[0].toLowerCase();
-			if (!$.user.isKnown(target)) {
-				quote = args.splice[1].join(' ');
+			if ($.user.isKnown(target)) {
+				quote = args.splice(1).join(' ');
 				$.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(target)), quote)));
 				$.log.event(sender + ' added a quote "' + quote + '".');
 				return;
