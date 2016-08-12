@@ -100,6 +100,16 @@
             message = $.replace(message, '(offlineonly)', '');
         }
 
+        if (message.match(/\(gameonly=[^)]+\)/g)) {
+            var t = message.match(/\([^)]+\)/)[0],
+                game = t.replace('(gameonly=', '').replace(')', '');
+
+            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
+                return '';
+            }
+            message = $.replace(message, t, '');
+        }
+
         if (message.match(/\(sender\)/g)) {
             message = $.replace(message, '(sender)', $.username.resolve(event.getSender()));
         }
