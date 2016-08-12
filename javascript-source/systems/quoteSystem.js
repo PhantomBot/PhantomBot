@@ -130,13 +130,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage'));
                 return;
             }
-			var target = args[0].toLowerCase();
-			if ($.user.isKnown(target)) {
-				quote = args.splice(1).join(' ');
-				$.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(target)), quote)));
-				$.log.event(sender + ' added a quote "' + quote + '".');
-				return;
-			}
+
             quote = args.splice(0).join(' ');
             $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
             $.log.event(sender + ' added a quote "' + quote + '".');
