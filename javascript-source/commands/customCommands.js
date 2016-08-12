@@ -287,7 +287,7 @@
                         } catch (ex) {
                             if (ex.message.indexOf('not a string') != -1) {
                                 try {
-                                    customAPIResponse = jsonObject.getInt(jsonCheckList[0]);
+                                    customAPIResponse = new JSONObject(origCustomAPIResponse).getInt(jsonCheckList[0]);
                                 } catch (ex) {
                                     return $.lang.get('customcommands.customapijson.err', command);
                                 }
