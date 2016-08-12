@@ -126,13 +126,17 @@
          * @commandpath addquote [quote text] - Save a quote
          */
         if (command.equalsIgnoreCase('addquote')) {
-            if (args.length < 1) {
+            if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage'));
                 return;
             }
-
-            quote = args.splice(0).join(' ');
-            $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
+			var target = args[0].toLowerCase();
+			if (!$.user.isKnown(target)) {
+				$.say($.whisperPrefix(sender) + $.lang.get('common.user.404')
+				return;
+			}
+            quote = args.splice(1).join(' ');
+            $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(target)), quote)));
             $.log.event(sender + ' added a quote "' + quote + '".');
         }
 
