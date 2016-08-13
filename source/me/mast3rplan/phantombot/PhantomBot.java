@@ -1076,7 +1076,7 @@ public class PhantomBot implements Listener {
     		String messageString = message;
     		message = messageString.substring(0, messageString.indexOf(" "));
     		arguments = messageString.substring(messageString.indexOf(" ") + 1);
-    		argument = arguments.split(" ", 5);
+    		argument = arguments.split(" ");
     	}
 
     	/** Chat in a channel */
@@ -1099,9 +1099,11 @@ public class PhantomBot implements Listener {
     	if (message.equalsIgnoreCase("followerstest")) {
     		String randomUser = generateRandomString(10);
     		int followCount = 5;
-    		if (argument[1] != null) {
-    			followCount = Integer.parseInt(argument[1]);
+
+    		if (argument != null) {
+    			followCount = Integer.parseInt(argument[0]);
     		}
+
     		print("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
     		for (int i = 0; i < followCount; i++) {
     			EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.getChannel(this.channelName)));
