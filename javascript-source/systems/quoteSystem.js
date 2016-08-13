@@ -130,11 +130,11 @@
 		 */
 		if (command.equalsIgnoreCase('quotemodetoggle')) {
 			if (quoteMode) {
-				quoteMode = 1;
+				quoteMode = 0;
 				$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage2'));
 				return;
 			} else {
-				quoteMode = 0;
+				quoteMode = 1;
 				$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));
 				return;
 			}
@@ -160,7 +160,7 @@
 				}
 				var target = args[0].toLowerCase();
 				if (!$.user.isKnown(target)) {
-					$.say($.whisperPrefix(sender) + $.lang.get('common.user.404'));
+					$.say($.whisperPrefix(sender) + $.lang.get('common.user.404', target));
 					return;
 				}
 				quote = args.splice(1).join(' ');
