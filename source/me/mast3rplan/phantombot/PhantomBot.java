@@ -154,13 +154,13 @@ public class PhantomBot implements Listener {
 	private Boolean twitterAuthenticated;
 
 	/** TwitchAlerts Information */
-	private String twitchAlertsKey;
-	private int twitchAlertsLimit;
+	private String twitchAlertsKey = "";
+	private int twitchAlertsLimit = 0;
 
 	/** StreamTip Information */
-	private String streamTipOAuth;
-	private String streamTipClientId;
-	private int streamTipLimit;
+	private String streamTipOAuth = "";
+	private String streamTipClientId = "";
+	private int streamTipLimit = 0;
 
 	/** GameWisp Information */
 	private String gameWispOAuth;
@@ -205,9 +205,9 @@ public class PhantomBot implements Listener {
 	private String chanName;
 	private Boolean timer = false;
 	private Boolean newSetup = false;
-	private String keyStorePath;
-	private String keyStorePassword;
-	private String keyPassword;
+	private String keyStorePath = "";
+	private String keyStorePassword = "";
+	private String keyPassword = "";
 	private SecureRandom random;
 	private static HashMap<String, Channel> channels;
 	private static HashMap<String, Session> sessions;
@@ -406,9 +406,9 @@ public class PhantomBot implements Listener {
 
 		/** Set the whisper limit for session.java to use. *Currently not used.* */
 		if (whisperLimit != 0) {
-			this.whisperLimit = null;
+			this.whisperLimit = 60.0;
 		} else {
-			this.whisperLimit = null;
+			this.whisperLimit = 60.0;
 		}
 
 		/** Set the client id for the twitch api to use */
@@ -969,20 +969,23 @@ public class PhantomBot implements Listener {
         this.twitchCache = TwitchCache.instance(this.chanName);
         this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
 
+        /** Start the donations cache if the keys are not null */
         if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty()) {
         	this.twitchAlertsCache = DonationsCache.instance(this.chanName);
         }
 
+        /** Start the streamtip cache if the keys are not null */
         if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty()) {
         	this.streamTipCache = StreamTipCache.instance(this.chanName);
         }
 
+        /** Start the twitter cache if the keys are not null */
         if (this.twitterAuthenticated) {
         	this.twitterCache = TwitterCache.instance(this.chanName);
         }
 
-	/* Start the notice timer and notice handler. */
-	noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+	    /* Start the notice timer and notice handler. */
+	    noticeTimer = NoticeTimer.instance(this.channelName, this.session);
 
         /** Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
@@ -1073,7 +1076,7 @@ public class PhantomBot implements Listener {
     		String messageString = message;
     		message = messageString.substring(0, messageString.indexOf(" "));
     		arguments = messageString.substring(messageString.indexOf(" ") + 1);
-    		argument = arguments.split(" ", 2);
+    		argument = arguments.split(" ", 5);
     	}
 
     	/** Chat in a channel */
@@ -1096,7 +1099,7 @@ public class PhantomBot implements Listener {
     	if (message.equalsIgnoreCase("followerstest")) {
     		String randomUser = generateRandomString(10);
     		int followCount = 5;
-    		if (argument[1].length() > 0) {
+    		if (argument[1] != null) {
     			followCount = Integer.parseInt(argument[1]);
     		}
     		print("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
