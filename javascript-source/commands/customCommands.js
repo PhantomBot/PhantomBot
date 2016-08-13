@@ -100,6 +100,16 @@
             message = $.replace(message, '(offlineonly)', '');
         }
 
+        if (message.match(/\(gameonly=[^)]+\)/g)) {
+            var t = message.match(/\([^)]+\)/)[0],
+                game = t.replace('(gameonly=', '').replace(')', '');
+
+            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
+                return '';
+            }
+            message = $.replace(message, t, '');
+        }
+
         if (message.match(/\(sender\)/g)) {
             message = $.replace(message, '(sender)', $.username.resolve(event.getSender()));
         }
@@ -287,7 +297,7 @@
                         } catch (ex) {
                             if (ex.message.indexOf('not a string') != -1) {
                                 try {
-                                    customAPIResponse = jsonObject.getInt(jsonCheckList[0]);
+                                    customAPIResponse = new JSONObject(origCustomAPIResponse).getInt(jsonCheckList[0]);
                                 } catch (ex) {
                                     return $.lang.get('customcommands.customapijson.err', command);
                                 }
