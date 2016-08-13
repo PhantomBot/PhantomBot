@@ -5,7 +5,7 @@
  */
 (function() {
 	
-	var quoteMode = 1;
+	var quoteMode = ($.inidb.exists('settings', 'quoteMode') ? $.inidb.get('settings', 'quoteMode') : true),
 
 
     /**
@@ -130,11 +130,13 @@
 		 */
 		if (command.equalsIgnoreCase('quotemodetoggle')) {
 			if (quoteMode) {
-				quoteMode = 0;
+				quoteMode = false;
+				$.inidb.set('settings', 'quoteMode', false);
 				$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage2'));
 				return;
 			} else {
-				quoteMode = 1;
+				quoteMode = true;
+				$.inidb.set('settings', 'quoteMode', true);
 				$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));
 				return;
 			}
