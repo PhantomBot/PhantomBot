@@ -272,7 +272,6 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/quoteSystem.js')) {
-			$.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle');
             $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
             $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', 1);
             $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
