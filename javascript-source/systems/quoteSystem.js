@@ -160,7 +160,7 @@
 				}
 				var target = args[0].toLowerCase();
 				if (!$.user.isKnown(target)) {
-					$.say($.whisperPrefix(sender) + $.lang.get('common.user.404');
+					$.say($.whisperPrefix(sender) + $.lang.get('common.user.404'));
 					return;
 				}
 				quote = args.splice(1).join(' ');
