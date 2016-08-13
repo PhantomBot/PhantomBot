@@ -5,7 +5,7 @@
  */
 (function() {
 	
-	var quoteMode = 0;
+	var quoteMode = 1;
 
 
     /**
