@@ -5,7 +5,7 @@
  */
 (function() {
 	
-	var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true;
+	var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true);
 
 
     /**
