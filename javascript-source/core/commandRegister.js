@@ -9,7 +9,8 @@
  */
 (function() {
     var commands = {},
-        commandScriptTable = {};
+        commandScriptTable = {},
+        aliases = [];
 
     /**
      * @function getCommandScript
@@ -77,6 +78,10 @@
             return;
         }
 
+        if ($.inidb.exists('disabledCommands', command)) {
+            return;
+        }
+
         if ($.inidb.exists('permcom', command)) {
             var newGroupId = parseInt($.inidb.get('permcom', command));
             groupId = newGroupId;
@@ -94,6 +99,18 @@
     };
 
     /**
+     * @function registerChatAlias
+     * @export $
+     * @param {command} alias
+     */
+
+    function registerChatAlias(alias) {
+        if (aliases[alias] === undefined) {
+            aliases[alias] = true;
+        }
+    };
+
+    /**
      * @function unregisterChatCommand
      * @export $
      * @param {string} command
@@ -102,6 +119,7 @@
         if (commandExists(command)) {
             delete commands[command];
             delete commandScriptTable[command];
+            delete aliases[command];
         }
 
         $.inidb.del('permcom', command);
@@ -129,6 +147,15 @@
      */
     function commandExists(command) {
         return (commands[command] ? true : false);
+    };
+
+    /**
+     * @function aliasExists
+     * @export $
+     * @param {string} command
+     */
+    function aliasExists(alias) {
+        return aliases[alias];
     };
 
     /**
@@ -283,4 +310,6 @@
     $.updateCommandGroup = updateCommandGroup;
     $.updateSubcommandGroup = updateSubcommandGroup;
     $.getCommandScript = getCommandScript;
+    $.aliasExists = aliasExists;
+    $.registerChatAlias = registerChatAlias;
 })();

@@ -800,12 +800,11 @@
                 permComCheck = $.permCom(sender, command, subCommand),
                 isModv3 = $.isModv3(sender, event.getTags());
 
-            if (!isModv3 && $.commandPause.isPaused() || !$.commandExists(command)) {
-                consoleDebug($.lang.get('commandpause.isactive'));
+            if ($.inidb.exists('botBlackList', sender) || $.commandPause.isPaused() || !$.commandExists(command)) {
                 return;
             }
 
-            if ($.inidb.exists('aliases', command)) {
+            if ($.aliasExists(command) !== undefined) {
                 var ScriptEventManager = Packages.me.mast3rplan.phantombot.script.ScriptEventManager,
                     CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
                     alias = $.getIniDbString('aliases', command),
@@ -839,11 +838,6 @@
                 return;
             }
 
-            if ($.inidb.exists('disabledCommands', command) || $.inidb.exists('botBlackList', sender)) {
-                consoleLn('[COMMAND NOT SENT] Command: !' + command + ' was not sent because its disabled or because the user is blacklisted.');
-                return;
-            }
-
             if ($.coolDown.get(command, sender, isModv3) > 0) {
                 if ($.getIniDbBoolean('settings', 'coolDownMsgEnabled', false)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
@@ -853,7 +847,7 @@
                 return;
             }
 
-            if (!$.isAdmin(sender) && permComCheck != 0) {
+            if (permComCheck !== 0) {
                 var permMsg;
                 if (permComCheck == 1) {
                     permMsg = $.getCommandGroupName(command);
@@ -870,15 +864,17 @@
                 return;
             }
 
-            if ($.inidb.exists('pricecom', command) && (((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
-                if (isModuleEnabled('./systems/pointSystem.js')) {
-                    if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
-                        return;
+            if ($.inidb.exists('pricecom', command)) {
+                if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
+                    if (isModuleEnabled('./systems/pointSystem.js')) {
+                        if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
+                            return;
+                        }
                     }
                 }
             }
-        
+
             callHook('command', event, false);
 
             if (isModuleEnabled('./systems/pointSystem.js')) {
