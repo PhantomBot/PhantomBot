@@ -246,7 +246,7 @@
                 for (idx in msgObject['results']) {
                     disabledCommands[msgObject['results'][idx]['key']] = true;
                 }
-                sendDBKeys("commands_permcom", "permcom");
+              sendDBKeys("commands_permcom", "permcom");
             }
 
             if (panelCheckQuery(msgObject, 'commands_permcom')) {
@@ -463,7 +463,7 @@
             sendDBDelete("commands_delalias_" + command, "aliases", command);
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-        setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadcommand " + command); }, TIMEOUT_WAIT_TIME);
     };
 
     /**
@@ -669,9 +669,11 @@
         if (panelMatch(action, 'enable')) {
             $('#commandEnabled_' + commandName).html('<i style="color: #333333" class="fa fa-toggle-on" />');
             sendDBDelete('commands_enablecom', 'disabledCommands', commandName);
+            sendCommand('registerpanel ' + commandName);
         } else {
             $('#commandEnabled_' + commandName).html('<i style="color: #333333" class="fa fa-toggle-off" />');
             sendDBUpdate('commands_enablecom', 'disabledCommands', commandName, 'true');
+            sendCommand('unregisterpanel ' + commandName);
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
