@@ -4,6 +4,9 @@
  * Have the bot remember the most epic/derpy oneliners
  */
 (function() {
+	
+	var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true);
+
 
     /**
      * @function updateQuote
@@ -121,26 +124,53 @@
 
             $.log.event(sender + ' edited quote #' + quote);
         }
+		
+		/**
+		 * @commandpath quotemodetoggle - toggle between !addquote function modes
+		 */
+		if (command.equalsIgnoreCase('quotemodetoggle')) {
+			if (quoteMode) {
+				quoteMode = false;
+				$.inidb.set('settings', 'quoteMode', 'false');
+				$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage2'));
+				return;
+			} else {
+				quoteMode = true;
+				$.inidb.set('settings', 'quoteMode', 'true');
+				$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));
+				return;
+			}
+		}
 
         /**
          * @commandpath addquote [quote text] - Save a quote
          */
         if (command.equalsIgnoreCase('addquote')) {
-            if (args.length < 1) {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage'));
-                return;
-            }
-			var target = args[0].toLowerCase();
-			if ($.user.isKnown(target)) {
+			if (quoteMode) {
+			    if (args.length < 1) {
+					$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));
+					return;
+				}
+				quote = args.splice(0).join(' ');
+				$.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
+				$.log.event(sender + ' added a quote "' + quote + '".');
+				return;
+			} else {
+				if (args.length < 2) {
+					$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage2'));
+					return;
+				}
+				var target = args[0].toLowerCase();
+				if (!$.user.isKnown(target)) {
+					$.say($.whisperPrefix(sender) + $.lang.get('common.user.404', target));
+					return;
+				}
 				quote = args.splice(1).join(' ');
 				$.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(target)), quote)));
 				$.log.event(sender + ' added a quote "' + quote + '".');
 				return;
 			}
-            quote = args.splice(0).join(' ');
-            $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
-            $.log.event(sender + ' added a quote "' + quote + '".');
-        }
+		}
 
         /**
          * USED BY THE PANEL
@@ -242,6 +272,7 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/quoteSystem.js')) {
+			$.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle', 2);
             $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
             $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', 1);
             $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
