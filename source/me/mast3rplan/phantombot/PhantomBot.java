@@ -2006,30 +2006,46 @@ public class PhantomBot implements Listener {
         /** Make a new botlogin with the botName, oauth or channel is not found */
         if (botName.isEmpty() || oauth.isEmpty() || channelName.isEmpty()) {
             try {
-                com.gmt2001.Console.out.println("");
-                com.gmt2001.Console.out.println("Welcome to the PhantomBot setup process!");
-                com.gmt2001.Console.out.println("If you have any issues please report them on our forum or tweet at us!");
-                com.gmt2001.Console.out.println("Forum: https://community.phantombot.tv/");
-                com.gmt2001.Console.out.println("Twitter: https://twitter.com/phantombotapp/");
-                com.gmt2001.Console.out.println("PhantomBot Knowledgebase: https://docs.phantombot.tv/");
-                com.gmt2001.Console.out.println("");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
+                com.gmt2001.Console.out.print("If you have any issues please report them on our forum or tweet at us!\r\n");
+                com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("Twitter: https://twitter.com/phantombotapp/");
+                com.gmt2001.Console.out.print("PhantomBot Knowledgebase: https://docs.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("\r\n");
 
-                com.gmt2001.Console.out.print("Please enter the bot's Twitch username: ");
+                com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
                 botName = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the bot's OAuth token generated from https://twitchapps.com/tmi while logged in as the bot: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
+                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
+                com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
+                com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
+                com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
+                //com.gmt2001.Console.out.print("Please enter the bot's OAuth token generated from https://twitchapps.com/tmi while logged in as the bot: ");
                 oauth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter your OAuth token generated from https://phantombot.tv/oauth while logged in as the caster: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
+                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
+                com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
+                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
+                com.gmt2001.Console.out.print("Please enter your OAuth token: ");
+                //com.gmt2001.Console.out.print("Please enter your OAuth token generated from https://phantombot.tv/oauth while logged in as the caster: ");
                 apiOAuth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the name of the Twitch channel the bot should join: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
                 channelName = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a custom username for the web panel: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
                 panelUsername = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a custom password for the web panel: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("6. Please enter a custom password for the web panel: ");
                 panelPassword = System.console().readLine().trim();
 
                 changed = true;
