@@ -350,10 +350,6 @@
             }
         }
 
-        if (command.equalsIgnoreCase('uptime')) {
-            $.say($.userPrefix(sender, true) + ($.getStreamUptime($.channelName) ? $.lang.get('timesystem.uptime', $.channelName, $.getStreamUptime($.channelName)) : $.lang.get('timesystem.uptime.offline', $.channelName)));
-        }
-
         if (command.equalsIgnoreCase('updatetimesettings')) {
             updateTimeSettings();
         }
@@ -402,7 +398,6 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./core/timeSystem.js')) {
             $.registerChatCommand('./core/timeSystem.js', 'streamertime');
-            $.registerChatCommand('./core/timeSystem.js', 'uptime');
             $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
             $.registerChatCommand('./core/timeSystem.js', 'updatetimesettings', 1);
             $.registerChatCommand('./core/timeSystem.js', 'time');
