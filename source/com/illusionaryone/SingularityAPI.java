@@ -67,7 +67,7 @@ public class SingularityAPI {
     private static final SingularityAPI instance = new SingularityAPI();
 
     private static final String apiURL = "https://singularity.gamewisp.com";
-    private static final String devKey = "32e01468d8bbc250721fe3b0d38c090a8ac589e";
+    private static final String devKey = "d391637bb332e0b67d60388e2cac31dd93ad5bf";
 
     private Socket webSocket;
 
