@@ -870,7 +870,7 @@
 
             $.inidb.set('disabledCommands', action, true);
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.success', action));
-            $.unregisterChatCommand(action.toLowerCase());
+            $.tempUnRegisterChatCommand(action.toLowerCase());
             $.log.event(sender + ' disabled command !' + command);
         }
 
@@ -892,7 +892,7 @@
 
             $.inidb.del('disabledCommands', action);
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.success', action));
-            $.tempUnRegisterChatCommand('./commands/customCommands.js', action.toLowerCase());
+            $.registerChatCommand('./commands/customCommands.js', action.toLowerCase());
             $.log.event(sender + ' re-enabled command !' + command);
         }
 
@@ -947,7 +947,7 @@
          * used for the panel
          */
         if (command.equalsIgnoreCase('unregisterpanel')) {
-            $.unregisterChatCommand(args[0].toLowerCase());
+            $.tempUnRegisterChatCommand(args[0].toLowerCase());
         }
     });
 
