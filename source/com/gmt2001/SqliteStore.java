@@ -553,7 +553,6 @@ public class SqliteStore extends DataStore {
             } else {
                 incrAutoCommitCtr();
                 connection.setAutoCommit(mode);
-                com.gmt2001.Console.debug.println(getAutoCommitCtr());
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.debug.println("SQLite commit was attempted too early, will perform later.");
