@@ -168,6 +168,26 @@
                 return;
             } 
         }
+
+        /**
+         * @commandpath createdat [channel] - Returns when a channel was created in Twitch Timestamp format.
+         *
+         * The purpose of this command is for moderators to help identify potential trolls that created a new
+         * account after being banned.
+         */
+        if (command.equalsIgnoreCase('createdat')) {
+            if (args.length === 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.createdat.404'));
+                return;
+            }
+            var createdAt = $.twitch.getChannelCreatedDate(args[0]);
+            if (createdAt.equals("ERROR")) {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.createdat.error'));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.createdat', args[0], createdAt));
+            }
+            return;
+        }
     });
 
 
@@ -184,6 +204,7 @@
             $.registerChatCommand('./commands/streamCommand.js', 'title', 7);
             $.registerChatCommand('./commands/streamCommand.js', 'playtime', 7);
             $.registerChatCommand('./commands/streamCommand.js', 'vod', 7);
+            $.registerChatCommand('./commands/streamCommand.js', 'createdat', 2);
 
             $.registerChatSubcommand('game', 'set', 1);
             $.registerChatSubcommand('title', 'set', 1);

@@ -11,3 +11,6 @@ $.lang.register('streamcommand.game.set.usage', 'usage: !game set [game title]. 
 $.lang.register('streamcommand.viewers', 'Currently $1 viewers are watching.');
 $.lang.register('streamcommand.online.offline', 'Stream is offline.');
 $.lang.register('streamcommand.online.online', 'Stream is online.');
+$.lang.register('streamcommand.createdat.404', 'Please provide a channel');
+$.lang.register('streamcommand.createdat.error', 'The channel does not exist or a Twitch API error occurred.');
+$.lang.register('streamcommand.createdat', 'Channel: $1 | Created At: $2');
