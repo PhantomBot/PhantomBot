@@ -892,7 +892,7 @@
 
             $.inidb.del('disabledCommands', action);
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.success', action));
-            $.registerChatCommand('./commands/customCommands.js', action.toLowerCase());
+            $.tempUnRegisterChatCommand('./commands/customCommands.js', action.toLowerCase());
             $.log.event(sender + ' re-enabled command !' + command);
         }
 
