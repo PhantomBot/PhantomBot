@@ -5,7 +5,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=/);
+        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|/);
 
     /**
      * @function getCustomAPIValue
@@ -49,11 +49,6 @@
             }
         }
 
-        if (message.match(/\(age\)/g)) {
-            $.getChannelAge(event);
-            return '';
-        }
-
         if (message.match(/\(1\)/g)) {
             for (var i = 1; i < 10; i++) {
                 if (message.includes('(' + i + ')')) {
@@ -64,7 +59,7 @@
             }
         }
 
-        if (message.match(/\(1=[^)]+\)/g)) { //ALPHA TAG, THIS MIGHT NOT WORK CORRECTLY.
+        if (message.match(/\(1=[^)]+\)/g)) {
             if (event.getArgs()[0]) {
                 var t = message.match(/\(1=[^)]+\)/)[0];
                 message = $.replace(message, t, event.getArgs()[0]);
@@ -73,10 +68,7 @@
         }
 
         if (message.match(/\(countdown=[^)]+\)/g)) {
-            var t = message.match(/\([^)]+\)/)[0],
-                countdown,
-                time;
-
+            var t = message.match(/\([^)]+\)/)[0], countdown, time;
             countdown = t.replace('(countdown=', '').replace(')', '');
             time = (Date.parse(countdown) - Date.parse(new Date()));
             message = $.replace(message, t, $.getTimeString(time / 1000));
@@ -84,6 +76,10 @@
 
         if (message.match(/\(downtime\)/g)) {
             message = $.replace(message, '(downtime)', String($.getStreamDownTime()));
+        }
+
+        if (message.match(/\(channelname\)/g)) {
+            message = $.replace(message, '(channelname)', $.channelName);
         }
 
         if (message.match(/\(onlineonly\)/g)) {
@@ -119,7 +115,7 @@
         }
 
         if (message.match(/\(@sender\)/g)) {
-            message = $.replace(message, '(@sender)', $.userPrefix(event.getSender()));
+            message = $.replace(message, '(@sender)', $.userPrefix(event.getSender(), true));
         }
 
         if (message.match(/\(baresender\)/g)) {
@@ -163,10 +159,6 @@
             message = $.replace(message, '(#)', String($.randRange(1, 100) + ' '));
         }
 
-        if (message.match(/\(uptime\)/g)) {
-            message = $.replace(message, '(uptime)', String($.getStreamUptime($.channelName)));
-        }
-
         if (message.match(/\(viewers\)/g)) {
             message = $.replace(message, '(viewers)', String($.getViewers($.channelName) + ' '));
         }
@@ -188,6 +180,10 @@
         }
 
         if (message.match(/\(gamesplayed\)/g)) {
+            if (!$.isOnline($.channelName)) {
+                $.say($.userPrefix(sender, true) + 'Channel ' + $.channelName + ' is offline.');
+                return '';
+            }
             message = $.replace(message, '(gamesplayed)', $.getGamesPlayed());
         }
 
@@ -218,6 +214,58 @@
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
             message = apiTags(event, message);
         }
+
+        if (message.match(/\(gameinfo\)/)) {
+            if (!$.isOnline($.channelName)) {
+                message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
+            } else {
+                message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.online', $.getGame($.channelName), $.getPlayTime()));
+            }
+        }
+
+        if (message.match(/\(titleinfo\)/)) {
+            if (!$.isOnline($.channelName)) {
+                message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.offline', $.getStatus($.channelName)));
+            } else {
+                message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.online', $.getStatus($.channelName), String($.getStreamUptime($.channelName))));
+            }
+        }
+
+        if (message.match(/\(followage\)/g)) {
+            var args = event.getArgs(), channel = $.channelName, sender = event.getSender();
+            
+            if (args.length > 0) sender = args[0];
+            if (args.length > 1) channel = args[1];
+
+            if ($.twitch.GetUserFollowsChannel(sender.toLowerCase(), channel.toLowerCase()).getInt('_http') == 200) {
+                $.getFollowAge(event.getSender(), sender, channel);
+                return '';
+            } else {
+                message = $.replace(message, '(followage)', String($.lang.get('followhandler.follow.age.err.404', $.userPrefix(event.getSender(), true), sender, channel)));
+            }
+        }
+
+        if (message.match(/\(playtime\)/g)) {
+            if (!$.isOnline($.channelName)) {
+                $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
+                return '';
+            }
+            message = $.replace(message, '(playtime)', ($.getPlayTime() ? $.getPlayTime() : ''));
+        }
+
+        if (message.match(/\(uptime\)/g)) {
+            if (!$.isOnline($.channelName)) {
+                $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
+                return '';
+            }
+            message = $.replace(message, '(uptime)', String($.getStreamUptime($.channelName)));
+        }
+
+        if (message.match(/\(age\)/g)) {
+            $.getChannelAge(event);
+            return '';
+        }
+
         return message;
     };
 
@@ -822,7 +870,7 @@
 
             $.inidb.set('disabledCommands', action, true);
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.success', action));
-            $.unregisterChatCommand(action.toLowerCase());
+            $.tempUnRegisterChatCommand(action.toLowerCase());
             $.log.event(sender + ' disabled command !' + command);
         }
 
@@ -899,7 +947,7 @@
          * used for the panel
          */
         if (command.equalsIgnoreCase('unregisterpanel')) {
-            $.unregisterChatCommand(args[0].toLowerCase());
+            $.tempUnRegisterChatCommand(args[0].toLowerCase());
         }
     });
 

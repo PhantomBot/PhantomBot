@@ -126,6 +126,22 @@
     };
 
     /**
+     * @function tempUnRegisterChatCommand
+     * @export $
+     * @param {string} command
+     */
+    function tempUnRegisterChatCommand(command) {
+        if (commandExists(command)) {
+            delete commands[command];
+            delete commandScriptTable[command];
+            delete aliases[command];
+        }
+
+        /** This is used for disablecom. */
+        //$.inidb.del('permcom', command);
+    };
+
+    /**
      * @function unregisterChatSubcommand
      * @export $
      * @param {string} command
@@ -312,4 +328,5 @@
     $.getCommandScript = getCommandScript;
     $.aliasExists = aliasExists;
     $.registerChatAlias = registerChatAlias;
+    $.tempUnRegisterChatCommand = tempUnRegisterChatCommand;
 })();

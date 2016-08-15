@@ -112,8 +112,16 @@
             $.inidb.set('modules', modules[i], 'false');
         }
 
+        $.consoleLn('Adding new default custom commands...');
+        $.inidb.set('command', 'uptime', '(@sender) (channelname) has been online for (uptime)');
+        $.inidb.set('command', 'followage', '(followage)');
+        $.inidb.set('command', 'playtime', '(@sender) Current playtime: (playtime)');
+        $.inidb.set('command', 'title', '(@sender) (titleinfo)');
+        $.inidb.set('command', 'game', '(@sender) (gameinfo)');
+        $.inidb.set('command', 'age', '(age)');
+
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.2.1.0'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -386,7 +394,7 @@
         }
         sounds = "";
 
-        $.consoleLn($.version + ' updates completed!');
+        $.consoleLn('PhantomBot v2.1 updates completed!');
         $.inidb.set('updates', 'installedv2.1.0', 'true');
         $.inidb.set('updates', 'installedNewBot', 'true');//If bot login is deleted after updates were installed we don't want to reset the modules.
     }
@@ -403,15 +411,50 @@
     }
 
     /** Version 2.2.1 updates */
-    if (!$.inidb.exists('updates', 'installedv2.2.1') || $.inidb.get('updates', 'installedv2.2.1') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv2.2.1.0') || $.inidb.get('updates', 'installedv2.2.1.0') != 'true') {
         $.consoleLn('Starting ' + $.version + ' updates...');
 
         $.consoleLn('Disabling new modules...');
         $.inidb.set('modules', './handlers/bitsHandler.js', 'false');
         $.inidb.set('modules', './systems/autoHostSystem.js', 'false');
 
+        $.consoleLn('Adding new default custom commands...');
+        if (!$.inidb.exists('command', 'uptime')) {
+            $.inidb.set('command', 'uptime', '(@sender) (channelname) has been online for (uptime)');
+        }
+        if (!$.inidb.exists('command', 'followage')) {
+            $.inidb.set('command', 'followage', '(followage)');
+        }
+        if (!$.inidb.exists('command', 'playtime')) {
+            $.inidb.set('command', 'playtime', '(@sender) Current playtime: (playtime)');
+        }
+        if (!$.inidb.exists('command', 'title')) {
+            $.inidb.set('command', 'title', '(@sender) (titleinfo)');
+        }
+        if (!$.inidb.exists('command', 'game')) {
+            $.inidb.set('command', 'game', '(@sender) (gameinfo)');
+        }
+        if (!$.inidb.exists('command', 'age')) {
+            $.inidb.set('command', 'age', '(age)');
+        }
+        if ($.inidb.exists('permcom', 'game set')) {
+            $.inidb.set('permcom', 'setgame', $.inidb.get('permcom', 'game set'));
+        }
+        if ($.inidb.exists('permcom', 'title set')) {
+            $.inidb.set('permcom', 'settitle', $.inidb.get('permcom', 'title set'));
+        }
+
+        /**
+         * @commandpath game - Give's you the current game, and the playtime if the channel is online. 
+         * @commandpath title - Give's you the current title, and the channel uptime if the channel is online. 
+         * @commandpath followage [optional (name)] [optional (channel)] - Tells you how long you have been following the channel.
+         * @commandpath playtime - Tells you how long the caster has been playing the current game for.
+         * @commandpath uptime - Give's you the current stream uptime 
+         * @commandpath age [optional (name)] - Tells you how long you have been on Twitch for.
+         */
+
         $.consoleLn($.version + ' updates completed!');
-        $.inidb.set('updates', 'installedv2.2.1', 'true');
+        $.inidb.set('updates', 'installedv2.2.1.0', 'true');
     }
 
     /**
