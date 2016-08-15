@@ -797,6 +797,8 @@
                 command = event.getCommand().toLowerCase(),
                 args = event.getArgs(),
                 subCommand = (args[0] ? args[0] : ''),
+                subCommandAction = (args[1] ? args[1] : ''),
+                commandCost = 0,
                 permComCheck = $.permCom(sender, command, subCommand),
                 isModv3 = $.isModv3(sender, event.getTags());
 
@@ -864,11 +866,14 @@
                 return;
             }
 
-            if ($.inidb.exists('pricecom', command)) {
+            if (($.inidb.exists('pricecom', command) ||
+                 $.inidb.exists('pricecom', command + ' ' + subCommand) ||
+                 $.inidb.exists('pricecom', (command + ' ' + subCommand + ' ' + subCommandAction)))) {
                 if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
                     if (isModuleEnabled('./systems/pointSystem.js')) {
-                        if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
-                            $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
+                        commandCost = $.getCommandPrice(command, subCommand, subCommandAction);
+                        if ($.getUserPoints(sender) < commandCost) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
                             return;
                         }
                     }
@@ -881,8 +886,8 @@
                 if (parseInt($.inidb.get('paycom', command)) > 0) {
                     $.inidb.incr('points', sender, $.inidb.get('paycom', command));
                 }
-                if ($.inidb.exists('pricecom', command) && parseInt($.inidb.get('pricecom', command)) > 0) {
-                    $.inidb.decr('points', sender, $.inidb.get('pricecom', command));
+                if (commandCost > 0) {
+                    $.inidb.decr('points', sender, commandCost);
                 }
             }
             handleInitCommands(event);
