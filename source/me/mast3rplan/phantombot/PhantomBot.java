@@ -489,7 +489,15 @@ public class PhantomBot implements Listener {
 		this.init();
 
 		/** Start a channel instance to create a session, and then connect to WS-IRC @ Twitch. */
-		this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
+		if (this.channelName.contains(",")) {
+			String[] create = this.channelName.split(",");
+
+			for (String join : create) {
+				this.channel = Channel.instance(join, this.botName, this.oauth, EventBus.instance());
+			}
+		} else {
+			this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
+		}
 
 		/** Check if the OS is Linux. */
 		if (SystemUtils.IS_OS_LINUX && !interactive) {
@@ -952,6 +960,8 @@ public class PhantomBot implements Listener {
     	this.chanName = event.getChannel().getName();
     	this.session = event.getSession();
 
+    	//print("ircJoinComplete::" + this.chanName);
+
     	/** Add the channel/session in the array for later use */
     	PhantomBot.instance().addChannel(this.chanName, event.getChannel());
     	PhantomBot.instance().addSession(this.chanName, this.session);
@@ -966,7 +976,7 @@ public class PhantomBot implements Listener {
         this.followersCache = FollowersCache.instance(this.chanName);
         this.hostCache = ChannelHostCache.instance(this.chanName);
         this.subscribersCache = SubscribersCache.instance(this.chanName);
-        this.twitchCache = TwitchCache.instance(this.chanName);
+        this.twitchCache = TwitchCache.instance(this.chanName);// This does not create a new instance for multiple channels. Not sure why.
         this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
 
         /** Start the donations cache if the keys are not null */
