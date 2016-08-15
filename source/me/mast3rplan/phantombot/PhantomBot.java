@@ -2405,8 +2405,8 @@ public class PhantomBot implements Listener {
         data += "streamtipkey=" + streamTipOAuth + "\r\n";
         data += "streamtiplimit=" + streamTipLimit + "\r\n";
         data += "streamtipid=" + streamTipClientId + "\r\n";
-        data += "gamewispauth=" + gameWispOAuth + "\r\n";
-        data += "gamewisprefresh=" + gameWispRefresh + "\r\n";
+        data += "gamewispauth=" + newTokens[0] + "\r\n";
+        data += "gamewisprefresh=" + newTokens[1] + "\r\n";
         data += "mysqlhost=" + mySqlHost + "\r\n";
         data += "mysqlport=" + mySqlPort + "\r\n";
         data += "mysqlname=" + mySqlName + "\r\n";
