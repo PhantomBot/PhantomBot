@@ -2018,9 +2018,9 @@ public class PhantomBot implements Listener {
             try {
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
-                com.gmt2001.Console.out.print("If you have any issues please report them on our forum or tweet at us!\r\n");
+                com.gmt2001.Console.out.print("If you have any issues please report them on our forum or Tweet at us!\r\n");
                 com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
-                com.gmt2001.Console.out.print("Twitter: https://twitter.com/phantombotapp/");
+                com.gmt2001.Console.out.print("Twitter: https://twitter.com/phantombotapp/\r\n");
                 com.gmt2001.Console.out.print("PhantomBot Knowledgebase: https://docs.phantombot.tv/\r\n");
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("\r\n");

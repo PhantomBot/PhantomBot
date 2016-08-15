@@ -4,7 +4,7 @@
     $.getSetIniDbBoolean('autohost_config', 'force', false);
     $.getSetIniDbNumber('autohost_config', 'offline_time', 0);
     $.getSetIniDbNumber('autohost_config', 'host_time_minutes', 0);
-    $.getSetIniDbNumber('autohost_config', 'delay_time_minutes', 5);
+    $.getSetIniDbNumber('autohost_config', 'delay_time_minutes', 10);
 
     /**
      * @function checkAutoHost
@@ -15,8 +15,8 @@
         // If stream is reported as online and force mode is not enabled, disable autohosting.
         //
         if ($.isOnline($.channelName) && !$.getIniDbBoolean('autohost_config', 'force')) {
-            $.inidb.set('autohost_config', 'hosting', 'false');
-            $.inidb.set('autohost_config', 'currently_hosting', '');
+            $.inidb.set('autohost_config', 'hosting', false);
+            $.inidb.del('autohost_config', 'currently_hosting');
             return;
         }
 
@@ -30,7 +30,7 @@
         // Twitch says the stream is offline, disable the force flag.
         //
         if (!$.isOnline($.channelName) && $.getIniDbBoolean('autohost_config', 'force')) {
-            $.inidb.set('autohost_config', 'force', 'false');
+            $.inidb.set('autohost_config', 'force', false);
             return;
         }
 
@@ -44,7 +44,7 @@
             if ($.getIniDbNumber('autohost_config', 'delay_time_minutes') > 0) {
                 if ($.getIniDbNumber('autohost_config', 'offline_time') + ($.getIniDbNumber('autohost_config', 'delay_time_minutes') * 6e4) < $.systemTime()) {
                     $.consoleDebug('Delay detected, not starting autohost');
-                    $.inidb.set('autohost_config', 'hosting', 'false');
+                    $.inidb.set('autohost_config', 'hosting', false);
                     return;
                 }
             }
@@ -52,7 +52,7 @@
 
         // Enable auto-hosting, this is also reached if isOnline and autohost_config|force is true.
         //
-        $.inidb.set('autohost_config', 'hosting', 'true');
+        $.inidb.set('autohost_config', 'hosting', true);
     }
 
     /**
@@ -67,18 +67,23 @@
         // them less than our configured number of allowed hours.  If they are otherwise offline
         // or we have been hosting them long enough, then we fall down into setting up a new host.
         //
-        if ($.getIniDbString('autohost_config', 'currently_hosting', '') !== '' && !force) {
+        if ($.getIniDbString('autohost_config', 'currently_hosting') !== undefined && force === false) {
+            if ($.getIniDbNumber('autohost_config', 'last_host_start') - $.systemTime() >= 0) {
+                return;
+            }
             if ($.isOnline($.getIniDbString('autohost_config', 'currently_hosting'))) {
                 if ($.getIniDbNumber('autohost_config', 'host_time_minutes') === 0) {
                     return;
                 }
-                if (($.getIniDbNumber('autohost_config', 'last_host_start') +
-                    $.getIniDbNumber('autohost_config', 'host_time_minutes') * 6e4) < $.systemTime()) {
-                    return;
-                }
             }
         }
-        
+
+        /** Is this channel online ? */ 
+        /* this will broke the force thing */
+        /*if ($.isOnline($.channelName) || $.inidb.get('autohost_config', 'hosting') === false) {
+            return;
+        }*/
+
         var lastRank = $.getSetIniDbNumber('autohost_config', 'last_rank', 0),
             lastHost = $.getSetIniDbString('autohost_config', 'last_host', ''),
             hostList = $.inidb.GetKeyList('autohost_hosts', ''),
@@ -90,7 +95,7 @@
             return;
         }
 
-        if (lastHost.length() === 0) {
+        if (lastHost === undefined) {
             foundLastHost = true;
         }
 
@@ -105,6 +110,7 @@
                     break;
                 }
             }
+
             if (hostList[i].equals(lastHost)) {
                 foundLastHost = true;
             }
@@ -112,13 +118,13 @@
 
         // Start at the head of the list if there was a previous channel being hosted.
         //
-        if (channelToHost.length() === 0 && lastHost.length() > 0) {
+        if (channelToHost !== undefined && lastHost !== undefined) {
             for (var i in hostList) {
-                if ($.isOnline(hostList[i])) {
-                    channelToHost = hostList[i];
+                if (hostList[i].equals(lastHost)) {
                     break;
                 }
-                if (hostList[i].equals(lastHost)) {
+                if ($.isOnline(hostList[i])) {
+                    channelToHost = hostList[i];
                     break;
                 }
             }
@@ -126,10 +132,11 @@
 
         // Host, note that we will not host the last person we hosted. 
         //
-        if (channelToHost.length() > 0) {
+        if (channelToHost !== undefined) {
             $.say('.host ' + channelToHost);
             $.inidb.set('autohost_config', 'last_host', channelToHost);
             $.inidb.set('autohost_config', 'currently_hosting', channelToHost);
+            $.inidb.set('autohost_config', 'last_host_start', ($.getIniDbNumber('autohost_config', 'host_time_minutes') * 6e4) + $.systemTime());
         }
     }
 
@@ -145,7 +152,7 @@
             subAction = args[1];
 
         /**
-         * @commandpath autohost [start|force|stop|delay|hosttime|skip|add|del|list] - Base command for autohost
+         * @commandpath autohost [start / force / stop / delay / hosttime / skip / add / del / list] - Base command for autohost
          */
         if (command.equalsIgnoreCase('autohost')) {
             if (action === undefined) {
@@ -154,7 +161,7 @@
             }
 
             /**
-             * @commandpath autohost [start|force|stop] - Start, force start, or stop autohosting.
+             * @commandpath autohost [start  / force / stop] - Start, force start, or stop autohosting.
              * Note that force is the same as start, it just instructs the process to ignore the stream
              * online status.
              */
@@ -164,7 +171,7 @@
                     $.setIniDbBoolean('autohost_config', 'force', true); 
                     $.say($.whisperPrefix(sender) + $.lang.get('autohost.force'));
                     //$.consoleLn('Autohosting is Enabled');
-                    $.inidb.set('autohost_config', 'hosting', 'true');
+                    $.inidb.set('autohost_config', 'hosting', true);
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('autohost.on'));
                 }
@@ -173,8 +180,8 @@
             if (action.equalsIgnoreCase('stop')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('autohost.off'));
                 $.setIniDbBoolean('autohost_config', 'enabled', false);
-                $.inidb.set('autohost_config', 'hosting', 'false');
-                $.inidb.set('autohost_config', 'currently_hosting', '');
+                $.inidb.set('autohost_config', 'hosting', false);
+                $.inidb.del('autohost_config', 'currently_hosting');
                 return;
             }
 
@@ -217,6 +224,7 @@
                 }
                 $.say($.whisperPrefix(sender) + $.lang.get('autohost.hosttime.success', subAction));
                 $.inidb.set('autohost_config', 'host_time_minutes', subAction);
+                $.inidb.set('autohost_config', 'last_host_start', ($.getIniDbNumber('autohost_config', 'host_time_minutes') * 6e4) + $.systemTime());
                 return;
             }
 
@@ -294,11 +302,13 @@
     $.bind('ircJoinComplete', function() {
         setTimeout(function() {
             setInterval(function() {
-                checkAutoHost();
-                if ($.getIniDbBoolean('autohost_config', 'hosting', false)) {
-                    doAutoHost(false);
+                if ($.getIniDbBoolean('autohost_config', 'enabled', false)) {
+                    checkAutoHost();
+                    if ($.getIniDbBoolean('autohost_config', 'hosting', false)) {
+                        doAutoHost(false);
+                    }
                 }
-            }, 6e3); 
+            }, 60e4); 
         }, 3e3);
     });
 })();
