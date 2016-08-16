@@ -38,7 +38,7 @@
 
         if (pointNameMultiple.equalsIgnoreCase('points') && pointNameSingle.equalsIgnoreCase('point')) {
             defaultPointsName(true);
-            registerNewPointsCommands($.inidb.get('temppoints', 'pointsname'), $.inidb.get('temppoints', 'pointsname2'), false);
+            //registerNewPointsCommands($.inidb.get('temppoints', 'pointsname'), $.inidb.get('temppoints', 'pointsname2'), false);
         } else {
             defaultPointsName(false);
             registerNewPointsCommands($.inidb.get('temppoints', 'pointsname'), $.inidb.get('temppoints', 'pointsname2'), true);
@@ -791,10 +791,8 @@
             $.registerChatSubcommand('points', 'add', 1);
             $.registerChatSubcommand('points', 'give', 1);
             $.registerChatSubcommand('points', 'take', 1);
-            $.registerChatSubcommand('points', 'remove', 1);
             $.registerChatSubcommand('points', 'set', 1);
             $.registerChatSubcommand('points', 'all', 1);
-            $.registerChatSubcommand('points', 'takeall', 1);
             $.registerChatSubcommand('points', 'setname', 1);
             $.registerChatSubcommand('points', 'setgain', 1);
             $.registerChatSubcommand('points', 'setofflinegain', 1);
