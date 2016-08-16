@@ -772,9 +772,12 @@
             /** Panel commands */
 
             $.registerChatSubcommand('points', 'add', 1);
+            $.registerChatSubcommand('points', 'give', 1);
             $.registerChatSubcommand('points', 'take', 1);
+            $.registerChatSubcommand('points', 'remove', 1);
             $.registerChatSubcommand('points', 'set', 1);
             $.registerChatSubcommand('points', 'all', 1);
+            $.registerChatSubcommand('points', 'takeall', 1);
             $.registerChatSubcommand('points', 'setname', 1);
             $.registerChatSubcommand('points', 'setgain', 1);
             $.registerChatSubcommand('points', 'setofflinegain', 1);
