@@ -115,7 +115,7 @@
         $.consoleLn('Adding new default custom commands...');
         $.inidb.set('command', 'uptime', '(@sender) (channelname) has been online for (uptime)');
         $.inidb.set('command', 'followage', '(followage)');
-        $.inidb.set('command', 'playtime', '(@sender) Current playtime: (playtime)');
+        $.inidb.set('command', 'playtime', '(@sender) (channelname) has been playing (game) for (playtime)');
         $.inidb.set('command', 'title', '(@sender) (titleinfo)');
         $.inidb.set('command', 'game', '(@sender) (gameinfo)');
         $.inidb.set('command', 'age', '(age)');
@@ -426,7 +426,7 @@
             $.inidb.set('command', 'followage', '(followage)');
         }
         if (!$.inidb.exists('command', 'playtime')) {
-            $.inidb.set('command', 'playtime', '(@sender) Current playtime: (playtime)');
+            $.inidb.set('command', 'playtime', '(@sender) (channelname) has been playing (game) for (playtime)');
         }
         if (!$.inidb.exists('command', 'title')) {
             $.inidb.set('command', 'title', '(@sender) (titleinfo)');
