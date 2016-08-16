@@ -866,9 +866,7 @@
                 return;
             }
 
-            if (($.inidb.exists('pricecom', command) ||
-                 $.inidb.exists('pricecom', command + ' ' + subCommand) ||
-                 $.inidb.exists('pricecom', (command + ' ' + subCommand + ' ' + subCommandAction)))) {
+            if (($.inidb.exists('pricecom', command) || $.inidb.exists('pricecom', command + ' ' + subCommand) || $.inidb.exists('pricecom', (command + ' ' + subCommand + ' ' + subCommandAction)))) {
                 if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
                     if (isModuleEnabled('./systems/pointSystem.js')) {
                         commandCost = $.getCommandPrice(command, subCommand, subCommandAction);
