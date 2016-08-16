@@ -489,15 +489,7 @@ public class PhantomBot implements Listener {
 		this.init();
 
 		/** Start a channel instance to create a session, and then connect to WS-IRC @ Twitch. */
-		if (this.channelName.contains(",")) {
-			String[] create = this.channelName.split(",");
-
-			for (String join : create) {
-				this.channel = Channel.instance(join, this.botName, this.oauth, EventBus.instance());
-			}
-		} else {
-			this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
-		}
+		this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
 
 		/** Check if the OS is Linux. */
 		if (SystemUtils.IS_OS_LINUX && !interactive) {
@@ -710,6 +702,8 @@ public class PhantomBot implements Listener {
     	    /** Set up a new http server */
     	    NEWHTTPServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
     	}
+
+    	print("New HTTP server accepting connection on port: " + (basePort + 5));
 
     	/** Enable gamewhisp if the oAuth is set */
     	if (!gameWispOAuth.isEmpty()) {
@@ -1230,23 +1224,23 @@ public class PhantomBot implements Listener {
                 print("PhantomBot MySQL setup.");
                 print("");
 
-                print("Please enter your MySQL host name: ");
+                com.gmt2001.Console.out.print("Please enter your MySQL host name: ");
                 String newHost = System.console().readLine().trim();
                 mySqlHost = newHost;
 
-                print("Please enter your MySQL port: ");
+                com.gmt2001.Console.out.print("Please enter your MySQL port: ");
                 String newPost = System.console().readLine().trim();
                 mySqlPort = newPost;
 
-                print("Please enter your MySQL db name: ");
+                com.gmt2001.Console.out.print("Please enter your MySQL db name: ");
                 String newName = System.console().readLine().trim();
                 mySqlName = newName;
 
-                print("Please enter a username for MySQL: ");
+                com.gmt2001.Console.out.print("Please enter a username for MySQL: ");
                 String newUser = System.console().readLine().trim();
                 mySqlUser = newUser;
 
-                print("Please enter a password for MySQL: ");
+                com.gmt2001.Console.out.print("Please enter a password for MySQL: ");
                 String newPass = System.console().readLine().trim();
                 mySqlPass = newPass;
 
@@ -1266,11 +1260,11 @@ public class PhantomBot implements Listener {
                 print("PhantomBot GameWisp setup.");
                 print("");
 
-                print("Please enter your GameWisp OAuth key: ");
+                com.gmt2001.Console.out.print("Please enter your GameWisp OAuth key: ");
                 String newToken = System.console().readLine().trim();
                 gameWispOAuth = newToken;
 
-                print("Please enter your GameWisp refresh key: ");
+                com.gmt2001.Console.out.print("Please enter your GameWisp refresh key: ");
                 String newToken2 = System.console().readLine().trim();
                 gameWispRefresh = newToken2;
 
@@ -1288,7 +1282,7 @@ public class PhantomBot implements Listener {
                 print("PhantomBot TwitchAlerts setup.");
                 print("");
 
-                print("Please enter your TwitchAlerts OAuth key: ");
+                com.gmt2001.Console.out.print("Please enter your TwitchAlerts OAuth key: ");
                 String newToken = System.console().readLine().trim();
                 twitchAlertsKey = newToken;
 
@@ -1306,11 +1300,11 @@ public class PhantomBot implements Listener {
                 print("PhantomBot StreamTip setup.");
                 print("");
 
-                print("Please enter your StreamTip Api OAuth: ");
+                com.gmt2001.Console.out.print("Please enter your StreamTip Api OAuth: ");
                 String newToken = System.console().readLine().trim();
                 streamTipOAuth = newToken;
 
-                print("Please enter your StreamTip Client Id: ");
+                com.gmt2001.Console.out.print("Please enter your StreamTip Client Id: ");
                 String newId = System.console().readLine().trim();
                 streamTipClientId = newId;
 
@@ -1329,11 +1323,11 @@ public class PhantomBot implements Listener {
                 print("Note: Do not use any ascii characters in your username of password.");
                 print("");
 
-                print("Please enter a username of your choice: ");
+                com.gmt2001.Console.out.print("Please enter a username of your choice: ");
                 String newUser = System.console().readLine().trim();
                 panelUsername = newUser;
 
-                print("Please enter a password of your choice: ");
+                com.gmt2001.Console.out.print("Please enter a password of your choice: ");
                 String newPass = System.console().readLine().trim();
                 panelPassword = newPass;
 
@@ -1351,23 +1345,23 @@ public class PhantomBot implements Listener {
                 print("PhantomBot Twitter setup.");
                 print("");
 
-                print("Please enter your Twitter username: ");
+                com.gmt2001.Console.out.print("Please enter your Twitter username: ");
                 String newUser = System.console().readLine().trim();
                 twitterUsername = newUser;
 
-                print("Please enter your consumer key: ");
+                com.gmt2001.Console.out.print("Please enter your consumer key: ");
                 String newConsumerKey = System.console().readLine().trim();
                 twitterConsumerToken = newConsumerKey;
 
-                print("Please enter your consumer secret: ");
+                com.gmt2001.Console.out.print("Please enter your consumer secret: ");
                 String newConsumerSecret = System.console().readLine().trim();
                 twitterConsumerSecret = newConsumerSecret;
 
-                print("Please enter your access token: ");
+                com.gmt2001.Console.out.print("Please enter your access token: ");
                 String newAccess = System.console().readLine().trim();
                 twitterAccessToken = newAccess;
 
-                print("Please enter your access token secret: ");
+                com.gmt2001.Console.out.print("Please enter your access token secret: ");
                 String newSecretAccess = System.console().readLine().trim();
                 twitterSecretToken = newSecretAccess;
 
@@ -2018,9 +2012,9 @@ public class PhantomBot implements Listener {
             try {
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
-                com.gmt2001.Console.out.print("If you have any issues please report them on our forum or tweet at us!\r\n");
+                com.gmt2001.Console.out.print("If you have any issues please report them on our forum or Tweet at us!\r\n");
                 com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
-                com.gmt2001.Console.out.print("Twitter: https://twitter.com/phantombotapp/");
+                com.gmt2001.Console.out.print("Twitter: https://twitter.com/phantombotapp/\r\n");
                 com.gmt2001.Console.out.print("PhantomBot Knowledgebase: https://docs.phantombot.tv/\r\n");
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("\r\n");
@@ -2387,7 +2381,7 @@ public class PhantomBot implements Listener {
         if (reloadScripts) {
         	data += "reloadscripts\r\n";
         }
-     data += "user=" + botName + "\r\n";
+        data += "user=" + botName + "\r\n";
         data += "oauth=" + oauth + "\r\n";
         data += "apioauth=" + apiOAuth + "\r\n";
         data += "paneluser=" + panelUsername + "\r\n";
