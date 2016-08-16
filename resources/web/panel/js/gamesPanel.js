@@ -24,7 +24,10 @@
  */
 
 (function() {
+    var toggleIcon = [];
 
+        toggleIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
+        toggleIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
     /**
      * @function onMessage
      */
@@ -44,6 +47,12 @@
 
             if (panelCheckQuery(msgObject, 'games_adventure')) {
                 for (idx in msgObject['results']) {
+                    if (msgObject['results'][idx]['key'] == 'warningMessage') {
+                        $('#adventure' + msgObject['results'][idx]['key']).html(toggleIcon[msgObject['results'][idx]['value']]);
+                    }
+                    if (msgObject['results'][idx]['key'] == 'enterMessage') {
+                        $('#adventure' + msgObject['results'][idx]['key']).html(toggleIcon[msgObject['results'][idx]['value']]);
+                    }
                    $('#adventure' + msgObject['results'][idx]['key'] + 'Input').attr('placeholder', msgObject['results'][idx]['value']);
                 }
             }
@@ -199,8 +208,32 @@
      * @function adventureUpdateSetting
      * @param {String} setting
      */
-    function adventureUpdateSetting(setting) {
+    function adventureUpdateSetting(setting, l) {
         var value = $('#adventure' + setting + 'Input').val();
+
+        if (setting == 'warningMessage') {
+            $("#adventure" + setting).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+            if (l == 'true') {
+                sendDBUpdate('games_adventure', 'adventureSettings', setting, 'true');
+            } else {
+                sendDBUpdate('games_adventure', 'adventureSettings', setting, 'false');
+            }
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { sendCommand('reloadadventure') }, TIMEOUT_WAIT_TIME);
+            return;
+        }
+
+        if (setting == 'enterMessage') {
+            $("#adventure" + setting).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+            if (l == 'true') {
+                sendDBUpdate('games_adventure', 'adventureSettings', setting, 'true');
+            } else {
+                sendDBUpdate('games_adventure', 'adventureSettings', setting, 'false');
+            }
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { sendCommand('reloadadventure') }, TIMEOUT_WAIT_TIME);
+            return;
+        }
 
         if (value.length > 0) {
             if (setting == 'joinTime') {
@@ -222,6 +255,7 @@
             if (setting == 'maxBet') {
                 sendDBUpdate('games_adventure', 'adventureSettings', setting, value);
             }
+
            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
            setTimeout(function() { sendCommand('reloadadventure') }, TIMEOUT_WAIT_TIME);
         }

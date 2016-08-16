@@ -418,7 +418,7 @@
         $.inidb.set('modules', './handlers/bitsHandler.js', 'false');
         $.inidb.set('modules', './systems/autoHostSystem.js', 'false');
 
-        $.consoleLn('Adding new default custom commands...');
+        $.consoleLn('Setting up new default custom commands...');
         if (!$.inidb.exists('command', 'uptime')) {
             $.inidb.set('command', 'uptime', '(@sender) (channelname) has been online for (uptime)');
         }
@@ -444,12 +444,16 @@
             $.inidb.set('permcom', 'settitle', $.inidb.get('permcom', 'title set'));
         }
 
+        $.consoleLn('Setting up new toggles...');
+        $.inidb.set('adventureSettings', 'warningMessage', true);
+        $.inidb.set('adventureSettings', 'enterMessage', true);
+
         /**
          * @commandpath game - Give's you the current game, and the playtime if the channel is online. 
          * @commandpath title - Give's you the current title, and the channel uptime if the channel is online. 
          * @commandpath followage [optional (name)] [optional (channel)] - Tells you how long you have been following the channel.
          * @commandpath playtime - Tells you how long the caster has been playing the current game for.
-         * @commandpath uptime - Give's you the current stream uptime 
+         * @commandpath uptime - Give's you the current stream uptime.
          * @commandpath age [optional (name)] - Tells you how long you have been on Twitch for.
          */
 
