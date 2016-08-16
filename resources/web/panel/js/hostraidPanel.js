@@ -266,12 +266,14 @@
         var val = $('#' + s).val();
 
         if (setting == 'enable') {
+            $("#autoHostToggle").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
             sendDBUpdate('auto_host', 'autohost_config', 'enabled', 'true');
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             return;
         }
 
         if (setting == 'disable') {
+            $("#autoHostToggle").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
             sendDBUpdate('auto_host', 'autohost_config', 'enabled', 'false');
             sendDBUpdate('auto_host', 'autohost_config', 'hosting', 'false');
             sendDBDelete('auto_host', 'autohost_config', 'currently_hosting');

@@ -489,15 +489,7 @@ public class PhantomBot implements Listener {
 		this.init();
 
 		/** Start a channel instance to create a session, and then connect to WS-IRC @ Twitch. */
-		if (this.channelName.contains(",")) {
-			String[] create = this.channelName.split(",");
-
-			for (String join : create) {
-				this.channel = Channel.instance(join, this.botName, this.oauth, EventBus.instance());
-			}
-		} else {
-			this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
-		}
+		this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
 
 		/** Check if the OS is Linux. */
 		if (SystemUtils.IS_OS_LINUX && !interactive) {
@@ -710,6 +702,8 @@ public class PhantomBot implements Listener {
     	    /** Set up a new http server */
     	    NEWHTTPServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
     	}
+
+    	print("New HTTP server accepting connection on port: " + (basePort + 5));
 
     	/** Enable gamewhisp if the oAuth is set */
     	if (!gameWispOAuth.isEmpty()) {
@@ -2387,7 +2381,7 @@ public class PhantomBot implements Listener {
         if (reloadScripts) {
         	data += "reloadscripts\r\n";
         }
-     data += "user=" + botName + "\r\n";
+        data += "user=" + botName + "\r\n";
         data += "oauth=" + oauth + "\r\n";
         data += "apioauth=" + apiOAuth + "\r\n";
         data += "paneluser=" + panelUsername + "\r\n";
