@@ -547,8 +547,8 @@
                         return;
                     }
                     if (actionArg1.equalsIgnoreCase('delete')) {
-                        $.inidb.del('pointSettings', 'pointNameSingle');
-                        $.inidb.del('pointSettings', 'pointNameMultiple');
+                        $.inidb.set('pointSettings', 'pointNameSingle', 'point');
+                        $.inidb.set('pointSettings', 'pointNameMultiple', 'points');
                         pointNameSingle = "point";
                         pointNameMultiple = "points";
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.delete'));
