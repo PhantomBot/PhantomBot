@@ -194,6 +194,7 @@ public class PhantomBot implements Listener {
 	private static PhantomBot instance;
 	public static Boolean reloadScripts = false;
 	public static Boolean enableDebugging = false;
+        public static Boolean enableRhinoDebugger = false;
 	public Boolean isExiting = false;
 	private Boolean interactive;
 	private Boolean resetLogin = false;
@@ -1836,6 +1837,10 @@ public class PhantomBot implements Listener {
                         com.gmt2001.Console.out.println("Debug Mode Enabled via botlogin.txt");
                         PhantomBot.enableDebugging = true;
                     }
+                    if (line.startsWith("rhinodebugger")) {
+                        com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
+                        PhantomBot.enableRhinoDebugger = true;
+                    }
                     if (line.startsWith("user=") && line.length() > 8) {
                         botName = line.substring(5);
                     }
@@ -2323,6 +2328,10 @@ public class PhantomBot implements Listener {
         	if (reloadScripts) {
         		data += "reloadscripts\r\n";
         	}
+                if (enableRhinoDebugger) {
+                    data += "rhinodebugger\r\n";
+                }
+                   
         	data += "user=" + botName + "\r\n";
             data += "oauth=" + oauth + "\r\n";
             data += "apioauth=" + apiOAuth + "\r\n";
@@ -2380,6 +2389,9 @@ public class PhantomBot implements Listener {
         String data = "";
         if (reloadScripts) {
         	data += "reloadscripts\r\n";
+        }
+        if (enableRhinoDebugger) {
+            data += "rhinodebugger\r\n";
         }
         data += "user=" + botName + "\r\n";
         data += "oauth=" + oauth + "\r\n";
