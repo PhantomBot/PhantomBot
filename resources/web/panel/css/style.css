@@ -770,6 +770,62 @@ input, textarea {
    background-color: #814cb6;
 }
 
+input[type=range] {
+    -webkit-appearance: none;
+    width: 40%;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 300px;
+    height: 10px;
+    background: #3f3f3f;
+    border-radius: 10px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 60%;
+    background: #814cb6;
+    margin-top: -4px;
+}
+
+input[type=range]:focus {
+    outline: transparent;
+}
+
+/* Firefox */
+input[type=range] {
+    /*required for proper track sizing in FF*/
+    width: 300px;
+}
+
+input[type=range]::-moz-range-track {
+    width: 300px;
+    height: 5px;
+    background: #3f3f3f;
+    border: none;
+    border-radius: 3px;
+}
+
+input[type=range]::-moz-range-thumb {
+    border: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 60%;
+    background: #814cb6;
+}
+
+/*hide the outline behind the border*/
+input[type=range]:-moz-focusring{
+    outline: transparent;
+}
+
+input[type=range]:focus::-moz-range-track {
+    background: #3f3f3f;
+}
+
 /* Overrides for FooTable */
 
 .footable .pagination > li > a,
