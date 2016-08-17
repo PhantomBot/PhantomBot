@@ -63,9 +63,9 @@
                     } else if (panelMatch(key, 'offlineGain')) {
                         $("#setPointGainInput_setofflinegain").attr("placeholder", value).blur();
                     } else if (panelMatch(key, 'onlinePayoutInterval')) {
-                        $("#setPointGainInput_setinterval").attr("placeholder", value).blur();
+                        $("#setOnlineInterval").html(value);
                     } else if (panelMatch(key, 'offlinePayoutInterval')) {
-                        $("#setPointGainInput_setofflineinterval").attr("placeholder", value).blur();
+                        $("#setOfflineInterval").html(value);
                     } else if (panelMatch(key, 'pointNameSingle')) {
                         $("#setPointNameInput").attr("placeholder", value).blur();
                     } else if (panelMatch(key, 'pointNameMultiple')) {
@@ -298,7 +298,6 @@
      */
     function setPointGain(action) {
         var value = $("#setPointGainInput_" + action).val();
-
         if (action == "setgain") {
             if (action.length != 0) {
                 sendDBUpdate("points_settings", "pointSettings", "onlineGain", value);
@@ -310,22 +309,34 @@
                 sendDBUpdate("points_settings", "pointSettings", "offlineGain", value);
             }
         }
-
-        if (action == "setinterval") {
+        setTimeout(function() { doLiteQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
+    }
+    /**
+     * @function setInterval
+     * @param {String} action
+     */
+    function setInterval(action) {
+        console.log(action);
+        
+        if (action == "offline") {
             if (action.length != 0) {
-                sendDBUpdate("points_settings", "pointSettings", "onlinePayoutInterval", value);
+                var val = $('#setOfflineIntervalInput').val();
+                console.log(val)
+                sendDBUpdate("points_settings", "pointSettings", "offlinePayoutInterval", val);
             }
         }
 
-        if (action == "setofflineinterval") {
+        if (action == "online") {
             if (action.length != 0) {
-                sendDBUpdate("points_settings", "pointSettings", "offlinePayoutInterval", value);
+                var val = $('#setOnlineIntervalInput').val();
+                console.log(val)
+                sendDBUpdate("points_settings", "pointSettings", "onlinePayoutInterval", val);
             }
         }
         setTimeout(function() { doLiteQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
     }
- 
     /**
      * @function modifyUserPoints
      * @param {String} action
@@ -463,4 +474,5 @@
     $.penaltyUser = penaltyUser;
     $.topListPoints = topListPoints;
     $.toggleModPriceCom = toggleModPriceCom;
+    $.setInterval = setInterval;
 })();

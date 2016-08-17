@@ -14,7 +14,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  @author IllusionaryOne
 -->
 
@@ -60,7 +60,7 @@
             <span id="userPtsTableTitle">User Time Table</span>
         </div>
         <br>
-        <div id="userPointsTable" style="height: 510px; overflow: auto;" />
+        <div id="userPointsTable" style="height: 300px; overflow: auto;" />
     </div>
 </div>
 
@@ -91,7 +91,25 @@
             <input type="text" data-toggle="tooltip" title="Name given to zero and two or more points." class="form-control"
                    id="setPointsNameInput" placeholder="Plural Point Name" />
         </div>
+        <br>
 
+        <form role="form">
+            <div>
+                <label for="setOnlineInterval">Online Interval (mins)</label>
+                <input style="display:inline;" type="range" id="setOnlineIntervalInput" min="0" max="180" value="setOnlineInterval" step="1"  oninput="val(this.value, 'setOnlineInterval')" 
+                       onchange="$.setInterval('online')" data-toggle="tooltip" title="Payout interval for when the stream is online." />
+                <span style="display:inline;" id="setOnlineInterval">0</span>
+
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+
+                <label for="setOfflineInterval">Offline Interval (mins)</label>
+                <input style="display:inline;" type="range" id="setOfflineIntervalInput" min="0" max="180" value="setOfflineInterval" step="1" oninput="val(this.value, 'setOfflineInterval')" 
+                       onchange="$.setInterval('offline')" data-toggle="tooltip" title="Payout interval for when the stream is offline."/>
+                <span style="display:inline;" id="setOfflineInterval">0</span>
+            </div>
+        </form>
+
+        <br>
         <div class="form-group" onkeypress="return event.keyCode != 13">
             <label for="setPointName">Set Online Points Gain</label>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setgain')">Update</button>
@@ -102,18 +120,6 @@
             <label for="setPointName">Set Offline Points Gain</label>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflinegain')">Update</button>
             <input type="number" min="0" class="form-control" id="setPointGainInput_setofflinegain" placeholder="Points" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Online Points Payout Interval (Minutes)</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setinterval')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setinterval" placeholder="Points" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Offline Points Payout Interval (Minutes)</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflineinterval')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflineinterval" placeholder="Points" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
@@ -143,4 +149,5 @@
 <!-- Run the Acordion -->
 <script>$("#pointsAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
 <script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
+<script type="text/javascript">function val(newValue, id) { document.getElementById(id).innerHTML = newValue; }</script>
 <script>handleInputFocus();</script>
