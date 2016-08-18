@@ -16,6 +16,8 @@ $.lang.register('gamemessages.win.15', 'Winning is great, sure, but if you are r
 $.lang.register('gamemessages.win.16', 'A winner is just a loser who tried one more time.');
 $.lang.register('gamemessages.win.17', 'Sugoi~!');
 $.lang.register('gamemessages.win.18', 'This thing must of been rigged!');
+$.lang.register('gamemessages.win.19', 'The Goddess Fortuna smiles upon you.');
+$.lang.register('gamemessages.win.20', '?!......... (Seriously?!)');
 
 $.lang.register('gamemessages.lost.1', 'Better luck next time!');
 $.lang.register('gamemessages.lost.2', 'Gambling can be hard, but don\'t stray.');
@@ -36,7 +38,7 @@ $.lang.register('gamemessages.lost.16', 'To win you must gain sight beyond sight
 $.lang.register('gamemessages.lost.17', 'You\'re great at losing! Don\'t let anyone tell you otherwise.');
 $.lang.register('gamemessages.lost.18', 'So tell me, what\'s it like living in a constant haze of losses?');
 $.lang.register('gamemessages.lost.19', 'Did you know that games of chance is the same way how Quantum Mechanics work?');
-$.lang.register('gamemessages.lost.20', 'LOSER');
+$.lang.register('gamemessages.lost.20', 'L-O-S-E-R...');
 $.lang.register('gamemessages.lost.21', 'Dreams shattered :(');
 $.lang.register('gamemessages.lost.22', 'Looks like you\'ve activated my trap card Kappa');
 $.lang.register('gamemessages.lost.23', 'You\’re not obligated to win. You’re obligated to keep trying.');
@@ -49,4 +51,35 @@ $.lang.register('gamemessages.lost.29', 'You should go set the world record for 
 $.lang.register('gamemessages.lost.30', 'Shut down!');
 $.lang.register('gamemessages.lost.31', 'You don\'t deserve to play this game. Go back to playing with crayons.');
 $.lang.register('gamemessages.lost.32', 'Too bad. Game over. Insert new quarter.');
+$.lang.register('gamemessages.lost.33', 'The Goddess Fortuna frowns upon you.');
+$.lang.register('gamemessages.lost.34', 'In my ideal nation, there would exist no one as weak as you!');
+$.lang.register('gamemessages.lost.35', 'What a joke!');
+$.lang.register('gamemessages.lost.36', 'Learn from your defeat, child.');
+$.lang.register('gamemessages.lost.37', 'You do not have enough experience! Are you listening to me?!');
+$.lang.register('gamemessages.lost.38', 'Hope you\'re listening. Level up homie!');
+$.lang.register('gamemessages.lost.39', 'Your technique need work.');
+$.lang.register('gamemessages.lost.40', 'Hey, did you hurt yourself?');
+$.lang.register('gamemessages.lost.41', 'That\'s your best?');
+$.lang.register('gamemessages.lost.42', 'Hah ha ha ha ha ha ha!');
+$.lang.register('gamemessages.lost.43', 'Don\'t make excuses for your loss! Go train and try again!');
+$.lang.register('gamemessages.lost.44', 'Hey, you\'re not that bad. You\'re not very good, either.');
+$.lang.register('gamemessages.lost.45', 'I\'ve had meetings that were more grueling than this.');
+$.lang.register('gamemessages.lost.46', 'Even by the lowest standards, that was really bad.');
+$.lang.register('gamemessages.lost.47', 'Ha-ha-ha! What\'s the matter? You don\'t like losing? Well, that\'s not my problem. Ha, ha, ha, ha, ha!');
+$.lang.register('gamemessages.lost.48', 'ncient words of wisdom... \"you suck\"');
+$.lang.register('gamemessages.lost.49', 'I won\'t say you\'re bad. I\'ll just think it, OK?');
+$.lang.register('gamemessages.lost.50', 'I think I\'ve learned something from this. You\'re nothing...');
+$.lang.register('gamemessages.lost.51', 'Hey! Don\'t worry about it! You know... being bad and all!');
+$.lang.register('gamemessages.lost.52', 'The tragedy of all losers is that they think they were on the verge of victory.');
+$.lang.register('gamemessages.lost.53', 'Hm! You should go back to playing puzzle games!');
+$.lang.register('gamemessages.lost.54', 'The past is the past man. If you are a loser now, then you’re a loser period.');
+$.lang.register('gamemessages.lost.55', 'The reason you lost is quite simple: you\'re bad!');
+$.lang.register('gamemessages.lost.56', 'Remember that one time during the game when it looked like you might actually win? No? Me neither.');
+$.lang.register('gamemessages.lost.57', 'Is that all you can do? You wouldn\'t have gone very far with that anyway.');
+$.lang.register('gamemessages.lost.58', 'Don\'t blame bad luck or fate. You lost because you suck.');
+$.lang.register('gamemessages.lost.59', 'You weren\'t that bad. You were pathetic! Go home!');
+$.lang.register('gamemessages.lost.60', 'You made an effort at least, pathetic as it was!');
+$.lang.register('gamemessages.lost.61', 'My dad could win, and he\'s dead!');
+$.lang.register('gamemessages.lost.62', 'You with the keyboard! I won DESPITE you. You suck. And smell -- REALLY smell.');
+
 $.lang.register('gamemessages.console.loaded', 'Found general game messages: $1 wins, $2 losts.');
