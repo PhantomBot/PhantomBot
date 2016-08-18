@@ -1091,6 +1091,18 @@ public class PhantomBot implements Listener {
     		return;
     	}*/
 
+        /** Update the followed (followers) table. */
+        if (message.equalsIgnoreCase("fixfollowedtable")) {
+        	TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, false);
+        	return;
+	}
+
+        /** Update the followed (followers) table - forced. */
+        if (message.equalsIgnoreCase("fixfollowedtable-force")) {
+        	TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, true);
+        	return;
+	}
+
     	/** tests a follow event */
     	if (message.equalsIgnoreCase("followertest")) {
     		String randomUser = generateRandomString(10);
