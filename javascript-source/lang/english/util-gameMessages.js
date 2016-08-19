@@ -66,7 +66,7 @@ $.lang.register('gamemessages.lost.44', 'Hey, you\'re not that bad. You\'re not 
 $.lang.register('gamemessages.lost.45', 'I\'ve had meetings that were more grueling than this.');
 $.lang.register('gamemessages.lost.46', 'Even by the lowest standards, that was really bad.');
 $.lang.register('gamemessages.lost.47', 'Ha-ha-ha! What\'s the matter? You don\'t like losing? Well, that\'s not my problem. Ha, ha, ha, ha, ha!');
-$.lang.register('gamemessages.lost.48', 'ncient words of wisdom... \"you suck\"');
+$.lang.register('gamemessages.lost.48', 'Ancient words of wisdom... \"you suck\"');
 $.lang.register('gamemessages.lost.49', 'I won\'t say you\'re bad. I\'ll just think it, OK?');
 $.lang.register('gamemessages.lost.50', 'I think I\'ve learned something from this. You\'re nothing...');
 $.lang.register('gamemessages.lost.51', 'Hey! Don\'t worry about it! You know... being bad and all!');
