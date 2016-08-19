@@ -181,7 +181,7 @@
 
         if (message.match(/\(gamesplayed\)/g)) {
             if (!$.isOnline($.channelName)) {
-                $.say($.userPrefix(sender, true) + 'Channel ' + $.channelName + ' is offline.');
+                $.say($.userPrefix(event.getSender(), true) + 'Channel ' + $.channelName + ' is offline.');
                 return '';
             }
             message = $.replace(message, '(gamesplayed)', $.getGamesPlayed());
