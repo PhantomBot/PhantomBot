@@ -31,14 +31,7 @@
         pointsData = [],
         chatData = [],
         timeoutData = [],
-        followedData = [],
-        countAdmin = 0,
-        countMod = 0,
-        countSub = 0,
-        countReg = 0,
-        countDonator = 0,
-        countViewer = 0,
-        viewersInDB = false;
+        followedData = [];
 
     var viewerData = {}; // [ user: { group, time, points, lastseen, timeout, followed } ]
 
@@ -120,12 +113,6 @@
                     if (panelCheckQuery(msgObject, 'viewers_groups')) {
                         groupData[key] = value;
                         if (value.indexOf("0") == 0) groupData[key] = "1";
-                        if (value.indexOf("0") == 0 || value.indexOf("1") == 0) countAdmin++;
-                        if (value.indexOf("2") == 0) countMod++;
-                        if (value.indexOf("3") == 0) countSub++;
-                        if (value.indexOf("4") == 0) countDonator++;
-                        if (value.indexOf("6") == 0) countReg++;
-                        if (value.indexOf("7") == 0) countViewer++; // Not written to the bot all the time.
                     }
                     if (panelCheckQuery(msgObject, 'viewers_time')) {
                         timeData[key] = value;
@@ -148,7 +135,6 @@
                 }
             }
 
-            viewersInDB = (countViewer > 0);
             loadedGroups = (loadedGroups ? true : panelCheckQuery(msgObject, 'viewers_groups'));
             loadedTime = (loadedTime ? true : panelCheckQuery(msgObject, 'viewers_time'));
             loadedPoints = (loadedPoints ? true : panelCheckQuery(msgObject, 'viewers_points'));
@@ -165,7 +151,6 @@
                     user = usernameData[idx];
 
                     if (groupData[user] == undefined) {
-                        if (!viewersInDB) countViewer++;
                         groupData[user] = "7";
                     }
                     if (!panelIsDefined(pointsData[user])) pointsData[user] = "0";
@@ -245,27 +230,21 @@
 
                 $("#viewersAdminList").html(htmlData["1"]);
                 $('.table_1').footable();
-                $("#viewersAdminCount").html("(Count: " + countAdmin + ")");
 
                 $("#viewersModList").html(htmlData["2"]);
                 $('.table_2').footable();
-                $("#viewersModCount").html("(Count: " + countMod + ")");
 
                 $("#viewersSubList").html(htmlData["3"]);
                 $('.table_3').footable();
-                $("#viewersSubCount").html("(Count: " + countSub + ")");
 
                 $("#viewersDonatorList").html(htmlData["4"]);
                 $('.table_4').footable();
-                $("#viewersDonatorCount").html("(Count: " + countDonator + ")");
 
                 $("#viewersRegList").html(htmlData["6"]);
                 $('.table_6').footable();
-                $("#viewersRegCount").html("(Count: " + countReg + ")");
 
                 $("#viewersViewerList").html(htmlData["7"]);
                 $('.table_7').footable();
-                $("#viewersViewerCount").html("(Count: " + countViewer + ")");
 
                 // Reset everything back now that the data displayed //
                 loadedGroups = false;
@@ -283,13 +262,6 @@
                 chatData = [];
                 timeoutData = [];
                 followedData = [];
-                countAdmin = 0;
-                countMod = 0;
-                countSub = 0;
-                countReg = 0;
-                countDonator = 0;
-                countViewer = 0;
-                viewersInDB = false;
             }
         }
     } 
@@ -308,6 +280,13 @@
             sendDBKeys("viewers_timeout", "panelmoduserstats");
             sendDBKeys("viewers_chat", "panelchatuserstats");
         }
+
+        $("#viewersAdminList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersModList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersSubList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersDonatorList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersRegList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersViewerList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
     }
 
     /**
