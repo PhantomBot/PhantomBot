@@ -199,7 +199,7 @@ $.lang.register('randomcommand.198', 'Cut people off while walking, and then fal
 $.lang.register('randomcommand.199', 'Go up to a stranger and talk into your watch - \"Suspect 342 found\" then run away.');
 $.lang.register('randomcommand.200', 'Get clear legos then spread them all over the floor, watch the results from afar.');
 $.lang.register('randomcommand.201', 'Take 4 pigs paint the numbers 1,2,3, and 5 release them in a store and sit back and watch security look for pig 4.');
-$.lang.register('randomcommand.202', 'Go to Mayan Brooke Hewitt.');
+$.lang.register('randomcommand.202', 'Dance in traffic.');
 $.lang.register('randomcommand.203', 'Tickle your belly/tummy.');
 $.lang.register('randomcommand.204', 'Try doing the moonwalk even though you can\'t.');
 $.lang.register('randomcommand.205', 'Turn on the TV with your friend and talk to the guy on the screen.');
@@ -230,12 +230,12 @@ $.lang.register('randomcommand.229', 'Hide in a box and leave it a little bit OP
 $.lang.register('randomcommand.230', 'Make up a new word.');
 $.lang.register('randomcommand.231', 'At a sleepover, duct tape people together.');
 $.lang.register('randomcommand.232', 'Go into a rear by woods and pick out a big stick and be a wizard.');
-$.lang.register('randomcommand.233', 'Go to Walmart and run around like a airplane, then pretend to run out of petrol and slowly fall over.');
+$.lang.register('randomcommand.233', 'Go to Walmart and run around like an airplane, then pretend to run out of petrol and slowly fall over.');
 $.lang.register('randomcommand.234', 'Spend hours on this channel until you find something to do.');
 $.lang.register('randomcommand.235', 'Play baseball with a balloon.');
 $.lang.register('randomcommand.236', 'Try going a whole day not talking instead bark or meow.');
 $.lang.register('randomcommand.237', 'Get Pokémon Go and do that lol I don\'t have that tho!');
-$.lang.register('randomcommand.238', 'Look a a wall and have a full fledged conversation with it then runaway crying.');
+$.lang.register('randomcommand.238', 'Look a wall and have a full fledged conversation with it then runaway crying.');
 $.lang.register('randomcommand.239', 'Shoot a dart at the target sign at target.');
 $.lang.register('randomcommand.240', 'Give out hugs and toys to kids at hospitals 😊.');
 $.lang.register('randomcommand.241', 'Try to use the word \'meow\' in a conversation as many times as possible without anyone noticing! its really fun!');
