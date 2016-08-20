@@ -49,7 +49,7 @@
         /**
          * @commandpath setgame [game name] - Set Twitch game title
          */
-        if (command.equalsIgnoreCase('setgame')) {
+        if (command.equalsIgnoreCase('setgame') || command.equalsIgnoreCase('editgame')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
                 return;
@@ -69,7 +69,7 @@
         /**
          * @commandpath settitle [stream title] - Set Twitch stream title
          */
-        if (command.equalsIgnoreCase('settitle')) {
+        if (command.equalsIgnoreCase('settitle') || command.equalsIgnoreCase('edittitle')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
                 return;
@@ -141,6 +141,8 @@
         if ($.bot.isModuleEnabled('./commands/streamCommand.js')) {
             $.registerChatCommand('./commands/streamCommand.js', 'setgame', 1);
             $.registerChatCommand('./commands/streamCommand.js', 'settitle', 1);
+            $.registerChatCommand('./commands/streamCommand.js', 'editgame', 1);
+            $.registerChatCommand('./commands/streamCommand.js', 'edittitle', 1);
             $.registerChatCommand('./commands/streamCommand.js', 'vod', 7);
             $.registerChatCommand('./commands/streamCommand.js', 'createdat', 2);
         }
