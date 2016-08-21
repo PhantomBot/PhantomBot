@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.mozilla.javascript.*;
+import org.mozilla.javascript.tools.debugger.Main;
 import me.mast3rplan.phantombot.PhantomBot;
 
 public class Script {
@@ -119,14 +120,35 @@ public class Script {
         };
         RhinoException.setStackStyle(StackStyle.MOZILLA);
 
+        /* Create Debugger Instance - this opens for only init.js */
+        Main debugger = null;
+        if (PhantomBot.enableRhinoDebugger) {
+            if (file.getName().endsWith("init.js")) {
+                debugger = new Main(file.getName());
+                debugger.attachTo(ctxFactory);
+            }
+        }
+
         context = ctxFactory.enterContext();
-        context.setOptimizationLevel(9);
+        if (!PhantomBot.enableRhinoDebugger) {
+            context.setOptimizationLevel(9);
+        }
 
         ScriptableObject scope = context.initStandardObjects(global, false);
         scope.defineProperty("$", global, 0);
         scope.defineProperty("$api", ScriptApi.instance(), 0);
         scope.defineProperty("$script", this, 0);
         scope.defineProperty("$var", vars, 0);
+
+        /* Configure debugger. */
+        if (PhantomBot.enableRhinoDebugger) {
+            if (file.getName().endsWith("init.js")) {
+                debugger.setBreakOnEnter(false);
+                debugger.setScope(scope);
+                debugger.setSize(640, 480);
+                debugger.setVisible(true);
+            }
+        }
 
         try {
             context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);

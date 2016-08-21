@@ -1,6 +1,6 @@
-$.lang.register('autohost.command.usage', 'autohost [start|force|stop|delay|hosttime|skip|add|del|list]');
-$.lang.register('autohost.force', 'Autohost Enabled in Force Mode (BETA)');
-$.lang.register('autohost.on', 'Autohost Enabled (BETA)');
+$.lang.register('autohost.command.usage', 'autohost [start / force / stop / delay / hosttime / skip / add / del / list]');
+$.lang.register('autohost.force', 'Autohost Enabled in Force Mode');
+$.lang.register('autohost.on', 'Autohost Enabled');
 $.lang.register('autohost.off', 'Autohost Disabled');
 $.lang.register('autohost.delay.usage', 'autohost delay [minutes] (Currently: $1)');
 $.lang.register('autohost.delay.success', 'Set autohost delay to $1 minutes');

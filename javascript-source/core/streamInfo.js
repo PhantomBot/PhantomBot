@@ -9,6 +9,7 @@
     $.bind('twitchOnline', function(event) {
         if (($.systemTime() - $.inidb.get('panelstats', 'playTimeStart')) >= (480 * 6e4)) {
             var hrs = Math.floor(getStreamUptimeSeconds($.channelName) / 3600), min = Math.floor((getStreamUptimeSeconds($.channelName) % 3600) / 60);
+            count = 1;
             $.inidb.del('streamInfo', 'gamesPlayed');
             $.inidb.set('panelstats', 'playTimeStart', $.systemTime());
             $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + hrs + ':' + min + '='));
@@ -20,6 +21,7 @@
     */
     $.bind('twitchOffline', function(event) {
         if (($.systemTime() - $.inidb.get('panelstats', 'playTimeStart')) >= (480 * 6e4)) {
+            count = 1;
             $.inidb.set('panelstats', 'playTimeStart', 0);
             $.inidb.del('streamInfo', 'gamesPlayed');
         }
@@ -66,6 +68,7 @@
     function getPlayTime() {
         var playTime = parseInt($.inidb.get('panelstats', 'playTimeStart')),
             time;
+
         if (playTime) {
             time = ($.systemTime() - playTime);
             return $.getTimeStringMinutes(time / 1000);
