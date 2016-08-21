@@ -58,6 +58,62 @@
         </div>
     </div>
 
+    <h3>Auto Hosting (beta)</h3>
+    <div>
+    <div id="_autoHostPanelDisabled" />
+    <div id="_autoHostPanel">
+        <i>Hey! This system is still in beta, so it might not work as you want to. If you find any issues please report them on our forum! If something breaks please disable the module to avoid the host command spam. Thanks.</i>
+        <br>
+        <br>
+            <table>
+            <tr class="textList">
+                <td>Auto Hosting Toggle</td>
+                <td style="width: 25px"><div id="autoHostToggle" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button"
+                         onclick="$.setAutoHostSetting('enable');"><i class="fa fa-circle" />
+                     </div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button"
+                         onclick="$.setAutoHostSetting('disable');"><i class="fa fa-circle-o" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="autoHostDelay">Delay (Minutes)</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setAutoHostSetting('delay', 'autoHostDelay')">Submit</button>
+                <input type="text" class="form-control" id="autoHostDelay" placeholder="Minutes" data-toggle="tooltip" title="Time to wait after stream is detected as offline."/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="autoHostTime">Time (Minutes)</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setAutoHostSetting('time', 'autoHostTime')">Submit</button>
+                <input type="number" class="form-control" id="autoHostTime" placeholder="Minutes" data-toggle="tooltip" title="Minutes to host a channel, 0 is till the channel goes offline."/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="autoHostListAdd">Add User</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setAutoHostSetting('add', 'autoHostListAdd')">Add</button>
+                <input type="text" class="form-control" id="autoHostListAdd" placeholder="Username" data-toggle="tooltip" title="Add a user in the auto host list."/>
+            </div>
+        </form>
+
+        <div id="autoHostList" style="height: 150px; overflow: auto;" />
+    </div>
+    </div>
+
     <h3>Hosts</h3>
     <div>
     <div id="_hostAlertsPanelDisabled" />

@@ -108,15 +108,16 @@
                     for (idx in msgObject['results']) {
                         modSetting = msgObject['results'][idx]['key'];
                         modValue = msgObject['results'][idx]['value'];
-    
+
                         html += "<tr class=\"textList\">" +
-                                "    <td style=\"width: 15px\" padding=\"5px\">" +
-                                "        <div id=\"delete_blackList_" + modSetting + "\" class=\"button\" " +
-                                "             onclick=\"$.deleteBlacklist('" + modSetting + "')\"><i class=\"fa fa-trash\" />" +
-                                "        </div>" +
-                                "    </td>" +
-                                "    <td>" + modValue + "</td>" +
-                                "</tr>";
+                            "    <td style=\"width: 3%\">" +
+                            "        <div id=\"delete_blackList_" + modSetting.replace(/![a-zA-Z1-9]/g, '__') + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
+                            "             onclick=\"$.deleteBlacklist('" + modSetting + "')\"><i class=\"fa fa-trash\" />" +
+                            "        </div>" +
+                            "    </td>" +
+                            "    <td>" + modValue + "</td>" +
+                            "</tr>";
+                    
                     }
                     html += "</table>";
                 } else {
@@ -508,7 +509,7 @@
     function addModBlacklist() {
         var value = $("#addModBlacklistInput").val();
         if (value.length > 0) {
-            sendDBUpdate("moderation_addBlacklist", "blackList", "phrase_" + value, value);
+            sendDBUpdate("moderation_addBlacklist", "blackList", "phrase_" + value.toLowerCase(), value.toLowerCase());
             $("#addModBlacklistInput").val("Submitted");
             setTimeout(function() { $("#addModBlacklistInput").val(""); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -535,7 +536,10 @@
      * @param {String} key
      */
     function deleteBlacklist(key) {
-        $("#delete_blackList_" + key).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        /* this was giving errors if it contained a symbol other then _ */
+        var newkey = key.replace(/:/g, '__').replace(/;/g, '__').replace('\'', '__').replace('"', '__').replace(/\[/g, '__').replace(/\\/g, '__').replace(/\//g, '__').replace(/\]/g, '__').replace('*', '__').replace('.', '__');
+        $("#delete_blackList_" + newkey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+
         sendDBDelete("commands_delblacklist_" + key, "blackList", key);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);

@@ -346,15 +346,15 @@
             }
 
             if (action.equalsIgnoreCase('rejoin') || action.equalsIgnoreCase('reconnect')) {
-                $.say($.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
+                $.say($.whisperPrefix(sender) + $.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' requested a reconnect!');
                 setTimeout(function () { $.session.close(); }, 100);
-                setTimeout(function () { $.say($.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully rejoined!')) }, 1000);
+                setTimeout(function () { $.say($.whisperPrefix(sender) + $.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully rejoined!')) }, 1000);
                 return;
             }
 
             if (action.equalsIgnoreCase('disconnect') || action.equalsIgnoreCase('remove')) {
-                $.say($.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
+                $.say($.whisperPrefix(sender) + $.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' removed the bot from chat!');
                 setTimeout(function () { java.lang.System.exit(0); }, 100);
                 return;
@@ -797,15 +797,16 @@
                 command = event.getCommand().toLowerCase(),
                 args = event.getArgs(),
                 subCommand = (args[0] ? args[0] : ''),
+                subCommandAction = (args[1] ? args[1] : ''),
+                commandCost = 0,
                 permComCheck = $.permCom(sender, command, subCommand),
                 isModv3 = $.isModv3(sender, event.getTags());
 
-            if (!isModv3 && $.commandPause.isPaused() || !$.commandExists(command)) {
-                consoleDebug($.lang.get('commandpause.isactive'));
+            if ($.inidb.exists('botBlackList', sender) || $.commandPause.isPaused() || !$.commandExists(command)) {
                 return;
             }
 
-            if ($.inidb.exists('aliases', command)) {
+            if ($.aliasExists(command) !== undefined) {
                 var ScriptEventManager = Packages.me.mast3rplan.phantombot.script.ScriptEventManager,
                     CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
                     alias = $.getIniDbString('aliases', command),
@@ -839,11 +840,6 @@
                 return;
             }
 
-            if ($.inidb.exists('disabledCommands', command) || $.inidb.exists('botBlackList', sender)) {
-                consoleLn('[COMMAND NOT SENT] Command: !' + command + ' was not sent because its disabled or because the user is blacklisted.');
-                return;
-            }
-
             if ($.coolDown.get(command, sender, isModv3) > 0) {
                 if ($.getIniDbBoolean('settings', 'coolDownMsgEnabled', false)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
@@ -853,7 +849,7 @@
                 return;
             }
 
-            if (!$.isAdmin(sender) && permComCheck != 0) {
+            if (permComCheck !== 0) {
                 var permMsg;
                 if (permComCheck == 1) {
                     permMsg = $.getCommandGroupName(command);
@@ -870,23 +866,26 @@
                 return;
             }
 
-            if ($.inidb.exists('pricecom', command) && (((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
-                if (isModuleEnabled('./systems/pointSystem.js')) {
-                    if ($.getUserPoints(sender) < $.getCommandPrice(command)) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.inidb.get('pricecom', command))));
-                        return;
+            if (($.inidb.exists('pricecom', command) || $.inidb.exists('pricecom', command + ' ' + subCommand) || $.inidb.exists('pricecom', (command + ' ' + subCommand + ' ' + subCommandAction)))) {
+                if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
+                    if (isModuleEnabled('./systems/pointSystem.js')) {
+                        commandCost = $.getCommandPrice(command, subCommand, subCommandAction);
+                        if ($.getUserPoints(sender) < commandCost) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
+                            return;
+                        }
                     }
                 }
             }
-        
+
             callHook('command', event, false);
 
             if (isModuleEnabled('./systems/pointSystem.js')) {
                 if (parseInt($.inidb.get('paycom', command)) > 0) {
                     $.inidb.incr('points', sender, $.inidb.get('paycom', command));
                 }
-                if ($.inidb.exists('pricecom', command) && parseInt($.inidb.get('pricecom', command)) > 0) {
-                    $.inidb.decr('points', sender, $.inidb.get('pricecom', command));
+                if (commandCost > 0) {
+                    $.inidb.decr('points', sender, commandCost);
                 }
             }
             handleInitCommands(event);
@@ -1274,7 +1273,7 @@
         // emit initReady event
         callHook('initReady', null, true);
 
-        if ($.isNightly.equals('true')) {
+        if ($.isNightly) {
             consoleLn('PhantomBot Nightly Build - No Support is Provided');
             consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
             consoleLn('https://community.phantombot.tv/category/23/bug-reports');

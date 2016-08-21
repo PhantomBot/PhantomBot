@@ -83,6 +83,10 @@
             return;
         }
 
+        if ($.twitchcache.getGameTitle() == '') {
+            return;
+        }
+
         if ($.getIniDbBoolean('twitter', 'post_gamechange', false) && $.isOnline($.channelName)) {
             if (now > $.getIniDbNumber('twitter', 'last_gamechange', 0) + gameChangeDelay) {
                 $.inidb.set('twitter', 'last_gamechange', now + gameChangeDelay);

@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package me.mast3rplan.phantombot;
 
 import com.gmt2001.DataStore;
@@ -34,6 +35,7 @@ import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
+import com.illusionaryone.NoticeTimer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -107,1256 +109,1423 @@ import me.mast3rplan.phantombot.twitchwsirc.Session;
 import java.net.URI;
 
 public class PhantomBot implements Listener {
-    private String mysql_db_conn;
-    private String mysql_db_host;
-    private String mysql_db_port;
-    private String mysql_db_name;
-    private String mysql_db_user;
-    private String mysql_db_pass;
-    private String twitchalertskey = null;
-    private int twitchalertslimit;
-    private String streamtipkey = null;
-    private int streamtiplimit;
-    private String streamtipid;
-    private static boolean newSetup = false;
-    public final String username;
-    private String panelpassword;
-    private String paneluser;
-    private final String webauth;
-    private final String webauthro;
-    private final String ytauth;
-    private final String ytauthro;
-    private String gamewispauth;
-    private String gamewisprefresh;
-    private final String oauth;
-    private String twitterUser;
-    private String twitter_access_token;
-    private String twitter_secret_token;
-    private String twitter_consumer_secret;
-    private String twitter_consumer_key;
-    private String apioauth;
-    private String clientid;
-    private final String channelName;
-    private final String ownerName;
-    private int baseport;
-    private double msglimit30;
-    private double whisperlimit60;
-    private String datastore;
-    private String datastoreconfig;
-    private String youtubekey;
-    private boolean webenable;
-    private boolean musicenable;
-    private boolean usehttps;
-    private boolean twitterAuthenticated;
-    private String keystorepath;
-    private String keystorepassword;
-    private String keypassword;
-    private String channelStatus;
-    private DataStore dataStoreObj;
-    private SecureRandom rng;
-    private TreeMap<String, Integer> pollResults;
-    private TreeSet<String> voters;
-    private Session session;
-    private Channel channel;
-    private final HashMap<String, Channel> channels;
-    private FollowersCache followersCache;
-    private ChannelHostCache hostCache;
-    private SubscribersCache subscribersCache;
-    private ChannelUsersCache channelUsersCache;
-    private DonationsCache donationsCache;
-    private StreamTipCache streamTipCache;
-    private EmotesCache emotesCache;
-    private TwitterCache twitterCache;
-    private TwitchCache twitchCache;
-    private YTWebSocketServer  ytsocketserver;
-    private HTTPServer httpserver;
-    private NEWHTTPServer NEWhttpserver;
-    private NEWHTTPSServer NEWhttpsServer;
-    private EventWebSocketServer eventsocketserver;
-    private PanelSocketServer panelsocketserver;
-    private static final boolean debugD = false;
-    public static boolean enableDebugging = false;
-    public static boolean interactive;
-    public static boolean webenabled = false;
-    public static boolean musicenabled = false;
-    public static boolean reloadScripts = false;
-    public static boolean resetLoging = false;
-    public static boolean wsIRCAlternateBurst = false;
-    public static String twitchCacheReady = "false";
-    private boolean exiting = false;
-    private static PhantomBot instance;
-    public static String log_timezone = "GMT";
-    private UsernameCache usernameCache;
-    private ScriptEventManager scriptEventManager;
-    private boolean timers = false;
+	/** Bot Information */
+	private String botName;
+	private String channelName;
+	private String ownerName;
+	private String oauth;
+	private String apiOAuth;
+	private String clientId;
+	private static Double messageLimit;
+	private static Double whisperLimit;
 
-    public static PhantomBot instance() {
-        return instance;
-    }
+	/** Web Information */
+	private String panelUsername;
+	private String panelPassword;
+	private String webOAuth;
+	private String webOAuthThro;
+	private String youtubeOAuth;
+	private String youtubeOAuthThro;
+	private String youtubeKey;
+	private Boolean webEnabled;
+	private Boolean musicEnabled;
+	private Boolean useHttps;
+	private int basePort;
 
-    public String botVersion() {
-        return "PhantomBot Version " + RepoVersion.getPhantomBotVersion();
-    }
+	/** DataStore Information */
+	private DataStore dataStore;
+	private String dataStoreType;
+	private String dataStoreConfig;
 
-    public String getBotInfo() {
-        return botVersion() + " (Revision: " + RepoVersion.getRepoVersion() + ")";
-    }
+	/** MySQL Information */
+	private String mySqlConn;
+	private String mySqlHost;
+	private String mySqlPort;
+	private String mySqlName;
+	private String mySqlUser;
+	private String mySqlPass;
 
-    public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel,
-                      String owner, int baseport, double msglimit30, double whisperlimit60, String datastore, String datastoreconfig, String youtubekey,
-                      boolean webenable, boolean musicenable, boolean usehttps, String keystorepath,
-                      String keystorepassword, String keypassword, String twitchalertskey, 
-                      int twitchalertslimit, String webauth, String webauthro, String ytauth, String ytauthro,
-                      String gamewispauth, String gamewisprefresh, String paneluser, String panelpassword,
-                      String twitterUser, String twitter_access_token, String twitter_secret_token, String twitter_consumer_key, String twitter_consumer_secret, String log_timezone,
-                      String mysql_db_host, String mysql_db_port, String mysql_db_name, String mysql_db_user, String mysql_db_pass, String streamtipkey, String streamtipid, int streamtiplimit) {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+	/** Twitter Information */
+	private String twitterUsername;
+	private String twitterAccessToken;
+	private String twitterSecretToken;
+	private String twitterConsumerSecret;
+	private String twitterConsumerToken;
+	private Boolean twitterAuthenticated;
 
-        com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println(botVersion());
-        if (isNightlyBuild()) {
-            com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion() + "-NIGHTLY");
-        } else {
-            com.gmt2001.Console.out.println("Build revision " + RepoVersion.getRepoVersion());
-        }
-        com.gmt2001.Console.out.println("Creator: mast3rplan");
-        com.gmt2001.Console.out.println("Developers: PhantomIndex, Kojitsari, scaniaTV, Zelakto, & IllusionaryOne");
-        com.gmt2001.Console.out.println("https://phantombot.tv/");
-        com.gmt2001.Console.out.println();
+	/** TwitchAlerts Information */
+	private String twitchAlertsKey = "";
+	private int twitchAlertsLimit = 0;
 
-        interactive = System.getProperty("interactive") != null;
+	/** StreamTip Information */
+	private String streamTipOAuth = "";
+	private String streamTipClientId = "";
+	private int streamTipLimit = 0;
 
-        this.twitchCacheReady = "false";
-        this.username = username;
-        this.oauth = oauth;
-        this.apioauth = apioauth;
-        this.webauth = webauth;
-        this.webauthro = webauthro;
-        this.ytauth = ytauth;
-        this.ytauthro = ytauthro;
-        this.gamewispauth = gamewispauth;
-        this.gamewisprefresh = gamewisprefresh;
-        this.channelName = channel;
-        this.ownerName = owner;
-        this.baseport = baseport;
-        this.datastore = datastore;
-        this.datastoreconfig = datastoreconfig;
-        this.youtubekey = youtubekey;
+	/** GameWisp Information */
+	private String gameWispOAuth;
+	private String gameWispRefresh;
 
-        this.twitterUser = twitterUser;
-        this.twitter_access_token = twitter_access_token;
-        this.twitter_secret_token = twitter_secret_token;
-        this.twitter_consumer_key = twitter_consumer_key;
-        this.twitter_consumer_secret = twitter_consumer_secret;
+	/** Notice Timer and Handling */
+	private NoticeTimer noticeTimer;
 
-        this.mysql_db_host = mysql_db_host;
-        this.mysql_db_port = mysql_db_port;
-        this.mysql_db_name = mysql_db_name;
-        this.mysql_db_user = mysql_db_user;
-        this.mysql_db_pass = mysql_db_pass;
-        
-        if (log_timezone.isEmpty()) {
-            this.log_timezone = "GMT";
-        } else {
-            this.log_timezone = log_timezone;
-        }
+	/** Caches */
+	private FollowersCache followersCache;
+	private ChannelHostCache hostCache;
+	private SubscribersCache subscribersCache;
+	private ChannelUsersCache channelUsersCache;
+	private DonationsCache twitchAlertsCache;
+	private StreamTipCache streamTipCache;
+	private EmotesCache emotesCache;
+	private TwitterCache twitterCache;
+	private TwitchCache twitchCache;
+	private UsernameCache usernameCache;
+	public static String twitchCacheReady = "false";
 
-        if (!youtubekey.isEmpty()) {
-            YouTubeAPIv3.instance().SetAPIKey(youtubekey);
-        }
+	/** Socket Servers */
+	private YTWebSocketServer youtubeSocketServer;
+	private EventWebSocketServer eventWebSocketServer;
+	private PanelSocketServer panelSocketServer;
+	private HTTPServer httpServer;
+	private NEWHTTPServer NEWHTTPServer;
+	private NEWHTTPSServer NEWHTTPSServer;
 
-        if (paneluser.isEmpty()) {
-            this.paneluser = "panel";
-        } else {
-            this.paneluser = paneluser;
-        }
+	/** PhantomBot Information */
+	private static PhantomBot instance;
+	public static Boolean reloadScripts = false;
+	public static Boolean enableDebugging = false;
+        public static Boolean enableRhinoDebugger = false;
+	public Boolean isExiting = false;
+	private Boolean interactive;
+	private Boolean resetLogin = false;
+	public static String timeZone = "GMT";
 
-        if (panelpassword.isEmpty()) {
-            this.panelpassword = "panel";
-        } else {
-            this.panelpassword = panelpassword;
-        }
+	/** Other Information */
+	private Channel channel;
+	private Session session;
+	private String chanName;
+	private Boolean timer = false;
+	private Boolean newSetup = false;
+	private String keyStorePath = "";
+	private String keyStorePassword = "";
+	private String keyPassword = "";
+	private SecureRandom random;
+	private static HashMap<String, Channel> channels;
+	private static HashMap<String, Session> sessions;
+	private static HashMap<String, String> apiOAuths;
+	public static Boolean wsIRCAlternateBurst = false;
 
-        this.webenable = webenable;
-        this.musicenable = musicenable;
-        this.usehttps = usehttps;
-        this.keystorepath = keystorepath;
-        this.keystorepassword = keystorepassword;
-        this.keypassword = keypassword;
 
-        this.twitchalertskey = twitchalertskey;
-        this.twitchalertslimit = twitchalertslimit;
+    /** 
+     * PhantomBot Instance.
+     *
+     * @return current instance of phantombot
+     */
+	public static PhantomBot instance() {
+		return instance;
+	}
 
-        this.streamtipid = streamtipid;
-        this.streamtipkey = streamtipkey;
-        this.streamtiplimit = streamtiplimit;
+	/** 
+	 * Current Repo Of PhantomBot.
+	 *
+	 * @return {string} repo version 
+	 */
+	public String repoVersion() {
+		return RepoVersion.getRepoVersion();
+	}
 
-        if (clientid.length() == 0) {
-            this.clientid = "7wpchwtqz7pvivc3qbdn1kajz42tdmb";
-        } else {
-            this.clientid = clientid;
-        }
+	/** 
+	 * Current Version Of PhantomBot.
+	 *
+	 * @return {string} bot version 
+	 */
+	public String botVersion() {
+		if (isNightly()) {
+			return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " - Nightly Build";
+		}
+		return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion();
+	}
 
-        rng = new SecureRandom();
-        pollResults = new TreeMap<>();
-        voters = new TreeSet<>();
+	/**
+	 * Used by the panel on the informations tab.
+	 *
+	 * @return {string} bot information
+	 */
+	public String getBotInfo() {
+		return botVersion() + " (Revision: " + repoVersion() + ")";
+	}
 
-        if (msglimit30 > 0) {
-            this.msglimit30 = msglimit30;
-        } else {
-            this.msglimit30 = 18.75;
-        }
+	/**
+	 * Used at boot up
+	 *
+	 * @return {string} build revision 
+	 */
+	public String botRevision() {
+		return "Build Revision: " + repoVersion();
+	}
 
-        if (whisperlimit60 > 0) {
-            this.whisperlimit60 = whisperlimit60;
-        } else {
-            this.whisperlimit60 = 90;
-        }
+	/**
+	 * Only used on bot boot up for now.
+	 *
+	 * @return {string} bot creator
+	 */
+	public String getBotCreator() {
+		return "Creator: mast3rplan";
+	}
 
-        if (datastore.equalsIgnoreCase("TempStore")) {
-            dataStoreObj = TempStore.instance();
-        } else if (datastore.equalsIgnoreCase("IniStore")) {
-            dataStoreObj = IniStore.instance();
-        } else if (datastore.equalsIgnoreCase("MySQLStore")) {
-            dataStoreObj = MySQLStore.instance();
-            if (this.mysql_db_port.length() > 0) {
-                this.mysql_db_conn = "jdbc:mysql://" + this.mysql_db_host + ":" + this.mysql_db_port + "/" + this.mysql_db_name + "?useSSL=false";
-            } else {
-                this.mysql_db_conn = "jdbc:mysql://" + this.mysql_db_host + "/" + this.mysql_db_name + "?useSSL=false";
-            }
-            if (dataStoreObj.CreateConnection(this.mysql_db_conn, this.mysql_db_user, this.mysql_db_pass) == null) {
+	/**
+	 * Only used on bot boot up for now.
+	 *
+	 * @return {string} bot developers
+	 */
+	public String botDevelopers() {
+		return "Developers: PhantomIndex, Kojitsari, ScaniaTV, Zelakto & IllusionaryOne";
+	}
+
+	/**
+	 * Only used on bot boot up for now.
+	 *
+	 * @return {string} bot website
+	 */
+	public String getWebSite() {
+		return "https://phantombot.tv";
+	}
+
+	/**
+	 * Prints a message in the bot console.
+	 *
+	 * @param {Object} message
+	 */
+	private void print(String message) {
+		com.gmt2001.Console.out.println(message);
+	}
+
+
+	/** PhantomBot instance */
+	public PhantomBot(String botName, String oauth, String apiOAuth, String clientId, String channelName, String ownerName, int basePort, Double messageLimit, Double whisperLimit, String dataStoreType, 
+		String dataStoreConfig, String youtubeOAuth, Boolean webEnabled, Boolean musicEnabled, Boolean useHttps, String keyStorePath, String keyStorePassword, String keyPassword, String twitchAlertsKey, 
+		int twitchAlertsLimit, String streamTipOAuth, int streamTipLimit, String gameWispOAuth, String gameWispRefresh, String panelUsername, String panelPassword, String timeZone, String twitterUsername,
+		String twitterConsumerToken, String twitterConsumerSecret, String twitterSecretToken, String twitterAccessToken, String mySqlHost, String mySqlPort, String mySqlConn, String mySqlPass, String mySqlUser,
+		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady) {
+
+        /** Set the exeption handler */
+		Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+
+        /** Start loading the bot information */
+		print("");
+		print(botVersion());
+		print(botRevision());
+		print(getBotCreator());
+		print(botDevelopers());
+		print(getWebSite());
+		print("");
+
+		/** System interactive */
+		interactive = (System.getProperty("interactive") != null);
+
+		/** Set the default bot variables */
+		this.botName = botName.toLowerCase();
+		this.channelName = channelName.toLowerCase();
+		this.ownerName = ownerName.toLowerCase();
+		this.oauth = oauth;
+		this.apiOAuth = apiOAuth;
+
+		/** Set the web variables */
+		this.youtubeOAuth = youtubeOAuth;
+		this.youtubeOAuthThro = youtubeOAuthThro;
+		this.youtubeKey = youtubeKey;
+		this.basePort = basePort;
+		this.webOAuth = webOAuth;
+		this.webOAuthThro = webOAuthThro;
+		this.webEnabled = webEnabled;
+		this.musicEnabled = musicEnabled;
+		this.useHttps = useHttps;
+
+		/** Set the datastore variables */
+		this.dataStoreType = dataStoreType;
+		this.dataStoreConfig = dataStoreConfig;
+
+		/** Set the Twitter variables */
+		this.twitterUsername = twitterUsername;
+		this.twitterConsumerSecret = twitterConsumerSecret;
+		this.twitterConsumerToken = twitterConsumerToken;
+		this.twitterAccessToken = twitterAccessToken;
+		this.twitterSecretToken = twitterSecretToken;
+		this.twitterAuthenticated = false;
+
+		/** Set the GameWisp variables */
+		this.gameWispOAuth = gameWispOAuth;
+		this.gameWispRefresh = gameWispRefresh;
+
+		/** Set the TwitchAlerts variables */
+		this.twitchAlertsKey = twitchAlertsKey;
+		this.twitchAlertsLimit = twitchAlertsLimit;
+
+		/** Set the StreamTip variables */
+		this.streamTipOAuth = streamTipOAuth;
+		this.streamTipClientId = streamTipClientId;
+		this.streamTipLimit = streamTipLimit;
+
+		/** Set the MySql variables */
+		this.mySqlName = mySqlName;
+		this.mySqlUser = mySqlUser;
+		this.mySqlPass = mySqlPass;
+		this.mySqlConn = mySqlConn;
+		this.mySqlHost = mySqlHost;
+		this.mySqlPort = mySqlPort;
+
+		/** twitch cache */
+		this.twitchCacheReady = "false";
+
+		/** Set the timeZone */
+		if (!timeZone.isEmpty()) {
+			this.timeZone = timeZone;
+		} else {
+			this.timeZone = "GMT";
+		}
+
+		/** Set the panel username login for the panel to use */
+		if (!panelUsername.isEmpty()) {
+			this.panelUsername = panelUsername;
+		} else {
+			this.panelUsername = "panel";
+		}
+
+		/** Set the panel password login for the panel to use */
+		if (!panelPassword.isEmpty()) {
+			this.panelPassword = panelPassword;
+		} else {
+			this.panelPassword = "panel";
+		}
+
+		/** Set the message limit for session.java to use */
+		if (messageLimit != 0) {
+			this.messageLimit = messageLimit;
+		} else {
+			this.messageLimit = 18.75;
+		}
+
+		/** Set the whisper limit for session.java to use. *Currently not used.* */
+		if (whisperLimit != 0) {
+			this.whisperLimit = 60.0;
+		} else {
+			this.whisperLimit = 60.0;
+		}
+
+		/** Set the client id for the twitch api to use */
+		if (!clientId.isEmpty()) {
+			this.clientId = clientId;
+		} else {
+			this.clientId = "7wpchwtqz7pvivc3qbdn1kajz42tdmb";
+		}
+
+		/** Load up a new SecureRandom for the scripts to use */
+		random = new SecureRandom();
+
+		/** Create a map for multiple channels. */
+		channels = new HashMap<>();
+
+		/** Create a map for multiple sessions. */
+		sessions = new HashMap<>();
+
+		/** Create a map for multiple oauth tokens. */
+		apiOAuths = new HashMap<>();
+
+		/** Load the datastore */
+		if (dataStoreType.equalsIgnoreCase("inistore")) {
+			dataStore = IniStore.instance();
+		} else if (dataStoreType.equalsIgnoreCase("mysqlstore")) {
+			dataStore = MySQLStore.instance();
+			if (this.mySqlPort.isEmpty()) {
+				this.mySqlConn = "jdbc:mysql://" + this.mySqlHost + "/" + this.mySqlName + "?useSSL=false";
+			} else {
+				this.mySqlConn = "jdbc:mysql://" + this.mySqlHost + ":" + this.mySqlPort + "/" + this.mySqlName + "?useSSL=false";
+			}
+			/** Check to see if we can create a connection */
+			if (dataStore.CreateConnection(this.mySqlConn, this.mySqlUser, this.mySqlPass) == null) {
+				print("Could not create a connection with MySql. PhantomBot now shutting down...");
                 System.exit(0);
             }
-        } else {
-            dataStoreObj = SqliteStore.instance();
-            if (!dataStoreObj.exists("settings", "tables_indexed")) {
-                com.gmt2001.Console.out.println("Creating SQLite3 Indexes, Please Wait...");
-                dataStoreObj.CreateIndexes();
-                com.gmt2001.Console.out.println("Completed Creating SQLite3 Indexes");
-                dataStoreObj.set("settings", "tables_indexed", "true");
-            }
-        }
-
-        if (datastore.isEmpty() && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0) {
-            ini2sqlite(true);
-        }
-
-        if (datastore.equalsIgnoreCase("MySQLStore")) {
+            /** Convert to MySql */
             if (IniStore.instance().GetFileList().length > 0) {
-                ini2mysql(true);
+                ini2MySql(true);
+            } else if (SqliteStore.instance().GetFileList().length > 0) {
+                sqlite2MySql();
             }
-            if (SqliteStore.instance().GetFileList().length > 0) {
-                sqlite2mysql();
-            }
-        }
+		} else {
+			dataStore = SqliteStore.instance();
+			/** Create indexes. */
+			if (!dataStore.exists("settings", "tables_indexed")) {
+				print("Creating SQLite3 Indexes. This might take time...");
+				dataStore.CreateIndexes();
+				dataStore.set("settings", "tables_indexed", "true");
+				print("Completed Creating SQLite3 Indexes!");
+			}
+			/** Convert the initstore to sqlite if the inistore exists and the db is empty */
+		    if (IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0) {
+		    	ini2Sqlite(true);
+		    }
+		}
 
-        TwitchAPIv3.instance().SetClientID(this.clientid);
-        TwitchAPIv3.instance().SetOAuth(apioauth);
-        if (TwitchAPIv3.instance().TestAPI()) {
-            com.gmt2001.Console.out.println("TwitchAPI has authenticated via Client-ID");
-        } else {
-            com.gmt2001.Console.err.println("TwitchAPI rejected Client-ID. TwitchAPI calls will not function.");
-        }
+		/** Set the client Id in the Twitch api. */
+		TwitchAPIv3.instance().SetClientID(this.clientId);
+		/** Set the oauth key in the Twitch api. */
+		TwitchAPIv3.instance().SetOAuth(this.apiOAuth);
 
-        TwitchAlertsAPIv1.instance().SetAccessToken(twitchalertskey);
-        TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchalertslimit);
+		/** Set the TwitchAlerts OAuth key and limiter. */
+		if (!twitchAlertsKey.isEmpty()) {
+			TwitchAlertsAPIv1.instance().SetAccessToken(twitchAlertsKey);
+			TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchAlertsLimit);
+		}
 
-        StreamTipAPI.instance().SetAccessToken(streamtipkey);
-        StreamTipAPI.instance().SetDonationPullLimit(streamtiplimit);
-        StreamTipAPI.instance().SetClientId(streamtipid);
+		/** Set the StreamTip OAuth key, Client ID and limiter. */
+		if (!streamTipOAuth.isEmpty() && !streamTipClientId.isEmpty()) {
+			StreamTipAPI.instance().SetAccessToken(streamTipOAuth);
+			StreamTipAPI.instance().SetDonationPullLimit(streamTipLimit);
+			StreamTipAPI.instance().SetClientId(streamTipClientId);
+		}
 
-        this.init();
 
-        if (SystemUtils.IS_OS_LINUX && !interactive) {
-            try {
-                java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
-                /*
-                 * java.lang.reflect.Field jvm =
-                 * runtime.getClass().getDeclaredField("jvm");
-                 * jvm.setAccessible(true); sun.management.VMManagement mgmt =
-                 * (sun.management.VMManagement) jvm.get(runtime);
-                 * java.lang.reflect.Method pid_method =
-                 * mgmt.getClass().getDeclaredMethod("getProcessId");
-                 * pid_method.setAccessible(true);
-                 *
-                 * int pid = (Integer) pid_method.invoke(mgmt);
-                 */
-                int pid = Integer.parseInt(runtime.getName().split("@")[0]);
+		/** Start things and start loading the scripts. */
+		this.init();
 
-                //int pid = Integer.parseInt( ( new File("/proc/self")).getCanonicalFile().getName() );
-                //File f = new File("/var/run/PhantomBot." + this.username.toLowerCase() + ".pid");
-                File f = new File("PhantomBot." + this.username.toLowerCase() + ".pid");
+		/** Start a channel instance to create a session, and then connect to WS-IRC @ Twitch. */
+		this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
 
-                try (FileOutputStream fs = new FileOutputStream(f, false)) {
+		/** Check if the OS is Linux. */
+		if (SystemUtils.IS_OS_LINUX && !interactive) {
+			try {
+			    java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
+			    int pid = Integer.parseInt(runtime.getName().split("@")[0]);
+    
+			    File file = new File("PhantomBot." + this.botName.toLowerCase() + ".pid");
+    
+			    try (FileOutputStream fs = new FileOutputStream(file, false)) {
                     PrintStream ps = new PrintStream(fs);
-
                     ps.print(pid);
                 }
-
-                f.deleteOnExit();
-            } catch (/*
-                     * NoSuchFieldException | IllegalAccessException |
-                     * NoSuchMethodException |
-                     * java.lang.reflect.InvocationTargetException |
-                     */SecurityException | IllegalArgumentException | IOException ex) {
+                file.deleteOnExit();
+            } catch (SecurityException | IllegalArgumentException | IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
+		}
+	}
+
+	/**
+	 * Tells you if the build is a nightly.
+	 *
+	 * @return {boolean}
+	 */
+	public Boolean isNightly() {
+        return RepoVersion.getNightlyBuild().equals("nightly_build");
+	}
+
+	/**
+	 * Enables or disables the debug mode.
+	 *
+	 * @param {boolean} debug
+	 */
+	public static void setDebugging(Boolean debug) {
+		PhantomBot.enableDebugging = debug;
+	}
+
+	/**
+	 * Tells you the bot name.
+	 *
+	 * @return {string} bot name
+	 */
+	public String getBotName() {
+		return this.botName;
+	}
+
+	/**
+	 * Gives you the current data store
+	 *
+	 * @return {datastore} dataStore
+	 */
+	public DataStore getDataStore() {
+		return this.dataStore;
+	}
+
+	/**
+	 * Tells you if the bot is exiting
+	 *
+	 * @return {boolean} exit
+	 */
+	public Boolean isExiting() {
+		return this.isExiting;
+	}
+
+	/**
+	 * Give's you the channel for that channelName.
+	 *
+	 * @return {channel}
+	 */
+	public Channel getChannel() {
+		return channels.get(this.channelName);
+	}
+
+	/**
+	 * Give's you the channel for that channelName.
+	 *
+	 * @param {string} channelName
+	 * @return {channel}
+	 */
+	public static Channel getChannel(String channelName) {
+		return channels.get(channelName);
+	}
+
+	/**
+	 * Give's you the session for that channel.
+	 *
+	 * @return {session}
+	 */
+	public Session getSession() {
+		return sessions.get(this.channelName);
+	}
+
+	/**
+	 * Give's you the session for that channel.
+	 *
+	 * @param {string} channelName
+	 * @return {session}
+	 */
+	public static Session getSession(String channelName) {
+		return sessions.get(channelName);
+	}
+
+	/**
+	 * Give's you the api oauth for that channel.
+	 *
+	 * @param {string} channelName
+	 * @return {string}
+	 */
+	public static String getOAuth(String channelName) {
+		return apiOAuths.get(channelName);
+	}
+
+	/**
+	 * Give's you the message limit.
+	 *
+	 * @return {long} message limit
+	 */
+	public static long getMessageInterval() {
+        return (long) ((30.0 / messageLimit) * 1000);
+    }
+
+    /**
+	 * Give's you the whisper limit. *Currently not used*
+	 *
+	 * @return {long} whisper limit
+	 */
+    public static long getWhisperInterval() {
+        return (long) ((60.0 / whisperLimit) * 1000);
+    }
+
+    /**
+	 * Adds a channel to the channels array for multiple channels.
+	 *
+	 * @param {string} channelName
+	 * @param {channel} channel
+	 */
+    public static void addChannel(String channelName, Channel channel) {
+    	if (!channels.containsKey(channelName)) {
+    		channels.put(channelName, channel);
+    	}
+    }
+
+    /**
+	 * Adds a session to the sessions array for multiple channels.
+	 *
+	 * @param {string} channelName
+	 * @param {session} session
+	 */
+    public static void addSession(String channelName, Session session) {
+    	if (!sessions.containsKey(channelName)) {
+    		sessions.put(channelName, session);
+    	}
+    }
+
+    /**
+	 * Adds a oauth to the apioauths array for multiple channels.
+	 *
+	 * @param {string} channelName
+	 * @param {string} oAuth
+	 */
+    public static void addOAuth(String channelName, String oAuth) {
+    	if (!apiOAuths.containsKey(channelName)) {
+    		apiOAuths.put(channelName, oAuth);
+    	}
+    }
+
+    /**
+	 * Loads everything up.
+	 *
+	 */
+    private void init() {
+    	/** Is the web toggle enabled? */
+    	if (webEnabled) {
+    		/** Do we want to use https? (ssl) */
+    		if (useHttps) {
+    			/** Create a new ssl server */
+    			httpServer = new HTTPServer(basePort, oauth);
+    		} else {
+    			/** open a normal non ssl server */
+    			httpServer = new HTTPServer(basePort, oauth);
+    		}
+
+    		/** Start this http server  */
+    		httpServer.start();
+
+    		/** Is the music toggled on? */
+    		if (musicEnabled) {
+    			/** Set the music player server */
+    			youtubeSocketServer = new YTWebSocketServer((basePort + 3), youtubeOAuth, youtubeOAuthThro);
+    			/** Start this youtube socket server */
+    			youtubeSocketServer.start();
+    			print("YouTubeSocketServer accepting connections on port: " + (basePort + 3));
+    		}
+
+    		/** Create a event server to get all the events. */
+    		eventWebSocketServer = new EventWebSocketServer((basePort + 2));
+    		/** Start this event server */
+    		eventWebSocketServer.start();
+    		print("EventSocketServer accepting connections on port: " + (basePort + 2));
+    		/** make the event bus register this event server */
+    		EventBus.instance().register(eventWebSocketServer);
+
+    	    /** Set up the panel socket server */
+    	    panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
+    	    /** Start the panel socket server */
+    	    panelSocketServer.start();
+    	    print("PanelSocketServer accepting connections on port: " + (basePort + 4));
+
+    	    /** Set up a new http server */
+    	    NEWHTTPServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
+    	}
+
+    	print("New HTTP server accepting connection on port: " + (basePort + 5));
+
+    	/** Enable gamewhisp if the oAuth is set */
+    	if (!gameWispOAuth.isEmpty()) {
+    		/** Set the oAuths */
+    		GameWispAPIv1.instance().SetAccessToken(gameWispOAuth);
+            GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
+            SingularityAPI.instance().setAccessToken(gameWispOAuth);
+            SingularityAPI.instance().StartService();
+            /** get a fresh token */
+            doRefreshGameWispToken();
+    	}
+
+    	/** Check to see if all the Twitter info needed is there */
+    	if (!twitterUsername.isEmpty() && !twitterAccessToken.isEmpty() && !twitterConsumerToken.isEmpty() && !twitterConsumerSecret.isEmpty() && !twitterSecretToken.isEmpty()) {
+    		/** Set the Twitter tokens */
+    		TwitterAPI.instance().setUsername(twitterUsername);
+            TwitterAPI.instance().setAccessToken(twitterAccessToken);
+            TwitterAPI.instance().setSecretToken(twitterSecretToken);
+            TwitterAPI.instance().setConsumerKey(twitterConsumerToken);
+            TwitterAPI.instance().setConsumerSecret(twitterConsumerSecret);
+            /** Check to see if the tokens worked */
+            this.twitterAuthenticated = TwitterAPI.instance().authenticate();
+    	}
+
+    	/** print a extra line in the console. */
+    	print("");
+
+    	/** Create configuration for YTPlayer v2.0 for the WS port. */
+    	String data = "";
+    	try {
+    		data += "//Configuration for YTPlayer\r\n";
+    		data += "//Automatically Generated by PhantomBot at Startup\r\n";
+    		data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
+    		data += "var playerPort = " + (basePort + 3) + ";\r\n";
+    		data += "var channelName = \"" + channelName + "\";\r\n";
+    		data += "var auth=\"" + youtubeOAuth + "\";\r\n";
+    		data += "function getPlayerPort() { return playerPort; }\r\n";
+    		data += "function getChannelName() { return channelName; }\r\n";
+    		data += "function getAuth() { return auth; }\r\n";
+
+    		/** Create a new file if it does not exist */
+    		if (!new File ("./web/ytplayer/").exists()) new File ("./web/ytplayer/").mkdirs();
+    		if (!new File ("./web/ytplayer/js").exists()) new File ("./web/ytplayer/js").mkdirs();
+
+    		/** Write the data to that file */
+    		Files.write(Paths.get("./web/ytplayer/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+    	} catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
-        
-        this.channel = Channel.instance(this.channelName, this.username, oauth, EventBus.instance());
 
-        channels = new HashMap<>();
-
-        usernameCache = UsernameCache.instance();
-    }
-
-    public boolean isNightlyBuild() {
-        if (RepoVersion.getNightlyBuild().equals("nightly_build")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public String isNightlyBuildString() {
-        if (RepoVersion.getNightlyBuild().equals("nightly_build")) {
-            return "true";
-        } else {
-            return "false";
-        }
-    }
-
-    public static void setDebugging(boolean debug) {
-        PhantomBot.enableDebugging = debug;
-    }
-
-    public String getBotName() {
-        return this.username;
-    }
- 
-    public UsernameCache getUsernameCache() {
-        return usernameCache;
-    }
-
-    public DataStore getDataStore() {
-        return dataStoreObj;
-    }
- 
-    public ScriptEventManager getScriptEventManagerInstance() {
-        return scriptEventManager;
-   }
-
-    public Session getSession() {
-        return this.session;
-    }
-
-    public boolean isExiting() {
-        return exiting;
-    }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
-    public long getMessageInterval() {
-        return (long) ((30.0 / this.msglimit30) * 1000);
-    }
-
-    public long getWhisperInterval() {
-        return (long) ((60.0 / this.whisperlimit60) * 1000);
-    }
-
-    public Channel getChannel(String channelName) {
-        return channels.get(channelName);
-    }
-
-    public HashMap<String, Channel> getChannels() {
-        return channels;
-    }
-
-    public final void init() {
-        if (webenable) {
-            if (usehttps) {
-                httpserver = new HTTPServer(baseport, oauth);
-                if (musicenable) {
-                    ytsocketserver = new YTWebSocketServer(baseport + 3, ytauth, ytauthro);
-                }
-                eventsocketserver = new EventWebSocketSecureServer(baseport + 2, keystorepath, keystorepassword, keypassword);
-            } else {
-                httpserver = new HTTPServer(baseport, oauth);
-                if (musicenable) {
-                    ytsocketserver = new YTWebSocketServer(baseport + 3, ytauth, ytauthro);
-                }
-                eventsocketserver = new EventWebSocketServer(baseport + 2);
-            }
-            webenabled = true;
-            httpserver.start();
-
-            if (musicenable) {
-                ytsocketserver.start();
-                com.gmt2001.Console.out.println("YouTubeSocketServer accepting connections on port " + (baseport + 3));
-            }
-
-            eventsocketserver.start();
-            int eventport = baseport + 2;
-            com.gmt2001.Console.out.println("EventSocketServer accepting connections on port " + eventport);
-            EventBus.instance().register(eventsocketserver);
-
-            panelsocketserver = new PanelSocketServer(baseport + 4, webauth, webauthro);
-            panelsocketserver.start();
-            com.gmt2001.Console.out.println("PanelSocketServer accepting connections on port " + (baseport + 4));
-
-            NEWhttpserver = new NEWHTTPServer(baseport + 5, oauth, webauth, paneluser, panelpassword);
-            com.gmt2001.Console.out.println("NEW HTTP Server accepting connections on port " + (baseport + 5));
-
-            // NEWhttpsServer = new NEWHTTPSServer(baseport + 6, oauth, webauth, paneluser, panelpassword);
-            // com.gmt2001.Console.out.println("NEW HTTPS Server accepting connections on port " + (baseport + 6));
-
-            if (gamewispauth.length() > 0) {
-                GameWispAPIv1.instance().SetAccessToken(gamewispauth);
-                GameWispAPIv1.instance().SetRefreshToken(gamewisprefresh);
-                SingularityAPI.instance().setAccessToken(gamewispauth);
-                SingularityAPI.instance().StartService();
-                doRefreshGameWispToken();
-            }
-
-            // Connect to Twitter API
-            if (twitterUser.length() > 0 &&
-                twitter_access_token.length() > 0 && twitter_secret_token.length() > 0 && twitter_consumer_key.length() > 0 && twitter_consumer_secret.length() > 0)
-            {
-                TwitterAPI.instance().setUsername(twitterUser);
-                TwitterAPI.instance().setAccessToken(twitter_access_token);
-                TwitterAPI.instance().setSecretToken(twitter_secret_token);
-                TwitterAPI.instance().setConsumerKey(twitter_consumer_key);
-                TwitterAPI.instance().setConsumerSecret(twitter_consumer_secret);
-                this.twitterAuthenticated = TwitterAPI.instance().authenticate();
-            }
-        }
-
-        // Print an extra new line after announcing HTTP and Socket servers
-        com.gmt2001.Console.out.println();
-
-        // Create configuration for YTPlayer v2.0 for the WS port.
-        //
+        /** Create configuration for YTPlayer v2.0 for the WS port. */
+        data = "";
         try {
-            String playerPortData = "// Configuration for YTPlayer\r\n" +
-                                    "// Automatically Generated by PhantomBot Core at Startup\r\n" +
-                                    "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n" +
-                                    "var playerPort = " + (baseport + 3) + ";\r\n" +
-                                    "var channelName = \"" + channelName + "\";\r\n" +
-                                    "var auth=\"" + ytauth + "\";\r\n" +
-                                    "function getPlayerPort() { return playerPort; }\r\n" +
-                                    "function getChannelName() { return channelName; }\r\n" +
-                                    "function getAuth() { return auth; }\r\n";
+    		data += "//Configuration for YTPlayer\r\n";
+    		data += "//Automatically Generated by PhantomBot at Startup\r\n";
+    		data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
+    		data += "var playerPort = " + (basePort + 3) + ";\r\n";
+    		data += "var channelName = \"" + channelName + "\";\r\n";
+    		data += "var auth=\"" + youtubeOAuthThro + "\";\r\n";
+    		data += "function getPlayerPort() { return playerPort; }\r\n";
+    		data += "function getChannelName() { return channelName; }\r\n";
+    		data += "function getAuth() { return auth; }\r\n";
 
-            if (!new File ("./web/ytplayer/").exists()) {
-                new File ("./web/ytplayer/").mkdirs();
-            }
-            if (!new File ("./web/ytplayer/js").exists()) {
-                new File ("./web/ytplayer/js").mkdirs();
-            }
+    		/** Create a new file if it does not exist */
+    		if (!new File ("./web/playlist/").exists()) new File ("./web/playlist/").mkdirs();
+    		if (!new File ("./web/playlist/js").exists()) new File ("./web/playlist/js").mkdirs();
 
-            Files.write(Paths.get("./web/ytplayer/js/playerConfig.js"), playerPortData.getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+    		/** Write the data to that file */
+    		Files.write(Paths.get("./web/playlist/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+    	} catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        /** Create configuration for WebPanel for the WS port. */
+        data = "";
+        try {
+        	data += "//Configuration for YTPlayer\r\n";
+    		data += "//Automatically Generated by PhantomBot at Startup\r\n";
+    		data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
+            data += "var panelSettings = {\r\n";
+            data += "    panelPort   : " + (basePort + 4) + ",\r\n";
+            data += "    channelName : \"" + channelName + "\",\r\n";
+            data += "    auth        : \"" + webOAuth + "\"\r\n";
+            data += "};\r\n\r\n";
+            data += "function getPanelPort() { return panelSettings.panelPort; }\r\n";
+            data += "function getChannelName() { return panelSettings.channelName; }\r\n";
+            data += "function getAuth() { return panelSettings.auth; }\r\n";
+
+            /** Create a new file if it does not exist */
+    		if (!new File ("./web/panel/").exists()) new File ("./web/panel/").mkdirs();
+    		if (!new File ("./web/panel/js").exists()) new File ("./web/panel/js").mkdirs();
+
+    		/** Write the data to that file */
+    		Files.write(Paths.get("./web/panel/js/panelConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
+        /** Create configuration for Read-Only Access to WS port. */
+        data = "";
         try {
-            String playerPortData = "// Configuration for YTPlayer\r\n" +
-                                    "// Automatically Generated by PhantomBot Core at Startup\r\n" +
-                                    "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n" +
-                                    "var playerPort = " + (baseport + 3) + ";\r\n" +
-                                    "var channelName = \"" + channelName + "\";\r\n" +
-                                    "var auth=\"" + ytauthro + "\";\r\n" +
-                                    "function getPlayerPort() { return playerPort; }\r\n" +
-                                    "function getChannelName() { return channelName; }\r\n" +
-                                    "function getAuth() { return auth; }\r\n";
+        	data += "//Configuration for YTPlayer\r\n";
+    		data += "//Automatically Generated by PhantomBot at Startup\r\n";
+    		data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
+        	data += "var panelSettings = {\r\n";
+        	data += "    panelPort   : " + (basePort + 4) + ",\r\n";
+        	data += "    channelName : \"" + channelName + "\",\r\n";
+        	data += "    auth        : \"" + webOAuthThro + "\"\r\n";
+        	data += "};\r\n\r\n";
+        	data += "function getPanelPort() { return panelSettings.panelPort; }\r\n";
+        	data += "function getChannelName() { return panelSettings.channelName; }\r\n";
+        	data += "function getAuth() { return panelSettings.auth; }\r\n";
 
-            if (!new File ("./web/playlist/").exists()) {
-                new File ("./web/playlist/").mkdirs();
-            }
-            if (!new File ("./web/playlist/js").exists()) {
-                new File ("./web/playlist/js").mkdirs();
-            }
+        	/** Create a new file if it does not exist */
+    		if (!new File ("./web/common/").exists()) new File ("./web/common/").mkdirs();
+    		if (!new File ("./web/common/js").exists()) new File ("./web/common/js").mkdirs();
 
-            Files.write(Paths.get("./web/playlist/js/playerConfig.js"), playerPortData.getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-
+    		/** Write the data to that file */
+    		Files.write(Paths.get("./web/common/js/wsConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+        data = "";
 
-
-        // Create configuration for WebPanel for the WS port.
-        try {
-            String panelPortData = "// Configuration for WebPanel\r\n" +
-                                   "// Automatically Generated by PhantomBot Core at Startup\r\n" +
-                                   "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n" +
-                                   "var panelSettings = {\r\n" +
-                                   "    panelPort   : " + (baseport + 4) + ",\r\n" +
-                                   "    channelName : \"" + channelName + "\",\r\n" +
-                                   "    auth        : \"" + webauth + "\"\r\n" +
-                                   "};\r\n\r\n" +
-       
-                                   "function getPanelPort() { return panelSettings.panelPort; }\r\n" +
-                                   "function getChannelName() { return panelSettings.channelName; }\r\n" +
-                                   "function getAuth() { return panelSettings.auth; }\r\n";
-
-            if (!new File ("./web/panel/").exists()) {
-                new File ("./web/panel/").mkdirs();
-            }
-            if (!new File ("./web/panel/js").exists()) {
-                new File ("./web/panel/js").mkdirs();
-            }
-
-            Files.write(Paths.get("./web/panel/js/panelConfig.js"), panelPortData.getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-
-        // Create configuration for Read-Only Access to WS port.
-        try {
-            String wsROPortData = "// Configuration for WebPanel\r\n" +
-                                  "// Automatically Generated by PhantomBot Core at Startup\r\n" +
-                                  "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n" +
-                                  "var panelSettings = {\r\n" +
-                                  "    panelPort   : " + (baseport + 4) + ",\r\n" +
-                                  "    channelName : \"" + channelName + "\",\r\n" +
-                                  "    auth        : \"" + webauthro + "\"\r\n" +
-                                  "};\r\n\r\n" +
-
-                                  "function getPanelPort() { return panelSettings.panelPort; }\r\n" +
-                                  "function getChannelName() { return panelSettings.channelName; }\r\n" +
-                                  "function getAuth() { return panelSettings.auth; }\r\n";
-
-            if (!new File ("./web/common/").exists()) {
-                new File ("./web/common/").mkdirs();
-            }
-            if (!new File ("./web/common/js").exists()) {
-                new File ("./web/common/js").mkdirs();
-            }
-
-            Files.write(Paths.get("./web/common/js/wsConfig.js"), wsROPortData.getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-        
-        // Load the games list configuration.
-        // Disabled for now, going to provide a direct file, but leave this here for when we decide to go
-        // this route and have an automatic update and somesuch.
-        // loadGameList(dataStoreObj);
-        
+        /** check if the console is interactive */
         if (interactive) {
-            ConsoleInputListener cil = new ConsoleInputListener();
-            cil.start();
+        	ConsoleInputListener consoleIL = new ConsoleInputListener();
+        	/** Start the Console Input Listener */
+        	consoleIL.start();
         }
 
+        /** Register PhantomBot (this) with the event bus. */
         EventBus.instance().register(this);
+        /** Register the script manager with the event bus. */
         EventBus.instance().register(ScriptEventManager.instance());
-        scriptEventManager = ScriptEventManager.instance();
 
-        dataStoreObj.LoadConfig(datastoreconfig);
+        /** Load the datastore config */
+        dataStore.LoadConfig(dataStoreConfig);
 
-        Script.global.defineProperty("inidb", dataStoreObj, 0);
-        Script.global.defineProperty("tempdb", TempStore.instance(), 0);
+        /** Export all these to the $. api in the scripts. */
+        Script.global.defineProperty("inidb", dataStore, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
-        Script.global.defineProperty("botName", username, 0);
+        Script.global.defineProperty("botName", botName, 0);
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
-        Script.global.defineProperty("channelStatus", channelStatus, 0);
-        Script.global.defineProperty("ytplayer", ytsocketserver, 0);
-        Script.global.defineProperty("panelsocketserver", panelsocketserver, 0);
-        Script.global.defineProperty("random", rng, 0);
+        Script.global.defineProperty("ytplayer", youtubeSocketServer, 0);
+        Script.global.defineProperty("panelsocketserver", panelSocketServer, 0);
+        Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
-        Script.global.defineProperty("pollResults", pollResults, 0);
-        Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
-        Script.global.defineProperty("isNightly", isNightlyBuildString(), 0);
+        Script.global.defineProperty("isNightly", isNightly(), 0);
         Script.global.defineProperty("version", botVersion(), 0);
         Script.global.defineProperty("changed", newSetup, 0);
 
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                onExit();
-            }
+        /** open a new thread for when the bot is exiting */
+        Thread thread = new Thread(new Runnable() {
+        	@Override
+        	public void run() {
+        		onExit();
+        	}
         });
 
-        Runtime.getRuntime().addShutdownHook(t);
+        /** Get the un time for that new thread we just created */
+        Runtime.getRuntime().addShutdownHook(thread);
 
+        /** And finally try to load init, that will then load the scripts */
         try {
             ScriptManager.loadScript(new File("./scripts/init.js"));
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
+        /** Check for a update with PhantomBot */
         doCheckPhantomBotUpdate();
     }
 
+    /**
+     * Used for exiting the bot
+     *
+     */
     @SuppressWarnings("SleepWhileInLoop")
     public void onExit() {
-        com.gmt2001.Console.out.println("[SHUTDOWN] Bot shutting down...");
+    	print(this.botName + " is now shutting down...");
+    	isExiting = true;
 
-        com.gmt2001.Console.out.println("[SHUTDOWN] Stopping events & message dispatching...");
-        this.session.setAllowSendMessages(false);
-        exiting = true;
+    	print("Stoping all events and message dispatching...");
+    	/** Gonna need a way to pass this to all channels */
+    	PhantomBot.getSession(this.channelName).setAllowSendMessages(false);
 
-        if (webenabled) {
-            com.gmt2001.Console.out.println("[SHUTDOWN] Terminating web server...");
-            httpserver.dispose();
-            NEWhttpserver.close();
-            eventsocketserver.dispose();
+    	/** Shutdown all caches */
+    	print("Terminating the Twitch channel host cache...");
+    	ChannelHostCache.killall();
+    	print("Terminating the Twitch channel user cache...");
+    	ChannelUsersCache.killall();
+    	print("Terminating the Twitch channel follower cache...");
+    	FollowersCache.killall();
+    	print("Terminating the Twitch channel subscriber cache...");
+    	SubscribersCache.killall();
+    	print("Terminating the TwitchAlerts cache...");
+    	DonationsCache.killall();
+    	print("Terminating the StreamTip cache...");
+    	StreamTipCache.killall();
+
+    	print("Terminating pending timers...");
+    	ScriptApi.instance().kill();
+
+    	print("Terminating all script modules...");
+    	HashMap<String, Script> scripts = ScriptManager.getScripts();
+    	for (Entry<String, Script> script : scripts.entrySet()) {
+            script.getValue().kill();
         }
 
-        if (musicenabled) {
-            com.gmt2001.Console.out.println("[SHUTDOWN] Terminating music server...");
-            ytsocketserver.dispose();
-        }
+        print("Saving all data...");
+        dataStore.SaveAll(true);
 
-        com.gmt2001.Console.out.print("[SHUTDOWN] Waiting for running scripts to finish...");
+        /** Check to see if web is enabled */
+    	if (webEnabled) {
+    		print("Sutting down all web socket servers...");
+    		httpServer.dispose();
+    		NEWHTTPServer.close();
+    		eventWebSocketServer.dispose();
+    		youtubeSocketServer.dispose();
+    	}
+
         try {
             for (int i = 10; i > 0; i--) {
-                com.gmt2001.Console.out.print("\r[SHUTDOWN] Waiting for running scripts to finish..." + i + " ");
+                com.gmt2001.Console.out.print("\rWaiting for everthing else to shutdown... " + i + " ");
                 Thread.sleep(1000);
             }
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        com.gmt2001.Console.out.println("\r[SHUTDOWN] Waiting for running scripts to finish...  ");
-
-        com.gmt2001.Console.out.println("[SHUTDOWN] Terminating TwitchAPI caches...");
-        ChannelHostCache.killall();
-        ChannelUsersCache.killall();
-        FollowersCache.killall();
-        SubscribersCache.killall();
-
-        com.gmt2001.Console.out.println("[SHUTDOWN] Terminating caches...");
-        DonationsCache.killall();
-        StreamTipCache.killall();
-
-        com.gmt2001.Console.out.println("[SHUTDOWN] Terminating pending timers...");
-        ScriptApi.instance().kill();
-
-        com.gmt2001.Console.out.println("[SHUTDOWN] Terminating scripts...");
-        HashMap<String, Script> scripts = ScriptManager.getScripts();
-
-        for (Entry<String, Script> script : scripts.entrySet()) {
-            script.getValue().kill();
-        }
-
-        com.gmt2001.Console.out.println("[SHUTDOWN] Saving data...");
-        dataStoreObj.SaveAll(true);
-
-        com.gmt2001.Console.out.println("[SHUTDOWN] Disconnecting from Twitch IRC...");
-
-        com.gmt2001.Console.out.println("[SHUTDOWN] Waiting for JVM to exit...");
+        print(this.botName + " now exiting.");
     }
 
+    /**
+     * Connected to Twitch.
+     *
+     */
     @Subscribe
-    public void onIRCJoinComplete(IrcJoinCompleteEvent event) {
-        this.session = event.getSession();
+    public void ircJoinComplete(IrcJoinCompleteEvent event) {
+    	this.chanName = event.getChannel().getName();
+    	this.session = event.getSession();
 
-        event.getSession().saySilent(".mods");
-        
-        if (!timers) {
-            event.getSession().startTimers();
-            timers = true;
+    	//print("ircJoinComplete::" + this.chanName);
+
+    	/** Add the channel/session in the array for later use */
+    	PhantomBot.instance().addChannel(this.chanName, event.getChannel());
+    	PhantomBot.instance().addSession(this.chanName, this.session);
+
+    	/** Say .mods in the channel to check if the bot is a moderator */
+    	this.session.saySilent(".mods");
+    	/** Start the message timers for this session */
+    	this.session.startTimers();
+
+    	/** Load the caches for each channels */
+    	this.emotesCache = EmotesCache.instance(this.chanName);
+        this.followersCache = FollowersCache.instance(this.chanName);
+        this.hostCache = ChannelHostCache.instance(this.chanName);
+        this.subscribersCache = SubscribersCache.instance(this.chanName);
+        this.twitchCache = TwitchCache.instance(this.chanName);// This does not create a new instance for multiple channels. Not sure why.
+        this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
+
+        /** Start the donations cache if the keys are not null */
+        if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty()) {
+        	this.twitchAlertsCache = DonationsCache.instance(this.chanName);
         }
 
-        this.emotesCache = EmotesCache.instance(this.channelName);
-        this.followersCache = FollowersCache.instance(this.channelName);
-        this.hostCache = ChannelHostCache.instance(this.channelName);
-        this.subscribersCache = SubscribersCache.instance(this.channelName);
-        this.twitchCache = TwitchCache.instance(this.channelName);
-        this.channelUsersCache = ChannelUsersCache.instance(this.channelName);
-
-        if (this.twitchalertskey != null && this.twitchalertskey.length() > 1) {
-            this.donationsCache = DonationsCache.instance(this.channelName);
+        /** Start the streamtip cache if the keys are not null */
+        if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty()) {
+        	this.streamTipCache = StreamTipCache.instance(this.chanName);
         }
 
-        if (this.streamtipkey != null && this.streamtipkey.length() > 1) {
-            this.streamTipCache = StreamTipCache.instance(this.channelName);
+        /** Start the twitter cache if the keys are not null */
+        if (this.twitterAuthenticated) {
+        	this.twitterCache = TwitterCache.instance(this.chanName);
         }
 
-        if (this.twitterUser.length() > 0 && this.twitter_access_token.length() > 0 && this.twitter_secret_token.length() > 0 && this.twitter_consumer_key.length() > 0 && this.twitter_consumer_secret.length() > 0) {
-            if (this.twitterAuthenticated) {
-                this.twitterCache = TwitterCache.instance(this.channelName);
-            } else {
-                com.gmt2001.Console.out.println("Disabling Twitter Features. Correct Authentication Issues and Restart.");
-            }
-        }
+	    /* Start the notice timer and notice handler. */
+	    noticeTimer = NoticeTimer.instance(this.channelName, this.session);
 
-        /* Make newly created instances available to JS. */
+        /** Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("followers", this.followersCache, 0);
         Script.global.defineProperty("hosts", this.hostCache, 0);
         Script.global.defineProperty("subscribers", this.subscribersCache, 0);
         Script.global.defineProperty("channelUsers", this.channelUsersCache, 0);
-        Script.global.defineProperty("donations", this.donationsCache, 0);
+        Script.global.defineProperty("donations", this.twitchAlertsCache, 0);
         Script.global.defineProperty("streamtip", this.streamTipCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
+
+        /** Make all these to null because they are useless with multiple channels */
+        this.chanName = null;
+        this.session = null;
+        this.emotesCache = null;
+        this.followersCache = null;
+        this.hostCache = null;
+        this.subscribersCache = null;
+        this.twitchCache = null;
+        this.channelUsersCache = null;
+        this.twitchAlertsCache = null;
+        this.streamTipCache = null;
+        this.twitterCache = null;
     }
 
+    /**
+     * Get private messages from Twitch. 
+     *
+     */
     @Subscribe
-    public void onIRCPrivateMessage(IrcPrivateMessageEvent event) {
-        if (event.getSender().equalsIgnoreCase("jtv")) {
-            String message = event.getMessage().toLowerCase();
+    public void ircPrivateMessage(IrcPrivateMessageEvent event) {
+    	String sender = event.getSender();
+    	String message = event.getMessage();
 
-            if (message.startsWith("the moderators of this room are: ")) {
-                String[] spl = message.substring(33).split(", ");
+    	/** Check to see if the sender is jtv */
+    	if (sender.equalsIgnoreCase("jtv")) {
+    		/** Splice the mod list so we can get all the mods */
+    		if (message.startsWith("The moderators of this room are: ")) {
+    			String[] moderators = message.substring(33).split(", ");
 
-                for (String spl1 : spl) {
-                    if (spl1.equalsIgnoreCase(this.username)) {
-                        session.setAllowSendMessages(true);
-                    }
-                }
-            }
-        }
+    			/** Check to see if the bot is a moderator */
+    			for (String moderator : moderators) {
+    				if (moderator.equalsIgnoreCase(this.botName)) {
+    					/** Allow the bot to sends message to this session */
+    					event.getSession().setAllowSendMessages(true);
+    				}
+    			}
+    		}
+    	}
     }
 
+    /**
+     * user modes from twitch
+     *
+     */
     @Subscribe
-    public void onIRCChannelUserMode(IrcChannelUserModeEvent event) {
-        if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o") && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName())) {
-            if (!event.getAdd()) {
-                event.getSession().saySilent(".mods");
-            }
-            session.setAllowSendMessages(event.getAdd());
-        }
+    public void ircUserMode(IrcChannelUserModeEvent event) {
+    	/** Check to see if Twitch sent a mode event for the bot name */
+    	if (event.getUser().equalsIgnoreCase(this.botName) && event.getMode().equalsIgnoreCase("o")) {
+    		/** Did we get mod? if not try .mods again */
+    		if (!event.getAdd()) {
+    			event.getSession().saySilent(".mods");
+    		}
+    		/** Allow the bot to sends message to this session */
+    		event.getSession().setAllowSendMessages(event.getAdd());
+    	}
     }
 
+    /**
+     * Check to see if someone is typing in the console. 
+     *
+     */
     @Subscribe
-    public void onConsoleMessage(ConsoleInputEvent msg) {
-        boolean changed = false;
-        String  message = msg.getMsg();
-        int     followCount = 0;
+    public void consoleInput(ConsoleInputEvent event) {
+    	String message = event.getMsg();
+    	Boolean changed = false;
+    	Boolean reset = false;
+    	String arguments;
+    	String[] argument = null;
 
-        if (message == null) {
+    	/** Check to see if the message is null or has nothing in it */
+    	if (message == null || message.isEmpty()) {
+    		return;
+    	}
+
+    	/** Check for arguments */
+    	if (message.contains(" ")) {
+    		String messageString = message;
+    		message = messageString.substring(0, messageString.indexOf(" "));
+    		arguments = messageString.substring(messageString.indexOf(" ") + 1);
+    		argument = arguments.split(" ");
+    	}
+
+    	/** Chat in a channel */
+    	/*if (message.equalsIgnoreCase("chat") || message.equalsIgnoreCase("echo")) {
+    		PhantomBot.getSession(channelName).say(message.replace("chat", "").replace("echo", ""), PhantomBot.getChannel(channelName));
+    		// Need to be able to chat in a channel with multiple channels 
+    		return;
+    	}*/
+
+        /** Update the followed (followers) table. */
+        if (message.equalsIgnoreCase("fixfollowedtable")) {
+        	TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, false);
+        	return;
+	}
+
+        /** Update the followed (followers) table - forced. */
+        if (message.equalsIgnoreCase("fixfollowedtable-force")) {
+        	TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, true);
+        	return;
+	}
+
+    	/** tests a follow event */
+    	if (message.equalsIgnoreCase("followertest")) {
+    		String randomUser = generateRandomString(10);
+    		print("[CONSOLE] Executing followertest (User: " + randomUser + ")");
+    		EventBus.instance().postAsync(new TwitchFollowEvent(randomUser, PhantomBot.getChannel(this.channelName)));
+    		//Need to add a custom channel here for multi channel support. followertest (channel). argument[1]
+    		return;
+    	}
+
+    	/** tests multiple follows */
+    	if (message.equalsIgnoreCase("followerstest")) {
+    		String randomUser = generateRandomString(10);
+    		int followCount = 5;
+
+    		if (argument != null) {
+    			followCount = Integer.parseInt(argument[0]);
+    		}
+
+    		print("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
+    		for (int i = 0; i < followCount; i++) {
+    			EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.getChannel(this.channelName)));
+    			//Need to add a custom channel here for multi channel support. followerstest (channel). argument[1]
+    		}
+    		return;
+    	}
+
+    	/** Test a subscriber event */
+    	if (message.equalsIgnoreCase("subscribertest")) {
+    		String randomUser = generateRandomString(10);
+    		print("[CONSOLE] Executing subscribertest (User: " + randomUser + ")");
+    		EventBus.instance().postAsync(new NewSubscriberEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), randomUser));
+    		//Need to add a custom channel here for multi channel support. subscribertest (channel). argument[1]
+    		return;
+    	}
+
+    	/** Test a resubscriber event */
+    	if (message.equalsIgnoreCase("resubscribertest")) {
+    		String randomUser = generateRandomString(10);
+    		print("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
+    		EventBus.instance().postAsync(new NewReSubscriberEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), randomUser, "10"));
+    		//Need to add a custom channel here for multi channel support. resubscribertest (channel). argument[1]
+    		return;
+    	}
+
+    	/** Test the online event */
+    	if (message.equalsIgnoreCase("onlinetest")) {
+            print("[CONSOLE] Executing onlinetest");
+            EventBus.instance().postAsync(new TwitchOnlineEvent(PhantomBot.getChannel(this.channelName)));
+            //Need to add a custom channel here for multi channel support. onlinetest (channel). argument[1]
             return;
         }
 
-        if (message.equals("testfollow")) {
-            String randomUser = generateRandomString(10);
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testfollow (User: " + randomUser + ")");
-            EventBus.instance().post(new TwitchFollowEvent(randomUser, PhantomBot.instance().getChannel("#" + this.channel)));
-        }
-
-        if (message.startsWith("testfollows")) {
-            String[] messageSplit = message.split(" ", 2);
-            if (messageSplit.length != 2) {
-                followCount = 1;
-            } else {
-                followCount = Integer.parseInt(messageSplit[1]);
-            }
-            String randomUser = generateRandomString(10);
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testfollows (Count: " + followCount + ", User: " + randomUser + ")");
-            for (int i = 0; i < followCount; i++) {
-                EventBus.instance().post(new TwitchFollowEvent(randomUser + "_" + i, this.channel));
-            }
-        }
-
-        if (message.equals("testonline")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testonline");
-            EventBus.instance().post(new TwitchOnlineEvent(this.channel));
+        /** Test the offline event */
+        if (message.equalsIgnoreCase("offlinetest")) {
+            print("[CONSOLE] Executing offlinetest");
+            EventBus.instance().postAsync(new TwitchOfflineEvent(PhantomBot.getChannel(this.channelName)));
+            //Need to add a custom channel here for multi channel support. offlinetest (channel). argument[1]
             return;
         }
 
-        if (message.equals("testoffline")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testoffline");
-            EventBus.instance().post(new TwitchOfflineEvent(this.channel));
+        /** Test the host event */
+        if (message.equalsIgnoreCase("hosttest")) {
+            print("[CONSOLE] Executing hosttest");
+            EventBus.instance().postAsync(new TwitchHostedEvent(this.botName, PhantomBot.getChannel(this.channelName)));
+            //Need to add a custom channel here for multi channel support. hosttest (channel). argument[1]
             return;
         }
 
-        if (message.equals("testhost")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testhost");
-            EventBus.instance().post(new TwitchHostedEvent(this.username, this.channel));
+        /** test the gamewisp subscriber event */
+        if (message.equalsIgnoreCase("gamewispsubscribertest")) {
+            print("[CONSOLE] Executing gamewispsubscribertest");
+            EventBus.instance().postAsync(new GameWispSubscribeEvent(this.botName, 1));
+            //Need to add a custom channel here for multi channel support. gamewispsubscribertest (channel). argument[1]
             return;
         }
 
-        if (message.equals("testgwsub")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testgwsub");
-            EventBus.instance().post(new GameWispSubscribeEvent(this.username, 1));
+        /** test the gamewisp resubscriber event */
+        if (message.equalsIgnoreCase("gamewispresubscribertest")) {
+            print("[CONSOLE] Executing gamewispresubscribertest");
+            EventBus.instance().post(new GameWispAnniversaryEvent(this.botName, 2));
+            //Need to add a custom channel here for multi channel support. gamewispresubscribertest (channel). argument[1]
             return;
         }
 
-        if (message.equals("testgwresub")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testgwresub");
-            EventBus.instance().post(new GameWispAnniversaryEvent(this.username, 2));
-            return;
-        }
-      
-        if (message.equals("testsub")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testsub");
-            EventBus.instance().post(new NewSubscriberEvent(session, this.channel, this.username));
+        /** test the bits event */
+        if (message.equalsIgnoreCase("bitstest")) {
+            print("[CONSOLE] Executing bitstest");
+            EventBus.instance().post(new BitsEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), this.botName, "100"));
+            //Need to add a custom channel here for multi channel support. bitstest (channel). argument[1]
             return;
         }
 
-        if (message.equals("testresub")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testresub");
-            EventBus.instance().post(new NewReSubscriberEvent(session, this.channel, this.username, "5"));
-            return;
-        }
-
-        if (message.equals("testbits")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing testbits");
-            EventBus.instance().post(new BitsEvent(session, this.channel, this.username, "100"));
-            return;
-        }
-
-        if (message.equals("debugon")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing debugon: Enable Debug Mode");
+        /** enables debug mode */
+        if (message.equalsIgnoreCase("debugon")) {
+            print("[CONSOLE] Executing debugon: Enable Debug Mode");
             PhantomBot.setDebugging(true);
             return;
         }
 
-        if (message.equals("debugoff")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing debugoff: Disable Debug Mode");
+        /** disables debug mode */
+        if (message.equalsIgnoreCase("debugoff")) {
+            print("[CONSOLE] Executing debugoff: Disable Debug Mode");
             PhantomBot.setDebugging(false);
             return;
         }
 
-        if (message.startsWith("inidb.get")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing inidb.get");
-            String spl[] = message.split(" ", 4);
-
-            com.gmt2001.Console.out.println(dataStoreObj.GetString(spl[1], spl[2], spl[3]));
-            return;
+        /** Reset the bot login */
+        if (message.equalsIgnoreCase("reset")) {
+        	print("Are you sure you want to reset the bot login? [y/n]");
+        	String check = System.console().readLine().trim();
+        	if (check.equals("y")) {
+        		reset = true;
+        		changed = true;
+        	} else {
+        		print("No changes were made.");
+        		return;
+        	}
         }
 
-        if (message.startsWith("inidb.set")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing inidb.set");
-            String spl[] = message.split(" ", 5);
-
-            dataStoreObj.SetString(spl[1], spl[2], spl[3], spl[4]);
-            com.gmt2001.Console.out.println(dataStoreObj.GetString(spl[1], spl[2], spl[3]));
-            return;
+        /** Change the apiOAuth token */
+        if (message.equalsIgnoreCase("apioauth")) {
+        	System.out.print("Please enter you're oauth token that you generated from https://phantombot.tv/oauth while logged as the caster: ");
+        	String newToken = System.console().readLine().trim();
+        	apiOAuth = newToken;
+        	changed = true;
         }
 
-        if (message.equals("reset")) {
-            com.gmt2001.Console.out.println("Type 'yes' to confirm that you want to reset your bot login information. Type 'no' if you do not want to processed.");
-            String check = System.console().readLine().trim();
-            if (check.equals("yes") || check.equals("y")) {
-                resetLoging = true;
-                changed = true;
-            } else {
-                com.gmt2001.Console.out.println("No changes where made.");
-            }
-        }
-
-        if (message.equals("apioauth")) {
-            com.gmt2001.Console.out.print("Please enter you're oauth token that you generated from https://phantombot.tv/oauth while logged as the caster: ");
-            String newoauth = System.console().readLine().trim();
-            TwitchAPIv3.instance().SetOAuth(newoauth);
-            apioauth = newoauth;
-            changed = true;
-        }
-
-        if (message.equals("clientid")) {
-            com.gmt2001.Console.out.print("Please enter the bot api clientid string: ");
-            String newclientid = System.console().readLine().trim();
-
-            TwitchAPIv3.instance().SetClientID(newclientid);
-            clientid = newclientid;
-
-            changed = true;
-        }
-
-        if (message.equals("baseport")) {
-            com.gmt2001.Console.out.print("Please enter a new base port: ");
-            String newbaseport = System.console().readLine().trim();
-
-            baseport = Integer.parseInt(newbaseport);
-
-            changed = true;
-        }
-
-        if (message.equals("youtubekey")) {
-            com.gmt2001.Console.out.print("Please enter a new YouTube API key: ");
-            String newyoutubekey = System.console().readLine().trim();
-
-            YouTubeAPIv3.instance().SetAPIKey(newyoutubekey);
-            youtubekey = newyoutubekey;
-
-            changed = true;
-        }
-
-        if (message.equals("paneluser")) {
-            com.gmt2001.Console.out.print("Please enter a new panel username: ");
-            String newpaneluser = System.console().readLine().trim();
-            paneluser = newpaneluser;
-            changed = true;
-        }
-
-        if (message.equals("panelpassword")) {
-            com.gmt2001.Console.out.print("Please enter a new panel password: ");
-            String newpanelpassword = System.console().readLine().trim();
-            panelpassword = newpanelpassword;
-            changed = true;
-        }
-
-        if (message.equals("webenable")) {
-            com.gmt2001.Console.out.print("Please note that the music server will also be disabled if the web server is disabled. The bot will require a restart for this to take effect. Type true or false to enable/disable web server: ");
-            String newwebenable = System.console().readLine().trim();
-            changed = true;
-
-            webenable = newwebenable.equalsIgnoreCase("1") || newwebenable.equalsIgnoreCase("true");
-        }
-
-        if (message.equals("musicenable")) {
-            if (!webenable) {
-                com.gmt2001.Console.out.println("Web server must be enabled first. ");
-            } else {
-                com.gmt2001.Console.out.print("The bot will require a restart for this to take effect. Please type true or false to enable/disable music server: ");
-                String newmusicenable = System.console().readLine().trim();
-                changed = true;
-
-                musicenable = newmusicenable.equalsIgnoreCase("1") || newmusicenable.equalsIgnoreCase("true");
-            }
-        }
-
-        if (message.equals("twitchalertskey")) {
-            com.gmt2001.Console.out.print("Please enter your twitch alerts key generated from https://phantombot.tv/twitchalerts/ while logged in as the caster: ");
-            String newtwitchalertskey = System.console().readLine().trim();
-
-            TwitchAlertsAPIv1.instance().SetAccessToken(newtwitchalertskey);
-            twitchalertskey = newtwitchalertskey;
-
-            changed = true;
-        }
-
-        if (message.equals("twitchalertslimit")) {
-            com.gmt2001.Console.out.print("Please enter Twitch Alerts pull limit: ");
-            int newtwitchalertslimit;
+        /** Setup for MySql */
+        if (message.equalsIgnoreCase("mysqlsetup")) {
             try {
-                newtwitchalertslimit = Integer.parseInt(System.console().readLine().trim());
-            } catch (NumberFormatException nfe) {
-                com.gmt2001.Console.out.println("Bad integer, defaulting to 5.");
-                newtwitchalertslimit = 5;
-            }
-            TwitchAlertsAPIv1.instance().SetDonationPullLimit(newtwitchalertslimit);
-
-            changed = true;
-        }
-
-        if (message.equals("streamtipkey")) {
-            com.gmt2001.Console.out.print("Please enter your stream tip key:");
-            String newstreamtipkey = System.console().readLine().trim();
-
-            StreamTipAPI.instance().SetAccessToken(newstreamtipkey);
-            streamtipkey = newstreamtipkey;
-
-            changed = true;
-        }
-
-        if (message.equals("streamtipid")) {
-            com.gmt2001.Console.out.print("Please enter your stream tip client id key:");
-            String newstreamtipid = System.console().readLine().trim();
-
-            StreamTipAPI.instance().SetClientId(newstreamtipid);
-            streamtipid = newstreamtipid;
-
-            changed = true;
-        }
-
-        if (message.equals("streamtiplimit")) {
-            com.gmt2001.Console.out.print("Please enter Twitch Alerts pull limit: ");
-            int newstreamtiplimit;
-            try {
-                newstreamtiplimit = Integer.parseInt(System.console().readLine().trim());
-            } catch (NumberFormatException nfe) {
-                com.gmt2001.Console.out.println("Bad integer, defaulting to 5.");
-                newstreamtiplimit = 5;
-            }
-            StreamTipAPI.instance().SetDonationPullLimit(newstreamtiplimit);
-
-            changed = true;
-        }
-
-        if (message.equals("mysqlsetup")) {
-            try {
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("PhantomBot MySQL setup.");
-                com.gmt2001.Console.out.println();
+                print("");
+                print("PhantomBot MySQL setup.");
+                print("");
 
                 com.gmt2001.Console.out.print("Please enter your MySQL host name: ");
                 String newHost = System.console().readLine().trim();
-                mysql_db_host = newHost;
+                mySqlHost = newHost;
 
                 com.gmt2001.Console.out.print("Please enter your MySQL port: ");
                 String newPost = System.console().readLine().trim();
-                mysql_db_port = newPost;
+                mySqlPort = newPost;
 
                 com.gmt2001.Console.out.print("Please enter your MySQL db name: ");
                 String newName = System.console().readLine().trim();
-                mysql_db_name = newName;
+                mySqlName = newName;
 
                 com.gmt2001.Console.out.print("Please enter a username for MySQL: ");
                 String newUser = System.console().readLine().trim();
-                mysql_db_user = newUser;
+                mySqlUser = newUser;
 
                 com.gmt2001.Console.out.print("Please enter a password for MySQL: ");
                 String newPass = System.console().readLine().trim();
-                mysql_db_pass = newPass;
+                mySqlPass = newPass;
 
-                datastore = "MySQLStore";
+                dataStoreType = "MySQLStore";
 
-                com.gmt2001.Console.out.println("PhantomBot MySQL setup done.");
+                print("PhantomBot MySQL setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
 
-        if (message.equals("gamewispsetup")) {
+        /** Setup for GameWisp */
+        if (message.equalsIgnoreCase("gamewispsetup")) {
             try {
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("PhantomBot GameWisp setup.");
-                com.gmt2001.Console.out.println();
+                print("");
+                print("PhantomBot GameWisp setup.");
+                print("");
 
                 com.gmt2001.Console.out.print("Please enter your GameWisp OAuth key: ");
                 String newToken = System.console().readLine().trim();
-                gamewispauth = newToken;
+                gameWispOAuth = newToken;
 
                 com.gmt2001.Console.out.print("Please enter your GameWisp refresh key: ");
                 String newToken2 = System.console().readLine().trim();
-                gamewisprefresh = newToken2;
+                gameWispRefresh = newToken2;
 
-                com.gmt2001.Console.out.println("PhantomBot GameWisp setup done.");
+                print("PhantomBot GameWisp setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
 
-        if (message.equals("twitchalertssetup")) {
+        /** Setup for TwitchAlerts */
+        if (message.equalsIgnoreCase("twitchalertssetup")) {
             try {
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("PhantomBot TwitchAlerts setup.");
-                com.gmt2001.Console.out.println();
+                print("");
+                print("PhantomBot TwitchAlerts setup.");
+                print("");
 
                 com.gmt2001.Console.out.print("Please enter your TwitchAlerts OAuth key: ");
                 String newToken = System.console().readLine().trim();
-                twitchalertskey = newToken;
+                twitchAlertsKey = newToken;
 
-                com.gmt2001.Console.out.println("PhantomBot TwitchAlerts setup done.");
+                print("PhantomBot TwitchAlerts setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
 
-        if (message.equals("streamtipsetup")) {
+        /** Setup for StreamTip */
+        if (message.equalsIgnoreCase("streamtipsetup")) {
             try {
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("PhantomBot StreamTip setup.");
-                com.gmt2001.Console.out.println();
+                print("");
+                print("PhantomBot StreamTip setup.");
+                print("");
 
                 com.gmt2001.Console.out.print("Please enter your StreamTip Api OAuth: ");
                 String newToken = System.console().readLine().trim();
-                streamtipkey = newToken;
+                streamTipOAuth = newToken;
 
                 com.gmt2001.Console.out.print("Please enter your StreamTip Client Id: ");
                 String newId = System.console().readLine().trim();
-                streamtipid = newId;
+                streamTipClientId = newId;
 
-                com.gmt2001.Console.out.println("PhantomBot StreamTip setup done.");
+                print("PhantomBot StreamTip setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
 
-        if (message.equals("panelsetup")) {
+        /** Setup the web panel login info */
+        if (message.equalsIgnoreCase("panelsetup")) {
             try {
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("PhantomBot Web Panel setup.");
-                com.gmt2001.Console.out.println("Note: Do not use any ascii characters in your username of password.");
-                com.gmt2001.Console.out.println();
+                print("");
+                print("PhantomBot Web Panel setup.");
+                print("Note: Do not use any ascii characters in your username of password.");
+                print("");
 
                 com.gmt2001.Console.out.print("Please enter a username of your choice: ");
                 String newUser = System.console().readLine().trim();
-                paneluser = newUser;
+                panelUsername = newUser;
 
                 com.gmt2001.Console.out.print("Please enter a password of your choice: ");
                 String newPass = System.console().readLine().trim();
-                panelpassword = newPass;
+                panelPassword = newPass;
 
-                com.gmt2001.Console.out.println("PhantomBot Web Panel setup done.");
+                print("PhantomBot Web Panel setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
 
-        if (message.equals("twittersetup")) {
+        /** Setup for Twitter */
+        if (message.equalsIgnoreCase("twittersetup")) {
             try {
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("PhantomBot Twitter setup.");
-                com.gmt2001.Console.out.println();
+                print("");
+                print("PhantomBot Twitter setup.");
+                print("");
 
                 com.gmt2001.Console.out.print("Please enter your Twitter username: ");
                 String newUser = System.console().readLine().trim();
-                twitterUser = newUser;
+                twitterUsername = newUser;
 
                 com.gmt2001.Console.out.print("Please enter your consumer key: ");
                 String newConsumerKey = System.console().readLine().trim();
-                twitter_consumer_key = newConsumerKey;
+                twitterConsumerToken = newConsumerKey;
 
                 com.gmt2001.Console.out.print("Please enter your consumer secret: ");
                 String newConsumerSecret = System.console().readLine().trim();
-                twitter_consumer_secret = newConsumerSecret;
+                twitterConsumerSecret = newConsumerSecret;
 
                 com.gmt2001.Console.out.print("Please enter your access token: ");
                 String newAccess = System.console().readLine().trim();
-                twitter_access_token = newAccess;
+                twitterAccessToken = newAccess;
 
                 com.gmt2001.Console.out.print("Please enter your access token secret: ");
                 String newSecretAccess = System.console().readLine().trim();
-                twitter_secret_token = newSecretAccess;
+                twitterSecretToken = newSecretAccess;
 
+                /** Delete the old Twitter file if it exists */
                 try {
                     File f = new File("./twitter.txt"); 
                     f.delete();
                 } catch (NullPointerException ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
+                    com.gmt2001.Console.debug.println(ex);
                 }
 
-                com.gmt2001.Console.out.println("PhantomBot Twitter setup done.");
+                print("PhantomBot Twitter setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
 
+        /** Check to see if any settings have been changed */
         if (changed) {
-            try {
-                String data = "";
-                if (!resetLoging) {
-                    data += "user=" + username + "\r\n";
+        	String data = "";
+        	try {
+        		if (!reset) {
+        			data += "user=" + botName + "\r\n";
                     data += "oauth=" + oauth + "\r\n";
-                    data += "apioauth=" + apioauth + "\r\n";
-                    data += "paneluser=" + paneluser + "\r\n";
-                    data += "panelpassword=" + panelpassword + "\r\n";
-                    data += "channel=" + channelName.replace("#", "") + "\r\n";
-                    data += "webauth=" + webauth + "\r\n";
-                    data += "webauthro=" + webauthro + "\r\n";
-                    data += "clientid=" + clientid + "\r\n";
+                    data += "apioauth=" + apiOAuth + "\r\n";
+                    data += "paneluser=" + panelUsername + "\r\n";
+                    data += "panelpassword=" + panelPassword + "\r\n";
+                    data += "channel=" + channelName + "\r\n";
+                    data += "webauth=" + webOAuth + "\r\n";
+                    data += "webauthro=" + webOAuthThro + "\r\n";
+                    data += "clientid=" + clientId + "\r\n";
                     data += "owner=" + ownerName + "\r\n";
-                    data += "baseport=" + baseport + "\r\n";
-                    data += "msglimit30=" + msglimit30 + "\r\n";
-                    data += "whisperlimit60=" + whisperlimit60 + "\r\n";
-                    data += "datastore=" + datastore + "\r\n";
-                    data += "youtubekey=" + youtubekey + "\r\n";
-                    data += "webenable=" + webenable + "\r\n";
-                    data += "musicenable=" + musicenable + "\r\n";
-                    data += "ytauth=" + ytauth + "\r\n";
-                    data += "ytauthro=" + ytauthro + "\r\n";
-                    data += "usehttps=" + usehttps + "\r\n";
-                    data += "keystorepath=" + keystorepath + "\r\n";
-                    data += "keystorepassword=" + keystorepassword + "\r\n";
-                    data += "keypassword=" + keypassword + "\r\n";
-                    data += "twitchalertskey=" + twitchalertskey + "\r\n";
-                    data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
-                    data += "streamtipkey=" + streamtipkey + "\r\n";
-                    data += "streamtiplimit=" + streamtiplimit + "\r\n";
-                    data += "streamtipid=" + streamtipid + "\r\n";
-                    data += "gamewispauth=" + gamewispauth + "\r\n";
-                    data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
-                    data += "mysqlhost=" + mysql_db_host + "\r\n";
-                    data += "mysqlport=" + mysql_db_port + "\r\n";
-                    data += "mysqlname=" + mysql_db_name + "\r\n";
-                    data += "mysqluser=" + mysql_db_user + "\r\n";
-                    data += "mysqlpass=" + mysql_db_pass + "\r\n";
-                    data += "twitterUser=" + twitterUser + "\r\n";
-                    data += "twitter_consumer_key=" + twitter_consumer_key + "\r\n";
-                    data += "twitter_consumer_secret=" + twitter_consumer_secret + "\r\n";
-                    data += "twitter_access_token=" + twitter_access_token + "\r\n";
-                    data += "twitter_secret_token=" + twitter_secret_token + "\r\n";
-                    
-                    if (!log_timezone.isEmpty()) {
-                        data += "logtimezone=" + log_timezone + "\r\n";
-                    }
-                }
+                    data += "baseport=" + basePort + "\r\n";
+                    data += "msglimit30=" + messageLimit + "\r\n";
+                    data += "whisperlimit60=" + whisperLimit + "\r\n";
+                    data += "datastore=" + dataStoreType + "\r\n";
+                    data += "youtubekey=" + youtubeKey + "\r\n";
+                    data += "webenable=" + webEnabled + "\r\n";
+                    data += "musicenable=" + musicEnabled + "\r\n";
+                    data += "ytauth=" + youtubeOAuth + "\r\n";
+                    data += "ytauthro=" + youtubeOAuthThro + "\r\n";
+                    data += "usehttps=" + useHttps + "\r\n";
+                    data += "keystorepath=" + keyStorePath + "\r\n";
+                    data += "keystorepassword=" + keyStorePassword + "\r\n";
+                    data += "keypassword=" + keyPassword + "\r\n";
+                    data += "twitchalertskey=" + twitchAlertsKey + "\r\n";
+                    data += "twitchalertslimit=" + twitchAlertsLimit + "\r\n";
+                    data += "streamtipkey=" + streamTipOAuth + "\r\n";
+                    data += "streamtiplimit=" + streamTipLimit + "\r\n";
+                    data += "streamtipid=" + streamTipClientId + "\r\n";
+                    data += "gamewispauth=" + gameWispOAuth + "\r\n";
+                    data += "gamewisprefresh=" + gameWispRefresh + "\r\n";
+                    data += "mysqlhost=" + mySqlHost + "\r\n";
+                    data += "mysqlport=" + mySqlPort + "\r\n";
+                    data += "mysqlname=" + mySqlName + "\r\n";
+                    data += "mysqluser=" + mySqlUser + "\r\n";
+                    data += "mysqlpass=" + mySqlPass + "\r\n";
+                    data += "twitterUser=" + twitterUsername + "\r\n";
+                    data += "twitter_consumer_key=" + twitterConsumerToken + "\r\n";
+                    data += "twitter_consumer_secret=" + twitterConsumerSecret + "\r\n";
+                    data += "twitter_access_token=" + twitterAccessToken + "\r\n";
+                    data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
+                    data += "logtimezone=" + timeZone + "\r\n";
+        		}
 
-                Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-                dataStoreObj.SaveChangedNow();
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("Changes have been saved.");
-                com.gmt2001.Console.out.println("Now exiting...");
-                com.gmt2001.Console.out.println();
-                resetLoging = false;
+        		/** Write the new info to the bot login */
+        		Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+        		/** save all the data */
+                dataStore.SaveAll(true);
+                print("");
+                print("Changes have been saved.");
+                print("Now exiting...");
+                print("");
+                reset = false;
+                /** Exit the bot */
                 System.exit(0);
-            } catch (IOException ex) {
+        	} catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
             return;
         }
 
-        if (message.equals("save")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing save");
-            dataStoreObj.SaveAll(true);
-            return;
+        /** Save everything */
+        if (message.equalsIgnoreCase("save")) {
+        	print("[CONSOLE] Executing save");
+        	dataStore.SaveAll(true);
+        	return;
         }
 
-        if (message.equals("quicksave")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing quicksave");
-            dataStoreObj.SaveChangedNow();
-            return;
+        /** Exit phantombot */
+        if (message.equalsIgnoreCase("exit")) {
+        	print("[CONSOLE] Executing exit");
+        	System.exit(0);
+        	return;
         }
 
-        if (message.equals("exit")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing exit");
-            System.exit(0);
-        }
-        handleCommand(username, message);
+        /** handle any other commands */
+        handleCommand(botName, event.getMsg(), PhantomBot.getChannel(this.channelName));
+        // Need to support channel here. command (channel) argument[1]
     }
 
-    public void handleCommand(String sender, String commandString) {
-        String command, arguments;
-        int split = commandString.indexOf(' ');
+    /** Handle commands */
+    public void handleCommand(String username, String command, Channel channel) {
+    	String arguments = "";
 
-        if (split == -1) {
-            command = commandString;
-            arguments = "";
-        } else {
-            command = commandString.substring(0, split);
-            arguments = commandString.substring(split + 1);
+        /** Does the command have arguments? */
+        if (command.contains(" ")) {
+            String commandString = command;
+            command = commandString.substring(0, commandString.indexOf(" "));
+            arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
-
-        ScriptEventManager.instance().runDirect(new CommandEvent(sender, command, arguments));
+        ScriptEventManager.instance().runDirect(new CommandEvent(username, command, arguments, null, channel));
     }
 
-    private static void sqlite2mysql() {
-        com.gmt2001.Console.out.println("Performing SQLite to MySQL Conversion...");
+    /** Handle commands */
+    public void handleCommand(String username, String command) {
+    	String arguments = "";
+
+        /** Does the command have arguments? */
+        if (command.contains(" ")) {
+            String commandString = command;
+            command = commandString.substring(0, commandString.indexOf(" "));
+            arguments = commandString.substring(commandString.indexOf(" ") + 1);
+        }
+        ScriptEventManager.instance().runDirect(new CommandEvent(username, command, arguments));
+    }
+
+    /** convert SqliteStore to MySql */
+    private void sqlite2MySql() {
+        print("Performing SQLite to MySQL Conversion...");
         MySQLStore mysql = MySQLStore.instance();
         SqliteStore sqlite = SqliteStore.instance();
 
         File backupFile = new File("phantombot.db.backup");
         if (backupFile.exists()) {
-            com.gmt2001.Console.out.println("A phantombot.db.backup file already exists. Please rename or remove this file first.");
-            com.gmt2001.Console.out.println("Exiting PhantomBot");
+            print("A phantombot.db.backup file already exists. Please rename or remove this file first.");
+            print("Exiting PhantomBot");
             System.exit(0);
         }
 
-        com.gmt2001.Console.out.println("  Wiping Existing MySQL Tables...");
+        print("Wiping Existing MySQL Tables...");
         String[] deltables = mysql.GetFileList();
         for (String table : deltables) {
             mysql.RemoveFile(table);
         }
 
-        mysql.setAutoCommit(false);
-        com.gmt2001.Console.out.println("  Converting SQLite to MySQL...");
+        print("Converting SQLite to MySQL...");
         String[] tables = sqlite.GetFileList();
         for (String table : tables) {
-            com.gmt2001.Console.out.println("    Converting Table: " + table);
+            print("Converting Table: " + table);
             String[] sections = sqlite.GetCategoryList(table);
             for (String section : sections) {
                 String[] keys = sqlite.GetKeyList(table, section);
@@ -1366,34 +1535,31 @@ public class PhantomBot implements Listener {
                 }
             }
         }
-        mysql.setAutoCommit(true);
         sqlite.CloseConnection();
-        com.gmt2001.Console.out.println("  Finished Converting Tables.");
-
-        com.gmt2001.Console.out.println("  Moving phantombot.db to phantombot.db.backup");
+        print("Finished Converting Tables.");
+        print("Moving phantombot.db to phantombot.db.backup");
 
         try {
             FileUtils.moveFile(new java.io.File("phantombot.db"), new java.io.File("phantombot.db.backup"));
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to move phantombot.db to phantombot.db.backup: " + ex.getMessage());
         }
-
-        com.gmt2001.Console.out.println("SQLite to MySQL Conversion is Complete");
-        
+        print("SQLite to MySQL Conversion is Complete");
     }
 
-    private static void ini2mysql(boolean delete) {
-        com.gmt2001.Console.out.println("Performing INI to MySQL Conversion...");
+    /** Convert iniStore to MySql */
+    private void ini2MySql(Boolean delete) {
+        print("Performing INI to MySQL Conversion...");
         IniStore ini = IniStore.instance();
         MySQLStore mysql = MySQLStore.instance();
 
-        com.gmt2001.Console.out.println("  Wiping Existing MySQL Tables...");
+        print("Wiping Existing MySQL Tables...");
         String[] deltables = mysql.GetFileList();
         for (String table : deltables) {
             mysql.RemoveFile(table);
         }
 
-        com.gmt2001.Console.out.println("  Converting IniStore to MySQL...");
+        print("Converting IniStore to MySQL...");
         String[] files = ini.GetFileList();
         int i = 0;
         String str;
@@ -1406,7 +1572,7 @@ public class PhantomBot implements Listener {
                 str += " ";
             }
             maxlen = Math.max(maxlen, str.length());
-            com.gmt2001.Console.out.println("\r  Converting File: " + file);
+            print("\rConverting File: " + file);
             mysql.AddFile(file);
 
             String[] sections = ini.GetCategoryList(file);
@@ -1433,13 +1599,10 @@ public class PhantomBot implements Listener {
 
                     String value = ini.GetString(file, section, key);
                     mysql.SetString(file, section, key, value);
-
                     k++;
                 }
-
                 b++;
             }
-
             i++;
         }
 
@@ -1447,35 +1610,36 @@ public class PhantomBot implements Listener {
         for (i = 0; i < maxlen - 4; i++) {
             str += " ";
         }
-        com.gmt2001.Console.out.println("\r  Conversion from IniStore to MySQL is Complete" + str);
+        com.gmt2001.Console.out.print("\rConversion from IniStore to MySQL is Complete" + str);
 
         if (delete) {
-            com.gmt2001.Console.out.print("  Deleting IniStore folder...");
+            print("Deleting IniStore folder...");
             for (String file : files) {
                 ini.RemoveFile(file);
             }
 
             File f = new File("./inistore");
             if (f.delete()) {
-                com.gmt2001.Console.out.println("Process is Done");
+                print("Process is Done");
             }
         }
     }
 
-    private static void ini2sqlite(boolean delete) {
-        com.gmt2001.Console.out.print("Performing INI 2 SQLite Upgrade");
+    /** Convert iniStore to SqliteStore */
+    private void ini2Sqlite(boolean delete) {
+        print("Performing INI 2 SQLite Upgrade");
         IniStore ini = IniStore.instance();
         SqliteStore sqlite = SqliteStore.instance();
-        com.gmt2001.Console.out.println("done");
+        print("done");
 
-        com.gmt2001.Console.out.print("  Wiping Existing SQLiteStore...");
+        print("Wiping Existing SQLiteStore...");
         String[] deltables = sqlite.GetFileList();
         for (String table : deltables) {
             sqlite.RemoveFile(table);
         }
-        com.gmt2001.Console.out.println("done");
+        print("done");
 
-        com.gmt2001.Console.out.print("  Copying IniStore to SQLiteStore...");
+        print("Copying IniStore to SQLiteStore...");
         String[] files = ini.GetFileList();
         int i = 0;
         String str;
@@ -1488,7 +1652,7 @@ public class PhantomBot implements Listener {
                 str += " ";
             }
             maxlen = Math.max(maxlen, str.length());
-            com.gmt2001.Console.out.print("\r  Copying IniStore to SQLiteStore..." + str);
+            com.gmt2001.Console.out.print("\r Copying IniStore to SQLiteStore..." + str);
             sqlite.AddFile(file);
 
             String[] sections = ini.GetCategoryList(file);
@@ -1501,7 +1665,7 @@ public class PhantomBot implements Listener {
                     str += " ";
                 }
                 maxlen = Math.max(maxlen, str.length());
-                com.gmt2001.Console.out.print("\r  Copying IniStore to SQLiteStore..." + str);
+                com.gmt2001.Console.out.print("\rCopying IniStore to SQLiteStore..." + str);
 
                 String[] keys = ini.GetKeyList(file, section);
                 int k = 0;
@@ -1513,17 +1677,15 @@ public class PhantomBot implements Listener {
                         str += " ";
                     }
                     maxlen = Math.max(maxlen, str.length());
-                    com.gmt2001.Console.out.print("\r  Copying IniStore to SQLiteStore..." + str);
+                    com.gmt2001.Console.out.print("\rCopying IniStore to SQLiteStore..." + str);
 
                     String value = ini.GetString(file, section, key);
                     sqlite.SetString(file, section, key, value);
 
                     k++;
                 }
-
                 b++;
             }
-
             i++;
         }
 
@@ -1531,121 +1693,141 @@ public class PhantomBot implements Listener {
         for (i = 0; i < maxlen - 4; i++) {
             str += " ";
         }
-        com.gmt2001.Console.out.println("\r  Copying IniStore to SQLiteStore is Completed" + str);
+        com.gmt2001.Console.out.print("\rCopying IniStore to SQLiteStore is Completed" + str);
 
         if (delete) {
-            com.gmt2001.Console.out.print("  Deleting IniStore folder...");
+            print("Deleting IniStore folder...");
             for (String file : files) {
                 ini.RemoveFile(file);
             }
 
+            /* Delete the old inistore folder */
             File f = new File("./inistore");
             if (f.delete()) {
-                com.gmt2001.Console.out.println("Process is Done");
+                print("Process is Done");
             }
         }
     }
 
+    /** Load up main */
     public static void main(String[] args) throws IOException {
-        String mysql_db_host = "";
-        String mysql_db_port = "";
-        String mysql_db_name = "";
-        String mysql_db_user = "";
-        String mysql_db_pass = "";
-        String user = "";
-        String oauth = "";
-        String webauth = "";
-        String webauthro = "";
-        String paneluser = "";
-        String panelpassword = "";
-        String ytauth = "";
-        String ytauthro = "";
-        String gamewispauth = "";
-        String gamewisprefresh = "";
-        String twitchalertskey = "";
-        int twitchalertslimit = 5;
-        String streamtipkey = "";
-        String streamtipid = "";
-        int streamtiplimit = 1;
-        String apioauth = "";
-        String clientid = "";
-        String channel = "";
-        String owner = "";
-        int baseport = 25000;
-        double msglimit30 = 0;
-        double whisperlimit60 = 0;
-        String datastore = "";
-        String datastoreconfig = "";
-        String youtubekey = "";
-        boolean webenable = true;
-        boolean musicenable = true;
-        boolean usehttps = false;
-        String keystorepath = "";
-        String keystorepassword = "";
-        String keypassword = "";
-        String log_timezone = "";
+    	/** Bot Information */
+	    String botName = "";
+	    String channelName = "";
+	    String ownerName = "";
+	    String oauth = "";
+	    String apiOAuth = "";
+	    String clientId = "";
+	    Double messageLimit = 18.75;
+	    Double whisperLimit = 60.0;
+    
+	    /** Web Information */
+	    String panelUsername = "";
+	    String panelPassword = "";
+	    String webOAuth = "";
+	    String webOAuthThro = "";
+	    String youtubeOAuth = "";
+	    String youtubeOAuthThro = "";
+	    String youtubeKey = "";
+	    Boolean webEnabled = true;
+	    Boolean musicEnabled = true;
+	    Boolean useHttps = false;
+	    int basePort = 25000;
+    
+	    /** DataStore Information */
+	    String dataStoreType = "";
+	    String dataStoreConfig = "";
+    
+	    /** MySQL Information */
+	    String mySqlConn = "";
+	    String mySqlHost = "";
+	    String mySqlPort = "";
+	    String mySqlName = "";
+	    String mySqlUser = "";
+	    String mySqlPass = "";
+    
+	    /** Twitter Information */
+	    String twitterUsername = "";
+	    String twitterAccessToken = "";
+	    String twitterSecretToken = "";
+	    String twitterConsumerSecret = "";
+	    String twitterConsumerToken = "";
+    
+	    /** TwitchAlerts Information */
+	    String twitchAlertsKey = "";
+	    int twitchAlertsLimit = 5;
+    
+	    /** StreamTip Information */
+	    String streamTipOAuth = "";
+	    String streamTipClientId = "";
+	    int streamTipLimit = 5;
+    
+	    /** GameWisp Information */
+	    String gameWispOAuth = "";
+	    String gameWispRefresh = "";
 
-        String twitterUser = "";
-        String twitter_access_token = "";
-        String twitter_secret_token = "";
-        String twitter_consumer_key = "";
-        String twitter_consumer_secret = "";
-
-
-        boolean changed = false;
+	    /** Other information */
+	    Boolean reloadScripts = false;
+        String timeZone = "";
+        Boolean changed = false;
+        String keyStorePath = "";
+	    String keyStorePassword = "";
+	    String keyPassword = "";
+	    Boolean newSetup = false;
 
         if (args.length > 0) {
             for (String arg : args) {
                 if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
                     System.out.println("\r\nUsage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [options]\r\n\r\n"
-                                     + "Options:\r\n"
-                                     + "    [printlogin]\r\n"
-                                     + "    [user=<bot username>]\r\n"
-                                     + "    [oauth=<bot irc oauth>]\r\n"
-                                     + "    [apioauth=<editor oauth>]\r\n"
-                                     + "    [clientid=<oauth clientid>]\r\n"
-                                     + "    [channel=<channel to join>]\r\n"
-                                     + "    [owner=<bot owner username>]\r\n"
-                                     + "    [baseport=<bot webserver port>]\r\n"
-                                     + "    [msglimit30=<message limit per 30 seconds>]\r\n"
-                                     + "    [whisperlimit60=<whisper limit per 60 seconds>]\r\n"
-                                     + "    [youtubekey=<youtube api key>]\r\n"
-                                     + "    [webenable=<true | false>]\r\n"
-                                     + "    [musicenable=<true | false>]\r\n"
-                                     + "    [twitchalertskey=<twitch alerts key>]\r\n"
-                                     + "    [twitchalertslimit=<limit>]\r\n"
-                                     + "    [streamtipkey=<stream tip key>]\r\n"
-                                     + "    [streamtiplimit=<limit>]\r\n"
-                                     + "    [gamewispauth=<gamewisp oauth>]\r\n"
-                                     + "    [gamewisprefresh=<gamewisp refresh key>]\r\n"
-                                     + "    [paneluser=<username>]\r\n"
-                                     + "    [panelpassword=<password>]\r\n"
-                                     + "    [mysqlhost=<MySQL server hostname>]\r\n"
-                                     + "    [mysqlport=<MySQL server port>]\r\n"
-                                     + "    [mysqlname=<MySQL database name>]\r\n"
-                                     + "    [mysqluser=<MySQL username>]\r\n"
-                                     + "    [mysqlpass=<MySQL password>]\r\n"
-                                     + "    [datastore=<IniStore|TempStore|SqliteStore|MySQLStore>] \r\n"
-                                     + "    [datastoreconfig=<IniStore Folder Name|SqliteStore config file>]\r\n\r\n"
-            
-                                     + "DataStore Types:\r\n"
-                                     + "    IniStore: .ini files stored in inifiles directory\r\n"
-                                     + "    TempStore: Memory store, lost on shutdown\r\n"
-                                     + "    MySQLStore: MySQL Database\r\n"
-                                     + "    SqliteStore: Default. SQLite3 database\r\n\r\n"
-                                
-                                     + "Ports:\r\n"
-                                     + "    EventWebSocketServer <baseport> + 2\r\n"
-                                     + "    YouTubeSocketServer  <baseport> + 3\r\n"
-                                     + "    PanelWebSocketServer <baseport> + 4\r\n"
-                                     + "    NEW HTTP Server      <baseport> + 5");
+                    + "Options:\r\n"
+                    + "    [printlogin]\r\n"
+                    + "    [user=<bot username>]\r\n"
+                    + "    [oauth=<bot irc oauth>]\r\n"
+                    + "    [apioauth=<editor oauth>]\r\n"
+                    + "    [clientid=<oauth clientid>]\r\n"
+                    + "    [channel=<channel to join>]\r\n"
+                    + "    [owner=<bot owner username>]\r\n"
+                    + "    [baseport=<bot webserver port>]\r\n"
+                    + "    [msglimit30=<message limit per 30 seconds>]\r\n"
+                    + "    [whisperlimit60=<whisper limit per 60 seconds>]\r\n"
+                    + "    [youtubekey=<youtube api key>]\r\n"
+                    + "    [webenable=<true | false>]\r\n"
+                    + "    [musicenable=<true | false>]\r\n"
+                    + "    [twitchalertskey=<twitch alerts key>]\r\n"
+                    + "    [twitchalertslimit=<limit>]\r\n"
+                    + "    [streamtipkey=<stream tip key>]\r\n"
+                    + "    [streamtiplimit=<limit>]\r\n"
+                    + "    [gamewispauth=<gamewisp oauth>]\r\n"
+                    + "    [gamewisprefresh=<gamewisp refresh key>]\r\n"
+                    + "    [paneluser=<username>]\r\n"
+                    + "    [panelpassword=<password>]\r\n"
+                    + "    [mysqlhost=<MySQL server hostname>]\r\n"
+                    + "    [mysqlport=<MySQL server port>]\r\n"
+                    + "    [mysqlname=<MySQL database name>]\r\n"
+                    + "    [mysqluser=<MySQL username>]\r\n"
+                    + "    [mysqlpass=<MySQL password>]\r\n"
+                    + "    [datastore=<IniStore|TempStore|SqliteStore|MySQLStore>] \r\n"
+                    + "    [datastoreconfig=<IniStore Folder Name|SqliteStore config file>]\r\n\r\n"
+                    + "DataStore Types:\r\n"
+                    + "    IniStore: .ini files stored in inifiles directory\r\n"
+                    + "    TempStore: Memory store, lost on shutdown\r\n"
+                    + "    MySQLStore: MySQL Database\r\n"
+                    + "    SqliteStore: Default. SQLite3 database\r\n\r\n"
+               
+                    + "Ports:\r\n"
+                    + "    EventWebSocketServer <baseport> + 2\r\n"
+                    + "    YouTubeSocketServer  <baseport> + 3\r\n"
+                    + "    PanelWebSocketServer <baseport> + 4\r\n"
+                    + "    NEW HTTP Server      <baseport> + 5");
                     return;
                 }
             }
         }
 
+        /** Print the user dir */
         com.gmt2001.Console.out.println("The working directory is: " + System.getProperty("user.dir"));
 
+        /** Load up the bot info from the bot login file */
         try {
             if (new File("./botlogin.txt").exists()) {
                 String data = FileUtils.readFileToString(new File("./botlogin.txt"));
@@ -1653,147 +1835,151 @@ public class PhantomBot implements Listener {
 
                 for (String line : lines) {
                     if (line.startsWith("logtimezone=") && line.length() >= 15) {
-                        log_timezone = line.substring(12);
+                        timeZone = line.substring(12);
                     }
                     if (line.startsWith("reloadscripts")) {
                         com.gmt2001.Console.out.println("Enabling Script Reloading");
                         PhantomBot.reloadScripts = true;
                     }
                     if (line.startsWith("wsircburstalt")) {
-                       com.gmt2001.Console.out.println("Using Alternate Burst Method for WS-IRC");
-                       PhantomBot.wsIRCAlternateBurst = true;
+                        com.gmt2001.Console.out.println("Using Alternate Burst Method for WS-IRC");
+                        PhantomBot.wsIRCAlternateBurst = true;
                     }
                     if (line.startsWith("debugon")) {
                         com.gmt2001.Console.out.println("Debug Mode Enabled via botlogin.txt");
                         PhantomBot.enableDebugging = true;
                     }
+                    if (line.startsWith("rhinodebugger")) {
+                        com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
+                        PhantomBot.enableRhinoDebugger = true;
+                    }
                     if (line.startsWith("user=") && line.length() > 8) {
-                        user = line.substring(5);
+                        botName = line.substring(5);
                     }
                     if (line.startsWith("webauth=") && line.length() > 11) {
-                        webauth = line.substring(8);
+                        webOAuth = line.substring(8);
                     }
                     if (line.startsWith("webauthro=") && line.length() > 13) {
-                        webauthro = line.substring(10);
+                        webOAuthThro = line.substring(10);
                     }
                     if (line.startsWith("paneluser=") && line.length() > 12) {
-                        paneluser = line.substring(10);
+                        panelUsername = line.substring(10);
                     }
                     if (line.startsWith("panelpassword=") && line.length() > 16) {
-                        panelpassword = line.substring(14);
+                        panelPassword = line.substring(14);
                     }
                     if (line.startsWith("mysqlhost=") && line.length() > 11) {
-                        mysql_db_host = line.substring(10);
+                        mySqlHost = line.substring(10);
                     }
                     if (line.startsWith("mysqlport=") && line.length() > 11) {
-                        mysql_db_port = line.substring(10);
+                        mySqlPort = line.substring(10);
                     }
                     if (line.startsWith("mysqlname=") && line.length() > 11) {
-                        mysql_db_name = line.substring(10);
+                        mySqlName = line.substring(10);
                     }
                     if (line.startsWith("mysqluser=") && line.length() > 11) {
-                        mysql_db_user = line.substring(10);
+                        mySqlUser = line.substring(10);
                     }
                     if (line.startsWith("mysqlpass=") && line.length() > 11) {
-                        mysql_db_pass = line.substring(10);
+                        mySqlPass = line.substring(10);
                     }
                     if (line.startsWith("ytauth=") && line.length() > 8) {
-                        ytauth = line.substring(7);
+                        youtubeOAuth = line.substring(7);
                     }
                     if (line.startsWith("ytauthro=") && line.length() > 10) {
-                        ytauthro = line.substring(9);
+                        youtubeOAuthThro = line.substring(9);
                     }
                     if (line.startsWith("gamewispauth=") && line.length() > 14) {
-                        gamewispauth = line.substring(13);
+                        gameWispOAuth = line.substring(13);
                     }
                     if (line.startsWith("gamewisprefresh=") && line.length() > 17) {
-                        gamewisprefresh = line.substring(16);
+                        gameWispRefresh = line.substring(16);
                     }
                     if (line.startsWith("oauth=") && line.length() > 9) {
                         oauth = line.substring(6);
                     }
                     if (line.startsWith("apioauth=") && line.length() > 12) {
-                        apioauth = line.substring(9);
+                        apiOAuth = line.substring(9);
                     }
                     if (line.startsWith("clientid=") && line.length() > 12) {
-                        clientid = line.substring(9);
+                        clientId = line.substring(9);
                     }
                     if (line.startsWith("channel=") && line.length() > 11) {
-                        channel = line.substring(8);
+                        channelName = line.substring(8);
                     }
                     if (line.startsWith("owner=") && line.length() > 9) {
-                        owner = line.substring(6);
+                        ownerName = line.substring(6);
                     }
                     if (line.startsWith("baseport=") && line.length() > 10) {
-                        baseport = Integer.parseInt(line.substring(9));
+                        basePort = Integer.parseInt(line.substring(9));
                     }
                     if (line.startsWith("msglimit30=") && line.length() > 12) {
-                        msglimit30 = Double.parseDouble(line.substring(11));
+                        messageLimit = Double.parseDouble(line.substring(11));
                     }
                     if (line.startsWith("whisperlimit60=") && line.length() > 16) {
-                        whisperlimit60 = Double.parseDouble(line.substring(15));
+                        whisperLimit = Double.parseDouble(line.substring(15));
                     }
                     if (line.startsWith("datastore=") && line.length() > 11) {
-                        datastore = line.substring(10);
+                        dataStoreType = line.substring(10);
                     }
                     if (line.startsWith("youtubekey=") && line.length() > 12) {
-                        youtubekey = line.substring(11);
+                        youtubeKey = line.substring(11);
                     }
                     if (line.startsWith("webenable=") && line.length() > 11) {
-                        webenable = Boolean.valueOf(line.substring(10));
+                        webEnabled = Boolean.valueOf(line.substring(10));
                     }
                     if (line.startsWith("musicenable=") && line.length() > 13) {
-                        musicenable = Boolean.valueOf(line.substring(12));
+                        musicEnabled = Boolean.valueOf(line.substring(12));
                     }
                     if (line.startsWith("usehttps=") && line.length() > 10) {
-                        usehttps = Boolean.valueOf(line.substring(9));
+                        useHttps = Boolean.valueOf(line.substring(9));
                     }
                     if (line.startsWith("keystorepath=") && line.length() > 14) {
-                        keystorepath = line.substring(13);
+                        keyStorePath = line.substring(13);
                     }
                     if (line.startsWith("keystorepassword=") && line.length() > 18) {
-                        keystorepassword = line.substring(17);
+                        keyStorePassword = line.substring(17);
                     }
                     if (line.startsWith("keypassword=") && line.length() > 13) {
-                        keypassword = line.substring(12);
+                        keyPassword = line.substring(12);
                     }
                     if (line.startsWith("twitchalertskey=") && line.length() > 17) {
-                        twitchalertskey = line.substring(16);
+                        twitchAlertsKey = line.substring(16);
                     }
                     if (line.startsWith("twitchalertslimit=") && line.length() > 18) {
                         try {
-                            twitchalertslimit = Integer.parseInt(line.substring(18));
+                            twitchAlertsLimit = Integer.parseInt(line.substring(18));
                         } catch (NumberFormatException nfe) {
-                            twitchalertslimit = 5;
+                            twitchAlertsLimit = 5;
                         }
                     }
                     if (line.startsWith("streamtipkey=") && line.length() > 14) {
-                        streamtipkey = line.substring(13);
+                        streamTipOAuth = line.substring(13);
                     }
                     if (line.startsWith("streamtipid=") && line.length() > 13) {
-                        streamtipid = line.substring(12);
+                        streamTipClientId = line.substring(12);
                     }
                     if (line.startsWith("streamtiplimit=") && line.length() > 16) {
                         try {
-                            streamtiplimit = Integer.parseInt(line.substring(15));
+                            streamTipLimit = Integer.parseInt(line.substring(15));
                         } catch (NumberFormatException nfe) {
-                            streamtiplimit = 5;
+                            streamTipLimit = 5;
                         }
                     }
                     if (line.startsWith("twitterUser=") && line.length() > 13) {
-                        twitterUser = line.substring(12);
+                        twitterUsername = line.substring(12);
                     }
                     if (line.startsWith("twitter_access_token=") && line.length() > 22) {
-                        twitter_access_token = line.substring(21);
+                        twitterAccessToken = line.substring(21);
                     }
                     if (line.startsWith("twitter_secret_token=") && line.length() > 22) {
-                        twitter_secret_token = line.substring(21);
+                        twitterSecretToken = line.substring(21);
                     }
                     if (line.startsWith("twitter_consumer_secret=") && line.length() > 25) {
-                        twitter_consumer_secret = line.substring(24);
+                        twitterConsumerSecret = line.substring(24);
                     }
                     if (line.startsWith("twitter_consumer_key=") && line.length() > 22) {
-                        twitter_consumer_key = line.substring(21);
+                        twitterConsumerToken = line.substring(21);
                     }
                 }
             }
@@ -1801,64 +1987,87 @@ public class PhantomBot implements Listener {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        if (webauth.isEmpty()) {
-            webauth = generateWebAuth();
+        /** Check to see if there's a webOauth set */
+        if (webOAuth.isEmpty()) {
+            webOAuth = generateWebAuth();
             com.gmt2001.Console.debug.println("New webauth key has been generated for botlogin.txt");
             changed = true;
         }
-        if (webauthro.isEmpty()) {
-            webauthro = generateWebAuth();
+        /** Check to see if there's a webOAuthThro set */
+        if (webOAuthThro.isEmpty()) {
+            webOAuthThro = generateWebAuth();
             com.gmt2001.Console.debug.println("New webauth read-only key has been generated for botlogin.txt");
             changed = true;
         }
-        if (paneluser.isEmpty()) {
+        /** Check to see if there's a panelUsername set */
+        if (panelUsername.isEmpty()) {
             com.gmt2001.Console.debug.println("No Panel Username, using default value of 'panel' for Control Panel and YouTube Player");
-            paneluser = "panel";
+            panelUsername = "panel";
             changed = true;
         }
-        if (panelpassword.isEmpty()) {
+        /** Check to see if there's a panelPassword set */
+        if (panelPassword.isEmpty()) {
             com.gmt2001.Console.debug.println("No Panel Password, using default value of 'panel' for Control Panel and YouTube Player");
-            panelpassword = "panel";
+            panelPassword = "panel";
             changed = true;
         }
-        if (ytauth.isEmpty()) {
-            ytauth = generateWebAuth();
+        /** Check to see if there's a youtubeOAuth set */
+        if (youtubeOAuth.isEmpty()) {
+            youtubeOAuth = generateWebAuth();
             com.gmt2001.Console.debug.println("New YouTube websocket key has been generated for botlogin.txt");
             changed = true;
         }
-        if (ytauthro.isEmpty()) {
-            ytauthro = generateWebAuth();
+        /** Check to see if there's a youtubeOAuthThro set */
+        if (youtubeOAuthThro.isEmpty()) {
+            youtubeOAuthThro = generateWebAuth();
             com.gmt2001.Console.debug.println("New YouTube read-only websocket key has been generated for botlogin.txt");
             changed = true;
         }
 
-        if (user.isEmpty() || oauth.isEmpty() || channel.isEmpty()) {
+        /** Make a new botlogin with the botName, oauth or channel is not found */
+        if (botName.isEmpty() || oauth.isEmpty() || channelName.isEmpty()) {
             try {
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("Welcome to the PhantomBot setup process!");
-                com.gmt2001.Console.out.println("If you have any issues please report them on our forum or tweet at us!");
-                com.gmt2001.Console.out.println("Forum: https://community.phantombot.tv/");
-                com.gmt2001.Console.out.println("Twitter: https://twitter.com/phantombotapp/");
-                com.gmt2001.Console.out.println("PhantomBot Knowledgebase: https://docs.phantombot.tv/");
-                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
+                com.gmt2001.Console.out.print("If you have any issues please report them on our forum or Tweet at us!\r\n");
+                com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("Twitter: https://twitter.com/phantombotapp/\r\n");
+                com.gmt2001.Console.out.print("PhantomBot Knowledgebase: https://docs.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("\r\n");
 
-                com.gmt2001.Console.out.print("Please enter the bot's Twitch username: ");
-                user = System.console().readLine().trim();
+                com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
+                botName = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the bot's OAuth token generated from https://twitchapps.com/tmi while logged in as the bot: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
+                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
+                com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
+                com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
+                com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
+                //com.gmt2001.Console.out.print("Please enter the bot's OAuth token generated from https://twitchapps.com/tmi while logged in as the bot: ");
                 oauth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter your OAuth token generated from https://phantombot.tv/oauth while logged in as the caster: ");
-                apioauth = System.console().readLine().trim();
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
+                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
+                com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
+                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
+                com.gmt2001.Console.out.print("Please enter your OAuth token: ");
+                //com.gmt2001.Console.out.print("Please enter your OAuth token generated from https://phantombot.tv/oauth while logged in as the caster: ");
+                apiOAuth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the name of the Twitch channel the bot should join: ");
-                channel = System.console().readLine().trim();
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
+                channelName = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a custom username for the web panel: ");
-                paneluser = System.console().readLine().trim();
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
+                panelUsername = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a custom password for the web panel: ");
-                panelpassword = System.console().readLine().trim();
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("6. Please enter a custom password for the web panel: ");
+                panelPassword = System.console().readLine().trim();
 
                 changed = true;
                 newSetup = true;
@@ -1867,433 +2076,389 @@ public class PhantomBot implements Listener {
             }
         }
 
-        if (owner.isEmpty()) {
-            owner = channel;
+        /** Check for a owner */
+        if (ownerName.isEmpty()) {
+            ownerName = channelName;
             changed = true;
         }
 
+        /** Make sure the oauth has been set correctly */
         if (!oauth.startsWith("oauth:") && !oauth.isEmpty()) {
             oauth = "oauth:" + oauth;
             changed = true;
         }
 
-        if (!apioauth.startsWith("oauth:") && !apioauth.isEmpty()) {
-            apioauth = "oauth:" + apioauth;
+        /** Make sure the apiOAuth has been set correctly */
+        if (!apiOAuth.startsWith("oauth:") && !apiOAuth.isEmpty()) {
+            apiOAuth = "oauth:" + apiOAuth;
             changed = true;
         }
 
-        if (channel.startsWith("#")) {
-            channel = channel.substring(1);
+        /** Make sure the channelName does not have a # */
+        if (channelName.startsWith("#")) {
+            channelName = channelName.substring(1);
             changed = true;
         }
 
         if (args.length > 0) {
             for (String arg : args) {
-                if (arg.equalsIgnoreCase("printlogin")) {
-                    com.gmt2001.Console.out.println("user='" + user + "'");
-                    com.gmt2001.Console.out.println("oauth='" + oauth + "'");
-                    com.gmt2001.Console.out.println("apioauth='" + apioauth + "'");
-                    com.gmt2001.Console.out.println("webauth='" + webauth + "'");
-                    com.gmt2001.Console.out.println("webauthro='" + webauthro + "'");
-                    com.gmt2001.Console.out.println("clientid='" + clientid + "'");
-                    com.gmt2001.Console.out.println("channel='" + channel + "'");
-                    com.gmt2001.Console.out.println("owner='" + owner + "'");
-                    com.gmt2001.Console.out.println("baseport='" + baseport + "'");
-                    com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
-                    com.gmt2001.Console.out.println("whisperlimit60='" + whisperlimit60 + "'");
-                    com.gmt2001.Console.out.println("datastore='" + datastore + "'");
-                    com.gmt2001.Console.out.println("youtubekey='" + youtubekey + "'");
-                    com.gmt2001.Console.out.println("webenable=" + webenable);
-                    com.gmt2001.Console.out.println("musicenable=" + musicenable);
-                    com.gmt2001.Console.out.println("ytauth=" + ytauth);
-                    com.gmt2001.Console.out.println("ytauthro=" + ytauthro);
-                    com.gmt2001.Console.out.println("gamewispauth=" + gamewispauth);
-                    com.gmt2001.Console.out.println("gamewisprefresh=" + gamewisprefresh);
-                    com.gmt2001.Console.out.println("usehttps=" + usehttps);
-                    com.gmt2001.Console.out.println("keystorepath='" + keystorepath + "'");
-                    com.gmt2001.Console.out.println("keystorepassword='" + keystorepassword + "'");
-                    com.gmt2001.Console.out.println("keypassword='" + keypassword + "'");
-                    com.gmt2001.Console.out.println("twitchalertskey='" + twitchalertskey + "'");
-                    com.gmt2001.Console.out.println("twitchalertslimit='" + twitchalertslimit + "'");
-                    com.gmt2001.Console.out.println("streamtipkey='" + streamtipkey + "'");
-                    com.gmt2001.Console.out.println("streamtipid='" + streamtipid + "'");
-                    com.gmt2001.Console.out.println("streamtiplimit='" + streamtiplimit + "'");
-                    com.gmt2001.Console.out.println("paneluser='" + paneluser + "'");
-                    com.gmt2001.Console.out.println("panelpassword='" + panelpassword + "'");
-                    com.gmt2001.Console.out.println("twitterUser='" + twitterUser + "'");
-                    com.gmt2001.Console.out.println("twitter_consumer_secret='" + twitter_consumer_secret + "'");
-                    com.gmt2001.Console.out.println("twitter_consumer_key='" + twitter_consumer_key + "'");
-                    com.gmt2001.Console.out.println("twitter_access_token='" + twitter_access_token + "'");
-                    com.gmt2001.Console.out.println("twitter_secret_token='" + twitter_secret_token + "'");
-                }
+            	arg = arg.toLowerCase();
 
-                if (arg.equalsIgnoreCase("debugon")) {
-                    com.gmt2001.Console.out.println("Debug Mode Enabled via command line");
-                    PhantomBot.enableDebugging = true;
-                }
-                if (arg.equalsIgnoreCase("ini2sqlite")) {
-                    com.gmt2001.Console.out.println("Converting default IniStore to default SqliteStore...");
-                    ini2sqlite(false);
-                    com.gmt2001.Console.out.println("Operation complete. The bot will now exit");
-                    System.exit(0);
-                    return;
-                }
-                if (arg.toLowerCase().startsWith("user=") && arg.length() > 8) {
-                    if (!user.equals(arg.substring(5))) {
-                        user = arg.substring(5);
+            	if (arg.startsWith("user=") && arg.length() > 8) {
+                    if (!botName.equals(arg.substring(5))) {
+                        botName = arg.substring(5);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("oauth=") && arg.length() > 9) {
+                if (arg.startsWith("oauth=") && arg.length() > 9) {
                     if (!oauth.equals(arg.substring(6))) {
                         oauth = arg.substring(6);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("apioauth=") && arg.length() > 12) {
-                    if (!apioauth.equals(arg.substring(9))) {
-                        apioauth = arg.substring(9);
+                if (arg.startsWith("apioauth=") && arg.length() > 12) {
+                    if (!apiOAuth.equals(arg.substring(9))) {
+                        apiOAuth = arg.substring(9);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("paneluser=") && arg.length() > 12) {
-                    if (!paneluser.equals(arg.substring(10))) {
-                        paneluser = arg.substring(10);
+                if (arg.startsWith("paneluser=") && arg.length() > 12) {
+                    if (!panelUsername.equals(arg.substring(10))) {
+                        panelUsername = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("panelpassword=") && arg.length() > 16) {
-                    if (!panelpassword.equals(arg.substring(14))) {
-                        panelpassword = arg.substring(14);
+                if (arg.startsWith("panelpassword=") && arg.length() > 16) {
+                    if (!panelPassword.equals(arg.substring(14))) {
+                        panelPassword = arg.substring(14);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("mysqlhost=") && arg.length() > 11) {
-                    if (!mysql_db_host.equals(arg.substring(10))) {
-                         mysql_db_host = arg.substring(10);
+                if (arg.startsWith("mysqlhost=") && arg.length() > 11) {
+                    if (!mySqlHost.equals(arg.substring(10))) {
+                        mySqlHost = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("mysqlport=") && arg.length() > 11) {
-                    if (!mysql_db_port.equals(arg.substring(10))) {
-                         mysql_db_port = arg.substring(10);
+                if (arg.startsWith("mysqlport=") && arg.length() > 11) {
+                    if (!mySqlPort.equals(arg.substring(10))) {
+                        mySqlPort = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("mysqlname=") && arg.length() > 11) {
-                    if (!mysql_db_name.equals(arg.substring(10))) {
-                         mysql_db_name = arg.substring(10);
+                if (arg.startsWith("mysqlname=") && arg.length() > 11) {
+                    if (!mySqlName.equals(arg.substring(10))) {
+                        mySqlName = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("mysqluser=") && arg.length() > 11) {
-                    if (!mysql_db_user.equals(arg.substring(14))) {
-                        mysql_db_user = arg.substring(10);
+                if (arg.startsWith("mysqluser=") && arg.length() > 11) {
+                    if (!mySqlUser.equals(arg.substring(14))) {
+                        mySqlUser = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("mysqlpass=") && arg.length() > 11) {
-                    if (!mysql_db_pass.equals(arg.substring(10))) {
-                        mysql_db_pass = arg.substring(10);
+                if (arg.startsWith("mysqlpass=") && arg.length() > 11) {
+                    if (!mySqlPass.equals(arg.substring(10))) {
+                        mySqlPass = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("gamewispauth=") && arg.length() > 14) {
-                    if (!gamewispauth.equals(arg.substring(13))) {
-                        gamewispauth = arg.substring(13);
+                if (arg.startsWith("gamewispauth=") && arg.length() > 14) {
+                    if (!gameWispOAuth.equals(arg.substring(13))) {
+                        gameWispOAuth = arg.substring(13);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("gamewisprefresh=") && arg.length() > 17) {
-                    if (!gamewisprefresh.equals(arg.substring(16))) {
-                        gamewisprefresh = arg.substring(16);
+                if (arg.startsWith("gamewisprefresh=") && arg.length() > 17) {
+                    if (!gameWispRefresh.equals(arg.substring(16))) {
+                        gameWispRefresh = arg.substring(16);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("clientid=") && arg.length() > 12) {
-                    if (!clientid.equals(arg.substring(9))) {
-                        clientid = arg.substring(9);
+                if (arg.startsWith("clientid=") && arg.length() > 12) {
+                    if (!clientId.equals(arg.substring(9))) {
+                        clientId = arg.substring(9);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("channel=") && arg.length() > 11) {
-                    if (!channel.equals(arg.substring(8))) {
-                        channel = arg.substring(8);
+                if (arg.startsWith("channel=") && arg.length() > 11) {
+                    if (!channelName.equals(arg.substring(8))) {
+                        channelName = arg.substring(8);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("owner=") && arg.length() > 9) {
-                    if (!owner.equals(arg.substring(6))) {
-                        owner = arg.substring(6);
+                if (arg.startsWith("owner=") && arg.length() > 9) {
+                    if (!ownerName.equals(arg.substring(6))) {
+                        ownerName = arg.substring(6);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("baseport=") && arg.length() > 10) {
-                    if (baseport != Integer.parseInt(arg.substring(9))) {
-                        baseport = Integer.parseInt(arg.substring(9));
+                if (arg.startsWith("baseport=") && arg.length() > 10) {
+                    if (basePort != Integer.parseInt(arg.substring(9))) {
+                        basePort = Integer.parseInt(arg.substring(9));
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("msglimit30=") && arg.length() > 12) {
-                    if (msglimit30 != Double.parseDouble(arg.substring(11))) {
-                        msglimit30 = Double.parseDouble(arg.substring(11));
+                if (arg.startsWith("msglimit30=") && arg.length() > 12) {
+                    if (messageLimit != Double.parseDouble(arg.substring(11))) {
+                        messageLimit = Double.parseDouble(arg.substring(11));
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("whisperlimit60=") && arg.length() > 16) {
-                    if (whisperlimit60 != Double.parseDouble(arg.substring(15))) {
-                        whisperlimit60 = Double.parseDouble(arg.substring(15));
+                if (arg.startsWith("whisperlimit60=") && arg.length() > 16) {
+                    if (whisperLimit != Double.parseDouble(arg.substring(15))) {
+                        whisperLimit = Double.parseDouble(arg.substring(15));
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("datastore=") && arg.length() > 11) {
-                    if (!datastore.equals(arg.substring(10))) {
-                        datastore = arg.substring(10);
+                if (arg.startsWith("datastore=") && arg.length() > 11) {
+                    if (!dataStoreType.equals(arg.substring(10))) {
+                        dataStoreType = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("datastoreconfig=") && arg.length() > 17) {
-                    datastoreconfig = arg.substring(16);
+                if (arg.startsWith("datastoreconfig=") && arg.length() > 17) {
+                    dataStoreConfig = arg.substring(16);
                 }
-                if (arg.toLowerCase().startsWith("youtubekey=") && arg.length() > 12) {
-                    if (!youtubekey.equals(arg.substring(11))) {
-                        youtubekey = arg.substring(11);
+                if (arg.startsWith("youtubekey=") && arg.length() > 12) {
+                    if (!youtubeKey.equals(arg.substring(11))) {
+                        youtubeKey = arg.substring(11);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("webenable=") && arg.length() > 11) {
-                    if (webenable != Boolean.valueOf(arg.substring(10))) {
-                        webenable = Boolean.valueOf(arg.substring(10));
+                if (arg.startsWith("webenable=") && arg.length() > 11) {
+                    if (webEnabled != Boolean.valueOf(arg.substring(10))) {
+                        webEnabled = Boolean.valueOf(arg.substring(10));
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("musicenable=") && arg.length() > 13) {
-                    if (musicenable != Boolean.valueOf(arg.substring(12))) {
-                        musicenable = Boolean.valueOf(arg.substring(12));
+                if (arg.startsWith("musicenable=") && arg.length() > 13) {
+                    if (musicEnabled != Boolean.valueOf(arg.substring(12))) {
+                        musicEnabled = Boolean.valueOf(arg.substring(12));
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("usehttps=") && arg.length() > 10) {
-                    if (usehttps != Boolean.valueOf(arg.substring(9))) {
-                        usehttps = Boolean.valueOf(arg.substring(9));
+                if (arg.startsWith("usehttps=") && arg.length() > 10) {
+                    if (useHttps != Boolean.valueOf(arg.substring(9))) {
+                        useHttps = Boolean.valueOf(arg.substring(9));
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("keystorepath=") && arg.length() > 14) {
-                    if (!keystorepath.equals(arg.substring(13))) {
-                        keystorepath = arg.substring(13);
+                if (arg.startsWith("keystorepath=") && arg.length() > 14) {
+                    if (!keyStorePath.equals(arg.substring(13))) {
+                        keyStorePath = arg.substring(13);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("keystorepassword=") && arg.length() > 18) {
-                    if (!keystorepassword.equals(arg.substring(17))) {
-                        keystorepassword = arg.substring(17);
+                if (arg.startsWith("keystorepassword=") && arg.length() > 18) {
+                    if (!keyStorePassword.equals(arg.substring(17))) {
+                        keyStorePassword = arg.substring(17);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("keypassword=") && arg.length() > 13) {
-                    if (!keypassword.equals(arg.substring(12))) {
-                        keypassword = arg.substring(12);
+                if (arg.startsWith("keypassword=") && arg.length() > 13) {
+                    if (!keyPassword.equals(arg.substring(12))) {
+                        keyPassword = arg.substring(12);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("twitchalertskey=") && arg.length() > 17) {
-                    if (!twitchalertskey.equals(arg.substring(16))) {
-                        twitchalertskey = arg.substring(16);
+                if (arg.startsWith("twitchalertskey=") && arg.length() > 17) {
+                    if (!twitchAlertsKey.equals(arg.substring(16))) {
+                        twitchAlertsKey = arg.substring(16);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("twitchalertslimit=") && arg.length() > 19) {
-                    if (twitchalertslimit != Integer.parseInt(arg.substring(18))) {
+                if (arg.startsWith("twitchalertslimit=") && arg.length() > 19) {
+                    if (twitchAlertsLimit != Integer.parseInt(arg.substring(18))) {
                         try {
-                            twitchalertslimit = Integer.parseInt(arg.substring(18));
+                            twitchAlertsLimit = Integer.parseInt(arg.substring(18));
                             changed = true;
                         } catch (NumberFormatException nfe) {
-                            twitchalertslimit = 5;
+                            twitchAlertsLimit = 5;
                         }
                     }
                 }
-                if (arg.toLowerCase().startsWith("streamtipkey=") && arg.length() > 14) {
-                    if (!streamtipkey.equals(arg.substring(13))) {
-                        streamtipkey = arg.substring(13);
+                if (arg.startsWith("streamtipkey=") && arg.length() > 14) {
+                    if (!streamTipOAuth.equals(arg.substring(13))) {
+                        streamTipOAuth = arg.substring(13);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("streamtipid=") && arg.length() > 13) {
-                    if (!streamtipid.equals(arg.substring(12))) {
-                        streamtipid = arg.substring(12);
+                if (arg.startsWith("streamtipid=") && arg.length() > 13) {
+                    if (!streamTipClientId.equals(arg.substring(12))) {
+                        streamTipClientId = arg.substring(12);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("streamtiplimit=") && arg.length() > 16) {
-                    if (streamtiplimit != Integer.parseInt(arg.substring(15))) {
+                if (arg.startsWith("streamtiplimit=") && arg.length() > 16) {
+                    if (streamTipLimit != Integer.parseInt(arg.substring(15))) {
                         try {
-                            streamtiplimit = Integer.parseInt(arg.substring(15));
+                            streamTipLimit = Integer.parseInt(arg.substring(15));
                             changed = true;
                         } catch (NumberFormatException nfe) {
-                            streamtiplimit = 5;
+                            streamTipLimit = 5;
                         }
                     }
                 }
-                if (arg.toLowerCase().startsWith("twitterUser=") && arg.length() > 13) {
-                    if (!twitterUser.equals(arg.substring(12))) {
-                        twitterUser = arg.substring(12);
+                if (arg.startsWith("twitterUser=") && arg.length() > 13) {
+                    if (!twitterUsername.equals(arg.substring(12))) {
+                        twitterUsername = arg.substring(12);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("twitter_secret_token=") && arg.length() > 22) {
-                    if (!twitter_secret_token.equals(arg.substring(21))) {
-                        twitter_secret_token = arg.substring(21);
+                if (arg.startsWith("twitter_secret_token=") && arg.length() > 22) {
+                    if (!twitterSecretToken.equals(arg.substring(21))) {
+                        twitterSecretToken = arg.substring(21);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("twitter_access_token=") && arg.length() > 22) {
-                    if (!twitter_access_token.equals(arg.substring(21))) {
-                        twitter_access_token = arg.substring(21);
+                if (arg.startsWith("twitter_access_token=") && arg.length() > 22) {
+                    if (!twitterAccessToken.equals(arg.substring(21))) {
+                        twitterAccessToken = arg.substring(21);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("twitter_consumer_secret=") && arg.length() > 25) {
-                    if (!twitter_consumer_secret.equals(arg.substring(24))) {
-                        twitter_consumer_secret = arg.substring(24);
+                if (arg.startsWith("twitter_consumer_secret=") && arg.length() > 25) {
+                    if (!twitterConsumerSecret.equals(arg.substring(24))) {
+                        twitterConsumerSecret = arg.substring(24);
                         changed = true;
                     }
                 }
-                if (arg.toLowerCase().startsWith("twitter_consumer_key=") && arg.length() > 22) {
-                    if (!twitter_consumer_key.equals(arg.substring(21))) {
-                        twitter_consumer_key = arg.substring(21);
+                if (arg.startsWith("twitter_consumer_key=") && arg.length() > 22) {
+                    if (!twitterConsumerToken.equals(arg.substring(21))) {
+                        twitterConsumerToken = arg.substring(21);
                         changed = true;
                     }
                 }
             }
         }
 
+        /** Check to see if anything changed */
         if (changed) {
-            String data = "";
-            if (reloadScripts) {
-                data += "reloadscripts\r\n";
-            }
-            if (wsIRCAlternateBurst) {
-                data += "wsircburstalt\r\n";
-            }
-            data += "user=" + user + "\r\n";
-            data += "webauth=" + webauth + "\r\n";
-            data += "webauthro=" + webauthro + "\r\n";
+        	String data = "";
+        	if (reloadScripts) {
+        		data += "reloadscripts\r\n";
+        	}
+                if (enableRhinoDebugger) {
+                    data += "rhinodebugger\r\n";
+                }
+                   
+        	data += "user=" + botName + "\r\n";
             data += "oauth=" + oauth + "\r\n";
-            data += "apioauth=" + apioauth + "\r\n";
-            data += "clientid=" + clientid + "\r\n";
-            data += "channel=" + channel + "\r\n";
-            data += "owner=" + owner + "\r\n";
-            data += "baseport=" + baseport + "\r\n";
-            data += "msglimit30=" + msglimit30 + "\r\n";
-            data += "whisperlimit60=" + whisperlimit60 + "\r\n";
-            data += "datastore=" + datastore + "\r\n";
-            data += "youtubekey=" + youtubekey + "\r\n";
-            data += "webenable=" + webenable + "\r\n";
-            data += "musicenable=" + musicenable + "\r\n";
-            data += "ytauth=" + ytauth + "\r\n";
-            data += "ytauthro=" + ytauthro + "\r\n";
-            data += "gamewispauth=" + gamewispauth + "\r\n";
-            data += "gamewisprefresh=" + gamewisprefresh + "\r\n";
-            data += "usehttps=" + usehttps + "\r\n";
-            data += "keystorepath=" + keystorepath + "\r\n";
-            data += "keystorepassword=" + keystorepassword + "\r\n";
-            data += "keypassword=" + keypassword + "\r\n";
-            data += "twitchalertskey=" + twitchalertskey + "\r\n";
-            data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
-            data += "paneluser=" + paneluser + "\r\n";
-            data += "panelpassword=" + panelpassword + "\r\n";
-            data += "mysqlhost=" + mysql_db_host + "\r\n";
-            data += "mysqlport=" + mysql_db_port + "\r\n";
-            data += "mysqlname=" + mysql_db_name + "\r\n";
-            data += "mysqluser=" + mysql_db_user + "\r\n";
-            data += "mysqlpass=" + mysql_db_pass + "\r\n";
-            data += "twitterUser=" + twitterUser + "\r\n";
-            data += "twitter_consumer_secret=" + twitter_consumer_secret + "\r\n";
-            data += "twitter_consumer_key=" + twitter_consumer_key + "\r\n";
-            data += "twitter_access_token=" + twitter_access_token + "\r\n";
-            data += "twitter_secret_token=" + twitter_secret_token + "\r\n";
-            if (!log_timezone.isEmpty()) {
-                data += "logtimezone=" + log_timezone + "\r\n";
-            }
+            data += "apioauth=" + apiOAuth + "\r\n";
+            data += "paneluser=" + panelUsername + "\r\n";
+            data += "panelpassword=" + panelPassword + "\r\n";
+            data += "channel=" + channelName + "\r\n";
+            data += "webauth=" + webOAuth + "\r\n";
+            data += "webauthro=" + webOAuthThro + "\r\n";
+            data += "clientid=" + clientId + "\r\n";
+            data += "owner=" + ownerName + "\r\n";
+            data += "baseport=" + basePort + "\r\n";
+            data += "msglimit30=" + messageLimit + "\r\n";
+            data += "whisperlimit60=" + whisperLimit + "\r\n";
+            data += "datastore=" + dataStoreType + "\r\n";
+            data += "youtubekey=" + youtubeKey + "\r\n";
+            data += "webenable=" + webEnabled + "\r\n";
+            data += "musicenable=" + musicEnabled + "\r\n";
+            data += "ytauth=" + youtubeOAuth + "\r\n";
+            data += "ytauthro=" + youtubeOAuthThro + "\r\n";
+            data += "usehttps=" + useHttps + "\r\n";
+            data += "keystorepath=" + keyStorePath + "\r\n";
+            data += "keystorepassword=" + keyStorePassword + "\r\n";
+            data += "keypassword=" + keyPassword + "\r\n";
+            data += "twitchalertskey=" + twitchAlertsKey + "\r\n";
+            data += "twitchalertslimit=" + twitchAlertsLimit + "\r\n";
+            data += "streamtipkey=" + streamTipOAuth + "\r\n";
+            data += "streamtiplimit=" + streamTipLimit + "\r\n";
+            data += "streamtipid=" + streamTipClientId + "\r\n";
+            data += "gamewispauth=" + gameWispOAuth + "\r\n";
+            data += "gamewisprefresh=" + gameWispRefresh + "\r\n";
+            data += "mysqlhost=" + mySqlHost + "\r\n";
+            data += "mysqlport=" + mySqlPort + "\r\n";
+            data += "mysqlname=" + mySqlName + "\r\n";
+            data += "mysqluser=" + mySqlUser + "\r\n";
+            data += "mysqlpass=" + mySqlPass + "\r\n";
+            data += "twitterUser=" + twitterUsername + "\r\n";
+            data += "twitter_consumer_key=" + twitterConsumerToken + "\r\n";
+            data += "twitter_consumer_secret=" + twitterConsumerSecret + "\r\n";
+            data += "twitter_access_token=" + twitterAccessToken + "\r\n";
+            data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
+            data += "logtimezone=" + timeZone + "\r\n";
 
-            Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, msglimit30,
-                                             whisperlimit60, datastore, datastoreconfig, youtubekey, webenable, musicenable,
-                                             usehttps, keystorepath, keystorepassword, keypassword, twitchalertskey, twitchalertslimit,
-                                             webauth, webauthro, ytauth, ytauthro, gamewispauth, gamewisprefresh, paneluser, panelpassword,
-                                             twitterUser, twitter_access_token, twitter_secret_token, twitter_consumer_key, twitter_consumer_secret, log_timezone,
-                                             mysql_db_host, mysql_db_port, mysql_db_name, mysql_db_user, mysql_db_pass, streamtipkey, streamtipid, streamtiplimit);
+        /** Start PhantomBot */
+        PhantomBot.instance = new PhantomBot(botName, oauth, apiOAuth, clientId, channelName, ownerName, basePort, messageLimit, whisperLimit, dataStoreType, 
+		dataStoreConfig, youtubeOAuth, webEnabled, musicEnabled, useHttps, keyStorePath, keyStorePassword, keyPassword, twitchAlertsKey, 
+		twitchAlertsLimit, streamTipOAuth, streamTipLimit, gameWispOAuth, gameWispRefresh, panelUsername, panelPassword, timeZone, twitterUsername,
+		twitterConsumerToken, twitterConsumerSecret, twitterSecretToken, twitterAccessToken, mySqlHost, mySqlPort, mySqlConn, mySqlPass, mySqlUser,
+		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady);
     }
 
-    public void updateGameWispTokens(String[] newTokens) {
+	public void updateGameWispTokens(String[] newTokens) {
         String data = "";
         if (reloadScripts) {
-            data += "reloadscripts\r\n";
+        	data += "reloadscripts\r\n";
         }
-        if (wsIRCAlternateBurst) {
-            data += "wsircburstalt\r\n";
+        if (enableRhinoDebugger) {
+            data += "rhinodebugger\r\n";
         }
-        data += "user=" + username + "\r\n";
-        data += "webauth=" + webauth + "\r\n";
-        data += "webauthro=" + webauthro + "\r\n";
+        data += "user=" + botName + "\r\n";
         data += "oauth=" + oauth + "\r\n";
-        data += "apioauth=" + apioauth + "\r\n";
-        data += "clientid=" + this.clientid + "\r\n";
-        data += "channel=" + this.channelName + "\r\n";
+        data += "apioauth=" + apiOAuth + "\r\n";
+        data += "paneluser=" + panelUsername + "\r\n";
+        data += "panelpassword=" + panelPassword + "\r\n";
+        data += "channel=" + channelName + "\r\n";
+        data += "webauth=" + webOAuth + "\r\n";
+        data += "webauthro=" + webOAuthThro + "\r\n";
+        data += "clientid=" + clientId + "\r\n";
         data += "owner=" + ownerName + "\r\n";
-        data += "baseport=" + baseport + "\r\n";
-        data += "msglimit30=" + msglimit30 + "\r\n";
-        data += "whisperlimit60=" + whisperlimit60 + "\r\n";
-        data += "datastore=" + datastore + "\r\n";
-        data += "youtubekey=" + youtubekey + "\r\n";
-        data += "webenable=" + webenable + "\r\n";
-        data += "musicenable=" + musicenable + "\r\n";
-        data += "ytauth=" + ytauth + "\r\n";
-        data += "ytauthro=" + ytauthro + "\r\n";
+        data += "baseport=" + basePort + "\r\n";
+        data += "msglimit30=" + messageLimit + "\r\n";
+        data += "whisperlimit60=" + whisperLimit + "\r\n";
+        data += "datastore=" + dataStoreType + "\r\n";
+        data += "youtubekey=" + youtubeKey + "\r\n";
+        data += "webenable=" + webEnabled + "\r\n";
+        data += "musicenable=" + musicEnabled + "\r\n";
+        data += "ytauth=" + youtubeOAuth + "\r\n";
+        data += "ytauthro=" + youtubeOAuthThro + "\r\n";
+        data += "usehttps=" + useHttps + "\r\n";
+        data += "keystorepath=" + keyStorePath + "\r\n";
+        data += "keystorepassword=" + keyStorePassword + "\r\n";
+        data += "keypassword=" + keyPassword + "\r\n";
+        data += "twitchalertskey=" + twitchAlertsKey + "\r\n";
+        data += "twitchalertslimit=" + twitchAlertsLimit + "\r\n";
+        data += "streamtipkey=" + streamTipOAuth + "\r\n";
+        data += "streamtiplimit=" + streamTipLimit + "\r\n";
+        data += "streamtipid=" + streamTipClientId + "\r\n";
         data += "gamewispauth=" + newTokens[0] + "\r\n";
         data += "gamewisprefresh=" + newTokens[1] + "\r\n";
-        data += "usehttps=" + usehttps + "\r\n";
-        data += "keystorepath=" + keystorepath + "\r\n";
-        data += "keystorepassword=" + keystorepassword + "\r\n";
-        data += "keypassword=" + keypassword + "\r\n";
-        data += "twitchalertskey=" + twitchalertskey + "\r\n";
-        data += "twitchalertslimit=" + twitchalertslimit + "\r\n";
-        data += "streamtipkey=" + streamtipkey + "\r\n";
-        data += "streamtiplimit=" + streamtiplimit + "\r\n";
-        data += "streamtipid=" + streamtipid + "\r\n";
-        data += "paneluser=" + paneluser + "\r\n";
-        data += "panelpassword=" + panelpassword + "\r\n";
-        data += "mysqlhost=" + mysql_db_host + "\r\n";
-        data += "mysqlport=" + mysql_db_port + "\r\n";
-        data += "mysqlname=" + mysql_db_name + "\r\n";
-        data += "mysqluser=" + mysql_db_user + "\r\n";
-        data += "mysqlpass=" + mysql_db_pass + "\r\n";
-        data += "twitterUser=" + twitterUser + "\r\n";
-        data += "twitter_consumer_secret=" + twitter_consumer_secret + "\r\n";
-        data += "twitter_consumer_key=" + twitter_consumer_key + "\r\n";
-        data += "twitter_access_token=" + twitter_access_token + "\r\n";
-        data += "twitter_secret_token=" + twitter_secret_token + "\r\n";
-        if (!log_timezone.isEmpty()) {
-            data += "logtimezone=" + log_timezone + "\r\n";
-        }
+        data += "mysqlhost=" + mySqlHost + "\r\n";
+        data += "mysqlport=" + mySqlPort + "\r\n";
+        data += "mysqlname=" + mySqlName + "\r\n";
+        data += "mysqluser=" + mySqlUser + "\r\n";
+        data += "mysqlpass=" + mySqlPass + "\r\n";
+        data += "twitterUser=" + twitterUsername + "\r\n";
+        data += "twitter_consumer_key=" + twitterConsumerToken + "\r\n";
+        data += "twitter_consumer_secret=" + twitterConsumerSecret + "\r\n";
+        data += "twitter_access_token=" + twitterAccessToken + "\r\n";
+        data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
+        data += "logtimezone=" + timeZone + "\r\n";
 
         try {
-            Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-            com.gmt2001.Console.out.println("GameWisp Token has been refreshed.");
+            Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            print("GameWisp Token has been refreshed.");
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("!!!! CRITICAL !!!! Failed to update GameWisp Refresh Tokens into botlogin.txt! Must manually add!");
             com.gmt2001.Console.err.println("!!!! CRITICAL !!!! gamewispauth = " + newTokens[0] + " gamewisprefresh = " + newTokens[1]);
         }
-
-        SingularityAPI.instance().setAccessToken(gamewispauth);
-        
+    
+        SingularityAPI.instance().setAccessToken(gameWispOAuth);
     }
 
+    /** gen a oauth */
     private static String generateWebAuth() {
         String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         char[] randomChars = randomAllowed.toCharArray();
@@ -2307,6 +2472,7 @@ public class PhantomBot implements Listener {
         return new String(randomBuffer);
     }
 
+    /** gen a random string */
     private static String generateRandomString(int length) {
         String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         char[] randomChars = randomAllowed.toCharArray();
@@ -2328,8 +2494,8 @@ public class PhantomBot implements Listener {
 
         long curTime = System.currentTimeMillis() / 1000l;
 
-        if (!dataStoreObj.exists("settings", "gameWispRefreshTime")) {
-            dataStoreObj.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
+        if (!dataStore.exists("settings", "gameWispRefreshTime")) {
+            dataStore.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
         }
 
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
@@ -2337,11 +2503,11 @@ public class PhantomBot implements Listener {
             @Override
             public void run() {
                 long curTime = System.currentTimeMillis() / 1000l;
-                String lastRunStr = dataStoreObj.GetString("settings", "", "gameWispRefreshTime");
+                String lastRunStr = dataStore.GetString("settings", "", "gameWispRefreshTime");
 
                 long lastRun = Long.parseLong(lastRunStr);
                 if ((curTime - lastRun) > (10 * 24 * 60 * 60)) { // 10 days, token expires every 35.
-                    dataStoreObj.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
+                    dataStore.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
                     updateGameWispTokens(GameWispAPIv1.instance().refreshToken());
                 }
             }
@@ -2359,66 +2525,65 @@ public class PhantomBot implements Listener {
                 String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
                 if (newVersionInfo != null) {
                     try {
-                        Thread.sleep(4000); 
-                        com.gmt2001.Console.out.println();
-                        com.gmt2001.Console.out.println("New PhantomBot Release Detected: " + newVersionInfo[0]);
-                        com.gmt2001.Console.out.println("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
-                        com.gmt2001.Console.out.println("Download Link: " + newVersionInfo[1]);
-                        com.gmt2001.Console.out.println("A reminder will be provided in 24 hours!");
-                        com.gmt2001.Console.out.println();
+                        Thread.sleep(6000); 
+                        print("");
+                        print("New PhantomBot Release Detected: " + newVersionInfo[0]);
+                        print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
+                        print("Download Link: " + newVersionInfo[1]);
+                        print("A reminder will be provided in 24 hours!");
+                        print("");
                     } catch (InterruptedException ex) {
                         com.gmt2001.Console.err.printStackTrace(ex);
                     }
 
-                    if (webenabled) {
-                        dataStoreObj.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                    if (webEnabled) {
+                        dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
                     }
                 } else {
-                    dataStoreObj.del("settings", "newrelease_info");
+                    dataStore.del("settings", "newrelease_info");
                 }
             }
         }, 0, 24, TimeUnit.HOURS);
     }
 
+    /** Set the twitch cache */
     public void setTwitchCacheReady(String twitchCacheReady) {
         this.twitchCacheReady = twitchCacheReady;
         Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
     }
 
+    /** Load the game list */
     public void loadGameList(DataStore dataStore) {
         try {
             if (new File("./conf/game_list.txt").exists()) {
                 long lastModified = new File("./conf/game_list.txt").lastModified();
                 long dbLastModified = dataStore.GetLong("settings", "", "gameListModified");
                 if (lastModified > dbLastModified) {
-                    com.gmt2001.Console.out.println("Processing New Game List File");
+                    print("Processing New Game List File");
 
-                    com.gmt2001.Console.out.println("    Loading into database...");
+                    print("Loading into database...");
                     String data = FileUtils.readFileToString(new File("./conf/game_list.txt"));
                     String[] lines = data.replaceAll("\\r", "").split("\\n");
                     dataStore.setbatch("gamelist", lines, lines);
 
-                    com.gmt2001.Console.out.println("    Creating cache file for Control Panel...");
+                    print("Creating cache file for Control Panel...");
 
                     if (!new File ("./web/panel/js/games.js").exists()) {
                         new File ("./web/panel/js").mkdirs();
                     }
 
                     String string = "// PhantomBot Control Panel Game List\r\n// Generated by PhantomBot Core\r\n\r\n$.gamesList = [";
-                    Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8),
-                                StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
                     
                     for (String line : lines) {
                         string = "'" + line.replace("'", "") + "', \r\n";
-                        Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8),
-                                    StandardOpenOption.APPEND);
+                        Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
                         string = "";
                     }
 
                     string += "];";
-                    Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8),
-                                StandardOpenOption.APPEND);
-                    com.gmt2001.Console.out.println("Completed Processing.");
+                    Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
+                    print("Completed Processing.");
         
                     dataStore.SetLong("settings", "", "gameListModified", lastModified);
                 }

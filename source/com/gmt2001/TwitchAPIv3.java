@@ -16,6 +16,9 @@
  */
 package com.gmt2001;
 
+import com.gmt2001.DataStore;
+import me.mast3rplan.phantombot.PhantomBot;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -600,6 +603,130 @@ public class TwitchAPIv3 {
 
         /* Just return an empty string. */
         return new String("");
+    }
+
+    /**
+     * Returns when a Twitch account was created.
+     *
+     * @param   String   channel
+     * @return  String   date-time representation (2015-05-09T00:08:04Z)
+     */
+    public String getChannelCreatedDate(String channel) {
+        JSONObject jsonInput = GetData(request_type.GET, base_url + "/channels/" + channel, false);
+        if (jsonInput.has("created_at")) {
+            return jsonInput.getString("created_at");
+        }
+        return "ERROR";
+    }
+
+    /**
+     * Populates the followed table from a JSONArray. The database auto commit is disabled
+     * as otherwise the large number of writes in a row can cause some delay.
+     *
+     * @param   JSONArray   JSON array object containing the followers data
+     * @param   DataStore   Copy of database object for writing
+     */
+    private void PopulateFollowedTable(JSONArray followsArray, DataStore dataStore) {
+        dataStore.setAutoCommit(false);
+        for (int idx = 0; idx < followsArray.length(); idx++) {
+            if (followsArray.getJSONObject(idx).has("user")) {
+                if (followsArray.getJSONObject(idx).getJSONObject("user").has("name")) {
+                    dataStore.set("followed", followsArray.getJSONObject(idx).getJSONObject("user").getString("name"), "true");
+                 }
+            }
+        }
+        dataStore.setAutoCommit(true);
+    }
+
+    /**
+     * Updates the followed table with a complete list of followers. This should only ever
+     * be executed once, when the database does not have complete list of followers.
+     *
+     * @param   String      Name of the channel to lookup data for
+     * @param   DataStore   Copy of database object for reading data from
+     */
+    private void FixFollowedTableWorker(String channel, DataStore dataStore) {
+        JSONObject jsonInput;
+        String tableUpdated;
+        String nextLink = base_url + "/channels/" + channel + "/follows?limit=100";
+
+        com.gmt2001.Console.out.println("FixFollowedTable: Retrieving all channel followers for the followed table.");
+
+        /* Perform the lookups. The initial lookup will return the next API endpoint.
+         * Twitch always will return another 'next' endpoint, but, the follows array
+         * will be empty once all of the users have been returned.
+         */
+        do {
+            jsonInput = GetData(request_type.GET, nextLink, false);
+            if (!jsonInput.has("follows")) {
+                return;
+            }
+            PopulateFollowedTable(jsonInput.getJSONArray("follows"), dataStore);
+
+            if (!jsonInput.has("_links")) {
+                return;
+            }
+            if (!jsonInput.getJSONObject("_links").has("next")) {
+                return;
+            }
+            nextLink = jsonInput.getJSONObject("_links").getString("next");
+
+            /* Be kind to Twitch during this process. */
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+            }
+        } while (jsonInput.getJSONArray("follows").length() > 0) ;
+
+        com.gmt2001.Console.out.println("FixFollowedTable: Pulled all followers into the followed table.");
+    }
+
+    /**
+     * Wrapper to perform the followed table updated.  In order to ensure that PhantomBot
+     * does not get stuck trying to perform this work, a thread is spawned to perform the
+     * work.
+     *
+     * @param   String      Name of the channel to lookup data for
+     * @param   DataStore   Copy of database object 
+     * @param   Boolean     Force the run even if the number of followers is too high
+     */
+    public void FixFollowedTable(String channel, DataStore dataStore, Boolean force) {
+
+        /* Determine number of followers to determine if this should not execute unless forced. */
+        JSONObject jsonInput = GetData(request_type.GET, base_url + "/channels/" + channel + "/follows?limit=1", false);
+        if (!jsonInput.has("_total")) {
+            com.gmt2001.Console.err.println("Failed to pull follower count for FixFollowedTable");
+            return;
+        }
+        int followerCount = jsonInput.getInt("_total");
+        if (followerCount > 10000 && !force) {
+            com.gmt2001.Console.out.println("Follower count is above 10,000 (" + followerCount + "). Not executing. You may force this.");
+            return;
+        }
+
+        try {
+            FixFollowedTableRunnable fixFollowedTableRunnable = new FixFollowedTableRunnable(channel, dataStore);
+            new Thread(fixFollowedTableRunnable).start();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to start thread for updating followed table.");
+        }
+    }
+
+    /**
+     * Class for Thread for running the FixFollowedTableWorker job in the background.
+     */
+    private class FixFollowedTableRunnable implements Runnable {
+        private DataStore dataStore;
+        private String channel;
+
+        public FixFollowedTableRunnable(String channel, DataStore dataStore) {
+            this.channel = channel;
+            this.dataStore = dataStore;
+        }
+
+        public void run() {
+            FixFollowedTableWorker(channel, dataStore);
+        }
     }
 
     /**

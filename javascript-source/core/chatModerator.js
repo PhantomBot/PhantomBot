@@ -248,6 +248,7 @@
      */
     function loadBlackList() {
         var keys = $.inidb.GetKeyList('blackList', '');
+        blackList = [];
         for (i in keys) {
             blackList.push($.inidb.get('blackList', keys[i]));
         }
@@ -258,6 +259,7 @@
      */
     function loadWhiteList() {
         var keys = $.inidb.GetKeyList('whiteList', '');
+        whiteList = [];
         for (i in keys) {
             whiteList.push($.inidb.get('whiteList', keys[i]));
         }
@@ -380,13 +382,23 @@
      */
     function checkBlackList(sender, message) {
         for (i in blackList) {
-            if (message.includes(blackList[i])) {
-                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                warning = $.lang.get('chatmoderator.timeout');
-                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                return true;
+            if (blackList[i].startsWith('regex:')) {
+                if (message.match(blackList[i].replace('regex:', '').replace('\/g', '').replace('\/', ''))) {
+                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
+                    warning = $.lang.get('chatmoderator.timeout');
+                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
+                    return true;
+                }
+            } else {
+                if (message.includes(blackList[i].toLowerCase())) {
+                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
+                    warning = $.lang.get('chatmoderator.timeout');
+                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
+                    return true;
+                }
             }
         }
+        
         return false;
     };
 

@@ -160,7 +160,7 @@
         if (min == max) {
             return min;
         }
-        return (rand(max) + min);
+        return (rand(max - min + 1) + min);
     };
 
     /**

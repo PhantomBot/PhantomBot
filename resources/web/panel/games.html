@@ -95,6 +95,38 @@
     <div>
     <div id="_adventurePanelDisabled" />
     <div id="_adventurePanel">
+        <table>
+            <tr class="textList">
+                <td>Per-user warning message</td>
+                <td style="width: 25px"><div id="adventurewarningMessage" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button"
+                         onclick="$.adventureUpdateSetting('warningMessage', 'true');"><i class="fa fa-circle" />
+                     </div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button"
+                         onclick="$.adventureUpdateSetting('warningMessage', 'false');"><i class="fa fa-circle-o" />
+                     </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Per-user entry message</td>
+                <td style="width: 25px"><div id="adventureenterMessage" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button"
+                         onclick="$.adventureUpdateSetting('enterMessage', 'true');"><i class="fa fa-circle" />
+                     </div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button"
+                         onclick="$.adventureUpdateSetting('enterMessage', 'false');"><i class="fa fa-circle-o" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="adventureStart">Start an Adventure - Provide Points to Start</label>
