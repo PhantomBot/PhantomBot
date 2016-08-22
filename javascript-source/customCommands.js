@@ -724,36 +724,78 @@
 
         /**
          * @commandpath pricecom [command] [amount] - Set the amount of points a command should cost
+         * @commandpath pricecom [command] [subcommand] [amount] - Set the amount of points a command should cost
+         * @commandpath pricecom [command] [subcommand] [subaction] [amount] - Set the amount of points a command should cost
          */
         if (command.equalsIgnoreCase('pricecom')) {
-            if (!action || !subAction) {
+            if (!action || !subAction || args.length > 4) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.usage'));
                 return;
             }
 
+            /* Traditional !pricecom. Set a price to a command and handle any aliases. */
+            if (args.length == 2) {
+                action = args[0].replace('!', '').toLowerCase();
+                if (!$.commandExists(action)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.error.404'));
+                    return;
+                } else if (isNaN(parseInt(subAction)) || parseInt(subAction) < 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.error.invalid'));
+                    return;
+                }
+    
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action, subAction, $.pointNameMultiple));
+                $.inidb.set('pricecom', action, subAction);
+                var list = $.inidb.GetKeyList('aliases', ''),
+                    i;
+    
+                for (i in list) {
+                    if (list[i].equalsIgnoreCase(action)) {
+                        $.inidb.set('pricecom', $.inidb.get('aliases', list[i]), parseInt(subAction));
+                    } 
+                    if ($.inidb.get('aliases', list[i]).includes(action)) {
+                        $.inidb.set('pricecom', list[i], parseInt(subAction));
+                    }
+                }
+                $.log.event(sender + ' set price on command !' + action + ' to ' + subAction + ' ' + $.pointNameMultiple);
+                return;
+            }
+
+            /**
+             * Enhanced !pricecom that supports a subcommand and subaction.  Note that we do not check to ensure that the subcommand
+             * or subaction are valid, only the root of the command.
+             */
             action = args[0].replace('!', '').toLowerCase();
             if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.error.404'));
                 return;
-            } else if (isNaN(parseInt(subAction)) || parseInt(subAction) < 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.error.invalid'));
+            }
+
+            /* Handle subcommand with price. */
+            if (args.length == 3) {
+                if (isNaN(args[2]) || parseInt(args[2]) < 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.error.invalid'));
+                    return;
+                }
+
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action + ' ' + subAction, args[2], $.pointNameMultiple));
+                $.inidb.set('pricecom', action + ' ' + subAction, args[2]);
+                $.log.event(sender + ' set price on command !' + action + ' ' + subAction + ' to ' + args[2] + ' ' + $.pointNameMultiple);
                 return;
             }
 
-            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action, subAction, $.pointNameMultiple));
-            $.inidb.set('pricecom', action, subAction);
-            var list = $.inidb.GetKeyList('aliases', ''),
-                i;
-
-            for (i in list) {
-                if (list[i].equalsIgnoreCase(action)) {
-                    $.inidb.set('pricecom', $.inidb.get('aliases', list[i]), parseInt(subAction));
-                } 
-                if ($.inidb.get('aliases', list[i]).includes(action)) {
-                    $.inidb.set('pricecom', list[i], parseInt(subAction));
+            /* Handle subcommand with subaction with price. */
+            if (args.length == 4) {
+                if (isNaN(args[3]) || parseInt(args[3]) < 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.error.invalid'));
+                    return;
                 }
+
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action + ' ' + subAction + ' ' + args[2], args[3], $.pointNameMultiple));
+                $.inidb.set('pricecom', action + ' ' + subAction +  ' ' + args[2], args[3]);
+                $.log.event(sender + ' set price on command !' + action + ' ' + subAction + ' to ' + args[2] + ' ' + $.pointNameMultiple);
+                return;
             }
-            $.log.event(sender + ' set price on command !' + action + ' to ' + subAction + ' ' + $.pointNameMultiple);
         }
 
         /**

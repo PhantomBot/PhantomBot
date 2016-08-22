@@ -56,8 +56,8 @@ public class GameWispAPIv1 {
     private static final GameWispAPIv1 instance = new GameWispAPIv1();
     private static final String sAPIURL = "https://api.gamewisp.com";
     private static final int iHTTPTimeout = 2 * 1000;
-    private static final String devKey = "32e01468d8bbc250721fe3b0d38c090a8ac589e";
-    private static final String devSec = "470651f241fec8972d94cdca5cbfdd5b9ec45ce";
+    private static final String devKey = "d391637bb332e0b67d60388e2cac31dd93ad5bf";
+    private static final String devSec = "7e50eab14d7dc66e0018ac97aef4e52e564e991";
     private static final String devURI = "https://phantombot.tv/gamewisp/genauth.php";
 
     private static String sAccessToken = "";

@@ -246,7 +246,7 @@
                 for (idx in msgObject['results']) {
                     disabledCommands[msgObject['results'][idx]['key']] = true;
                 }
-                sendDBKeys("commands_permcom", "permcom");
+              sendDBKeys("commands_permcom", "permcom");
             }
 
             if (panelCheckQuery(msgObject, 'commands_permcom')) {
@@ -372,26 +372,36 @@
      * @function addCustomCommand
      */
     function addCustomCommand() {
-    var name = $('#addCommandCommand').val();
-    var commandtext = $('#addCommandText').val();
+        var command = $('#addCommandCommand').val();
+        var commandText = $('#addCommandText').val();
 
-        if (name.length == 0) {
-            $("#addCommandCommand").val("Please enter a value");
-            setTimeout(function() { $("#addCommandCommand").val(""); }, TIMEOUT_WAIT_TIME * 2);
+        if (command.length == 0) {
+            $('#addCommandCommand').val('[ERROR] Please enter a value.');
+            $('#addCommandText').val('');
+            setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
-        } else if (commandtext.length == 0) {
-            $("#addCommandText").val("Please enter a value");
-            setTimeout(function() { $("#addCommandText").val(""); }, TIMEOUT_WAIT_TIME * 2);
+        } else if (commandText.length == 0) {
+            $('#addCommandText').val('[ERROR] Please enter a value.');
+            $('#addCommandCommand').val('');
+            setTimeout(function() { $('#addCommandText').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
+        } else if (command.match(/ /)) {
+            $('#addCommandCommand').val('[ERROR] Your command cannot contain a space.');
+            $('#addCommandText').val('');
+            setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
+            return;
+        } else if (command.startsWith('!')) {
+            command = command.replace('!', '');
         }
 
-        if (name.startsWith('!')) {
-            name = name.replace('!', '');
-        }
-
-        sendDBUpdate("addCustomCommand", "command", name.toLowerCase(), commandtext);
-        setTimeout(function() { $('#addCommandText').val(""); $('#addCommandCommand').val(""); sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        $('#addCommandText').val('Command successfully added!'); 
+        sendDBUpdate('addCustomCommand', 'command', command.toLowerCase(), commandText);
+        setTimeout(function() { 
+            $('#addCommandText').val(''); 
+            $('#addCommandCommand').val(''); 
+            sendCommand('reloadcommand'); 
+            doQuery(); 
+        }, TIMEOUT_WAIT_TIME);
     };
 
     /**
@@ -428,16 +438,16 @@
         var alias = $('#aliasCommandInputAlias').val();
 
         if (main.match(/;/) || main.match(/-/) || main.match(/ /)) {
-            $("#aliasCommandInputAlias").val("Error: alias name can not contain special symbols, or spaces.");
+            $("#aliasCommandInputAlias").val("[ERROR] Alias name can not contain special symbols, or spaces.");
             $("#aliasCommandInput").val("");
             setTimeout(function() { $('#aliasCommandInputAlias').val(""); }, TIMEOUT_WAIT_TIME * 10);
             return;
         } else if (alias.length == 0) {
-            $("#aliasCommandInputAlias").val("Please enter a value.");
+            $("#aliasCommandInputAlias").val("[ERROR] Please enter a value.");
             setTimeout(function() { $("#aliasCommandInputAlias").val(""); }, TIMEOUT_WAIT_TIME * 2);
             return;
         } else if (main.length == 0) {
-            $("#aliasCommandInput").val("Please enter a value.");
+            $("#aliasCommandInput").val("[ERROR] Please enter a value.");
             setTimeout(function() { $("#aliasCommandInput").val(""); }, TIMEOUT_WAIT_TIME * 2);
             return;
         }
@@ -463,7 +473,7 @@
             sendDBDelete("commands_delalias_" + command, "aliases", command);
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-        setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand("reloadcommand " + command); }, TIMEOUT_WAIT_TIME);
     };
 
     /**
@@ -669,9 +679,11 @@
         if (panelMatch(action, 'enable')) {
             $('#commandEnabled_' + commandName).html('<i style="color: #333333" class="fa fa-toggle-on" />');
             sendDBDelete('commands_enablecom', 'disabledCommands', commandName);
+            sendCommand('registerpanel ' + commandName);
         } else {
             $('#commandEnabled_' + commandName).html('<i style="color: #333333" class="fa fa-toggle-off" />');
             sendDBUpdate('commands_enablecom', 'disabledCommands', commandName, 'true');
+            sendCommand('unregisterpanel ' + commandName);
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }

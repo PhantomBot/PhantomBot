@@ -66,6 +66,7 @@
     function getPlayTime() {
         var playTime = parseInt($.inidb.get('panelstats', 'playTimeStart')),
             time;
+
         if (playTime) {
             time = ($.systemTime() - playTime);
             return $.getTimeStringMinutes(time / 1000);

@@ -40,106 +40,50 @@
             command = event.getCommand(),
             args = event.getArgs(),
             argsString,
+            action = args[0],
             uptime,
             twitchVODtime,
             vodJsonStr,
             vodJsonObj = {};
 
         /**
-         * @commandpath online - Tell if the stream is online or not
+         * @commandpath setgame [game name] - Set Twitch game title
          */
-        if (command.equalsIgnoreCase('online')) {
-            if ($.isOnline($.channelName)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.online.online'));
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.online.offline'));
+        if (command.equalsIgnoreCase('setgame')) {
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
+                return;
             }
+            argsString = args.splice(0).join(' ');
+            $.updateGame($.channelName, argsString, sender);
             return;
         }
 
+        /** Used for the panel */
+        if (command.equalsIgnoreCase('setgamesilent')) {
+            argsString = args.splice(0).join(' ');
+            $.updateGame($.channelName, argsString, sender, true);
+            return;
+        } 
+
         /**
-         * @commandpath viewers - Announce the current amount of viewers in the chat
+         * @commandpath settitle [stream title] - Set Twitch stream title
          */
-        if (command.equalsIgnoreCase('viewers')) {
-            $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.viewers', $.getViewers($.channelName)));
+        if (command.equalsIgnoreCase('settitle')) {
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
+                return;
+            }
+            argsString = args.splice(0).join(' ');
+            $.updateStatus($.channelName, argsString, sender);
             return;
         }
 
-        /**
-         * @commandpath game - Announce Twitch game title and play time if online.
-         * @commandpath game set [game title] - Set Twitch game title
-         */
-        if (command.equalsIgnoreCase('game')) {
-            if (args.length == 0) {
-                if (!$.isOnline($.channelName) || $.getPlayTime() == null) {
-                    $.say($.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
-                } else {
-                    $.say($.lang.get('streamcommand.game.online', $.getGame($.channelName), $.getPlayTime()));
-                }
-                return;
-            } else {
-                if (args[0].equalsIgnoreCase('set')) {
-                    if (args.length == 1) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
-                        return;
-                    }
-                    argsString = args.splice(1).join(' ');
-                    $.updateGame($.channelName, argsString, sender);
-                    return;
-                } else if (args[0].equalsIgnoreCase('setsilent')) {
-                    argsString = args.splice(1).join(' ');
-                    $.updateGame($.channelName, argsString, sender, true);
-                    return;
-                } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
-                    return;
-                }
-            }
-        }
-
-        /**
-         * @commandpath title - Announce Twitch stream title
-         * @commandpath title set [stream title] - Set Twitch stream title
-         */
-        if (command.equalsIgnoreCase('title')) {
-            if (args.length == 0) {
-                $.say($.lang.get('streamcommand.title', $.getStatus($.channelName)));
-                return;
-            } else {
-                if (args[0].equalsIgnoreCase('set')) {
-                    if (args.length == 1) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
-                        return;
-                    }
-                    argsString = args.splice(1).join(' ');
-                    $.updateStatus($.channelName, argsString, sender);
-                    return;
-                } else if (args[0].equalsIgnoreCase('setsilent')) {
-                    argsString = args.splice(1).join(' ');
-                    $.updateStatus($.channelName, argsString, sender, true); // used for the panel.
-                    return;
-                } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
-                    return;
-                }
-            }
-        }
-
-        /**
-         * @commandpath playtime - Tell's you how long the streamer has been playing that game for, in the current stream
-         */
-        if (command.equalsIgnoreCase('playtime')) {
-            if (!$.isOnline($.channelName)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.playtime.offline', $.channelName));
-                return;
-            }
-
-            if ($.getPlayTime() == null) {
-                $.say($.lang.get('streamcommand.playtime.online', $.username.resolve($.channelName), $.getGame($.channelName), $.getStreamUptime($.channelName)));
-                return;
-            }
-
-            $.say($.lang.get('streamcommand.playtime.online', $.username.resolve($.channelName), $.getGame($.channelName), $.getPlayTime()));
+        /** Used for the panel */
+        if (command.equalsIgnoreCase('settitlesilent')) {
+            argsString = args.splice(0).join(' ');
+            $.updateStatus($.channelName, argsString, sender, true); // used for the panel.
+            return;
         }
 
         /**
@@ -168,27 +112,37 @@
                 return;
             } 
         }
+
+        /**
+         * @commandpath createdat [channel] - Returns when a channel was created in Twitch Timestamp format.
+         *
+         * The purpose of this command is for moderators to help identify potential trolls that created a new
+         * account after being banned.
+         */
+        if (command.equalsIgnoreCase('createdat')) {
+            if (args.length === 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.createdat.404'));
+                return;
+            }
+            var createdAt = $.twitch.getChannelCreatedDate(args[0]);
+            if (createdAt.equals("ERROR")) {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.createdat.error'));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.createdat', args[0], createdAt));
+            }
+            return;
+        }
     });
-
-
-    /** NEED TO LANG THIS SCRIPT **/
     
     /**
      * @event initReady
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./commands/streamCommand.js')) {
-            $.registerChatCommand('./commands/streamCommand.js', 'online', 7);
-            $.registerChatCommand('./commands/streamCommand.js', 'viewers', 7);
-            $.registerChatCommand('./commands/streamCommand.js', 'game', 7);
-            $.registerChatCommand('./commands/streamCommand.js', 'title', 7);
-            $.registerChatCommand('./commands/streamCommand.js', 'playtime', 7);
+            $.registerChatCommand('./commands/streamCommand.js', 'setgame', 1);
+            $.registerChatCommand('./commands/streamCommand.js', 'settitle', 1);
             $.registerChatCommand('./commands/streamCommand.js', 'vod', 7);
-
-            $.registerChatSubcommand('game', 'set', 1);
-            $.registerChatSubcommand('title', 'set', 1);
-            $.registerChatSubcommand('title', 'setsilent', 1);
-            $.registerChatSubcommand('game', 'setsilent', 1);
+            $.registerChatCommand('./commands/streamCommand.js', 'createdat', 2);
         }
     });
 })();

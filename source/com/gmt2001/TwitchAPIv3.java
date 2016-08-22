@@ -603,6 +603,20 @@ public class TwitchAPIv3 {
     }
 
     /**
+     * Returns when a Twitch account was created.
+     *
+     * @param   String   channel
+     * @return  String   date-time representation (2015-05-09T00:08:04Z)
+     */
+    public String getChannelCreatedDate(String channel) {
+        JSONObject jsonInput = GetData(request_type.GET, base_url + "/channels/" + channel, false);
+        if (jsonInput.has("created_at")) {
+            return jsonInput.getString("created_at");
+        }
+        return "ERROR";
+    }
+
+    /**
      * Tests the Twitch API to ensure that authentication is good.
      */
     public boolean TestAPI() {
