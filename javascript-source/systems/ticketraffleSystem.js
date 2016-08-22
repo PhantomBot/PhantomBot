@@ -158,18 +158,18 @@
     };
 
     function incr(user, times) {
-        if (!$.inidb.exists('entered', user)) {
-            $.inidb.set('entered', user, 'true');
+        if (!$.inidb.exists('entered', user.toLowerCase())) {
+            $.inidb.set('entered', user.toLowerCase(), 'true');
             $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
         }
-        $.inidb.incr('ticketsList', $.username.resolve(user), times);
+        $.inidb.incr('ticketsList', user.toLowerCase(), times);
     }
 
     function getTickets(user) {
-        if (!$.inidb.exists('ticketsList', user)) {
+        if (!$.inidb.exists('ticketsList', user.toLowerCase())) {
             return 0;
         }
-        return $.inidb.get('ticketsList', user);
+        return $.inidb.get('ticketsList', user.toLowerCase());
     };
 
     /**
