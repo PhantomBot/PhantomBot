@@ -154,13 +154,13 @@ public class PhantomBot implements Listener {
 	private Boolean twitterAuthenticated;
 
 	/** TwitchAlerts Information */
-	private String twitchAlertsKey;
-	private int twitchAlertsLimit;
+	private String twitchAlertsKey = "";
+	private int twitchAlertsLimit = 0;
 
 	/** StreamTip Information */
-	private String streamTipOAuth;
-	private String streamTipClientId;
-	private int streamTipLimit;
+	private String streamTipOAuth = "";
+	private String streamTipClientId = "";
+	private int streamTipLimit = 0;
 
 	/** GameWisp Information */
 	private String gameWispOAuth;
@@ -205,9 +205,9 @@ public class PhantomBot implements Listener {
 	private String chanName;
 	private Boolean timer = false;
 	private Boolean newSetup = false;
-	private String keyStorePath;
-	private String keyStorePassword;
-	private String keyPassword;
+	private String keyStorePath = "";
+	private String keyStorePassword = "";
+	private String keyPassword = "";
 	private SecureRandom random;
 	private static HashMap<String, Channel> channels;
 	private static HashMap<String, Session> sessions;
@@ -406,9 +406,9 @@ public class PhantomBot implements Listener {
 
 		/** Set the whisper limit for session.java to use. *Currently not used.* */
 		if (whisperLimit != 0) {
-			this.whisperLimit = null;
+			this.whisperLimit = 60.0;
 		} else {
-			this.whisperLimit = null;
+			this.whisperLimit = 60.0;
 		}
 
 		/** Set the client id for the twitch api to use */
@@ -489,7 +489,15 @@ public class PhantomBot implements Listener {
 		this.init();
 
 		/** Start a channel instance to create a session, and then connect to WS-IRC @ Twitch. */
-		this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
+		if (this.channelName.contains(",")) {
+			String[] create = this.channelName.split(",");
+
+			for (String join : create) {
+				this.channel = Channel.instance(join, this.botName, this.oauth, EventBus.instance());
+			}
+		} else {
+			this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
+		}
 
 		/** Check if the OS is Linux. */
 		if (SystemUtils.IS_OS_LINUX && !interactive) {
@@ -952,6 +960,8 @@ public class PhantomBot implements Listener {
     	this.chanName = event.getChannel().getName();
     	this.session = event.getSession();
 
+    	//print("ircJoinComplete::" + this.chanName);
+
     	/** Add the channel/session in the array for later use */
     	PhantomBot.instance().addChannel(this.chanName, event.getChannel());
     	PhantomBot.instance().addSession(this.chanName, this.session);
@@ -966,23 +976,26 @@ public class PhantomBot implements Listener {
         this.followersCache = FollowersCache.instance(this.chanName);
         this.hostCache = ChannelHostCache.instance(this.chanName);
         this.subscribersCache = SubscribersCache.instance(this.chanName);
-        this.twitchCache = TwitchCache.instance(this.chanName);
+        this.twitchCache = TwitchCache.instance(this.chanName);// This does not create a new instance for multiple channels. Not sure why.
         this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
 
+        /** Start the donations cache if the keys are not null */
         if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty()) {
         	this.twitchAlertsCache = DonationsCache.instance(this.chanName);
         }
 
+        /** Start the streamtip cache if the keys are not null */
         if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty()) {
         	this.streamTipCache = StreamTipCache.instance(this.chanName);
         }
 
+        /** Start the twitter cache if the keys are not null */
         if (this.twitterAuthenticated) {
         	this.twitterCache = TwitterCache.instance(this.chanName);
         }
 
-	/* Start the notice timer and notice handler. */
-	noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+	    /* Start the notice timer and notice handler. */
+	    noticeTimer = NoticeTimer.instance(this.channelName, this.session);
 
         /** Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
@@ -1073,7 +1086,7 @@ public class PhantomBot implements Listener {
     		String messageString = message;
     		message = messageString.substring(0, messageString.indexOf(" "));
     		arguments = messageString.substring(messageString.indexOf(" ") + 1);
-    		argument = arguments.split(" ", 2);
+    		argument = arguments.split(" ");
     	}
 
     	/** Chat in a channel */
@@ -1096,9 +1109,11 @@ public class PhantomBot implements Listener {
     	if (message.equalsIgnoreCase("followerstest")) {
     		String randomUser = generateRandomString(10);
     		int followCount = 5;
-    		if (argument[1].length() > 0) {
-    			followCount = Integer.parseInt(argument[1]);
+
+    		if (argument != null) {
+    			followCount = Integer.parseInt(argument[0]);
     		}
+
     		print("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
     		for (int i = 0; i < followCount; i++) {
     			EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.getChannel(this.channelName)));
@@ -2001,30 +2016,46 @@ public class PhantomBot implements Listener {
         /** Make a new botlogin with the botName, oauth or channel is not found */
         if (botName.isEmpty() || oauth.isEmpty() || channelName.isEmpty()) {
             try {
-                com.gmt2001.Console.out.println("");
-                com.gmt2001.Console.out.println("Welcome to the PhantomBot setup process!");
-                com.gmt2001.Console.out.println("If you have any issues please report them on our forum or tweet at us!");
-                com.gmt2001.Console.out.println("Forum: https://community.phantombot.tv/");
-                com.gmt2001.Console.out.println("Twitter: https://twitter.com/phantombotapp/");
-                com.gmt2001.Console.out.println("PhantomBot Knowledgebase: https://docs.phantombot.tv/");
-                com.gmt2001.Console.out.println("");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
+                com.gmt2001.Console.out.print("If you have any issues please report them on our forum or tweet at us!\r\n");
+                com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("Twitter: https://twitter.com/phantombotapp/");
+                com.gmt2001.Console.out.print("PhantomBot Knowledgebase: https://docs.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("\r\n");
 
-                com.gmt2001.Console.out.print("Please enter the bot's Twitch username: ");
+                com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
                 botName = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the bot's OAuth token generated from https://twitchapps.com/tmi while logged in as the bot: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
+                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
+                com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
+                com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
+                com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
+                //com.gmt2001.Console.out.print("Please enter the bot's OAuth token generated from https://twitchapps.com/tmi while logged in as the bot: ");
                 oauth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter your OAuth token generated from https://phantombot.tv/oauth while logged in as the caster: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
+                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
+                com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
+                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
+                com.gmt2001.Console.out.print("Please enter your OAuth token: ");
+                //com.gmt2001.Console.out.print("Please enter your OAuth token generated from https://phantombot.tv/oauth while logged in as the caster: ");
                 apiOAuth = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter the name of the Twitch channel the bot should join: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
                 channelName = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a custom username for the web panel: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
                 panelUsername = System.console().readLine().trim();
 
-                com.gmt2001.Console.out.print("Please enter a custom password for the web panel: ");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("6. Please enter a custom password for the web panel: ");
                 panelPassword = System.console().readLine().trim();
 
                 changed = true;
@@ -2384,8 +2415,8 @@ public class PhantomBot implements Listener {
         data += "streamtipkey=" + streamTipOAuth + "\r\n";
         data += "streamtiplimit=" + streamTipLimit + "\r\n";
         data += "streamtipid=" + streamTipClientId + "\r\n";
-        data += "gamewispauth=" + gameWispOAuth + "\r\n";
-        data += "gamewisprefresh=" + gameWispRefresh + "\r\n";
+        data += "gamewispauth=" + newTokens[0] + "\r\n";
+        data += "gamewisprefresh=" + newTokens[1] + "\r\n";
         data += "mysqlhost=" + mySqlHost + "\r\n";
         data += "mysqlport=" + mySqlPort + "\r\n";
         data += "mysqlname=" + mySqlName + "\r\n";

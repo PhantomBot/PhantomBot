@@ -18,7 +18,7 @@ $.lang.register('killcommand.self.17', '$1 fell off a ladder.');
 $.lang.register('killcommand.self.18', '$1 fell off a tree.');
 $.lang.register('killcommand.self.19', '$1 fell off himself.');
 $.lang.register('killcommand.self.20', '$1 bursts into flames.');
-$.lang.register('killcommand.self.21', '$1 was struck by lightening.');
+$.lang.register('killcommand.self.21', '$1 was struck by lightning.');
 $.lang.register('killcommand.self.22', '$1 starved to death.');
 $.lang.register('killcommand.self.23', '$1 was stabbed to death.');
 $.lang.register('killcommand.self.24', '$1 fell victim to gravity.');

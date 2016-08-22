@@ -130,7 +130,6 @@ public class NoticeTimer implements Runnable {
         }
 
         /* Main loop for processing the notices. */
-        com.gmt2001.Console.out.println("Core Notice Timer System Activated");
         while (!killed) {
             int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
 
