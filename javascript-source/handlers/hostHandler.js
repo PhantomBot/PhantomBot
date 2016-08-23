@@ -177,13 +177,14 @@
          * @commandpath host [channel] - Send the /host command to Twitch
          */
         if (command.equalsIgnoreCase('host')) {
-            if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.host.usage'));
+			if (args.length < 1) {
+				$.say($.whisperPrefix(sender) + $.lang.get('hosthandler.host.usage'));
                 return;
-            }
+			}
+			var target = args[0].toLowerCase();
 
-            $.say('.host ' + action);
-            $.log.event(sender + ' hosted channel ' + action);
+            $.say('.host ' + target);
+            $.log.event(sender + ' hosted channel ' + target);
         }
 
         /**
