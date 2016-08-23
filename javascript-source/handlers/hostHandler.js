@@ -151,7 +151,7 @@
          * @commandpath hostmessage [message] - Set a message given when a channel hosts
          */
         if (command.equalsIgnoreCase('hostmessage')) {
-            if (!action) {
+            if (args.length < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostmessage.usage'));
                 return;
             }
@@ -235,7 +235,7 @@
          * @commandpath hosthistory [on/off] - Enable/disable collection of host history data for the Panel.
          */
         if (command.equalsIgnoreCase('hosthistory')) {
-            if (!action) {
+            if (args.length < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
                 return;
             }
