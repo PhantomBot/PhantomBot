@@ -14,7 +14,6 @@
             hours,
             minutes,
             timestamp,
-            output_msg,
             keys,
             localDate,
             arr,
@@ -72,11 +71,9 @@
                 return;
             }
 
-            output_msg = "";
             keys = $.inidb.GetKeyList('highlights', '');
             arr = [];
             for (var i = keys.length - 1; i >= 0; i--) {
-                output_msg += "[" + keys[i] + " > " + $.inidb.get("highlights", keys[i]) + "] ";
                 arr.push("[" + keys[i] + " > " + $.inidb.get("highlights", keys[i]) + "] ");
             }
 
