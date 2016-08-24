@@ -61,8 +61,7 @@
             if (minutes < 10) {
                 minutes = "0" + minutes;
             }
-            count = $.randRange(0, 100)
-            timestamp = hours + ":" + count;
+            timestamp = hours + ":" + minutes;
             localDate = getCurLocalTimeString("'['dd-MM-yyyy']'");
             $.inidb.set('highlights', timestamp, localDate + ' ' + args.splice(0).join(' '));
         }
