@@ -10,12 +10,13 @@
         var command = event.getCommand(),
             sender = event.getSender(),
             args = event.getArgs(),
+            action = args[0],
             hours,
             minutes,
             timestamp,
-            output_msg,
             keys,
             localDate,
+            arr,
             streamUptimeMinutes;
 
         /**
@@ -70,13 +71,13 @@
                 return;
             }
 
-            output_msg = "";
             keys = $.inidb.GetKeyList('highlights', '');
+            arr = [];
             for (var i = keys.length - 1; i >= 0; i--) {
-                output_msg = output_msg + "[ " + keys[i] + " > " + $.inidb.get("highlights", keys[i]) + " ] ";
+                arr.push("[" + keys[i] + " > " + $.inidb.get("highlights", keys[i]) + "] ");
             }
-            $.say($.whisperPrefix(sender) + "Highlights: " + output_msg);
-            return;
+
+            $.paginateArray(arr, 'highlightcommand.highlights', ' ', true, sender);
         }
 
         if (command.equalsIgnoreCase("clearhighlights")) {
