@@ -4,7 +4,7 @@
  * Register and announce incomming/outgoing raids
  */
 (function() {
-    var raidMessage = $.getSetIniDbString('settings', 'raidMessage', $.lang.get('raidsystem.message.nomessageset', $.ownerName));
+    var raidMessage = $.getSetIniDbString('settings', 'raidMessage', ' ');
 
     /**
      * @event command
@@ -26,7 +26,7 @@
             }
 
             $.inidb.incr('outgoingRaids', username, 1);
-            $.say($.lang.get('raidsystem.raid', $.username.resolve(username), raidMessage));
+            $.say($.lang.get('raidsystem.raid', $.username.resolve(username), $.getIniDbString('settings', 'raidMessage', '')));
         }
 
         /**
@@ -54,7 +54,7 @@
 
             raidMessage = args.join(' ');
             $.inidb.set('settings', 'raidMessage', raidMessage);
-            $.say($.whisperPrefix(sender) + $.lang.get('raidsystem.message.setsuccess', raidMessage));
+            $.say($.whisperPrefix(sender) + $.lang.get('raidsystem.message.setsuccess', $.getIniDbString('settings', 'raidMessage', '')));
         }
     });
 
@@ -63,7 +63,6 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/raidSystem.js')) {
-            $.consoleDebug($.lang.get('raidsystem.console.announceraidmsg', raidMessage));
 
             $.registerChatCommand('./systems/raidSystem.js', 'raid', 2);
             $.registerChatCommand('./systems/raidSystem.js', 'raider', 2);

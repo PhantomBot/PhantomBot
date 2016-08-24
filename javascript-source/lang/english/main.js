@@ -57,7 +57,7 @@ $.lang.register('chatmoderator.subscribers.toggle.symbols', 'subscribers are cur
 $.lang.register('chatmoderator.subscribers.toggle.spam', 'subscribers are currently $1 to spam repeating characters.');
 $.lang.register('chatmoderator.subscribers.toggle.emotes', 'subscribers are currently $1 to overuse emotes.');
 $.lang.register('chatmoderator.subscribers.toggle.colors', 'subscribers are currently $1 to use /me for colored text');
-$.lang.register('chatmoderator.subscribers.toggle.long.msg', 'subscribers are currently $1 to post lon messages.');
+$.lang.register('chatmoderator.subscribers.toggle.long.msg', 'subscribers are currently $1 to post long messages.');
 $.lang.register('chatmoderator.regulars.links.allowed', 'regulars will now be effected by the link filter.');
 $.lang.register('chatmoderator.regulars.links.not.allowed', 'regulars will no longer be effected by the link filter.');
 $.lang.register('chatmoderator.regulars.caps.allowed', 'regulars will now be effected by the caps filter.');
@@ -80,7 +80,7 @@ $.lang.register('chatmoderator.regulars.toggle.symbols', 'regulars are currently
 $.lang.register('chatmoderator.regulars.toggle.spam', 'regulars are currently $1 to spam repeating characters.');
 $.lang.register('chatmoderator.regulars.toggle.emotes', 'regulars are currently $1 to overuse emotes.');
 $.lang.register('chatmoderator.regulars.toggle.colors', 'regulars are currently $1 to use /me for colored text');
-$.lang.register('chatmoderator.regulars.toggle.long.msg', 'regulars are currently $1 to post lon messages.');
+$.lang.register('chatmoderator.regulars.toggle.long.msg', 'regulars are currently $1 to post long messages.');
 $.lang.register('chatmoderator.silenttimeout.toggle.links', 'silent timeout is currently $1 for links.');
 $.lang.register('chatmoderator.silenttimeout.usage.all', 'usage: !moderation silenttimeout all [true / false]');
 $.lang.register('chatmoderator.silenttimeout.true', 'silent timeout has been enabled for all filters.');
