@@ -162,10 +162,6 @@
             /* Slot machine */
             calculateResult(sender);
         }
-
-        if (command.equalsIgnoreCase('loadprizes')) {
-            loadPrizes();
-        }
     });
 
     /**
@@ -176,7 +172,6 @@
             $.registerChatCommand('./games/slotMachine.js', 'slot', 7);
             $.registerChatSubcommand('slot', 'rewards', 1);
             $.registerChatSubcommand('slot', 'emotes', 1);
-            $.registerChatCommand('./games/slotMachine.js', 'loadprizes', 7);
         }
     });
 
@@ -186,4 +181,6 @@
     if ($.bot.isModuleEnabled('./games/slotMachine.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
         $.log.error("Disabled. ./systems/pointSystem.js is not enabled.");
     }
+
+    $.loadPrizesSlot = loadPrizes;
 })();

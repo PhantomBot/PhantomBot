@@ -55,11 +55,6 @@
             action = args[0],
             cooldown,
             message;
-        
-        /* Hidden from command list, for panel only. */
-        if (command.equalsIgnoreCase('greetingspanelupdate')) {
-            greetingspanelupdate();
-        }
     
         /**
          * @commandpath greeting - Base command for controlling greetings.
@@ -162,7 +157,6 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/greetingSystem.js')) {
-            $.registerChatCommand('./systems/greetingSystem.js', 'greetingspanelupdate', 1);
             $.registerChatCommand('./systems/greetingSystem.js', 'greeting', 6);
             $.registerChatSubcommand('greeting', 'cooldown', 1);
             $.registerChatSubcommand('greeting', 'toggledefault', 2);
@@ -171,4 +165,6 @@
             $.registerChatSubcommand('greeting', 'disable', 6);
         }
     });
+
+    $.greetingspanelupdate = greetingspanelupdate;
 })();

@@ -13,7 +13,7 @@
         a = '',
         interval;
 
-    function reloadRaffle() {
+    function reloadTRaffle() {
         msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
         raffleMessage = $.getSetIniDbString('settings', 'traffleMessage');
         messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval');
@@ -270,13 +270,6 @@
             }
             enterRaffle(sender, parseInt(action));
         }
-
-        /**
-        * Used for the panel
-        */
-        if (command.equalsIgnoreCase('reloadtraffle')) {
-            reloadRaffle();
-        }
     });
 
     /**
@@ -287,7 +280,8 @@
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'traffle', 2);
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'tickets', 7);
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'ticket', 7);
-            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'reloadtraffle', 1);
         }
     });
+
+    $.reloadTRaffle = reloadTRaffle;
 })();
