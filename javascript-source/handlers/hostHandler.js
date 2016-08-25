@@ -250,15 +250,6 @@
                 return;
             }
         }
-
-        /** 
-         * Used for the panel 
-         *
-         * No command path
-         */
-        if (command.equalsIgnoreCase('reloadhost')) {
-            updateHost();
-        }
     });
 
     /**
@@ -275,7 +266,8 @@
             $.registerChatCommand('./handlers/hostHandler.js', 'hostcount');
             $.registerChatCommand('./handlers/hostHandler.js', 'hostlist');
             $.registerChatCommand('./handlers/hostHandler.js', 'hosthistory', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'reloadhost', 1);
         }
     });
+
+    $.updateHost = updateHost;
 })();

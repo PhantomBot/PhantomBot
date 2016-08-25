@@ -113,11 +113,6 @@
             command = event.getCommand(),
             argsString = event.getArguments().trim(),
             args = event.getArgs();
-
-        /* Do not show command in command list, for the panel only. */
-        if (command.equalsIgnoreCase('subscribepanelupdate')) {
-            updateSubscribeConfig();
-        }
     
         /**
          * @commandpath subwelcometoggle - Enable or disable subscription alerts
@@ -232,8 +227,9 @@
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribers', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribersoff', 2);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'subscribepanelupdate', 1);
             announce = true;
         }
     });
+
+    $.updateSubscribeConfig = updateSubscribeConfig;
 })();

@@ -443,7 +443,6 @@
 
     /**
      * @function addComRegisterCommands
-     * @param {boolean} silent
      */
     function addComRegisterCommands() {
         if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
@@ -453,7 +452,7 @@
                 if (!$.commandExists(commands[i])) {
                     $.registerChatCommand('./commands/customCommands.js', commands[i], 7);
                 } else {
-                    //$.log.error('Cannot add custom command, command already exists: ' + commands[i]);
+                    $.log.error('Cannot add custom command, command already exists: ' + commands[i]);
                 }
             }
         }
@@ -461,7 +460,6 @@
 
     /**
      * @function addComRegisterAliases
-     * @param {boolean} silent
      */
     function addComRegisterAliases() {
         if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
@@ -472,23 +470,11 @@
                     $.registerChatCommand('./commands/customCommands.js', aliases[i], $.getIniDbNumber('permcom', aliases[i], 7));
                     $.registerChatAlias(aliases[i]);
                 } else {
-                    //$.log.error('Cannot add alias, command already exists: ' + aliases[i]);
+                    $.log.error('Cannot add alias, command already exists: ' + aliases[i]);
                 }
             }
         }
     }
-
-    /**
-     * @function reloadCommands
-     * Used for the panel
-     */
-    function reloadCommands(command) {
-        addComRegisterAliases();
-        addComRegisterCommands();
-        if (command) {
-            $.unregisterChatCommand(command);
-        }
-    };
 
     /**
      * @event command
@@ -946,60 +932,6 @@
             $.registerChatCommand('./commands/customCommands.js', action.toLowerCase());
             $.log.event(sender + ' re-enabled command !' + command);
         }
-
-        /**
-         *  Used by the panel
-         */
-        if (command.equalsIgnoreCase('permcomsilent')) {
-            if (args.length == 2) {
-                var group = args[1];
-
-                if (isNaN(parseInt(group))) {
-                    group = $.getGroupIdByName(group);
-                }
-
-                var list = $.inidb.GetKeyList('aliases', ''),
-                    i;
-
-                for (i in list) {
-                    if (list[i].equalsIgnoreCase(action)) {
-                        $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
-                        $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
-                    } 
-                }
-                $.inidb.set('permcom', action, group);
-                $.updateCommandGroup(action, group);
-                return;
-            }
-
-            var subcommand = args[1];
-            var group = args[2];
-
-            if (isNaN(parseInt(group))) {
-                group = $.getGroupIdByName(group);
-            }
-            $.inidb.set('permcom', action + " " + subcommand, group);
-            $.updateSubcommandGroup(action, subcommand, group);
-        }
-
-        /**
-         * used for the panel
-         */
-        if (command.equalsIgnoreCase('reloadcommand')) {
-            reloadCommands(args[0]);
-        }
-        /**
-         * used for the panel
-         */
-        if (command.equalsIgnoreCase('registerpanel')) {
-            $.registerChatCommand('./commands/customCommands.js', args[0].toLowerCase());
-        }
-        /**
-         * used for the panel
-         */
-        if (command.equalsIgnoreCase('unregisterpanel')) {
-            $.tempUnRegisterChatCommand(args[0].toLowerCase());
-        }
     });
 
     /**
@@ -1020,10 +952,6 @@
             $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'botcommands', 2);
-            $.registerChatCommand('./commands/customCommands.js', 'reloadcommand', 1);
-            $.registerChatCommand('./commands/customCommands.js', 'permcomsilent', 1);
-            $.registerChatCommand('./commands/customCommands.js', 'registerpanel', 1);
-            $.registerChatCommand('./commands/customCommands.js', 'unregisterpanel', 1);
         }
     });
 

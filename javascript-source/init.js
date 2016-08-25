@@ -719,6 +719,7 @@
         loadScript('./core/permissions.js');
         loadScript('./core/streamInfo.js');
         loadScript('./core/timeSystem.js');
+        loadScript('./core/panelCommands.js');
 
         $.log.event('Core loaded, initializing bot...');
 
