@@ -62,6 +62,9 @@ public class Session {
     private String botName;
     private String oAuth;
     private int chatLineCtr = 0;
+    private int reconnectCtr = 0;
+    private int sleepTime = 5000;
+    private int maxAttempts = 50;
 
     /*
      * Creates an instance for a Session
@@ -117,26 +120,21 @@ public class Session {
      */
     public void reconnect() {
         Boolean reconnected = false;
-        int     reconnectCtr = 0;
-        int     sleepTime = 5000;
-        int     maxAttempts = 50;
 
         while (reconnectCtr != maxAttempts && !reconnected) {
-            reconnectCtr++;
             try {
-                this.twitchWSIRC.delete();
-                this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("TwitchWSIRC URI Failed, PhantomBot will exit: " + ex.getMessage());
-                System.exit(0);
-            }
-            reconnected = twitchWSIRC.connectWSS(true);
-            if (!reconnected) {
+                reconnectCtr++;
                 try {
-                    Thread.sleep(sleepTime);
-                } catch (InterruptedException ex) {
-                    com.gmt2001.Console.err.println("Sleep failed during reconnect: " + ex.getMessage());
+                    this.twitchWSIRC.delete();
+                    this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.println("TwitchWSIRC URI Failed, PhantomBot will exit: " + ex.getMessage());
+                    System.exit(0);
                 }
+                reconnected = twitchWSIRC.connectWSS(true);
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.println("Sleep failed during reconnect: " + ex.getMessage());
             }
         }
         if (reconnectCtr == maxAttempts) {

@@ -758,6 +758,9 @@
          * @event api-ircJoinComplete
          */
         $api.on($script, 'ircJoinComplete', function(event) {
+            if (connected) {
+                return;
+            }
             connected = true;
             $.channel = event.getChannel();
             $.session = event.getSession();
