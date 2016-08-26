@@ -828,13 +828,6 @@
             $.log.event(action + ' was permited by ' + sender);
             return;
         }
-
-        /**
-         * Used by the panel, no commandpath given. 
-         */
-        if (command.equalsIgnoreCase('reloadmod')) {
-            reloadModeration();
-        }
     };
 
     /**
@@ -1792,7 +1785,6 @@
             $.registerChatCommand('./core/chatmoderator.js', 'mod', 1);
             $.registerChatCommand('./core/chatmoderator.js', 'blacklist', 1);
             $.registerChatCommand('./core/chatmoderator.js', 'whitelist', 1);
-            $.registerChatCommand('./core/chatmoderator.js', 'reloadmod', 1); // Used by the panel //
         }
     });
 
@@ -1800,4 +1792,5 @@
     $.performModeration = performModeration;
     $.timeoutUser = timeoutUserFor;
     $.permitUserLink = permitUser;
+    $.reloadModeration = reloadModeration;
 })();

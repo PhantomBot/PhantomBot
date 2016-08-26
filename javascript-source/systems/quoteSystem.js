@@ -180,14 +180,11 @@
                 return;
             }
             if (args.length < 1) {
-                //$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage'));
                 return;
             }
 
             quote = args.splice(0).join(' ');
             saveQuote(String($.username.resolve(sender)), quote);
-            //$.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
-            //$.log.event(sender + ' added a quote "' + quote + '".');
         }
 
         /**
@@ -217,20 +214,12 @@
             if (!$.isBot(sender)) {
                 return;
             }
-            if (!args[0] || isNaN(args[0])) {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.usage'));
-                return;
-            }
 
             var newCount;
 
             if ((newCount = deleteQuote(args[0])) >= 0) {
-                //$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.success', args[0], newCount));
             } else {
-                //$.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.404', args[0]));
             }
-
-            //$.log.event(sender + ' removed quote with id: ' + args[0]);
         }
 
         /**

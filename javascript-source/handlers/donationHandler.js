@@ -123,12 +123,7 @@
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
             args = event.getArgs();
-
-        /* Hidden from command list, for panel only. */
-        if (command.equalsIgnoreCase('donationpanelupdate')) {
-            donationpanelupdate();
-        }
-
+        
         /**
          * Tells the user the last donation that the caster got.
          *
@@ -297,7 +292,8 @@
             $.registerChatCommand('./handlers/donationHandler.js', 'lastdonation', 7);
             $.registerChatCommand('./handlers/donationHandler.js', 'lasttip', 7);
             $.registerChatCommand('./handlers/donationHandler.js', 'twitchalerts', 1);
-            $.registerChatCommand('./handlers/donationHandler.js', 'donationpanelupdate', 1);
         }
     });
+
+    $.donationpanelupdate = donationpanelupdate;
 })();
