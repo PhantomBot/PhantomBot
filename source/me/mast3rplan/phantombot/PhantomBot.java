@@ -954,8 +954,9 @@ public class PhantomBot implements Listener {
     @Subscribe
     public void ircJoinComplete(IrcJoinCompleteEvent event) {
     	if (connected) {
-    		return;
+    	    return;
     	}
+    	connected = true;
     	this.chanName = event.getChannel().getName();
     	this.session = event.getSession();
 
