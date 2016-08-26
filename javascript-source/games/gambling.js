@@ -115,13 +115,6 @@
 			$.inidb.set('gambling', 'winGainPercent', winGainPercent);
 			$.say($.whisperPrefix(sender) + $.lang.get('gambling.percent', winGainPercent));
 		}
-
-		/**
-		* Used for the panel
-		*/
-		if (command.equalsIgnoreCase('reloadgamble')) {
-			reloadGamble();
-		}
 	});
 
 	$.bind('initReady', function() {
@@ -131,7 +124,8 @@
         	$.registerChatCommand('./games/gambling.js', 'gamblesetmin', 1);
         	$.registerChatCommand('./games/gambling.js', 'gamblesetwinningrange', 1);
         	$.registerChatCommand('./games/gambling.js', 'gamblesetgainpercent', 1);
-        	$.registerChatCommand('./games/gambling.js', 'reloadgamble', 1);
         }
     });
+
+    $.reloadGamble = reloadGamble;
 })();
