@@ -134,7 +134,8 @@ public class Session {
                 reconnected = twitchWSIRC.connectWSS(true);
                 Thread.sleep(sleepTime);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("Sleep failed during reconnect: " + ex.getMessage());
+                //com.gmt2001.Console.err.println("Sleep failed during reconnect: " + ex.getMessage());
+                // Guess we don't wont errors for this loop.
             }
         }
         if (reconnectCtr == maxAttempts) {
