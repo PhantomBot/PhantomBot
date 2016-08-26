@@ -206,6 +206,7 @@ public class PhantomBot implements Listener {
 	private String chanName;
 	private Boolean timer = false;
 	private Boolean newSetup = false;
+	private Boolean connected = false;
 	private String keyStorePath = "";
 	private String keyStorePassword = "";
 	private String keyPassword = "";
@@ -952,6 +953,10 @@ public class PhantomBot implements Listener {
      */
     @Subscribe
     public void ircJoinComplete(IrcJoinCompleteEvent event) {
+    	if (connected) {
+    	    return;
+    	}
+    	connected = true;
     	this.chanName = event.getChannel().getName();
     	this.session = event.getSession();
 
