@@ -282,6 +282,9 @@ public class TwitchWSIRCParser {
         /* Print the parsed message in the console. */
         com.gmt2001.Console.out.println(username + ": " + message);
 
+        /* Print the IRCv3 tags if debug mode is on*/
+        com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
+
         /* Check to see if the users disaplay name. Used in the scripts. */
         if (tagsMap.containsKey("display-name")) {
             usernameCache.addUser(username, tagsMap.get("display-name"));
