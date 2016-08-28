@@ -147,7 +147,7 @@
      * @info this also included gamewisp subs.
      */
     function isSubv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || isSub(username.toLowerCase()) || isGWSub(username.toLowerCase());
+        return (tags != null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || isSub(username.toLowerCase());
     };
 
     /**
