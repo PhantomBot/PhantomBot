@@ -26,11 +26,11 @@
      * @param {string} sender
      * @param {string} command
      */
-    function returnCommandCost(sender, command) {
+    function returnCommandCost(sender, command, isMod) {
         sender = sender.toLowerCase();
         command = command.toLowerCase();
         if ($.inidb.exists('pricecom', command) && parseInt($.inidb.get('pricecom', command)) > 0) {
-            if (!$.isMod(sender)) {
+            if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isMod))) {
                 $.inidb.incr('points', sender, $.inidb.get('pricecom', command));
             }
         }
