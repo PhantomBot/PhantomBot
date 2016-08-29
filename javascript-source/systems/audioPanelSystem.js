@@ -34,17 +34,20 @@
 
             if (subCommand === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('audiohook.usage'));
+                $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
                 return;
             }
 
             if (subCommand.equalsIgnoreCase('play')) {
                 if (audioHook === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('audiohook.play.usage'));
+                    $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
                     return;
                 }
 
                 if (hookList[audioHook] === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('audiohook.play.404', audioHook));
+                    $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
                     return;
                 }
                 $.panelsocketserver.triggerAudioPanel(audioHook);
