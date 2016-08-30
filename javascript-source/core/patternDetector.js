@@ -22,8 +22,10 @@
      * @param {boolean} [aggressive]
      * @returns {boolean}
      */
-    function hasLinks(message, aggressive) {
+    function hasLinks(event, aggressive) {
         try {
+            var message = event.getMessage();
+            
             message = deobfuscateLinks(message, (aggressive));
 
             lastFoundLink = patterns.link.exec(message)[0];
