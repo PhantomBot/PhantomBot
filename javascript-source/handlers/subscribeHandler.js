@@ -80,6 +80,7 @@
             }
             $.say(message);
             $.addSubUsersList(subscriber);
+            $.restoreSubscriberStatus(resubscriber, true);
             $.inidb.set('streamInfo', 'lastSub', $.username.resolve(subscriber));
         }
     });
@@ -100,6 +101,7 @@
                 message = $.replace(message, '(reward)', String(subReward));
             }
             $.say(message);
+            $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(resubscriber, true);
             $.inidb.set('streamInfo', 'lastReSub', $.username.resolve(resubscriber));
         }
