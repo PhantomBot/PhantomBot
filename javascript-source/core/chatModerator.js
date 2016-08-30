@@ -382,20 +382,11 @@
      */
     function checkBlackList(sender, message) {
         for (i in blackList) {
-            if (blackList[i].startsWith('regex:')) {
-                if (message.match(blackList[i].replace('regex:', '').replace('\/g', '').replace('\/', ''))) {
-                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                    warning = $.lang.get('chatmoderator.timeout');
-                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                    return true;
-                }
-            } else {
-                if (message.includes(blackList[i].toLowerCase())) {
-                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                    warning = $.lang.get('chatmoderator.timeout');
-                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                    return true;
-                }
+            if (message.includes(blackList[i].toLowerCase())) {
+                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
+                warning = $.lang.get('chatmoderator.timeout');
+                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
+                return true;
             }
         }
         

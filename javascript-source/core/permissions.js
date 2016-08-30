@@ -751,6 +751,11 @@
                 return;
             }
 
+            if (groupId == 3) {
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.sub.error'));
+                return;
+            }
+
             $.inidb.set('group', username.toLowerCase(), groupId);
             $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.username.resolve(username), getGroupNameById(groupId) + " (" + groupId + ")"));
         }
