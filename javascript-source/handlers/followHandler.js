@@ -203,13 +203,7 @@
             command = event.getCommand(),
             args = event.getArgs(),
             argString = event.getArguments(),
-            action = args[0],
-            channel = $.channelName;
-
-        /* Do not show command on the command list, for the panel only. */
-        if (command.equalsIgnoreCase('followerpanelupdate')) {
-            updateFollowConfig();
-        }
+            action = args[0];
 
         /**
          * Set a follow reward for when someone follows.
@@ -389,7 +383,8 @@
             $.registerChatCommand('./handlers/followHandler.js', 'follow', 2);
             $.registerChatCommand('./handlers/followHandler.js', 'shoutout', 2);
             $.registerChatCommand('./handlers/followHandler.js', 'caster', 2);
-            $.registerChatCommand('./handlers/followHandler.js', 'followerpanelupdate', 1);
         }
     });
+
+    $.updateFollowConfig = updateFollowConfig;
 })();

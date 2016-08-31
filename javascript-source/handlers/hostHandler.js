@@ -151,7 +151,7 @@
          * @commandpath hostmessage [message] - Set a message given when a channel hosts
          */
         if (command.equalsIgnoreCase('hostmessage')) {
-            if (!action) {
+            if (args.length < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostmessage.usage'));
                 return;
             }
@@ -177,13 +177,14 @@
          * @commandpath host [channel] - Send the /host command to Twitch
          */
         if (command.equalsIgnoreCase('host')) {
-            if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.host.usage'));
+			if (args.length < 1) {
+				$.say($.whisperPrefix(sender) + $.lang.get('hosthandler.host.usage'));
                 return;
-            }
+			}
+			var target = args[0].toLowerCase();
 
-            $.say('.host ' + action);
-            $.log.event(sender + ' hosted channel ' + action);
+            $.say('.host ' + target);
+            $.log.event(sender + ' hosted channel ' + target);
         }
 
         /**
@@ -234,7 +235,7 @@
          * @commandpath hosthistory [on/off] - Enable/disable collection of host history data for the Panel.
          */
         if (command.equalsIgnoreCase('hosthistory')) {
-            if (!action) {
+            if (args.length < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
                 return;
             }
@@ -248,15 +249,6 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
                 return;
             }
-        }
-
-        /** 
-         * Used for the panel 
-         *
-         * No command path
-         */
-        if (command.equalsIgnoreCase('reloadhost')) {
-            updateHost();
         }
     });
 
@@ -274,7 +266,8 @@
             $.registerChatCommand('./handlers/hostHandler.js', 'hostcount');
             $.registerChatCommand('./handlers/hostHandler.js', 'hostlist');
             $.registerChatCommand('./handlers/hostHandler.js', 'hosthistory', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'reloadhost', 1);
         }
     });
+
+    $.updateHost = updateHost;
 })();

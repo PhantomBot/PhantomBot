@@ -138,15 +138,6 @@
 			$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.minimum.set', minimum));
 			$.log.event(sender + ' changed the bits minimum to: ' + minimum + ' bits.');
 		}
-
-		/**
-	     * Used by the panel when someone updates a setting to reload the script vars.
-	     * 
-	     * No command path.
-	     */
-		if (command.equalsIgnoreCase('reloadbits')) {
-			reloadBits();
-		}
 	});
 
     /**
@@ -160,8 +151,9 @@
         	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsmessage', 1);
         	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsreward', 1);
         	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsminimum', 1);
-        	$.registerChatCommand('./handlers/bitsHandler.js', 'reloadbits', 1);
         	announceBits = true; //Make sure the module is enabled to announce bits, incase the toggle is on.
         }
     });
+
+    $.reloadBits = reloadBits;
 })();

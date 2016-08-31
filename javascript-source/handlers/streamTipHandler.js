@@ -108,11 +108,6 @@
             command = event.getCommand(),
             args = event.getArgs();
 
-        /* Hidden from command list, for panel only. */
-        if (command.equalsIgnoreCase('donationpanelupdatestreamtip')) {
-            donationpanelupdate();
-        }
-
         /**
          * @commandpath lasttip - Display the last donation.
          */
@@ -262,7 +257,7 @@
         if ($.bot.isModuleEnabled('./handlers/streamTipHandler.js')) {
             $.registerChatCommand('./handlers/streamTipHandler.js', 'lasttip', 7);
             $.registerChatCommand('./handlers/streamTipHandler.js', 'streamtip', 1);
-            $.registerChatCommand('./handlers/streamTipHandler.js', 'donationpanelupdatestreamtip', 1);
         }
     });
+    $.donationpanelupdatestreamtip = donationpanelupdate;
 })();

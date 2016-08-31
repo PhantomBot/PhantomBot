@@ -59,13 +59,6 @@
             return;
         }
 
-        /** Used for the panel */
-        if (command.equalsIgnoreCase('setgamesilent')) {
-            argsString = args.splice(0).join(' ');
-            $.updateGame($.channelName, argsString, sender, true);
-            return;
-        } 
-
         /**
          * @commandpath settitle [stream title] - Set Twitch stream title
          */
@@ -79,12 +72,6 @@
             return;
         }
 
-        /** Used for the panel */
-        if (command.equalsIgnoreCase('settitlesilent')) {
-            argsString = args.splice(0).join(' ');
-            $.updateStatus($.channelName, argsString, sender, true); // used for the panel.
-            return;
-        }
 
         /**
          * @commandpath vod - Displays stream uptime and current VOD or, if offline, the last VOD available.

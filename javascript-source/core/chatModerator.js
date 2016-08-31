@@ -382,20 +382,11 @@
      */
     function checkBlackList(sender, message) {
         for (i in blackList) {
-            if (blackList[i].startsWith('regex:')) {
-                if (message.match(blackList[i].replace('regex:', '').replace('\/g', '').replace('\/', ''))) {
-                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                    warning = $.lang.get('chatmoderator.timeout');
-                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                    return true;
-                }
-            } else {
-                if (message.includes(blackList[i].toLowerCase())) {
-                    timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                    warning = $.lang.get('chatmoderator.timeout');
-                    sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                    return true;
-                }
+            if (message.includes(blackList[i].toLowerCase())) {
+                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
+                warning = $.lang.get('chatmoderator.timeout');
+                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
+                return true;
             }
         }
         
@@ -827,13 +818,6 @@
             $.say($.username.resolve(action) + $.lang.get('chatmoderator.permited', linkPermitTime));
             $.log.event(action + ' was permited by ' + sender);
             return;
-        }
-
-        /**
-         * Used by the panel, no commandpath given. 
-         */
-        if (command.equalsIgnoreCase('reloadmod')) {
-            reloadModeration();
         }
     };
 
@@ -1792,7 +1776,6 @@
             $.registerChatCommand('./core/chatmoderator.js', 'mod', 1);
             $.registerChatCommand('./core/chatmoderator.js', 'blacklist', 1);
             $.registerChatCommand('./core/chatmoderator.js', 'whitelist', 1);
-            $.registerChatCommand('./core/chatmoderator.js', 'reloadmod', 1); // Used by the panel //
         }
     });
 
@@ -1800,4 +1783,5 @@
     $.performModeration = performModeration;
     $.timeoutUser = timeoutUserFor;
     $.permitUserLink = permitUser;
+    $.reloadModeration = reloadModeration;
 })();

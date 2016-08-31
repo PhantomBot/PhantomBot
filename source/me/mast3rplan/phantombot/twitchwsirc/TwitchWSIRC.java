@@ -202,7 +202,7 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     public void onError(Exception ex) {
         if (!ex.toString().contains("ArrayIndexOutOfBoundsException")) {
-            com.gmt2001.Console.err.println("Twitch WS-IRC Exception: " + ex);
+            com.gmt2001.Console.debug.println("Twitch WS-IRC Exception: " + ex);
         }
     }
 
