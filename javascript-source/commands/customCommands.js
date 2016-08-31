@@ -84,14 +84,14 @@
 
         if (message.match(/\(onlineonly\)/g)) {
             if (!$.isOnline($.channelName)) {
-                return '';
+                return null;
             }
             message = $.replace(message, '(onlineonly)', '');
         }
 
         if (message.match(/\(offlineonly\)/g)) {
             if ($.isOnline($.channelName)) {
-                return '';
+                return null;
             }
             message = $.replace(message, '(offlineonly)', '');
         }
@@ -101,7 +101,7 @@
                 game = t.replace('(gameonly=', '').replace(')', '');
 
             if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
-                return '';
+                return null;
             }
             message = $.replace(message, t, '');
         }
@@ -182,7 +182,7 @@
         if (message.match(/\(gamesplayed\)/g)) {
             if (!$.isOnline($.channelName)) {
                 $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
-                return '';
+                return null;
             }
             message = $.replace(message, '(gamesplayed)', $.getGamesPlayed());
         }
@@ -216,7 +216,7 @@
         }
 
         if (message.match(/\(gameinfo\)/)) {
-            if (!$.isOnline($.channelName)) {
+            if (!$.isOnline($.channelName) || $.getPlayTime() == 0) {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
             } else {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.online', $.getGame($.channelName), $.getPlayTime()));
@@ -239,7 +239,7 @@
 
             if ($.twitch.GetUserFollowsChannel(sender.toLowerCase(), channel.toLowerCase()).getInt('_http') == 200) {
                 $.getFollowAge(event.getSender(), sender, channel);
-                return '';
+                return null;
             } else {
                 message = $.replace(message, '(followage)', String($.lang.get('followhandler.follow.age.err.404', $.userPrefix(event.getSender(), true), sender, channel)));
             }
@@ -248,7 +248,7 @@
         if (message.match(/\(playtime\)/g)) {
             if (!$.isOnline($.channelName)) {
                 $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
-                return '';
+                return null;
             }
             message = $.replace(message, '(playtime)', ($.getPlayTime() ? $.getPlayTime() : ''));
         }
@@ -256,14 +256,14 @@
         if (message.match(/\(uptime\)/g)) {
             if (!$.isOnline($.channelName)) {
                 $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
-                return '';
+                return null;
             }
             message = $.replace(message, '(uptime)', String($.getStreamUptime($.channelName)));
         }
 
         if (message.match(/\(age\)/g)) {
             $.getChannelAge(event);
-            return '';
+            return null;
         }
 
         return message;
@@ -387,7 +387,7 @@
                 var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
                 var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
                 EventBus.instance().post(new CommandEvent(event.getSender(), commandToExec, message.replace(reCommandTag, '')));//Don't use postCommand. it got removed.
-                return '';
+                return null;
             }
         }
 
@@ -480,11 +480,10 @@
      * @event command
      */
     $.bind('command', function(event) {
-        var sender = event.getSender().toLowerCase(),
-            username = $.username.resolve(sender, event.getTags()),
-            command = event.getCommand().toLowerCase(),
-            args = event.getArgs(),
+        var sender = event.getSender(),
+            command = event.getCommand(),
             argString = event.getArguments(),
+            args = event.getArgs(),
             action = args[0],
             subAction = args[1],
             aliasArgs;
@@ -492,7 +491,7 @@
         /** Used for custom commands */
         if ($.inidb.exists('command', command)) {
             var tag = tags(event, $.inidb.get('command', command), true);
-            if (tag != '') {
+            if (tag !== null) {
                 $.say(tag);
             }
             return;
