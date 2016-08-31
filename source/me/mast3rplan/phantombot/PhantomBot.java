@@ -700,10 +700,15 @@ public class PhantomBot implements Listener {
     	    panelSocketServer.start();
     	    print("PanelSocketServer accepting connections on port: " + (basePort + 4));
 
-    	    /** Set up a new http server */
-    	    NEWHTTPServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
-
-    	    print("New HTTP server accepting connection on port: " + (basePort + 5));
+    	    if (useHttps) {
+    	    	/** Set up a new https server */
+    	    	NEWHTTPSServer = new NEWHTTPSServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
+    	    	print("New HTTPS (SSL) server accepting connection on port: " + (basePort + 5));
+    	    } else {
+    	    	/** Set up a new http server */
+    	        NEWHTTPServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
+    	        print("New HTTP server accepting connection on port: " + (basePort + 5));
+    	    }
     	}
 
     	/** Enable gamewhisp if the oAuth is set */
