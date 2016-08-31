@@ -97,10 +97,6 @@
             $.inidb.set('roulette', 'timeoutTime', timeoutTime);
             $.say($.whisperPrefix(sender) + $.lang.get('roulette.set.timeouttime.success', timeoutTime));
         }
-
-        if (command.equalsIgnoreCase('reloadroulette')) {
-            reloadRoulette();
-        }
     });
 
     /**
@@ -113,7 +109,8 @@
             }
             $.registerChatCommand('./games/roulette.js', 'roulette', 7);
             $.registerChatCommand('./games/roulette.js', 'roulettetimeouttime', 1);
-            $.registerChatCommand('./games/roulette.js', 'reloadroulette', 1);
         }
     });
+
+    $.reloadRoulette = reloadRoulette;
 })();

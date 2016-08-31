@@ -719,6 +719,7 @@
         loadScript('./core/permissions.js');
         loadScript('./core/streamInfo.js');
         loadScript('./core/timeSystem.js');
+        loadScript('./core/panelCommands.js');
 
         $.log.event('Core loaded, initializing bot...');
 
@@ -884,7 +885,7 @@
                 if (parseInt($.inidb.get('paycom', command)) > 0) {
                     $.inidb.incr('points', sender, $.inidb.get('paycom', command));
                 }
-                if (commandCost > 0) {
+                if (commandCost > 0 && (((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
                     $.inidb.decr('points', sender, commandCost);
                 }
             }

@@ -107,7 +107,7 @@
                 c++;
             }
 
-            $.say($.lang.get('top5.default', 'time', amountTime, top5.join(', ')));
+            $.say($.lang.get('top5.default', amountTime, 'time', top5.join(', ')));
             temp = "";
             top5 = [];
             list = [];//Saving memory here.

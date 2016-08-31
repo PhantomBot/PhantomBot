@@ -158,7 +158,7 @@
 
         var now = new Date();
         $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/error/' + getLogDateString() + '.txt', true);
-        Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile + '] ' + message));
+        //Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile + '] ' + message));
     };
 
     /**
@@ -344,10 +344,6 @@
                 $.say($.whisperPrefix(sender) + (logs.error ? $.lang.get('logging.enabled.error') : $.lang.get('logging.disabled.error')));
             }
         }
-
-        if (command.equalsIgnoreCase('reloadlogs')) {
-            reloadLogs();
-        }
     });
 
     interval = setInterval(function() { 
@@ -360,7 +356,6 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./core/logging.js')) {
             $.registerChatCommand('./core/logging.js', 'log', 1);
-            $.registerChatCommand('./core/logging.js', 'reloadlogs', 1);
             logRotate();
         }
     });
@@ -376,4 +371,5 @@
         event: logEvent,
         error: logError,
     };
+    $.reloadLogs = reloadLogs;
 })();

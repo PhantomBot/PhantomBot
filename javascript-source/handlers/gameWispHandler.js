@@ -225,11 +225,6 @@ $.consoleDebug('checkGameWispSub(' + username + '): handler complete');
             sender = event.getSender().toLowerCase(),
             args = event.getArgs();
 
-        /* Do not display command on list, this is for the panel */
-        if (command.equalsIgnoreCase('gamewisppanelupdate')) {
-            updateGameWispDB();
-        }
-
         /*
          * @commandpath gamewisp - Base command for GameWisp options.
          */
@@ -399,11 +394,11 @@ $.consoleDebug('checkGameWispSub(' + username + '): handler complete');
         if ($.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
             $.registerChatCommand('./handlers/gameWispHandler.js', 'gamewisp', 1);
             $.registerChatCommand('./handlers/gameWispHandler.js', 'gamewisptier', 1);
-            $.registerChatCommand('./handlers/gameWispHandler.js', 'gamewisppanelupdate', 1);
         }
     });
 
     /** Export functions to API */
     $.getTierData = getTierData;
     $.checkGameWispSub = checkGameWispSub;
+    $.updateGameWispDB = updateGameWispDB;
 })();

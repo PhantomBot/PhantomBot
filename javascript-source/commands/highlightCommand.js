@@ -10,12 +10,13 @@
         var command = event.getCommand(),
             sender = event.getSender(),
             args = event.getArgs(),
+            action = args[0],
             hours,
             minutes,
             timestamp,
-            output_msg,
             keys,
             localDate,
+            arr,
             streamUptimeMinutes;
 
         /**
@@ -48,35 +49,19 @@
             $.log.event(sender + ' added a highlight at ' + timestamp);
         }
 
-        /** Used for the panel */
-        if (command.equalsIgnoreCase('highlightpanel')) {
-            if (!$.isOnline($.channelName)) {
-                return;
-            }
-            streamUptimeMinutes = parseInt(getStreamUptimeSeconds($.channelName) / 60);
-            hours = parseInt(streamUptimeMinutes / 60);
-            minutes = parseInt(streamUptimeMinutes % 60);
-            if (minutes < 10) {
-                minutes = "0" + minutes;
-            }
-            timestamp = hours + ":" + minutes;
-            localDate = getCurLocalTimeString("'['dd-MM-yyyy']'");
-            $.inidb.set('highlights', timestamp, localDate + ' ' + args.splice(0).join(' '));
-        }
-
         if (command.equalsIgnoreCase("gethighlights") || command.equalsIgnoreCase("showhighlights")) {
             if (!$.inidb.FileExists('highlights')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.gethighlights.no-highlights'));
                 return;
             }
 
-            output_msg = "";
             keys = $.inidb.GetKeyList('highlights', '');
+            arr = [];
             for (var i = keys.length - 1; i >= 0; i--) {
-                output_msg = output_msg + "[ " + keys[i] + " > " + $.inidb.get("highlights", keys[i]) + " ] ";
+                arr.push("[" + keys[i] + " > " + $.inidb.get("highlights", keys[i]) + "] ");
             }
-            $.say($.whisperPrefix(sender) + "Highlights: " + output_msg);
-            return;
+
+            $.paginateArray(arr, 'highlightcommand.highlights', ' ', true, sender);
         }
 
         if (command.equalsIgnoreCase("clearhighlights")) {
@@ -86,20 +71,12 @@
             $.log.event(sender + ' cleared highlights');
             return;
         }
-
-        /** Used for the panel */
-        if (command.equalsIgnoreCase("clearhighlightspanel")) {
-            $.inidb.RemoveFile("highlights");
-            $.inidb.ReloadFile("highlights");
-            return;
-        }
     });
 
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./commands/highlightCommand.js')) {
             $.registerChatCommand('./commands/highlightCommand.js', 'highlight', 2);
-            $.registerChatCommand('./commands/highlightCommand.js', 'highlightpanel', 1);
-            $.registerChatCommand('./commands/highlightCommand.js', 'clearhighlightspanel', 1);
+            
             $.registerChatCommand('./commands/highlightCommand.js', 'gethighlights', 2);
             $.registerChatCommand('./commands/highlightCommand.js', 'showhighlights', 2);
             $.registerChatCommand('./commands/highlightCommand.js', 'clearhighlights', 1);

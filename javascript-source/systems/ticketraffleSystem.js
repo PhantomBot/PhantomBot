@@ -13,7 +13,7 @@
         a = '',
         interval;
 
-    function reloadRaffle() {
+    function reloadTRaffle() {
         msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
         raffleMessage = $.getSetIniDbString('settings', 'traffleMessage');
         messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval');
@@ -158,18 +158,18 @@
     };
 
     function incr(user, times) {
-        if (!$.inidb.exists('entered', user)) {
-            $.inidb.set('entered', user, 'true');
+        if (!$.inidb.exists('entered', user.toLowerCase())) {
+            $.inidb.set('entered', user.toLowerCase(), 'true');
             $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
         }
-        $.inidb.incr('ticketsList', $.username.resolve(user), times);
+        $.inidb.incr('ticketsList', user.toLowerCase(), times);
     }
 
     function getTickets(user) {
-        if (!$.inidb.exists('ticketsList', user)) {
+        if (!$.inidb.exists('ticketsList', user.toLowerCase())) {
             return 0;
         }
-        return $.inidb.get('ticketsList', user);
+        return $.inidb.get('ticketsList', user.toLowerCase());
     };
 
     /**
@@ -270,13 +270,6 @@
             }
             enterRaffle(sender, parseInt(action));
         }
-
-        /**
-        * Used for the panel
-        */
-        if (command.equalsIgnoreCase('reloadtraffle')) {
-            reloadRaffle();
-        }
     });
 
     /**
@@ -287,7 +280,8 @@
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'traffle', 2);
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'tickets', 7);
             $.registerChatCommand('./systems/ticketRaffleSystem.js', 'ticket', 7);
-            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'reloadtraffle', 1);
         }
     });
+
+    $.reloadTRaffle = reloadTRaffle;
 })();

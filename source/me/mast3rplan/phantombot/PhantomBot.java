@@ -205,7 +205,6 @@ public class PhantomBot implements Listener {
 	private Session session;
 	private String chanName;
 	private Boolean timer = false;
-	private Boolean newSetup = false;
 	private String keyStorePath = "";
 	private String keyStorePassword = "";
 	private String keyPassword = "";
@@ -214,6 +213,7 @@ public class PhantomBot implements Listener {
 	private static HashMap<String, Session> sessions;
 	private static HashMap<String, String> apiOAuths;
 	public static Boolean wsIRCAlternateBurst = false;
+	private static Boolean newSetup = false;
 
 
     /** 
@@ -702,9 +702,9 @@ public class PhantomBot implements Listener {
 
     	    /** Set up a new http server */
     	    NEWHTTPServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
-    	}
 
-    	print("New HTTP server accepting connection on port: " + (basePort + 5));
+    	    print("New HTTP server accepting connection on port: " + (basePort + 5));
+    	}
 
     	/** Enable gamewhisp if the oAuth is set */
     	if (!gameWispOAuth.isEmpty()) {
@@ -862,7 +862,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightly(), 0);
         Script.global.defineProperty("version", botVersion(), 0);
-        Script.global.defineProperty("changed", newSetup, 0);
+        Script.global.defineProperty("changed", Boolean.valueOf(newSetup), 0);
 
         /** open a new thread for when the bot is exiting */
         Thread thread = new Thread(new Runnable() {
@@ -1773,7 +1773,6 @@ public class PhantomBot implements Listener {
         String keyStorePath = "";
 	    String keyStorePassword = "";
 	    String keyPassword = "";
-	    Boolean newSetup = false;
 
         if (args.length > 0) {
             for (String arg : args) {
@@ -2340,9 +2339,9 @@ public class PhantomBot implements Listener {
         	if (reloadScripts) {
         		data += "reloadscripts\r\n";
         	}
-                if (enableRhinoDebugger) {
-                    data += "rhinodebugger\r\n";
-                }
+            if (enableRhinoDebugger) {
+                data += "rhinodebugger\r\n";
+            }
                    
         	data += "user=" + botName + "\r\n";
             data += "oauth=" + oauth + "\r\n";

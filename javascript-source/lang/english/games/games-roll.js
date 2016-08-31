@@ -1,4 +1,4 @@
-$.lang.register('roll.rolled', '$1 rolls [$2] and [$3]. ');
+$.lang.register('roll.rolled', '$1 rolls a [$2] and [$3]. ');
 $.lang.register('roll.doubleone', 'Snake eyes for $1! ');
 $.lang.register('roll.doubletwo', 'Hard four for $1! ');
 $.lang.register('roll.doublethree', 'Hard six for $1! ');

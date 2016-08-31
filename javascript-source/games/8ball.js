@@ -33,6 +33,7 @@
         if (command.equalsIgnoreCase('8ball')) {
             if (!args[0]) {
                 $.say($.resolveRank(sender) + $.lang.get('8ball.usage'));
+                $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
                 return
             }
 

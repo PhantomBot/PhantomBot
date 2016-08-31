@@ -305,13 +305,6 @@
                 }
             }
         }
-
-        if (command.equalsIgnoreCase('reloadnotice')) {
-            if (!$.isAdmin(sender)) {
-                return;
-            }
-            reloadNoticeSettings();
-        }
     });
 
     // Set the interval to announce
@@ -332,7 +325,8 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/noticeSystem.js')) {
             $.registerChatCommand('./systems/noticeSystem.js', 'notice', 1);
-            $.registerChatCommand('./systems/noticeSystem.js', 'reloadnotice');
         }
     });
+
+    $.reloadNoticeSettings = reloadNoticeSettings;
 })();

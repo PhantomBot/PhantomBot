@@ -244,12 +244,7 @@ public class TwitchWSIRCParser {
     /*
      * Handles commands.
      */
-    private void commandEvent(String message, String username) {
-        /* is this message a command? */
-        if (!message.startsWith("!")) {
-            return;
-        }
-
+    private void commandEvent(String message, String username, Map<String, String> tagsMap) {
         String arguments = "";
         String command = message.substring(1);
 
@@ -260,7 +255,8 @@ public class TwitchWSIRCParser {
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
 
-        scriptEventManager.runDirect(new CommandEvent(username, command, arguments));
+        /* Send the command event with the ircv3 tags from Twitch. */
+        scriptEventManager.runDirect(new CommandEvent(username, command, arguments, tagsMap));
     }
 
     /*
@@ -286,6 +282,9 @@ public class TwitchWSIRCParser {
         /* Print the parsed message in the console. */
         com.gmt2001.Console.out.println(username + ": " + message);
 
+        /* Print the IRCv3 tags if debug mode is on*/
+        com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
+
         /* Check to see if the users disaplay name. Used in the scripts. */
         if (tagsMap.containsKey("display-name")) {
             usernameCache.addUser(username, tagsMap.get("display-name"));
@@ -303,14 +302,14 @@ public class TwitchWSIRCParser {
         /* Check to see if the user is donating/cheering bits */
         if (tagsMap.containsKey("bits")) {
             scriptEventManager.runDirect(new BitsEvent(this.session, channel, username, tagsMap.get("bits")));
-            com.gmt2001.Console.debug.println("Bits::" + username + "::" + tagsMap.get("bits"));
+            com.gmt2001.Console.debug.println("Bits::" + username + "::amount::" + tagsMap.get("bits"));
         }
 
         /* Check to see if the user is a channel subscriber */
         if (tagsMap.containsKey("subscriber")) {
             if (tagsMap.get("subscriber").equals("1")) {
+                eventBus.postAsync(new IrcPrivateMessageEvent(this.session, "jtv", "SPECIALUSER " + username + " subscriber", tagsMap));
                 com.gmt2001.Console.debug.println("Subscriber::" + username + "::true");
-                eventBus.postAsync(new IrcPrivateMessageEvent(this.session, "jtv", "SPECIALUSER " + username + " subscriber", tagsMap)); 
             }
         }
 
@@ -319,21 +318,21 @@ public class TwitchWSIRCParser {
             if (tagsMap.get("user-type").length() > 0) {
                 if (!moderators.contains(username.toLowerCase())) {
                     moderators.add(username.toLowerCase());
-                    com.gmt2001.Console.debug.println("Moderator::" + username + "::true");
                     eventBus.postAsync(new IrcChannelUserModeEvent(this.session, this.channel, username, "O", true));
+                    com.gmt2001.Console.debug.println("Moderator::" + username + "::true");
                 }
             } else {
                 if (this.channelName.equalsIgnoreCase(username)) {
                     if (!moderators.contains(username.toLowerCase())) {
                         moderators.add(username.toLowerCase());
-                        com.gmt2001.Console.debug.println("Broadcaster::" + username + "::true");
                         eventBus.postAsync(new IrcChannelUserModeEvent(this.session, this.channel, username, "O", true));
+                        com.gmt2001.Console.debug.println("Broadcaster::" + username + "::true");
                     }
                 } else {
                     if (moderators.contains(username.toLowerCase())) {
                         moderators.remove(username.toLowerCase());
-                        com.gmt2001.Console.debug.println("Moderator::" + username + "::false");
                         eventBus.postAsync(new IrcChannelUserModeEvent(this.session, this.channel, username, "O", false));
+                        com.gmt2001.Console.debug.println("Moderator::" + username + "::false");
                     }
                 }
             }
@@ -348,7 +347,10 @@ public class TwitchWSIRCParser {
         }
 
         /* Check if the message is a command */
-        commandEvent(message, username);
+        if (message.startsWith("!")) {
+            commandEvent(message, username, tagsMap);
+        }
+
         /* Send the message to the scripts. */
         eventBus.post(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
 
@@ -375,12 +377,14 @@ public class TwitchWSIRCParser {
             banDuration = tagsMap.get("ban-duration");
         }
         if (tagsMap.containsKey("ban-reason")) {
-            banReason = "Reason:" + tagsMap.get("ban-reason").replaceAll("\\\\s", " ");
+            banReason = "Reason: " + tagsMap.get("ban-reason").replaceAll("\\\\s", " ");
         }
         if (banDuration.isEmpty()) {
             com.gmt2001.Console.debug.println(username + " has been banned. " + banReason);
-        } else {
+        } else if (banReason != "Reason:") {
             com.gmt2001.Console.debug.println(username + " has been timed out for " + banDuration + " seconds. " + banReason);
+        } else {
+            com.gmt2001.Console.debug.println(username + " has been timed out for " + banDuration + " seconds.");
         }
 
         eventBus.postAsync(new IrcClearchatEvent(this.session, this.channel, username, banReason, banDuration));
@@ -394,8 +398,8 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void whisperMessage(String message, String username, Map<String, String> tagsMap) {
-        com.gmt2001.Console.out.println("Whisper: " + username + ": " + message);
         eventBus.postAsync(new IrcPrivateMessageEvent(this.session, username, message, tagsMap));
+        com.gmt2001.Console.out.println("[WHISPER] " + username + ": " + message);
     }
 
     /*
@@ -413,9 +417,9 @@ public class TwitchWSIRCParser {
             com.gmt2001.Console.out.println();
             System.exit(0);
             return;
-        } else if (message.startsWith("The moderators of this room are: ")) {
-            com.gmt2001.Console.debug.println("Message from jtv: " + message);
-            eventBus.postAsync(new IrcPrivateMessageEvent(this.session, "jtv", message, tagsMap)); 
+        } else {
+            eventBus.postAsync(new IrcPrivateMessageEvent(this.session, "jtv", message, tagsMap));
+            com.gmt2001.Console.debug.println("Message from jtv: " + message); 
         }
     }
 

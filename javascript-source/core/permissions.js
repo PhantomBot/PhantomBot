@@ -147,7 +147,7 @@
      * @info this also included gamewisp subs.
      */
     function isSubv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || isSub(username.toLowerCase()) || isGWSub(username.toLowerCase());
+        return (tags != null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || isSub(username.toLowerCase());
     };
 
     /**
@@ -748,6 +748,11 @@
 
             if (!isOwner(sender) && groupId == getUserGroupId(sender)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.error.samegroup'));
+                return;
+            }
+
+            if (groupId == 3) {
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.sub.error'));
                 return;
             }
 

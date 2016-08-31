@@ -474,10 +474,6 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.success', actionArg1, actionArg2));
             }
         }
-
-        if (command.equalsIgnoreCase('reloadadventure')) {
-            reloadAdventure();
-        }
     });
 
     /**
@@ -491,7 +487,6 @@
                 moduleLoaded = true;
             }
             $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
-            $.registerChatCommand('./games/adventureSystem.js', 'reloadadventure', 1);
         }
     });
 
@@ -501,4 +496,6 @@
     if ($.bot.isModuleEnabled('./games/adventureSystem.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
         $.log.error("Disabled. ./systems/pointSystem.js is not enabled.");
     }
+
+    $.reloadAdventure = reloadAdventure;
 })();

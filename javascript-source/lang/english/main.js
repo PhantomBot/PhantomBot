@@ -57,7 +57,7 @@ $.lang.register('chatmoderator.subscribers.toggle.symbols', 'subscribers are cur
 $.lang.register('chatmoderator.subscribers.toggle.spam', 'subscribers are currently $1 to spam repeating characters.');
 $.lang.register('chatmoderator.subscribers.toggle.emotes', 'subscribers are currently $1 to overuse emotes.');
 $.lang.register('chatmoderator.subscribers.toggle.colors', 'subscribers are currently $1 to use /me for colored text');
-$.lang.register('chatmoderator.subscribers.toggle.long.msg', 'subscribers are currently $1 to post lon messages.');
+$.lang.register('chatmoderator.subscribers.toggle.long.msg', 'subscribers are currently $1 to post long messages.');
 $.lang.register('chatmoderator.regulars.links.allowed', 'regulars will now be effected by the link filter.');
 $.lang.register('chatmoderator.regulars.links.not.allowed', 'regulars will no longer be effected by the link filter.');
 $.lang.register('chatmoderator.regulars.caps.allowed', 'regulars will now be effected by the caps filter.');
@@ -80,7 +80,7 @@ $.lang.register('chatmoderator.regulars.toggle.symbols', 'regulars are currently
 $.lang.register('chatmoderator.regulars.toggle.spam', 'regulars are currently $1 to spam repeating characters.');
 $.lang.register('chatmoderator.regulars.toggle.emotes', 'regulars are currently $1 to overuse emotes.');
 $.lang.register('chatmoderator.regulars.toggle.colors', 'regulars are currently $1 to use /me for colored text');
-$.lang.register('chatmoderator.regulars.toggle.long.msg', 'regulars are currently $1 to post lon messages.');
+$.lang.register('chatmoderator.regulars.toggle.long.msg', 'regulars are currently $1 to post long messages.');
 $.lang.register('chatmoderator.silenttimeout.toggle.links', 'silent timeout is currently $1 for links.');
 $.lang.register('chatmoderator.silenttimeout.usage.all', 'usage: !moderation silenttimeout all [true / false]');
 $.lang.register('chatmoderator.silenttimeout.true', 'silent timeout has been enabled for all filters.');
@@ -208,7 +208,7 @@ $.lang.register('cmd.adminonly', 'Only an Administrator has access to that comma
 $.lang.register('cmd.casteronly', 'Only a Caster has access to that command!');
 $.lang.register('cmd.modonly', 'Only a Moderator has access to that command!');
 $.lang.register('cmd.needpoints', 'That command costs $1, which you don\'t have.');
-$.lang.register('cmd.perm.404', 'only a $1 has access to that command.');
+$.lang.register('cmd.perm.404', 'only a $1 or higher has access to that command.');
 $.lang.register('commandlist.commands', 'Commands (page $1 of $2): $3');
 $.lang.register('commandlist.more', ' >> Type "!commands $1" for more');
 $.lang.register('commandlist.nocommands', 'There are currently no commands available to you');
@@ -302,6 +302,7 @@ $.lang.register('permissions.grouppoints.showgroup.online', '$1 gains $2 $3 onli
 $.lang.register('permissions.grouppoints.showgroup.offline', '$1 gains $2 $3 offline.');
 $.lang.register('permissions.grouppoints.set.online', 'Set permission $1 to gain $2 $3 online.');
 $.lang.register('permissions.grouppoints.set.offline', 'Set permission $1 to gain $2 $3 offline.');
+$.lang.register('permissions.grouppoints.set.sub.error', 'You cannot promote anyone to Subscriber, this status is from Twitch is GameWisp.');
 $.lang.register('timesystem.uptime.offline', '$1 is currently offline.');
 $.lang.register('timesystem.uptime', '$1 has been live for $2!');
 $.lang.register('timesystem.add.error.negative', 'You can not give negative time.');
