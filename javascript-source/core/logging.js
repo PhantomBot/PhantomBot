@@ -209,7 +209,11 @@
         var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase();
 
-        if (message.toLowerCase().indexOf('moderators if this room') == -1) {
+        if (message.startsWith('specialuser')) {
+            return;
+        }
+
+        if (message.indexOf('the moderators if this room') == -1) {
             logfile('private-messages', '' + sender + ': ' + message);
         }
 
@@ -218,33 +222,19 @@
                 logfile('private-messages', '' + $.lang.get('console.received.clearchat'));
             } else if (message.indexOf('clearchat') != -1) {
                 logEvent($.lang.get('console.received.purgetimeoutban', message.substring(10)));
-            }
-
-            if (message.indexOf('now in slow mode') != -1) {
+            } else if (message.indexOf('now in slow mode') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
-            }
-
-            if (message.indexOf('no longer in slow mode') != -1) {
+            } else if (message.indexOf('no longer in slow mode') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.slowmode.end'));
-            }
-
-            if (message.indexOf('now in subscribers-only') != -1) {
+            } else if (message.indexOf('now in subscribers-only') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.subscriberonly.start'));
-            }
-
-            if (message.indexOf('no longer in subscribers-only') != -1) {
+            } else if (message.indexOf('no longer in subscribers-only') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.subscriberonly.end'));
-            }
-
-            if (message.indexOf('now in r9k') != -1) {
+            } else if (message.indexOf('now in r9k') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.r9k.start'));
-            }
-
-            if (message.indexOf('no longer in r9k') != -1) {
+            } else if (message.indexOf('no longer in r9k') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.r9k.end'));
-            }
-
-            if (message.indexOf('hosting') != -1) {
+            } else if (message.indexOf('hosting') != -1) {
                 var target = String(message).replace(/now hosting /ig, '').replace(/\./ig, '');
 
                 if (target.equalsIgnoreCase('-')) {
@@ -254,6 +244,8 @@
                     $.bot.channelIsHosting = target;
                     logfile('private-messages', '' + $.lang.get('console.received.host.start', target));
                 }
+            } else {
+                logfile('private-messages', '' + sender + ': ' + message);
             }
         }
     });
