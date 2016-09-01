@@ -477,6 +477,7 @@ public class TwitchWSIRCParser {
             } else {
                 com.gmt2001.Console.out.println("[ERROR] " + session.getNick() + " is not detected as a moderator!");
                 com.gmt2001.Console.out.println("[ERROR] You must add " + session.getNick() + " as a channel moderator for it to chat.");
+                com.gmt2001.Console.out.println("[ERROR] Type /mod " + session.getNick() + " to add " + session.getNick() + " as a channel moderator.");
                 session.setAllowSendMessages(false);
                 if (moderators.contains(session.getNick())) {
                     moderators.remove(session.getNick());

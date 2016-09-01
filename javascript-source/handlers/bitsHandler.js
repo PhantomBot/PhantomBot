@@ -9,6 +9,7 @@
 	    reward = $.getSetIniDbNumber('bitsSettings', 'reward', 0),
 	    minimum = $.getSetIniDbNumber('bitsSettings', 'minimum', 0),
 	    announceBits = false;
+	    moduleEnaled = false;
 
 	/**
 	 * Used by the panel when someone updates a setting to reload the script vars.
@@ -28,6 +29,9 @@
 	 * @event BitsEvent
 	 */
 	$.bind('Bits', function(event) {
+		if (!moduleEnaled) {
+			return;
+		}
 		var s = message;
 
 		/** Match (name) if it is in the message to replace it with the username to cheered. */
@@ -49,8 +53,9 @@
 		if (announceBits && toggle) {
 			if (event.getBits() >= minimum) {//Check if the user cheered enough bits. Default is 0, so any amount.
 				$.say(s);
-			} else if (reward > 0) {//Check if the owner set a reward for when someone cheers. Default is non.
-				$.inidb.incr('points', username, parseInt(reward));
+				if (reward > 0) {//Check if the owner set a reward for when someone cheers. Default is non.
+				    $.inidb.incr('points', username, parseInt(reward));
+			    }
 			}
 			/** Write thelast  user and the amount of bits to a file for if the owner wants to display it on his stream. */
 			//$.writeToFile($.username.resolve(event.getUsername()) + ': ' + event.getBits(), './addons/bitsHandler/lastCheer.txt', false);
@@ -152,6 +157,7 @@
         	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsreward', 1);
         	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsminimum', 1);
         	announceBits = true; //Make sure the module is enabled to announce bits, incase the toggle is on.
+        	moduleEnaled = $.bot.isModuleEnabled('./handlers/bitsHandler.js'); // Don't want to call the replace function if this module is disabled.
         }
     });
 
