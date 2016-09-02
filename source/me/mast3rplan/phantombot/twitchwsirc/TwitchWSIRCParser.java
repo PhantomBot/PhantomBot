@@ -368,6 +368,8 @@ public class TwitchWSIRCParser {
         String banDuration = "";
         String banReason = "";
 
+        com.gmt2001.Console.debug.println("CLEARCHAT::USERNAME::" + username + "::TAGS::" + tagsMap);
+
         /* This should never happen, but just in case. */
         if (username == null) {
             return;
@@ -379,9 +381,10 @@ public class TwitchWSIRCParser {
         if (tagsMap.containsKey("ban-reason")) {
             banReason = "Reason: " + tagsMap.get("ban-reason").replaceAll("\\\\s", " ");
         }
+        
         if (banDuration.isEmpty()) {
             com.gmt2001.Console.debug.println(username + " has been banned. " + banReason);
-        } else if (banReason != "Reason:") {
+        } else if (!banReason.endsWith("Reason: ")) {
             com.gmt2001.Console.debug.println(username + " has been timed out for " + banDuration + " seconds. " + banReason);
         } else {
             com.gmt2001.Console.debug.println(username + " has been timed out for " + banDuration + " seconds.");
@@ -477,7 +480,6 @@ public class TwitchWSIRCParser {
             } else {
                 com.gmt2001.Console.out.println("[ERROR] " + session.getNick() + " is not detected as a moderator!");
                 com.gmt2001.Console.out.println("[ERROR] You must add " + session.getNick() + " as a channel moderator for it to chat.");
-                com.gmt2001.Console.out.println("[ERROR] Type /mod " + session.getNick() + " to add " + session.getNick() + " as a channel moderator.");
                 session.setAllowSendMessages(false);
                 if (moderators.contains(session.getNick())) {
                     moderators.remove(session.getNick());
