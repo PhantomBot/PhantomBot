@@ -900,7 +900,7 @@ public class PhantomBot implements Listener {
     	print(this.botName + " is now shutting down...");
     	isExiting = true;
 
-    	print("Stoping all events and message dispatching...");
+    	print("Stopping all events and message dispatching...");
     	/** Gonna need a way to pass this to all channels */
     	PhantomBot.getSession(this.channelName).setAllowSendMessages(false);
 
@@ -932,7 +932,7 @@ public class PhantomBot implements Listener {
 
         /** Check to see if web is enabled */
     	if (webEnabled) {
-    		print("Sutting down all web socket servers...");
+    		print("Shutting down all web socket servers...");
     		httpServer.dispose();
     		NEWHTTPServer.close();
     		eventWebSocketServer.dispose();
