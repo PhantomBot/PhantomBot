@@ -18,6 +18,7 @@
 package com.illusionaryone;
 
 import com.gmt2001.UncaughtExceptionHandler;
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.RepoVersion;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -163,10 +164,46 @@ public class GitHubAPIv3 {
     }
 
     /*
+     * Getting version difference.
+     *
+     * @bool count      getting numbers difference of version
+     * @return  int     returning zero if version is newer.
+     *                  -1 if local version is greater then from repository (if count is true)
+     *                  greater then 0 - there is a newer version.
+     */
+
+    public int versionDiff(boolean count) {
+        String currentVersion = GetReleases().getJSONArray("array").getJSONObject(0).getString("tag_name");
+        String[] New = currentVersion.substring(1).split("\\.");
+        String[] Old = RepoVersion.getPhantomBotVersion().split("\\.");
+        int i = 0;
+
+        while ( i < Old.length && i < New.length && New[i].equals(Old[i])) {
+            i++;
+        }
+
+        if (i < Old.length && i < New.length) {
+            int diff = Integer.valueOf(New[i]).compareTo(Integer.valueOf(Old[i]));
+            if (Integer.signum(diff) <= 0){
+                return 0;
+            }
+        }
+        int size = New.length - Old.length;
+        if ( size > 0 ){
+            return 1;
+        }
+        if (count) {
+            return size;
+        }
+        return 0;
+    }
+
+    /*
      * Pulls release information from GitHub and checks to see if there is a new release.
      *
      * @return  String  null if no new version detected else the version and URL to download the release
      */
+
     public String[] CheckNewRelease() {
         JSONObject jsonObject = GetReleases();
         JSONArray jsonArray = jsonObject.getJSONArray("array");
@@ -185,7 +222,11 @@ public class GitHubAPIv3 {
         if (!assetsArray.getJSONObject(0).has("browser_download_url")) {
             return null;
         }
-        return new String[] { tagName, assetsArray.getJSONObject(0).getString("browser_download_url") };
+        if(versionDiff(false) == 0){
+            return null;
+        } else {
+            return new String[]{tagName, assetsArray.getJSONObject(0).getString("browser_download_url")};
+        }
     }
 
 }

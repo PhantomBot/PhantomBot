@@ -34,12 +34,12 @@
         </fileset>
     </path>
 
-    <condition property="nightly_build" value="${nightly}" else="not_nightly">
+    <!--<condition property="nightly_build" value="${nightly}" else="not_nightly">
         <and>
             <isset property="nightly" />
             <length string="${nightly}" trim="yes" length="0" when="greater" />
         </and>
-    </condition>
+    </condition>-->
     
     <available file=".git" type="dir" property="git.present"/>
 
@@ -142,7 +142,7 @@
                 <attribute name="Implementation-Revision" value="${git.revision}" />
                 <attribute name="Implementation-URL" value="https://phantombot.tv" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
-                <attribute name="Main-Class" value="me.mast3rplan.phantombot.Main" />
+                <attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot" />
             </manifest>
         </jar>
             
