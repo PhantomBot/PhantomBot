@@ -1716,6 +1716,12 @@ public class PhantomBot implements Listener {
 
     /** Load up main */
     public static void main(String[] args) throws IOException {
+    	/** Nightly build  */
+
+    	if(GitHubAPIv3.instance().versionDiff(true) <= -1){
+    		RepoVersion.nightlyBuild = "nightly_build";
+		}
+
     	/** Bot Information */
 	    String botName = "";
 	    String channelName = "";

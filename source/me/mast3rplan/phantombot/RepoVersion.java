@@ -20,7 +20,7 @@ public class RepoVersion {
 
     private static final String phantomBotVersion = "@phantombot.version@";
     private static final String repoVersion = "@repository.version@";
-    private static final String nightlyBuild = "@nightly.build@";
+    public static String nightlyBuild;
 
     private RepoVersion() {
     }
