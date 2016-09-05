@@ -24,7 +24,7 @@ In ./development-resources there's a template (module-template.js) wich you can 
 This file should give you enough insight on the general layout of the modules code.
 
 ##Code specific rules
-- 4 space indents.
+- 4 space indents. Make sure you code lines up with the current one or it will be rejected.
 - Encapsulate all code in `(function(){ /* Your code */ })();` and export globally needed code to $ by function assignment.
 - Do not assign variables and functions to the `$` global. Do not use the $ api if you variable is local.
 - If a function or variable needs to be global, assign it at the end of your module like `$.functionName = functionName;`.
