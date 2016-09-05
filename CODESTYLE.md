@@ -24,20 +24,23 @@ In ./development-resources there's a template (module-template.js) wich you can 
 This file should give you enough insight on the general layout of the modules code.
 
 ##Code specific rules
-
 - 4 space indents.
 - Encapsulate all code in `(function(){ /* Your code */ })();` and export globally needed code to $ by function assignment.
-- Do not assign variables and functions to the `$` global.
+- Do not assign variables and functions to the `$` global. Do not use the $ api if you variable is local.
 - If a function or variable needs to be global, assign it at the end of your module like `$.functionName = functionName;`.
 - Camel case for variable and function names. (thisIsCamelCase)
 - Word capitalisation on class names. (ThisIsWordCapitalisation)
 - Use [JSDoc](http://usejsdoc.org/) comments for classes and functions.
 - Use `@commandpath` tags to define each possible command variation. (check below on how exactly)  
-- Use comments for code that is not apparent to understand
+- Use comments for code that is not apparent to understand, same with functions use `@param {string}, {number} or {boolean} something` so we know what that function needs.
 - Try and use some space while writing code, no need to be parsimonious, the script is going to be minified anyway!
 - Use descriptive function/variable/class names.
 - Create functions for repeating code.
 - Always keep performance in mind, use as much native javascript as possible and keep your variable use at a minimum.
+
+##If statements 
+- Proper if statement: `if (something) {`
+- Bad if statements: `if(something){`, `if ( something ) {` and `if( something ){` etc.
 
 ##@commandpath tags
 The `@commandpath` tag is used for describing all possible paths per command.  
@@ -73,6 +76,3 @@ Generates:
 
 *Note: `command-list-generator.php` is depending on the conventions noted above to be followed correctly.*  
 *Note: New-lines in command descriptions are not supported in `command-list-generator.php`. Only the text on the same line as `@commandpath` is parsed.*
-
-#Java
-This section is yet to be written
