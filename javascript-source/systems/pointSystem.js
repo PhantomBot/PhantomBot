@@ -14,6 +14,7 @@
         penaltys = [],
         pointsBonus = false,
         pointsBonusAmount = 0,
+		monthly = $.getSetIniDbNumber('pointSettings', 'monthlyBonus', 1000),
 
         /** @export $ */
         pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'point'),
@@ -600,6 +601,7 @@
                     }
 
                     monthlyBonus = actionArg1;
+                    $.inidb.set('pointSettings', 'monthlyBonus', monthlyBonus);
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.monthly.success', getPointsString(monthlyBonus)));
                 }
 
