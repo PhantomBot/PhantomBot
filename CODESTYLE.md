@@ -3,7 +3,8 @@
 When implementing new code or making changes to the current create a branch with the following name: `YOURUSERNAME_WHAT_YOU_ARE_DOING`.
 That way there'll be no pollution on the master branch and everyone can see what is being done already and by who.  
 Whenever you wish to have your code pushed to the master branch just merge it (do notify others, courtesy and such)
-or create a pull request for others to merge, if you don't feel comfortable with resolving conflicts.
+or create a pull request for others to merge, if you don't feel comfortable with resolving conflicts. Also make sure to leave a comment on what your code
+is going to be doing or changing to PhantomBot.
 
 #JavaScript
 
@@ -39,8 +40,10 @@ This file should give you enough insight on the general layout of the modules co
 - Always keep performance in mind, use as much native javascript as possible and keep your variable use at a minimum.
 
 ##If statements 
-- Proper if statement: `if (something) {`
-- Bad if statements: `if(something){`, `if ( something ) {` and `if( something ){` etc.
+- Please don't leave spaces inside at the start and end of your if statements.
+- Examples: 
+        Proper if statement: `if (something) {`
+        Bad if statements: `if(something){`, `if ( something ) {` and `if( something ){` etc.
 
 ##@commandpath tags
 The `@commandpath` tag is used for describing all possible paths per command.  
