@@ -12,6 +12,7 @@
         modeO = false,
         modules = [],
         hooks = [],
+        lastRecon = 0,
         pricecomMods = ($.inidb.exists('settings', 'pricecomMods') ? $.inidb.get('settings', 'pricecomMods') : false),
         coolDownMsgEnabled = ($.inidb.exists('settings', 'coolDownMsgEnabled') ? $.inidb.get('settings', 'coolDownMsgEnabled') : false),
         permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : true);
@@ -346,10 +347,16 @@
             }
 
             if (action.equalsIgnoreCase('rejoin') || action.equalsIgnoreCase('reconnect')) {
+                /* Added a cooldown to this so people can spam it and cause errors. */
+                if (lastRecon + 10000 >= $.systemTime()) {
+                    $.consoleLn('[ERROR] Already trying to reconnect.');
+                    return;
+                }
+                lastRecon = $.systemTime();
                 $.say($.whisperPrefix(sender) + $.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' requested a reconnect!');
                 setTimeout(function () { $.session.close(); }, 100);
-                setTimeout(function () { $.say($.whisperPrefix(sender) + $.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully rejoined!')) }, 1000);
+                setTimeout(function () { $.say($.whisperPrefix(sender) + $.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully rejoined!')) }, 5000);
                 return;
             }
 
@@ -454,6 +461,11 @@
             if (!$.isBot(sender)) {
                 return;
             }
+            if (lastRecon + 10000 >= $.systemTime()) {
+                $.consoleLn('[ERROR] Already trying to reconnect.');
+                return;
+            }
+            lastRecon = $.systemTime();
             $.log.event(username + ' requested a reconnect!');
             $.session.close();
         }
