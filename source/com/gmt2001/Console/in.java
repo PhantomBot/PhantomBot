@@ -44,7 +44,7 @@ public class in {
         String s = br.readLine();
 
         if (PhantomBot.enableDebugging) {
-            Logger.instance().log(Logger.LogType.Input, logTimestamp.log() + " " + s);
+            Logger.instance().log(Logger.LogType.Input, "[" + logTimestamp.log() + "] " + s);
             Logger.instance().log(Logger.LogType.Input, "");
         }
 

@@ -50,7 +50,7 @@ public class err {
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
         stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
-        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + stackInfo + o.toString());
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         System.err.print("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
     }
 
@@ -72,7 +72,7 @@ public class err {
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
         stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
-        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + stackInfo + o.toString());
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
         System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
     }
@@ -90,7 +90,7 @@ public class err {
 
         e.printStackTrace(ptrace);
 
-        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + trace.toString());
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + trace.toString());
         Logger.instance().log(Logger.LogType.Error, "");
     }
 }
