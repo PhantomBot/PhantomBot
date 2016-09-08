@@ -100,7 +100,7 @@
 			}
 			winRange = action;
 			$.inidb.set('gambling', 'winRange', winRange);
-			$.say($.whisperPrefix(sender) + $.lang.get('gambling.win.range', winRange, (winRange - 1)));
+			$.say($.whisperPrefix(sender) + $.lang.get('gambling.win.range', parseInt(winRange) + 1, winRange));
 		}
 
 		/**
