@@ -34,7 +34,7 @@
 			return;
 		}
 
-		if (range < winRange) {
+		if (range <= winRange) {
 			$.inidb.decr('points', sender, amount);
 			$.say($.lang.get('gambling.lost', $.resolveRank(sender), range, $.getPointsString(amount), $.getPointsString($.getUserPoints(sender))));
 		} else {
