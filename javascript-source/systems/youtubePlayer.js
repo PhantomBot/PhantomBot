@@ -1510,7 +1510,7 @@
          */
         if (command.equalsIgnoreCase('nextsong')) {
             var minRange,
-                maxRange;
+                maxRange,
                 showRange;
 
             if (!args[0]) {
