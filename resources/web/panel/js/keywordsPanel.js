@@ -25,8 +25,7 @@
 
 (function() {
 
-    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />',
-        keywordMap = [];
+    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />';
 
     /**
      * @function onMessage
@@ -44,7 +43,6 @@
 
         if (panelHasQuery(msgObject)) {
             if (panelCheckQuery(msgObject, 'keywords_keywords')) {
-                keywordMap = [];
                 if (msgObject['results'].length === 0) {
                     $('#keywordsList').html('<i>No Keywords are Defined</i>');
                     return;
@@ -53,15 +51,14 @@
                 html = '<table>';
                 for (idx in msgObject['results']) {
                     keyword = msgObject['results'][idx]['key'];
-                    keywordMap[idx] = keyword;
                     html += '<tr style="textList">' +
                     '    <td style="width: 10%">' + keyword + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 80%" type="text" id="inlineKeywordEdit_' + idx + '"' +
+                    '            <input style="width: 80%" type="text" id="inlineKeywordEdit_' + keyword + '"' +
                     '                   value="' + msgObject['results'][idx]['value'] + '" />' +
-                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateKeyword(\'' + idx + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="deleteKeyword_' + idx + '" onclick="$.deleteKeyword(\'' + idx + '\')"><i class="fa fa-trash" /> </button>' +
+                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateKeyword(\'' + keyword + '\')"><i class="fa fa-pencil" /> </button> ' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteKeyword_' + keyword + '" onclick="$.deleteKeyword(\'' + keyword + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -73,7 +70,6 @@
             }
 
             if (panelCheckQuery(msgObject, 'keywords_cooldown')) {
-                keywordMap = [];
                 if (msgObject['results'].length === 0) {
                     $('#keywordsCooldownList').html('<i>No Keywords cooldown Defined</i>');
                     return;
@@ -101,7 +97,6 @@
             }
 
             if (panelCheckQuery(msgObject, 'keywords_price')) {
-                keywordMap = [];
                 if (msgObject['results'].length === 0) {
                     $('#keywordsPriceList').html('<i>No Keywords prices Defined</i>');
                     return;
@@ -118,7 +113,7 @@
                     '            <input style="width: 60%" type="text" id="editKeyPrice_' + key + '"' +
                     '                   value="' + time + '" />' +
                     '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateKeyPrice(\'' + key + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="deletePrice_' + key + '" onclick="$.deleteKeyPrice(\'' + key + '\')"><i class="fa fa-trash" /> </button>' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteKeyPrice_' + key + '" onclick="$.deleteKeyPrice(\'' + key + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -162,10 +157,12 @@
      * @function deleteKeyword
      * @param {String} keywordIdx
      */
-    function deleteKeyword(keywordIdx) {
-        $('#deleteKeyword_' + keywordIdx).html(spinIcon);
-        keyword = keywordMap[keywordIdx];
+    function deleteKeyword(keyword) {
+        $('#deleteKeyword_' + keyword).html(spinIcon);
+        console.log(keyword);
         sendDBDelete('keywords_delkeyword', 'keywords', keyword);
+        sendDBDelete('keywords_delkeyword', 'coolkey', keyword);
+        sendDBDelete('keywords_delkeyword', 'pricekey', keyword);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -173,10 +170,9 @@
      * @function updateKeyword
      * @param {String} keyword
      */
-    function updateKeyword(keywordIdx) {
-        var value = $('#inlineKeywordEdit_' + keywordIdx).val();
+    function updateKeyword(keyword) {
+        var value = $('#inlineKeywordEdit_' + keyword).val();
         if (value.length > 0) {
-            keyword = keywordMap[keywordIdx];
             sendDBUpdate('keywords_editkeyword', 'keywords', keyword, value);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
