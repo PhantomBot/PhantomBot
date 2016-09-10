@@ -237,12 +237,8 @@
             if (args.length > 0) sender = args[0];
             if (args.length > 1) channel = args[1];
 
-            if ($.twitch.GetUserFollowsChannel(sender.toLowerCase(), channel.toLowerCase()).getInt('_http') == 200) {
-                $.getFollowAge(event.getSender(), sender, channel);
-                return null;
-            } else {
-                message = $.replace(message, '(followage)', String($.lang.get('followhandler.follow.age.err.404', $.userPrefix(event.getSender(), true), sender, channel)));
-            }
+            $.getFollowAge(event.getSender(), sender, channel);
+            return null;
         }
 
         if (message.match(/\(playtime\)/g)) {
