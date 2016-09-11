@@ -32,6 +32,11 @@ var YOUTUBE_IFRAME = false;
 
 var url = window.location.host.split(":");
 var addr = 'ws://' + url[0] + ':' + getPanelPort();
+
+if (getProtocol() == 'https://') {
+    addr = 'wss://' + url[0] + ':' + getPanelPort();
+}
+
 var connection = new WebSocket(addr, []);
 var isConnected = false;
 var panelStatsEnabled = false;
