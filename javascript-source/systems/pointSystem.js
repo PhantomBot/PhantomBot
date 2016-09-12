@@ -246,8 +246,8 @@
                         amount = onlineGain;
                     }
                 } else {
-                    if ($.inidb.exists('grouppointsoffline', $.getUserGroupName(username))) {
-                        amount = (parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))) < 0 ? onlineGain : parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))));
+                    if ($.inidb.exists('grouppoints', $.getUserGroupName(username))) {
+                        amount = (parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))) < 0 ? onlineGain : parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))));
                     }
                 }
             } else {
