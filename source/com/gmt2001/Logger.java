@@ -100,7 +100,7 @@ public class Logger implements Runnable {
                                 this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
                                 this.psCore = new PrintStream(this.fosCore);
                             }
-                            this.psCore.println(">>" + i.s);
+                            this.psCore.println(i.s);
                             this.psCore.flush();
                             break;
 
@@ -109,7 +109,7 @@ public class Logger implements Runnable {
                                 this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
                                 this.psCore = new PrintStream(this.fosCore);
                             }
-                            this.psCore.println("<<" + i.s);
+                            this.psCore.println(i.s);
                             this.psCore.flush();
                             break;
 
@@ -136,7 +136,7 @@ public class Logger implements Runnable {
                                 this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
                                 this.psCore = new PrintStream(this.fosCore);
                             } 
-                            this.psCore.println("??" + i.s);
+                            this.psCore.println(i.s);
                             this.psCore.flush();
                             break;
                         }
