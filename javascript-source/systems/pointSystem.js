@@ -14,6 +14,7 @@
         penaltys = [],
         pointsBonus = false,
         pointsBonusAmount = 0,
+		monthly = $.getSetIniDbNumber('pointSettings', 'monthlyBonus', 1000),
 
         /** @export $ */
         pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'point'),
@@ -64,12 +65,14 @@
             $.registerChatSubcommand('points', 'takeall', 1);
             $.registerChatSubcommand('points', 'setname', 1);
             $.registerChatSubcommand('points', 'setgain', 1);
+			$.registerChatSubcommand('points', 'setmonthly', 1);
             $.registerChatSubcommand('points', 'setofflinegain', 1);
             $.registerChatSubcommand('points', 'setinterval', 1);
             $.registerChatSubcommand('points', 'user', 7);
             $.registerChatSubcommand('points', 'check', 7);
             $.registerChatSubcommand('points', 'bonus', 1);
             $.registerChatSubcommand('points', 'resetall', 1);
+			$.registerChatSubcommand('points', 'restartmonth', 1);
         } else {
             $.unregisterChatCommand('points', 7);
             $.unregisterChatSubcommand('points', 'add', 1);
@@ -81,12 +84,14 @@
             $.unregisterChatSubcommand('points', 'takeall', 1);
             $.unregisterChatSubcommand('points', 'setname', 1);
             $.unregisterChatSubcommand('points', 'setgain', 1);
+			$.unregisterChatSubcommand('points', 'setmonthly', 1);
             $.unregisterChatSubcommand('points', 'setofflinegain', 1);
             $.unregisterChatSubcommand('points', 'setinterval', 1);
             $.unregisterChatSubcommand('points', 'user', 7);
             $.unregisterChatSubcommand('points', 'check', 7);
             $.unregisterChatSubcommand('points', 'bonus', 1);
             $.unregisterChatSubcommand('points', 'resetall', 1);
+			$.unregisterChatSubcommand('points', 'restartmonth', 1);
         }
     }
 
@@ -107,12 +112,14 @@
             $.registerChatSubcommand(newName, 'takeall', 1);
             $.registerChatSubcommand(newName, 'setname', 1);
             $.registerChatSubcommand(newName, 'setgain', 1);
+			$.registerChatSubcommand(newName, 'setmonthly', 1);
             $.registerChatSubcommand(newName, 'setofflinegain', 1);
             $.registerChatSubcommand(newName, 'setinterval', 1);
             $.registerChatSubcommand(newName, 'user', 7);
             $.registerChatSubcommand(newName, 'check', 7);
             $.registerChatSubcommand(newName, 'bonus', 1);
             $.registerChatSubcommand(newName, 'resetall', 1);
+			$.registerChatSubcommand(newName, 'restartmonth', 1);
         } 
         if (newName2 && boolean) {
             $.registerChatCommand('./systems/pointSystem.js', newName2, 7);
@@ -125,12 +132,14 @@
             $.registerChatSubcommand(newName2, 'takeall', 1);
             $.registerChatSubcommand(newName2, 'setname', 1);
             $.registerChatSubcommand(newName2, 'setgain', 1);
+			$.registerChatSubcommand(newName2, 'setmonthly', 1);
             $.registerChatSubcommand(newName2, 'setofflinegain', 1);
             $.registerChatSubcommand(newName2, 'setinterval', 1);
             $.registerChatSubcommand(newName2, 'user', 7);
             $.registerChatSubcommand(newName2, 'check', 7);
             $.registerChatSubcommand(newName2, 'bonus', 1);
             $.registerChatSubcommand(newName2, 'resetall', 1);
+			$.registerChatSubcommand(newName2, 'restartmonth', 1);
         }
 
         if (newName && !boolean) {
@@ -144,12 +153,14 @@
             $.unregisterChatSubcommand(newName, 'takeall', 1);
             $.unregisterChatSubcommand(newName, 'setname', 1);
             $.unregisterChatSubcommand(newName, 'setgain', 1);
+			$.unregisterChatSubcommand(newName, 'setmonthly', 1);
             $.unregisterChatSubcommand(newName, 'setofflinegain', 1);
             $.unregisterChatSubcommand(newName, 'setinterval', 1);
             $.unregisterChatSubcommand(newName, 'user', 7);
             $.unregisterChatSubcommand(newName, 'check', 7);
             $.unregisterChatSubcommand(newName, 'bonus', 1);
             $.unregisterChatSubcommand(newName, 'resetall', 1);
+			$.unregisterChatSubcommand(newName, 'restartmonth', 1);
         } 
         if (newName2 && !boolean) {
             $.unregisterChatCommand('./systems/pointSystem.js', newName2, 7);
@@ -162,12 +173,14 @@
             $.unregisterChatSubcommand(newName2, 'all', 1);
             $.unregisterChatSubcommand(newName2, 'setname', 1);
             $.unregisterChatSubcommand(newName2, 'setgain', 1);
+			$.unregisterChatSubcommand(newName2, 'setmonthly', 1);
             $.unregisterChatSubcommand(newName2, 'setofflinegain', 1);
             $.unregisterChatSubcommand(newName2, 'setinterval', 1);
             $.unregisterChatSubcommand(newName2, 'user', 7);
             $.unregisterChatSubcommand(newName2, 'check', 7);
             $.unregisterChatSubcommand(newName2, 'bonus', 1);
             $.unregisterChatSubcommand(newName2, 'resetall', 1);
+			$.unregisterChatSubcommand(newName2, 'restartmonth', 1);
         }
     };
 
@@ -233,8 +246,8 @@
                         amount = onlineGain;
                     }
                 } else {
-                    if ($.inidb.exists('grouppointsoffline', $.getUserGroupName(username))) {
-                        amount = (parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))) < 0 ? onlineGain : parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))));
+                    if ($.inidb.exists('grouppoints', $.getUserGroupName(username))) {
+                        amount = (parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))) < 0 ? onlineGain : parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))));
                     }
                 }
             } else {
@@ -393,6 +406,7 @@
             temp,
             user,
             i;
+		monthly = $.getIniDbNumber('pointSettings', 'monthlyBonus');
 
         /**
          * @commandpath points - Announce points in chat when no parameters are given.
@@ -577,6 +591,27 @@
                     $.inidb.set('pointSettings', 'onlineGain', onlineGain);
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.gain.success', pointNameSingle, getPointsString(onlineGain), onlinePayoutInterval));
                 }
+				
+				/**
+                 * @commandpath points setmonthly [amount] - Set the amount of points gained per payout interval while the channel is online, can be overriden by group settings
+                 */
+                else if (action.equalsIgnoreCase('setmonthly')) {
+                    actionArg1 = parseInt(actionArg1);
+					monthlyBonus = $.getIniDbNumber('pointSettings', 'monthlyBonus');
+                    if (isNaN(actionArg1)) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.monthly.usage', getPointsString(monthlyBonus)));
+                        return;
+                    }
+
+                    if (actionArg1 < 0) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.monthly.error.negative', pointNameMultiple));
+                        return;
+                    }
+
+                    monthlyBonus = actionArg1;
+                    $.inidb.set('pointSettings', 'monthlyBonus', monthlyBonus);
+                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.monthly.success', getPointsString(monthlyBonus)));
+                }
 
                 /**
                  * @commandpath points setofflinegain [amount] - Set the amount of points gained per interval while the channel is offline, can be overridden by group settings
@@ -655,10 +690,42 @@
                  */
                 else if (action.equalsIgnoreCase('resetall')) {
                     $.inidb.RemoveFile('points'); 
+					$.inidb.RemoveFile('monthly');
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.reset.all'));
-                } else {
+                }
+				
+				/**
+				* @commandpath restartmonth now - gives each user in chat [monthly] amount of points, and sets their monthly status to true, so they cannot receive it again
+				**/
+				else if (action.equalsIgnoreCase('restartmonth')) {
+					var status;
+					
+					if (!actionArg1) {
+						$.say($.whisperPrefix(sender) + $.lang.get('pointsystem.restart.usage'))
+						return;
+					}
+					
+					if (!$.isAdmin(sender)) {
+						$.say($.whisperPrefix(sender) + $.adminMsg);
+						return;
+					}
+					
+					if (actionArg1.equalsIgnoreCase('now')) {
+						for (i in $.users) {
+							status = $.getSetIniDbBoolean('monthly', $.users[i][0].toLowerCase(), false);
+							
+							if (!status) {
+								$.inidb.set('points', $.users[i][0].toLowerCase(), monthly);
+								$.inidb.set('monthly', $.users[i][0].toLowerCase(), 'true');						
+							}
+						}
+						$.say($.lang.get('pointsystem.restart.success', monthly, pointNameMultiple));
+					}
+					return;
+				} else {
                     $.say($.whisperPrefix(sender) + $.lang.get("pointsystem.usage.invalid", "!" + command));
                 } 
+		
             }
         }
 
@@ -739,6 +806,25 @@
             }
             setPenalty(sender, action.toLowerCase(), parseInt(actionArg1));
         }
+		
+
+		/** 
+		 * @commandpath claim - give the user their monthly gift if they have not already recived it
+		 **/
+		if (command.equalsIgnoreCase('claim')) {
+			var status = $.getSetIniDbBoolean('monthly', sender, false);
+			monthly = $.getIniDbNumber('pointSettings', 'monthlyBonus');
+			
+			if (!status) {
+				$.inidb.set('points', sender, monthly);
+				$.inidb.set('monthly', sender, 'true');
+				$.say($.whisperPrefix(sender) + $.lang.get('pointsystem.claim.success', monthly, pointNameMultiple));
+				return;
+			}
+			$.say($.whisperPrefix(sender) + $.lang.get('pointsystem.claim.failure', monthly, pointNameMultiple));
+			return;
+		}
+		 
     });
 
     // Set the timer for the points payouts
@@ -756,6 +842,7 @@
             $.registerChatCommand('./systems/pointSystem.js', 'point', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'gift', 7);
             $.registerChatCommand('./systems/pointSystem.js', 'penalty', 2);
+			$.registerChatCommand('./systems/pointSystem.js', 'claim', 7);
 
             $.registerChatSubcommand('points', 'add', 1);
             $.registerChatSubcommand('points', 'give', 1);
@@ -766,12 +853,14 @@
             $.registerChatSubcommand('points', 'takeall', 1);
             $.registerChatSubcommand('points', 'setname', 1);
             $.registerChatSubcommand('points', 'setgain', 1);
+			$.registerChatSubcommand('points', 'setmonthly', 1);
             $.registerChatSubcommand('points', 'setofflinegain', 1);
             $.registerChatSubcommand('points', 'setinterval', 1);
             $.registerChatSubcommand('points', 'user', 7);
             $.registerChatSubcommand('points', 'check', 7);
             $.registerChatSubcommand('points', 'bonus', 1);
             $.registerChatSubcommand('points', 'resetall', 1);
+			$.registerChatSubcommand('points', 'restartmonth', 1);
 
             if (pointNameSingle != 'point' && pointNameMultiple != 'points') {
                updateSettings(); 
