@@ -73,3 +73,8 @@ $.lang.register('ytplayer.blacklist.add.success.song', 'Song/Keyword: "$1" has b
 $.lang.register('ytplayer.blacklist.remove.usage.song', 'usage: !ytp blacklist remove [name]');
 $.lang.register('ytplayer.blacklist.remove.success.song', 'Song/Keyword: "$1" has been removed from the blacklist.');
 $.lang.register('ytplayer.blacklist.404', 'Song name has been blacklisted.');
+$.lang.register('ytplayer.command.skip.success', 'Skip requested! Current song will be skipped in $1 more votes.');
+$.lang.register('ytplayer.command.skip.failure', 'You have already requested a skip for the current song.');
+$.lang.register('ytplayer.command.skip.skipping', 'The votes are counted, and the users have spoken!!! Skipping the current song!.');
+$.lang.register('ytplayer.command.votecount.set', 'Minimum votes now needed for viewers to skip songs: $1');
+$.lang.register('ytplayer.command.votecount.usage', '!ytp votecount [amount]  ---  Current setting: $1');
