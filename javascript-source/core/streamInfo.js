@@ -297,8 +297,14 @@
      * @param channelName
      */
     function getFollowAge(sender, username, channelName) {
-        var user = $.twitch.GetUserFollowsChannel(username, channelName),
-            date = new Date(user.getString('created_at')),
+        var user = $.twitch.GetUserFollowsChannel(username, channelName);
+
+        if (user.getInt('_http') === 404) {
+            $.say($.lang.get('followhandler.follow.age.err.404', $.userPrefix(sender, true), username, channelName));
+            return;
+        }
+
+        var date = new Date(user.getString('created_at')),
             dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
             dateFinal = dateFormat.format(date),
             days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
@@ -316,8 +322,14 @@
      * @param event
      */
     function getChannelAge(event) {
-        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : event.getArgs()[0])),
-            date = new Date(channelData.getString('created_at')),
+        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]));
+
+        if (channelData.getInt('_http') === 404) {
+            $.say($.userPrefix(event.getSender(), true) + $.lang.get('channel.age.user.404'));
+            return;
+        }
+
+        var date = new Date(channelData.getString('created_at')),
             dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
             dateFinal = dateFormat.format(date),
             days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
@@ -337,7 +349,7 @@
     function getSubscriberCount() {
         var jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, 0, true);
 
-        if (jsonObject.getInt('_http') != 200) {
+        if (jsonObject.getInt('_http') !== 200) {
             return 0;
         }
 

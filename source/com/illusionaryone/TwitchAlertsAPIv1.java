@@ -43,7 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /*
- * Communicates with the Twitch Alerts v1 API server.  Currently only
+ * Communicates with the Twitch Alerts v1 API server. (StreamLabs)  Currently only
  * supports the GET donations method.
  *
  * @author illusionaryone

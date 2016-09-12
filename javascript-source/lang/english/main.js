@@ -344,3 +344,4 @@ $.lang.register('common.minutes2', ' minutes.');
 $.lang.register('common.seconds', ' seconds');
 $.lang.register('common.get.age.days', '$1 $2 has been on Twitch since $3. (Joined $4 days ago)');
 $.lang.register('common.get.age', '$1 $2 has been on Twitch since $3.');
+$.lang.register('channel.age.user.404', 'That user is not on Twitch.');

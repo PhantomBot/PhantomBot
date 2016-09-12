@@ -593,12 +593,13 @@
                 }
 				
 				/**
-                 * @commandpath points setgain [amount] - Set the amount of points gained per payout interval while the channel is online, can be overriden by group settings
+                 * @commandpath points setmonthly [amount] - Set the amount of points gained per payout interval while the channel is online, can be overriden by group settings
                  */
                 else if (action.equalsIgnoreCase('setmonthly')) {
                     actionArg1 = parseInt(actionArg1);
+					monthlyBonus = $.getIniDbNumber('pointSettings', 'monthlyBonus');
                     if (isNaN(actionArg1)) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.monthly.usage'));
+                        $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.monthly.usage', getPointsString(monthlyBonus)));
                         return;
                     }
 

@@ -13,6 +13,9 @@
         songRequestsEnabled = $.getSetIniDbBoolean('ytSettings', 'songRequestsEnabled', true),
         songRequestsMaxParallel = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxParallel', 1),
         songRequestsMaxSecondsforVideo = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxSecondsforVideo', (8 * 60)),
+		voteCount = $.getSetIniDbNumber('ytSettings', 'voteCount', 5),
+		voteArray = [],
+		skipCount,
         playlistDJname = $.getSetIniDbString('ytSettings', 'playlistDJname', $.botName);
 
         /* enum for player status */
@@ -499,6 +502,8 @@
             if (announceInChat) {
                 $.say($.lang.get('ytplayer.announce.nextsong', currentVideo.getVideoTitle(), currentVideo.getOwner()));
             }
+			skipCount = 0;
+			voteArray = [];
             return currentVideo;
         };
 
@@ -1047,6 +1052,27 @@
                 return;
             }
 
+			/**
+			 * @commandpath ytp votecount - Set the amount of votes needed for the !skip command to work
+			 */
+            if (action.equalsIgnoreCase('votecount')) {
+				voteCount = $.getIniDbNumber('ytSettings', 'voteCount');
+				
+                if (!connectedPlayerClient) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
+                    return;
+                } 
+				
+                if (actionArgs[0] && !isNaN(parseInt(actionArgs[0]))) {
+                    $.inidb.set('ytSettings', 'voteCount', actionArgs[0]);
+					voteArray = [];
+					skipCount = 0;
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.votecount.set', actionArgs[0]));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.votecount.usage', voteCount));
+                }
+                return;
+            }
             /**
              * @commandpath ytp pause - Pause/unpause the player.
              */
@@ -1501,6 +1527,29 @@
                 currentPlaylist.getCurrentVideo().getVideoLink()
             ));
         }
+		/**
+		 * @commandpath skip - Allows a user to vote to skip the currently playing song
+		 */
+		if (command.equalsIgnoreCase('skip')) {
+			var username = $.username.resolve(sender, event.getTags()),
+				check = voteArray.indexOf(username),
+				voteCount = $.getIniDbNumber('ytSettings', 'voteCount');
+			if (check != -1) {
+				$.say($.lang.get('ytplayer.command.skip.failure'));
+				return;
+			}
+			
+			skipCount = skipCount +1;
+			if (skipCount == voteCount) {
+				$.say($.lang.get('ytplayer.command.skip.skipping'));
+				currentPlaylist.nextVideo();
+				connectedPlayerClient.pushSongList();
+				return;				
+			}
+			$.say($.lang.get('ytplayer.command.skip.success', voteCount - skipCount));
+			voteArray.push(username);
+			return;
+        }
 
         /**
          * @commandpath nextsong - Display the next song in the request queue
@@ -1592,6 +1641,7 @@
             $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
+			$.registerChatCommand('./systems/youtubePlayer.js', 'skip', 7);
             $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
             $.registerChatSubcommand('wrongsong', 'user', 2);
 
