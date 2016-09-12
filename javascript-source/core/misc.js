@@ -100,7 +100,7 @@
      * @param {string} message
      */
     function say(message) {
-        if ($.channel !== null) {
+        if ($.session !== null) {
             if (message.startsWith('.')) {
                 $.session.say(message);
             }

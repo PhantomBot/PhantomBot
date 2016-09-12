@@ -64,6 +64,13 @@ public class HTTPServer extends Thread {
         } catch (IOException e) {
             com.gmt2001.Console.err.println("Could not start HTTP server: " + e);
             com.gmt2001.Console.err.logStackTrace(e);
+            /**
+             * @info Shutting down the bot would stop people from having multiple opened.
+             * com.gmt2001.Console.out.println("[ERROR] PhantomBot is now shutting down.");
+             * com.gmt2001.Console.out.println("[ERROR] Close all Java instantace in your TaskManager.");
+             * com.gmt2001.Console.out.println("[ERROR] Or type "!" + PhantomBot.instance().getSession().getNick() + " remove" in your chat.");
+             * System.exit(0);
+             */
             return;
         }
 
