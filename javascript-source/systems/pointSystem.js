@@ -65,7 +65,6 @@
             $.registerChatSubcommand('points', 'takeall', 1);
             $.registerChatSubcommand('points', 'setname', 1);
             $.registerChatSubcommand('points', 'setgain', 1);
-			$.registerChatSubcommand('points', 'setmonthly', 1);
             $.registerChatSubcommand('points', 'setofflinegain', 1);
             $.registerChatSubcommand('points', 'setinterval', 1);
             $.registerChatSubcommand('points', 'user', 7);
@@ -84,7 +83,6 @@
             $.unregisterChatSubcommand('points', 'takeall', 1);
             $.unregisterChatSubcommand('points', 'setname', 1);
             $.unregisterChatSubcommand('points', 'setgain', 1);
-			$.unregisterChatSubcommand('points', 'setmonthly', 1);
             $.unregisterChatSubcommand('points', 'setofflinegain', 1);
             $.unregisterChatSubcommand('points', 'setinterval', 1);
             $.unregisterChatSubcommand('points', 'user', 7);
@@ -112,7 +110,6 @@
             $.registerChatSubcommand(newName, 'takeall', 1);
             $.registerChatSubcommand(newName, 'setname', 1);
             $.registerChatSubcommand(newName, 'setgain', 1);
-			$.registerChatSubcommand(newName, 'setmonthly', 1);
             $.registerChatSubcommand(newName, 'setofflinegain', 1);
             $.registerChatSubcommand(newName, 'setinterval', 1);
             $.registerChatSubcommand(newName, 'user', 7);
@@ -132,7 +129,6 @@
             $.registerChatSubcommand(newName2, 'takeall', 1);
             $.registerChatSubcommand(newName2, 'setname', 1);
             $.registerChatSubcommand(newName2, 'setgain', 1);
-			$.registerChatSubcommand(newName2, 'setmonthly', 1);
             $.registerChatSubcommand(newName2, 'setofflinegain', 1);
             $.registerChatSubcommand(newName2, 'setinterval', 1);
             $.registerChatSubcommand(newName2, 'user', 7);
@@ -153,7 +149,6 @@
             $.unregisterChatSubcommand(newName, 'takeall', 1);
             $.unregisterChatSubcommand(newName, 'setname', 1);
             $.unregisterChatSubcommand(newName, 'setgain', 1);
-			$.unregisterChatSubcommand(newName, 'setmonthly', 1);
             $.unregisterChatSubcommand(newName, 'setofflinegain', 1);
             $.unregisterChatSubcommand(newName, 'setinterval', 1);
             $.unregisterChatSubcommand(newName, 'user', 7);
@@ -173,7 +168,6 @@
             $.unregisterChatSubcommand(newName2, 'all', 1);
             $.unregisterChatSubcommand(newName2, 'setname', 1);
             $.unregisterChatSubcommand(newName2, 'setgain', 1);
-			$.unregisterChatSubcommand(newName2, 'setmonthly', 1);
             $.unregisterChatSubcommand(newName2, 'setofflinegain', 1);
             $.unregisterChatSubcommand(newName2, 'setinterval', 1);
             $.unregisterChatSubcommand(newName2, 'user', 7);
@@ -406,7 +400,6 @@
             temp,
             user,
             i;
-		monthly = $.getIniDbNumber('pointSettings', 'monthlyBonus');
 
         /**
          * @commandpath points - Announce points in chat when no parameters are given.
@@ -812,7 +805,6 @@
 		 **/
 		if (command.equalsIgnoreCase('claim')) {
 			var status = $.getSetIniDbBoolean('monthly', sender, false);
-			monthly = $.getIniDbNumber('pointSettings', 'monthlyBonus');
 			
 			if (!status) {
 				$.inidb.set('points', sender, monthly);
