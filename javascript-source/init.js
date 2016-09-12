@@ -1269,6 +1269,14 @@
             callHook('Bits', event, false);
         });
 
+        /**
+         * @event api-DeveloperCommandEvent
+         */
+        $api.on($script, 'DeveloperCommand', function(event) {
+            callHook('command', event, false);
+            handleInitCommands(event);
+        });
+
         $.log.event('init.js api\'s loaded.');
         consoleDebug('init.js api\'s loaded.');
         consoleLn('');
