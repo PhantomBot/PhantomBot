@@ -62,6 +62,7 @@ public class Session {
     private String botName;
     private String oAuth;
     private int chatLineCtr = 0;
+    private Long lastTry = 0L;
 
     /*
      * Creates an instance for a Session
@@ -113,35 +114,28 @@ public class Session {
     }
 
     /*
-     * Attempts to reconnect to Twitch after a failure.
+     * Trys to reconnect to Twitch.
      */
     public void reconnect() {
         Boolean reconnected = false;
-        int     reconnectCtr = 0;
-        int     sleepTime = 5000;
-        int     maxAttempts = 50;
 
-        while (reconnectCtr != maxAttempts && !reconnected) {
-            reconnectCtr++;
-            try {
-                this.twitchWSIRC.delete();
-                this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("TwitchWSIRC URI Failed, PhantomBot will exit: " + ex.getMessage());
-                System.exit(0);
-            }
-            reconnected = twitchWSIRC.connectWSS(true);
-            if (!reconnected) {
+        while (!reconnected) {
+            if (lastTry + 10000L <= System.currentTimeMillis()) {
+                lastTry = System.currentTimeMillis();
                 try {
-                    Thread.sleep(sleepTime);
-                } catch (InterruptedException ex) {
-                    com.gmt2001.Console.err.println("Sleep failed during reconnect: " + ex.getMessage());
-                }
+                    this.twitchWSIRC.delete();
+                    this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
+                    reconnected = this.twitchWSIRC.connectWSS(true);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.println("Failed to reconnect to TwitchWSIRC... PhantomBot will now exit: " + ex.getMessage());
+                    System.exit(0);
+                } 
             }
-        }
-        if (reconnectCtr == maxAttempts) {
-            com.gmt2001.Console.out.println("Unable to reconnect to Twitch WS-IRC after " + maxAttempts + " attempts, bot will shutdown.");
-            System.exit(0);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.debug.println("Sleep failed during reconnect: " + ex.getMessage());
+            }
         }
     }
 
@@ -223,7 +217,10 @@ public class Session {
      * Close the connection to WSIRC.
      */
     public void close() {
-        this.twitchWSIRC.close();
+        this.twitchWSIRC.delete();
+    }
+    public void close(String channelName) {
+        this.twitchWSIRC.delete(channelName);
     }
 
     /*

@@ -168,7 +168,7 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        com.gmt2001.Console.out.println("Disconnected from Twitch WS-IRC Server.");
+        com.gmt2001.Console.out.println("Failed to connect to Twitch WS-IRC, retying connection in 10 seconds...");
         com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
         session.reconnect();
     }

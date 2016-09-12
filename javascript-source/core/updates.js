@@ -121,7 +121,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.2.1.0'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -410,8 +410,8 @@
         $.inidb.set('updates', 'installedv2.1.1', 'true');
     }
 
-    /** Version 2.2.1 updates */
-    if (!$.inidb.exists('updates', 'installedv2.2.1.0') || $.inidb.get('updates', 'installedv2.2.1.0') != 'true') {
+    /** Version 2.3 updates */
+    if (!$.inidb.exists('updates', 'installedv2.3') || $.inidb.get('updates', 'installedv2.3') != 'true') {
         $.consoleLn('Starting ' + $.version + ' updates...');
 
         $.consoleLn('Disabling new modules...');
@@ -444,6 +444,9 @@
             $.inidb.set('permcom', 'settitle', $.inidb.get('permcom', 'title set'));
         }
 
+        $.inidb.del('permcom', 'game set');
+        $.inidb.del('permcom', 'title set');
+
         $.consoleLn('Setting up new toggles...');
         $.inidb.set('adventureSettings', 'warningMessage', true);
         $.inidb.set('adventureSettings', 'enterMessage', true);
@@ -458,7 +461,7 @@
          */
 
         $.consoleLn($.version + ' updates completed!');
-        $.inidb.set('updates', 'installedv2.2.1.0', 'true');
+        $.inidb.set('updates', 'installedv2.3', 'true');
     }
 
     /**
