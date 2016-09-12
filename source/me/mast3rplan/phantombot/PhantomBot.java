@@ -1314,18 +1314,18 @@ public class PhantomBot implements Listener {
             }
         }
 
-        /** Setup for TwitchAlerts */
-        if (message.equalsIgnoreCase("twitchalertssetup")) {
+        /** Setup for StreamLabs (TwitchAlerts) */
+        if (message.equalsIgnoreCase("streamlabssetup")) {
             try {
                 print("");
-                print("PhantomBot TwitchAlerts setup.");
+                print("PhantomBot StreamLabs setup.");
                 print("");
 
-                com.gmt2001.Console.out.print("Please enter your TwitchAlerts OAuth key: ");
+                com.gmt2001.Console.out.print("Please enter your StreamLabs OAuth key: ");
                 String newToken = System.console().readLine().trim();
                 twitchAlertsKey = newToken;
 
-                print("PhantomBot TwitchAlerts setup done.");
+                print("PhantomBot StreamLabs setup done.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -2068,6 +2068,7 @@ public class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
                 com.gmt2001.Console.out.print("Twitter: https://twitter.com/phantombotapp/\r\n");
                 com.gmt2001.Console.out.print("PhantomBot Knowledgebase: https://docs.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("PhantomBot WebPanel: https://docs.phantombot.tv/kb/panel/\r\n");
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("\r\n");
 
@@ -2096,6 +2097,11 @@ public class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
                 channelName = System.console().readLine().trim();
 
+                /*if (channelName.contains(".tv")) {
+                	com.gmt2001.Console.out.print("Please enter the name of the Twitch channel, not the link: ");
+                	channelName = System.console().readLine().trim();
+                }*/
+
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
                 panelUsername = System.console().readLine().trim();
@@ -2108,6 +2114,8 @@ public class PhantomBot implements Listener {
                 newSetup = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+                com.gmt2001.Console.out.println("[ERROR] Faild to setup PhantomBot. Now exiting...");
+                System.exit(0);
             }
         }
 
