@@ -51,6 +51,6 @@ $.lang.register('pointsystem.restart.usage', 'Use this command AFTER using \'!po
 $.lang.register('pointsystem.restart.success', 'All users currently in chat have been given their monthly $1 $2.');
 $.lang.register('pointsystem.claim.success', 'You have claimed your gift of $1 $2.');
 $.lang.register('pointsystem.claim.failure', 'You have have already claimed your gift of $1 $2.');
-$.lang.register('pointsystem.set.monthly.usage', 'Usage: !points setmonthly [amount]  ---  Current setting $1/month');
+$.lang.register('pointsystem.set.monthly.usage', 'Usage: !points setmonthly [amount]');
 $.lang.register('pointsystem.set.monthly.error.negative', 'You can not set the monthly bonus of $1 to a negative number.');
 $.lang.register('pointsystem.set.monthly.success', 'Set the monthly bonus to $1.');
