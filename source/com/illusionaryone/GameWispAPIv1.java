@@ -46,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import me.mast3rplan.phantombot.PhantomBot;
+
 /*
  * Communicates with the GameWisp v1 API server.
  *
@@ -119,7 +121,8 @@ public class GameWispAPIv1 {
 
         if (sAccessToken.length() == 0) {
             if (!noAccessWarning) {
-                com.gmt2001.Console.err.println("GameWispAPIv1: Attempting to use GameWisp API without key. Disable GameWisp module.");
+                com.gmt2001.Console.err.println("GameWispAPIv1: Attempting to use GameWisp API without key. Disabling the GameWisp module.");
+                PhantomBot.instance().getDataStore().set("modules", "./handlers/gameWispHandler.js", "false");
                 noAccessWarning = true;
             }
             JSONStringer jsonObject = new JSONStringer();
