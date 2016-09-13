@@ -46,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import me.mast3rplan.phantombot.PhantomBot;
+
 /*
  * Communicates with the GameWisp v1 API server.
  *
