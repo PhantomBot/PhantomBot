@@ -172,7 +172,6 @@ public class TwitchWSIRCParser {
      * @param  String  Incoming single line of a raw IRC message
      */
     private void parseLine(String rawMessage) {
-        //com.gmt2001.Console.out.println("rawMessage::" + rawMessage);
         Map<String, String> tagsMap = null;
         String messageParts[] = rawMessage.split(" :", 3);
         String userName = "";
@@ -423,7 +422,7 @@ public class TwitchWSIRCParser {
             return;
         } else {
             eventBus.postAsync(new IrcPrivateMessageEvent(this.session, "jtv", message, tagsMap));
-            com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message); 
+            com.gmt2001.Console.debug.println("Message from jtv: " + message); 
         }
     }
 
@@ -435,8 +434,8 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void joinUser(String message, String username, Map<String, String> tagMaps) {
+        com.gmt2001.Console.debug.println("User Joined Channel [" + username + "#" + this.channel + "]");
         eventBus.postAsync(new IrcChannelJoinEvent(this.session, this.channel, username));
-        com.gmt2001.Console.debug.println("User Joined Channel [" + username + "#" + this.channelName + "]");
     }
 
     /*
@@ -447,8 +446,8 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void partUser(String message, String username, Map<String, String> tagMaps) {
+        com.gmt2001.Console.debug.println("User Left Channel [" + username + "#" + this.channel + "]");
         eventBus.postAsync(new IrcChannelLeaveEvent(this.session, this.channel, username, message));
-        com.gmt2001.Console.debug.println("User Left Channel [" + username + "#" + this.channelName + "]");
     }
 
     /*
@@ -473,30 +472,28 @@ public class TwitchWSIRCParser {
     private void userState(Map<String, String> tagMaps) {
         if (tagMaps.containsKey("user-type")) {
             if (tagMaps.get("user-type").length() > 0) {
-                if (!moderators.contains(this.session.getNick())) {
-                    moderators.add(this.session.getNick());
-                    com.gmt2001.Console.debug.println("Bot::" + this.session.getNick() + "::Moderator::true");
-                    eventBus.postAsync(new IrcChannelUserModeEvent(this.session, this.channel, session.getNick(), "O", true));
+                if (!moderators.contains(session.getNick())) {
+                    moderators.add(session.getNick());
+                    com.gmt2001.Console.debug.println("Bot::" + session.getNick() + "::Moderator::true");
+                    eventBus.postAsync(new IrcChannelUserModeEvent(session, this.channel, session.getNick(), "O", true));
                 }
-            } else { 
-                if (this.channelName.equalsIgnoreCase(this.session.getNick())) {
-                    if (!moderators.contains(this.session.getNick())) {
-                        moderators.add(this.session.getNick());
-                        com.gmt2001.Console.debug.println("Caster::Bot::" + this.session.getNick() + "::Moderator::true");
-                        eventBus.postAsync(new IrcChannelUserModeEvent(this.session, this.channel, session.getNick(), "O", true));
-                    }
-                } else {
-                    com.gmt2001.Console.out.println();
-                    com.gmt2001.Console.out.println("[ERROR] " + this.session.getNick() + " is not detected as a moderator!");
-                    com.gmt2001.Console.out.println("[ERROR] You must add " + this.session.getNick() + " as a channel moderator for it to chat.");
-                    com.gmt2001.Console.out.println("[ERROR] Type /mod " + this.session.getNick() + " to add " + this.session.getNick() + " as a channel moderator.");
-                    com.gmt2001.Console.out.println();
-                    session.setAllowSendMessages(false);
-                    if (moderators.contains(this.session.getNick())) {
-                        moderators.remove(this.session.getNick());
-                        com.gmt2001.Console.debug.println("Bot::" + this.session.getNick() + "::Moderator::false");
-                        eventBus.postAsync(new IrcChannelUserModeEvent(this.session, this.channel, this.session.getNick(), "O", false));
-                    }
+            } else {
+                com.gmt2001.Console.out.println("[ERROR] " + session.getNick() + " is not detected as a moderator!");
+                com.gmt2001.Console.out.println("[ERROR] You must add " + session.getNick() + " as a channel moderator for it to chat.");
+                com.gmt2001.Console.out.println("[ERROR] Type /mod " + session.getNick() + " to add " + session.getNick() + " as a channel moderator.");
+                session.setAllowSendMessages(false);
+                if (moderators.contains(session.getNick())) {
+                    moderators.remove(session.getNick());
+                    com.gmt2001.Console.debug.println("Bot::" + session.getNick() + "::Moderator::false");
+                    eventBus.postAsync(new IrcChannelUserModeEvent(session, this.channel, session.getNick(), "O", false));
+                }
+            }
+        } else {
+            if (this.channelName.equalsIgnoreCase(session.getNick())) {
+                if (!moderators.contains(session.getNick())) {
+                    moderators.add(session.getNick());
+                    com.gmt2001.Console.debug.println("Caster::Bot::" + session.getNick() + "::Moderator::true");
+                    eventBus.postAsync(new IrcChannelUserModeEvent(session, this.channel, session.getNick(), "O", true));
                 }
             }
         }
