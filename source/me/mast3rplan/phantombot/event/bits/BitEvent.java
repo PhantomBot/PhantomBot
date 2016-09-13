@@ -15,25 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.mast3rplan.phantombot.event.subscribers;
+package me.mast3rplan.phantombot.event.bits;
 
+import me.mast3rplan.phantombot.event.Event;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
 
-public class NewSubscriberEvent extends SubscriberEvent {
+public class BitEvent extends Event {
 
-	private final String subscriber;
+	private final Channel channel;
+	private final Session session;
 
-	public NewSubscriberEvent(String subscriber) {
-        this.subscriber = subscriber;
-    }
+	protected BitEvent() {
+		this.channel = null;
+		this.session = null;
+	}
 
-    public NewSubscriberEvent(Session session, Channel channel, String subscriber) {
-        super(channel, session);
-        this.subscriber = subscriber;
-    }
+	protected BitEvent(Channel channel, Session session) {
+		this.channel = channel;
+		this.session = session;
+	}
 
-    public String getSub() {
-        return subscriber;
-    }
+	public Channel getChannel() {
+		return this.channel;
+	}
+
+	public Session getSession() {
+		return this.session;
+	}
 }
