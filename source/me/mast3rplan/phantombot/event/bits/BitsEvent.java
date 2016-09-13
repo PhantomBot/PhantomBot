@@ -20,7 +20,7 @@ package me.mast3rplan.phantombot.event.bits;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
 
-public class BitsEvent extends BitEvent {
+public class BitsEvent extends Event {
 
 	private final String username;
     private final String bits;

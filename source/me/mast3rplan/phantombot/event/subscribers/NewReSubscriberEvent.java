@@ -20,7 +20,7 @@ package me.mast3rplan.phantombot.event.subscribers;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
 
-public class NewReSubscriberEvent extends SubscriberEvent {
+public class NewReSubscriberEvent extends Event {
 
 	private final String resubscriber;
     private final String months;
