@@ -108,7 +108,7 @@ public class TwitchCache implements Runnable {
 
     /*
      * Thread run instance.  This is the main loop for the thread that is created to manage
-     * retrieving data from the Twitch API.  This loop runs every 15 seconds, querying data
+     * retrieving data from the Twitch API.  This loop runs every 30 seconds, querying data
      * from Twitch.
      */
     @Override
@@ -131,14 +131,14 @@ public class TwitchCache implements Runnable {
                 try {
                     this.updateCache();
                 } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
             }
 
             try {
-                Thread.sleep(15 * 1000);
+                Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
             }
