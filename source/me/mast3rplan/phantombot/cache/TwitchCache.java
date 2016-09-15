@@ -173,11 +173,11 @@ public class TwitchCache implements Runnable {
 
                 if (!this.isOnline && isOnline) {
                     this.isOnline = true;
-                    EventBus.instance().post(new TwitchOnlineEvent(getChannel()));
+                    EventBus.instance().postAsync(new TwitchOnlineEvent(getChannel()));
                     sentTwitchOnlineEvent = true;
                 } else if (this.isOnline && !isOnline) {
                     this.isOnline = false;
-                    EventBus.instance().post(new TwitchOfflineEvent(getChannel()));
+                    EventBus.instance().postAsync(new TwitchOfflineEvent(getChannel()));
                 }
 
                 if (isOnline) {
@@ -191,8 +191,7 @@ public class TwitchCache implements Runnable {
                         this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
                     } catch (Exception ex) {
                         success = false;
-                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" +
-                                                         streamObj.getJSONObject("stream").getString("created_at") + ")");
+                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
                     }
 
                     /* Determine the preview link. */
@@ -233,7 +232,7 @@ public class TwitchCache implements Runnable {
                             /* Send an event if we did not just send a TwitchOnlineEvent. */
                             if (!sentTwitchOnlineEvent) {
                                 this.gameTitle = gameTitle;
-                                EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
+                                EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle, getChannel()));
                             }
                             this.gameTitle = gameTitle;
                         }
@@ -263,7 +262,6 @@ public class TwitchCache implements Runnable {
                 } else {
                     success = false;
                 }
-
             } else {
                 success = false;
             }
@@ -331,7 +329,7 @@ public class TwitchCache implements Runnable {
      public void setGameTitle(String gameTitle) {   
          forcedGameTitleUpdate = true;
          this.gameTitle = gameTitle;
-         EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
+         EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle, getChannel()));
      }
 
     /*
