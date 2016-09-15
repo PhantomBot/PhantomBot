@@ -329,7 +329,7 @@ public class TwitchCache implements Runnable {
      public void setGameTitle(String gameTitle) {   
          forcedGameTitleUpdate = true;
          this.gameTitle = gameTitle;
-         EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
+         EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle, getChannel()));
      }
 
     /*
