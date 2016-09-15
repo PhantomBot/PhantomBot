@@ -295,7 +295,7 @@ public class PhantomBot implements Listener {
 	 * @return {string} bot website
 	 */
 	public String getWebSite() {
-		return "https://phantombot.tv";
+		return "https://phantombot.tv/";
 	}
 
 	/**
