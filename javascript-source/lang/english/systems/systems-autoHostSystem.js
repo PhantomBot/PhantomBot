@@ -1,5 +1,4 @@
-$.lang.register('autohost.command.usage', 'autohost [start / force / stop / delay / hosttime / skip / add / del / list]');
-$.lang.register('autohost.force', 'Autohost Enabled in Force Mode');
+$.lang.register('autohost.command.usage', 'autohost [start  / stop / delay / hosttime / skip / add / del / list]');
 $.lang.register('autohost.on', 'Autohost Enabled');
 $.lang.register('autohost.off', 'Autohost Disabled');
 $.lang.register('autohost.delay.usage', 'autohost delay [minutes] (Currently: $1)');
@@ -15,3 +14,4 @@ $.lang.register('autohost.del.404', 'Sorry, that channel does not exist in your 
 $.lang.register('autohost.del.success', 'Deleted channel $1 from your autohost list');
 $.lang.register('autohost.list', 'Autohost Channels: $1');
 $.lang.register('autohost.list.total', 'Total Pages: $1');
+$.lang.register('autohost.hosttime.usage.err', 'You cannot set the host time to less than 30 minutes.');
