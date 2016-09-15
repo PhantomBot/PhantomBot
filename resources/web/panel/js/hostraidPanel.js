@@ -289,6 +289,15 @@
 
         if (val.length !== 0) {
             if (setting == 'time') {
+                if (val < 30) {
+                    $('#' + s).val('The host time cannot be less than 30 minutes.');
+                    setTimeout(function() { $('#' + s).val(''); doQuery(); }, TIMEOUT_WAIT_TIME * 5);
+                    return;
+                }
+                if (isNaN(parseInt(val))) {
+                    doQuery();
+                    return;
+                }
                 sendDBUpdate('auto_host', 'autohost_config', 'host_time_minutes', val);
                 setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
                 return;

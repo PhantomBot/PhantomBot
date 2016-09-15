@@ -5,6 +5,7 @@
     $.getSetIniDbNumber('autohost_config', 'offline_time', 0);
     $.getSetIniDbNumber('autohost_config', 'host_time_minutes', 0);
     $.getSetIniDbNumber('autohost_config', 'delay_time_minutes', 10);
+    var hostTimer = false;
 
     /**
      * @function checkAutoHost
@@ -78,18 +79,14 @@
             }
         }
 
-        /** Is this channel online ? */ 
-        /* this will broke the force thing */
-        /*if ($.isOnline($.channelName) || $.inidb.get('autohost_config', 'hosting') === false) {
-            return;
-        }*/
-
         var lastRank = $.getSetIniDbNumber('autohost_config', 'last_rank', 0),
             lastHost = $.getSetIniDbString('autohost_config', 'last_host', ''),
             hostList = $.inidb.GetKeyList('autohost_hosts', ''),
             hostTime = $.getIniDbNumber('autohost_config', 'host_start_time'),
-            channelToHost = "",
-            foundLastHost = false;
+            channelToHost = '',
+            foundLastHost = false,
+            whoToHost = false,
+            i;
 
         if (hostList.length === 0) {
             return;
@@ -103,10 +100,11 @@
         // channel previously hosted.  If the previously hosted channel was deleted, the
         // next loop will handle that.
         //
-        for (var i in hostList) {
+        for (i in hostList) {
             if (foundLastHost) {
                 if ($.isOnline(hostList[i])) {
                     channelToHost = hostList[i];
+                    whoToHost = true;
                     break;
                 }
             }
@@ -116,13 +114,15 @@
             }
         }
 
+
         // Start at the head of the list if there was a previous channel being hosted.
         //
-        if (channelToHost !== undefined && lastHost !== undefined) {
-            for (var i in hostList) {
+        if (channelToHost !== undefined && lastHost !== undefined && !whoToHost) {
+            for (i in hostList) {
                 if (hostList[i].equals(lastHost)) {
                     break;
                 }
+
                 if ($.isOnline(hostList[i])) {
                     channelToHost = hostList[i];
                     break;
@@ -132,7 +132,7 @@
 
         // Host, note that we will not host the last person we hosted. 
         //
-        if (channelToHost !== undefined) {
+        if (channelToHost !== undefined && channelToHost != '') {
             $.say('.host ' + channelToHost);
             $.inidb.set('autohost_config', 'last_host', channelToHost);
             $.inidb.set('autohost_config', 'currently_hosting', channelToHost);
@@ -152,7 +152,7 @@
             subAction = args[1];
 
         /**
-         * @commandpath autohost [start / force / stop / delay / hosttime / skip / add / del / list] - Base command for autohost
+         * @commandpath autohost [start / stop / delay / hosttime / skip / add / del / list] - Base command for autohost
          */
         if (command.equalsIgnoreCase('autohost')) {
             if (action === undefined) {
@@ -161,20 +161,11 @@
             }
 
             /**
-             * @commandpath autohost [start  / force / stop] - Start, force start, or stop autohosting.
-             * Note that force is the same as start, it just instructs the process to ignore the stream
-             * online status.
+             * @commandpath autohost [start  / stop] - Start or stop autohosting.
              */
-            if (action.equalsIgnoreCase('start') || action.equalsIgnoreCase('force')) {
+            if (action.equalsIgnoreCase('start')) {
                 $.setIniDbBoolean('autohost_config', 'enabled', true);
-                if (action.equalsIgnoreCase('force')) {
-                    $.setIniDbBoolean('autohost_config', 'force', true); 
-                    $.say($.whisperPrefix(sender) + $.lang.get('autohost.force'));
-                    //$.consoleLn('Autohosting is Enabled');
-                    $.inidb.set('autohost_config', 'hosting', true);
-                } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('autohost.on'));
-                }
+                $.say($.whisperPrefix(sender) + $.lang.get('autohost.on'));
                 return;
             }
             if (action.equalsIgnoreCase('stop')) {
@@ -207,7 +198,7 @@
             }
 
             /**
-             * @commandpath autohost hosttime [minutes] - Minutes to host a channel, 0 means infinite.
+             * @commandpath autohost hosttime [minutes] - Minutes to host a channel, 0 means until the channel goes offline.
              */
             if (action.equalsIgnoreCase('hosttime')) {
                 if (subAction === undefined) {
@@ -218,8 +209,8 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('autohost.hosttime.usage', $.getIniDbNumber('autohost_config', 'host_time_minutes')));
                     return;
                 }
-                if (subAction < 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('autohost.hosttime.usage', $.getIniDbNumber('autohost_config', 'host_time_minutes')));
+                if (subAction < 30) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('autohost.hosttime.usage.err', $.getIniDbNumber('autohost_config', 'host_time_minutes')));
                     return;
                 }
                 $.say($.whisperPrefix(sender) + $.lang.get('autohost.hosttime.success', subAction));
@@ -300,6 +291,10 @@
     // will function properly.
     //
     $.bind('ircJoinComplete', function() {
+        if (hostTimer) {
+            return;
+        }
+        hostTimer = true;
         setTimeout(function() {
             setInterval(function() {
                 if ($.getIniDbBoolean('autohost_config', 'enabled', false)) {
