@@ -85,6 +85,23 @@ public class debug {
         }
     }
 
+    public static void println(Object o, Boolean force) {
+        if (PhantomBot.enableDebugging || force) {
+            String stackInfo = "";
+            String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
+            String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
+            int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "");
+
+            stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+            System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
+        }
+    }
+
     public static void printStackTrace(Throwable e) {
         if (PhantomBot.enableDebugging) {
             e.printStackTrace(System.err);
