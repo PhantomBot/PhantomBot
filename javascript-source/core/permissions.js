@@ -736,7 +736,7 @@
             var username = args[0],
                 groupId = parseInt(args[1]);
 
-            if ((args.length < 2 && username === undefined) || isNaN(groupId) || $.outOfRange(groupId, 0, userGroups.length - 1)) {
+            if ((args.length < 2 || username === undefined) || isNaN(groupId) || $.outOfRange(groupId, 0, userGroups.length - 1)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.usage'));
                 return;
             }
