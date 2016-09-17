@@ -216,7 +216,9 @@
         }
 
         if (message.match(/\(gameinfo\)/)) {
-            if (!$.isOnline($.channelName) || $.getPlayTime() == 0) {
+            if ($.getGame($.channelName) == ' ') {
+                message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.no.game'));
+            } else if (!$.isOnline($.channelName) || $.getPlayTime() == 0) {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
             } else {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.online', $.getGame($.channelName), $.getPlayTime()));
@@ -224,7 +226,9 @@
         }
 
         if (message.match(/\(titleinfo\)/)) {
-            if (!$.isOnline($.channelName)) {
+            if ($.getStatus($.channelName) == ' ') {
+                message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.no.title'));
+            } else if (!$.isOnline($.channelName)) {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.offline', $.getStatus($.channelName)));
             } else {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.online', $.getStatus($.channelName), String($.getStreamUptime($.channelName))));
