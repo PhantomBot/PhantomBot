@@ -110,7 +110,7 @@
             return;
         }
 
-        if (times > maxEntries || times == 0) {
+        if (times > maxEntries || times == 0 || times < 0) {
             if (msgToggle) {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only, buy.amount', maxEntries));
             }
