@@ -716,6 +716,7 @@
         loadScript('./core/commandRegister.js');
         loadScript('./core/whisper.js');
         loadScript('./core/commandCoolDown.js');
+        loadScript('./core/keywordCoolDown.js');
         loadScript('./core/gameMessages.js');
         loadScript('./core/patternDetector.js');
         loadScript('./core/permissions.js');
