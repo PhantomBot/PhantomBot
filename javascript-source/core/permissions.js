@@ -736,12 +736,12 @@
             var username = args[0],
                 groupId = parseInt(args[1]);
 
-            if ((args.length < 2 && !$.user.isKnown(args[0].toLowerCase())) || isNaN(groupId) || $.outOfRange(groupId, 0, userGroups.length - 1)) {
+            if ((args.length < 2 && username === undefined) || isNaN(groupId) || $.outOfRange(groupId, 0, userGroups.length - 1)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.usage'));
                 return;
             }
 
-            if ($.user.isKnown(args[0].toLowerCase())) {
+            if (username !== undefined && $.user.isKnown(username.toLowerCase())) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.self.current', $.username.resolve(args[0]), $.getUserGroupName(args[0])));
                 return;
             }
