@@ -292,6 +292,7 @@ $.lang.register('permissions.current.listtoolong', 'There are over $1 to list, I
 $.lang.register('permissions.current.mods', 'Mods in channel: $1');
 $.lang.register('permissions.current.users', 'Users in channel: $1');
 $.lang.register('permissions.group.self.current', 'You currently have $1 permissions.');
+$.lang.register('permissions.group.other.current', '$1 currently has $1 permissions.');
 $.lang.register('permissions.group.set.error.abovegroup', 'You must have higher permissions than the person you are trying to promote!');
 $.lang.register('permissions.group.set.error.samegroup', 'You cannot promote others to the same permission as you.');
 $.lang.register('permissions.group.set.success', 'Permission for $1 changed to $2!');
