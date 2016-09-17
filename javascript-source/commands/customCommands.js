@@ -49,6 +49,10 @@
             }
         }
 
+        if (message.match(/\(adminonlyedit\)/)) {
+            message = $.replace(message, '(adminonlyedit)', '');
+        }
+
         if (message.match(/\(1\)/g)) {
             for (var i = 1; i < 10; i++) {
                 if (message.includes('(' + i + ')')) {
@@ -549,6 +553,9 @@
                 return;
             } else if ($.commandExists(action) && !$.inidb.exists('command', action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.404'));
+                return;
+            } else if ($.inidb.get('command', action).match(/\(adminonlyedit\)/) && !$.isAdmin(sender)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getGroupNameById('1')));
                 return;
             }
 
