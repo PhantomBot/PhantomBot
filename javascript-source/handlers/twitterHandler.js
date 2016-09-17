@@ -43,7 +43,11 @@
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
-        $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+        if (event.getMentionUser() != null) {
+            $.say($.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+        } else {
+            $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+        }
     });
 
     /**

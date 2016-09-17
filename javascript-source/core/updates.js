@@ -459,15 +459,6 @@
         $.inidb.set('adventureSettings', 'warningMessage', true);
         $.inidb.set('adventureSettings', 'enterMessage', true);
 
-        /**
-         * @commandpath game - Give's you the current game, and the playtime if the channel is online. 
-         * @commandpath title - Give's you the current title, and the channel uptime if the channel is online. 
-         * @commandpath followage [optional (name)] [optional (channel)] - Tells you how long you have been following the channel.
-         * @commandpath playtime - Tells you how long the caster has been playing the current game for.
-         * @commandpath uptime - Give's you the current stream uptime.
-         * @commandpath age [optional (name)] - Tells you how long you have been on Twitch for.
-         */
-
         $.consoleLn($.version + ' updates completed!');
         $.inidb.set('updates', 'installedv2.3s', 'true');
     }
