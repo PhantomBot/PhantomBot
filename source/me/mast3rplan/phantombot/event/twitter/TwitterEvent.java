@@ -23,19 +23,32 @@ public class TwitterEvent extends Event {
 
     private final String tweet;
     private final Channel channel;
+    private final String mention;
 
     public TwitterEvent(String tweet) {
         this.tweet = tweet;
         this.channel = null;
+        this.mention = null;
     }
 
     public TwitterEvent(String tweet, Channel channel) {
         this.tweet = tweet;
         this.channel = channel;
+        this.mention = null;
+    }
+
+    public TwitterEvent(String tweet, Channel channel, String mention) {
+        this.tweet = tweet;
+        this.channel = channel;
+        this.mention = mention;
     }
 
     public String getTweet() {
         return tweet;
+    }
+
+    public String getMentionUser() {
+        return mention;
     }
 
     public Channel getChannel() {
