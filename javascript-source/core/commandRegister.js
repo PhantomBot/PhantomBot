@@ -1,447 +1,342 @@
-/* 
- * This script is used to reload variables from scripts when you edit stuff on the panel. Only the bot can use these, and you can't disable them
+/**
+ * commandRegister.js
+ *
+ * Register and keep track of commands.
+ * (previously known as commandList.js)
+ *
+ * NOTE: You will have to register ANY command you implement!
+ * The commandEvent will not get fired to your module if the registry does not know about it!
  */
-
 (function() {
-    $.bind('command', function(event) {
-        var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0];
+    var commands = {},
+        commandScriptTable = {},
+        aliases = [];
 
-        /*
-         * Sets permissions on a command.
-         */
-        if (command.equalsIgnoreCase('permcomsilent')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
+    /**
+     * @function getCommandScript
+     * @export $
+     * @param {string} command
+     */
+    function getCommandScript(command) {
+        return commandScriptTable[command];
+    };
 
-            if (args.length == 2) {
-                var group = args[1];
-    
-                if (isNaN(parseInt(group))) {
-                    group = $.getGroupIdByName(group);
-                }
-    
-                var list = $.inidb.GetKeyList('aliases', ''), i;
-                for (i in list) {
-                    if (list[i].equalsIgnoreCase(action)) {
-                        $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
-                        $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
-                    } 
-                }
-                $.inidb.set('permcom', action, group);
-                $.updateCommandGroup(action, group);
-                return;
-            }
-    
-            var subcommand = args[1], group = args[2];
-            if (isNaN(parseInt(group))) {
-                group = $.getGroupIdByName(group);
-            }
-    
-            $.inidb.set('permcom', action + ' ' + subcommand, group);
-            $.updateSubcommandGroup(action, subcommand, group);
+    /**
+     * @function registerChatSubcommand
+     * @export $
+     * @param {string} command
+     * @param {string} subcommand
+     * @param {string|Number} [groupId]
+     */
+    function registerChatSubcommand(command, subcommand, groupId) {
+        groupId = (groupId ? groupId : 7);
+
+        if (typeof groupId == 'string') {
+            groupId = $.getGroupIdByName(groupId);
+        }
+
+        if (!commandExists(command)) {
             return;
         }
 
-        /*
-         * Reloads the command variables.
-         */
-        if (command.equalsIgnoreCase('reloadcommand')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.addComRegisterAliases();
-            $.addComRegisterCommands();
-            if (action) { $.unregisterChatCommand(action); }
+        if (subCommandExists(command, subcommand)) {
             return;
         }
 
-        /*
-         * Registers a command
-         */
-        if (command.equalsIgnoreCase('registerpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.registerChatCommand('./commands/customCommands.js', args[0].toLowerCase());
+        if ($.inidb.exists('permcom', command + " " + subcommand)) {
+            var newGroupId = parseInt($.inidb.get('permcom', command + " " + subcommand));
+            groupId = newGroupId;
+        } else {
+            $.inidb.set('permcom', command + " " + subcommand, groupId);
+        }
+
+        commands[command].subcommands[subcommand] = {
+            groupId: groupId
+        }
+    };
+
+    /**
+     * @function registerChatCommand
+     * @export $
+     * @param {string} script
+     * @param {string} command
+     * @param {string|Number} [groupId]
+     */
+    function registerChatCommand(script, command, groupId) {
+        script = script.replace('\\', '/').replace('./scripts/', '');
+        groupId = (groupId ? groupId : 7);
+
+        if (typeof groupId == 'string') {
+            groupId = $.getGroupIdByName(groupId);
+        }
+
+        if ($.commandExists(command)) {
+            $.log.error('Failed to register command as already registered: ' + command + ' Script: ' + script + ' Original Script: ' + commandScriptTable[command]);
             return;
         }
 
-        /*
-         * unregtisters a command
-         */
-        if (command.equalsIgnoreCase('unregisterpanel')) {
-            if (!$.isBot(sender)) {
-                return;
+        if (groupId == 30) {
+            if ($.inidb.exists('permcom', command)) {
+                $.inidb.del('permcom', command);
             }
-            $.tempUnRegisterChatCommand(args[0].toLowerCase());
+            commands[command] = {
+                groupId: groupId,
+                script: script,
+                subcommands: {}
+            };
+            commandScriptTable[command] = script;
             return;
         }
 
-        /*
-         * Reloads the moderation variables.
-         */
-        if (command.equalsIgnoreCase('reloadmod')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadModeration();
-        }
-
-        /*
-         * Clears the highlight
-         */
-        if (command.equalsIgnoreCase("clearhighlightspanel")) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.inidb.RemoveFile("highlights");
-            $.inidb.ReloadFile("highlights");
+        if ($.inidb.exists('disabledCommands', command)) {
             return;
         }
 
-        /*
-         * makes a highlight
-         */
-        if (command.equalsIgnoreCase('highlightpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            if (!$.isOnline($.channelName)) {
-                return;
-            }
-            var streamUptimeMinutes = parseInt($.getStreamUptimeSeconds($.channelName) / 60);
-            var hours = parseInt(streamUptimeMinutes / 60);
-            var minutes = parseInt(streamUptimeMinutes % 60);
-            if (minutes < 10) {
-                minutes = "0" + minutes;
-            }
-            timestamp = hours + ":" + minutes;
-            localDate = $.getCurLocalTimeString("'['dd-MM-yyyy']'");
-            $.inidb.set('highlights', timestamp, localDate + ' ' + args.splice(0).join(' '));
+        if ($.inidb.exists('permcom', command)) {
+            var newGroupId = parseInt($.inidb.get('permcom', command));
+            groupId = newGroupId;
+        } else {
+            $.inidb.set('permcom', command, groupId);
         }
 
-        /*
-         * Sets the title on stream
-         */
-        if (command.equalsIgnoreCase('settitlesilent')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            var argsString = args.splice(0).join(' ');
-            $.updateStatus($.channelName, argsString, sender, true); 
-            return;
+        commands[command] = {
+            groupId: groupId,
+            script: script,
+            subcommands: {}
+        };
+
+        commandScriptTable[command] = script;
+    };
+
+    /**
+     * @function registerChatAlias
+     * @export $
+     * @param {command} alias
+     */
+
+    function registerChatAlias(alias) {
+        if (aliases[alias] === undefined) {
+            aliases[alias] = true;
+        }
+    };
+
+    /**
+     * @function unregisterChatCommand
+     * @export $
+     * @param {string} command
+     */
+    function unregisterChatCommand(command) {
+        if (commandExists(command)) {
+            delete commands[command];
+            delete commandScriptTable[command];
+            delete aliases[command];
         }
 
-        /*
-         * Sets the game on stream
-         */
-        if (command.equalsIgnoreCase('setgamesilent')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            var argsString = args.splice(0).join(' ');
-            $.updateGame($.channelName, argsString, sender, true);
-            return;
-        } 
+        $.inidb.del('permcom', command);
+    };
 
-        /*
-         * Reloads the adventure variables.
-         */
-        if (command.equalsIgnoreCase('reloadadventure')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadAdventure();
-            return;
+    /**
+     * @function tempUnRegisterChatCommand
+     * @export $
+     * @param {string} command
+     */
+    function tempUnRegisterChatCommand(command) {
+        if (commandExists(command)) {
+            delete commands[command];
+            delete commandScriptTable[command];
+            delete aliases[command];
         }
 
-        /*
-         * Reloads the gambling variables.
-         */
-        if (command.equalsIgnoreCase('reloadgamble')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadGamble();
-            return;
+        /** This is used for disablecom. */
+        //$.inidb.del('permcom', command);
+    };
+
+    /**
+     * @function unregisterChatSubcommand
+     * @export $
+     * @param {string} command
+     * @param {string} subcommand
+     */
+    function unregisterChatSubcommand(command, subcommand) {
+        if (commandExists(command)) {
+            delete commands[command].subcommands[subcommand];
         }
 
-        /*
-         * Reloads the roll variables.
-         */
-        if (command.equalsIgnoreCase('loadprizesroll')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.loadPrizes();
-            return;
-        }
+        $.inidb.del('permcom', command + ' ' + subcommand);
+    };
 
-        /*
-         * Reloads the roulette variables.
-         */
-        if (command.equalsIgnoreCase('reloadroulette')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadRoulette();
-            return;
-        }
+    /**
+     * @function commandExists
+     * @export $
+     * @param {string} command
+     * @returns {boolean}
+     */
+    function commandExists(command) {
+        return (commands[command] ? true : false);
+    };
 
-        /*
-         * Reloads the slot variables.
-         */
-        if (command.equalsIgnoreCase('loadprizes')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.loadPrizesSlot();
-            return;
-        }
+    /**
+     * @function aliasExists
+     * @export $
+     * @param {string} command
+     */
+    function aliasExists(alias) {
+        return aliases[alias];
+    };
 
-        /*
-         * Reloads the bits variables.
-         */
-        if (command.equalsIgnoreCase('reloadbits')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadBits();
-            return;
+    /**
+     * @function subCommandExists
+     * @export $
+     * @param {string} command
+     * @param {string} subcommand
+     * @return {boolean}
+     */
+    function subCommandExists(command, subcommand) {
+        if (commandExists(command)) {
+            return (commands[command].subcommands[subcommand] ? true : false);
         }
+        return false;
+    };
 
-        /*
-         * Reloads the donation variables.
-         */
-        if (command.equalsIgnoreCase('donationpanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.donationpanelupdate();
-            return;
+    /**
+     * @function getCommandGroup
+     * @export $
+     * @param command
+     * @param name
+     * @returns {Number}
+     */
+    function getCommandGroup(command, name) {
+        if (commandExists(command)) {
+            return commands[command].groupId;
         }
+        return 7;
+    };
 
-        /*
-         * Reloads the follow variables.
-         */
-        if (command.equalsIgnoreCase('followerpanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
+
+    /**
+     * @function getCommandGroupName
+     * @export $
+     * @param command
+     * @returns {name}
+     */
+    function getCommandGroupName(command) {
+        var group = '';
+
+        if (commandExists(command)) {
+            if (commands[command].groupId == 0) {
+                group = 'Caster';
+            } else if (commands[command].groupId == 1) {
+                group = 'Administrator';
+            } else if (commands[command].groupId == 2) {
+                group = 'Moderator';
+            } else if (commands[command].groupId == 3) {
+                group = 'Subscriber';
+            } else if (commands[command].groupId == 4) {
+                group = 'Donator';
+            } else if (commands[command].groupId == 5) {
+                group = 'Hoster';
+            } else if (commands[command].groupId == 6) {
+                group = 'Regular';
+            } else if (commands[command].groupId == 7) {
+                group = 'Viewer';
             }
-            $.updateFollowConfig();
-            return;
+            return group;
         }
+        return 'Viewer';
+    };
 
-        /*
-         * Reloads the gameWisp variables.
-         */
-        if (command.equalsIgnoreCase('gamewisppanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
+    /**
+     * @function getSubcommandGroup
+     * @export $
+     * @param command
+     * @param subcommand
+     * @param name
+     * @returns {Number}
+     */
+    function getSubcommandGroup(command, subcommand, name) {
+        if (commandExists(command)) {
+            if (subCommandExists(command, subcommand)) {
+                return commands[command].subcommands[subcommand].groupId;
             }
-            $.updateGameWispDB();
-            return;
+            return getCommandGroup(command, name);
         }
+        return 7;
+    };
 
-        /*
-         * Reloads the host variables.
-         */
-        if (command.equalsIgnoreCase('reloadhost')) {
-            if (!$.isBot(sender)) {
-                return;
+    /**
+     * @function getSubCommandGroupName
+     * @export $
+     * @param command
+     * @param subcommand
+     * @returns {String}
+     *
+     */
+    function getSubCommandGroupName(command, subcommand) {
+        var group = '';
+
+        if (subCommandExists(command, subcommand)) {
+           if (commands[command].subcommands[subcommand].groupId == 0) {
+                group = 'Caster';
+            } else if (commands[command].subcommands[subcommand].groupId == 1) {
+                group = 'Administrator';
+            } else if (commands[command].subcommands[subcommand].groupId == 2) {
+                group = 'Moderator';
+            } else if (commands[command].subcommands[subcommand].groupId == 3) {
+                group = 'Subscriber';
+            } else if (commands[command].subcommands[subcommand].groupId == 4) {
+                group = 'Donator';
+            } else if (commands[command].subcommands[subcommand].groupId == 5) {
+                group = 'Hoster';
+            } else if (commands[command].subcommands[subcommand].groupId == 6) {
+                group = 'Regular';
+            } else if (commands[command].subcommands[subcommand].groupId == 7) {
+                group = 'Viewer';
             }
-            $.updateHost();
-            return;
+            return group;
         }
+        return 'Viewer';
+    };
 
-        /*
-         * Reloads the streamtip variables.
-         */
-        if (command.equalsIgnoreCase('donationpanelupdatestreamtip')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.donationpanelupdatestreamtip();
-            return;
+    /**
+     * @function updateCommandGroup
+     * @export $
+     * @param command
+     * @param groupId
+     */
+    function updateCommandGroup(command, groupId) {
+        if (commandExists(command)) {
+            commands[command].groupId = groupId;
         }
+    };
 
-        /*
-         * Reloads the subscriber variables.
-         */
-        if (command.equalsIgnoreCase('subscribepanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.updateSubscribeConfig();
-            return;
+    /**
+     * @function updateSubcommandGroup
+     * @export $
+     * @param command
+     * @param sub
+     * @param groupId
+     */
+    function updateSubcommandGroup(command, subcommand, groupId) {
+        if (subCommandExists(command, subcommand)) {
+            commands[command].subcommands[subcommand].groupId = groupId;
         }
+    };
 
-        /*
-         * Reloads the greeting variables.
-         */
-        if (command.equalsIgnoreCase('greetingspanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.greetingspanelupdate();
-            return;
-        }
-
-        /*
-         * Reloads the notice variables.
-         */
-        if (command.equalsIgnoreCase('reloadnotice')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadNoticeSettings();
-        }
-
-        /*
-         * Reloads the points variables.
-         */
-        if (command.equalsIgnoreCase('reloadpoints')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.updateSettings();
-            return;
-        }
-
-        /*
-         * Sets a points bonus
-         */
-        if (command.equalsIgnoreCase('pointsbonuspanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.setTempBonus(action, args[1]);
-            return;
-        }
-
-        /*
-         * Gives points to everyone in the channel 
-         */
-        if (command.equalsIgnoreCase('pointsallpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            for (var i in $.users) {
-                $.inidb.incr('points', $.users[i][0].toLowerCase(), parseInt(action));
-            }
-            return;
-        }
-
-        /*
-         * Takes points from everyone in the channel
-         */
-        if (command.equalsIgnoreCase('pointstakeallpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            for (var i in $.users) {
-                if ($.getUserPoints($.users[i][0].toLowerCase()) > parseInt(action)) {
-                    $.inidb.decr('points', $.users[i][0].toLowerCase(), parseInt(action));
-                }
-            }
-            return;
-        }
-
-        /*
-         * Reloads the raffle variables.
-         */
-        if (command.equalsIgnoreCase('reloadraffle')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadRaffle();
-            return;
-        }
-
-        /*
-         * Reloads the rank variables.
-         */
-        if (command.equalsIgnoreCase('rankreloadtable')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.loadRanksTimeTable();
-            return;
-        }
-
-        /*
-         * Reloads the ticket raffle variables.
-         */
-        if (command.equalsIgnoreCase('reloadtraffle')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadTRaffle();
-            return;
-        }
-
-        /*
-         * Reloads the time variables.
-         */
-        if (command.equalsIgnoreCase('updatetimesettings')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.updateTimeSettings();
-            return;
-        }
-
-        /*
-         * Reloads the log variables.
-         */
-        if (command.equalsIgnoreCase('reloadlogs')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadLogs();
-            return;
-        }
-    });
-
-    $.bind('initReady', function() {
-        /* 10 second delay here because I don't want these commands to be registered first. */
-        setTimeout(function() {
-            $.registerChatCommand('./core/panelCommands.js', 'reloadcommand', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'permcomsilent', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'registerpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'unregisterpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadmod', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'clearhighlightspanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'highlightpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'settitlesilent', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'setgamesilent', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadadventure', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadgamble', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'loadprizesroll', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadroulette', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'loadprizes', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadbits', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'followerpanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'gamewisppanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadhost', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdatestreamtip', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'subscribepanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'greetingspanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadnotice', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadpoints', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'pointsallpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'pointsbonuspanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'pointstakeallpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadraffle', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'rankreloadtable', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadtraffle', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'updatetimesettings', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadlogs', 30);
-        }, 10000);
-    });
+    /** Export functions to API */
+    $.registerChatCommand = registerChatCommand;
+    $.registerChatSubcommand = registerChatSubcommand;
+    $.unregisterChatCommand = unregisterChatCommand;
+    $.unregisterChatSubcommand = unregisterChatSubcommand;
+    $.commandExists = commandExists;
+    $.subCommandExists = subCommandExists;
+    $.getCommandGroup = getCommandGroup;
+    $.getCommandGroupName = getCommandGroupName;
+    $.getSubcommandGroup = getSubcommandGroup;
+    $.getSubCommandGroupName = getSubCommandGroupName;
+    $.updateCommandGroup = updateCommandGroup;
+    $.updateSubcommandGroup = updateSubcommandGroup;
+    $.getCommandScript = getCommandScript;
+    $.aliasExists = aliasExists;
+    $.registerChatAlias = registerChatAlias;
+    $.tempUnRegisterChatCommand = tempUnRegisterChatCommand;
 })();
