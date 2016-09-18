@@ -172,6 +172,8 @@
 
                     if (actionArgs.equalsIgnoreCase('(list)')) {
                         $.say($.whisperPrefix(sender) + $.lang.get('audiohook.customcommand.add.list', subAction));
+                        $.inidb.set('audioCommands', subAction.toLowerCase(), actionArgs);
+                        $.registerChatCommand('./systems/audioPanelSystem.js', subAction.toLowerCase(), 7);
                         return;
                     }
 
