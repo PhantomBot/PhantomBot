@@ -76,7 +76,7 @@
                 return;
             } else {
                 if (perUserCooldown) {
-                    cooldown[command] = {time: time, username: username};
+                    cooldown[username] = {time: time};
                     $.consoleDebug('Pushed command !' + command + ' to user cooldown with username: ' + username + '.');
                     return;
                 }
@@ -118,10 +118,10 @@
             set(command, hasCooldown, globalCooldownTime); return 0;
         } else {
             if (perUserCooldown && hasCooldown) {
-                if (cooldown[command] !== undefined && cooldown[command].username.equalsIgnoreCase(username)) {
-                    if (cooldown[command].time - $.systemTime() >= 0) {
+                if (cooldown[username] !== undefined) {
+                    if (cooldown[username].time - $.systemTime() >= 0) {
                         if (permCheck(username, isMod)) return 0;
-                        return parseInt(cooldown[command].time - $.systemTime());
+                        return parseInt(cooldown[username].time - $.systemTime());
                     }
                 }
                 set(command, hasCooldown, getCooldown(command), username); return 0;
