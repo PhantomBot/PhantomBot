@@ -841,7 +841,7 @@ public class PhantomBot implements Listener {
         	data += "var panelSettings = {\r\n";
         	data += "    panelPort   : " + (basePort + 4) + ",\r\n";
         	data += "    channelName : \"" + channelName + "\",\r\n";
-        	data += "    auth        : \"" + webOAuthThro + ",\"\r\n";
+        	data += "    auth        : \"" + webOAuthThro + "\",\r\n";
         	data += "    http        : \"" + http + "\"\r\n";
         	data += "};\r\n\r\n";
         	data += "function getPanelPort() { return panelSettings.panelPort; }\r\n";
@@ -1556,6 +1556,7 @@ public class PhantomBot implements Listener {
     public void devDebugCommands(String command, String id, String sender) {
     	if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName))) {
     		String arguments = "";
+    		String[] args = null;
     		command = command.substring(12);
 
     		if (!command.contains("!")) {
@@ -1568,7 +1569,14 @@ public class PhantomBot implements Listener {
 
     		command = command.substring(1);
 
-    		if (command.equals("exit")) {
+    		if (command.contains(" ")) {
+                String commandString = command;
+                command = commandString.substring(0, commandString.indexOf(" "));
+                arguments = commandString.substring(commandString.indexOf(" ") + 1);
+                args = arguments.split(" ");
+            }
+
+            if (command.equals("exit")) {
     			System.exit(0);
     			Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". ShutDown: " + botName + ". Id: " + id);
     			Logger.instance().log(Logger.LogType.Debug, "");
@@ -1581,11 +1589,38 @@ public class PhantomBot implements Listener {
     			return;
     		}
 
-    		if (command.contains(" ")) {
-                String commandString = command;
-                command = commandString.substring(0, commandString.indexOf(" "));
-                arguments = commandString.substring(commandString.indexOf(" ") + 1);
-            }
+    		if (command.equals("dbtabledel")) {
+    			try {
+    			    PhantomBot.instance().getDataStore().RemoveFile(args[0]);
+    			    Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". Removed DB Table: " + args[0] + ". Id: " + id);
+    			    Logger.instance().log(Logger.LogType.Debug, "");
+    			} catch (Exception ex) {
+    				com.gmt2001.Console.err.println("Could not edit the db: " + ex.getMessage());
+    			}
+    			return;
+    		}
+
+    		if (command.equals("dbedit")) {
+    			try {
+    			    PhantomBot.instance().getDataStore().set(args[0], args[1], arguments.substring(arguments.indexOf(args[1]) + args[1].length() + 1));
+    			    Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". Edited DB Table: " + args[0] + " With: " + arguments.substring(arguments.indexOf(args[1]) + args[1].length() + 1) + ". Id: " + id);
+    			    Logger.instance().log(Logger.LogType.Debug, "");
+    			} catch (Exception ex) {
+    				com.gmt2001.Console.err.println("Could not edit the db: " + ex.getMessage());
+    			}
+    			return;
+    		}
+
+    		if (command.equals("dbdel")) {
+    			try {
+    			    PhantomBot.instance().getDataStore().del(args[0], args[1]);
+    			    Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". Edited DB Table: " + args[0] + " Del: " + args[1] + ". Id: " + id);
+    			    Logger.instance().log(Logger.LogType.Debug, "");
+    			} catch (Exception ex) {
+    				com.gmt2001.Console.err.println("Could not edit the db: " + ex.getMessage());
+    			}
+    			return;
+    		}
 
     		ScriptEventManager.instance().runDirect(new DeveloperCommandEvent(sender, command, arguments, id));
     		Logger.instance().log(Logger.LogType.Debug, "User: " + sender + " Issued Command: " + command + ". Id: " + id);

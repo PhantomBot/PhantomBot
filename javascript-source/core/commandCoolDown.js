@@ -12,7 +12,9 @@
         perUserCooldown = $.getSetIniDbBoolean('cooldown', 'perUserCooldown', false),
         globalCooldownTime = $.getSetIniDbNumber('cooldown', 'globalCooldownTime', 90),
         modCooldown = $.getSetIniDbBoolean('cooldown', 'modCooldown', false),
-        cooldown = [];
+        cooldown = [],
+        cooldowns = [],
+        i;
 
     /**
      * @function reloadCooldown 
@@ -76,7 +78,7 @@
                 return;
             } else {
                 if (perUserCooldown) {
-                    cooldown[command] = {time: time, username: username};
+                    cooldowns.push({username: username, time: time, command: command});
                     $.consoleDebug('Pushed command !' + command + ' to user cooldown with username: ' + username + '.');
                     return;
                 }
@@ -118,10 +120,10 @@
             set(command, hasCooldown, globalCooldownTime); return 0;
         } else {
             if (perUserCooldown && hasCooldown) {
-                if (cooldown[command] !== undefined && cooldown[command].username.equalsIgnoreCase(username)) {
-                    if (cooldown[command].time - $.systemTime() >= 0) {
+                for (i in cooldowns) {
+                    if (cooldowns[i].command.equals(command) && cooldowns[i].username.equals(username) && cooldowns[i].time - $.systemTime() >= 0) {
                         if (permCheck(username, isMod)) return 0;
-                        return parseInt(cooldown[command].time - $.systemTime());
+                        return parseInt(cooldowns[i].time - $.systemTime());
                     }
                 }
                 set(command, hasCooldown, getCooldown(command), username); return 0;
