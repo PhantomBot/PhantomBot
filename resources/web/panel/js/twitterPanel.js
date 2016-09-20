@@ -81,7 +81,7 @@
                         case 'polldelay_hometimeline' :
                         case 'polldelay_usertimeline' :
                         case 'postdelay_update' :
-                            $('#' + setting + 'TweetInput').attr('placeholder', value).blur();
+                            $('#' + setting + 'TweetInput').val(value);
                             break;
                     }
 
