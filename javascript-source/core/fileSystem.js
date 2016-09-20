@@ -107,7 +107,7 @@
 
         closeOpenFiles();
 
-        if (fileHandles[path] !== undefined) {
+        if (fileHandles[path] !== undefined && append) {
             fos = fileHandles[path].fos;
             ps = fileHandles[path].ps;
             fileHandles[path].lastWrite = $.systemTime();
