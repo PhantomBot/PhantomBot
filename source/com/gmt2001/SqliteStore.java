@@ -106,7 +106,7 @@ public class SqliteStore extends DataStore {
                     }
                 }
 
-                connection = CreateConnection(dbname, cache_size, safe_write, journal);
+                connection = CreateConnection(dbname, cache_size, safe_write, journal, true);
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -117,7 +117,7 @@ public class SqliteStore extends DataStore {
                };
     }
 
-    private static Connection CreateConnection(String dbname, int cache_size, boolean safe_write, boolean journal) {
+    private static Connection CreateConnection(String dbname, int cache_size, boolean safe_write, boolean journal, boolean autocommit) {
         Connection connection = null;
 
         try {
@@ -127,7 +127,7 @@ public class SqliteStore extends DataStore {
             config.setTempStore(SQLiteConfig.TempStore.MEMORY);
             config.setJournalMode(journal ? SQLiteConfig.JournalMode.TRUNCATE : SQLiteConfig.JournalMode.OFF);
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbname.replaceAll("\\\\", "/"), config.toProperties());
-            connection.setAutoCommit(getAutoCommitCtr() == 0);
+            connection.setAutoCommit(autocommit);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -164,7 +164,7 @@ public class SqliteStore extends DataStore {
     private void CheckConnection() {
         try {
             if (connection == null || connection.isClosed() || !connection.isValid(10)) {
-                connection = CreateConnection(dbname, cache_size, safe_write, journal);
+                connection = CreateConnection(dbname, cache_size, safe_write, journal, getAutoCommitCtr() == 0);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
