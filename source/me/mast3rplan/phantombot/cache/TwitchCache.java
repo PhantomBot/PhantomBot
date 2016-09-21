@@ -270,7 +270,7 @@ public class TwitchCache implements Runnable {
             success = false;
         }
 
-        if (PhantomBot.instance().twitchCacheReady.equals("false") && success) {
+        if (PhantomBot.twitchCacheReady.equals("false") && success) {
             com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
             PhantomBot.instance().setTwitchCacheReady("true");
         }
