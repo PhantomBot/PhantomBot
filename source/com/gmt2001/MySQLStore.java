@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
-import org.sqlite.SQLiteConfig;
 
 import me.mast3rplan.phantombot.PhantomBot;
 
@@ -67,6 +66,7 @@ public class MySQLStore extends DataStore {
         this.pass = pass;
         try {
             connection = DriverManager.getConnection(db, user, pass);
+            connection.setAutoCommit(getAutoCommitCtr() == 0);
             com.gmt2001.Console.out.println("Connected to MySQL");
             return connection;
         } catch (SQLException ex) {
@@ -387,8 +387,9 @@ public class MySQLStore extends DataStore {
         fName = validateFname(fName);
         AddFile(fName);
 
+        setAutoCommit(false);
+
         try {
-            connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement("REPLACE INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
                 statement.setQueryTimeout(10);
                 for (int idx = 0; idx < keys.length; idx++) {
@@ -405,19 +406,13 @@ public class MySQLStore extends DataStore {
                 statement.executeBatch();
                 statement.clearBatch();
                 connection.commit();
-                connection.setAutoCommit(true);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.println(ex);
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        try {
-            connection.setAutoCommit(true);
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.println(ex);
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+        setAutoCommit(true);
     }
 
     @Override
