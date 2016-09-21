@@ -155,7 +155,7 @@ public class FollowersCache implements Runnable {
             com.gmt2001.Console.err.printStackTrace(e);
         }
 
-        EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+        EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.getChannel("#" + this.channel)));
 
         while (!killed) {
             try {
@@ -176,7 +176,7 @@ public class FollowersCache implements Runnable {
                         /*
                          * if (firstUpdate) { firstUpdate = false;
                          * EventBus.instance().post(new
-                         * TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
+                         * TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channel)));
                          * }
                          */
                     }
