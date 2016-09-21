@@ -382,7 +382,7 @@ public class PhantomBot implements Listener {
 		this.mySqlPort = mySqlPort;
 
 		/** twitch cache */
-		this.twitchCacheReady = "false";
+		PhantomBot.twitchCacheReady = "false";
 
 		/** Set the SSL info */
 		this.httpsFileName = httpsFileName;
@@ -390,9 +390,9 @@ public class PhantomBot implements Listener {
 
 		/** Set the timeZone */
 		if (!timeZone.isEmpty()) {
-			this.timeZone = timeZone;
+			PhantomBot.timeZone = timeZone;
 		} else {
-			this.timeZone = "GMT";
+			PhantomBot.timeZone = "GMT";
 		}
 
 		/** Set the panel username login for the panel to use */
@@ -417,16 +417,16 @@ public class PhantomBot implements Listener {
 
 		/** Set the message limit for session.java to use */
 		if (messageLimit != 0) {
-			this.messageLimit = messageLimit;
+			PhantomBot.messageLimit = messageLimit;
 		} else {
-			this.messageLimit = 18.75;
+			PhantomBot.messageLimit = 18.75;
 		}
 
 		/** Set the whisper limit for session.java to use. *Currently not used.* */
 		if (whisperLimit != 0) {
-			this.whisperLimit = 60.0;
+			PhantomBot.whisperLimit = 60.0;
 		} else {
-			this.whisperLimit = 60.0;
+			PhantomBot.whisperLimit = 60.0;
 		}
 
 		/** Set the client id for the twitch api to use */
@@ -890,7 +890,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
-        Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
+        Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightly(), 0);
         Script.global.defineProperty("version", botVersion(), 0);
         Script.global.defineProperty("changed", Boolean.valueOf(newSetup), 0);
@@ -993,8 +993,8 @@ public class PhantomBot implements Listener {
     	//print("ircJoinComplete::" + this.chanName);
 
     	/** Add the channel/session in the array for later use */
-    	PhantomBot.instance().addChannel(this.chanName, event.getChannel());
-    	PhantomBot.instance().addSession(this.chanName, this.session);
+    	PhantomBot.addChannel(this.chanName, event.getChannel());
+    	PhantomBot.addSession(this.chanName, this.session);
 
     	/** Say .mods in the channel to check if the bot is a moderator */
     	this.session.saySilent(".mods");
@@ -2713,8 +2713,8 @@ public class PhantomBot implements Listener {
 
     /** Set the twitch cache */
     public void setTwitchCacheReady(String twitchCacheReady) {
-        this.twitchCacheReady = twitchCacheReady;
-        Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
+        PhantomBot.twitchCacheReady = twitchCacheReady;
+        Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
     }
 
     /** Load the game list */

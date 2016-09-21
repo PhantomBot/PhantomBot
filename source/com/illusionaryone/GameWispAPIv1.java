@@ -193,7 +193,7 @@ public class GameWispAPIv1 {
      * @param sAccessToken
      */
     public void SetAccessToken(String sAccessToken) {
-        this.sAccessToken = sAccessToken;
+        GameWispAPIv1.sAccessToken = sAccessToken;
     }
 
     /*
@@ -202,7 +202,7 @@ public class GameWispAPIv1 {
      * @param sRefreshToken
      */
     public void SetRefreshToken(String sRefreshToken) {
-        this.sRefreshToken = sRefreshToken;
+        GameWispAPIv1.sRefreshToken = sRefreshToken;
     }
 
     /*
@@ -211,7 +211,7 @@ public class GameWispAPIv1 {
      * @return JSONObject
      */
     public JSONObject getUserSubInfoJSON(String username) {
-        return readJsonFromGETUrl(sAPIURL + "/pub/v1/channel/subscriber-for-channel?access_token=" + this.sAccessToken + "&type=twitch&user_name=" + username + "&include=anniversaries,user,tier");
+        return readJsonFromGETUrl(sAPIURL + "/pub/v1/channel/subscriber-for-channel?access_token=" + GameWispAPIv1.sAccessToken + "&type=twitch&user_name=" + username + "&include=anniversaries,user,tier");
     }
 
     /*
