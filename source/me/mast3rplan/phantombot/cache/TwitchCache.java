@@ -270,7 +270,7 @@ public class TwitchCache implements Runnable {
             success = false;
         }
 
-        if (PhantomBot.instance().twitchCacheReady.equals("false") && success) {
+        if (PhantomBot.twitchCacheReady.equals("false") && success) {
             com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
             PhantomBot.instance().setTwitchCacheReady("true");
         }
@@ -282,7 +282,7 @@ public class TwitchCache implements Runnable {
      * @return  Channel  Channel object.
      */
     private Channel getChannel() {
-        return PhantomBot.instance().getChannel("#" + this.channel);
+        return PhantomBot.getChannel("#" + this.channel);
     }
 
     /*

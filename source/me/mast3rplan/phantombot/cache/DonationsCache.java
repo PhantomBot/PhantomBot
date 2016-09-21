@@ -159,13 +159,13 @@ public class DonationsCache implements Runnable {
 
         if (firstUpdate) {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchAlertsDonationInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchAlertsDonationInitializedEvent(PhantomBot.getChannel("#" + this.channel)));
         }
 
         if (donations != null) {
             for (int i = 0; i < donations.length(); i++) {
                 if (cache == null || !cache.containsKey(donations.getJSONObject(i).getString("donation_id"))) {
-                    EventBus.instance().post(new TwitchAlertsDonationEvent(donations.getJSONObject(i).toString(), PhantomBot.instance().getChannel("#" + this.channel)));
+                    EventBus.instance().post(new TwitchAlertsDonationEvent(donations.getJSONObject(i).toString(), PhantomBot.getChannel("#" + this.channel)));
                 }
             }
         }
