@@ -42,7 +42,7 @@ public class Script {
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public Script(File file) {
 
-        if (PhantomBot.instance().reloadScripts) {
+        if (PhantomBot.reloadScripts) {
             this.fileWatcher = new ScriptFileWatcher(this);
         } else {
             if (file.getPath().indexOf("/lang/") != -1) {
