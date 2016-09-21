@@ -16,7 +16,6 @@
  */
 package me.mast3rplan.phantombot;
 
-import com.gmt2001.controlpanel.ControlPanel;
 import java.io.IOException;
 
 /**
@@ -28,11 +27,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         for (String arg : args) {
             if (arg.startsWith("main=")) {
-                if (arg.substring(5).equalsIgnoreCase("controlpanel")) {
-                    ControlPanel.main(args);
-                    return;
-                }
-
                 if (arg.substring(5).equalsIgnoreCase("exit")) {
                     return;
                 }
