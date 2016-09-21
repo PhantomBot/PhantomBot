@@ -364,7 +364,7 @@ public class Session {
      
     class MessageTask extends TimerTask {
         private final Session session;
-        private final double messageLimit = PhantomBot.instance().getMessageInterval();
+        private final double messageLimit = PhantomBot.getMessageInterval();
         private long lastMessage = 0;
 
         public MessageTask(Session session) {

@@ -225,16 +225,16 @@ public class ChannelHostCache implements Runnable {
         this.cache = newCache;
 
         for (String hoster : hosted) {
-            EventBus.instance().post(new TwitchHostedEvent(hoster, PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchHostedEvent(hoster, PhantomBot.getChannel("#" + this.channel)));
         }
 
         for (String unhoster : unhosted) {
-            EventBus.instance().post(new TwitchUnhostedEvent(unhoster, PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchUnhostedEvent(unhoster, PhantomBot.getChannel("#" + this.channel)));
         }
 
         if (firstUpdate) {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchHostsInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchHostsInitializedEvent(PhantomBot.getChannel("#" + this.channel)));
         }
     }
 
