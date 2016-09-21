@@ -142,7 +142,7 @@
                 <attribute name="Implementation-Revision" value="${git.revision}" />
                 <attribute name="Implementation-URL" value="https://phantombot.tv" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
-                <attribute name="Main-Class" value="me.mast3rplan.phantombot.Main" />
+                <attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot" />
             </manifest>
         </jar>
             
