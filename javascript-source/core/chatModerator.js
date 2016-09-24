@@ -88,7 +88,7 @@
 
         warningTime = {
             Links: $.getSetIniDbNumber('chatModerator', 'warningTimeLinks', 5),
-            Caps: $.getSetIniDbNumber('chatModerator', 'warningTimeCaps', 5),
+            Caps: $.getSetIniDbNumber('chatModerator', 'warningTimeCaps', 5)
             Symbols: $.getSetIniDbNumber('chatModerator', 'warningTimeSymbols', 5),
             Spam: $.getSetIniDbNumber('chatModerator', 'warningTimeSpam', 5),
             Emotes: $.getSetIniDbNumber('chatModerator', 'warningTimeEmotes', 5),
@@ -229,14 +229,14 @@
 
         loadBlackList();
         loadWhiteList();
-    };
+    }
 
     /**
      * @interval
      * Check to see if no one has chatted in 5 minutes. If so clear the array. because this can get big in large channels.
      */
     setInterval(function() {
-        if (spamTracker.length != 0) {
+        if (spamTracker.length !== 0) {
             if (spamTrackerLastMsg - $.systemTime() <= 0) {
                 spamTracker = [];
             }
@@ -249,10 +249,11 @@
     function loadBlackList() {
         var keys = $.inidb.GetKeyList('blackList', '');
         blackList = [];
-        for (i in keys) {
+
+        for (i = 0; i < keys.length; i++) {
             blackList.push($.inidb.get('blackList', keys[i]));
         }
-    };
+    }
 
     /**
      * @function loadWhiteList
@@ -260,10 +261,11 @@
     function loadWhiteList() {
         var keys = $.inidb.GetKeyList('whiteList', '');
         whiteList = [];
-        for (i in keys) {
+        
+        for (i = 0; i < keys.length; i++) {
             whiteList.push($.inidb.get('whiteList', keys[i]));
         }
-    };
+    }
 
     /**
      * @function timeoutUserFor
@@ -277,7 +279,7 @@
         setTimeout(function() {
             $.say('.timeout ' + user + ' ' + time + ' ' + reason);
         }, 1000);
-    };
+    }
 
     /**
      * @function timeout
@@ -308,7 +310,7 @@
         timeouts[user] = resetTime + $.systemTime();
         warning = $.lang.get('chatmoderator.warning');
         panelLog(user);
-    };
+    }
 
     /**
      * @function panelLog
@@ -319,7 +321,7 @@
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
             $.panelDB.updateModLinesDB(user);
         }
-    };
+    }
 
     /**
      * @function sendMessage
@@ -334,7 +336,7 @@
             $.say($.userPrefix(user, true) + message + ' ' + warning);
             messageTime = (msgCooldownSec * 1000) + $.systemTime();
         } 
-    };
+    }
 
     /**
      * @function permitUser
@@ -343,7 +345,7 @@
      */
     function permitUser(user) {
         permitList[user] = (linkPermitTime * 1000) + $.systemTime();
-    };
+    }
 
     /**
      * @function getModerationFilterStatus
@@ -357,7 +359,7 @@
         } else {
             return (filter ? 'not allowed' : 'allowed');
         }
-    };
+    }
 
     /**
      * @function checkPermitList
@@ -372,7 +374,7 @@
             }
         }
         return false;
-    };
+    }
 
     /**
      * @function checkBlackList
@@ -391,7 +393,7 @@
         }
         
         return false;
-    };
+    }
 
     /**
      * @function checkWhiteList
@@ -405,7 +407,7 @@
             }
         }
         return false;
-    };
+    }
 
     /**
      * @function checkYoutubePlayer
@@ -417,7 +419,7 @@
             return true;
         }
         return false;
-    };
+    }
 
     /**
      * @function performModeration
@@ -528,7 +530,7 @@
                 spamTrackerLastMsg = ($.systemTime() + 3e5);
             }
         }
-    };
+    }
 
     /**
      * @function extraCommands
@@ -819,7 +821,7 @@
             $.log.event(action + ' was permited by ' + sender);
             return;
         }
-    };
+    }
 
     /**
      * @event ircClearchat
@@ -1314,7 +1316,7 @@
                         $.inidb.set('chatModerator', 'silentTimeoutLongMsg', silentTimeout.LongMsg);
                         $.inidb.set('chatModerator', 'silentTimeoutColors', silentTimeout.Colors);
                         $.inidb.set('chatModerator', 'silentTimeoutSpamTacker', silentTimeout.SpamTracker);
-                        $.say($.whisperPrefix(sender) + (args[0] ? $.lang.get('chatmoderator.silenttimeout.true') : $.lang.get('chatmoderator.silenttimeout.false')))
+                        $.say($.whisperPrefix(sender) + (args[0] ? $.lang.get('chatmoderator.silenttimeout.true') : $.lang.get('chatmoderator.silenttimeout.false')));
                     }
                 }
             }
