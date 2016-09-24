@@ -461,7 +461,7 @@
         }
 
         for (i in groups) {
-            temp.push('Group ID: ' + groups[i].id + ' (' + groups[i].group + ')');
+            temp.push('Permission IDs: ' + groups[i].id + ' (' + groups[i].group + ')');
         }
         return temp.join(', ');
     };
