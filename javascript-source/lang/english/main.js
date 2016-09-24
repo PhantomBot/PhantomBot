@@ -297,7 +297,7 @@ $.lang.register('permissions.group.set.error.abovegroup', 'You must have higher 
 $.lang.register('permissions.group.set.error.samegroup', 'You cannot promote others to the same permission as you.');
 $.lang.register('permissions.group.set.success', 'Permission for $1 changed to $2!');
 $.lang.register('permissions.group.usage', 'Usage: !permission, !permission [name] [permissionID]');
-$.lang.register('permissions.grouppoints.usage', 'Usage: !permissionpoints [group] [online|offline] [points]. points of -1 uses !setgain, !setofflinegain values.');
+$.lang.register('permissions.grouppoints.usage', 'Usage: !permissionpoints [permission name] [online|offline] [points]. points of -1 uses !setgain, !setofflinegain values.');
 $.lang.register('permissions.grouppoints.showgroup', 'Permission $1 gains $2 $3 online and $4 $5 offline.');
 $.lang.register('permissions.grouppoints.showgroup.online', '$1 gains $2 $3 online.');
 $.lang.register('permissions.grouppoints.showgroup.offline', '$1 gains $2 $3 offline.');
