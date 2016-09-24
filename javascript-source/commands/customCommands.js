@@ -205,12 +205,9 @@
 
         if (message.match(/\(alert [,.\w]+\)/g)) {
             var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
-            $.consoleLn($.panelsocketserver)
             $.panelsocketserver.alertImage(filename);
             message = message.replaceFirst('\\(alert [,.\\w]+\\)', '');
-            if (message == '') {
-                return null;
-            }
+            if (message == '') return null;
         }
 
         if (message.match(/\(readfile/)) {
@@ -564,7 +561,9 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.404'));
                 return;
             } else if ($.inidb.get('command', action).match(/\(adminonlyedit\)/) && !$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getGroupNameById('1')));
+                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getGroupNameById('1')));
+                }
                 return;
             }
 
