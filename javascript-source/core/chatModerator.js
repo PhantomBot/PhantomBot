@@ -88,7 +88,7 @@
 
         warningTime = {
             Links: $.getSetIniDbNumber('chatModerator', 'warningTimeLinks', 5),
-            Caps: $.getSetIniDbNumber('chatModerator', 'warningTimeCaps', 5)
+            Caps: $.getSetIniDbNumber('chatModerator', 'warningTimeCaps', 5),
             Symbols: $.getSetIniDbNumber('chatModerator', 'warningTimeSymbols', 5),
             Spam: $.getSetIniDbNumber('chatModerator', 'warningTimeSpam', 5),
             Emotes: $.getSetIniDbNumber('chatModerator', 'warningTimeEmotes', 5),
