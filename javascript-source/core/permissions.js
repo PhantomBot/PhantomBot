@@ -741,7 +741,7 @@
                 return;
             }
 
-            if (username !== undefined && $.user.isKnown(username.toLowerCase())) {
+            if (username !== undefined && (isNaN(groupId) || groupId === undefined) && $.user.isKnown(username.toLowerCase())) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.other.current', $.username.resolve(args[0]), $.getUserGroupName(args[0])));
                 return;
             }

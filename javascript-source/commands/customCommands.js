@@ -205,8 +205,12 @@
 
         if (message.match(/\(alert [,.\w]+\)/g)) {
             var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
+            $.consoleLn($.panelsocketserver)
             $.panelsocketserver.alertImage(filename);
             message = message.replaceFirst('\\(alert [,.\\w]+\\)', '');
+            if (message == '') {
+                return null;
+            }
         }
 
         if (message.match(/\(readfile/)) {
@@ -518,6 +522,11 @@
                 return;
             }
 
+            if ($.inidb.exists('disabledCommands', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.disabled'));
+                return;
+            }
+
             if (argString.indexOf('(command ') !== -1) {
                 if (argString.indexOf('(command ') !== 0) {
                     $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.commandtag.notfirst'));
@@ -555,9 +564,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.404'));
                 return;
             } else if ($.inidb.get('command', action).match(/\(adminonlyedit\)/) && !$.isAdmin(sender)) {
-                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getGroupNameById('1')));
-                }
+                $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getGroupNameById('1')));
                 return;
             }
 
