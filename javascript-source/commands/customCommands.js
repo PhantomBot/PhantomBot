@@ -207,6 +207,7 @@
             var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
             $.panelsocketserver.alertImage(filename);
             message = message.replaceFirst('\\(alert [,.\\w]+\\)', '');
+            if (message == '') return null;
         }
 
         if (message.match(/\(readfile/)) {
@@ -515,6 +516,11 @@
 
             if ($.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.error'));
+                return;
+            }
+
+            if ($.inidb.exists('disabledCommands', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.disabled'));
                 return;
             }
 
