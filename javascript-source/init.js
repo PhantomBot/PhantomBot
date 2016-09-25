@@ -478,11 +478,6 @@
          * @commandpath module - Display the usage for !module
          */
         if (command.equalsIgnoreCase('module')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
                 return;
