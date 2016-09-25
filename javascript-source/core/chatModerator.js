@@ -274,42 +274,36 @@
      * @param {number} time
      * @param {string} reason
      */
-    function timeoutUserFor(user, time, reason) {
-        $.say('.timeout ' + user + ' ' + time + ' ' + reason);
+    function timeoutUserFor(username, time, reason) {
+        $.say('.timeout ' + username + ' ' + time + ' ' + reason);
         setTimeout(function() {
-            $.say('.timeout ' + user + ' ' + time + ' ' + reason);
+            $.say('.timeout ' + username + ' ' + time + ' ' + reason);
         }, 1000);
     }
 
     /**
      * @function timeout
      *
-     * @param {string} user
+     * @param {string} username
      * @param {number} warningT
      * @param {number} timeoutT
-     * @param {boolean} silent
      * @param {string} reason
      */
-    function timeout(user, warningT, timeoutT, silent, reason) {
-        if (timeouts[user] !== undefined) {
-            var time = timeouts[user] - $.systemTime();
-            if (time > 0) {
-                timeoutUserFor(user, timeoutT, silent, reason);
-                timeouts[user] = resetTime + $.systemTime();
+    function timeout(username, warningT, timeoutT, reason) {
+        if (timeouts[username] !== undefined) {
+            if ((timeouts[username] - $.systemTime()) >= 0) {
+                timeoutUserFor(username, timeoutT, reason);
                 warning = $.lang.get('chatmoderator.timeout');
-                panelLog(user);
             } else {
-                timeoutUserFor(user, warningT, silent, reason);
-                timeouts[user] = resetTime + $.systemTime();
+                timeoutUserFor(username, warningT, reason);
                 warning = $.lang.get('chatmoderator.warning');
-                panelLog(user);
             }
-            return;
+        } else {
+            timeoutUserFor(username, warningT, reason);
+            warning = $.lang.get('chatmoderator.warning');
         }
-        timeoutUserFor(user, warningT, silent, reason);
-        timeouts[user] = resetTime + $.systemTime();
-        warning = $.lang.get('chatmoderator.warning');
-        panelLog(user);
+        timeouts[username] = (resetTime + $.systemTime());
+        panelLog(username);
     }
 
     /**
@@ -317,34 +311,33 @@
      *
      * @param {string} user
      */
-    function panelLog(user) {
+    function panelLog(username) {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            $.panelDB.updateModLinesDB(user);
+            $.panelDB.updateModLinesDB(username);
         }
     }
 
     /**
      * @function sendMessage
      *
-     * @param {string} user
+     * @param {string} username
      * @param {string} message
      * @param {boolean} filter
      */
-    function sendMessage(user, message, filter) {
-        var messageReset = messageTime - $.systemTime();
-        if (!filter && messageReset <= 0) {
-            $.say($.userPrefix(user, true) + message + ' ' + warning);
-            messageTime = (msgCooldownSec * 1000) + $.systemTime();
+    function sendMessage(username, message, filter) {
+        if (!filter && (messageTime - $.systemTime()) <= 0) {
+            $.say($.userPrefix(username, true) + message + ' ' + warning);
+            messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         } 
     }
 
     /**
      * @function permitUser
      *
-     * @param {string} user
+     * @param {string} username
      */
-    function permitUser(user) {
-        permitList[user] = (linkPermitTime * 1000) + $.systemTime();
+    function permitUser(username) {
+        permitList[username] = ((linkPermitTime * 1000) + $.systemTime());
     }
 
     /**
@@ -364,16 +357,16 @@
     /**
      * @function checkPermitList
      *
-     * @param {string} user
+     * @param {string} username
      */
-    function checkPermitList(user) {
-        if (permitList[user] !== undefined) {
-            var time = permitList[user] - $.systemTime();
-            if (time > 0) {
+    function checkPermitList(username) {
+        if (permitList[username] !== undefined) {
+            if ((permitList[username] - $.systemTime()) >= 0) {
                 return true;
             }
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -417,15 +410,16 @@
     function checkYoutubePlayer(message) {
         if ($.youtubePlayerConnected && (message.includes('youtube.com') || message.includes('youtu.be'))) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
      * @function performModeration
      */
     function performModeration(event) {
-        var sender = event.getSender().toLowerCase(),
+        var sender = event.getSender(),
             message = event.getMessage().toLowerCase(),
             messageLength = message.length(),
             emotesObject = {};
