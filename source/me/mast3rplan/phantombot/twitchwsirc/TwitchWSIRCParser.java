@@ -414,7 +414,7 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void noticeMessage(String message, String username, Map<String, String> tagsMap) {
-        if (message.equals("Error logging in")) {
+        if (message.equals("Error logging in") || message.equals("Login authentication failed")) {
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
             com.gmt2001.Console.out.println("Exiting PhantomBot.");
