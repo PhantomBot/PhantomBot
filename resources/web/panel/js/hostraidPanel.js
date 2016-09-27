@@ -128,43 +128,6 @@
             }
         }
 
-        if (panelCheckQuery(msgObject, 'hostraid_autohost')) {
-            for (var idx in msgObject['results']) {
-                if (panelMatch(msgObject['results'][idx]['key'], 'enabled')) {
-                    $('#autoHostToggle').html(modeIcon[msgObject['results'][idx]['value']]);
-                }
-                if (panelMatch(msgObject['results'][idx]['key'], 'delay_time_minutes')) {
-                    $('#autoHostDelay').val(msgObject['results'][idx]['value']);
-                }
-                if (panelMatch(msgObject['results'][idx]['key'], 'host_time_minutes')) {
-                    $('#autoHostTime').val(msgObject['results'][idx]['value']);
-                }
-            }
-        }
-
-        if (panelCheckQuery(msgObject, 'hostraid_autohostlist')) {
-            if (msgObject['results'].length === 0) {
-                $('#autoHostList').html('<i>Theres no one in the auto host list.</i>');
-                return;
-            }
-
-            html = "<table>";
-            for (idx in msgObject['results']) {
-                html += "<tr class=\"textList\">" +
-                        "    <td style=\"width: 5%\">" +
-                        "        <div id=\"deleteUser_" + msgObject['results'][idx]['key'] + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
-                        "             onclick=\"$.setAutoHostSetting('del', 'deleteUser_', '" + msgObject['results'][idx]['key'] + "')\"><i class=\"fa fa-trash\" />" +
-                        "        </div>" +
-                        "    </td>" +
-                        "    <td>" + msgObject['results'][idx]['key'] + "</td>" +
-                        "</tr>";
-            }
-            html += "</table>";
-            $("#autoHostList").html(html);
-            handleInputFocus();
-        }
-    }
-
     /**
      * @function doQuery
      */
@@ -173,8 +136,6 @@
         sendDBKeys('hostraid_settings', 'settings');
         sendDBKeys('hostraid_inraids', 'incommingRaids'); 
         sendDBKeys('hostraid_outraids', 'outgoingRaids');
-        sendDBKeys('hostraid_autohost', 'autohost_config');
-        sendDBKeys('hostraid_autohostlist', 'autohost_hosts');
     }
 
     /** 
@@ -259,62 +220,6 @@
             sendDBUpdate('hostraid_settings', 'settings', 'raidMessage', value);
             $('#raidMessageInput').attr('placeholder', 'Updating...').blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-        }
-    }
-
-    function setAutoHostSetting(setting, s, t) {
-        var val = $('#' + s).val();
-
-        if (setting == 'enable') {
-            $("#autoHostToggle").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-            sendDBUpdate('auto_host', 'autohost_config', 'enabled', 'true');
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-            return;
-        }
-
-        if (setting == 'disable') {
-            $("#autoHostToggle").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-            sendDBUpdate('auto_host', 'autohost_config', 'enabled', 'false');
-            sendDBUpdate('auto_host', 'autohost_config', 'hosting', 'false');
-            sendDBDelete('auto_host', 'autohost_config', 'currently_hosting');
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-            return;
-        }
-
-        if (setting == 'del') {
-            sendDBDelete('auto_host', 'autohost_hosts', t);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-            return;
-        }
-
-        if (val.length !== 0) {
-            if (setting == 'time') {
-                if (val < 30) {
-                    $('#' + s).val('The host time cannot be less than 30 minutes.');
-                    setTimeout(function() { $('#' + s).val(''); doQuery(); }, TIMEOUT_WAIT_TIME * 5);
-                    return;
-                }
-                if (isNaN(parseInt(val))) {
-                    doQuery();
-                    return;
-                }
-                sendDBUpdate('auto_host', 'autohost_config', 'host_time_minutes', val);
-                setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-                return;
-            }
-
-            if (setting == 'delay') {
-                sendDBUpdate('auto_host', 'autohost_config', 'delay_time_minutes', val);
-                setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-                return;
-            }
-
-            if (setting == 'add') {
-                sendDBUpdate('auto_host', 'autohost_hosts', val, val);
-                $('#' + s).val('');
-                setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-                return;
-            }
         }
     }
 
