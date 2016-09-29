@@ -22,7 +22,7 @@
  * @contact: https://phantombot.net/
  *
  */
-
+ 
 /*
  *		  - COMMANDS -
  *
@@ -43,52 +43,58 @@
  */
 
 (function() {
-	setInterval(function(){
+	setInterval(function() {
 		if (parseInt($.inidb.get("statusphrasesystem", "toggle_phrases")) != 1) { return; };
 		var pos = parseInt($.inidb.get("statusphrasesystem", "pos_phrase"));
 		var last_pos = parseInt($.inidb.get("statusphrasesystem", "pos_phrase_last"));
 		var msg_toggle = parseInt($.inidb.get("statusphrasesystem", "msg_toggle"));
 		var separator = $.inidb.get("statusphrasesystem", "separator");
 		var separator_last = $.inidb.get("statusphrasesystem", "separator_last");
-		var num_phrases = (parseInt($.inidb.GetKeyList('statusphrases', '').length) ? parseInt($.inidb.GetKeyList('statusphrases', '').length) : NaN);
+		var num_phrases = parseInt($.inidb.GetKeyList('statusphrases', '').length) > 0 ? parseInt($.inidb.GetKeyList('statusphrases', '').length) : NaN;
 		var num;
 		var new_status = "";
 		var old_phrase = "";
+		var phrase = "";
 		var i;
 		var res;
 
 		if (!isNaN(num_phrases)) {
-			
-			num = num_phrases > 1 ? Math.floor(Math.random() * num_phrases) : 0;
 
-			var phrase = JSON.parse($.inidb.get('statusphrases', num))[1];
 			var channelData = $.twitch.GetChannel($.channelName);
 			var curr_status = channelData.getString('status');
-
-			if (phrase == null || curr_status == "" || curr_status == null) {
+			
+			if (curr_status == "" || curr_status == null) {
+				
 				$.consoleLn("Failed to retrieve the status. TwitchAPI must be having issues.");
+				
 			} else {
+
 				if (curr_status.includes(separator_last)) {
 					if (parseInt(last_pos) >= 1) {
 						old_phrase = curr_status.substring(curr_status.indexOf(separator_last) - 1, curr_status.length()); //check in back
 					} else {
 						old_phrase = curr_status.substring(0, curr_status.lastIndexOf(separator_last) + 1); //check in front
-					}
+					};
 					if (old_phrase) {
 						curr_status = curr_status.replace(old_phrase, "").trim(); //remove old phrase
-					}
-				}
+					};
+				};
+
+				do {
+					num = num_phrases > 1 ? Math.floor(Math.random() * num_phrases) : 0;
+					phrase = JSON.parse($.inidb.get('statusphrases', num))[1];
+				} while(old_phrase.includes(phrase));
 
 				if (pos >= 1) {
 					new_status = curr_status + " " + separator + " " + phrase; //added in back
-				} else { 
+				} else {
 					new_status = phrase + " " + separator + " " + curr_status; //added in front
-				}
+				};
 
 				var res = $.twitch.UpdateChannel($.channelName, new_status, "");
 				if (res.getBoolean("_success")) {
 					if (res.getInt("_http") == 200) {
-						$.inidb.set("streamInfo","title",res.getString("status"))
+						$.inidb.set("streamInfo","title",res.getString("status"));
 						$.inidb.set('statusphrasesystem', 'pos_phrase_last', pos);
 						$.inidb.set('statusphrasesystem', 'separator_last', separator);
 						if (msg_toggle >= 1) {
@@ -98,35 +104,44 @@
 								$.consoleLn("Changed status phrase to '" + separator + " " + phrase + "'!");
 							} else {
 								$.consoleLn("Changed status phrase to '" + phrase + " " + separator + "'!");
-							}
-						}
+							};
+						};
 						if (pos >= 1) {
-							$.logEvent("statusphraseSystem.js", 109, "Changed status phrase to '" + separator + " " + phrase + "'!");
+							$.log.event("statusphraseSystem.js", 110, "Changed status phrase to '" + separator + " " + phrase + "'!");
 						} else {
-							$.logEvent("statusphraseSystem.js", 111, "Changed status phrase to '" + phrase + " " + separator + "'!");			
-						}
+							$.log.event("statusphraseSystem.js", 112, "Changed status phrase to '" + phrase + " " + separator + "'!");			
+						};
 						$.consoleLn($.inidb.get("streamInfo","title"));
 					} else {
 						$.consoleLn("Failed to change the status. TwitchAPI must be having issues.");
 						$.consoleLn(res.getString("message"));
-						$.logError("statusphraseSystem.js", 117, res.getString("message"));
-					}
+						$.log.error("statusphraseSystem.js", 118, res.getString("message"));
+					};
 				} else {
 					$.consoleLn("Failed to change the status. TwitchAPI must be having issues.");
 					$.consoleLn(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
-					$.logError("statusphraseSystem.js", 122, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
+					$.log.error("statusphraseSystem.js", 123, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
 				};
-			}
+			};
 		} else {
 			$.say($.whisperPrefix($.ownerName) + "The status phrase list is empty!");
-		}
-	}, parseInt($.inidb.get("statusphrasesystem", "interval")));
+		};
+	}, parseInt($.inidb.exists("statusphrasesystem", "interval") ? $.inidb.get("statusphrasesystem", "interval") : 120000));
 
+	/**
+	 * @function savePhrase
+	 * @param {String} username {String} phrase
+	 */
 	function savePhrase(username, phrase) {
 		var newKey = $.inidb.GetKeyList('statusphrases', '').length;
 		$.inidb.set('statusphrases', newKey, JSON.stringify([username, phrase, $.systemTime()]));
 		return newKey;
 	};
+
+	/**
+	 * @function deletePhrase
+	 * @param {String} id
+	 */
 	function deletePhrase(phraseId) {
 		var phraseKeys,
 		phrases = [],
@@ -149,6 +164,7 @@
 			return -1;
 		}
 	}
+
 	$.bind('command', function (event) {
 		var sender = event.getSender();
 		var username = $.username.resolve(sender);
@@ -362,7 +378,7 @@
 				$.inidb.set('statusphrasesystem', 'separator_last', '»');
 			$.inidb.SaveAll(true);
 		}, 5 * 1000);
-	}
+	};
 	$.bind('initReady', function() {
 		if ($.bot.isModuleEnabled('./systems/statusphraseSystem.js')) {
 			$.registerChatCommand("./systems/statusphraseSystem.js", "addphrase");
@@ -379,6 +395,6 @@
 			$.registerChatCommand("./systems/statusphraseSystem.js", "phraseintervalsilent");
 			$.registerChatCommand("./systems/statusphraseSystem.js", "phrasemessage");
 			$.registerChatCommand("./systems/statusphraseSystem.js", "phrasemessagesilent");
-		}
+		};
 	});
 })();
