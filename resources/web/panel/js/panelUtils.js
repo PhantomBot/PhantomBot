@@ -24,7 +24,7 @@
  * Purpose  : Contains utilities for the control panel.
  */
 var DEBUG_MODE = false;
-var PANEL_VERSION = "@webpanel.version@";
+var PANEL_VERSION = "1.1";
 var TABS_INITIALIZED = false;
 var INITIAL_WAIT_TIME = 200;
 var TIMEOUT_WAIT_TIME = 500;
@@ -419,7 +419,7 @@ function performCurrentPanelRefresh() {
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.twitterDoQuery();
              break;
-         case 18 : 
+         case 18 :
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.audioDoQuery();
              break;
