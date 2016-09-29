@@ -78,9 +78,9 @@
 			
 			if (panelCheckQuery(msgObject, 'statusphrases_interval')) {
 				if (msgObject['results']['interval'] != undefined) {
-					interval = parseInt(msgObject['results']['interval']) / 60 / 1000;
+					_interval = parseInt(msgObject['results']['interval']) / 60 / 1000;
 				}
-				$("#phraseIntervalInput").attr("placeholder", interval).blur();
+				$("#phraseIntervalInput").attr("placeholder", _interval).blur();
 			}
 			if (panelCheckQuery(msgObject, 'statusphrases_separator')) {
 				if (msgObject['results']['separator'] != undefined) {
@@ -262,19 +262,24 @@
 		var preset_phrases = ["<ᴍᴇssᴀɢᴇ ᴅᴏɴɢᴇʀᴇᴅ>", "Best game EVER!", "ᕙ༼ຈل͜ຈ༽ᕗ CopyPasterino ᕙ༼ຈل͜ຈ༽ᕗ", "I Can Has Cheezburger? (*ΦДΦ*)✧",
 			"Come in and find out!", "OUR DONGERS ARE RAZOR SHARP(\\ ( ͠° ͟ل͜ ͡°) /)", "Chat commands!", 
 			"Born just in time to post DANK ℳℰℳℰS└( ° ͜ʖ͡°)┐", "We love this game <3", "ζ༼Ɵ͆ل͜Ɵ͆༽ᶘ FINALLY A REAL DONG ζ༼Ɵ͆ل͜Ɵ͆༽ᶘ", 
-			"Just another caffeinated stream~", "Enjoy your stay!", "Endless gaming!", "Notice Me Senpai! (≧∇≦*)", "What\' up beaches! ヾ(￣◇￣)ノ"];
+			"Just another caffeinated stream~", "Enjoy your stay!", "Endless gaming!", "Notice Me Senpai! (≧∇≦*)", "Aloha beaches! ヾ(￣◇￣)ノ",
+			"Baka Baka!!! Hentai!", "I-it\'s not like that... B-baka!", "Seems legit", "Top kek", "When I\'m Bored!", "LONG HAVE WE WAITED NOW WE..!",
+			"Grey Face (no space)", "No Face (Dog Space)", "Sodium, atomic number 11", "CTRL + TYPE \'WTF\' FOR ℱ𝓪𝓷𝓬𝔂 𝓦𝓣ℱ",
+			"( ͠° ͟ʖ ͡°) OVERCONFIDENCE KILLING SLOWLY", "Jet fuel won't melt tomorrow\'s memes", "YESTERDAY YOU SAID TOMMOROW", 
+			"[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅] I have more money than you ( ᐛ )و", "Here come dat boi!!! ᕕ( ᐛ )ᕗ", "Human body = 75% water, gamers = 100% salt",
+			"ＦＲＯＭ ＳＯＭＡＬＩＡ． ＳＯＲＲＹ ＦＯＲ ＢＡＤ ＥＮＧＬＡＮＤ．", "Ｉ ＳＥＬＬＥＤ ＭＹ ＷＩＦＥ ＦＯＲ ＩＮＴＥＲＮＥＴ"];
 		$('#addPhraseInput').val(preset_phrases[Math.floor(Math.random() * preset_phrases.length)]).blur();
 	}
     // Import the HTML file for this panel.
     $("#statusphrasesPanel").load("/panel/statusphrases.html");
 
     // Load the DB items for this panel, wait to ensure that we are connected.
-    var initialize = setInterval(function() {
+    var interval = setInterval(function() {
         if (isConnected && TABS_INITIALIZED) {
             var active = $('#tabs').tabs('option', 'active');
-            if (active == 10) {
+            if (active == 11) {
                 doQuery();
-                clearInterval(initialize);
+                clearInterval(interval);
             }
         }
     }, INITIAL_WAIT_TIME);
@@ -282,7 +287,7 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
-        if (active == 10 && isConnected && !isInputFocus()) {
+        if (active == 11 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Phrase Data', 'success', 1000);
             doQuery();
         }
