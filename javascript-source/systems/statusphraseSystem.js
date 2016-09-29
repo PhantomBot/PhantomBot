@@ -22,23 +22,23 @@
  * @contact: https://phantombot.net/
  *
  */
- 
+
 /*
  *		  - COMMANDS -
  *
- * "!togglephrases" - Toggles automatic status phrase changes enabled or disabled.
+ * @commandpath togglephrases - Toggles automatic status phrase changes enabled or disabled.
  *
- * "!phraseposition" - Toggles the status phrase position in front or back of the broadcast title.
+ * @commandpath phraseposition - Toggles the status phrase position in front or back of the broadcast title.
  * 
- * "!phraseseparator [symbol]" - Changes the symbol that separates the phrase from the broadcast title.
+ * @commandpath phraseseparator [symbol] - Changes the symbol that separates the phrase from the broadcast title.
  *
- * "!addphrase [phrase]" - Adds a new phrase to the list.
+ * @commandpath addphrase [phrase] - Adds a new phrase to the list.
  *
- * "!delphrase [ID]" - Deletes a phrase by its given ID.
+ * @commandpath delphrase [ID] - Deletes a phrase by its given ID.
  *
- * "!phraseinterval [integer]" - Changes the interval between automatic status phrase changes in minutes.
+ * @commandpath phraseinterval [integer] - Changes the interval between automatic status phrase changes in minutes.
  *
- * "!phrasemessage" - Toggles wether the bot should say the phrase in chat or if a change should be print into console.
+ * @commandpath phrasemessage - Toggles wether the bot should say the phrase in chat or if a change should be print into console.
  *
  */
 
