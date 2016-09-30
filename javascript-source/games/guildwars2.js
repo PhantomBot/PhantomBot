@@ -276,12 +276,16 @@ $.bind('command', function (event) {
     if (command.equalsIgnoreCase("gw2")) {
         var action = args[0];
 		
-		if (!args[0]) {
+		if (!action) {
 			$.say("@" + sender + ": No argument was given! Usage: '!gw2 [action] [optional arguments]'");
 			return;
 		}
 		
         if (action.equalsIgnoreCase("setkey")) {
+            if (!$.isCaster(sender)) {
+                $.say($.whisperPrefix(sender) + $.adminMsg);
+                return;
+            };
 			if (!args[1] || !args[1].match(/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{20}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/)) {
 				$.say($.whisperPrefix(sender) + $.lang.get("guildwars2.setkey.404"));
 				$.log.error("guildwars2.js", 284, "Invalid GW2 API Key!");
