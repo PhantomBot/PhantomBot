@@ -288,7 +288,7 @@ $.bind('command', function (event) {
             };
 			if (!args[1] || !args[1].match(/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{20}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/)) {
 				$.say($.whisperPrefix(sender) + $.lang.get("guildwars2.setkey.404"));
-				$.log.error("guildwars2.js", 284, "Invalid GW2 API Key!");
+				$.log.error("guildwars2.js", 291, "Invalid GW2 API Key!");
 				return;
 			};
 			$.inidb.set('settings', 'gw2_apikey', args[1]);
@@ -305,7 +305,7 @@ $.bind('command', function (event) {
 			for (var i = 0; i < Object.keys(UUIDs).length; i++) {
 				var currSeason = JSON.parse(_getJSON('https://api.guildwars2.com/v2/pvp/seasons?id=' + UUIDs[i]));
 				if (String(currSeason['active']) == 'true') {
-					if (!args[1]) {
+					if (args[1]) {
 						if (args[1].match(/^[1-9]{1}$/)) {
 							var season = parseInt(args[1] - 1)
 							if (season != currSeason) {
@@ -341,7 +341,7 @@ $.bind('command', function (event) {
         }
         if (action.equalsIgnoreCase("stats")) {
 			data = JSON.parse(_getJSON(GW2apiURL + '/v2/pvp/stats?access_token=' + GW2apiKey));
-			if (!args[1]) {
+			if (args[1]) {
 				for (var i = 0; i < GW2_professions.length; i++) {
 					var prof_abbreviations = $.lang.get('guildwars2.professions.' + GW2_professions[i]).split(", ");
 					if (prof_abbreviations.indexOf(String(args[1])) > -1) {
@@ -458,10 +458,10 @@ $.bind('command', function (event) {
 			return;
 		}
         if (action.equalsIgnoreCase("wiki")) {
-			if (!args[1]) {
-				var wiki_lang = args[1].toLocaleLowerCase().split(' ');
+			if (args[1]) {
+				var wiki_lang = args.filter(function(str){ return str != action });
 				for (var i = 0; i < wiki_lang.length; i++) {
-					wiki_lang[i] = wiki_lang[i].charAt(0).toLocaleUpperCase() + wiki_lang[i].slice(1);
+					wiki_lang[i] = String(wiki_lang[i]).charAt(0).toLocaleUpperCase() + wiki_lang[i].slice(1);
 				};
 				$.say('http://wiki.guildwars2.com?search=' + encodeURI(String(wiki_lang).replace(/,/g,' ')));
 			};
@@ -505,7 +505,7 @@ $.bind('command', function (event) {
 					$.mkDir("addons/guildwars2");
 					var fil = new java.io.File ("addons/guildwars2/", "session_deaths.txt");
 				}
-				if (!args[1]) {
+				if (args[1]) {
 					data = JSON.parse(_getJSON(GW2apiURL + '/v2/characters/' + args[1].trim() + '?access_token=' + GW2apiKey))['deaths'];
 					if (!data || data == undefined) {
 						$.say($.whisperPrefix(sender) + $.lang.get("guildwars2.deathcounter.error"));
