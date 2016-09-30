@@ -47,6 +47,7 @@ $.lang.register('guildwars2.fractals', '$1 hat Fraktalstufe $2 erreicht!');
 $.lang.register('guildwars2.build.pve', '$1\'s derzeitige PvE Ausrüstung: $2');
 $.lang.register('guildwars2.build.pvp', '$1\'s derzeitige PvP Ausrüstung: $2');
 $.lang.register('guildwars2.build.wvw', '$1\'s derzeitige WvW Ausrüstung: $2');
+$.lang.register('guildwars2.build.404', 'Nutzung: !gw2 build [gamemode] [character]');
 $.lang.register('guildwars2.deathcounter.disabled', '「Guild Wars²」 Todeszähler deaktiviert!');
 $.lang.register('guildwars2.deathcounter.error', '「Guild Wars²」 Charakter nicht gefunden!');
 $.lang.register('guildwars2.deathcounter.enabled', '「Guild Wars²」 Todeszähler aktiviert für $1!');
