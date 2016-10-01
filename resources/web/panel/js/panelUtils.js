@@ -116,6 +116,7 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('hostraid_') !== -1) $.hostraidOnMessage(e);
     if (e.data.indexOf('notices_') !== -1) $.noticesOnMessage(e);
     if (e.data.indexOf('quotes_') !== -1) $.quotesOnMessage(e);
+    if (e.data.indexOf('statusphrases_') !== -1) $.statusphrasesOnMessage(e);
     if (e.data.indexOf('keywords_') !== -1) $.keywordsOnMessage(e);
     if (e.data.indexOf('poll_') !== -1) $.pollOnMessage(e);
     if (e.data.indexOf('gambling_') !== -1) $.gamblingOnMessage(e);
@@ -390,31 +391,35 @@ function performCurrentPanelRefresh() {
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.quotesDoQuery();
              break;
-         case 11 :
+		 case 11 : 
+			 newPanelAlert('Refreshing Data', 'success', 1000);
+			 $.statusphrasesDoQuery();
+			 break;
+         case 12 :
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.keywordsDoQuery();
              break;
-         case 12 :
+         case 13 :
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.pollDoQuery();
              break;
-         case 13 :
+         case 14 :
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.hostraidDoQuery();
              break;
-         case 14 :
+         case 15 :
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.gamblingDoQuery();
              break;
-         case 15 :
+         case 16 :
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.gamesDoQuery();
              break;
-         case 16 :
+         case 17 :
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.twitterDoQuery();
              break;
-         case 17 : 
+         case 18 : 
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.audioDoQuery();
              break;

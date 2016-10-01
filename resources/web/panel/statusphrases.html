@@ -1,0 +1,116 @@
+<!--
+
+ Copyright (C) 2016 phantombot.tv
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ @author Nekres
+-->
+
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<table>
+	<tr style="background-color: transparent">
+	<td style="width: 130px">
+		<span align="char" id="currentPhrase" placeholder="-" />
+	</td>
+</table>
+<div id="phrasesAccordion">
+    <h3>Statusphrases</h3>
+    <div>
+    <div id="_statusphrasesPanelDisabled" />
+    <div id="_statusphrasesPanel">
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addPhrase">Add Status Phrase</label>
+                <input type="text" class="form-control" id="addPhraseInput" placeholder="A New Status Phrase">
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.addPhrase()">Submit</button>
+				<button type="button" class="bluePill inline pull-right" onclick="$.setRandomPhrase()">Random</button>
+            </div>
+        </form>
+        <br>
+
+        <strong>Phrases</strong><br><br>
+        <div id="phraseList" style="height: 350px; overflow: auto;" />
+    </div>
+    </div>
+    <h3>Configuration</h3>
+    <div>
+        <table>
+            <tr class="textList">
+                <td>Statusphrase System</td>
+                <td style="width: 25px"><div id="phraseToggleRefresh" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggles enabled/disabled" class="button"
+                         onclick="$.togglePhrases();"><i class="fa fa-refresh" />
+                     </div>
+                    <div>
+                </td>
+            </tr>
+            <tr class="textlist">
+                <td>Message Phrase In Chat on Change</td>
+                <td style="width: 25px"><div id="phraseMsgRefresh" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggles enabled/disabled" class="button"
+                         onclick="$.phraseMsg()"><i class="fa fa-refresh" />
+                     </div>
+                     </div>
+                <div>
+                    </td>
+                </tr>
+            <tr class="textList">
+                <td>Position Of Phrase in Broadcast Title: </td>
+                <td style="width: 25px"><div id="phrasePositionSelect" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Front" class="button"
+                         onclick="$.phrasePosition('0');"><i class="fa fa-circle-o" />
+                     </div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Back" class="button"
+                         onclick="$.phrasePosition('1');"><i class="fa fa-circle" />
+                     </div>
+                </td>
+            </tr>
+            </tr>
+        </table>
+        <br>
+        <form role="form">
+             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="statusPhraseInt">Interval</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.phraseInterval()">Submit</button>
+				<button type="button" class="btn btn-danger inline pull-right" onclick="$.setDefaultPhraseConfig('statusPhraseInt')">Default</button>
+                <input type="number" min="2" class="form-control" id="phraseIntervalInput" placeholder="" 
+                       data-toggle="tooltip" title="Time between a status phrase change in minutes."/>
+            </div>
+        </form>
+        <form role="form">
+             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="statusPhraseSep">Separator</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.phraseSeparator()">Submit</button>
+				<button type="button" class="btn btn-danger inline pull-right" onclick="$.setDefaultPhraseConfig('statusPhraseSep')">Default</button>
+                <input type="text" class="form-control" id="phraseSeparatorInput" placeholder=""
+                       data-toggle="tooltip" title="The symbol that separates the phrase from your broadcast title."/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Run the Acordion -->
+<script>$("#phrasesAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
+<script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
+<script>handleInputFocus();</script>
