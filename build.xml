@@ -76,18 +76,18 @@
     <target depends="init,git.revision" name="pre.compile">
         <echo>${ant.project.name} Version ${version} (${repository.version}) (${nightly_build})</echo>
         <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
-        <replace
+        <replaceregexp
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            token="@repository.version@"
-            value="${repository.version}" />
-        <replace
+            match="repoVersion = &quot;(.*)&quot;;"
+            replace="repoVersion = &quot;${repository.version}&quot;;" />
+        <replaceregexp
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            token="@nightly.build@"
-            value="${nightly_build}" />
-        <replace
+            match="nightlyBuild = &quot;(.*)&quot;;"
+            replace="nightlyBuild = &quot;${nightly_build}&quot;;" />
+        <replaceregexp
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            token="@phantombot.version@"
-            value="${version}" />
+            match="phantomBotVersion = &quot;(.*)&quot;;"
+            replace="phantomBotVersion = &quot;${version}&quot;;" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -114,18 +114,18 @@
     </target>
     
     <target name="post.compile">
-        <replace
+        <replaceregexp
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            token="${repository.version}"
-            value="@repository.version@" />
-        <replace 
+            match="repoVersion = &quot;(.*)&quot;;"
+            replace="repoVersion = &quot;@repository.version@&quot;;" />
+        <replaceregexp
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            token="${nightly_build}"
-            value="@nightly.build@" />
-        <replace 
+            match="nightlyBuild = &quot;(.*)&quot;;"
+            replace="nightlyBuild = &quot;@nightly.build@&quot;;" />
+        <replaceregexp
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            token="${version}"
-            value="@phantombot.version@" />
+            match="phantomBotVersion = &quot;(.*)&quot;;"
+            replace="phantomBotVersion = &quot;@phantombot.version@&quot;;" />
     </target>
 
     <target depends="compile.src,post.compile,git.revision" name="jar">
@@ -157,10 +157,10 @@
         <copy todir="${res.dir}">
             <fileset dir="./resources" />
         </copy>
-        <replace
+        <replaceregexp
             file="${build.dir}/web/panel/js/panelUtils.js"
-            token="@webpanel.version@"
-            value="${webpanel.version}" />
+            match="PANEL_VERSION = &quot;(.*)&quot;;"
+            replace="PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
         <echo level="info" message="staging files into distribution folder." />
         <copy todir="${versionfolder}">
             <fileset dir="${build.dir}" />
