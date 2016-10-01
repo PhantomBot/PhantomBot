@@ -127,6 +127,7 @@
                 $('#outgoingRaidList').html(html);
             }
         }
+    }
 
     /**
      * @function doQuery
@@ -256,5 +257,4 @@
     $.updateHostReward = updateHostReward;
     $.changeHostHistory = changeHostHistory;
     $.updateRaidMessage = updateRaidMessage;
-    $.setAutoHostSetting = setAutoHostSetting;
 })();

@@ -102,6 +102,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.gmt2001.TwitchAPIv3;
+
 import com.google.common.collect.Maps;
 
 import org.java_websocket.WebSocket;
@@ -188,7 +190,13 @@ public class PanelSocketServer extends WebSocketServer {
                 authenticated = jsonObject.getString("authenticate").equals(authStringRO);
                 sessionData.setAuthenticated(authenticated);
                 sessionData.setReadOnly(true);
-            } 
+
+                if (!authenticated) {
+                    authenticated = authenticateOauth(jsonObject.getString("authenticate"));
+                    sessionData.setAuthenticated(authenticated);
+                    sessionData.setReadOnly(false);
+                }
+            }
             return;
         }
 
@@ -441,6 +449,36 @@ public class PanelSocketServer extends WebSocketServer {
 
     private static String genSessionKey(WebSocket webSocket) {
         return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
+    }
+
+    private Boolean authenticateOauth(String oauth) {
+        String value;
+        String authUsername = TwitchAPIv3.instance().GetUserFromOauth(oauth);
+
+        if (authUsername == null) {
+            return false;
+        }
+
+        // TODO: This will be migrated into a file for management, for right now, this is in the
+        //        database for testing purposes.
+        try {
+            value = PhantomBot.instance().getDataStore().GetString("ws_test_auth", "", authUsername);
+        } catch (NullPointerException ex) {
+            if (!dbCallNull) {
+                dbCallNull = true;
+                debugMsg("NULL returned from DB. DB Object not created yet.");
+            }
+            return false;
+        }
+
+        if (value == null) {
+            return false;
+        }
+        if (value.equals(authUsername)) {
+            return true;
+        }
+        
+        return false;
     }
 
     // -----------------------------------------------------------------------
