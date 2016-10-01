@@ -293,7 +293,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Check to see if the user is subscribing to the channel */
-        if (message.endsWith("subscribed!")) {
+        if (message.endsWith("subscribed!") || message.endsWith("Prime!")) {
             if (username.equalsIgnoreCase("twitchnotify")) {
                 scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
                 com.gmt2001.Console.debug.println(message.substring(0, message.indexOf(" ", 1)) + " just subscribed!");
@@ -414,7 +414,7 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void noticeMessage(String message, String username, Map<String, String> tagsMap) {
-        if (message.equals("Error logging in") || message.equals("Login authentication failed")) {
+        if (message.equals("Error logging in")) {
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
             com.gmt2001.Console.out.println("Exiting PhantomBot.");
