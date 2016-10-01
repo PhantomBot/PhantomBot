@@ -110,6 +110,8 @@ import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
 import java.net.URI;
 
+import com.scaniatv.Discord;
+
 public class PhantomBot implements Listener {
 	/** Bot Information */
 	private String botName;
@@ -205,6 +207,9 @@ public class PhantomBot implements Listener {
 	private Boolean interactive;
 	private Boolean resetLogin = false;
 	public static String timeZone = "GMT";
+
+	/** Discord Information */
+	private static String discordKey = "";
 
 	/** Other Information */
 	private Channel channel;
@@ -313,7 +318,7 @@ public class PhantomBot implements Listener {
 		String dataStoreConfig, String youtubeOAuth, Boolean webEnabled, Boolean musicEnabled, Boolean useHttps, String keyStorePath, String keyStorePassword, String keyPassword, String twitchAlertsKey, 
 		int twitchAlertsLimit, String streamTipOAuth, int streamTipLimit, String gameWispOAuth, String gameWispRefresh, String panelUsername, String panelPassword, String timeZone, String twitterUsername,
 		String twitterConsumerToken, String twitterConsumerSecret, String twitterSecretToken, String twitterAccessToken, String mySqlHost, String mySqlPort, String mySqlConn, String mySqlPass, String mySqlUser,
-		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady, String httpsPassword, String httpsFileName, Boolean devCommands) {
+		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady, String httpsPassword, String httpsFileName, Boolean devCommands, String discordKey) {
 
         /** Set the exeption handler */
 		Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -415,6 +420,12 @@ public class PhantomBot implements Listener {
 			this.devCommands = devCommands;
 		}
 
+		if (!discordKey.isEmpty()) {
+			this.discordKey = discordKey;
+		} else {
+			this.discordKey = "";
+		}
+
 		/** Set the message limit for session.java to use */
 		if (messageLimit != 0) {
 			PhantomBot.messageLimit = messageLimit;
@@ -509,6 +520,14 @@ public class PhantomBot implements Listener {
 		/** Start a channel instance to create a session, and then connect to WS-IRC @ Twitch. */
 		this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
 
+		if (discordKey != "" && discordKey != null) {
+		    try {
+		        Discord.instance().Connect(discordKey);
+		    } catch (Exception ex) {
+		    	com.gmt2001.Console.err.println(ex);
+		    }
+		}
+		
 		/** Check if the OS is Linux. */
 		if (SystemUtils.IS_OS_LINUX && !interactive) {
 			try {
@@ -698,12 +717,12 @@ public class PhantomBot implements Listener {
     		}
 
     		/** Create a event server to get all the events. */
-    		eventWebSocketServer = new EventWebSocketServer((basePort + 2));
+    		//eventWebSocketServer = new EventWebSocketServer((basePort + 2));
     		/** Start this event server */
-    		eventWebSocketServer.start();
-    		print("EventSocketServer accepting connections on port: " + (basePort + 2));
+    		//eventWebSocketServer.start();
+    		//print("EventSocketServer accepting connections on port: " + (basePort + 2));
     		/** make the event bus register this event server */
-    		EventBus.instance().register(eventWebSocketServer);
+    		//EventBus.instance().register(eventWebSocketServer);
 
     	    /** Set up the panel socket server */
     	    panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
@@ -1488,6 +1507,7 @@ public class PhantomBot implements Listener {
                     data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
                     data += "logtimezone=" + timeZone + "\r\n";
                     data += "devcommands=" + devCommands + "\r\n";
+                    data += "discordToken=" + discordKey + "\r\n";
         		}
 
         		/** Write the new info to the bot login */
@@ -1966,6 +1986,9 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("devcommands=") && line.length() >= 13) {
                     	devCommands = Boolean.valueOf(line.substring(12));
+                    }
+                    if (line.startsWith("discordToken=") && line.length() >= 14) {
+                    	discordKey = line.substring(13);
                     }
                     if (line.startsWith("reloadscripts")) {
                         com.gmt2001.Console.out.println("Enabling Script Reloading");
@@ -2490,6 +2513,13 @@ public class PhantomBot implements Listener {
                         changed = true;
                     }
                 }
+
+                if (arg.startsWith("discordToken=") && arg.length() > 14) {
+                    if (!discordKey.equals(arg.substring(13))) {
+                        discordKey = arg.substring(13);
+                        changed = true;
+                    }
+                }
             }
         }
 
@@ -2547,6 +2577,7 @@ public class PhantomBot implements Listener {
             data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
             data += "logtimezone=" + timeZone + "\r\n";
             data += "devcommands=" + devCommands + "\r\n";
+            data += "discordToken=" + discordKey + "\r\n";
 
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
@@ -2556,7 +2587,7 @@ public class PhantomBot implements Listener {
 		dataStoreConfig, youtubeOAuth, webEnabled, musicEnabled, useHttps, keyStorePath, keyStorePassword, keyPassword, twitchAlertsKey, 
 		twitchAlertsLimit, streamTipOAuth, streamTipLimit, gameWispOAuth, gameWispRefresh, panelUsername, panelPassword, timeZone, twitterUsername,
 		twitterConsumerToken, twitterConsumerSecret, twitterSecretToken, twitterAccessToken, mySqlHost, mySqlPort, mySqlConn, mySqlPass, mySqlUser,
-		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady, httpsPassword, httpsFileName, devCommands);
+		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady, httpsPassword, httpsFileName, devCommands, discordKey);
     }
 
 	public void updateGameWispTokens(String[] newTokens) {
@@ -2611,6 +2642,7 @@ public class PhantomBot implements Listener {
         data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
         data += "logtimezone=" + timeZone + "\r\n";
         data += "devcommands=" + devCommands + "\r\n";
+        data += "discordToken=" + discordKey + "\r\n";
 
         try {
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
