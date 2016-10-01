@@ -5,7 +5,7 @@
 
     <property environment="env" />
     <property name="project.base.dir" value="." />
-    <property name="version" value="2.3.1" />
+    <property name="version" value="2.3.2" />
     <property name="webpanel.version" value="1.1" />
     <property name="java.class.path" value="" />
     <property name="src" value="${project.base.dir}/source" />
