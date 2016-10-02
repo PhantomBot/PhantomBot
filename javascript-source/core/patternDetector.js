@@ -33,7 +33,7 @@
         } catch (e) {
             return false;
         }
-    };
+    }
 
     /**
      * @function getLastFoundLink
@@ -42,7 +42,7 @@
      */
     function getLastFoundLink() {
         return lastFoundLink;
-    };
+    }
 
     /**
      * @function logLastLink
@@ -50,7 +50,7 @@
      */
     function logLastLink(event) {
         $.log.file('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + lastFoundLink);
-    };
+    }
 
     /**
      * @function deobfuscateLinks
@@ -98,7 +98,7 @@
         }
 
         return message;
-    };
+    }
 
     /**
      * @function getLongestRepeatedSequence
@@ -107,10 +107,10 @@
      * @returns {number}
      */
     function getLongestRepeatedSequence(event) {
-            var message = (event.getMessage() + ''),
-                sequences = event.getMessage().match(patterns.repeatedSeq);
-        return (sequences == null ? 0 : sequences.slice(0, 1)[0].length);
-    };
+        var sequences = event.getMessage().match(patterns.repeatedSeq);
+
+        return (sequences === null ? 0 : sequences[0].length);
+    }
 
     /**
      * @function getLongestNonLetterSequence
@@ -121,8 +121,9 @@
     function getLongestNonLetterSequence(event) {
         var message = (event.getMessage() + ''),
             sequences = message.match(patterns.nonAlphaSeq);
-        return (sequences == null ? 0 : sequences.slice(0, 1)[0].length);
-    };
+
+        return (sequences === null ? 0 : sequences[0].length);
+    }
 
     /**
      * @function getNumberOfNonLetters
@@ -131,19 +132,9 @@
      * @returns {number}
      */
     function getNumberOfNonLetters(event) {
-        var message = (event.getMessage() + ''),
-            sequences = message.match(patterns.nonAlphaCount);
-        return (sequences == null ? 0 : sequences.length);
-    };
+        var sequences = event.getMessage().match(patterns.nonAlphaCount);
 
-    /**
-     * @function getNumberOfEmotes
-     * @export $.patternDetector
-     * @param {Object} event
-     * @returns {number}
-     */
-    function getNumberOfEmotes(event) {
-        return $.emotesHandler.getEmotesMatchCount(event.getMessage() + '');
+        return (sequences === null ? 0 : sequences.length);
     }
 
     /**
@@ -151,16 +142,35 @@
      * @export $.patternDetector
      * @param {Object} event
      * @returns {number}
-     * @info this gets the emote count from the ircv3 tags.
+     * @info this gets the emote count from the ircv3 tags and the emotes cache if enabled.
      */
     function getEmotesCount(event) {
-        var tags = event.getTags(),
-            emotes = tags.get('emotes');
-        if (tags !== null && tags != '{}' && tags.get('emotes') != '') {
-            return (emotes.match(patterns.emotes) === null ? 0 : emotes.match(patterns.emotes).length);
-        } else {
-            return 0;
+        var emotes = event.getTags().get('emotes');
+
+        return ((emotes.match(patterns.emotes) === null ? 0 : emotes.match(patterns.emotes).length) + $.emotesHandler.getEmotesMatchCount(event.getMessage()));
+    }
+
+    /**
+     * @function getEmotesLength
+     * @export $.patternDetector
+     * @param {Object} event
+     * @returns {number}
+     * @info this gets the total emote length
+     */
+    function getEmotesLength(event) {
+        var emotes = event.getTags().get('emotes'),
+            length = 0,
+            i;
+
+        if (emotes !== null && emotes != '') {
+            emotes = emotes.replaceAll('[0-9]+:', '').replaceAll('/', ',').split(',');
+            for (i = 0; i < emotes.length; i++) {
+                length += (parseInt(emotes[i].split('-')[1]) - parseInt(emotes[i].split('-')[0]) + 1);
+            }
+            return length;
         }
+            
+        return 0;
     }
 
     /**
@@ -170,9 +180,9 @@
      * @returns {number}
      */
     function getNumberOfCaps(event) {
-        var message = (event.getMessage() + ''),
-            sequences = message.match(patterns.capsCount);
-        return (sequences == null ? 0 : sequences.length);
+        var sequences = event.getMessage().match(patterns.capsCount);
+
+        return (sequences === null ? 0 : sequences.length);
     }
 
     /** Export functions to API */
@@ -182,8 +192,8 @@
         getLongestNonLetterSequence: getLongestNonLetterSequence,
         getNumberOfNonLetters: getNumberOfNonLetters,
         getLastFoundLink: getLastFoundLink,
-        getNumberOfEmotes: getNumberOfEmotes,
         getEmotesCount: getEmotesCount,
+        getEmotesLength: getEmotesLength,
         getNumberOfCaps: getNumberOfCaps,
         logLastLink: logLastLink,
     };
