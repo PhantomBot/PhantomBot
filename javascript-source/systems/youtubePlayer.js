@@ -13,7 +13,7 @@
         songRequestsEnabled = $.getSetIniDbBoolean('ytSettings', 'songRequestsEnabled', true),
         songRequestsMaxParallel = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxParallel', 1),
         songRequestsMaxSecondsforVideo = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxSecondsforVideo', (8 * 60)),
-		voteCount = $.getSetIniDbNumber('ytSettings', 'voteCount', 5),
+		voteCount = $.getSetIniDbNumber('ytSettings', 'voteCount', 0),
 		voteArray = [],
 		skipCount,
         playlistDJname = $.getSetIniDbString('ytSettings', 'playlistDJname', $.botName);
@@ -1435,9 +1435,60 @@
          * @commandpath skipsong - Skip the current song and proceed to the next video in line
          */
         if (command.equalsIgnoreCase('skipsong')) {
-            currentPlaylist.nextVideo();
-            connectedPlayerClient.pushSongList();
-        }
+			var username = $.username.resolve(sender, event.getTags()),
+			check = voteArray.indexOf(username),
+			action = args[0],
+			voteCount = $.getIniDbNumber('ytSettings', 'voteCount');
+			
+			if (voteCount == 0) {
+				if ($.isAdmin(sender)) {
+					currentPlaylist.nextVideo();
+					connectedPlayerClient.pushSongList();
+					return;
+				} else {
+					$.say($.whisperPrefix(sender) + $.lang.get('cmd.adminonly'));
+					return;
+				}
+			} else {
+				if (!action) {
+					if (check != -1) {
+						$.say($.lang.get('ytplayer.command.skip.failure'));
+						return;
+					}
+					skipCount = skipCount +1;
+					if (skipCount == voteCount) {
+						$.say($.lang.get('ytplayer.command.skip.skipping'));
+						currentPlaylist.nextVideo();
+						connectedPlayerClient.pushSongList();
+						return;				
+					}
+					$.say($.lang.get('ytplayer.command.skip.success', voteCount - skipCount));
+					voteArray.push(username);
+					return;
+				}
+				
+				if (action.equalsIgnoreCase('now') && isAdmin(sender)) {
+					currentPlaylist.nextVideo();
+					connectedPlayerClient.pushSongList();
+					return;		
+				}
+				
+				if (check != -1) {
+					$.say($.lang.get('ytplayer.command.skip.failure'));
+					return;
+				}
+				skipCount = skipCount +1;
+				if (skipCount == voteCount) {
+					$.say($.lang.get('ytplayer.command.skip.skipping'));
+					currentPlaylist.nextVideo();
+					connectedPlayerClient.pushSongList();
+					return;				
+				}
+				$.say($.lang.get('ytplayer.command.skip.success', voteCount - skipCount));
+				voteArray.push(username);
+				return;
+			}
+        }	
 
         /**
          * @commandpath songrequest [YouTube ID | YouTube link | search string] - Request a song!
@@ -1527,29 +1578,6 @@
                 currentPlaylist.getCurrentVideo().getVideoLink()
             ));
         }
-		/**
-		 * @commandpath skip - Allows a user to vote to skip the currently playing song
-		 */
-		if (command.equalsIgnoreCase('skip')) {
-			var username = $.username.resolve(sender, event.getTags()),
-				check = voteArray.indexOf(username),
-				voteCount = $.getIniDbNumber('ytSettings', 'voteCount');
-			if (check != -1) {
-				$.say($.lang.get('ytplayer.command.skip.failure'));
-				return;
-			}
-			
-			skipCount = skipCount +1;
-			if (skipCount == voteCount) {
-				$.say($.lang.get('ytplayer.command.skip.skipping'));
-				currentPlaylist.nextVideo();
-				connectedPlayerClient.pushSongList();
-				return;				
-			}
-			$.say($.lang.get('ytplayer.command.skip.success', voteCount - skipCount));
-			voteArray.push(username);
-			return;
-        }
 
         /**
          * @commandpath nextsong - Display the next song in the request queue
@@ -1634,14 +1662,13 @@
             $.registerChatCommand('./systems/youtubePlayer.js', 'stealsong', 1);
             $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 1);
             $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', 1);
-            $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
+            $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 7);
             $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
             $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
             $.registerChatCommand('./systems/youtubePlayer.js', 'addsong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
             $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
-			$.registerChatCommand('./systems/youtubePlayer.js', 'skip', 7);
             $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
             $.registerChatSubcommand('wrongsong', 'user', 2);
 
