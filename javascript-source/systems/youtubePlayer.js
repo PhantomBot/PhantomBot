@@ -1456,7 +1456,7 @@
 			} else {
 				if (!action) {
 					if (check != -1) {
-						$.say($.lang.get('ytplayer.command.skip.failure'));
+						$.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.skip.failure'));
 						return;
 					}
 					skipCount = skipCount +1;
@@ -1466,7 +1466,7 @@
 						connectedPlayerClient.pushSongList();
 						return;				
 					}
-					$.say($.lang.get('ytplayer.command.skip.success', voteCount - skipCount));
+					$.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.skip.success', voteCount - skipCount));
 					voteArray.push(username);
 					return;
 				}
@@ -1478,7 +1478,7 @@
 				}
 				
 				if (check != -1) {
-					$.say($.lang.get('ytplayer.command.skip.failure'));
+					$.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.skip.failure'));
 					return;
 				}
 				skipCount = skipCount +1;
@@ -1488,7 +1488,7 @@
 					connectedPlayerClient.pushSongList();
 					return;				
 				}
-				$.say($.lang.get('ytplayer.command.skip.success', voteCount - skipCount));
+				$.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.skip.success', voteCount - skipCount));
 				voteArray.push(username);
 				return;
 			}
