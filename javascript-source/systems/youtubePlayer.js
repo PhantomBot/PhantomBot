@@ -1064,6 +1064,10 @@
                 } 
 				
                 if (actionArgs[0] && !isNaN(parseInt(actionArgs[0]))) {
+					if (actionArgs[0] < 0) {
+						$.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.votecount.negative'));
+						return;
+					}
                     $.inidb.set('ytSettings', 'voteCount', actionArgs[0]);
 					voteArray = [];
 					skipCount = 0;
