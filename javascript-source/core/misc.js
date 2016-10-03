@@ -53,6 +53,7 @@
         } else {
             userFollowsCheck = $.twitch.GetUserFollowsChannel(username.toLowerCase(), $.channelName.toLowerCase());
             if (userFollowsCheck.getInt('_http') == 200) {
+                $.inidb.set('followed', username.toLowerCase(), true);
                 return true;
             }
         }
