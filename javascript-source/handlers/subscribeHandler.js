@@ -83,7 +83,7 @@
             }
             $.say(message);
             $.addSubUsersList(subscriber);
-            $.restoreSubscriberStatus(resubscriber, true);
+            $.restoreSubscriberStatus(subscriber, true);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
         }
     });
