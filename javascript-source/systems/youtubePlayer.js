@@ -1451,7 +1451,7 @@
             } else {
                 
                 /**
-                * @commandpath skipsong vote - allow a mod to force skip a song
+                * @commandpath skipsong vote - allow viewers to vote to skip a song
                 */
                 if (action.equalsIgnoreCase('vote')) {
                     if (voteCount == 0) {
