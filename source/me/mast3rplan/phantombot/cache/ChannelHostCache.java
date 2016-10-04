@@ -17,6 +17,7 @@
 package me.mast3rplan.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv3;
+import com.illusionaryone.TwitchTMIv1;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.Calendar;
@@ -159,7 +160,7 @@ public class ChannelHostCache implements Runnable {
             return;
         }
 
-        j = TwitchAPIv3.instance().GetHostUsers(id);
+        j = TwitchTMIv1.instance().GetHostUsers(id);
 
         if (j.getBoolean("_success")) {
             if (j.getInt("_http") == 200) {
