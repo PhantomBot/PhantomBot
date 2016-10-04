@@ -40,9 +40,11 @@ public class Logger implements Runnable {
 
     private FileOutputStream fosCore = null;
     private FileOutputStream fosError = null;
+    private FileOutputStream fosWarning = null;
     private FileOutputStream fosDebug = null;
     private PrintStream psCore = null;
     private PrintStream psError = null;
+    private PrintStream psWarning = null;
     private PrintStream psDebug = null;
     private String curLogTimestamp = "";
 
@@ -59,6 +61,9 @@ public class Logger implements Runnable {
         }
         if (!new File ("./logs/core-error").exists()) {
           new File ("./logs/core-error/").mkdirs();
+        }
+        if (!new File ("./logs/core-warnings").exists()) {
+          new File ("./logs/core-warnings/").mkdirs();
         }
         if (!new File ("./logs/core-debug").exists()) {
           new File ("./logs/core-debug/").mkdirs();
@@ -81,6 +86,10 @@ public class Logger implements Runnable {
                     if (psError != null) {
                         this.psError.close();
                         this.psError = null;
+                    }
+                    if (psWarning != null) {
+                        this.psWarning.close();
+                        this.psWarning = null;
                     }
                     if (this.psDebug != null) {
                         this.psDebug.close();
@@ -129,6 +138,15 @@ public class Logger implements Runnable {
                             }
                             this.psDebug.println(i.s);
                             this.psDebug.flush();
+                            break;
+
+                        case Warning:
+                            if (this.psWarning == null) {
+                                this.fosWarning = new FileOutputStream("./logs/core-warnings/" + timestamp + ".txt", true);
+                                this.psWarning = new PrintStream(this.fosWarning);
+                            }
+                            this.psWarning.println(i.s);
+                            this.psWarning.flush();
                             break;
 
                         default:
@@ -182,6 +200,7 @@ public class Logger implements Runnable {
         Input,
         Error,
         Debug,
+        Warning,
         
     }
 

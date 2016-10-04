@@ -723,7 +723,7 @@ public class PhantomBot implements Listener {
     	}
 
     	/** Enable gamewhisp if the oAuth is set */
-    	if (!gameWispOAuth.isEmpty()) {
+    	if (!gameWispOAuth.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/gameWispHandler.js").equals("true")) {
     		/** Set the oAuths */
     		GameWispAPIv1.instance().SetAccessToken(gameWispOAuth);
             GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
@@ -1009,18 +1009,18 @@ public class PhantomBot implements Listener {
         this.twitchCache = TwitchCache.instance(this.chanName);// This does not create a new instance for multiple channels. Not sure why.
         this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
 
-        /** Start the donations cache if the keys are not null */
-        if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty()) {
+        /** Start the donations cache if the keys are not null and the module is enabled */
+        if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/donationHandler.js").equals("true")) {
         	this.twitchAlertsCache = DonationsCache.instance(this.chanName);
         }
 
-        /** Start the streamtip cache if the keys are not null */
-        if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty()) {
+        /** Start the streamtip cache if the keys are not null and the module is enabled */
+        if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/streamTipHandler.js").equals("true")) {
         	this.streamTipCache = StreamTipCache.instance(this.chanName);
         }
 
-        /** Start the twitter cache if the keys are not null */
-        if (this.twitterAuthenticated) {
+        /** Start the twitter cache if the keys are not null and the module is enabled */
+        if (this.twitterAuthenticated && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/twitterHandler.js").equals("true")) {
         	this.twitterCache = TwitterCache.instance(this.chanName);
         }
 
