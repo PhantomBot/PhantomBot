@@ -17,6 +17,7 @@
 package com.gmt2001;
 
 import com.gmt2001.DataStore;
+import com.gmt2001.HttpRequest;
 import me.mast3rplan.phantombot.PhantomBot;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -488,16 +490,6 @@ public class TwitchAPIv3 {
      */
     public JSONObject GetChatUsers(String channel) {
         return GetData(request_type.GET, "https://tmi.twitch.tv/group/user/" + channel + "/chatters", false);
-    }
-
-    /**
-     * Gets a list of users hosting the channel
-     *
-     * @param channelid
-     * @return
-     */
-    public JSONObject GetHostUsers(int channelid) {
-        return GetData(request_type.GET, "https://tmi.twitch.tv/hosts?include_logins=1&target=" + channelid, false);
     }
 
     /**
