@@ -121,7 +121,6 @@ public class TwitchTMIv1 {
             } else {
                 jsonResult = new JSONObject(jsonText);
             }
-com.gmt2001.Console.out.println(">>>" + jsonText);
             fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
         } catch (JSONException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
