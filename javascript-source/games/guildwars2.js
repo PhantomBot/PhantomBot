@@ -8,7 +8,7 @@
  *
  *          - CHANGELOG -
  *
- *    v2.8.0
+ *    V2.8.0
  *    - Adjusted coding style to etiquette:
  *        Added some missing camel cases. Replaced any " with ' and any tab with 4 space indents.
  *        Encapsulated code in (function(){ /* code / })();
@@ -522,7 +522,7 @@
                 for (var i = 0; i < data.length; i++) {
                     if (data[i].equalsIgnoreCase(args[2].trim())) {
                         var GW2ToolID = JSON.parse(_getJSON('http://gw2tool.net/api/token-check?token=' + GW2_apiKey))['code'];
-                        if (!GW2ToolID || !GW2ToolID.match(/^\w{10,10}$/)) { $.consoleLn('Error: Couldn't recieve GW2ToolID!'); return; };
+                        if (!GW2ToolID || !GW2ToolID.match(/^\w{10,10}$/)) { $.consoleLn('Error: Couldn\'t recieve GW2ToolID!'); return; };
                         _updateGW2ToolRights('http://gw2tool.net/api/save-rights?code=' + GW2ToolID);
 
                         if (args[1].match(/pve/i)) {
