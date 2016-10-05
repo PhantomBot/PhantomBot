@@ -122,7 +122,7 @@
     var GW2_apiKey = ($.inidb.exists('settings', 'gw2_apikey') ? $.inidb.get('settings', 'gw2_apikey') : '');
     // Minimum required permissions: account, wallet, characters, pvp, builds, progression.
     var GW2_apiURL = 'https://api.guildwars2.com';
-    var GW2_coinformat = ($.inidb.exists('settings', 'gw2_coinformat') ? parseInt($.inidb.get('settings', 'gw2_coinformat')) : 0);
+    var GW2_coinformat = ($.inidb.exists('settings', 'gw2_coinformat') ? parseInt($.inidb.get('settings', 'gw2_coinformat')) : 1);
     var GW2_leagues = ['amber', 'emerald', 'sapphire', 'ruby', 'diamond', 'legendary'];
     var GW2_tiers = ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ', 'Ⅵ', 'Ⅶ', 'Ⅷ', 'Ⅸ', 'Ⅹ'];
     var GW2_professions = ['elementalist', 'engineer', 'guardian', 'mesmer', 'necromancer', 'ranger', 'revenant', 'thief', 'warrior'];
@@ -272,7 +272,7 @@
             var action = args[0];
             
             if (!action) {
-                $.say('@' + sender + ': No argument was given! Usage: '!gw2 [action] [optional arguments]'');
+                $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.action.404'));
                 return;
             }
 
@@ -286,7 +286,7 @@
                 };
                 if (!args[1] || !args[1].match(/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{20}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.setkey.404'));
-                    $.log.error('guildwars2.js', 291, 'Invalid GW2 API Key!');
+                    $.log.error('guildwars2.js', 289, 'Invalid GW2 API Key!');
                     return;
                 };
                 $.inidb.set('settings', 'gw2_apikey', args[1]);
@@ -307,25 +307,25 @@
                 var pips;
                 var UUIDs = JSON.parse(_getJSON('https://api.guildwars2.com/v2/pvp/seasons'));
                 for (var i = 0; i < Object.keys(UUIDs).length; i++) {
-                    var currSeason = JSON.parse(_getJSON('https://api.guildwars2.com/v2/pvp/seasons?id=' + UUIDs[i]));
-                    if (String(currSeason['active']) == 'true') {
-                        if (args[1]) {
-                            if (args[1].match(/^[1-9]{1}$/)) {
-                                var season = parseInt(args[1] - 1)
-                                if (season != currSeason) {
-                                    league = GW2_leagues[parseInt(data[season].best['division'])];
-                                    tier = GW2_tiers[parseInt(data[season].best['tier'])];
-                                    pips = data[season].best['points'];
-                                    if (league.match('legendary')) {
-                                        var repeats = data[season].best['repeats'];
-                                        $.say($.lang.get('guildwars2.rank.peaked.legendary', $.channelName, args[1], repeats + '× ' + $.lang.get('guildwars2.leagues.' + league), tier, pips));
-                                        return;
-                                    }
-                                    $.say($.lang.get('guildwars2.rank.peaked.normal', $.channelName, args[1], $.lang.get('guildwars2.leagues.' + league), tier, pips));
+                    if (args[1]) {
+                        if (args[1].match(/^[1-9]{1}$/)) {
+                            var season = parseInt(args[1])
+                            if (season == (i + 1)) {
+                                league = GW2_leagues[parseInt(data[season].best['division'])];
+                                tier = GW2_tiers[parseInt(data[season].best['tier'])];
+                                pips = data[season].best['points'];
+                                if (league.match('legendary')) {
+                                    var repeats = data[season].best['repeats'];
+                                    $.say($.lang.get('guildwars2.rank.peaked.legendary', $.channelName, args[1], repeats + '× ' + $.lang.get('guildwars2.leagues.' + league), tier, pips));
                                     return;
                                 }
+                                $.say($.lang.get('guildwars2.rank.peaked.normal', $.channelName, args[1], $.lang.get('guildwars2.leagues.' + league), tier, pips));
+                                return;
                             }
                         }
+                    }
+                    var currSeason = JSON.parse(_getJSON('https://api.guildwars2.com/v2/pvp/seasons?id=' + UUIDs[i]));
+                    if (String(currSeason['active']) == 'true') {
                         for (var i = 0; i < Object.keys(data).length; i++) {
                             if (data[i]['season_id'] == currSeason['id']) {
                                 league = GW2_leagues[parseInt(data[i]['current']['division'])];
@@ -342,6 +342,7 @@
                         }
                     }
                 }
+                $.say($.lang.get('guildwars2.rank.404'));
             }
 
             /**
@@ -551,7 +552,7 @@
                     $.say($.whisperPrefix(sender) + $.adminMsg);
                     return;
                 }
-                if (GW2_toggle_deathcounter >= 1) {
+                if (GW2_toggle_deathcounter == 1) {
                     GW2_toggle_deathcounter = 0;
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.deathcounter.disabled'));
                 } else {
@@ -585,7 +586,7 @@
                     $.say($.whisperPrefix(sender) + $.adminMsg);
                     return;
                 }
-                if (GW2_toggle_goldcounter >= 1) {
+                if (GW2_toggle_goldcounter == 1) {
                     GW2_toggle_goldcounter = 0;
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.goldcounter.disabled'));
                 } else {
@@ -616,14 +617,16 @@
                     $.say($.whisperPrefix(sender) + $.adminMsg);
                     return;
                 }
-                if (GW2_coinformat) >= 1) {
-                    $.inidb.set('settings', 'gw2_coinformat', 0);
+                if (GW2_coinformat == 1) {
+                    $.inidb.set('settings', 'gw2_coinformat', '0');
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.coinsformat.toggle', '####g 00s 00c'));
                     $.consoleLn($.lang.get('guildwars2.coinsformat.toggle', '####g 00s 00c'));
+                    GW2_coinformat = 0;
                 } else {
-                    $.inidb.set('settings', 'gw2_coinformat', 1);
+                    $.inidb.set('settings', 'gw2_coinformat', '1');
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.coinsformat.toggle', '####.00,00g'));
                     $.consoleLn($.lang.get('guildwars2.coinsformat.toggle', '####,00.00g'));
+                    GW2_coinformat = 1;
                 };
                 return;
             }

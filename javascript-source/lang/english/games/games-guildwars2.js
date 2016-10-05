@@ -1,3 +1,5 @@
+$.lang.register('guildwars2.action.404', 'No argument was given! Usage: !gw2 [action] [optional arguments]')
+
 $.lang.register('guildwars2.setkey.success', 'SUCCESS! GW2 API KEY SET!');
 $.lang.register('guildwars2.setkey.404', 'Invalid GW2 API Key! Make sure you copied & pasted your whole key and gave it the correct permissions!');
 
@@ -33,6 +35,7 @@ $.lang.register('guildwars2.rank.peaked.legendary', '$1 peaked season $2 in $3, 
 $.lang.register('guildwars2.rank.peaked.normal', '$1 peaked season $2 in $3, tier $4 with $5 pip(s)!');
 $.lang.register('guildwars2.rank.current.legendary', '$1 is currently in $2, tier $3 with $4 pip(s)!');
 $.lang.register('guildwars2.rank.current.normal', '$1 is currently in $2, tier $3 with $4 pip(s)!');
+$.lang.register('guildwars2.rank.404', 'No ongoing PvP season or season not found! Try: !gw2 rank [number for past seasons]');
 $.lang.register('guildwars2.stats.profession', '$1 has played $2 match(es) as $3 with a current win rate of $4\%!');
 $.lang.register('guildwars2.stats.ranked', '$1 has reached rank $2 and has played $3 ranked match(es) with a current W/L ratio of $4!');
 $.lang.register('guildwars2.characters', '$1 owns the following characters: $2!');
