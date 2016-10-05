@@ -502,8 +502,8 @@
             if (announceInChat) {
                 $.say($.lang.get('ytplayer.announce.nextsong', currentVideo.getVideoTitle(), currentVideo.getOwner()));
             }
-			skipCount = 0;
-			voteArray = [];
+            skipCount = 0;
+            voteArray = [];
             return currentVideo;
         };
 
@@ -1056,8 +1056,6 @@
             * @commandpath ytp votecount - Set the amount of votes needed for the !skip command to work
             */
             if (action.equalsIgnoreCase('votecount')) {
-                voteCount = $.getIniDbNumber('ytSettings', 'voteCount');
-                
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
@@ -1069,6 +1067,7 @@
                         return;
                     }
                     $.inidb.set('ytSettings', 'voteCount', actionArgs[0]);
+                    voteCount = actionArgs[0];
                     voteArray = [];
                     skipCount = 0;
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.votecount.set', actionArgs[0]));
@@ -1442,7 +1441,6 @@
             var username = $.username.resolve(sender, event.getTags()),
             check = voteArray.indexOf(username),
             action = args[0],
-            voteCount = $.getIniDbNumber('ytSettings', 'voteCount');
             
             if (!action) {
                 currentPlaylist.nextVideo();
