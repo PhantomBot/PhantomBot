@@ -1440,7 +1440,7 @@
         if (command.equalsIgnoreCase('skipsong')) {
             var username = $.username.resolve(sender, event.getTags()),
             check = voteArray.indexOf(username),
-            action = args[0],
+            action = args[0];
             
             if (!action) {
                 currentPlaylist.nextVideo();
