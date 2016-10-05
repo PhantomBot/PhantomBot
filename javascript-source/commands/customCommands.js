@@ -221,7 +221,7 @@
         }
 
         if (message.match(/\(gameinfo\)/)) {
-            if ($.getGame($.channelName) == ' ') {
+            if ($.getGame($.channelName) == ' ' || $.getGame($.channelName) == '') {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.no.game'));
             } else if (!$.isOnline($.channelName) || $.getPlayTime() == 0) {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
@@ -231,7 +231,7 @@
         }
 
         if (message.match(/\(titleinfo\)/)) {
-            if ($.getStatus($.channelName) == ' ') {
+            if ($.getStatus($.channelName) == ' ' || $.getStatus($.channelName) == '') {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.no.title'));
             } else if (!$.isOnline($.channelName)) {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.offline', $.getStatus($.channelName)));

@@ -1510,7 +1510,8 @@
          */
         if (command.equalsIgnoreCase('nextsong')) {
             var minRange,
-                maxRange;
+                maxRange,
+                showRange;
 
             if (!args[0]) {
                 if (currentPlaylist.getRequestAtIndex(0) == null) {
@@ -1561,11 +1562,13 @@
                 }
 
                 var displayString = '';
+                minRange = minRange - 1;
                 while (minRange <= maxRange) {
+                    showRange = minRange + 1;
                     if (currentPlaylist.getRequestAtIndex(minRange) == null) {
                         break;
                     }
-                    displayString += "[(#"+ minRange + ") "+ currentPlaylist.getRequestAtIndex(minRange).getVideoTitle().substr(0, 20) + "] ";
+                    displayString += "[(#"+ showRange + ") "+ currentPlaylist.getRequestAtIndex(minRange).getVideoTitle().substr(0, 20) + "] ";
                     minRange++;
                 }
                 if (displayString.equals('')) {
