@@ -4,10 +4,12 @@ $.lang.register('streamcommand.vod.offline', 'Stream is offline. Last video crea
 $.lang.register('streamcommand.playtime.offline', '$1 is not streaming right now.');
 $.lang.register('streamcommand.playtime.online', '$1 has been playing $2 for $3');
 $.lang.register('streamcommand.title.offline', 'Current Status: $1');
+$.lang.register('streamcommand.title.no.title', 'There\'s no status set.');
 $.lang.register('streamcommand.title.online', 'Current Status: $1. Uptime: $2');
 $.lang.register('streamcommand.title.set.usage', 'usage: !settitle [stream title]. Currently: $1');
 $.lang.register('streamcommand.game.online', 'Current Game: $1. Playtime: $2');
 $.lang.register('streamcommand.game.offline', 'Current Game: $1');
+$.lang.register('streamcommand.game.no.game', 'There\'s no game set.');
 $.lang.register('streamcommand.game.set.usage', 'usage: !setgame [game title]. Currently: $1');
 $.lang.register('streamcommand.viewers', 'Currently $1 viewers are watching.');
 $.lang.register('streamcommand.online.offline', 'Stream is offline.');

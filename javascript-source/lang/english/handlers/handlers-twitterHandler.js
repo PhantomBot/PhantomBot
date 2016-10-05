@@ -1,4 +1,5 @@
-$.lang.register('twitter.tweet', '[Twitter @(twitterid)] $1');
+$.lang.register('twitter.tweet', '[Twitter Feed From @(twitterid)] $1');
+$.lang.register('twitter.tweet.mention', '[Twitter Feed From @(twitterid)] @$1: $2');
 $.lang.register('twitter.usage', 'usage: !twitter [lasttweet | lastmention | lastretweet | set | post | id]');
 $.lang.register('twitter.id', '$1 is on Twitter @$2 [twitter.com/$2]');
 $.lang.register('twitter.usage.id', '(!twitter usage for usage)');

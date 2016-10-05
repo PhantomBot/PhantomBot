@@ -461,7 +461,7 @@
         }
 
         for (i in groups) {
-            temp.push('Group ID: ' + groups[i].id + ' (' + groups[i].group + ')');
+            temp.push('Permission IDs: ' + groups[i].id + ' (' + groups[i].group + ')');
         }
         return temp.join(', ');
     };
@@ -736,8 +736,13 @@
             var username = args[0],
                 groupId = parseInt(args[1]);
 
-            if (args.length < 2 || isNaN(groupId) || $.outOfRange(groupId, 0, userGroups.length - 1)) {
+            if ((args.length < 2 && username === undefined) || (isNaN(groupId) && username === undefined) || $.outOfRange(groupId, 0, userGroups.length - 1)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.usage'));
+                return;
+            }
+
+            if (username !== undefined && (isNaN(groupId) || groupId === undefined) && $.user.isKnown(username.toLowerCase())) {
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.other.current', $.username.resolve(args[0]), $.getUserGroupName(args[0])));
                 return;
             }
 

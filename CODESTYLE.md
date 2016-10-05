@@ -6,6 +6,17 @@ Whenever you wish to have your code pushed to the master branch just merge it (d
 or create a pull request for others to merge, if you don't feel comfortable with resolving conflicts. Also make sure to leave a comment on what your code
 is going to be doing or changing to PhantomBot.
 
+##Naming Conventions
+The below is written about functions, but basically also aplies to classes.
+
+1. Self-explanatory names: a function `getName()` will tell the developer what it returns as well as `setAddress()`, `isMale()`, etc.
+
+2. Short: A function name must be as short as possible so that it's simple to type as well as easy to remember. A function `getNumberOfPagesInTheBook()` is not good, something like `getBookPageCount()` is better.
+
+3. Use of prefixes: Always use prefixes in the functions such as `getName()`, `setName()`, `hasHair()`, `isBlond()`, etc.
+
+4. Names should be verbs if the function changes the state of the program, and nouns if they're used to return a certain value
+
 #JavaScript
 
 ##Files and folders
@@ -38,6 +49,7 @@ This file should give you enough insight on the general layout of the modules co
 - Use descriptive function/variable/class names.
 - Create functions for repeating code.
 - Always keep performance in mind, use as much native javascript as possible and keep your variable use at a minimum.
+- Use `'` and not `"` as most as you can, please. 
 
 ##If statements 
 - Please don't leave spaces inside at the start and end of your if statements.

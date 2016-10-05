@@ -63,4 +63,7 @@ genTwitterTokens/classes/generatetwittertokens
 nbproject
 
 # Eclipse Project files
+.settings/
+.classpath
+.project
 

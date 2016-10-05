@@ -336,11 +336,6 @@
          */
 
          if (command.equalsIgnoreCase($.botName.toLowerCase())) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.usage', $.botName.toLowerCase()));
                 return;
@@ -483,11 +478,6 @@
          * @commandpath module - Display the usage for !module
          */
         if (command.equalsIgnoreCase('module')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
                 return;
@@ -697,11 +687,6 @@
          * @commandpath echo [message] - In the console, can be used to chat as the bot. Also used by the webpanel to communicate with chat
          */
         if (command.equalsIgnoreCase('chat') || command.equalsIgnoreCase('echo')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             $.say(event.getArguments());
         }
     }
@@ -726,6 +711,7 @@
         loadScript('./core/commandRegister.js');
         loadScript('./core/whisper.js');
         loadScript('./core/commandCoolDown.js');
+        loadScript('./core/keywordCoolDown.js');
         loadScript('./core/gameMessages.js');
         loadScript('./core/patternDetector.js');
         loadScript('./core/permissions.js');
@@ -1267,6 +1253,14 @@
          */
         $api.on($script, 'Bits', function(event) {
             callHook('Bits', event, false);
+        });
+
+        /**
+         * @event api-DeveloperCommandEvent
+         */
+        $api.on($script, 'DeveloperCommand', function(event) {
+            callHook('command', event, false);
+            handleInitCommands(event);
         });
 
         $.log.event('init.js api\'s loaded.');

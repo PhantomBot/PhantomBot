@@ -30,15 +30,15 @@ import me.mast3rplan.phantombot.PhantomBot;
  *
  * @author Gary Tekulsky
  */
-public class err {
+public class warn {
 
-    private static final err instance = new err();
+    private static final warn instance = new warn();
 
-    public static err instance() {
+    public static warn instance() {
         return instance;
     }
 
-    private err() {
+    private warn() {
     }
 
     public static void print(Object o) {
@@ -50,17 +50,17 @@ public class err {
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
         stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
-        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
-        System.err.print("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+        Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+        System.out.print("[" + logTimestamp.log() + "] [INFO] " + o);
     }
 
     public static void println() {
-        System.err.println();
+        System.out.println();
     }
 
     public static void printlnRhino(Object o) {
         // Do not write to a log file as the JS Rhino files already do this. //
-        System.out.println("[" + logTimestamp.log() + "] [ERROR] " + o);
+        System.out.println("[" + logTimestamp.log() + "] [INFO] " + o);
     }
 
     public static void println(Object o) {
@@ -72,9 +72,9 @@ public class err {
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
         stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
-        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
-        Logger.instance().log(Logger.LogType.Error, "");
-        System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+        Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+        Logger.instance().log(Logger.LogType.Warning, "");
+        System.out.println("[" + logTimestamp.log() + "] [INFO] " + o);
     }
 
     public static void println(Object o, Boolean logOnly) {
@@ -86,10 +86,10 @@ public class err {
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
         stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
-        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
-        Logger.instance().log(Logger.LogType.Error, "");
+        Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+        Logger.instance().log(Logger.LogType.Warning, "");
         if (!logOnly) {
-            System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+            System.out.println("[" + logTimestamp.log() + "] [INFO] " + o);
         }
     }
 
@@ -106,7 +106,7 @@ public class err {
 
         e.printStackTrace(ptrace);
 
-        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + trace.toString());
-        Logger.instance().log(Logger.LogType.Error, "");
+        Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + trace.toString());
+        Logger.instance().log(Logger.LogType.Warning, "");
     }
 }

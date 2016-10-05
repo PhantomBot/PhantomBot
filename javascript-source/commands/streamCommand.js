@@ -47,7 +47,13 @@
             vodJsonObj = {};
 
         /**
-         * @commandpath setgame [game name] - Set Twitch game title
+         * @commandpath game - Give's you the current game, and the playtime if the channel is online. 
+         * @commandpath title - Give's you the current title, and the channel uptime if the channel is online. 
+         * @commandpath followage [optional (name)] [optional (channel)] - Tells you how long you have been following the channel.
+         * @commandpath playtime - Tells you how long the caster has been playing the current game for.
+         * @commandpath uptime - Give's you the current stream uptime.
+         * @commandpath age [optional (name)] - Tells you how long you have been on Twitch for.
+         * @commandpath setgame [game name] - Set Twitch game title.
          */
         if (command.equalsIgnoreCase('setgame') || command.equalsIgnoreCase('editgame')) {
             if (!action) {
@@ -60,7 +66,7 @@
         }
 
         /**
-         * @commandpath settitle [stream title] - Set Twitch stream title
+         * @commandpath settitle [stream title] - Set Twitch stream title.
          */
         if (command.equalsIgnoreCase('settitle') || command.equalsIgnoreCase('edittitle')) {
             if (!action) {
