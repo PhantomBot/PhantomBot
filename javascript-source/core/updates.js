@@ -121,7 +121,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -411,8 +411,8 @@
     }
 
     /** Version 2.3 updates */
-    if (!$.inidb.exists('updates', 'installedv2.3') || $.inidb.get('updates', 'installedv2.3') != 'true') {
-        $.consoleLn('Starting ' + $.version + ' updates...');
+    if (!$.inidb.exists('updates', 'installedv2.3s') || $.inidb.get('updates', 'installedv2.3s') != 'true') {
+        $.consoleLn('Starting 2.3 updates...');
 
         $.consoleLn('Disabling new modules...');
         $.inidb.set('modules', './handlers/bitsHandler.js', 'false');
@@ -447,21 +447,31 @@
         $.inidb.del('permcom', 'game set');
         $.inidb.del('permcom', 'title set');
 
+        $.consoleLn('Updating auto hosting settings...');
+        if ($.inidb.exists('autohost_config', 'force') && $.inidb.get('autohost_config', 'force') == true) {
+            $.inidb.set('autohost_config', 'force', false);
+        }
+        if ($.inidb.exists('autohost_config', 'host_time_minutes') && $.inidb.get('autohost_config', 'host_time_minutes') < 30) {
+            $.inidb.set('autohost_config', 'host_time_minutes', 0);
+        }
+
         $.consoleLn('Setting up new toggles...');
         $.inidb.set('adventureSettings', 'warningMessage', true);
         $.inidb.set('adventureSettings', 'enterMessage', true);
 
-        /**
-         * @commandpath game - Give's you the current game, and the playtime if the channel is online. 
-         * @commandpath title - Give's you the current title, and the channel uptime if the channel is online. 
-         * @commandpath followage [optional (name)] [optional (channel)] - Tells you how long you have been following the channel.
-         * @commandpath playtime - Tells you how long the caster has been playing the current game for.
-         * @commandpath uptime - Give's you the current stream uptime.
-         * @commandpath age [optional (name)] - Tells you how long you have been on Twitch for.
-         */
+        $.consoleLn('v2.3 updates completed!');
+        $.inidb.set('updates', 'installedv2.3s', 'true');
+    }
 
-        $.consoleLn($.version + ' updates completed!');
-        $.inidb.set('updates', 'installedv2.3', 'true');
+    /* version 2.3.3 updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.3') || $.inidb.get('updates', 'installedv2.3.3') != 'true') {
+        $.consoleLn('Starting ' + $.version + ' updates...');
+
+        $.consoleLn('Deleting the old emotes cache.');
+        $.inidb.RemoveFile('emotecache');
+
+        $.consoleLn( $.version + ' updates completed!');
+        $.inidb.set('updates', 'installedv2.3.3', 'true');
     }
 
     /**

@@ -133,6 +133,7 @@
         }
 
         $.inidb.del('permcom', command);
+        $.inidb.del('disabledCommands', command);
     };
 
     /**

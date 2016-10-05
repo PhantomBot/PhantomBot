@@ -5,7 +5,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)/);
+        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|\(customapi |\(customapijson /);
 
     /**
      * @function getCustomAPIValue
@@ -47,6 +47,10 @@
             if (!message.match(tagCheck)) {
                 return event.getArgs()[0] + ' -> ' + message;
             }
+        }
+
+        if (message.match(/\(adminonlyedit\)/)) {
+            message = $.replace(message, '(adminonlyedit)', '');
         }
 
         if (message.match(/\(1\)/g)) {
@@ -203,6 +207,7 @@
             var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
             $.panelsocketserver.alertImage(filename);
             message = message.replaceFirst('\\(alert [,.\\w]+\\)', '');
+            if (message == '') return null;
         }
 
         if (message.match(/\(readfile/)) {
@@ -216,7 +221,9 @@
         }
 
         if (message.match(/\(gameinfo\)/)) {
-            if (!$.isOnline($.channelName) || $.getPlayTime() == 0) {
+            if ($.getGame($.channelName) == ' ' || $.getGame($.channelName) == '') {
+                message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.no.game'));
+            } else if (!$.isOnline($.channelName) || $.getPlayTime() == 0) {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
             } else {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.online', $.getGame($.channelName), $.getPlayTime()));
@@ -224,7 +231,9 @@
         }
 
         if (message.match(/\(titleinfo\)/)) {
-            if (!$.isOnline($.channelName)) {
+            if ($.getStatus($.channelName) == ' ' || $.getStatus($.channelName) == '') {
+                message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.no.title'));
+            } else if (!$.isOnline($.channelName)) {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.offline', $.getStatus($.channelName)));
             } else {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.online', $.getStatus($.channelName), String($.getStreamUptime($.channelName))));
@@ -510,6 +519,11 @@
                 return;
             }
 
+            if ($.inidb.exists('disabledCommands', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.disabled'));
+                return;
+            }
+
             if (argString.indexOf('(command ') !== -1) {
                 if (argString.indexOf('(command ') !== 0) {
                     $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.commandtag.notfirst'));
@@ -545,6 +559,11 @@
                 return;
             } else if ($.commandExists(action) && !$.inidb.exists('command', action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.404'));
+                return;
+            } else if ($.inidb.get('command', action).match(/\(adminonlyedit\)/) && !$.isAdmin(sender)) {
+                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getGroupNameById('1')));
+                }
                 return;
             }
 

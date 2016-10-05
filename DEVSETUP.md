@@ -57,4 +57,16 @@ DONE! Happy coding <3
 ##Eclipse
 You can get Eclipse [here](https://www.eclipse.org/downloads/).
 
-Yet to be written.
+1. Open up Eclipse
+2. Clone repository using File -> Import
+3. Type on filter text **Git**, then select **Projects from Git**. Click **Next**.
+4. Select **Clone URI**. Click **Next**.
+5. Paste or enter repository url. On **Authentication** column enter your GitHub username and password. **Next** page!
+6. Select the branches you want. Click **Next**.
+7. Choose a destination folder, default branch and remote name. Click **Next**.
+8. When the clone process is finished select *"Import using the New Project wizard"*. Click **Next**. And press **Finish** to adding project.
+9. Select or type filter text *"Java Project from Existing Ant Buildfile"*. **Next** page!
+10. Click **Browse** to select `build.xml` from destination folder. Also mark *Link to the buildfile in the file system*. Press **Finish**
+  `./libraries` has been automatically imported to *Referenced Libraries*.
+
+DONE! Happy coding <3

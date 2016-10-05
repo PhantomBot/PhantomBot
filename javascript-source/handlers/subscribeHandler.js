@@ -9,7 +9,10 @@
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
-        announce = false;
+        announce = false,
+        customEmote = '', //Add your custom emote to be said when a user resubscribes here. Use (customeomte) in the message for it.
+        emotes = [],
+        i;
     /**
      * @function updateSubscribeConfig
      */
@@ -73,26 +76,27 @@
 
         if (subWelcomeToggle && announce) {
             if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', $.username.resolve(subscriber));
+                message = $.replace(message, '(name)', subscriber);
             }
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
             }
             $.say(message);
             $.addSubUsersList(subscriber);
-            $.restoreSubscriberStatus(resubscriber, true);
-            $.inidb.set('streamInfo', 'lastSub', $.username.resolve(subscriber));
+            $.restoreSubscriberStatus(subscriber, true);
+            $.inidb.set('streamInfo', 'lastSub', subscriber);
         }
     });
 
     $.bind('NewReSubscriber', function(event) { // From notice event
         var resubscriber = event.getReSub(),
             months = event.getReSubMonths(),
-            message = reSubMessage;
+            message = reSubMessage,
+            emotes = [];
 
         if (reSubWelcomeToggle && announce) {
             if (message.match(/\(name\)/g)) {
-                message = $.replace(reSubMessage, '(name)', $.username.resolve(resubscriber));
+                message = $.replace(reSubMessage, '(name)', resubscriber);
             }
             if (message.match(/\(months\)/g)) {
                 message = $.replace(message, '(months)', months);
@@ -100,10 +104,14 @@
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
             }
+            if (message.match(/\(customemote\)/)) {
+                for (i = 0; i < months; i++, emotes.push(customEmote));
+                message = $.replace(message, '(customemote)', emotes.join(' '));
+            }
             $.say(message);
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(resubscriber, true);
-            $.inidb.set('streamInfo', 'lastReSub', $.username.resolve(resubscriber));
+            $.inidb.set('streamInfo', 'lastReSub', resubscriber);
         }
     });
 

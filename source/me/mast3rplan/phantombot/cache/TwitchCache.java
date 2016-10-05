@@ -108,7 +108,7 @@ public class TwitchCache implements Runnable {
 
     /*
      * Thread run instance.  This is the main loop for the thread that is created to manage
-     * retrieving data from the Twitch API.  This loop runs every 15 seconds, querying data
+     * retrieving data from the Twitch API.  This loop runs every 30 seconds, querying data
      * from Twitch.
      */
     @Override
@@ -131,14 +131,14 @@ public class TwitchCache implements Runnable {
                 try {
                     this.updateCache();
                 } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
             }
 
             try {
-                Thread.sleep(15 * 1000);
+                Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
             }
@@ -173,11 +173,11 @@ public class TwitchCache implements Runnable {
 
                 if (!this.isOnline && isOnline) {
                     this.isOnline = true;
-                    EventBus.instance().post(new TwitchOnlineEvent(getChannel()));
+                    EventBus.instance().postAsync(new TwitchOnlineEvent(getChannel()));
                     sentTwitchOnlineEvent = true;
                 } else if (this.isOnline && !isOnline) {
                     this.isOnline = false;
-                    EventBus.instance().post(new TwitchOfflineEvent(getChannel()));
+                    EventBus.instance().postAsync(new TwitchOfflineEvent(getChannel()));
                 }
 
                 if (isOnline) {
@@ -191,8 +191,7 @@ public class TwitchCache implements Runnable {
                         this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
                     } catch (Exception ex) {
                         success = false;
-                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" +
-                                                         streamObj.getJSONObject("stream").getString("created_at") + ")");
+                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
                     }
 
                     /* Determine the preview link. */
@@ -233,7 +232,7 @@ public class TwitchCache implements Runnable {
                             /* Send an event if we did not just send a TwitchOnlineEvent. */
                             if (!sentTwitchOnlineEvent) {
                                 this.gameTitle = gameTitle;
-                                EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
+                                EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle, getChannel()));
                             }
                             this.gameTitle = gameTitle;
                         }
@@ -263,7 +262,6 @@ public class TwitchCache implements Runnable {
                 } else {
                     success = false;
                 }
-
             } else {
                 success = false;
             }
@@ -272,7 +270,7 @@ public class TwitchCache implements Runnable {
             success = false;
         }
 
-        if (PhantomBot.instance().twitchCacheReady.equals("false") && success) {
+        if (PhantomBot.twitchCacheReady.equals("false") && success) {
             com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
             PhantomBot.instance().setTwitchCacheReady("true");
         }
@@ -284,7 +282,7 @@ public class TwitchCache implements Runnable {
      * @return  Channel  Channel object.
      */
     private Channel getChannel() {
-        return PhantomBot.instance().getChannel("#" + this.channel);
+        return PhantomBot.getChannel("#" + this.channel);
     }
 
     /*
@@ -331,7 +329,7 @@ public class TwitchCache implements Runnable {
      public void setGameTitle(String gameTitle) {   
          forcedGameTitleUpdate = true;
          this.gameTitle = gameTitle;
-         EventBus.instance().post(new TwitchGameChangeEvent(gameTitle, getChannel()));
+         EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle, getChannel()));
      }
 
     /*
