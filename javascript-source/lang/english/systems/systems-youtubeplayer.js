@@ -40,7 +40,7 @@ $.lang.register('ytplayer.command.currentsong.404', 'There is not a curent song'
 $.lang.register('ytplayer.command.delrequest.success', 'Removed song with ID [$1] and title of [$2] from song requests.');
 $.lang.register('ytplayer.command.delrequest.404', 'Song requests do not have a song with an ID of [$1]');
 $.lang.register('ytplayer.command.delrequest.usage', 'usage: !ytp delrequest [YouTube ID]');
-$.lang.register('ytplayer.command.ytp.usage', 'usage: !ytp [togglesongrequest | toggleanounce | delrequest | volume | togglerandom | setrequestmax | setmaxvidlength]');
+$.lang.register('ytplayer.command.ytp.usage', 'usage: !ytp [togglesongrequest | toggleanounce | delrequest | volume | togglerandom | setrequestmax | setmaxvidlength | votecount]');
 $.lang.register('ytplayer.command.wrongsong.success', 'Removed last requested song: [$1]');
 $.lang.register('ytplayer.command.wrongsong.404', 'No songs found');
 $.lang.register('ytplayer.command.wrongsong.user.success', 'Removed last requested song from $1: [$2]');
@@ -73,3 +73,10 @@ $.lang.register('ytplayer.blacklist.add.success.song', 'Song/Keyword: "$1" has b
 $.lang.register('ytplayer.blacklist.remove.usage.song', 'usage: !ytp blacklist remove [name]');
 $.lang.register('ytplayer.blacklist.remove.success.song', 'Song/Keyword: "$1" has been removed from the blacklist.');
 $.lang.register('ytplayer.blacklist.404', 'Song name has been blacklisted.');
+$.lang.register('ytplayer.command.skip.success', 'Skip requested! Current song will be skipped in $1 more votes.');
+$.lang.register('ytplayer.command.skip.disabled', 'The vote functionality is currently disabled.');
+$.lang.register('ytplayer.command.skip.failure', 'You have already requested a skip for the current song.');
+$.lang.register('ytplayer.command.skip.skipping', 'The votes are counted, and the users have spoken!!! Skipping the current song!.');
+$.lang.register('ytplayer.command.votecount.set', 'Minimum votes now needed for viewers to skip songs: $1');
+$.lang.register('ytplayer.command.votecount.negative', 'The number of votes needed must be positive!');
+$.lang.register('ytplayer.command.votecount.usage', '!ytp votecount [amount]  ---  Current setting: $1');

@@ -49,6 +49,7 @@ This file should give you enough insight on the general layout of the modules co
 - Use descriptive function/variable/class names.
 - Create functions for repeating code.
 - Always keep performance in mind, use as much native javascript as possible and keep your variable use at a minimum.
+- Use `'` and not `"` as most as you can, please. 
 
 ##If statements 
 - Please don't leave spaces inside at the start and end of your if statements.

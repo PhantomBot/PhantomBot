@@ -421,8 +421,7 @@
     function performModeration(event) {
         var sender = event.getSender(),
             message = event.getMessage().toLowerCase(),
-            messageLength = message.length(),
-            emotesObject = {};
+            messageLength = message.length();
 
         if (!$.isModv3(sender, event.getTags())) {
             if (linksToggle && $.patternDetector.hasLinks(event)) {
@@ -482,9 +481,7 @@
                 return;
             }
 
-            emotesObject = $.patternDetector.getNumberOfEmotes(event);
-
-            if (emotesToggle && emotesObject.matches > emotesLimit) {
+            if (emotesToggle && $.patternDetector.getEmotesCount(event) > emotesLimit) {
                 if (!regulars.Emotes && $.isReg(sender) || !subscribers.Emotes && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
@@ -494,7 +491,7 @@
             }
 
             if (capsToggle && messageLength > capsTriggerLength) {
-                if (((parseFloat($.patternDetector.getNumberOfCaps(event) - (emotesObject.length + emotesObject.matches)) / messageLength) * 100) > capsLimitPercent) {
+                if (((parseFloat($.patternDetector.getNumberOfCaps(event) - $.patternDetector.getEmotesLength(event)) / messageLength) * 100) > capsLimitPercent) {
                     if (!regulars.Caps && $.isReg(sender) || !subscribers.Caps && $.isSubv3(sender, event.getTags())) {
                         return;
                     }
