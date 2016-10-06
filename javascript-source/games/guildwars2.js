@@ -308,9 +308,9 @@
                 var UUIDs = JSON.parse(_getJSON('https://api.guildwars2.com/v2/pvp/seasons'));
                 for (var i = 0; i < Object.keys(UUIDs).length; i++) {
                     if (args[1]) {
-                        if (args[1].match(/^[1-9]{1}$/)) {
-                            var season = parseInt(args[1])
-                            if (season == (i + 1)) {
+                        if (args[1].match(/^[1-9]+$/)) {
+                            var season = (parseInt(args[1]) - 1);
+                            if (season == i) {
                                 league = GW2_leagues[parseInt(data[season].best['division'])];
                                 tier = GW2_tiers[parseInt(data[season].best['tier'])];
                                 pips = data[season].best['points'];
