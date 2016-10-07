@@ -532,16 +532,20 @@
             if (action.equalsIgnoreCase('build')) {
                 data = JSON.parse(_getJSON(GW2_apiURL + '/v2/characters?access_token=' + GW2_apiKey));
                 for (var i = 0; i < data.length; i++) {
+                    if (data[i].equalsIgnoreCase(args[2].trim()) || data[i].equalsIgnoreCase(args[1].trim())) {
                         var GW2ToolID = JSON.parse(_getJSON('http://gw2tool.net/api/token-check?token=' + GW2_apiKey))['code'];
                         if (!GW2ToolID || !GW2ToolID.match(/^\w{10,10}$/)) { $.consoleLn('Error: Couldn\'t recieve GW2ToolID!'); return; };
                         _updateGW2ToolRights('http://gw2tool.net/api/save-rights?code=' + GW2ToolID);
 
+                        if (args[1].match(/pve/i) || args[2].match(/pve/i)) {
                             $.say($.lang.get('guildwars2.build.pve', data[i], encodeURI('https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pve/' + data[i])));
                             return;
                         };
+                        if (args[1].match(/(s)?pvp/i) || args[2].match(/(s)?pvp/i)) {
                             $.say($.lang.get('guildwars2.build.pvp', data[i], encodeURI('https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pvp/' + data[i])));
                             return;
                         };
+                        if (args[1].match(/(wv)?wvw/i) || args[2].match(/(wv)?wvw/i)) {
                             $.say($.lang.get('guildwars2.build.wvw', data[i], encodeURI('https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-wvw/' + data[i])));
                             return;
                         };
