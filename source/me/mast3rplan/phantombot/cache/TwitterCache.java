@@ -374,7 +374,7 @@ public class TwitterCache implements Runnable {
      * @return  Channel  Channel object.
      */
     private Channel getChannel() {
-        return PhantomBot.getChannel("#" + this.channel);
+        return PhantomBot.getChannel(this.channel);
     }
 
     /*

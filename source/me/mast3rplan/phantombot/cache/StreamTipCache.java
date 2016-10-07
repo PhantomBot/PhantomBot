@@ -173,7 +173,7 @@ public class StreamTipCache implements Runnable {
         if (donations != null && !killed) {
             for (int i = 0; i < donations.length(); i++) {
                 if (cache == null || !cache.containsKey(donations.getJSONObject(i).getString("_id"))) {
-                    EventBus.instance().post(new StreamTipDonationEvent(donations.getJSONObject(i).toString(), PhantomBot.getChannel("#" + this.channel)));
+                    EventBus.instance().post(new StreamTipDonationEvent(donations.getJSONObject(i).toString(), PhantomBot.getChannel(this.channel)));
                 }
             }
         }
