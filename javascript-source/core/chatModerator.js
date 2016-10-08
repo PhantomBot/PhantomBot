@@ -440,7 +440,7 @@
                 return;
             }
 
-            if (symbolsToggle && (messageLength > symbolsTriggerLength)) {
+            if (symbolsToggle && messageLength > symbolsTriggerLength) {
                 if ($.patternDetector.getLongestNonLetterSequence(event) > symbolsGroupLimit || (($.patternDetector.getNumberOfNonLetters(event) / messageLength) * 100) > symbolsLimitPercent) {
                     if (!regulars.Symbols && $.isReg(sender) || !subscribers.Symbols && $.isSubv3(sender, event.getTags())) {
                         return;

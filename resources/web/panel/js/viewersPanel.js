@@ -309,18 +309,22 @@
         if (username.length != 0) {
             if (perm == 'Admin') {
                 sendDBUpdate('user_perm', 'group', username.toLowerCase(), '1');
+                sendCommand('permissionsetuser ' + username.toLowerCase() + ' 1');
             }
     
             if (perm == 'Mod') {
                 sendDBUpdate('user_perm', 'group', username.toLowerCase(), '2');
+                sendCommand('permissionsetuser ' + username.toLowerCase() + ' 2');
             }
     
             if (perm == 'Sub') {
                 sendDBUpdate('user_perm', 'group', username.toLowerCase(), '3');
+                sendCommand('permissionsetuser ' + username.toLowerCase() + ' 3');
             }
     
             if (perm == 'Donator') {
                 sendDBUpdate('user_perm', 'group', username.toLowerCase(), '4');
+                sendCommand('permissionsetuser ' + username.toLowerCase() + ' 4');
             }
 
             /*
@@ -330,6 +334,7 @@
     
             if (perm == 'Reg') {
                 sendDBUpdate('user_perm', 'group', username.toLowerCase(), '6');
+                sendCommand('permissionsetuser ' + username.toLowerCase() + ' 6');
             }
         }
 
@@ -344,6 +349,7 @@
         var username = $("#unPromoteUser" + perm).val();
         if (username.length != 0) {
             sendDBDelete('user_perm', 'group', username.toLowerCase());
+            sendCommand('permissionsetuser ' + username.toLowerCase() + ' 7');
         }
         $("#unPromoteUser" + perm).val('');
         doQuery();
