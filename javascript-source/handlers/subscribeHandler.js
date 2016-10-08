@@ -10,7 +10,7 @@
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
         announce = false,
-        customEmote = '', //Add your custom emote to be said when a user resubscribes here. Use (customeomte) in the message for it.
+        customEmote = '', //Add your custom emote to be said when a user resubscribes here. Use (customemote) in the message for it.
         emotes = [],
         i;
     /**
