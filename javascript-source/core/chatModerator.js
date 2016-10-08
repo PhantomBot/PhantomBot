@@ -114,6 +114,7 @@
         spamTrackerLastMsg = 0,
         messageTime = 0,
         warning = '',
+        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'ig'),
         i;
 
     /**
@@ -362,11 +363,11 @@
     function checkPermitList(username) {
         if (permitList[username] !== undefined) {
             if ((permitList[username] - $.systemTime()) >= 0) {
+                delete permitList[username];
                 return true;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -408,7 +409,7 @@
      * @param {string} message
      */
     function checkYoutubePlayer(message) {
-        if ($.youtubePlayerConnected && (message.includes('youtube.com') || message.includes('youtu.be'))) {
+        if ($.youtubePlayerConnected && message.match(youtubeLinks)) {
             return true;
         } else {
             return false;
@@ -439,8 +440,8 @@
                 return;
             }
 
-            if (symbolsToggle && messageLength > symbolsTriggerLength) {
-                if ($.patternDetector.getLongestNonLetterSequence(event) > symbolsGroupLimit || ((parseFloat($.patternDetector.getNumberOfNonLetters(event)) / messageLength) * 100) > symbolsLimitPercent) {
+            if (symbolsToggle && (messageLength > symbolsTriggerLength)) {
+                if ($.patternDetector.getLongestNonLetterSequence(event) > symbolsGroupLimit || (($.patternDetector.getNumberOfNonLetters(event) / messageLength) * 100) > symbolsLimitPercent) {
                     if (!regulars.Symbols && $.isReg(sender) || !subscribers.Symbols && $.isSubv3(sender, event.getTags())) {
                         return;
                     }
@@ -459,7 +460,7 @@
                 return;
             }
 
-            if (colorsToggle && message.startsWith('/me')) {
+            if (colorsToggle && $.patternDetector.getColoredMessage(event)) {
                 if (!regulars.Colors && $.isReg(sender) || !subscribers.Colors && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
@@ -491,7 +492,7 @@
             }
 
             if (capsToggle && messageLength > capsTriggerLength) {
-                if (((parseFloat($.patternDetector.getNumberOfCaps(event) - $.patternDetector.getEmotesLength(event)) / messageLength) * 100) > capsLimitPercent) {
+                if (((($.patternDetector.getNumberOfCaps(event) - $.patternDetector.getEmotesLength(event)) / messageLength) * 100) > capsLimitPercent) {
                     if (!regulars.Caps && $.isReg(sender) || !subscribers.Caps && $.isSubv3(sender, event.getTags())) {
                         return;
                     }

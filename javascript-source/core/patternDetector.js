@@ -24,11 +24,14 @@
      */
     function hasLinks(event, aggressive) {
         try {
-            var message = event.getMessage();
+            var message = (event.getMessage() + '');
             
-            message = deobfuscateLinks(message, (aggressive));
+            /**
+             * @info commented out because this is not used at all since it does not replace correctly in the function.
+             * message = deobfuscateLinks(message, (aggressive));
+             */
 
-            lastFoundLink = patterns.link.exec(message)[0];
+            lastFoundLink = patterns.link.exec(event.getMessage())[0];
             return true;
         } catch (e) {
             return false;
@@ -147,7 +150,7 @@
     function getEmotesCount(event) {
         var emotes = event.getTags().get('emotes');
 
-        return ((emotes.match(patterns.emotes) === null ? 0 : emotes.match(patterns.emotes).length) + $.emotesHandler.getEmotesMatchCount(event.getMessage()));
+        return ((emotes.match(patterns.emotes) === null ? 0 : (emotes.match(patterns.emotes).length) + $.emotesHandler.getEmotesMatchCount(event.getMessage())));
     }
 
     /**
@@ -185,6 +188,16 @@
         return (sequences === null ? 0 : sequences.length);
     }
 
+    /**
+     * @function getColoredMessage
+     * @export $.patternDetector
+     * @param {Object} event
+     * @returns {boolean}
+     */
+    function getColoredMessage(event) {
+        return event.getMessage().startsWith('/me');
+    }
+
     /** Export functions to API */
     $.patternDetector = {
         hasLinks: hasLinks,
@@ -196,5 +209,6 @@
         getEmotesLength: getEmotesLength,
         getNumberOfCaps: getNumberOfCaps,
         logLastLink: logLastLink,
+        getColoredMessage: getColoredMessage,
     };
 })();
