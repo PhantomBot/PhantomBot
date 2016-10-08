@@ -8,7 +8,7 @@
  *
  *          - CHANGELOG -
  *
- *    V3.0.2
+ *    V3.0.4
  *    - Improvements to code.
  *        Replaced string notations with dot notations for fetching JSON.
  *        Removed unnecessary semicolons.
@@ -16,6 +16,8 @@
  *        Fixed scoping for some variables.
  *        Removed unnecessary URI encoding.
  *    - Fixed deathcounter for character names with multiple surnames.
+ *    - Added subcommands to the register.
+ *    - Fixed deathcounter and goldcounter update interval being 10 seconds, not 5 minutes.
  *
  *    V2.9.7
  *    - !gw2 deathcounter and !gw2 goldcounter can now be called by moderators and above.
@@ -653,7 +655,7 @@
                     GW2_coinformat = 1;
                     $.inidb.set('settings', 'gw2_coinformat', '1');
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.coinsformat.toggle', '####.00,00g'));
-                    $.consoleLn($.lang.get('guildwars2.coinsformat.toggle', '####,00.00g'));
+                    $.consoleLn($.lang.get('guildwars2.coinsformat.toggle', '####.00,00g'));
                 }
                 return;
             }
@@ -664,6 +666,29 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./games/guildwars2.js', 'gw2');
+        if ($.bot.isModuleEnabled('./games/guildwars2.js')) {
+            $.registerChatCommand('./games/guildwars2.js', 'gw2', 7);
+            $.registerChatSubcommand('gw2', 'setkey', 1);
+            $.registerChatSubcommand('gw2', 'rank', 7);
+            $.registerChatSubcommand('gw2', 'stats', 7);
+            $.registerChatSubcommand('gw2', 'characters', 7); 
+            $.registerChatSubcommand('gw2', 'chars', 7);
+            $.registerChatSubcommand('gw2', 'account', 7);
+            $.registerChatSubcommand('gw2', 'acc', 7);
+            $.registerChatSubcommand('gw2', 'world', 7);
+            $.registerChatSubcommand('gw2', 'server', 7);
+            $.registerChatSubcommand('gw2', 'wallet', 7); 
+            $.registerChatSubcommand('gw2', 'coins', 7);
+            $.registerChatSubcommand('gw2', 'gold', 7); 
+            $.registerChatSubcommand('gw2', 'karma', 7);
+            $.registerChatSubcommand('gw2', 'guilds', 7);
+            $.registerChatSubcommand('gw2', 'wvw', 7);
+            $.registerChatSubcommand('gw2', 'fractals', 7);
+            $.registerChatSubcommand('gw2', 'build', 7);
+            $.registerChatSubcommand('gw2', 'deathcounter', 2);
+            $.registerChatSubcommand('gw2', 'deaths', 2);
+            $.registerChatSubcommand('gw2', 'goldcounter', 2);
+            $.registerChatSubcommand('gw2', 'coinsformat', 2);
+        }
     });
 })();
