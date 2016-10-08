@@ -8,6 +8,15 @@
  *
  *          - CHANGELOG -
  *
+ *    V3.0.2
+ *    - Improvements to code.
+ *        Replaced string notations with dot notations for fetching JSON.
+ *        Removed unnecessary semicolons.
+ *        Removed unused variables.
+ *        Fixed scoping for some variables.
+ *        Removed unnecessary URI encoding.
+ *    - Fixed deathcounter for character names with multiple surnames.
+ *
  *    V2.9.7
  *    - !gw2 deathcounter and !gw2 goldcounter can now be called by moderators and above.
  *    - !gw2 build [gamemode] [character] can now also be called with swapped arguments: !gw2 build [character] [gamemode].
@@ -164,32 +173,33 @@
     function CalcCoins(coins) {
         coins = coins || 0;
         var c = coins % 100;
+        var s;
         if (Math.abs(coins) >= 10000) {
             coins = (coins - c) / 100;
-            var s = coins % 100;
+            s = coins % 100;
             var g = (coins - s) / 100;
             c = Math.round(c);
-            if (s.toString().match(/^\s*-?[0-9]\s*$/)) { s = '0' + Math.abs(s) } else { s = Math.abs(s) };
-            if (c.toString().match(/^\s*-?[0-9]\s*$/)) { c = '0' + Math.abs(c) } else { c = Math.abs(c) };
+            if (s.toString().match(/^\s*-?[0-9]\s*$/)) { s = '0' + Math.abs(s); } else { s = Math.abs(s); }
+            if (c.toString().match(/^\s*-?[0-9]\s*$/)) { c = '0' + Math.abs(c); } else { c = Math.abs(c); }
             if (GW2_coinformat) {
                 return g + '.' + s + ',' + c + 'g';
             } else {
                 return g + 'g ' + s + 's ' + c + 'c';
-            };
-        };
+            }
+        }
         if (Math.abs(coins) >= 100) {
             coins = (coins - c) / 100;
-            var s = coins % 100;
+            s = coins % 100;
             c = Math.round(c);
-            if (c.toString().match(/^\s*-?[0-9]\s*$/)) { c = '0' + Math.abs(c) } else { c = Math.abs(c) };
+            if (c.toString().match(/^\s*-?[0-9]\s*$/)) { c = '0' + Math.abs(c); } else { c = Math.abs(c); }
             if (GW2_coinformat) {
                 return s + ',' + c + 's';
             } else {
                 return s + 's ' + c + 'c';
-            };
-        };
+            }
+        }
         return Math.round(c) + 'c';
-    };
+    }
 
     /**
      * @function _getJSON
@@ -197,85 +207,85 @@
      * @returns {JSON}
      */
     function _getJSON(url){
-        var HttpResponse = Packages.com.gmt2001.HttpResponse;
         var HttpRequest = Packages.com.gmt2001.HttpRequest;
         var HashMap = Packages.java.util.HashMap;
         var responseData = HttpRequest.getData(HttpRequest.RequestType.GET, encodeURI(url), '', new HashMap());
         return responseData.content;
-    };
+    }
 
     /**
      * @function _updateGW2ToolRights
      * @param {String} url
      */
     function _updateGW2ToolRights(url){
-        var url = url + '&rights[]=builds&rights[]=other.limit_characters';
+        url = url + '&rights[]=builds&rights[]=other.limit_characters';
         var data = JSON.parse(_getJSON(GW2_apiURL + '/v2/characters?access_token=' + GW2_apiKey));
         for (var i = 0; i < data.length; i++) {
             url = url + '&rights[]=character/' + data[i];
-        };
-        var HttpResponse = Packages.com.gmt2001.HttpResponse;
+        }
         var HttpRequest = Packages.com.gmt2001.HttpRequest;
         var HashMap = Packages.java.util.HashMap;
         var headers = new HashMap();
         headers.put('Cookie', 'accesstoken=' + GW2_apiKey);
-        var responseData = HttpRequest.getData(HttpRequest.RequestType.POST, encodeURI(url), '', headers);
-    };
+        HttpRequest.getData(HttpRequest.RequestType.POST, encodeURI(url), '', headers);
+    }
 
     /**
      * GOLD COUNTER
      * used by !gw2 goldcounter
      */
     setInterval(function(){
-        if (GW2_toggle_goldcounter != 1) { return };
+        if (GW2_toggle_goldcounter != 1) { return; }
         var new_gold = JSON.parse(_getJSON(GW2_apiURL + '/v2/account/wallet?access_token=' + GW2_apiKey));
         for (var i = 0; i < new_gold.length; i++) {
-            if (new_gold[i]['id'] == 1 ) {
-                new_gold = parseInt(new_gold[i]['value'] - GW2_overall_gold);
-            };
-        };
-        if (new_gold == GW2_session_gold) { return };
+            if (new_gold[i].id == 1 ) {
+                new_gold = parseInt(new_gold[i].value - GW2_overall_gold);
+            }
+        }
+        if (new_gold == GW2_session_gold) { return; }
         if (Math.abs(new_gold - GW2_session_gold) >= 10000) {
             if (new_gold < GW2_session_gold) {
                 $.say($.lang.get('guildwars2.session_gold.lost', $.channelName, CalcCoins(Math.abs(new_gold - GW2_session_gold))));
             } else {
                 $.say($.lang.get('guildwars2.session_gold.earned', $.channelName, CalcCoins(Math.abs(new_gold - GW2_session_gold))));
-            };
-        };
+            }
+        }
         if (new_gold >= 0) {
             $.writeToFile(CalcCoins(GW2_overall_gold) + '\n+' + CalcCoins(new_gold), './addons/guildwars2/session_gold.txt', false);
         } else {
             $.writeToFile(CalcCoins(GW2_overall_gold) + '\n' + CalcCoins(new_gold), './addons/guildwars2/session_gold.txt', false);
-        };
-        session_gold = new_gold;
-    }, 10000);
+        }
+        GW2_session_gold = new_gold;
+    }, 300000);
 
     /**
      * DEATH COUNTER
      * used by !gw2 deathcounter [character]
      */
     setInterval(function(){
-        if (GW2_toggle_deathcounter != 1) { return };
+        if (GW2_toggle_deathcounter != 1) { return; }
         if (GW2_last_game != JSON.parse(_getJSON(GW2_apiURL + '/v2/pvp/games?access_token=' + GW2_apiKey)).shift()) {
             GW2_session_deaths = 0;
-            GW2_overall_deaths = parseInt(JSON.parse(_getJSON(GW2_apiURL + '/v2/characters/' + GW2_deathcounterChar + '?access_token=' + GW2_apiKey))['deaths']);
-        };
-        var new_deaths = parseInt(JSON.parse(_getJSON(GW2_apiURL + '/v2/characters/' + GW2_deathcounterChar + '?access_token=' + GW2_apiKey))['deaths']) - GW2_overall_deaths;
-        if (new_deaths == GW2_session_deaths) { return };
+            GW2_overall_deaths = parseInt(JSON.parse(_getJSON(GW2_apiURL + '/v2/characters/' + GW2_deathcounterChar + '?access_token=' + GW2_apiKey)).deaths);
+        }
+        var new_deaths = parseInt(JSON.parse(_getJSON(GW2_apiURL + '/v2/characters/' + GW2_deathcounterChar + '?access_token=' + GW2_apiKey)).deaths) - GW2_overall_deaths;
+        if (new_deaths == GW2_session_deaths) { return; }
         $.say($.lang.get('guildwars2.session_deaths.deaths', GW2_deathcounterChar, Math.abs(new_deaths - GW2_session_deaths)));
         $.writeToFile(new_deaths.toString() + '☠', './addons/guildwars2/session_deaths.txt', false);
         GW2_session_deaths = new_deaths;
-    }, 10000);
+    }, 300000);
 
     /**
      * @event command
      */
     $.bind('command', function (event) {
         var sender = event.getSender();
-        var username = $.username.resolve(sender);
+        //var username = $.username.resolve(sender);
         var command = event.getCommand();
         var args = event.getArgs();
         var data;
+        var i;
+        var coins;
 
         if (command.equalsIgnoreCase('gw2')) {
             var action = args[0];
@@ -283,7 +293,7 @@
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.action.404'));
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 setkey [GW2apiKey] - Sets a Guild Wars 2 api key. Required permissions: account, wallet, characters, pvp, builds, progression. Created at: https://account.arena.net/applications
@@ -292,19 +302,19 @@
                 if (!$.isCaster(sender)) {
                     $.say($.whisperPrefix(sender) + $.adminMsg);
                     return;
-                };
+                }
                 if (!args[1] || !args[1].match(/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{20}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.setkey.404'));
-                    $.log.error('guildwars2.js', 289, 'Invalid GW2 API Key!');
+                    $.log.error('guildwars2.js', 308, 'Invalid GW2 API Key!');
                     return;
-                };
+                }
                 $.inidb.set('settings', 'gw2_apikey', args[1]);
                 GW2_apiKey = args[1];
                 $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.setkey.success'));
                 return;
-            };
+            }
 
-            if (!GW2_apiKey) { $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.apikey.404')); return; };
+            if (!GW2_apiKey) { $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.apikey.404')); return; }
 
             /**
              * @commandpath gw2 rank [integer] - Displays current league placement or the best of a season given associated with the api key set.
@@ -314,46 +324,47 @@
                 var league;
                 var tier;
                 var pips;
+                var repeats;
                 var UUIDs = JSON.parse(_getJSON('https://api.guildwars2.com/v2/pvp/seasons'));
-                for (var i = 0; i < Object.keys(UUIDs).length; i++) {
+                for (i = 0; i < Object.keys(UUIDs).length; i++) {
                     if (args[1]) {
                         if (args[1].match(/^[1-9]+$/)) {
                             var season = (parseInt(args[1]) - 1);
                             if (season == i) {
-                                league = GW2_leagues[parseInt(data[season].best['division'])];
-                                tier = GW2_tiers[parseInt(data[season].best['tier'])];
-                                pips = data[season].best['points'];
+                                league = GW2_leagues[parseInt(data[season].best.division)];
+                                tier = GW2_tiers[parseInt(data[season].best.tier)];
+                                pips = data[season].best.points;
                                 if (league.match('legendary')) {
-                                    var repeats = data[season].best['repeats'];
+                                    repeats = data[season].best.repeats;
                                     $.say($.lang.get('guildwars2.rank.peaked.legendary', $.channelName, args[1], repeats + '× ' + $.lang.get('guildwars2.leagues.' + league), tier, pips));
                                     return;
-                                };
+                                }
                                 $.say($.lang.get('guildwars2.rank.peaked.normal', $.channelName, args[1], $.lang.get('guildwars2.leagues.' + league), tier, pips));
                                 return;
-                            };
-                        };
-                    };
+                            }
+                        }
+                    }
                     var currSeason = JSON.parse(_getJSON('https://api.guildwars2.com/v2/pvp/seasons?id=' + UUIDs[i]));
-                    if (String(currSeason['active']) == 'true') {
-                        for (var i = 0; i < Object.keys(data).length; i++) {
-                            if (data[i]['season_id'] == currSeason['id']) {
-                                league = GW2_leagues[parseInt(data[i]['current']['division'])];
-                                tier = GW2_tiers[parseInt(data[i]['current']['tier'])];
-                                pips = data[i]['current']['points'];
+                    if (String(currSeason.active) == 'true') {
+                        for (i = 0; i < Object.keys(data).length; i++) {
+                            if (data[i].season_id == currSeason.id) {
+                                league = GW2_leagues[parseInt(data[i].current.division)];
+                                tier = GW2_tiers[parseInt(data[i].current.tier)];
+                                pips = data[i].current.points;
                             if (league.match('legendary')) {
-                                var repeats = data[i]['current']['repeats'];
+                                repeats = data[i].current.repeats;
                                 $.say($.lang.get('guildwars2.rank.current.legendary', $.channelName, repeats + '× ' + $.lang.get('guildwars2.leagues.' + league), tier, pips));
                                 return;
-                            };
+                            }
                                 $.say($.lang.get('guildwars2.rank.current.normal', $.channelName, $.lang.get('guildwars2.leagues.' + league), tier, pips));
                                 return;
-                            };
-                        };
-                    };
-                };
+                            }
+                        }
+                    }
+                }
                 $.say($.lang.get('guildwars2.rank.404'));
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 stats [profession] - Displays overall pvp stats or stats by a given profession associated with the api key set.
@@ -371,31 +382,31 @@
                 var lossratio;
                 var wlRatio;
                 if (args[1]) {
-                    for (var i = 0; i < GW2_professions.length; i++) {
+                    for (i = 0; i < GW2_professions.length; i++) {
                         var prof_abbreviations = $.lang.get('guildwars2.professions.' + GW2_professions[i]).split(', ');
                         if (prof_abbreviations.indexOf(String(args[1]).toLocaleLowerCase()) > -1) {
-                            wins = parseInt(data['professions'][GW2_professions[i]]['wins']);
-                            losses = parseInt(data['professions'][GW2_professions[i]]['losses']);
-                            desertions = parseInt(data['professions'][GW2_professions[i]]['desertions']);
-                            byes = parseInt(data['professions'][GW2_professions[i]]['byes']);
-                            forfeits = parseInt(data['professions'][GW2_professions[i]]['forfeits']);
+                            wins = parseInt(data.professions[GW2_professions[i]].wins);
+                            losses = parseInt(data.professions[GW2_professions[i]].losses);
+                            desertions = parseInt(data.professions[GW2_professions[i]].desertions);
+                            byes = parseInt(data.professions[GW2_professions[i]].byes);
+                            forfeits = parseInt(data.professions[GW2_professions[i]].forfeits);
                             trueTotalGames = wins + losses + desertions + byes + forfeits;
                             totalGames = wins + losses + desertions + byes;
                             winratio = parseFloat(((wins + byes)/totalGames)*100);
                             var profession_lang = prof_abbreviations[0].toLocaleLowerCase();
                             profession_lang = profession_lang.charAt(0).toLocaleUpperCase() + profession_lang.slice(1);
                             $.say($.lang.get('guildwars2.stats.profession', $.channelName, trueTotalGames, profession_lang, winratio.toFixed(1)));
-                        };
-                    };
+                        }
+                    }
                     return;
-                };
+                }
                 
-                var rank = data['pvp_rank'];
-                wins = parseInt(data['ladders']['ranked']['wins']);
-                losses = parseInt(data['ladders']['ranked']['losses']);
-                desertions = parseInt(data['ladders']['ranked']['desertions']);
-                byes = parseInt(data['ladders']['ranked']['byes']);
-                forfeits = parseInt(data['ladders']['ranked']['forfeits']);
+                var rank = data.pvp_rank;
+                wins = parseInt(data.ladders.ranked.wins);
+                losses = parseInt(data.ladders.ranked.losses);
+                desertions = parseInt(data.ladders.ranked.desertions);
+                byes = parseInt(data.ladders.ranked.byes);
+                forfeits = parseInt(data.ladders.ranked.forfeits);
                 trueTotalGames = wins + losses + desertions + byes + forfeits;
                 totalGames = wins + losses + desertions + byes;
                 winratio = parseFloat(((wins + byes)/totalGames)*100);
@@ -403,157 +414,158 @@
                 wlRatio = (winratio/lossratio);
                 $.say($.lang.get('guildwars2.stats.ranked', $.channelName, rank, trueTotalGames, wlRatio.toFixed(1)));
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 characters/chars  - Whispers the names of all the characters associated with the api key set.
              */
             if (action.equalsIgnoreCase('characters') || action.equalsIgnoreCase('chars')) {
-                if (!GW2_characters || GW2_characters == undefined) {
+                if (!GW2_characters || GW2_characters === undefined) {
                     data = JSON.parse(_getJSON(GW2_apiURL + '/v2/characters?access_token=' + GW2_apiKey));
                     GW2_characters = data.valueOf().toString().replace(/,/g, ', ');
-                };
+                }
                 $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.characters', $.channelName, GW2_characters));
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 account/acc - Displays general information of the account associated with the api key set.
              */
             if (action.equalsIgnoreCase('account') || action.equalsIgnoreCase('acc')) {
-                if (!GW2_accCreated || GW2_accCreated == undefined) {
+                if (!GW2_accCreated || GW2_accCreated === undefined) {
                     data = JSON.parse(_getJSON(GW2_apiURL + '/v2/account?access_token=' + GW2_apiKey));
-                    GW2_accCreated = data['created'].replace('Z', '').split('T');
-                    GW2_accAccess = data['access'];
-                    GW2_accName = data['name'];
-                };
+                    GW2_accCreated = data.created.replace('Z', '').split('T');
+                    GW2_accAccess = data.access;
+                    GW2_accName = data.name;
+                }
                 $.say($.lang.get('guildwars2.account', $.channelName, GW2_accName, GW2_accCreated[0], GW2_accCreated[1], GW2_accAccess));
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 world/server - Displays the world & population of the world associated with the api key set.
              */
             if (action.equalsIgnoreCase('world') || action.equalsIgnoreCase('server')) {
-                if (!GW2_world || GW2_world == undefined) {
+                if (!GW2_world || GW2_world === undefined) {
                     data = JSON.parse(_getJSON(GW2_apiURL + '/v2/account?access_token=' + GW2_apiKey));
-                    GW2_world = JSON.parse(_getJSON(GW2_apiURL + '/v2/worlds?ids=' + data['world'].toString() + '&lang=en'));
-                    GW2_world_name = GW2_world[0]['name'];
-                    GW2_world_population = $.lang.get('guildwars2.world_population.' + GW2_world[0]['population'].toLowerCase());
-                    GW2_commander = data['commander'];
-                };
-                if (GW2_commander == true) {
+                    GW2_world = JSON.parse(_getJSON(GW2_apiURL + '/v2/worlds?ids=' + data.world.toString() + '&lang=en'));
+                    GW2_world_name = GW2_world[0].name;
+                    GW2_world_population = $.lang.get('guildwars2.world_population.' + GW2_world[0].population.toLowerCase());
+                    GW2_commander = data.commander;
+                }
+                if (GW2_commander === true) {
                     $.say($.lang.get('guildwars2.world.commander', $.channelName, GW2_world_population, GW2_world_name));
                 } else {
                     $.say($.lang.get('guildwars2.world', $.channelName, GW2_world_population, GW2_world_name));
-                };
+                }
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 wallet/coins/gold/karma - Displays the amount of gold and karma in possession associated with the api key set.
              */
             if (action.equalsIgnoreCase('wallet') || action.equalsIgnoreCase('coins') || action.equalsIgnoreCase('gold') || action.equalsIgnoreCase('karma')) {
                 data = JSON.parse(_getJSON(GW2_apiURL + '/v2/account/wallet?access_token=' + GW2_apiKey));
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i]['id'] == 1 ) {
-                        var coins = data[i]['value'];
+                var rawKarma;
+                for (i = 0; i < data.length; i++) {
+                    if (data[i].id == 1 ) {
+                        coins = data[i].value;
                     }
-                    if (data[i]['id'] == 2 ) {
-                        var rawKarma = data[i]['value'];
-                    };
-                };
+                    if (data[i].id == 2 ) {
+                        rawKarma = data[i].value;
+                    }
+                }
                 $.say($.lang.get('guildwars2.wallet', $.channelName, CalcCoins(coins), rawKarma));
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 guilds - Whispers the name and tag of guilds associated with the api key set.
              */
             if (action.equalsIgnoreCase('guilds')) {
-                if (!GW2_guilds || GW2_guilds == undefined) {
+                if (!GW2_guilds || GW2_guilds === undefined) {
                     data = JSON.parse(_getJSON(GW2_apiURL + '/v2/account?access_token=' + GW2_apiKey));
-                    var guild_ids = data['guilds'];
-                    GW2_guilds = new Array();
-                    for (var i = 0; i < guild_ids.length; i++) {
+                    var guild_ids = data.guilds;
+                    GW2_guilds = [];
+                    for (i = 0; i < guild_ids.length; i++) {
                         var guild = JSON.parse(_getJSON(GW2_apiURL + '/v1/guild_details.json?guild_id=' + guild_ids[i]));
-                        GW2_guilds.push(guild['guild_name'] + ' [' + guild['tag'] + ']');
-                    };
+                        GW2_guilds.push(guild.guild_name + ' [' + guild.tag + ']');
+                    }
                     GW2_guilds = GW2_guilds.toString().replace(/,/g, ', ');
-                };
+                }
                 $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.guilds', $.channelName, GW2_guilds));
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 wvw - Displays the current WvW level associated with the api key set.
              */
             if (action.equalsIgnoreCase('wvw')) {
-                if (!GW2_wvw_rank || GW2_wvw_rank == undefined) {
+                if (!GW2_wvw_rank || GW2_wvw_rank === undefined) {
                     data = JSON.parse(_getJSON(GW2_apiURL + '/v2/account?access_token=' + GW2_apiKey));
-                    GW2_wvw_rank = data['wvw_rank'].toString();
-                    GW2_commander = data['commander'];
+                    GW2_wvw_rank = data.wvw_rank.toString();
+                    GW2_commander = data.commander;
                     setTimeout(function(){ GW2_wvw_rank = undefined; }, 1800000);
-                };
-                if (GW2_commander == true) {
+                }
+                if (GW2_commander === true) {
                     $.say($.lang.get('guildwars2.wvw.commander', $.channelName, GW2_wvw_rank));
                 } else {
                     $.say($.lang.get('guildwars2.wvw', $.channelName, GW2_wvw_rank));
-                };
+                }
                 return;
-            };
+            }
             
             /**
              * @commandpath gw2 fractals/fracs - Displays the current fractal level associated with the api key set.
              */
             if (action.equalsIgnoreCase('fractals') || action.equalsIgnoreCase('fracs')) {
-                if (!GW2_fractal_level || GW2_fractal_level == undefined) {
+                if (!GW2_fractal_level || GW2_fractal_level === undefined) {
                     data = JSON.parse(_getJSON(GW2_apiURL + '/v2/account?access_token=' + GW2_apiKey));
-                    GW2_fractal_level = data['fractal_level'].toString();
+                    GW2_fractal_level = data.fractal_level.toString();
                     setTimeout(function(){ GW2_fractal_level = undefined; }, 1800000);
-                };
+                }
                 $.say($.lang.get('guildwars2.fractals', $.channelName, GW2_fractal_level));
                 return;
-            };
+            }
             if (action.equalsIgnoreCase('wiki')) {
                 if (args[1]) {
-                    var wiki_lang = args.filter(function(str){ return str != action });
-                    for (var i = 0; i < wiki_lang.length; i++) {
+                    var wiki_lang = args.filter(function(str){ return str != action; });
+                    for (i = 0; i < wiki_lang.length; i++) {
                         wiki_lang[i] = String(wiki_lang[i]).charAt(0).toLocaleUpperCase() + wiki_lang[i].slice(1);
-                    };
+                    }
                     $.say('http://wiki.guildwars2.com?search=' + encodeURI(String(wiki_lang).replace(/,/g,' ')));
-                };
+                }
                 return;
-            };
+            }
 
             /**
             * @commandpath gw2 build [gamemode] [character] - Returns a gw2tool.net link that will forward to the gw2skills.net build editor which will be adjusted to the current equipped build in a specified gamemode on a specified character associated with the api key set.
              */
             if (action.equalsIgnoreCase('build')) {
                 data = JSON.parse(_getJSON(GW2_apiURL + '/v2/characters?access_token=' + GW2_apiKey));
-                for (var i = 0; i < data.length; i++) {
+                for (i = 0; i < data.length; i++) {
                     if (data[i].equalsIgnoreCase(args[2].trim()) || data[i].equalsIgnoreCase(args[1].trim())) {
-                        var GW2ToolID = JSON.parse(_getJSON('http://gw2tool.net/api/token-check?token=' + GW2_apiKey))['code'];
-                        if (!GW2ToolID || !GW2ToolID.match(/^\w{10,10}$/)) { $.consoleLn('Error: Couldn\'t recieve GW2ToolID!'); return; };
+                        var GW2ToolID = JSON.parse(_getJSON('http://gw2tool.net/api/token-check?token=' + GW2_apiKey)).code;
+                        if (!GW2ToolID || !GW2ToolID.match(/^\w{10,10}$/)) { $.consoleLn('Error: Couldn\'t recieve GW2ToolID!'); return; }
                         _updateGW2ToolRights('http://gw2tool.net/api/save-rights?code=' + GW2ToolID);
 
                         if (args[1].match(/pve/i) || args[2].match(/pve/i)) {
-                            $.say($.lang.get('guildwars2.build.pve', data[i], encodeURI('https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pve/' + data[i])));
+                            $.say($.lang.get('guildwars2.build.pve', data[i], 'https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pve/' + data[i]));
                             return;
-                        };
+                        }
                         if (args[1].match(/(s)?pvp/i) || args[2].match(/(s)?pvp/i)) {
-                            $.say($.lang.get('guildwars2.build.pvp', data[i], encodeURI('https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pvp/' + data[i])));
+                            $.say($.lang.get('guildwars2.build.pvp', data[i], 'https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pvp/' + data[i]));
                             return;
-                        };
+                        }
                         if (args[1].match(/(wv)?wvw/i) || args[2].match(/(wv)?wvw/i)) {
-                            $.say($.lang.get('guildwars2.build.wvw', data[i], encodeURI('https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-wvw/' + data[i])));
+                            $.say($.lang.get('guildwars2.build.wvw', data[i], 'https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-wvw/' + data[i]));
                             return;
-                        };
-                    };
-                };
+                        }
+                    }
+                }
                 $.say($.lang.get('guildwars2.build.404'));
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 deathcounter/deaths [character] - Toggles a death counter for a specific character associated with the api key set and writes its value to '[...]/addons/guildwars2/session_deaths.txt'.
@@ -567,27 +579,31 @@
                     GW2_toggle_deathcounter = 0;
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.deathcounter.disabled'));
                 } else {
-                    if ($.isDirectory('./addons/guildwars2') != true && $.fileExists('./addons/guildwars2/session_deaths.txt') != true) {
+                    if ($.isDirectory('./addons/guildwars2') !== true && $.fileExists('./addons/guildwars2/session_deaths.txt') !== true) {
                         $.mkDir('./addons/guildwars2');
-                        var fil = new java.io.File ('./addons/guildwars2/', 'session_deaths.txt');
-                    };
+                        java.io.File ('./addons/guildwars2/', 'session_deaths.txt');
+                    }
                     if (args[1]) {
-                        data = JSON.parse(_getJSON(GW2_apiURL + '/v2/characters/' + args[1].trim() + '?access_token=' + GW2_apiKey))['deaths'];
-                        if (!data || data == undefined) {
+                        var charname = args.filter(function(str){ return str != action; });
+                        for (i = 0; i < charname.length; i++) {
+                            charname[i] = String(charname[i]).charAt(0).toLocaleUpperCase() + charname[i].slice(1).toLocaleLowerCase();
+                        }
+                        data = JSON.parse(_getJSON(GW2_apiURL + '/v2/characters/' + String(charname).replace(/,/g,' ') + '?access_token=' + GW2_apiKey)).deaths;
+                        if (!data || data === undefined) {
                             $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.deathcounter.error'));
                             return;
-                        };
+                        }
                         $.writeToFile('0☠', './addons/guildwars2/session_deaths.txt', false);
                         GW2_session_deaths = 0;
                         GW2_overall_deaths = parseInt(data);
-                        GW2_deathcounterChar = args[1].trim();
+                        GW2_deathcounterChar = String(charname).replace(/,/g,' ');
                         GW2_last_game =  JSON.parse(_getJSON(GW2_apiURL + '/v2/pvp/games?access_token=' + GW2_apiKey)).shift();
                         GW2_toggle_deathcounter = 1;
                         $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.deathcounter.enabled', GW2_deathcounterChar));
-                    };
-                };
+                    }
+                }
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 goldcounter - Toggles a gold counter for the gold associated with the api key set and writes initial gold, earnings plus losses to '[...]/addons/guildwars2/session_gold.txt'.
@@ -596,29 +612,29 @@
                 if (!$.isMod(sender)) {
                     $.say($.whisperPrefix(sender) + $.adminMsg);
                     return;
-                };
+                }
                 if (GW2_toggle_goldcounter == 1) {
                     GW2_toggle_goldcounter = 0;
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.goldcounter.disabled'));
                 } else {
-                    if ($.isDirectory('./addons/guildwars2') != true && $.fileExists('./addons/guildwars2/session_gold.txt') != true) {
+                    if ($.isDirectory('./addons/guildwars2') !== true && $.fileExists('./addons/guildwars2/session_gold.txt') !== true) {
                         $.mkDir('./addons/guildwars2');
-                        var fil = new java.io.File ('./addons/guildwars2/', 'session_gold.txt');
-                    };
+                        java.io.File ('./addons/guildwars2/', 'session_gold.txt');
+                    }
                     data = JSON.parse(_getJSON(GW2_apiURL + '/v2/account/wallet?access_token=' + GW2_apiKey));
-                    for (var i = 0; i < data.length; i++) {
-                        if (data[i]['id'] == 1 ) {
-                            var coins = parseInt(data[i]['value']);
-                        };
-                    };
+                    for (i = 0; i < data.length; i++) {
+                        if (data[i].id == 1 ) {
+                            coins = parseInt(data[i].value);
+                        }
+                    }
                     $.writeToFile(CalcCoins(coins) + '\n+0c', './addons/guildwars2/session_gold.txt', false);
                     GW2_session_gold = 0;
                     GW2_overall_gold = coins;
                     GW2_toggle_goldcounter = 1;
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.goldcounter.enabled'));    
-                };
+                }
                 return;
-            };
+            }
 
             /**
              * @commandpath gw2 coinsformat - Toggles between two different currency formats: '####.00,00g' or '####g 00s 00c' (default).
@@ -627,7 +643,7 @@
                 if (!$.isMod(sender)) {
                     $.say($.whisperPrefix(sender) + $.adminMsg);
                     return;
-                };
+                }
                 if (GW2_coinformat == 1) {
                     GW2_coinformat = 0;
                     $.inidb.set('settings', 'gw2_coinformat', '0');
@@ -638,10 +654,10 @@
                     $.inidb.set('settings', 'gw2_coinformat', '1');
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.coinsformat.toggle', '####.00,00g'));
                     $.consoleLn($.lang.get('guildwars2.coinsformat.toggle', '####,00.00g'));
-                };
+                }
                 return;
-            };
-        };
+            }
+        }
     });
 
     /**
