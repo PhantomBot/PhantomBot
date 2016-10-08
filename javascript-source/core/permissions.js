@@ -13,6 +13,7 @@
         gwSubUsers = [],
         modListUsers = [],
         users = [],
+        moderatorsCache = [],
         lastJoinPart = $.systemTime();
 
 
@@ -40,7 +41,7 @@
             }
         }
         return false;
-    };
+    }
     
     /**
      * @function userExists
@@ -55,7 +56,7 @@
             }
         }
         return false;
-    };
+    }
 
     /**
      * @function isBot
@@ -65,7 +66,7 @@
      */
     function isBot(username) {
         return username.equalsIgnoreCase($.botName);
-    };
+    }
 
     /**
      * @function isOwner
@@ -75,7 +76,7 @@
      */
     function isOwner(username) {
         return username.equalsIgnoreCase($.ownerName) || username.equalsIgnoreCase($.botName);
-    };
+    }
 
     /**
      * @function isCaster
@@ -84,8 +85,8 @@
      * @returns {boolean}
      */
     function isCaster(username) {
-        return getUserGroupId(username.toLowerCase()) == 0 || isOwner(username) || isBot(username);
-    };
+        return getUserGroupId(username.toLowerCase()) == 0 || isOwner(username);
+    }
 
     /**
      * @function isAdmin
@@ -94,8 +95,8 @@
      * @returns {boolean}
      */
     function isAdmin(username) {
-        return getUserGroupId(username.toLowerCase()) <= 1 || isOwner(username) || isBot(username);
-    };
+        return getUserGroupId(username.toLowerCase()) <= 1 || isOwner(username);
+    }
 
     /**
      * @function isMod
@@ -104,19 +105,19 @@
      * @returns {boolean}
      */
     function isMod(username) {
-        return getUserGroupId(username.toLowerCase()) <= 2 || isOwner(username) || isBot(username);
-    };
+        return getUserGroupId(username.toLowerCase()) <= 2 || isOwner(username);
+    }
 
     /**
-     * @function isOwner
+     * @function isModv3
      * @export $
      * @param {string} username
      * @param {Object} tags
      * @returns {boolean}
      */
     function isModv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('user-type').equalsIgnoreCase('mod')) || isMod(username.toLowerCase());
-    };
+        return (tags !== null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase());
+    }
 
     /**
      * @function isSub
@@ -127,7 +128,7 @@
      */
     function isSub(username) {
         return hasKey(subUsers, username, 0) || isGWSub(username.toLowerCase());
-    };
+    }
 
     /**
      * @function isGWSub
@@ -136,7 +137,7 @@
      */
     function isGWSub(username) {
         return (username.toLowerCase() in gwSubUsers);
-    };
+    }
 
     /**
      * @function isSubv3
@@ -147,8 +148,8 @@
      * @info this also included gamewisp subs.
      */
     function isSubv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || isSub(username.toLowerCase());
-    };
+        return (tags !== null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || isSub(username.toLowerCase());
+    }
 
     /**
      * @function isTurbo
@@ -157,8 +158,8 @@
      * @returns {boolean}
      */
     function isTurbo(tags) {
-        return (tags != null && tags != '{}' && tags.get('turbo').equalsIgnoreCase('1')) || false;
-    };
+        return (tags !== null && tags != '{}' && tags.get('turbo').equalsIgnoreCase('1')) || false;
+    }
 
     /**
      * @function isDonator
@@ -168,7 +169,7 @@
      */
     function isDonator(username) {
         return getUserGroupId(username.toLowerCase()) == 4;
-    };
+    }
 
     /**
      * @function isHoster
@@ -178,7 +179,7 @@
      */
     function isHoster(username) {
         return getUserGroupId(username.toLowerCase()) == 5;
-    };
+    }
 
     /**
      * @function isReg
@@ -187,8 +188,8 @@
      * @returns {boolean}
      */
     function isReg(username) {
-        return getUserGroupId(username.toLowerCase()) <= 6 || isOwner(username) || isBot(username);
-    };
+        return getUserGroupId(username.toLowerCase()) <= 6 || isOwner(username);
+    }
 
     /**
      * @function hasModeO
@@ -198,7 +199,7 @@
      */
     function hasModeO(username) {
         return hasKey(modeOUsers, username.toLowerCase(), 0);
-    };
+    }
 
     /**
      * @function hasModList
@@ -208,7 +209,7 @@
      */
     function hasModList(username) {
         return hasKey(modListUsers, username.toLowerCase());
-    };
+    }
 
     /**
      * @function isTwitchSub
@@ -217,7 +218,7 @@
      */
     function isTwitchSub(username) {
         return hasKey(subUsers, username, 0);
-    };
+    }
 
     /**
      * @function getUserGroupId
@@ -231,7 +232,7 @@
         } else {
             return 7;
         }
-    };
+    }
 
     /**
      * @function getUserGroupName
@@ -241,7 +242,7 @@
      */
     function getUserGroupName(username) {
         return getGroupNameById(getUserGroupId(username.toLowerCase()));
-    };
+    }
 
     /**
      * @function getGroupNameById
@@ -256,7 +257,7 @@
         } else {
             return userGroups[7];
         }
-    };
+    }
 
     /**
      * @function getGroupIdByName
@@ -272,7 +273,7 @@
             }
         }
         return 7;
-    };
+    }
 
     /**
      * @function getGroupPointMultiplier
@@ -282,7 +283,7 @@
      */
     function getGroupPointMultiplier(username) {
         return parseInt($.inidb.get('grouppoints', getUserGroupName(username.toLowerCase())));
-    };
+    }
 
     /**
      * @function setUserGroupById
@@ -292,7 +293,7 @@
      */
     function setUserGroupById(username, id) {
         $.inidb.set('group', username.toLowerCase(), id);
-    };
+    }
 
     /**
      * @function setUserGroupByName
@@ -302,7 +303,7 @@
      */
     function setUserGroupByName(username, groupName) {
         setUserGroupById(username.toLowerCase(), getGroupIdByName(groupName.toLowerCase()));
-    };
+    }
 
     /**
      * @function reloadGroups
@@ -315,7 +316,7 @@
         for (i in groupKeys) {
             userGroups[parseInt(groupKeys[i])] = $.inidb.get('groups', groupKeys[i]);
         }
-    };
+    }
 
     /**
      * @function getUsernamesArrayByGroupId
@@ -334,7 +335,7 @@
             }
         }
         return array;
-    };
+    }
 
     /**
      * @function getGWTier
@@ -346,7 +347,7 @@
             return gwSubUsers[username];
         }
         return 0;
-    };
+    }
 
     /**
      * @function addGWSubUsersList
@@ -355,7 +356,7 @@
      */
     function addGWSubUsersList(username, tier) {
         gwSubUsers[username] = tier;
-    };
+    }
 
     /**
      * @function delGWSubUsersList
@@ -364,7 +365,7 @@
      */
     function delGWSubUsersList(username) {
         delete gwSubUsers[username];
-    };
+    }
    
     /**
      * @function addSubUsersList
@@ -379,7 +380,7 @@
             }
         }
         subUsers.push([username, $.systemTime() + 1e4]);
-    };
+    }
 
     /**
      * @function delSubUsersList
@@ -396,7 +397,50 @@
             }
         }
         subUsers = newSubUsers;
-    };
+    }
+
+    /**
+     * @function isModeratorCache
+     * @export $
+     * @param username
+     */
+    function isModeratorCache(username) {
+        return (moderatorsCache[username] !== undefined);
+    }
+
+    /**
+     * @function addModeratorToCache
+     * @export $
+     * @param username
+     */
+    function addModeratorToCache(username) {
+        moderatorsCache[username] = true;
+    }
+
+    /**
+     * @function removeModeratorFromCache
+     * @export $
+     * @param username
+     */
+    function removeModeratorFromCache(username) {
+        if (moderatorsCache[username] !== undefined) {
+            delete moderatorsCache[username];
+        }
+    }
+
+    /**
+     * @function loadModeratorsCache
+     */
+    function loadModeratorsCache() {
+        var keys = $.inidb.GetKeyList('group', ''),
+            i;
+
+        for (i in keys) {
+            if (parseInt($.inidb.get('group', keys[i])) <= 2) {
+                addModeratorToCache(keys[i].toLowerCase());
+            }
+        }
+    }
 
     /**
      * @function restoreSubscriberStatus
@@ -445,7 +489,7 @@
                 }
             }
         }
-    };
+    }
 
     function getGroupList() {
         var keys = $.inidb.GetKeyList('groups', ''),
@@ -464,7 +508,7 @@
             temp.push('Permission IDs: ' + groups[i].id + ' (' + groups[i].group + ')');
         }
         return temp.join(', ');
-    };
+    }
 
     /**
      * @function generateDefaultGroupPoints
@@ -486,7 +530,7 @@
         $.getSetIniDbString('grouppointsoffline', 'Regular', '-1');
         $.getSetIniDbString('grouppoints', 'Viewer', '-1');
         $.getSetIniDbString('grouppointsoffline', 'Viewer', '-1');
-    };
+    }
 
     /**
      * @function generateDefaultGroups
@@ -526,7 +570,7 @@
         }
         $.inidb.set('group', $.ownerName.toLowerCase(), 0);
         $.inidb.set('group', $.botName.toLowerCase(), 0);
-    };
+    }
 
     /**
      * @event ircChannelJoinUpdate
@@ -607,6 +651,7 @@
         if (event.getMode().equalsIgnoreCase('o')) {
             if (event.getAdd().toString().equals('true')) {
                 if (!hasModeO(username)) {
+                    addModeratorToCache(username.toLowerCase());
                     if (isOwner(username)) {
                         modeOUsers.push([username, 0]);
                         $.inidb.set('group', username, '0');
@@ -623,6 +668,8 @@
             } else {
                 if (hasModeO(username)) {
                     var newmodeOUsers = [];
+
+                    removeModeratorFromCache(username.toLowerCase());
 
                     for (i in modeOUsers) {
                         if (!modeOUsers[i][0].equalsIgnoreCase(username)) {
@@ -761,8 +808,13 @@
                 return;
             }
 
-            $.inidb.set('group', username.toLowerCase(), groupId);
             $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.username.resolve(username), getGroupNameById(groupId) + " (" + groupId + ")"));
+            $.inidb.set('group', username.toLowerCase(), groupId);
+            if (groupId <= 2) {
+                addModeratorToCache(username.toLowerCase());
+            } else {
+                removeModeratorFromCache(username.toLowerCase());
+            }
         }
 
         /**
@@ -868,6 +920,11 @@
         reloadGroups();
         generateDefaultGroups();
         generateDefaultGroupPoints();
+
+        /* Load the moderators cache. This needs to load after the privmsg check. */
+        setTimeout(function() {
+            loadModeratorsCache();
+        }, 7000);
     });
 
     /** Export functions to API */
@@ -888,6 +945,7 @@
     $.isAdmin = isAdmin;
     $.isMod = isMod;
     $.isModv3 = isModv3;
+    $.isModeratorCache = isModeratorCache;
     $.isOwner = isOwner;
     $.isSub = isSub;
     $.isSubv3 = isSubv3;
@@ -909,5 +967,7 @@
     $.restoreSubscriberStatus = restoreSubscriberStatus;
     $.addGWSubUsersList = addGWSubUsersList;
     $.delGWSubUsersList = delGWSubUsersList;
+    $.addModeratorToCache = addModeratorToCache;
+    $.removeModeratorFromCache = removeModeratorFromCache;
     $.getGWTier = getGWTier;
 })();
