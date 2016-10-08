@@ -24,10 +24,10 @@
      */
     function hasLinks(event, aggressive) {
         try {
-            var message = (event.getMessage() + '');
-            
             /**
              * @info commented out because this is not used at all since it does not replace correctly in the function.
+             *
+             * var message = event.getMessage();
              * message = deobfuscateLinks(message, (aggressive));
              */
 
