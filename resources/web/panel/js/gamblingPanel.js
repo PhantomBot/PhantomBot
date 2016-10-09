@@ -24,6 +24,7 @@
  */
 
 (function() {
+    var eligibility;
 
     /**
      * @function onMessage
@@ -44,6 +45,51 @@
             if (panelCheckQuery(msgObject, 'gambling_betsettings')) {
                 for (idx in msgObject['results']) {
                     $('#' + msgObject['results'][idx]['key'] + 'Input').attr('placeholder', msgObject['results'][idx]['value']).blur();
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'gambling_rafflesettings')) {
+                for (idx in msgObject['results']) {
+                    var value = msgObject['results'][idx]['value'],
+                        key = msgObject['results'][idx]['key'];
+
+                    if (key == 'raffleMessage') {
+                        $('#raffle-message-input').val(value);
+                    }
+
+                    if (key == 'raffleMessageInterval') {
+                        if (value == 0) {
+                            $('#raffle-message-timer2').html('Disabled');
+                            $('#raffle-message-timer').html('0');
+                        } else {
+                            $('#raffle-message-timer2').html(value + ' Minutes');
+                            $('#raffle-message-timer').val(value);
+                        }
+                    }
+
+                    if (key == 'noRepickSame') {
+                        if (value == 'true') {
+                            $('#raffle-repick').html('No');
+                        } else {
+                            $('#raffle-repick').html('Yes');
+                        }
+                    }
+
+                    if (key == 'raffleWhisperWinner') {
+                        if (value == 'true') {
+                            $('#raffle-whisper-winner').html('Yes');
+                        } else {
+                            $('#raffle-whisper-winner').html('No');
+                        }
+                    }
+
+                    if (key == 'raffleMSGToggle') {
+                        if (value == 'true') {
+                            $('#raffle-message').html('Enabled');
+                        } else {
+                            $('#raffle-message').html('Disabled');
+                        }
+                    }
                 }
             }
 
@@ -94,26 +140,12 @@
                 }
             }
 
-            if (panelCheckQuery(msgObject, 'gambling_rafflemessage')) {
-                $('#raffleMsg').val(msgObject['results']['raffleMessage']);
-            }
-
-            if (panelCheckQuery(msgObject, 'gambling_raffletimer')) {
-                $('#raffleTimer').val(msgObject['results']['raffleMessageInterval']);
-            }
-
             if (panelCheckQuery(msgObject, 'gambling_trafflemessage')) {
                 $('#traffleMsg').val(msgObject['results']['traffleMessage']);
             }
 
             if (panelCheckQuery(msgObject, 'gambling_traffletimer')) {
                 $('#traffleTimer').val(msgObject['results']['traffleMessageInterval']);
-            }
-
-            if (panelCheckQuery(msgObject, 'gambling_norepicksame')) {
-                if (panelMatch(msgObject['results']['noRepickSame'], 'false')) {
-                    $('#raffleMultipleRepick').attr('checked', 'checked');
-                }
             }
 
             if (panelCheckQuery(msgObject, 'gambling_rafflemsgtoggle')) {
@@ -188,17 +220,14 @@
      */
     function doQuery() {
         sendDBKeys('gambling_betsettings', 'betSettings');
+        sendDBKeys('gambling_rafflesettings', 'raffleSettings');
         sendDBKeys('gambling_betresults', 'betresults');
         sendDBKeys('gambling_auctionresults', 'auctionresults');
         sendDBQuery('gambling_raffleresults', 'raffleresults', 'winner');
         sendDBQuery('gambling_traffleresults', 'traffleresults', 'winner');
         sendDBKeys('gambling_rafflelist', 'raffleList');
         sendDBKeys('gambling_trafflelist', 'ticketsList');
-        sendDBQuery('gambling_norepicksame', 'settings', 'noRepickSame');
-        sendDBQuery('gambling_rafflemsgtoggle', 'settings', 'raffleMSGToggle');
         sendDBQuery('gambling_trafflemsgtoggle', 'settings', 'tRaffleMSGToggle');
-        sendDBQuery('gambling_raffletimer', 'settings', 'raffleMessageInterval');
-        sendDBQuery('gambling_rafflemessage', 'settings', 'raffleMessage');
         sendDBQuery('gambling_traffletimer', 'settings', 'traffleMessageInterval');
         sendDBQuery('gambling_trafflemessage', 'settings', 'traffleMessage');
         sendDBQuery('gambling_rafflelistentries', 'raffleresults', 'raffleEntries');
@@ -249,10 +278,110 @@
     }
 
     /**
-     * @function raffleRepick
+     * @function timeRaffleOpen
      */
-    function raffleRepick() {
-        sendCommand('raffle repick');
+    function timeRaffleOpen() {
+        var keyword = $('#raffle-time-keyword').val(),
+            minimumTime = $('#raffle-time-cost').val(),
+            timer = $('#raffle-normal-timer').val(),
+            reg = $('#raffle-normal-regluck').val(),
+            sub = $('#raffle-normal-subluck').val();
+
+        if (keyword.length == 0 && minimumTime.length == 0) {
+            return;
+        }
+
+        if (sub == 0) {
+            sub = 1
+        }
+
+        if (reg == 0) {
+            reg = 1
+        }
+
+        sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
+        sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
+        sendCommand('reloadraffle');
+
+        sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usetime');
+        $('#raffle-keyword').val('');
+        $('#raffle-cost').val('');
+        $('#raffle-time-sub').html('1 Times');
+        $('#raffle-time-reg').html('1 Times');
+        $('#raffle-time-timer2').html('Until closed');
+        $('#raffle-normal-timer').val('0');
+        $('#raffle-normal-regluck').val('0');
+        $('#raffle-normal-subluck').val('0');
+    }
+
+    /**
+     * @function pointsRaffleOpen
+     */
+    function pointsRaffleOpen() {
+        var keyword = $('#raffle-keyword').val(),
+            minimumTime = $('#raffle-cost').val(),
+            timer = $('#raffle-normal-timer').val(),
+            reg = $('#raffle-normal-regluck').val(),
+            sub = $('#raffle-normal-subluck').val();
+
+        if (keyword.length == 0 && minimumTime.length == 0) {
+            return;
+        }
+
+        sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
+        sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
+        sendCommand('reloadraffle');
+
+        sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usepoints');
+        $('#raffle-keyword').val('');
+        $('#raffle-cost').val('');
+        $('#raffle-points-sub').html('1 Times');
+        $('#raffle-points-reg').html('1 Times');
+        $('#raffle-points-timer2').html('Until closed');
+        $('#raffle-normal-timer').val('0');
+        $('#raffle-normal-regluck').val('0');
+        $('#raffle-normal-subluck').val('0');
+    }
+
+    /**
+     * @function normalRaffleOpen
+     */
+    function normalRaffleOpen() {
+        var keyword = $('#raffle-normal-keyword').val(),
+            timer = $('#raffle-normal-timer').val(),
+            reg = $('#raffle-normal-regluck').val(),
+            sub = $('#raffle-normal-subluck').val();
+
+        if (keyword.length == 0) {
+            return;
+        }
+
+        sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
+        sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
+        sendCommand('reloadraffle');
+
+        sendCommand('raffle open ' + keyword + ' ' + timer + ' ' + eligibility);
+        $('#raffle-normal-keyword').val('');
+        $('#raffle-normal-sub').html('1 Times');
+        $('#raffle-normal-reg').html('1 Times');
+        $('#raffle-normal-timer2').html('Until closed');
+        $('#raffle-normal-timer').val('0');
+        $('#raffle-normal-regluck').val('0');
+        $('#raffle-normal-subluck').val('0');
+    }
+
+    /**
+     * @function raffleSettings
+     */
+    function raffleSettings() {
+        var message = $('#raffle-message-input').val(),
+            interval = $('#raffle-message-timer').val();
+
+        console.log(message + ' ' + interval);
+
+        sendDBUpdate('raffle_settings_set', 'raffleSettings', 'raffleMessage', message);
+        sendDBUpdate('raffle_settings_set', 'raffleSettings', 'raffleMessageInterval', String(interval));
+        sendCommand('reloadraffle');
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
 
@@ -261,28 +390,34 @@
      */
     function raffleClose() {
         sendCommand('raffle close');
+    }
+
+    /**
+     * @function raffleRepick
+     */
+    function raffleRepick() {
+        sendCommand('raffle repick');
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
-     * @function raffleOpen
+     * @function setEligibility
      */
-    function raffleOpen() {
-        var keyword = $('#raffleKeywordInput').val(),
-            cost = $('#raffleCostInput').val(),
-            timer = $('#raffleTimerInput').val(),
-            followers = $('#raffleFollowerInput:checked').val();
+    function setEligibility(value) {
+        if (value == 'followers') {
+            eligibility = '-followers';
+        } else {
+            eligibility = '';
+        }
+    }
 
-        if (timer.length === 0) {
-            timer = "0";
-        }
-        if (keyword.length > 0 && cost.length > 0) {
-            sendCommand('raffle open ' + keyword + ' ' + cost + ' ' + timer + ' ' + followers);
-            $('#raffleKeywordInput').val(''),
-            $('#raffleCostInput').val(''),
-            $('#raffleTimerInput').val(''),
-            $('#raffleFollowerInput:checkbox').removeAttr('checked');
-        }
+    /**
+     * @function dropdownSet
+     */
+    function dropdownSet(table, key, value) {
+        sendDBUpdate('dropdown_set', table, key, value);
+        sendCommand('reloadraffle');
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
@@ -317,28 +452,6 @@
         }
     }
 
-    function toggleRaffleMultipleRepick() {
-        var value = $('#raffleMultipleRepick').attr('checked', 'checked');
-
-        if ($('#raffleMultipleRepick').is(':checked') === true) {
-            sendDBUpdate("gambling_norepicksame", "settings", "noRepickSame", 'false');
-        } else {
-            sendDBUpdate("gambling_norepicksame", "settings", "noRepickSame", 'true');
-        }
-        setTimeout(function() { sendCommand("reloadraffle"); }, TIMEOUT_WAIT_TIME);
-    }
-
-    function toggleRaffleMsg() {
-        var value = $('#raffleEnterMsg').attr('checked', 'checked');
-
-        if ($('#raffleEnterMsg').is(':checked') === true) {
-            sendDBUpdate("gambling_rafflemsgtoggle", "settings", "raffleMSGToggle", 'true');
-        } else {
-            sendDBUpdate("gambling_rafflemsgtoggle", "settings", "raffleMSGToggle", 'false');
-        }
-        setTimeout(function() { sendCommand("reloadraffle"); }, TIMEOUT_WAIT_TIME);
-    }
-
     function toggleTRaffleMsg() {
         var value = $('#traffleEnterMsg').attr('checked', 'checked');
 
@@ -348,19 +461,6 @@
             sendDBUpdate("gambling_trafflemsgtoggle", "settings", "tRaffleMSGToggle", 'false');
         }
         setTimeout(function() { sendCommand("reloadtraffle"); }, TIMEOUT_WAIT_TIME);
-    }
-
-    function updateRaffleSettings(setting) {
-        var value = $('#' + setting).val();
-
-        if (setting == "raffleMsg") {
-            sendDBUpdate('gambling_rafflemessage', 'settings', 'raffleMessage', value);
-        }
-
-        if (setting == "raffleTimer") {
-            sendDBUpdate('gambling_rafflemessage', 'settings', 'raffleMessageInterval', value);
-        }
-        setTimeout(function() { sendCommand("reloadraffle"); }, TIMEOUT_WAIT_TIME);
     }
 
     function updateTRaffleSettings(setting) {
@@ -390,14 +490,14 @@
         }
     }, INITIAL_WAIT_TIME);
 
-    // Query the DB every 20 seconds for updates.
+    // Query the DB every 25 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 14 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Gambling Data', 'success', 1000);
             doQuery();
         }
-    }, 2e4);
+    }, 2e5);
 
 
     // Export to HTML
@@ -406,15 +506,20 @@
     $.betHandler = betHandler;
     $.auctionOpen = auctionOpen;
     $.auctionClose = auctionClose;
-    $.raffleRepick = raffleRepick;
-    $.raffleOpen = raffleOpen;
-    $.raffleClose = raffleClose;
     $.traffleRepick = traffleRepick;
     $.traffleOpen = traffleOpen;
     $.traffleClose = traffleClose;
-    $.toggleRaffleMultipleRepick = toggleRaffleMultipleRepick;
-    $.toggleRaffleMsg = toggleRaffleMsg;
     $.toggleTRaffleMsg = toggleTRaffleMsg;
-    $.updateRaffleSettings = updateRaffleSettings;
     $.updateTRaffleSettings = updateTRaffleSettings;
+    $.setEligibility = setEligibility;
+
+    $.raffle = {
+        openTime: timeRaffleOpen,
+        openPoints: pointsRaffleOpen,
+        openNormal: normalRaffleOpen,
+        end: raffleClose,
+        repick: raffleRepick,
+        settings: raffleSettings,
+        set: dropdownSet,
+    };
 })();

@@ -121,7 +121,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3s'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -463,15 +463,36 @@
         $.inidb.set('updates', 'installedv2.3s', 'true');
     }
 
-    /* version 2.3.3 updates */
-    if (!$.inidb.exists('updates', 'installedv2.3.3') || $.inidb.get('updates', 'installedv2.3.3') != 'true') {
+    /* version 2.3.3s updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.3s') || $.inidb.get('updates', 'installedv2.3.3s') != 'true') {
         $.consoleLn('Starting ' + $.version + ' updates...');
 
         $.consoleLn('Deleting the old emotes cache.');
         $.inidb.RemoveFile('emotecache');
 
+        $.consoleLn('Updating raffle settings...');
+        if ($.inidb.exists('settings', 'raffleMSGToggle')) {
+            $.inidb.set('raffleSettings', 'raffleMSGToggle', $.inidb.get('settings', 'raffleMSGToggle'));
+            $.inidb.del('settings', 'raffleMSGToggle');
+        }
+
+        if ($.inidb.exists('settings', 'noRepickSame')) {
+            $.inidb.set('raffleSettings', 'noRepickSame', $.inidb.get('settings', 'noRepickSame'));
+            $.inidb.del('settings', 'noRepickSame');
+        }
+
+        if ($.inidb.exists('settings', 'raffleMessage')) {
+            $.inidb.set('raffleSettings', 'raffleMessage', $.inidb.get('settings', 'raffleMessage'));
+            $.inidb.del('settings', 'raffleMessage');
+        }
+
+        if ($.inidb.exists('settings', 'raffleMessageInterval')) {
+            $.inidb.set('raffleSettings', 'raffleMessageInterval', $.inidb.get('settings', 'raffleMessageInterval'));
+            $.inidb.del('settings', 'raffleMessageInterval');
+        }
+
         $.consoleLn( $.version + ' updates completed!');
-        $.inidb.set('updates', 'installedv2.3.3', 'true');
+        $.inidb.set('updates', 'installedv2.3.3s', 'true');
     }
 
     /**
