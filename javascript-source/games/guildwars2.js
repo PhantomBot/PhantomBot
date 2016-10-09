@@ -8,6 +8,11 @@
  *
  *          - CHANGELOG -
  *
+ *    V3.1.3
+ *    - Fixed !gw2 build for characters with multiple surnames.
+ *    - Fixed !gw2 build for characters with a gamemode abbreviation inside their names.
+ *    - Added 'fracs' as subcommand to the register.
+ *
  *    V3.0.4
  *    - Improvements to code.
  *        Replaced string notations with dot notations for fetching JSON.
@@ -15,9 +20,9 @@
  *        Removed unused variables.
  *        Fixed scoping for some variables.
  *        Removed unnecessary URI encoding.
- *    - Fixed deathcounter for character names with multiple surnames.
+ *    - Fixed deathcounter for characters with multiple surnames.
  *    - Added subcommands to the register.
- *    - Fixed deathcounter and goldcounter update interval being 10 seconds, not 5 minutes.
+ *    - Fixed deathcounter and goldcounter update interval being 10 seconds instead of 5 minutes.
  *
  *    V2.9.7
  *    - !gw2 deathcounter and !gw2 goldcounter can now be called by moderators and above.
@@ -307,7 +312,7 @@
                 }
                 if (!args[1] || !args[1].match(/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{20}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('guildwars2.setkey.404'));
-                    $.log.error('guildwars2.js', 308, 'Invalid GW2 API Key!');
+                    $.log.error('guildwars2.js', 310, 'Invalid GW2 API Key!');
                     return;
                 }
                 $.inidb.set('settings', 'gw2_apikey', args[1]);
@@ -545,22 +550,26 @@
              */
             if (action.equalsIgnoreCase('build')) {
                 data = JSON.parse(_getJSON(GW2_apiURL + '/v2/characters?access_token=' + GW2_apiKey));
+                args = args.filter(function(str){ return str != action; }).toString().replace(/,/g, ' ').toLocaleLowerCase();
                 for (i = 0; i < data.length; i++) {
-                    if (data[i].equalsIgnoreCase(args[2].trim()) || data[i].equalsIgnoreCase(args[1].trim())) {
-                        var GW2ToolID = JSON.parse(_getJSON('http://gw2tool.net/api/token-check?token=' + GW2_apiKey)).code;
-                        if (!GW2ToolID || !GW2ToolID.match(/^\w{10,10}$/)) { $.consoleLn('Error: Couldn\'t recieve GW2ToolID!'); return; }
-                        _updateGW2ToolRights('http://gw2tool.net/api/save-rights?code=' + GW2ToolID);
-
-                        if (args[1].match(/pve/i) || args[2].match(/pve/i)) {
-                            $.say($.lang.get('guildwars2.build.pve', data[i], 'https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pve/' + data[i]));
+                    if (args.includes(data[i].toLocaleLowerCase())) {
+                        var gamemode = args.replace(data[i].toLocaleLowerCase(), '');
+                        var GW2ToolID;
+                        if (gamemode.match(/pve|(s)?pvp|(wv)?wvw/i)) {
+                            GW2ToolID = JSON.parse(_getJSON('http://gw2tool.net/api/token-check?token=' + GW2_apiKey)).code;
+                            if (!GW2ToolID || !GW2ToolID.match(/^\w{10,10}$/)) { $.consoleLn('Error: Couldn\'t recieve GW2ToolID!'); return; }
+                            _updateGW2ToolRights('http://gw2tool.net/api/save-rights?code=' + GW2ToolID);
+                        }
+                        if (gamemode.match(/pve/i)) {
+                            $.say($.lang.get('guildwars2.build.pve', data[i], 'https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pve/' + encodeURI(data[i])));
                             return;
                         }
-                        if (args[1].match(/(s)?pvp/i) || args[2].match(/(s)?pvp/i)) {
-                            $.say($.lang.get('guildwars2.build.pvp', data[i], 'https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pvp/' + data[i]));
+                        if (gamemode.match(/(s)?pvp/i)) {
+                            $.say($.lang.get('guildwars2.build.pvp', data[i], 'https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-pvp/' + encodeURI(data[i])));
                             return;
                         }
-                        if (args[1].match(/(wv)?wvw/i) || args[2].match(/(wv)?wvw/i)) {
-                            $.say($.lang.get('guildwars2.build.wvw', data[i], 'https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-wvw/' + data[i]));
+                        if (gamemode.match(/(wv)?wvw/i)) {
+                            $.say($.lang.get('guildwars2.build.wvw', data[i], 'https://gw2tool.net/en/' + GW2ToolID + '/gw2skills-wvw/' + encodeURI(data[i])));
                             return;
                         }
                     }
@@ -684,6 +693,7 @@
             $.registerChatSubcommand('gw2', 'guilds', 7);
             $.registerChatSubcommand('gw2', 'wvw', 7);
             $.registerChatSubcommand('gw2', 'fractals', 7);
+            $.registerChatSubcommand('gw2', 'fracs', 7);
             $.registerChatSubcommand('gw2', 'build', 7);
             $.registerChatSubcommand('gw2', 'deathcounter', 2);
             $.registerChatSubcommand('gw2', 'deaths', 2);
