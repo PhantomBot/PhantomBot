@@ -102,7 +102,7 @@
         }
 
         if (parseInt(messageInterval) !== 0) {
-            interval = setInterval(function() { $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', Object.keys(entered).length)); }, messageInterval * 6e4);
+            interval = setInterval(function() { $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', String(Object.keys(entered).length))); }, messageInterval * 6e4);
         }
 
         /* Clear the old raffle data */
