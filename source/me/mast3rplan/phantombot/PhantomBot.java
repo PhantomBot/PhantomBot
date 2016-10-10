@@ -939,7 +939,7 @@ public class PhantomBot implements Listener {
     	FollowersCache.killall();
     	print("Terminating the Twitch channel subscriber cache...");
     	SubscribersCache.killall();
-    	print("Terminating the TwitchAlerts cache...");
+    	print("Terminating the Streamlabs cache...");
     	DonationsCache.killall();
     	print("Terminating the StreamTip cache...");
     	StreamTipCache.killall();
