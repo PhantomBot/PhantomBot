@@ -723,7 +723,7 @@ public class PhantomBot implements Listener {
     	}
 
     	/** Enable gamewhisp if the oAuth is set */
-    	if (!gameWispOAuth.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/gameWispHandler.js").equals("true")) {
+    	if (!gameWispOAuth.isEmpty() && dataStore.GetString("modules", "", "./handlers/gameWispHandler.js").equals("true")){
     		/** Set the oAuths */
     		GameWispAPIv1.instance().SetAccessToken(gameWispOAuth);
             GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
