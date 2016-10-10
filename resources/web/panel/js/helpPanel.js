@@ -58,6 +58,7 @@
                                   "    Ion.Sound 3.0.7<br>" +
                                   "    FlotCharts 0.8.3<br>" +
                                   "    FooTable 3.0.10<br>" +
+                                  "    ReconnectingWebsocket<br>" +
                                   "</small>");
         }
     }
