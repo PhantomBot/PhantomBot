@@ -221,6 +221,7 @@ public class PhantomBot implements Listener {
 	public static Boolean wsIRCAlternateBurst = false;
 	private static Boolean newSetup = false;
 	private Boolean devCommands = true;
+	private Boolean joined = false;
 
 
     /** 
@@ -987,6 +988,13 @@ public class PhantomBot implements Listener {
      */
     @Subscribe
     public void ircJoinComplete(IrcJoinCompleteEvent event) {
+    	/* Check if the bot already joined once. */
+    	if (joined) {
+    		return;
+    	}
+
+    	joined = true;
+
     	this.chanName = event.getChannel().getName();
     	this.session = event.getSession();
 
