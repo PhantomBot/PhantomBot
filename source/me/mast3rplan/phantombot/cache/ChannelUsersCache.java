@@ -226,13 +226,13 @@ public class ChannelUsersCache implements Runnable {
 
             this.cache = newCache;
 
-            for (String joined : join) {
-                //EventBus.instance().post(new IrcChannelJoinUpdateEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getChannel(), joined));
+            /*for (String joined : join) {
+                EventBus.instance().post(new IrcChannelJoinUpdateEvent(PhantomBot.getSession(this.channel), PhantomBot.getChannel(this.channel), joined));
             }
 
             for (String parted : part) {
-                //EventBus.instance().post(new IrcChannelLeaveEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getChannel(), parted, "Left"));
-            }
+                EventBus.instance().post(new IrcChannelLeaveEvent(PhantomBot.getSession(this.channel), PhantomBot.getChannel(this.channel), parted, "Left"));
+            }*/
 
             firstTime = false;
         }
