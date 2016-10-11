@@ -6,7 +6,47 @@
  */
 (function() {
     var patterns = {
-            link: new RegExp('((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)' + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_' + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?' + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+' + '(?:' + '(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])' + '|(?:biz|b[abdefghijmnorstvwyz])' + '|(?:cat|com|coop|c[acdfghiklmnoruvxyz])' + '|d[ejkmoz]' + '|(?:edu|e[cegrstu])' + '|f[ijkmor]' + '|(?:gov|g[abdefghilmnpqrstuwy])' + '|h[kmnrtu]' + '|(?:info|int|i[delmnoqrst])' + '|(?:jobs|j[emop])' + '|k[eghimnrwyz]' + '|l[abcikrstuvy]' + '|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])' + '|(?:name|net|n[acefgilopruz])' + '|(?:org|om)' + '|(?:pro|p[aefghklmnrstwy])' + '|qa' + '|r[eouw]' + '|s[abcdeghijklmnortuvyz]' + '|(?:tel|travel|t[cdfghjklmnoprtvwz])' + '|u[agkmsyz]' + '|v[aceginu]' + '|m[e]' + '|(?:stream)' + '|(?:moe)' + '|(?:xxx)' + '|w[fs]' + '|y[etu]' + '|z[amw]))' + '|(?:(?:25[0-5]|2[0-4]' + '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]' + '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]' + '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}' + '|[1-9][0-9]|[0-9])))' + '(?:\\:\\d{1,5})?)' + '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~' + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?' + '(?:\\b|$)' + '|(magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'i'),
+            link: new RegExp('((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)'
+             + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_'
+             + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?'
+             + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+'
+             + '(?:'
+             + '(?:aero|arpa|app|a[cdefgilmnoqrstuwxz])'
+             + '|(?:biz|bar|best|bingo|bot|b[abdefghijmnorstvwyz])'
+             + '|(?:cat|com|coop|cash|chat|codes|cool|c[acdfghiklmnoruvxyz])'
+             + '|d[ejkmoz]'
+             + '|(?:edu|e[cegrstu])'
+             + '|(?:fyi|f[ijkmor])'
+             + '|(?:gov|g[abdefghilmnpqrstuwy])'
+             + '|(?:how|h[kmnrtu])'
+             + '|(?:info|int|i[delmnoqrst])'
+             + '|(?:jobs|j[emop])'
+             + '|k[eghimnrwyz]'
+             + '|l[abcikrstuvy]'
+             + '|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])'
+             + '|(?:name|net|n[acefgilopruz])'
+             + '|(?:org|om)'
+             + '|(?:pro|p[aefghklmnrstwy])'
+             + '|qa'
+             + '|(?:rodeo|rocks|r[eouw])'
+             + '|(?:stream|support|sale|s[abcdeghijklmnortuvyz])'
+             + '|(?:tel|travel|top|t[cdfghjklmnoprtvwz])'
+             + '|u[agkmsyz]'
+             + '|(?:vote|video|v[aceginu])'
+             + '|(?:xxx)'
+             + '|(?:watch|w[fs])'
+             + '|y[etu]'
+             + '|z[amw]))'
+             + '|(?:(?:25[0-5]|2[0-4]'
+             + '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]'
+             + '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]'
+             + '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}'
+             + '|[1-9][0-9]|[0-9])))'
+             + '(?:\\:\\d{1,5})?)'
+             + '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~'
+             + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?'
+             + '(?:\\b|$)'
+             + '|(\\.[a-z]+\\/|magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'i'),
             emotes: new RegExp('([0-9][0-9]-[0-9][0-9])|([0-9]-[0-9])', 'g'),
             repeatedSeq: /(.)(\1+)/g,
             nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
@@ -24,10 +64,10 @@
      */
     function hasLinks(event, aggressive) {
         try {
+            //var message = (event.getMessage() + '');
+            
             /**
              * @info commented out because this is not used at all since it does not replace correctly in the function.
-             *
-             * var message = event.getMessage();
              * message = deobfuscateLinks(message, (aggressive));
              */
 
