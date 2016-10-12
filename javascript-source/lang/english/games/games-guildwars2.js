@@ -57,3 +57,5 @@ $.lang.register('guildwars2.deathcounter.enabled', '「Guild Wars²」 Death cou
 $.lang.register('guildwars2.goldcounter.disabled', '「Guild Wars²」 Gold counter disabled!');
 $.lang.register('guildwars2.goldcounter.enabled', '「Guild Wars²」 Gold counter enabled!');
 $.lang.register('guildwars2.coinsformat.toggle', '「Guild Wars²」 The coins formatting is now toggled to \'$1\'');
+$.lang.register('guildwars2.birthday', '$1 is celebrating the birthday of $2! KAPOW Happy Birthday!');
+$.lang.register('guildwars2.birthday.404', 'None of $1\'s characters had birthday on the last three days. :(');
