@@ -84,8 +84,8 @@ $.lang.register('killcommand.other.28', '$1 rekt $2 by 30-4 doing a 360 no-scope
 $.lang.register('killcommand.other.33', '$1 struck the mighty blow and ended by $2.');
 
 /** Add "(jail)" at the start of the lang for the user to get timed out for the jailTime you set. You can also use $3 for the jail timeout time to be displayed. $4 = botname. */
-$.lang.register('killcommand.other.29', '(jail) $1 tried to kill $2 with a unicorn\'s horn, but a cop showed up before he had time.');
-$.lang.register('killcommand.other.30', '(jail) $1 tried to kill $2 with a spork, but a cop showed up before he had time.');
+$.lang.register('killcommand.other.29', '(jail) $1 tried to kill $2 with a unicorn\'s horn, but a cop showed up before $1 had time.');
+$.lang.register('killcommand.other.30', '(jail) $1 tried to murder $2 with a spork, but a cop was hiding in the bushes and jumped $1 before it could be done.');
 $.lang.register('killcommand.other.31', '(jail) $1 was going to hit $2 with a hammer. But $2 was a undercover cop!');
 $.lang.register('killcommand.other.32', '(jail) $1 was paid by $4 to kill $2. But $2 was a cop.');
 /** Jail End **/
