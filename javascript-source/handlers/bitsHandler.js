@@ -152,7 +152,6 @@
         	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsreward', 1);
         	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsminimum', 1);
         	announceBits = true; //Make sure the module is enabled to announce bits, incase the toggle is on.
-        	moduleEnaled = $.bot.isModuleEnabled('./handlers/bitsHandler.js'); // Don't want to call the replace function if this module is disabled.
         }
     });
 
