@@ -334,7 +334,7 @@
             }
 
             /**
-             * @commandpath log files - Toggle the logging of events
+             * @commandpath log events - Toggle the logging of events
              */
             if (action.equalsIgnoreCase('events')) {
                 if (logs.event) {
@@ -348,7 +348,7 @@
             }
 
             /**
-             * @commandpath log files - Toggle the logging of errors
+             * @commandpath log errors - Toggle the logging of errors
              */
             if (action.equalsIgnoreCase('errors')) {
                 if (logs.error) {
