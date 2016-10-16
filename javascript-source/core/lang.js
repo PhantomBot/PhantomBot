@@ -54,14 +54,16 @@
     function get(key) {
         var string = data[key.toLowerCase()],
             i;
+
         if (!string) {
-            $.log.error('Language string missing for "' + key + '"');
-            $.consoleLn('[lang.js] Missing string "' + key + '"');
-            return 'Could not find string for "' + key + '"';
+            $.log.warn('Language string missing for "' + key + '". This could be due to a update to the lang files.');
+            return ''; // Don't say anything in chat.
         }
+
         if (string.equals('<<EMPTY_PLACEHOLDER>>')) {
             return '';
         }
+
         for (i = 1; i < arguments.length; i++) {
             while (string.indexOf("$" + i) >= 0) {
                 string = string.replace("$" + i, arguments[i]);
@@ -121,6 +123,7 @@
             inversedState = !$.getIniDbBoolean('settings', 'response_@chat');
 
             $.setIniDbBoolean('settings', 'response_@chat', inversedState);
+            $.reloadMisc();
             $.say($.whisperPrefix(sender) + (inversedState ? get('lang.response.enabled') : get('lang.response.disabled')));
         }
 
@@ -131,6 +134,7 @@
             inversedState = !$.getIniDbBoolean('settings', 'response_action');
 
             $.setIniDbBoolean('settings', 'response_action', inversedState);
+            $.reloadMisc();
             $.say($.whisperPrefix(sender) + (inversedState ? get('lang.response.action.enabled') : get('lang.response.action.disabled')));
         }
     });

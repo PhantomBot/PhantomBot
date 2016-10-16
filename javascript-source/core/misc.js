@@ -1,5 +1,17 @@
 (function() {
-    var currentHostTarget = '';
+    var currentHostTarget = '',
+        respond = getIniDbBoolean('settings', 'response_@chat', true),
+        action = getIniDbBoolean('settings', 'response_action', false),
+        maxLength,
+        pos;
+
+    /* 
+     * @function reloadMisc
+     */
+    function reloadMisc() {
+        respond = getIniDbBoolean('settings', 'response_@chat');
+        action = getIniDbBoolean('settings', 'response_action');
+    }
 
     /**
     ** This function sometimes does not work. So only use it for stuff that people dont use much
@@ -27,7 +39,7 @@
             }
         }
         return false;
-    };
+    }
 
     /**
      * @function isKnown
@@ -37,7 +49,7 @@
      */
     function isKnown(username) {
         return $.inidb.exists('visited', username.toLowerCase());
-    };
+    }
 
     /**
      * @function isFollower
@@ -58,7 +70,7 @@
             }
         }
         return false;
-    };
+    }
 
     /**
      * @function getCurrentHostTarget
@@ -67,7 +79,7 @@
      */
     function getCurrentHostTarget() {
         return currentHostTarget.toLowerCase();
-    };
+    }
 
     /**
      * @function strlen
@@ -93,7 +105,7 @@
                 return str.length;
             }
         }
-    };
+    }
 
     /**
      * @function say
@@ -104,28 +116,27 @@
         if ($.session !== null) {
             if (message.startsWith('.')) {
                 $.session.say(message);
+                return;
             }
 
             if (message.startsWith('@') && message.endsWith(',')) {
                 return;
             }
-    
-            if (!message.startsWith('.')) {
-                if (getIniDbBoolean('settings', 'response_@chat', true) && (!getIniDbBoolean('settings', 'response_action', false) || message.startsWith('/w'))) {
-                    $.session.say(message);
-                } else {
-                    if (getIniDbBoolean('settings', 'response_@chat', true) && getIniDbBoolean('settings', 'response_action', false)) {
-                        $.session.say('/me ' + message);
-                    }
-                    if (!getIniDbBoolean('settings', 'response_@chat')) {
-                        $.consoleLn('[MUTED] ' + message);
-                    }
+
+            if (respond && (!action || message.startsWith('/w'))) {
+                $.session.say(message);
+            } else {
+                if (respond && action) {
+                    $.session.say('/me ' + message);
+                }
+                if (!respond) {
+                    $.consoleLn('[MUTED] ' + message);
                 }
             }
         }
 
         $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
-    };
+    }
 
     /**
      * @function systemTime
@@ -134,7 +145,7 @@
      */
     function systemTime() {
         return parseInt(java.lang.System.currentTimeMillis());
-    };
+    }
 
     /**
      * @function rand
@@ -148,7 +159,7 @@
         }
         $.random = new java.security.SecureRandom();
         return (Math.abs($.random.nextInt()) % max);
-    };
+    }
 
     /**
      * @function randRange
@@ -162,7 +173,7 @@
             return min;
         }
         return (rand(max - min + 1) + min);
-    };
+    }
 
     /**
      * @function randElement
@@ -175,7 +186,7 @@
             return null;
         }
         return array[randRange(0, array.length - 1)];
-    };
+    }
 
     /**
      * @function arrayShuffle
@@ -190,7 +201,7 @@
             array[j] = temp;
         }
         return array;
-    };
+    }
 
     /**
      * @function randInterval
@@ -201,7 +212,7 @@
      */
     function randInterval(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
-    };
+    }
 
     /**
      * @function trueRandRange
@@ -269,7 +280,7 @@
         }
 
         return randRange(min, max);
-    };
+    }
 
     /**
      * @function trueRandElement
@@ -282,7 +293,7 @@
             return null;
         }
         return array[trueRand(array.length - 1)];
-    };
+    }
 
     /**
      * @function trueRand
@@ -292,7 +303,7 @@
      */
     function trueRand(max) {
         return trueRandRange(0, max);
-    };
+    }
 
     /**
      * @function outOfRange
@@ -304,7 +315,7 @@
      */
     function outOfRange(number, min, max) {
         return (number < min && number > max);
-    };
+    }
 
     /**
      * @function getOrdinal
@@ -316,7 +327,7 @@
         var s = ["th", "st", "nd", "rd"],
             v = number % 100;
         return (number + (s[(v - 20) % 10] || s[v] || s[0]));
-    };
+    }
 
     /**
      * @function getPercentage
@@ -327,7 +338,7 @@
      */
     function getPercentage(current, total) {
         return Math.ceil((current / total) * 100);
-    };
+    }
 
     /**
      * @function getIniDbBoolean
@@ -343,7 +354,7 @@
         } else {
             return (defaultValue);
         }
-    };
+    }
 
     /**
      * @function getSetIniDbBoolean
@@ -360,7 +371,7 @@
             $.inidb.set(fileName, key, defaultValue.toString());
             return (defaultValue);
         }
-    };
+    }
 
 
     /**
@@ -372,7 +383,7 @@
      */
     function setIniDbBoolean(fileName, key, state) {
         $.inidb.set(fileName, key, state.toString());
-    };
+    }
 
     /**
      * @function getIniDbString
@@ -387,7 +398,7 @@
         } else {
             return (defaultValue);
         }
-    };
+    }
 
     /**
      * @function getSetIniDbString
@@ -403,7 +414,7 @@
             $.inidb.set(fileName, key, defaultValue);
             return (defaultValue);
         }
-    };
+    }
 
 
     /**
@@ -535,7 +546,7 @@
         }
     
         return string;
-    };
+    }
 
     /**
      * @function userPrefix
@@ -547,16 +558,16 @@
             return '@' + $.username.resolve(username) + ' ';
         } 
         return '@' + $.username.resolve(username) + ', ';
-    };
+    }
 
     /** Export functions to API */
     $.list = {
-        hasKey: hasKey,
+        hasKey: hasKey
     };
 
     $.user = {
         isKnown: isKnown,
-        isFollower: isFollower,
+        isFollower: isFollower
     };
 
     $.arrayShuffle = arrayShuffle;
@@ -586,4 +597,5 @@
     $.paginateArray = paginateArray;
     $.replace = replace;
     $.userPrefix = userPrefix;
+    $.reloadMisc = reloadMisc;
 })();
