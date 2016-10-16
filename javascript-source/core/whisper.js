@@ -3,35 +3,29 @@
 
     /** 
      * @function hasKey
-     * @param {Array} list
-     * @param {*} value
-     * @param {Number} [subIndex]
+     *
+     * @param {array} list
+     * @param {string} value
+     * @param {int} subIndex
      * @returns {boolean}
      */
     function hasKey(list, value, subIndex) {
         var i;
 
-        if (subIndex > -1) {
-            for (i in list) {
-                if (list[i][subIndex].equalsIgnoreCase(value)) {
-                    return true;
-                }
-            }
-        } else {
-            for (i in list) {
-                if (list[i].equalsIgnoreCase(value)) {
-                    return true;
-                }
+        for (i in list) {
+            if (list[i][subIndex].equalsIgnoreCase(value)) {
+                return true;
             }
         }
         return false;
-    };
+    }
 
     /**
      * @function whisperPrefix
+     *
      * @export $
      * @param {string} username
-     * @param {boolean} [force]
+     * @param {boolean} force
      * @returns {string}
      */
     function whisperPrefix(username, force) {
@@ -39,48 +33,48 @@
             return '/w ' + username + ' ';
         }
         return '@' + $.username.resolve(username) + ', ';
-    };
+    }
 
     /**
      * @function getBotWhisperMode
+     *
      * @export $
      * @returns {boolean}
      */
     function getBotWhisperMode() {
         return whisperMode;
-    };
+    }
 
     /**
-     * @function whisperCommands
+     * @event ircPrivateMessage
      */
-    function whisperCommands(event) {
-        if (!event.getSender().equalsIgnoreCase('jtv') || !event.getSender().equalsIgnoreCase('twitchnotify')) {
-            if (event.getMessage().startsWith('!') && $.isMod(event.getSender()) && hasKey($.users, event.getSender(), 0)) {
-                var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
-                    CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
-                    commandString = event.getMessage().substring(1),
-                    split = commandString.indexOf(' '),
-                    arguments,
-                    command;
-                if (split == -1) {
-                    command = commandString;
-                    arguments = '';
+    $.bind('ircPrivateMessage', function(event) {
+        var sender = event.getSender(),
+            message = event.getMessage(),
+            arguments = '',
+            command;
+
+        if (!sender.equalsIgnoreCase('jtv') && !sender.equalsIgnoreCase('twitchnotify')) {
+            if (message.startsWith('!') && $.isMod(sender) && hasKey($.users, sender, 0)) {
+                if (message.includes(' ')) {
+                    arguments = message.split(' ');
+                    command = message.substring(0, arguments);
+                    arguments = commandString.substring(arguments + 1);
                 } else {
-                    command = commandString.substring(0, split);
-                    arguments = commandString.substring(split + 1);
+                    command = message;
                 }
-                EventBus.instance().post(new CommandEvent(event.getSender(), command, arguments));
-                $.log.file('whispers', '' + event.getSender() + ': ' + event.getMessage());
+
+                $.command.post(sender, command, arguments);
+                $.log.file('whispers', '' + sender + ': ' + message);
             }
         }
-        return;
-    };
+    });
 
     /**
      * @event command
      */
     $.bind('command', function(event) {
-        var sender = event.getSender().toLowerCase(),
+        var sender = event.getSender(),
             command = event.getCommand();
 
         /**
@@ -109,5 +103,4 @@
     /** Export functions to API */
     $.whisperPrefix = whisperPrefix;
     $.getBotWhisperMode = getBotWhisperMode;
-    $.whisperCommands = whisperCommands;
 })();
