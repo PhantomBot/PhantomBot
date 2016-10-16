@@ -255,7 +255,7 @@ $.lang.register('init.module.usage', 'Usage: !module list, !module enable [modul
 $.lang.register('init.reconnect', 'Reconnecting to $1');
 $.lang.register('init.rejoin', 'Rejoining the channel.');
 $.lang.register('init.disconnect', 'Disconnecting from $1');
-$.lang.register('init.usage', '!$1 [reconnect / disconnect / connectmessage / removeconnectmessage / blacklist]');
+$.lang.register('init.usage', '!$1 [reconnect / disconnect / connectmessage / removeconnectmessage / togglepricecommods / togglepermcommessage / togglecooldownmessage]');
 $.lang.register('init.connected.msg', 'Connect message set to: $1');
 $.lang.register('init.connected.msg.usage', '!$1 connectmessage [message]');
 $.lang.register('init.connected.msg.removed', 'Connect message removed!');
