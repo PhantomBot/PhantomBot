@@ -388,7 +388,6 @@ public class PanelSocketServer extends WebSocketServer {
         }
 
         jsonObject.endArray().endObject();
-com.gmt2001.Console.out.println("doDBKeysListQuery: " + jsonObject.toString());
         webSocket.send(jsonObject.toString());
     }
 
