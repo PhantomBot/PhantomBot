@@ -7,7 +7,43 @@
         var sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
+            arguments = event.getArguments(),
             action = args[0];
+
+        /* Used to add a command from the panel */
+        if (command.equalsIgnoreCase('addcommandpanel')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            arguments = arguments.split(' ');
+
+            $.command.add(arguments[0], arguments[1].split('___').join(' '), 7, false);
+            if (arguments[2] != 'null') {
+                $.command.add(arguments[2], arguments[0], 7, true);
+            }
+
+            if (arguments[3] != 'null') {
+                $.updateCommandCost(arguments[0], parseInt(arguments[3]));
+            }
+
+            if (arguments[4] != 'null') {
+                $.updateCommandGroup(arguments[0], parseInt(arguments[4]));
+            }
+
+            if (arguments[5] != 'null') {
+                $.updateCommandCooldown(arguments[0], parseInt(arguments[5]));
+            }
+            return;
+        }
+
+         /* Used to remove a command from the panel */
+        if (command.equalsIgnoreCase('deletecommandpanel')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.command.remove(action, false);
+            return;
+        }
 
         /** Adds or removes a user from the moderator cache */
         if (command.equalsIgnoreCase('permissionsetuser')) {
@@ -19,78 +55,6 @@
             } else {
                 $.removeModeratorFromCache(action.toLowerCase());
             }
-        }
-
-        /*
-         * Sets permissions on a command.
-         */
-        if (command.equalsIgnoreCase('permcomsilent')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-
-            if (args.length == 2) {
-                var group = args[1];
-    
-                if (isNaN(parseInt(group))) {
-                    group = $.getGroupIdByName(group);
-                }
-    
-                var list = $.inidb.GetKeyList('aliases', ''), i;
-                for (i in list) {
-                    if (list[i].equalsIgnoreCase(action)) {
-                        $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
-                        $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
-                    } 
-                }
-                $.inidb.set('permcom', action, group);
-                $.updateCommandGroup(action, group);
-                return;
-            }
-    
-            var subcommand = args[1], group = args[2];
-            if (isNaN(parseInt(group))) {
-                group = $.getGroupIdByName(group);
-            }
-    
-            $.inidb.set('permcom', action + ' ' + subcommand, group);
-            $.updateSubcommandGroup(action, subcommand, group);
-            return;
-        }
-
-        /*
-         * Reloads the command variables.
-         */
-        if (command.equalsIgnoreCase('reloadcommand')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.addComRegisterAliases();
-            $.addComRegisterCommands();
-            if (action) { $.unregisterChatCommand(action); }
-            return;
-        }
-
-        /*
-         * Registers a command
-         */
-        if (command.equalsIgnoreCase('registerpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.registerChatCommand('./commands/customCommands.js', args[0].toLowerCase());
-            return;
-        }
-
-        /*
-         * unregtisters a command
-         */
-        if (command.equalsIgnoreCase('unregisterpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.tempUnRegisterChatCommand(args[0].toLowerCase());
-            return;
         }
 
         /*
@@ -422,11 +386,9 @@
     $.bind('initReady', function() {
         /* 10 second delay here because I don't want these commands to be registered first. */
         setTimeout(function() {
+            $.registerChatCommand('./core/panelCommands.js', 'addcommandpanel', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'deletecommandpanel', 30);
             $.registerChatCommand('./core/panelCommands.js', 'permissionsetuser', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadcommand', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'permcomsilent', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'registerpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'unregisterpanel', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadmod', 30);
             $.registerChatCommand('./core/panelCommands.js', 'clearhighlightspanel', 30);
             $.registerChatCommand('./core/panelCommands.js', 'highlightpanel', 30);
