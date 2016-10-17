@@ -194,6 +194,21 @@ function sendDBKeys(unique_id, table) {
 }
 
 /**
+ * @function sendDBKeysList
+ * @param {String} unique_id
+ * @param {Array}{String} tables
+ */
+function sendDBKeysList(unique_id, tableList) {
+    jsonObject = {};
+    jsonObject["dbkeyslist"] = unique_id;
+    jsonObject["query"] = [];
+    for (i in tableList) {
+        jsonObject["query"].push({ "table": tableList[i] });
+    }
+    connection.send(JSON.stringify(jsonObject));
+}
+
+/**
  * @function sendDBUpdate
  * @param {String} unique_id
  * @param {String} table

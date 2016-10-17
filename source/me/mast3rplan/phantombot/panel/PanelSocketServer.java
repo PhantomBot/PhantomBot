@@ -36,6 +36,7 @@
  *
  * // Query DB keys and values
  * { "dbkeys" : "query_id", "query" : { "table" : "table_name"  } }
+ * { "dbkeyslist" : "query_id", "query" : [ { "table" : "table_name"  } ] }
  *
  * // Update DB
  * { "dbupdate" : "query_id", "update" : { "table" : "table_name", "key" : "key_name", "value" : "new_value" } }
@@ -231,6 +232,10 @@ public class PanelSocketServer extends WebSocketServer {
                 uniqueID = jsonObject.getString("dbkeys");
                 String table = jsonObject.getJSONObject("query").getString("table");
                 doDBKeysQuery(webSocket, uniqueID, table);
+            } else if (jsonObject.has("dbkeyslist")) {
+                uniqueID = jsonObject.getString("dbkeyslist");
+                jsonArray = jsonObject.getJSONArray("query");
+                doDBKeysListQuery(webSocket, uniqueID, jsonArray);
             } else if (jsonObject.has("dbupdate") && !sessionData.isReadOnly()) {
                 uniqueID = jsonObject.getString("dbupdate");
                 String table = jsonObject.getJSONObject("update").getString("table");
@@ -354,6 +359,38 @@ public class PanelSocketServer extends WebSocketServer {
         jsonObject.endArray().endObject();
         webSocket.send(jsonObject.toString());
     }
+
+    private void doDBKeysListQuery(WebSocket webSocket, String id, JSONArray jsonArray) {
+        JSONStringer jsonObject = new JSONStringer();
+
+        if (jsonArray.length() == 0) {
+            return;
+        }
+
+        jsonObject.object().key("query_id").value(id).key("results").array();
+
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                if (jsonArray.getJSONObject(i).has("table")) {
+                    String table = jsonArray.getJSONObject(i).getString("table");
+                    String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(table, "");
+                    for (String dbKey : dbKeys) {
+                        String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
+                        jsonObject.object().key("table").value(table).key("key").value(dbKey).key("value").value(value).endObject();
+                    }
+                }
+            }
+        } catch (NullPointerException ex) {
+            if (!dbCallNull) {
+                debugMsg("NULL returned from DB. DB Object not created yet.");
+            }
+            return;
+        }
+
+        jsonObject.endArray().endObject();
+        webSocket.send(jsonObject.toString());
+    }
+
 
     private void doDBUpdate(WebSocket webSocket, String id, String table, String key, String value) {
         JSONStringer jsonObject = new JSONStringer();
