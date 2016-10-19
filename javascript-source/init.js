@@ -993,7 +993,6 @@
          */
         $api.on($script, 'ircPrivateMessage', function(event) {
             callHook('ircPrivateMessage', event, false);
-            $.whisperCommands(event);
         });
 
         /**
