@@ -257,7 +257,7 @@
      * @returns {boolean}
      */
     function aliasExists(alias) {
-        return (commands[alias].alias !== null);
+        return (commands[alias] !== undefined && commands[alias].alias !== null);
     }
 
     /**
@@ -424,7 +424,7 @@
      */
     function updateCommandGroup(command, groupId) {
         if (commandExists(command)) {
-            commands[command].groupId = (groupId ? groupId : 7);
+            commands[command].groupId = (groupId ? parseInt(groupId) : 7);
         }
     }
 
@@ -439,7 +439,7 @@
      */
     function updateSubCommandGroup(command, subCommand, groupId) {
         if (subCommandExists(command, subCommand)) {
-            commands[command].subCommand[subCommand].groupId = (groupId ? groupId : 7);
+            commands[command].subCommand[subCommand].groupId = (groupId ? parseInt(groupId) : 7);
         }
     }
 
@@ -453,7 +453,7 @@
      */
     function updateCommandCooldown(command, cooldown) {
         if (commandExists(command)) {
-            commands[command].cooldown = (cooldown ? cooldown : -1);
+            commands[command].cooldown = (cooldown ? parseInt(cooldown) : -1);
         }
     }
 
@@ -468,10 +468,9 @@
      */
     function updateSubCommandCooldown(command, subCommand, cooldown) {
         if (subCommandExists(command, subCommand)) {
-            commands[command].subCommand[subCommand].cooldown = (cooldown ? cooldown : -1);
+            commands[command].subCommand[subCommand].cooldown = (cooldown ? parseInt(cooldown) : -1);
         }
     }
-
 
     /**
      * @function updateCommandCost
@@ -483,7 +482,7 @@
      */
     function updateCommandCost(command, cost) {
         if (commandExists(command)) {
-            commands[command].price = (cost ? cost : 0);
+            commands[command].price = (cost ? parseInt(cost) : 0);
         }
     }
 
@@ -498,7 +497,7 @@
      */
     function updateSubCommandCost(command, subCommand, cost) {
         if (subCommandExists(command, subCommand)) {
-            commands[command].subCommand[subCommand].price = (cost ? cost : 0);
+            commands[command].subCommand[subCommand].price = (cost ? parseInt(cost) : 0);
         }
     }
 

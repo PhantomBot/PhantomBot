@@ -77,8 +77,8 @@
                         <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 10px; width: 450px; background: #000" data-toggle="dropdown">
                             <span id="command-permission">Everyone</span><span class="caret pull-right"></span></button>
 
-                        <ul class="dropdown-menu" style="margin-left: 10px;">
-                            <li><a style="width: 450px;" class="dropdown-shadow">Administartors</a>
+                        <ul id="add-drop" class="dropdown-menu" style="margin-left: 10px;">
+                            <li><a style="width: 450px;" class="dropdown-shadow">Administrators</a>
                             </li>
                             <li><a style="width: 450px;" class="dropdown-shadow">Moderators</a>
                             </li>
@@ -94,9 +94,9 @@
                     </div>
 
                     <br>
-                    <lable data-toggle="tooltip" title="Cooldown for the command. Default is the global cooldown, set it to 0 for no cooldown at all. This is not required."><b>Cooldown</b></lable>
+                    <lable data-toggle="tooltip" title="Cooldown for the command. Default is the global cooldown, set it to 0 for no cooldown at all and -1 is the global cooldown. This is not required."><b>Cooldown</b></lable>
                     <div class="btn-group">&nbsp;&nbsp;&nbsp;
-                        <input id="command-cooldown" style="width: 448px; margin-left: 22px;" type="range" min="0" max="600" value="0" step="1" oninput="rangeUpdate(this.value, 'command-cooldown2', 'Seconds')" />
+                        <input id="command-cooldown" style="width: 448px; margin-left: 22px;" type="range" min="-1" max="600" value="-1" step="1" oninput="$.rangeUpdate(this.value, 'command-cooldown2', 'Seconds')" />
                         <span id="command-cooldown2" style="margin-left: 22px;">Global Cooldown</span>
                     </div>
                 </div>
@@ -153,8 +153,8 @@
                         <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 10px; width: 450px; background: #000" data-toggle="dropdown">
                             <span id="edit-command-permission">Everyone</span> <span class="caret pull-right"></span></button>
 
-                        <ul class="dropdown-menu" style="margin-left: 10px;">
-                            <li><a style="width: 450px;" class="dropdown-shadow">Administartors</a>
+                        <ul id="edit-drop-permission" class="dropdown-menu" style="margin-left: 10px;">
+                            <li><a style="width: 450px;" class="dropdown-shadow">Administrators</a>
                             </li>
                             <li><a style="width: 450px;" class="dropdown-shadow">Moderators</a>
                             </li>
@@ -175,7 +175,7 @@
                         <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 41px; width: 450px; background: #000" data-toggle="dropdown">
                             <span id="edit-command-active">Yes</span><span class="caret pull-right"></span></button>
 
-                        <ul class="dropdown-menu" style="margin-left: 41px;">
+                        <ul id="edit-drop-active" class="dropdown-menu" style="margin-left: 41px;">
                             <li><a style="width: 450px;" class="dropdown-shadow">Yes</a>
                             </li>
                             <li><a style="width: 450px;" class="dropdown-shadow">No</a>
@@ -184,9 +184,9 @@
                     </div>
 
                     <br>
-                    <lable data-toggle="tooltip" title="Cooldown for the command. Default is the global cooldown, set it to 0 for no cooldown at all. This is not required."><b>Cooldown</b></lable>
+                    <lable data-toggle="tooltip" title="Cooldown for the command. Default is the global cooldown, set it to 0 for no cooldown at all and -1 is the global cooldown. This is not required."><b>Cooldown</b></lable>
                     <div class="btn-group">&nbsp;&nbsp;&nbsp;
-                        <input id="edit-command-cooldown" style="width: 448px; margin-left: 22px;" type="range" min="0" max="600" value="0" step="1" oninput="rangeUpdate(this.value, 'edit-command-cooldown2', 'Seconds')" />
+                        <input id="edit-command-cooldown" style="width: 448px; margin-left: 22px;" type="range" min="-1" max="600" value="-1" step="1" oninput="$.rangeUpdate(this.value, 'edit-command-cooldown2', 'Seconds')" />
                         <span id="edit-command-cooldown2" style="margin-left: 22px;">Global Cooldown</span>
                     </div>
                 </div>
@@ -263,8 +263,8 @@
                         <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 10px; width: 450px; background: #000" data-toggle="dropdown">
                             <span id="default-command-permission">Everyone</span> <span class="caret pull-right"></span></button>
 
-                        <ul class="dropdown-menu" style="margin-left: 10px;">
-                            <li><a style="width: 450px;" class="dropdown-shadow">Administartors</a>
+                        <ul id="edit-default-drop" class="dropdown-menu" style="margin-left: 10px;">
+                            <li><a style="width: 450px;" class="dropdown-shadow">Administrators</a>
                             </li>
                             <li><a style="width: 450px;" class="dropdown-shadow">Moderators</a>
                             </li>
@@ -283,9 +283,9 @@
                     <lable data-toggle="tooltip" title="Enables or disables the command. Default is enabled."><b>Active</b></lable>&nbsp;
                     <div class="btn-group">
                         <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 41px; width: 450px; background: #000" data-toggle="dropdown">
-                            <span id="default-command-active">Yes</span><span class="caret pull-right"></span></button>
+                            <span id="default-command-active">Yes </span><span class="caret pull-right"></span></button>
 
-                        <ul class="dropdown-menu" style="margin-left: 41px;">
+                        <ul id="default-drop-active" class="dropdown-menu" style="margin-left: 41px;">
                             <li><a style="width: 450px;" class="dropdown-shadow">Yes</a>
                             </li>
                             <li><a style="width: 450px;" class="dropdown-shadow">No</a>
@@ -294,15 +294,15 @@
                     </div>
 
                     <br>
-                    <lable data-toggle="tooltip" title="Cooldown for the command. Default is the global cooldown, set it to 0 for no cooldown at all. This is not required."><b>Cooldown</b></lable>
+                    <lable data-toggle="tooltip" title="Cooldown for the command. Default is the global cooldown, set it to 0 for no cooldown at all and -1 is the global cooldown. This is not required."><b>Cooldown</b></lable>
                     <div class="btn-group">&nbsp;&nbsp;&nbsp;
-                        <input id="default-command-cooldown" style="width: 448px; margin-left: 22px;" type="range" min="0" max="600" value="0" step="1" oninput="rangeUpdate(this.value, 'default-command-cooldown2', 'Seconds')" />
+                        <input id="default-command-cooldown" style="width: 448px; margin-left: 22px;" type="range" min="-1" max="600" value="-1" step="1" oninput="$.rangeUpdate(this.value, 'default-command-cooldown2', 'Seconds')" />
                         <span id="default-command-cooldown2" style="margin-left: 22px;">Global Cooldown</span>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.modal.default()">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.modal.def()">Submit</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -314,5 +314,9 @@
 <!-- Run the Acordion -->
 <script>$("#customCommandsAccordion").accordion({ clearStyle: true, heightStyle: "panel", icons: null });</script>
 <script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
-<script>$(".dropdown-menu li a").click(function(){$(this).parents('.btn-group').find('.dropdown-toggle').html($(this).text() + ' <span class="caret pull-right"></span>');});</script>
+<script>$('#edit-drop-permission li').on('click', function() {$('#edit-command-permission').html($(this).text());});</script>
+<script>$('#edit-default-drop li').on('click', function() {$('#default-command-permission').html($(this).text());});</script>
+<script>$('#add-drop li').on('click', function() {$('#command-permission').html($(this).text());});</script>
+<script>$('#edit-drop-active li').on('click', function() {$('#edit-command-active').html($(this).text());});</script>
+<script>$('#default-drop-active li').on('click', function() {$('#default-command-active').html($(this).text());});</script>
 <script>handleInputFocus();</script>
