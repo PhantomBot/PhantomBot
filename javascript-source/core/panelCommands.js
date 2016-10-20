@@ -10,30 +10,121 @@
             arguments = event.getArguments(),
             action = args[0];
 
-        /* Used to add a command from the panel */
+        $.consoleLn('command::' + command + ' arguments::' + arguments);
         if (command.equalsIgnoreCase('addcommandpanel')) {
             if (!$.isBot(sender)) {
                 return;
             }
-            arguments = arguments.split(' ');
 
-            $.command.add(arguments[0], arguments[1].split('___').join(' '), 7, false);
-            if (arguments[2] != 'null') {
-                $.command.add(arguments[2], arguments[0], 7, true);
+            $.command.add(action, arguments.substring(action.length() + 1), 7, false);
+        }
+
+        if (command.equalsIgnoreCase('editcommandpanel')) {
+            if (!$.isBot(sender)) {
+                return;
             }
 
-            if (arguments[3] != 'null') {
-                $.updateCommandCost(arguments[0], parseInt(arguments[3]));
+            $.command.edit(action, arguments.substring(action.length() + 1));
+        }
+
+        if (command.equalsIgnoreCase('updatecommandcost')) {
+            if (!$.isBot(sender)) {
+                return;
             }
 
-            if (arguments[4] != 'null') {
-                $.updateCommandGroup(arguments[0], parseInt(arguments[4]));
+            if (!arguments.includes('+++')) {
+                $.updateCommandCost(arguments.substring(action.length() + 1), action);
+            } else {
+                var commands = arguments.split('+++');
+                $.updateSubCommandCost(commands[0], commands[1], action);
+            }
+        }
+
+        if (command.equalsIgnoreCase('updatecommandcooldown')) {
+            if (!$.isBot(sender)) {
+                return;
             }
 
-            if (arguments[5] != 'null') {
-                $.updateCommandCooldown(arguments[0], parseInt(arguments[5]));
+            if (!arguments.includes('+++')) {
+                $.updateCommandCooldown(arguments.substring(action.length() + 1), action);
+            } else {
+                var commands = arguments.split('+++');
+                $.updateCommandCooldown(commands[0], commands[1], action);
             }
-            return;
+        }
+
+        if (command.equalsIgnoreCase('updatecommandpermission')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+
+            if (!arguments.includes('+++')) {
+                $.updateCommandGroup(arguments.substring(action.length() + 1), action);
+            } else {
+                var commands = arguments.split('+++');
+                $.updateSubCommandGroup(commands[0], commands[1], action);
+            }
+        }
+
+        if (command.equalsIgnoreCase('updatecommandactive')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+
+            if (!arguments.includes('+++')) {
+                if (action == 'Yes') {
+                    if ($.commandExists(arguments.substring(action.length() + 1).trim())) return;
+                    $.registerChatCommand('./commands/customCommands.js', arguments.substring(action.length() + 1).trim());
+                } else {
+                    if (!$.commandExists(arguments.substring(action.length() + 1).trim())) return;
+                    $.unregisterChatCommand(arguments.substring(action.length() + 1).trim());
+                }
+            } else {
+                var commands = arguments.split('+++');
+
+                if (action == true) {
+                    if (!$.subCommandExists(commands[0], commands[1])) return;
+                    $.registerChatSubcommand('./commands/customCommands.js', commands[0], commands[1]);
+                } else {
+                    if (!$.subCommandExists(commands[0], commands[1])) return;
+                    $.unregisterChatCommand(commands[0], commands[1]);
+                }
+            }
+        }
+
+        if (command.equalsIgnoreCase('updatecommandreward')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+
+            if (!arguments.includes('+++')) {
+                $.inidb.set('paycom', arguments.substring(action.length() + 1), action);
+            } else {
+                var commands = arguments.split('+++');
+                $.inidb.set('paycom', commands[0] + ' ' + commands[1], action);
+            }
+        }
+
+        if (command.equalsIgnoreCase('addaliaspanel')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+
+            if ($.aliasExists(action)) return;
+            if (!arguments.includes('+++')) {
+                $.command.add(action, args[1], 7, true);
+            } else {
+                var commands = arguments.split('+++');
+                $.command.add(action, commands[0] + ' ' + commands[1], 7, true);
+            }
+        }
+
+        if (command.equalsIgnoreCase('removealiaspanel')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+
+            $.command.remove(action, true);
         }
 
          /* Used to remove a command from the panel */
@@ -387,6 +478,14 @@
         /* 10 second delay here because I don't want these commands to be registered first. */
         setTimeout(function() {
             $.registerChatCommand('./core/panelCommands.js', 'addcommandpanel', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'editcommandpanel', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'removealiaspanel', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'addaliaspanel', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'updatecommandcost', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'updatecommandreward', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'updatecommandcooldown', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'updatecommandpermission', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'updatecommandactive', 30);
             $.registerChatCommand('./core/panelCommands.js', 'deletecommandpanel', 30);
             $.registerChatCommand('./core/panelCommands.js', 'permissionsetuser', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadmod', 30);
