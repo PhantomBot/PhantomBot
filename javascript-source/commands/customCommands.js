@@ -91,7 +91,7 @@
      * @returns {boolean}
      */
     function priceCom(username, command, subCommand) {
-        return ($.getUserPoints(username) >= getCommandPrice(command, subCommand) ? 0 : 1);
+        return ($.getUserPoints(username) > getCommandPrice(command, subCommand) ? 0 : 1);
     }
 
     /**
@@ -1154,10 +1154,10 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('customcommands.command.enable.enabled', subAction));
                     $.inidb.del('disabledCommands', subAction);
                     if (!$.inidb.exists('command', subAction)) {
-                        $.registerChatcommand('./commands/customCommands.js', subAction, 7);
+                        $.registerChatCommand('./commands/customCommands.js', subAction, 7);
                     } else {
                         commandCache[subAction] = $.inidb.get('command', subAction);
-                        $.registerChatcommand('./commands/customCommands.js', subAction, 7);
+                        $.registerChatCommand('./commands/customCommands.js', subAction, 7);
                     }
                 } else {
                     subActionArgs = subActionArgs.toLowerCase();
@@ -1177,7 +1177,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('customcommands.command.enable.enabled', (subAction + ' ' + subActionArgs)));
                     $.inidb.del('disabledCommands', subAction + ' ' + subActionArgs);
                     if (!$.commandExists(subAction)) {
-                        $.registerChatcommand('./commands/customCommands.js', subAction, 7);
+                        $.registerChatCommand('./commands/customCommands.js', subAction, 7);
                     }
                     $.registerChatSubcommand(subAction, subActionArgs, 7);
                 }
