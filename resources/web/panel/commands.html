@@ -31,7 +31,66 @@
     <div id="command-list" style="height: 300px; overflow: auto;" />
 
     <br>
+    <button type="button" class="btn btn-default inline pull-right" data-toggle="modal" data-target="#commandSettings"><i class="fa fa-cog"/></button>
     <button type="button" class="btn btn-primary inline pull-right" data-toggle="modal" data-target="#addcommand">Add a Command</button>
+
+    <div id="commandSettings" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Global Settings</h4>
+                </div>
+
+                <div class="modal-body">
+                    <table>
+                        <tr class="textList">
+                            <td>Global Cooldown</td>
+                            <td style="width: 25px" ><div data-toggle="tooltip" title="If toggled on commands with no cooldowns or set to (-1) will use this cooldown." id="globalCooldown" /></td>
+                            <td style="width: 25px">
+                                <div data-toggle="tooltip" title="Enable" class="button" onclick="$.globalCooldown('on');"><i class="fa fa-circle" /></div>
+                            </td>
+                            <td style="width: 25px">
+                                <div data-toggle="tooltip" title="Disable" class="button" onclick="$.globalCooldown('off');"><i class="fa fa-circle-o" /></div>
+                            </td>
+                        </tr>
+                        <tr class="textList">
+                            <td>Per-user Cooldown</td>
+                            <td style="width: 25px"><div data-toggle="tooltip" title="If toggled on all cooldown will be set on users and not everyone." id="perUserCooldown" /></td>
+                            <td style="width: 25px">
+                                <div data-toggle="tooltip" title="Enable" class="button" onclick="$.perUserCooldown('on');"><i class="fa fa-circle" /></div>
+                            </td>
+                            <td style="width: 25px">
+                                <div data-toggle="tooltip" title="Disable" class="button" onclick="$.perUserCooldown('off');"><i class="fa fa-circle-o" /></div>
+                            </td>
+                        </tr>
+                        <tr class="textList">
+                            <td>Moderator Cooldown</td>
+                            <td style="width: 25px"><div data-toggle="tooltip" title="If toggled on Moderators will not be able to ignore command cooldowns." id="modCooldown" /></td>
+                            <td style="width: 25px">
+                                <div data-toggle="tooltip" title="Enable" class="button" onclick="$.modCooldown('on');"><i class="fa fa-circle" /></div>
+                            </td>
+                            <td style="width: 25px">
+                                <div data-toggle="tooltip" title="Disable" class="button" onclick="$.modCooldown('off');"><i class="fa fa-circle-o" /></div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <lable data-toggle="tooltip" title="Global Cooldown time. This cooldown is used when a command cooldown is set to -1."><b>Global Cooldown</b></lable>
+                    <div class="btn-group">&nbsp;&nbsp;&nbsp;
+                        <input id="global-cooldown" style="width: 430px; margin-left: 6px;" type="range" min="1" max="800" value="1" step="1" oninput="$.rangeUpdate(this.value, 'global-cooldown2', 'Seconds')" />
+                        <span id="global-cooldown2" style="margin-left: 6px;">0 Seconds</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="addbutton" onclick="$.modal.cooldown()">Ok</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="addcommand" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -319,4 +378,5 @@
 <script>$('#add-drop li').on('click', function() {$('#command-permission').html($(this).text());});</script>
 <script>$('#edit-drop-active li').on('click', function() {$('#edit-command-active').html($(this).text());});</script>
 <script>$('#default-drop-active li').on('click', function() {$('#default-command-active').html($(this).text());});</script>
+<script></script>
 <script>handleInputFocus();</script>

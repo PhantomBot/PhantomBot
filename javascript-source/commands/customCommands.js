@@ -91,7 +91,7 @@
      * @returns {boolean}
      */
     function priceCom(username, command, subCommand) {
-        return ($.getUserPoints(username) > getCommandPrice(command, subCommand) ? 0 : 1);
+        return (getCommandPrice(command, subCommand) < $.getUserPoints(username) ? 0 : 1);
     }
 
     /**

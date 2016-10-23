@@ -24,7 +24,12 @@
  * Drives the Custom Commands Panel
  */
 (function() {
-    var commands = {};
+    var commands = {},
+        icon = [];
+
+    icon['false'] = '<i style="color: #6136b1" class="fa fa-circle-o" />';
+    icon['true'] = '<i style="color: #6136b1" class="fa fa-circle" />';
+
 
     /*
      * @function onMessage
@@ -48,6 +53,7 @@
                 results,
                 i, l;
 
+            /* Info from the permcom table */
             if (panelCheckQuery(msgObject, 'commands_permission')) {
                 results = msgObject['results'].sort(sort);
 
@@ -60,19 +66,19 @@
                             commands[key] = { isDisabled: false, response: null, isCustom: false, cost: 0, reward: 0, cooldown: -1, permission: value, alias: '', subCommand: {} };
                         } else {
                             commands[key].permission = value;
+                            commands[key].isDisabled = false;
                         }
                     } else {
                         key = key.split(' ');
                         if (commands[key[0]] === undefined) {
                             commands[key[0]] = { isDisabled: false, response: null, isCustom: false, cost: 0, reward: 0, cooldown: -1, permission: value, alias: '', subCommand: {} };
-                        } else {
-                            commands[key[0]].permission = value;
                         }
 
                         if (commands[key[0]].subCommand[key[1]] === undefined) {
                             commands[key[0]].subCommand[key[1]] = { isDisabled: false, response: null, isCustom: false, cost: 0, reward: 0, cooldown: -1, permission: value, alias: '' };
                         } else {
                             commands[key[0]].subCommand[key[1]].permission = value;
+                            commands[key[0]].subCommand[key[1]].isDisabled = false;
                         }
                     }
                 }
@@ -80,6 +86,7 @@
                 doLiteQuery();
             }
 
+            /* Info from the aliases table */
             if (panelCheckQuery(msgObject, 'commands_aliases')) {
                 for (i in msgObject['results']) {
                     key = msgObject['results'][i]['key'];
@@ -103,56 +110,104 @@
                 }
             }
 
+            /* Info from the pricecom table */
             if (panelCheckQuery(msgObject, 'commands_costs')) {
                 for (i in msgObject['results']) {
                     key = msgObject['results'][i]['key'];
                     value = msgObject['results'][i]['value'];
 
-                    if (commands[key] !== undefined) {
-                        commands[key].cost = (value ? value : 0); 
+                    if (!key.includes(' ')) {
+                        if (commands[key] !== undefined) {
+                            commands[key].cost = (value ? value : 0); 
+                        }
+                    } else {
+                        key = key.split(' ');
+                        if (commands[key[0]] !== undefined && commands[key[0]].subCommand[key[1]] !== undefined) {
+                            commands[key[0]].subCommand[key[1]].cost = (value ? value : 0); 
+                        }
                     }
                 }
             }
 
+            /* Info from the paycom table */
             if (panelCheckQuery(msgObject, 'commands_reward')) {
                 for (i in msgObject['results']) {
                     key = msgObject['results'][i]['key'];
                     value = msgObject['results'][i]['value'];
 
-                    if (commands[key] !== undefined) {
-                        commands[key].reward = (value ? value : 0); 
+                    if (!key.includes(' ')) {
+                        if (commands[key] !== undefined) {
+                            commands[key].reward = (value ? value : 0); 
+                        }
+                    } else {
+                        key = key.split(' ');
+                        if (commands[key[0]] !== undefined && commands[key[0]].subCommand[key[1]] !== undefined) {
+                            commands[key[0]].subCommand[key[1]].reward = (value ? value : 0); 
+                        }
                     }
                 }
             }
 
+            /* Info from the cooldown table */
             if (panelCheckQuery(msgObject, 'commands_cooldown')) {
                 for (i in msgObject['results']) {
                     key = msgObject['results'][i]['key'];
                     value = msgObject['results'][i]['value'];
 
-                    if (commands[key] !== undefined) {
-                        commands[key].cooldown = (value ? value : 0);
+                    if (panelMatch(key, 'globalCooldown')) {
+                        $('#globalCooldown').html(icon[value]);
+                    } else if (panelMatch(key, 'perUserCooldown')) {
+                        $('#perUserCooldown').html(icon[value]);
+                    } else if (panelMatch(key, 'modCooldown')) {
+                        $('#modCooldown').html(icon[value]);
+                    } else if (panelMatch(key, 'globalCooldownTime')) {
+                        $('#global-cooldown2').html(value + ' Seconds');
+                        $('#global-cooldown').val(value);
+                    }
+
+                    if (!key.includes(' ')) {
+                        if (commands[key] !== undefined) {
+                            commands[key].cooldown = (value ? value : 0); 
+                        }
+                    } else {
+                        key = key.split(' ');
+                        if (commands[key[0]] !== undefined && commands[key[0]].subCommand[key[1]] !== undefined) {
+                            commands[key[0]].subCommand[key[1]].cooldown = (value ? value : 0); 
+                        }
                     }
                 }
             }
 
+            /* Info from the disabledCommands table */
             if (panelCheckQuery(msgObject, 'commands_disabled')) {
                 for (i in msgObject['results']) {
                     key = msgObject['results'][i]['key'];
                     value = msgObject['results'][i]['value'];
 
-                    if (commands[key] !== undefined) {
-                        commands[key].isDisabled = (value ? value : false); 
+                    if (!key.includes(' ')) {
+                        if (commands[key] !== undefined) {
+                            commands[key].isDisabled = (value == 'true' ? true : false); 
+                        }
+                    } else {
+                        key = key.split(' ');
+                        if (commands[key[0]] !== undefined && commands[key[0]].subCommand[key[1]] !== undefined) {
+                            commands[key[0]].subCommand[key[1]].isDisabled = (value == 'true' ? true : false);
+                        }
                     }
                 }
             }
 
+            /* Info from the command table */
             if (panelCheckQuery(msgObject, 'commands_custom')) {
                 html = '<table> <tr> <th style="border: 1px solid #3a3939;">Command</th> <th style="border: 1px solid #3a3939;">Response</th><th style="border-top: 1px solid #3a3939; border-bottom: 1px solid #3a3939;"></th>' +
                        '<th style="border-top: 1px solid #3a3939; border-bottom: 1px solid #3a3939;"></th></tr>';
                 for (i in msgObject['results']) {
                     key = msgObject['results'][i]['key'];
                     value = msgObject['results'][i]['value'];
+
+                    if (commands[key].isCustom === undefined) {
+                        console.log('[ERROR] Command permission for command !' + key + ' does not exists! Set it with "!command permission ' + key + ' 7".');
+                    }
 
                     commands[key].isCustom = true;
                     commands[key].response = value;
@@ -246,8 +301,8 @@
      * @param {int} id
      */
     function getPermissionNameById(id) {
-        if (name == null) {
-            return;
+        if (id == null) {
+            return 'Everyone';
         }
         if (id.match(/1/g)) {
             return 'Administrators';
@@ -273,7 +328,7 @@
      */
     function getPermissionIdByName(name) {
         if (name == null) {
-            return;
+            return 7;
         }
         if (name.match(/Administrators/ig)) {
             return 1;
@@ -416,8 +471,6 @@
         var command = $('#' + htmlId + '-name').val().replace('!', ''),
             response = $('#' + htmlId + '-response').val();
 
-        console.log('editcommand::' + command + ' response::' + response);
-
         sendCommand('editcommandpanel ' + command.toLowerCase() + ' ' + response);
     }
 
@@ -430,7 +483,6 @@
         var command = $('#' + htmlId + '-name').val().replace('!', ''),
             response = $('#' + htmlId + '-response').val();
 
-        console.log('command::' + command + ' response::' + response);
 
         sendCommand('addcommandpanel ' + command.toLowerCase() + ' ' + response);
     }
@@ -441,14 +493,23 @@
      * @param {string} htmlId
      */
     function commandAlias(htmlId) {
-        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '+++'),
+        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '---'),
             alias = $('#' + htmlId + '-alias').val();
 
-        console.log('command::' + command + ' alias::' + alias);
-
         if (alias.length == 0) {
-            if (commands[command] !== undefined && commands[command].alias != '') {
-                sendCommand('removealiaspanel ' + commands[command].alias);
+            if (command.includes('---')) {
+                var cmd = command.split('---');
+                if (commands[cmd[0]] !== undefined && commands[cmd[0]].subCommand[cmd[1]] !== undefined && commands[cmd[0]].subCommand[cmd[1]].alias != '') {
+                    sendCommand('removealiaspanel ' + commands[cmd[0]].subCommand[cmd[1]].alias);
+                    commands[cmd[0]].subCommand[cmd[1]].alias = '';
+                    delete commands[commands[cmd[0]].subCommand[cmd[1]].alias];
+                }
+            } else {
+                if (commands[command] !== undefined && commands[command].alias != '') {
+                    sendCommand('removealiaspanel ' + commands[command].alias);
+                    commands[command].alias = '';
+                    delete commands[commands[command].alias];
+                }
             }
         } else {
             sendCommand('addaliaspanel ' + alias.toLowerCase() + ' ' + command.toLowerCase());
@@ -462,15 +523,21 @@
      * @param {string} htmlId
      */
     function commandCost(htmlId) {
-        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '+++'),
+        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '---'),
             cost = $('#' + htmlId + '-cost').val();
 
-        console.log('command::' + command + ' cost::' + cost);
-
         if (cost != '') {
-            sendDBUpdate('command_edit_cost', 'pricecom', command.toLowerCase(), String(cost));
-            sendCommand('updatecommandcost ' + cost + ' ' + command.toLowerCase());
+            if (!command.includes('---')) {
+                sendDBUpdate('command_edit_cost', 'pricecom', command.toLowerCase(), String(cost));
+                sendCommand('updatecommandcost ' + cost + ' ' + command.toLowerCase());
+            } else {
+                sendCommand('updatecommandcost ' + cost + ' ' + command.toLowerCase());
+                command = command.split('---');
+                commands[command[0]].subCommand[command[1]].cost = cost;
+                sendDBUpdate('command_edit_cost', 'pricecom', command[0].toLowerCase() + ' ' + command[1].toLowerCase(), String(cost));
+            }
         }
+
         $('#' + htmlId + '-cost').val('');
     }
 
@@ -480,15 +547,21 @@
      * @param {string} htmlId
      */
     function commandReward(htmlId) {
-        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '+++'),
+        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '---'),
             reward = $('#' + htmlId + '-reward').val();
 
-        console.log('command::' + command + ' reward::' + reward);
-
         if (reward != '') {
-            sendDBUpdate('command_edit_reward', 'paycom', command.toLowerCase(), String(reward));
-            sendCommand('updatecommandreward ' + reward + ' ' + command.toLowerCase());
+            if (!command.includes('---')) {
+                sendDBUpdate('command_edit_reward', 'paycom', command.toLowerCase(), String(reward));
+                sendCommand('updatecommandreward ' + reward + ' ' + command.toLowerCase());
+            } else {
+                sendCommand('updatecommandreward ' + reward + ' ' + command.toLowerCase());
+                command = command.split('---');
+                commands[command[0]].subCommand[command[1]].reward = reward;
+                sendDBUpdate('command_edit_reward', 'paycom', command[0].toLowerCase() + ' ' + command[1].toLowerCase(), String(reward));
+            }
         }
+
         $('#' + htmlId + '-reward').val('');
     }
 
@@ -498,14 +571,21 @@
      * @param {string} htmlId
      */
     function commandCooldown(htmlId) {
-        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '+++'),
+        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '---'),
             cooldown = $('#' + htmlId + '-cooldown').val();
 
-        console.log('command::' + command + ' cooldown::' + cooldown);
         if (cooldown != '') {
-            sendDBUpdate('command_edit_cooldown', 'cooldown', command.toLowerCase(), String(cooldown));
-            sendCommand('updatecommandcooldown ' + cooldown + ' ' + command.toLowerCase());
+            if (!command.includes('---')) {
+                sendDBUpdate('command_edit_cooldown', 'cooldown', command.toLowerCase(), String(cooldown));
+                sendCommand('updatecommandcooldown ' + cooldown + ' ' + command.toLowerCase());
+            } else {
+                sendCommand('updatecommandcooldown ' + cooldown + ' ' + command.toLowerCase());
+                command = command.split('---');
+                commands[command[0]].subCommand[command[1]].cooldown = cooldown;
+                sendDBUpdate('command_edit_cooldown', 'cooldown', command[0].toLowerCase() + ' ' + command[1].toLowerCase(), String(cooldown));
+            }
         }
+
         $('#' + htmlId + '-cooldown').val('');
     }
 
@@ -515,15 +595,22 @@
      * @param {string} htmlId
      */
     function commandPermission(htmlId) {
-        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '+++'),
+        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '---'),
             permission = getPermissionIdByName($('#' + htmlId + '-permission').html().trim());
 
-        console.log('command::' + command + ' permission::' + permission);
-        console.log($('#' + htmlId + '-permission').html())
         if (permission != '') {
-            sendDBUpdate('command_edit_perm', 'permcom', command.toLowerCase(), String(permission));
-            sendCommand('updatecommandpermission ' + permission + ' ' + command.toLowerCase());
+            if (!command.includes('---')) {
+                sendDBUpdate('command_edit_perm', 'permcom', command.toLowerCase(), String(permission));
+                commands[command].permission = permission;
+                sendCommand('updatecommandpermission ' + permission + ' ' + command.toLowerCase());
+            } else {
+                sendCommand('updatecommandpermission ' + permission + ' ' + command.toLowerCase());
+                command = command.split('---');
+                commands[command[0]].subCommand[command[1]].permission = permission;
+                sendDBUpdate('command_edit_perm', 'permcom', command[0].toLowerCase() + ' ' + command[1].toLowerCase(), String(permission));
+            }
         }
+
         $('#' + htmlId + '-permission').html('Everyone');
     }
 
@@ -533,21 +620,19 @@
      * @param {string} htmlId
      */
     function commandActive(htmlId) {
-        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '+++'),
+        var command = $('#' + htmlId + '-name').val().replace('!', '').replace(/ /g, '---'),
             active = $('#' + htmlId + '-active').html();
 
-        console.log('command::' + command + ' active::' + active);
-        console.log(active.length)
-        if (active.length == 1) return;
+        if (active.length == 1) {
+            return;
+        }
+        var cmd = command.split('---');
 
         if (active.trim() == 'Yes') {
-            console.log('1')
-            sendDBDelete('command_edit_active', 'disabledCommands', command.toLowerCase().split('+++').join(' '));
-            console.log('"' + command.toLowerCase().split('+++').join(' ') + '"');
+            sendDBDelete('command_edit_active', 'disabledCommands', command.toLowerCase().split('---').join(' '));
             sendCommand('updatecommandactive ' + active.trim() + ' ' + command.toLowerCase());
         } else {
-            console.log('11')
-            sendDBUpdate('command_edit_active', 'disabledCommands', command.toLowerCase().split('+++').join(' '), 'true');
+            sendDBUpdate('command_edit_active', 'disabledCommands', command.toLowerCase().split('---').join(' '), 'true');
             sendCommand('updatecommandactive ' + active.trim() + ' ' + command.toLowerCase());
         }
     }
@@ -575,6 +660,18 @@
     }
 
     /**
+     * @function cooldown
+     *
+     * @export $.modal
+     */
+    function cooldown() {
+        var cooldown = $('#global-cooldown').val();
+
+        sendDBUpdate('global-cooldown', 'cooldown', 'globalCooldownTime', String(cooldown));
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /**
      * @function rangeUpdate
      *
      * @export $
@@ -586,6 +683,53 @@
         document.getElementById(id).innerHTML = val + ' ' + string; 
     }
 
+    /**
+     * @function globalCooldown
+     *
+     * @export $
+     * @param {string} toggle
+     */
+    function globalCooldown(toggle) {
+        $("#globalCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        if (toggle == 'on') {
+            sendDBUpdate('command_cooldown_global', 'cooldown', 'globalCooldown', 'true');
+        } else {
+            sendDBUpdate('command_cooldown_global', 'cooldown', 'globalCooldown', 'false');
+        }
+        setTimeout(function() { sendCommand('reloadcooldown'); doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /**
+     * @function perUserCooldown
+     *
+     * @export $
+     * @param {string} toggle
+     */
+    function perUserCooldown(toggle) {
+        $("#perUserCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        if (toggle == 'on') {
+            sendDBUpdate('command_cooldown_global', 'cooldown', 'perUserCooldown', 'true');
+        } else {
+            sendDBUpdate('command_cooldown_global', 'cooldown', 'perUserCooldown', 'false');
+        }
+        setTimeout(function() { sendCommand('reloadcooldown'); doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /**
+     * @function modCooldown
+     *
+     * @export $
+     * @param {string} toggle
+     */
+    function modCooldown(toggle) {
+        $("#modCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        if (toggle == 'on') {
+            sendDBUpdate('command_cooldown_global', 'cooldown', 'modCooldown', 'true');
+        } else {
+            sendDBUpdate('command_cooldown_global', 'cooldown', 'modCooldown', 'false');
+        }
+        setTimeout(function() { sendCommand('reloadcooldown'); doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
 
     /* Import the HTML file for this panel. */
     $('#commandsPanel').load('/panel/commands.html');
@@ -610,14 +754,20 @@
         }
     }, 3e4);
 
+    /* Export to the $ api */
     $.commandsOnMessage = onMessage;
+    $.commandsDoQuery = doQuery;
     $.rangeUpdate = rangeUpdate;
+    $.globalCooldown = globalCooldown;
+    $.perUserCooldown = perUserCooldown;
+    $.modCooldown = modCooldown;
     $.modal = {
         open: open,
         remove: remove,
         maxLength: maxLength,
         add: add,
         edit: edit,
-        def: def
+        def: def,
+        cooldown: cooldown
     };
 })();

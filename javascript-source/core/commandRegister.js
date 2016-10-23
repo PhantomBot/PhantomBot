@@ -210,9 +210,9 @@
         if (subCommand === '') {
             if (commandExists(command)) {
                 delete commands[command];
-            }
-            if ($.inidb.exists('aliases', command)) {
-                delete commands[$.inidb.get('aliases', command)];
+                if ($.inidb.exists('aliases', command)) {
+                    delete commands[$.inidb.get('aliases', command)];
+                }
             }
         } else {
             if (subCommandExists(command, subCommand)) {
@@ -356,7 +356,7 @@
      * @returns {int}
      */
     function getCommandCooldown(command) {
-        return (commands[command] ? commands[command].cooldown : 0);
+        return (commands[command] ? commands[command].cooldown : -1);
     }
 
     /**
@@ -386,7 +386,7 @@
      * @returns {int}
      */
     function getSubCommandCooldown(command, subCommand) {
-        return (subCommandExists(command, subCommand) ? commands[command].subCommand[subCommand].cooldown : 0);
+        return (subCommandExists(command, subCommand) ? commands[command].subCommand[subCommand].cooldown : -1);
     }
 
     /**
