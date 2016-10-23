@@ -600,8 +600,6 @@
 
         if (permission != '') {
             if (!command.includes('---')) {
-                console.log('command::' + command + '"');
-                console.log('perm::' + permission);
                 sendDBUpdate('command_edit_perm', 'permcom', command.toLowerCase(), String(permission));
                 commands[command].permission = permission;
                 sendCommand('updatecommandpermission ' + permission + ' ' + command.toLowerCase());
@@ -629,9 +627,6 @@
             return;
         }
         var cmd = command.split('---');
-
-        console.log(active);
-        console.log(command.toLowerCase().split('---').join(' '))
 
         if (active.trim() == 'Yes') {
             sendDBDelete('command_edit_active', 'disabledCommands', command.toLowerCase().split('---').join(' '));
