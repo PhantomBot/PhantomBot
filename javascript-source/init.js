@@ -283,10 +283,9 @@
 
         // Lookup the JS file that contains the command, this removes the need to cycle through all files.
         if (hook == 'command') {
-            i = getHookIndex($.getCommandScript(event.getCommand()), hook);
-            if (i === -1) { // Do not handle init.js commands here.
+            var i = getHookIndex(getCommandScript(event.getCommand()), hook);
+            if (i == -1) // Do not handle init.js commands here.
                 return;
-            }
             if (isModuleEnabled(hooks[i].scriptFile) || alwaysRun) {
                 try {
                     hooks[i].handler(event);
@@ -320,6 +319,7 @@
             args = event.getArgs(),
             action = args[0],
             subAction = args[1],
+            actionArgs = args[2],
             pointsRelatedModules = [],
             temp,
             index;
@@ -334,6 +334,7 @@
          * @commandpath YourBotName togglepermcommessage - Toggles the no permission message
          * @commandpath YourBotName togglecooldownmessage - Toggles the on command cooldown message
          */
+
          if (command.equalsIgnoreCase($.botName.toLowerCase())) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.usage', $.botName.toLowerCase()));
@@ -343,11 +344,12 @@
             if (action.equalsIgnoreCase('rejoin') || action.equalsIgnoreCase('reconnect')) {
                 /* Added a cooldown to this so people can spam it and cause errors. */
                 if (lastRecon + 10000 >= $.systemTime()) {
+                    $.consoleLn('[ERROR] Already trying to reconnect.');
                     return;
                 }
-
                 lastRecon = $.systemTime();
                 $.say($.whisperPrefix(sender) + $.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
+                $.log.event(username + ' requested a reconnect!');
                 setTimeout(function () { $.session.close(); }, 100);
                 setTimeout(function () { $.say($.whisperPrefix(sender) + $.getIniDbString('settings', 'connectedMsg', $.botName + ' successfully rejoined!')) }, 5000);
                 return;
@@ -355,7 +357,8 @@
 
             if (action.equalsIgnoreCase('disconnect') || action.equalsIgnoreCase('remove')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
-                java.lang.System.exit(0);
+                $.log.event(username + ' removed the bot from chat!');
+                setTimeout(function () { java.lang.System.exit(0); }, 100);
                 return;
             }
 
@@ -379,6 +382,38 @@
                 return;
             }
 
+            if (action.equalsIgnoreCase('blacklist')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.usage', $.botName.toLowerCase()));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('add')) {
+                    if (!actionArgs) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.add.usage', $.botName.toLowerCase()));
+                        return;
+                    }
+
+                    $.inidb.set('botBlackList', actionArgs.toLowerCase(), 'true');
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.added', actionArgs));
+                    $.log.event(sender + ' added ' + actionArgs + ' to the bot blacklist.');
+                }
+
+                if (subAction.equalsIgnoreCase('remove')) {
+                    if (!actionArgs) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.remove.usage', $.botName.toLowerCase()));
+                        return;
+                    } else if (!$.inidb.exists('botBlackList', actionArgs.toLowerCase())) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.err'));
+                        return;
+                    }
+
+                    $.inidb.del('botBlackList', actionArgs.toLowerCase());
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.removed', actionArgs));
+                    $.log.event(sender + ' removed ' + actionArgs + ' to the bot blacklist.');
+                }
+            }
+
             if (action.equalsIgnoreCase('togglepricecommods')) {
                 if (pricecomMods) {
                     pricecomMods = false;
@@ -389,7 +424,6 @@
                     $.inidb.set('settings', 'pricecomMods', true);
                     $.say($.whisperPrefix(sender) + $.lang.get('init.mod.toggle.on.pay'));
                 }
-                return;
             }
 
             if (action.equalsIgnoreCase('togglepermcommessage')) {
@@ -402,7 +436,6 @@
                     $.inidb.set('settings', 'permComMsgEnabled', true);
                     $.say($.whisperPrefix(sender) + $.lang.get('init.mod.toggle.perm.msg.on'));
                 }
-                return;
             }
 
             if (action.equalsIgnoreCase('togglecooldownmessage')) {
@@ -415,7 +448,6 @@
                     $.inidb.set('settings', 'coolDownMsgEnabled', true);
                     $.say($.whisperPrefix(sender) + $.lang.get('init.toggle.cooldown.msg.on'));
                 }
-                return;
             }
         }
 
@@ -425,10 +457,11 @@
                 return;
             }
             if (lastRecon + 10000 >= $.systemTime()) {
+                $.consoleLn('[ERROR] Already trying to reconnect.');
                 return;
             }
-
             lastRecon = $.systemTime();
+            $.log.event(username + ' requested a reconnect!');
             $.session.close();
         }
 
@@ -437,7 +470,7 @@
             if (!$.isBot(sender)) {
                 return;
             }
-
+            $.log.event(username + ' removed the bot from chat!');
             java.lang.System.exit(0);
         }
 
@@ -692,8 +725,8 @@
         loadScriptRecursive('.');
 
         // Register custom commands and aliases.
-        $.registerCustomCommands();
-        $.registerCustomAliases();
+        $.addComRegisterCommands();
+        $.addComRegisterAliases();
 
         // Bind all $api events
 
@@ -759,90 +792,101 @@
          * @event api-command
          */
         $api.on($script, 'command', function(event) {
-            var sender = event.getSender(),
-                command = event.getCommand(),
+            var sender = event.getSender().toLowerCase(),
+                command = event.getCommand().toLowerCase(),
                 args = event.getArgs(),
                 subCommand = (args[0] ? args[0] : ''),
-                isMod = $.isModv3(sender, event.getTags());
+                subCommandAction = (args[1] ? args[1] : ''),
+                commandCost = 0,
+                permComCheck = $.permCom(sender, command, subCommand),
+                isModv3 = $.isModv3(sender, event.getTags());
 
-            /* Checks if the commands exists and if the commands are paused or if the user is blocked from using commands. */
-            if (!$.commandExists(command) || $.subCommandIsDisabled(command, subCommand) || (!isMod && $.commandPause.isPaused())) {
+            if ($.inidb.exists('botBlackList', sender) || $.commandPause.isPaused() || !$.commandExists(command)) {
                 return;
             }
 
-            /* Checks if the command has a alias */
-            if ($.aliasExists(command)) {
-                var alias = $.getCommandFromAlias(command),
-                    aliasArguments;
+            if ($.aliasExists(command) !== undefined) {
+                var ScriptEventManager = Packages.me.mast3rplan.phantombot.script.ScriptEventManager,
+                    CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
+                    alias = $.getIniDbString('aliases', command),
+                    aliasCmd,
+                    aliasParams;
 
-                if (!alias.match(/;/g)) {
-                    command = alias.split(' ');
-                    if (command.length > 1) {
-                        aliasArguments = alias.substring(alias.indexOf(' ') + 1);
+                if (alias.indexOf(';') === -1) {
+                    aliasCmd = alias.split(' ')[0];
+                    if (alias.split(' ').length > 1) {
+                        aliasParams = alias.substring(alias.indexOf(' ') + 1);
                     } else {
-                        aliasArguments = ' ';
+                        aliasParams = ' ';
                     }
-
-                    $.command.post(sender, command[0], (aliasArguments + ' ' + args.join(' ')), event.getTags());
+                    ScriptEventManager.instance().runDirect(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                 } else {
-                    aliases = alias.split(';');
-                    for (i in aliases) {
-                        command = aliases[i].split(' ');
-                        if (command.length > 1) {
-                            aliasArguments = aliases[i].substring(aliases[i].indexOf(' ') + 1);
+                    var aliasList = alias.split(';');
+                    for (var idx in aliasList) {
+                        aliasCmd = aliasList[idx].split(' ')[0];
+                        if (aliasList[idx].split(' ').length > 1) {
+                            aliasParams = aliasList[idx].substring(aliasList[idx].indexOf(' ') + 1);
                         } else {
-                            aliasArguments = ' ';
+                            aliasParams = ' ';
                         }
-
-                        if (i === (aliases.length - 1)) {
-                            $.command.post(sender, command[0], (aliasArguments + ' ' + args.join(' ')), event.getTags());
+                        if (idx == (aliasList.length - 1)) {
+                            ScriptEventManager.instance().runDirect(new CommandEvent(sender, aliasCmd, aliasParams + ' ' + args.join(' ')));
                         } else {
-                            $.command.post(sender, command[0], aliasArguments, event.getTags());
+                            ScriptEventManager.instance().runDirect(new CommandEvent(sender, aliasCmd, aliasParams));
                         }
                     }
                 }
                 return;
             }
 
-            /* Checks if the command is on cooldown. */
-            if ($.coolDown.get(sender, command, subCommand, isMod) !== 0) {
+            if ($.coolDown.get(command, sender, isModv3) > 0) {
                 if ($.getIniDbBoolean('settings', 'coolDownMsgEnabled', false)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getTime(sender, command, subCommand)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
+                } else {
+                    consoleLn('[COMMAND COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
                 }
                 return;
             }
 
-            /* Checks if the user has permission to use that command, if not tell him he does not if the permissionMessage toggle is on. */
-            if ($.permCom(sender, command, subCommand) !== 0) {
+            if (permComCheck !== 0) {
+                var permMsg;
+                if (permComCheck == 1) {
+                    permMsg = $.getCommandGroupName(command);
+                } else {
+                    if ($.subCommandExists(command, subCommand)) {
+                        permMsg = $.getSubCommandGroupName(command, subCommand);
+                    } else {
+                        permMsg = $.getCommandGroupName(command);
+                    }
+                }
                 if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getCommandGroupName(command, subCommand)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', permMsg));
                 }
                 return;
             }
 
-            /* Checks if the user has enough points for that command */
-            if ($.priceCom(sender, command, subCommand) !== 0) {
-                if (((isMod && pricecomMods && !$.isBot(sender)) || !isMod) && isModuleEnabled('./systems/pointSystem.js')) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, subCommand))));
-                    return;
+            if (($.inidb.exists('pricecom', command) || $.inidb.exists('pricecom', command + ' ' + subCommand) || $.inidb.exists('pricecom', (command + ' ' + subCommand + ' ' + subCommandAction)))) {
+                if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
+                    if (isModuleEnabled('./systems/pointSystem.js')) {
+                        commandCost = $.getCommandPrice(command, subCommand, subCommandAction);
+                        if ($.getUserPoints(sender) < commandCost) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
+                            return;
+                        }
+                    }
                 }
             }
 
-            /* Send the command event */
             callHook('command', event, false);
 
-            /* remove or give points to the user if needed. */
             if (isModuleEnabled('./systems/pointSystem.js')) {
-                if ($.inidb.get('paycom', command) > 0) {
+                if (parseInt($.inidb.get('paycom', command)) > 0) {
                     $.inidb.incr('points', sender, $.inidb.get('paycom', command));
                 }
-
-                if ($.getCommandPrice(command, subCommand) > 0 && ((isMod && pricecomMods && !$.isBot(sender)) || !isMod)) {
-                    $.inidb.decr('points', sender, $.getCommandPrice(command, subCommand));
+                if (commandCost > 0 && (((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
+                    $.inidb.decr('points', sender, commandCost);
                 }
             }
-        
-            /* Check if a init command was sent */
             handleInitCommands(event);
         });
 
