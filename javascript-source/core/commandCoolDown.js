@@ -3,10 +3,9 @@
  *
  * Manage cooldowns for commands
  * Cooldowns are kept per user.
- *
+ *!command 
  * To use the cooldown in other scipts use the $.coolDown API
  */
-
 (function() {
     var globalCooldown = $.getSetIniDbBoolean('cooldown', 'globalCooldown', true),
         perUserCooldown = $.getSetIniDbBoolean('cooldown', 'perUserCooldown', false),
@@ -58,7 +57,7 @@
             if (subCommand === '') {
                 return Math.floor((cooldown[command].time - $.systemTime()) / 1000);
             } else {
-                return Math.floor((subCooldown[command].subCommand[subCommand].time) - $.systemTime() / 1000);
+                return Math.floor((subCooldown[command].subCommand[subCommand].time - $.systemTime()) / 1000);
             }
         }
     }
@@ -85,7 +84,7 @@
             cooldown[command] = {
                 time: time
             };
-            return;
+            return 0;
         }
 
         /* commands with no sub commands */
@@ -180,21 +179,21 @@
 
         /* Cooldown with sub commands */
         if (globalCooldown && !hasCooldown) {
-            if (subCooldown[command] !== undefined && subCooldown[command].subCommand[subCommand].time - $.systemTime() >= 0) {
+            if (subCooldown[command] !== undefined && subCooldown[command].subCommand[subCommand] !== undefined && subCooldown[command].subCommand[subCommand].time - $.systemTime() >= 0) {
                 if (permission(username, isMod)) return 0;
                 return 1;
             } else {
                 return set(username, command, subCommand, hasCooldown, globalCooldownTime);
             }
         } else if (perUserCooldown && hasCooldown) {
-            if (subCooldown[username] !== undefined && subCooldown[username].command[command] !== undefined && subCooldown[username].command[command].subCommand[subCommand].time - $.systemTime() >= 0) {
+            if (subCooldown[username] !== undefined && subCooldown[username].command[command] !== undefined && subCooldown[username].command[command].subCommand[subCommand] !== undefined && subCooldown[username].command[command].subCommand[subCommand].time - $.systemTime() >= 0) {
                 if (permission(username, isMod)) return 0;
                 return 1;
             } else {
                 return set(username, command, subCommand, hasCooldown, $.getSubCommandCooldown(command, subCommand));
             }
         } else {
-            if (subCooldown[command] !== undefined && subCooldown[command].subCommand[subCommand].time - $.systemTime() >= 0) {
+            if (subCooldown[command] !== undefined && subCooldown[command].subCommand[subCommand] !== undefined && subCooldown[command].subCommand[subCommand].time - $.systemTime() >= 0) {
                 if (permission(username, isMod)) return 0;
                 return 1;
             } else {
@@ -230,7 +229,7 @@
                 if (subAction.equalsIgnoreCase('global')) {
                     globalCooldown = !globalCooldown;
                     $.inidb.set('cooldown', 'globalCooldown', globalCooldown);
-                    $.say($.whisperPrefix + $.lang.get('cooldown.toggle.global', (globalCooldown === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.toggle.global', (globalCooldown === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
                     return;
                 }
 
@@ -238,7 +237,7 @@
                 if (subAction.equalsIgnoreCase('peruser')) {
                     perUserCooldown = !perUserCooldown;
                     $.inidb.set('cooldown', 'perUserCooldown', perUserCooldown);
-                    $.say($.whisperPrefix + $.lang.get('cooldown.toggle.per.user', (perUserCooldown === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.toggle.per.user', (perUserCooldown === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
                     return;
                 }
 
@@ -246,7 +245,7 @@
                 if (subAction.equalsIgnoreCase('modcooldown')) {
                     modCooldown = !modCooldown;
                     $.inidb.set('cooldown', 'modCooldown', modCooldown);
-                    $.say($.whisperPrefix + $.lang.get('cooldown.toggle.mod.cooldown', (modCooldown === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.toggle.mod.cooldown', (modCooldown === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
                     return;
                 }
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.toggle.usage'));
