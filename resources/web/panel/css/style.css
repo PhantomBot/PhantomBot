@@ -873,3 +873,10 @@ input[type=range]:focus::-moz-range-track {
     border-color: grey;
 }
 
+.caret {
+    margin-top: 8px !important;
+}
+
+.dropdown-menu {
+    cursor: pointer;
+}
