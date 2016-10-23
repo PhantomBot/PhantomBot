@@ -121,7 +121,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3s'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -464,7 +464,7 @@
     }
 
     /* version 2.3.3s updates */
-    if (!$.inidb.exists('updates', 'installedv2.3.3ss') || $.inidb.get('updates', 'installedv2.3.3ss') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv2.3.3s') || $.inidb.get('updates', 'installedv2.3.3s') != 'true') {
         $.consoleLn('Starting ' + $.version + ' updates...');
 
         $.consoleLn('Deleting the old emotes cache.');
@@ -491,29 +491,8 @@
             $.inidb.del('settings', 'raffleMessageInterval');
         }
 
-        $.consoleLn('Deleting old permcom keys in 40 seconds');
-        setTimeout(function() {
-            $.consoleLn('Deleting old permcom keys...');
-            var keys = $.inidb.GetKeyList('permcom', ''),
-                key,
-                i;
-
-            for (i in keys) {
-                if (!keys[i].includes(' ') && !$.commandExists(keys[i])) {
-                    $.inidb.del('permcom', keys[i]);
-                    $.consoleLn('Deleted permcom key::' + keys[i]);
-                } else if (keys[i].includes(' ')) { 
-                    key = keys[i].split(' ');
-                    if (!$.subCommandExists(key[0], key[1])) {
-                        $.inidb.del('permcom', keys[i]);
-                        $.consoleLn('Deleted permcom key::' + keys[i]);
-                    }
-                }
-            }
-        }, 40000);
-
         $.consoleLn( $.version + ' updates completed!');
-        $.inidb.set('updates', 'installedv2.3.3ss', 'true');
+        $.inidb.set('updates', 'installedv2.3.3s', 'true');
     }
 
     /**
