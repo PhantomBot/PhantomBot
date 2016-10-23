@@ -1,4 +1,3 @@
-
 <!--
 
  Copyright (C) 2016 phantombot.tv
@@ -16,367 +15,248 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
- @author ScaniaTV
+ @author IllusionaryOne
 -->
 
 <!-- This is outside of the accordion, so will always be on top of the tab -->
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="customCommandsAccordion">
-    <h3>Custom Commands</h3>
+    <h3>Commands</h3>
     <div>
-    <div id="_editCustomCommandsPanelDisabled" />
+        <div id="_editCustomCommandsPanelDisabled" />
     <div id="_editCustomCommandsPanel">
 
-    <div id="command-list" style="height: 300px; overflow: auto;" />
+        <div id="tagHelpDialog" title="Custom Command Tags" style="font-size: 90%">
+            <table>
+                <tr>
+                    <td>(sender) </td><td> User who triggered the command.<td>
+                    </tr><tr>
+                    <td>(@sender) </td><td> User who triggered the command and adds a @ symbol to his name.<td>
+                    </tr><tr>
+                    <td>(baresender) </td><td> User who triggered the command in lower case.<td>
+                    </tr><tr>
+                    <td>(touser) </td><td> Replaces with the argument you say after the command. If nothing is said after its the user who triggered the command.<td>
+                    </tr><tr>
+                    <td>(#) </td><td> Random number<td>
+                    </tr><tr>
+                    <td>(1), (2), (3) etc </td><td> Command arguments.<td>
+                    </tr><tr>
+                    <td>(age) </td><td> Tells you how long you have been on twitch for.<td>
+                    </tr><tr>
+                    <td>(random) </td><td> Random person in chat.<td>
+                    </tr><tr>
+                    <td>(pointname) </td><td> Current point name.<td>
+                    </tr><tr>
+                    <td>(uptime) </td><td> Current stream uptime.<td>
+                    </tr><tr>
+                    <td>(game) </td><td> Current game set on twitch.<td>
+                    </tr><tr>
+                    <td>(status) </td><td> Current title set on twitch.<td>
+                    </tr><tr>
+                    <td>(price) </td><td> Current command price.<td>
+                    </tr><tr>
+                    <td>(pay) </td><td> Payment of the command.<td>
+                    </tr><tr>
+                    <td>(onlineonly) </td><td> Will make the command work when the stream is online.<td>
+                    </tr><tr>
+                    <td>(offlineonly) </td><td> Will make the command work when the stream is offline.<td>
+                    </tr><tr>
+                    <td>(viewers) </td><td> Current viewer count.<td>
+                    </tr><tr>
+                    <td>(count) </td><td> Amount of time the command has been used.<td>
+                    </tr><tr>
+                    <td>(echo) </td><td> Will say any message as the bot.<td>
+                    </tr><tr>
+                    <td>(1=) </td><td> Argument 1. Add a the tag name of your choice after the = for if the argument is empty.<td>
+                    </tr><tr>
+                    <td>(countdown=) </td><td> Add the date you want to count down too. Ex (countdown=July 2 2016 7:00).<td>
+                    </tr><tr>
+                    <td>(downtime) </td><td> Time since the last stream.<td>
+                    </tr><tr>
+                    <td>(readfile filename.txt) </td><td> Reads what is in the file. The file must be in the bots addons folder.<td>
+                    </tr><tr>
+                    <td>(customapijson URL key | {literal string} ...) </td>
+                    <td> Call a remote URL that returns JSON. key or object.key or object.object.key to access JSON data.
+                    </tr><tr>
+                    <td>(command [command_name]) </td><td> Call a command. Must be first item in custom command. Do not include ! before command_name</td>
+                    </tr><tr>
+                    <td>(customapi [requesturl]) </td><td> Call a remote URL<td>
+                </tr>
+            </table>
+        </div>
 
-    <br>
-    <button type="button" class="btn btn-default inline pull-right" data-toggle="modal" data-target="#commandSettings"><i class="fa fa-cog"/></button>
-    <button type="button" class="btn btn-primary inline pull-right" data-toggle="modal" data-target="#addcommand">Add a Command</button>
+        <div>
+            <button type="button" class="btn btn-primary btn-xs inline pull-right"
+                     onclick="$('#tagHelpDialog').dialog('open')"><small>Command variables</small></button>
+            <br><br>
+        </div>
+    </div>
 
-    <div id="commandSettings" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Global Settings</h4>
-                </div>
-
-                <div class="modal-body">
-                    <table>
-                        <tr class="textList">
-                            <td>Global Cooldown</td>
-                            <td style="width: 25px" ><div data-toggle="tooltip" title="If toggled on commands with no cooldowns or set to (-1) will use this cooldown." id="globalCooldown" /></td>
-                            <td style="width: 25px">
-                                <div data-toggle="tooltip" title="Enable" class="button" onclick="$.globalCooldown('on');"><i class="fa fa-circle" /></div>
-                            </td>
-                            <td style="width: 25px">
-                                <div data-toggle="tooltip" title="Disable" class="button" onclick="$.globalCooldown('off');"><i class="fa fa-circle-o" /></div>
-                            </td>
-                        </tr>
-                        <tr class="textList">
-                            <td>Per-user Cooldown</td>
-                            <td style="width: 25px"><div data-toggle="tooltip" title="If toggled on all cooldown will be set on users and not everyone." id="perUserCooldown" /></td>
-                            <td style="width: 25px">
-                                <div data-toggle="tooltip" title="Enable" class="button" onclick="$.perUserCooldown('on');"><i class="fa fa-circle" /></div>
-                            </td>
-                            <td style="width: 25px">
-                                <div data-toggle="tooltip" title="Disable" class="button" onclick="$.perUserCooldown('off');"><i class="fa fa-circle-o" /></div>
-                            </td>
-                        </tr>
-                        <tr class="textList">
-                            <td>Moderator Cooldown</td>
-                            <td style="width: 25px"><div data-toggle="tooltip" title="If toggled on Moderators will not be able to ignore command cooldowns." id="modCooldown" /></td>
-                            <td style="width: 25px">
-                                <div data-toggle="tooltip" title="Enable" class="button" onclick="$.modCooldown('on');"><i class="fa fa-circle" /></div>
-                            </td>
-                            <td style="width: 25px">
-                                <div data-toggle="tooltip" title="Disable" class="button" onclick="$.modCooldown('off');"><i class="fa fa-circle-o" /></div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <br>
-                    <lable data-toggle="tooltip" title="Global Cooldown time. This cooldown is used when a command cooldown is set to -1."><b>Global Cooldown</b></lable>
-                    <div class="btn-group">&nbsp;&nbsp;&nbsp;
-                        <input id="global-cooldown" style="width: 430px; margin-left: 6px;" type="range" min="1" max="800" value="1" step="1" oninput="$.rangeUpdate(this.value, 'global-cooldown2', 'Seconds')" />
-                        <span id="global-cooldown2" style="margin-left: 6px;">0 Seconds</span>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="addbutton" onclick="$.modal.cooldown()">Ok</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="runCustomCommand">Run a command</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.runCommand()">Run</button>
+                <input type="text" class="form-control" id="commandImput" placeholder="Command name" />
             </div>
-        </div>
-    </div>
+        </form>
+        <br>
 
-    <div id="addcommand" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Add a Command</h4>
-                </div>
-
-                <div class="modal-body">
-                    <lable data-toggle="tooltip" title="Command name to be used in chat."><b>Command *</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 10px;" type="text" class="form-control" id="command-name" placeholder="!Command" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Response to be said in chat when the command is triggered."><b>Repsonse *</b></lable>
-                    <div class="btn-group">
-                        <textarea style="width: 450px; margin-left: 13px;" type="text" class="form-control" maxlength="496" id="command-response" onkeypress="$.modal.maxLength('command-response', 'addbutton')" placeholder="Repsonse"></textarea>
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="A alias for this command. This is not required."><b>Alias</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 53px;" type="text" class="form-control" id="command-alias" placeholder="Alias" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Cost for using the command. This is not required."><b>Cost</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 55px;" type="number" min="0" class="form-control" id="command-cost" placeholder="Cost" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Reward for using the command. This is not required."><b>Reward</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 36px;" type="number" min="0" class="form-control inline" id="command-reward" placeholder="Reward" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Permission to use the command. This is not required."><b>Permission</b></lable>&nbsp;
-                    <div class="btn-group">
-                        <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 10px; width: 450px; background: #000" data-toggle="dropdown">
-                            <span id="command-permission">Everyone</span><span class="caret pull-right"></span></button>
-
-                        <ul id="add-drop" class="dropdown-menu" style="margin-left: 10px;">
-                            <li><a style="width: 450px;" class="dropdown-shadow">Administrators</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Moderators</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Subscribers</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Donators</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Regulars</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Everyone</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <br>
-                    <lable data-toggle="tooltip" title="Cooldown for the command. Default is the global cooldown, set it to 0 for no cooldown at all and -1 is the global cooldown. This is not required."><b>Cooldown</b></lable>
-                    <div class="btn-group">&nbsp;&nbsp;&nbsp;
-                        <input id="command-cooldown" style="width: 448px; margin-left: 22px;" type="range" min="-1" max="600" value="-1" step="1" oninput="$.rangeUpdate(this.value, 'command-cooldown2', 'Seconds')" />
-                        <span id="command-cooldown2" style="margin-left: 22px;">Global Cooldown</span>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="addbutton" onclick="$.modal.add()">Submit</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addCustomCommand">Add a command</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCustomCommand()">Submit</button>
+                <input type="text" class="form-control" id="addCommandCommand" placeholder="Command name" />
+                <input type="text" class="form-control" id="addCommandText" placeholder="Command response" />
             </div>
-        </div>
-    </div>
-    
-    <div id="editcommand" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Edit a Command</h4>
-                </div>
-
-                <div class="modal-body">
-                    <lable data-toggle="tooltip" title="Command name to be used in chat. This cannot be changed."><b>Command</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 19px;" type="text" class="form-control" id="edit-command-name" placeholder="!Command" Disabled />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Response to be said in chat when the command is triggered."><b>Repsonse</b></lable>
-                    <div class="btn-group">
-                        <textarea style="width: 450px; margin-left: 23px;" type="text" class="form-control" maxlength="496" id="edit-command-response" onkeypress="$.modal.maxLength('edit-command-response', 'editbutton')" placeholder="Repsonse"></textarea>
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="A alias for this command. This is not required."><b>Alias</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 53px;" type="text" class="form-control" id="edit-command-alias" placeholder="Alias" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Cost for using the command. This is not required."><b>Cost</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 55px;" type="number" min="0" class="form-control" id="edit-command-cost" placeholder="Cost" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Reward for using the command. This is not required."><b>Reward</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 36px;" type="number" min="0" class="form-control" id="edit-command-reward" placeholder="Reward" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Permission to use the command. This is not required."><b>Permission</b></lable>&nbsp;
-                    <div class="btn-group">
-                        <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 10px; width: 450px; background: #000" data-toggle="dropdown">
-                            <span id="edit-command-permission">Everyone</span> <span class="caret pull-right"></span></button>
-
-                        <ul id="edit-drop-permission" class="dropdown-menu" style="margin-left: 10px;">
-                            <li><a style="width: 450px;" class="dropdown-shadow">Administrators</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Moderators</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Subscribers</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Donators</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Regulars</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Everyone</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Enables or disables the command. Default is enabled."><b>Active</b></lable>&nbsp;
-                    <div class="btn-group">
-                        <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 41px; width: 450px; background: #000" data-toggle="dropdown">
-                            <span id="edit-command-active">Yes</span><span class="caret pull-right"></span></button>
-
-                        <ul id="edit-drop-active" class="dropdown-menu" style="margin-left: 41px;">
-                            <li><a style="width: 450px;" class="dropdown-shadow">Yes</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">No</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <br>
-                    <lable data-toggle="tooltip" title="Cooldown for the command. Default is the global cooldown, set it to 0 for no cooldown at all and -1 is the global cooldown. This is not required."><b>Cooldown</b></lable>
-                    <div class="btn-group">&nbsp;&nbsp;&nbsp;
-                        <input id="edit-command-cooldown" style="width: 448px; margin-left: 22px;" type="range" min="-1" max="600" value="-1" step="1" oninput="$.rangeUpdate(this.value, 'edit-command-cooldown2', 'Seconds')" />
-                        <span id="edit-command-cooldown2" style="margin-left: 22px;">Global Cooldown</span>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="editbutton" onclick="$.modal.edit()">Submit</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-        </div>
-   
-       <div id="deletecommand" class="modal fade" role="dialog">
-           <div class="modal-dialog">
-               <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
-                   <div class="modal-header">
-                       <button type="button" class="close" data-dismiss="modal">&times;</button>
-                       <h4 class="modal-title">Remove a Command</h4>
-                   </div>
-   
-                   <div class="modal-body">
-                       <span>Are you sure you want to remove command <b>!<span id="delete-command"></span></b>?</span>
-                   </div>
-   
-                   <div class="modal-footer">
-                       <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.modal.remove('null', 'true')">Ok</button>
-                       <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                   </div>
-               </div>
-           </div>
-        </div>
+        </form>
+        <label for="addCustomCommand">Command list</label>
+    <div id="_viewCustomCommandsPanelDisabled" />
+    <div id="_viewCustomCommandsPanel">
+        <div id="customCommandsList" style="height: 250px; overflow: auto;" />
     </div>
     </div>
 
-    <h3>Default Commands</h3>
+    <h3>Aliases</h3>
     <div>
-        <div id="default-command-list" style="height: 300px; overflow: auto;" />
-
-        <div id="defaultcommand" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Command Settings</h4>
-                </div>
-
-                <div class="modal-body">
-                    <lable data-toggle="tooltip" title="Command name to be used in chat. This cannot be changed."><b>Command</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 19px;" type="text" class="form-control" id="default-command-name" placeholder="!Command" Disabled />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="A alias for this command. This is not required."><b>Alias</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 53px;" type="text" class="form-control" id="default-command-alias" placeholder="Alias" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Cost for using the command. This is not required."><b>Cost</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 55px;" type="number" min="0" class="form-control" id="default-command-cost" placeholder="Cost" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Reward for using the command. This is not required."><b>Reward</b></lable>
-                    <div class="btn-group">
-                        <input style="width: 450px; margin-left: 36px;" type="number" min="0" class="form-control" id="default-command-reward" placeholder="Reward" />
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Permission to use the command. This is not required."><b>Permission</b></lable>&nbsp;
-                    <div class="btn-group">
-                        <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 10px; width: 450px; background: #000" data-toggle="dropdown">
-                            <span id="default-command-permission">Everyone</span> <span class="caret pull-right"></span></button>
-
-                        <ul id="edit-default-drop" class="dropdown-menu" style="margin-left: 10px;">
-                            <li><a style="width: 450px;" class="dropdown-shadow">Administrators</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Moderators</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Subscribers</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Donators</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Regulars</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">Everyone</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <br><br>
-                    <lable data-toggle="tooltip" title="Enables or disables the command. Default is enabled."><b>Active</b></lable>&nbsp;
-                    <div class="btn-group">
-                        <button class="btn dropdown-toggle btn-select" style="text-align: left; margin-left: 41px; width: 450px; background: #000" data-toggle="dropdown">
-                            <span id="default-command-active">Yes </span><span class="caret pull-right"></span></button>
-
-                        <ul id="default-drop-active" class="dropdown-menu" style="margin-left: 41px;">
-                            <li><a style="width: 450px;" class="dropdown-shadow">Yes</a>
-                            </li>
-                            <li><a style="width: 450px;" class="dropdown-shadow">No</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <br>
-                    <lable data-toggle="tooltip" title="Cooldown for the command. Default is the global cooldown, set it to 0 for no cooldown at all and -1 is the global cooldown. This is not required."><b>Cooldown</b></lable>
-                    <div class="btn-group">&nbsp;&nbsp;&nbsp;
-                        <input id="default-command-cooldown" style="width: 448px; margin-left: 22px;" type="range" min="-1" max="600" value="-1" step="1" oninput="$.rangeUpdate(this.value, 'default-command-cooldown2', 'Seconds')" />
-                        <span id="default-command-cooldown2" style="margin-left: 22px;">Global Cooldown</span>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.modal.def()">Submit</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addCustomCommand">Add a alias</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.aliasCommand()">Submit</button>
+                <input type="text" class="form-control" id="aliasCommandInputAlias" placeholder="Default command name" />
+                <input type="text" class="form-control" id="aliasCommandInput" placeholder="Alias name" />
             </div>
-        </div>
+        </form>
+    <div id="_viewCommandAliasesPanelDisabled" />
+    <div id="_viewCommandAliasesPanel">
+        <div id="aliasCommandsList" style="height: 200px; overflow: auto;" />
     </div>
+    </div>
+
+    <h3>Cost</h3>
+    <div>
+    <div id="_commandPricesPanelDisabled" />
+    <div id="_commandPricesPanel">
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="setCommandPrice">Add a new price</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPrice()">Submit</button>
+                <input type="text" class="form-control" id="setCommandPriceInputCommand" placeholder="Command name" />
+                <input type="text" class="form-control" id="setCommandPriceInput" placeholder="Price" />
+            </div>
+        </form>
+
+        <strong>Current Command Prices</strong><br><br>
+        <div id="priceCommandsList" style="height: 200px; overflow: auto;" />
+    </div>
+    </div>
+
+    <h3>Payment</h3>
+    <div>
+    <div id="_commandPayPanelDisabled" />
+    <div id="_commandPayPanel">
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="setCommandPay">Add a new payment</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPay()">Submit</button>
+                <input type="text" class="form-control" id="setCommandPayInputCommand" placeholder="Command name" />
+                <input type="text" class="form-control" id="setCommandPayInput" placeholder="Payment" />
+            </div>
+        </form>
+
+        <strong>Current Command Payments</strong><br><br>
+        <div id="payCommandsList" style="height: 200px; overflow: auto;" />
+    </div>
+    </div>
+
+    <h3>Permissions</h3>
+    <div>
+        <table>
+            <tr class="textList">
+                <td>No permission warning message</td>
+                <td style="width: 25px"><div id="permcomMsg" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.togglePermcomMsg();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
+    <div id="_commandPermissionPanelDisabled" />
+    <div id="_commandPermissionPanel">
+        <div id="permCommandsList" style="height: 300px; overflow: auto;" />
+    </div>
+    </div>
+
+    <h3>Cooldown</h3>
+    <div>
+        <table>
+            <tr class="textList">
+                <td>Global cooldown</td>
+                <td style="width: 25px"><div id="toggleGlobalCooldown" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGlobalCooldown();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Per-user cooldown</td>
+                <td style="width: 25px"><div id="togglePerUserCooldown" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.togglePerUserCooldown();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Mod cooldown</td>
+                <td style="width: 25px"><div id="toggleModCooldown" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleModCooldown();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Cooldown warning message</td>
+                <td style="width: 25px"><div id="cooldownMsg" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleCooldownMsg();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="globalCooldownTime">Global cooldown time</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setGlobalCooldownTime()">Submit</button>
+                <input type="number" min="0" class="form-control" id="globalCooldownTimeInput" placeholder="Seconds" />
+            </div>
+        </form>
+
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="cooldownCmd">Command cooldown</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldown()">Submit</button>
+                <input type="text" class="form-control" id="cooldownCmdInputCommand" placeholder="Command name" />
+                <input type="number" min="0" class="form-control" id="cooldownCmdInput" placeholder="Seconds" />
+            </div>
+        </form>
+        <br>
+        <strong>Commands with Cooldowns</strong>
+        <div id="cooldownList" style="height: 200px; overflow: auto;" />
     </div>
 </div>
 
 <!-- Run the Acordion -->
-<script>$("#customCommandsAccordion").accordion({ clearStyle: true, heightStyle: "panel", icons: null });</script>
+<script>$("#customCommandsAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
 <script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>
-<script>$('#edit-drop-permission li').on('click', function() {$('#edit-command-permission').html($(this).text());});</script>
-<script>$('#edit-default-drop li').on('click', function() {$('#default-command-permission').html($(this).text());});</script>
-<script>$('#add-drop li').on('click', function() {$('#command-permission').html($(this).text());});</script>
-<script>$('#edit-drop-active li').on('click', function() {$('#edit-command-active').html($(this).text());});</script>
-<script>$('#default-drop-active li').on('click', function() {$('#default-command-active').html($(this).text());});</script>
-<script></script>
+<script>$(function() {var command = $.commands; $("#commandImput").autocomplete({source: command});});</script>
+<script>$("#tagHelpDialog").dialog({ autoOpen: false, maxHeight: 500, maxWidth: 500, resizable: false });</script>
 <script>handleInputFocus();</script>

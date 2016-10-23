@@ -114,11 +114,6 @@ public class TwitchCache implements Runnable {
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
-        try {
-            Thread.sleep(30 * 1000);
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
-        }
 
         /* Check the DB for a previous Game and Stream Title */
         String gameTitle = getDBString("game");
@@ -145,7 +140,7 @@ public class TwitchCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
             }
         }
     }
