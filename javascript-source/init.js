@@ -17,6 +17,10 @@
         coolDownMsgEnabled = ($.inidb.exists('settings', 'coolDownMsgEnabled') ? $.inidb.get('settings', 'coolDownMsgEnabled') : false),
         permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : true);
 
+    /* Make these null to start */
+    $.session = null;
+    $.channel = null;
+
     /**
      * @class
      * @param {string} scriptFile
