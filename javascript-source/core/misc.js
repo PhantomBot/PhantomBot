@@ -1,9 +1,7 @@
 (function() {
     var currentHostTarget = '',
-        respond = getIniDbBoolean('settings', 'response_@chat', true),
-        action = getIniDbBoolean('settings', 'response_action', false),
-        maxLength,
-        pos;
+        respond = getSetIniDbBoolean('settings', 'response_@chat', true),
+        action = getSetIniDbBoolean('settings', 'response_action', false);
 
     /* 
      * @function reloadMisc
