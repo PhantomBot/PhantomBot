@@ -1,9 +1,9 @@
 (function() {
-    var permitList = [],
-        timeouts = [],
+    var permitList = {},
+        timeouts = {},
         whiteList = [],
         blackList = [],
-        spamTracker = [],
+        spamTracker = {},
 
         linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', false),
         linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking.'),
@@ -239,7 +239,7 @@
     setInterval(function() {
         if (spamTracker.length !== 0) {
             if (spamTrackerLastMsg - $.systemTime() <= 0) {
-                spamTracker = [];
+                spamTracker = {};
             }
         }
     }, 8e4);
@@ -304,18 +304,6 @@
             warning = $.lang.get('chatmoderator.warning');
         }
         timeouts[username] = (resetTime + $.systemTime());
-        panelLog(username);
-    }
-
-    /**
-     * @function panelLog
-     *
-     * @param {string} user
-     */
-    function panelLog(username) {
-        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            $.panelDB.updateModLinesDB(username);
-        }
     }
 
     /**
@@ -329,7 +317,10 @@
         if (!filter && (messageTime - $.systemTime()) <= 0) {
             $.say($.userPrefix(username, true) + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
-        } 
+        }
+
+        // Only log the user once the moderation messages are all done.
+        $.panelDB.updateModLinesDB(username);
     }
 
     /**
@@ -385,7 +376,6 @@
                 return true;
             }
         }
-        
         return false;
     }
 
@@ -411,9 +401,8 @@
     function checkYoutubePlayer(message) {
         if ($.youtubePlayerConnected && message.match(youtubeLinks)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
