@@ -67,6 +67,9 @@ public class DataStore {
     public void SetString(String fName, String section, String key, String value) {
     }
 
+    public void InsertString(String fName, String section, String key, String value) {
+    }
+
     public void SetBatchString(String fName, String section, String[] key, String[] value) {
     }
 
