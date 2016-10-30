@@ -63,6 +63,7 @@ public class Session {
     private String oAuth;
     private int chatLineCtr = 0;
     private Long lastTry = 0L;
+    private Long lastModTry = 0L;
 
     /*
      * Creates an instance for a Session
@@ -268,6 +269,19 @@ public class Session {
         if (message != null && sendMessages) { //make sure the message is not null, and make sure we are allowed to send messages.
             twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message.message);// send the message to Twitch.
             com.gmt2001.Console.out.println("[CHAT] " + message.message);//print the message in the console once its sent to Twitch.
+        } else {
+            if (!sendMessages && message != null) {
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("[ERROR] " + getNick() + " is not detected as a moderator!");
+                if (lastModTry + 60000 <= System.currentTimeMillis()) {
+                    lastModTry = System.currentTimeMillis();
+                    com.gmt2001.Console.out.println("[INFO] Trying to automatically detect moderator status now.");
+                    saySilent(".mods");
+                } else {
+                    com.gmt2001.Console.out.println("[INFO] Will try to automatically detect moderator status in 60 seconds.");
+                }
+                com.gmt2001.Console.out.println();
+            }
         }
     }
 
@@ -291,9 +305,22 @@ public class Session {
         }
 
         Message message = session.sendQueue.poll();
-        if (message != null && sendMessages) { 
-            twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message.message);
-            com.gmt2001.Console.out.println("[CHAT] " + message.message);
+        if (message != null && sendMessages) { //make sure the message is not null, and make sure we are allowed to send messages.
+            twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message.message);// send the message to Twitch.
+            com.gmt2001.Console.out.println("[CHAT] " + message.message);//print the message in the console once its sent to Twitch.
+        } else {
+            if (!sendMessages && message != null) {
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("[ERROR] " + getNick() + " is not detected as a moderator!");
+                if (lastModTry + 60000 <= System.currentTimeMillis()) {
+                    lastModTry = System.currentTimeMillis();
+                    com.gmt2001.Console.out.println("[INFO] Trying to automatically detect moderator status now.");
+                    saySilent(".mods");
+                } else {
+                    com.gmt2001.Console.out.println("[INFO] Will try to automatically detect moderator status in 60 seconds.");
+                }
+                com.gmt2001.Console.out.println();
+            }
         }
     }
 
