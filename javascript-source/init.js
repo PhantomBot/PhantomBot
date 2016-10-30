@@ -15,7 +15,7 @@
         lastRecon = 0,
         pricecomMods = ($.inidb.exists('settings', 'pricecomMods') ? $.inidb.get('settings', 'pricecomMods') : false),
         coolDownMsgEnabled = ($.inidb.exists('settings', 'coolDownMsgEnabled') ? $.inidb.get('settings', 'coolDownMsgEnabled') : false),
-        permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : true);
+        permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : false);
 
     /* Make these null to start */
     $.session = null;
@@ -802,10 +802,9 @@
                 subCommand = (args[0] ? args[0] : ''),
                 subCommandAction = (args[1] ? args[1] : ''),
                 commandCost = 0,
-                permComCheck = $.permCom(sender, command, subCommand),
                 isModv3 = $.isModv3(sender, event.getTags());
 
-            if ($.inidb.exists('botBlackList', sender) || $.commandPause.isPaused() || !$.commandExists(command)) {
+            if ($.inidb.exists('botBlackList', sender) || ($.commandPause.isPaused() && !isModv3) || !$.commandExists(command)) {
                 return;
             }
 
@@ -843,28 +842,16 @@
                 return;
             }
 
-            if ($.coolDown.get(command, sender, isModv3) > 0) {
-                if ($.getIniDbBoolean('settings', 'coolDownMsgEnabled', false)) {
+            if ($.coolDown.get(command, sender, isModv3) >= 0) {
+                if (coolDownMsgEnabled) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
-                } else {
-                    consoleLn('[COMMAND COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
                 }
                 return;
             }
 
-            if (permComCheck !== 0) {
-                var permMsg;
-                if (permComCheck == 1) {
-                    permMsg = $.getCommandGroupName(command);
-                } else {
-                    if ($.subCommandExists(command, subCommand)) {
-                        permMsg = $.getSubCommandGroupName(command, subCommand);
-                    } else {
-                        permMsg = $.getCommandGroupName(command);
-                    }
-                }
-                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', permMsg));
+            if ($.permCom(sender, command, subCommand) !== 0) {
+                if (permComMsgEnabled) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (subCommand === '' ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, subCommand))));
                 }
                 return;
             }

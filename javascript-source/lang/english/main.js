@@ -201,8 +201,6 @@ $.lang.register('chatmoderator.timeouttime.emotes.usage', '!moderation timeout t
 $.lang.register('chatmoderator.timeouttime.emotes', 'timeout time for emotes has been set to $1 seconds.');
 $.lang.register('chatmoderator.timeouttime.longmsg.usage', '!moderation timeout time longmessages [time in seconds] (current timeout time for long messages is set to $1 seconds)');
 $.lang.register('chatmoderator.timeouttime.longmsg', 'timeout time for long messages has been set to $1 seconds.');
-$.lang.register('chatmoderator.timeouttime.err', 'your timeout time for the spam tracker can not be lower then your spam tracker time.');
-$.lang.register('chatmoderator.warningtime.err', 'your warning time for the spam tracker can not be lower then your spam tracker time.');
 $.lang.register('cmd.404', 'command !$1 does not exist or is not registered.');
 $.lang.register('cmd.adminonly', 'Only an Administrator has access to that command!');
 $.lang.register('cmd.casteronly', 'Only a Caster has access to that command!');
@@ -255,7 +253,7 @@ $.lang.register('init.module.usage', 'Usage: !module list, !module enable [modul
 $.lang.register('init.reconnect', 'Reconnecting to $1');
 $.lang.register('init.rejoin', 'Rejoining the channel.');
 $.lang.register('init.disconnect', 'Disconnecting from $1');
-$.lang.register('init.usage', '!$1 [reconnect / disconnect / connectmessage / removeconnectmessage / blacklist]');
+$.lang.register('init.usage', '!$1 [reconnect / disconnect]');
 $.lang.register('init.connected.msg', 'Connect message set to: $1');
 $.lang.register('init.connected.msg.usage', '!$1 connectmessage [message]');
 $.lang.register('init.connected.msg.removed', 'Connect message removed!');
@@ -268,6 +266,7 @@ $.lang.register('init.blacklist.removed', 'removed $1 from the bot blacklist!');
 $.lang.register('init.mod.toggle.on.pay', 'moderators+ will now pay for commands.');
 $.lang.register('init.mod.toggle.off.pay', 'moderators+ will no longer pay for commands.');
 $.lang.register('init.mod.toggle.perm.msg.off', 'No permission messages have been disabled.');
+$.lang.register('init.mod.toggle.perm.msg.on', 'No permission messages have been enabled.');
 $.lang.register('init.toggle.cooldown.msg.on', 'The cooldown message has been enabled.');
 $.lang.register('init.toggle.cooldown.msg.off', 'The cooldown message has been disabled.');
 $.lang.register('init.cooldown.msg', 'command !$1 is still on cooldown. ($2 seconds)');
