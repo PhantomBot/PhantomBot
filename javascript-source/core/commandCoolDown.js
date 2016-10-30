@@ -64,7 +64,7 @@
      * @param username
      */
     function set(command, hasCooldown, time, username) {
-        if (time == null || time == 0 || time == 1 || isNaN(time)) {
+        if (time === null || time === 0) {
             return;
         }
 
@@ -159,17 +159,17 @@
      * @event command
      */
     $.bind('command', function(event) {
-        var sender = event.getSender().toLowerCase(),
+        var sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
             cmd = args[0],
             time = parseInt(args[1]);
 
         /**
-         * @commandpath coolcom [command or keyword] [seconds] - Sets a cooldown in seconds for a command or a keyword. Use -1 for seconds to remove it. This also applies for the per-user cooldown.
+         * @commandpath coolcom [command] [seconds] - Sets a cooldown in seconds for a command. Use -1 for seconds to remove it. This also applies for the per-user cooldown.
          */
         if (command.equalsIgnoreCase('coolcom') || command.equalsIgnoreCase('cooldown')) {
-            if (!cmd || !time) {
+            if (cmd === undefined || isNaN(time)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set.usage'));
                 return;
             }
@@ -201,7 +201,7 @@
         }
 
         /**
-         * @commandpath toggleglobalcooldown - Enables/Disables the global command cooldown.
+         * @commandpath toggleglobalcooldown - Enables or Disables the global command cooldown.
          */
         if (command.equalsIgnoreCase('toggleglobalcooldown')) {
             globalCooldown = !globalCooldown;
@@ -211,7 +211,7 @@
         }
 
         /**
-         * @commandpath toggleperusercooldown - Enables/Disables the per-user command cooldown.
+         * @commandpath toggleperusercooldown - Enables or Disables the per-user command cooldown.
          */
         if (command.equalsIgnoreCase('toggleperusercooldown')) {
             perUserCooldown = !perUserCooldown;
@@ -234,7 +234,7 @@
         }
 
         /**
-         * @commandpath togglemodcooldown - Enable/Disable mods being affected by cooldowns
+         * @commandpath togglemodcooldown - Enable or Disable mods being affected by cooldowns
          */
         if (command.equalsIgnoreCase('togglemodcooldown')) {
             modCooldown = !modCooldown;
