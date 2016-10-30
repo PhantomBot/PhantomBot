@@ -329,16 +329,16 @@
             index;
 
         /**
-         * @commandpath YourBotName rejoin - Reconnects to the channel
-         * @commandpath YourBotName disconnect - Removes the bot from chat
-         * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel
-         * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
-         * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist
-         * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands
-         * @commandpath YourBotName togglepermcommessage - Toggles the no permission message
-         * @commandpath YourBotName togglecooldownmessage - Toggles the on command cooldown message
+         * @commandpath YourBotName reconnect - Makes the bot reconnect to Twitches servers.
+         * @commandpath YourBotName disconnect - Makes the bot leave your channel and disconnects it from Twitch.
+         * @commandpath YourBotName moderate - Trys to detect the bots moderator status. This is useful if you unmod and remod the bot while its on.
+         * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel.
+         * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set.
+         * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist.
+         * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands.
+         * @commandpath YourBotName togglepermcommessage - Toggles the no permission message.
+         * @commandpath YourBotName togglecooldownmessage - Toggles the on command cooldown message.
          */
-
          if (command.equalsIgnoreCase($.botName.toLowerCase())) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.usage', $.botName.toLowerCase()));
@@ -348,9 +348,9 @@
             if (action.equalsIgnoreCase('rejoin') || action.equalsIgnoreCase('reconnect')) {
                 /* Added a cooldown to this so people can spam it and cause errors. */
                 if (lastRecon + 10000 >= $.systemTime()) {
-                    $.consoleLn('[ERROR] Already trying to reconnect.');
                     return;
                 }
+
                 lastRecon = $.systemTime();
                 $.say($.whisperPrefix(sender) + $.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' requested a reconnect!');
@@ -363,6 +363,17 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' removed the bot from chat!');
                 setTimeout(function () { java.lang.System.exit(0); }, 100);
+                return;
+            }
+
+            if (action.equalsIgnoreCase('moderate')) {
+                /* Have a cooldown here because saySilent does not go through the core cooldown. */
+                if (lastRecon + 9000 >= $.systemTime()) {
+                   return;
+                }
+                lastRecon = $.systemTime();
+                $.session.saySilent('.mods');
+                $.consoleLn('[INFO] Trying to detect moderator status for ' + $.botName + '.');
                 return;
             }
 
@@ -461,7 +472,6 @@
                 return;
             }
             if (lastRecon + 10000 >= $.systemTime()) {
-                $.consoleLn('[ERROR] Already trying to reconnect.');
                 return;
             }
             lastRecon = $.systemTime();
@@ -842,7 +852,7 @@
                 return;
             }
 
-            if ($.coolDown.get(command, sender, isModv3) >= 0) {
+            if ($.coolDown.get(command, sender, isModv3) > 0) {
                 if (coolDownMsgEnabled) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
                 }
@@ -1266,6 +1276,9 @@
         $.registerChatCommand('./init.js', 'reconnect', 1);
         $.registerChatCommand('./init.js', 'disconnect', 1);
         $.registerChatCommand('./init.js', $.botName.toLowerCase(), 1);
+        $.registerChatSubcommand($.botName.toLowerCase(), 'disconnect', 1);
+        $.registerChatSubcommand($.botName.toLowerCase(), 'reconnect', 1);
+        $.registerChatSubcommand($.botName.toLowerCase(), 'moderate', 2);
 
         // emit initReady event
         callHook('initReady', null, true);
