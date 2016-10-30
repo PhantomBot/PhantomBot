@@ -100,6 +100,11 @@
             }
 
             var lengthData = $.youtube.GetVideoLength(videoId);
+
+            if (lengthData[0] == 123 && lengthData[1] == 456 && lengthData[2] === 7899) {
+                throw 'Live Stream Detected';
+            }
+
             while (lengthData[0] == 0 && lengthData[1] == 0 && lengthData[2] == 0) {
                 lengthData = $.youtube.GetVideoLength(videoId);
             }
