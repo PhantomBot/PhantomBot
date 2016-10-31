@@ -53,6 +53,14 @@
             message = $.replace(message, '(adminonlyedit)', '');
         }
 
+        if (message.match(/\(pointtouser\)/)) {
+            if (event.getArgs()[0] !== undefined) {
+                message = $.replace(message, '(pointtouser)', (event.getArgs()[0] + ' -> '));
+            } else {
+                message = $.replace(message, '(pointtouser)', $.userPrefix(event.getSender(), true));
+            }
+        }
+
         if (message.match(/\(1\)/g)) {
             for (var i = 1; i < 10; i++) {
                 if (message.includes('(' + i + ')')) {
@@ -83,7 +91,7 @@
         }
 
         if (message.match(/\(channelname\)/g)) {
-            message = $.replace(message, '(channelname)', $.channelName);
+            message = $.replace(message, '(channelname)', $.username.resolve($.channelName));
         }
 
         if (message.match(/\(onlineonly\)/g)) {
@@ -456,8 +464,6 @@
             for (i in commands) {
                 if (!$.commandExists(commands[i])) {
                     $.registerChatCommand('./commands/customCommands.js', commands[i], 7);
-                } else {
-                    $.log.error('Cannot add custom command, command already exists: ' + commands[i]);
                 }
             }
         }
@@ -474,8 +480,6 @@
                 if (!$.commandExists(aliases[i])) {
                     $.registerChatCommand('./commands/customCommands.js', aliases[i], $.getIniDbNumber('permcom', aliases[i], 7));
                     $.registerChatAlias(aliases[i]);
-                } else {
-                    $.log.error('Cannot add alias, command already exists: ' + aliases[i]);
                 }
             }
         }
