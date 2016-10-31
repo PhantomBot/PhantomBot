@@ -1263,6 +1263,13 @@
             handleInitCommands(event);
         });
 
+        /**
+         * @event api-DiscordEvent
+         */
+        $api.on($script, 'discord', function(event) {
+            callHook('discord', event, false);
+        });
+
         $.log.event('init.js api\'s loaded.');
         consoleDebug('init.js api\'s loaded.');
         consoleLn('');
