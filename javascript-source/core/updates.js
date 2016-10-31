@@ -121,7 +121,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3s'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -420,19 +420,19 @@
 
         $.consoleLn('Setting up new default custom commands...');
         if (!$.inidb.exists('command', 'uptime')) {
-            $.inidb.set('command', 'uptime', '(@sender) (channelname) has been online for (uptime)');
+            $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
         }
         if (!$.inidb.exists('command', 'followage')) {
             $.inidb.set('command', 'followage', '(followage)');
         }
         if (!$.inidb.exists('command', 'playtime')) {
-            $.inidb.set('command', 'playtime', '(@sender) (channelname) has been playing (game) for (playtime)');
+            $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
         }
         if (!$.inidb.exists('command', 'title')) {
-            $.inidb.set('command', 'title', '(@sender) (titleinfo)');
+            $.inidb.set('command', 'title', '(pointtouser) (titleinfo)');
         }
         if (!$.inidb.exists('command', 'game')) {
-            $.inidb.set('command', 'game', '(@sender) (gameinfo)');
+            $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         }
         if (!$.inidb.exists('command', 'age')) {
             $.inidb.set('command', 'age', '(age)');
@@ -464,7 +464,7 @@
     }
 
     /* version 2.3.3s updates */
-    if (!$.inidb.exists('updates', 'installedv2.3.3s') || $.inidb.get('updates', 'installedv2.3.3s') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv2.3.3ss') || $.inidb.get('updates', 'installedv2.3.3ss') != 'true') {
         $.consoleLn('Starting ' + $.version + ' updates...');
 
         $.consoleLn('Deleting the old emotes cache.');
@@ -491,8 +491,24 @@
             $.inidb.del('settings', 'raffleMessageInterval');
         }
 
+        if ($.inidb.exists('command', 'uptime') && $.inidb.get('command', 'uptime').equalsIgnoreCase('(@sender) (channelname) has been online for (uptime)')) {
+            $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
+        }
+
+        if ($.inidb.exists('command', 'playtime') && $.inidb.get('command', 'playtime').equalsIgnoreCase('(@sender) (channelname) has been playing (game) for (playtime)')) {
+            $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
+        }
+
+        if ($.inidb.exists('command', 'title') && $.inidb.get('command', 'title').equalsIgnoreCase('(@sender) (titleinfo)')) {
+            $.inidb.set('command', 'title', '(pointtouser) (titleinfo)');
+        }
+
+        if ($.inidb.exists('command', 'game') && $.inidb.get('command', 'game').equalsIgnoreCase('(@sender) (gameinfo)')) {
+            $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
+        }
+
         $.consoleLn( $.version + ' updates completed!');
-        $.inidb.set('updates', 'installedv2.3.3s', 'true');
+        $.inidb.set('updates', 'installedv2.3.3ss', 'true');
     }
 
     /**
