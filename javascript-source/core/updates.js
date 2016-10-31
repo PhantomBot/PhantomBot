@@ -42,6 +42,7 @@
         './handlers/keywordHandler.js',
         './handlers/twitterHandler.js',
         './handlers/streamTipHandler.js',
+        './handlers/discordHandler.js',
         './systems/cleanupSystem.js',
         './systems/greetingSystem.js',
         './systems/pointSystem.js',
@@ -506,6 +507,9 @@
         if ($.inidb.exists('command', 'game') && $.inidb.get('command', 'game').equalsIgnoreCase('(@sender) (gameinfo)')) {
             $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         }
+
+        // Disable the Discord Module by default. //
+        $.inidb.set('modules', './handlers/discordHandler.js', 'false');
 
         $.consoleLn( $.version + ' updates completed!');
         $.inidb.set('updates', 'installedv2.3.3ss', 'true');
