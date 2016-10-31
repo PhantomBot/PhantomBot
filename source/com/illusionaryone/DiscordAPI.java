@@ -149,6 +149,7 @@ public class DiscordAPI {
                 ReadyEvent readyEvent = (ReadyEvent) event;
                 getTextChannels();
                 messageTimer.schedule(new MessageTask(), 1000, 1);
+                jdaAPI.getAccountManager().setGame("PhantomBot Discord Service");
                 com.gmt2001.Console.out.println("Discord API is Ready");
             }
 
