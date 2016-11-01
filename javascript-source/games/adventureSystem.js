@@ -28,7 +28,9 @@
         currentAdventure = 1,
         stories = [],
         moduleLoaded = false,
-        lastStory;
+        lastStory,
+        isReady = true,
+        lastStoryTime = 0;
 
 
     function reloadAdventure () {
@@ -223,6 +225,14 @@
      * @returns {boolean}
      */
     function joinHeist(username, bet) {
+        if (!isReady) {
+            var date = new Date();
+            var time = date.getTime();
+            var delta = Math.round(coolDown - (time - lastStoryTime) / 1000);
+            $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.adventure.cooldown', delta));
+            return;
+        }
+
         if (currentAdventure.gameState > 1) {
             if (!warningMessage) return;
             $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.notpossible'));
@@ -281,6 +291,7 @@
             line,
             t;
 
+        isReady = false;
         currentAdventure.gameState = 2;
         calculateResult();
 
@@ -349,7 +360,12 @@
 
         clearCurrentAdventure();
         temp = "";
-        $.coolDown.set('adventure', true, coolDown);
+        var date = new Date();
+        lastStoryTime = date.getTime();
+        setTimeout(function() {
+            $.say($.lang.get('adventuresystem.adventure.ready'));
+            isReady = true;
+        }, coolDown * 1000);
     };
 
     /**
