@@ -168,7 +168,7 @@
         }
 
         if (message.match(/\(#\)/g)) {
-            message = $.replace(message, '(#)', String($.randRange(1, 100) + ' '));
+            message = $.replace(message, '(#)', String($.randRange(1, 100)));
         }
 
         if (message.match(/\(viewers\)/g)) {
