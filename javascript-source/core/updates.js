@@ -114,11 +114,11 @@
         }
 
         $.consoleLn('Adding new default custom commands...');
-        $.inidb.set('command', 'uptime', '(@sender) (channelname) has been online for (uptime)');
+        $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
         $.inidb.set('command', 'followage', '(followage)');
-        $.inidb.set('command', 'playtime', '(@sender) (channelname) has been playing (game) for (playtime)');
-        $.inidb.set('command', 'title', '(@sender) (titleinfo)');
-        $.inidb.set('command', 'game', '(@sender) (gameinfo)');
+        $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
+        $.inidb.set('command', 'title', '(pointtouser) (titleinfo)');
+        $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
@@ -127,7 +127,7 @@
             $.inidb.set('updates', versions[i], 'true');
         }
 
-        $.consoleLn('Initializing completed!');
+        $.consoleLn('Initializing complete!');
         sounds = "";
         modules = "";
         versions = "";
@@ -413,7 +413,7 @@
 
     /** Version 2.3 updates */
     if (!$.inidb.exists('updates', 'installedv2.3s') || $.inidb.get('updates', 'installedv2.3s') != 'true') {
-        $.consoleLn('Starting 2.3 updates...');
+        $.consoleLn('Starting PhantomBot v2.3 updates...');
 
         $.consoleLn('Disabling new modules...');
         $.inidb.set('modules', './handlers/bitsHandler.js', 'false');
@@ -460,7 +460,7 @@
         $.inidb.set('adventureSettings', 'warningMessage', true);
         $.inidb.set('adventureSettings', 'enterMessage', true);
 
-        $.consoleLn('v2.3 updates completed!');
+        $.consoleLn('PhantomBot v2.3 updates completed!');
         $.inidb.set('updates', 'installedv2.3s', 'true');
     }
 
@@ -511,7 +511,7 @@
         // Disable the Discord Module by default. //
         $.inidb.set('modules', './handlers/discordHandler.js', 'false');
 
-        $.consoleLn( $.version + ' updates completed!');
+        $.consoleLn($.version + ' updates completed!');
         $.inidb.set('updates', 'installedv2.3.3ss', 'true');
     }
 
