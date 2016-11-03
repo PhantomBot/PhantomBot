@@ -92,4 +92,4 @@ or
    }
 ```
 *Note: `parse_commandpath.pl` is depending on the conventions noted above to be followed correctly.*  
-*Note: New-lines in command descriptions are not supported in `command-list-generator.php`. Only the text on the same line as `@commandpath` is parsed.*
+*Note: New-lines in command descriptions are not supported in `parse_commandpath.pl`. Only the text on the same line as `@commandpath` is parsed.*
