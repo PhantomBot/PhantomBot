@@ -2,9 +2,9 @@
 #General
 When implementing new code or making changes to the current create a branch with the following name: `YOURUSERNAME_WHAT_YOU_ARE_DOING`.
 That way there'll be no pollution on the master branch and everyone can see what is being done already and by who.  
-Whenever you wish to have your code pushed to the master branch just merge it (do notify others, courtesy and such)
-or create a pull request for others to merge, if you don't feel comfortable with resolving conflicts. Also make sure to leave a comment on what your code
-is going to be doing or changing to PhantomBot.
+
+Whenever you wish to have your code pushed to the master branch please create a pull request for the development team to review and merge.
+Also make sure to leave a comment on what your code is going to be doing or changing to PhantomBot.
 
 ##Naming Conventions
 The below is written about functions, but basically also aplies to classes.
