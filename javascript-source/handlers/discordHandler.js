@@ -30,7 +30,17 @@
     $.bind('discord', function(event) {
         var discordChannel = event.getDiscordChannel(),
             discordUser = event.getDiscordUser(),
+            discordUserMentionAs = event.getDiscordUserMentionAs(),
             discordMessage = event.getDiscordMessage();
+
+            if (discordMessage.equals('!twitter')) {
+                $.discord.sendMessage(discordChannel, 'Follow me on Twitter at https://twitter.com/illusionaryone');
+                return;
+            }
+            if (discordMessage.equals('!web')) {
+                $.discord.sendMessage(discordChannel, discordUserMentionAs + ' Visit http://www.illusionaryone.tv');
+                return;
+            }
     });
 
 

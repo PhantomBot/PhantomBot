@@ -51,6 +51,7 @@ public class NoticeTimer implements Runnable {
     private String botname;
 
     private boolean killed = false;
+    private boolean reIndex = false;
     private long lastNoticeTime = -1L;
     private int lastMinuteRan = -1;
     private int lastNoticeID = -1;
@@ -226,7 +227,7 @@ public class NoticeTimer implements Runnable {
         lastNoticeID++;
 
         /* Check to see if any notices even exist. */
-        String message0 = dataStore.GetString("timers", "notice_0" + lastNoticeID, "message");
+        String message0 = dataStore.GetString("notices", "notice_0", "message");
         if (message0 == null && lastNoticeID == 0) {
             return;
         }
@@ -237,7 +238,7 @@ public class NoticeTimer implements Runnable {
         /*
          * Get the notice.  If it is null or empty, assume we are at the end of the list and reset to 0.
          */
-        String message = dataStore.GetString("timers", "notice_" + lastNoticeID, "message");
+        String message = dataStore.GetString("notices", "notice_" + lastNoticeID, "message");
         if (message == null) {
             lastNoticeID = 0;
             message = message0;
@@ -248,9 +249,9 @@ public class NoticeTimer implements Runnable {
         }
         
         /* See if the message is really a command and handle accordingly. */
-        if (message.startsWith(":")) {
+        if (message.startsWith("command:")) {
             String arguments = "";
-            String command = message.substring(1);
+            String command = message.substring(8);
 
             if (command.contains(" ")) {
                 String commandString = command;
@@ -281,7 +282,7 @@ public class NoticeTimer implements Runnable {
             this.session.chatLinesReset();
         }
 
-        String[] sections = dataStore.GetCategoryList("timers");
+        String[] sections = dataStore.GetCategoryList("notices");
         if (sections == null) {
             return;
         }
@@ -291,7 +292,7 @@ public class NoticeTimer implements Runnable {
                 continue;
             }
 
-            String minutesListStr = dataStore.GetString("timers", section, "minutes");
+            String minutesListStr = dataStore.GetString("notices", section, "minutes");
             if (minutesListStr == null) {
                 continue;
             }
@@ -312,7 +313,7 @@ public class NoticeTimer implements Runnable {
             }
             
             /* Pull chatlines.  0 means ignore lines in chat. */
-            String chatlines = dataStore.GetString("timers", section, "chatlines");
+            String chatlines = dataStore.GetString("notices", section, "chatlines");
             if (chatlines == null) {
                 continue;
             }
@@ -325,7 +326,7 @@ public class NoticeTimer implements Runnable {
             }
 
             /* Pull gametitle. If it is empty, always use it, otherwise, compare to current game. */
-            String gametitle = dataStore.GetString("timers", section, "gametitle");
+            String gametitle = dataStore.GetString("notices", section, "gametitle");
             if (gametitle != null) {
                 if (gametitle.length() > 0) {
                     if (!gametitle.toLowerCase().equals(currentGameTitle.toLowerCase())) {
@@ -335,7 +336,7 @@ public class NoticeTimer implements Runnable {
             }
     
             /* Pull the message (or command). */
-            String message = dataStore.GetString("timers", section, "message");
+            String message = dataStore.GetString("notices", section, "message");
             if (message == null) {
                 continue;
             }
@@ -344,9 +345,9 @@ public class NoticeTimer implements Runnable {
             }
 
             /* See if the message is really a command and handle accordingly. */
-            if (message.startsWith(":")) {
+            if (message.startsWith("command:")) {
                 String arguments = "";
-                String command = message.substring(1);
+                String command = message.substring(8);
 
                 if (command.contains(" ")) {
                     String commandString = command;
