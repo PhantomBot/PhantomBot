@@ -25,7 +25,6 @@ public class DiscordEvent extends Event {
     private final String discordUserMentionAs;
     private final String discordMessage;
     private final String discordDiscrim;
-    private final Permission messageEvent;
 
     public DiscordEvent(String discordChannel, String discordUser, String discordUserMentionAs, String discordDiscrim, String discordMessage) {
         this.discordChannel = discordChannel;
