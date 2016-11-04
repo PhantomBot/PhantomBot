@@ -160,8 +160,10 @@ public class DiscordAPI {
                 String textChannelName = textChannel.getName();
                 String messageText = messageReceivedEvent.getMessage().getContent();
                 String messageAuthorName = messageReceivedEvent.getAuthorName();
+                String messageAuthorMention = messageReceivedEvent.getAuthor().getAsMention();
+                String messageAuthorDisc = messageReceivedEvent.getAuthor().getDiscriminator();
 
-                EventBus.instance().post(new DiscordEvent(textChannelName, messageAuthorName, messageText));
+                EventBus.instance().post(new DiscordEvent(textChannelName, messageAuthorName, messageAuthorMention, messageAuthorDisc, messageText));
             }
         }
     }

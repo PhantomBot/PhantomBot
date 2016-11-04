@@ -22,12 +22,17 @@ public class DiscordEvent extends Event {
 
     private final String discordChannel;
     private final String discordUser;
+    private final String discordUserMentionAs;
     private final String discordMessage;
+    private final String discordDiscrim;
+    private final Permission messageEvent;
 
-    public DiscordEvent(String discordChannel, String discordUser, String discordMessage) {
+    public DiscordEvent(String discordChannel, String discordUser, String discordUserMentionAs, String discordDiscrim, String discordMessage) {
         this.discordChannel = discordChannel;
         this.discordUser = discordUser;
+        this.discordUserMentionAs = discordUserMentionAs;
         this.discordMessage = discordMessage;
+        this.discordDiscrim = discordDiscrim;
     }
 
     public String getDiscordChannel() {
@@ -38,7 +43,15 @@ public class DiscordEvent extends Event {
         return this.discordUser;
     }
 
+    public String getDiscordUserMentionAs() {
+        return this.discordUserMentionAs;
+    }
+
     public String getDiscordMessage() {
         return this.discordMessage;
+    }
+
+    public String getDiscriminator() {
+        return this.discordDiscrim;
     }
 }
