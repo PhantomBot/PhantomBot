@@ -1,5 +1,7 @@
 (function() {
-    var whisperMode = $.getSetIniDbBoolean('settings', 'whisperMode', false);
+    var whisperMode = $.getSetIniDbBoolean('settings', 'whisperMode', false),
+        ScriptEventManager = Packages.me.mast3rplan.phantombot.script.ScriptEventManager,
+        CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
 
     /** 
      * @function hasKey
@@ -51,22 +53,26 @@
     $.bind('ircPrivateMessage', function(event) {
         var sender = event.getSender(),
             message = event.getMessage(),
-            arguments = '',
+            arguments,
+            split,
             command;
 
-        if (!sender.equalsIgnoreCase('jtv') && !sender.equalsIgnoreCase('twitchnotify')) {
-            if (message.startsWith('!') && $.isMod(sender) && hasKey($.users, sender, 0)) {
-                if (message.includes(' ')) {
-                    arguments = message.split(' ');
-                    command = message.substring(0, arguments);
-                    arguments = commandString.substring(arguments + 1);
-                } else {
-                    command = message;
-                }
+        if (sender.equalsIgnoreCase('jtv') || sender.equalsIgnoreCase('twitchnotify')) {
+            return;
+        }
 
-                $.command.post(sender, command, arguments);
-                $.log.file('whispers', '' + sender + ': ' + message);
+        if (message.startsWith('!') && $.isMod(sender) && hasKey($.users, sender, 0)) {
+            message = message.replace('!', '').toLowerCase();
+            if (message.includes(' ')) {
+                split = message.indexOf(' ');
+                command = message.substring(0, split);
+                arguments = message.substring(split + 1);
+            } else {
+                command = message;
             }
+
+            ScriptEventManager.instance().runDirect(new CommandEvent(sender, command, arguments));            
+            $.log.file('whispers', '' + sender + ': ' + message);
         }
     });
 
