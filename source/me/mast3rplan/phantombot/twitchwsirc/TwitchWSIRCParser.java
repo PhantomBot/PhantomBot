@@ -338,11 +338,6 @@ public class TwitchWSIRCParser {
                 }
             }
         }
-
-        /* Check if the message is a command */
-        if (message.startsWith("!")) {
-            commandEvent(message, username, tagsMap);
-        }
         
         /* Moderate the incoming message. Have it run in the background on a thread. */
         try {
@@ -350,6 +345,11 @@ public class TwitchWSIRCParser {
             new Thread(moderationRunnable).start();
         } catch (Exception ex) {
             scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
+        }
+
+        /* Check if the message is a command */
+        if (message.startsWith("!")) {
+            commandEvent(message, username, tagsMap);
         }
 
         /* Send the message to the scripts. */
