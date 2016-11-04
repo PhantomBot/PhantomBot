@@ -53,7 +53,7 @@
     $.bind('ircPrivateMessage', function(event) {
         var sender = event.getSender(),
             message = event.getMessage(),
-            arguments,
+            arguments = '',
             split,
             command;
 
