@@ -53,7 +53,7 @@ public class Script {
         }
         this.file = file;
 
-        if (!file.getName().endsWith(".js")) {
+        if (!file.getName().endsWith(".js") || file.getName().startsWith(".")) {
             return;
         }
 
