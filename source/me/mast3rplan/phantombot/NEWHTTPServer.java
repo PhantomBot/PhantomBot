@@ -437,8 +437,11 @@ public class NEWHTTPServer {
             return;
         }
 
-        EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(),
-                                 user, message, PhantomBot.instance().getChannel()));
+        if (message.startsWith("!")) {
+            PhantomBot.instance().handleCommand(user, message.substring(1));
+        } else {
+            PhantomBot.instance().getSession().say(message);
+        }
         sendData("text/text", "event posted", exchange);
     }
 
