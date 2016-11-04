@@ -33,7 +33,7 @@ Additional functionality is enabled through the use of third-party modules.
 
 PhantomBot requires the following software to be installed:
 
-* [Java 7/8](https://www.java.com/en/download/)
+* [Java 8](https://www.java.com/en/download/)
 
 ## Installation
 Please refer to platform-specific installation documentation.
