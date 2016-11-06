@@ -861,7 +861,7 @@
 
             if ($.permCom(sender, command, subCommand) !== 0) {
                 if (permComMsgEnabled) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (subCommand === '' ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, subCommand))));
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command).toLowerCase() : $.getSubCommandGroupName(command, subCommand).toLowerCase())));
                 }
                 return;
             }
