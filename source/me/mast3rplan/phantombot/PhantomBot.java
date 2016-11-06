@@ -326,7 +326,7 @@ public class PhantomBot implements Listener {
 	/** PhantomBot instance */
 	public PhantomBot(String botName, String oauth, String apiOAuth, String clientId, String channelName, String ownerName, int basePort, Double messageLimit, Double whisperLimit, String dataStoreType, 
 		String dataStoreConfig, String youtubeOAuth, Boolean webEnabled, Boolean musicEnabled, Boolean useHttps, String keyStorePath, String keyStorePassword, String keyPassword, String twitchAlertsKey, 
-		int twitchAlertsLimit, String streamTipOAuth, int streamTipLimit, String gameWispOAuth, String gameWispRefresh, String panelUsername, String panelPassword, String timeZone, String twitterUsername,
+		int twitchAlertsLimit, String streamTipOAuth, String streamTipClientId, int streamTipLimit, String gameWispOAuth, String gameWispRefresh, String panelUsername, String panelPassword, String timeZone, String twitterUsername,
 		String twitterConsumerToken, String twitterConsumerSecret, String twitterSecretToken, String twitterAccessToken, String mySqlHost, String mySqlPort, String mySqlConn, String mySqlPass, String mySqlUser,
 		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady, String httpsPassword, String httpsFileName, Boolean devCommands, String discordToken,
                 String discordStreamOnlineChannel) {
@@ -2602,7 +2602,7 @@ public class PhantomBot implements Listener {
         /** Start PhantomBot */
         PhantomBot.instance = new PhantomBot(botName, oauth, apiOAuth, clientId, channelName, ownerName, basePort, messageLimit, whisperLimit, dataStoreType, 
 		dataStoreConfig, youtubeOAuth, webEnabled, musicEnabled, useHttps, keyStorePath, keyStorePassword, keyPassword, twitchAlertsKey, 
-		twitchAlertsLimit, streamTipOAuth, streamTipLimit, gameWispOAuth, gameWispRefresh, panelUsername, panelPassword, timeZone, twitterUsername,
+		twitchAlertsLimit, streamTipOAuth, streamTipClientId, streamTipLimit, gameWispOAuth, gameWispRefresh, panelUsername, panelPassword, timeZone, twitterUsername,
 		twitterConsumerToken, twitterConsumerSecret, twitterSecretToken, twitterAccessToken, mySqlHost, mySqlPort, mySqlConn, mySqlPass, mySqlUser,
 		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady, httpsPassword, httpsFileName, devCommands, discordToken,
                 discordStreamOnlineChannel);
