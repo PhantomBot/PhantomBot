@@ -1560,6 +1560,11 @@ public class PhantomBot implements Listener {
         /** handle any other commands */
         handleCommand(botName, event.getMsg(), PhantomBot.getChannel(this.channelName));
         // Need to support channel here. command (channel) argument[1]
+
+        /* Handle dev commands */
+        if (event.getMsg().startsWith("!debug !dev")) {
+        	devDebugCommands(event.getMsg(), "no_id", botName);
+        }
     }
 
     /** Handle commands */
@@ -1590,16 +1595,12 @@ public class PhantomBot implements Listener {
 
     /** Handles dev debug commands. */
     public void devDebugCommands(String command, String id, String sender) {
-    	if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName))) {
+    	if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName) || sender.equalsIgnoreCase(botName))) {
     		String arguments = "";
     		String[] args = null;
     		command = command.substring(12);
 
-    		if (!command.contains("!")) {
-    			return;
-    		}
-
-    		if (!devCommands) { // If the user disables the dev commands return here.
+    		if (!command.contains("!") || !devCommands) {
     			return;
     		}
 
@@ -1613,15 +1614,14 @@ public class PhantomBot implements Listener {
             }
 
             if (command.equals("exit")) {
-    			System.exit(0);
     			Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". ShutDown: " + botName + ". Id: " + id);
     			Logger.instance().log(Logger.LogType.Debug, "");
+    			System.exit(0);
     			return;
     		}
 
     		if (command.equals("version")) {
     			PhantomBot.instance().getSession().say("@" + sender + ", Info: " + getBotInfo() + ". OS: " + System.getProperty("os.name"));
-    			Logger.instance().log(Logger.LogType.Debug, "");
     			return;
     		}
 
