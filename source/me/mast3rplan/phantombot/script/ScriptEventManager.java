@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.Event;
 import me.mast3rplan.phantombot.event.Listener;
@@ -56,7 +57,8 @@ public class ScriptEventManager implements Listener {
         "me.mast3rplan.phantombot.event.streamtip.donate",
         "me.mast3rplan.phantombot.event.emotes",
         "me.mast3rplan.phantombot.event.gamewisp",
-        "me.mast3rplan.phantombot.event.twitter"
+        "me.mast3rplan.phantombot.event.twitter",
+        "me.mast3rplan.phantombot.event.discord"
     };
 
     private ScriptEventManager() {
@@ -74,6 +76,7 @@ public class ScriptEventManager implements Listener {
         }
     }
     private final List<EventHandlerEntry> entries = Lists.newCopyOnWriteArrayList();
+    private final ConcurrentHashMap<String,EventHandlerEntry> hashEntries = new ConcurrentHashMap<String,EventHandlerEntry>();
 
     public void runDirect(Event event) {
         if (PhantomBot.instance().isExiting()) {
@@ -81,14 +84,13 @@ public class ScriptEventManager implements Listener {
         }
 
         try {
-            for (EventHandlerEntry entry : entries) {
-                if (event.getClass().isAssignableFrom(entry.eventClass)) {
-                    com.gmt2001.Console.debug.println("Direct event " + entry.eventClass.getName());
-                    entry.handler.handle(event);
-                }
+            EventHandlerEntry entry = hashEntries.get(event.getClass().getName());
+            if (entry != null) {
+                entry.handler.handle(event);
+                com.gmt2001.Console.debug.println("Dispatched runDirect event " + entry.eventClass.getName());
             }
         } catch (Exception e) {
-            com.gmt2001.Console.err.println("Failed to direct event " + event.getClass().getName());
+            com.gmt2001.Console.err.println("Failed to dispatch runDirect event " + event.getClass().getName());
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
@@ -102,9 +104,8 @@ public class ScriptEventManager implements Listener {
         try {
             for (EventHandlerEntry entry : entries) {
                 if (event.getClass().isAssignableFrom(entry.eventClass)) {
-                    com.gmt2001.Console.debug.println("Dispatching event " + entry.eventClass.getName());
-
                     entry.handler.handle(event);
+                    com.gmt2001.Console.debug.println("Dispatched event " + entry.eventClass.getName());
                 }
             }
         } catch (Exception e) {
@@ -128,16 +129,24 @@ public class ScriptEventManager implements Listener {
         }
 
         entries.add(new EventHandlerEntry(eventClass, handler));
+        hashEntries.put(eventClass.getName(), new EventHandlerEntry(eventClass, handler));
     }
 
     public void unregister(ScriptEventHandler handler) {
         EventHandlerEntry entry;
+
         Iterator<EventHandlerEntry> iterator = entries.iterator();
         while (iterator.hasNext()) {
             entry = iterator.next();
-
             if (entry.handler == handler) {
                 entries.remove(entry);
+            }
+        }
+ 
+        for (ConcurrentHashMap.Entry<String, EventHandlerEntry> hashEntry : hashEntries.entrySet()) {
+            entry = hashEntry.getValue();
+            if (entry.handler == handler) {
+                hashEntries.remove(hashEntry.getKey());
             }
         }
     }

@@ -520,6 +520,27 @@ public class SqliteStore extends DataStore {
     }
 
     @Override
+    public void InsertString(String fName, String section, String key, String value) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        AddFile(fName);
+
+        try {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
+                statement.setQueryTimeout(10);
+                statement.setString(1, section);
+                statement.setString(2, key);
+                statement.setString(3, value);
+                statement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
     public void CreateIndexes() {
         CheckConnection();
         String[] tableNames = GetFileList();

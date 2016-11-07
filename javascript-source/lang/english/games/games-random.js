@@ -173,7 +173,7 @@ $.lang.register('randomcommand.172', 'Write somebody a creepy note hand it to th
 $.lang.register('randomcommand.173', 'Have a conversation with yourself on the phone.');
 $.lang.register('randomcommand.174', 'Google search I\'m underwater and click the first link! It\'s really cool!');
 $.lang.register('randomcommand.175', 'Spray pedestrians with your garden hose on a hot summer day.');
-$.lang.register('randomcommand.176', 'Get a friend to video tape you doing all of these. Then watch it and try not to laugh.');
+$.lang.register('randomcommand.176', 'Watch Glitter Force, yes the dub. Kappa');
 $.lang.register('randomcommand.177', 'Freak out in an elevator when there are people in it.');
 $.lang.register('randomcommand.178', 'Stay up all night!');
 $.lang.register('randomcommand.179', 'Turn on a ceiling fan then look up at it and spin in the same direction and try to keep up to it.');
@@ -247,7 +247,7 @@ $.lang.register('randomcommand.246', 'Space out for a few minutes.');
 $.lang.register('randomcommand.247', 'Take a blank white shirt, write "LIFE" on it, stand on the sidewalk handing out lemons.');
 $.lang.register('randomcommand.248', 'Fill your pockets with sparkles and go up to people and shower them in stupidity (the sparkles).');
 $.lang.register('randomcommand.249', 'Shake up a bottle of soft drink then quickly take the lid off and see how long you can keep your mouth over it.');
-$.lang.register('randomcommand.250', 'Buy a new t.v, and have fun with the box.');
+$.lang.register('randomcommand.250', 'Buy a new T.V., and have fun with the box.');
 $.lang.register('randomcommand.251', 'Draw a little smiley face on a paper and talk to it in front of people...');
 $.lang.register('randomcommand.252', 'Hand out lemons wearing a shirt that says life.');
 $.lang.register('randomcommand.253', 'Try to make a porter potty fly.');

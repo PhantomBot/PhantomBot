@@ -71,7 +71,9 @@ public class NEWHTTPServer {
             server.start();
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to create HTTP Server: " + ex.getMessage());
+            com.gmt2001.Console.warn.println("PhantomBot will now shutdown. Close all Java instances to fix this.");
             com.gmt2001.Console.err.logStackTrace(ex);
+            System.exit(0);
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to create HTTP Server: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
@@ -435,8 +437,11 @@ public class NEWHTTPServer {
             return;
         }
 
-        EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(),
-                                 user, message, PhantomBot.instance().getChannel()));
+        if (message.startsWith("!")) {
+            PhantomBot.instance().handleCommand(user, message.substring(1));
+        } else {
+            PhantomBot.instance().getSession().say(message);
+        }
         sendData("text/text", "event posted", exchange);
     }
 

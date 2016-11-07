@@ -5,11 +5,12 @@
  [ ![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot) 
  [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/Xdh5SRY)  
 
-[**PhantomBot**](https://phantombot.tv) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more! PhantomBot can also be integrated with many services such as [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [StreamTip](https://streamtip.com) and [StreamLabs](https://streamlabs.com)!
+[**PhantomBot**](https://phantombot.tv) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, [and more](https://phantombot.tv/features)! PhantomBot can also be integrated with many services such as [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [StreamTip](https://streamtip.com) and [StreamLabs](https://streamlabs.com)!
 
 Additional functionality is enabled through the use of third-party modules.
 
 * [Get PhantomBot](https://phantombot.tv/ "PhantomBot")
+* [Full Feature List](https://phantombot.tv/features "PhantomBot Features")
 * [Community Forums](https://community.phantombot.tv)
 * [Documentation & Installation Instructions](https://docs.phantombot.tv)
 * [PhantomBot Blog](https://blog.phantombot.tv)
@@ -32,7 +33,7 @@ Additional functionality is enabled through the use of third-party modules.
 
 PhantomBot requires the following software to be installed:
 
-* [Java 7/8](https://www.java.com/en/download/)
+* [Java 8](https://www.java.com/en/download/)
 
 ## Installation
 Please refer to platform-specific installation documentation.

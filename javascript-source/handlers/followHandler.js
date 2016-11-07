@@ -159,10 +159,10 @@
                         }, 8e3);
                     }
                     lastFollowTime = $.systemTime();//last follow was here, save this time for later.
+                    $.inidb.set('streamInfo', 'lastFollow', $.username.resolve(follower));//set the follower name in the db for the panel to read.
                 }
 
                 $.setIniDbBoolean('followed', follower, true);//set the follower as followed.
-                $.inidb.set('streamInfo', 'lastFollow', $.username.resolve(follower));//set the follower name in the db for the panel to read.
                 /** Give points to the user if the caster wants to. */
                 if (followReward > 0) {
                     $.inidb.incr('points', follower, followReward);

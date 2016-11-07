@@ -42,6 +42,7 @@
         './handlers/keywordHandler.js',
         './handlers/twitterHandler.js',
         './handlers/streamTipHandler.js',
+        './handlers/discordHandler.js',
         './systems/cleanupSystem.js',
         './systems/greetingSystem.js',
         './systems/pointSystem.js',
@@ -113,20 +114,20 @@
         }
 
         $.consoleLn('Adding new default custom commands...');
-        $.inidb.set('command', 'uptime', '(@sender) (channelname) has been online for (uptime)');
+        $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
         $.inidb.set('command', 'followage', '(followage)');
-        $.inidb.set('command', 'playtime', '(@sender) (channelname) has been playing (game) for (playtime)');
-        $.inidb.set('command', 'title', '(@sender) (titleinfo)');
-        $.inidb.set('command', 'game', '(@sender) (gameinfo)');
+        $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
+        $.inidb.set('command', 'title', '(pointtouser) (titleinfo)');
+        $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
 
-        $.consoleLn('Initializing completed!');
+        $.consoleLn('Initializing complete!');
         sounds = "";
         modules = "";
         versions = "";
@@ -412,7 +413,7 @@
 
     /** Version 2.3 updates */
     if (!$.inidb.exists('updates', 'installedv2.3s') || $.inidb.get('updates', 'installedv2.3s') != 'true') {
-        $.consoleLn('Starting ' + $.version + ' updates...');
+        $.consoleLn('Starting PhantomBot v2.3 updates...');
 
         $.consoleLn('Disabling new modules...');
         $.inidb.set('modules', './handlers/bitsHandler.js', 'false');
@@ -420,19 +421,19 @@
 
         $.consoleLn('Setting up new default custom commands...');
         if (!$.inidb.exists('command', 'uptime')) {
-            $.inidb.set('command', 'uptime', '(@sender) (channelname) has been online for (uptime)');
+            $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
         }
         if (!$.inidb.exists('command', 'followage')) {
             $.inidb.set('command', 'followage', '(followage)');
         }
         if (!$.inidb.exists('command', 'playtime')) {
-            $.inidb.set('command', 'playtime', '(@sender) (channelname) has been playing (game) for (playtime)');
+            $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
         }
         if (!$.inidb.exists('command', 'title')) {
-            $.inidb.set('command', 'title', '(@sender) (titleinfo)');
+            $.inidb.set('command', 'title', '(pointtouser) (titleinfo)');
         }
         if (!$.inidb.exists('command', 'game')) {
-            $.inidb.set('command', 'game', '(@sender) (gameinfo)');
+            $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         }
         if (!$.inidb.exists('command', 'age')) {
             $.inidb.set('command', 'age', '(age)');
@@ -459,8 +460,59 @@
         $.inidb.set('adventureSettings', 'warningMessage', true);
         $.inidb.set('adventureSettings', 'enterMessage', true);
 
-        $.consoleLn($.version + ' updates completed!');
+        $.consoleLn('PhantomBot v2.3 updates completed!');
         $.inidb.set('updates', 'installedv2.3s', 'true');
+    }
+
+    /* version 2.3.3s updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.3ss') || $.inidb.get('updates', 'installedv2.3.3ss') != 'true') {
+        $.consoleLn('Starting ' + $.version + ' updates...');
+
+        $.consoleLn('Deleting the old emotes cache.');
+        $.inidb.RemoveFile('emotecache');
+
+        $.consoleLn('Updating raffle settings...');
+        if ($.inidb.exists('settings', 'raffleMSGToggle')) {
+            $.inidb.set('raffleSettings', 'raffleMSGToggle', $.inidb.get('settings', 'raffleMSGToggle'));
+            $.inidb.del('settings', 'raffleMSGToggle');
+        }
+
+        if ($.inidb.exists('settings', 'noRepickSame')) {
+            $.inidb.set('raffleSettings', 'noRepickSame', $.inidb.get('settings', 'noRepickSame'));
+            $.inidb.del('settings', 'noRepickSame');
+        }
+
+        if ($.inidb.exists('settings', 'raffleMessage')) {
+            $.inidb.set('raffleSettings', 'raffleMessage', $.inidb.get('settings', 'raffleMessage'));
+            $.inidb.del('settings', 'raffleMessage');
+        }
+
+        if ($.inidb.exists('settings', 'raffleMessageInterval')) {
+            $.inidb.set('raffleSettings', 'raffleMessageInterval', $.inidb.get('settings', 'raffleMessageInterval'));
+            $.inidb.del('settings', 'raffleMessageInterval');
+        }
+
+        if ($.inidb.exists('command', 'uptime') && $.inidb.get('command', 'uptime').equalsIgnoreCase('(@sender) (channelname) has been online for (uptime)')) {
+            $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
+        }
+
+        if ($.inidb.exists('command', 'playtime') && $.inidb.get('command', 'playtime').equalsIgnoreCase('(@sender) (channelname) has been playing (game) for (playtime)')) {
+            $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
+        }
+
+        if ($.inidb.exists('command', 'title') && $.inidb.get('command', 'title').equalsIgnoreCase('(@sender) (titleinfo)')) {
+            $.inidb.set('command', 'title', '(pointtouser) (titleinfo)');
+        }
+
+        if ($.inidb.exists('command', 'game') && $.inidb.get('command', 'game').equalsIgnoreCase('(@sender) (gameinfo)')) {
+            $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
+        }
+
+        // Disable the Discord Module by default. //
+        $.inidb.set('modules', './handlers/discordHandler.js', 'false');
+
+        $.consoleLn($.version + ' updates completed!');
+        $.inidb.set('updates', 'installedv2.3.3ss', 'true');
     }
 
     /**

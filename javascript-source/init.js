@@ -15,7 +15,11 @@
         lastRecon = 0,
         pricecomMods = ($.inidb.exists('settings', 'pricecomMods') ? $.inidb.get('settings', 'pricecomMods') : false),
         coolDownMsgEnabled = ($.inidb.exists('settings', 'coolDownMsgEnabled') ? $.inidb.get('settings', 'coolDownMsgEnabled') : false),
-        permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : true);
+        permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') ? $.inidb.get('settings', 'permComMsgEnabled') : false);
+
+    /* Make these null to start */
+    $.session = null;
+    $.channel = null;
 
     /**
      * @class
@@ -325,16 +329,16 @@
             index;
 
         /**
-         * @commandpath YourBotName rejoin - Reconnects to the channel
-         * @commandpath YourBotName disconnect - Removes the bot from chat
-         * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel
-         * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set
-         * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist
-         * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands
-         * @commandpath YourBotName togglepermcommessage - Toggles the no permission message
-         * @commandpath YourBotName togglecooldownmessage - Toggles the on command cooldown message
+         * @commandpath YourBotName reconnect - Makes the bot reconnect to Twitches servers.
+         * @commandpath YourBotName disconnect - Makes the bot leave your channel and disconnects it from Twitch.
+         * @commandpath YourBotName moderate - Trys to detect the bots moderator status. This is useful if you unmod and remod the bot while its on.
+         * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel.
+         * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set.
+         * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist.
+         * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands.
+         * @commandpath YourBotName togglepermcommessage - Toggles the no permission message.
+         * @commandpath YourBotName togglecooldownmessage - Toggles the on command cooldown message.
          */
-
          if (command.equalsIgnoreCase($.botName.toLowerCase())) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.usage', $.botName.toLowerCase()));
@@ -344,9 +348,9 @@
             if (action.equalsIgnoreCase('rejoin') || action.equalsIgnoreCase('reconnect')) {
                 /* Added a cooldown to this so people can spam it and cause errors. */
                 if (lastRecon + 10000 >= $.systemTime()) {
-                    $.consoleLn('[ERROR] Already trying to reconnect.');
                     return;
                 }
+
                 lastRecon = $.systemTime();
                 $.say($.whisperPrefix(sender) + $.lang.get('init.reconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' requested a reconnect!');
@@ -359,6 +363,17 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' removed the bot from chat!');
                 setTimeout(function () { java.lang.System.exit(0); }, 100);
+                return;
+            }
+
+            if (action.equalsIgnoreCase('moderate')) {
+                /* Have a cooldown here because saySilent does not go through the core cooldown. */
+                if (lastRecon + 9000 >= $.systemTime()) {
+                   return;
+                }
+                lastRecon = $.systemTime();
+                $.session.saySilent('.mods');
+                $.consoleLn('[INFO] Trying to detect moderator status for ' + $.botName + '.');
                 return;
             }
 
@@ -457,7 +472,6 @@
                 return;
             }
             if (lastRecon + 10000 >= $.systemTime()) {
-                $.consoleLn('[ERROR] Already trying to reconnect.');
                 return;
             }
             lastRecon = $.systemTime();
@@ -478,11 +492,6 @@
          * @commandpath module - Display the usage for !module
          */
         if (command.equalsIgnoreCase('module')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
                 return;
@@ -803,10 +812,9 @@
                 subCommand = (args[0] ? args[0] : ''),
                 subCommandAction = (args[1] ? args[1] : ''),
                 commandCost = 0,
-                permComCheck = $.permCom(sender, command, subCommand),
                 isModv3 = $.isModv3(sender, event.getTags());
 
-            if ($.inidb.exists('botBlackList', sender) || $.commandPause.isPaused() || !$.commandExists(command)) {
+            if ($.inidb.exists('botBlackList', sender) || ($.commandPause.isPaused() && !isModv3) || !$.commandExists(command)) {
                 return;
             }
 
@@ -845,27 +853,15 @@
             }
 
             if ($.coolDown.get(command, sender, isModv3) > 0) {
-                if ($.getIniDbBoolean('settings', 'coolDownMsgEnabled', false)) {
+                if (coolDownMsgEnabled) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
-                } else {
-                    consoleLn('[COMMAND COOLDOWN] Command: !' + command + ' was not sent because it is still on a cooldown.');
                 }
                 return;
             }
 
-            if (permComCheck !== 0) {
-                var permMsg;
-                if (permComCheck == 1) {
-                    permMsg = $.getCommandGroupName(command);
-                } else {
-                    if ($.subCommandExists(command, subCommand)) {
-                        permMsg = $.getSubCommandGroupName(command, subCommand);
-                    } else {
-                        permMsg = $.getCommandGroupName(command);
-                    }
-                }
-                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', permMsg));
+            if ($.permCom(sender, command, subCommand) !== 0) {
+                if (permComMsgEnabled) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command).toLowerCase() : $.getSubCommandGroupName(command, subCommand).toLowerCase())));
                 }
                 return;
             }
@@ -998,7 +994,6 @@
          */
         $api.on($script, 'ircPrivateMessage', function(event) {
             callHook('ircPrivateMessage', event, false);
-            $.whisperCommands(event);
         });
 
         /**
@@ -1268,6 +1263,13 @@
             handleInitCommands(event);
         });
 
+        /**
+         * @event api-DiscordEvent
+         */
+        $api.on($script, 'discord', function(event) {
+            callHook('discord', event, false);
+        });
+
         $.log.event('init.js api\'s loaded.');
         consoleDebug('init.js api\'s loaded.');
         consoleLn('');
@@ -1281,6 +1283,9 @@
         $.registerChatCommand('./init.js', 'reconnect', 1);
         $.registerChatCommand('./init.js', 'disconnect', 1);
         $.registerChatCommand('./init.js', $.botName.toLowerCase(), 1);
+        $.registerChatSubcommand($.botName.toLowerCase(), 'disconnect', 1);
+        $.registerChatSubcommand($.botName.toLowerCase(), 'reconnect', 1);
+        $.registerChatSubcommand($.botName.toLowerCase(), 'moderate', 2);
 
         // emit initReady event
         callHook('initReady', null, true);

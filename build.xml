@@ -4,20 +4,18 @@
     <!-- To specify a Nightly Build run as ant -Dnightly=nightly_build -->
 
     <property environment="env" />
-    <property name="project.base.dir" value="." />
-    <property name="version" value="2.3.1" />
+    <property name="version" value="2.3.3" />
     <property name="webpanel.version" value="1.1" />
-    <property name="java.class.path" value="" />
-    <property name="src" value="${project.base.dir}/source" />
-    <property name="reference" value="${project.base.dir}/libraries" />
-    <property name="build" value="${project.base.dir}/build" />
-    <property name="classes" value="${build}/classes" />
-    <property name="dist" value="${project.base.dir}/dist" />
-    <property name="versionfolder" value="${dist}/${ant.project.name}-${version}" />
+    <property name="src" location="source" />
+    <property name="reference" location="libraries" />
+    <property name="build" location="build" />
+    <property name="classes" location="${build}/classes" />
+    <property name="dist" location="dist" />
     <property name="version.name" value="${ant.project.name}-${version}" />
-    <property name="build.dir" value="${dist}/build" />
-    <property name="res.dir" value="${build.dir}" />
-    <property name="lib.dir" value="${build.dir}/lib" />
+    <property name="version.folder" location="${dist}/${version.name}" />
+    <property name="build.dir" location="${dist}/build" />
+    <property name="res.dir" location="${build.dir}" />
+    <property name="lib.dir" location="${build.dir}/lib" />
 
     <tstamp>
         <format property="NOW" pattern="MMM dd yyyy HH:mm:ss zzz" timezone="GMT" />
@@ -46,7 +44,7 @@
         <mkdir dir="${build}" />
         <mkdir dir="${classes}" />
         <mkdir dir="${dist}" />
-        <mkdir dir="${versionfolder}" />
+        <mkdir dir="${version.folder}" />
 
         <pathconvert property="mf.classpath" pathsep=" ">
             <path refid="reference.class.path" />
@@ -162,7 +160,7 @@
             match="PANEL_VERSION = &quot;(.*)&quot;;"
             replace="PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
         <echo level="info" message="staging files into distribution folder." />
-        <copy todir="${versionfolder}">
+        <copy todir="${version.folder}">
             <fileset dir="${build.dir}" />
         </copy>
     </target>
