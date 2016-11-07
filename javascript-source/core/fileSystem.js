@@ -124,6 +124,7 @@
         try {
             ps.println(line);
             fos.flush();
+            ps.close();
         } catch (e) {
             $.log.error('Failed to write to \'' + path + '\': ' + e);
         }
