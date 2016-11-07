@@ -9,6 +9,18 @@
             args = event.getArgs(),
             action = args[0];
 
+        /** Adds or removes a user from the moderator cache */
+        if (command.equalsIgnoreCase('permissionsetuser')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            if (parseInt(args[1]) <= 2) {
+                $.addModeratorToCache(action.toLowerCase());
+            } else {
+                $.removeModeratorFromCache(action.toLowerCase());
+            }
+        }
+
         /*
          * Sets permissions on a command.
          */
@@ -410,6 +422,7 @@
     $.bind('initReady', function() {
         /* 10 second delay here because I don't want these commands to be registered first. */
         setTimeout(function() {
+            $.registerChatCommand('./core/panelCommands.js', 'permissionsetuser', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadcommand', 30);
             $.registerChatCommand('./core/panelCommands.js', 'permcomsilent', 30);
             $.registerChatCommand('./core/panelCommands.js', 'registerpanel', 30);

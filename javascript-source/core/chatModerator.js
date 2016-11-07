@@ -1,9 +1,9 @@
 (function() {
-    var permitList = [],
-        timeouts = [],
+    var permitList = {},
+        timeouts = {},
         whiteList = [],
         blackList = [],
-        spamTracker = [],
+        spamTracker = {},
 
         linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', false),
         linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking.'),
@@ -114,6 +114,7 @@
         spamTrackerLastMsg = 0,
         messageTime = 0,
         warning = '',
+        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'ig'),
         i;
 
     /**
@@ -238,7 +239,7 @@
     setInterval(function() {
         if (spamTracker.length !== 0) {
             if (spamTrackerLastMsg - $.systemTime() <= 0) {
-                spamTracker = [];
+                spamTracker = {};
             }
         }
     }, 8e4);
@@ -303,18 +304,6 @@
             warning = $.lang.get('chatmoderator.warning');
         }
         timeouts[username] = (resetTime + $.systemTime());
-        panelLog(username);
-    }
-
-    /**
-     * @function panelLog
-     *
-     * @param {string} user
-     */
-    function panelLog(username) {
-        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            $.panelDB.updateModLinesDB(username);
-        }
     }
 
     /**
@@ -328,7 +317,10 @@
         if (!filter && (messageTime - $.systemTime()) <= 0) {
             $.say($.userPrefix(username, true) + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
-        } 
+        }
+
+        // Only log the user once the moderation messages are all done.
+        $.panelDB.updateModLinesDB(username);
     }
 
     /**
@@ -362,11 +354,11 @@
     function checkPermitList(username) {
         if (permitList[username] !== undefined) {
             if ((permitList[username] - $.systemTime()) >= 0) {
+                delete permitList[username];
                 return true;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -384,7 +376,6 @@
                 return true;
             }
         }
-        
         return false;
     }
 
@@ -408,11 +399,10 @@
      * @param {string} message
      */
     function checkYoutubePlayer(message) {
-        if ($.youtubePlayerConnected && (message.includes('youtube.com') || message.includes('youtu.be'))) {
+        if ($.youtubePlayerConnected && message.match(youtubeLinks)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -421,8 +411,7 @@
     function performModeration(event) {
         var sender = event.getSender(),
             message = event.getMessage().toLowerCase(),
-            messageLength = message.length(),
-            emotesObject = {};
+            messageLength = message.length();
 
         if (!$.isModv3(sender, event.getTags())) {
             if (linksToggle && $.patternDetector.hasLinks(event)) {
@@ -441,7 +430,7 @@
             }
 
             if (symbolsToggle && messageLength > symbolsTriggerLength) {
-                if ($.patternDetector.getLongestNonLetterSequence(event) > symbolsGroupLimit || ((parseFloat($.patternDetector.getNumberOfNonLetters(event)) / messageLength) * 100) > symbolsLimitPercent) {
+                if ($.patternDetector.getLongestNonLetterSequence(event) > symbolsGroupLimit || (($.patternDetector.getNumberOfNonLetters(event) / messageLength) * 100) > symbolsLimitPercent) {
                     if (!regulars.Symbols && $.isReg(sender) || !subscribers.Symbols && $.isSubv3(sender, event.getTags())) {
                         return;
                     }
@@ -460,7 +449,7 @@
                 return;
             }
 
-            if (colorsToggle && message.startsWith('/me')) {
+            if (colorsToggle && $.patternDetector.getColoredMessage(event)) {
                 if (!regulars.Colors && $.isReg(sender) || !subscribers.Colors && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
@@ -482,9 +471,7 @@
                 return;
             }
 
-            emotesObject = $.patternDetector.getNumberOfEmotes(event);
-
-            if (emotesToggle && emotesObject.matches > emotesLimit) {
+            if (emotesToggle && $.patternDetector.getEmotesCount(event) > emotesLimit) {
                 if (!regulars.Emotes && $.isReg(sender) || !subscribers.Emotes && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
@@ -494,7 +481,7 @@
             }
 
             if (capsToggle && messageLength > capsTriggerLength) {
-                if (((parseFloat($.patternDetector.getNumberOfCaps(event) - (emotesObject.length + emotesObject.matches)) / messageLength) * 100) > capsLimitPercent) {
+                if (((($.patternDetector.getNumberOfCaps(event) - $.patternDetector.getEmotesLength(event)) / messageLength) * 100) > capsLimitPercent) {
                     if (!regulars.Caps && $.isReg(sender) || !subscribers.Caps && $.isSubv3(sender, event.getTags())) {
                         return;
                     }

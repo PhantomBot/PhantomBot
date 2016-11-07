@@ -293,7 +293,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Check to see if the user is subscribing to the channel */
-        if (message.endsWith("subscribed!")) {
+        if (message.endsWith("subscribed!") || message.endsWith("Prime!")) {
             if (username.equalsIgnoreCase("twitchnotify")) {
                 scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
                 com.gmt2001.Console.debug.println(message.substring(0, message.indexOf(" ", 1)) + " just subscribed!");
@@ -338,11 +338,6 @@ public class TwitchWSIRCParser {
                 }
             }
         }
-
-        /* Check if the message is a command */
-        if (message.startsWith("!")) {
-            commandEvent(message, username, tagsMap);
-        }
         
         /* Moderate the incoming message. Have it run in the background on a thread. */
         try {
@@ -350,6 +345,11 @@ public class TwitchWSIRCParser {
             new Thread(moderationRunnable).start();
         } catch (Exception ex) {
             scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
+        }
+
+        /* Check if the message is a command */
+        if (message.startsWith("!")) {
+            commandEvent(message, username, tagsMap);
         }
 
         /* Send the message to the scripts. */
@@ -414,9 +414,16 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void noticeMessage(String message, String username, Map<String, String> tagsMap) {
-        if (message.equals("Error logging in")) {
+        if (message.equals("Error logging in") || message.equals("Login authentication failed")) {
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
+            com.gmt2001.Console.out.println("Exiting PhantomBot.");
+            com.gmt2001.Console.out.println();
+            System.exit(0);
+            return;
+        } else if (message.equals("Invalid NICK")) {
+            com.gmt2001.Console.out.println();
+            com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user' setting in botlogin.txt");
             com.gmt2001.Console.out.println("Exiting PhantomBot.");
             com.gmt2001.Console.out.println();
             System.exit(0);

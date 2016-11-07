@@ -17,7 +17,7 @@
 	function gamble(sender, amount) {
 		var winnings = 0,
 		    winSpot = 0,
-		    range = $.randRange(0, 100);
+		    range = $.randRange(1, 100);
 
 		if ($.getUserPoints(sender) < amount) {
 			$.say($.whisperPrefix(sender) + $.lang.get('gambling.need.points', $.pointNameMultiple));
@@ -100,7 +100,7 @@
 			}
 			winRange = action;
 			$.inidb.set('gambling', 'winRange', winRange);
-			$.say($.whisperPrefix(sender) + $.lang.get('gambling.win.range', winRange, (winRange - 1)));
+			$.say($.whisperPrefix(sender) + $.lang.get('gambling.win.range', parseInt(winRange) + 1, winRange));
 		}
 
 		/**

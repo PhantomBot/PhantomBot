@@ -51,7 +51,10 @@ public class NoticeTimer implements Runnable {
     private String botname;
 
     private boolean killed = false;
+    private boolean reIndex = false;
+    private long lastNoticeTime = -1L;
     private int lastMinuteRan = -1;
+    private int lastNoticeID = -1;
 
     /*
      * The instance creation for a NoticeTimer object.
@@ -136,11 +139,6 @@ public class NoticeTimer implements Runnable {
             if (this.lastMinuteRan != currentMinute) {
                 this.lastMinuteRan = currentMinute;
                 processTimers(currentMinute);
-
-                /* Reset chat lines every 5 minutes. */
-                if (currentMinute % 5 == 0) {
-                    this.session.chatLinesReset();
-                }
             }
 
             /* Wait 30 seconds between checking for the next minute to arrive. */
@@ -154,16 +152,137 @@ public class NoticeTimer implements Runnable {
     }
 
     /*
-     * Performs the main processing of the timers.
+     * Determines which timer process to utilize.
      *
-     * @param    int    currentMinute - The current minute past the hour to compare to the timers.
+     * @param    int    currentMinute - Passed to processScheduledTimers()
      */
     private void processTimers(int currentMinute) {
         TwitchCache twitchCache = TwitchCache.instance(this.channel);
         DataStore dataStore = PhantomBot.instance().getDataStore();
+
+        /* If offline and the offline toggle is true, do not process the timers. */
+        String offlineToggle = dataStore.GetString("noticeSettings", "", "noticeOfflineToggle");
+        if (offlineToggle != null) {
+            if (offlineToggle.equals("true") && !twitchCache.isStreamOnline()) {
+                return;
+            }
+        }
+
+        /* Determine which type of notice timer is being used and call the proper function to handle. */
+        String timerScheduled = dataStore.GetString("noticeSettings", "", "useScheduledTimer");
+        if (timerScheduled == null) {
+            processOrderedTimers();
+            return;
+        } 
+        if (timerScheduled.length() == 0 || timerScheduled.toLowerCase().equals("false")) {
+            processOrderedTimers();
+            return;
+        }
+
+        /* Reset lastNoticeTime to -1 in case the user switches between the different modes. Note that 
+         * lastNoticeTime is only used by processOrderedTimers().
+         */
+        lastNoticeTime = -1L;
+        processScheduledTimers(currentMinute);
+    }
+  
+
+    /*
+     * Performs the main procesing of ordered timers.
+     */
+    private void processOrderedTimers() {
+        DataStore dataStore = PhantomBot.instance().getDataStore();
+
+        /*
+         * If the lastNoticeTime is -1, then this timer type has not been used yet.  Set to current
+         * time_t and exit function.  The way the first notice will go out after the configured
+         * amount of wait time.
+         */
+        if (lastNoticeTime == -1) {
+            lastNoticeTime = System.currentTimeMillis() / 1000L;
+            return;
+        }
+
+        /* Get the current time and compare to the lastNoticeTime, convert to minutes. */
+        long currentNoticeTime = System.currentTimeMillis() / 1000L;
+        long noticeTimeDiff = (currentNoticeTime - lastNoticeTime) / 60L;
+        long noticeTimeInterval = dataStore.GetLong("noticeSettings", "", "interval");
+        if (noticeTimeInterval == 0) {
+            noticeTimeInterval = 10;
+        }
+        if (noticeTimeDiff < noticeTimeInterval) {
+            return;
+        }
+        
+        /* Get the required messages and compare to how many lines have been posted into chat. */
+        int noticeReqMessages = dataStore.GetInteger("noticeSettings", "", "reqmessages");
+        if (noticeReqMessages > this.session.chatLinesGet() && noticeReqMessages != 0) {
+            return;
+        }
+
+        /* As the appropriate amount of time has passed, reset the chat line counter. */
+        this.session.chatLinesReset();
+
+        /* Find the next notice to process. */
+        lastNoticeID++;
+
+        /* Check to see if any notices even exist. */
+        String message0 = dataStore.GetString("notices", "notice_0", "message");
+        if (message0 == null && lastNoticeID == 0) {
+            return;
+        }
+        if (message0.length() == 0 && lastNoticeID == 0) {
+            return;
+        }
+      
+        /*
+         * Get the notice.  If it is null or empty, assume we are at the end of the list and reset to 0.
+         */
+        String message = dataStore.GetString("notices", "notice_" + lastNoticeID, "message");
+        if (message == null) {
+            lastNoticeID = 0;
+            message = message0;
+        }
+        if (message.length() == 0 && lastNoticeID == 0) {
+            lastNoticeID = 0;
+            message = message0;
+        }
+        
+        /* See if the message is really a command and handle accordingly. */
+        if (message.startsWith("command:")) {
+            String arguments = "";
+            String command = message.substring(8);
+
+            if (command.contains(" ")) {
+                String commandString = command;
+                command = commandString.substring(0, commandString.indexOf(" "));
+                arguments = commandString.substring(commandString.indexOf(" ") + 1);
+            }
+            this.scriptEventManager.runDirect(new CommandEvent(botname, command, arguments));
+        } else {
+            this.session.say(message);
+        }
+
+        /* Store the current time_t into lastNoticeTime for comparing again later. */
+        lastNoticeTime = currentNoticeTime;
+    }
+
+    /*
+     * Performs the main processing of scheduled timers.
+     *
+     * @param    int    currentMinute - The current minute past the hour to compare to the timers.
+     */
+    private void processScheduledTimers(int currentMinute) {
+        TwitchCache twitchCache = TwitchCache.instance(this.channel);
+        DataStore dataStore = PhantomBot.instance().getDataStore();
         String currentGameTitle = twitchCache.getGameTitle();
 
-        String[] sections = dataStore.GetCategoryList("timers");
+        /* Reset chat lines every 5 minutes. */
+        if (currentMinute % 5 == 0) {
+            this.session.chatLinesReset();
+        }
+
+        String[] sections = dataStore.GetCategoryList("notices");
         if (sections == null) {
             return;
         }
@@ -173,7 +292,7 @@ public class NoticeTimer implements Runnable {
                 continue;
             }
 
-            String minutesListStr = dataStore.GetString("timers", section, "minutes");
+            String minutesListStr = dataStore.GetString("notices", section, "minutes");
             if (minutesListStr == null) {
                 continue;
             }
@@ -194,7 +313,7 @@ public class NoticeTimer implements Runnable {
             }
             
             /* Pull chatlines.  0 means ignore lines in chat. */
-            String chatlines = dataStore.GetString("timers", section, "chatlines");
+            String chatlines = dataStore.GetString("notices", section, "chatlines");
             if (chatlines == null) {
                 continue;
             }
@@ -207,7 +326,7 @@ public class NoticeTimer implements Runnable {
             }
 
             /* Pull gametitle. If it is empty, always use it, otherwise, compare to current game. */
-            String gametitle = dataStore.GetString("timers", section, "gametitle");
+            String gametitle = dataStore.GetString("notices", section, "gametitle");
             if (gametitle != null) {
                 if (gametitle.length() > 0) {
                     if (!gametitle.toLowerCase().equals(currentGameTitle.toLowerCase())) {
@@ -217,7 +336,7 @@ public class NoticeTimer implements Runnable {
             }
     
             /* Pull the message (or command). */
-            String message = dataStore.GetString("timers", section, "message");
+            String message = dataStore.GetString("notices", section, "message");
             if (message == null) {
                 continue;
             }
@@ -226,9 +345,9 @@ public class NoticeTimer implements Runnable {
             }
 
             /* See if the message is really a command and handle accordingly. */
-            if (message.startsWith(":")) {
+            if (message.startsWith("command:")) {
                 String arguments = "";
-                String command = message.substring(1);
+                String command = message.substring(8);
 
                 if (command.contains(" ")) {
                     String commandString = command;

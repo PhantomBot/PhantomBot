@@ -5,7 +5,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)/);
+        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(customapi |\(customapijson /);
 
     /**
      * @function getCustomAPIValue
@@ -53,6 +53,14 @@
             message = $.replace(message, '(adminonlyedit)', '');
         }
 
+        if (message.match(/\(pointtouser\)/)) {
+            if (event.getArgs()[0] !== undefined) {
+                message = $.replace(message, '(pointtouser)', (event.getArgs()[0] + ' -> '));
+            } else {
+                message = $.replace(message, '(pointtouser)', $.userPrefix(event.getSender(), true));
+            }
+        }
+
         if (message.match(/\(1\)/g)) {
             for (var i = 1; i < 10; i++) {
                 if (message.includes('(' + i + ')')) {
@@ -83,7 +91,7 @@
         }
 
         if (message.match(/\(channelname\)/g)) {
-            message = $.replace(message, '(channelname)', $.channelName);
+            message = $.replace(message, '(channelname)', $.username.resolve($.channelName));
         }
 
         if (message.match(/\(onlineonly\)/g)) {
@@ -160,7 +168,7 @@
         }
 
         if (message.match(/\(#\)/g)) {
-            message = $.replace(message, '(#)', String($.randRange(1, 100) + ' '));
+            message = $.replace(message, '(#)', String($.randRange(1, 100)));
         }
 
         if (message.match(/\(viewers\)/g)) {
@@ -221,7 +229,7 @@
         }
 
         if (message.match(/\(gameinfo\)/)) {
-            if ($.getGame($.channelName) == ' ') {
+            if ($.getGame($.channelName) == ' ' || $.getGame($.channelName) == '') {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.no.game'));
             } else if (!$.isOnline($.channelName) || $.getPlayTime() == 0) {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
@@ -231,7 +239,7 @@
         }
 
         if (message.match(/\(titleinfo\)/)) {
-            if ($.getStatus($.channelName) == ' ') {
+            if ($.getStatus($.channelName) == ' ' || $.getStatus($.channelName) == '') {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.no.title'));
             } else if (!$.isOnline($.channelName)) {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.offline', $.getStatus($.channelName)));
@@ -456,8 +464,6 @@
             for (i in commands) {
                 if (!$.commandExists(commands[i])) {
                     $.registerChatCommand('./commands/customCommands.js', commands[i], 7);
-                } else {
-                    $.log.error('Cannot add custom command, command already exists: ' + commands[i]);
                 }
             }
         }
@@ -474,8 +480,6 @@
                 if (!$.commandExists(aliases[i])) {
                     $.registerChatCommand('./commands/customCommands.js', aliases[i], $.getIniDbNumber('permcom', aliases[i], 7));
                     $.registerChatAlias(aliases[i]);
-                } else {
-                    $.log.error('Cannot add alias, command already exists: ' + aliases[i]);
                 }
             }
         }

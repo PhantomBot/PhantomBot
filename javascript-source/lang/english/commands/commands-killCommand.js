@@ -66,7 +66,7 @@ $.lang.register('killcommand.other.10', '$1 put $2 out of their misery.');
 $.lang.register('killcommand.other.11', '$1 destroyed $2!');
 $.lang.register('killcommand.other.12', '$1 atacó a $2 con un consolador grande!');
 $.lang.register('killcommand.other.13', '$2 was poked a bit too hard by $1 with a spork!');
-$.lang.register('killcommand.other.14', '$1 got his hands on a steamroller and steam rolled $2 flat! So, yeah $2 did die from that.');
+$.lang.register('killcommand.other.14', 'ZA WARUDO! $1 stopped time and throw 100s of knives at $2. END!');
 $.lang.register('killcommand.other.15', '$1 attacked $2 with a rusty spork as weapon...and managed to kill $2 with very little effort.');
 $.lang.register('killcommand.other.16', '$1 stole a car known as \'KITT\' and ran over $2.');
 $.lang.register('killcommand.other.17', '$1 tickled $2 to death!');
@@ -84,10 +84,12 @@ $.lang.register('killcommand.other.28', '$1 rekt $2 by 30-4 doing a 360 no-scope
 $.lang.register('killcommand.other.33', '$1 struck the mighty blow and ended by $2.');
 
 /** Add "(jail)" at the start of the lang for the user to get timed out for the jailTime you set. You can also use $3 for the jail timeout time to be displayed. $4 = botname. */
-$.lang.register('killcommand.other.29', '(jail) $1 tried to kill $2 with a unicorn\'s horn, but a cop showed up before he had time.');
-$.lang.register('killcommand.other.30', '(jail) $1 tried to kill $2 with a spork, but a cop showed up before he had time.');
-$.lang.register('killcommand.other.31', '(jail) $1 was going to hit $2 with a hammer. But $2 was a undercover cop!');
-$.lang.register('killcommand.other.32', '(jail) $1 was paid by $4 to kill $2. But $2 was a cop.');
+$.lang.register('killcommand.other.29', '(jail) $1 tried to kill $2 with a unicorn\'s horn, but a cop showed up before $1 had time.');
+$.lang.register('killcommand.other.30', '(jail) $1 tried to murder $2, but a cop was hiding in the bushes and jumped on $1 before it could be done.');
+$.lang.register('killcommand.other.31', '(jail) $1 was going to hit $2 with a hammer. However $2 was trained in the Secret Nippon Arts!');
+$.lang.register('killcommand.other.32', '(jail) $4 was paid by $1 to assassinate $2. $1\'s plan failed because $4 was actually a undercover cop!');
+$.lang.register('killcommand.other.44', '(jail) $1 attacked $2 with a plastic spoon, but then suddenly a swarm of police surrounded $1 and fired shots for 5 minutes.');
+$.lang.register('killcommand.other.45', '(jail) $2 is protected by an unknown force which repels $1.');
 /** Jail End **/
 
 $.lang.register('killcommand.other.34', '$1 was justly ended by $2.');
@@ -99,7 +101,7 @@ $.lang.register('killcommand.other.39', '$1 delivered the fatal blow on $2.');
 $.lang.register('killcommand.other.40', '$1 has punched $2 to death.');
 $.lang.register('killcommand.other.41', '$1 ruffled $2\'s fluff, and died!');
 $.lang.register('killcommand.other.42', '$1 hugged $2 a little too tight.');
-$.lang.register('killcommand.other.43', '$1 sent $2 to an to an awesome farm in the country.');
+$.lang.register('killcommand.other.43', '$1 sent $2 to an awesome farm in the country.');
 
 $.lang.register('killcommand.jail.timeout.usage', 'usage: !jailtimeouttime (amount in seconds)');
 $.lang.register('killcommand.jail.timeout.set', 'jail timeout time set to: $1 seconds.');

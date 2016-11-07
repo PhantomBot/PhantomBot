@@ -296,6 +296,7 @@ public class YouTubeAPIv3 {
                            q, "Video Marked Private", ""
                        };
             }
+
             if (j.getInt("_http") == 200) {
                 try {
                     com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End Success");
@@ -334,6 +335,7 @@ public class YouTubeAPIv3 {
 
                         JSONObject id = it.getJSONObject("id");
                         JSONObject sn = it.getJSONObject("snippet");
+
                         com.gmt2001.Console.debug.println("YouTubeAPIv3.SearchForVideo End Success2");
 
                         return new String[] {
@@ -386,6 +388,13 @@ public class YouTubeAPIv3 {
                     PeriodFormatter formatter = ISOPeriodFormat.standard();
 
                     Period d = formatter.parsePeriod(cd.getString("duration"));
+
+                    if (cd.getString("duration").equalsIgnoreCase("PT0S")) {
+                        com.gmt2001.Console.debug.println("YouTubeAPIv3.GetVideoLength Fail (Live Stream)");
+                        return new int[] {
+                               123, 456, 7899
+                           };
+                    }
 
                     //String d = cd.getString("duration").substring(2);
                     int h, m, s;

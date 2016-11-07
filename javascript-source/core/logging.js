@@ -158,7 +158,32 @@
 
         var now = new Date();
         $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/error/' + getLogDateString() + '.txt', true);
-        //Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile + '] ' + message));
+        Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile + '] ' + message));
+    };
+
+    /**
+     * @function logWarning
+     * @export $
+     * @param {string} message
+     */
+    function logWarning(message) {
+        if (!logs.error) {// this will count as a error just not a bad error
+            return;
+        }
+
+        if (!$.isDirectory('./logs/warning')) {
+            $.mkDir('./logs/warning');
+        }
+
+        try {
+            throw new Error('warninglog');
+        } catch (e) {
+            sourceFile = e.stack.split('\n')[1].split('@')[1];
+        }
+
+        var now = new Date();
+        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/warning/' + getLogDateString() + '.txt', true);
+        Packages.com.gmt2001.Console.warn.printlnRhino(java.util.Objects.toString(message));
     };
 
     /**
@@ -309,7 +334,7 @@
             }
 
             /**
-             * @commandpath log files - Toggle the logging of events
+             * @commandpath log events - Toggle the logging of events
              */
             if (action.equalsIgnoreCase('events')) {
                 if (logs.event) {
@@ -323,7 +348,7 @@
             }
 
             /**
-             * @commandpath log files - Toggle the logging of errors
+             * @commandpath log errors - Toggle the logging of errors
              */
             if (action.equalsIgnoreCase('errors')) {
                 if (logs.error) {
@@ -362,6 +387,8 @@
         file: logfile,
         event: logEvent,
         error: logError,
+        warn: logWarning,
     };
+
     $.reloadLogs = reloadLogs;
 })();

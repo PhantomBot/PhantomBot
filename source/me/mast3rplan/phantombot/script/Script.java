@@ -53,7 +53,7 @@ public class Script {
         }
         this.file = file;
 
-        if (!file.getName().endsWith(".js")) {
+        if (!file.getName().endsWith(".js") || file.getName().startsWith(".")) {
             return;
         }
 
@@ -76,7 +76,8 @@ public class Script {
             if (file.getPath().endsWith("init.js")) {
                 com.gmt2001.Console.out.println("Reloaded module: init.js");
             } else {
-                com.gmt2001.Console.out.println("Reloaded module: " + file.getPath().replace("./scripts/./", ""));
+                String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
+                com.gmt2001.Console.out.println("Reloaded module: " + path);
             }
             fileNotFoundCount = 0;
         } catch (Exception ex) {
@@ -92,7 +93,8 @@ public class Script {
             if (file.getPath().endsWith("init.js")) {
                 com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
             } else {
-                com.gmt2001.Console.err.println("Failed to reload module: " + file.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
+                String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
+                com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
             }
         }
     }

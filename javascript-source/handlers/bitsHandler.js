@@ -8,8 +8,7 @@
 	    message = $.getSetIniDbString('bitsSettings', 'message', '(name) just cheered (amount) bits!'),
 	    reward = $.getSetIniDbNumber('bitsSettings', 'reward', 0),
 	    minimum = $.getSetIniDbNumber('bitsSettings', 'minimum', 0),
-	    announceBits = false,
-	    moduleEnaled = false;
+	    announceBits = false;
 
 	/**
 	 * Used by the panel when someone updates a setting to reload the script vars.
@@ -21,7 +20,7 @@
 	    message = $.getIniDbString('bitsSettings', 'message', '(name) just cheered (amount) bits!');
 	    reward = $.getIniDbNumber('bitsSettings', 'reward', 0);
 	    minimum = $.getIniDbNumber('bitsSettings', 'minimum', 0);
-	};
+	}
 
 	/**
 	 * Gets the event from the core when someone cheers in the chat.
@@ -29,7 +28,7 @@
 	 * @event BitsEvent
 	 */
 	$.bind('Bits', function(event) {
-		if (!moduleEnaled) {
+		if (!announceBits || !toggle) {
 			return;
 		}
 		var s = message;
@@ -50,15 +49,11 @@
 		}
 
 		/** Make sure the module is on, and the bits toggle has been toggle on by the bot owner. */
-		if (announceBits && toggle) {
-			if (event.getBits() >= minimum) {//Check if the user cheered enough bits. Default is 0, so any amount.
-				$.say(s);
-				if (reward > 0) {//Check if the owner set a reward for when someone cheers. Default is non.
-				    $.inidb.incr('points', event.getUsername(), parseInt(reward));
-			    }
-			}
-			/** Write thelast  user and the amount of bits to a file for if the owner wants to display it on his stream. */
-			//$.writeToFile($.username.resolve(event.getUsername()) + ': ' + event.getBits(), './addons/bitsHandler/lastCheer.txt', false);
+		if (event.getBits() >= minimum) {//Check if the user cheered enough bits. Default is 0, so any amount.
+			$.say(s);
+			if (reward > 0) {//Check if the owner set a reward for when someone cheers. Default is non.
+			    $.inidb.incr('points', event.getUsername(), parseInt(reward));
+		    }
 		}
 	});
 
@@ -157,7 +152,6 @@
         	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsreward', 1);
         	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsminimum', 1);
         	announceBits = true; //Make sure the module is enabled to announce bits, incase the toggle is on.
-        	moduleEnaled = $.bot.isModuleEnabled('./handlers/bitsHandler.js'); // Don't want to call the replace function if this module is disabled.
         }
     });
 
