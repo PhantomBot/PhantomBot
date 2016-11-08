@@ -142,6 +142,7 @@
      * @param {string} command
      */
     function tempUnRegisterChatCommand(command) {
+        $.inidb.set('tempDisabledCommandScript', command, commands[command].script);
         if (commandExists(command)) {
             delete commands[command];
             delete commandScriptTable[command];
