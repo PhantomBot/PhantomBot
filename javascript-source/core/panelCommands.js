@@ -78,7 +78,8 @@
             if (!$.isBot(sender)) {
                 return;
             }
-            $.registerChatCommand('./commands/customCommands.js', args[0].toLowerCase());
+            $.registerChatCommand(($.inidb.exists('tempDisabledCommandScript', args[0].toLowerCase()) ? $.inidb.get('tempDisabledCommandScript', args[0].toLowerCase()) : './commands/customCommands.js'), args[0].toLowerCase());
+            $.inidb.del('tempDisabledCommandScript', args[0].toLowerCase());
             return;
         }
 
