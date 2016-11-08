@@ -89,6 +89,7 @@
         }
 
         if ($.inidb.exists('disabledCommands', command)) {
+            $.inidb.set('tempDisabledCommandScript', command, script);
             return;
         }
 
