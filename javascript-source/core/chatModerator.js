@@ -43,6 +43,9 @@
         blacklistTimeoutTime = $.getSetIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
         blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase.'),
 
+        fakePurgeToggle = $.getSetIniDbBoolean('chatModerator', 'fakePurgeToggle', false),
+        fakePurgeMessage = $.getSetIniDbString('chatModerator', 'fakePurgeMessage',  'you were timed out for a fake purge.'),
+
         subscribers = {
             Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', true),
             Caps: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateCaps', true),
@@ -52,6 +55,7 @@
             Colors: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateColors', true),
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLongMsg', true),
             SpamTracker: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSpamTracker', true),
+            FakePurge: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateFakePurge', true),
         },
 
         regulars = {
@@ -63,6 +67,7 @@
             Colors: $.getSetIniDbBoolean('chatModerator', 'regularsModerateColors', true),
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'regularsModerateLongMsg', true),
             SpamTracker: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSpamTracker', true),
+            FakePurge: $.getSetIniDbBoolean('chatModerator', 'regularsModerateFakePurge', true),
         },
 
         silentTimeout = {
@@ -75,6 +80,7 @@
             LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
             Blacklist: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutBlacklist', false),
             SpamTracker: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSpamTracker', false),
+            FakePurge: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutFakePurge', false),
             LinkMessage: $.getSetIniDbString('chatModerator', 'silentLinkMessage', 'Posting links without permission. (Automated by ' + $.botName + ')'),
             SpamMessage: $.getSetIniDbString('chatModerator', 'silentSpamMessage', 'Excessive use of repeating characters. (Automated by ' + $.botName + ')'),
             CapMessage: $.getSetIniDbString('chatModerator', 'silentCapMessage', 'Excessive use of caps. (Automated by ' + $.botName + ')'),
@@ -84,6 +90,7 @@
             LongMessage: $.getSetIniDbString('chatModerator', 'silentLongMessage', 'Excessive message length. (Automated by ' + $.botName + ')'),
             BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted phrase. (Automated by ' + $.botName + ')'),
             SpamTrackerMessage: $.getSetIniDbString('chatModerator', 'silentSpamTrackerMessage', 'Spamming chat. (Automated by ' + $.botName + ')'),
+            FakePurgeMessage: $.getSetIniDbString('chatModerator', 'silentFakePurgeMessage', 'Fake purge. (Automated by ' + $.botName + ')'),
         },
 
         warningTime = {
@@ -95,6 +102,7 @@
             Colors: $.getSetIniDbNumber('chatModerator', 'warningTimeColors', 5),
             LongMsg: $.getSetIniDbNumber('chatModerator', 'warningTimeLongMsg', 5),
             SpamTracker: $.getSetIniDbNumber('chatModerator', 'warningTimeSpamTracker', 5),
+            FakePurge: $.getSetIniDbNumber('chatModerator', 'warningTimeFakePurge', 5),
         },
 
         timeoutTime = {
@@ -106,6 +114,7 @@
             Colors: $.getSetIniDbNumber('chatModerator', 'timeoutTimeColors', 600),
             LongMsg: $.getSetIniDbNumber('chatModerator', 'timeoutTimeLongMsg', 600),
             SpamTracker: $.getSetIniDbNumber('chatModerator', 'timeoutTimeSpamTracker', 600),
+            FakePurge: $.getSetIniDbNumber('chatModerator', 'timeoutTimeFakePurge', 600),
         },
 
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
@@ -157,6 +166,9 @@
         spamTrackerTime = $.getIniDbNumber('chatModerator', 'spamTrackerTime');
         spamTrackerLimit = $.getIniDbNumber('chatModerator', 'spamTrackerLimit');
 
+        fakePurgeToggle = $.getSetIniDbBoolean('chatModerator', 'fakePurgeToggle');
+        fakePurgeMessage = $.getSetIniDbString('chatModerator', 'fakePurgeMessage');
+
         subscribers = {
             Links: $.getIniDbBoolean('chatModerator', 'subscribersModerateLinks'),
             Caps: $.getIniDbBoolean('chatModerator', 'subscribersModerateCaps'),
@@ -166,6 +178,7 @@
             Colors: $.getIniDbBoolean('chatModerator', 'subscribersModerateColors'),
             LongMsg: $.getIniDbBoolean('chatModerator', 'subscribersModerateLongMsg'),
             SpamTracker: $.getIniDbBoolean('chatModerator', 'subscribersModerateSpamTracker'),
+            FakePurge: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateFakePurge')
         };
 
         regulars = {
@@ -177,6 +190,7 @@
             Colors: $.getIniDbBoolean('chatModerator', 'regularsModerateColors'),
             LongMsg: $.getIniDbBoolean('chatModerator', 'regularsModerateLongMsg'),
             SpamTracker: $.getIniDbBoolean('chatModerator', 'regularsModerateSpamTracker'),
+            FakePurge: $.getSetIniDbBoolean('chatModerator', 'regularsModerateFakePurge')
         };
 
         silentTimeout = {
@@ -189,6 +203,7 @@
             LongMsg: $.getIniDbBoolean('chatModerator', 'silentTimeoutLongMsg'),
             Blacklist: $.getIniDbBoolean('chatModerator', 'silentTimeoutBlacklist'),
             SpamTracker: $.getIniDbBoolean('chatModerator', 'silentSpamTracker'),
+            FakePurge: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutFakePurge'),
             LinkMessage: $.getIniDbString('chatModerator', 'silentLinkMessage'),
             SpamMessage: $.getIniDbString('chatModerator', 'silentSpamMessage'),
             CapMessage: $.getIniDbString('chatModerator', 'silentCapMessage'),
@@ -198,6 +213,7 @@
             LongMessage: $.getIniDbString('chatModerator', 'silentLongMessage'),
             BlacklistMessage: $.getIniDbString('chatModerator', 'silentBlacklistMessage'),
             SpamTrackerMessage: $.getIniDbString('chatModerator', 'silentSpamTrackerMessage'),
+            FakePurgeMessage: $.getSetIniDbString('chatModerator', 'silentFakePurgeMessage')
         };
 
         warningTime = {
@@ -209,6 +225,7 @@
             Colors: $.getIniDbNumber('chatModerator', 'warningTimeColors'),
             LongMsg: $.getIniDbNumber('chatModerator', 'warningTimeLongMsg'),
             SpamTracker: $.getIniDbNumber('chatModerator', 'warningTimeSpamTracker'),
+            FakePurge: $.getSetIniDbNumber('chatModerator', 'warningTimeFakePurge')
         };
 
         timeoutTime = {
@@ -220,6 +237,7 @@
             Colors: $.getIniDbNumber('chatModerator', 'timeoutTimeColors'),
             LongMsg: $.getIniDbNumber('chatModerator', 'timeoutTimeLongMsg'),
             SpamTracker: $.getIniDbNumber('chatModerator', 'timeoutTimeSpamTracker'),
+            FakePurge: $.getSetIniDbNumber('chatModerator', 'timeoutTimeFakePurge')
         };
 
         blacklistTimeoutTime = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime');
@@ -280,6 +298,16 @@
         setTimeout(function() {
             $.say('.timeout ' + username + ' ' + time + ' ' + reason);
         }, 1000);
+
+        /*
+         * @info Better for when messages don't get deleted with a first timeout. This does limit timeouts due to Twitch chat limits though.
+         *
+         * $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+         * $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+         * setTimeout(function() {
+         *     $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+         * }, 2500);
+         */
     }
 
     /**
@@ -449,15 +477,6 @@
                 return;
             }
 
-            if (colorsToggle && $.patternDetector.getColoredMessage(event)) {
-                if (!regulars.Colors && $.isReg(sender) || !subscribers.Colors && $.isSubv3(sender, event.getTags())) {
-                    return;
-                }
-                timeout(sender, warningTime.Colors, timeoutTime.Colors, silentTimeout.ColorMessage);
-                sendMessage(sender, colorsMessage, silentTimeout.Colors);
-                return;
-            }
-
             if (longMessageToggle && messageLength > longMessageLimit) {
                 if (!regulars.LongMsg && $.isReg(sender) || !subscribers.LongMsg && $.isSubv3(sender, event.getTags())) {
                     return;
@@ -467,7 +486,13 @@
                 return;
             }
 
-            if (message && checkBlackList(sender, message)) {
+            if (fakePurgeToggle && $.patternDetector.getFakePurge(event)) {
+                if (!regulars.FakePurge && $.isReg(sender) || !subscribers.FakePurge && $.isSubv3(sender, event.getTags())) {
+                    return;
+                }
+
+                timeout(sender, warningTime.FakePurge, timeoutTime.FakePurge, silentTimeout.FakePurgeMessage);
+                sendMessage(sender, fakePurgeMessage, silentTimeout.FakePurge);
                 return;
             }
 
@@ -489,6 +514,19 @@
                     sendMessage(sender, capsMessage, silentTimeout.Caps);
                     return;
                 }
+            }
+
+            if (colorsToggle && $.patternDetector.getColoredMessage(event)) {
+                if (!regulars.Colors && $.isReg(sender) || !subscribers.Colors && $.isSubv3(sender, event.getTags())) {
+                    return;
+                }
+                timeout(sender, warningTime.Colors, timeoutTime.Colors, silentTimeout.ColorMessage);
+                sendMessage(sender, colorsMessage, silentTimeout.Colors);
+                return;
+            }
+
+            if (message && checkBlackList(sender, message)) {
+                return;
             }
 
             if (spamTrackerToggle) {
@@ -602,7 +640,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        regulars.SpamTracker = subAction.equalsIgnoreCase('true');
+                        regulars.SpamTracker = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'regularsModerateSpamTracker', regulars.SpamTracker);
                         $.say($.whisperPrefix(sender) + (regulars.SpamTracker ? $.lang.get('chatmoderator.regulars.spamtracker.allowed') : $.lang.get('chatmoderator.regulars.spamtracker.not.allowed')));
                         $.log.event(sender + ' changed regulars moderation for spam tracker to ' + args[2]);
@@ -619,7 +657,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        subscribers.SpamTracker = subAction.equalsIgnoreCase('true');
+                        subscribers.SpamTracker = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'subscribersModerateSpamTracker', subscribers.SpamTracker);
                         $.say($.whisperPrefix(sender) + (subscribers.SpamTracker ? $.lang.get('chatmoderator.subscribers.spamtracker.allowed') : $.lang.get('chatmoderator.subscribers.spamtracker.not.allowed')));
                         $.log.event(sender + ' changed subscribers moderation for spam tracker to ' + args[2]);
@@ -670,6 +708,118 @@
                     $.inidb.set('chatModerator', 'timeoutTimeSpamTracker', timeoutTime.SpamTracker);
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.spamtracker', timeoutTime.SpamTracker));
                     $.log.event(sender + ' changed timeout time for spam tracker to: ' + timeoutTime.SpamTracker);
+                }
+            }
+
+            /**
+             * @commandpath moderation fakepurge [on / off] - Enable/Disable the fake purges filter. This will remove <message deleted> variations if enabled.
+             */
+            if (action.equalsIgnoreCase('fakepurge')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.fakepurge.usage', getModerationFilterStatus(fakePurgeToggle, true)));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('on') || subAction.equalsIgnoreCase('off')) {
+                    fakePurgeToggle = subAction.equalsIgnoreCase('on');
+                    $.inidb.set('chatModerator', 'fakePurgeToggle', fakePurgeToggle);
+                    $.say($.whisperPrefix(sender) + (fakePurgeToggle ? $.lang.get('chatmoderator.fakepurge.filter.enabled') : $.lang.get('chatmoderator.fakepurge.filter.disabled'))); 
+                    $.log.event('fake purge filter was turned ' + subAction + ' by ' + sender);
+                    return;
+                }
+            }
+
+            /**
+             * @commandpath moderation fakepurgemessage [message] - Sets the fake purge warning message
+             */
+            if (action.equalsIgnoreCase('fakepurgemessage')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.fakepurge.message.usage'));
+                    return;
+                }
+                fakePurgeMessage = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'fakePurgeMessage', fakePurgeMessage);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.fakepurge.message.set', fakePurgeMessage));
+                $.log.event(sender + ' changed the fake purge warning message to "' + fakePurgeMessage + '"');
+                return;
+            }
+
+            if (action.equalsIgnoreCase('regulars')) {
+                if (subAction && subAction.equalsIgnoreCase('fakepurge')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.regulars.toggle.fakepurge', getModerationFilterStatus(regulars.FakePurge)));
+                        return;
+                    }
+
+                    if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
+                        regulars.FakePurge = args[2].equalsIgnoreCase('true');
+                        $.inidb.set('chatModerator', 'regularsModerateFakePurge', regulars.FakePurge);
+                        $.say($.whisperPrefix(sender) + (regulars.FakePurge ? $.lang.get('chatmoderator.regulars.fakepurge.allowed') : $.lang.get('chatmoderator.regulars.fakepurge.not.allowed')));
+                        $.log.event(sender + ' changed regulars moderation for fake purge to ' + args[2]);
+                        return;
+                    }
+                }
+            }
+
+            if (action.equalsIgnoreCase('subscribers')) {
+                if (subAction && subAction.equalsIgnoreCase('fakepurge')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.subscribers.toggle.fakepurge', getModerationFilterStatus(subscribers.FakePurge)));
+                        return;
+                    }
+
+                    if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
+                        subscribers.FakePurge = args[2].equalsIgnoreCase('true');
+                        $.inidb.set('chatModerator', 'subscribersModerateFakePurge', subscribers.FakePurge);
+                        $.say($.whisperPrefix(sender) + (subscribers.FakePurge ? $.lang.get('chatmoderator.subscribers.fakepurge.allowed') : $.lang.get('chatmoderator.subscribers.fakepurge.not.allowed')));
+                        $.log.event(sender + ' changed subscribers moderation for fake purge to ' + args[2]);
+                        return;
+                    }
+                }
+            }
+
+            if (action.equalsIgnoreCase('silenttimeout')) {
+                if (subAction && subAction.equalsIgnoreCase('fakepurge')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.fakepurge', getModerationFilterStatus(silentTimeout.FakePurge, true)));
+                        return;
+                    }
+
+                    if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
+                        silentTimeout.FakePurge = args[2].equalsIgnoreCase('true');
+                        $.inidb.set('chatModerator', 'silentTimeoutFakePurge', silentTimeout.FakePurge);
+                        $.say($.whisperPrefix(sender) + (silentTimeout.FakePurge ? $.lang.get('chatmoderator.silenttimeout.fakepurge.true') : $.lang.get('chatmoderator.silenttimeout.fakepurge.false')));
+                        $.log.event(sender + ' changed silent timeout moderation for fake purge to ' + args[2]);
+                        return;
+                    }
+                }
+            }
+
+            if (action.equalsIgnoreCase('warningtime')) {
+                if (subAction && subAction.equalsIgnoreCase('fakepurge')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.fakepurge.usage', warningTime.FakePurge));
+                        return;
+                    }
+
+                    warningTime.FakePurge = parseInt(args[2]);
+                    $.inidb.set('chatModerator', 'warningTimeFakePurge', warningTime.FakePurge);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.fakepurge', warningTime.FakePurge));
+                    $.log.event(sender + ' changed warning time for fake purge to: ' + warningTime.FakePurge);
+                }
+            }
+
+            if (action.equalsIgnoreCase('timeouttime')) {
+                if (subAction && subAction.equalsIgnoreCase('fakepurge')) {
+                    if (!args[2]) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.fakepurge.usage', timeoutTime.FakePurge));
+                        return;
+                    }
+
+                    timeoutTime.FakePurge = parseInt(args[2]);
+                    $.inidb.set('chatModerator', 'timeoutTimeFakePurge', timeoutTime.FakePurge);
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.fakepurge', timeoutTime.FakePurge));
+                    $.log.event(sender + ' changed timeout time for fake purge to: ' + timeoutTime.FakePurge);
                 }
             }
         }
@@ -967,7 +1117,7 @@
             }
 
             /**
-             * @commandpath moderation regulars [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker] [true / false] - Enable or disable if regulars get moderated by that filter
+             * @commandpath moderation regulars [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker / fakepurge] [true / false] - Enable or disable if regulars get moderated by that filter
              */
             if (action.equalsIgnoreCase('regulars')) {
                 if (!subAction) {
@@ -1070,7 +1220,7 @@
             }
 
             /**
-             * @commandpath moderation subscribers [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker] [true / false] - Enable or disable if subscribers get moderated by that filter
+             * @commandpath moderation subscribers [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker / fakepurge] [true / false] - Enable or disable if subscribers get moderated by that filter
              */
             if (action.equalsIgnoreCase('subscribers')) {
                 if (!subAction) {
@@ -1173,7 +1323,7 @@
             }
 
             /**
-             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / blacklist / spamtracker/ all] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
+             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / blacklist / spamtracker / fakepurge / all] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
              */
             if (action.equalsIgnoreCase('silenttimeout')) {
                 if (!subAction) {
@@ -1297,13 +1447,14 @@
                         $.inidb.set('chatModerator', 'silentTimeoutLongMsg', silentTimeout.LongMsg);
                         $.inidb.set('chatModerator', 'silentTimeoutColors', silentTimeout.Colors);
                         $.inidb.set('chatModerator', 'silentTimeoutSpamTacker', silentTimeout.SpamTracker);
+                        $.inidb.set('chatModerator', 'silentTimeoutFakePurge', silentTimeout.FakePurge);
                         $.say($.whisperPrefix(sender) + (args[0] ? $.lang.get('chatmoderator.silenttimeout.true') : $.lang.get('chatmoderator.silenttimeout.false')));
                     }
                 }
             }
 
             /**
-             * @commandpath moderation warningtime [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker] [time in seconds] - Sets a warning time for a filter. This is when the user gets timed out for the first time
+             * @commandpath moderation warningtime [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker / fakepurge] [time in seconds] - Sets a warning time for a filter. This is when the user gets timed out for the first time
              */
             if (action.equalsIgnoreCase('warningtime')) {
                 if (!subAction) {
@@ -1378,7 +1529,7 @@
             }
 
             /**
-             * @commandpath moderation timeouttime [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker] [time in seconds] - Sets a timeout time for a filter. This is when a user gets timed out the for the second time
+             * @commandpath moderation timeouttime [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker / fakepurge] [time in seconds] - Sets a timeout time for a filter. This is when a user gets timed out the for the second time
              */
             if (action.equalsIgnoreCase('timeouttime')) {
                 if (!subAction) {
