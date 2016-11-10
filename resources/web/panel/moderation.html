@@ -489,6 +489,74 @@
         </form>
     </div>
 
+    <h3>Fake Purge settings</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="fakePurgeMessage">Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#fakePurgeMessageInput', 'fakePurgeMessage')">Submit</button>
+                <input type="text" class="form-control" id="fakePurgeMessageInput" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message said in chat when a user get punished for fake purges." />
+            </div>
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="FakePurgeReason">Ban Reason</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.banReason('#FakePurgeReason', 'FakePurgeMessage')">Submit</button>
+                <input type="text" class="form-control" id="FakePurgeReason" placeholder="Loading..."
+                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="warningTimeFakePurge">Warning duration</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#warningTimeFakePurge', 'warningTimeFakePurge')">Submit</button>
+                <input type="number" min="1" class="form-control" id="warningTimeFakePurge" placeholder="Loading..."
+                     data-toggle="tooltip" title="Set how long a user will get timed out ,in seconds, when using a fale purge on their first offence." />
+            </div>
+        </form>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="timeoutTimeFakePurge">Timeout duration</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                     onclick="$.updateRedrawModSetting('#timeoutTimeFakePurge', 'timeoutTimeFakePurge')">Submit</button>
+                <input type="number" min="1" class="form-control" id="timeoutTimeFakePurge" placeholder="Loading..."
+                     data-toggle="tooltip" title="Set how long a user will get timed out ,in seconds, when using a fale purge on their last offence." />
+            </div>
+        </form>
+    </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleModerationFakePurge" onclick="$.toggleModerations('FakePurge', 'fakePurgeToggle')">Moderate spam
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleRegularFakePurge" onclick="$.toggleRegular('FakePurge')">Exclude regulars
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSubscriberFakePurge" onclick="$.toggleSubscriber('FakePurge')">Exclude subscribers
+                </label>
+            </div>
+        </form>
+        <form role="form">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="toggleSilentTimeoutFakePurge" onclick="$.toggleSilentTimeout('FakePurge')">Silent mode
+                </label>
+            </div>
+        </form>
+    </div>
+    
     <h3>Emote settings</h3>
     <div>
         <form role="form">

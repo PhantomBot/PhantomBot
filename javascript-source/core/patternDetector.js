@@ -52,6 +52,7 @@
             nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
             nonAlphaCount: /([^a-z0-9 ])/ig,
             capsCount: /([A-Z])/g,
+            fakePurge: /(^<message \w+>$)/
         },
         lastFoundLink = '';
 
@@ -238,6 +239,16 @@
         return event.getMessage().startsWith('/me');
     }
 
+    /**
+     * @function getFakePurge
+     * @export $.patternDetector
+     * @param {Object} event
+     * @returns {boolean}
+     */
+    function getFakePurge(event) {
+        return event.getMessage().match(patterns.fakePurge);
+    }
+
     /** Export functions to API */
     $.patternDetector = {
         hasLinks: hasLinks,
@@ -250,5 +261,6 @@
         getNumberOfCaps: getNumberOfCaps,
         logLastLink: logLastLink,
         getColoredMessage: getColoredMessage,
+        getFakePurge: getFakePurge
     };
 })();
