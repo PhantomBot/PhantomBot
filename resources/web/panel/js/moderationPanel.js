@@ -39,6 +39,7 @@
         modSettingMap['linksToggle'] = "Links Protection";
         modSettingMap['longMessageToggle'] = "Long Message Protection";
         modSettingMap['spamTrackerToggle'] = "Spam Tracker Protection";
+        modSettingMap['fakePurgeToggle'] = "Fake Purge Protection";
 
         modSettingMap['subscribersModerateLinks'] = "Subscriber " + modSettingMap['linksToggle'];
         modSettingMap['subscribersModerateCaps'] = "Subscriber " + modSettingMap['capsToggle'];
@@ -48,6 +49,7 @@
         modSettingMap['subscribersModerateColors'] = "Subscriber " + modSettingMap['colorsToggle'];
         modSettingMap['subscribersModerateLongMsg'] = "Subscriber " + modSettingMap['longMessageToggle'];
         modSettingMap['subscribersModerateSpamTracker'] = "Subscriber " + modSettingMap['spamTrackerToggle'];
+        modSettingMap['subscribersModerateFakePurge'] = "Subscriber " + modSettingMap['fakePurgeToggle'];
 
         modSettingMap['regularsModerateLinks'] = "Regulars " + modSettingMap['linksToggle'];
         modSettingMap['regularsModerateCaps'] = "Regulars " + modSettingMap['capsToggle'];
@@ -56,7 +58,8 @@
         modSettingMap['regularsModerateEmotes'] = "Regulars " + modSettingMap['emotesToggle'];
         modSettingMap['regularsModerateColors'] = "Regulars " + modSettingMap['colorsToggle'];
         modSettingMap['regularsModerateLongMsg'] = "Regulars " + modSettingMap['longMessageToggle'];
-        modSettingMap['subscribersModerateSpamTracker'] = "Regulars " + modSettingMap['spamTrackerToggle'];
+        modSettingMap['regularsModerateSpamTracker'] = "Regulars " + modSettingMap['spamTrackerToggle'];
+        modSettingMap['regularsModerateFakePurge'] = "Regulars " + modSettingMap['fakePurgeToggle'];
 
         modSettingMap['silentTimeoutLinks'] = "Silent Timeout on " + modSettingMap['linksToggle'];
         modSettingMap['silentTimeoutCaps'] = "Silent Timeout on " + modSettingMap['capsToggle'];
@@ -66,6 +69,7 @@
         modSettingMap['silentTimeoutColors'] = "Silent Timeout on " + modSettingMap['colorsToggle'];
         modSettingMap['silentTimeoutLongMsg'] = "Silent Timeout on " + modSettingMap['longMessageToggle'];
         modSettingMap['silentTimeoutSpamTracker'] = "Silent Timeout on " + modSettingMap['spamTrackerToggle'];
+        modSettingMap['silentTimeoutFakePurge'] = "Silent Timeout on " + modSettingMap['fakePurgeToggle'];
         modSettingMap['silentTimeoutBlacklist'] = "Silent Timeout on Blacklist";
 
     /**
@@ -178,6 +182,8 @@
                         case 'spamTrackerMessage' :
                         case 'spamTrackerLimit' :
                         case 'spamTrackerTime' :
+                        case 'fakePurgeToggle' :
+                        case 'fakePurgeMessage' :
                             $("#" + modSetting + "Input").attr("placeholder", modValue).blur();
                             break;
                     }
@@ -200,6 +206,14 @@
 
                     if (panelMatch(modSetting, 'timeoutTimeLinks')) {
                         $("#timeoutTimeLinks").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'warningTimeFakePurge')) {
+                        $("#warningTimeFakePurge").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'timeoutTimeFakePurge')) {
+                        $("#timeoutTimeFakePurge").attr("placeholder", modValue).blur();
                     }
 
                     if (panelMatch(modSetting, 'warningTimeCaps')) {
@@ -270,6 +284,10 @@
                         $("#LinkMessageReason").attr("placeholder", modValue).blur();
                     }
 
+                    if (panelMatch(modSetting, 'silentFakePurgeMessage')) {
+                        $("#FakePurgeReason").attr("placeholder", modValue).blur();
+                    }
+
                     if (panelMatch(modSetting, 'silentSymbolsMessage')) {
                         $("#SymbolMessageReason").attr("placeholder", modValue).blur();
                     }
@@ -313,6 +331,12 @@
                     if (panelMatch(modSetting, 'linksToggle')) {
                         if (panelMatch(modValue, 'true')) {
                             $('#toggleModerationLinks').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'fakePurgeToggle')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleModerationFakePurge').attr('checked', 'checked');
                         }
                     }
 
@@ -363,6 +387,12 @@
                             $('#toggleRegularLinks').attr('checked', 'checked');
                         }
                     }
+
+                    if (panelMatch(modSetting, 'regularsModerateFakePurge')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularFakePurge').attr('checked', 'checked');
+                        }
+                    }
                 
                     if (panelMatch(modSetting, 'regularsModerateCaps')) {
                         if (panelMatch(modValue, 'false')) {
@@ -405,6 +435,12 @@
                             $('#toggleSubscriberLinks').attr('checked', 'checked');
                         }
                     }
+
+                    if (panelMatch(modSetting, 'subscribersModerateFakePurge')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberFakePurge').attr('checked', 'checked');
+                        }
+                    }
                 
                     if (panelMatch(modSetting, 'subscribersModerateCaps')) {
                         if (panelMatch(modValue, 'false')) {
@@ -445,6 +481,12 @@
                     if (panelMatch(modSetting, 'silentTimeoutLinks')) {
                         if (panelMatch(modValue, 'true')) {
                             $('#toggleSilentTimeoutLinks').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutFakePurge')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutFakePurge').attr('checked', 'checked');
                         }
                     }
 
@@ -563,17 +605,17 @@
     function toggleModeration(group, type) {
         var modDbKeys = [];
         if (group.indexOf('viewers') === 0) {
-            modDbKeys = [ "linksToggle", "capsToggle", "spamToggle", "symbolsToggle", "emotesToggle", "longMessageToggle", "colorsToggle", "spamTrackerToggle" ];
+            modDbKeys = [ "linksToggle", "capsToggle", "spamToggle", "symbolsToggle", "emotesToggle", "longMessageToggle", "colorsToggle", "spamTrackerToggle", "fakePurgeToggle" ];
         }
 
         if (group.indexOf('subscribers') === 0) {
             modDbKeys = [ "subscribersModerateLinks", "subscribersModerateCaps", "subscribersModerateSymbols", "subscribersModerateSpam",
-                          "subscribersModerateEmotes", "subscribersModerateColors", "subscribersModerateLongMsg", "subscribersModerateSpamTacker" ];
+                          "subscribersModerateEmotes", "subscribersModerateColors", "subscribersModerateLongMsg", "subscribersModerateSpamTacker", "subscribersModerateFakePurge" ];
         }
 
         if (group.indexOf('regulars') === 0) {
             modDbKeys = [ "regularsModerateLinks", "regularsModerateCaps", "regularsModerateSymbols", "regularsModerateSpam",
-                          "regularsModerateEmotes", "regularsModerateColors", "regularsModerateLongMsg", "regularsModerateSpamTacker" ];
+                          "regularsModerateEmotes", "regularsModerateColors", "regularsModerateLongMsg", "regularsModerateSpamTacker", "regularsModerateFakePurge" ];
         }
 
         for (key in modDbKeys) {
