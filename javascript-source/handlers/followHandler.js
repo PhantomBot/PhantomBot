@@ -79,7 +79,11 @@
             follows.push(message);
             if (!timer) {
                 timer = true;
-                setTimeout(function() { interval = setInterval(function() { run(); }, 3e2); }, 1e2);
+                setTimeout(function() { 
+                    interval = setInterval(function() { 
+                        run(); 
+                    }, 3e2); 
+                }, 1e2);
             }
         }
     };
@@ -101,7 +105,7 @@
         for (i in follows) {
             if (!running && ($.systemTime() - lastFollow) > (followDelay * 1e3)) {
                 running = true;
-                $.say(follows[i]);
+                $.say(follows[i].replace('/w', ' /w'));
                 lastFollow = $.systemTime();
                 follows.splice(i, 1);
                 running = false;
