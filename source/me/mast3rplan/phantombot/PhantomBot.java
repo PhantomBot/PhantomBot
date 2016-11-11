@@ -176,9 +176,8 @@ public class PhantomBot implements Listener {
 	/** Notice Timer and Handling */
 	private NoticeTimer noticeTimer;
 
-        /** Discord Configuration */
-        private String discordToken = "";
-        private String discordStreamOnlineChannel = "";
+    /** Discord Configuration */
+    private String discordToken = "";
 
 	/** Caches */
 	private FollowersCache followersCache;
@@ -304,15 +303,6 @@ public class PhantomBot implements Listener {
 		return "https://phantombot.tv/";
 	}
 
-        /**
-         * Returns the name of the Discord Channel to receive stream online announcements.
-         *
-         * @return {string} discord channel
-         */
-        public String getDiscordStreamOnlineChannel() {
-            return discordStreamOnlineChannel;
-        }
-
 	/**
 	 * Prints a message in the bot console.
 	 *
@@ -328,8 +318,7 @@ public class PhantomBot implements Listener {
 		String dataStoreConfig, String youtubeOAuth, Boolean webEnabled, Boolean musicEnabled, Boolean useHttps, String keyStorePath, String keyStorePassword, String keyPassword, String twitchAlertsKey, 
 		int twitchAlertsLimit, String streamTipOAuth, String streamTipClientId, int streamTipLimit, String gameWispOAuth, String gameWispRefresh, String panelUsername, String panelPassword, String timeZone, String twitterUsername,
 		String twitterConsumerToken, String twitterConsumerSecret, String twitterSecretToken, String twitterAccessToken, String mySqlHost, String mySqlPort, String mySqlConn, String mySqlPass, String mySqlUser,
-		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady, String httpsPassword, String httpsFileName, Boolean devCommands, String discordToken,
-                String discordStreamOnlineChannel) {
+		String mySqlName, String webOAuth, String webOAuthThro, String youtubeOAuthThro, String youtubeKey, String twitchCacheReady, String httpsPassword, String httpsFileName, Boolean devCommands, String discordToken) {
 
         /** Set the exeption handler */
 		Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -376,9 +365,8 @@ public class PhantomBot implements Listener {
 		this.twitterSecretToken = twitterSecretToken;
 		this.twitterAuthenticated = false;
 
-                /** Set the Discord variables */
-                this.discordToken = discordToken;
-                this.discordStreamOnlineChannel = discordStreamOnlineChannel;
+        /** Set the Discord variables */
+        this.discordToken = discordToken;
 
 		/** Set the GameWisp variables */
 		this.gameWispOAuth = gameWispOAuth;
@@ -920,7 +908,6 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("version", botVersion(), 0);
         Script.global.defineProperty("changed", Boolean.valueOf(newSetup), 0);
         Script.global.defineProperty("discord", DiscordAPI.instance(), 0);
-        Script.global.defineProperty("discordStreamOnlineChannel", getDiscordStreamOnlineChannel(), 0);
 
         /** open a new thread for when the bot is exiting */
         Thread thread = new Thread(new Runnable() {
@@ -1523,7 +1510,6 @@ public class PhantomBot implements Listener {
                     data += "logtimezone=" + timeZone + "\r\n";
                     data += "devcommands=" + devCommands + "\r\n";
                     data += "discord_token=" + discordToken + "\r\n";
-                    data += "discord_stream_online_channel=" + discordStreamOnlineChannel + "\r\n";
         		}
 
         		/** Write the new info to the bot login */
@@ -1929,9 +1915,8 @@ public class PhantomBot implements Listener {
 	    String gameWispOAuth = "";
 	    String gameWispRefresh = "";
 
-            /** Discord Information */
-            String discordToken = "";
-            String discordStreamOnlineChannel = "";
+        /** Discord Information */
+        String discordToken = "";
 
 	    /** Other information */
 	    Boolean reloadScripts = false;
@@ -2006,9 +1991,6 @@ public class PhantomBot implements Listener {
                     }
                     if (line.startsWith("discord_token=") && line.length() >= 15) {
                         discordToken = line.substring(14);
-                    }
-                    if (line.startsWith("discord_stream_online_channel=") && line.length() >= 31) {
-                        discordStreamOnlineChannel = line.substring(30);
                     }
                     if (line.startsWith("devcommands=") && line.length() >= 13) {
                     	devCommands = Boolean.valueOf(line.substring(12));
@@ -2594,7 +2576,6 @@ public class PhantomBot implements Listener {
             data += "logtimezone=" + timeZone + "\r\n";
             data += "devcommands=" + devCommands + "\r\n";
             data += "discord_token=" + discordToken + "\r\n";
-            data += "discord_stream_online_channel=" + discordStreamOnlineChannel + "\r\n";
 
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
@@ -2604,8 +2585,7 @@ public class PhantomBot implements Listener {
 		dataStoreConfig, youtubeOAuth, webEnabled, musicEnabled, useHttps, keyStorePath, keyStorePassword, keyPassword, twitchAlertsKey, 
 		twitchAlertsLimit, streamTipOAuth, streamTipClientId, streamTipLimit, gameWispOAuth, gameWispRefresh, panelUsername, panelPassword, timeZone, twitterUsername,
 		twitterConsumerToken, twitterConsumerSecret, twitterSecretToken, twitterAccessToken, mySqlHost, mySqlPort, mySqlConn, mySqlPass, mySqlUser,
-		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady, httpsPassword, httpsFileName, devCommands, discordToken,
-                discordStreamOnlineChannel);
+		mySqlName, webOAuth, webOAuthThro, youtubeOAuthThro, youtubeKey, twitchCacheReady, httpsPassword, httpsFileName, devCommands, discordToken);
     }
 
 	public void updateGameWispTokens(String[] newTokens) {
@@ -2661,7 +2641,6 @@ public class PhantomBot implements Listener {
         data += "logtimezone=" + timeZone + "\r\n";
         data += "devcommands=" + devCommands + "\r\n";
         data += "discord_token=" + discordToken + "\r\n";
-        data += "discord_stream_online_channel=" + discordStreamOnlineChannel + "\r\n";
 
         try {
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
