@@ -38,7 +38,6 @@ import net.dv8tion.jda.utils.PermissionUtil;
 import net.dv8tion.jda.hooks.EventListener;
 import net.dv8tion.jda.utils.SimpleLog;
 import net.dv8tion.jda.utils.SimpleLog.Level;
-import net.dv8tion.jda.utils.PermissionUtil;
 import net.dv8tion.jda.exceptions.RateLimitedException;
 import net.dv8tion.jda.exceptions.PermissionException;
 
