@@ -27,12 +27,14 @@ import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.events.Event;
 import net.dv8tion.jda.events.InviteReceivedEvent;
 import net.dv8tion.jda.events.ReadyEvent;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.utils.PermissionUtil;
 import net.dv8tion.jda.hooks.EventListener;
 import net.dv8tion.jda.utils.SimpleLog;
 import net.dv8tion.jda.utils.SimpleLog.Level;
@@ -104,6 +106,13 @@ public class DiscordAPI {
     }
 
     /*
+     * @returns jda api.
+     */
+    public JDA jda() {
+        return jdaAPI;
+    }
+
+    /*
      * Sends a text message to the given channel. This is private as it is behind the rate-limit logic.
      *
      * @param  channel  The name of a text channel to send a message to
@@ -119,7 +128,7 @@ public class DiscordAPI {
                 try {
                     textChannel.sendMessage(message);
                 } catch (RateLimitedException ex) {
-                    com.gmt2001.Console.err.println("Discord Rate Limit has been Exceeded");
+                    com.gmt2001.Console.warn.println("Discord Rate Limit has been Exceeded");
                 } catch (PermissionException ex) {
                     com.gmt2001.Console.err.println("ACTION REQUIRED: Discord Bot Account does not have Write Permission to Channel: " + channel);
                 }
@@ -149,7 +158,6 @@ public class DiscordAPI {
                 ReadyEvent readyEvent = (ReadyEvent) event;
                 getTextChannels();
                 messageTimer.schedule(new MessageTask(), 1000, 1);
-                jdaAPI.getAccountManager().setGame("PhantomBot Discord Service");
                 com.gmt2001.Console.out.println("Discord API is Ready");
             }
 
@@ -162,8 +170,9 @@ public class DiscordAPI {
                 String messageAuthorName = messageReceivedEvent.getAuthorName();
                 String messageAuthorMention = messageReceivedEvent.getAuthor().getAsMention();
                 String messageAuthorDisc = messageReceivedEvent.getAuthor().getDiscriminator();
+                Boolean isAdmin = PermissionUtil.checkPermission(messageReceivedEvent.getAuthor(), Permission.ADMINISTRATOR, messageReceivedEvent.getGuild());
 
-                EventBus.instance().post(new DiscordEvent(textChannelName, messageAuthorName, messageAuthorMention, messageAuthorDisc, messageText));
+                EventBus.instance().post(new DiscordEvent(textChannelName, messageAuthorName, messageAuthorMention, messageAuthorDisc, isAdmin, messageText));
             }
         }
     }

@@ -109,7 +109,7 @@
                 message = $.replace(message, '(customemote)', emotes.join(' '));
             }
             $.say(message);
-            $.addSubUsersList(subscriber);
+            $.addSubUsersList(resubscriber);
             $.restoreSubscriberStatus(resubscriber, true);
             $.inidb.set('streamInfo', 'lastReSub', resubscriber);
         }
