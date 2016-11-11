@@ -79,7 +79,7 @@
         /** Replace the tags in the host message */
         msg = msg.replace('(name)', hoster);
         msg = msg.replace('(reward)', hostReward.toString());
-        $.say(msg);
+        $.say(msg.replace('/w', ' /w'));
 
         /** is there a host reward set? */
         if (hostReward > 0) {
@@ -177,11 +177,11 @@
          * @commandpath host [channel] - Send the /host command to Twitch
          */
         if (command.equalsIgnoreCase('host')) {
-			if (args.length < 1) {
-				$.say($.whisperPrefix(sender) + $.lang.get('hosthandler.host.usage'));
+            if (args.length < 1) {
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.host.usage'));
                 return;
-			}
-			var target = args[0].toLowerCase();
+            }
+            var target = args[0].toLowerCase();
 
             $.say('.host ' + target);
             $.log.event(sender + ' hosted channel ' + target);
