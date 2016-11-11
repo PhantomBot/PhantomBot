@@ -26,6 +26,8 @@
         timeout = false,
         interval;
 
+    $.announceFollows = false; // for the discord handler
+
     /**
      * Used by the panel for reloading the script variables.
      *
@@ -119,6 +121,7 @@
      * @event twitchFollowsInitialized
      */
     $.bind('twitchFollowsInitialized', function() {
+        $.announceFollows = true;//for the discord handler.
         if (!$.bot.isModuleEnabled('./handlers/followHandler.js')) {
             return;
         }

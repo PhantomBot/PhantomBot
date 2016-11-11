@@ -25,13 +25,15 @@ public class DiscordEvent extends Event {
     private final String discordUserMentionAs;
     private final String discordMessage;
     private final String discordDiscrim;
+    private final Boolean isAdmin;
 
-    public DiscordEvent(String discordChannel, String discordUser, String discordUserMentionAs, String discordDiscrim, String discordMessage) {
+    public DiscordEvent(String discordChannel, String discordUser, String discordUserMentionAs, String discordDiscrim, Boolean isAdmin, String discordMessage) {
         this.discordChannel = discordChannel;
         this.discordUser = discordUser;
         this.discordUserMentionAs = discordUserMentionAs;
         this.discordMessage = discordMessage;
         this.discordDiscrim = discordDiscrim;
+        this.isAdmin = isAdmin;
     }
 
     public String getDiscordChannel() {
@@ -52,5 +54,9 @@ public class DiscordEvent extends Event {
 
     public String getDiscriminator() {
         return this.discordDiscrim;
+    }
+
+    public Boolean isAdmin() {
+        return this.isAdmin;
     }
 }
