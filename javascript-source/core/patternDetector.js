@@ -52,7 +52,7 @@
             nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
             nonAlphaCount: /([^a-z0-9 ])/ig,
             capsCount: /([A-Z])/g,
-            fakePurge: /(^<message \w+>$)/
+            fakePurge: /(^<message \w+>$)/i
         },
         lastFoundLink = '';
 
