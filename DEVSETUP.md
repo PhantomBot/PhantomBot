@@ -11,8 +11,6 @@ It's very global, so you might need to take some extra steps to get it to work f
 2. Check out your for and open it in your favorite IDE.
 2. Set the project Java SDK to [1.8](http://www.oracle.com/technetwork/java/javase/overview/index.html).
 3. Import `build.xml` into your [ANT](http://ant.apache.org/) task manager.
-4. Setup your favorite JavaScript minifier to mangle & minify all sources from `./javascript-sources/` and have it put the output in `./resources/scripts/`.  
-  *The most commonly used minifier is [UglifyJS](https://www.npmjs.com/package/uglify-js) with [NodeJS](https://nodejs.org).*
 
 DONE! Happy coding <3
 
