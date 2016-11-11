@@ -38,6 +38,7 @@ import net.dv8tion.jda.utils.PermissionUtil;
 import net.dv8tion.jda.hooks.EventListener;
 import net.dv8tion.jda.utils.SimpleLog;
 import net.dv8tion.jda.utils.SimpleLog.Level;
+import net.dv8tion.jda.utils.PermissionUtil;
 import net.dv8tion.jda.exceptions.RateLimitedException;
 import net.dv8tion.jda.exceptions.PermissionException;
 
@@ -126,6 +127,7 @@ public class DiscordAPI {
             TextChannel textChannel = channelMap.get(channel);
             if (textChannel != null) {
                 try {
+                    com.gmt2001.Console.out.println("[DISCORD] [#" + channel + "] [CHAT] " + message);
                     textChannel.sendMessage(message);
                 } catch (RateLimitedException ex) {
                     com.gmt2001.Console.warn.println("Discord Rate Limit has been Exceeded");
@@ -157,7 +159,7 @@ public class DiscordAPI {
             if (event instanceof ReadyEvent) {
                 ReadyEvent readyEvent = (ReadyEvent) event;
                 getTextChannels();
-                messageTimer.schedule(new MessageTask(), 1000, 1);
+                messageTimer.schedule(new MessageTask(), 100, 1);
                 com.gmt2001.Console.out.println("Discord API is Ready");
             }
 
@@ -170,9 +172,10 @@ public class DiscordAPI {
                 String messageAuthorName = messageReceivedEvent.getAuthorName();
                 String messageAuthorMention = messageReceivedEvent.getAuthor().getAsMention();
                 String messageAuthorDisc = messageReceivedEvent.getAuthor().getDiscriminator();
+                String messageAuthorId = messageReceivedEvent.getAuthor().getId();
                 Boolean isAdmin = PermissionUtil.checkPermission(messageReceivedEvent.getAuthor(), Permission.ADMINISTRATOR, messageReceivedEvent.getGuild());
 
-                EventBus.instance().post(new DiscordEvent(textChannelName, messageAuthorName, messageAuthorMention, messageAuthorDisc, isAdmin, messageText));
+                EventBus.instance().post(new DiscordEvent(textChannelName, messageAuthorName, messageAuthorMention, messageAuthorDisc, messageAuthorId, isAdmin, messageText));
             }
         }
     }
@@ -200,10 +203,11 @@ public class DiscordAPI {
 
     /*
      * This is the timer task for sending messages. According to the API documentation, Discord allows
-     * 10 messages in 10 seconds, therefore, we just allow one message a second to be sent.
+     * 5 messages in 5 seconds, therefore, we just allow one message a second to be sent.
      */
     private class MessageTask extends TimerTask {
         private long lastMsgTime = 0;
+        private Double limit = ((5.0 / 5.0) * 1000);
 
         public MessageTask() {
             super();
@@ -212,7 +216,7 @@ public class DiscordAPI {
 
         @Override
         public void run() {
-            if (System.currentTimeMillis() - lastMsgTime >= 1000) {
+            if (System.currentTimeMillis() - lastMsgTime >= limit) {
                 Message message = messageQueue.poll();
                 if (message != null) {
                     println(message.getChannel(), message.getMessage());
