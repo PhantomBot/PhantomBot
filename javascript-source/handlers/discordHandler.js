@@ -22,7 +22,37 @@
  *
  */
 (function() {
-    var lastStreamOnlineSend = 0;
+    var lastStreamOnlineSend = 0,
+        commands = [],
+        keywords = [];
+
+    /**
+     * @function loadCommands
+     * @info used to push the commands into a object.
+     *
+     */
+    function loadCommands() {
+        var keys = $.inidb.GetKeyList('discordCommands', ''),
+            i;
+
+        for (i in keys) {
+            commands[keys[i]] = $.inidb.get('discordCommands', keys[i]);
+        }
+    }
+
+    /**
+     * @function loadKeywords
+     * @info used to push the keywords into a object.
+     *
+     */
+    function loadKeywords() {
+        var keys = $.inidb.GetKeyList('discordKeywords', ''),
+            i;
+
+        for (i in keys) {
+            keywords[keys[i]] = $.inidb.get('discordKeywords', keys[i]);
+        }
+    }
 
     /**
      * @function userPrefix
@@ -63,26 +93,27 @@
         args = message.split(' ');
 
         /* Handles custom commands. */
-        if ($.inidb.exists('discordCommands', command)) {
-            $.discord.sendMessage(channel, $.inidb.get('discordCommands', command).replace('(sender)', sender).replace('(@sender)', userPrefix(mention)));
+        if (commands[command] !== undefined) {
+            $.discord.sendMessage(channel, String(commands[command]).replace(/\(sender\)/g, sender).replace(/\(@sender\)/g, userPrefix(mention)).replace(/\(touser\)/g, (args[1] !== undefined ? args[1] : '').replace(/\(#\)/g, String($.randRange(1, 100)))));
             return;
         }
 
         /* Handles the other admin only commands. */
         if (command.equalsIgnoreCase('addcom')) {
             if (event.isAdmin() == true) {
-                if (args[1] === undefined) {
+                if (args[1] === undefined || args[2] === undefined) {
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.addcom.usage'));
                     return;
                 }
 
-                $.inidb.set('discordCommands', args[1].replace('!', '').toLowerCase(), arguments.substring(args[1].length()));
+                $.inidb.set('discordCommands', args[1].replace('!', '').toLowerCase(), arguments.substring(args[1].length() + 1));
+                commands[args[1].replace('!', '').toLowerCase()] = arguments.substring(args[1].length() + 1);
                 $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.addcom.success', args[1].replace('!', '').toLowerCase()));
                 return;
             }
         } else if (command.equalsIgnoreCase('editcom')) {
             if (event.isAdmin() == true) {
-                if (args[1] === undefined) {
+                if (args[1] === undefined || args[2] === undefined) {
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.editcom.usage'));
                     return;
                 } else if (!$.inidb.exists('discordCommands', args[1].replace('!', '').toLowerCase())) {
@@ -91,6 +122,7 @@
                 }
 
                 $.inidb.set('discordCommands', args[1].replace('!', '').toLowerCase(), arguments.substring(args[1].length()));
+                commands[args[1].replace('!', '').toLowerCase()] = arguments.substring(args[1].length() + 1);
                 $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.editcom.success', args[1].replace('!', '').toLowerCase()));
                 return;
             }
@@ -105,7 +137,50 @@
                 }
 
                 $.inidb.del('discordCommands', args[1].replace('!', '').toLowerCase());
+                delete commands[args[1].replace('!', '').toLowerCase()];
                 $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.delcom.success', args[1].replace('!', '').toLowerCase()));
+                return;
+            }
+        } else if (command.equalsIgnoreCase('addkey')) {
+            if (event.isAdmin() == true || args[2] === undefined) {
+                if (args[1] === undefined) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.addkey.usage'));
+                    return;
+                }
+
+                $.inidb.set('discordKeywords', args[1].split('_').join(' ').toLowerCase(), arguments.substring(args[1].length() + 1));
+                keywords[args[1].split('_').join(' ').toLowerCase()] = arguments.substring(args[1].length() + 1);
+                $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.addkey.success', args[1].split('_').join(' ').toLowerCase()));
+                return;
+            }
+        } else if (command.equalsIgnoreCase('editkey')) {
+            if (event.isAdmin() == true || args[2] === undefined) {
+                if (args[1] === undefined) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.editkey.usage'));
+                    return;
+                } else if (!$.inidb.exists('discordKeywords', args[1].replace('!', '').toLowerCase())) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.editkey.404'));
+                    return;
+                }
+
+                $.inidb.set('discordKeywords', args[1].split('_').join(' ').toLowerCase(), arguments.substring(args[1].length() + 1));
+                keywords[args[1].split('_').join(' ').toLowerCase()] = arguments.substring(args[1].length() + 1);
+                $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.editkey.success', args[1].replace('!', '').toLowerCase()));
+                return;
+            }
+        } else if (command.equalsIgnoreCase('delkey')) {
+            if (event.isAdmin() == true) {
+                if (args[1] === undefined) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.delkey.usage'));
+                    return;
+                } else if (!$.inidb.exists('discordKeywords', args[1].split('_').join(' ').toLowerCase())) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.delkey.404'));
+                    return;
+                }
+
+                $.inidb.del('discordKeywords', args[1].replace('!', '').toLowerCase());
+                delete keywords[args[1].replace('!', '').toLowerCase()];
+                $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.delkey.success', args[1].replace('!', '').toLowerCase()));
                 return;
             }
         } else if (command.equalsIgnoreCase('announcetwitchfollowers')) {
@@ -188,20 +263,94 @@
                 }
                 return;
             }
+        } else if (command.equalsIgnoreCase('announcegamewispsubscribers')) {
+            if (event.isAdmin() == true) {
+                if (args[1] === undefined) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.subscriber.usage'));
+                    return;
+                }
+
+                if (args[1].equalsIgnoreCase('disable')) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.subscriber.disabled'));
+                    $.inidb.del('discordSettings', 'gamewispsubscriberChannel');
+                } else {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.subscriber.enabled', args[1].toLowerCase()));
+                    $.inidb.set('discordSettings', 'gamewispsubscriberChannel', args[1].toLowerCase());
+                }
+                return;
+            }
+        } else if (command.equalsIgnoreCase('announcegamewispresubscribers')) {
+            if (event.isAdmin() == true) {
+                if (args[1] === undefined) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.resubscriber.usage'));
+                    return;
+                }
+
+                if (args[1].equalsIgnoreCase('disable')) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.resubscriber.disabled'));
+                    $.inidb.del('discordSettings', 'gamewispresubscriberChannel');
+                } else {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.resubscriber.enabled', args[1].toLowerCase()));
+                    $.inidb.set('discordSettings', 'gamewispresubscriberChannel', args[1].toLowerCase());
+                }
+                return;
+            }
+        }  else if (command.equalsIgnoreCase('announcestreamtips')) {
+            if (event.isAdmin() == true) {
+                if (args[1] === undefined) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamtip.usage'));
+                    return;
+                }
+
+                if (args[1].equalsIgnoreCase('disable')) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamtip.disabled'));
+                    $.inidb.del('discordSettings', 'streamtipChannel');
+                } else {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamtip.enabled', args[1].toLowerCase()));
+                    $.inidb.set('discordSettings', 'streamtipChannel', args[1].toLowerCase());
+                }
+                return;
+            }
+        } else if (command.equalsIgnoreCase('announcestreamlabs')) {
+            if (event.isAdmin() == true) {
+                if (args[1] === undefined) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamlabs.usage'));
+                    return;
+                }
+
+                if (args[1].equalsIgnoreCase('disable')) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamlabs.disabled'));
+                    $.inidb.del('discordSettings', 'streamlabsChannel');
+                } else {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamlabs.enabled', args[1].toLowerCase()));
+                    $.inidb.set('discordSettings', 'streamlabsChannel', args[1].toLowerCase());
+                }
+                return;
+            }
         } else if (command.equalsIgnoreCase('botcommands')) {
             if (event.isAdmin() == true) {
                 $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.botcommands'));
                 return;
             }
         } else if (command.equalsIgnoreCase('commands')) {
-            var commands = [],
+            var cmds = [],
                 keys = $.inidb.GetKeyList('discordCommands', ''),
                 i;
 
             for (i in keys) {
-                commands.push('!' + keys[i]);
+                cmds.push('!' + keys[i]);
             }
-            $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.commands', commands.join(', ')));
+            $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.commands', cmds.join(', ')));
+            return;
+        } else if (command.equalsIgnoreCase('keywords')) {
+            var keyys = [],
+                keys = $.inidb.GetKeyList('discordKeywords', ''),
+                i;
+
+            for (i in keys) {
+                keyys.push(keys[i]);
+            }
+            $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.keywords', keyys.join(', ')));
             return;
         }
     }
@@ -214,11 +363,23 @@
             discordUser = event.getDiscordUser(),
             discordMessage = event.getDiscordMessage();
 
+        /* Don't read our own messages, this could create a loop. */
+        if ($.discord.jda().getSelfInfo().getId() == event.getId()) {
+            return;
+        }
+
         $.consoleLn('[DISCORD] [#' + discordChannel + '] ' + discordUser + ': ' + discordMessage);
 
         if (discordMessage.startsWith('!')) {
             commandEvent(discordMessage.substring(1), event);
             return;
+        }
+
+        for (var i in Object.keys(keywords)) {
+            if (discordMessage.match(Object.keys(keywords)[i])) {
+                $.discord.sendMessage(discordChannel, String(keywords[Object.keys(keywords)[i]]).replace(/\(sender\)/g, discordUser).replace(/\(@sender\)/g, event.getDiscordUserMentionAs()));
+                return;
+            }
         }
     });
 
@@ -295,4 +456,89 @@
             }
         }
     });
+
+    /*
+     * @event gameWispSubscribe
+     *
+     * Announces new gamewisp subs.
+     */
+    $.bind('gameWispSubscribe', function(event) {
+        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'gamewispsubscriberChannel', '') != '') {
+            $.discord.sendMessage($.getIniDbString('discordSettings', 'gamewispsubscriberChannel', ''), $.lang.get('discord.gamewisp.newsub', event.getUsername(), $.channelName));
+        }
+    });
+
+    /*
+     * @event gameWispSubscribe
+     *
+     * Announces new gamewisp resubs.
+     */
+    $.bind('gameWispAnniversary', function(event) {
+        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'gamewispresubscriberChannel', '') != '') {
+            $.discord.sendMessage($.getIniDbString('discordSettings', 'gamewispresubscriberChannel', ''), $.lang.get('discord.gamewisp.renewsub', event.getUsername(), event.getMonths(), $.channelName));
+        }
+    });
+
+    /*
+     * @event twitchAlertsDonation
+     *
+     * Announces donations from streamlabs
+     */
+    $.bind('twitchAlertsDonation', function(event) {
+        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'streamlabsChannel', '') != '') {
+            var donationJsonStr = event.getJsonString(),
+                JSONObject = Packages.org.json.JSONObject,
+                donationJson = new JSONObject(donationJsonStr);
+
+            /** Make the json into variables that we can then use tags with */
+            var donationID = donationJson.getString("donation_id"),
+                donationCreatedAt = donationJson.getString("created_at"),
+                donationCurrency = donationJson.getString("currency"),
+                donationAmount = parseFloat(donationJson.getString("amount")),
+                donationUsername = donationJson.getString("name"),
+                donationMsg = donationJson.getString("message");
+
+            if ($.inidb.exists('discordDonations', 'streamlabs' + donationID)) {
+                return;
+            } else {
+                $.inidb.set('discordDonations', 'streamlabs' + donationID, 'true');
+            }
+
+            $.discord.sendMessage($.getIniDbString('discordSettings', 'streamlabsChannel', ''), $.lang.get('discord.streamlabs', donationCurrency, donationAmount, donationUsername, donationMsg, $.channelName));
+        }
+    });
+
+    /*
+     * @event streamTipDonation
+     *
+     * Announces donations from streamtip
+     */
+    $.bind('streamTipDonation', function(event) {
+        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'streamtipChannel', '') != '') {
+            var donationJsonStr = event.getJsonString(),
+                JSONObject = Packages.org.json.JSONObject,
+                donationJson = new JSONObject(donationJsonStr);
+
+            /** Make the json into variables that we can then use tags with */
+            var donationID = donationJson.getString("_id"),
+                donationCreatedAt = donationJson.getString("date"),
+                donationCurrency = donationJson.getString("currencyCode"),
+                donationCurrencySymbol = donationJson.getString("currencySymbol"),
+                donationAmount = parseFloat(donationJson.getString("amount")),
+                donationUsername = donationJson.getString("username"),
+                donationMsg = donationJson.getString("note");
+
+            if ($.inidb.exists('discordDonations', 'streamtip' + donationID)) {
+                return;
+            } else {
+                $.inidb.set('discordDonations', 'streamtip' + donationID, 'true');
+            }
+
+            $.discord.sendMessage($.getIniDbString('discordSettings', 'streamtipChannel', ''), $.lang.get('discord.streamtip', donationCurrency, donationAmount, donationCurrencySymbol, donationUsername, donationMsg, $.channelName));
+        }
+    });
+
+    // Load command and keywords here. 
+    loadCommands();
+    loadKeywords();
 })();
