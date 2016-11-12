@@ -334,11 +334,6 @@ public class PhantomBot implements Listener {
 		print(getWebSite());
 		print("");
 
-		/* donate link stuff kek. */
-		for (int i = 0; i < 1000; i++) {
-			print("Donate to PhantomBot here: https://paypal.me/zelato/100");
-		}
-
 		/** System interactive */
 		interactive = (System.getProperty("interactive") != null);
 
