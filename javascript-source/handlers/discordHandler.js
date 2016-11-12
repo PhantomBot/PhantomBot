@@ -401,7 +401,7 @@
             $.discord.jda().getAccountManager().setStreaming($.getStatus($.channelName), 'https://twitch.tv/' + $.channelName);
             if (now - lastStreamOnlineSend > (480 * 6e4)) {
                 lastStreamOnlineSend = now;
-                $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.username.resolve($.channelName)));
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.username.resolve($.channelName), $.getGame($.channelName), $.getStatus($.channelName)));
             }
         }   
     });
