@@ -53,4 +53,4 @@ $.lang.register('discord.streamlabs', '$3 just tipped $2$1 via StreamLabs!');// 
 $.lang.register('discord.streamtip', '$4 just tipped $3$2$1 via StreamTip!');// $5 is the message.
 $.lang.register('discord.tweet', '[Tweet From @(twitterid)] $1');
 $.lang.register('discord.tweet.mention', '[Tweet From @(twitterid)] @$1: $2');
-$.lang.register('discord.streamonline', '$1 just went online on Twitch at https://www.twitch.tv/$1');
+$.lang.register('discord.streamonline', '$1 just went online on Twitch at https://www.twitch.tv/$1 with $2!'); //$3 is the stream title.
