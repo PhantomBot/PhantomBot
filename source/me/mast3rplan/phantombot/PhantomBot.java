@@ -101,6 +101,7 @@ import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.script.ScriptManager;
 import me.mast3rplan.phantombot.panel.PanelSocketServer;
+import me.mast3rplan.phantombot.panel.PanelSocketSecureServer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FileExistsException;
@@ -197,6 +198,7 @@ public class PhantomBot implements Listener {
 	private YTWebSocketServer youtubeSocketServer;
 	private EventWebSocketServer eventWebSocketServer;
 	private PanelSocketServer panelSocketServer;
+	private PanelSocketSecureServer panelSocketSecureServer;
 	private HTTPServer httpServer;
 	private NEWHTTPServer newHttpServer;
 	private NEWHTTPSServer newHttpsServer;
@@ -725,17 +727,24 @@ public class PhantomBot implements Listener {
     		/** make the event bus register this event server */
     		EventBus.instance().register(eventWebSocketServer);
 
-    	    /** Set up the panel socket server */
-    	    panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
-    	    /** Start the panel socket server */
-    	    panelSocketServer.start();
-    	    print("PanelSocketServer accepting connections on port: " + (basePort + 4));
 
     	    if (useHttps) {
+    	        /** Set up the panel socket server */
+    	        panelSocketSecureServer = new PanelSocketSecureServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword);
+    	        /** Start the panel socket server */
+    	        panelSocketSecureServer.start();
+    	        print("PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
+
     	    	/** Set up a new https server */
     	    	newHttpsServer = new NEWHTTPSServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
     	    	print("New HTTPS server accepting connection on port: " + (basePort + 5) + " (SSL)");
     	    } else {
+    	        /** Set up the panel socket server */
+    	        panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
+    	        /** Start the panel socket server */
+    	        panelSocketServer.start();
+    	        print("PanelSocketServer accepting connections on port: " + (basePort + 4));
+
     	    	/** Set up a new http server */
     	        newHttpServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
     	        print("New HTTP server accepting connection on port: " + (basePort + 5));
@@ -909,7 +918,11 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("ytplayer", youtubeSocketServer, 0);
-        Script.global.defineProperty("panelsocketserver", panelSocketServer, 0);
+        if (useHttps) {
+            Script.global.defineProperty("panelsocketserver", panelSocketSecureServer, 0);
+        } else {
+            Script.global.defineProperty("panelsocketserver", panelSocketServer, 0);
+        }
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
