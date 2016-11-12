@@ -194,8 +194,8 @@
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.follower.disabled'));
                     $.inidb.del('discordSettings', 'followerChannel');
                 } else {
-                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.follower.enabled', args[1].toLowerCase()));
-                    $.inidb.set('discordSettings', 'followerChannel', args[1].toLowerCase());
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.follower.enabled', args[1].replace('#', '').toLowerCase()));
+                    $.inidb.set('discordSettings', 'followerChannel', args[1].replace('#', '').toLowerCase());
                 }
                 return;
             }
@@ -210,8 +210,8 @@
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.subscriber.disabled'));
                     $.inidb.del('discordSettings', 'subscriberChannel');
                 } else {
-                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.subscriber.enabled', args[1].toLowerCase()));
-                    $.inidb.set('discordSettings', 'subscriberChannel', args[1].toLowerCase());
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.subscriber.enabled', args[1].replace('#', '').toLowerCase()));
+                    $.inidb.set('discordSettings', 'subscriberChannel', args[1].replace('#', '').toLowerCase());
                 }
                 return;
             }
@@ -226,8 +226,8 @@
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.resubscriber.disabled'));
                     $.inidb.del('discordSettings', 'resubscriberChannel');
                 } else {
-                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.resubscriber.enabled', args[1].toLowerCase()));
-                    $.inidb.set('discordSettings', 'resubscriberChannel', args[1].toLowerCase());
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.resubscriber.enabled', args[1].replace('#', '').toLowerCase()));
+                    $.inidb.set('discordSettings', 'resubscriberChannel', args[1].replace('#', '').toLowerCase());
                 }
                 return;
             }
@@ -242,8 +242,8 @@
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.tweets.disabled'));
                     $.inidb.del('discordSettings', 'tweetChannel');
                 } else {
-                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.enabled', args[1].toLowerCase()));
-                    $.inidb.set('discordSettings', 'tweetChannel', args[1].toLowerCase());
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.enabled', args[1].replace('#', '').toLowerCase()));
+                    $.inidb.set('discordSettings', 'tweetChannel', args[1].replace('#', '').toLowerCase());
                 }
                 return;
             }
@@ -258,8 +258,8 @@
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.online.disabled'));
                     $.inidb.del('discordSettings', 'onlineChannel');
                 } else {
-                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.online.enabled', args[1].toLowerCase()));
-                    $.inidb.set('discordSettings', 'onlineChannel', args[1].toLowerCase());
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.online.enabled', args[1].replace('#', '').toLowerCase()));
+                    $.inidb.set('discordSettings', 'onlineChannel', args[1].replace('#', '').toLowerCase());
                 }
                 return;
             }
@@ -274,8 +274,8 @@
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.subscriber.disabled'));
                     $.inidb.del('discordSettings', 'gamewispsubscriberChannel');
                 } else {
-                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.subscriber.enabled', args[1].toLowerCase()));
-                    $.inidb.set('discordSettings', 'gamewispsubscriberChannel', args[1].toLowerCase());
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.subscriber.enabled', args[1].replace('#', '').toLowerCase()));
+                    $.inidb.set('discordSettings', 'gamewispsubscriberChannel', args[1].replace('#', '').toLowerCase());
                 }
                 return;
             }
@@ -290,8 +290,8 @@
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.resubscriber.disabled'));
                     $.inidb.del('discordSettings', 'gamewispresubscriberChannel');
                 } else {
-                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.resubscriber.enabled', args[1].toLowerCase()));
-                    $.inidb.set('discordSettings', 'gamewispresubscriberChannel', args[1].toLowerCase());
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.gamewisp.resubscriber.enabled', args[1].replace('#', '').toLowerCase()));
+                    $.inidb.set('discordSettings', 'gamewispresubscriberChannel', args[1].replace('#', '').toLowerCase());
                 }
                 return;
             }
@@ -306,8 +306,8 @@
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamtip.disabled'));
                     $.inidb.del('discordSettings', 'streamtipChannel');
                 } else {
-                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamtip.enabled', args[1].toLowerCase()));
-                    $.inidb.set('discordSettings', 'streamtipChannel', args[1].toLowerCase());
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamtip.enabled', args[1].replace('#', '').toLowerCase()));
+                    $.inidb.set('discordSettings', 'streamtipChannel', args[1].replace('#', '').toLowerCase());
                 }
                 return;
             }
@@ -322,8 +322,8 @@
                     $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamlabs.disabled'));
                     $.inidb.del('discordSettings', 'streamlabsChannel');
                 } else {
-                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamlabs.enabled', args[1].toLowerCase()));
-                    $.inidb.set('discordSettings', 'streamlabsChannel', args[1].toLowerCase());
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.announce.streamlabs.enabled', args[1].replace('#', '').toLowerCase()));
+                    $.inidb.set('discordSettings', 'streamlabsChannel', args[1].replace('#', '').toLowerCase());
                 }
                 return;
             }
@@ -340,6 +340,9 @@
             for (i in keys) {
                 cmds.push('!' + keys[i]);
             }
+            if (cmds.length === 0) {
+                return;
+            }
             $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.commands', cmds.join(', ')));
             return;
         } else if (command.equalsIgnoreCase('keywords')) {
@@ -349,6 +352,9 @@
 
             for (i in keys) {
                 keyys.push(keys[i]);
+            }
+            if (keyys.length === 0) {
+                return;
             }
             $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.keywords', keyys.join(', ')));
             return;
@@ -395,7 +401,7 @@
             $.discord.jda().getAccountManager().setStreaming($.getStatus($.channelName), 'https://twitch.tv/' + $.channelName);
             if (now - lastStreamOnlineSend > (480 * 6e4)) {
                 lastStreamOnlineSend = now;
-                $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.username.resolve($.channelName)));
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.username.resolve($.channelName), $.getGame($.channelName), $.getStatus($.channelName)));
             }
         }   
     });
