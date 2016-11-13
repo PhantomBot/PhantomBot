@@ -665,6 +665,8 @@
         }
     });
 
+/* Load these hooks last (7 sec delay), I want the Twitch modules to have the event sent first. */
+setTimeout(function() {
     /*
      * @event twitchOnline
      *
@@ -819,7 +821,7 @@
             $.discord.sendMessage($.getIniDbString('discordSettings', 'streamtipChannel', ''), $.lang.get('discord.streamtip', donationCurrency, donationAmount, donationCurrencySymbol, donationUsername, donationMsg, $.channelName));
         }
     });
-
+}, 7000);
 
     // cool things here.
     loadCommands();
