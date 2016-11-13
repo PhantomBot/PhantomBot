@@ -601,8 +601,8 @@
             }
         } else if (command.equalsIgnoreCase('commandtags')) {
             if (event.isAdmin() == true) {
-                $.discord.sendMessage(channel, userPrefix(mention) + 'Normal Tags: `(sender)`, `(@sender)`, `(game)`, `(status)`, `(#)`, `(touser)`, `(uptime)`, `(echo)`');
-                $.discord.sendMessage(channel, userPrefix(mention) + 'Game Tags: `(8ball)`, `(random)`, `(roulette)`, `(kill)`');
+                $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.command.tags'));
+                $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.game.tags'));
                 return;
             }
         } else if (command.equalsIgnoreCase('commands')) {
@@ -679,7 +679,7 @@
                 lastStreamOnlineSend = now;
                 $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.username.resolve($.channelName), $.getGame($.channelName), $.getStatus($.channelName)));
             }
-        }   
+        }
     });
 
     /*
