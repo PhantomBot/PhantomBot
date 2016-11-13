@@ -23,8 +23,41 @@
  */
 (function() {
     var lastStreamOnlineSend = 0,
-        commands = [],
-        keywords = [];
+        globalCooldown = $.getSetIniDbNumber('discordSettings', 'globalCooldown', 10),
+        lastRandom,
+        commands = {},
+        cooldown = {},
+        keywords = [],
+        games = {
+            ball: 0,
+            random: 0,
+            rouletteWin: 0,
+            rouletteLost: 0,
+            killSelf: 0,
+            killOther: 0
+        };
+
+    /**
+     * @function registerCommand
+     * @info used to push the command into a object.
+     *
+     */
+    function registerCommand(command) {
+        if (command.includes(',')) {
+            command = command.split(', ');
+            for (var i in command) {
+                commands[command[i]] = {
+                    cooldown: $.getIniDbNumber('discordCooldown', command[i], -1),
+                    command: null
+                };
+            }
+            return;
+        }
+        commands[command] = {
+            cooldown: $.getIniDbNumber('discordCooldown', command, -1),
+            command: null
+        };
+    }
 
     /**
      * @function loadCommands
@@ -36,7 +69,10 @@
             i;
 
         for (i in keys) {
-            commands[keys[i]] = $.inidb.get('discordCommands', keys[i]);
+            commands[keys[i]] = {
+                cooldown: $.getIniDbNumber('discordCooldown', keys[i], -1),
+                command: $.inidb.get('discordCommands', keys[i])
+            };
         }
     }
 
@@ -55,6 +91,57 @@
     }
 
     /**
+     * @function load8Balls
+     * @info used to load 8ball responses.
+     *
+     */
+    function load8Balls() {
+        for (var i = 1; $.lang.exists('8ball.answer.' + i); i++) {
+            games.ball++;
+        }
+    }
+
+    /**
+     * @function loadRandoms
+     * @info used to load random responses.
+     *
+     */
+    function loadRandoms() {
+        for (var i = 1; $.lang.exists('randomcommand.' + i); i++) {
+            games.random++;
+        }
+    }
+
+    /**
+     * @function loadRoulette
+     * @info used to load roulette responses.
+     *
+     */
+    function loadRoulette() {
+        for (var i = 1; $.lang.exists('roulette.win.' + i); i++) {
+            games.rouletteWin++;
+        }
+
+        for (var i = 1; $.lang.exists('roulette.lost.' + i); i++) {
+            games.rouletteLost++;
+        }
+    }
+
+    /**
+     * @function loadKills
+     * @info used to load kill responses.
+     *
+     */
+    function loadKills() {
+        for (var i = 1; $.lang.exists('killcommand.self.' + i); i++) {
+            games.killSelf++;
+        }
+        for (var i = 1; $.lang.exists('killcommand.other.' + i); i++) {
+            games.killOther++;
+        }
+    }
+
+    /**
      * @function userPrefix
      * @info Used to mention a user.
      *
@@ -66,13 +153,167 @@
     }
 
     /**
+     * @function tags
+     * @info Used for command tags
+     *
+     * @param {object} event
+     * @param {array} args
+     * @param {string} message
+     * @returns {string}
+     */
+    function tags(event, args, message) {
+        /**
+         * @info Matched (sender) in the command, and replaces with a the sender's name.
+         */
+        if (message.match(/\(sender\)/g)) {
+            message = $.replace(message, '(sender)', event.getDiscordUser());
+        }
+
+        /**
+         * @info Matched (@sender) in the command, and replaces with a ping for that sender.
+         */
+        if (message.match(/\(@sender\)/g)) {
+            message = $.replace(message, '(@sender)', userPrefix(event.getDiscordUserMentionAs()));
+        }
+
+        /**
+         * @info Matched (touser) in the command, and replaces with either the sender, or the argument after the command.
+         */
+        if (message.match(/\(touser\)/g)) {
+            message = $.replace(message, '(touser)', (args[1] ? args[1].toString() : event.getDiscordUser()));
+        }
+
+        /**
+         * @info Matched (#) in the command, and replaces with a random number from 1-100
+         */
+        if (message.match(/\(#\)/g)) {
+            message = $.replace(message, '(#)', $.randRange(1, 100).toString());
+        }
+
+        /**
+         * @info Matched (status) in the command, and replaces with your Twitch title.
+         */
+        if (message.match(/\(status\)/g)) {
+            message = $.replace(message, '(status)', $.getStatus($.channelName));
+        }
+
+        /**
+         * @info Matched (game) in the command, and replaces with your Twitch game.
+         */
+        if (message.match(/\(game\)/g)) {
+            message = $.replace(message, '(game)', $.getGame($.channelName));
+        }
+
+        /**
+         * @info Matched (uptime) in the command, and replaces with your stream uptime if you're live.
+         */
+        if (message.match(/\(uptime\)/g)) {
+            if ($.isOnline($.channelName)) {
+                message = $.replace(message, '(uptime)', $.getStreamUptime($.channelName));
+            } else {
+                message = $.replace(message, '(uptime)', '0 seconds.');
+            }
+        }
+
+        /**
+         * @info Matched (echo) in the command, and replaces with anything said after the command.
+         */
+        if (message.match(/\(echo\)/g)) {
+            if (args[1] !== undefined) {
+                message = $.replace(message, '(echo)', event.getDiscordMessage().substring(event.getDiscordMessage().indexOf(args[0]) + args[0].length() + 1));
+            }
+        }
+
+        /**
+         * @info Matched (8ball) in the command, and replaces with the correct response.
+         */
+        if (message.match(/\(8ball\)/g)) {
+            if (args[1] === undefined) {
+                message = $.replace(message, '(8ball)', 'Ask me a question.');
+            } else {
+                message = $.replace(message, '(8ball)', $.lang.get('8ball.answer.' + $.randRange(1, games.ball)));
+            }
+        }
+
+        /**
+         * @info Matched (random) in the command, and replaces with the correct response.
+         */
+        if (message.match(/\(random\)/g)) {
+            message = $.replace(message, '(random)', $.lang.get('randomcommand.' + $.randRange(1, games.random)));
+        }
+
+        /**
+         * @info Matched (roulette) in the command, and replaces with the correct response.
+         */
+        if (message.match(/\(roulette\)/g)) {
+            if ($.randRange(1, 2) == 1) {
+                message = $.replace(message, '(roulette)', $.lang.get('roulette.win.' + $.randRange(1, games.rouletteWin), event.getDiscordUserMentionAs()));
+            } else {
+                message = $.replace(message, '(roulette)', $.lang.get('roulette.lost.' + $.randRange(1, games.rouletteLost), event.getDiscordUserMentionAs()));
+            }
+        }
+
+        /**
+         * @info Matched (kill) in the command, and replaces with the correct response.
+         */
+        if (message.match(/\(kill\)/g)) {
+            if (args[1] === undefined) {
+                message = $.replace(message, '(kill)', $.lang.get('killcommand.self.' + $.randRange(1, games.killSelf), event.getDiscordUserMentionAs()));
+            } else {
+                message = $.replace(message, '(kill)', $.lang.get('killcommand.other.' + $.randRange(1, games.killOther), event.getDiscordUserMentionAs(), args[1], 10, '<@' + $.discord.jda().getSelfInfo().getId() + '>').replace('(jail)', ''));
+            }
+        }
+
+        /* Returns the message with the edits. */
+        return message;
+    }
+
+    /**
+     * @function cooldown
+     * @info Used for command cooldowns.
+     *
+     * @param {object} event
+     * @param {string} command
+     * @returns {int} 0 or 1
+     */
+    function coolDown(event, command) {
+        /* Checks if the user is a admin, if so he ignores the cooldown. return 0 */
+        if (event.isAdmin() == true) {
+            return 0;
+        }
+
+
+        /* Checks if the command is in the command object. */
+        if (cooldown[command] === undefined) {
+            if (commands[command].cooldown !== -1 && commands[command].cooldown !== 0) {
+                cooldown[command] = ((commands[command].cooldown * 1000) + $.systemTime());
+            } else if (commands[command].cooldown !== -1) {
+                cooldown[command] = ((globalCooldown * 1000) + $.systemTime());
+            }
+        } else {
+            /* Checks if the command is on cooldown still. */
+            if ((cooldown[command] - $.systemTime()) >= 0) {
+                return 1;
+            } else {
+                if (commands[command].cooldown !== -1 && commands[command].cooldown !== 0) {
+                    cooldown[command] = ((commands[command].cooldown * 1000) + $.systemTime());
+                } else if (commands[command].cooldown !== -1) {
+                    cooldown[command] = ((globalCooldown * 1000) + $.systemTime());
+                }
+            }
+        }
+        /* the command is no longer on cooldown if it makes it here. so return 0 */
+        return 0;
+    }
+
+    /**
      * @function commandEvent
      * @info Used for commands.
      *
      * @param {object} event
      */
     function commandEvent(commandString, event) {
-        var sender = event.getDiscordUser().toLowerCase(),
+        var sender = event.getDiscordUser(),
             mention = event.getDiscordUserMentionAs(),
             message = event.getDiscordMessage(),
             channel = event.getDiscordChannel(),
@@ -84,17 +325,22 @@
         /* Handles the argument parsing. */
         if (message.includes(' ')) {
             split = message.indexOf(' ');
-            command = message.substring(0, split).replace('!', '');
+            command = message.substring(0, split).replace('!', '').toLowerCase();
             arguments = message.substring(split + 1);
         } else {
-            command = commandString;
+            command = commandString.toLowerCase();
         }
 
         args = message.split(' ');
 
+        /* Check if the command is on cooldown. */
+        if (coolDown(event, command) === 1) {
+            return;
+        }
+
         /* Handles custom commands. */
-        if (commands[command] !== undefined) {
-            $.discord.sendMessage(channel, String(commands[command]).replace(/\(sender\)/g, sender).replace(/\(@sender\)/g, userPrefix(mention)).replace(/\(touser\)/g, (args[1] !== undefined ? args[1] : '').replace(/\(#\)/g, String($.randRange(1, 100)))));
+        if (commands[command] !== undefined && commands[command].command !== null) {
+            $.discord.sendMessage(channel, tags(event, args, commands[command].command));
             return;
         }
 
@@ -107,7 +353,7 @@
                 }
 
                 $.inidb.set('discordCommands', args[1].replace('!', '').toLowerCase(), arguments.substring(args[1].length() + 1));
-                commands[args[1].replace('!', '').toLowerCase()] = arguments.substring(args[1].length() + 1);
+                loadCommands();
                 $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.addcom.success', args[1].replace('!', '').toLowerCase()));
                 return;
             }
@@ -122,7 +368,7 @@
                 }
 
                 $.inidb.set('discordCommands', args[1].replace('!', '').toLowerCase(), arguments.substring(args[1].length()));
-                commands[args[1].replace('!', '').toLowerCase()] = arguments.substring(args[1].length() + 1);
+                loadCommands();
                 $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.editcom.success', args[1].replace('!', '').toLowerCase()));
                 return;
             }
@@ -140,6 +386,27 @@
                 delete commands[args[1].replace('!', '').toLowerCase()];
                 $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.delcom.success', args[1].replace('!', '').toLowerCase()));
                 return;
+            }
+        } else if (command.equalsIgnoreCase('coolcom')) {
+            if (event.isAdmin() == true) {
+                if (args[1] === undefined || args[2] === undefined) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.coolcom.usage'));
+                    return;
+                } else if (!args[1].replace('!', '').toLowerCase().equalsIgnoreCase('global') && !$.inidb.exists('discordCommands', args[1].replace('!', '').toLowerCase())) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.coolcom.404'));
+                    return;
+                }
+
+                if (args[1].equalsIgnoreCase('global')) {
+                    $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.coolcom.global.success', args[2]));
+                    globalCooldown = parseInt(args[2]);
+                    $.inidb.set('discordSettings', 'globalCooldown', globalCooldown);
+                    return;
+                }
+
+                commands[args[1].replace('!', '').toLowerCase()].cooldown = parseInt(args[2]);
+                $.inidb.set('discordCooldown', args[1].replace('!', '').toLowerCase(), args[2]);
+                $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.coolcom.success', args[1].replace('!', '').toLowerCase(), args[2]));
             }
         } else if (command.equalsIgnoreCase('addkey')) {
             if (event.isAdmin() == true || args[2] === undefined) {
@@ -332,6 +599,12 @@
                 $.discord.sendMessage(channel, userPrefix(mention) + $.lang.get('discord.botcommands'));
                 return;
             }
+        } else if (command.equalsIgnoreCase('commandtags')) {
+            if (event.isAdmin() == true) {
+                $.discord.sendMessage(channel, userPrefix(mention) + 'Normal Tags: `(sender)`, `(@sender)`, `(game)`, `(status)`, `(#)`, `(touser)`, `(uptime)`, `(echo)`');
+                $.discord.sendMessage(channel, userPrefix(mention) + 'Game Tags: `(8ball)`, `(random)`, `(roulette)`, `(kill)`');
+                return;
+            }
         } else if (command.equalsIgnoreCase('commands')) {
             var cmds = [],
                 keys = $.inidb.GetKeyList('discordCommands', ''),
@@ -374,13 +647,16 @@
             return;
         }
 
+        /* Prints the discord message in the console. */
         $.consoleLn('[DISCORD] [#' + discordChannel + '] ' + discordUser + ': ' + discordMessage);
 
+        /* Checks if the message is a command. */
         if (discordMessage.startsWith('!')) {
             commandEvent(discordMessage.substring(1), event);
             return;
         }
 
+        /* Checks if the message has any keywords. Also works with regex.*/
         for (var i in Object.keys(keywords)) {
             if (discordMessage.match(Object.keys(keywords)[i])) {
                 $.discord.sendMessage(discordChannel, String(keywords[Object.keys(keywords)[i]]).replace(/\(sender\)/g, discordUser).replace(/\(@sender\)/g, event.getDiscordUserMentionAs()));
@@ -398,8 +674,8 @@
     $.bind('twitchOnline', function(event) {
         var now = $.systemTime();
         if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'onlineChannel', '') != '') {
-            $.discord.jda().getAccountManager().setStreaming($.getStatus($.channelName), 'https://twitch.tv/' + $.channelName);
-            if (now - lastStreamOnlineSend > (480 * 6e4)) {
+            $.discord.jda().getAccountManager().setStreaming($.getStatus($.channelName), 'https://www.twitch.tv/' + $.channelName);
+            if (now - lastStreamOnlineSend > (480 * 6e4)) {//8 hour delay here, because Twitch always sends a lot of online events.
                 lastStreamOnlineSend = now;
                 $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.username.resolve($.channelName), $.getGame($.channelName), $.getStatus($.channelName)));
             }
@@ -544,7 +820,15 @@
         }
     });
 
-    // Load command and keywords here. 
+
+    // cool things here.
     loadCommands();
     loadKeywords();
+    load8Balls();
+    loadRandoms();
+    loadRoulette();
+    loadKills();
+
+    /* Registers the default commands. */
+    registerCommand('addcom, editcom, delcom, coolcom, addkey, editkey, delkey, commands, keywords, botcommands, commandtags, announcetwitchfollowers, announcetwitchsubscribers, announcetwitchresubscribers, announcetweets, announceonline, announcegamewispsubscribers, announcegamewispresubscribers, announcestreamlabs, announcestreamtip');
 })();
