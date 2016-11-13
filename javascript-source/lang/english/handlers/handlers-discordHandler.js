@@ -6,6 +6,10 @@ $.lang.register('discord.editcom.success', 'Command !$1 has been edited!');
 $.lang.register('discord.delcom.usage', 'Usage: !delcom [command]');
 $.lang.register('discord.delcom.404', 'That command does not exists.');
 $.lang.register('discord.delcom.success', 'Command !$1 has been removed!');
+$.lang.register('discord.coolcom.usage', 'Usage: !coolcom [command] [seconds] Use 0 to use the global cooldown, -1 for no cooldown, and global as the command to set the global cooldown time.');
+$.lang.register('discord.coolcom.404', 'That command does not exists.');
+$.lang.register('discord.coolcom.success', 'Cooldown for command !$1 has been set to $2 seconds!');
+$.lang.register('discord.coolcom.global.success', 'Global cooldown has been set to $1 seconds!');
 $.lang.register('discord.addkey.usage', 'Usage: !addkey [keyword] [message] - Regex is supported.');
 $.lang.register('discord.addkey.success', 'Keyword $1 has been created!');
 $.lang.register('discord.editkey.usage', 'Usage: !editkey [keyword] [message]');
@@ -41,7 +45,7 @@ $.lang.register('discord.announce.streamtip.enabled', 'StreamTip donations will 
 $.lang.register('discord.announce.streamlabs.usage', 'Usage: !announcestreamlabs [channel name] - Will announce donations from StreamLabs in that channel. Use "disable" as the channel to disable this. Note you do need to have the streamlabs module setup for this to work.');
 $.lang.register('discord.announce.streamlabs.disabled', 'StreamLabs donations will no longer be announced in discord.');
 $.lang.register('discord.announce.streamlabs.enabled', 'StreamLabs donations will now be announced in channel #$1');
-$.lang.register('discord.botcommands', 'Bot Commands: !addcom, !delcom, !editcom, !addkey, !editkey, !delkey, !announcetwitchfollowers, !announcetwitchsubscribers, !announcetwitchresubscribers, !announcetweets, !announceonline, !announcegamewispsubscribers, !announcegamewispresubscribers, !announcestreamlabs, !announcestreamtip');
+$.lang.register('discord.botcommands', 'Bot Commands: !addcom, !delcom, !editcom, !addkey, !editkey, !delkey, !commandtags, !announcetwitchfollowers, !announcetwitchsubscribers, !announcetwitchresubscribers, !announcetweets, !announceonline, !announcegamewispsubscribers, !announcegamewispresubscribers, !announcestreamlabs, !announcestreamtip');
 $.lang.register('discord.commands', 'Commands: $1');
 $.lang.register('discord.keywords', 'Keywords: $1');
 $.lang.register('discord.newsub', '$1 just subscribed to $2 on Twitch!');
@@ -53,4 +57,4 @@ $.lang.register('discord.streamlabs', '$3 just tipped $2$1 via StreamLabs!');// 
 $.lang.register('discord.streamtip', '$4 just tipped $3$2$1 via StreamTip!');// $5 is the message.
 $.lang.register('discord.tweet', '[Tweet From @(twitterid)] $1');
 $.lang.register('discord.tweet.mention', '[Tweet From @(twitterid)] @$1: $2');
-$.lang.register('discord.streamonline', '$1 just went online on Twitch at https://www.twitch.tv/$1 with $2!'); //$3 is the stream title.
+$.lang.register('discord.streamonline', '$1 just went online on Twitch at https://www.twitch.tv/$1');
