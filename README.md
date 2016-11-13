@@ -43,7 +43,7 @@ Please refer to platform-specific installation documentation.
 
 ## Upgrading PhantomBot
 
-Detailed upgrade instructions are listed on our [documentation](https://docs.phantombot.tv/how-to/How-to-Update).
+Detailed upgrade instructions are listed on our [documentation](https://docs.phantombot.tv/kb/update).
 
 ## License
 
