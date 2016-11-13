@@ -113,7 +113,7 @@ public class SingularityAPI {
             webSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS: Connected to Singularity");
+                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Connected to Singularity");
                     webSocket.emit("authentication", new JSONObject().put("key", devKey).put("access_token", AccessToken));
                 }
             });
@@ -122,17 +122,17 @@ public class SingularityAPI {
                 @Override
                 public void call(Object... args) {
                     JSONObject jsonObject = new JSONObject(args[0].toString());
-                    com.gmt2001.Console.err.println("SingularityWS: Authorization Failed: " + jsonObject.getString("message"));
+                    com.gmt2001.Console.err.println("SingularityWS (GameWisp): Authorization Failed: " + jsonObject.getString("message"));
                 }
             });
 
             webSocket.on("authenticated", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS: Authenticated");
+                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Authenticated");
                     JSONObject jsonObject = new JSONObject(args[0].toString());
                     if (!jsonObject.has("session")) {
-                        com.gmt2001.Console.err.println("SingularityWS: Missing Session in Authenticated Return JSON");
+                        com.gmt2001.Console.err.println("SingularityWS (GameWisp): Missing Session in Authenticated Return JSON");
                         Authenticated = false;
                         return;
                     }
@@ -146,13 +146,13 @@ public class SingularityAPI {
                 public void call(Object... args) {
                     if (Authenticated) {
                         if (PhantomBot.enableDebugging) {
-                            com.gmt2001.Console.debug.println("SingularityWS: Connected to Channel");
+                            com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Connected to Channel");
                         } else {
-                            com.gmt2001.Console.out.println("SingularityWS: Connected and Ready for Requests");
+                            com.gmt2001.Console.out.println("SingularityWS (GameWisp): Connected and Ready for Requests");
                         }
                         ChannelConnected = true;
                     } else {
-                        com.gmt2001.Console.debug.println("SingularityWS: Connected to Channel; Missing Session ID; Unusable Session");
+                        com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Connected to Channel; Missing Session ID; Unusable Session");
                         ChannelConnected = false;
                     }
                 }
@@ -161,7 +161,7 @@ public class SingularityAPI {
             webSocket.on("subscriber-new", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS: subscriber-new received");
+                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-new received");
                     JSONObject jsonObject = new JSONObject(args[0].toString());
                     if (!jsonObject.has("data")) {
                         return;
@@ -187,7 +187,7 @@ public class SingularityAPI {
             webSocket.on("subscriber-anniversary", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS: subscriber-anniversary received");
+                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-anniversary received");
                     JSONObject jsonObject = new JSONObject(args[0].toString());
                     if (!jsonObject.has("data")) {
                         return; 
@@ -213,7 +213,7 @@ public class SingularityAPI {
             webSocket.on("subscriber-benefits-change", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS: subscriber-benefits-change received");
+                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-benefits-change received");
                     JSONObject jsonObject = new JSONObject(args[0].toString());
                     if (!jsonObject.has("data")) {
                         return;
@@ -248,7 +248,7 @@ public class SingularityAPI {
             webSocket.on("subscriber-status-change", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS: subscriber-status-changed received");
+                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-status-changed received");
                     JSONObject jsonObject = new JSONObject(args[0].toString());
                     if (!jsonObject.has("data")) {
                         return;
@@ -271,14 +271,14 @@ public class SingularityAPI {
             webSocket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS: Disconnected");
+                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Disconnected");
                 }
             });
 
             webSocket.connect();
 
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("SingularityWS: Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.println("SingularityWS (GameWisp): Exception: " + ex.getMessage());
         }
     }
 
