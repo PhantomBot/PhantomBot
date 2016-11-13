@@ -45,7 +45,9 @@ $.lang.register('discord.announce.streamtip.enabled', 'StreamTip donations will 
 $.lang.register('discord.announce.streamlabs.usage', 'Usage: !announcestreamlabs [channel name] - Will announce donations from StreamLabs in that channel. Use "disable" as the channel to disable this. Note you do need to have the streamlabs module setup for this to work.');
 $.lang.register('discord.announce.streamlabs.disabled', 'StreamLabs donations will no longer be announced in discord.');
 $.lang.register('discord.announce.streamlabs.enabled', 'StreamLabs donations will now be announced in channel #$1');
-$.lang.register('discord.botcommands', 'Bot Commands: !addcom, !delcom, !editcom, !addkey, !editkey, !delkey, !commandtags, !announcetwitchfollowers, !announcetwitchsubscribers, !announcetwitchresubscribers, !announcetweets, !announceonline, !announcegamewispsubscribers, !announcegamewispresubscribers, !announcestreamlabs, !announcestreamtip');
+$.lang.register('discord.botcommands', 'Bot Commands: !addcom, !delcom, !editcom, !coolcom, !addkey, !editkey, !delkey, !commandtags, !announcetwitchfollowers, !announcetwitchsubscribers, !announcetwitchresubscribers, !announcetweets, !announceonline, !announcegamewispsubscribers, !announcegamewispresubscribers, !announcestreamlabs, !announcestreamtip');
+$.lang.register('discord.command.tags', 'Normal Tags: `(sender)`, `(@sender)`, `(game)`, `(status)`, `(#)`, `(touser)`, `(uptime)`, `(echo)`');
+$.lang.register('discord.game.tags', 'Game Tags: `(8ball)`, `(random)`, `(roulette)`, `(kill)`');
 $.lang.register('discord.commands', 'Commands: $1');
 $.lang.register('discord.keywords', 'Keywords: $1');
 $.lang.register('discord.newsub', '$1 just subscribed to $2 on Twitch!');
