@@ -665,6 +665,8 @@
         }
     });
 
+/* Load these hooks last (7 sec delay), I want the Twitch modules to have the event sent first. */
+setTimeout(function() {
     /*
      * @event twitchOnline
      *
@@ -677,7 +679,7 @@
             $.discord.jda().getAccountManager().setStreaming($.getStatus($.channelName), 'https://www.twitch.tv/' + $.channelName);
             if (now - lastStreamOnlineSend > (480 * 6e4)) {//8 hour delay here, because Twitch always sends a lot of online events.
                 lastStreamOnlineSend = now;
-                $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.channelName, $.getGame($.channelName), $.getStatus($.channelName)));
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.username.resolve($.channelName), $.getGame($.channelName), $.getStatus($.channelName)));
             }
         }
     });
@@ -708,6 +710,12 @@
      * Announces new Twitch subscribers in a specific channel if the user enables it. 
      */
     $.bind('NewSubscriber', function(event) {
+        var c = 0;
+        $.consoleLn('1');
+        for (var i = 0; i < 100; i++) {
+            $.inidb.InsertString('test', '', 'test', 'lol');
+        }
+        $.consoleLn('1');
         if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'subscriberChannel', '') != '') {
             $.discord.sendMessage($.getIniDbString('discordSettings', 'subscriberChannel', ''), $.lang.get('discord.newsub', event.getSub(), $.channelName));
         }
@@ -819,7 +827,7 @@
             $.discord.sendMessage($.getIniDbString('discordSettings', 'streamtipChannel', ''), $.lang.get('discord.streamtip', donationCurrency, donationAmount, donationCurrencySymbol, donationUsername, donationMsg, $.channelName));
         }
     });
-
+}, 7000);
 
     // cool things here.
     loadCommands();
