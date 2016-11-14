@@ -346,7 +346,7 @@ $.lang.register('timesystem.settime.success', 'Set the time balance of $1 to $2.
 $.lang.register('timesystem.settime.usage', 'Usage: "!time set [name] [amount]"');
 $.lang.register('timesystem.streamertime', 'It is currently $1 where $2 is located.');
 $.lang.register('timesystem.take.error.toomuch', 'You can not take more than what $1 has in time.');
-$.lang.register('timesystem.take.success', 'Taken $1 from $2. New balance is $3.');
+$.lang.register('timesystem.take.success', 'Took $1 from $2. New balance is $3.');
 $.lang.register('timesystem.take.usage', 'Usage: "!time take [name] [amount]"');
 $.lang.register('get.long.time.string.short', ' $1 days, $2 hours and $3 minutes.');
 $.lang.register('get.long.time.string.long', '$1 months, $2 hours and $3 minutes.');
