@@ -1,10 +1,10 @@
 $.lang.register('roulette.win.1', 'The trigger is pulled, and the revolver clicks. $1 has lived to survive roulette!');
 $.lang.register('roulette.win.2', 'The trigger is pulled, but the revolver malfunctions! $1 is lucky, and live\'s another day!');
 $.lang.register('roulette.win.3', 'The trigger is pulled, but $1 has been saved by magic!');
-$.lang.register('roulette.win.4', 'The trigger is pulled, but $1 has lived due to not having anything in his skull to begin with.');
+$.lang.register('roulette.win.4', 'The trigger is pulled, but $1 has lived due to not having anything in his/her skull to begin with.');
 $.lang.register('roulette.win.5', 'The trigger is pulled, but $1\'s skull was so thick the bullet could not penetrate it.');
 $.lang.register('roulette.win.6', 'The trigger is pulled, but $1 stopped space and time and dodged the bullet!');
-$.lang.register('roulette.win.7', 'The trigger is pulled, but $1 did not die from the bullet, the bullet died from him.');
+$.lang.register('roulette.win.7', 'The trigger is pulled, but $1 did not die from the bullet, the bullet died from him/her.');
 
 $.lang.register('roulette.lost.1', 'The trigger is pulled, and the revolver fires! $1 lies dead in the chat.');
 $.lang.register('roulette.lost.2', 'The trigger is pulled, and $1 loses their head!');
