@@ -33,6 +33,15 @@ import me.mast3rplan.phantombot.event.twitch.host.TwitchUnhostedEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * 11/16/16 - IllusionaryOne
+ *
+ * This class should be deprecated and removed in a couple of releases, allowing folks time to 
+ * update their Oauth accordingly to use the WS-IRC method to retrieve hosts. By leaving this
+ * in place for now, it doesn't force users to immediately obtain a new Oauth key for 
+ * PhantomBot.
+ */
+
 public class ChannelHostCache implements Runnable {
 
     private static final Map<String, ChannelHostCache> instances = Maps.newHashMap();
@@ -101,7 +110,11 @@ public class ChannelHostCache implements Runnable {
             try {
                 try {
                     if (new Date().after(timeoutExpire)) {
-                        this.updateCache();
+                        if (PhantomBot.instance().wsHostIRCConnected()) {
+                            this.kill();
+                        } else {
+                            this.updateCache();
+                        }
                     }
                 } catch (Exception e) {
                     if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]")) {
