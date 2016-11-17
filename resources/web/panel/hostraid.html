@@ -71,6 +71,16 @@
                        data-toggle="tooltip" title="Tags: (name) (reward)"/>
             </div>
         </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="hostAutoAnnounce">Auto-Host Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.updateAutoHostAnnounce()">Submit</button>
+                <input type="text" class="form-control" id="hostAutoAnnounceInput" placeholder="Auto-Host Message"
+                       data-toggle="tooltip" title="Tags: (name)"/>
+            </div>
+        </form>
         
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">

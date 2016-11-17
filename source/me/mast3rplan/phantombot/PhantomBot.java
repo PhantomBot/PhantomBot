@@ -111,6 +111,7 @@ import org.apache.commons.io.FileExistsException;
 import org.apache.commons.lang3.SystemUtils;
 
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
+import me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
 import java.net.URI;
@@ -185,7 +186,7 @@ public class PhantomBot implements Listener {
 
 	/** Caches */
 	private FollowersCache followersCache;
-	private ChannelHostCache hostCache;
+	private ChannelHostCache hostCache = null;
 	private SubscribersCache subscribersCache;
 	private ChannelUsersCache channelUsersCache;
 	private DonationsCache twitchAlertsCache;
@@ -231,7 +232,7 @@ public class PhantomBot implements Listener {
 	private static Boolean newSetup = false;
 	private Boolean devCommands = true;
 	private Boolean joined = false;
-
+        private TwitchWSHostIRC wsHostIRC;
 
     /** 
      * PhantomBot Instance.
@@ -522,6 +523,11 @@ public class PhantomBot implements Listener {
 		/** Start a channel instance to create a session, and then connect to WS-IRC @ Twitch. */
 		this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
 
+                /** Start a host checking instance. */
+                // if (this.apiOAuth.length() > 0) {
+                    // this.wsHostIRC = TwitchWSHostIRC.instance(this.channelName, this.apiOAuth, EventBus.instance());
+                // }
+
 		/** Check if the OS is Linux. */
 		if (SystemUtils.IS_OS_LINUX && !interactive) {
 			try {
@@ -686,6 +692,13 @@ public class PhantomBot implements Listener {
     	if (!apiOAuths.containsKey(channelName)) {
     		apiOAuths.put(channelName, oAuth);
     	}
+    }
+
+    /**
+     * Returns if Twitch WS-IRC Host Detection is connected.
+     */
+    public boolean wsHostIRCConnected() {
+        return this.wsHostIRC.isConnected();
     }
 
     /**
@@ -1079,19 +1092,6 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("donations", this.twitchAlertsCache, 0);
         Script.global.defineProperty("streamtip", this.streamTipCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
-
-        /** Make all these to null because they are useless with multiple channels */
-        this.chanName = null;
-        this.session = null;
-        this.emotesCache = null;
-        this.followersCache = null;
-        this.hostCache = null;
-        this.subscribersCache = null;
-        this.twitchCache = null;
-        this.channelUsersCache = null;
-        this.twitchAlertsCache = null;
-        this.streamTipCache = null;
-        this.twitterCache = null;
     }
 
     /**
