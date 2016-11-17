@@ -740,15 +740,21 @@ public class PhantomBot implements Listener {
     	}
 
     	/** Enable gamewhisp if the oAuth is set */
-    	if (!gameWispOAuth.isEmpty() && dataStore.GetString("modules", "", "./handlers/gameWispHandler.js").equals("true")){
+        try {
+    	    if (!gameWispOAuth.isEmpty() && dataStore.GetString("modules", "", "./handlers/gameWispHandler.js").equals("true")){
     		/** Set the oAuths */
     		GameWispAPIv1.instance().SetAccessToken(gameWispOAuth);
-            GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
-            SingularityAPI.instance().setAccessToken(gameWispOAuth);
-            SingularityAPI.instance().StartService();
-            /** get a fresh token */
-            doRefreshGameWispToken();
-    	}
+                GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
+                SingularityAPI.instance().setAccessToken(gameWispOAuth);
+                SingularityAPI.instance().StartService();
+                /** get a fresh token */
+                doRefreshGameWispToken();
+            }
+    	} catch (NullPointerException ex) {
+            // Nothing to do, this means that the datastore did not have the module enabled yet.  There is nothing to log,
+            // not really a reason to indicate that GameWisp is not enabled as the caster would know that, the database will
+            // default it to disabled on the first start.  This, in particular, seems to be a problem with the IniStore.
+        }
 
     	/** Check to see if all the Twitter info needed is there */
     	if (!twitterUsername.isEmpty() && !twitterAccessToken.isEmpty() && !twitterConsumerToken.isEmpty() && !twitterConsumerSecret.isEmpty() && !twitterSecretToken.isEmpty()) {
