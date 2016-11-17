@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.mast3rplan.phantombot;
+package me.mast3rplan.phantombot.httpserver;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +29,7 @@ import java.net.URLDecoder;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.TreeMap;
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 
@@ -43,7 +44,7 @@ public class HTTPServer extends Thread {
     ServerSocket socket;
     Boolean dorun = true;
 
-    HTTPServer(int p, String oauth) {
+    public HTTPServer(int p, String oauth) {
         port = p;
         pass = oauth.replace("oauth:", "");
 
