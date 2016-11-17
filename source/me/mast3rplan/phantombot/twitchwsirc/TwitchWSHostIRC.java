@@ -138,6 +138,11 @@ public class TwitchWSHostIRC extends WebSocketClient {
     public boolean connectWSS(boolean reconnect) {
         try {
             if (reconnect) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    // Do nothing, this just means the sleep was interrupted.
+                }
                 com.gmt2001.Console.out.println("Reconnecting to Twitch Host Data Feed");
             } 
             this.connect();
