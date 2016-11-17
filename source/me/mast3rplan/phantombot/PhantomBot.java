@@ -524,9 +524,9 @@ public class PhantomBot implements Listener {
 		this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
 
                 /** Start a host checking instance. */
-                // if (this.apiOAuth.length() > 0) {
-                    // this.wsHostIRC = TwitchWSHostIRC.instance(this.channelName, this.apiOAuth, EventBus.instance());
-                // }
+                if (this.apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
+                    this.wsHostIRC = TwitchWSHostIRC.instance(this.channelName, this.apiOAuth, EventBus.instance());
+                }
 
 		/** Check if the OS is Linux. */
 		if (SystemUtils.IS_OS_LINUX && !interactive) {
@@ -702,6 +702,21 @@ public class PhantomBot implements Listener {
     }
 
     /**
+     * Helper method to see if a module is enabled.
+     */
+    public boolean checkModuleEnabled(String module) {
+        try {
+            if (dataStore.GetString("modules", "", module).equals("true")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    /**
 	 * Loads everything up.
 	 *
 	 */
@@ -756,8 +771,7 @@ public class PhantomBot implements Listener {
     	}
 
     	/** Enable gamewhisp if the oAuth is set */
-        try {
-    	    if (!gameWispOAuth.isEmpty() && dataStore.GetString("modules", "", "./handlers/gameWispHandler.js").equals("true")){
+        if (!gameWispOAuth.isEmpty() && checkModuleEnabled("./handlers/gameWispHandler.js")) {
     		/** Set the oAuths */
     		GameWispAPIv1.instance().SetAccessToken(gameWispOAuth);
                 GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
@@ -765,11 +779,6 @@ public class PhantomBot implements Listener {
                 SingularityAPI.instance().StartService();
                 /** get a fresh token */
                 doRefreshGameWispToken();
-            }
-    	} catch (NullPointerException ex) {
-            // Nothing to do, this means that the datastore did not have the module enabled yet.  There is nothing to log,
-            // not really a reason to indicate that GameWisp is not enabled as the caster would know that, the database will
-            // default it to disabled on the first start.  This, in particular, seems to be a problem with the IniStore.
         }
 
     	/** Check to see if all the Twitter info needed is there */
