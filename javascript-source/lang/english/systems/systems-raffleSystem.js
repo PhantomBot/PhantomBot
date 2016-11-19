@@ -31,3 +31,4 @@ $.lang.register('rafflesystem.timer.set', 'Raffle message timer has been set to 
 $.lang.register('rafflesystem.common.following', 'and you need to be following the channel');
 $.lang.register('rafflesystem.common.timer', 'The raffle will close in $1 minutes.');
 $.lang.register('rafflesystem.common.message', 'no longer');
+$.lang.register('rafflesystem.open.keyword-exists', 'Keyword cannot be an existing command: $1');
