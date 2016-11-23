@@ -206,7 +206,7 @@
         var command = $("#cooldownKeyInputCommand").val();
         
         if (input.length > 0 && command.length != 0) {
-            sendDBUpdate("keyword_cooldown_add", "coolkey", String(command), String(input));
+            sendDBUpdate("keyword_cooldown_add", "coolkey", String(command.toLowerCase()), String(input));
             $("#cooldownKeyInput").val("Submitted");
             $("#cooldownKeyInputCommand").val("Submitted");
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
