@@ -124,7 +124,7 @@
         try {
             ps.println(line);
             fos.flush();
-            ps.close();
+            // ps.close(); This makes the file reset everytime. 
         } catch (e) {
             $.log.error('Failed to write to \'' + path + '\': ' + e);
         }
