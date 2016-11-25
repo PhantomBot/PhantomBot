@@ -441,7 +441,7 @@
                     return;
                 }
 
-                raffleMessage = arguments.substring(action.length);
+                raffleMessage = arguments.substring(action.length() + 1);
                 $.inidb.set('raffleSettings', 'raffleMessage', raffleMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.message.set', raffleMessage));
                 return;
