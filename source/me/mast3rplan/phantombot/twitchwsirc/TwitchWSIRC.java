@@ -181,6 +181,7 @@ public class TwitchWSIRC extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         if (message.startsWith("PING")) {
+            com.gmt2001.Console.debug.println("Got a ping from Twitch: " + message + ".");
             sendPong();
         }
         
@@ -211,6 +212,7 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     private void sendPong() {
         this.send("PONG :tmi.twitch.tv");
+        com.gmt2001.Console.debug.println("Sent a pong to Twitch.");
     }
 
     /**
