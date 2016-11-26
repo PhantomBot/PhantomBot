@@ -647,7 +647,7 @@
         this.updateCurrentSongFile = function(youtubeVideo) {
             $.writeToFile(
                 youtubeVideo.getVideoTitle(),
-                baseFileOutputPath + 'currentSong.txt',
+                baseFileOutputPath + 'currentsong.txt',
                 false
             );
         };
