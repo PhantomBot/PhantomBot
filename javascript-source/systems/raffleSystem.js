@@ -80,10 +80,17 @@
         if (args[i] !== undefined) {
             keyword = args[i];
             i++;
+
+            /* Ensure that keyword is not already a registered command. */
+            if (keyword.startsWith('!') && $.commandExists(keyword.substring(1))) {
+                $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.open.keyword-exists', keyword));
+                return;
+            }
         } else {
             $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.open.usage'));
             return;
         }
+
 
         /* Check if the caster wants a auto close timer */
         if (!isNaN(parseInt(args[i])) && parseInt(args[i]) !== 0) {
