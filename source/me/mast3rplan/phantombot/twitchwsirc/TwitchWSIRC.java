@@ -212,7 +212,7 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     private void sendPong() {
         this.send("PONG :tmi.twitch.tv");
-        com.gmt2001.Console.out.println("Sent a pong to Twitch.");
+        com.gmt2001.Console.debug.println("Sent a pong to Twitch.");
     }
 
     /**
