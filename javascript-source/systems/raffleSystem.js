@@ -317,7 +317,7 @@
         } else {
             if (register) {
                 $.bind('ircChannelMessage', function(event) {
-                    if (event.getMessage().equals(keyword)) {
+                    if (event.getMessage().equalsIgnoreCase(keyword)) {
                         enter(event.getSender(), event.getTags());
                     }
                 });
@@ -469,7 +469,7 @@
                 return;
             }
         }
-
+        
         /**
          * @info command for entering the raffle.
          */
