@@ -14,14 +14,14 @@
     /**
      * @function load
      */
-    function load() {
-        $.bot.loadScriptRecursive('./lang/english', true);
+    function load(force) {
+        $.bot.loadScriptRecursive('./lang/english', true, (force ? force : false));
         if (curLang != 'english') {
-            $.bot.loadScriptRecursive('./lang/' + curLang, true);
+            $.bot.loadScriptRecursive('./lang/' + curLang, true, (force ? force : false));
         }
 
         if ($.isDirectory('./scripts/lang/custom')) {
-            $.bot.loadScriptRecursive('./lang/custom', false);
+            $.bot.loadScriptRecursive('./lang/custom', true, (force ? force : false));
         }
 
         // Set "response_@chat" to true if it hasn't been set yet, so the bot isn't muted when using a fresh install
@@ -110,7 +110,7 @@
                 } else {
                     $.inidb.set('settings', 'lang', action);
                     curLang = action;
-                    load();
+                    load(true);
                     $.say($.whisperPrefix(sender) + get('lang.lang.changed', action));
                 }
             }
