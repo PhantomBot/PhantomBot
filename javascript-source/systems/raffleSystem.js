@@ -340,8 +340,6 @@
             action = args[0],
             subAction = args[1];
 
-        $.consoleLn('command::' + command);
-
         if (command.equalsIgnoreCase('raffle')) {
             if (action === undefined && !status) {
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.usage'));
@@ -471,8 +469,7 @@
                 return;
             }
         }
-
-        $.consoleLn('"' + command + '"');
+        
         /**
          * @info command for entering the raffle.
          */
