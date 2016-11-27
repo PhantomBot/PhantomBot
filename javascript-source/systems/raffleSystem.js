@@ -78,7 +78,7 @@
 
         /* Check for the keyword */
         if (args[i] !== undefined) {
-            keyword = args[i];
+            keyword = args[i].toLowerCase();
             i++;
 
             /* Ensure that keyword is not already a registered command. */
