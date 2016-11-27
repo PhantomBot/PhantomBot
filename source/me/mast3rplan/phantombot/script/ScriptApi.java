@@ -86,6 +86,10 @@ public class ScriptApi {
         return ScriptManager.loadScriptR(new File(new File("./scripts/"), fileName));
     }
 
+    public Script reloadScriptR(Script script, String fileName) throws IOException {
+        return ScriptManager.reloadScriptR(new File(new File("./scripts/"), fileName));
+    }
+
     public Script getScript(Script script, String fileName) throws IOException {
         return ScriptManager.getScript(new File(new File("./scripts/"), fileName));
     }
