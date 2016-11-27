@@ -317,7 +317,7 @@
         } else {
             if (register) {
                 $.bind('ircChannelMessage', function(event) {
-                    if (event.getMessage().equals(keyword)) {
+                    if (event.getMessage().equalsIgnoreCase(keyword)) {
                         enter(event.getSender(), event.getTags());
                     }
                 });
@@ -339,6 +339,8 @@
             args = event.getArgs(),
             action = args[0],
             subAction = args[1];
+
+        $.consoleLn('command::' + command);
 
         if (command.equalsIgnoreCase('raffle')) {
             if (action === undefined && !status) {
@@ -470,6 +472,7 @@
             }
         }
 
+        $.consoleLn('"' + command + '"');
         /**
          * @info command for entering the raffle.
          */
