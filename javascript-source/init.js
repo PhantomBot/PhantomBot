@@ -137,8 +137,16 @@
             }
 
             try {
-                var script = $api.loadScriptR($script, scriptFile),
+                var script = null,
                     enabled;
+
+                /* Checks if the script was already loaded, if so force reload it. This is used for the lang system. */
+                // $.consoleLn('$api.getScript()::' + $api.getScript($script, scriptFile));
+                if ($api.getScript($script, scriptFile) != null) {
+                    script = $api.reloadScriptR($script, scriptFile);
+                } else {
+                    script = $api.loadScriptR($script, scriptFile);
+                }
 
                 if (!$.inidb.exists('modules', scriptFile)) {
                     enabled = true;
@@ -166,22 +174,22 @@
      * @param {string} path
      * @param {boolean} [silent]
      */
-    function loadScriptRecursive(path, silent) {
+    function loadScriptRecursive(path, silent, force) {
         if (path.substring($.strlen(path) - 1).equalsIgnoreCase('/')) {
             path = path.substring(0, $.strlen(path) - 1);
         }
         var list = $.findFiles('./scripts/' + path, ''),
             i;
-        for (i = 0; i < list.length; i++) {
+        for (i in list) {
             if (path.equalsIgnoreCase('.')) {
                 if (list[i].equalsIgnoreCase('util') || list[i].equalsIgnoreCase('lang') || list[i].equalsIgnoreCase('init.js') || list[i].equalsIgnoreCase('dev')) {
                     continue;
                 }
             }
             if ($.isDirectory('./scripts/' + path + '/' + list[i])) {
-                loadScriptRecursive(path + '/' + list[i], silent);
+                loadScriptRecursive(path + '/' + list[i], silent, (force ? force : false));
             } else {
-                loadScript(path + '/' + list[i], false, silent);
+                loadScript(path + '/' + list[i], (force ? force : false), silent);
             }
         }
     };
