@@ -72,6 +72,31 @@
         return string;
     }
 
+     /**
+      * @function paramCount
+      * @export $.lang
+      * @param {string} key
+      * @returns {Number}
+      */
+     function paramCount(key) {
+         var string = data[key.toLowerCase()],
+             i,
+             ctr = 0;
+ 
+         if (!string) {
+             return 0;
+         }
+ 
+         for (i = 1; i < 99; i++) {
+             if (string.indexOf("$" + i) >= 0) {
+                 ctr++;
+             } else {
+                 break;
+             }
+         }
+         return ctr;
+     }
+
     /**
      * @function exists
      * @export $.lang
@@ -155,6 +180,7 @@
         exists: exists,
         get: get,
         register: register,
+        paramCount: paramCount
     };
 
     // Run the load function to enable modules, loaded after lang.js, to access the language strings immediatly
