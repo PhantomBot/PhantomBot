@@ -71,6 +71,9 @@ public class TwitchWSHostIRC extends WebSocketClient {
     private long lastPing = 0L;
     private boolean sentPing = false;
 
+    private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "480000"));
+    private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "600000"));
+
     /*
      * Creates an instance for a channel.
      *
@@ -111,6 +114,16 @@ public class TwitchWSHostIRC extends WebSocketClient {
         this.oAuth = oAuth;
         this.eventBus = eventBus;
         this.uri = uri;
+
+        /* Lowest value for sendPingWaitTime is 5.5 minutes */
+        if (this.sendPingWaitTime < 330000) {
+            this.sendPingWaitTime = 330000;
+        }
+
+        /* Lowest value for pingWaitTime is 6 minutes */
+        if (this.pingWaitTime < 360000) {
+            this.pingWaitTime = 360000;
+        }
 
         try {
             SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -269,14 +282,14 @@ public class TwitchWSHostIRC extends WebSocketClient {
             @Override
             public void run() {
                 /* If 8 minutes has passed, request a PONG from Twitch. */
-                if (System.currentTimeMillis() - lastPing >= 480000 && !sentPing) {
+                if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
                     sentPing = true;
                     send("PING tmi.twitch.tv");
                     com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
                 }
 
                 /* If 10 minutes has passed, force a disconnect which results in a reconnect. */
-                if (System.currentTimeMillis() - lastPing >= 600000) {
+                if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
                     com.gmt2001.Console.debug.println("PING not Detected from Twitch (Host Data) in 10 minutes, Forcing Reconnect");
                     close();
                 }
