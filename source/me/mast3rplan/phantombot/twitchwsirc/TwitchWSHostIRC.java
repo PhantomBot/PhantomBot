@@ -39,6 +39,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -65,6 +68,11 @@ public class TwitchWSHostIRC extends WebSocketClient {
     private final URI uri;
     private Pattern hostPattern = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now hosting you for up to (\\d+) viewers");
     private Pattern autoHostPattern = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now auto hosting you for up to (\\d+) viewers");
+    private long lastPing = 0L;
+    private boolean sentPing = false;
+
+    private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "480000"));
+    private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "600000"));
 
     /*
      * Creates an instance for a channel.
@@ -106,6 +114,16 @@ public class TwitchWSHostIRC extends WebSocketClient {
         this.oAuth = oAuth;
         this.eventBus = eventBus;
         this.uri = uri;
+
+        /* Lowest value for sendPingWaitTime is 5.5 minutes */
+        if (this.sendPingWaitTime < 330000) {
+            this.sendPingWaitTime = 330000;
+        }
+
+        /* Lowest value for pingWaitTime is 6 minutes */
+        if (this.pingWaitTime < 360000) {
+            this.pingWaitTime = 360000;
+        }
 
         try {
             SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -175,7 +193,7 @@ public class TwitchWSHostIRC extends WebSocketClient {
     @Override
     public void onClose(int code, String reason, boolean remote) {
         if (!badOauth) {
-            com.gmt2001.Console.out.println("Failed to connect to Twitch Host Data Feed, retrying connection in 10 seconds...");
+            com.gmt2001.Console.out.println("Lost connection to Twitch Host Data Feed, retrying in 10 seconds...");
             com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
             connectWSS(true);
         }
@@ -189,7 +207,15 @@ public class TwitchWSHostIRC extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         if (message.startsWith("PING")) {
+            sentPing = false;
+            lastPing = System.currentTimeMillis();
             sendPong();
+            return;
+        }
+
+        if (message.startsWith(":tmi.twitch.tv PONG")) {
+            sentPing = false;
+            lastPing = System.currentTimeMillis();
             return;
         }
 
@@ -197,6 +223,8 @@ public class TwitchWSHostIRC extends WebSocketClient {
             connected = true;
             com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
             eventBus.post(new TwitchHostsInitializedEvent());
+            lastPing = System.currentTimeMillis();
+            checkPingTime();
             return;
         }
 
@@ -241,6 +269,32 @@ public class TwitchWSHostIRC extends WebSocketClient {
      */
     private void sendPong() {
         this.send("PONG :tmi.twitch.tv");
+    }
+
+    /**
+     * Timer for checking to ensure that PINGs are received on a timely basis from Twitch
+     * and if not a reconnection is requested, this also attempts to send a PING after a
+     * period of time.
+     */
+    private void checkPingTime() {
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                /* If 8 minutes has passed, request a PONG from Twitch. */
+                if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
+                    sentPing = true;
+                    send("PING tmi.twitch.tv");
+                    com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
+                }
+
+                /* If 10 minutes has passed, force a disconnect which results in a reconnect. */
+                if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
+                    com.gmt2001.Console.debug.println("PING not Detected from Twitch (Host Data) in 10 minutes, Forcing Reconnect");
+                    close();
+                }
+            }
+        }, 2, 2, TimeUnit.MINUTES);
     }
 }
 

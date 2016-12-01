@@ -99,6 +99,43 @@ public class Script {
         }
     }
 
+    @SuppressWarnings("rawtypes")
+    public void reload(Boolean silent) throws IOException {
+        if (killed) {
+            return;
+        }
+
+        doDestroyables();
+        try {
+            load();
+            if (silent) {
+                if (file.getPath().endsWith("init.js")) {
+                    com.gmt2001.Console.out.println("Reloaded module: init.js");
+                } else {
+                    String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
+                    com.gmt2001.Console.out.println("Reloaded module: " + path);
+                }
+            }
+            fileNotFoundCount = 0;
+        } catch (Exception ex) {
+            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+                fileNotFoundCount++;
+                if (fileNotFoundCount == 1) {
+                    return;
+                }
+            } else {
+                fileNotFoundCount = 0;
+            }
+
+            if (file.getPath().endsWith("init.js")) {
+                com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
+            } else {
+                String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
+                com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
+            }
+        }
+    }
+
     public void load() throws IOException {
         if (killed) {
             return;
