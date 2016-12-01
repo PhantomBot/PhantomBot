@@ -750,7 +750,7 @@
             return;
         }
 
-        if (newValue.length > 0 && newValue > 1) {
+        if (newValue.length > 0 && ((typeof newValue === 'number' && newValue > 1) || (typeof newValue === 'string'))) {
             sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
             $(tagId).val('');
             $(tagId).attr("placeholder", newValue).blur();
