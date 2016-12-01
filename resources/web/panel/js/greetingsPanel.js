@@ -298,101 +298,91 @@
             $('#globalGreetings').html(spinIcon);
             if (greetingToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'greeting', 'autoGreetEnabled', 'false');
-                sendCommand('greetingspanelupdate');
             } else {
                 sendDBUpdate('greetings_greeting', 'greeting', 'autoGreetEnabled', 'true');
-                sendCommand('greetingspanelupdate');
             }
+            setTimeout(function() { sendCommand('greetingspanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'settings')) { // Confusing? Follow is in the settings table.
             $('#followerGreetings').html(spinIcon);
             if (followToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'settings', 'followToggle', 'false');
-                sendCommand('followerpanelupdate');
             } else {
                 sendDBUpdate('greetings_greeting', 'settings', 'followToggle', 'true');
-                sendCommand('followerpanelupdate');
             }
+            setTimeout(function() { sendCommand('followerpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'donations')) {
             $('#donationGreetings').html(spinIcon);
             if (donationToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'donations', 'announce', 'false');
-                sendCommand('donationpanelupdate');
             } else {
                 sendDBUpdate('greetings_greeting', 'donations', 'announce', 'true');
-                sendCommand('donationpanelupdate');
             }
+            setTimeout(function() { sendCommand('donationpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'streamtip')) {
             $('#streamtipGreetings').html(spinIcon);
             if (streamtipdonationToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'streamtip', 'announce', 'false');
-                sendCommand('donationpanelupdatestreamtip');
             } else {
                 sendDBUpdate('greetings_greeting', 'streamtip', 'announce', 'true');
-                sendCommand('donationpanelupdatestreamtip');
             } 
+            setTimeout(function() { sendCommand('donationpanelupdatestreamtip'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'donationGroup')) {
             $('#donationGroup').html(spinIcon);
             if (donationGroup == "true") {
                 sendDBUpdate('greetings_greeting', 'donations', 'donationGroup', 'false');
-                sendCommand('donationpanelupdate');
             } else {
                 sendDBUpdate('greetings_greeting', 'donations', 'donationGroup', 'true');
-                sendCommand('donationpanelupdate');
             }
+            setTimeout(function() { sendCommand('donationpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'streamtipdonationGroup')) {
             $('#streamtipdonationGroup').html(spinIcon);
             if (streamtipdonationGroup == "true") {
                 sendDBUpdate('greetings_greeting', 'streamtip', 'donationGroup', 'false');
-                sendCommand('donationpanelupdatestreamtip');
             } else {
                 sendDBUpdate('greetings_greeting', 'streamtip', 'donationGroup', 'true');
-                sendCommand('donationpanelupdatestreamtip');
             }
+            setTimeout(function() { sendCommand('donationpanelupdatestreamtip'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'subscriberWelcomeToggle')) { 
             $('#subscriptionGreetings').html(spinIcon);
             if (subToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'subscriberWelcomeToggle', 'false');
-                sendCommand('subscriberpanelupdate');
             } else {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'subscriberWelcomeToggle', 'true');
-                sendCommand('subscriberpanelupdate');
             }
+            setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'reSubscriberWelcomeToggle')) { 
             $('#resubscriptionGreetings').html(spinIcon);
             if (reSubToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberWelcomeToggle', 'false');
-                sendCommand('subscriberpanelupdate');
             } else {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberWelcomeToggle', 'true');
-                sendCommand('subscriberpanelupdate');
             }
+            setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'bitsSettings') && panelMatch(key, 'toggle')) { 
             $('#bitsToggle').html(spinIcon);
             if (bitsToggle == "true") {
                 sendDBUpdate('greetings_bits', 'bitsSettings', 'toggle', 'false');
-                sendCommand('reloadbits');
             } else {
                 sendDBUpdate('greetings_bits', 'bitsSettings', 'toggle', 'true');
-                sendCommand('reloadbits');
             }
+            setTimeout(function() { sendCommand('reloadbits'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'gameWispSubHandler')) { 
             $('#gameWispGreetings').html(spinIcon);
             if (gameWhispToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'gameWispSubHandler', 'subscriberShowMessages', 'false');
-                sendCommand('gamewisppanelupdate');
             } else {
                 sendDBUpdate('greetings_greeting', 'gameWispSubHandler', 'subscriberShowMessages', 'true');
-                sendCommand('gamewisppanelupdate');
             }
+            setTimeout(function() { sendCommand('gamewisppanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
