@@ -14,14 +14,14 @@
     /**
      * @function load
      */
-    function load() {
-        $.bot.loadScriptRecursive('./lang/english', true);
+    function load(force) {
+        $.bot.loadScriptRecursive('./lang/english', true, (force ? force : false));
         if (curLang != 'english') {
-            $.bot.loadScriptRecursive('./lang/' + curLang, true);
+            $.bot.loadScriptRecursive('./lang/' + curLang, true, (force ? force : false));
         }
 
         if ($.isDirectory('./scripts/lang/custom')) {
-            $.bot.loadScriptRecursive('./lang/custom', false);
+            $.bot.loadScriptRecursive('./lang/custom', true, (force ? force : false));
         }
 
         // Set "response_@chat" to true if it hasn't been set yet, so the bot isn't muted when using a fresh install
@@ -72,6 +72,31 @@
         return string;
     }
 
+     /**
+      * @function paramCount
+      * @export $.lang
+      * @param {string} key
+      * @returns {Number}
+      */
+     function paramCount(key) {
+         var string = data[key.toLowerCase()],
+             i,
+             ctr = 0;
+ 
+         if (!string) {
+             return 0;
+         }
+ 
+         for (i = 1; i < 99; i++) {
+             if (string.indexOf("$" + i) >= 0) {
+                 ctr++;
+             } else {
+                 break;
+             }
+         }
+         return ctr;
+     }
+
     /**
      * @function exists
      * @export $.lang
@@ -110,7 +135,7 @@
                 } else {
                     $.inidb.set('settings', 'lang', action);
                     curLang = action;
-                    load();
+                    load(true);
                     $.say($.whisperPrefix(sender) + get('lang.lang.changed', action));
                 }
             }
@@ -155,6 +180,7 @@
         exists: exists,
         get: get,
         register: register,
+        paramCount: paramCount
     };
 
     // Run the load function to enable modules, loaded after lang.js, to access the language strings immediatly

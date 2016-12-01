@@ -147,7 +147,7 @@
          * @commandpath resubwelcometoggle - Eenable or disable resubsciption alerts
          */
         if (command.equalsIgnoreCase('resubwelcometoggle')) {
-            if (subWelcomeToggle) {
+            if (reSubWelcomeToggle) {
                 $.inidb.set('subscribeHandler', 'reSubscriberWelcomeToggle', false);
                 subWelcomeToggle = false;
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.toggle.off'));

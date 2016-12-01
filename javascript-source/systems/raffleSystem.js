@@ -78,12 +78,19 @@
 
         /* Check for the keyword */
         if (args[i] !== undefined) {
-            keyword = args[i];
+            keyword = args[i].toLowerCase();
             i++;
+
+            /* Ensure that keyword is not already a registered command. */
+            if (keyword.startsWith('!') && $.commandExists(keyword.substring(1))) {
+                $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.open.keyword-exists', keyword));
+                return;
+            }
         } else {
             $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.open.usage'));
             return;
         }
+
 
         /* Check if the caster wants a auto close timer */
         if (!isNaN(parseInt(args[i])) && parseInt(args[i]) !== 0) {
@@ -310,7 +317,7 @@
         } else {
             if (register) {
                 $.bind('ircChannelMessage', function(event) {
-                    if (event.getMessage().equals(keyword)) {
+                    if (event.getMessage().equalsIgnoreCase(keyword)) {
                         enter(event.getSender(), event.getTags());
                     }
                 });
@@ -441,7 +448,7 @@
                     return;
                 }
 
-                raffleMessage = arguments.substring(action.length);
+                raffleMessage = arguments.substring(action.length() + 1);
                 $.inidb.set('raffleSettings', 'raffleMessage', raffleMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.message.set', raffleMessage));
                 return;
@@ -462,7 +469,7 @@
                 return;
             }
         }
-
+        
         /**
          * @info command for entering the raffle.
          */
