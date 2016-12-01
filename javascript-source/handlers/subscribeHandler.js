@@ -147,7 +147,7 @@
          * @commandpath resubwelcometoggle - Eenable or disable resubsciption alerts
          */
         if (command.equalsIgnoreCase('resubwelcometoggle')) {
-            if (subWelcomeToggle) {
+            if (reSubWelcomeToggle) {
                 $.inidb.set('subscribeHandler', 'reSubscriberWelcomeToggle', false);
                 subWelcomeToggle = false;
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.toggle.off'));
@@ -223,6 +223,10 @@
             $.say('.subscribersoff');
             $.log.event(sender + ' disabled subscriber only mode');
         }
+
+        if (command.equalsIgnoreCase('subscriberpanelupdate')) {
+            updateSubscribeConfig();
+        }
     });
 
     /**
@@ -237,6 +241,7 @@
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribers', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribersoff', 2);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'subscriberpanelupdate', 30);
             announce = true;
         }
     });
