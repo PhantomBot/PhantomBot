@@ -156,7 +156,7 @@
      */
     function updateNoticeReq(tagId, tableKey) {
         var newValue = $(tagId).val();
-        if (parseInt(newValue) >= 1 && newValue.length > 0) {
+        if (parseInt(newValue) >= 0 && newValue.length > 0) {
             sendDBUpdate("noticeReqInput", "noticeSettings", tableKey, newValue);
             $(tagId).val('')
             $(tagId).attr("placeholder", newValue).blur();
