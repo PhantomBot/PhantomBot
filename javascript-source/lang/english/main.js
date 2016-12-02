@@ -333,8 +333,8 @@ $.lang.register('timesystem.autolevel.promoted', '$1 has been promoted to $2 by 
 $.lang.register('timesystem.get.other', '$1 currently spent $2 in the chat.');
 $.lang.register('timesystem.get.self', 'you currently have spent $2 in the chat.');
 $.lang.register('timesystem.modpermtoggle.success', 'Users in the group $1 or higher are now able to use time management commands.');
-$.lang.register('timesystem.offlinetime.disabled', 'Offline time will not longer be counted towards the time.');
-$.lang.register('timesystem.offlinetime.enabled', 'Offline time will now be counted towards the time.');
+$.lang.register('timesystem.offlinetime.disabled', 'Offline time will no longer be counted towards the time earned in chat.');
+$.lang.register('timesystem.offlinetime.enabled', 'Offline time will now be counted towards the time earned in chat.');
 $.lang.register('timesystem.set.promotehours.error.negative', 'You can not set the time in hours to promote a user to $1 to a negative number.');
 $.lang.register('timesystem.set.promotehours.success', 'Set the time in hours to promote a user to $1 to $2.');
 $.lang.register('timesystem.set.promotehours.usage', 'Usage: "!time promotehours [amount]"');
