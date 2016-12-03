@@ -559,10 +559,6 @@
     }
 
     /** Export functions to API */
-    $.list = {
-        hasKey: hasKey
-    };
-
     $.user = {
         isKnown: isKnown,
         isFollower: isFollower
@@ -596,4 +592,5 @@
     $.replace = replace;
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
+    $.hasKey = $.hasKey;
 })();
