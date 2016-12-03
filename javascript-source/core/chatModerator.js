@@ -1132,7 +1132,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        regulars.Links = subAction.equalsIgnoreCase('true');
+                        regulars.Links = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'regularsModerateLinks', regulars.Links);
                         $.say($.whisperPrefix(sender) + (regulars.Links ? $.lang.get('chatmoderator.regulars.links.allowed') : $.lang.get('chatmoderator.regulars.links.not.allowed')));
                         $.log.event(sender + ' changed regulars moderation for links to ' + args[2]);
@@ -1145,7 +1145,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        regulars.Caps = subAction.equalsIgnoreCase('true');
+                        regulars.Caps = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'regularsModerateCaps', regulars.Caps);
                         $.say($.whisperPrefix(sender) + (regulars.Caps ? $.lang.get('chatmoderator.regulars.caps.allowed') : $.lang.get('chatmoderator.regulars.caps.not.allowed')));
                         $.log.event(sender + ' changed regulars moderation for caps to ' + args[2]);
@@ -1158,7 +1158,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        regulars.Symbols = subAction.equalsIgnoreCase('true');
+                        regulars.Symbols = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'regularsModerateSymbols', regulars.Symbols);
                         $.say($.whisperPrefix(sender) + (regulars.Symbols ? $.lang.get('chatmoderator.regulars.symbols.allowed') : $.lang.get('chatmoderator.regulars.symbols.not.allowed')));
                         $.log.event(sender + ' changed regulars moderation for symbols to ' + args[2]);
@@ -1171,7 +1171,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        regulars.Spam = subAction.equalsIgnoreCase('true');
+                        regulars.Spam = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'regularsModerateSpam', regulars.Spam);
                         $.say($.whisperPrefix(sender) + (regulars.Spam ? $.lang.get('chatmoderator.regulars.spam.allowed') : $.lang.get('chatmoderator.regulars.spam.not.allowed')));
                         $.log.event(sender + ' changed regulars moderation for spam to ' + args[2]);
@@ -1184,7 +1184,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        regulars.Emotes = subAction.equalsIgnoreCase('true');
+                        regulars.Emotes = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'regularsModerateEmotes', regulars.Emotes);
                         $.say($.whisperPrefix(sender) + (regulars.Emotes ? $.lang.get('chatmoderator.regulars.emotes.allowed') : $.lang.get('chatmoderator.regulars.emotes.not.allowed')));
                         $.log.event(sender + ' changed regulars moderation for emotes to ' + args[2]);
@@ -1197,7 +1197,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        regulars.Colors = subAction.equalsIgnoreCase('true');
+                        regulars.Colors = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'regularsModerateColors', regulars.Colors);
                         $.say($.whisperPrefix(sender) + (regulars.Colors ? $.lang.get('chatmoderator.regulars.colors.allowed') : $.lang.get('chatmoderator.regulars.colors.not.allowed')));
                         $.log.event(sender + ' changed regulars moderation for colors to ' + args[2]);
@@ -1210,7 +1210,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        regulars.LongMsg = subAction.equalsIgnoreCase('true');
+                        regulars.LongMsg = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'regularsModerateColors', regulars.LongMsg);
                         $.say($.whisperPrefix(sender) + (regulars.LongMsg ? $.lang.get('chatmoderator.regulars.long.messages.allowed') : $.lang.get('chatmoderator.regulars.long.messages.not.allowed')));
                         $.log.event(sender + ' changed regulars moderation for long messages to ' + args[2]);
@@ -1235,7 +1235,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        subscribers.Links = subAction.equalsIgnoreCase('true');
+                        subscribers.Links = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'subscribersModerateLinks', subscribers.Links);
                         $.say($.whisperPrefix(sender) + (subscribers.Links ? $.lang.get('chatmoderator.subscribers.links.allowed') : $.lang.get('chatmoderator.subscribers.links.not.allowed')));
                         $.log.event(sender + ' changed subscribers moderation for links to ' + args[2]);
@@ -1248,7 +1248,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        subscribers.Caps = subAction.equalsIgnoreCase('true');
+                        subscribers.Caps = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'subscribersModerateCaps', subscribers.Caps);
                         $.say($.whisperPrefix(sender) + (subscribers.Caps ? $.lang.get('chatmoderator.subscribers.caps.allowed') : $.lang.get('chatmoderator.subscribers.caps.not.allowed')));
                         $.log.event(sender + ' changed subscribers moderation for caps to ' + args[2]);
@@ -1261,7 +1261,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        subscribers.Symbols = subAction.equalsIgnoreCase('true');
+                        subscribers.Symbols = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'subscribersModerateSymbols', subscribers.Symbols);
                         $.say($.whisperPrefix(sender) + (subscribers.Symbols ? $.lang.get('chatmoderator.subscribers.symbols.allowed') : $.lang.get('chatmoderator.subscribers.symbols.not.allowed')));
                         $.log.event(sender + ' changed subscribers moderation for symbols to ' + args[2]);
@@ -1274,7 +1274,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        subscribers.Spam = subAction.equalsIgnoreCase('true');
+                        subscribers.Spam = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'subscribersModerateSpam', subscribers.Spam);
                         $.say($.whisperPrefix(sender) + (subscribers.Spam ? $.lang.get('chatmoderator.subscribers.spam.allowed') : $.lang.get('chatmoderator.subscribers.spam.not.allowed')));
                         $.log.event(sender + ' changed subscribers moderation for spam to ' + args[2]);
@@ -1287,7 +1287,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        subscribers.Emotes = subAction.equalsIgnoreCase('true');
+                        subscribers.Emotes = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'subscribersModerateEmotes', subscribers.Emotes);
                         $.say($.whisperPrefix(sender) + (subscribers.Emotes ? $.lang.get('chatmoderator.subscribers.emotes.allowed') : $.lang.get('chatmoderator.subscribers.emotes.not.allowed')));
                         $.log.event(sender + ' changed subscribers moderation for emotes to ' + args[2]);
@@ -1300,7 +1300,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        subscribers.Colors = subAction.equalsIgnoreCase('true');
+                        subscribers.Colors = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'subscribersModerateColors', subscribers.Colors);
                         $.say($.whisperPrefix(sender) + (subscribers.Colors ? $.lang.get('chatmoderator.subscribers.colors.allowed') : $.lang.get('chatmoderator.subscribers.colors.not.allowed')));
                         $.log.event(sender + ' changed subscribers moderation for colors to ' + args[2]);
@@ -1313,7 +1313,7 @@
                     }
 
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        subscribers.LongMsg = subAction.equalsIgnoreCase('true');
+                        subscribers.LongMsg = args[2].equalsIgnoreCase('true');
                         $.inidb.set('chatModerator', 'subscribersModerateColors', subscribers.LongMsg);
                         $.say($.whisperPrefix(sender) + (subscribers.LongMsg ? $.lang.get('chatmoderator.subscribers.long.messages.allowed') : $.lang.get('chatmoderator.subscribers.long.messages.not.allowed')));
                         $.log.event(sender + ' changed subscribers moderation for long messages to ' + args[2]);
