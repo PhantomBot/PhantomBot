@@ -97,10 +97,10 @@
                         break;
                 }
 
-                $.say(resultMessage + $.gameMessages.getWin(sender));
+                $.say(resultMessage + $.gameMessages.getWin(sender, 'roll'));
                 $.inidb.incr('points', sender, prizes[dice1 - 1]);
             } else {
-                $.say(resultMessage + $.gameMessages.getLose(sender));
+                $.say(resultMessage + $.gameMessages.getLose(sender, 'roll'));
             }
         }
     });
