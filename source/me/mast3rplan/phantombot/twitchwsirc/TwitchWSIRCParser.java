@@ -297,6 +297,7 @@ public class TwitchWSIRCParser {
             if (username.equalsIgnoreCase("twitchnotify")) {
                 scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
                 com.gmt2001.Console.debug.println(message.substring(0, message.indexOf(" ", 1)) + " just subscribed!");
+                return;
             }
         }
 
