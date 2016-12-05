@@ -35,7 +35,8 @@
             rouletteLost: 0,
             killSelf: 0,
             killOther: 0
-        };
+        },
+        hookLoaded = false;
 
     /**
      * @function registerCommand
@@ -665,163 +666,168 @@
         }
     });
 
-/* Load these hooks last (7 sec delay), I want the Twitch modules to have the event sent first. */
-setTimeout(function() {
-    /*
-     * @event twitchOnline
-     *
-     * Send a message to a Discord Channel to indicate that the stream is online. 
-     * Only send once every 8 hours because we get a crap load of online events.
-     */
-    $.bind('twitchOnline', function(event) {
-        var now = $.systemTime();
-        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'onlineChannel', '') != '') {
-            $.discord.jda().getAccountManager().setStreaming($.getStatus($.channelName), 'https://www.twitch.tv/' + $.channelName);
-            if (now - lastStreamOnlineSend >= (480 * 6e4)) {//8 hour delay here, because Twitch always sends a lot of online events.
-                lastStreamOnlineSend = now;
-                $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.channelName, $.getGame($.channelName), $.getStatus($.channelName)));
+    /* Wait to load these events last. */
+    $.bind('initReady', function() {
+        if (hookLoaded == true) {
+            return;
+        }
+        $.consoleDebug('loading discord hooks');
+        /*
+         * @event twitchOnline
+         *
+         * Send a message to a Discord Channel to indicate that the stream is online. 
+         * Only send once every 8 hours because we get a crap load of online events.
+         */
+        $.bind('twitchOnline', function(event) {
+            var now = $.systemTime();
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'onlineChannel', '') != '') {
+                $.discord.jda().getAccountManager().setStreaming($.getStatus($.channelName), 'https://www.twitch.tv/' + $.channelName);
+                if (now - lastStreamOnlineSend >= (480 * 6e4)) {//8 hour delay here, because Twitch always sends a lot of online events.
+                    lastStreamOnlineSend = now;
+                    $.discord.sendMessage($.getIniDbString('discordSettings', 'onlineChannel', ''), $.lang.get('discord.streamonline', $.channelName, $.getGame($.channelName), $.getStatus($.channelName)));
+                }
             }
-        }
-    });
-
-    /*
-     * @event twitchOffline
-     *
-     * Sets the stream as offline.
-     */
-    $.bind('twitchOffline', function(event) {
-        $.discord.jda().getAccountManager().setStreaming('', '');
-    });
-
-    /*
-     * @event twitchFollow
-     *
-     * Announces new Twitch followers in a specific channel if the user enables it. 
-     */
-    $.bind('twitchFollow', function(event) {
-        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.announceFollows && $.getIniDbString('discordSettings', 'followerChannel', '') != '') {
-            $.discord.sendMessage($.getIniDbString('discordSettings', 'followerChannel', ''), $.lang.get('discord.newfollow', event.getFollower(), $.channelName));
-        }
-    });
-
-    /*
-     * @event NewSubscriber
-     *
-     * Announces new Twitch subscribers in a specific channel if the user enables it. 
-     */
-    $.bind('NewSubscriber', function(event) {
-        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'subscriberChannel', '') != '') {
-            $.discord.sendMessage($.getIniDbString('discordSettings', 'subscriberChannel', ''), $.lang.get('discord.newsub', event.getSub(), $.channelName));
-        }
-    });
-
-    /*
-     * @event NewReSubscriber
-     *
-     * Announces new Twitch resubscribers in a specific channel if the user enables it. 
-     */
-    $.bind('NewReSubscriber', function(event) {
-        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'resubscriberChannel', '') != '') {
-            $.discord.sendMessage($.getIniDbString('discordSettings', 'resubscriberChannel', ''), $.lang.get('discord.newresub', event.getReSub(), event.getReSubMonths(), $.channelName));
-        }
-    });
-
-    /*
-     * @event twitter
-     *
-     * Announces new Tweets retweets and mentions.
-     */
-    $.bind('twitter', function(event) {
-        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'tweetChannel', '') != '') {
-            if (event.getMentionUser() != null) {
-                $.discord.sendMessage($.getIniDbString('discordSettings', 'tweetChannel', ''), $.lang.get('discord.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
-            } else {
-                $.discord.sendMessage($.getIniDbString('discordSettings', 'tweetChannel', ''), $.lang.get('discord.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+        });
+    
+        /*
+         * @event twitchOffline
+         *
+         * Sets the stream as offline.
+         */
+        $.bind('twitchOffline', function(event) {
+            $.discord.jda().getAccountManager().setStreaming('', '');
+        });
+    
+        /*
+         * @event twitchFollow
+         *
+         * Announces new Twitch followers in a specific channel if the user enables it. 
+         */
+        $.bind('twitchFollow', function(event) {
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.announceFollows && $.getIniDbString('discordSettings', 'followerChannel', '') != '') {
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'followerChannel', ''), $.lang.get('discord.newfollow', event.getFollower(), $.channelName));
             }
-        }
-    });
-
-    /*
-     * @event gameWispSubscribe
-     *
-     * Announces new gamewisp subs.
-     */
-    $.bind('gameWispSubscribe', function(event) {
-        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'gamewispsubscriberChannel', '') != '') {
-            $.discord.sendMessage($.getIniDbString('discordSettings', 'gamewispsubscriberChannel', ''), $.lang.get('discord.gamewisp.newsub', event.getUsername(), $.channelName));
-        }
-    });
-
-    /*
-     * @event gameWispSubscribe
-     *
-     * Announces new gamewisp resubs.
-     */
-    $.bind('gameWispAnniversary', function(event) {
-        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'gamewispresubscriberChannel', '') != '') {
-            $.discord.sendMessage($.getIniDbString('discordSettings', 'gamewispresubscriberChannel', ''), $.lang.get('discord.gamewisp.renewsub', event.getUsername(), event.getMonths(), $.channelName));
-        }
-    });
-
-    /*
-     * @event twitchAlertsDonation
-     *
-     * Announces donations from streamlabs
-     */
-    $.bind('twitchAlertsDonation', function(event) {
-        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'streamlabsChannel', '') != '') {
-            var donationJsonStr = event.getJsonString(),
-                JSONObject = Packages.org.json.JSONObject,
-                donationJson = new JSONObject(donationJsonStr);
-
-            /** Make the json into variables that we can then use tags with */
-            var donationID = donationJson.getString("donation_id"),
-                donationCreatedAt = donationJson.getString("created_at"),
-                donationCurrency = donationJson.getString("currency"),
-                donationAmount = parseFloat(donationJson.getString("amount")),
-                donationUsername = donationJson.getString("name"),
-                donationMsg = donationJson.getString("message");
-
-            if ($.inidb.exists('discordDonations', 'streamlabs' + donationID)) {
-                return;
-            } else {
-                $.inidb.set('discordDonations', 'streamlabs' + donationID, 'true');
+        });
+    
+        /*
+         * @event NewSubscriber
+         *
+         * Announces new Twitch subscribers in a specific channel if the user enables it. 
+         */
+        $.bind('NewSubscriber', function(event) {
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'subscriberChannel', '') != '') {
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'subscriberChannel', ''), $.lang.get('discord.newsub', event.getSub(), $.channelName));
             }
-
-            $.discord.sendMessage($.getIniDbString('discordSettings', 'streamlabsChannel', ''), $.lang.get('discord.streamlabs', donationCurrency, donationAmount, donationUsername, donationMsg, $.channelName));
-        }
-    });
-
-    /*
-     * @event streamTipDonation
-     *
-     * Announces donations from streamtip
-     */
-    $.bind('streamTipDonation', function(event) {
-        if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'streamtipChannel', '') != '') {
-            var donationJsonStr = event.getJsonString(),
-                JSONObject = Packages.org.json.JSONObject,
-                donationJson = new JSONObject(donationJsonStr);
-
-            /** Make the json into variables that we can then use tags with */
-            var donationID = donationJson.getString("_id"),
-                donationCreatedAt = donationJson.getString("date"),
-                donationCurrency = donationJson.getString("currencyCode"),
-                donationCurrencySymbol = donationJson.getString("currencySymbol"),
-                donationAmount = parseFloat(donationJson.getString("amount")),
-                donationUsername = donationJson.getString("username"),
-                donationMsg = donationJson.getString("note");
-
-            if ($.inidb.exists('discordDonations', 'streamtip' + donationID)) {
-                return;
-            } else {
-                $.inidb.set('discordDonations', 'streamtip' + donationID, 'true');
+        });
+    
+        /*
+         * @event NewReSubscriber
+         *
+         * Announces new Twitch resubscribers in a specific channel if the user enables it. 
+         */
+        $.bind('NewReSubscriber', function(event) {
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'resubscriberChannel', '') != '') {
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'resubscriberChannel', ''), $.lang.get('discord.newresub', event.getReSub(), event.getReSubMonths(), $.channelName));
             }
-
-            $.discord.sendMessage($.getIniDbString('discordSettings', 'streamtipChannel', ''), $.lang.get('discord.streamtip', donationCurrency, donationAmount, donationCurrencySymbol, donationUsername, donationMsg, $.channelName));
-        }
+        });
+    
+        /*
+         * @event twitter
+         *
+         * Announces new Tweets retweets and mentions.
+         */
+        $.bind('twitter', function(event) {
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'tweetChannel', '') != '') {
+                if (event.getMentionUser() != null) {
+                    $.discord.sendMessage($.getIniDbString('discordSettings', 'tweetChannel', ''), $.lang.get('discord.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+                } else {
+                    $.discord.sendMessage($.getIniDbString('discordSettings', 'tweetChannel', ''), $.lang.get('discord.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+                }
+            }
+        });
+    
+        /*
+         * @event gameWispSubscribe
+         *
+         * Announces new gamewisp subs.
+         */
+        $.bind('gameWispSubscribe', function(event) {
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'gamewispsubscriberChannel', '') != '') {
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'gamewispsubscriberChannel', ''), $.lang.get('discord.gamewisp.newsub', event.getUsername(), $.channelName));
+            }
+        });
+    
+        /*
+         * @event gameWispSubscribe
+         *
+         * Announces new gamewisp resubs.
+         */
+        $.bind('gameWispAnniversary', function(event) {
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'gamewispresubscriberChannel', '') != '') {
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'gamewispresubscriberChannel', ''), $.lang.get('discord.gamewisp.renewsub', event.getUsername(), event.getMonths(), $.channelName));
+            }
+        });
+    
+        /*
+         * @event twitchAlertsDonation
+         *
+         * Announces donations from streamlabs
+         */
+        $.bind('twitchAlertsDonation', function(event) {
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'streamlabsChannel', '') != '') {
+                var donationJsonStr = event.getJsonString(),
+                    JSONObject = Packages.org.json.JSONObject,
+                    donationJson = new JSONObject(donationJsonStr);
+    
+                /** Make the json into variables that we can then use tags with */
+                var donationID = donationJson.getString("donation_id"),
+                    donationCreatedAt = donationJson.getString("created_at"),
+                    donationCurrency = donationJson.getString("currency"),
+                    donationAmount = parseFloat(donationJson.getString("amount")),
+                    donationUsername = donationJson.getString("name"),
+                    donationMsg = donationJson.getString("message");
+    
+                if ($.inidb.exists('discordDonations', 'streamlabs' + donationID)) {
+                    return;
+                } else {
+                    $.inidb.set('discordDonations', 'streamlabs' + donationID, 'true');
+                }
+    
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'streamlabsChannel', ''), $.lang.get('discord.streamlabs', donationCurrency, donationAmount, donationUsername, donationMsg, $.channelName));
+            }
+        });
+    
+        /*
+         * @event streamTipDonation
+         *
+         * Announces donations from streamtip
+         */
+        $.bind('streamTipDonation', function(event) {
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'streamtipChannel', '') != '') {
+                var donationJsonStr = event.getJsonString(),
+                    JSONObject = Packages.org.json.JSONObject,
+                    donationJson = new JSONObject(donationJsonStr);
+    
+                /** Make the json into variables that we can then use tags with */
+                var donationID = donationJson.getString("_id"),
+                    donationCreatedAt = donationJson.getString("date"),
+                    donationCurrency = donationJson.getString("currencyCode"),
+                    donationCurrencySymbol = donationJson.getString("currencySymbol"),
+                    donationAmount = parseFloat(donationJson.getString("amount")),
+                    donationUsername = donationJson.getString("username"),
+                    donationMsg = donationJson.getString("note");
+    
+                if ($.inidb.exists('discordDonations', 'streamtip' + donationID)) {
+                    return;
+                } else {
+                    $.inidb.set('discordDonations', 'streamtip' + donationID, 'true');
+                }
+    
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'streamtipChannel', ''), $.lang.get('discord.streamtip', donationCurrency, donationAmount, donationCurrencySymbol, donationUsername, donationMsg, $.channelName));
+            }
+        });
+        hookLoaded = true;
     });
-}, 7000);
 
     // cool things here.
     loadCommands();
