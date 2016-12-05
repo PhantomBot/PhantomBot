@@ -121,7 +121,7 @@ public class TwitchWSIRC extends WebSocketClient {
         }
 
         /* Force a spread of two minutes between sendPingWaitTime and pingWaitTime. */
-        if (this.sendPingWaitTime - this.pingWaitTime <= 60000) {
+        if (this.pingWaitTime - this.sendPingWaitTime <= 60000) {
             this.pingWaitTime = this.sendPingWaitTime + 120000;
         }
     }
