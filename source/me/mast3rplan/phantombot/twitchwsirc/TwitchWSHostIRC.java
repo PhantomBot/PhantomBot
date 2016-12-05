@@ -115,14 +115,23 @@ public class TwitchWSHostIRC extends WebSocketClient {
         this.eventBus = eventBus;
         this.uri = uri;
 
-        /* Lowest value for sendPingWaitTime is 5.5 minutes */
-        if (this.sendPingWaitTime < 330000) {
-            this.sendPingWaitTime = 330000;
+        /* Lowest value for sendPingWaitTime is 3 minutes. This is based on research that shows that Azure Cloud Services
+         * drop TCP connections without activity for 4 minutes.
+         */
+        if (this.sendPingWaitTime < 180000) {
+            this.sendPingWaitTime = 180000;
         }
-
-        /* Lowest value for pingWaitTime is 6 minutes */
+        
+        /* Lowest value for pingWaitTime is 6 minutes. This is based on Twitch indicating that they will send a PING
+         * around every 5 minutes.  This provides a minute of padding.
+         */
         if (this.pingWaitTime < 360000) {
             this.pingWaitTime = 360000;
+        }
+        
+        /* Force a spread of two minutes between sendPingWaitTime and pingWaitTime. */
+        if (this.sendPingWaitTime - this.pingWaitTime <= 60000) {
+            this.pingWaitTime = this.sendPingWaitTime + 120000;
         }
 
         try {
@@ -207,6 +216,7 @@ public class TwitchWSHostIRC extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         if (message.startsWith("PING")) {
+            com.gmt2001.Console.debug.println("Got a PING from Twitch Host Data Feed");
             sentPing = false;
             lastPing = System.currentTimeMillis();
             sendPong();
@@ -214,6 +224,7 @@ public class TwitchWSHostIRC extends WebSocketClient {
         }
 
         if (message.startsWith(":tmi.twitch.tv PONG")) {
+            com.gmt2001.Console.debug.println("Got a PONG from Twitch Host Data Feed");
             sentPing = false;
             lastPing = System.currentTimeMillis();
             return;
@@ -281,20 +292,18 @@ public class TwitchWSHostIRC extends WebSocketClient {
         service.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                /* If 8 minutes has passed, request a PONG from Twitch. */
                 if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
+                    com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
                     sentPing = true;
                     send("PING tmi.twitch.tv");
-                    com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
                 }
 
-                /* If 10 minutes has passed, force a disconnect which results in a reconnect. */
                 if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
-                    com.gmt2001.Console.debug.println("PING not Detected from Twitch (Host Data) in 10 minutes, Forcing Reconnect");
+                   com.gmt2001.Console.debug.println("PING not Detected from Twitch (Host Data) - Forcing Reconnect (Timeout is " + pingWaitTime + "ms)");
                     close();
                 }
             }
-        }, 2, 2, TimeUnit.MINUTES);
+        }, 1, 1, TimeUnit.MINUTES);
     }
 }
 
