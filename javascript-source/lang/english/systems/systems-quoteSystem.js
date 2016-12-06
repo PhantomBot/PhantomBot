@@ -14,3 +14,6 @@ $.lang.register('quotesystem.edit.quote.success', 'Updated quote on quote $1 to 
 $.lang.register('quotesystem.edit.404', 'Could not find quote $1... Are you sure it exists?');
 $.lang.register('quotesystem.quotemessage.usage', 'usage: !quotemessage [message] (Tags: (id) (quote) (user) (game) (date))');
 $.lang.register('quotesystem.quotemessage.success', 'Changed the message used for quotes.');
+$.lang.register('quotesystem.searchquote.usage', 'usage: !searchquote [text] (Must provide at least 5 characters)');
+$.lang.register('quotesystem.searchquote.404', 'No matches were found in the quotes.');
+$.lang.register('quotesystem.searchquote.found', 'Quote IDs with matches: $1');
