@@ -1,0 +1,384 @@
+/*
+ * Copyright (C) 2016 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Twitch PubSub
+ * @author: ScaniaTV
+ */
+
+package me.mast3rplan.phantombot.twitchwsirc;
+
+import com.google.common.collect.Maps;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
+
+import org.java_websocket.WebSocket;
+import org.java_websocket.WebSocketImpl;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.ArrayList;
+
+import java.net.URI;
+
+public class TwitchPubSub extends WebSocketClient {
+	private static final Map<String, TwitchPubSub> instances = Maps.newHashMap();
+	private final Timer timer = new Timer();
+	private final URI uri;
+	private Boolean reconnectAllowed = true;
+	private Long lastReconnect;
+	private int channelId;
+	private String oAuth;
+
+	/**
+	 * @function instance
+	 * @info used to start this instance.
+	 *
+	 * @param {string} channel
+	 * @param {int} channelId
+	 * @param {string} oauth
+	 */
+	public static TwitchPubSub instance(String channel, int channelId, String oAuth) {
+		TwitchPubSub instance = instances.get(channel);
+		if (instance == null) {
+			try {
+			    instance = new TwitchPubSub(new URI("wss://pubsub-edge.twitch.tv"), channelId, oAuth);
+			    instances.put(channel, instance);
+			} catch (Exception ex) {
+                com.gmt2001.Console.err.println("Twitch PubSub-Edge URI Failed, PhantomBot will exit: " + ex.getMessage());
+                System.exit(0);
+			}
+		}
+		return instance;
+	}
+
+	/**
+	 * @function TwitchPubSub
+	 * @info used to start this class.
+	 *
+	 * @param {string} channel
+	 * @param {int} channelId
+	 * @param {string} oauth
+	 */
+	private TwitchPubSub(URI uri, int channelId, String oAuth) {
+		super(uri, new Draft_17(), null, 5000);
+
+		this.uri = uri;
+		this.channelId = channelId;
+		this.oAuth = oAuth;
+
+		this.connectWSS(false);
+		this.startTimer();
+	}
+
+	/**
+	 * @function connectWSS
+	 * @info Used to connect and reconnect to pubsub.
+	 *
+	 * @param {boolean} reconnect
+	 */
+	private void connectWSS(Boolean reconnect) {
+		if (!reconnect) {
+		    com.gmt2001.Console.debug.println("Connecting to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
+		} else {
+			com.gmt2001.Console.out.println("Reconnecting to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
+		}
+		try {
+		    SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, null, null);
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            this.setSocket(sslSocketFactory.createSocket());
+            this.connect();
+        } catch (Exception ex) {
+        	com.gmt2001.Console.err.println("Twitch PubSub-Edge failed to connect: " + ex.getMessage());
+        }
+	}
+
+	/**
+	 * @function reconnectWSS
+	 * @info Used to reconnect to pubsub.
+	 *
+	 */
+	private void reconnectWSS() {
+		Long now = System.currentTimeMillis();
+
+		if (lastReconnect + 10000L <= now && reconnectAllowed) {
+			lastReconnect = now;
+			try {
+			    this.connectWSS(true);
+			} catch (Exception ex) {
+				com.gmt2001.Console.err.println("Twitch PubSub-Edge failed to reconnect: " + ex.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * @function startTimer
+	 * @info Starts the ping timer since we need to send pings to pubsub.
+	 *
+	 */
+	private void startTimer() {
+		timer.schedule(new PingTask(), 5000, 294000);
+	}
+
+	/**
+	 * @function closeTimer
+	 * @info Stops the ping timers
+	 *
+	 */
+	private void closeTimer() {
+		timer.cancel();
+        timer.purge();
+	}
+
+	/**
+	 * @function parse
+	 * @info Used to parse messages we get from pubsub
+	 *
+	 * @param {jsonObject} message
+	 */
+	private void parse(JSONObject message) {
+		JSONObject dataObj;
+		JSONObject messageObj;
+		JSONObject data;
+		String action;
+
+		if (message.has("data")) {
+			dataObj = message.getJSONObject("data");
+			if (dataObj.has("message")) {
+				messageObj = new JSONObject(dataObj.getString("message"));
+				if (messageObj.has("data")) {
+					data = messageObj.getJSONObject("data");
+					if (data.has("moderation_action")) {
+						action = data.getString("moderation_action");
+
+						switch (action) {
+							case "timeout":
+							    if (data.has("args") && data.has("created_by")) {
+							    	JSONArray args = data.getJSONArray("args");
+							        if (args.length() == 3) {
+							        	this.log("timeout_reason", data.getString("created_by"), args.getString(0), args.getString(2), args.getString(1));
+							        } else {
+							        	this.log("timeout", data.getString("created_by"), args.getString(0), null, args.getString(1));
+							        }
+							    }
+							    break;
+							case "untimeout":
+							    if (data.has("args") && data.has("created_by")) {
+							    	JSONArray args = data.getJSONArray("args");
+							    	if (args.length() == 1) {
+							    		this.log("untimeout", data.getString("created_by"), args.getString(0), null, null);
+							    	}
+							    }
+							    break;
+							case "ban":
+							    if (data.has("args") && data.has("created_by")) {
+							    	JSONArray args = data.getJSONArray("args");
+							    	if (args.length() == 2) {
+							    		this.log("ban_reason", data.getString("created_by"), args.getString(0), args.getString(1), null);
+							        } else {
+							        	this.log("ban", data.getString("created_by"), args.getString(0), null, null);
+							        }
+							    }
+							    break;
+							case "unban":
+							    if (data.has("args") && data.has("created_by")) {
+							    	JSONArray args = data.getJSONArray("args");
+							    	if (args.length() == 1) {
+							    		this.log("unban", data.getString("created_by"), args.getString(0), null, null);
+							    	}
+							    }
+							    break;
+							case "mod":
+							    if (data.has("args") && data.has("created_by")) {
+							    	JSONArray args = data.getJSONArray("args");
+							    	if (args.length() == 1) {
+							    		this.log("mod", data.getString("created_by"), args.getString(0), null, null);
+							    	}
+							    }
+							    break;
+							case "unmod":
+							    if (data.has("args") && data.has("created_by")) {
+							    	JSONArray args = data.getJSONArray("args");
+							    	if (args.length() == 1) {
+							    		this.log("unmod", data.getString("created_by"), args.getString(0), null, null);
+							    	}
+							    }
+							    break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * @function log
+	 * @info Used to log messages once they are parsed.
+	 *
+	 * @param {string} action
+	 * @param {string} creator
+	 * @param {string} username
+	 * @param {string} reason
+	 * @param {string} time
+	 */
+	private void log(String action, String creator, String username, String reason, String time) {
+		// Logging logic here. Only printing for now.
+		switch (action) {			
+			case "timeout_reason":
+			    com.gmt2001.Console.out.println(username + " has been timed out for " + time + " seconds. Reason: " + reason + ". By: " + creator);
+			    break;
+			case "timeout":
+			    com.gmt2001.Console.out.println(username + " has been timed out for " + time + " seconds. By: " + creator);
+			    break;
+			case "ban":
+			    com.gmt2001.Console.out.println(username + " has been banned. By: " + creator);
+			    break;
+			case "ban_reason":
+			    com.gmt2001.Console.out.println(username + " has been banned. Reason: " + reason + ". By: " + creator);
+			    break;
+			case "untimeout":
+			    com.gmt2001.Console.out.println(username + " has been un-timed out. By: " + creator);
+			    break;
+			case "unban":
+			    com.gmt2001.Console.out.println(username + " has been un-banned. By: " + creator);
+			    break;
+			case "mod":
+			   com.gmt2001.Console.out.println(username + " has been modded. By: " + creator);
+			   break;
+			case "unmod":
+			   com.gmt2001.Console.out.println(username + " has been un-modded. By: " + creator);
+			   break;
+		}
+	}
+
+	/**
+	 * @function onOpen
+	 * @info Used to get messages from the socket when it opens
+	 *
+	 * @param {ServerHandshake} handshakedata
+	 */
+	@Override
+	public void onOpen(ServerHandshake handshakedata) {
+		com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
+		com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
+
+		JSONObject jsonObject = new JSONObject();
+		JSONObject topics = new JSONObject();
+		String[] type = new String[] {"chat_moderator_actions." + channelId + "." + channelId};
+
+		jsonObject.put("type", "LISTEN");
+		topics.put("topics", type);
+		topics.put("auth_token", oAuth.replace("oauth:", ""));
+		jsonObject.put("data", topics);
+
+		this.send(jsonObject.toString()); // Send the info to connect in a jsonObject.
+	}
+
+	/**
+	 * @function onClose
+	 * @info Used to get messages from the socket when it closes.
+	 *
+	 * @param {int} code
+	 * @param {string} reason
+	 * @param {boolean} remote
+	 */
+	@Override
+	public void onClose(int code, String reason, boolean remote) {
+		com.gmt2001.Console.out.println("Disconnected from Twitch PubSub-Edge");
+		com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
+
+		// this.reconnectWSS();
+	}
+
+	/**
+	 * @function onError
+	 * @info Used to get messages from the socket when it errors
+	 *
+	 * @param {Exception} ex
+	 */
+	@Override
+	public void onError(Exception ex) {
+        if (!ex.toString().contains("ArrayIndexOutOfBoundsException")) {
+            com.gmt2001.Console.debug.println("Twitch PubSub-Edge Exception: " + ex);
+        }
+    }
+
+    /**
+	 * @function onMessage
+	 * @info Used to get messages from the socket.
+	 *
+	 * @param {String} message
+	 */
+	@Override
+	public void onMessage(String message) {
+		com.gmt2001.Console.debug.println("[Twitch PubSub-Edge Raw Message] " + message);
+
+		JSONObject messageObj = new JSONObject(message);
+
+		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("reconnect")) {
+			this.reconnectWSS();
+			return;
+		}
+
+		if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
+			String error = messageObj.getString("error");
+			if (error.contains("ERR_BADAUTH")) {
+				com.gmt2001.Console.out.println("Twitch PubSub-Edge Error: Bad oauth provided!");
+				com.gmt2001.Console.out.println("Please generate a new oauth token with your caster account here: https://phantombot.tv/oauth");
+				reconnectAllowed = false;
+				this.closeTimer();
+				return;
+			}
+			com.gmt2001.Console.err.println("Twitch PubSub-Edge Error: " + error);
+		}
+
+		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("message")) {
+		    this.parse(messageObj);
+		}
+	}
+
+	/**
+	 * @class PingTask
+	 * @info Used to send pings to pubsub in json format.
+	 *
+	 */
+	class PingTask extends TimerTask {
+		@Override
+		public void run() {
+			JSONObject jsonObject = new JSONObject("{}");
+
+			jsonObject.put("type", "PING");
+
+			send(jsonObject.toString()); // Send a ping in a jsonObject.
+			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: sent a ping.");
+		}
+	}
+}
