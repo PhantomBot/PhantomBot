@@ -112,6 +112,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC;
+import me.mast3rplan.phantombot.twitchwsirc.TwitchPubSub;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
 import java.net.URI;
@@ -232,7 +233,8 @@ public class PhantomBot implements Listener {
 	private static Boolean newSetup = false;
 	private Boolean devCommands = true;
 	private Boolean joined = false;
-        private TwitchWSHostIRC wsHostIRC;
+    private TwitchWSHostIRC wsHostIRC;
+    private TwitchPubSub pubSubEdge;
 
     /** 
      * PhantomBot Instance.
@@ -523,10 +525,15 @@ public class PhantomBot implements Listener {
 		/** Start a channel instance to create a session, and then connect to WS-IRC @ Twitch. */
 		this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
 
-                /** Start a host checking instance. */
-                if (this.apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
-                    this.wsHostIRC = TwitchWSHostIRC.instance(this.channelName, this.apiOAuth, EventBus.instance());
-                }
+		/** Start a host checking instance. */
+        if (apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
+            this.wsHostIRC = TwitchWSHostIRC.instance(this.channelName, this.apiOAuth, EventBus.instance());
+        }
+
+        /** Start a pubsub instance here. */
+        if (this.oauth.length() > 0 && dataStore.GetString("chatModerator", "", "moderationLogs").equals("true")) {
+        	this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv3.instance().getChannelId(this.channelName), TwitchAPIv3.instance().getChannelId(this.botName), this.oauth);
+        }
 
 		/** Check if the OS is Linux. */
 		if (SystemUtils.IS_OS_LINUX && !interactive) {
@@ -774,11 +781,16 @@ public class PhantomBot implements Listener {
         if (!gameWispOAuth.isEmpty() && checkModuleEnabled("./handlers/gameWispHandler.js")) {
     		/** Set the oAuths */
     		GameWispAPIv1.instance().SetAccessToken(gameWispOAuth);
-                GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
-                SingularityAPI.instance().setAccessToken(gameWispOAuth);
-                SingularityAPI.instance().StartService();
-                /** get a fresh token */
-                doRefreshGameWispToken();
+            GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
+            SingularityAPI.instance().setAccessToken(gameWispOAuth);
+            SingularityAPI.instance().StartService();
+            /** get a fresh token */
+            doRefreshGameWispToken();
+        }
+
+        /** Connect to Discord if the data is present. */
+        if (!discordToken.isEmpty()) {
+            DiscordAPI.instance().connect(discordToken);
         }
 
     	/** Check to see if all the Twitter info needed is there */
@@ -792,11 +804,6 @@ public class PhantomBot implements Listener {
             /** Check to see if the tokens worked */
             this.twitterAuthenticated = TwitterAPI.instance().authenticate();
     	}
-
-        /** Connect to Discord if the data is present. */
-        if (!discordToken.isEmpty()) {
-            DiscordAPI.instance().connect(discordToken);
-        }
 
     	/** print a extra line in the console. */
     	print("");
@@ -937,11 +944,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("ytplayer", youtubeSocketServer, 0);
-        if (useHttps) {
-            Script.global.defineProperty("panelsocketserver", panelSocketSecureServer, 0);
-        } else {
-            Script.global.defineProperty("panelsocketserver", panelSocketServer, 0);
-        }
+        Script.global.defineProperty("panelsocketserver", (Boolean.valueOf(useHttps) ? panelSocketSecureServer : panelSocketServer), 0);
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
@@ -1090,7 +1093,7 @@ public class PhantomBot implements Listener {
         }
 
 	    /* Start the notice timer and notice handler. */
-	    noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+	    // this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
 
         /** Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
@@ -1280,7 +1283,7 @@ public class PhantomBot implements Listener {
         /** test the gamewisp resubscriber event */
         if (message.equalsIgnoreCase("gamewispresubscribertest")) {
             print("[CONSOLE] Executing gamewispresubscribertest");
-            EventBus.instance().post(new GameWispAnniversaryEvent(this.botName, 2));
+            EventBus.instance().postAsync(new GameWispAnniversaryEvent(this.botName, 2));
             //Need to add a custom channel here for multi channel support. gamewispresubscribertest (channel). argument[1]
             return;
         }
@@ -1288,7 +1291,7 @@ public class PhantomBot implements Listener {
         /** test the bits event */
         if (message.equalsIgnoreCase("bitstest")) {
             print("[CONSOLE] Executing bitstest");
-            EventBus.instance().post(new BitsEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), this.botName, "100"));
+            EventBus.instance().postAsync(new BitsEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), this.botName, "100"));
             //Need to add a custom channel here for multi channel support. bitstest (channel). argument[1]
             return;
         }
