@@ -56,6 +56,7 @@ public class TwitchPubSub extends WebSocketClient {
 	private Boolean reconnectAllowed = true;
 	private Long lastReconnect;
 	private int channelId;
+	private int botId;
 	private String oAuth;
 
 	/**
@@ -66,11 +67,11 @@ public class TwitchPubSub extends WebSocketClient {
 	 * @param {int} channelId
 	 * @param {string} oauth
 	 */
-	public static TwitchPubSub instance(String channel, int channelId, String oAuth) {
+	public static TwitchPubSub instance(String channel, int channelId, int botId, String oAuth) {
 		TwitchPubSub instance = instances.get(channel);
 		if (instance == null) {
 			try {
-			    instance = new TwitchPubSub(new URI("wss://pubsub-edge.twitch.tv"), channelId, oAuth);
+			    instance = new TwitchPubSub(new URI("wss://pubsub-edge.twitch.tv"), channelId, botId, oAuth);
 			    instances.put(channel, instance);
 			} catch (Exception ex) {
                 com.gmt2001.Console.err.println("Twitch PubSub-Edge URI Failed, PhantomBot will exit: " + ex.getMessage());
@@ -88,11 +89,12 @@ public class TwitchPubSub extends WebSocketClient {
 	 * @param {int} channelId
 	 * @param {string} oauth
 	 */
-	private TwitchPubSub(URI uri, int channelId, String oAuth) {
+	private TwitchPubSub(URI uri, int channelId, int botId, String oAuth) {
 		super(uri, new Draft_17(), null, 5000);
 
 		this.uri = uri;
 		this.channelId = channelId;
+		this.botId = botId;
 		this.oAuth = oAuth;
 
 		this.connectWSS(false);
@@ -126,8 +128,17 @@ public class TwitchPubSub extends WebSocketClient {
 	 * @function reconnectWSS
 	 * @info Used to reconnect to pubsub.
 	 *
+	 * @param {boolean} sleep
 	 */
-	private void reconnectWSS() {
+	private void reconnectWSS(Boolean sleep) {
+		if (sleep) {
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException ex) {
+				com.gmt2001.Console.err.println("Twitch PubSub-Edge: Failed to sleep before reconnecting: " + ex.getMessage());
+			}
+		}
+
 		Long now = System.currentTimeMillis();
 
 		if (lastReconnect + 10000L <= now && reconnectAllowed) {
@@ -233,7 +244,7 @@ public class TwitchPubSub extends WebSocketClient {
 
 		JSONObject jsonObject = new JSONObject();
 		JSONObject topics = new JSONObject();
-		String[] type = new String[] {"chat_moderator_actions." + channelId + "." + channelId};
+		String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId}; // listen as the bot in the channel.
 
 		jsonObject.put("type", "LISTEN");
 		topics.put("topics", type);
@@ -256,7 +267,7 @@ public class TwitchPubSub extends WebSocketClient {
 		com.gmt2001.Console.out.println("Disconnected from Twitch PubSub-Edge");
 		com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
 
-		// this.reconnectWSS();
+		this.reconnectWSS(false);
 	}
 
 	/**
@@ -280,25 +291,24 @@ public class TwitchPubSub extends WebSocketClient {
 	 */
 	@Override
 	public void onMessage(String message) {
-		com.gmt2001.Console.debug.println("[Twitch PubSub-Edge Raw Message] " + message);
+		// com.gmt2001.Console.out.println("[Twitch PubSub-Edge Raw Message] " + message);
 
 		JSONObject messageObj = new JSONObject(message);
 
 		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("reconnect")) {
-			this.reconnectWSS();
+			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: Force reconnect required. (10 second sleep)");
+			this.reconnectWSS(true);
 			return;
 		}
 
 		if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
-			String error = messageObj.getString("error");
-			if (error.contains("ERR_BADAUTH")) {
-				com.gmt2001.Console.out.println("Twitch PubSub-Edge Error: Bad oauth provided!");
-				com.gmt2001.Console.out.println("Please generate a new oauth token with your caster account here: https://phantombot.tv/oauth");
-				reconnectAllowed = false;
-				this.closeTimer();
-				return;
-			}
-			com.gmt2001.Console.err.println("Twitch PubSub-Edge Error: " + error);
+			com.gmt2001.Console.err.println("Twitch PubSub-Edge Error: " + messageObj.getString("error"));
+			reconnectAllowed = false;
+			return;
+		}
+
+		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("pong")) {
+			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: got a pong.");
 		}
 
 		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("message")) {

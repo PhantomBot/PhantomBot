@@ -748,4 +748,25 @@ public class TwitchAPIv3 {
         }
         return null;
     }
+
+    /**
+     * Returns the channel Id
+     *
+     * @param   String      channel name
+     * @return  int      the channel id.
+     */
+    public int getChannelId(String channel) {
+        JSONObject jsonObject = GetChannel(channel);
+        int channelId = 0;
+        if (jsonObject.getBoolean("_success")) {
+            if (jsonObject.getInt("_http") == 200) {
+                channelId = jsonObject.getInt("_id");
+            } else {
+                com.gmt2001.Console.debug.println("TwitchAPIv3: ID get HTTP failure: " + jsonObject.getInt("_id"));
+            }
+        } else {
+            com.gmt2001.Console.debug.println("TwitchAPIv3: ID get fail");
+        }
+        return channelId;
+    }
 }
