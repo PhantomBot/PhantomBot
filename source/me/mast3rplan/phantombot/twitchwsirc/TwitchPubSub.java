@@ -47,6 +47,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ArrayList;
 
+import me.mast3rplan.phantombot.PhantomBot;
+
 import java.net.URI;
 
 public class TwitchPubSub extends WebSocketClient {
@@ -197,13 +199,13 @@ public class TwitchPubSub extends WebSocketClient {
 
 						switch (action) {
 							case "timeout":
-							    this.log(username + " has been timed out by " + creator + " for " + time + " seconds. Reason: " + reason);
+							    this.log(username + " has been timed out by " + creator + " for " + time + " seconds. " + (reason.length() == 0 ? "" : "Reason: " + reason)); 
 							    break;
 							case "untimeout":
 							    this.log(username + " has been un-timed out by " + creator + ".");
 							    break;
 							case "ban":
-							    this.log(username + " has been banned by " + creator + ". Reason: " + time);
+							    this.log(username + " has been banned by " + creator + ". " + (time.length() == 0 ? "" : "Reason: " + time));
 							    break;
 							case "unban":
 							    this.log(username + " has been un-banned by " + creator + ".");
@@ -228,7 +230,9 @@ public class TwitchPubSub extends WebSocketClient {
 	 * @param {string} message
 	 */
 	private void log(String message) {
-		Logger.instance().log(Logger.LogType.Moderation, "[" + Logger.instance().logTimestamp() + "] " + message);
+		if (PhantomBot.instance().getDataStore().GetString("chatModerator", "", "moderationLogs").equals("true")) {
+		    Logger.instance().log(Logger.LogType.Moderation, "[" + Logger.instance().logTimestamp() + "] " + message);
+		}
 	}
 
 	/**
