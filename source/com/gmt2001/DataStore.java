@@ -60,6 +60,16 @@ public class DataStore {
                };
     }
 
+    public String[] GetKeysByLikeValues(String fName, String section, String search) {
+        return new String[] {
+               };
+    }
+
+    public String[] GetKeysByLikeKeys(String fName, String section, String search) {
+        return new String[] {
+               };
+    }
+
     public String GetString(String fName, String section, String key) {
         return "";
     }
@@ -215,6 +225,14 @@ public class DataStore {
         ival -= amount;
 
         SetInteger(fName, "", key, ival);
+    }
+
+    public String[] searchByValue(String fName, String search) {
+        return GetKeysByLikeValues(fName, "", search);
+    }
+
+    public String[] searchByKey(String fName, String search) {
+        return GetKeysByLikeKeys(fName, "", search);
     }
 
     public void CreateIndexes() {
