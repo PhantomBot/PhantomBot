@@ -1,3 +1,5 @@
+$.lang.register('chatmoderator.moderation.logs', 'moderation logs have been $1');
+$.lang.register('chatmoderator.moderation.enabled', 'enabled - this will require a bot reboot.');
 $.lang.register('chatmoderator.usage.toggles', 'Usage: !moderation [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker / fakepurge / regulars / subscribers / silenttimeout]');
 $.lang.register('chatmoderator.usage.messages', 'Usage: !moderation [linksmessage / capsmessage / symbolsmessage / spammessage / emotesmessage / colorsmessage / blacklistmessage / longmsgmessage / spamtrackermessage / fakepurgemessage]');
 $.lang.register('chatmoderator.options', 'Usage: !moderation [capstriggerlength / capslimit / symbolstriggerlength / symbolslimit / symbolsgrouplimit / spamlimit / emoteslimit / spamtrackerlimit / spamtrackertime / permittime / warningtime / timeouttime / messagecooldown / messagecharacterlimit / blacklisttimeouttime / warningresettime]');

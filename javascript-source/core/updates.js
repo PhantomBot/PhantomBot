@@ -122,7 +122,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -466,7 +466,7 @@
 
     /* version 2.3.3s updates */
     if (!$.inidb.exists('updates', 'installedv2.3.3ss') || $.inidb.get('updates', 'installedv2.3.3ss') != 'true') {
-        $.consoleLn('Starting ' + $.version + ' updates...');
+        $.consoleLn('Starting PhantomBot update 2.3.3 updates...');
 
         $.consoleLn('Deleting the old emotes cache.');
         $.inidb.RemoveFile('emotecache');
@@ -511,8 +511,18 @@
         // Disable the Discord Module by default. //
         $.inidb.set('modules', './handlers/discordHandler.js', 'false');
 
-        $.consoleLn($.version + ' updates completed!');
+        $.consoleLn('PhantomBot update 2.3.3 completed!');
         $.inidb.set('updates', 'installedv2.3.3ss', 'true');
+    }
+
+    /* version 2.3.5 updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.5') || $.inidb.get('updates', 'installedv2.3.5') != 'true') {
+        $.consoleLn('Starting PhantomBot update 2.3.5 updates...');
+
+        $.inidb.set('chatModerator', 'moderationLogs', 'false');
+
+        $.consoleLn('PhantomBot update 2.3.5 completed!');
+        $.inidb.set('updates', 'installedv2.3.5', 'true');
     }
 
     /**

@@ -117,6 +117,7 @@
             FakePurge: $.getSetIniDbNumber('chatModerator', 'timeoutTimeFakePurge', 600),
         },
 
+        moderationLogs = $.getSetIniDbBoolean('chatModerator', 'moderationLogs', false),
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
         warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
         resetTime = (warningResetTime * 6e4),
@@ -566,6 +567,15 @@
         if (command.equalsIgnoreCase('moderation') || command.equalsIgnoreCase('mod')) { // js can't handle anymore commands in the default function.
             if (!action) {
                 return;
+            }
+
+            /**
+             * @commandpath moderation togglemoderationlogs - Toggles the moderation logs. You will need to reboot if you are enabling it.
+             */
+            if (action.equalsIgnoreCase('togglemoderationlogs')) {
+                moderationLogs = !moderationLogs;
+                $.inidb.set('chatModerator', 'moderationLogs', moderationLogs);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.moderation.logs', (moderationLogs === true ? $.lang.get('chatmoderator.moderation.enabled') : $.lang.get('common.disabled'))));
             }
             
             /**
