@@ -58,6 +58,7 @@ $.lang.register('ytplayer.requestsong.error.exists', 'song is already in queue')
 $.lang.register('ytplayer.requestsong.error.maxlength', 'song length is $1 and exceeds maximum length');
 $.lang.register('ytplayer.command.importpl.file.start', 'Import has started, please wait...');
 $.lang.register('ytplayer.command.importpl.file.success', 'Import Complete! Successfully imported $1 songs and failed to import $2 songs from $3 to playlist $4');
+$.lang.register('ytplayer.command.importpl.file.success.plerror', 'Import Complete! Successfully imported $1 songs and failed to import $2 songs from $3 to playlist $4. Skipped $5 playlist(s).');
 $.lang.register('ytplayer.command.importpl.file.404', 'Could not find file $1');
 $.lang.register('ytplayer.command.importpl.file.registry404', 'List $1 was not created in DB, try again.');
 $.lang.register('ytplayer.command.importpl.file.usage', 'usage: !importpl file [playlist name] [filename]');
