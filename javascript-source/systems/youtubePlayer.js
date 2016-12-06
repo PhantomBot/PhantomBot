@@ -159,6 +159,17 @@
             owner = owner.toLowerCase();
         }
 
+        /* Redefine searchQuery to check the cache, if it doesn't exist in the cache,
+         * this is simply extracting the ID from the searchString which is one way
+         * of looking up videos via the YouTube API.
+         */
+        if (searchQuery.contains('watch?v=')) {
+            searchQuery = searchQuery.split('=', 2)[1];
+        }
+        if (searchQuery.startsWith('https://youtu.be/')) {
+            searchQuery = searchQuery.split('/', 4)[3];
+        }
+
         if ($.inidb.exists('ytcache', searchQuery)) {
             var jsonString = $.inidb.get('ytcache', searchQuery);
             var jsonData = JSON.parse(jsonString);
@@ -219,13 +230,19 @@
         this.importPlaylistFile = function(listName, fileName, sender) {
             var importedList = [],
                 importCount = 0,
-                failCount = 0;
+                failCount = 0,
+                playlistFailCount = 0;
 
             if ($.inidb.exists('yt_playlists_registry', 'ytPlaylist_' + listName)) {
                 if ($.fileExists("./addons/youtubePlayer/" + fileName)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.importpl.file.start'));
                     importedList = readFile("./addons/youtubePlayer/" + fileName);
                     for (var i = 0; i < importedList.length; i++) {
+                        if (importedList[i].contains('&list')) {
+                            playlistFailCount++;
+                            continue;
+                         }
+
                         try {
                             var youtubeVideo = new YoutubeVideo(importedList[i], 'importPlaylistFile');
                             $.inidb.set(playlistDbPrefix + listName, importCount, youtubeVideo.getVideoId());
@@ -234,10 +251,17 @@
                             $.log.error("importPlaylistFile::skipped [" + importedList[i] + "]: " + ex);
                             failCount++;
                         }
+                        if (importCount >= 150) {
+                            break;
+                        }
                     }
                     $.inidb.set(playlistDbPrefix + listName, 'lastkey', importCount);
 
-                    return $.lang.get('ytplayer.command.importpl.file.success', importCount, failCount, fileName, listName);
+                    if (playlistFailCount > 0) {
+                        return $.lang.get('ytplayer.command.importpl.file.success.plerror', importCount, failCount, fileName, listName, playlistFailCount);
+                    } else {
+                        return $.lang.get('ytplayer.command.importpl.file.success', importCount, failCount, fileName, listName);
+                    }
                 } else {
                     return $.lang.get('ytplayer.command.importpl.file.404', fileName);
                 }
