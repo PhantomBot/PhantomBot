@@ -328,7 +328,7 @@ public class TwitchPubSub extends WebSocketClient {
 	class PingTask extends TimerTask {
 		@Override
 		public void run() {
-			JSONObject jsonObject = new JSONObject("{}");
+			JSONObject jsonObject = new JSONObject();
 
 			jsonObject.put("type", "PING");
 
