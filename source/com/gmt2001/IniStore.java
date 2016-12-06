@@ -339,6 +339,70 @@ public class IniStore extends DataStore implements ActionListener {
     }
 
     @Override
+    public String[] GetKeysByLikeValues(String fName, String section, String search) {
+        fName = validatefName(fName);
+
+        if (!LoadFile(fName, false)) {
+            return null;
+        }
+
+        section = validateSection(section);
+        Set<String> o = files.get(fName).data.get(section).keySet();
+        String[] s = new String[o.size()];
+
+        int i = 0;
+        Iterator<String> it = o.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            if (files.get(fName).data.get(section).get(key).toLowerCase().contains(search.toLowerCase())) {
+                s[i++] = key;
+            }
+        }
+
+        if (i == 0) {
+            return null;
+        }
+
+        String[] retVal = new String[i];
+        for (int j = 0; j < i; j++) {
+            retVal[j] = s[j];
+        }
+        return retVal;
+    }
+
+    @Override
+    public String[] GetKeysByLikeKeys(String fName, String section, String search) {
+        fName = validatefName(fName);
+
+        if (!LoadFile(fName, false)) {
+            return null;
+        }
+
+        section = validateSection(section);
+        Set<String> o = files.get(fName).data.get(section).keySet();
+        String[] s = new String[o.size()];
+
+        int i = 0;
+        Iterator<String> it = o.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            if (key.toLowerCase().contains(search.toLowerCase())) {
+                s[i++] = key;
+            }
+        }
+
+        if (i == 0) {
+            return null;
+        }
+
+        String[] retVal = new String[i];
+        for (int j = 0; j < i; j++) {
+            retVal[j] = s[j];
+        }
+        return retVal;
+    }
+
+    @Override
     public void SetBatchString(String fName, String section, String[] keys, String[] values) {
         fName = validatefName(fName);
 

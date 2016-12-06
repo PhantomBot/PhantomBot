@@ -103,6 +103,60 @@ public class TempStore extends DataStore {
     }
 
     @Override
+    public String[] GetKeysByLikeValues(String fName, String section, String search) {
+        AddFile(fName);
+
+        Set<String> o = files.get(fName).data.get(section).keySet();
+        String[] s = new String[o.size()];
+
+        int i = 0;
+        Iterator<String> it = o.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            if (GetString(fName, section, key).toLowerCase().contains(search.toLowerCase())) {
+                s[i++] = key;
+            }
+        }
+
+        if (i == 0) {
+            return null;
+        }
+
+        String[] retVal = new String[i];
+        for (int j = 0; j < i; j++) {
+            retVal[j] = s[j];
+        }
+        return retVal;
+    }
+
+    @Override
+    public String[] GetKeysByLikeKeys(String fName, String section, String search) {
+        AddFile(fName);
+    
+        Set<String> o = files.get(fName).data.get(section).keySet();
+        String[] s = new String[o.size()];
+
+        int i = 0;
+        Iterator<String> it = o.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            if (key.toLowerCase().contains(search.toLowerCase())) {
+                s[i++] = key;
+            }
+        }
+
+        if (i == 0) {
+            return null;
+        }
+
+        String[] retVal = new String[i];
+        for (int j = 0; j < i; j++) {
+            retVal[j] = s[j];
+        }
+        return retVal;
+    } 
+
+    @Override
     public Object GetObject(String fName, String section, String key) {
         AddFile(fName);
 
