@@ -1,7 +1,8 @@
 (function() {
     var currentHostTarget = '',
         respond = getSetIniDbBoolean('settings', 'response_@chat', true),
-        action = getSetIniDbBoolean('settings', 'response_action', false);
+        action = getSetIniDbBoolean('settings', 'response_action', false),
+        secureRandom = new java.security.SecureRandom();
 
     /* 
      * @function reloadMisc
@@ -155,8 +156,7 @@
         if (max == 0) {
             return max;
         }
-        $.random = new java.security.SecureRandom();
-        return (Math.abs($.random.nextInt()) % max);
+        return (Math.abs(secureRandom.nextInt()) % max);
     }
 
     /**
