@@ -7,12 +7,11 @@
 # % ./launch-service.sh
 #
 
-
 cd $(dirname $(readlink -f $0))
 
 unset DISPLAY
 
-if type -p java; then
+if type -p java 1>/dev/null 2>/dev/null; then
     _java=java
 elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
@@ -21,8 +20,10 @@ else
 fi
 
 if [[ "$_java" ]]; then
-    version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-    if [[ "$version" > "1.8" ]]; then
+    version=$(java -version 2>&1)
+    version=${version#*.}
+    version=${version%%.*}
+    if [[ $version -ge 8 ]]; then
         java -Dfile.encoding=UTF-8 -jar PhantomBot.jar
     else
         echo Your Java is out of date! Please download Java 8 at https://www.java.com/en/download/
