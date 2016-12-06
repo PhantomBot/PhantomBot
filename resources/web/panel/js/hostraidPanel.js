@@ -57,20 +57,20 @@
             if (panelCheckQuery(msgObject, 'hostraid_settings')) {
                 for (var idx in msgObject['results']) {
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostReward')) {
-                        $('#hostRewardInput').attr('placeholder', msgObject['results'][idx]['value']).blur();
+                        $('#hostRewardInput').val(msgObject['results'][idx]['value']).blur();
                     }
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostMessage')) {
-                        $('#hostAnnounceInput').attr('placeholder', msgObject['results'][idx]['value']).blur();
+                        $('#hostAnnounceInput').val(msgObject['results'][idx]['value']).blur();
                     }
                     if (panelMatch(msgObject['results'][idx]['key'], 'autoHostMessage')) {
-                        $('#hostAutoAnnounceInput').attr('placeholder', msgObject['results'][idx]['value']).blur();
+                        $('#hostAutoAnnounceInput').val(msgObject['results'][idx]['value']).blur();
                     }
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostHistory')) {
                         hostHistory = msgObject['results'][idx]['value'];
                         $('#hostHistoryMode').html(modeIcon[msgObject['results'][idx]['value']]);
                     }
                     if (panelMatch(msgObject['results'][idx]['key'], 'raidMessage')) {
-                        $('#raidMessageInput').attr('placeholder', msgObject['results'][idx]['value']).blur();
+                        $('#raidMessageInput').val(msgObject['results'][idx]['value']).blur();
                     }
                 }
             }
@@ -270,6 +270,7 @@
     $.raidChannel = raidChannel;
     $.raiderChannel = raiderChannel;
     $.updateHostAnnounce = updateHostAnnounce;
+    $.updateAutoHostAnnounce = updateAutoHostAnnounce;
     $.updateHostReward = updateHostReward;
     $.changeHostHistory = changeHostHistory;
     $.updateRaidMessage = updateRaidMessage;
