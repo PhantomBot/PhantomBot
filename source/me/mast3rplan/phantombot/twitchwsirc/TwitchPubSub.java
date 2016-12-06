@@ -23,6 +23,7 @@
 package me.mast3rplan.phantombot.twitchwsirc;
 
 import com.google.common.collect.Maps;
+import com.gmt2001.Logger;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -168,7 +169,6 @@ public class TwitchPubSub extends WebSocketClient {
 		JSONObject dataObj;
 		JSONObject messageObj;
 		JSONObject data;
-		String action;
 
 		if (message.has("data")) {
 			dataObj = message.getJSONObject("data");
@@ -176,61 +176,32 @@ public class TwitchPubSub extends WebSocketClient {
 				messageObj = new JSONObject(dataObj.getString("message"));
 				if (messageObj.has("data")) {
 					data = messageObj.getJSONObject("data");
-					if (data.has("moderation_action")) {
-						action = data.getString("moderation_action");
+					if (data.has("moderation_action") && data.has("args") && data.has("created_by")) {
+						JSONArray args = data.getJSONArray("args");
+						String action = data.getString("moderation_action");
+						String creator = data.getString("created_by");
+						String username = args.getString(0);
+						String time = (args.length() == 2 || args.length() == 3 ? args.getString(1) : "");
+						String reason = (args.length() == 3 ? args.getString(2) : "");
 
 						switch (action) {
 							case "timeout":
-							    if (data.has("args") && data.has("created_by")) {
-							    	JSONArray args = data.getJSONArray("args");
-							        if (args.length() == 3) {
-							        	this.log("timeout_reason", data.getString("created_by"), args.getString(0), args.getString(2), args.getString(1));
-							        } else {
-							        	this.log("timeout", data.getString("created_by"), args.getString(0), null, args.getString(1));
-							        }
-							    }
+							    this.log(username + " has been timed out by " + creator + " for " + time + " seconds. Reason: " + reason);
 							    break;
 							case "untimeout":
-							    if (data.has("args") && data.has("created_by")) {
-							    	JSONArray args = data.getJSONArray("args");
-							    	if (args.length() == 1) {
-							    		this.log("untimeout", data.getString("created_by"), args.getString(0), null, null);
-							    	}
-							    }
+							    this.log(username + " has been un-timed out by " + creator + ".");
 							    break;
 							case "ban":
-							    if (data.has("args") && data.has("created_by")) {
-							    	JSONArray args = data.getJSONArray("args");
-							    	if (args.length() == 2) {
-							    		this.log("ban_reason", data.getString("created_by"), args.getString(0), args.getString(1), null);
-							        } else {
-							        	this.log("ban", data.getString("created_by"), args.getString(0), null, null);
-							        }
-							    }
+							    this.log(username + " has been banned by " + creator + ". Reason: " + time);
 							    break;
 							case "unban":
-							    if (data.has("args") && data.has("created_by")) {
-							    	JSONArray args = data.getJSONArray("args");
-							    	if (args.length() == 1) {
-							    		this.log("unban", data.getString("created_by"), args.getString(0), null, null);
-							    	}
-							    }
+							    this.log(username + " has been un-banned by " + creator + ".");
 							    break;
 							case "mod":
-							    if (data.has("args") && data.has("created_by")) {
-							    	JSONArray args = data.getJSONArray("args");
-							    	if (args.length() == 1) {
-							    		this.log("mod", data.getString("created_by"), args.getString(0), null, null);
-							    	}
-							    }
+							    this.log(username + " has been modded by " + creator + ".");
 							    break;
 							case "unmod":
-							    if (data.has("args") && data.has("created_by")) {
-							    	JSONArray args = data.getJSONArray("args");
-							    	if (args.length() == 1) {
-							    		this.log("unmod", data.getString("created_by"), args.getString(0), null, null);
-							    	}
-							    }
+							    this.log(username + " has been un-modded by " + creator + ".");
 							    break;
 						}
 					}
@@ -243,40 +214,10 @@ public class TwitchPubSub extends WebSocketClient {
 	 * @function log
 	 * @info Used to log messages once they are parsed.
 	 *
-	 * @param {string} action
-	 * @param {string} creator
-	 * @param {string} username
-	 * @param {string} reason
-	 * @param {string} time
+	 * @param {string} message
 	 */
-	private void log(String action, String creator, String username, String reason, String time) {
-		// Logging logic here. Only printing for now.
-		switch (action) {			
-			case "timeout_reason":
-			    com.gmt2001.Console.out.println(username + " has been timed out for " + time + " seconds. Reason: " + reason + ". By: " + creator);
-			    break;
-			case "timeout":
-			    com.gmt2001.Console.out.println(username + " has been timed out for " + time + " seconds. By: " + creator);
-			    break;
-			case "ban":
-			    com.gmt2001.Console.out.println(username + " has been banned. By: " + creator);
-			    break;
-			case "ban_reason":
-			    com.gmt2001.Console.out.println(username + " has been banned. Reason: " + reason + ". By: " + creator);
-			    break;
-			case "untimeout":
-			    com.gmt2001.Console.out.println(username + " has been un-timed out. By: " + creator);
-			    break;
-			case "unban":
-			    com.gmt2001.Console.out.println(username + " has been un-banned. By: " + creator);
-			    break;
-			case "mod":
-			   com.gmt2001.Console.out.println(username + " has been modded. By: " + creator);
-			   break;
-			case "unmod":
-			   com.gmt2001.Console.out.println(username + " has been un-modded. By: " + creator);
-			   break;
-		}
+	private void log(String message) {
+		Logger.instance().log(Logger.LogType.Moderation, "[" + Logger.instance().logTimestamp() + "] " + message);
 	}
 
 	/**

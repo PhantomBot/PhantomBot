@@ -42,10 +42,12 @@ public class Logger implements Runnable {
     private FileOutputStream fosError = null;
     private FileOutputStream fosWarning = null;
     private FileOutputStream fosDebug = null;
+    private FileOutputStream fosModeration = null;
     private PrintStream psCore = null;
     private PrintStream psError = null;
     private PrintStream psWarning = null;
     private PrintStream psDebug = null;
+    private PrintStream psModeration = null;
     private String curLogTimestamp = "";
 
     @Override
@@ -67,6 +69,9 @@ public class Logger implements Runnable {
         }
         if (!new File ("./logs/core-debug").exists()) {
           new File ("./logs/core-debug/").mkdirs();
+        }
+        if (!new File ("./logs/moderation").exists()) {
+          new File ("./logs/moderation/").mkdirs();
         }
 
         while (!disposed) {
@@ -94,6 +99,10 @@ public class Logger implements Runnable {
                     if (this.psDebug != null) {
                         this.psDebug.close();
                         this.psDebug = null;
+                    }
+                    if (this.psModeration != null) {
+                        this.psModeration.close();
+                        this.psModeration = null;
                     }
                     this.curLogTimestamp = timestamp;
                 }
@@ -148,7 +157,14 @@ public class Logger implements Runnable {
                             this.psWarning.println(i.s);
                             this.psWarning.flush();
                             break;
-
+                        case Moderation:
+                            if (this.psModeration == null) {
+                                this.fosModeration = new FileOutputStream("./logs/moderation/" + timestamp + ".txt", true);
+                                this.psModeration = new PrintStream(this.fosModeration);
+                            }
+                            this.psModeration.println(i.s);
+                            this.psModeration.flush();
+                            break;
                         default:
                             if (this.psCore == null) {
                                 this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
@@ -195,13 +211,12 @@ public class Logger implements Runnable {
     }
 
     public enum LogType {
-
         Output,
         Input,
         Error,
         Debug,
         Warning,
-        
+        Moderation,
     }
 
     public static Logger instance() {
