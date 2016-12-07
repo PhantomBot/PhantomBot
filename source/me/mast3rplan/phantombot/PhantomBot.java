@@ -2054,10 +2054,10 @@ public class PhantomBot implements Listener {
                     if (line.startsWith("webauthro=") && line.length() > 13) {
                         webOAuthThro = line.substring(10);
                     }
-                    if (line.startsWith("paneluser=") && line.length() > 12) {
+                    if (line.startsWith("paneluser=") && line.length() > 10) {
                         panelUsername = line.substring(10);
                     }
-                    if (line.startsWith("panelpassword=") && line.length() > 16) {
+                    if (line.startsWith("panelpassword=") && line.length() > 14) {
                         panelPassword = line.substring(14);
                     }
                     if (line.startsWith("mysqlhost=") && line.length() > 11) {
