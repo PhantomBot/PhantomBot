@@ -7,6 +7,34 @@
     var messageToggle = $.getSetIniDbBoolean('settings', 'audiohookmessages', false);
 
     /**
+     * @function updateAudioHookDB
+     */
+    function updateAudioHookDB() {
+        var audioHookFiles = $.findFiles('./web/panel/js/ion-sound/sounds', ''),
+            audioHookNames = {},
+            dbAudioHookNames,
+            reFileExt = new RegExp(/\.mp3$|\.ogg$|\.aac$/);
+
+        for (var i in audioHookFiles) {
+            var fileName = audioHookFiles[i] + '';
+            audioHookNames[fileName.replace(reFileExt, '')] = fileName.replace(reFileExt, '');
+        }
+
+        for (var i in audioHookNames) {
+            if (!$.inidb.exists('audio_hooks', audioHookNames[i])) {
+                $.inidb.set('audio_hooks', audioHookNames[i], audioHookNames[i]);
+            }
+        }
+
+        dbAudioHookNames = $.inidb.GetKeyList('audio_hooks', '');
+        for (i in dbAudioHookNames) {
+            if (audioHookNames[dbAudioHookNames[i]] === undefined) {
+                $.inidb.del('audio_hooks', dbAudioHookNames[i]);
+            }
+        }
+    };
+
+    /**
      * @function audioHookExists
      * @param {string} hook
      */
@@ -71,8 +99,16 @@
             audioHook = args[1],
             audioHookListStr;
 
+        /* Control Panel call to update the Audio Hooks DB. */
+        if (command.equalsIgnoreCase('reloadaudiopanelhooks')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            updateAudioHookDB();
+        }
+
         /**
-         * Checks if the command is a adio hook 
+         * Checks if the command is an audio hook 
          */
         if ($.inidb.exists('audioCommands', command)) {
             if ($.inidb.get('audioCommands', command).match(/\(list\)/g)) {
@@ -215,6 +251,7 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./systems/audioPanelSystem.js')) {
+            $.registerChatCommand('./systems/audioPanelSystem.js', 'reloadaudiopanelhooks', 30);
             $.registerChatCommand('./systems/audioPanelSystem.js', 'audiohook', 1);
             $.registerChatSubcommand('audiohook', 'play', 1);
             $.registerChatSubcommand('audiohook', 'list', 1);
