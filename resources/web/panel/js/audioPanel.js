@@ -33,7 +33,8 @@
      */
     var announceInChat = false,
         playlists = [],
-        sounds = [];
+        sounds = [],
+        audioPanelLoaded = false;
 
     /**
      * @function onMessage
@@ -89,25 +90,10 @@
         }
 
         if (panelCheckQuery(msgObject, 'audio_hook')) {
-            var html = "<table>";
-            sounds.splice(0);
-
+            sounds = [];
             for (var idx in msgObject['results']) {
-
                 sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
-
-                html += "<tr class=\"textList\">" +
-                    "    <td style=\"width: 5%\">" +
-                    "        <div id=\"deleteAudio_" + msgObject['results'][idx]['key'] + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
-                    "             onclick=\"$.deleteAudio('" + msgObject['results'][idx]['key'] + "')\"><i class=\"fa fa-trash\" />" +
-                    "        </div>" +
-                    "    </td>" +
-                    "    <td>" + msgObject['results'][idx]['value'] + "</td>" +
-                    "</tr>";
             }
-            html += "</table>";
-            $('#audioHooks').html(html);
-            handleInputFocus();
 
             setTimeout(function () {
                 $(document).ready(function() {
@@ -119,9 +105,25 @@
                         ready_callback: ionSoundLoaded,
                         ended_callback: clearIonSoundPlaying 
                     });
-                    sendAudioHooksToCore();
                 });
             }, 2000);
+        }
+
+        if (panelCheckQuery(msgObject, 'audio_hook_reload')) {
+            sounds = [];
+            for (var idx in msgObject['results']) {
+                sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
+            }
+
+            ion.sound({
+                sounds: sounds,
+                path: "/panel/js/ion-sound/sounds/",
+                preload: true,
+                volume: 1.0,
+                ready_callback: ionSoundLoaded,
+                ended_callback: clearIonSoundPlaying 
+            });
+            loadAudioPanel();
         }
 
         if (panelCheckQuery(msgObject, 'audio_ytplaylists')) {
@@ -167,15 +169,6 @@
     }
 
     /**
-     * @function sendAudioHooksToCore
-     */
-    function sendAudioHooksToCore() {
-        var jsonObject = {};
-        jsonObject["audio_hooks"] = sounds;
-        connection.send(JSON.stringify(jsonObject));
-    }
-
-    /**
      * @function doQuery
      */
     function doQuery(message) {
@@ -189,32 +182,14 @@
         sendDBKeys('audio_hook', 'audio_hooks');
     }
 
-    /** 
-     * @function addSound
+    /**
+     * @function reloadAudioHooks
      */
-    function addSound() {
-        var name = $('#soundImput').val();
-        var desc = $('#soundImputDesc').val();
-
-        if (name.length && desc.length != 0) {
-            sendDBUpdate('audio_hook_add', 'audio_hooks', name, desc);
-        }
-
-        $('#soundImput').val('');
-        $('#soundImputDesc').val('');
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-    };
-
-    /** 
-     * @function addSound
-     */
-    function deleteAudio(audio) {
-        if (audio.length != 0) {
-            $("#deleteAudio_" + audio).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-            sendDBDelete('deleteAudio_' + audio, 'audio_hooks', audio);
-        }
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
-    };
+    function reloadAudioHooks() {
+        $('#reloadSounds').html('Please wait...');
+        sendCommand('reloadaudiopanelhooks');
+        setTimeout(function() { sendDBKeys('audio_hook_reload', 'audio_hooks'); $("#reloadSounds").html('Reload Audio Hooks'); }, 5 * 1000);
+    }
 
     /** 
      * @function deleteBSong
@@ -457,6 +432,5 @@
     $.deleteUser = deleteUser;
     $.playlists = playlists;
     $.loadYtplaylist = loadYtplaylist;
-    $.addSound = addSound;
-    $.deleteAudio = deleteAudio;
+    $.reloadAudioHooks = reloadAudioHooks;
 })();
