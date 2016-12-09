@@ -88,7 +88,7 @@
         $.say(msg.replace('/w', ' /w'));
 
         /** is there a host reward set? */
-        if (thisReward > 0) {
+        if (autoHostReward > 0) {
             /** Give the hoster points */
             $.inidb.incr('points', hoster.toLowerCase(), autoHostReward);
         }
