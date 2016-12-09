@@ -59,6 +59,12 @@
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostReward')) {
                         $('#hostRewardInput').val(msgObject['results'][idx]['value']).blur();
                     }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'autoHostReward')) {
+                        $('#autoHostRewardInput').val(msgObject['results'][idx]['value']).blur();
+                    }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'hostMinViewerCount')) {
+                        $('#hostMinViewersInput').val(msgObject['results'][idx]['value']).blur();
+                    }
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostMessage')) {
                         $('#hostAnnounceInput').val(msgObject['results'][idx]['value']).blur();
                     }
@@ -214,6 +220,33 @@
         }
     }
 
+    /** 
+     * @function updateAutoHostReward
+     */
+    function updateAutoHostReward() {
+        var value = $('#autoHostRewardInput').val();
+        if (value.length > 0) {
+            sendDBUpdate('hostraid_settings', 'settings', 'autoHostReward', value);
+            sendCommand('reloadhost');
+            $('#autoHostRewardInput').attr('placeholder', value).blur();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /** 
+     * @function updateHostMinViewers
+     */
+    function updateHostMinViewers() {
+        var value = $('#hostMinViewersInput').val();
+        if (value.length > 0) {
+            sendDBUpdate('hostraid_settings', 'settings', 'hostMinViewerCount', value);
+            sendCommand('reloadhost');
+            $('#hostMinViewersInput').attr('placeholder', value).blur();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+
     /**
      * @function changeHostHistory
      * @param {String} action
@@ -272,6 +305,8 @@
     $.updateHostAnnounce = updateHostAnnounce;
     $.updateAutoHostAnnounce = updateAutoHostAnnounce;
     $.updateHostReward = updateHostReward;
+    $.updateAutoHostReward = updateAutoHostReward;
+    $.updateHostMinViewers = updateHostMinViewers;
     $.changeHostHistory = changeHostHistory;
     $.updateRaidMessage = updateRaidMessage;
 })();

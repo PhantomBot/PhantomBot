@@ -68,7 +68,7 @@
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateHostAnnounce()">Submit</button>
                 <input type="text" class="form-control" id="hostAnnounceInput" placeholder="Host Message"
-                       data-toggle="tooltip" title="Tags: (name) (reward)"/>
+                       data-toggle="tooltip" title="Tags: (name) (viewers) (reward)"/>
             </div>
         </form>
 
@@ -78,7 +78,7 @@
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.updateAutoHostAnnounce()">Submit</button>
                 <input type="text" class="form-control" id="hostAutoAnnounceInput" placeholder="Auto-Host Message"
-                       data-toggle="tooltip" title="Tags: (name)"/>
+                       data-toggle="tooltip" title="Tags: (name) (viewers) (reward)"/>
             </div>
         </form>
         
@@ -90,6 +90,25 @@
                 <input type="number" min="0" class="form-control" id="hostRewardInput" placeholder="Points" />
             </div>
         </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="autoHostReward">Auto Host Reward</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateAutoHostReward()">Submit</button>
+                <input type="number" min="0" class="form-control" id="autoHostRewardInput" placeholder="Points" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="hostMinViewers">Minimum Viewers for Host Reward</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateHostMinViewers()">Submit</button>
+                <input type="number" min="0" class="form-control" id="hostMinViewersInput" placeholder="Points" />
+            </div>
+        </form>
+
     </div>
     </div>
 
