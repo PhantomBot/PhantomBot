@@ -293,7 +293,7 @@
         /*
          * Reloads the subscriber variables.
          */
-        if (command.equalsIgnoreCase('subscribepanelupdate')) {
+        if (command.equalsIgnoreCase('subscriberpanelupdate')) {
             if (!$.isBot(sender)) {
                 return;
             }
@@ -452,7 +452,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'gamewisppanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadhost', 30);
             $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdatestreamtip', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'subscribepanelupdate', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'subscriberpanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'greetingspanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadnotice', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadpoints', 30);

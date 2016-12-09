@@ -5,8 +5,10 @@
  */
 (function() {
     var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
+        primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
         reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
+        primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
         announce = false,
@@ -18,8 +20,10 @@
      */
     function updateSubscribeConfig() {
         subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage');
+        primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage');
         reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage');
         subWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle');
+        primeSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle');
         reSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle');
         subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
     }
@@ -88,6 +92,24 @@
         }
     });
 
+    $.bind('NewPrimeSubscriber', function(event) { // From twitchnotify
+        var subscriber = event.getSub(),
+            message = primeSubMessage;
+
+        if (primeSubWelcomeToggle && announce) {
+            if (message.match(/\(name\)/g)) {
+                message = $.replace(message, '(name)', subscriber);
+            }
+            if (message.match(/\(reward\)/g)) {
+                message = $.replace(message, '(reward)', String(subReward));
+            }
+            $.say(message);
+            $.addSubUsersList(subscriber);
+            $.restoreSubscriberStatus(subscriber, true);
+            $.inidb.set('streamInfo', 'lastSub', subscriber);
+        }
+    });
+
     $.bind('NewReSubscriber', function(event) { // From notice event
         var resubscriber = event.getReSub(),
             months = event.getReSubMonths(),
@@ -125,7 +147,7 @@
             args = event.getArgs();
     
         /**
-         * @commandpath subwelcometoggle - Enable or disable subscription alerts
+         * @commandpath subwelcometoggle - Enable or disable subscription alerts.
          */
         if (command.equalsIgnoreCase('subwelcometoggle')) {
             if (subWelcomeToggle) {
@@ -144,7 +166,26 @@
         }
 
         /**
-         * @commandpath resubwelcometoggle - Eenable or disable resubsciption alerts
+         * @commandpath primesubwelcometoggle - Enable or disable Twitch Prime subscription alerts.
+         */
+        if (command.equalsIgnoreCase('primesubwelcometoggle')) {
+            if (primeSubWelcomeToggle) {
+                $.inidb.set('subscribeHandler', 'primeSubscriberWelcomeToggle', false);
+                primeSubWelcomeToggle = false;
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.new.primesub.toggle.off'));
+                $.log.event(sender + ' disabled prime subscriber announcements');
+                return;
+            } else {
+                $.inidb.set('subscribeHandler', 'primeSubscriberWelcomeToggle', true);
+                primeSubWelcomeToggle = true;
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.new.primesub.toggle.on'));
+                $.log.event(sender + ' enabled prime subscriber announcements');
+                return;
+            }
+        }
+
+        /**
+         * @commandpath resubwelcometoggle - Eenable or disable resubsciption alerts.
          */
         if (command.equalsIgnoreCase('resubwelcometoggle')) {
             if (reSubWelcomeToggle) {
@@ -163,7 +204,7 @@
         }
 
         /**
-         * @commandpath submessage [message] - Set a welcome message for new subscribers when a reward is given
+         * @commandpath submessage [message] - Set a welcome message for new subscribers.
          */
         if (command.equalsIgnoreCase('submessage')) {
             if (args.length == 0) {
@@ -178,7 +219,22 @@
         }
 
         /**
-         * @commandpath resubmessage [message] - Set a message for resubscribers when a reward is given
+         * @commandpath primesubmessage [message] - Set a welcome message for new Twitch Prime subscribers.
+         */
+        if (command.equalsIgnoreCase('primesubmessage')) {
+            if (args.length == 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.primesub.msg.usage'));
+                return;
+            }
+            $.inidb.set('subscribeHandler', 'primeSubscribeMessage', argsString);
+            primeSubMessage = argsString + '';
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.primesub.msg.set'));
+            $.log.event(sender + ' changed the prime subscriber message to "' + primeSubMessage + '"');
+            return;
+        }
+
+        /**
+         * @commandpath resubmessage [message] - Set a message for resubscribers.
          */
         if (command.equalsIgnoreCase('resubmessage')) {
             if (args.length == 0) {
@@ -193,7 +249,7 @@
         }
 
         /**
-         * @commandpath subscribereward [points] - Set an award for subscribers
+         * @commandpath subscribereward [points] - Set an award for subscribers.
          */
         if (command.equalsIgnoreCase('subscribereward')) {
             if (args.length == 0) {
@@ -209,7 +265,7 @@
 
 
         /**
-         * @commandpath subscribers - Enables subscription only chat mode
+         * @commandpath subscribers - Enables subscription only chat mode.
          */
         if (command.equalsIgnoreCase('subscribers')) {
             $.say('.subscribers');
@@ -217,7 +273,7 @@
         }
 
         /**
-         * @commandpath subscribersoff - Disables subscription only chat mode
+         * @commandpath subscribersoff - Disables subscription only chat mode.
          */
         if (command.equalsIgnoreCase('subscribersoff')) {
             $.say('.subscribersoff');
@@ -230,11 +286,13 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./handlers/subscribehandler.js')) {
-            $.registerChatCommand('./handlers/subscribehandler.js', 'subwelcometoggle', 2);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'resubwelcometoggle', 2);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 2);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 2);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 2);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'subwelcometoggle', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'primesubwelcometoggle', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'resubwelcometoggle', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'primesubmessage', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribers', 2);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribersoff', 2);
             announce = true;
