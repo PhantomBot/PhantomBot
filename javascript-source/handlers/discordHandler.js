@@ -714,9 +714,20 @@
          *
          * Announces new Twitch subscribers in a specific channel if the user enables it. 
          */
-        $.bind('NewSubscriber', function(event) {
+        $.bind('newSubscriber', function(event) {
             if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'subscriberChannel', '') != '') {
-                $.discord.sendMessage($.getIniDbString('discordSettings', 'subscriberChannel', ''), $.lang.get('discord.newsub', event.getSub(), $.channelName));
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'subscriberChannel', ''), $.lang.get('discord.newsub', event.getSubscriber(), $.channelName));
+            }
+        });
+
+        /*
+         * @event NewSubscriber
+         *
+         * Announces new Twitch subscribers in a specific channel if the user enables it. 
+         */
+        $.bind('newPrimeSubscriber', function(event) {
+            if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'subscriberChannel', '') != '') {
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'subscriberChannel', ''), $.lang.get('discord.newsub', event.getSubscriber(), $.channelName));
             }
         });
     
@@ -725,9 +736,9 @@
          *
          * Announces new Twitch resubscribers in a specific channel if the user enables it. 
          */
-        $.bind('NewReSubscriber', function(event) {
+        $.bind('newReSubscriber', function(event) {
             if ($.bot.isModuleEnabled('./handlers/discordHandler.js') && $.getIniDbString('discordSettings', 'resubscriberChannel', '') != '') {
-                $.discord.sendMessage($.getIniDbString('discordSettings', 'resubscriberChannel', ''), $.lang.get('discord.newresub', event.getReSub(), event.getReSubMonths(), $.channelName));
+                $.discord.sendMessage($.getIniDbString('discordSettings', 'resubscriberChannel', ''), $.lang.get('discord.newresub', event.getReSubscriber(), event.getMonths(), $.channelName));
             }
         });
     
