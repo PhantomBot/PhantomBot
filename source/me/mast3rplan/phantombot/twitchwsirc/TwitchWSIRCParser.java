@@ -287,12 +287,6 @@ public class TwitchWSIRCParser {
         /* Print the IRCv3 tags if debug mode is on*/
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
 
-        /* Check to see if the users disaplay name. Used in the scripts. */
-        if (tagsMap.containsKey("display-name")) {
-            usernameCache.addUser(username, tagsMap.get("display-name"));
-            com.gmt2001.Console.debug.println("Username::" + username + "::Display-Name::" + tagsMap.get("display-name"));
-        }
-
         /* Check to see if the user is subscribing to the channel */
         if (message.endsWith("subscribed!") || message.endsWith("Prime!")) {
             if (username.equalsIgnoreCase("twitchnotify")) {
@@ -304,6 +298,12 @@ public class TwitchWSIRCParser {
                 com.gmt2001.Console.debug.println(message.substring(0, message.indexOf(" ", 1)) + " just subscribed!");
                 return;
             }
+        }
+
+        /* Check to see if the users disaplay name. Used in the scripts. */
+        if (tagsMap.containsKey("display-name")) {
+            usernameCache.addUser(username, tagsMap.get("display-name"));
+            com.gmt2001.Console.debug.println("Username::" + username + "::Display-Name::" + tagsMap.get("display-name"));
         }
 
         /* Check to see if the user is donating/cheering bits */

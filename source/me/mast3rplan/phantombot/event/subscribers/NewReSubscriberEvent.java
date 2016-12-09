@@ -24,23 +24,44 @@ public class NewReSubscriberEvent extends SubscriberEvent {
 
 	private final String resubscriber;
     private final String months;
+    private final Channel channel;
+    private final Session session;
 
 	public NewReSubscriberEvent(String resubscriber, String months) {
         this.resubscriber = resubscriber;
         this.months = months;
+        this.channel = null;
+        this.session = null;
+    }
+
+    public NewReSubscriberEvent(Channel channel, String resubscriber, String months) {
+        this.resubscriber = resubscriber;
+        this.months = months;
+        this.channel = channel;
+        this.session = null;
     }
 
     public NewReSubscriberEvent(Session session, Channel channel, String resubscriber, String months) {
         super(channel, session);
         this.resubscriber = resubscriber;
         this.months = months;
+        this.channel = channel;
+        this.session = session;
     }
 
-    public String getReSub() {
-        return resubscriber;
+    public String getReSubscriber() {
+        return this.resubscriber;
     }
 
-    public String getReSubMonths() {
-        return months;
+    public String getMonths() {
+        return this.months;
+    }
+
+    public Channel getChannel() {
+        return this.channel;
+    }
+
+    public Session getSession() {
+        return this.session;
     }
 }

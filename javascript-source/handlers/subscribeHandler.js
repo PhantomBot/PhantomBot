@@ -74,8 +74,8 @@
         }
     });
 
-    $.bind('NewSubscriber', function(event) { // From twitchnotify
-        var subscriber = event.getSub(),
+    $.bind('newSubscriber', function(event) { // From twitchnotify
+        var subscriber = event.getSubscriber(),
             message = subMessage;
 
         if (subWelcomeToggle && announce) {
@@ -92,8 +92,8 @@
         }
     });
 
-    $.bind('NewPrimeSubscriber', function(event) { // From twitchnotify
-        var subscriber = event.getSub(),
+    $.bind('newPrimeSubscriber', function(event) { // From twitchnotify
+        var subscriber = event.getSubscriber(),
             message = primeSubMessage;
 
         if (primeSubWelcomeToggle && announce) {
@@ -110,9 +110,9 @@
         }
     });
 
-    $.bind('NewReSubscriber', function(event) { // From notice event
-        var resubscriber = event.getReSub(),
-            months = event.getReSubMonths(),
+    $.bind('newReSubscriber', function(event) { // From notice event
+        var resubscriber = event.getReSubscriber(),
+            months = event.getMonths(),
             message = reSubMessage,
             emotes = [];
 
