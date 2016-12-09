@@ -2345,13 +2345,13 @@ public class PhantomBot implements Listener {
                         changed = true;
                     }
                 }
-                if (arg.startsWith("paneluser=") && arg.length() > 12) {
+                if (arg.startsWith("paneluser=") && arg.length() > 10) {
                     if (!panelUsername.equals(arg.substring(10))) {
                         panelUsername = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (arg.startsWith("panelpassword=") && arg.length() > 16) {
+                if (arg.startsWith("panelpassword=") && arg.length() > 14) {
                     if (!panelPassword.equals(arg.substring(14))) {
                         panelPassword = arg.substring(14);
                         changed = true;
