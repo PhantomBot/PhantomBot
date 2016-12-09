@@ -134,6 +134,7 @@
                 });
             }
             loadAudioPanel();
+            $('#reloadSounds').html('Reload Audio Hooks');
         }
 
         if (panelCheckQuery(msgObject, 'audio_ytplaylists')) {
@@ -194,11 +195,12 @@
 
     /**
      * @function reloadAudioHooks
+     * Note that there is not a query performed here because the command sends back a 
+     * doDBKeysQuery() call with the ID of audio_hook_reload.
      */
     function reloadAudioHooks() {
         $('#reloadSounds').html('Please wait...');
         sendCommand('reloadaudiopanelhooks');
-        setTimeout(function() { sendDBKeys('audio_hook_reload', 'audio_hooks'); $("#reloadSounds").html('Reload Audio Hooks'); }, 5 * 1000);
     }
 
     /** 
