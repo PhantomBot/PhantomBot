@@ -93,6 +93,7 @@ import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
+import me.mast3rplan.phantombot.event.subscribers.NewPrimeSubscriberEvent;
 import me.mast3rplan.phantombot.event.bits.BitsEvent;
 import me.mast3rplan.phantombot.httpserver.HTTPServer;
 import me.mast3rplan.phantombot.httpserver.NEWHTTPServer;
@@ -1239,6 +1240,15 @@ public class PhantomBot implements Listener {
     		return;
     	}
 
+    	/** Test a prime subscriber event */
+    	if (message.equalsIgnoreCase("primesubscribertest")) {
+    		String randomUser = generateRandomString(10);
+    		print("[CONSOLE] Executing primesubscribertest (User: " + randomUser + ")");
+    		EventBus.instance().postAsync(new NewPrimeSubscriberEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), randomUser));
+    		//Need to add a custom channel here for multi channel support. subscribertest (channel). argument[1]
+    		return;
+    	}
+
     	/** Test a resubscriber event */
     	if (message.equalsIgnoreCase("resubscribertest")) {
     		String randomUser = generateRandomString(10);
@@ -1631,6 +1641,13 @@ public class PhantomBot implements Listener {
                 command = commandString.substring(0, commandString.indexOf(" "));
                 arguments = commandString.substring(commandString.indexOf(" ") + 1);
                 args = arguments.split(" ");
+            }
+
+            if (command.equals("consoleevent")) {
+            	EventBus.instance().postAsync(new ConsoleInputEvent(arguments));
+            	Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". ConsoleEvent: " + arguments + ". Id: " + id);
+    			Logger.instance().log(Logger.LogType.Debug, "");
+    			return;
             }
 
             if (command.equals("exit")) {
@@ -2054,10 +2071,10 @@ public class PhantomBot implements Listener {
                     if (line.startsWith("webauthro=") && line.length() > 13) {
                         webOAuthThro = line.substring(10);
                     }
-                    if (line.startsWith("paneluser=") && line.length() > 12) {
+                    if (line.startsWith("paneluser=") && line.length() > 10) {
                         panelUsername = line.substring(10);
                     }
-                    if (line.startsWith("panelpassword=") && line.length() > 16) {
+                    if (line.startsWith("panelpassword=") && line.length() > 14) {
                         panelPassword = line.substring(14);
                     }
                     if (line.startsWith("mysqlhost=") && line.length() > 11) {

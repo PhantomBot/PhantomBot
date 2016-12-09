@@ -41,6 +41,7 @@ import me.mast3rplan.phantombot.event.irc.message.IrcModerationEvent;
 import me.mast3rplan.phantombot.event.irc.clearchat.IrcClearchatEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
+import me.mast3rplan.phantombot.event.subscribers.NewPrimeSubscriberEvent;
 import me.mast3rplan.phantombot.event.bits.BitsEvent;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.command.CommandEvent;
@@ -295,7 +296,11 @@ public class TwitchWSIRCParser {
         /* Check to see if the user is subscribing to the channel */
         if (message.endsWith("subscribed!") || message.endsWith("Prime!")) {
             if (username.equalsIgnoreCase("twitchnotify")) {
-                scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
+                if (message.endsWith("Prime!")) {
+                    scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
+                } else {
+                    scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
+                }
                 com.gmt2001.Console.debug.println(message.substring(0, message.indexOf(" ", 1)) + " just subscribed!");
                 return;
             }

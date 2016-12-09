@@ -40,6 +40,7 @@
         donationGroup = false,  
         streamtipdonationGroup = false,         
         gameWhispToggle = false,
+        primeSubToggle = false;
         bitsToggle = false;
 
     /*
@@ -158,12 +159,19 @@
                     if (panelMatch(key, 'subscribeMessage')) {
                         $('#subGreetingInput').val(value);
                     }
+                    if (panelMatch(key, 'primeSubscribeMessage')) {
+                        $('#primeSubGreetingInput').val(value);
+                    }
                     if (panelMatch(key, 'reSubscribeMessage')) {
                         $('#resubGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'subscriberWelcomeToggle')) {
                         subToggle = value;
                         $('#subscriptionGreetings').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'primeSubscriberWelcomeToggle')) {
+                        primeSubToggle = value;
+                        $('#primeSubscriptionGreetings').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'reSubscriberWelcomeToggle')) {
                         reSubToggle = value;
@@ -357,6 +365,15 @@
             }
             setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
+        if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'primeSubscriberWelcomeToggle')) { 
+            $('#primeSubscriptionGreetings').html(spinIcon);
+            if (primeSubToggle == "true") {
+                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'primeSubscriberWelcomeToggle', 'false');
+            } else {
+                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'primeSubscriberWelcomeToggle', 'true');
+            }
+            setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
+        }
         if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'reSubscriberWelcomeToggle')) { 
             $('#resubscriptionGreetings').html(spinIcon);
             if (reSubToggle == "true") {
@@ -421,7 +438,7 @@
                 sendCommand('donationpanelupdatestreamtip');
             }
             if (panelMatch(table, 'subscribeHandler')) {
-                sendCommand('subscribepanelupdate');
+                sendCommand('subscriberpanelupdate');
             }
             if (panelMatch(table, 'bitsSettings')) {
                 sendCommand('reloadbits');
@@ -429,7 +446,7 @@
             if (panelMatch(table, 'gameWispSubHandler')) {
                 sendCommand('gamewisppanelupdate');
             }
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         } 
     }
 
