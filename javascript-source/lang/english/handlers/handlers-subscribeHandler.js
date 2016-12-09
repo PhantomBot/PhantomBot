@@ -18,5 +18,6 @@ $.lang.register('subscribehandler.sub.count', 'There are currently $1 subscriber
 $.lang.register('subscribehandler.sub.msg.set', 'New subscriber welcome message set!');
 $.lang.register('subscribehandler.primesub.msg.set', 'New Twitch Prime subscriber welcome message set!');
 $.lang.register('subscribehandler.sub.msg.usage', 'Usage: !submessage (message) - Tags: (name) and (reward)');
+$.lang.register('subscribehandler.primesub.msg.usage', 'Usage: !primesubmessage (message) - Tags: (name) and (reward)');
 $.lang.register('subscribehandler.sub.msg.noreward.set', 'New subscriber welcome message set for no rewards!');
 $.lang.register('subscribehandler.sub.msg.noreward.usage', 'Usage: !submessage (message) - Tag: (name)');
