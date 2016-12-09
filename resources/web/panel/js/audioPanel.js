@@ -95,18 +95,23 @@
                 sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
             }
 
-            setTimeout(function () {
-                $(document).ready(function() {
-                    ion.sound({
-                        sounds: sounds,
-                        path: "/panel/js/ion-sound/sounds/",
-                        preload: true,
-                        volume: 1.0,
-                        ready_callback: ionSoundLoaded,
-                        ended_callback: clearIonSoundPlaying 
+            if (sounds.length === 0) {
+                $('#audioPanelButtons').html('No sounds configured, please click Reload Audio Hooks if sounds are installed.');
+                $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
+            } else {
+                setTimeout(function () {
+                    $(document).ready(function() {
+                        ion.sound({
+                            sounds: sounds,
+                            path: "/panel/js/ion-sound/sounds/",
+                            preload: true,
+                            volume: 1.0,
+                            ready_callback: ionSoundLoaded,
+                            ended_callback: clearIonSoundPlaying 
+                        });
                     });
-                });
-            }, 2000);
+                }, 2000);
+            }
         }
 
         if (panelCheckQuery(msgObject, 'audio_hook_reload')) {
@@ -115,14 +120,19 @@
                 sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
             }
 
-            ion.sound({
-                sounds: sounds,
-                path: "/panel/js/ion-sound/sounds/",
-                preload: true,
-                volume: 1.0,
-                ready_callback: ionSoundLoaded,
-                ended_callback: clearIonSoundPlaying 
-            });
+            if (sounds.length === 0) {
+                $('#audioPanelButtons').html('No sounds configured, please click Reload Audio Hooks if sounds are installed.');
+                $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
+            } else {
+                ion.sound({
+                    sounds: sounds,
+                    path: "/panel/js/ion-sound/sounds/",
+                    preload: true,
+                    volume: 1.0,
+                    ready_callback: ionSoundLoaded,
+                    ended_callback: clearIonSoundPlaying 
+                });
+            }
             loadAudioPanel();
         }
 

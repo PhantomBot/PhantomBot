@@ -258,6 +258,7 @@
             $.registerChatSubcommand('audiohook', 'togglemessages', 1);
             $.registerChatSubcommand('audiohook', 'customcommand', 1);
             loadAudioHookCommands();
+            updateAudioHookDB();
         }
     });
 
