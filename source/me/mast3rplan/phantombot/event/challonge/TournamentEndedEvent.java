@@ -16,13 +16,12 @@
  */
 package me.mast3rplan.phantombot.event.challonge;
 
-import me.mast3rplan.phantombot.event.Event;
+public class TournamentEndedEvent extends ChallongeEvent {
 
-public class TournamentEndedEvent extends Event {
-	private String champion;
-	private String name;
-	private String game;
-	private String url;
+	private final String champion;
+	private final String name;
+	private final String game;
+	private final String url;
 
 	public TournamentEndedEvent(String champion, String name, String game, String url) {
 		this.champion = champion;

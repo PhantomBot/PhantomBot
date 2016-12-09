@@ -16,11 +16,10 @@
  */
 package me.mast3rplan.phantombot.event.challonge;
 
-import me.mast3rplan.phantombot.event.Event;
+public class MatchEndedEvent extends ChallongeEvent {
 
-public class MatchEndedEvent extends Event {
-	private String winner;
-	private String loser;
+	private final String winner;
+	private final String loser;
 
 	public MatchEndedEvent(String winner, String loser) {
 		this.winner = winner;

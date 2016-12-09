@@ -17,11 +17,10 @@
 
 package me.mast3rplan.phantombot.event.subscribers;
 
-import me.mast3rplan.phantombot.event.Event;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
 
-public class SubscriberEvent extends Event {
+public class SubscriberEvent extends ChallongeEvent {
 
 	private final Channel channel;
 	private final Session session;
