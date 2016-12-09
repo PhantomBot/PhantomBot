@@ -23,17 +23,37 @@ import me.mast3rplan.phantombot.twitchwsirc.Session;
 public class NewSubscriberEvent extends SubscriberEvent {
 
 	private final String subscriber;
+    private final Channel channel;
+    private final Session session;
 
 	public NewSubscriberEvent(String subscriber) {
         this.subscriber = subscriber;
+        this.channel = null;
+        this.session = null;
+    }
+
+    public NewSubscriberEvent(Channel channel, String subscriber) {
+        this.subscriber = subscriber;
+        this.channel = channel;
+        this.session = null;
     }
 
     public NewSubscriberEvent(Session session, Channel channel, String subscriber) {
         super(channel, session);
         this.subscriber = subscriber;
+        this.channel = channel;
+        this.session = session;
     }
 
-    public String getSub() {
-        return subscriber;
+    public String getSubscriber() {
+        return this.subscriber;
+    }
+
+    public Channel getChannel() {
+        return this.channel;
+    }
+
+    public Session getSession() {
+        return this.session;
     }
 }

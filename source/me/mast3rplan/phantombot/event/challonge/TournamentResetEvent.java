@@ -16,12 +16,11 @@
  */
 package me.mast3rplan.phantombot.event.challonge;
 
-import me.mast3rplan.phantombot.event.Event;
+public class TournamentResetEvent extends ChallongeEvent {
 
-public class TournamentResetEvent extends Event {
-	private String name;
-	private String game;
-	private String url;
+	private final String name;
+	private final String game;
+	private final String url;
 
 	public TournamentResetEvent(String name, String game, String url) {
 		this.name = name;
