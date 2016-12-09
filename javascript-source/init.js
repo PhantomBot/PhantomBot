@@ -1259,35 +1259,35 @@
         /**
          * @event api-NewSubscriberEvent
          */
-        $api.on($script, 'NewSubscriber', function(event) {
-            callHook('NewSubscriber', event, false);
+        $api.on($script, 'newSubscriber', function(event) {
+            callHook('newSubscriber', event, false);
         });
 
         /**
          * @event api-NewPrimeSubscriberEvent
          */
-        $api.on($script, 'NewPrimeSubscriber', function(event) {
-            callHook('NewPrimeSubscriber', event, false);
+        $api.on($script, 'newPrimeSubscriber', function(event) {
+            callHook('newPrimeSubscriber', event, false);
         });
 
         /**
          * @event api-NewReSubscriberEvent
          */
-        $api.on($script, 'NewReSubscriber', function(event) {
-            callHook('NewReSubscriber', event, false);
+        $api.on($script, 'newReSubscriber', function(event) {
+            callHook('newReSubscriber', event, false);
         });
 
         /**
          * @event api-BitsEvent
          */
-        $api.on($script, 'Bits', function(event) {
-            callHook('Bits', event, false);
+        $api.on($script, 'bits', function(event) {
+            callHook('bits', event, false);
         });
 
         /**
          * @event api-DeveloperCommandEvent
          */
-        $api.on($script, 'DeveloperCommand', function(event) {
+        $api.on($script, 'developerCommand', function(event) {
             callHook('command', event, false);
             handleInitCommands(event);
         });

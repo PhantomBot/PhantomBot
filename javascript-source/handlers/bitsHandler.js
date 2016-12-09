@@ -27,7 +27,7 @@
 	 * 
 	 * @event BitsEvent
 	 */
-	$.bind('Bits', function(event) {
+	$.bind('bits', function(event) {
 		if (!announceBits || !toggle) {
 			return;
 		}

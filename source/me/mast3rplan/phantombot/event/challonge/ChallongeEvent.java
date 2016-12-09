@@ -14,29 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package me.mast3rplan.phantombot.event.challonge;
 
-public class TournamentStartedEvent extends ChallongeEvent {
+import me.mast3rplan.phantombot.event.Event;
 
-	private final String name;
-	private final String game;
-	private final String url;
+public class ChallongeEvent extends Event {
 
-	public TournamentStartedEvent(String name, String game, String url) {
-		this.name = name;
-		this.game = game;
-		this.url = url;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public String getGame() {
-		return this.game;
-	}
-
-	public String getUrl() {
-		return this.url;
+	protected ChallongeEvent() {
+		// Nothing here, yet.
 	}
 }
