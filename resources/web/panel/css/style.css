@@ -805,3 +805,66 @@ input, textarea {
     border-color: grey;
 }
 
+.togglebutton {
+    background: #666666; /* For that extra satanic infusion */
+    display: inline-block;
+    border-radius: 20px;
+    width: 80px;
+    vertical-align: middle;
+    font-size: 0;
+}
+
+.togglebutton:hover {
+    cursor: pointer;
+}
+
+.togglebutton .togglebuttoninside {
+    padding: 2px;
+    line-height: 22px;
+    float: left;
+    color: #141414;
+}
+
+.togglebutton .togglebuttoninside.spinner {
+    display: none;
+    font-size: 12pt;
+}
+
+.togglebutton .togglebuttoninside.toggleball {
+    display: inline-block;
+    font-size: 12pt;
+}
+
+.togglebutton.enabled {
+    background: #6441a5;
+}
+
+.togglebutton.enabled .togglebuttoninside {
+    float: right;
+}
+
+.togglebutton.enabled .togglebuttoninside::before,
+.togglebutton.disabled .togglebuttoninside::after {
+    font-family: "Roboto", arial;
+    font-size: 10pt;
+    padding: 0;
+    vertical-align: top;
+}
+
+.togglebutton.enabled .togglebuttoninside::before {
+    content: "ON";
+
+}
+
+.togglebutton.disabled .togglebuttoninside::after {
+    content: "OFF";
+
+}
+
+.togglebutton.switchingstate .togglebuttoninside.toggleball {
+    display: none;
+}
+
+.togglebutton.switchingstate .togglebuttoninside.spinner {
+    display: inline-block;
+}
