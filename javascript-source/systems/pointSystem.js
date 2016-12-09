@@ -671,11 +671,6 @@
                 amount = 0,
                 totalAmount = 0;
 
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             action = parseInt(action);
             if (isNaN(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.makeitrain.usage'));
