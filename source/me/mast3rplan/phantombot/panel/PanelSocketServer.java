@@ -50,9 +50,6 @@
  * // Delete from DB
  * { "dbdelkey" : "query_id", "delkey" : { "table" : "table_name", "key" : "key_name" } }
  *
- * // Replace the Audio Hooks DB Entries
- * { "audio_hooks" : [ "name" : "audio hook name", "desc" : "audio hook description" ] }
- * 
  * ---------------------------------------------------------------------------
  *
  * Websocket pushes the following to the Panel Interface
@@ -259,8 +256,6 @@ public class PanelSocketServer extends WebSocketServer {
                 String table = jsonObject.getJSONObject("delkey").getString("table");
                 String key = jsonObject.getJSONObject("delkey").getString("key");
                 doDBDelKey(webSocket, uniqueID, table, key);
-            } else if (jsonObject.has("audio_hooks") && !sessionData.isReadOnly()) {
-                doAudioHooksUpdate(jsonObject);
             } else {
                 com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
                 return;
@@ -357,7 +352,12 @@ public class PanelSocketServer extends WebSocketServer {
         }
 
         jsonObject.endArray().endObject();
-        webSocket.send(jsonObject.toString());
+        if (webSocket == null) {
+            sendToAll(jsonObject.toString());
+        } else {
+            webSocket.send(jsonObject.toString());
+        }
+       
     }
 
     private void doDBKeysListQuery(WebSocket webSocket, String id, JSONArray jsonArray) {
@@ -457,20 +457,8 @@ public class PanelSocketServer extends WebSocketServer {
         sendToAll(jsonObject.toString());
     }
 
-    private void doAudioHooksUpdate(JSONObject jsonObject) {
-        JSONArray jsonArray = jsonObject.getJSONArray("audio_hooks");
-        try {
-            PhantomBot.instance().getDataStore().RemoveFile("audio_hooks");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonArray.getJSONObject(i).getString("name");
-                PhantomBot.instance().getDataStore().set("audio_hooks", jsonArray.getJSONObject(i).getString("name"), jsonArray.getJSONObject(i).getString("name"));
-            }
-        } catch (NullPointerException ex) {
-            if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
-            }
-            return;
-        }
+    public void doAudioHooksUpdate() {
+        doDBKeysQuery(null, "audio_hook_reload", "audio_hooks");
     }
 
     public void alertImage(String imageInfo) {
