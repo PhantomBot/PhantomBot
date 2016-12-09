@@ -71,16 +71,10 @@ public class TwitchWSHostIRC {
      * @param  eventBus     EventBus for performing work on.
      */
     public static TwitchWSHostIRC instance(String channelName, String oAuth, EventBus eventBus) {
-        URI uri = null;
         TwitchWSHostIRC instance = instances.get(channelName);
         if (instance == null) {
-            try {
-                uri = new URI("wss://irc-ws.chat.twitch.tv");
-                instance = new TwitchWSHostIRC(channelName, oAuth, eventBus);
-                instances.put(channelName, instance);
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Unable to capture hosting information from TwitchWSHostIRC: " + ex.getMessage());
-            }
+            instance = new TwitchWSHostIRC(channelName, oAuth, eventBus);
+            instances.put(channelName, instance);
             return instance;
         }
         return instance;
@@ -101,10 +95,12 @@ public class TwitchWSHostIRC {
         try {
             twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
             if (!twitchWSHostIRCWS.connectWSS(false)) {
-                com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed. Hosting notices will not function.");
+                com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed. Exiting PhantomBot");
+                System.exit(0);
             }
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed. Hosting notices will not function.");
+            com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed. Exiting PhantomBot.");
+            System.exit(0);
         }
     }
 
@@ -145,7 +141,8 @@ public class TwitchWSHostIRC {
     }
 
     /*
-     * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data.
+     * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data. Note that a sleep operation
+     * is performed in the connectWSS() call, and that is why there is no sleep present here.
      */
     public void reconnect() {
         Boolean reconnected = false;
@@ -155,7 +152,8 @@ public class TwitchWSHostIRC {
                 this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
                 reconnected = twitchWSHostIRCWS.connectWSS(true);
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Failed to reconnect to Twitch Data Host Feed. Hosting notices will not function: " + ex.getMessage());
+                com.gmt2001.Console.err.println("Failed to reconnect to Twitch Data Host Feed. Exiting PhantomBot: " + ex.getMessage());
+                System.exit(0);
             }
         }
     }
@@ -240,7 +238,8 @@ public class TwitchWSHostIRC {
         }
 
         /*
-         * Connect via WSS. This provides a secure connection to Twitch.
+         * Connect via WSS. This provides a secure connection to Twitch.  If this is a 
+         * reconnect request, the method waits 10 seconds before attempting to connect.
          *
          * @param   boolean  true if reconnecting
          * @return  boolean  true on success and false on failure
@@ -251,7 +250,7 @@ public class TwitchWSHostIRC {
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException ex) {
-                        // Do nothing, this just means the sleep was interrupted.
+                        com.gmt2001.Console.debug.println("InterruptedException Occurred");
                     }
                     com.gmt2001.Console.out.println("Reconnecting to Twitch Host Data Feed");
                 }
@@ -285,7 +284,7 @@ public class TwitchWSHostIRC {
         @Override
         public void onClose(int code, String reason, boolean remote) {
             if (!badOauth) {
-                com.gmt2001.Console.out.println("Lost connection to Twitch Host Data Feed, retrying in 10 seconds...");
+                com.gmt2001.Console.out.println("Lost connection to Twitch Host Data Feed, retrying in 10 seconds");
                 com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
                 twitchWSHostIRC.reconnect();
             }
@@ -324,7 +323,8 @@ public class TwitchWSHostIRC {
 
             if (message.contains("Error logging in") || message.contains("Login authentication failed") && badOauth == false) {
                 com.gmt2001.Console.out.println("");
-                com.gmt2001.Console.out.println("API OAuth not allowed to gather host data, suggest updating to support auto-host capture. Current method will be decommissioned in the near future.");
+                com.gmt2001.Console.out.println("API OAuth not allowed to gather host data, please update to support auto-host and viewer count capture.");
+                com.gmt2001.Console.out.println("Current method will be decommissioned in the near future, resulting in no host data being collected!");
                 com.gmt2001.Console.out.println("Please obtain new API OAuth at https://phantombot.tv/oauth");
                 com.gmt2001.Console.out.println("");
                 badOauth = true;

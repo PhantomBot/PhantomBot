@@ -6,6 +6,8 @@
  */
 (function() {
     var hostReward = $.getSetIniDbNumber('settings', 'hostReward', 200),
+        autoHostReward = $.getSetIniDbNumber('settings', 'autoHostReward', 0),
+        hostMinViewerCount = $.getSetIniDbNumber('settings', 'hostMinViewerCount', 0),
         hostMessage = $.getSetIniDbString('settings', 'hostMessage', $.lang.get('hosthandler.host.message')),
         autoHostMessage = $.getSetIniDbString('settings', 'autoHostMessage', $.lang.get('hosthandler.autohost.message')),
         hostHistory = $.getSetIniDbBoolean('settings', 'hostHistory', false),
@@ -20,6 +22,8 @@
      */
     function updateHost() {
         hostReward = $.getIniDbNumber('settings', 'hostReward');
+        autoHostReward = $.getIniDbNumber('settings', 'autoostReward');
+        hostMinViewerCont = $.getIniDbNumber('settings', 'hostMinViewerCount');
         hostMessage = $.getIniDbString('settings', 'hostMessage');
         autoHostMessage = $.getIniDbString('settings', 'autoHostMessage');
         hostHistory = $.getIniDbBoolean('settings', 'hostHistory');
@@ -58,6 +62,7 @@
         }
 
         var hoster = $.username.resolve(event.getHoster()),
+            viewers = event.getUsers(),
             now = $.systemTime(),
             msg = autoHostMessage,
             jsonObject = {};
@@ -78,7 +83,15 @@
 
         /** Replace the tags in the host message */
         msg = msg.replace('(name)', hoster);
+        msg = msg.replace('(reward)', autoHostReward.toString());
+        msg = msg.replace('(viewers)', viewers.toString());
         $.say(msg.replace('/w', ' /w'));
+
+        /** is there a host reward set? */
+        if (autoHostReward > 0) {
+            /** Give the hoster points */
+            $.inidb.incr('points', hoster.toLowerCase(), autoHostReward);
+        }
     });
 
     /**
@@ -93,8 +106,10 @@
         }
 
         var hoster = $.username.resolve(event.getHoster()),
+            viewers = event.getUsers(),
             now = $.systemTime(),
             msg = hostMessage,
+            thisReward = hostReward,
             jsonObject = {};
 
         /** Are we allowed to announce hosts? */
@@ -118,20 +133,25 @@
             };
         }
 
+        if (viewers < hostMinViewerCount) {
+            thisReward = 0;
+        }
+
         /** Replace the tags in the host message */
         msg = msg.replace('(name)', hoster);
-        msg = msg.replace('(reward)', hostReward.toString());
+        msg = msg.replace('(reward)', thisReward.toString());
+        msg = msg.replace('(viewers)', viewers.toString());
         $.say(msg.replace('/w', ' /w'));
 
         /** is there a host reward set? */
-        if (hostReward > 0) {
+        if (thisReward > 0) {
             /** Give the hoster points */
-            $.inidb.incr('points', hoster.toLowerCase(), hostReward);
+            $.inidb.incr('points', hoster.toLowerCase(), thisReward);
         }
 
         /** is the host history enabled? */
         if ($.getIniDbBoolean('settings', 'hostHistory', false)) {
-            jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : 0 }; // Add viewers as placeholder.
+            jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : viewers };
             $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
         }
     });
@@ -163,6 +183,40 @@
             hostReward = parseInt(action);
             $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostreward.success', $.getPointsString(action)));
             $.log.event(sender + ' changed the host reward to ' + action);
+        }
+
+        /**
+         * Set a reward for when someone autohosts the channel.
+         *
+         * @commandpath autohostreward [amount] - Set the amount of points to reward when a channel starts autohosting
+         */
+        if (command.equalsIgnoreCase('autohostreward')) {
+            if (!parseInt(action) || isNaN(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.autohostreward.usage', $.pointNameMultiple));
+                return;
+            }
+
+            $.inidb.set('settings', 'autoHostReward', action);
+            autoHostReward = parseInt(action);
+            $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.autohostreward.success', $.getPointsString(action)));
+            $.log.event(sender + ' changed the autohost reward to ' + action);
+        }
+
+        /**
+         * Set a minimum number of viewers in the hosted channel to provide a reward.
+         *
+         * @commandpath hostrewardminviewers [amount] - The number of viewers in the hosted channel required to provide a reward.
+         */
+        if (command.equalsIgnoreCase('hostrewardminviewers')) {
+            if (!parseInt(action) || isNaN(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostrewardminviewers'));
+                return;
+            }
+
+            $.inidb.set('settings', 'hostMinViewerCount', action);
+            hostMinViewerCount = parseInt(action);
+            $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostrewardminviewers.success', hostMinViewerCount));
+            $.log.event(sender + ' changed the host minimum viewer count to ' + action);
         }
 
         /**
@@ -275,6 +329,8 @@
             $.registerChatCommand('./handlers/hostHandler.js', 'hostmessage', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'autohostmessage', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'hostreward', 1);
+            $.registerChatCommand('./handlers/hostHandler.js', 'autohostreward', 1);
+            $.registerChatCommand('./handlers/hostHandler.js', 'hostrewardminviewers', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'unhost', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'host', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'hostcount');
