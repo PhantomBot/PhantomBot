@@ -32,6 +32,8 @@
                 $.inidb.del('audio_hooks', dbAudioHookNames[i]);
             }
         }
+        
+        $.panelsocketserver.doAudioHooksUpdate();
     };
 
     /**
