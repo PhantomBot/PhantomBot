@@ -1264,6 +1264,13 @@
         });
 
         /**
+         * @event api-NewPrimeSubscriberEvent
+         */
+        $api.on($script, 'NewPrimeSubscriber', function(event) {
+            callHook('NewPrimeSubscriber', event, false);
+        });
+
+        /**
          * @event api-NewReSubscriberEvent
          */
         $api.on($script, 'NewReSubscriber', function(event) {
