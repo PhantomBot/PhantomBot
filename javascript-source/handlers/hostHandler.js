@@ -22,7 +22,7 @@
      */
     function updateHost() {
         hostReward = $.getIniDbNumber('settings', 'hostReward');
-        autoHostReward = $.getIniDbNumber('settings', 'autoostReward');
+        autoHostReward = $.getIniDbNumber('settings', 'autoHostReward');
         hostMinViewerCont = $.getIniDbNumber('settings', 'hostMinViewerCount');
         hostMessage = $.getIniDbString('settings', 'hostMessage');
         autoHostMessage = $.getIniDbString('settings', 'autoHostMessage');
@@ -88,7 +88,7 @@
         $.say(msg.replace('/w', ' /w'));
 
         /** is there a host reward set? */
-        if (autoHostReward > 0) {
+        if (thisReward > 0) {
             /** Give the hoster points */
             $.inidb.incr('points', hoster.toLowerCase(), autoHostReward);
         }
@@ -174,7 +174,7 @@
          * @commandpath hostreward [amount] - Set the amount of points to reward when a channel starts hosting
          */
         if (command.equalsIgnoreCase('hostreward')) {
-            if (!parseInt(action) || isNaN(action)) {
+            if (isNaN(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostreward.usage', $.pointNameMultiple));
                 return;
             }
@@ -191,7 +191,7 @@
          * @commandpath autohostreward [amount] - Set the amount of points to reward when a channel starts autohosting
          */
         if (command.equalsIgnoreCase('autohostreward')) {
-            if (!parseInt(action) || isNaN(action)) {
+            if (isNaN(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.autohostreward.usage', $.pointNameMultiple));
                 return;
             }
@@ -208,8 +208,8 @@
          * @commandpath hostrewardminviewers [amount] - The number of viewers in the hosted channel required to provide a reward.
          */
         if (command.equalsIgnoreCase('hostrewardminviewers')) {
-            if (!parseInt(action) || isNaN(action)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostrewardminviewers'));
+            if (isNaN(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostrewardminviewers.usage'));
                 return;
             }
 
