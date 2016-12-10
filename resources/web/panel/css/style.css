@@ -810,29 +810,28 @@ input, textarea {
     display: inline-block;
     border-radius: 20px;
     width: 80px;
-    vertical-align: middle;
     font-size: 0;
 }
 
-.togglebutton:hover {
+.togglebutton:hover,
+.togglebutton *:hover {
     cursor: pointer;
 }
 
 .togglebutton .togglebuttoninside {
     padding: 2px;
-    line-height: 22px;
     float: left;
     color: #141414;
 }
 
 .togglebutton .togglebuttoninside.spinner {
     display: none;
-    font-size: 12pt;
+    font-size: 12px;
 }
 
 .togglebutton .togglebuttoninside.toggleball {
     display: inline-block;
-    font-size: 12pt;
+    font-size: 12px;
 }
 
 .togglebutton.enabled {
@@ -848,7 +847,6 @@ input, textarea {
     font-family: "Roboto", arial;
     font-size: 10pt;
     padding: 0;
-    vertical-align: top;
 }
 
 .togglebutton.enabled .togglebuttoninside::before {
