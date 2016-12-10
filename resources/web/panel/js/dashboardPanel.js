@@ -41,12 +41,6 @@
         settingIcon = [];
         gameTitle = '__not_loaded__';
 
-        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
-
-        settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
-        settingIcon['true'] = "<i class=\"fa fa-circle\" />";
-
         var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />';
 
     /*
@@ -91,21 +85,17 @@
                     if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
                         html += "<tr class=\"textList\">" +
                                 "    <td>" + module + "</td>" +
-
-                                "    <td style=\"width: 25px\">" +
-                                "        <div id=\"moduleStatus_" + idx + "\">" + modeIcon[moduleEnabled] + "</div>" +
-                                "    </td>" +
-
-                                "    <td style=\"width: 25px\">" +
-                                "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
-                                "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
-                                "        </div>" +
-                                "    </td>" +
-
-                                "    <td style=\"width: 25px\">" +
-                                "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
-                                "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
-                                "        </div>" +
+                                "    <td style=\"width: 80px\">" +
+                                "        <div id=\"moduleStatus_" + idx + "\" class=\"togglebutton " + 
+                                        (moduleEnabled == 'true' ? "enabled" : "disabled") + "\"  " +
+                                "        onclick=\"$.toggleModule('" + module + "', " + idx + ")\">" +
+                                "           <div class=\"togglebuttoninside spinner\"> " +
+                                "               <i class=\"fa fa-spinner fa-pulse fa-lg fa-fw\"></i> " +
+                                "           </div> " +
+                                "           <div class=\"togglebuttoninside toggleball\"> " +
+                                "               <i class=\"fa fa-circle fa-lg fa-fw\" aria-hidden=\"true\"></i> " +
+                                "           </div> " +
+                                "        </div> " +
                                 "    </td>" +
                                 "</tr>";
                     }
@@ -363,22 +353,39 @@
         return panelStrcmp(a.key, b.key);
     }
 
+    /**
+    * @function toggleModule
+    * @param {String} module
+    */
+    function toggleModule(module, idx) {
+        var el = $('#moduleStatus_' + idx);
+
+        if($(el).hasClass("enabled")) {
+            //If the module is getting disabled
+            $(el).addClass("switchingstate");
+            disableModule(module, idx);
+        } else {
+            //If the module is getting enabled
+            $(el).addClass("switchingstate");
+            enableModule(module, idx);
+        }
+    }
+
     /** 
      * @function enableModule
      * @param {String} module
      */
     function enableModule(module, idx) {
-        $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module enablesilent " + module);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
+
 
     /**
      * @function disableModule
      * @param {String} module
      */
     function disableModule(module, idx) {
-        $("#moduleStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("module disablesilent " + module);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -656,8 +663,7 @@
     $.toggleTwitchChat = toggleTwitchChat;
     $.toggleTwitchChatRollup = toggleTwitchChatRollup;
     $.toggleLog = toggleLog;
-    $.enableModule = enableModule;
-    $.disableModule = disableModule;
+    $.toggleModule = toggleModule;
     $.adjustDeathCounter = adjustDeathCounter;
     $.shoutOut = shoutOut;
     $.disconnect = disconnect;
