@@ -518,6 +518,23 @@
             }
 
             /**
+             * @commandpath module delete - Delete a module from the DB, use if a custom module is removed from the scripts directory.
+             */
+            if (action.equalsIgnoreCase('delete')) {
+                if (args[1] === undefined) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.delete.usage'));
+                } else {
+                    if ($.inidb.exists('modules', args[1])) {
+                        $.inidb.del('modules', args[1]);
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.delete.success', args[1]));
+                    } else {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.delete.404', args[1]));
+                    }
+                }
+                return;
+            }
+
+            /**
              * @commandpath module list - List all known modules
              */
             if (action.equalsIgnoreCase('list')) {
