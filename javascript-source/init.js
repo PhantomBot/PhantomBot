@@ -79,7 +79,7 @@
             try {
                 throw new Error('debug');
             } catch (e) {
-                var stackData = e.stack.split('\n')[1];
+                var stackData = e.stack.split('\r\n')[1];
                 Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + stackData + '] ' + message));
             }
         }
@@ -1259,35 +1259,28 @@
         /**
          * @event api-NewSubscriberEvent
          */
-        $api.on($script, 'newSubscriber', function(event) {
-            callHook('newSubscriber', event, false);
-        });
-
-        /**
-         * @event api-NewPrimeSubscriberEvent
-         */
-        $api.on($script, 'newPrimeSubscriber', function(event) {
-            callHook('newPrimeSubscriber', event, false);
+        $api.on($script, 'NewSubscriber', function(event) {
+            callHook('NewSubscriber', event, false);
         });
 
         /**
          * @event api-NewReSubscriberEvent
          */
-        $api.on($script, 'newReSubscriber', function(event) {
-            callHook('newReSubscriber', event, false);
+        $api.on($script, 'NewReSubscriber', function(event) {
+            callHook('NewReSubscriber', event, false);
         });
 
         /**
          * @event api-BitsEvent
          */
-        $api.on($script, 'bits', function(event) {
-            callHook('bits', event, false);
+        $api.on($script, 'Bits', function(event) {
+            callHook('Bits', event, false);
         });
 
         /**
          * @event api-DeveloperCommandEvent
          */
-        $api.on($script, 'developerCommand', function(event) {
+        $api.on($script, 'DeveloperCommand', function(event) {
             callHook('command', event, false);
             handleInitCommands(event);
         });
