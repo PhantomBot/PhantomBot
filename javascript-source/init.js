@@ -79,7 +79,7 @@
             try {
                 throw new Error('debug');
             } catch (e) {
-                var stackData = e.stack.split('\n')[1];
+                var stackData = e.stack.split('\r\n')[1];
                 Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + stackData + '] ' + message));
             }
         }
