@@ -96,6 +96,7 @@
 
         if (message.match(/\(onlineonly\)/g)) {
             if (!$.isOnline($.channelName)) {
+                returnCommandCost(event.getSender(), event.getCommand(), $.isModv3(event.getSender(), event.getTags()));
                 return null;
             }
             message = $.replace(message, '(onlineonly)', '');
@@ -103,6 +104,7 @@
 
         if (message.match(/\(offlineonly\)/g)) {
             if ($.isOnline($.channelName)) {
+                returnCommandCost(event.getSender(), event.getCommand(), $.isModv3(event.getSender(), event.getTags()));
                 return null;
             }
             message = $.replace(message, '(offlineonly)', '');
