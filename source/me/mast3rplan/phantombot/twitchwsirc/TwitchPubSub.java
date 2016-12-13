@@ -216,6 +216,15 @@ public class TwitchPubSub extends WebSocketClient {
 							case "unmod":
 							    this.log(username + " has been un-modded by " + creator + ".");
 							    break;
+							case "twitchbot_rejected":
+							    this.log("Message (" + time + ") from " + username + " has been rejected by AutoMod.");
+							    break;
+							case "denied_twitchbot_message":
+							    this.log(creator + " denied a message from " + username + ". Message id: " + data.getString("msg_id") + ".");
+							    break;
+							case "approved_twitchbot_message":
+							    this.log(creator + " allowed a message from " + username + ". Message id: " + data.getString("msg_id") + ".");
+							    break;
 						}
 					}
 				}
@@ -295,7 +304,7 @@ public class TwitchPubSub extends WebSocketClient {
 	 */
 	@Override
 	public void onMessage(String message) {
-		// com.gmt2001.Console.out.println("[Twitch PubSub-Edge Raw Message] " + message);
+		//com.gmt2001.Console.out.println("[Twitch PubSub-Edge Raw Message] " + message);
 
 		JSONObject messageObj = new JSONObject(message);
 
