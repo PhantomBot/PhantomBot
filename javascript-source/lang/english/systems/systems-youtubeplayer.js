@@ -7,6 +7,8 @@ $.lang.register('ytplayer.songrequests.enabled', '[\u266B] Song requests are ena
 $.lang.register('ytplayer.songrequests.disabled', '[\u266B] Song requests have been disabled! [\u266B]');
 $.lang.register('ytplayer.command.volume.get', 'Current YouTube Player Volume: $1');
 $.lang.register('ytplayer.command.volume.set', 'Set YouTube Player Volume: $1');
+$.lang.register('ytplayer.command.ytp.togglestealrefund.enable', 'YouTube Player stolen songs will be refunded to users.');
+$.lang.register('ytplayer.command.ytp.togglestealrefund.disable', 'YouTube Player stolen songs will NOT be refunded to users.');
 $.lang.register('ytplayer.command.ytp.togglerandom.toggled', 'YouTube Player Playlist Randomization has been $1');
 $.lang.register('ytplayer.command.ytp.toggleannounce.toggled', 'YouTube Player Announcements have been $1');
 $.lang.register('ytplayer.command.ytp.setrequestmax.usage', 'usage: !ytp setrequestmax [max requests]');
@@ -29,6 +31,7 @@ $.lang.register('ytplayer.command.playlist.delete.usage', 'usage: !playlist dele
 $.lang.register('ytplayer.command.playlist.listpl', 'Playlists: $1');
 $.lang.register('ytplayer.command.stealsong.this.success', '$1 copied the current song to the playlist.');
 $.lang.register('ytplayer.command.stealsong.other.success', '$1 copied the current song to the [$2] playlist.');
+$.lang.register('ytplayer.command.stealsong.refund', '$1 received a refund of $2 $3 on their song request!');
 $.lang.register('ytplayer.command.jumptosong.failed', 'Cannot find song at position $1 in playlist.');
 $.lang.register('ytplayer.command.songrequest.usage', 'usage: !songrequest [YouTube ID | YouTube link | search string]');
 $.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue (Position: $2 ID: $3)');
