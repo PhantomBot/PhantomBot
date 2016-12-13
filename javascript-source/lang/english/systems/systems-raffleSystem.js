@@ -1,5 +1,5 @@
 $.lang.register('rafflesystem.open.error.opened', 'A raffle is currently in progress.');
-$.lang.register('rafflesystem.open.usage', 'Usage: !raffle open [-usetime minutes | -usepoints entry_fee] [keyword] [close timer minutes] [-followers]. [keyword] required.');
+$.lang.register('rafflesystem.open.usage', 'Usage: !raffle open [-usetime minutes | -usepoints entry_fee] [keyword] [close timer minutes] [-followers | -subscribers]. [keyword] required.');
 $.lang.register('rafflesystem.open.time', 'A raffle is now opened! Type $1 to enter. You need to have been in chat for $2 minutes $3 to enter. $4');
 $.lang.register('rafflesystem.open.points', 'A raffle is now opened! Type $1 to enter. Entering cost $2! $3');
 $.lang.register('rafflesystem.open', 'A raffle is now opened! Type $1 to enter$2! $3');
@@ -12,6 +12,7 @@ $.lang.register('rafflesystem.repick.error', 'There are no more users in the raf
 $.lang.register('rafflesystem.repick', 'New winner is $1!');
 $.lang.register('rafflesystem.enter.404', 'You already entered this raffle.');
 $.lang.register('rafflesystem.enter.following', 'You need to be following to enter this raffle.');
+$.lang.register('rafflesystem.enter.subscriber', 'You need to be subscribed to enter this raffle.');
 $.lang.register('rafflesystem.enter.points', 'You don\'t have enough $1 to enter this raffle.');
 $.lang.register('rafflesystem.enter.time', 'You have not been in the channel long enough to enter this raffle.');
 $.lang.register('rafflesystem.usage', 'Usage: !raffle [open / close / repick / results / subscriberbonus/ regularbonus / whisperwinner]');
