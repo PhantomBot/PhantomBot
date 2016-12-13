@@ -377,8 +377,6 @@
         var message = $('#raffle-message-input').val(),
             interval = $('#raffle-message-timer').val();
 
-        console.log(message + ' ' + interval);
-
         sendDBUpdate('raffle_settings_set', 'raffleSettings', 'raffleMessage', message);
         sendDBUpdate('raffle_settings_set', 'raffleSettings', 'raffleMessageInterval', String(interval));
         sendCommand('reloadraffle');
@@ -406,6 +404,8 @@
     function setEligibility(value) {
         if (value == 'followers') {
             eligibility = '-followers';
+        } else if (value == 'subscribers') {
+            eligibility = '-subscribers';
         } else {
             eligibility = '';
         }
