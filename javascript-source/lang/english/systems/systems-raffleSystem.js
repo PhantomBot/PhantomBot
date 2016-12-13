@@ -1,5 +1,5 @@
 $.lang.register('rafflesystem.open.error.opened', 'A raffle is currently in progress.');
-$.lang.register('rafflesystem.open.usage', 'Usage: !raffle open [entry fee] [keyword] [close timer minutes] [-usetime / -usepoints / -followers]');
+$.lang.register('rafflesystem.open.usage', 'Usage: !raffle open [-usetime minutes | -usepoints entry_fee] [keyword] [close timer minutes] [-followers]. [keyword] required.');
 $.lang.register('rafflesystem.open.time', 'A raffle is now opened! Type $1 to enter. You need to have been in chat for $2 minutes $3 to enter. $4');
 $.lang.register('rafflesystem.open.points', 'A raffle is now opened! Type $1 to enter. Entering cost $2! $3');
 $.lang.register('rafflesystem.open', 'A raffle is now opened! Type $1 to enter$2! $3');
