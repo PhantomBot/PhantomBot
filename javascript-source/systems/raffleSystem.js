@@ -9,6 +9,7 @@
         entryFee = 0,
         timerTime = 0,
         followers = false,
+        subscribers = false,
         usePoints = true,
         status = false,
         sendMessages = $.getSetIniDbBoolean('raffleSettings', 'raffleMSGToggle', false),
@@ -66,6 +67,11 @@
         if (arguments.match('-followers')) {
             followers = true;
             followMessage = ' ' + $.lang.get('rafflesystem.common.following');
+        }
+
+        /* Check if the caster wants the raffle to be for susbcribers only or not */
+        if (arguments.match('-subscribers')) {
+            subscribers = true;
         }
 
         /* Now split the arguments string up as we could have removed some items. */
@@ -244,6 +250,12 @@
             return;
         }
 
+        /* Check if the user is a subscriber */
+        if (subscribers && !$.isSubv3(username, tags)) {
+            message(username, $.lang.get('rafflesystem.enter.subscriber'));
+            return;
+        }
+
         /* Check if the user is following the channel. */
         if (followers && !$.user.isFollower(username)) {
             message(username, $.lang.get('rafflesystem.enter.following'));
@@ -300,6 +312,7 @@
         timerMessage = '';
         usePoints = false;
         followers = false;
+        subscribers = false;
         status = false;
         entryFee = 0;
         timerTime = 0;
