@@ -42,7 +42,7 @@
      * @param {arguments} arguments
      */
     function open(username, arguments) {
-        var args = arguments.split(' '),
+        var args,
             i = 1;
 
         /* Check if there's a raffle already opened */
@@ -54,7 +54,9 @@
         /* Check if the caster wants to use time or points for the raffle */
         if (arguments.match('-usetime')) {
             usePoints = false;
+            arguments = arguments.replace('-usetime ', '');
         } else if (arguments.match('-usepoints')) {
+            arguments = arguments.replace('-usepoints ', '');
             usePoints = true;
         } else {
             usePoints = null;
@@ -65,6 +67,9 @@
             followers = true;
             followMessage = ' ' + $.lang.get('rafflesystem.common.following');
         }
+
+        /* Now split the arguments string up as we could have removed some items. */
+        args = arguments.split(' ');
 
         /* Check the entry fee of points, or the minimum time */
         if (!isNaN(parseInt(args[i])) && usePoints !== null) {
