@@ -12,11 +12,12 @@
         noticeOffline = $.getSetIniDbBoolean('noticeSettings', 'noticeOfflineToggle', false),
         messageCount = 0,
         RandomNotice = 0,
+        lastNoticeSent = 0,
         interval;
 
     /**
-     /* @function reloadNotices
-       */
+     * @function reloadNotices
+     */
     function reloadNotices() {
         var keys = $.inidb.GetKeyList('notices', ''),
             count = 0,
@@ -36,6 +37,7 @@
 
         $.inidb.RemoveFile('tempnotices');
     };
+
     /**
      * @function sendNotice
      */
@@ -51,8 +53,11 @@
         }
 
         if (notice.startsWith('command:')) {
-            notice = notice.substring(8);
-            EventBus.instance().post(new CommandEvent($.botName, notice, ' '));//Don't use postCommand. it got removed.
+            notice = notice.substring(8).replace('!', '');
+            EventBus.instance().post(new CommandEvent($.botName, notice, ' '));
+        } else if (notice.startsWith('!')) {
+            notice = notice.substring(1);
+            EventBus.instance().post(new CommandEvent($.botName, notice, ' '));
         } else {
             $.say(notice);
         }
@@ -65,28 +70,13 @@
         noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages');
         noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle');
         noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle');
-
-        // Only update noticeInterval if it changed and then reset the timer.
-        if (noticeInterval != $.getIniDbNumber('noticeSettings', 'interval')) {
-            noticeInterval = $.getIniDbNumber('noticeSettings', 'interval');
-            clearInterval(interval);
-            interval = setInterval(function() {
-                if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
-                    if (noticeReqMessages < 0 || messageCount >= noticeReqMessages) {
-                        if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
-                            sendNotice();
-                            messageCount = 0;
-                        }
-                    }
-                }
-            }, noticeInterval * 6e4);
-        }
+        noticeInterval = $.getIniDbNumber('noticeSettings', 'interval');
     };
 
     /**
      * @event ircChannelMessage
      */
-    $.bind('ircChannelMessage', function() {
+    $.bind('ircChannelMessage', function(event) {
         messageCount++;
     });
 
@@ -310,14 +300,15 @@
     // Set the interval to announce
     interval = setInterval(function() {
         if (noticeToggle && $.bot.isModuleEnabled('./systems/noticeSystem.js') && numberOfNotices > 0) {
-            if (noticeReqMessages < 0 || messageCount >= noticeReqMessages) {
+            if ((noticeReqMessages < 0 || messageCount >= noticeReqMessages) && (lastNoticeSent + (noticeInterval * 6e4)) <= $.systemTime()) {
                 if ((noticeOffline && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
                     sendNotice();
                     messageCount = 0;
+                    lastNoticeSent = $.systemTime();
                 }
             }
         }
-    }, noticeInterval * 6e4);
+    }, 1e4);
 
     /**
      * @event initReady
