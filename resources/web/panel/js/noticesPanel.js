@@ -149,6 +149,7 @@
             $(tagId).attr("placeholder", newValue).blur();
             setTimeout(function() { sendCommand("reloadnotice"); }, TIMEOUT_WAIT_TIME);
         }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -162,6 +163,7 @@
             $(tagId).attr("placeholder", newValue).blur();
             setTimeout(function() { sendCommand("reloadnotice"); }, TIMEOUT_WAIT_TIME);
         }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
