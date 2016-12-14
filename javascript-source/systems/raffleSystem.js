@@ -332,18 +332,17 @@
             } else {
                 $.unregisterChatCommand(keyword.substring(1));
             }
-        } else {
-            if (register) {
-                $.bind('ircChannelMessage', function(event) {
-                    if (event.getMessage().equalsIgnoreCase(keyword)) {
-                        enter(event.getSender(), event.getTags());
-                    }
-                });
-            } else {
-                $.unbind('ircChannelMessage');
-            }
         }
     }
+
+    /**
+     * @event ircChannelMessage
+     */
+    $.bind('ircChannelMessage', function(event) {
+        if (status === true && !keyword.includes('!') && event.getMessage().equalsIgnoreCase(keyword)) {
+            enter(event.getSender(), event.getTags());
+        }
+    });
 
     /**
      * @event command
