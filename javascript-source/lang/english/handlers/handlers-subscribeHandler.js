@@ -21,3 +21,5 @@ $.lang.register('subscribehandler.sub.msg.usage', 'Usage: !submessage (message) 
 $.lang.register('subscribehandler.primesub.msg.usage', 'Usage: !primesubmessage (message) - Tags: (name) and (reward)');
 $.lang.register('subscribehandler.sub.msg.noreward.set', 'New subscriber welcome message set for no rewards!');
 $.lang.register('subscribehandler.sub.msg.noreward.usage', 'Usage: !submessage (message) - Tag: (name)');
+$.lang.register('subscribehandler.resubemote.set', 'New resubscriber emote set!');
+$.lang.register('subscribehandler.resubemote.usage', 'Usage: !resubemote (emote name)');
