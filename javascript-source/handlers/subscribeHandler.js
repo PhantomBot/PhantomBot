@@ -11,8 +11,8 @@
         primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
+        customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote', ''),
         announce = false,
-        customEmote = '', //Add your custom emote to be said when a user resubscribes here. Use (customemote) in the message for it.
         emotes = [],
         i;
     /**
@@ -26,6 +26,7 @@
         primeSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle');
         reSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle');
         subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
+        customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote');
     }
 
     /**
@@ -207,7 +208,7 @@
          * @commandpath submessage [message] - Set a welcome message for new subscribers.
          */
         if (command.equalsIgnoreCase('submessage')) {
-            if (args.length == 0) {
+            if (args.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.usage'));
                 return;
             }
@@ -222,7 +223,7 @@
          * @commandpath primesubmessage [message] - Set a welcome message for new Twitch Prime subscribers.
          */
         if (command.equalsIgnoreCase('primesubmessage')) {
-            if (args.length == 0) {
+            if (args.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.primesub.msg.usage'));
                 return;
             }
@@ -237,7 +238,7 @@
          * @commandpath resubmessage [message] - Set a message for resubscribers.
          */
         if (command.equalsIgnoreCase('resubmessage')) {
-            if (args.length == 0) {
+            if (args.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.usage'));
                 return;
             }
@@ -252,7 +253,7 @@
          * @commandpath subscribereward [points] - Set an award for subscribers.
          */
         if (command.equalsIgnoreCase('subscribereward')) {
-            if (args.length == 0) {
+            if (args.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.reward.usage'));
                 return;
             }
@@ -260,6 +261,21 @@
             subReward = parseInt(args[0]);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.reward.set'));
             $.log.event(sender + ' changed the subscriber reward to ' + subReward);
+            return;
+        }
+
+        /**
+         * @commandpath resubemote [emote] - The (customemote) tag will be replace with that emote.  The emote will be added the amount of months the user subscribed for.
+         */
+        if (command.equalsIgnoreCase('resubemote')) {
+            if (args.length === 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.usage'));
+                return;
+            }
+            $.inidb.set('subscribeHandler', 'resubEmote', args[0]);
+            customEmote = args[0];
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.set'));
+            $.log.event(sender + ' changed the re-subscriber emote to ' + customEmote);
             return;
         }
 
@@ -287,6 +303,7 @@
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./handlers/subscribehandler.js')) {
             $.registerChatCommand('./handlers/subscribehandler.js', 'subwelcometoggle', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'resubemote', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'primesubwelcometoggle', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubwelcometoggle', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 1);
