@@ -403,11 +403,6 @@
              * @commandpath adventure set - Base command for controlling the adventure settings
              */
             if (action.equalsIgnoreCase('set')) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.whisperPrefix(sender) + $.adminMsg);
-                    return;
-                }
-
                 if (actionArg1 === undefined || actionArg2 === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
                     return;
@@ -417,6 +412,10 @@
                  * @commandpath adventure set jointime [seconds] - Set the join time
                  */
                 if (actionArg1.equalsIgnoreCase('joinTime')) {
+                    if (isNaN(parseInt(actionArg2))) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
+                        return;
+                    }
                     joinTime = parseInt(actionArg2);
                     $.inidb.set('adventureSettings', 'joinTime', parseInt(actionArg2));
                 }
@@ -425,6 +424,10 @@
                  * @commandpath adventure set cooldown [seconds] - Set cooldown time
                  */
                 if (actionArg1.equalsIgnoreCase('coolDown')) {
+                    if (isNaN(parseInt(actionArg2))) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
+                        return;
+                    }
                     coolDown = parseInt(actionArg2);
                     $.inidb.set('adventureSettings', 'coolDown', parseInt(actionArg2));
                 }
@@ -433,6 +436,10 @@
                  * @commandpath adventure set gainpercent [value] - Set the gain percent value
                  */
                 if (actionArg1.equalsIgnoreCase('gainPercent')) {
+                    if (isNaN(parseInt(actionArg2))) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
+                        return;
+                    }
                     gainPercent = parseInt(actionArg2);
                     $.inidb.set('adventureSettings', 'gainPercent', parseInt(actionArg2));
                 }
@@ -441,6 +448,10 @@
                  * @commandpath adventure set minbet [value] - Set the minimum bet
                  */
                 if (actionArg1.equalsIgnoreCase('minBet')) {
+                    if (isNaN(parseInt(actionArg2))) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
+                        return;
+                    }
                     minBet = parseInt(actionArg2);
                     $.inidb.set('adventureSettings', 'minBet', parseInt(actionArg2));
                 }
@@ -449,6 +460,10 @@
                  * @commandpath adventure set maxbet [value] - Set the maximum bet
                  */
                 if (actionArg1.equalsIgnoreCase('maxBet')) {
+                    if (isNaN(parseInt(actionArg2))) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
+                        return;
+                    }
                     maxBet = parseInt(actionArg2);
                     $.inidb.set('adventureSettings', 'maxBet', parseInt(actionArg2));
                 }
@@ -487,6 +502,7 @@
                 moduleLoaded = true;
             }
             $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
+            $.registerChatSubcommand('adventure', 'set' 1);
         }
     });
 
@@ -494,7 +510,7 @@
      * Warn the user if the points system is disabled and this is enabled.
      */
     if ($.bot.isModuleEnabled('./games/adventureSystem.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
-        $.log.error("Disabled. ./systems/pointSystem.js is not enabled.");
+        $.log.warn("Disabled. ./systems/pointSystem.js is not enabled.");
     }
 
     $.reloadAdventure = reloadAdventure;
