@@ -133,7 +133,7 @@
         }
 
         var now = new Date();
-        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/event/' + getLogDateString() + '.txt', true);
+        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile.trim() + '] ' + message,'./logs/event/' + getLogDateString() + '.txt', true);
     };
 
     /**
@@ -158,7 +158,7 @@
 
         var now = new Date();
         $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/error/' + getLogDateString() + '.txt', true);
-        Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile + '] ' + message));
+        Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile.trim() + '] ' + message));
     };
 
     /**
@@ -182,7 +182,7 @@
         }
 
         var now = new Date();
-        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/warning/' + getLogDateString() + '.txt', true);
+        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile.trim() + '] ' + message,'./logs/warning/' + getLogDateString() + '.txt', true);
         Packages.com.gmt2001.Console.warn.printlnRhino(java.util.Objects.toString(message));
     };
 
