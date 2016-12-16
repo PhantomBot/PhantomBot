@@ -502,7 +502,7 @@
                 moduleLoaded = true;
             }
             $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
-            $.registerChatSubcommand('adventure', 'set' 1);
+            $.registerChatSubcommand('adventure', 'set', 1);
         }
     });
 
