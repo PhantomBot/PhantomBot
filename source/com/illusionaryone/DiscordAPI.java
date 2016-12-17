@@ -217,7 +217,7 @@ public class DiscordAPI {
         @Override
         public void run() {
             if (System.currentTimeMillis() - lastMsgTime >= limit) {
-                Message message = messageQueue.poll();
+                DiscordAPI.Message message = messageQueue.poll();
                 if (message != null) {
                     println(message.getChannel(), message.getMessage());
                     lastMsgTime = System.currentTimeMillis();
