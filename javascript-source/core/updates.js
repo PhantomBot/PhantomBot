@@ -53,60 +53,12 @@
         './systems/ticketraffleSystem.js',
         './systems/raidSystem.js',
         './systems/youtubePlayer.js',
-        './systems/betSystem.js',
         './systems/ranksSystem.js',
         './systems/auctionSystem.js',
         './systems/audioPanelSystem.js',
         './systems/queueSystem.js',
+        './systems/bettingSystem.js',
         ];
-
-        sounds = [
-        { name: "beer_can_opening", desc: "Beer Can Opening" },
-        { name: "bell_ring",        desc: "Bell Ring" },
-        { name: "branch_break",     desc: "Branch Break" },
-        { name: "button_click",     desc: "Button Click" },
-        { name: "button_click_on",  desc: "Button Click On" },
-        { name: "button_push",      desc: "Button Push" },
-        { name: "button_tiny",      desc: "Button Tiny" },
-        { name: "camera_flashing",  desc: "Camera Flashing" },
-        { name: "camera_flashing_2",    desc: "Camera Flashing 2" },
-        { name: "cd_tray",      desc: "CD Tray" },
-        { name: "computer_error",   desc: "Computer Error" },
-        { name: "door_bell",        desc: "Door Bell" },
-        { name: "door_bump",        desc: "Door Bump" },
-        { name: "glass",        desc: "Glass" },
-        { name: "keyboard_desk",    desc: "Keyboard Desk" },
-        { name: "light_bulb_breaking",  desc: "Light Bulb Breaking" },
-        { name: "metal_plate",      desc: "Metal Plate" },
-        { name: "metal_plate_2",    desc: "Metal Plate 2" },
-        { name: "pop_cork",     desc: "Pop Cork" },
-        { name: "snap",         desc: "Snap" },
-        { name: "staple_gun",       desc: "Staple Gun" },
-        { name: "tap",          desc: "Tap" },
-        { name: "water_droplet_2",  desc: "Water Droplet 2" },
-        { name: "water_droplet_3",  desc: "Water Droplet 3" },
-        { name: "water_droplet",    desc: "Water Droplet" },
-        { name: "sweetcrap",        desc: "Sweet Merciful Crap" },
-        { name: "badumtiss",        desc: "Ba-Dum-Tiss!" },
-        { name: "whaawhaa",     desc: "Whaa Whaa Whaa" },
-        { name: "nobodycares",      desc: "Nobody Cares" },
-        { name: "johncena",     desc: "John Cena" },
-        { name: "tutturuu",     desc: "Tutturuu" },
-        { name: "wilhelmscream",    desc: "Wilhelm Scream" },
-        { name: "airhorn",      desc: "Airhorn" },
-        { name: "crickets",     desc: "Crickets" },
-        { name: "drumroll",     desc: "Drum Roll" },
-        { name: "splat",        desc: "Splat" },
-        { name: "applause",     desc: "Applause" },
-        { name: "r2d2",         desc: "R2D2" },
-        { name: "yesyes",       desc: "M.Bison Yes Yes" },
-        { name: "goodgood",     desc: "Good Good" },
-        ];
-
-        $.consoleLn('Setting up new audio hooks...');
-        for (i in sounds) {
-            $.inidb.set('audio_hooks', sounds[i].name, sounds[i].desc);
-        }
 
         $.consoleLn('Disabling default modules...');
         for (i in modules) {
@@ -520,6 +472,8 @@
         $.consoleLn('Starting PhantomBot update 2.3.5 updates...');
 
         $.inidb.set('chatModerator', 'moderationLogs', 'false');
+        $.inidb.set('modules', './systems/bettingSystem.js', 'false');
+        $.inidb.del('modules', './systems/betSystem.js');
 
         $.consoleLn('PhantomBot update 2.3.5 completed!');
         $.inidb.set('updates', 'installedv2.3.5', 'true');
