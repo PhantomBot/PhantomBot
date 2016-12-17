@@ -17,6 +17,14 @@
             $.reloadInit();
         }
 
+        /* reloads the betting vars */
+        if (command.equalsIgnoreCase('reloadbet')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadBet();
+        }
+
         /** Adds or removes a user from the moderator cache */
         if (command.equalsIgnoreCase('permissionsetuser')) {
             if (!$.isBot(sender)) {
@@ -465,6 +473,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'updatetimesettings', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadlogs', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadinit', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadbet', 30);
         }, 10000);
     });
 })();

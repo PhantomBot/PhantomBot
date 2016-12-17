@@ -42,11 +42,6 @@
 
 
         if (panelHasQuery(msgObject)) {
-            if (panelCheckQuery(msgObject, 'gambling_betsettings')) {
-                for (idx in msgObject['results']) {
-                    $('#' + msgObject['results'][idx]['key'] + 'Input').attr('placeholder', msgObject['results'][idx]['value']).blur();
-                }
-            }
 
             if (panelCheckQuery(msgObject, 'gambling_rafflesettings')) {
                 for (idx in msgObject['results']) {
@@ -90,22 +85,6 @@
                             $('#raffle-message').html('Disabled');
                         }
                     }
-                }
-            }
-
-            if (panelCheckQuery(msgObject, 'gambling_betresults')) {
-                for (idx in msgObject['results']) {
-                    if (panelMatch(msgObject['results'][idx]['key'], 'winners')) {
-                        winner = msgObject['results'][idx]['value'];
-                    }
-                    if (panelMatch(msgObject['results'][idx]['key'], 'amount')) {
-                        amount = msgObject['results'][idx]['value'];
-                    }
-                }
-                if (winner.length > 0) {
-                    $('#betResults').html('<strong>Results from Last Bet</strong><br>' +
-                                          'Winner(s): ' + winner + '<br>' +
-                                          'Amount Won: ' + amount);
                 }
             }
 
@@ -219,7 +198,6 @@
      * @function doQuery
      */
     function doQuery() {
-        sendDBKeys('gambling_betsettings', 'betSettings');
         sendDBKeys('gambling_rafflesettings', 'raffleSettings');
         sendDBKeys('gambling_betresults', 'betresults');
         sendDBKeys('gambling_auctionresults', 'auctionresults');
@@ -232,25 +210,6 @@
         sendDBQuery('gambling_trafflemessage', 'settings', 'traffleMessage');
         sendDBQuery('gambling_rafflelistentries', 'raffleresults', 'raffleEntries');
         sendDBQuery('gambling_trafflelistentries', 'raffleresults', 'ticketRaffleEntries');
-    }
-
-    /**
-     * @function betHandler
-     * @param {String} action
-     * @param {String} id
-     */
-    function betHandler(action, id) {
-        var value = $('#' + id).val();
-
-        if (value.length > 0) {
-            sendCommand('bet ' + action + ' ' + value);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-
-            if (panelMatch(action, 'close')) {
-                $('#betOpenInput').val('');
-                $('#betCloseInput').val('');
-            }
-        }
     }
 
     /**
@@ -503,7 +462,6 @@
     // Export to HTML
     $.gamblingOnMessage = onMessage;
     $.gamblingDoQuery = doQuery;
-    $.betHandler = betHandler;
     $.auctionOpen = auctionOpen;
     $.auctionClose = auctionClose;
     $.traffleRepick = traffleRepick;
