@@ -286,7 +286,7 @@ public class TwitchWSHostIRC {
             if (!badOauth) {
                 com.gmt2001.Console.out.println("Lost connection to Twitch Host Data Feed, retrying in 10 seconds");
                 com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-                twitchWSHostIRC.reconnect();
+                twitchWSHostIRC.connectWSS(true);
             }
         }
 
