@@ -38,8 +38,8 @@ PhantomBot requires the following software to be installed:
 ## Installation
 Please refer to platform-specific installation documentation.
 * [Windows](https://docs.phantombot.tv/kb/setup-guide-windows)
-* [Linux](https://docs.phantombot.tv/kb/YUlwD8VVHNS7hhpd)
-* [macOS](https://docs.phantombot.tv/kb/rBauYDIRjyNlQEfS)
+* [Linux](https://docs.phantombot.tv/kb/linux)
+* [macOS](https://docs.phantombot.tv/kb/macos)
 
 ## Upgrading PhantomBot
 
