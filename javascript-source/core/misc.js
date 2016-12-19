@@ -414,6 +414,16 @@
         }
     }
 
+    /**
+     * @function setIniDbString
+     * @export $
+     * @param {string}
+     * @param {string}
+     * @param {string}
+     */
+    function setIniDbString(fileName, key, value) {
+        $.inidb.set(fileName, key, value);
+    }
 
     /**
      * @function getIniDbNumber
@@ -447,6 +457,17 @@
     }
 
     /**
+     * @function setIniDbNumber
+     * @export $
+     * @param {string}
+     * @param {string}
+     * @param {number}
+     */
+    function setIniDbNumber(fileName, key, value) {
+        $.inidb.set(fileName, key, value.toString());
+    }
+
+    /**
      * @function getIniDbFloat
      * @export $
      * @param {string}
@@ -475,6 +496,17 @@
             $.inidb.set(fileName, key, defaultValue.toString());
             return defaultValue;
         }
+    }
+
+    /**
+     * @function setIniDbFloat
+     * @export $
+     * @param {string}
+     * @param {string}
+     * @param {number}
+     */
+    function setIniDbFloat(fileName, key, value) {
+        $.inidb.set(fileName, key, value.toString());
     }
 
     /**
@@ -574,6 +606,10 @@
     $.getSetIniDbString = getSetIniDbString;
     $.getSetIniDbNumber = getSetIniDbNumber;
     $.getSetIniDbFloat = getSetIniDbFloat;
+    $.setIniDbBoolean = setIniDbBoolean;
+    $.setIniDbString = setIniDbString;
+    $.setIniDbNumber = setIniDbNumber;
+    $.setIniDbFloat = setIniDbFloat;
     $.getOrdinal = getOrdinal;
     $.getPercentage = getPercentage;
     $.outOfRange = outOfRange;
@@ -582,7 +618,6 @@
     $.randInterval = randInterval;
     $.randRange = randRange;
     $.say = say;
-    $.setIniDbBoolean = setIniDbBoolean;
     $.strlen = strlen;
     $.systemTime = systemTime;
     $.trueRand = trueRand;
