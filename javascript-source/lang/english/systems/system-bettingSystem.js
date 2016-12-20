@@ -6,7 +6,7 @@ $.lang.register('bettingsystem.close.error.usage', 'The bet is now closed! Waiti
 $.lang.register('bettingsystem.close.usage', 'Usage: !bet close [winning option]');
 $.lang.register('bettingsystem.close.success', 'Bet is now closed! Calculating results and giving points to the winners!');
 $.lang.register('bettingsystem.close.semi.success', 'The bet is now closed! Waiting on a winning option.');
-$.lang.register('bettingsystem.close.success.winners', 'A total of $1 people won this bet! And a total of $2 was won!');
+$.lang.register('bettingsystem.close.success.winners', 'A total of $1 players won this bet! And a total of $2 was won!');
 $.lang.register('bettingsystem.save.format', 'Title: "$1", Options: "$2", Total Bets: $3, Total Entries: $4, Points Won: $5.');
 $.lang.register('bettingsystem.global.usage', 'Usage: !bet [open / close / save / saveformat / lookup / togglemessages / gain]');
 $.lang.register('bettingsystem.bet.usage', 'Usage: !bet [amount] [option]');
