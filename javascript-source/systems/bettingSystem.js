@@ -52,14 +52,19 @@
 		bet.status = true;
 		bet.opened = true;
 
+		var split = options.split(', ');
+
+		if (split.length() === 1) {
+			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.open.usage'));
+			return;
+		}
+		
 		if (timer !== undefined && !isNaN(parseInt(timer)) && timer > 0) {
 			bet.timer = timer;
 			setTimeout(function() {
 				stop();
 			}, timer * 6e4);
 		}
-
-		var split = options.split(', ');
 
 		for (var i = 0; i < split.length; i++) {
 			bet.options[split[i].toLowerCase()] = { bets: 0, total: 0 };
