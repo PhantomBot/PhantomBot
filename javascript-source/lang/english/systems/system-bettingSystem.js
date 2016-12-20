@@ -1,4 +1,4 @@
-$.lang.register('bettingsystem.open.usage', 'Usage: !bet open ["title"] ["options"] [minimum bet] [maximum bet] [close timer mins]');
+$.lang.register('bettingsystem.open.usage', 'Usage: !bet open ["title"] ["option1, option2, etc."] [minimum bet] [maximum bet] [close timer mins] - The quotes are needed for the title and options.');
 $.lang.register('bettingsystem.open.error', 'You must chose a winning option on the previous bet before you can open a new one. !bet close [option]');
 $.lang.register('bettingsystem.open.error.opened', 'A bet is already opened.');
 $.lang.register('bettingsystem.open.success', 'A bet is now opened! "$1". Bet options: "$2". Bet with: !bet [amount] [option]');
