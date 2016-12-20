@@ -44,6 +44,9 @@
 			if (sender == $.botName) return;
 			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.open.error.opened'));
 			return;
+		} else if (!options.includes(',')) {
+			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.open.usage'));
+			return;
 		}
 
 		bet.title = title;
@@ -51,13 +54,6 @@
 		bet.maximum = parseInt(maximum);
 		bet.status = true;
 		bet.opened = true;
-
-		var split = options.split(', ');
-
-		if (split.length() === 1) {
-			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.open.usage'));
-			return;
-		}
 		
 		if (timer !== undefined && !isNaN(parseInt(timer)) && timer > 0) {
 			bet.timer = timer;
@@ -65,6 +61,8 @@
 				stop();
 			}, timer * 6e4);
 		}
+
+		var split = options.split(', ');
 
 		for (var i = 0; i < split.length; i++) {
 			bet.options[split[i].toLowerCase()] = { bets: 0, total: 0 };
