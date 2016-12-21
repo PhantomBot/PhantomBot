@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Twitch PubSub
+/*
+ * TwitchPubSub.java
  * @author: ScaniaTV
  */
 
@@ -45,7 +45,6 @@ import org.json.JSONArray;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.ArrayList;
 
 import me.mast3rplan.phantombot.PhantomBot;
 
@@ -55,19 +54,19 @@ public class TwitchPubSub extends WebSocketClient {
 	private static final Map<String, TwitchPubSub> instances = Maps.newHashMap();
 	private final Timer timer = new Timer();
 	private final URI uri;
-	private Boolean reconnectAllowed = true;
+	private final int channelId;
+	private final int botId;
+	private final String oAuth;
+	private Boolean reconAllowed;
 	private Long lastReconnect;
-	private int channelId;
-	private int botId;
-	private String oAuth;
 
-	/**
-	 * @function instance
-	 * @info used to start this instance.
+	/*
+	 * This starts the PubSub instance.
 	 *
-	 * @param {string} channel
-	 * @param {int} channelId
-	 * @param {string} oauth
+	 * @param {string}  channel    Name of the channel to start the instance on. As of right now you can onyl start one instance.
+	 * @param {int}     channelId  The channel user id.
+	 * @param {int}     botId      The bot user id.
+	 * @param {string}  oauth      The bots tmi oauth token.
 	 */
 	public static TwitchPubSub instance(String channel, int channelId, int botId, String oAuth) {
 		TwitchPubSub instance = instances.get(channel);
@@ -83,13 +82,13 @@ public class TwitchPubSub extends WebSocketClient {
 		return instance;
 	}
 
-	/**
-	 * @function TwitchPubSub
-	 * @info used to start this class.
+	/*
+	 * Constructor for the PubSub class.
 	 *
-	 * @param {string} channel
-	 * @param {int} channelId
-	 * @param {string} oauth
+	 * @param {string}  channel    Name of the channel to start the instance on. As of right now you can onyl start one instance.
+	 * @param {int}     channelId  The channel user id.
+	 * @param {int}     botId      The bot user id.
+	 * @param {string}  oauth      The bots tmi oauth token.
 	 */
 	private TwitchPubSub(URI uri, int channelId, int botId, String oAuth) {
 		super(uri, new Draft_17(), null, 5000);
@@ -98,16 +97,16 @@ public class TwitchPubSub extends WebSocketClient {
 		this.channelId = channelId;
 		this.botId = botId;
 		this.oAuth = oAuth;
+		this.reconAllowed = true;
 
 		this.connectWSS(false);
 		this.startTimer();
 	}
 
-	/**
-	 * @function connectWSS
-	 * @info Used to connect and reconnect to pubsub.
+	/*
+	 * Creates a connection with the PubSub websocket.
 	 *
-	 * @param {boolean} reconnect
+	 * @param {boolean}  reconnect  Changes the console log message from connection to reconnecting.
 	 */
 	private void connectWSS(Boolean reconnect) {
 		if (!reconnect) {
@@ -115,6 +114,7 @@ public class TwitchPubSub extends WebSocketClient {
 		} else {
 			com.gmt2001.Console.out.println("Reconnecting to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
 		}
+
 		try {
 		    SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, null, null);
@@ -126,11 +126,10 @@ public class TwitchPubSub extends WebSocketClient {
         }
 	}
 
-	/**
-	 * @function reconnectWSS
-	 * @info Used to reconnect to pubsub.
+	/*
+	 * Try to reconnect to the PubSub websocket when the connection is closed with some logic.
 	 *
-	 * @param {boolean} sleep
+	 * @param {boolean}  sleep  Adds a sleep timer when trying to reconnect so we don't try spam the socket.
 	 */
 	private void reconnectWSS(Boolean sleep) {
 		if (sleep) {
@@ -143,7 +142,7 @@ public class TwitchPubSub extends WebSocketClient {
 
 		Long now = System.currentTimeMillis();
 
-		if (lastReconnect + 10000L <= now && reconnectAllowed) {
+		if (lastReconnect + 10000L <= now && reconAllowed) {
 			lastReconnect = now;
 			try {
 			    this.connectWSS(true);
@@ -154,29 +153,25 @@ public class TwitchPubSub extends WebSocketClient {
 	}
 
 	/**
-	 * @function startTimer
-	 * @info Starts the ping timer since we need to send pings to pubsub.
-	 *
+	 * Used to start the ping timer for PubSub. Since PubSub does not send pings, we need to requests them to keep our connection opened.
+	 * We will send a PING request every 4.9 minutes. Twitch recommends every 5 minutes.
 	 */
 	private void startTimer() {
 		timer.schedule(new PingTask(), 5000, 294000);
 	}
 
 	/**
-	 * @function closeTimer
-	 * @info Stops the ping timers
-	 *
+	 * This purges the ping timer. It is used when the user tries to connect with a bad oauth token.
 	 */
 	private void closeTimer() {
 		timer.cancel();
         timer.purge();
 	}
 
-	/**
-	 * @function parse
-	 * @info Used to parse messages we get from pubsub
+	/*
+	 * This function parses the message we get from PubSub. Since everything is sent in a jsonObject there is a bit of checks to do.
 	 *
-	 * @param {jsonObject} message
+	 * @param {jsonObject}  message  Message we get from PubSub.
 	 */
 	private void parse(JSONObject message) {
 		JSONObject dataObj;
@@ -193,37 +188,37 @@ public class TwitchPubSub extends WebSocketClient {
 						JSONArray args = data.getJSONArray("args");
 						String action = data.getString("moderation_action");
 						String creator = data.getString("created_by");
-						String username = args.getString(0);
-						String time = (args.length() == 2 || args.length() == 3 ? args.getString(1) : "");
-						String reason = (args.length() == 3 ? args.getString(2) : "");
+						String args1 = args.getString(0);
+						String args2 = (args.length() == 2 || args.length() == 3 ? args.getString(1) : "");
+						String args3 = (args.length() == 3 ? args.getString(2) : "");
 
 						switch (action) {
 							case "timeout":
-							    this.log(username + " has been timed out by " + creator + " for " + time + " seconds. " + (reason.length() == 0 ? "" : "Reason: " + reason)); 
+							    this.log(args1 + " has been timed out by " + creator + " for " + args2 + " seconds. " + (args3.length() == 0 ? "" : "Reason: " + args3)); 
 							    break;
 							case "untimeout":
-							    this.log(username + " has been un-timed out by " + creator + ".");
+							    this.log(args1 + " has been un-timed out by " + creator + ".");
 							    break;
 							case "ban":
-							    this.log(username + " has been banned by " + creator + ". " + (time.length() == 0 ? "" : "Reason: " + time));
+							    this.log(args1 + " has been banned by " + creator + ". " + (args2.length() == 0 ? "" : "Reason: " + args2));
 							    break;
 							case "unban":
-							    this.log(username + " has been un-banned by " + creator + ".");
+							    this.log(args1 + " has been un-banned by " + creator + ".");
 							    break;
 							case "mod":
-							    this.log(username + " has been modded by " + creator + ".");
+							    this.log(args1 + " has been modded by " + creator + ".");
 							    break;
 							case "unmod":
-							    this.log(username + " has been un-modded by " + creator + ".");
+							    this.log(args1 + " has been un-modded by " + creator + ".");
 							    break;
 							case "twitchbot_rejected":
-							    this.log("Message (" + time + ") from " + username + " has been rejected by AutoMod.");
+							    this.log("Message (" + args2 + ") from " + args1 + " has been rejected by AutoMod.");
 							    break;
 							case "denied_twitchbot_message":
-							    this.log(creator + " denied a message from " + username + ". Message id: " + data.getString("msg_id") + ".");
+							    this.log(creator + " denied a message from " + args1 + ". Message id: " + data.getString("msg_id") + ".");
 							    break;
 							case "approved_twitchbot_message":
-							    this.log(creator + " allowed a message from " + username + ". Message id: " + data.getString("msg_id") + ".");
+							    this.log(creator + " allowed a message from " + args1 + ". Message id: " + data.getString("msg_id") + ".");
 							    break;
 						}
 					}
@@ -232,11 +227,10 @@ public class TwitchPubSub extends WebSocketClient {
 		}
 	}
 
-	/**
-	 * @function log
-	 * @info Used to log messages once they are parsed.
+	/* 
+	 * Logs the messages we get from PubSub.
 	 *
-	 * @param {string} message
+	 * @param {String}  message  Message that we will log.
 	 */
 	private void log(String message) {
 		if (PhantomBot.instance().getDataStore().GetString("chatModerator", "", "moderationLogs").equals("true")) {
@@ -244,50 +238,45 @@ public class TwitchPubSub extends WebSocketClient {
 		}
 	}
 
-	/**
-	 * @function onOpen
-	 * @info Used to get messages from the socket when it opens
-	 *
-	 * @param {ServerHandshake} handshakedata
+	/*
+	 * Handles the event of when the socket opens, it also sends the login information and the topics we can to listen to. 
 	 */
 	@Override
 	public void onOpen(ServerHandshake handshakedata) {
 		com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
 		com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
 
+		String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId};
 		JSONObject jsonObject = new JSONObject();
 		JSONObject topics = new JSONObject();
-		String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId}; // listen as the bot in the channel.
 
-		jsonObject.put("type", "LISTEN");
 		topics.put("topics", type);
 		topics.put("auth_token", oAuth.replace("oauth:", ""));
+		jsonObject.put("type", "LISTEN");
 		jsonObject.put("data", topics);
 
-		this.send(jsonObject.toString()); // Send the info to connect in a jsonObject.
+		send(jsonObject.toString());
 	}
 
-	/**
-	 * @function onClose
-	 * @info Used to get messages from the socket when it closes.
+	/*
+	 * Handles the event of when the socket closes, this will also attempt to reonnect to PubSub when it happens.
 	 *
-	 * @param {int} code
-	 * @param {string} reason
-	 * @param {boolean} remote
+	 * @param {int}      code    The code of why the socket closed.
+	 * @param {string}   reason  The reasons as why the socket closed.
+	 * @param {boolean}  remote  Says if its a remote issue or not.
 	 */
 	@Override
 	public void onClose(int code, String reason, boolean remote) {
-		com.gmt2001.Console.out.println("Disconnected from Twitch PubSub-Edge");
 		com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-
+		com.gmt2001.Console.out.println("Disconnected from Twitch PubSub-Edge.");
+		
 		this.reconnectWSS(false);
 	}
 
-	/**
-	 * @function onError
-	 * @info Used to get messages from the socket when it errors
+	/*
+	 * Handles the error event we can get from the socket. It will also print it in the console.
 	 *
-	 * @param {Exception} ex
+	 * @param {Exception}  ex  Exception message that the socket sent.
 	 */
 	@Override
 	public void onError(Exception ex) {
@@ -296,32 +285,31 @@ public class TwitchPubSub extends WebSocketClient {
         }
     }
 
-    /**
-	 * @function onMessage
-	 * @info Used to get messages from the socket.
+    /*
+     * Handles the event of when we get messages from the socket.
 	 *
-	 * @param {String} message
+	 * @param {String}  message  Message the socket sent.
 	 */
 	@Override
 	public void onMessage(String message) {
-		//com.gmt2001.Console.out.println("[Twitch PubSub-Edge Raw Message] " + message);
-
 		JSONObject messageObj = new JSONObject(message);
 
+		// com.gmt2001.Console.out.println("[PubSub Raw Message] " + messageObj);
+
 		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("reconnect")) {
-			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: Force reconnect required. (10 second sleep)");
+			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: Force reconnect required. (10 second delay)");
 			this.reconnectWSS(true);
 			return;
 		}
 
 		if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
 			com.gmt2001.Console.err.println("Twitch PubSub-Edge Error: " + messageObj.getString("error"));
-			reconnectAllowed = false;
+			reconAllowed = false;
 			return;
 		}
 
 		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("pong")) {
-			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: got a pong.");
+			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: Got a PONG.");
 		}
 
 		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("message")) {
@@ -330,19 +318,17 @@ public class TwitchPubSub extends WebSocketClient {
 	}
 
 	/**
-	 * @class PingTask
-	 * @info Used to send pings to pubsub in json format.
-	 *
+	 * Class for the PING timer. Since PubSub doesn't send PINGS we need to request them.
 	 */
-	class PingTask extends TimerTask {
+	private class PingTask extends TimerTask {
 		@Override
 		public void run() {
 			JSONObject jsonObject = new JSONObject();
 
 			jsonObject.put("type", "PING");
 
-			send(jsonObject.toString()); // Send a ping in a jsonObject.
-			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: sent a ping.");
+			send(jsonObject.toString());
+			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: Sent a PING.");
 		}
 	}
 }
