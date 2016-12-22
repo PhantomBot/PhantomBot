@@ -358,7 +358,7 @@
             subAction = args[1];
 
         if (command.equalsIgnoreCase('raffle')) {
-            if (action === undefined && !status) {
+            if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.usage'));
                 return;
             }
