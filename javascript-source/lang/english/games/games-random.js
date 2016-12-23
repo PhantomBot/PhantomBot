@@ -254,5 +254,5 @@ $.lang.register('randomcommand.253', 'Try to make a porter potty fly.');
 $.lang.register('randomcommand.254', 'Donate money to hopitals, children homes, and give till it you feel you have gave enough.');
 $.lang.register('randomcommand.255', 'Go to the cereal aisle and build a fort and see how big you can get it without getting in trouble.');
 $.lang.register('randomcommand.256', 'Eat a potato... and when your done with that eat another potato.');
-
+$.lang.register('randomcommand.257', 'Secret softener... a useful tool the lord of secrets thought... a wonderful item to thwart a cockatrice\'s plans of adding more statues to the roost and in turn returning the elements to dust eventually as time flows along.');
 $.lang.register('randomcommand.console.loaded', 'Found $1 random command messages.');
