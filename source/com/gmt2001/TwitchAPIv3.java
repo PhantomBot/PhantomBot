@@ -630,7 +630,7 @@ public class TwitchAPIv3 {
                 if (followsArray.getJSONObject(idx).getJSONObject("user").has("name")) {
                     if (dataStore.exists("time", followsArray.getJSONObject(idx).getJSONObject("user").getString("name"))) {
                         insertCtr++;
-                        dataStore.set("followed", followsArray.getJSONObject(idx).getJSONObject("user").getString("name"), "true");
+                        dataStore.set("followed_fixtable", followsArray.getJSONObject(idx).getJSONObject("user").getString("name"), "true");
                     }
                 }
             }
@@ -682,6 +682,7 @@ public class TwitchAPIv3 {
             }
         } while (jsonInput.getJSONArray("follows").length() > 0) ;
 
+        dataStore.RenameFile("followed_fixtable", "followed");
         com.gmt2001.Console.out.println("FixFollowedTable: Pulled followers into the followed table, loaded " + insertCtr + "/" + followerCount + " records.");
     }
 

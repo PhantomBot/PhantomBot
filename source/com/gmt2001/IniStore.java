@@ -121,6 +121,10 @@ public class IniStore extends DataStore implements ActionListener {
     }
 
     private void SaveFile(String fName, IniFile data) {
+        if (data == null) {
+            return;
+        }
+
         try {
             String wdata = "";
             Object[] adata = data.data.keySet().toArray();
@@ -480,6 +484,30 @@ public class IniStore extends DataStore implements ActionListener {
         f.delete();
 
         files.remove(fName);
+    }
+
+    @Override
+    public void RenameFile(String fNameSource, String fNameDest) {
+        fNameSource = validatefName(fNameSource);
+        fNameDest = validatefName(fNameDest);
+
+        SaveFile(fNameSource, files.get(fNameSource));
+        if (!FileExists(fNameSource)) {
+            return;
+        }
+
+        SaveFile(fNameDest, files.get(fNameDest));
+        if (FileExists(fNameDest)) {
+            RemoveFile(fNameDest);
+        }
+
+        File sourceFile = new File("./" + inifolder + "/" + fNameSource + ".ini");
+        File destFile = new File("./" + inifolder + "/" + fNameDest + ".ini");
+        
+        sourceFile.renameTo(destFile);
+
+        files.remove(fNameSource);
+        LoadFile(fNameDest, false);
     }
 
     @Override
