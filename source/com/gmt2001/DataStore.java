@@ -183,6 +183,9 @@ public class DataStore {
     public void RemoveFile(String fName) {
     }
 
+    public void RenameFile(String fNameSource, String fNameDest) {
+    }
+
     public boolean FileExists(String fName) {
         return false;
     }
