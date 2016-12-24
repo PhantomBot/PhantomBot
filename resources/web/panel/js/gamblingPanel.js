@@ -271,6 +271,9 @@
         $('#raffle-normal-timer').val('0');
         $('#raffle-normal-regluck').val('0');
         $('#raffle-normal-subluck').val('0');
+        document.getElementById('raffle-time-regluck').value = 0;
+        document.getElementById('raffle-time-subluck').value = 0;
+        document.getElementById('raffle-time-timer').value = 0;
     }
 
     /**
@@ -300,6 +303,9 @@
         $('#raffle-normal-timer').val('0');
         $('#raffle-normal-regluck').val('0');
         $('#raffle-normal-subluck').val('0');
+        document.getElementById('raffle-points-regluck').value = 0;
+        document.getElementById('raffle-points-subluck').value = 0;
+        document.getElementById('raffle-points-timer').value = 0;
     }
 
     /**
@@ -327,6 +333,9 @@
         $('#raffle-normal-timer').val('0');
         $('#raffle-normal-regluck').val('0');
         $('#raffle-normal-subluck').val('0');
+        document.getElementById('raffle-normal-regluck').value = 0;
+        document.getElementById('raffle-normal-subluck').value = 0;
+        document.getElementById('raffle-normal-timer').value = 0;
     }
 
     /**
