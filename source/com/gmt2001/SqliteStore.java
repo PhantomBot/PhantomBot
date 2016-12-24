@@ -241,6 +241,27 @@ public class SqliteStore extends DataStore {
     }
 
     @Override
+    public void RenameFile(String fNameSource, String fNameDest) {
+        CheckConnection();
+
+        fNameSource = validateFname(fNameSource);
+        fNameDest = validateFname(fNameDest);
+
+        if (!FileExists(fNameSource)) {
+            return;
+        }
+
+        RemoveFile(fNameDest);
+
+        try (Statement statement = connection.createStatement()) {
+            statement.setQueryTimeout(10);
+            statement.executeUpdate("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
     public boolean FileExists(String fName) {
         CheckConnection();
 
