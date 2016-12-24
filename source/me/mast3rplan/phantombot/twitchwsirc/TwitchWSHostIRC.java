@@ -172,6 +172,8 @@ public class TwitchWSHostIRC {
         private final URI uri;
         private Pattern hostPattern = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now hosting you for up to (\\d+) viewers");
         private Pattern autoHostPattern = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now auto hosting you for up to (\\d+) viewers");
+        private Pattern hostPatternNoViewers = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now hosting you.");
+        private Pattern autoHostPatternNoViewers = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now auto hosting you.");
         private long lastPing = 0L;
         private boolean sentPing = false;
 
@@ -337,12 +339,24 @@ public class TwitchWSHostIRC {
                     eventBus.post(new TwitchHostedEvent(matcher.group(1), Integer.parseInt(matcher.group(2))));
                     return;
                 }
+
+                matcher = hostPatternNoViewers.matcher(message);
+                if (matcher.find()) {
+                    eventBus.post(new TwitchHostedEvent(matcher.group(1)));
+                    return;
+                }
+
                 matcher = autoHostPattern.matcher(message);
                 if (matcher.find()) {
                     eventBus.post(new TwitchAutoHostedEvent(matcher.group(1), Integer.parseInt(matcher.group(2))));
                     return;
                 }
-                return;
+
+                matcher = autoHostPatternNoViewers.matcher(message);
+                if (matcher.find()) {
+                    eventBus.post(new TwitchAutoHostedEvent(matcher.group(1)));
+                    return;
+                }
             }
         }
 
