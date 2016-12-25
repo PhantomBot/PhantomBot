@@ -111,9 +111,10 @@
         } else {
             var channelData = $.twitch.GetChannel(channelName);
 
-            if (!channelData.isNull('status')) {
+            if (!channelData.isNull('status') && channelData.getInt('_http') == 200) {
                 return channelData.getString('status');
             }
+            $.log.error('Failed to get the current status: ' + channelData.getString('message'));
             return '';
         }
     };
@@ -130,9 +131,10 @@
         } else {
             var channelData = $.twitch.GetChannel(channelName);
 
-            if (!channelData.isNull('game')) {
+            if (!channelData.isNull('game') && channelData.getInt('_http') == 200) {
                 return channelData.getString("game");
             }
+            $.log.error('Failed to get the current game: ' + channelData.getString('message'));
             return '';
         }
     };
@@ -266,7 +268,7 @@
         } else {
             var stream = $.twitch.GetStream(channelName);
 
-            if (!stream.isNull('stream')) {
+            if (!stream.isNull('stream') && stream.getInt('_http') == 200) {
                 return stream.getJSONObject('stream').getInt('viewers');
             } else {
                 return 0;
@@ -283,7 +285,7 @@
     function getFollows(channelName) {
         var channel = $.twitch.GetChannel(channelName);
 
-        if (!channel.isNull('followers')) {
+        if (!channel.isNull('followers') && channel.getInt('_http') == 200) {
             return channel.getInt('followers');
         } else {
             return 0;
