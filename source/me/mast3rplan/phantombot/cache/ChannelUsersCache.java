@@ -21,7 +21,7 @@ import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelJoinEvent;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelJoinUpdateEvent;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelLeaveEvent;
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.Calendar;
@@ -140,7 +140,7 @@ public class ChannelUsersCache implements Runnable {
     private void updateCache() throws Exception {
         Map<String, String> newCache = Maps.newHashMap();
 
-        JSONObject j = TwitchAPIv3.instance().GetChatUsers(channel);
+        JSONObject j = TwitchAPIv5.instance().GetChatUsers(channel);
 
         if (j.getBoolean("_success")) {
             if (j.getInt("_http") == 200) {

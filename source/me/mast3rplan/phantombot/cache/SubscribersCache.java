@@ -16,7 +16,7 @@
  */
 package me.mast3rplan.phantombot.cache;
 
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.Calendar;
@@ -76,7 +76,7 @@ public class SubscribersCache implements Runnable {
     }
 
     public int getCount(String channel) throws Exception {
-        JSONObject j = TwitchAPIv3.instance().GetChannelSubscriptions(channel, 1, 0, false);
+        JSONObject j = TwitchAPIv5.instance().GetChannelSubscriptions(channel, 1, 0, false);
 
         if (j.getBoolean("_success")) {
             if (j.getInt("_http") == 200) {
@@ -120,7 +120,7 @@ public class SubscribersCache implements Runnable {
         while (!killed) {
             try {
                 try {
-                    if (new Date().after(timeoutExpire) && run && TwitchAPIv3.instance().HasOAuth()) {
+                    if (new Date().after(timeoutExpire) && run && TwitchAPIv5.instance().HasOAuth()) {
                         int newCount = getCount(channel);
 
                         if (newCount == -1) {
@@ -176,7 +176,7 @@ public class SubscribersCache implements Runnable {
             Thread thread = new Thread() {
                 @Override
                 public void run() {
-                    JSONObject j = TwitchAPIv3.instance().GetChannelSubscriptions(channel, 100, offset, true);
+                    JSONObject j = TwitchAPIv5.instance().GetChannelSubscriptions(channel, 100, offset, true);
 
                     if (j.getBoolean("_success")) {
                         if (j.getInt("_http") == 200) {

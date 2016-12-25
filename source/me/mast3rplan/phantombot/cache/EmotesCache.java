@@ -19,7 +19,7 @@
 
 package me.mast3rplan.phantombot.cache;
 
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 import com.illusionaryone.FrankerZAPIv1;
 import com.illusionaryone.BTTVAPIv2;
 import com.google.common.collect.Maps;
@@ -170,7 +170,7 @@ public class EmotesCache implements Runnable {
 
         /**
          * @info Don't need this anymore since we use the IRCv3 tags for Twitch emotes.
-         * twitchJsonResult = TwitchAPIv3.instance().GetEmotes();
+         * twitchJsonResult = TwitchAPIv5.instance().GetEmotes();
          * if (!checkJSONExceptions(twitchJsonResult, false, "Twitch")) {
          *    com.gmt2001.Console.err.println("Failed to get Twitch Emotes");
          *    return;

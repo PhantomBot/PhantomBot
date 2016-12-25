@@ -100,7 +100,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 
 import com.google.common.collect.Maps;
 
@@ -478,7 +478,7 @@ public class PanelSocketServer extends WebSocketServer {
 
     private Boolean authenticateOauth(String oauth) {
         String value;
-        String authUsername = TwitchAPIv3.instance().GetUserFromOauth(oauth);
+        String authUsername = TwitchAPIv5.instance().GetUserFromOauth(oauth);
 
         if (authUsername == null) {
             return false;

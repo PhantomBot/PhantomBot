@@ -19,110 +19,88 @@ package me.mast3rplan.phantombot;
 
 import com.gmt2001.DataStore;
 import com.gmt2001.IniStore;
-import com.gmt2001.SqliteStore;
-import com.gmt2001.TempStore;
-import com.gmt2001.MySQLStore;
-import com.gmt2001.TwitchAPIv3;
-import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.Logger;
+import com.gmt2001.MySQLStore;
+import com.gmt2001.SqliteStore;
+import com.gmt2001.TwitchAPIv5;
+import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
-import de.simeonf.EventWebSocketSecureServer;
-import de.simeonf.EventWebSocketServer;
-import de.simeonf.MusicWebSocketSecureServer;
-import com.illusionaryone.TwitchAlertsAPIv1;
-import com.illusionaryone.StreamTipAPI;
-import com.illusionaryone.SingularityAPI;
+import com.illusionaryone.DiscordAPI;
 import com.illusionaryone.GameWispAPIv1;
-import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
 import com.illusionaryone.NoticeTimer;
-import com.illusionaryone.DiscordAPI;
-
+import com.illusionaryone.SingularityAPI;
+import com.illusionaryone.StreamTipAPI;
+import com.illusionaryone.TwitchAlertsAPIv1;
+import com.illusionaryone.TwitterAPI;
+import de.simeonf.EventWebSocketServer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.Properties;
-import java.util.Enumeration;
-import java.util.Collections;
-
-
-import java.util.concurrent.TimeUnit;
+import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import java.security.SecureRandom;
-import java.math.BigInteger;
-
+import java.util.concurrent.TimeUnit;
 import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
-import me.mast3rplan.phantombot.cache.FollowersCache;
-import me.mast3rplan.phantombot.cache.SubscribersCache;
-import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.cache.DonationsCache;
-import me.mast3rplan.phantombot.cache.StreamTipCache;
 import me.mast3rplan.phantombot.cache.EmotesCache;
-import me.mast3rplan.phantombot.cache.TwitterCache;
+import me.mast3rplan.phantombot.cache.FollowersCache;
+import me.mast3rplan.phantombot.cache.StreamTipCache;
+import me.mast3rplan.phantombot.cache.SubscribersCache;
 import me.mast3rplan.phantombot.cache.TwitchCache;
+import me.mast3rplan.phantombot.cache.TwitterCache;
+import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.console.ConsoleInputListener;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.Listener;
+import me.mast3rplan.phantombot.event.bits.BitsEvent;
 import me.mast3rplan.phantombot.event.command.CommandEvent;
-import me.mast3rplan.phantombot.event.devcommand.DeveloperCommandEvent;
 import me.mast3rplan.phantombot.event.console.ConsoleInputEvent;
+import me.mast3rplan.phantombot.event.devcommand.DeveloperCommandEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
+import me.mast3rplan.phantombot.event.irc.channel.IrcChannelJoinEvent;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelUserModeEvent;
-import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
-import me.mast3rplan.phantombot.event.irc.channel.IrcChannelJoinEvent;
-import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
-import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
-import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
-import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
-import me.mast3rplan.phantombot.event.streamtip.donate.StreamTipDonationEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
+import me.mast3rplan.phantombot.event.subscribers.NewPrimeSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
-import me.mast3rplan.phantombot.event.subscribers.NewPrimeSubscriberEvent;
-import me.mast3rplan.phantombot.event.bits.BitsEvent;
+import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
+import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
+import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
+import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
 import me.mast3rplan.phantombot.httpserver.HTTPServer;
-import me.mast3rplan.phantombot.httpserver.NEWHTTPServer;
 import me.mast3rplan.phantombot.httpserver.NEWHTTPSServer;
-import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
-import me.mast3rplan.phantombot.ytplayer.YTWebSocketServer;
+import me.mast3rplan.phantombot.httpserver.NEWHTTPServer;
+import me.mast3rplan.phantombot.panel.PanelSocketSecureServer;
+import me.mast3rplan.phantombot.panel.PanelSocketServer;
 import me.mast3rplan.phantombot.script.Script;
 import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.script.ScriptManager;
-import me.mast3rplan.phantombot.panel.PanelSocketServer;
-import me.mast3rplan.phantombot.panel.PanelSocketSecureServer;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FileExistsException;
-import org.apache.commons.lang3.SystemUtils;
-
-import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
-import me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC;
-import me.mast3rplan.phantombot.twitchwsirc.TwitchPubSub;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
-import java.net.URI;
+import me.mast3rplan.phantombot.twitchwsirc.TwitchPubSub;
+import me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC;
+import me.mast3rplan.phantombot.ytplayer.YTWebSocketServer;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 public class PhantomBot implements Listener {
     /* Bot Information */
@@ -430,7 +408,7 @@ public class PhantomBot implements Listener {
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
          * for moderators.  For non-moderators, the maximum is 20 messages in 30 seconds. While it is not recommended
          * to go above anything higher than 18.75 in case the bot is ever de-modded, the option is available but is
-         * capped at 80.0. 
+         * capped at 80.0.
          */
         PhantomBot.messageLimit = Double.parseDouble(this.pbProperties.getProperty("msglimit30", "18.75"));
         if (PhantomBot.messageLimit > 80.0) {
@@ -492,9 +470,9 @@ public class PhantomBot implements Listener {
         }
 
         /* Set the client Id in the Twitch api. */
-        TwitchAPIv3.instance().SetClientID(this.clientId);
+        TwitchAPIv5.instance().SetClientID(this.clientId);
         /* Set the oauth key in the Twitch api. */
-        TwitchAPIv3.instance().SetOAuth(this.apiOAuth);
+        TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
 
         /* Set the TwitchAlerts OAuth key and limiter. */
         if (!twitchAlertsKey.isEmpty()) {
@@ -522,7 +500,7 @@ public class PhantomBot implements Listener {
 
         /* Start a pubsub instance here. */
         if (this.oauth.length() > 0 && dataStore.GetString("chatModerator", "", "moderationLogs").equals("true")) {
-            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv3.instance().getChannelId(this.channelName), TwitchAPIv3.instance().getChannelId(this.botName), this.oauth);
+            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.oauth);
         }
 
         /* Check if the OS is Linux. */
@@ -570,7 +548,7 @@ public class PhantomBot implements Listener {
     public static void setDebuggingLogOnly(Boolean debug) {
         PhantomBot.enableDebugging = debug;
         PhantomBot.enableDebuggingLogOnly = debug;
-    } 
+    }
 
     /*
      * Tells you the bot name.
@@ -939,7 +917,7 @@ public class PhantomBot implements Listener {
         /* Export all these to the $. api in the scripts. */
         Script.global.defineProperty("inidb", dataStore, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
-        Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
+        Script.global.defineProperty("twitch", TwitchAPIv5.instance(), 0);
         Script.global.defineProperty("botName", botName, 0);
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("channels", channels, 0);
@@ -1195,13 +1173,13 @@ public class PhantomBot implements Listener {
 
         /* Update the followed (followers) table. */
         if (message.equalsIgnoreCase("fixfollowedtable")) {
-            TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, false);
+            TwitchAPIv5.instance().FixFollowedTable(channelName, dataStore, false);
             return;
         }
 
         /* Update the followed (followers) table - forced. */
         if (message.equalsIgnoreCase("fixfollowedtable-force")) {
-            TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, true);
+            TwitchAPIv5.instance().FixFollowedTable(channelName, dataStore, true);
             return;
         }
 
@@ -2010,8 +1988,8 @@ public class PhantomBot implements Listener {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                
-                /* Fill in the Properties object with default values. Note that some values are left 
+
+                /* Fill in the Properties object with default values. Note that some values are left
                  * unset to be caught in the upcoming logic to enforce settings.
                  */
 
@@ -2219,7 +2197,7 @@ public class PhantomBot implements Listener {
 
         gameWispOAuth = newTokens[0];
         gameWispRefresh = newTokens[1];
-        
+
         pbProperties.setProperty("gamewispauth", newTokens[0]);
         pbProperties.setProperty("gamewisprefresh", newTokens[1]);
 
