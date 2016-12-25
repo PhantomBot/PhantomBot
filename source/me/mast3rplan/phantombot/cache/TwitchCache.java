@@ -166,7 +166,7 @@ public class TwitchCache implements Runnable {
         try {
             JSONObject streamObj = TwitchAPIv3.instance().GetStream(this.channel);
 
-            if (streamObj.getBoolean("_success")) {
+            if (streamObj.getBoolean("_success") && streamObj.getInt("_http") == 200) {
 
                 /* Determine if the stream is online or not */
                 isOnline = !streamObj.isNull("stream");
@@ -212,6 +212,7 @@ public class TwitchCache implements Runnable {
 
             } else {
                 success = false;
+                com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
@@ -221,7 +222,7 @@ public class TwitchCache implements Runnable {
         try {
             JSONObject streamObj = TwitchAPIv3.instance().GetChannel(this.channel);
 
-            if (streamObj.getBoolean("_success")) {
+            if (streamObj.getBoolean("_success") && streamObj.getInt("_http") == 200) {
 
                 /* Get the game being streamed. */
                 if (streamObj.has("game")) {
@@ -264,6 +265,7 @@ public class TwitchCache implements Runnable {
                 }
             } else {
                 success = false;
+                com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
