@@ -322,7 +322,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="resubEmote">Resubscriber Custom Emote</label>
                 <button type="button" class="btn btn-primary inline pull-right"  
-                        onclick="$.updateGreetingData('resubEmoteInput', 'subscribeHandler', 'resubEmote')">Submit</button>
+                        onclick="$.updateGreetingData('resubGreetingInput', 'subscribeHandler', 'resubEmote')">Submit</button>
                 <input type="text" class="form-control" id="resubEmoteInput" placeholder="Emote name"
                        data-toggle="tooltip" title="Emote that the (customemote) that will be replaced with. The emote will be added the amount of months the user subscribed for." />
             </div>
@@ -341,6 +341,15 @@
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
                          onclick="$.toggleGreetings('bitsSettings', 'toggle');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+			<tr class="textList">
+                <td>Toggle Bits Rewards To Become a Multiplicative Factor Of Number of Bits</td>
+                <td style="width: 25px"><div id="bitsRewardMultToggle" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('bitsSettings', 'rewardMultToggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
