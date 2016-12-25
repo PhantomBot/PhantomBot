@@ -2022,6 +2022,7 @@ public class PhantomBot implements Listener {
                 startProperties.setProperty("msglimit30", "18.75");
                 startProperties.setProperty("musicenable", "true");
                 startProperties.setProperty("whisperlimit60", "60.0");
+                startProperties.setProperty("clientid", "7wpchwtqz7pvivc3qbdn1kajz42tdmb");
 
                 /* These are all items that require additional setup later from the user. */
                 startProperties.setProperty("datastore", "");
