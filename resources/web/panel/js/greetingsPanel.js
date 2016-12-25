@@ -42,6 +42,7 @@
         gameWhispToggle = false,
         primeSubToggle = false;
         bitsToggle = false;
+		bitsRewardMultToggle = false;
 
     /*
      * onMessage
@@ -222,6 +223,10 @@
                         bitsToggle = value;
                         $('#bitsToggle').html(settingIcon[value]);
                     }
+					if (panelMatch(key, 'rewardMultToggle')) {
+						bitsRewardMultToggle = value;
+                        $('#bitsRewardMultToggle').html(settingIcon[value]);
+					}
                     if (panelMatch(key, 'message')) {
                         $('#bitsMessage').val(value);
                     }
@@ -392,6 +397,15 @@
                 sendDBUpdate('greetings_bits', 'bitsSettings', 'toggle', 'false');
             } else {
                 sendDBUpdate('greetings_bits', 'bitsSettings', 'toggle', 'true');
+            }
+            setTimeout(function() { sendCommand('reloadbits'); }, TIMEOUT_WAIT_TIME);
+        }
+		if (panelMatch(table, 'bitsSettings') && panelMatch(key, 'rewardMultToggle')) { 
+            $('#bitsRewardMultToggle').html(spinIcon);
+            if (bitsRewardMultToggle == "true") {
+                sendDBUpdate('greetings_bits', 'bitsSettings', 'rewardMultToggle', 'false');
+            } else {
+                sendDBUpdate('greetings_bits', 'bitsSettings', 'rewardMultToggle', 'true');
             }
             setTimeout(function() { sendCommand('reloadbits'); }, TIMEOUT_WAIT_TIME);
         }
