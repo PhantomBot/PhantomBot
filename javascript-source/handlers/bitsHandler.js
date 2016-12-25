@@ -48,7 +48,7 @@
 		/** Match (reward) if it is in the message to replace it with the reward the owner has set when someone cheers. */
 		if (s.match(/\(reward\)/g)) {
 			if (rewardMultToggle) {
-				s = $.replace(s, '(reward)', $.getPointsString(event.getBits() * reward));
+				s = $.replace(s, '(reward)', $.getPointsString(parseInt(event.getBits()) * reward));
 			} else {
 				s = $.replace(s, '(reward)', $.getPointsString(reward));
 			}
@@ -59,7 +59,7 @@
 			$.say(s);
 			if (reward > 0) {//Check if the owner set a reward for when someone cheers. Default is non.
 				if (rewardMultToggle) {
-					$.inidb.incr('points', event.getUsername(), event.getBits() * parseInt(reward));
+					$.inidb.incr('points', event.getUsername(), parseInt(event.getBits()) * parseInt(reward));
 				} else {
 					$.inidb.incr('points', event.getUsername(), parseInt(reward));
 				}
