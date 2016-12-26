@@ -122,7 +122,7 @@ public class TwitchPubSub extends WebSocketClient {
             this.setSocket(sslSocketFactory.createSocket());
             this.connect();
         } catch (Exception ex) {
-        	com.gmt2001.Console.err.println("Twitch PubSub-Edge failed to connect: " + ex.getMessage());
+        	com.gmt2001.Console.err.println("PubSub failed to connect: " + ex.getMessage());
         }
 	}
 
@@ -136,7 +136,7 @@ public class TwitchPubSub extends WebSocketClient {
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException ex) {
-				com.gmt2001.Console.err.println("Twitch PubSub-Edge: Failed to sleep before reconnecting: " + ex.getMessage());
+				com.gmt2001.Console.err.println("PubSub failed to sleep before reconnecting: " + ex.getMessage());
 			}
 		}
 
@@ -147,7 +147,7 @@ public class TwitchPubSub extends WebSocketClient {
 			try {
 			    this.connectWSS(true);
 			} catch (Exception ex) {
-				com.gmt2001.Console.err.println("Twitch PubSub-Edge failed to reconnect: " + ex.getMessage());
+				com.gmt2001.Console.err.println("PubSub failed to reconnect: " + ex.getMessage());
 			}
 		}
 	}
@@ -268,7 +268,7 @@ public class TwitchPubSub extends WebSocketClient {
 	@Override
 	public void onClose(int code, String reason, boolean remote) {
 		com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-		com.gmt2001.Console.out.println("Disconnected from Twitch PubSub-Edge.");
+		com.gmt2001.Console.out.println("Disconnected from Twitch PubSub.");
 		
 		this.reconnectWSS(false);
 	}
@@ -281,7 +281,7 @@ public class TwitchPubSub extends WebSocketClient {
 	@Override
 	public void onError(Exception ex) {
         if (!ex.toString().contains("ArrayIndexOutOfBoundsException")) {
-            com.gmt2001.Console.debug.println("Twitch PubSub-Edge Exception: " + ex);
+            com.gmt2001.Console.debug.println("PubSub Exception: " + ex);
         }
     }
 
@@ -296,24 +296,28 @@ public class TwitchPubSub extends WebSocketClient {
 
 		// com.gmt2001.Console.out.println("[PubSub Raw Message] " + messageObj);
 
-		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("reconnect")) {
-			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: Force reconnect required. (10 second delay)");
-			this.reconnectWSS(true);
+		if (!messageObj.has("type")) {
 			return;
 		}
 
-		if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
-			com.gmt2001.Console.err.println("Twitch PubSub-Edge Error: " + messageObj.getString("error"));
+		if (messageObj.getString("type").equalsIgnoreCase("reconnect")) {
+			com.gmt2001.Console.debug.println("PubSub: Force reconnect required. (10 second delay)");
+			reconnectWSS(true);
+			return;
+		}
+
+		if (messageObj.getString("error").length() > 0) {
+			com.gmt2001.Console.err.println("PubSub Error: " + messageObj.getString("error"));
 			reconAllowed = false;
 			return;
 		}
 
-		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("pong")) {
-			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: Got a PONG.");
+		if (messageObj.getString("type").equalsIgnoreCase("pong")) {
+			com.gmt2001.Console.debug.println("PubSub: Got a PONG.");
 		}
 
-		if (messageObj.has("type") && messageObj.getString("type").equalsIgnoreCase("message")) {
-		    this.parse(messageObj);
+		if (messageObj.getString("type").equalsIgnoreCase("message")) {
+		    parse(messageObj);
 		}
 	}
 
@@ -328,7 +332,7 @@ public class TwitchPubSub extends WebSocketClient {
 			jsonObject.put("type", "PING");
 
 			send(jsonObject.toString());
-			com.gmt2001.Console.debug.println("Twitch PubSub-Edge: Sent a PING.");
+			com.gmt2001.Console.debug.println("PubSub: Sent a PING.");
 		}
 	}
 }
