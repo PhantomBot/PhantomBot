@@ -59,7 +59,7 @@ public class HttpLang implements Listener
 
     @Subscribe
     public void ircChannelMessage(IrcChannelMessageEvent event) {
-        if (event.getMessage().startsWith("!lang") && event.getMessage().contains(" ")) {
+        if (event.getMessage().startsWith("!lang") && event.getMessage().contains(" ") && !event.getTags().get("user-type").isEmpty()) {
             this.lang = event.getMessage().substring(event.getMessage().indexOf(" ") + 1);
             this.loadLang();
         }
