@@ -1094,7 +1094,7 @@ public class PhantomBot implements Listener {
         }
 
         /* Start the notice timer and notice handler. */
-        this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+        // this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
 
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
