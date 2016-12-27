@@ -58,9 +58,6 @@
         if (!$.inidb.exists('subscribed', subscriber)) {
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber, true);
-            if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
-                $.inidb.incr('points', subscriber, subReward);
-            }
         }
     });
 
