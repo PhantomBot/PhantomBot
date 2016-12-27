@@ -1461,7 +1461,7 @@
                 if (!$.isBot(refundUser) && !playlistDJname.equalsIgnoreCase(refundUser)) {
                     if ($.inidb.exists('pricecom', 'songrequest') || $.inidb.exists('pricecom', 'addsong')) {
                        var isMod = $.isMod(refundUser);
-                       if ((((isMod && $.iniDbGetBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isMod))) {
+                       if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isMod))) {
                            var refund = $.inidb.get('pricecom', 'songrequest');
                            if (refund == 0) {
                                refund = $.inidb.get('pricecom', 'addsong');
