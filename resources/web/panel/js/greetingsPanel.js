@@ -35,7 +35,6 @@
         followerToggle = false,
         subToggle = false,
         reSubToggle = false,
-        reSubRewardToggle = false,
         donationToggle = false,
         streamtipdonationToggle = false,
         donationGroup = false,  
@@ -178,10 +177,6 @@
                     if (panelMatch(key, 'reSubscriberWelcomeToggle')) {
                         reSubToggle = value;
                         $('#resubscriptionGreetings').html(settingIcon[value]);
-                    }
-                    if (panelMatch(key, 'reSubscriberRewardToggle')) {
-                        reSubRewardToggle = value;
-                        $('#resubscriptionReward').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'subscribeReward')) {
                         $('#subRewardInput').val(value);
@@ -396,15 +391,6 @@
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberWelcomeToggle', 'false');
             } else {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberWelcomeToggle', 'true');
-            }
-            setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
-        }
-        if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'reSubscriberRewardToggle')) { 
-            $('#resubscriptionReward').html(spinIcon);
-            if (reSubRewardToggle == "true") {
-                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberRewardToggle', 'false');
-            } else {
-                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberRewardToggle', 'true');
             }
             setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
