@@ -10,7 +10,7 @@
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
         primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
-		reSubRewardToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberRewardToggle', false),
+        reSubRewardToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberRewardToggle', false),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
 		reSubReward = $.getSetIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
         customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote', ''),
@@ -27,7 +27,7 @@
         subWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle');
         primeSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle');
         reSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle');
-		reSubRewardToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberRewardToggle');
+        reSubRewardToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberRewardToggle');
         subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
 		reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward');
         customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote');
@@ -88,7 +88,7 @@
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
             }
-			if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+            if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
                 $.inidb.incr('points', subscriber, subReward);
             }
             $.say(message);
@@ -109,7 +109,7 @@
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
             }
-			if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+            if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
                 $.inidb.incr('points', subscriber, subReward);
             }
             $.say(message);
@@ -133,24 +133,24 @@
                 message = $.replace(message, '(months)', months);
             }
             if (message.match(/\(reward\)/g)) {
-				if (reSubRewardToggle) {
-					message = $.replace(message, '(reward)', String(reSubReward));
-				} else {
-					message = $.replace(message, '(reward)', String(subReward));
-				}
+                if (reSubRewardToggle) {
+                    message = $.replace(message, '(reward)', String(reSubReward));
+                } else {
+                    message = $.replace(message, '(reward)', String(subReward));
+                }
             }
             if (message.match(/\(customemote\)/)) {
                 for (i = 0; i < months; i++, emotes.push(customEmote));
                 message = $.replace(message, '(customemote)', emotes.join(' '));
             }
-			if (reSubRewardToggle) {
-				if (reSubReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
-					$.inidb.incr('points', resubscriber, reSubReward);
-				}
-			} else {
-				if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
-					$.inidb.incr('points', resubscriber, subReward);
-				}
+            if (reSubRewardToggle) {
+                if (reSubReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+                    $.inidb.incr('points', resubscriber, reSubReward);
+                }
+            } else {
+                if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+                    $.inidb.incr('points', resubscriber, subReward);
+                }
 			}
             $.say(message);
             $.addSubUsersList(resubscriber);
@@ -361,9 +361,9 @@
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubemote', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'primesubwelcometoggle', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubwelcometoggle', 1);
-			$.registerChatCommand('./handlers/subscribehandler.js', 'resubrewardtoggle', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'resubrewardtoggle', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 1);
-			$.registerChatCommand('./handlers/subscribehandler.js', 'resubscribereward', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'resubscribereward', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'primesubmessage', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 1);

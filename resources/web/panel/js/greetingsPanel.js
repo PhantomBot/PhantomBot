@@ -35,7 +35,7 @@
         followerToggle = false,
         subToggle = false,
         reSubToggle = false,
-		reSubRewardToggle = false,
+        reSubRewardToggle = false,
         donationToggle = false,
         streamtipdonationToggle = false,
         donationGroup = false,  
@@ -179,14 +179,14 @@
                         reSubToggle = value;
                         $('#resubscriptionGreetings').html(settingIcon[value]);
                     }
-					if (panelMatch(key, 'reSubscriberRewardToggle')) {
+                    if (panelMatch(key, 'reSubscriberRewardToggle')) {
                         reSubRewardToggle = value;
                         $('#resubscriptionReward').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'subscribeReward')) {
                         $('#subRewardInput').val(value);
                     }
-					if (panelMatch(key, 'reSubscribeReward')) {
+                    if (panelMatch(key, 'reSubscribeReward')) {
                         $('#reSubRewardInput').val(value);
                     }
                     if (panelMatch(key, 'resubEmote')) {
@@ -399,7 +399,7 @@
             }
             setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
-		if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'reSubscriberRewardToggle')) { 
+        if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'reSubscriberRewardToggle')) { 
             $('#resubscriptionReward').html(spinIcon);
             if (reSubRewardToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberRewardToggle', 'false');
