@@ -12,7 +12,7 @@
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
         reSubRewardToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberRewardToggle', false),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
-		reSubReward = $.getSetIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
+        reSubReward = $.getSetIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
         customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote', ''),
         announce = false,
         emotes = [],
@@ -29,7 +29,7 @@
         reSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle');
         reSubRewardToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberRewardToggle');
         subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
-		reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward');
+        reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward');
         customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote');
     }
 
