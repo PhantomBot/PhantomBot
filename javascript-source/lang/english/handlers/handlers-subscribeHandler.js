@@ -12,8 +12,6 @@ $.lang.register('subscribehandler.resub.msg.noreward.set', 'Resubscriber welcome
 $.lang.register('subscribehandler.resub.msg.noreward.usage', 'Usage: !resubmessage (message) - Tags: (name) (months)');
 $.lang.register('subscribehandler.resub.toggle.off', 'Resubscribers will no longer be welcomed upon resubscribing.');
 $.lang.register('subscribehandler.resub.toggle.on', 'Resubscribers will now be welcomed upon resubscribing.');
-$.lang.register('subscribehandler.resub.reward.toggle.off', 'Resubscribers rewards will be the same as subscribers rewards.');
-$.lang.register('subscribehandler.resub.reward.toggle.on', 'Resubscribers rewards will now be separate from subscribers rewards.');
 $.lang.register('subscribehandler.sub.reward.set', 'Reward for subscribing set!');
 $.lang.register('subscribehandler.sub.reward.usage', 'Usage: !subscribereward (amount)');
 $.lang.register('subscribehandler.resub.reward.set', 'Reward for resubscribing set!');
