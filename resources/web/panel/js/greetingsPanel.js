@@ -181,6 +181,9 @@
                     if (panelMatch(key, 'subscribeReward')) {
                         $('#subRewardInput').val(value);
                     }
+                    if (panelMatch(key, 'reSubscribeReward')) {
+                        $('#reSubRewardInput').val(value);
+                    }
                     if (panelMatch(key, 'resubEmote')) {
                         $('#resubEmoteInput').val(value);
                     }
