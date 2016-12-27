@@ -7,7 +7,7 @@
     var alreadyStarted = false,
         interval;
 
-    /**
+    /*
      * @event twitchOnline
      */
     $.bind('twitchOnline', function(event) {
@@ -15,7 +15,7 @@
         $.inidb.set('streamInfo', 'downtime', 0);
     });
 
-    /**
+    /*
      * @event twitchOffline
      */
     $.bind('twitchOffline', function(event) {
@@ -23,15 +23,15 @@
         $.inidb.set('streamInfo', 'downtime', $.systemTime());
     });
 
-    /**
-     * @function updateViewerCount()
+    /*
+     * @function updateViewerCount
      */
     function updateViewerCount() {
         $.inidb.set('panelstats', 'viewerCount', $.users.length);
     }
 
-    /**
-     * @function updateStreamUptime()
+    /*
+     * @function updateStreamUptime
      */
     function updateStreamUptime() {
         if ($.twitchCacheReady.equals('true')) {
@@ -42,8 +42,8 @@
         }
     }
 
-    /**
-     * @function updateChatLinesDB()
+    /*
+     * @function updateChatLinesDB
      */
     function updateChatLinesDB(user) {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
@@ -52,8 +52,8 @@
         }
     }
 
-    /**
-     * @function updateChatLinesDB()
+    /*
+     * @function updateChatLinesDB
      */
     function updateModLinesDB(user) {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
@@ -62,8 +62,8 @@
         }
     }
 
-    /**
-     * @function updatePlayTime()
+    /*
+     * @function updatePlayTime
      */
     function updatePlayTime() {
         var playTimeStart = $.getIniDbNumber('panelstats', 'playTimeStart', 0),
@@ -79,21 +79,21 @@
         $.inidb.set('panelstats', 'playTime', hrs + ":" + min);
     }
 
-    /**
-     * @function getTitlePanel()
+    /*
+     * @function getTitlePanel
      */
     function getTitlePanel() {
         $.inidb.set('streamInfo', 'title', $.getStatus($.channelName));
-    };
+    }
 
-    /**
-     * @function getGamePanel()
+    /*
+     * @function getGamePanel
      */
     function getGamePanel() {
         $.inidb.set('streamInfo', 'game', $.getGame($.channelName));
-    };
+    }
 
-    /**
+    /*
      * @function updateAll()
      */
     function updateAll() {
@@ -102,9 +102,9 @@
         updateStreamUptime();
         getTitlePanel();
         getGamePanel();
-    };
+    }
 
-    /**
+    /*
      * @event initReady
      *
      * If the module is enabled, run a timer to update the panelstats DB table.
@@ -125,7 +125,7 @@
         }
     });
 
-    /**
+    /*
      * Export functions to API
      */
     $.panelDB = {
