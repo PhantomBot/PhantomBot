@@ -26,7 +26,8 @@
 	 */
 	$.bind('bits', function(event) {
 		var username = event.getUsername(),
-		    bits = event.getBits();
+		    bits = event.getBits(),
+		    s = message;
 
 		if (announceBits === false || toggle === false) {
 			return;
