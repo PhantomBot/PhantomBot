@@ -183,7 +183,7 @@
             if (action.equalsIgnoreCase('announce')) {
                 announceDonations = !announceDonations;
                 $.setIniDbBoolean('streamtip', 'announce', announceDonations);
-                $.say($.whisperPrefix(sender) + (announceDonations ? $.lang.get('streamtip.donations.announce.enable') : $.lang.get('streamtip.donations.announce.disabled')));
+                $.say($.whisperPrefix(sender) + (announceDonations ? $.lang.get('streamtip.donations.announce.enable') : $.lang.get('streamtip.donations.announce.disable')));
             }
 
             /*

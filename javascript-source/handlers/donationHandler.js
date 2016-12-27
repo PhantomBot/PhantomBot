@@ -183,7 +183,7 @@
             if (action.equalsIgnoreCase('announce')) {
                 announceDonations = !announceDonations;
                 $.setIniDbBoolean('donations', 'announce', announceDonations);
-                $.say($.whisperPrefix(sender) + (announceDonations ? $.lang.get('donationhandler.donations.announce.enable') : $.lang.get('donationhandler.donations.announce.disabled')));
+                $.say($.whisperPrefix(sender) + (announceDonations ? $.lang.get('donationhandler.donations.announce.enable') : $.lang.get('donationhandler.donations.announce.disable')));
             }
 
             /*
