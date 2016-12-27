@@ -1094,7 +1094,7 @@ public class PhantomBot implements Listener {
         }
 
         /* Start the notice timer and notice handler. */
-        this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+        // this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
 
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
@@ -2011,7 +2011,7 @@ public class PhantomBot implements Listener {
                 }
             } else {
                 
-                /* Fill in the Properties object with default values. Note that some values are left 
+                /* Fill in the Properties object with some default values. Note that some values are left 
                  * unset to be caught in the upcoming logic to enforce settings.
                  */
 
@@ -2022,24 +2022,6 @@ public class PhantomBot implements Listener {
                 startProperties.setProperty("msglimit30", "18.75");
                 startProperties.setProperty("musicenable", "true");
                 startProperties.setProperty("whisperlimit60", "60.0");
-                startProperties.setProperty("clientid", "7wpchwtqz7pvivc3qbdn1kajz42tdmb");
-
-                /* These are all items that require additional setup later from the user. */
-                startProperties.setProperty("datastore", "");
-                startProperties.setProperty("discord_token", "");
-                startProperties.setProperty("gamewispauth", "");
-                startProperties.setProperty("gamewisprefresh", "");
-                startProperties.setProperty("httpsFileName", "");
-                startProperties.setProperty("httpsPassword", "");
-                startProperties.setProperty("logtimezone", "");
-                startProperties.setProperty("mysqlhost", "");
-                startProperties.setProperty("mysqlname", "");
-                startProperties.setProperty("mysqlpass", "");
-                startProperties.setProperty("mysqlport", "");
-                startProperties.setProperty("mysqluser", "");
-                startProperties.setProperty("streamtipid", "");
-                startProperties.setProperty("streamtipkey", "");
-                startProperties.setProperty("twitchalertskey", "");
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -2184,6 +2166,16 @@ public class PhantomBot implements Listener {
             channelName = channelName.substring(1);
             startProperties.setProperty("channel", channelName);
             changed = true;
+        }
+
+        /* Iterate the properties and delete entries for anything that does not have a 
+         * value.
+         */
+        for (String propertyKey : startProperties.stringPropertyNames()) {
+            if (startProperties.getProperty(propertyKey).isEmpty()) {
+                changed = true;
+                startProperties.remove(propertyKey);
+            }
         }
 
         /* Check to see if anything changed */
