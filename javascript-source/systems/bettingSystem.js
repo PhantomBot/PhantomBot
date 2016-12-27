@@ -38,7 +38,7 @@
 			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.open.usage'));
 			return;
 		} else if (bet.status === true && bet.opened === false) {
-			$.say($.whisperPrefix(sender) + $.lang.get('You must chose a winning option on the previous bet before you can open a new one. !bet close [option]'));
+			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.open.error'));
 			return;
 		} else if (bet.status === true) {
 			if (sender == $.botName) return;
@@ -105,7 +105,7 @@
 		for (i in bets) {
 			if (bets[i].option.equalsIgnoreCase(option)) {
 				winners.push(i.toLowerCase());
-				give = (((bet.total / bet.entries) * parseFloat(gain / 100)) + parseInt(bets[i].amount));
+				give = ((bet.total * parseFloat(gain / 100)) + parseInt(bets[i].amount));
 				total += give;
 				$.inidb.incr('points', i.toLowerCase(), Math.floor(give));
 			}
