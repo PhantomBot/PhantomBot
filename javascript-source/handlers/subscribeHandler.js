@@ -10,7 +10,9 @@
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
         primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
+		reSubRewardToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberRewardToggle', false),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
+		reSubReward = $.getSetIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
         customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote', ''),
         announce = false,
         emotes = [],
@@ -25,7 +27,9 @@
         subWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle');
         primeSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle');
         reSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle');
+		reSubRewardToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberRewardToggle');
         subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
+		reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward');
         customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote');
     }
 
@@ -87,6 +91,9 @@
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
             }
+			if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+                $.inidb.incr('points', subscriber, subReward);
+            }
             $.say(message);
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber, true);
@@ -104,6 +111,9 @@
             }
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
+            }
+			if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+                $.inidb.incr('points', subscriber, subReward);
             }
             $.say(message);
             $.addSubUsersList(subscriber);
@@ -126,12 +136,25 @@
                 message = $.replace(message, '(months)', months);
             }
             if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(subReward));
+				if (reSubRewardToggle) {
+					message = $.replace(message, '(reward)', String(reSubReward));
+				} else {
+					message = $.replace(message, '(reward)', String(subReward));
+				}
             }
             if (message.match(/\(customemote\)/)) {
                 for (i = 0; i < months; i++, emotes.push(customEmote));
                 message = $.replace(message, '(customemote)', emotes.join(' '));
             }
+			if (reSubRewardToggle) {
+				if (reSubReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+					$.inidb.incr('points', resubscriber, reSubReward);
+				}
+			} else {
+				if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+					$.inidb.incr('points', resubscriber, subReward);
+				}
+			}
             $.say(message);
             $.addSubUsersList(resubscriber);
             $.restoreSubscriberStatus(resubscriber, true);
@@ -187,20 +210,39 @@
         }
 
         /**
-         * @commandpath resubwelcometoggle - Eenable or disable resubsciption alerts.
+         * @commandpath resubwelcometoggle - Enable or disable resubsciption alerts.
          */
         if (command.equalsIgnoreCase('resubwelcometoggle')) {
             if (reSubWelcomeToggle) {
                 $.inidb.set('subscribeHandler', 'reSubscriberWelcomeToggle', false);
-                subWelcomeToggle = false;
+                reSubWelcomeToggle = false;
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.toggle.off'));
                 $.log.event(sender + ' disabled re-subscriber announcements');
                 return;
             } else {
                 $.inidb.set('subscribeHandler', 'reSubscriberWelcomeToggle', true);
-                subWelcomeToggle = true;
+                reSubWelcomeToggle = true;
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.toggle.on'));
                 $.log.event(sender + ' enabled re-subscriber announcements');
+                return;
+            }
+        }
+		
+		/**
+         * @commandpath resubrewardtoggle - Enable or disable resubsciption rewards to be seperate from subscription rewards.
+         */
+        if (command.equalsIgnoreCase('resubrewardtoggle')) {
+            if (reSubRewardToggle) {
+                $.inidb.set('subscribeHandler', 'reSubscriberRewardToggle', false);
+                reSubRewardToggle = false;
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.toggle.off'));
+                $.log.event(sender + ' disabled re-subscriber rewards seperation');
+                return;
+            } else {
+                $.inidb.set('subscribeHandler', 'reSubscriberRewardToggle', true);
+                reSubRewardToggle = true;
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.toggle.on'));
+                $.log.event(sender + ' enabled re-subscriber rewards seperation');
                 return;
             }
         }
@@ -255,13 +297,28 @@
          */
         if (command.equalsIgnoreCase('subscribereward')) {
             if (args.length === 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.reward.usage'));
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.usage'));
                 return;
             }
             $.inidb.set('subscribeHandler', 'subscribeReward', parseInt(args[0]));
             subReward = parseInt(args[0]);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.reward.set'));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.set'));
             $.log.event(sender + ' changed the subscriber reward to ' + subReward);
+            return;
+        }
+		
+		/**
+         * @commandpath resubscribereward [points] - Set an award for resubscribers.
+         */
+        if (command.equalsIgnoreCase('resubscribereward')) {
+            if (args.length === 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.usage'));
+                return;
+            }
+            $.inidb.set('subscribeHandler', 'reSubscribeReward', parseInt(args[0]));
+            reSubReward = parseInt(args[0]);
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.set'));
+            $.log.event(sender + ' changed the reSubscriber reward to ' + reSubReward);
             return;
         }
 
@@ -307,7 +364,9 @@
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubemote', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'primesubwelcometoggle', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubwelcometoggle', 1);
+			$.registerChatCommand('./handlers/subscribehandler.js', 'resubrewardtoggle', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 1);
+			$.registerChatCommand('./handlers/subscribehandler.js', 'resubscribereward', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'primesubmessage', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 1);
