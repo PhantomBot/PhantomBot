@@ -12,7 +12,7 @@
         donationGroupMin = $.getSetIniDbNumber('streamtip', 'donationGroupMin', 5),
         donationAddonDir = "./addons/streamTipHandler";
 
-    /**
+    /*
      * @function donationpanelupdate
      */
     function donationpanelupdate() {
@@ -22,9 +22,9 @@
         donationLastMsg = $.getIniDbString('streamtip', 'lastmessage');
         donationGroup = $.getIniDbBoolean('streamtip', 'donationGroup');
         donationGroupMin = $.getIniDbNumber('streamtip', 'donationGroupMin');
-    };
+    }
 
-    /**
+    /*
      * @event streamTipDonationsInitialized
      */
     $.bind('streamTipDonationInitialized', function(event) {
@@ -33,7 +33,7 @@
         }
 
         if (!$.isDirectory(donationAddonDir)) {
-            $.consoleLn(">> Creating StreamTip handler Directory: " + donationAddonDir);
+            $.consoleDebug(">> Creating StreamTip handler Directory: " + donationAddonDir);
             $.mkDir(donationAddonDir);
         }
 
@@ -42,7 +42,7 @@
         announceDonations = true;
     });
 
-    /**
+    /*
      * @event streamTipDonations
      */
     $.bind('streamTipDonation', function(event) {
@@ -86,11 +86,11 @@
             $.say(donationSay);
         }
 
-        if (donationGroup) { // if the Donation group is enabled.
+        if (donationGroup) {
             $.inidb.incr('streamtip', donationUsername.toLowerCase(), donationAmount.toFixed(2));
-            if ($.inidb.exists('streamtip', donationUsername.toLowerCase()) && $.inidb.get('streamtip', donationUsername.toLowerCase()) >= donationGroupMin) { // Check if the donator donated enough in total before promoting him.
-                if ($.getUserGroupId(donationUsername.toLowerCase()) > 3) { // Check if the user is not a mod, or admin, or sub.
-                    $.setUserGroupById(donationUsername.toLowerCase(), '4'); // Set user as a Donator
+            if ($.inidb.exists('streamtip', donationUsername.toLowerCase()) && $.inidb.get('streamtip', donationUsername.toLowerCase()) >= donationGroupMin) {
+                if ($.getUserGroupId(donationUsername.toLowerCase()) > 3) {
+                    $.setUserGroupById(donationUsername.toLowerCase(), '4');
                 }
             }
         }
@@ -100,18 +100,20 @@
         }
     });
 
-    /**
+    /*
      * @event command
      */
     $.bind('command', function(event) {
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
-            args = event.getArgs();
+            args = event.getArgs(),
+            action = args[0],
+            subAction = args[1];
 
-        /**
+        /*
          * @commandpath lasttip - Display the last donation.
          */
-        if (command.equalsIgnoreCase('lastdonation') || command.equalsIgnoreCase('lasttip')) {
+        if (command.equalsIgnoreCase('lasttip')) {
             if (!$.inidb.exists('streamtip', 'last_donation')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('streamtip.lastdonation.no-donations'));
                 return;
@@ -143,92 +145,69 @@
             $.say(donationSay);
         }
 
-        /**
+        /*
          * @commandpath streamtip - Controls various options for donation handling
          */
         if (command.equalsIgnoreCase('streamtip')) {
-            if (!args[0]) {
+            if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.usage'));
                 return;
             }
 
-            /**
+            /*
              * @commandpath streamtip toggledonators - Toggles the Donator's group.
              */
-            if (args[0].equalsIgnoreCase('toggledonators')) {
-                if (donationGroup) {
-                    donationGroup = false;
-                    $.inidb.set('streamtip', 'donationGroup', false);
-                    $.say($.whisperPrefix(sender) + $.lang.get('streamtip.disabled.donators'));
-                    $.log.event(sender + ' disabled donation Donator group.');
-                } else {
-                    donationGroup = true;
-                    $.inidb.set('streamtip', 'donationGroup', true);
-                    $.say($.whisperPrefix(sender) + $.lang.get('streamtip.enabled.donators'));
-                    $.log.event(sender + ' enabled donation Donator group.');
-                }
+            if (action.equalsIgnoreCase('toggledonators')) {
+                donationGroup = !donationGroup;
+                $.setIniDbBoolean('streamtip', 'donationGroup', donationGroup);
+                $.say($.whisperPrefix(sender) + (donationGroup ? $.lang.get('streamtip.enabled.donators') : $.lang.get('streamtip.disabled.donators')));
             }
 
-            /**
+            /*
              * @commandpath streamtip minmumbeforepromotion - Set the minimum before people get promoted to a Donator
              */
-            if (args[0].equalsIgnoreCase('minmumbeforepromotion')) {
-                if (!args[1]) {
+            if (action.equalsIgnoreCase('minmumbeforepromotion')) {
+                if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donators.min.usage'));
                     return;
                 }
-                donationGroupMin = args[1];
-                $.inidb.set('streamtip', 'donationGroupMin', args[1]);
-                $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donators.min', args[1]));
-                $.log.event(sender + ' set the minimum before being promoted to a Donator was set to ' + args[1]);
+
+                donationGroupMin = subAction;
+                $.setIniDbNumber('streamtip', 'donationGroupMin', donationGroupMin);
+                $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donators.min', donationGroupMin));
             }
 
-            /**
+            /*
              * @commandpath streamtip announce - Toggles announcements for donations off and on
              */
-            if (args[0].equalsIgnoreCase('announce')) {
-                if (announceDonations) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.announce.disable'));
-                    announceDonations = false;
-                    $.inidb.set('streamtip', 'announce', 'false');
-                    $.log.event(sender + ' disabled donation announcements');
-                } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.announce.enable'));
-                    announceDonations = true;
-                    $.inidb.set('streamtip', 'announce', 'true');
-                    $.log.event(sender + ' enabled donation announcements');
-                }
-                return;
+            if (action.equalsIgnoreCase('announce')) {
+                announceDonations = !announceDonations;
+                $.setIniDbBoolean('streamtip', 'announce', announceDonations);
+                $.say($.whisperPrefix(sender) + (announceDonations ? $.lang.get('streamtip.donations.announce.enable') : $.lang.get('streamtip.donations.announce.disabled')));
             }
 
-            /**
+            /*
              * @commandpath streamtip rewardmultiplier [n.n] - Set a reward multiplier for donations.
              */
-            if (args[0].equalsIgnoreCase('rewardmultiplier')) {
-                if (!args[1]) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.reward.usage'));
-                    return;
-                }
-                if (isNaN(args[1])) {
+            if (action.equalsIgnoreCase('rewardmultiplier')) {
+                if (isNaN(parseFloat(subAction))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.reward.usage'));
                     return;
                 }
 
-                $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.reward.success', args[1], (args[1] == "1" ? $.pointNameSingle : $.pointNameMultiple).toLowerCase()));
-                $.inidb.set('streamtip', 'reward', args[1]);
-                donationReward = parseFloat(args[1]);
-                $.log.event(sender + ' changed donation reward to ' + args[1]);
-                return;
+                donationReward = parseFloat(subAction);
+                $.setIniDbFloat('streamtip', 'reward', donationReward);
+                $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.reward.success', subAction, (subAction == "1" ? $.pointNameSingle : $.pointNameMultiple).toLowerCase()));
             }
 
-            /**
+            /*
              * @commandpath streamtip message [message text] - Set the donation message. Tags: (name), (amount), (points), (pointname), (message) and (currency)
              * @commandpath streamtip lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
              */
-            if (args[0].equalsIgnoreCase('message') || args[0].equalsIgnoreCase('lastmessage')) {
+            if (action.equalsIgnoreCase('message') || action.equalsIgnoreCase('lastmessage')) {
                 var comArg = args[0].toLowerCase();
 
-                if (!args[1]) {
+                if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.' + comArg + '.usage'));
                     return;
                 }
@@ -239,7 +218,7 @@
                     return;
                 }
 
-                $.inidb.set('streamtip', comArg, message);
+                $.setIniDbString('donations', comArg, message);
 
                 donationMessage = $.getIniDbString('streamtip', 'message');
                 donationLastMsg = $.getIniDbString('streamtip', 'lastmessage');
@@ -259,5 +238,6 @@
             $.registerChatCommand('./handlers/streamTipHandler.js', 'streamtip', 1);
         }
     });
+
     $.donationpanelupdatestreamtip = donationpanelupdate;
 })();
