@@ -226,20 +226,20 @@
         }
 		
 		/**
-         * @commandpath resubrewardtoggle - Enable or disable resubsciption rewards to be seperate from subscription rewards.
+         * @commandpath resubrewardtoggle - Enable or disable resubsciption rewards to be separate from subscription rewards.
          */
         if (command.equalsIgnoreCase('resubrewardtoggle')) {
             if (reSubRewardToggle) {
                 $.inidb.set('subscribeHandler', 'reSubscriberRewardToggle', false);
                 reSubRewardToggle = false;
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.toggle.off'));
-                $.log.event(sender + ' disabled re-subscriber rewards seperation');
+                $.log.event(sender + ' disabled re-subscriber rewards separation');
                 return;
             } else {
                 $.inidb.set('subscribeHandler', 'reSubscriberRewardToggle', true);
                 reSubRewardToggle = true;
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.toggle.on'));
-                $.log.event(sender + ' enabled re-subscriber rewards seperation');
+                $.log.event(sender + ' enabled re-subscriber rewards separation');
                 return;
             }
         }
