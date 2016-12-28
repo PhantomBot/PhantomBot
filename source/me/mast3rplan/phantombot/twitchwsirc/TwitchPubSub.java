@@ -16,9 +16,10 @@
  */
 
 /*
- * TwitchPubSubWS.java
- * @author: ScaniaTV
+ * TwitchPubSub.java
+ * @author ScaniaTV
  */
+
 package me.mast3rplan.phantombot.twitchwsirc;
 
 import com.google.common.collect.Maps;
