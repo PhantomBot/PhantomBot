@@ -93,7 +93,7 @@ public class Session {
      * @param  oAuth        OAUTH login
      * @param  Channel      Channel instance  
      * @param  eventBus     Eventbus
-     */ 
+     */
     private Session(Channel channel, String channelName, String botName, String oAuth, EventBus eventBus) {
         this.channelName = channelName.toLowerCase();
         this.eventBus = eventBus;
@@ -130,7 +130,7 @@ public class Session {
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.println("Failed to reconnect to TwitchWSIRC... PhantomBot will now exit: " + ex.getMessage());
                     System.exit(0);
-                } 
+                }
             }
             try {
                 Thread.sleep(1000);

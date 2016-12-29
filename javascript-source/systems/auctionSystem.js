@@ -120,7 +120,7 @@
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.bid.usage'));
             return;
         } else if (amount < auction.minimum) {
-            $.say($.lang.get('auctionsystem.err.bid.minimum', $.getPointsString(auction.topPoints)));
+            $.say($.lang.get('auctionsystem.err.bid.minimum', $.getPointsString(auction.minimum)));
             return;
         } else if (amount > $.getUserPoints(user)) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.points', $.pointNameMultiple));
