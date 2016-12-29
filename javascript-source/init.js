@@ -1106,6 +1106,20 @@
         });
 
         /**
+         * @event api-tipeeeStreamDonationInitialized
+         */
+        $api.on($script, 'tipeeeStreamDonationInitialized', function(event) {
+            callHook('tipeeeStreamDonationInitialized', event, true);
+        });
+
+        /**
+         * @event api-tipeeeStreamDonation
+         */
+        $api.on($script, 'tipeeeStreamDonation', function(event) {
+            callHook('tipeeeStreamDonation', event, true);
+        });
+
+        /**
          * @event api-getEmotes
          */
         $api.on($script, 'emotesGet', function(event) {
