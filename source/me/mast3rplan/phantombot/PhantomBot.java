@@ -251,6 +251,7 @@ public class PhantomBot implements Listener {
     private TwitchWSHostIRC wsHostIRC;
     private TwitchPubSub pubSubEdge;
     private Properties pbProperties;
+    private Boolean legacyServers = false;
 
     /*
      * PhantomBot Instance.
@@ -436,6 +437,9 @@ public class PhantomBot implements Listener {
 
         /* Enable/disable devCommands */
         this.devCommands = this.pbProperties.getProperty("devcommands", "false").equalsIgnoreCase("true") ? true : false;
+
+        /* Toggle for the old servers. */
+        this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true") ? true : false;
 
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
@@ -749,11 +753,12 @@ public class PhantomBot implements Listener {
     private void init() {
         /* Is the web toggle enabled? */
         if (webEnabled) {
-            /* open a normal non ssl server */
-            httpServer = new HTTPServer(basePort, oauth);
-
-            /* Start this http server  */
-            httpServer.start();
+            if (legacyServers) {
+                /* open a normal non ssl server */
+                httpServer = new HTTPServer(basePort, oauth);
+                /* Start this http server  */
+                httpServer.start();
+            }
 
             /* Is the music toggled on? */
             if (musicEnabled) {
@@ -764,13 +769,16 @@ public class PhantomBot implements Listener {
                 print("YouTubeSocketServer accepting connections on port: " + (basePort + 3));
             }
 
-            /* Create a event server to get all the events. */
-            eventWebSocketServer = new EventWebSocketServer((basePort + 2));
-            /* Start this event server */
-            eventWebSocketServer.start();
-            print("EventSocketServer accepting connections on port: " + (basePort + 2));
-            /* make the event bus register this event server */
-            EventBus.instance().register(eventWebSocketServer);
+            /* Checks if the user wants the legacy servers, this is off by default. */
+            if (legacyServers) {
+                /* Create a event server to get all the events. */
+                eventWebSocketServer = new EventWebSocketServer((basePort + 2));
+                /* Start this event server */
+                 eventWebSocketServer.start();
+                print("EventSocketServer accepting connections on port: " + (basePort + 2));
+                /* make the event bus register this event server */
+                EventBus.instance().register(eventWebSocketServer);
+            }
 
             if (useHttps) {
                 /* Set up the panel socket server */
@@ -828,12 +836,7 @@ public class PhantomBot implements Listener {
 
         /* Create configuration for YTPlayer v2.0 for the WS port. */
         String data = "";
-        String http = "http://";
-
-        if (useHttps) {
-            com.gmt2001.Console.debug.println("Settings https in the panel config files.");
-            http = "https://";
-        }
+        String http = (useHttps ? "https://" : "http://");
 
         try {
             data += "//Configuration for YTPlayer\r\n";
@@ -1038,13 +1041,15 @@ public class PhantomBot implements Listener {
         /* Check to see if web is enabled */
         if (webEnabled) {
             print("Shutting down all web socket servers...");
-            httpServer.dispose();
+            if (legacyServers) {
+                httpServer.dispose();
+                eventWebSocketServer.dispose();
+            }
             if (!useHttps) {
                 newHttpServer.close();
             } else {
                 newHttpsServer.close();
             }
-            eventWebSocketServer.dispose();
             youtubeSocketServer.dispose();
         }
 
@@ -1163,7 +1168,6 @@ public class PhantomBot implements Listener {
     public void ircUserMode(IrcChannelUserModeEvent event) {
         /* Check to see if Twitch sent a mode event for the bot name */
         if (event.getUser().equalsIgnoreCase(this.botName) && event.getMode().equalsIgnoreCase("o")) {
-            /* Did we get mod? if not try .mods again */
             if (!event.getAdd()) {
                 event.getSession().saySilent(".mods");
             }
@@ -1210,9 +1214,9 @@ public class PhantomBot implements Listener {
 
         /* Chat in a channel */
         /*if (message.equalsIgnoreCase("chat") || message.equalsIgnoreCase("echo")) {
-        	PhantomBot.getSession(channelName).say(message.replace("chat", "").replace("echo", ""), PhantomBot.getChannel(channelName));
-        	// Need to be able to chat in a channel with multiple channels
-        	return;
+            PhantomBot.getSession(channelName).say(message.replace("chat", "").replace("echo", ""), PhantomBot.getChannel(channelName));
+            // Need to be able to chat in a channel with multiple channels
+            return;
         }*/
 
         /* Update the followed (followers) table. */
@@ -2012,6 +2016,7 @@ public class PhantomBot implements Listener {
         String keyStorePassword = "";
         String keyPassword = "";
         Boolean devCommands = true;
+        Boolean legacyServers = false;
 
         /* Print the user dir */
         com.gmt2001.Console.out.println("The working directory is: " + System.getProperty("user.dir"));
@@ -2154,8 +2159,8 @@ public class PhantomBot implements Listener {
                 startProperties.setProperty("channel", channelName);
 
                 /*if (channelName.contains(".tv")) {
-                	com.gmt2001.Console.out.print("Please enter the name of the Twitch channel, not the link: ");
-                	channelName = System.console().readLine().trim();
+                    com.gmt2001.Console.out.print("Please enter the name of the Twitch channel, not the link: ");
+                    channelName = System.console().readLine().trim();
                 }*/
 
                 com.gmt2001.Console.out.print("\r\n");
