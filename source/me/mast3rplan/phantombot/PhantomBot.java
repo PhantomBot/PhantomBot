@@ -38,6 +38,7 @@ import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
 import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.DiscordAPI;
+import com.scaniatv.TipeeeStreamAPIv1;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,6 +74,7 @@ import me.mast3rplan.phantombot.cache.SubscribersCache;
 import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.cache.DonationsCache;
 import me.mast3rplan.phantombot.cache.StreamTipCache;
+import me.mast3rplan.phantombot.cache.TipeeeStreamCache;
 import me.mast3rplan.phantombot.cache.EmotesCache;
 import me.mast3rplan.phantombot.cache.TwitterCache;
 import me.mast3rplan.phantombot.cache.TwitchCache;
@@ -181,6 +183,10 @@ public class PhantomBot implements Listener {
     private String streamTipOAuth = "";
     private String streamTipClientId = "";
     private int streamTipLimit = 0;
+
+    /* TipeeeStream Information */
+    private String tipeeeStreamOAuth = "";
+    private int tipeeeStreamLimit = 5;
 
     /* GameWisp Information */
     private String gameWispOAuth;
@@ -400,6 +406,10 @@ public class PhantomBot implements Listener {
         this.streamTipClientId = this.pbProperties.getProperty("streamtipid", "");
         this.streamTipLimit = Integer.parseInt(this.pbProperties.getProperty("streamtiplimit", "5"));
 
+        /* Set the TipeeeStream variables */
+        this.tipeeeStreamOAuth = this.pbProperties.getProperty("tipeeestreamkey", "");
+        this.tipeeeStreamLimit = Integer.parseInt(this.pbProperties.getProperty("tipeeestreamlimit", "5"));
+
         /* Set the MySql variables */
         this.mySqlName = this.pbProperties.getProperty("mysqlname", "");
         this.mySqlUser = this.pbProperties.getProperty("mysqluser", "");
@@ -507,6 +517,12 @@ public class PhantomBot implements Listener {
             StreamTipAPI.instance().SetAccessToken(streamTipOAuth);
             StreamTipAPI.instance().SetDonationPullLimit(streamTipLimit);
             StreamTipAPI.instance().SetClientId(streamTipClientId);
+        }
+
+        /* Set the TipeeeStream oauth key. */
+        if (!tipeeeStreamOAuth.isEmpty()) {
+            TipeeeStreamAPIv1.instance().SetOauth(tipeeeStreamOAuth);
+            TipeeeStreamAPIv1.instance().SetLimit(tipeeeStreamLimit);
         }
 
         /* Start things and start loading the scripts. */
@@ -1088,6 +1104,11 @@ public class PhantomBot implements Listener {
             this.streamTipCache = StreamTipCache.instance(this.chanName);
         }
 
+        /* Start the TipeeeStream cache if the keys are not null and the module is enabled. */
+        if (this.tipeeeStreamOAuth != null && !this.tipeeeStreamOAuth.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/tipeeeStreamHandler.js").equals("true")) {
+            this.tipeeeStreamCache = TipeeeStreamCache.instance(this.chanName);
+        }
+
         /* Start the twitter cache if the keys are not null and the module is enabled */
         if (this.twitterAuthenticated && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/twitterHandler.js").equals("true")) {
             this.twitterCache = TwitterCache.instance(this.chanName);
@@ -1458,6 +1479,25 @@ public class PhantomBot implements Listener {
                 pbProperties.setProperty("streamtipid", streamTipClientId);
 
                 print("PhantomBot StreamTip setup done, PhantomBot will exit.");
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        /* Setup for TipeeeStream */
+        if (message.equalsIgnoreCase("tipeeestreamsetup")) {
+            try {
+                print("");
+                print("PhantomBot TipeeeStream setup.");
+                print("");
+
+                com.gmt2001.Console.out.print("Please enter your TipeeeStream Api OAuth: ");
+                String newToken = System.console().readLine().trim();
+                tipeeeStreamOAuth = newToken;
+                pbProperties.setProperty("tipeeestreamkey", tipeeeStreamOAuth);
+
+                print("PhantomBot TipeeeStream setup done, PhantomBot will exit.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);

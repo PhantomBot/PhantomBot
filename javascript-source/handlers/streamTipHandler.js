@@ -62,14 +62,17 @@
             donationUsername = donationJson.getString("username"),
             donationMsg = donationJson.getString("note");
 
-
         if ($.inidb.exists('streamtip', donationID)) {
             return;
         }
 
         $.inidb.set('streamInfo', 'lastDonator', $.username.resolve(donationUsername));
+
         $.inidb.set('streamtip', donationID, donationJson);
+
         $.inidb.set('streamtip', 'last_donation', donationID);
+
+        $.inidb.set('donations', 'last_donation_message', $.lang.get('main.donation.last.tip.message', donationUsername, donationCurrency, donationAmount.toFixed(2)));
 
         $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), donationAddonDir + "/latestDonation.txt", false);
 
@@ -109,41 +112,6 @@
             args = event.getArgs(),
             action = args[0],
             subAction = args[1];
-
-        /*
-         * @commandpath lasttip - Display the last donation.
-         */
-        if (command.equalsIgnoreCase('lasttip')) {
-            if (!$.inidb.exists('streamtip', 'last_donation')) {
-                $.say($.whisperPrefix(sender) + $.lang.get('streamtip.lastdonation.no-donations'));
-                return;
-            }
-
-            var donationID = $.inidb.get('streamtip', 'last_donation');
-            if (!$.inidb.exists('streamtip', donationID)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('streamtip.lastdonation.404'));
-                return;
-            }
-
-            var donationJsonStr = $.inidb.get('streamtip', donationID),
-                JSONObject = Packages.org.json.JSONObject,
-                donationJson = new JSONObject(donationJsonStr);
-
-            var donationID = donationJson.getString("donation_id"),
-                donationCreatedAt = donationJson.getString("created_at"),
-                donationCurrency = donationJson.getString("currency"),
-                donationCurrencySymbol = donationJson.getString("currencySymbol"),
-                donationAmount = parseFloat(donationJson.getString("amount")),
-                donationUsername = donationJson.getString("name"),
-                donationMsg = donationJson.getString("message");
-
-            var donationSay = donationLastMsg;
-            donationSay = donationSay.replace('(name)', donationUsername);
-            donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
-            donationSay = donationSay.replace('(currency)', donationCurrency);
-            donationSay = donationSay.replace('(currencysymbol)', donationCurrencySymbol);
-            $.say(donationSay);
-        }
 
         /*
          * @commandpath streamtip - Controls various options for donation handling
@@ -202,29 +170,26 @@
 
             /*
              * @commandpath streamtip message [message text] - Set the donation message. Tags: (name), (amount), (points), (pointname), (message) and (currency)
-             * @commandpath streamtip lastmessage [message text] - Set the message for !lastdonation. Tags: (name), (amount) and (currency)
              */
-            if (action.equalsIgnoreCase('message') || action.equalsIgnoreCase('lastmessage')) {
+            if (action.equalsIgnoreCase('message')) {
                 var comArg = args[0].toLowerCase();
 
                 if (subAction === undefined) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.' + comArg + '.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.message.usage'));
                     return;
                 }
 
                 var message = args.splice(1).join(' ');
                 if (message.search(/\(name\)/) == -1) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.' + comArg + '.no-name'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.message.no-name'));
                     return;
                 }
 
-                $.setIniDbString('donations', comArg, message);
+                $.setIniDbString('streamtip', comArg, message);
 
                 donationMessage = $.getIniDbString('streamtip', 'message');
-                donationLastMsg = $.getIniDbString('streamtip', 'lastmessage');
 
-                $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.' + comArg + '.success', message));
-                $.log.event(sender + ' set the donation message to ' + message);
+                $.say($.whisperPrefix(sender) + $.lang.get('streamtip.donations.message.success', message));
             }
         }
     });
@@ -234,7 +199,6 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./handlers/streamTipHandler.js')) {
-            $.registerChatCommand('./handlers/streamTipHandler.js', 'lasttip', 7);
             $.registerChatCommand('./handlers/streamTipHandler.js', 'streamtip', 1);
         }
     });
