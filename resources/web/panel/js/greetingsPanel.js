@@ -387,8 +387,8 @@
             }
             setTimeout(function() { sendCommand('donationpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
-        if (panelMatch(table, 'tipeeestreamdonationGroup')) {
-            $('#tipeeestreamdonationGroup').html(spinIcon);
+        if (panelMatch(table, 'streamtipdonationGroup')) {
+            $('#streamtipdonationGroup').html(spinIcon);
             if (streamtipdonationGroup == "true") {
                 sendDBUpdate('greetings_greeting', 'streamtip', 'donationGroup', 'false');
             } else {
@@ -397,7 +397,7 @@
             setTimeout(function() { sendCommand('donationpanelupdatestreamtip'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'tipeeestreamdonationGroup')) {
-            $('#stipeeestreamdonationGroup').html(spinIcon);
+            $('#tipeeestreamdonationGroup').html(spinIcon);
             if (tipeeestreamdonationGroup == "true") {
                 sendDBUpdate('greetings_greeting', 'tipeeeStreamHandler', 'group', 'false');
             } else {
