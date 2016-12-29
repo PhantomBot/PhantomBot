@@ -209,6 +209,7 @@ public class PhantomBot implements Listener {
     private TwitterCache twitterCache;
     private TwitchCache twitchCache;
     private UsernameCache usernameCache;
+    private TipeeeStreamCache tipeeeStreamCache;
     public static String twitchCacheReady = "false";
 
     /* Socket Servers */
