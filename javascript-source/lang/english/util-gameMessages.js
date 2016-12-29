@@ -170,6 +170,11 @@ $.lang.register('roll.lost.59', 'You weren\'t that bad. You were pathetic! Go ho
 $.lang.register('roll.lost.60', 'You made an effort at least, pathetic as it was!');
 $.lang.register('roll.lost.61', 'My dad could win, and he\'s dead!');
 $.lang.register('roll.lost.62', 'You with the keyboard! I won DESPITE you. You suck. And smell -- REALLY smell.');
+$.lang.register('roll.lost.63', 'A loser doesn\'t know what he\'ll do if he loses, but talks about what he\'ll do if he wins, and a winner doesn\'t talk about what he\'ll do if he wins, but knows what he\'ll do if he loses.');
+$.lang.register('roll.lost.64', 'If you can\'t win, lose like a champion!');
+$.lang.register('roll.lost.65', 'Welcome to Loserville! Population: You!');
+$.lang.register('roll.lost.66', 'Whoever said, "It\'s not whether you win or lose that counts," probably lost.');
+$.lang.register('roll.lost.67', 'What went wrong? What didn\'t? - it was just one of those days. Not your day really');
 
 // Win messages for the gambling (gambling.js) mini game, remove the /// to start using it.:
 
