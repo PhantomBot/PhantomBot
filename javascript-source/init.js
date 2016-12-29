@@ -1348,7 +1348,15 @@
         $.registerChatSubcommand($.botName.toLowerCase(), 'moderate', 2);
 
         // emit initReady event
-        callHook('initReady', null, true);
+        try {
+            consoleDebug('Trying to start a new thread for initReady');
+            var runnable = new java.lang.Runnable({ run: function() { callHook('initReady', null, true); }});
+            var thread = new java.lang.Thread(runnable);
+            thread.start();
+        } catch (ex) {
+            consoleDebug('Failed to start a new thread for initReady: ' + ex.message);
+            callHook('initReady', null, true);
+        }
 
         if ($.isNightly) {
             consoleLn('PhantomBot Nightly Build - No Support is Provided');

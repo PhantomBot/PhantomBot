@@ -317,9 +317,15 @@ public class TwitchWSHostIRC {
             if (message.contains("002 " + channelName + " :")) {
                 connected = true;
                 com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
-                eventBus.post(new TwitchHostsInitializedEvent());
                 lastPing = System.currentTimeMillis();
                 checkPingTime();
+
+                try {
+                    Thread.sleep(30 * 1000);
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.out.println("TwitchWSIRC: Failed to sleep: [InterruptedException] " + ex.getMessage());
+                }
+                eventBus.post(new TwitchHostsInitializedEvent());
                 return;
             }
 
