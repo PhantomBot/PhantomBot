@@ -179,6 +179,6 @@ public class TipeeeStreamAPIv1 {
      * @return {JSONObject}  The last 5 donations from the api.
      */
     public JSONObject GetDonations() {
-        return readJsonFromUrl(url + "?apiKey=" + this.apiOauth + "&type{}=donation&limit=" + this.pullLimit);
+        return readJsonFromUrl(url + "?apiKey=" + this.apiOauth + "&type[]=donation&limit=" + this.pullLimit);
     }
 }
