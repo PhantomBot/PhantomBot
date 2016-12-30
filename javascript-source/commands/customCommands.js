@@ -5,7 +5,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(customapi |\(customapijson /);
+        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(customapi |\(customapijson /);
 
     /**
      * @function getCustomAPIValue
@@ -190,7 +190,7 @@
         }
 
         if (message.match(/\(echo\)/g)) {
-            message = $.replace(message, '(echo)', event.getArguments());
+            message = $.replace(message, '(echo)', (event.getArguments() ? event.getArguments() : ''));
         }
 
         if (message.match(/\(gamesplayed\)/g)) {
@@ -282,6 +282,16 @@
 
         if (message.match(/\(age\)/g)) {
             $.getChannelAge(event);
+            return null;
+        }
+
+        if (message.match(/\(writefile .+\)/)) {
+            if (message.match(/\(writefile (.+), (.+), (.+)\)/)) {
+                var file = message.match(/\(writefile (.+), (.+), (.+)\)/)[1],
+                    append = message.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false,
+                    string = message.match(/\(writefile (.+), (.+), (.+)\)/)[3];
+                $.writeToFile(string, './addons/' + file, append);
+            }
             return null;
         }
 
