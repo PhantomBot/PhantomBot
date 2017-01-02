@@ -149,13 +149,12 @@ public class PanelSocketServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket webSocket, String jsonString) {
-        // try {
-        //     MessageRunnable messageRunnable = new MessageRunnable(webSocket, jsonString);
-        //     new Thread(messageRunnable).start();
-        // } catch (Exception ex) {
-        //     handleMessage(webSocket, jsonString);
-        // }
-        handleMessage(webSocket, jsonString);
+        try {
+            MessageRunnable messageRunnable = new MessageRunnable(webSocket, jsonString);
+            new Thread(messageRunnable).start();
+        } catch (Exception ex) {
+            handleMessage(webSocket, jsonString);
+        }
     }
 
     private void handleMessage(WebSocket webSocket, String jsonString) {
