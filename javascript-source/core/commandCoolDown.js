@@ -103,6 +103,7 @@
             if (command.equals('adventure')) {
                 if (cooldown[command] !== undefined) {
                     if (cooldown[command].time - $.systemTime() >= 0) {
+                        $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.adventure.cooldown', parseInt(parseInt(cooldown[command].time - $.systemTime())/1000)));
                         return parseInt(cooldown[command].time - $.systemTime());
                     }
                 }

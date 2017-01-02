@@ -22,6 +22,7 @@
         maxBet = $.getSetIniDbNumber('adventureSettings', 'maxBet', 1000),
         enterMessage = $.getSetIniDbBoolean('adventureSettings', 'enterMessage', false),
         warningMessage = $.getSetIniDbBoolean('adventureSettings', 'warningMessage', false),
+        allowOnlyWhenOnline = $.getSetIniDbBoolean('adventureSettings', 'allowOnlyWhenOnline', false),
         tgFunIncr = 1,
         tgExpIncr = 0.5,
         tgFoodDecr = 0.25,
@@ -39,6 +40,7 @@
         maxBet = $.getIniDbNumber('adventureSettings', 'maxBet');
         enterMessage = $.getIniDbBoolean('adventureSettings', 'enterMessage');
         warningMessage = $.getIniDbBoolean('adventureSettings', 'warningMessage');
+        allowOnlyWhenOnline = $.getIniDbBoolean('adventureSettings', 'allowOnlyWhenOnline');
     };
 
     /**
@@ -388,6 +390,12 @@
             }
 
             if (!isNaN(parseInt(action))) {
+                if (allowOnlyWhenOnline) {
+                    if (!$.isOnline($.channelName)) {
+                        $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
+                        return null;
+                    }
+                }
                 joinHeist(sender, parseInt(action));
                 return;
             }
@@ -484,6 +492,15 @@
                     if (args[2].equalsIgnoreCase('true')) enterMessage = true, actionArg2 = $.lang.get('common.enabled');
                     if (args[2].equalsIgnoreCase('false')) enterMessage = false, actionArg2 = $.lang.get('common.disabled');
                     $.inidb.set('adventureSettings', 'enterMessage', enterMessage);
+                }
+                
+                /**
+                 * @commandpath adventure set allowonlywhenonline [true / false] - Sets adventure to only work when stream is online
+                 */
+                if (actionArg1.equalsIgnoreCase('allowOnlyWhenOnline')) {
+                    if (args[2].equalsIgnoreCase('true')) allowOnlyWhenOnline = true, actionArg2 = $.lang.get('common.enabled');
+                    if (args[2].equalsIgnoreCase('false')) allowOnlyWhenOnline = false, actionArg2 = $.lang.get('common.disabled');
+                    $.inidb.set('adventureSettings', 'allowOnlyWhenOnline', allowOnlyWhenOnline);
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.success', actionArg1, actionArg2));
