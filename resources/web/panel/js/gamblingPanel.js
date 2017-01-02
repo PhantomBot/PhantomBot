@@ -327,8 +327,8 @@
 
         sendCommand('raffle open ' + keyword + ' ' + timer + ' ' + eligibility);
         $('#raffle-normal-keyword').val('');
-        $('#raffle-normal-sub').html('1 Times');
-        $('#raffle-normal-reg').html('1 Times');
+        $('#raffle-normal-subluck2').html('1 Times');
+        $('#raffle-normal-regluck2').html('1 Times');
         $('#raffle-normal-timer2').html('Until closed');
         $('#raffle-normal-timer').val('0');
         $('#raffle-normal-regluck').val('0');
