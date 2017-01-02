@@ -214,20 +214,24 @@ public class DataStore {
         RemoveKey(fName, "", key);
     }
 
-    public void incr(String fName, String key, int amount) {
-        int ival = GetInteger(fName, "", key);
-
+    public void incr(String fName, String section, String key, int amount) {
+        int ival = GetInteger(fName, section, key);
         ival += amount;
+        SetInteger(fName, section, key, ival);
+    }
 
+    public void incr(String fName, String key, int amount) {
+        incr(fName, "", key, amount);
+    }
+
+    public void decr(String fName, String section, String key, int amount) {
+        int ival = GetInteger(fName, "", key);
+        ival -= amount;
         SetInteger(fName, "", key, ival);
     }
 
     public void decr(String fName, String key, int amount) {
-        int ival = GetInteger(fName, "", key);
-
-        ival -= amount;
-
-        SetInteger(fName, "", key, ival);
+        decr(fName, "", key, amount);
     }
 
     public String[] searchByValue(String fName, String search) {
