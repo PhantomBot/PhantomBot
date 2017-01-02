@@ -36,6 +36,20 @@
     }
 
     /**
+     * @function reloadRaffle
+     * @info used for the panel to push bonuses.
+     */
+    function reloadRaffleBonus(subBonus, regBonus) {
+        sendMessages = $.getIniDbBoolean('raffleSettings', 'raffleMSGToggle');
+        allowRepick = $.getIniDbBoolean('raffleSettings', 'noRepickSame');
+        whisperWinner = $.getIniDbBoolean('raffleSettings', 'raffleWhisperWinner');
+        raffleMessage = $.getIniDbString('raffleSettings', 'raffleMessage');
+        messageInterval = $.getIniDbNumber('raffleSettings', 'raffleMessageInterval');
+        subscriberBonus = subBonus;
+        regularBonus = regBonus;
+    }
+
+    /**
      * @function open
      * @info opens a raffle
      *
@@ -517,4 +531,5 @@
     });
 
     $.reloadRaffle = reloadRaffle;
+    $.reloadRaffleBonus = reloadRaffleBonus;
 })();
