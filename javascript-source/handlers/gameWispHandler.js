@@ -178,7 +178,7 @@
         var jsonString = $.gamewisp.getUserSubInfoString(username) + '',
             jsonData = JSON.parse(jsonString);
 
-        $.consoleDebug('checkGameWispSub(' + username + '): ' + jsonString);
+        $.consoleDebug('checkGameWispSub(' + username + '): ' + jsonString.replace(/access_token=\w+&/, ''));
 
         if (jsonData['error_description'] !== undefined) {
             if (jsonData['error_description'].equals('The resource owner or authorization server denied the request.')) {
