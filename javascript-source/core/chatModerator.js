@@ -7,12 +7,12 @@
 
         linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', false),
         linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking.'),
-        linkPermitTime = $.getSetIniDbNumber('chatModerator', 'linkPermitTime', 60),
+        linkPermitTime = $.getSetIniDbNumber('chatModerator', 'linkPermitTime', 30),
 
         capsToggle = $.getSetIniDbBoolean('chatModerator', 'capsToggle', false),
         capsMessage = $.getSetIniDbString('chatModerator', 'capsMessage', 'you were timed out for overusing caps.'),
-        capsLimitPercent = $.getSetIniDbFloat('chatModerator', 'capsLimitPercent', 50),
-        capsTriggerLength = $.getSetIniDbNumber('chatModerator', 'capsTriggerLength', 15),
+        capsLimitPercent = $.getSetIniDbFloat('chatModerator', 'capsLimitPercent', 70),
+        capsTriggerLength = $.getSetIniDbNumber('chatModerator', 'capsTriggerLength', 20),
 
         spamToggle = $.getSetIniDbBoolean('chatModerator', 'spamToggle', false),
         spamMessage = $.getSetIniDbString('chatModerator', 'spamMessage', 'you were timed out for spamming repeating characters.'),
@@ -22,11 +22,11 @@
         symbolsMessage = $.getSetIniDbString('chatModerator', 'symbolsMessage', 'you were timed out for overusing symbols.'),
         symbolsLimitPercent = $.getSetIniDbFloat('chatModerator', 'symbolsLimitPercent', 50),
         symbolsGroupLimit = $.getSetIniDbFloat('chatModerator', 'symbolsGroupLimit', 10),
-        symbolsTriggerLength = $.getSetIniDbNumber('chatModerator', 'symbolsTriggerLength', 15),
+        symbolsTriggerLength = $.getSetIniDbNumber('chatModerator', 'symbolsTriggerLength', 20),
 
         emotesToggle = $.getSetIniDbBoolean('chatModerator', 'emotesToggle', false),
         emotesMessage = $.getSetIniDbString('chatModerator', 'emotesMessage', 'you were timed out for overusing emotes.'),
-        emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 10),
+        emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 5),
 
         longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', false),
         longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message.'),
@@ -300,15 +300,12 @@
             $.say('.timeout ' + username + ' ' + time + ' ' + reason);
         }, 1000);
 
-        /*
-         * @info Better for when messages don't get deleted with a first timeout. This does limit timeouts due to Twitch chat limits though.
-         *
-         * $.say('.timeout ' + username + ' ' + time + ' ' + reason);
-         * $.say('.timeout ' + username + ' ' + time + ' ' + reason);
-         * setTimeout(function() {
-         *     $.say('.timeout ' + username + ' ' + time + ' ' + reason);
-         * }, 2500);
-         */
+        // Only send one timeout if we are near the max message limit of 20 messages in 30 seconds.
+        // if (!$.session.isLimited()) {
+        //     setTimeout(function() {
+        //         $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+        //     }, 1000);
+        // }
     }
 
     /**
