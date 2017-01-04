@@ -184,6 +184,9 @@
                     if (panelMatch(key, 'primeSubscribeMessage')) {
                         $('#primeSubGreetingInput').val(value);
                     }
+                    if (panelMatch(key, 'reSubscribeReward')) {
+                        $('#reSubRewardInput').val(value);
+                    }
                     if (panelMatch(key, 'reSubscribeMessage')) {
                         $('#resubGreetingInput').val(value);
                     }
