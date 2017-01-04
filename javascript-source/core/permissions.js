@@ -145,10 +145,10 @@
      * @param {string} username
      * @param {Object} tags
      * @returns {boolean}
-     * @info this also included gamewisp subs.
+     * @info this also included gamewisp subs, and it will only check if the user is a sub with the tags.
      */
     function isSubv3(username, tags) {
-        return (tags !== null && tags != '{}' && tags.get('subscriber').equalsIgnoreCase('1')) || isSub(username.toLowerCase());
+        return ((tags !== null && tags != '{}' && tags.get('subscriber').equals('1')) || gwSubUsers[username] !== undefined);
     }
 
     /**
@@ -158,7 +158,7 @@
      * @returns {boolean}
      */
     function isTurbo(tags) {
-        return (tags !== null && tags != '{}' && tags.get('turbo').equalsIgnoreCase('1')) || false;
+        return (tags !== null && tags != '{}' && tags.get('turbo').equals('1')) || false;
     }
 
     /**
