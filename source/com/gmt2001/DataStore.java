@@ -225,7 +225,7 @@ public class DataStore {
     }
 
     public void decr(String fName, String section, String key, int amount) {
-        int ival = GetInteger(fName, "", key);
+        int ival = GetInteger(fName, section, key);
         ival -= amount;
         SetInteger(fName, section, key, ival);
     }
