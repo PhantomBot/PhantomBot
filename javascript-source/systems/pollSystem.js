@@ -19,7 +19,8 @@
         result: '',
         hasTie: 0,
         counts: [],
-    };
+    },
+    timeout;
 
     /** 
      * @function hasKey
@@ -89,7 +90,7 @@
 
         $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
         if (poll.time) {
-            var timeout = setTimeout(function() { endPoll(); }, poll.time);
+            timeout = setTimeout(function() { endPoll(); }, poll.time);
         }
 
         return true;
@@ -177,12 +178,10 @@
             args = event.getArgs(),
             action = args[0];
 
-        if (command.equalsIgnoreCase('vote') && action) {
-            if (!poll.pollRunning) {
-                $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.nopoll'));
-                return;
+        if (command.equalsIgnoreCase('vote') && action !== undefined) {
+            if (poll.pollRunning) {
+                vote(sender, action);
             }
-            vote(sender, action);
         }
 
         /**
@@ -197,17 +196,8 @@
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.poll.running', poll.question, optionsStr));
                 } else {
-                    if (!$.isMod(sender)) {
-                        $.say($.whisperPrefix(sender) + $.modMsg);
-                        return;
-                    }
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.poll.usage'));
                 }
-                return;
-            }
-
-            if (!$.isMod(sender)) {
-                $.say($.whisperPrefix(sender) + $.modMsg);
                 return;
             }
 
@@ -256,16 +246,16 @@
                     return;
                 }
 
-                if (isNaN(time) || !question || !options || options.length == 0 || isNaN(minVotes) || minVotes < 1) {
+                if (isNaN(time) || !question || !options || options.length === 0 || isNaN(minVotes) || minVotes < 1) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.open.usage'));
                     return;
                 }
-                if (options.length == 1) {
+                if (options.length === 1) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.open.moreoptions'));
                     return;
                 }
 
-                if (runPoll(question, options, (time == 0 ? 60 : time), sender, minVotes, function(winner) {
+                if (runPoll(question, options, time, sender, minVotes, function(winner) {
                         if (winner === false) {
                             $.say($.lang.get('pollsystem.runpoll.novotes', question));
                             return;
@@ -280,7 +270,6 @@
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.results.running'));
                 }
-
             }
 
             /**
@@ -303,12 +292,15 @@
         if ($.bot.isModuleEnabled('./systems/pollSystem.js')) {
             $.registerChatCommand('./systems/pollSystem.js', 'poll', 2);
             $.registerChatCommand('./systems/pollSystem.js', 'vote', 7);
+            $.registerChatSubcommand('poll', 'results', 2);
+            $.registerChatSubcommand('poll', 'open', 2);
+            $.registerChatSubcommand('poll', 'close', 2);
         }
     });
 
     /** Export functions to API */
     $.poll = {
         runPoll: runPoll,
-        endPoll: endPoll,
+        endPoll: endPoll
     };
 })();
