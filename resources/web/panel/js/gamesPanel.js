@@ -162,6 +162,7 @@
         $('#minBet').val(''),
         $('#maxBet').val(''),
         $('#bet-timer').val('');
+        document.getElementById('bet-timer').value = 0;
     }
 
     /**

@@ -94,7 +94,7 @@ public class TwitchWSHostIRC {
 
         try {
             twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
-            if (!twitchWSHostIRCWS.connectWSS(false)) {
+            if (!twitchWSHostIRCWS.connectWSS()) {
                 com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed. Exiting PhantomBot");
                 System.exit(0);
             }
@@ -141,19 +141,29 @@ public class TwitchWSHostIRC {
     }
 
     /*
-     * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data. Note that a sleep operation
-     * is performed in the connectWSS() call, and that is why there is no sleep present here.
+     * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data. 
      */
     public void reconnect() {
         Boolean reconnected = false;
+        long lastTry = System.currentTimeMillis();
 
         while (!reconnected) {
-            try {
-                this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
-                reconnected = twitchWSHostIRCWS.connectWSS(true);
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Failed to reconnect to Twitch Data Host Feed. Exiting PhantomBot: " + ex.getMessage());
-                System.exit(0);
+            if (lastTry + 10000L <= System.currentTimeMillis()) {
+                lastTry = System.currentTimeMillis();
+                try {
+                    com.gmt2001.Console.out.println("Reconnecting to Twitch Host Data Feed");
+                    this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
+                    reconnected = twitchWSHostIRCWS.connectWSS();
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.println("Failed to reconnect to Twitch Data Host Feed. Exiting PhantomBot: " + ex.getMessage());
+                    System.exit(0);
+                }
+            } else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.debug.println("InterruptedException Occurred");
+                }
             }
         }
     }
@@ -240,22 +250,12 @@ public class TwitchWSHostIRC {
         }
 
         /*
-         * Connect via WSS. This provides a secure connection to Twitch.  If this is a 
-         * reconnect request, the method waits 10 seconds before attempting to connect.
+         * Connect via WSS. This provides a secure connection to Twitch.
          *
-         * @param   boolean  true if reconnecting
          * @return  boolean  true on success and false on failure
          */
-        public boolean connectWSS(boolean reconnect) {
+        public boolean connectWSS() {
             try {
-                if (reconnect) {
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException ex) {
-                        com.gmt2001.Console.debug.println("InterruptedException Occurred");
-                    }
-                    com.gmt2001.Console.out.println("Reconnecting to Twitch Host Data Feed");
-                }
                 connect();
                 return true;
             } catch (Exception ex) {
@@ -288,7 +288,7 @@ public class TwitchWSHostIRC {
             if (!badOauth) {
                 com.gmt2001.Console.out.println("Lost connection to Twitch Host Data Feed, retrying in 10 seconds");
                 com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-                this.connectWSS(true);
+                twitchWSHostIRC.reconnect();
             }
         }
 
@@ -317,9 +317,15 @@ public class TwitchWSHostIRC {
             if (message.contains("002 " + channelName + " :")) {
                 connected = true;
                 com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
-                eventBus.post(new TwitchHostsInitializedEvent());
                 lastPing = System.currentTimeMillis();
                 checkPingTime();
+
+                try {
+                    Thread.sleep(30 * 1000);
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.out.println("TwitchWSIRC: Failed to sleep: [InterruptedException] " + ex.getMessage());
+                }
+                eventBus.post(new TwitchHostsInitializedEvent());
                 return;
             }
 

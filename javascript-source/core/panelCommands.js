@@ -38,6 +38,16 @@
         }
 
         /*
+         * Reloads the tipeeestream vars.
+         */
+        if (command.equalsIgnoreCase('tipeeestreamreload')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadTipeeeStream();
+        }
+
+        /*
          * Sets permissions on a command.
          */
         if (command.equalsIgnoreCase('permcomsilent')) {
@@ -474,6 +484,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadlogs', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadinit', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadbet', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
         }, 10000);
     });
 })();

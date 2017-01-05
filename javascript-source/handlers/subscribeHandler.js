@@ -11,11 +11,13 @@
         primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
+        reSubReward = $.getSetIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
         customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote', ''),
         announce = false,
         emotes = [],
         i;
-    /**
+
+    /*
      * @function updateSubscribeConfig
      */
     function updateSubscribeConfig() {
@@ -26,79 +28,43 @@
         primeSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle');
         reSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle');
         subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
+        reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward');
         customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote');
     }
 
-    /**
-     * @event twitchSubscribeInitialized
+    /*
+     * @event newSubscriber
      */
-    $.bind('twitchSubscribesInitialized', function() {
-        if (!$.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
-            return;
-        }
+    $.bind('newSubscriber', function(event) {
+        var subscriber = event.getSubscriber(),
+            message = subMessage;
 
-        $.consoleLn('>> Enabling subscriber announcements');
-        $.log.event('Subscriber announcements enabled');
-    });
+        if (subWelcomeToggle === true && announce === true) {
+            if (message.match(/\(name\)/g)) {
+                message = $.replace(message, '(name)', subscriber);
+            }
 
-    /**
-     * @event twitchSubscribe
-     */
-    $.bind('twitchSubscribe', function(event) { // from twitch api
-        if (!$.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
-            return;
-        }
-
-        var subscriber = event.getSubscriber();
-
-        if (!$.inidb.exists('subscribed', subscriber)) {
+            if (message.match(/\(reward\)/g)) {
+                message = $.replace(message, '(reward)', String(subReward));
+            }
+            $.say(message);
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber, true);
-            if (subReward > 0 && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+            $.inidb.set('streamInfo', 'lastSub', subscriber);
+            if (subReward > 0) {
                 $.inidb.incr('points', subscriber, subReward);
             }
         }
     });
 
-    /**
-     * @event twitchUnSubscribe
+    /*
+     * @event newPrimeSubscriber
      */
-    $.bind('twitchUnsubscribe', function(event) { // from twitch api
-        if (!$.bot.isModuleEnabled('./handlers/subscribeHandler.js')) {
-            return;
-        }
-
-        var subscriber = event.getSubscriber();
-
-        if ($.inidb.exists('subscribed', subscriber)) {
-            $.delSubUsersList(subscriber);
-            $.restoreSubscriberStatus(subscriber, true);
-        }
-    });
-
-    $.bind('newSubscriber', function(event) { // From twitchnotify
-        var subscriber = event.getSubscriber(),
-            message = subMessage;
-
-        if (subWelcomeToggle && announce) {
-            if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', subscriber);
-            }
-            if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(subReward));
-            }
-            $.say(message);
-            $.addSubUsersList(subscriber);
-            $.restoreSubscriberStatus(subscriber, true);
-            $.inidb.set('streamInfo', 'lastSub', subscriber);
-        }
-    });
-
-    $.bind('newPrimeSubscriber', function(event) { // From twitchnotify
+    $.bind('newPrimeSubscriber', function(event) {
         var subscriber = event.getSubscriber(),
             message = primeSubMessage;
 
-        if (primeSubWelcomeToggle && announce) {
+        if (primeSubWelcomeToggle === true && announce === true) {
             if (message.match(/\(name\)/g)) {
                 message = $.replace(message, '(name)', subscriber);
             }
@@ -109,25 +75,34 @@
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber, true);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
+            if (subReward > 0) {
+                $.inidb.incr('points', subscriber, subReward);
+            }
         }
     });
 
-    $.bind('newReSubscriber', function(event) { // From notice event
+    /*
+     * @event newReSubscriber
+     */
+    $.bind('newReSubscriber', function(event) {
         var resubscriber = event.getReSubscriber(),
             months = event.getMonths(),
             message = reSubMessage,
             emotes = [];
 
-        if (reSubWelcomeToggle && announce) {
+        if (reSubWelcomeToggle === true && announce === true) {
             if (message.match(/\(name\)/g)) {
                 message = $.replace(reSubMessage, '(name)', resubscriber);
             }
+
             if (message.match(/\(months\)/g)) {
                 message = $.replace(message, '(months)', months);
             }
+
             if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(subReward));
+                message = $.replace(message, '(reward)', String(reSubReward));
             }
+
             if (message.match(/\(customemote\)/)) {
                 for (i = 0; i < months; i++, emotes.push(customEmote));
                 message = $.replace(message, '(customemote)', emotes.join(' '));
@@ -136,165 +111,132 @@
             $.addSubUsersList(resubscriber);
             $.restoreSubscriberStatus(resubscriber, true);
             $.inidb.set('streamInfo', 'lastReSub', resubscriber);
+            if (reSubReward > 0) {
+                $.inidb.incr('points', resubscriber, reSubReward);
+            }
         }
     });
 
-    /**
+    /*
      * @event command
      */
     $.bind('command', function(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
-            argsString = event.getArguments().trim(),
-            args = event.getArgs();
+            argsString = event.getArguments(),
+            args = event.getArgs(),
+            action = args[0];
     
-        /**
+        /*
          * @commandpath subwelcometoggle - Enable or disable subscription alerts.
          */
         if (command.equalsIgnoreCase('subwelcometoggle')) {
-            if (subWelcomeToggle) {
-                $.inidb.set('subscribeHandler', 'subscriberWelcomeToggle', false);
-                subWelcomeToggle = false;
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.new.sub.toggle.off'));
-                $.log.event(sender + ' disabled subscriber announcements');
-                return;
-            } else {
-                $.inidb.set('subscribeHandler', 'subscriberWelcomeToggle', true);
-                subWelcomeToggle = true;
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.new.sub.toggle.on'));
-                $.log.event(sender + ' enabled subscriber announcements');
-                return;
-            }
+            subWelcomeToggle = !subWelcomeToggle;
+            $.setIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', subWelcomeToggle);
+            $.say($.whisperPrefix(sender) + (subWelcomeToggle ? $.lang.get('subscribehandler.new.sub.toggle.on') : $.lang.get('subscribehandler.new.sub.toggle.off')));
         }
 
-        /**
+        /*
          * @commandpath primesubwelcometoggle - Enable or disable Twitch Prime subscription alerts.
          */
         if (command.equalsIgnoreCase('primesubwelcometoggle')) {
-            if (primeSubWelcomeToggle) {
-                $.inidb.set('subscribeHandler', 'primeSubscriberWelcomeToggle', false);
-                primeSubWelcomeToggle = false;
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.new.primesub.toggle.off'));
-                $.log.event(sender + ' disabled prime subscriber announcements');
-                return;
-            } else {
-                $.inidb.set('subscribeHandler', 'primeSubscriberWelcomeToggle', true);
-                primeSubWelcomeToggle = true;
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.new.primesub.toggle.on'));
-                $.log.event(sender + ' enabled prime subscriber announcements');
-                return;
-            }
+            primeSubWelcomeToggle = !primeSubWelcomeToggle;
+            $.setIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', primeSubWelcomeToggle);
+            $.say($.whisperPrefix(sender) + (primeSubWelcomeToggle ? $.lang.get('subscribehandler.new.primesub.toggle.on') : $.lang.get('subscribehandler.new.primesub.toggle.off')));
         }
 
-        /**
-         * @commandpath resubwelcometoggle - Eenable or disable resubsciption alerts.
+        /*
+         * @commandpath resubwelcometoggle - Enable or disable resubsciption alerts.
          */
         if (command.equalsIgnoreCase('resubwelcometoggle')) {
-            if (reSubWelcomeToggle) {
-                $.inidb.set('subscribeHandler', 'reSubscriberWelcomeToggle', false);
-                subWelcomeToggle = false;
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.toggle.off'));
-                $.log.event(sender + ' disabled re-subscriber announcements');
-                return;
-            } else {
-                $.inidb.set('subscribeHandler', 'reSubscriberWelcomeToggle', true);
-                subWelcomeToggle = true;
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.toggle.on'));
-                $.log.event(sender + ' enabled re-subscriber announcements');
-                return;
-            }
+            reSubWelcomeToggle = !reSubWelcomeToggle;
+            $.setIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', reSubWelcomeToggle);
+            $.say($.whisperPrefix(sender) + (reSubWelcomeToggle ? $.lang.get('subscribehandler.resub.toggle.on') : $.lang.get('subscribehandler.resub.toggle.off')))
         }
 
-        /**
+        /*
          * @commandpath submessage [message] - Set a welcome message for new subscribers.
          */
         if (command.equalsIgnoreCase('submessage')) {
-            if (args.length === 0) {
+            if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.usage'));
                 return;
             }
-            $.inidb.set('subscribeHandler', 'subscribeMessage', argsString);
-            subMessage = argsString + '';
+
+            subMessage = argsString;
+            $.setIniDbString('subscribeHandler', 'subscribeMessage', subMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.set'));
-            $.log.event(sender + ' changed the subscriber message to "' + subMessage + '"');
-            return;
         }
 
-        /**
+        /*
          * @commandpath primesubmessage [message] - Set a welcome message for new Twitch Prime subscribers.
          */
         if (command.equalsIgnoreCase('primesubmessage')) {
-            if (args.length === 0) {
+            if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.primesub.msg.usage'));
                 return;
             }
-            $.inidb.set('subscribeHandler', 'primeSubscribeMessage', argsString);
-            primeSubMessage = argsString + '';
+
+            primeSubMessage = argsString;
+            $.setIniDbString('subscribeHandler', 'primeSubscribeMessage', primeSubMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.primesub.msg.set'));
-            $.log.event(sender + ' changed the prime subscriber message to "' + primeSubMessage + '"');
-            return;
         }
 
-        /**
+        /*
          * @commandpath resubmessage [message] - Set a message for resubscribers.
          */
         if (command.equalsIgnoreCase('resubmessage')) {
-            if (args.length === 0) {
+            if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.usage'));
                 return;
             }
-            $.inidb.set('subscribeHandler', 'reSubscribeMessage', argsString);
-            reSubMessage = argsString + '';
+
+            reSubMessage = argsString ;
+            $.setIniDbString('subscribeHandler', 'reSubscribeMessage', reSubMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.set'));
-            $.log.event(sender + ' changed the re-subscriber message to "' + reSubMessage + '"');
-            return;
         }
 
         /**
          * @commandpath subscribereward [points] - Set an award for subscribers.
          */
         if (command.equalsIgnoreCase('subscribereward')) {
-            if (args.length === 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.reward.usage'));
+            if (isNaN(parseInt(action))) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.usage'));
                 return;
             }
-            $.inidb.set('subscribeHandler', 'subscribeReward', parseInt(args[0]));
-            subReward = parseInt(args[0]);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.reward.set'));
-            $.log.event(sender + ' changed the subscriber reward to ' + subReward);
-            return;
+
+            subReward = parseInt(action);
+            $.setIniDbNumber('subscribeHandler', 'subscribeReward', subReward);
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.set'));
+
+        }
+		
+		/**
+         * @commandpath resubscribereward [points] - Set an award for resubscribers.
+         */
+        if (command.equalsIgnoreCase('resubscribereward')) {
+            if (isNaN(parseInt(action))) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.usage'));
+                return;
+            }
+            
+            reSubReward = parseInt(action);
+            $.setIniDbNumber('subscribeHandler', 'reSubscribeReward', subReward);
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.set'));
         }
 
-        /**
+        /*
          * @commandpath resubemote [emote] - The (customemote) tag will be replace with that emote.  The emote will be added the amount of months the user subscribed for.
          */
         if (command.equalsIgnoreCase('resubemote')) {
-            if (args.length === 0) {
+            if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.usage'));
                 return;
             }
-            $.inidb.set('subscribeHandler', 'resubEmote', args[0]);
-            customEmote = args[0];
+
+            customEmote = action;
+            $.setIniDbString('subscribeHandler', 'resubEmote', customEmote);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.set'));
-            $.log.event(sender + ' changed the re-subscriber emote to ' + customEmote);
-            return;
-        }
-
-
-        /**
-         * @commandpath subscribers - Enables subscription only chat mode.
-         */
-        if (command.equalsIgnoreCase('subscribers')) {
-            $.say('.subscribers');
-            $.log.event(sender + ' enabled subscriber only mode');
-        }
-
-        /**
-         * @commandpath subscribersoff - Disables subscription only chat mode.
-         */
-        if (command.equalsIgnoreCase('subscribersoff')) {
-            $.say('.subscribersoff');
-            $.log.event(sender + ' disabled subscriber only mode');
         }
     });
 
@@ -308,11 +250,10 @@
             $.registerChatCommand('./handlers/subscribehandler.js', 'primesubwelcometoggle', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubwelcometoggle', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'subscribereward', 1);
+            $.registerChatCommand('./handlers/subscribehandler.js', 'resubscribereward', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'submessage', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'primesubmessage', 1);
             $.registerChatCommand('./handlers/subscribehandler.js', 'resubmessage', 1);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'subscribers', 2);
-            $.registerChatCommand('./handlers/subscribehandler.js', 'subscribersoff', 2);
             announce = true;
         }
     });
