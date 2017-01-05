@@ -255,7 +255,7 @@
                     return;
                 }
 
-                if (runPoll(question, options, time, sender, minVotes, function(winner) {
+                if (runPoll(question, options, parseInt(time), sender, minVotes, function(winner) {
                         if (winner === false) {
                             $.say($.lang.get('pollsystem.runpoll.novotes', question));
                             return;
