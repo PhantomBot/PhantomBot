@@ -397,7 +397,13 @@
             if (!$.isBot(sender)) {
                 return;
             }
-            $.reloadRaffle();
+            if(action === null) {
+                $.reloadRaffle();
+            }
+            else if(action == 'pushBonusValues') {
+                $.reloadRaffleBonus(parseInt(args[1]), parseInt(args[2]));
+            }
+
             return;
         }
 

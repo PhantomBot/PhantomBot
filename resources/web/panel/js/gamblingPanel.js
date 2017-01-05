@@ -260,7 +260,7 @@
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
-        sendCommand('reloadraffle');
+        sendCommand('reloadraffle pushBonusValues ' + String(sub) + ' ' + String(reg));
 
         sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usetime');
         $('#raffle-keyword').val('');
@@ -292,7 +292,7 @@
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
-        sendCommand('reloadraffle');
+        sendCommand('reloadraffle pushBonusValues ' + String(sub) + ' ' + String(reg));
 
         sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usepoints');
         $('#raffle-keyword').val('');
@@ -323,7 +323,7 @@
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
-        sendCommand('reloadraffle');
+        sendCommand('reloadraffle pushBonusValues ' + String(sub) + ' ' + String(reg));
 
         sendCommand('raffle open ' + keyword + ' ' + timer + ' ' + eligibility);
         $('#raffle-normal-keyword').val('');
