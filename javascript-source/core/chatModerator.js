@@ -124,7 +124,7 @@
         spamTrackerLastMsg = 0,
         messageTime = 0,
         warning = '',
-        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'ig'),
+        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'g'),
         i;
 
     /**
@@ -395,7 +395,7 @@
      */
     function checkBlackList(sender, message) {
         for (i in blackList) {
-            if (message.includes(blackList[i].toLowerCase())) {
+            if (message.includes(blackList[i])) {
                 timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
                 warning = $.lang.get('chatmoderator.timeout');
                 sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
