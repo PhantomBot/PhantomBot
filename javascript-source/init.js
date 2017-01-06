@@ -182,10 +182,15 @@
             i;
         for (i in list) {
             if (path.equalsIgnoreCase('.')) {
-                if (list[i].equalsIgnoreCase('util') || list[i].equalsIgnoreCase('lang') || list[i].equalsIgnoreCase('init.js') || list[i].equalsIgnoreCase('dev')) {
+                if (list[i].equalsIgnoreCase('core') || list[i].equalsIgnoreCase('lang') || list[i].equalsIgnoreCase('init.js') || list[i].equalsIgnoreCase('discord')) {
+                    continue;
+                }
+            } else if (path.equalsIgnoreCase('./discord')) {
+                if (list[i].equalsIgnoreCase('core')) {
                     continue;
                 }
             }
+
             if ($.isDirectory('./scripts/' + path + '/' + list[i])) {
                 loadScriptRecursive(path + '/' + list[i], silent, (force ? force : false));
             } else {
@@ -770,6 +775,21 @@
         // Load all other modules
         loadScriptRecursive('.');
 
+        // Check if the discord token has been set.
+        if (!$.hasDiscordToken) {
+            // Load the discord core scripts.
+            loadScript('./discord/core/misc.js');
+            loadScript('./discord/core/patternDetector.js');
+            loadScript('./discord/core/moderation.js');
+            loadScript('./discord/core/registerCommand.js');
+            loadScript('./discord/core/commandCooldown.js');
+
+            $.log.event('Discord Core loaded, initializing modules...');
+
+            // Load the other discord modules
+            loadScriptRecursive('./discord');
+        }
+
         // Register custom commands and aliases.
         $.addComRegisterCommands();
         $.addComRegisterAliases();
@@ -921,6 +941,34 @@
                 }
             }
             handleInitCommands(event);
+        });
+
+        /**
+         * @event api-DiscordCommandEvent
+         */
+        $api.on($script, 'discordCommand', function(event) {
+            var command = event.getCommand(),
+                channel = event.getChannel(),
+                isAdmin = event.isAdmin(),
+                args = event.getArgs();
+
+            if ($.discord.commandExists(command) === false) {
+                return;
+            }
+
+            if (isAdmin == false && $.discord.permCom(command, (args[0] === undefined ? '' : args[0].toLowerCase())) !== 0) {
+                return;
+            }
+
+            if (isAdmin == false && $.discord.command.coolDown(command) !== 0) {
+                return;
+            }
+
+            if ($.discord.getCommandChannel(command) !== '' && !$.discord.getCommandChannel(command).equalsIgnoreCase(channel)) {
+                return;
+            }
+
+            callHook('discordCommand', event, false);
         });
 
         /**
@@ -1324,10 +1372,24 @@
         });
 
         /**
-         * @event api-DiscordEvent
+         * @event api-DiscordMessageEvent
          */
-        $api.on($script, 'discord', function(event) {
-            callHook('discord', event, false);
+        $api.on($script, 'discordMessage', function(event) {
+            callHook('discordMessage', event, false);
+        });
+
+        /**
+         * @event api-discordJoinEvent
+         */
+        $api.on($script, 'discordJoin', function(event) {
+            callHook('discordJoin', event, false);
+        });
+
+        /**
+         * @event api-discordLeaveEvent
+         */
+        $api.on($script, 'discordLeave', function(event) {
+            callHook('discordLeave', event, false);
         });
 
         $.log.event('init.js api\'s loaded.');
@@ -1373,6 +1435,10 @@
         isModuleLoaded: isModuleLoaded,
         isModuleEnabled: isModuleEnabled,
         getModule: getModule,
+        getModuleIndex: getModuleIndex,
+        modules: modules,
+        hooks: hooks,
+        getHookIndex: getHookIndex
     };
 
     // Start init

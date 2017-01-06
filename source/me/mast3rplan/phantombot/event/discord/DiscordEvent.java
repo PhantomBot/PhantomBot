@@ -19,50 +19,43 @@ package me.mast3rplan.phantombot.event.discord;
 import me.mast3rplan.phantombot.event.Event;
 
 public class DiscordEvent extends Event {
+	private final String sender;
+	private final String username;
+	private final String discrim;
+	private final String channel;
+	private final String mention;
+	private final String senderId;
 
-    private final String discordChannel;
-    private final String discordUser;
-    private final String discordUserMentionAs;
-    private final String discordMessage;
-    private final String discordDiscrim;
-    private final String discordId;
-    private final Boolean isAdmin;
+	public DiscordEvent(String sender, String senderId, String discrim, String channel) {
+		this.sender = (sender + "#" + discrim);
+		this.mention = "<@" + senderId + ">";
+		this.discrim = discrim;
+		this.channel = channel;
+		this.username = sender;
+		this.senderId = senderId;
+	}
 
-    public DiscordEvent(String discordChannel, String discordUser, String discordUserMentionAs, String discordDiscrim, String discordId, Boolean isAdmin, String discordMessage) {
-        this.discordChannel = discordChannel;
-        this.discordUser = discordUser;
-        this.discordUserMentionAs = discordUserMentionAs;
-        this.discordMessage = discordMessage;
-        this.discordDiscrim = discordDiscrim;
-        this.isAdmin = isAdmin;
-        this.discordId = discordId;
-    }
+	public String getSender() {
+		return this.sender.toLowerCase();
+	}
 
-    public String getDiscordChannel() {
-        return this.discordChannel;
-    }
+	public String getUsername() {
+		return this.username;
+	}
 
-    public String getDiscordUser() {
-        return this.discordUser;
-    }
+	public String getMention() {
+		return this.mention;
+	}
 
-    public String getDiscordUserMentionAs() {
-        return this.discordUserMentionAs;
-    }
+	public String getChannel() {
+		return this.channel;
+	}
 
-    public String getDiscordMessage() {
-        return this.discordMessage;
-    }
+	public String getDiscriminator() {
+		return this.discrim;
+	}
 
-    public String getDiscriminator() {
-        return this.discordDiscrim;
-    }
-
-    public String getId() {
-        return this.discordId;
-    }
-
-    public Boolean isAdmin() {
-        return this.isAdmin;
-    }
+	public String getSenderId() {
+		return this.senderId;
+	}
 }
