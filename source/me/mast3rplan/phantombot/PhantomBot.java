@@ -630,6 +630,15 @@ public class PhantomBot implements Listener {
     }
 
     /*
+     * Tells you if the discord token has been set.
+     *
+     * @return {boolean}
+     */
+    public Boolean hasDiscordToken() {
+        return this.discordToken.isEmpty();
+    }
+
+    /*
      * Give's you the channel for that channelName.
      *
      * @param {string} channelName
@@ -975,7 +984,8 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("isNightly", isNightly(), 0);
         Script.global.defineProperty("version", botVersion(), 0);
         Script.global.defineProperty("changed", Boolean.valueOf(newSetup), 0);
-        Script.global.defineProperty("discord", DiscordAPI.instance(), 0);
+        Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
+        Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
 
         /* open a new thread for when the bot is exiting */
         Thread thread = new Thread(new Runnable() {

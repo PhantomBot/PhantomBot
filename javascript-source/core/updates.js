@@ -426,6 +426,12 @@
         $.inidb.set('modules', './systems/bettingSystem.js', 'false');
         $.inidb.del('modules', './systems/betSystem.js');
 
+        $.consoleLn('Removing old discord settings...');
+        $.inidb.RemoveFile('discordSettings');
+        $.inidb.RemoveFile('discordKeywords');
+        $.inidb.RemoveFile('discordCommands');
+        $.inidb.RemoveFile('discordCooldown');
+
         $.consoleLn('Reloading blacklist and whitelist...');
         var keys = $.inidb.GetKeyList('blackList', ''),
             i;
