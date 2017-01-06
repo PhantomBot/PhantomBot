@@ -142,7 +142,7 @@
         			return;
         		}
 
-        		subMessage = args.slice(2).join(' ');
+        		subMessage = args.slice(1).join(' ');
         		$.inidb.set('discordSettings', 'gamewispSubMessage', subMessage);
         		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.sub.message.set', subMessage));
         	}
@@ -156,7 +156,7 @@
         			return;
         		}
 
-        		resubMessage = args.slice(2).join(' ');
+        		resubMessage = args.slice(1).join(' ');
         		$.inidb.set('discordSettings', 'gamewispReSubMessage', resubMessage);
         		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.resub.message.set', resubMessage));
         	}
@@ -170,7 +170,7 @@
         			return;
         		}
 
-        		tierMessage = args.slice(2).join(' ');
+        		tierMessage = args.slice(1).join(' ');
         		$.inidb.set('discordSettings', 'gamewispTierMessage', tierMessage);
         		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.message.set', tierMessage));
         	}
