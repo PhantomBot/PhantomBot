@@ -317,13 +317,22 @@
             </tr>
         </table>
         <br>
-
+        
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subReward">Reward</label>
+                <label for="subReward">Subscribing Reward</label>
+                    <button type="button" class="btn btn-primary inline pull-right" 
+                          onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Submit</button>
+                    <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Points" />
+              </div>
+        </form>
+      
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="reSubReward">Resubscribing Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Submit</button>
-                <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('reSubRewardInput', 'subscribeHandler', 'reSubscribeReward')">Submit</button>
+                <input type="number" min="0" class="form-control" id="reSubRewardInput" placeholder="Points" />
             </div>
         </form>
 

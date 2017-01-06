@@ -420,7 +420,7 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void noticeMessage(String message, String username, Map<String, String> tagsMap) {
-        if (message.equals("Error logging in") || message.equals("Login authentication failed")) {
+        if (message.equals("Login authentication failed")) {
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
             com.gmt2001.Console.out.println("Exiting PhantomBot.");
@@ -472,7 +472,7 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void userNotice(String message, String username, Map<String, String> tagMaps) {
-        if (tagMaps.containsKey("login") && tagMaps.containsKey("msg-param-months") && (tagMaps.containsKey("msg_id") && tagMaps.get("msg_id").equals("resub"))) {
+        if (tagMaps.containsKey("login") && tagMaps.containsKey("msg-param-months") && (tagMaps.containsKey("msg-id") && tagMaps.get("msg-id").equals("resub"))) {
             scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, tagMaps.get("login"), tagMaps.get("msg-param-months")));
             com.gmt2001.Console.debug.println(tagMaps.get("login") + " just subscribed for " + tagMaps.get("msg-param-months") + " months in a row!");
         }

@@ -260,9 +260,12 @@
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
-        sendCommand('reloadraffle');
-
-        sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usetime');
+        
+        // For some slower drives sometimes this makes it before it has time to write the new data.
+        setTimeout(function() {
+            sendCommand('reloadraffle');
+            sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usetime');
+        }, TIMEOUT_WAIT_TIME);
         $('#raffle-keyword').val('');
         $('#raffle-cost').val('');
         $('#raffle-time-sub').html('1 Times');
@@ -292,9 +295,12 @@
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
-        sendCommand('reloadraffle');
-
-        sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usepoints');
+        
+        // For some slower drives sometimes this makes it before it has time to write the new data.
+        setTimeout(function() {
+            sendCommand('reloadraffle');
+            sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usepoints');
+        }, TIMEOUT_WAIT_TIME);
         $('#raffle-keyword').val('');
         $('#raffle-cost').val('');
         $('#raffle-points-sub').html('1 Times');
@@ -323,12 +329,15 @@
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
-        sendCommand('reloadraffle');
-
-        sendCommand('raffle open ' + keyword + ' ' + timer + ' ' + eligibility);
+        
+        // For some slower drives sometimes this makes it before it has time to write the new data.
+        setTimeout(function() {
+            sendCommand('reloadraffle');
+            sendCommand('raffle open ' + keyword + ' ' + timer + ' ' + eligibility);
+        }, TIMEOUT_WAIT_TIME);
         $('#raffle-normal-keyword').val('');
-        $('#raffle-normal-sub').html('1 Times');
-        $('#raffle-normal-reg').html('1 Times');
+        $('#raffle-normal-subluck2').html('1 Times');
+        $('#raffle-normal-regluck2').html('1 Times');
         $('#raffle-normal-timer2').html('Until closed');
         $('#raffle-normal-timer').val('0');
         $('#raffle-normal-regluck').val('0');
@@ -347,8 +356,7 @@
 
         sendDBUpdate('raffle_settings_set', 'raffleSettings', 'raffleMessage', message);
         sendDBUpdate('raffle_settings_set', 'raffleSettings', 'raffleMessageInterval', String(interval));
-        sendCommand('reloadraffle');
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        setTimeout(function() { doQuery(); sendCommand('reloadraffle'); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
