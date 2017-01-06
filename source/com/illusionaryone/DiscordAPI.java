@@ -238,13 +238,13 @@ public class DiscordAPI {
             /* GuildMemberJoinEvent - Happens when a user joins the server. */
             if (event instanceof GuildMemberJoinEvent) {
                 GuildMemberJoinEvent joinEvent = (GuildMemberJoinEvent) event;
-                // EventBus.instance().post(new DiscordJoinEvent(joinEvent.getUser().getUsername(), joinEvent.getUser().getId(), joinEvent.getUser().getDiscriminator()));
+                EventBus.instance().post(new DiscordJoinEvent(joinEvent.getUser().getUsername(), joinEvent.getUser().getId(), joinEvent.getUser().getDiscriminator()));
             }
 
             /* GuildMemberLeaveEvent - Happens when a user leaves the server. */
             if (event instanceof GuildMemberLeaveEvent) {
                 GuildMemberLeaveEvent partEvent = (GuildMemberLeaveEvent) event;
-                // EventBus.instance().post(new DiscordLeaveEvent(partEvent.getUser().getUsername(), partEvent.getUser().getId(), partEvent.getUser().getDiscriminator()));
+                EventBus.instance().post(new DiscordLeaveEvent(partEvent.getUser().getUsername(), partEvent.getUser().getId(), partEvent.getUser().getDiscriminator()));
             }
 
             /* TextChannelCreateEvent - Happens when a user creates a new channel, this will also add the channel to our cache so the bot does not need a reboot. */
