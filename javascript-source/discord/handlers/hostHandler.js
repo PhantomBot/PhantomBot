@@ -133,7 +133,7 @@
                     return;
                 }
 
-                autohostMessage = args.slice(2).join(' ');
+                autohostMessage = args.slice(1).join(' ');
                 $.inidb.set('discordSettings', 'autohostMessage', autohostMessage);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.hosthandler.autohost.message.set', autohostMessage));
             }
