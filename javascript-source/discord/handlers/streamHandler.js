@@ -112,7 +112,7 @@
         			return;
         		}
 
-        		onlineMessage = args.slice(2).join(' ');
+        		onlineMessage = args.slice(1).join(' ');
         		$.inidb.set('discordSettings', 'onlineMessage', onlineMessage);
         		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.online.message.set', onlineMessage));
         	}
@@ -135,7 +135,7 @@
         			return;
         		}
 
-        		gameMessage = args.slice(2).join(' ');
+        		gameMessage = args.slice(1).join(' ');
         		$.inidb.set('discordSettings', 'gameMessage', gameMessage);
         		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.game.message.set', gameMessage));
         	}

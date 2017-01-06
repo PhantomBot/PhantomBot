@@ -69,7 +69,7 @@
         			return;
         		}
 
-        		message = args.slice(2).join(' ');
+        		message = args.slice(1).join(' ');
         		$.inidb.set('discordSettings', 'followMessage', message);
         		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.followhandler.follow.message.set', message));
         	}
