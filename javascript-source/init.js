@@ -758,6 +758,7 @@
         loadScript('./core/updates.js');
         loadScript('./core/fileSystem.js');
         loadScript('./core/lang.js');
+        loadScript('./core/commandPause.js');
         loadScript('./core/logging.js');
         loadScript('./core/commandRegister.js');
         loadScript('./core/whisper.js');
