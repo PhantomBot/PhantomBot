@@ -761,7 +761,6 @@
         loadScript('./core/commandPause.js');
         loadScript('./core/logging.js');
         loadScript('./core/commandRegister.js');
-        loadScript('./core/chatModerator.js');
         loadScript('./core/whisper.js');
         loadScript('./core/commandCoolDown.js');
         loadScript('./core/keywordCoolDown.js');
