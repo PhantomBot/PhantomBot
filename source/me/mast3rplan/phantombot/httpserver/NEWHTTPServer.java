@@ -72,7 +72,9 @@ public class NEWHTTPServer {
             server.start();
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to create HTTP Server: " + ex.getMessage());
-            com.gmt2001.Console.warn.println("PhantomBot will now shutdown. Close all Java instances to fix this.");
+            com.gmt2001.Console.warn.println("Failed to create a new HTTP server on port: " + myPort + ".");
+            com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + myPort + " on your system.");
+            com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file if you need port " + myPort + " for something else.");
             com.gmt2001.Console.err.logStackTrace(ex);
             System.exit(0);
         } catch (Exception ex) {
