@@ -1956,7 +1956,7 @@ public class PhantomBot implements Listener {
     /* Load up main */
     public static void main(String[] args) throws IOException {
         /* List of properties that must exist. */
-        String requiredProperties[] = new String[] { "oauth", "apioauth", "channel", "owner", "user" };
+        String requiredProperties[] = new String[] { "oauth", "channel", "owner", "user" };
         String requiredPropertiesErrorMessage = "";
 
         /* Properties configuration */
@@ -2158,6 +2158,7 @@ public class PhantomBot implements Listener {
                 requiredPropertiesErrorMessage += requiredProperty + " ";
             }
         }
+        
         if (!requiredPropertiesErrorMessage.isEmpty()) {
             com.gmt2001.Console.err.println();
             com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);
