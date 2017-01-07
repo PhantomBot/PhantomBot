@@ -508,8 +508,11 @@ public class PhantomBot implements Listener {
 
         /* Set the client Id in the Twitch api. */
         TwitchAPIv3.instance().SetClientID(this.clientId);
+
         /* Set the oauth key in the Twitch api. */
-        TwitchAPIv3.instance().SetOAuth(this.apiOAuth);
+        if (!this.apiOAuth.isEmpty()) {
+            TwitchAPIv3.instance().SetOAuth(this.apiOAuth);
+        }
 
         /* Set the TwitchAlerts OAuth key and limiter. */
         if (!twitchAlertsKey.isEmpty()) {
