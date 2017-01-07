@@ -366,9 +366,9 @@ public class PhantomBot implements Listener {
         this.botName = this.pbProperties.getProperty("user").toLowerCase();
         this.channelName = this.pbProperties.getProperty("channel").toLowerCase();
         this.ownerName = this.pbProperties.getProperty("owner").toLowerCase();
+        this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
         this.oauth = this.pbProperties.getProperty("oauth");
-        this.apiOAuth = this.pbProperties.getProperty("apioauth");
-
+        
         /* Set the web variables */
         this.youtubeOAuth = this.pbProperties.getProperty("ytauth");
         this.youtubeOAuthThro = this.pbProperties.getProperty("ytauthro");
