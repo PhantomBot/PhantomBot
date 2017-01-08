@@ -46,7 +46,7 @@
         	if (action.equalsIgnoreCase('toggle')) {
         		toggle = !toggle;
         		$.inidb.set('discordSettings', 'twitterToggle', toggle);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.twitterhandler.toggle', (toggle === true ? $.lang.get('command.enabled') : $.lang.get('command.disabled'))));
+        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.twitterhandler.toggle', (toggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
         	}
 
         	/**
