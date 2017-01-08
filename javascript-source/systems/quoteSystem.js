@@ -165,7 +165,7 @@
                     return;
                 }
                 quote = args.splice(1).join(' ');
-                $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(target)), quote)));
+                $.say($.lang.get('quotesystem.add.success', $.username.resolve(target), saveQuote(String($.username.resolve(target)), quote)));
                 $.log.event(sender + ' added a quote "' + quote + '".');
                 return;
             }
