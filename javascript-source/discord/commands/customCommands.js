@@ -4,7 +4,7 @@
 (function() {
     var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&]+)\)/),
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/),
-        reCustomArg = new RegExp(/\(([1-9]) (.+)\)/),
+        reCustomArg = new RegExp(/\(([1-9]) (\(.+\))\)/),
         reNormalCommandArg = new RegExp(/\(([1-9])\)/),
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
 
