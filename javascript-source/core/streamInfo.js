@@ -111,9 +111,10 @@
         } else {
             var channelData = $.twitch.GetChannel(channelName);
 
-            if (!channelData.isNull('status')) {
+            if (!channelData.isNull('status') && channelData.getInt('_http') == 200) {
                 return channelData.getString('status');
             }
+            $.log.error('Failed to get the current status: ' + channelData.getString('message'));
             return '';
         }
     };
@@ -130,9 +131,10 @@
         } else {
             var channelData = $.twitch.GetChannel(channelName);
 
-            if (!channelData.isNull('game')) {
+            if (!channelData.isNull('game') && channelData.getInt('_http') == 200) {
                 return channelData.getString("game");
             }
+            $.log.error('Failed to get the current game: ' + channelData.getString('message'));
             return '';
         }
     };
@@ -266,7 +268,7 @@
         } else {
             var stream = $.twitch.GetStream(channelName);
 
-            if (!stream.isNull('stream')) {
+            if (!stream.isNull('stream') && stream.getInt('_http') == 200) {
                 return stream.getJSONObject('stream').getInt('viewers');
             } else {
                 return 0;
@@ -283,7 +285,7 @@
     function getFollows(channelName) {
         var channel = $.twitch.GetChannel(channelName);
 
-        if (!channel.isNull('followers')) {
+        if (!channel.isNull('followers') && channel.getInt('_http') == 200) {
             return channel.getInt('followers');
         } else {
             return 0;
@@ -297,8 +299,14 @@
      * @param channelName
      */
     function getFollowAge(sender, username, channelName) {
-        var user = $.twitch.GetUserFollowsChannel(username, channelName),
-            date = new Date(user.getString('created_at')),
+        var user = $.twitch.GetUserFollowsChannel(username, channelName);
+
+        if (user.getInt('_http') === 404) {
+            $.say($.lang.get('followhandler.follow.age.err.404', $.userPrefix(sender, true), username, channelName));
+            return;
+        }
+
+        var date = new Date(user.getString('created_at')),
             dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
             dateFinal = dateFormat.format(date),
             days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
@@ -316,8 +324,14 @@
      * @param event
      */
     function getChannelAge(event) {
-        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : event.getArgs()[0])),
-            date = new Date(channelData.getString('created_at')),
+        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]));
+
+        if (channelData.getInt('_http') === 404) {
+            $.say($.userPrefix(event.getSender(), true) + $.lang.get('channel.age.user.404'));
+            return;
+        }
+
+        var date = new Date(channelData.getString('created_at')),
             dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
             dateFinal = dateFormat.format(date),
             days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
@@ -337,7 +351,7 @@
     function getSubscriberCount() {
         var jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, 0, true);
 
-        if (jsonObject.getInt('_http') != 200) {
+        if (jsonObject.getInt('_http') !== 200) {
             return 0;
         }
 

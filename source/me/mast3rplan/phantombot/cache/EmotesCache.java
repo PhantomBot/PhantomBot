@@ -166,13 +166,16 @@ public class EmotesCache implements Runnable {
         // We will pull emotes, set the sleep to every 10 minutes.
         loopSleep = LOOP_SLEEP_EMOTES_ENABLED;
 
-        com.gmt2001.Console.debug.println("Polling Emotes from Twitch, BTTV and FFZ");
+        com.gmt2001.Console.debug.println("Polling Emotes from BTTV and FFZ");
 
-        twitchJsonResult = TwitchAPIv3.instance().GetEmotes();
-        if (!checkJSONExceptions(twitchJsonResult, false, "Twitch")) {
-            com.gmt2001.Console.err.println("Failed to get Twitch Emotes");
-            return;
-        }
+        /**
+         * @info Don't need this anymore since we use the IRCv3 tags for Twitch emotes.
+         * twitchJsonResult = TwitchAPIv3.instance().GetEmotes();
+         * if (!checkJSONExceptions(twitchJsonResult, false, "Twitch")) {
+         *    com.gmt2001.Console.err.println("Failed to get Twitch Emotes");
+         *    return;
+         * }
+         */
 
         bttvJsonResult = BTTVAPIv2.instance().GetGlobalEmotes();
         if (!checkJSONExceptions(bttvJsonResult, true, "Global BTTV")) {
@@ -199,8 +202,15 @@ public class EmotesCache implements Runnable {
         }
 
         com.gmt2001.Console.debug.println("Pushing Emote JSON Objects to EventBus");
-        EventBus.instance().post(new EmotesGetEvent(twitchJsonResult, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult, PhantomBot.instance().getChannel("#" + this.channel)));
+        EventBus.instance().post(new EmotesGetEvent(twitchJsonResult, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult, PhantomBot.getChannel(this.channel)));
         System.gc();
+
+        /* Set these to null to save memory */
+        twitchJsonResult = null;
+        bttvJsonResult = null;
+        bttvLocalJsonResult = null;
+        ffzJsonResult = null;
+        ffzLocalJsonResult = null;
     }
 
     public void kill() {

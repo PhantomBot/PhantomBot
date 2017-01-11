@@ -140,8 +140,8 @@
             if (panelMatch(module, './systems/auctionSystem.js')) {
                 handlePanel('./systems/auctionSystem.js', '#_auctionPanel', moduleEnabled);
             }
-            if (panelMatch(module, './systems/betSystem.js')) {
-                handlePanel('./systems/betSystem.js', '#_betPanel', moduleEnabled);
+            if (panelMatch(module, './systems/bettingSystem.js')) {
+                handlePanel('./systems/bettingSystem.js', '#_bettingPanel', moduleEnabled);
             }
             if (panelMatch(module, './systems/raffleSystem.js')) {
                 handlePanel('./systems/raffleSystem.js', '#_rafflePanel', moduleEnabled);

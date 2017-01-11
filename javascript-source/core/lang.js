@@ -14,21 +14,21 @@
     /**
      * @function load
      */
-    function load() {
-        $.bot.loadScriptRecursive('./lang/english', true);
+    function load(force) {
+        $.bot.loadScriptRecursive('./lang/english', true, (force ? force : false));
         if (curLang != 'english') {
-            $.bot.loadScriptRecursive('./lang/' + curLang, true);
+            $.bot.loadScriptRecursive('./lang/' + curLang, true, (force ? force : false));
         }
 
         if ($.isDirectory('./scripts/lang/custom')) {
-            $.bot.loadScriptRecursive('./lang/custom', false);
+            $.bot.loadScriptRecursive('./lang/custom', true, (force ? force : false));
         }
 
         // Set "response_@chat" to true if it hasn't been set yet, so the bot isn't muted when using a fresh install
         if (!$.inidb.exists('settings', 'response_@chat')) {
             $.setIniDbBoolean('settings', 'response_@chat', true);
         }
-    };
+    }
 
     /**
      * @function register
@@ -54,21 +54,48 @@
     function get(key) {
         var string = data[key.toLowerCase()],
             i;
+
         if (!string) {
-            $.log.error('Language string missing for "' + key + '"');
-            $.consoleLn('[lang.js] Missing string "' + key + '"');
-            return 'Could not find string for "' + key + '"';
+            $.log.warn('Language string missing for "' + key + '". This could be due to a update to the lang files.');
+            return ''; // Don't say anything in chat.
         }
+
         if (string.equals('<<EMPTY_PLACEHOLDER>>')) {
             return '';
         }
+
         for (i = 1; i < arguments.length; i++) {
             while (string.indexOf("$" + i) >= 0) {
                 string = string.replace("$" + i, arguments[i]);
             }
         }
         return string;
-    };
+    }
+
+     /**
+      * @function paramCount
+      * @export $.lang
+      * @param {string} key
+      * @returns {Number}
+      */
+     function paramCount(key) {
+         var string = data[key.toLowerCase()],
+             i,
+             ctr = 0;
+ 
+         if (!string) {
+             return 0;
+         }
+ 
+         for (i = 1; i < 99; i++) {
+             if (string.indexOf("$" + i) >= 0) {
+                 ctr++;
+             } else {
+                 break;
+             }
+         }
+         return ctr;
+     }
 
     /**
      * @function exists
@@ -108,7 +135,7 @@
                 } else {
                     $.inidb.set('settings', 'lang', action);
                     curLang = action;
-                    load();
+                    load(true);
                     $.say($.whisperPrefix(sender) + get('lang.lang.changed', action));
                 }
             }
@@ -121,6 +148,7 @@
             inversedState = !$.getIniDbBoolean('settings', 'response_@chat');
 
             $.setIniDbBoolean('settings', 'response_@chat', inversedState);
+            $.reloadMisc();
             $.say($.whisperPrefix(sender) + (inversedState ? get('lang.response.enabled') : get('lang.response.disabled')));
         }
 
@@ -131,6 +159,7 @@
             inversedState = !$.getIniDbBoolean('settings', 'response_action');
 
             $.setIniDbBoolean('settings', 'response_action', inversedState);
+            $.reloadMisc();
             $.say($.whisperPrefix(sender) + (inversedState ? get('lang.response.action.enabled') : get('lang.response.action.disabled')));
         }
     });
@@ -151,6 +180,7 @@
         exists: exists,
         get: get,
         register: register,
+        paramCount: paramCount
     };
 
     // Run the load function to enable modules, loaded after lang.js, to access the language strings immediatly

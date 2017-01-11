@@ -39,6 +39,7 @@
         modSettingMap['linksToggle'] = "Links Protection";
         modSettingMap['longMessageToggle'] = "Long Message Protection";
         modSettingMap['spamTrackerToggle'] = "Spam Tracker Protection";
+        modSettingMap['fakePurgeToggle'] = "Fake Purge Protection";
 
         modSettingMap['subscribersModerateLinks'] = "Subscriber " + modSettingMap['linksToggle'];
         modSettingMap['subscribersModerateCaps'] = "Subscriber " + modSettingMap['capsToggle'];
@@ -48,6 +49,7 @@
         modSettingMap['subscribersModerateColors'] = "Subscriber " + modSettingMap['colorsToggle'];
         modSettingMap['subscribersModerateLongMsg'] = "Subscriber " + modSettingMap['longMessageToggle'];
         modSettingMap['subscribersModerateSpamTracker'] = "Subscriber " + modSettingMap['spamTrackerToggle'];
+        modSettingMap['subscribersModerateFakePurge'] = "Subscriber " + modSettingMap['fakePurgeToggle'];
 
         modSettingMap['regularsModerateLinks'] = "Regulars " + modSettingMap['linksToggle'];
         modSettingMap['regularsModerateCaps'] = "Regulars " + modSettingMap['capsToggle'];
@@ -56,7 +58,8 @@
         modSettingMap['regularsModerateEmotes'] = "Regulars " + modSettingMap['emotesToggle'];
         modSettingMap['regularsModerateColors'] = "Regulars " + modSettingMap['colorsToggle'];
         modSettingMap['regularsModerateLongMsg'] = "Regulars " + modSettingMap['longMessageToggle'];
-        modSettingMap['subscribersModerateSpamTracker'] = "Regulars " + modSettingMap['spamTrackerToggle'];
+        modSettingMap['regularsModerateSpamTracker'] = "Regulars " + modSettingMap['spamTrackerToggle'];
+        modSettingMap['regularsModerateFakePurge'] = "Regulars " + modSettingMap['fakePurgeToggle'];
 
         modSettingMap['silentTimeoutLinks'] = "Silent Timeout on " + modSettingMap['linksToggle'];
         modSettingMap['silentTimeoutCaps'] = "Silent Timeout on " + modSettingMap['capsToggle'];
@@ -66,6 +69,7 @@
         modSettingMap['silentTimeoutColors'] = "Silent Timeout on " + modSettingMap['colorsToggle'];
         modSettingMap['silentTimeoutLongMsg'] = "Silent Timeout on " + modSettingMap['longMessageToggle'];
         modSettingMap['silentTimeoutSpamTracker'] = "Silent Timeout on " + modSettingMap['spamTrackerToggle'];
+        modSettingMap['silentTimeoutFakePurge'] = "Silent Timeout on " + modSettingMap['fakePurgeToggle'];
         modSettingMap['silentTimeoutBlacklist'] = "Silent Timeout on Blacklist";
 
     /**
@@ -111,11 +115,11 @@
 
                         html += "<tr class=\"textList\">" +
                             "    <td style=\"width: 3%\">" +
-                            "        <div id=\"delete_blackList_" + modSetting.replace(/![a-zA-Z1-9]/g, '__') + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
+                            "        <div id=\"delete_blackList_" + modSetting.replace(/[^a-z1-9]/ig, '_') + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
                             "             onclick=\"$.deleteBlacklist('" + modSetting + "')\"><i class=\"fa fa-trash\" />" +
                             "        </div>" +
                             "    </td>" +
-                            "    <td>" + modValue + "</td>" +
+                            "    <td>" + modSetting + "</td>" +
                             "</tr>";
                     
                     }
@@ -135,11 +139,11 @@
     
                         html += "<tr class=\"textList\">" +
                                 "    <td style=\"width: 15px\" padding=\"5px\">" +
-                                "        <div id=\"delete_whiteList_" + modSetting.replace(".", "_") + "\" class=\"button\" " +
+                                "        <div id=\"delete_whiteList_" + modSetting.replace(/[^a-z1-9]/ig, '_') + "\" type=\"button\" class=\"btn btn-default btn-xs\"" +
                                 "             onclick=\"$.deleteWhitelist('" + modSetting + "')\"><i class=\"fa fa-trash\" />" +
                                 "        </div>" +
                                 "    </td>" +
-                                "    <td>" + modValue + "</td>" +
+                                "    <td>" + modSetting + "</td>" +
                                 "</tr>";
                     }
                     html += "</table>";
@@ -178,6 +182,8 @@
                         case 'spamTrackerMessage' :
                         case 'spamTrackerLimit' :
                         case 'spamTrackerTime' :
+                        case 'fakePurgeToggle' :
+                        case 'fakePurgeMessage' :
                             $("#" + modSetting + "Input").attr("placeholder", modValue).blur();
                             break;
                     }
@@ -200,6 +206,14 @@
 
                     if (panelMatch(modSetting, 'timeoutTimeLinks')) {
                         $("#timeoutTimeLinks").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'warningTimeFakePurge')) {
+                        $("#warningTimeFakePurge").attr("placeholder", modValue).blur();
+                    }
+
+                    if (panelMatch(modSetting, 'timeoutTimeFakePurge')) {
+                        $("#timeoutTimeFakePurge").attr("placeholder", modValue).blur();
                     }
 
                     if (panelMatch(modSetting, 'warningTimeCaps')) {
@@ -270,6 +284,10 @@
                         $("#LinkMessageReason").attr("placeholder", modValue).blur();
                     }
 
+                    if (panelMatch(modSetting, 'silentFakePurgeMessage')) {
+                        $("#FakePurgeReason").attr("placeholder", modValue).blur();
+                    }
+
                     if (panelMatch(modSetting, 'silentSymbolsMessage')) {
                         $("#SymbolMessageReason").attr("placeholder", modValue).blur();
                     }
@@ -313,6 +331,12 @@
                     if (panelMatch(modSetting, 'linksToggle')) {
                         if (panelMatch(modValue, 'true')) {
                             $('#toggleModerationLinks').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'fakePurgeToggle')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleModerationFakePurge').attr('checked', 'checked');
                         }
                     }
 
@@ -363,6 +387,12 @@
                             $('#toggleRegularLinks').attr('checked', 'checked');
                         }
                     }
+
+                    if (panelMatch(modSetting, 'regularsModerateFakePurge')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularFakePurge').attr('checked', 'checked');
+                        }
+                    }
                 
                     if (panelMatch(modSetting, 'regularsModerateCaps')) {
                         if (panelMatch(modValue, 'false')) {
@@ -405,6 +435,12 @@
                             $('#toggleSubscriberLinks').attr('checked', 'checked');
                         }
                     }
+
+                    if (panelMatch(modSetting, 'subscribersModerateFakePurge')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberFakePurge').attr('checked', 'checked');
+                        }
+                    }
                 
                     if (panelMatch(modSetting, 'subscribersModerateCaps')) {
                         if (panelMatch(modValue, 'false')) {
@@ -445,6 +481,12 @@
                     if (panelMatch(modSetting, 'silentTimeoutLinks')) {
                         if (panelMatch(modValue, 'true')) {
                             $('#toggleSilentTimeoutLinks').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutFakePurge')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutFakePurge').attr('checked', 'checked');
                         }
                     }
 
@@ -509,7 +551,7 @@
     function addModBlacklist() {
         var value = $("#addModBlacklistInput").val();
         if (value.length > 0) {
-            sendDBUpdate("moderation_addBlacklist", "blackList", "phrase_" + value.toLowerCase(), value.toLowerCase());
+            sendDBUpdate("moderation_addBlacklist", "blackList", value.toLowerCase(), 'true');
             $("#addModBlacklistInput").val("Submitted");
             setTimeout(function() { $("#addModBlacklistInput").val(""); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -523,7 +565,7 @@
     function addModWhitelist() {
         var value = $("#addModWhitelistInput").val();
         if (value.length > 0) {
-            sendDBUpdate("moderation_addWhitelist", "whiteList", "link_" + value, value);
+            sendDBUpdate("moderation_addWhitelist", "whiteList", value.toLowerCase(), 'true');
             $("#addModWhitelistInput").val("Submitted");
             setTimeout(function() { $("#addModWhitelistInput").val(""); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -537,7 +579,7 @@
      */
     function deleteBlacklist(key) {
         /* this was giving errors if it contained a symbol other then _ */
-        var newkey = key.replace(/:/g, '__').replace(/;/g, '__').replace('\'', '__').replace('"', '__').replace(/\[/g, '__').replace(/\\/g, '__').replace(/\//g, '__').replace(/\]/g, '__').replace('*', '__').replace('.', '__');
+        var newkey = key.replace(/[^a-z1-9]/ig, '_');
         $("#delete_blackList_" + newkey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
 
         sendDBDelete("commands_delblacklist_" + key, "blackList", key);
@@ -550,8 +592,9 @@
      * @param {String} key
      */
     function deleteWhitelist(key) {
-        $("#delete_whiteList_" + key.replace(".", "_")).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendDBDelete("commands_delwhitelist_" + key, "whiteList", key);
+        var newkey = key.replace(/[^a-z1-9]/ig, '_');
+        $("#delete_whiteList_" + newkey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        sendDBDelete("commands_delwhitelist_" + newkey, "whiteList", key);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
@@ -563,17 +606,17 @@
     function toggleModeration(group, type) {
         var modDbKeys = [];
         if (group.indexOf('viewers') === 0) {
-            modDbKeys = [ "linksToggle", "capsToggle", "spamToggle", "symbolsToggle", "emotesToggle", "longMessageToggle", "colorsToggle", "spamTrackerToggle" ];
+            modDbKeys = [ "linksToggle", "capsToggle", "spamToggle", "symbolsToggle", "emotesToggle", "longMessageToggle", "colorsToggle", "spamTrackerToggle", "fakePurgeToggle" ];
         }
 
         if (group.indexOf('subscribers') === 0) {
             modDbKeys = [ "subscribersModerateLinks", "subscribersModerateCaps", "subscribersModerateSymbols", "subscribersModerateSpam",
-                          "subscribersModerateEmotes", "subscribersModerateColors", "subscribersModerateLongMsg", "subscribersModerateSpamTacker" ];
+                          "subscribersModerateEmotes", "subscribersModerateColors", "subscribersModerateLongMsg", "subscribersModerateSpamTacker", "subscribersModerateFakePurge" ];
         }
 
         if (group.indexOf('regulars') === 0) {
             modDbKeys = [ "regularsModerateLinks", "regularsModerateCaps", "regularsModerateSymbols", "regularsModerateSpam",
-                          "regularsModerateEmotes", "regularsModerateColors", "regularsModerateLongMsg", "regularsModerateSpamTacker" ];
+                          "regularsModerateEmotes", "regularsModerateColors", "regularsModerateLongMsg", "regularsModerateSpamTacker", "regularsModerateFakePurge" ];
         }
 
         for (key in modDbKeys) {
@@ -708,7 +751,7 @@
             return;
         }
 
-        if (newValue.length > 0 && newValue > 1) {
+        if (newValue.length > 0 && ((typeof newValue === 'number' && newValue > 1) || (typeof newValue === 'string'))) {
             sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
             $(tagId).val('');
             $(tagId).attr("placeholder", newValue).blur();

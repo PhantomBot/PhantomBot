@@ -244,10 +244,11 @@ public class TwitterCache implements Runnable {
 
         long twitterID = statuses.get(0).getId();
         String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        String name = statuses.get(0).getUser().getScreenName();
 
         updateDBLong("lastid_mentions", twitterID);
         updateDBString("last_mentions", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet, getChannel()));
+        EventBus.instance().post(new TwitterEvent(tweet, getChannel(), name));
     }
 
     /*
@@ -373,7 +374,7 @@ public class TwitterCache implements Runnable {
      * @return  Channel  Channel object.
      */
     private Channel getChannel() {
-        return PhantomBot.instance().getChannel("#" + this.channel);
+        return PhantomBot.getChannel(this.channel);
     }
 
     /*

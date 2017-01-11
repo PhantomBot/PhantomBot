@@ -22,9 +22,14 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class ScriptManager {
-
     private static final HashMap<String, Script> scripts = new HashMap<>();
 
+    /**
+     * @function loadScript
+     * @info Used to load scripts
+     *
+     * @param {File} scriptFile
+     */
     public static void loadScript(File scriptFile) throws IOException {
         if (scripts.containsKey(scriptFile.toPath().toString()) && !scripts.get(scriptFile.toPath().toString()).isKilled()) {
             return;
@@ -35,7 +40,7 @@ public class ScriptManager {
         try {
             script.load();
         } catch (Exception ex) {
-             if (scriptFile.getPath().endsWith("init.js")) {
+            if (scriptFile.getPath().endsWith("init.js")) {
                 com.gmt2001.Console.err.println("Failed to load module: init.js: " + ex.getMessage());
             } else {
                 com.gmt2001.Console.err.println("Failed to load module: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
@@ -48,11 +53,65 @@ public class ScriptManager {
         }
     }
 
+    /**
+     * @function reloadScript
+     * @info Used to force reload scripts.
+     *
+     * @param {File} scriptFile
+     */
+    public static void reloadScript(File scriptFile) throws IOException {
+        if (!scripts.containsKey(scriptFile.toPath().toString()) || scripts.get(scriptFile.toPath().toString()).isKilled()) {
+            return;
+        }
+
+        Script script = scripts.get(scriptFile.toPath().toString());
+        try {
+            script.reload(false);
+        } catch (Exception ex) {
+            if (scriptFile.getPath().endsWith("init.js")) {
+                com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
+            } else {
+                com.gmt2001.Console.err.println("Failed to reload module: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
+            }
+            if (!PhantomBot.reloadScripts) {
+                com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
+                System.exit(0);
+            }
+            throw new IOException(ex.getMessage());
+        }
+    }
+
+    /**
+     * @function reloadScriptR
+     * @info Used to reload a script.
+     *
+     * @param {File} scriptFile
+     * @return {Script} file
+     */
+    public static Script reloadScriptR(File scriptFile) throws IOException {
+        reloadScript(scriptFile);
+        return getScript(scriptFile);
+    }
+
+    /**
+     * @function loadScriptR
+     * @info Used to load scripts
+     *
+     * @param {File} scriptFile
+     * @return {Script} file
+     */
     public static Script loadScriptR(File scriptFile) throws IOException {
         loadScript(scriptFile);
         return getScript(scriptFile);
     }
 
+    /**
+     * @function getScript
+     * @info Used to get scripts
+     *
+     * @param {File} scriptFile
+     * @return {Script} file
+     */
     public static Script getScript(File scriptFile) throws IOException {
         if (!scripts.containsKey(scriptFile.toPath().toString())) {
             return null;
@@ -60,13 +119,18 @@ public class ScriptManager {
 
         if (scripts.get(scriptFile.toPath().toString()).isKilled()) {
             scripts.remove(scriptFile.toPath().toString());
-
             return null;
         }
 
         return scripts.get(scriptFile.toPath().toString());
     }
 
+    /**
+     * @function getScripts
+     * @info Used to all the scripts
+     *
+     * @return {Script} file
+     */
     public static HashMap<String, Script> getScripts() {
         return scripts;
     }

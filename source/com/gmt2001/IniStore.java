@@ -121,6 +121,10 @@ public class IniStore extends DataStore implements ActionListener {
     }
 
     private void SaveFile(String fName, IniFile data) {
+        if (data == null) {
+            return;
+        }
+
         try {
             String wdata = "";
             Object[] adata = data.data.keySet().toArray();
@@ -197,7 +201,7 @@ public class IniStore extends DataStore implements ActionListener {
                 }
 
                 if (n.length > 0) {
-                    com.gmt2001.Console.out.println(">>>Saving " + n.length + " files");
+                    com.gmt2001.Console.debug.println("Saving " + n.length + " files");
                 }
 
                 for (Object n1 : n) {
@@ -217,10 +221,10 @@ public class IniStore extends DataStore implements ActionListener {
                 nextSave.setTime(new Date().getTime() + saveInterval);
 
                 if (n.length > 0) {
-                    com.gmt2001.Console.out.println(">>>Save complete");
+                    com.gmt2001.Console.debug.println("Save complete");
                 }
             } else {
-                com.gmt2001.Console.out.println(">>>Object null, nothing to save.");
+                com.gmt2001.Console.debug.println("Object null, nothing to save.");
             }
         }
     }
@@ -339,6 +343,70 @@ public class IniStore extends DataStore implements ActionListener {
     }
 
     @Override
+    public String[] GetKeysByLikeValues(String fName, String section, String search) {
+        fName = validatefName(fName);
+
+        if (!LoadFile(fName, false)) {
+            return null;
+        }
+
+        section = validateSection(section);
+        Set<String> o = files.get(fName).data.get(section).keySet();
+        String[] s = new String[o.size()];
+
+        int i = 0;
+        Iterator<String> it = o.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            if (files.get(fName).data.get(section).get(key).toLowerCase().contains(search.toLowerCase())) {
+                s[i++] = key;
+            }
+        }
+
+        if (i == 0) {
+            return null;
+        }
+
+        String[] retVal = new String[i];
+        for (int j = 0; j < i; j++) {
+            retVal[j] = s[j];
+        }
+        return retVal;
+    }
+
+    @Override
+    public String[] GetKeysByLikeKeys(String fName, String section, String search) {
+        fName = validatefName(fName);
+
+        if (!LoadFile(fName, false)) {
+            return null;
+        }
+
+        section = validateSection(section);
+        Set<String> o = files.get(fName).data.get(section).keySet();
+        String[] s = new String[o.size()];
+
+        int i = 0;
+        Iterator<String> it = o.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            if (key.toLowerCase().contains(search.toLowerCase())) {
+                s[i++] = key;
+            }
+        }
+
+        if (i == 0) {
+            return null;
+        }
+
+        String[] retVal = new String[i];
+        for (int j = 0; j < i; j++) {
+            retVal[j] = s[j];
+        }
+        return retVal;
+    }
+
+    @Override
     public void SetBatchString(String fName, String section, String[] keys, String[] values) {
         fName = validatefName(fName);
 
@@ -416,6 +484,30 @@ public class IniStore extends DataStore implements ActionListener {
         f.delete();
 
         files.remove(fName);
+    }
+
+    @Override
+    public void RenameFile(String fNameSource, String fNameDest) {
+        fNameSource = validatefName(fNameSource);
+        fNameDest = validatefName(fNameDest);
+
+        SaveFile(fNameSource, files.get(fNameSource));
+        if (!FileExists(fNameSource)) {
+            return;
+        }
+
+        SaveFile(fNameDest, files.get(fNameDest));
+        if (FileExists(fNameDest)) {
+            RemoveFile(fNameDest);
+        }
+
+        File sourceFile = new File("./" + inifolder + "/" + fNameSource + ".ini");
+        File destFile = new File("./" + inifolder + "/" + fNameDest + ".ini");
+        
+        sourceFile.renameTo(destFile);
+
+        files.remove(fNameSource);
+        LoadFile(fNameDest, false);
     }
 
     @Override

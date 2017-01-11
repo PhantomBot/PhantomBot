@@ -187,7 +187,7 @@
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), getUserTimeString(sender)));
             } else if (action && $.inidb.exists('time', action.toLowerCase())) {
-                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.resolveRank(action), getUserTimeString(action)));
+                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.username.resolve(action), getUserTimeString(action)));
             } else {
                 subject = args[1];
                 timeArg = parseInt(args[2]);
@@ -373,7 +373,7 @@
         if (levelWithTime) {
             for (i in $.users) {
                 username = $.users[i][0].toLowerCase();
-                if (!$.isMod(username) && !$.isAdmin(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp &&  parseInt($.getUserGroupId(username)) > regularsGroupId) {
+                if (!$.isMod(username) && !$.isAdmin(username) && !$.isSub(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp &&  parseInt($.getUserGroupId(username)) > regularsGroupId) {
                     if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
                         $.setUserGroupById(username, regularsGroupId);
                         $.say($.lang.get(

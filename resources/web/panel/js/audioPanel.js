@@ -33,7 +33,8 @@
      */
     var announceInChat = false,
         playlists = [],
-        sounds = [];
+        sounds = [],
+        audioPanelLoaded = false;
 
     /**
      * @function onMessage
@@ -89,39 +90,51 @@
         }
 
         if (panelCheckQuery(msgObject, 'audio_hook')) {
-            var html = "<table>";
-            sounds.splice(0);
-
+            sounds = [];
             for (var idx in msgObject['results']) {
-
                 sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
-
-                html += "<tr class=\"textList\">" +
-                    "    <td style=\"width: 5%\">" +
-                    "        <div id=\"deleteAudio_" + msgObject['results'][idx]['key'] + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
-                    "             onclick=\"$.deleteAudio('" + msgObject['results'][idx]['key'] + "')\"><i class=\"fa fa-trash\" />" +
-                    "        </div>" +
-                    "    </td>" +
-                    "    <td>" + msgObject['results'][idx]['value'] + "</td>" +
-                    "</tr>";
             }
-            html += "</table>";
-            $('#audioHooks').html(html);
-            handleInputFocus();
 
-            setTimeout(function () {
-                $(document).ready(function() {
-                    ion.sound({
-                        sounds: sounds,
-                        path: "/panel/js/ion-sound/sounds/",
-                        preload: true,
-                        volume: 1.0,
-                        ready_callback: ionSoundLoaded,
-                        ended_callback: clearIonSoundPlaying 
+            if (sounds.length === 0) {
+                $('#audioPanelButtons').html('No sounds configured, please click Reload Audio Hooks if sounds are installed.');
+                $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
+            } else {
+                setTimeout(function () {
+                    $(document).ready(function() {
+                        ion.sound({
+                            sounds: sounds,
+                            path: "/panel/js/ion-sound/sounds/",
+                            preload: true,
+                            volume: 1.0,
+                            ready_callback: ionSoundLoaded,
+                            ended_callback: clearIonSoundPlaying 
+                        });
                     });
-                    sendAudioHooksToCore();
+                }, 2000);
+            }
+        }
+
+        if (panelCheckQuery(msgObject, 'audio_hook_reload')) {
+            sounds = [];
+            for (var idx in msgObject['results']) {
+                sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
+            }
+
+            if (sounds.length === 0) {
+                $('#audioPanelButtons').html('No sounds configured, please click Reload Audio Hooks if sounds are installed.');
+                $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
+            } else {
+                ion.sound({
+                    sounds: sounds,
+                    path: "/panel/js/ion-sound/sounds/",
+                    preload: true,
+                    volume: 1.0,
+                    ready_callback: ionSoundLoaded,
+                    ended_callback: clearIonSoundPlaying 
                 });
-            }, 2000);
+            }
+            loadAudioPanel();
+            $('#reloadSounds').html('Reload Audio Hooks');
         }
 
         if (panelCheckQuery(msgObject, 'audio_ytplaylists')) {
@@ -167,15 +180,6 @@
     }
 
     /**
-     * @function sendAudioHooksToCore
-     */
-    function sendAudioHooksToCore() {
-        var jsonObject = {};
-        jsonObject["audio_hooks"] = sounds;
-        connection.send(JSON.stringify(jsonObject));
-    }
-
-    /**
      * @function doQuery
      */
     function doQuery(message) {
@@ -189,32 +193,15 @@
         sendDBKeys('audio_hook', 'audio_hooks');
     }
 
-    /** 
-     * @function addSound
+    /**
+     * @function reloadAudioHooks
+     * Note that there is not a query performed here because the command sends back a 
+     * doDBKeysQuery() call with the ID of audio_hook_reload.
      */
-    function addSound() {
-        var name = $('#soundImput').val();
-        var desc = $('#soundImputDesc').val();
-
-        if (name.length && desc.length != 0) {
-            sendDBUpdate('audio_hook_add', 'audio_hooks', name, desc);
-        }
-
-        $('#soundImput').val('');
-        $('#soundImputDesc').val('');
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-    };
-
-    /** 
-     * @function addSound
-     */
-    function deleteAudio(audio) {
-        if (audio.length != 0) {
-            $("#deleteAudio_" + audio).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-            sendDBDelete('deleteAudio_' + audio, 'audio_hooks', audio);
-        }
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
-    };
+    function reloadAudioHooks() {
+        $('#reloadSounds').html('Please wait...');
+        sendCommand('reloadaudiopanelhooks');
+    }
 
     /** 
      * @function deleteBSong
@@ -391,14 +378,14 @@
      */
     function fillYouTubePlayerIframe() {
         $('#youTubePlayerIframe').html('<iframe id="youTubePlayer" frameborder="0" scrolling="auto" height="400" width="680"'+
-                                       '        src="http://' + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer?start_paused">');
+                                       '        src="' + getProtocol() + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer?start_paused">');
     }
 
     /**
      * @function launchYouTubePlayer
      */
     function launchYouTubePlayer() {
-        window.open('http://' + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer', 'PhantomBot YouTube Player',
+        window.open(getProtocol() + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer', 'PhantomBot YouTube Player',
                     'menubar=no,resizeable=yes,scrollbars=yes,status=no,toolbar=no,height=700,width=900,location=no' );
     }
 
@@ -457,6 +444,5 @@
     $.deleteUser = deleteUser;
     $.playlists = playlists;
     $.loadYtplaylist = loadYtplaylist;
-    $.addSound = addSound;
-    $.deleteAudio = deleteAudio;
+    $.reloadAudioHooks = reloadAudioHooks;
 })();

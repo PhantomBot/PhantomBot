@@ -57,17 +57,26 @@
             if (panelCheckQuery(msgObject, 'hostraid_settings')) {
                 for (var idx in msgObject['results']) {
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostReward')) {
-                        $('#hostRewardInput').attr('placeholder', msgObject['results'][idx]['value']).blur();
+                        $('#hostRewardInput').val(msgObject['results'][idx]['value']).blur();
+                    }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'autoHostReward')) {
+                        $('#autoHostRewardInput').val(msgObject['results'][idx]['value']).blur();
+                    }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'hostMinViewerCount')) {
+                        $('#hostMinViewersInput').val(msgObject['results'][idx]['value']).blur();
                     }
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostMessage')) {
-                        $('#hostAnnounceInput').attr('placeholder', msgObject['results'][idx]['value']).blur();
+                        $('#hostAnnounceInput').val(msgObject['results'][idx]['value']).blur();
+                    }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'autoHostMessage')) {
+                        $('#hostAutoAnnounceInput').val(msgObject['results'][idx]['value']).blur();
                     }
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostHistory')) {
                         hostHistory = msgObject['results'][idx]['value'];
                         $('#hostHistoryMode').html(modeIcon[msgObject['results'][idx]['value']]);
                     }
                     if (panelMatch(msgObject['results'][idx]['key'], 'raidMessage')) {
-                        $('#raidMessageInput').attr('placeholder', msgObject['results'][idx]['value']).blur();
+                        $('#raidMessageInput').val(msgObject['results'][idx]['value']).blur();
                     }
                 }
             }
@@ -127,42 +136,6 @@
                 $('#outgoingRaidList').html(html);
             }
         }
-
-        if (panelCheckQuery(msgObject, 'hostraid_autohost')) {
-            for (var idx in msgObject['results']) {
-                if (panelMatch(msgObject['results'][idx]['key'], 'enabled')) {
-                    $('#autoHostToggle').html(modeIcon[msgObject['results'][idx]['value']]);
-                }
-                if (panelMatch(msgObject['results'][idx]['key'], 'delay_time_minutes')) {
-                    $('#autoHostDelay').val(msgObject['results'][idx]['value']);
-                }
-                if (panelMatch(msgObject['results'][idx]['key'], 'host_time_minutes')) {
-                    $('#autoHostTime').val(msgObject['results'][idx]['value']);
-                }
-            }
-        }
-
-        if (panelCheckQuery(msgObject, 'hostraid_autohostlist')) {
-            if (msgObject['results'].length === 0) {
-                $('#autoHostList').html('<i>Theres no one in the auto host list.</i>');
-                return;
-            }
-
-            html = "<table>";
-            for (idx in msgObject['results']) {
-                html += "<tr class=\"textList\">" +
-                        "    <td style=\"width: 5%\">" +
-                        "        <div id=\"deleteUser_" + msgObject['results'][idx]['key'] + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
-                        "             onclick=\"$.setAutoHostSetting('del', 'deleteUser_', '" + msgObject['results'][idx]['key'] + "')\"><i class=\"fa fa-trash\" />" +
-                        "        </div>" +
-                        "    </td>" +
-                        "    <td>" + msgObject['results'][idx]['key'] + "</td>" +
-                        "</tr>";
-            }
-            html += "</table>";
-            $("#autoHostList").html(html);
-            handleInputFocus();
-        }
     }
 
     /**
@@ -173,8 +146,6 @@
         sendDBKeys('hostraid_settings', 'settings');
         sendDBKeys('hostraid_inraids', 'incommingRaids'); 
         sendDBKeys('hostraid_outraids', 'outgoingRaids');
-        sendDBKeys('hostraid_autohost', 'autohost_config');
-        sendDBKeys('hostraid_autohostlist', 'autohost_hosts');
     }
 
     /** 
@@ -224,6 +195,19 @@
     }
 
     /** 
+     * @function updateAutoHostAnnounce
+     */
+    function updateAutoHostAnnounce() {
+        var value = $('#hostAutoAnnounceInput').val();
+        if (value.length > 0) {
+            sendDBUpdate('hostraid_settings', 'settings', 'autoHostMessage', value);
+            sendCommand('reloadhost');
+            $('#hostAutoAnnounceInput').attr('placeholder', 'Updating...').blur();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /** 
      * @function updateHostReward
      */
     function updateHostReward() {
@@ -235,6 +219,33 @@
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
+
+    /** 
+     * @function updateAutoHostReward
+     */
+    function updateAutoHostReward() {
+        var value = $('#autoHostRewardInput').val();
+        if (value.length > 0) {
+            sendDBUpdate('hostraid_settings', 'settings', 'autoHostReward', value);
+            sendCommand('reloadhost');
+            $('#autoHostRewardInput').attr('placeholder', value).blur();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /** 
+     * @function updateHostMinViewers
+     */
+    function updateHostMinViewers() {
+        var value = $('#hostMinViewersInput').val();
+        if (value.length > 0) {
+            sendDBUpdate('hostraid_settings', 'settings', 'hostMinViewerCount', value);
+            sendCommand('reloadhost');
+            $('#hostMinViewersInput').attr('placeholder', value).blur();
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
 
     /**
      * @function changeHostHistory
@@ -259,53 +270,6 @@
             sendDBUpdate('hostraid_settings', 'settings', 'raidMessage', value);
             $('#raidMessageInput').attr('placeholder', 'Updating...').blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-        }
-    }
-
-    function setAutoHostSetting(setting, s, t) {
-        var val = $('#' + s).val();
-
-        if (setting == 'enable') {
-            $("#autoHostToggle").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-            sendDBUpdate('auto_host', 'autohost_config', 'enabled', 'true');
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-            return;
-        }
-
-        if (setting == 'disable') {
-            $("#autoHostToggle").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-            sendDBUpdate('auto_host', 'autohost_config', 'enabled', 'false');
-            sendDBUpdate('auto_host', 'autohost_config', 'hosting', 'false');
-            sendDBDelete('auto_host', 'autohost_config', 'currently_hosting');
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-            return;
-        }
-
-        if (setting == 'del') {
-            sendDBDelete('auto_host', 'autohost_hosts', t);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-            return;
-        }
-
-        if (val.length !== 0) {
-            if (setting == 'time') {
-                sendDBUpdate('auto_host', 'autohost_config', 'host_time_minutes', val);
-                setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-                return;
-            }
-
-            if (setting == 'delay') {
-                sendDBUpdate('auto_host', 'autohost_config', 'delay_time_minutes', val);
-                setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-                return;
-            }
-
-            if (setting == 'add') {
-                sendDBUpdate('auto_host', 'autohost_hosts', val, val);
-                $('#' + s).val('');
-                setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-                return;
-            }
         }
     }
 
@@ -339,8 +303,10 @@
     $.raidChannel = raidChannel;
     $.raiderChannel = raiderChannel;
     $.updateHostAnnounce = updateHostAnnounce;
+    $.updateAutoHostAnnounce = updateAutoHostAnnounce;
     $.updateHostReward = updateHostReward;
+    $.updateAutoHostReward = updateAutoHostReward;
+    $.updateHostMinViewers = updateHostMinViewers;
     $.changeHostHistory = changeHostHistory;
     $.updateRaidMessage = updateRaidMessage;
-    $.setAutoHostSetting = setAutoHostSetting;
 })();

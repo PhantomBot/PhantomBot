@@ -264,15 +264,15 @@ public class SubscribersCache implements Runnable {
 
         if (firstUpdate) {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchSubscribesInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchSubscribesInitializedEvent(PhantomBot.getChannel(this.channel)));
         }
 
         for (String subscriber : subscribers) {
-            EventBus.instance().post(new TwitchSubscribeEvent(subscriber, PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchSubscribeEvent(subscriber, PhantomBot.getChannel(this.channel)));
         }
 
         for (String subscriber : unsubscribers) {
-            EventBus.instance().post(new TwitchUnsubscribeEvent(subscriber, PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchUnsubscribeEvent(subscriber, PhantomBot.getChannel(this.channel)));
         }
 
     }

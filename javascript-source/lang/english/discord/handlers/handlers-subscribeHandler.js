@@ -1,0 +1,12 @@
+$.lang.register('discord.subscribehandler.usage', 'Usage: !subscribehandler [submessage / primemessage / resubmessage / subtoggle / primetoggle / resubtoggle / channel]');
+$.lang.register('discord.subscribehandler.sub.toggle', 'Subscriber annoucements have been $1.');
+$.lang.register('discord.subscribehandler.prime.toggle', 'Twitch Prime subscriber annoucements have been $1.');
+$.lang.register('discord.subscribehandler.resub.toggle', 'Re-subscriber annoucements have been $1.');
+$.lang.register('discord.subscribehandler.sub.message.usage', 'Usage: !subscribehandler submessage [message] - Tag: (name)');
+$.lang.register('discord.subscribehandler.sub.message.set', 'Subscriber annoucement message set to: $1');
+$.lang.register('discord.subscribehandler.prime.sub.message.usage', 'Usage: !subscribehandler primemessage [message] - Tag: (name)');
+$.lang.register('discord.subscribehandler.prime.sub.message.set', 'Twitch Prime subscriber annoucement message set to: $1');
+$.lang.register('discord.subscribehandler.resub.message.usage', 'Usage: !subscribehandler resubmessage [message] - Tags: (name) (months)');
+$.lang.register('discord.subscribehandler.resub.message.set', 'Re-subscriber annoucement message set to: $1');
+$.lang.register('discord.subscribehandler.channel.usage', 'Usage: !subscribehandler channel [channel name]');
+$.lang.register('discord.subscribehandler.channel.set', 'Subscriber annoucements will now be made in channel #$1');

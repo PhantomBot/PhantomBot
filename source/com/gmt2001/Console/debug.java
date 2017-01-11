@@ -48,23 +48,30 @@ public class debug {
 
             stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
-            Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + stackInfo + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
-            System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
+            if (!PhantomBot.enableDebuggingLogOnly) {
+                System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
+            }
         }
     }
 
     public static void println() {
-      if (PhantomBot.enableDebugging) {
-        System.out.println();
-      }
+        if (PhantomBot.enableDebugging) {
+            Logger.instance().log(Logger.LogType.Debug, "");
+            if (!PhantomBot.enableDebuggingLogOnly) {
+                System.out.println();
+            }
+        }
     }
 
     public static void printlnRhino(Object o) {
         if (PhantomBot.enableDebugging) {
-            Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
-            System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + o);
+            if (!PhantomBot.enableDebuggingLogOnly) {
+                System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + o);
+            }
         }
     }
 
@@ -77,17 +84,40 @@ public class debug {
             String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
             int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
 
-            Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + stackInfo + o.toString());
+            stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
 
+            if (!PhantomBot.enableDebuggingLogOnly) {
+                System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
+            }
+        }
+    }
+
+    public static void println(Object o, Boolean force) {
+        if (PhantomBot.enableDebugging || force) {
+            String stackInfo = "";
+            String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
+            String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
+            int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+
             stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
-            System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "");
+
+            if (!PhantomBot.enableDebuggingLogOnly) {
+                System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
+            }
         }
     }
 
     public static void printStackTrace(Throwable e) {
         if (PhantomBot.enableDebugging) {
-            e.printStackTrace(System.err);
+            if (!PhantomBot.enableDebuggingLogOnly) {
+                e.printStackTrace(System.err);
+            }
             logStackTrace(e);
         }
     }
@@ -99,7 +129,7 @@ public class debug {
     
             e.printStackTrace(ptrace);
     
-            Logger.instance().log(Logger.LogType.Debug, logTimestamp.log() + " " + trace.toString());
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + trace.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
         }
     }

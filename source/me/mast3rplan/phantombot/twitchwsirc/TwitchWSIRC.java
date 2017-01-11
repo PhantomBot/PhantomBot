@@ -35,6 +35,9 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -48,7 +51,6 @@ import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
-
 public class TwitchWSIRC extends WebSocketClient {
 
     private static final Map<String, TwitchWSIRC> instances = Maps.newHashMap();
@@ -60,6 +62,11 @@ public class TwitchWSIRC extends WebSocketClient {
     private EventBus eventBus;
     private Session session;
     private Channel channel;
+    private long lastPing = 0L;
+    private boolean sentPing = false;
+
+    private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "480000"));
+    private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "600000"));
 
     /*
      * Creates an instance for a channel.
@@ -98,6 +105,25 @@ public class TwitchWSIRC extends WebSocketClient {
         this.eventBus = eventBus;
         this.channel = channel;
         this.session = session;
+
+        /* Lowest value for sendPingWaitTime is 3 minutes. This is based on research that shows that Azure Cloud Services
+         * drop TCP connections without activity for 4 minutes.
+         */
+        if (this.sendPingWaitTime < 180000) {
+            this.sendPingWaitTime = 180000;
+        }
+
+        /* Lowest value for pingWaitTime is 6 minutes. This is based on Twitch indicating that they will send a PING
+         * around every 5 minutes.  This provides a minute of padding.
+         */
+        if (this.pingWaitTime < 360000) {
+            this.pingWaitTime = 360000;
+        }
+
+        /* Force a spread of two minutes between sendPingWaitTime and pingWaitTime. */
+        if (this.pingWaitTime - this.sendPingWaitTime <= 60000) {
+            this.pingWaitTime = this.sendPingWaitTime + 120000;
+        }
     }
 
     /*
@@ -122,7 +148,6 @@ public class TwitchWSIRC extends WebSocketClient {
      * Connect via WSS. This provides a secure connection to Twitch.
      *
      * @param   boolean  true if reconnecting
-     *
      * @return  boolean  true on success and false on failure
      */
     public boolean connectWSS(boolean reconnect) {
@@ -147,7 +172,9 @@ public class TwitchWSIRC extends WebSocketClient {
      
     /*
      * Callback for connection opening to WS-IRC.  Calls send() directly to login to Twitch
-     * IRC rather than sendAddQueue().
+     * IRC rather than sendAddQueue().  We set the lastPing time here as while Twitch has not
+     * sent the PING, we did at least connect to Twitch and we will use this as our baseline
+     * before starting up the timer to check the ping time.
      *
      * @param  ServerHandShake  Handshake data provided by WebSocketClient
      */
@@ -157,6 +184,8 @@ public class TwitchWSIRC extends WebSocketClient {
         this.send("PASS " + oAuth);
         this.send("NICK " + login);
         eventBus.postAsync(new IrcConnectCompleteEvent(session));
+        lastPing = System.currentTimeMillis();
+        checkPingTime();
     }
 
     /*
@@ -168,7 +197,7 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        com.gmt2001.Console.out.println("Disconnected from Twitch WS-IRC Server.");
+        com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC, retrying within 10 seconds...");
         com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
         session.reconnect();
     }
@@ -181,7 +210,18 @@ public class TwitchWSIRC extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         if (message.startsWith("PING")) {
+            sentPing = false;
+            lastPing = System.currentTimeMillis();
+            com.gmt2001.Console.debug.println("Got a PING from Twitch");
             sendPong();
+            return;
+        }
+
+        if (message.startsWith(":tmi.twitch.tv PONG")) {
+            sentPing = false;
+            lastPing = System.currentTimeMillis();
+            com.gmt2001.Console.debug.println("Got a PONG from Twitch");
+            return;
         }
         
         if (message.startsWith(":") || message.startsWith("@")) {
@@ -211,6 +251,7 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     private void sendPong() {
         this.send("PONG :tmi.twitch.tv");
+        com.gmt2001.Console.debug.println("Sent a PONG to Twitch.");
     }
 
     /**
@@ -226,6 +267,31 @@ public class TwitchWSIRC extends WebSocketClient {
         public void run() {
             twitchWSIRCParser.parseData(message);
         }
+    }
+
+    /**
+     * Timer for checking to ensure that PINGs are received on a timely basis from Twitch
+     * and if not a reconnection is requested, this also attempts to send a PING after a
+     * period of time.
+     */
+    private void checkPingTime() {
+        com.gmt2001.Console.debug.println("Ping Wait Time: " + pingWaitTime + " Send Ping Wait Time: " + sendPingWaitTime);
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
+                    com.gmt2001.Console.debug.println("Sending a PING to Twitch to Verify Connection");
+                    sentPing = true;
+                    send("PING tmi.twitch.tv");
+                }
+
+                if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
+                    com.gmt2001.Console.debug.println("PING not Detected from Twitch - Forcing Reconnect (Timeout is " + pingWaitTime + "ms)");
+                    close();
+                }
+            }
+        }, 1, 1, TimeUnit.MINUTES);
     }
 }
 

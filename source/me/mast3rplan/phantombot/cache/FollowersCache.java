@@ -93,7 +93,7 @@ public class FollowersCache implements Runnable {
                 for (String key : newCache.keySet()) {
                     if (cache == null || !cache.containsKey(key)) {
                         cache.put(key, newCache.get(key));
-                        EventBus.instance().post(new TwitchFollowEvent(key, PhantomBot.instance().getChannel("#" + this.channel)));
+                        EventBus.instance().post(new TwitchFollowEvent(key, PhantomBot.getChannel("#" + this.channel)));
                     }
                 }
 
@@ -155,7 +155,7 @@ public class FollowersCache implements Runnable {
             com.gmt2001.Console.err.printStackTrace(e);
         }
 
-        EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+        EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channel)));
 
         while (!killed) {
             try {
@@ -176,7 +176,7 @@ public class FollowersCache implements Runnable {
                         /*
                          * if (firstUpdate) { firstUpdate = false;
                          * EventBus.instance().post(new
-                         * TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
+                         * TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channel)));
                          * }
                          */
                     }
@@ -319,15 +319,15 @@ public class FollowersCache implements Runnable {
 
         if (firstUpdate) {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channel)));
         }
 
         for (String follower : followers) {
-            EventBus.instance().post(new TwitchFollowEvent(follower, PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchFollowEvent(follower, PhantomBot.getChannel(this.channel)));
         }
 
         for (String follower : unfollowers) {
-            EventBus.instance().post(new TwitchUnfollowEvent(follower, PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchUnfollowEvent(follower, PhantomBot.getChannel(this.channel)));
         }
     }
 

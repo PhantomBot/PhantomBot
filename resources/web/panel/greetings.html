@@ -106,7 +106,7 @@
     </div>
     </div>
 
-    <h3>Twitch Alerts Settings</h3>
+    <h3>StreamLabs Settings</h3>
     <div>
     <div id="_donationAlertsPanelDisabled" />
     <div id="_donationAlertsPanel">
@@ -160,16 +160,6 @@
                         onclick="$.updateGreetingData('donateGreetingInput', 'donations', 'message')">Submit</button>
                 <input type="text" class="form-control" id="donateGreetingInput" placeholder="Donation Message" 
                        data-toggle="tooltip" title="Tags: (name) (amount) (points) (pointname) (message) (currency)"/>
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="donateLastMsg">Last Donation Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.updateGreetingData('donateLastMsgInput', 'donations', 'lastmessage')">Submit</button>
-                <input type="text" class="form-control" id="donateLastMsgInput" placeholder="Message" 
-                       data-toggle="tooltip" title="Tags: (name) (amount) (currency)"/>
             </div>
         </form>
     </div>
@@ -231,14 +221,63 @@
                        data-toggle="tooltip" title="Tags: (name) (amount) (points) (pointname) (message) (currency)"/>
             </div>
         </form>
+    </div>
+    </div>
+
+    <h3>TipeeeStream Settings</h3>
+    <div>
+    <div id="_tipeeestreamAlertsPanelDisabled" />
+    <div id="_tipeeestreamdonationAlertsPanel">
+        <table>
+            <tr class="textList">
+                <td>Toggle Donation Alerts</td>
+                <td style="width: 25px"><div id="tipeeestreamGreetings" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('tipeeestream', 'toggle');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+
+            <tr class="textList">
+                <td>Toggle Donator Promotion</td>
+                <td style="width: 25px"><div id="tipeeestreamdonationGroup" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('tipeeestreamdonationGroup', 'group');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamtipdonateLastMsg">Last Donation Message</label>
+                <label for="tipeeestreamdonateRewardInput">Multiplier Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.updateGreetingData('streamtipdonateLastMsgInput', 'streamtip', 'lastmessage')">Submit</button>
-                <input type="text" class="form-control" id="streamtipdonateLastMsgInput" placeholder="Message" 
-                       data-toggle="tooltip" title="Tags: (name) (amount) (currency)"/>
+                        onclick="$.updateGreetingData('tipeeestreamdonateRewardInput', 'tipeeeStreamHandler', 'reward')">Submit</button>
+                <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
+                       type="number" min="0" step="0.1" class="form-control" id="tipeeestreamdonateRewardInput" placeholder="Points" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="tipeeestreamdonationGroupMin">Promote Amount</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('tipeeestreamdonationGroupMin', 'tipeeeStreamHandler', 'groupMin')">Submit</button>
+                <input type="text" class="form-control" id="tipeeestreamdonationGroupMin" placeholder="Amount" 
+                       data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="tipeeestreamdonateGreeting">Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('tipeeestreamdonateGreetingInput', 'tipeeeStreamHandler', 'message')">Submit</button>
+                <input type="text" class="form-control" id="tipeeestreamdonateGreetingInput" placeholder="Donation Message" 
+                       data-toggle="tooltip" title="Tags: (name) (amount) (reward) (message) (currency) (formattedamount)"/>
             </div>
         </form>
     </div>
@@ -259,6 +298,15 @@
                 </td>
             </tr>
             <tr class="textList">
+                <td>Toggle Prime Subscription Alerts</td>
+                <td style="width: 25px"><div id="primeSubscriptionGreetings" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('subscribeHandler', 'primeSubscriberWelcomeToggle');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
                 <td>Toggle Resubscription Alerts</td>
                 <td style="width: 25px"><div id="resubscriptionGreetings" /></td>
                 <td style="width: 25px">
@@ -269,13 +317,22 @@
             </tr>
         </table>
         <br>
-
+        
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subReward">Reward</label>
+                <label for="subReward">Subscribing Reward</label>
+                    <button type="button" class="btn btn-primary inline pull-right" 
+                          onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Submit</button>
+                    <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Points" />
+              </div>
+        </form>
+      
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="reSubReward">Resubscribing Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Submit</button>
-                <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('reSubRewardInput', 'subscribeHandler', 'reSubscribeReward')">Submit</button>
+                <input type="number" min="0" class="form-control" id="reSubRewardInput" placeholder="Points" />
             </div>
         </form>
 
@@ -291,11 +348,31 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="primeSubGreeting">Prime Subscriber Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.updateGreetingData('primeSubGreetingInput', 'subscribeHandler', 'primeSubscribeMessage')">Submit</button>
+                <input type="text" class="form-control" id="primeSubGreetingInput" placeholder="Greeting Message" 
+                       data-toggle="tooltip" title="Tags: (name) (reward)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="resubGreeting">Resubscriber Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"  
                         onclick="$.updateGreetingData('resubGreetingInput', 'subscribeHandler', 'reSubscribeMessage')">Submit</button>
                 <input type="text" class="form-control" id="resubGreetingInput" placeholder="Greeting Message"
-                       data-toggle="tooltip" title="Tags: (name) (reward) (months)" />
+                       data-toggle="tooltip" title="Tags: (name) (reward) (months) (customemote)" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="resubEmote">Resubscriber Custom Emote</label>
+                <button type="button" class="btn btn-primary inline pull-right"  
+                        onclick="$.updateGreetingData('resubEmoteInput', 'subscribeHandler', 'resubEmote')">Submit</button>
+                <input type="text" class="form-control" id="resubEmoteInput" placeholder="Emote name"
+                       data-toggle="tooltip" title="Emote that the (customemote) that will be replaced with. The emote will be added the amount of months the user subscribed for." />
             </div>
         </form>
     </div>
@@ -312,6 +389,15 @@
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
                          onclick="$.toggleGreetings('bitsSettings', 'toggle');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Toggle Bits Rewards To Become a Multiplicative Factor Of Number of Bits</td>
+                <td style="width: 25px"><div id="bitsRewardMultToggle" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('bitsSettings', 'rewardMultToggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>

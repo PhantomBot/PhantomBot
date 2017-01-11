@@ -50,7 +50,7 @@ public class err {
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
         stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
-        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + stackInfo + o.toString());
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         System.err.print("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
     }
 
@@ -72,9 +72,25 @@ public class err {
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
         stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
-        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + stackInfo + o.toString());
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
         System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+    }
+
+    public static void println(Object o, Boolean logOnly) {
+        String stackInfo = "";
+        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
+        String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
+        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+        stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+        Logger.instance().log(Logger.LogType.Error, "");
+        if (!logOnly) {
+            System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+        }
     }
 
     public static void printStackTrace(Throwable e) {
@@ -90,7 +106,7 @@ public class err {
 
         e.printStackTrace(ptrace);
 
-        Logger.instance().log(Logger.LogType.Error, logTimestamp.log() + " " + trace.toString());
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + trace.toString());
         Logger.instance().log(Logger.LogType.Error, "");
     }
 }

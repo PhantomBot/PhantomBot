@@ -133,7 +133,7 @@
         }
 
         var now = new Date();
-        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/event/' + getLogDateString() + '.txt', true);
+        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile.trim() + '] ' + message,'./logs/event/' + getLogDateString() + '.txt', true);
     };
 
     /**
@@ -158,7 +158,32 @@
 
         var now = new Date();
         $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/error/' + getLogDateString() + '.txt', true);
-        //Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile + '] ' + message));
+        Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile.trim() + '] ' + message));
+    };
+
+    /**
+     * @function logWarning
+     * @export $
+     * @param {string} message
+     */
+    function logWarning(message) {
+        if (!logs.error) {// this will count as a error just not a bad error
+            return;
+        }
+
+        if (!$.isDirectory('./logs/warning')) {
+            $.mkDir('./logs/warning');
+        }
+
+        try {
+            throw new Error('warninglog');
+        } catch (e) {
+            sourceFile = e.stack.split('\n')[1].split('@')[1];
+        }
+
+        var now = new Date();
+        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile.trim() + '] ' + message,'./logs/warning/' + getLogDateString() + '.txt', true);
+        Packages.com.gmt2001.Console.warn.printlnRhino(java.util.Objects.toString(message));
     };
 
     /**
@@ -209,7 +234,11 @@
         var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase();
 
-        if (message.toLowerCase().indexOf('moderators if this room') == -1) {
+        if (message.startsWith('specialuser')) {
+            return;
+        }
+
+        if (message.indexOf('the moderators if this room') == -1) {
             logfile('private-messages', '' + sender + ': ' + message);
         }
 
@@ -218,33 +247,19 @@
                 logfile('private-messages', '' + $.lang.get('console.received.clearchat'));
             } else if (message.indexOf('clearchat') != -1) {
                 logEvent($.lang.get('console.received.purgetimeoutban', message.substring(10)));
-            }
-
-            if (message.indexOf('now in slow mode') != -1) {
+            } else if (message.indexOf('now in slow mode') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
-            }
-
-            if (message.indexOf('no longer in slow mode') != -1) {
+            } else if (message.indexOf('no longer in slow mode') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.slowmode.end'));
-            }
-
-            if (message.indexOf('now in subscribers-only') != -1) {
+            } else if (message.indexOf('now in subscribers-only') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.subscriberonly.start'));
-            }
-
-            if (message.indexOf('no longer in subscribers-only') != -1) {
+            } else if (message.indexOf('no longer in subscribers-only') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.subscriberonly.end'));
-            }
-
-            if (message.indexOf('now in r9k') != -1) {
+            } else if (message.indexOf('now in r9k') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.r9k.start'));
-            }
-
-            if (message.indexOf('no longer in r9k') != -1) {
+            } else if (message.indexOf('no longer in r9k') != -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.r9k.end'));
-            }
-
-            if (message.indexOf('hosting') != -1) {
+            } else if (message.indexOf('hosting') != -1) {
                 var target = String(message).replace(/now hosting /ig, '').replace(/\./ig, '');
 
                 if (target.equalsIgnoreCase('-')) {
@@ -254,6 +269,8 @@
                     $.bot.channelIsHosting = target;
                     logfile('private-messages', '' + $.lang.get('console.received.host.start', target));
                 }
+            } else {
+                logfile('private-messages', '' + sender + ': ' + message);
             }
         }
     });
@@ -317,7 +334,7 @@
             }
 
             /**
-             * @commandpath log files - Toggle the logging of events
+             * @commandpath log events - Toggle the logging of events
              */
             if (action.equalsIgnoreCase('events')) {
                 if (logs.event) {
@@ -331,7 +348,7 @@
             }
 
             /**
-             * @commandpath log files - Toggle the logging of errors
+             * @commandpath log errors - Toggle the logging of errors
              */
             if (action.equalsIgnoreCase('errors')) {
                 if (logs.error) {
@@ -370,6 +387,8 @@
         file: logfile,
         event: logEvent,
         error: logError,
+        warn: logWarning,
     };
+
     $.reloadLogs = reloadLogs;
 })();

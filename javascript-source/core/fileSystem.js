@@ -8,7 +8,7 @@
         JFileInputStream = java.io.FileInputStream,
         JFileOutputStream = java.io.FileOutputStream;
 
-    var fileHandles = {};
+    var fileHandles = [];
 
     /**
      * @function readFile
@@ -86,8 +86,8 @@
      * @function closeOpenFiles
      */
     function closeOpenFiles() {
-        for (key in fileHandles) {
-            if (fileHandles[key].lastWrite + 36e5 >= $.systemTime()) { 
+        for (var key in fileHandles) {
+            if (fileHandles[key].lastWrite + 36e5 <= $.systemTime()) { 
                 fileHandles[key].fos.close();
                 delete fileHandles[key];
             }
@@ -107,9 +107,9 @@
 
         closeOpenFiles();
 
-        if (fileHandles.path !== undefined) {
-            fos = fileHandles.path.fos;
-            ps = fileHandles.path.ps;
+        if (fileHandles[path] !== undefined && append) {
+            fos = fileHandles[path].fos;
+            ps = fileHandles[path].ps;
             fileHandles[path].lastWrite = $.systemTime();
         } else {
             fos = new JFileOutputStream(path, append);
@@ -124,6 +124,7 @@
         try {
             ps.println(line);
             fos.flush();
+            // ps.close(); This makes the file reset everytime. 
         } catch (e) {
             $.log.error('Failed to write to \'' + path + '\': ' + e);
         }

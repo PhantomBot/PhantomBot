@@ -10,13 +10,10 @@ $.lang.register('streamtip.donations.reward.usage', 'usage: !streamtip rewardmul
 $.lang.register('streamtip.donations.reward.success', 'The reward for tips has been set to $1 $2 per whole amount of currency donated.');
 $.lang.register('streamtip.donations.message.usage', 'usage: !streamtip message [message...] Tags: (name) (amount) (currency) (currencysymbol) (message)');
 $.lang.register('streamtip.donations.rewardmessage.usage', 'usage: !streamtip rewardmessage [message...] Tags: (name) (amount) (currency) (currencysymbol) (points) (pointname) (message)');
-$.lang.register('streamtip.donations.lastmessage.usage', 'usage: !streamtip lastmessage [message...] Tags: (name) (amount) (currency)');
 $.lang.register('streamtip.donations.message.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (message)');
 $.lang.register('streamtip.donations.rewardmessage.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (currencysymbol) (points) (pointname) (message)');
-$.lang.register('streamtip.donations.lastmessage.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (currencysymbol)');
 $.lang.register('streamtip.donations.message.success', 'Updated the message for tips when rewards are disabled.');
 $.lang.register('streamtip.donations.rewardmessage.success', 'Updated the message for tips with rewards enabled.');
-$.lang.register('streamtip.donations.lastmessage.success', 'Updates the message for !lasttip command.');
 $.lang.register('streamtip.enabled.donators', 'The donators group has been enabled.');
 $.lang.register('streamtip.disabled.donators', 'The donators group has been disabled.');
 $.lang.register('streamtip.donators.min', 'The minimum before being promoted to a Donator was set to $1');

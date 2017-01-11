@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
-import org.sqlite.SQLiteConfig;
 
 import me.mast3rplan.phantombot.PhantomBot;
 
@@ -67,6 +66,7 @@ public class MySQLStore extends DataStore {
         this.pass = pass;
         try {
             connection = DriverManager.getConnection(db, user, pass);
+            connection.setAutoCommit(getAutoCommitCtr() == 0);
             com.gmt2001.Console.out.println("Connected to MySQL");
             return connection;
         } catch (SQLException ex) {
@@ -166,6 +166,27 @@ public class MySQLStore extends DataStore {
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
+        }
+    }
+
+    @Override
+    public void RenameFile(String fNameSource, String fNameDest) {
+        CheckConnection();
+
+        fNameSource = validateFname(fNameSource);
+        fNameDest = validateFname(fNameDest);
+
+        if (!FileExists(fNameSource)) {
+            return;
+        }
+
+        RemoveFile(fNameDest);
+
+        try (Statement statement = connection.createStatement()) {
+            statement.setQueryTimeout(10);
+            statement.executeUpdate("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -291,6 +312,104 @@ public class MySQLStore extends DataStore {
     }
 
     @Override
+    public String[] GetKeysByLikeValues(String fName, String section, String search) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) {
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value LIKE ?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+                    statement.setString(2, "%" + search + "%");
+
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value LIKE ?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, "%" + search + "%");
+
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new String[] {
+               };
+    }
+
+    @Override
+    public String[] GetKeysByLikeKeys(String fName, String section, String search) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) {
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+                    statement.setString(2, "%" + search + "%");
+
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE '%?%';")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, search);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new String[] {
+               };
+    }
+
+    @Override
     public boolean HasKey(String fName, String section, String key) {
         CheckConnection();
 
@@ -387,8 +506,9 @@ public class MySQLStore extends DataStore {
         fName = validateFname(fName);
         AddFile(fName);
 
+        setAutoCommit(false);
+
         try {
-            connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement("REPLACE INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
                 statement.setQueryTimeout(10);
                 for (int idx = 0; idx < keys.length; idx++) {
@@ -405,19 +525,13 @@ public class MySQLStore extends DataStore {
                 statement.executeBatch();
                 statement.clearBatch();
                 connection.commit();
-                connection.setAutoCommit(true);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.println(ex);
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        try {
-            connection.setAutoCommit(true);
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.println(ex);
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+        setAutoCommit(true);
     }
 
     @Override

@@ -143,7 +143,15 @@ public class StreamTipCache implements Runnable {
                                         (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
                                          jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
                 } catch (Exception ex) {
-                    com.gmt2001.Console.out.println("StreamTip.updateCache: Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.err.println("StreamTipCache.updateCache: Failed to update donations: " + ex.getMessage());
+
+                    /* Kill this cache if the streamtip token is bad and disable the module. */
+                    if (ex.getMessage().contains("message=Unauthorized")) {
+                        com.gmt2001.Console.warn.println("StreamTipCache.updateCache: Bad OAuth token or ClientID disabling the StreamTip module.");
+                        PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/streamTipHandler.js", "false");
+                        this.kill();
+                        this.killall();
+                    }
                 }
             }
         } else {
@@ -152,20 +160,20 @@ public class StreamTipCache implements Runnable {
             } catch (Exception ex) {
                 if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
                     checkLastFail();
-                    com.gmt2001.Console.out.println("StreamTipCache.run: Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.warn.println("StreamTipCache.run: Failed to update donations: " + ex.getMessage());
                 }
             }
         }
 
-        if (firstUpdate) {
+        if (firstUpdate && !killed) {
             firstUpdate = false;
-            EventBus.instance().post(new StreamTipDonationInitializedEvent(PhantomBot.instance().getChannel("#" + this.channel)));
+            EventBus.instance().post(new StreamTipDonationInitializedEvent(PhantomBot.getChannel("#" + this.channel)));
         }
 
-        if (donations != null) {
+        if (donations != null && !killed) {
             for (int i = 0; i < donations.length(); i++) {
                 if (cache == null || !cache.containsKey(donations.getJSONObject(i).getString("_id"))) {
-                    EventBus.instance().post(new StreamTipDonationEvent(donations.getJSONObject(i).toString(), PhantomBot.instance().getChannel("#" + this.channel)));
+                    EventBus.instance().post(new StreamTipDonationEvent(donations.getJSONObject(i).toString(), PhantomBot.getChannel(this.channel)));
                 }
             }
         }

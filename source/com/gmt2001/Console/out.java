@@ -39,7 +39,7 @@ public class out {
 
     public static void print(Object o) {
         if (PhantomBot.enableDebugging) {
-            Logger.instance().log(Logger.LogType.Output, logTimestamp.log() + " " + o.toString());
+            Logger.instance().log(Logger.LogType.Output, "[" + logTimestamp.log() + "] " + o.toString());
         }
 
         System.out.print(o);
@@ -51,7 +51,7 @@ public class out {
 
     public static void println(Object o) {
         if (PhantomBot.enableDebugging) {
-            Logger.instance().log(Logger.LogType.Output, logTimestamp.log() + " " + o.toString());
+            Logger.instance().log(Logger.LogType.Output, "[" + logTimestamp.log() + "] " + o.toString());
             Logger.instance().log(Logger.LogType.Output, "");
         }
 

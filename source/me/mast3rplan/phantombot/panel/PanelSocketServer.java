@@ -36,6 +36,7 @@
  *
  * // Query DB keys and values
  * { "dbkeys" : "query_id", "query" : { "table" : "table_name"  } }
+ * { "dbkeyslist" : "query_id", "query" : [ { "table" : "table_name"  } ] }
  *
  * // Update DB
  * { "dbupdate" : "query_id", "update" : { "table" : "table_name", "key" : "key_name", "value" : "new_value" } }
@@ -49,9 +50,6 @@
  * // Delete from DB
  * { "dbdelkey" : "query_id", "delkey" : { "table" : "table_name", "key" : "key_name" } }
  *
- * // Replace the Audio Hooks DB Entries
- * { "audio_hooks" : [ "name" : "audio hook name", "desc" : "audio hook description" ] }
- * 
  * ---------------------------------------------------------------------------
  *
  * Websocket pushes the following to the Panel Interface
@@ -101,6 +99,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.gmt2001.TwitchAPIv3;
 
 import com.google.common.collect.Maps;
 
@@ -188,7 +188,13 @@ public class PanelSocketServer extends WebSocketServer {
                 authenticated = jsonObject.getString("authenticate").equals(authStringRO);
                 sessionData.setAuthenticated(authenticated);
                 sessionData.setReadOnly(true);
-            } 
+
+                if (!authenticated) {
+                    authenticated = authenticateOauth(jsonObject.getString("authenticate"));
+                    sessionData.setAuthenticated(authenticated);
+                    sessionData.setReadOnly(false);
+                }
+            }
             return;
         }
 
@@ -223,6 +229,10 @@ public class PanelSocketServer extends WebSocketServer {
                 uniqueID = jsonObject.getString("dbkeys");
                 String table = jsonObject.getJSONObject("query").getString("table");
                 doDBKeysQuery(webSocket, uniqueID, table);
+            } else if (jsonObject.has("dbkeyslist")) {
+                uniqueID = jsonObject.getString("dbkeyslist");
+                jsonArray = jsonObject.getJSONArray("query");
+                doDBKeysListQuery(webSocket, uniqueID, jsonArray);
             } else if (jsonObject.has("dbupdate") && !sessionData.isReadOnly()) {
                 uniqueID = jsonObject.getString("dbupdate");
                 String table = jsonObject.getJSONObject("update").getString("table");
@@ -246,8 +256,6 @@ public class PanelSocketServer extends WebSocketServer {
                 String table = jsonObject.getJSONObject("delkey").getString("table");
                 String key = jsonObject.getJSONObject("delkey").getString("key");
                 doDBDelKey(webSocket, uniqueID, table, key);
-            } else if (jsonObject.has("audio_hooks") && !sessionData.isReadOnly()) {
-                doAudioHooksUpdate(jsonObject);
             } else {
                 com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
                 return;
@@ -344,8 +352,45 @@ public class PanelSocketServer extends WebSocketServer {
         }
 
         jsonObject.endArray().endObject();
+        if (webSocket == null) {
+            sendToAll(jsonObject.toString());
+        } else {
+            webSocket.send(jsonObject.toString());
+        }
+       
+    }
+
+    private void doDBKeysListQuery(WebSocket webSocket, String id, JSONArray jsonArray) {
+        JSONStringer jsonObject = new JSONStringer();
+
+        if (jsonArray.length() == 0) {
+            return;
+        }
+
+        jsonObject.object().key("query_id").value(id).key("results").array();
+
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                if (jsonArray.getJSONObject(i).has("table")) {
+                    String table = jsonArray.getJSONObject(i).getString("table");
+                    String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(table, "");
+                    for (String dbKey : dbKeys) {
+                        String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
+                        jsonObject.object().key("table").value(table).key("key").value(dbKey).key("value").value(value).endObject();
+                    }
+                }
+            }
+        } catch (NullPointerException ex) {
+            if (!dbCallNull) {
+                debugMsg("NULL returned from DB. DB Object not created yet.");
+            }
+            return;
+        }
+
+        jsonObject.endArray().endObject();
         webSocket.send(jsonObject.toString());
     }
+
 
     private void doDBUpdate(WebSocket webSocket, String id, String table, String key, String value) {
         JSONStringer jsonObject = new JSONStringer();
@@ -412,20 +457,8 @@ public class PanelSocketServer extends WebSocketServer {
         sendToAll(jsonObject.toString());
     }
 
-    private void doAudioHooksUpdate(JSONObject jsonObject) {
-        JSONArray jsonArray = jsonObject.getJSONArray("audio_hooks");
-        try {
-            PhantomBot.instance().getDataStore().RemoveFile("audio_hooks");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonArray.getJSONObject(i).getString("name");
-                PhantomBot.instance().getDataStore().set("audio_hooks", jsonArray.getJSONObject(i).getString("name"), jsonArray.getJSONObject(i).getString("name"));
-            }
-        } catch (NullPointerException ex) {
-            if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
-            }
-            return;
-        }
+    public void doAudioHooksUpdate() {
+        doDBKeysQuery(null, "audio_hook_reload", "audio_hooks");
     }
 
     public void alertImage(String imageInfo) {
@@ -441,6 +474,36 @@ public class PanelSocketServer extends WebSocketServer {
 
     private static String genSessionKey(WebSocket webSocket) {
         return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
+    }
+
+    private Boolean authenticateOauth(String oauth) {
+        String value;
+        String authUsername = TwitchAPIv3.instance().GetUserFromOauth(oauth);
+
+        if (authUsername == null) {
+            return false;
+        }
+
+        // TODO: This will be migrated into a file for management, for right now, this is in the
+        //        database for testing purposes.
+        try {
+            value = PhantomBot.instance().getDataStore().GetString("ws_test_auth", "", authUsername);
+        } catch (NullPointerException ex) {
+            if (!dbCallNull) {
+                dbCallNull = true;
+                debugMsg("NULL returned from DB. DB Object not created yet.");
+            }
+            return false;
+        }
+
+        if (value == null) {
+            return false;
+        }
+        if (value.equals(authUsername)) {
+            return true;
+        }
+        
+        return false;
     }
 
     // -----------------------------------------------------------------------

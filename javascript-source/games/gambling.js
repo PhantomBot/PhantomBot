@@ -1,23 +1,31 @@
 (function() {
-
 	var winGainPercent = $.getSetIniDbNumber('gambling', 'winGainPercent', 30),
 	    winRange = $.getSetIniDbNumber('gambling', 'winRange', 50),
 	    max = $.getSetIniDbNumber('gambling', 'max', 100),
 	    min = $.getSetIniDbNumber('gambling', 'min', 5),
 	    gain = Math.abs(winGainPercent / 100);
 
+	/**
+	 * @function reloadGamble
+	 */
 	function reloadGamble() {
 	 	winGainPercent = $.getIniDbNumber('gambling', 'winGainPercent');
 	    winRange = $.getIniDbNumber('gambling', 'winRange');
 	    max = $.getIniDbNumber('gambling', 'max');
 	    min = $.getIniDbNumber('gambling', 'min');
 	    gain = Math.abs(winGainPercent / 100);
-	};
+	}
 
+	/**
+	 * @function gamble
+	 *
+	 * @param {int amout}
+	 * @param {string} sender
+	 */
 	function gamble(sender, amount) {
 		var winnings = 0,
 		    winSpot = 0,
-		    range = $.randRange(0, 100);
+		    range = $.randRange(1, 100);
 
 		if ($.getUserPoints(sender) < amount) {
 			$.say($.whisperPrefix(sender) + $.lang.get('gambling.need.points', $.pointNameMultiple));
@@ -35,16 +43,16 @@
 		}
 
 		if (range <= winRange) {
+			$.say($.lang.get('gambling.lost', $.resolveRank(sender), range, $.getPointsString(amount), $.getPointsString($.getUserPoints(sender) - amount), $.gameMessages.getLose(sender, 'gamble')));
 			$.inidb.decr('points', sender, amount);
-			$.say($.lang.get('gambling.lost', $.resolveRank(sender), range, $.getPointsString(amount), $.getPointsString($.getUserPoints(sender))));
 		} else {
 			winSpot = (range - winRange + 1); 
             winnings = Math.floor(amount + ((amount + winSpot) * gain));
+			$.say($.lang.get('gambling.won', $.resolveRank(sender), range, $.getPointsString(winnings), $.getPointsString($.getUserPoints(sender) + (winnings - amount)), $.gameMessages.getWin(sender, 'gamble')));
 			$.inidb.decr('points', sender, amount);
 			$.inidb.incr('points', sender, winnings);
-			$.say($.lang.get('gambling.won', $.resolveRank(sender), range, $.getPointsString(winnings - amount), $.getPointsString($.getUserPoints(sender))));
 		}
-	};
+	}
 
 	$.bind('command', function(event) {
 		var sender = event.getSender(),
@@ -100,7 +108,7 @@
 			}
 			winRange = action;
 			$.inidb.set('gambling', 'winRange', winRange);
-			$.say($.whisperPrefix(sender) + $.lang.get('gambling.win.range', winRange, (winRange - 1)));
+			$.say($.whisperPrefix(sender) + $.lang.get('gambling.win.range', parseInt(winRange) + 1, winRange));
 		}
 
 		/**

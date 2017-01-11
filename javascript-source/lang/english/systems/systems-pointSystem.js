@@ -36,7 +36,7 @@ $.lang.register('pointsystem.setbalance.error.negative', 'You can not set a bala
 $.lang.register('pointsystem.setbalance.success', 'Set the $1 balance of $2 to $3.');
 $.lang.register('pointsystem.setbalance.usage', 'Usage: !points set [name] [amount]');
 $.lang.register('pointsystem.take.error.toomuch', 'You can not take more than what $1 has in $2.');
-$.lang.register('pointsystem.take.success', 'Taken $1 from $2. New balance is $3.');
+$.lang.register('pointsystem.take.success', 'Took $1 from $2. New balance is $3.');
 $.lang.register('pointsystem.take.usage', 'Usage: !points take [name] [amount]');
 $.lang.register('pointsystem.gift.usage', 'usage: !gift [user] [amount]');
 $.lang.register('pointsystem.gift.shortpoints', 'Sorry! You do not have enough points to send that gift!');

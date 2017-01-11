@@ -6,12 +6,53 @@
  */
 (function() {
     var patterns = {
-            link: new RegExp('((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)' + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_' + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?' + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+' + '(?:' + '(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])' + '|(?:biz|b[abdefghijmnorstvwyz])' + '|(?:cat|com|coop|c[acdfghiklmnoruvxyz])' + '|d[ejkmoz]' + '|(?:edu|e[cegrstu])' + '|f[ijkmor]' + '|(?:gov|g[abdefghilmnpqrstuwy])' + '|h[kmnrtu]' + '|(?:info|int|i[delmnoqrst])' + '|(?:jobs|j[emop])' + '|k[eghimnrwyz]' + '|l[abcikrstuvy]' + '|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])' + '|(?:name|net|n[acefgilopruz])' + '|(?:org|om)' + '|(?:pro|p[aefghklmnrstwy])' + '|qa' + '|r[eouw]' + '|s[abcdeghijklmnortuvyz]' + '|(?:tel|travel|t[cdfghjklmnoprtvwz])' + '|u[agkmsyz]' + '|v[aceginu]' + '|m[e]' + '|(?:xxx)' + '|w[fs]' + '|y[etu]' + '|z[amw]))' + '|(?:(?:25[0-5]|2[0-4]' + '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]' + '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]' + '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}' + '|[1-9][0-9]|[0-9])))' + '(?:\\:\\d{1,5})?)' + '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~' + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?' + '(?:\\b|$)' + '|(magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'i'),
+            link: new RegExp('((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)'
+             + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_'
+             + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?'
+             + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+'
+             + '(?:'
+             + '(?:aero|arpa|app|a[cdefgilmnoqrstuwxz])'
+             + '|(?:biz|bar|best|bingo|bot|b[abdefghijmnorstvwyz])'
+             + '|(?:cat|com|coop|cash|chat|codes|cool|c[acdfghiklmnoruvxyz])'
+             + '|d[ejkmoz]'
+             + '|(?:edu|e[cegrstu])'
+             + '|(?:fyi|f[ijkmor])'
+             + '|(?:gov|g[abdefghilmnpqrstuwy])'
+             + '|(?:how|h[kmnrtu])'
+             + '|(?:info|int|i[delmnoqrst])'
+             + '|(?:jobs|j[emop])'
+             + '|k[eghimnrwyz]'
+             + '|l[abcikrstuvy]'
+             + '|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])'
+             + '|(?:name|net|n[acefgilopruz])'
+             + '|(?:org|om)'
+             + '|(?:pro|p[aefghklmnrstwy])'
+             + '|qa'
+             + '|(?:rodeo|rocks|r[eouw])'
+             + '|(?:stream|support|sale|s[abcdeghijklmnortuvyz])'
+             + '|(?:tel|travel|top|t[cdfghjklmnoprtvwz])'
+             + '|u[agkmsyz]'
+             + '|(?:vote|video|v[aceginu])'
+             + '|(?:xxx)'
+             + '|(?:watch|w[fs])'
+             + '|y[etu]'
+             + '|z[amw]))'
+             + '|(?:(?:25[0-5]|2[0-4]'
+             + '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]'
+             + '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]'
+             + '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}'
+             + '|[1-9][0-9]|[0-9])))'
+             + '(?:\\:\\d{1,5})?)'
+             + '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~'
+             + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?'
+             + '(?:\\b|$)'
+             + '|(\\.[a-z]+\\/|magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'i'),
             emotes: new RegExp('([0-9][0-9]-[0-9][0-9])|([0-9]-[0-9])', 'g'),
             repeatedSeq: /(.)(\1+)/g,
             nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
             nonAlphaCount: /([^a-z0-9 ])/ig,
             capsCount: /([A-Z])/g,
+            fakePurge: /(^<message \w+>$)/i
         },
         lastFoundLink = '';
 
@@ -24,16 +65,19 @@
      */
     function hasLinks(event, aggressive) {
         try {
-            var message = event.getMessage();
+            //var message = (event.getMessage() + '');
             
-            message = deobfuscateLinks(message, (aggressive));
+            /**
+             * @info commented out because this is not used at all since it does not replace correctly in the function.
+             * message = deobfuscateLinks(message, (aggressive));
+             */
 
-            lastFoundLink = patterns.link.exec(message)[0];
+            lastFoundLink = patterns.link.exec(event.getMessage())[0];
             return true;
         } catch (e) {
             return false;
         }
-    };
+    }
 
     /**
      * @function getLastFoundLink
@@ -42,7 +86,7 @@
      */
     function getLastFoundLink() {
         return lastFoundLink;
-    };
+    }
 
     /**
      * @function logLastLink
@@ -50,7 +94,7 @@
      */
     function logLastLink(event) {
         $.log.file('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + lastFoundLink);
-    };
+    }
 
     /**
      * @function deobfuscateLinks
@@ -98,7 +142,7 @@
         }
 
         return message;
-    };
+    }
 
     /**
      * @function getLongestRepeatedSequence
@@ -107,10 +151,10 @@
      * @returns {number}
      */
     function getLongestRepeatedSequence(event) {
-            var message = (event.getMessage() + ''),
-                sequences = event.getMessage().match(patterns.repeatedSeq);
-        return (sequences == null ? 0 : sequences.slice(0, 1)[0].length);
-    };
+        var sequences = event.getMessage().match(patterns.repeatedSeq);
+
+        return (sequences === null ? 0 : sequences[0].length);
+    }
 
     /**
      * @function getLongestNonLetterSequence
@@ -121,8 +165,9 @@
     function getLongestNonLetterSequence(event) {
         var message = (event.getMessage() + ''),
             sequences = message.match(patterns.nonAlphaSeq);
-        return (sequences == null ? 0 : sequences.slice(0, 1)[0].length);
-    };
+
+        return (sequences === null ? 0 : sequences[0].length);
+    }
 
     /**
      * @function getNumberOfNonLetters
@@ -131,19 +176,9 @@
      * @returns {number}
      */
     function getNumberOfNonLetters(event) {
-        var message = (event.getMessage() + ''),
-            sequences = message.match(patterns.nonAlphaCount);
-        return (sequences == null ? 0 : sequences.length);
-    };
+        var sequences = event.getMessage().match(patterns.nonAlphaCount);
 
-    /**
-     * @function getNumberOfEmotes
-     * @export $.patternDetector
-     * @param {Object} event
-     * @returns {number}
-     */
-    function getNumberOfEmotes(event) {
-        return $.emotesHandler.getEmotesMatchCount(event.getMessage() + '');
+        return (sequences === null ? 0 : sequences.length);
     }
 
     /**
@@ -151,16 +186,35 @@
      * @export $.patternDetector
      * @param {Object} event
      * @returns {number}
-     * @info this gets the emote count from the ircv3 tags.
+     * @info this gets the emote count from the ircv3 tags and the emotes cache if enabled.
      */
     function getEmotesCount(event) {
-        var tags = event.getTags(),
-            emotes = tags.get('emotes');
-        if (tags !== null && tags != '{}' && tags.get('emotes') != '') {
-            return (emotes.match(patterns.emotes) === null ? 0 : emotes.match(patterns.emotes).length);
-        } else {
-            return 0;
+        var emotes = event.getTags().get('emotes');
+
+        return ((emotes.match(patterns.emotes) === null ? 0 : (emotes.match(patterns.emotes).length) + $.emotesHandler.getEmotesMatchCount(event.getMessage())));
+    }
+
+    /**
+     * @function getEmotesLength
+     * @export $.patternDetector
+     * @param {Object} event
+     * @returns {number}
+     * @info this gets the total emote length
+     */
+    function getEmotesLength(event) {
+        var emotes = event.getTags().get('emotes'),
+            length = 0,
+            i;
+
+        if (emotes !== null && emotes != '') {
+            emotes = emotes.replaceAll('[0-9]+:', '').replaceAll('/', ',').split(',');
+            for (i = 0; i < emotes.length; i++) {
+                length += (parseInt(emotes[i].split('-')[1]) - parseInt(emotes[i].split('-')[0]) + 1);
+            }
+            return length;
         }
+            
+        return 0;
     }
 
     /**
@@ -170,9 +224,29 @@
      * @returns {number}
      */
     function getNumberOfCaps(event) {
-        var message = (event.getMessage() + ''),
-            sequences = message.match(patterns.capsCount);
-        return (sequences == null ? 0 : sequences.length);
+        var sequences = event.getMessage().match(patterns.capsCount);
+
+        return (sequences === null ? 0 : sequences.length);
+    }
+
+    /**
+     * @function getColoredMessage
+     * @export $.patternDetector
+     * @param {Object} event
+     * @returns {boolean}
+     */
+    function getColoredMessage(event) {
+        return event.getMessage().startsWith('/me');
+    }
+
+    /**
+     * @function getFakePurge
+     * @export $.patternDetector
+     * @param {Object} event
+     * @returns {boolean}
+     */
+    function getFakePurge(event) {
+        return event.getMessage().match(patterns.fakePurge);
     }
 
     /** Export functions to API */
@@ -182,9 +256,11 @@
         getLongestNonLetterSequence: getLongestNonLetterSequence,
         getNumberOfNonLetters: getNumberOfNonLetters,
         getLastFoundLink: getLastFoundLink,
-        getNumberOfEmotes: getNumberOfEmotes,
         getEmotesCount: getEmotesCount,
+        getEmotesLength: getEmotesLength,
         getNumberOfCaps: getNumberOfCaps,
         logLastLink: logLastLink,
+        getColoredMessage: getColoredMessage,
+        getFakePurge: getFakePurge
     };
 })();

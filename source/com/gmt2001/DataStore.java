@@ -60,11 +60,24 @@ public class DataStore {
                };
     }
 
+    public String[] GetKeysByLikeValues(String fName, String section, String search) {
+        return new String[] {
+               };
+    }
+
+    public String[] GetKeysByLikeKeys(String fName, String section, String search) {
+        return new String[] {
+               };
+    }
+
     public String GetString(String fName, String section, String key) {
         return "";
     }
 
     public void SetString(String fName, String section, String key, String value) {
+    }
+
+    public void InsertString(String fName, String section, String key, String value) {
     }
 
     public void SetBatchString(String fName, String section, String[] key, String[] value) {
@@ -170,6 +183,9 @@ public class DataStore {
     public void RemoveFile(String fName) {
     }
 
+    public void RenameFile(String fNameSource, String fNameDest) {
+    }
+
     public boolean FileExists(String fName) {
         return false;
     }
@@ -198,20 +214,32 @@ public class DataStore {
         RemoveKey(fName, "", key);
     }
 
-    public void incr(String fName, String key, int amount) {
-        int ival = GetInteger(fName, "", key);
-
+    public void incr(String fName, String section, String key, int amount) {
+        int ival = GetInteger(fName, section, key);
         ival += amount;
+        SetInteger(fName, section, key, ival);
+    }
 
-        SetInteger(fName, "", key, ival);
+    public void incr(String fName, String key, int amount) {
+        incr(fName, "", key, amount);
+    }
+
+    public void decr(String fName, String section, String key, int amount) {
+        int ival = GetInteger(fName, section, key);
+        ival -= amount;
+        SetInteger(fName, section, key, ival);
     }
 
     public void decr(String fName, String key, int amount) {
-        int ival = GetInteger(fName, "", key);
+        decr(fName, "", key, amount);
+    }
 
-        ival -= amount;
+    public String[] searchByValue(String fName, String search) {
+        return GetKeysByLikeValues(fName, "", search);
+    }
 
-        SetInteger(fName, "", key, ival);
+    public String[] searchByKey(String fName, String search) {
+        return GetKeysByLikeKeys(fName, "", search);
     }
 
     public void CreateIndexes() {

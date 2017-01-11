@@ -12,7 +12,9 @@
         perUserCooldown = $.getSetIniDbBoolean('cooldown', 'perUserCooldown', false),
         globalCooldownTime = $.getSetIniDbNumber('cooldown', 'globalCooldownTime', 90),
         modCooldown = $.getSetIniDbBoolean('cooldown', 'modCooldown', false),
-        cooldown = [];
+        cooldown = [],
+        cooldowns = [],
+        i;
 
     /**
      * @function reloadCooldown 
@@ -62,7 +64,7 @@
      * @param username
      */
     function set(command, hasCooldown, time, username) {
-        if (time == null || time == 0 || time == 1 || isNaN(time)) {
+        if (time === null || time === 0) {
             return;
         }
 
@@ -76,7 +78,7 @@
                 return;
             } else {
                 if (perUserCooldown) {
-                    cooldown[command] = {time: time, username: username};
+                    cooldowns.push({username: username, time: time, command: command});
                     $.consoleDebug('Pushed command !' + command + ' to user cooldown with username: ' + username + '.');
                     return;
                 }
@@ -118,10 +120,10 @@
             set(command, hasCooldown, globalCooldownTime); return 0;
         } else {
             if (perUserCooldown && hasCooldown) {
-                if (cooldown[command] !== undefined && cooldown[command].username.equalsIgnoreCase(username)) {
-                    if (cooldown[command].time - $.systemTime() >= 0) {
+                for (i in cooldowns) {
+                    if (cooldowns[i].command.equals(command) && cooldowns[i].username.equals(username) && cooldowns[i].time - $.systemTime() >= 0) {
                         if (permCheck(username, isMod)) return 0;
-                        return parseInt(cooldown[command].time - $.systemTime());
+                        return parseInt(cooldowns[i].time - $.systemTime());
                     }
                 }
                 set(command, hasCooldown, getCooldown(command), username); return 0;
@@ -157,17 +159,17 @@
      * @event command
      */
     $.bind('command', function(event) {
-        var sender = event.getSender().toLowerCase(),
+        var sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
             cmd = args[0],
             time = parseInt(args[1]);
 
         /**
-         * @commandpath coolcom [command or keyword] [seconds] - Sets a cooldown in seconds for a command or a keyword. Use -1 for seconds to remove it. This also applies for the per-user cooldown.
+         * @commandpath coolcom [command] [seconds] - Sets a cooldown in seconds for a command. Use -1 for seconds to remove it. This also applies for the per-user cooldown.
          */
         if (command.equalsIgnoreCase('coolcom') || command.equalsIgnoreCase('cooldown')) {
-            if (!cmd || !time) {
+            if (cmd === undefined || isNaN(time)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set.usage'));
                 return;
             }
@@ -199,7 +201,7 @@
         }
 
         /**
-         * @commandpath toggleglobalcooldown - Enables/Disables the global command cooldown.
+         * @commandpath toggleglobalcooldown - Enables or Disables the global command cooldown.
          */
         if (command.equalsIgnoreCase('toggleglobalcooldown')) {
             globalCooldown = !globalCooldown;
@@ -209,7 +211,7 @@
         }
 
         /**
-         * @commandpath toggleperusercooldown - Enables/Disables the per-user command cooldown.
+         * @commandpath toggleperusercooldown - Enables or Disables the per-user command cooldown.
          */
         if (command.equalsIgnoreCase('toggleperusercooldown')) {
             perUserCooldown = !perUserCooldown;
@@ -232,7 +234,7 @@
         }
 
         /**
-         * @commandpath togglemodcooldown - Enable/Disable mods being affected by cooldowns
+         * @commandpath togglemodcooldown - Enable or Disable mods being affected by cooldowns
          */
         if (command.equalsIgnoreCase('togglemodcooldown')) {
             modCooldown = !modCooldown;

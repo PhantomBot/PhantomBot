@@ -17,6 +17,7 @@
 package com.gmt2001;
 
 import com.gmt2001.DataStore;
+import com.gmt2001.HttpRequest;
 import me.mast3rplan.phantombot.PhantomBot;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -491,16 +493,6 @@ public class TwitchAPIv3 {
     }
 
     /**
-     * Gets a list of users hosting the channel
-     *
-     * @param channelid
-     * @return
-     */
-    public JSONObject GetHostUsers(int channelid) {
-        return GetData(request_type.GET, "https://tmi.twitch.tv/hosts?include_logins=1&target=" + channelid, false);
-    }
-
-    /**
      * Checks if a user is following a channel
      *
      * @param user
@@ -621,21 +613,30 @@ public class TwitchAPIv3 {
 
     /**
      * Populates the followed table from a JSONArray. The database auto commit is disabled
-     * as otherwise the large number of writes in a row can cause some delay.
+     * as otherwise the large number of writes in a row can cause some delay.  We only
+     * update the followed table if the user has an entry in the time table. This way we
+     * do not potentially enter thousands, or tens of thousands, or even more, entries into
+     * the followed table for folks that do not visit the stream.
      *
      * @param   JSONArray   JSON array object containing the followers data
      * @param   DataStore   Copy of database object for writing
+     * @return  int         How many objects were inserted into the database
      */
-    private void PopulateFollowedTable(JSONArray followsArray, DataStore dataStore) {
+    private int PopulateFollowedTable(JSONArray followsArray, DataStore dataStore) {
+        int insertCtr = 0;
         dataStore.setAutoCommit(false);
         for (int idx = 0; idx < followsArray.length(); idx++) {
             if (followsArray.getJSONObject(idx).has("user")) {
                 if (followsArray.getJSONObject(idx).getJSONObject("user").has("name")) {
-                    dataStore.set("followed", followsArray.getJSONObject(idx).getJSONObject("user").getString("name"), "true");
-                 }
+                    if (dataStore.exists("time", followsArray.getJSONObject(idx).getJSONObject("user").getString("name"))) {
+                        insertCtr++;
+                        dataStore.set("followed_fixtable", followsArray.getJSONObject(idx).getJSONObject("user").getString("name"), "true");
+                    }
+                }
             }
         }
         dataStore.setAutoCommit(true);
+        return insertCtr;
     }
 
     /**
@@ -644,41 +645,45 @@ public class TwitchAPIv3 {
      *
      * @param   String      Name of the channel to lookup data for
      * @param   DataStore   Copy of database object for reading data from
+     * @param   int         Total number of followers reported from Twitch API
      */
-    private void FixFollowedTableWorker(String channel, DataStore dataStore) {
+    private void FixFollowedTableWorker(String channel, DataStore dataStore, int followerCount) {
+        int insertCtr = 0;
         JSONObject jsonInput;
         String tableUpdated;
-        String nextLink = base_url + "/channels/" + channel + "/follows?limit=100";
+        String baseLink = base_url + "/channels/" + channel + "/follows";
+        String nextLink = baseLink + "?limit=100";
 
-        com.gmt2001.Console.out.println("FixFollowedTable: Retrieving all channel followers for the followed table.");
+        com.gmt2001.Console.out.println("FixFollowedTable: Retrieving followers that exist in the time table, this may take some time.");
 
-        /* Perform the lookups. The initial lookup will return the next API endpoint.
-         * Twitch always will return another 'next' endpoint, but, the follows array
-         * will be empty once all of the users have been returned.
+        /* Perform the lookups. The initial lookup will return the next API endpoint
+         * as a _cursor object. Use this to build the next query. We do this to prepare
+         * for Twitch API v5 which will require this.
          */
         do {
             jsonInput = GetData(request_type.GET, nextLink, false);
             if (!jsonInput.has("follows")) {
                 return;
             }
-            PopulateFollowedTable(jsonInput.getJSONArray("follows"), dataStore);
+            insertCtr += PopulateFollowedTable(jsonInput.getJSONArray("follows"), dataStore);
 
-            if (!jsonInput.has("_links")) {
-                return;
+            if (!jsonInput.has("_cursor")) {
+                break;
             }
-            if (!jsonInput.getJSONObject("_links").has("next")) {
-                return;
-            }
-            nextLink = jsonInput.getJSONObject("_links").getString("next");
+            nextLink = baseLink + "?limit=100&cursor=" + jsonInput.getString("_cursor");
 
             /* Be kind to Twitch during this process. */
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
+                /* Since it might be possible that we have hundreds, even thousands of calls,
+                 * we do not dump even a debug statement here.
+                 */
             }
         } while (jsonInput.getJSONArray("follows").length() > 0) ;
 
-        com.gmt2001.Console.out.println("FixFollowedTable: Pulled all followers into the followed table.");
+        dataStore.RenameFile("followed_fixtable", "followed");
+        com.gmt2001.Console.out.println("FixFollowedTable: Pulled followers into the followed table, loaded " + insertCtr + "/" + followerCount + " records.");
     }
 
     /**
@@ -705,7 +710,7 @@ public class TwitchAPIv3 {
         }
 
         try {
-            FixFollowedTableRunnable fixFollowedTableRunnable = new FixFollowedTableRunnable(channel, dataStore);
+            FixFollowedTableRunnable fixFollowedTableRunnable = new FixFollowedTableRunnable(channel, dataStore, followerCount);
             new Thread(fixFollowedTableRunnable).start();
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to start thread for updating followed table.");
@@ -718,14 +723,16 @@ public class TwitchAPIv3 {
     private class FixFollowedTableRunnable implements Runnable {
         private DataStore dataStore;
         private String channel;
+        private int followerCount;
 
-        public FixFollowedTableRunnable(String channel, DataStore dataStore) {
+        public FixFollowedTableRunnable(String channel, DataStore dataStore, int followerCount) {
             this.channel = channel;
             this.dataStore = dataStore;
+            this.followerCount = followerCount;
         }
 
         public void run() {
-            FixFollowedTableWorker(channel, dataStore);
+            FixFollowedTableWorker(channel, dataStore, followerCount);
         }
     }
 
@@ -738,5 +745,43 @@ public class TwitchAPIv3 {
             return jsonObject.getBoolean("identified");
         }
         return false;
+    }
+
+    /**
+     * Returns a username when given an Oauth.
+     *
+     * @param   String      Oauth to check with.
+     * @return  String      The name of the user or null to indicate that there was an error.
+     */
+    public String GetUserFromOauth(String userOauth) {
+        JSONObject jsonInput = GetData(request_type.GET, base_url, "", userOauth, false);
+        if (jsonInput.has("token")) {
+            if (jsonInput.getJSONObject("token").has("user_name")) {
+                com.gmt2001.Console.out.println("username = " + jsonInput.getJSONObject("token").getString("user_name"));
+                return jsonInput.getJSONObject("token").getString("user_name");
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the channel Id
+     *
+     * @param   String      channel name
+     * @return  int      the channel id.
+     */
+    public int getChannelId(String channel) {
+        JSONObject jsonObject = GetChannel(channel);
+        int channelId = 0;
+        if (jsonObject.getBoolean("_success")) {
+            if (jsonObject.getInt("_http") == 200) {
+                channelId = jsonObject.getInt("_id");
+            } else {
+                com.gmt2001.Console.debug.println("TwitchAPIv3: ID get HTTP failure: " + jsonObject.getInt("_id"));
+            }
+        } else {
+            com.gmt2001.Console.debug.println("TwitchAPIv3: ID get fail");
+        }
+        return channelId;
     }
 }

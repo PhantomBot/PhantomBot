@@ -106,7 +106,7 @@ public class SqliteStore extends DataStore {
                     }
                 }
 
-                connection = CreateConnection(dbname, cache_size, safe_write, journal);
+                connection = CreateConnection(dbname, cache_size, safe_write, journal, true);
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -117,7 +117,7 @@ public class SqliteStore extends DataStore {
                };
     }
 
-    private static Connection CreateConnection(String dbname, int cache_size, boolean safe_write, boolean journal) {
+    private static Connection CreateConnection(String dbname, int cache_size, boolean safe_write, boolean journal, boolean autocommit) {
         Connection connection = null;
 
         try {
@@ -127,7 +127,7 @@ public class SqliteStore extends DataStore {
             config.setTempStore(SQLiteConfig.TempStore.MEMORY);
             config.setJournalMode(journal ? SQLiteConfig.JournalMode.TRUNCATE : SQLiteConfig.JournalMode.OFF);
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbname.replaceAll("\\\\", "/"), config.toProperties());
-            connection.setAutoCommit(true);
+            connection.setAutoCommit(autocommit);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -164,7 +164,7 @@ public class SqliteStore extends DataStore {
     private void CheckConnection() {
         try {
             if (connection == null || connection.isClosed() || !connection.isValid(10)) {
-                connection = CreateConnection(dbname, cache_size, safe_write, journal);
+                connection = CreateConnection(dbname, cache_size, safe_write, journal, getAutoCommitCtr() == 0);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -237,6 +237,27 @@ public class SqliteStore extends DataStore {
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
+        }
+    }
+
+    @Override
+    public void RenameFile(String fNameSource, String fNameDest) {
+        CheckConnection();
+
+        fNameSource = validateFname(fNameSource);
+        fNameDest = validateFname(fNameDest);
+
+        if (!FileExists(fNameSource)) {
+            return;
+        }
+
+        RemoveFile(fNameDest);
+
+        try (Statement statement = connection.createStatement()) {
+            statement.setQueryTimeout(10);
+            statement.executeUpdate("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -364,6 +385,104 @@ public class SqliteStore extends DataStore {
     }
 
     @Override
+    public String[] GetKeysByLikeValues(String fName, String section, String search) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) {
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value LIKE ?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+                    statement.setString(2, "%" + search + "%");
+  
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value LIKE ?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, "%" + search + "%");
+
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new String[] {
+               };
+    }
+
+    @Override
+    public String[] GetKeysByLikeKeys(String fName, String section, String search) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) { 
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+                    statement.setString(2, "%" + search + "%");
+                    
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+                        
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, "%" + search + "%");
+                    
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+                        
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new String[] {
+               };
+    }
+
+    @Override
     public boolean HasKey(String fName, String section, String key) {
         CheckConnection();
 
@@ -460,8 +579,9 @@ public class SqliteStore extends DataStore {
         fName = validateFname(fName);
         AddFile(fName);
 
+        setAutoCommit(false);
+
         try {
-            connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement("REPLACE INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
                 statement.setQueryTimeout(10);
                 for (int idx = 0; idx < keys.length; idx++) {
@@ -478,19 +598,13 @@ public class SqliteStore extends DataStore {
                 statement.executeBatch();
                 statement.clearBatch();
                 connection.commit();
-                connection.setAutoCommit(true);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.println(ex);
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        try {
-            connection.setAutoCommit(true);
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.println(ex);
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+        setAutoCommit(true);
     }
 
     @Override
@@ -518,6 +632,27 @@ public class SqliteStore extends DataStore {
                     statement.setString(3, value);
                     statement.executeUpdate();
                 }
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
+    public void InsertString(String fName, String section, String key, String value) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        AddFile(fName);
+
+        try {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
+                statement.setQueryTimeout(10);
+                statement.setString(1, section);
+                statement.setString(2, key);
+                statement.setString(3, value);
+                statement.executeUpdate();
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
