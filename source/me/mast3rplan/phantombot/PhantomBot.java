@@ -518,9 +518,6 @@ public class PhantomBot implements Listener {
         if (!twitchAlertsKey.isEmpty()) {
             TwitchAlertsAPIv1.instance().SetAccessToken(twitchAlertsKey);
             TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchAlertsLimit);
-            if (dataStore.HasKey("settings", "", "streamlabs.currencycode")) {
-                TwitchAlertsAPIv1.instance().SetCurrencyCode(dataStore.GetString("settings", "", "streamlabs.currencycode"));
-            }
         }
 
         /* Set the StreamTip OAuth key, Client ID and limiter. */
@@ -832,6 +829,11 @@ public class PhantomBot implements Listener {
         /* Connect to Discord if the data is present. */
         if (!discordToken.isEmpty()) {
             DiscordAPI.instance().connect(discordToken);
+        }
+
+        /* Set Streamlabs currency code, if possible */
+        if (dataStore.HasKey("settings", "", "streamlabs.currencycode")) {
+            TwitchAlertsAPIv1.instance().SetCurrencyCode(dataStore.GetString("settings", "", "streamlabs.currencycode"));
         }
 
         /* Check to see if all the Twitter info needed is there */
