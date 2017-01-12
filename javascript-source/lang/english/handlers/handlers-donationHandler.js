@@ -21,6 +21,6 @@ $.lang.register('donationhandler.donators.min.usage', 'usage: !streamlabs minmum
 $.lang.register('donationhandler.streamlabs.currencycode', 'The currency code for Streamlabs donations is $1');
 $.lang.register('donationhandler.streamlabs.nocurrencycode', 'There is no currency code set for Streamlabs. All donations will appear in their original currency');
 $.lang.register('donationhandler.streamlabs.currencycode.usage1', 'To change the currency code, use !streamlabs currencycode (code)');
-$.lang.register('donationhandler.streamlabs.currencycode.usage2', 'You must use a valid, all caps, 3-character currency code. You can type ERASE as the currency code to remove it. You can find a list at https://en.wikipedia.org/wiki/ISO_4217');
+$.lang.register('donationhandler.streamlabs.currencycode.usage2', 'You must use a valid, all caps, 3-character currency code. You can type ERASE as the currency code to remove it. You can find a list at https://twitchalerts.readme.io/v1.0/docs/currency-codes');
 $.lang.register('donationhandler.streamlabs.currencycode.success', 'The currency code for Streamlabs donations is now set to $1');
 $.lang.register('donationhandler.streamlabs.currencycode.success-erase', 'The currency code for Streamlabs donations has been removed, all donations will now appear in their original currency');
