@@ -518,6 +518,9 @@ public class PhantomBot implements Listener {
         if (!twitchAlertsKey.isEmpty()) {
             TwitchAlertsAPIv1.instance().SetAccessToken(twitchAlertsKey);
             TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchAlertsLimit);
+            if (dataStore.HasKey("settings", "", "streamlabs.currencycode")) {
+                TwitchAlertsAPIv1.instance().SetCurrencyCode(dataStore.GetString("settings", "", "streamlabs.currencycode"));
+            }
         }
 
         /* Set the StreamTip OAuth key, Client ID and limiter. */

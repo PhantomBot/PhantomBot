@@ -189,6 +189,33 @@
 
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.message.success', message));
             }
+
+            /*
+             * @commandpath streamlabs currencycode - Set a currency code to convert all Streamlabs donations to.
+             */
+            if (action.equalsIgnoreCase('currencycode')) {
+                if (subAction === undefined || $.strlen(subAction) < 3) {
+                    if ($.strlen($.getIniDbString('settings', 'streamlabs.currencycode', '')) > 0) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode', $.getIniDbString('settings', 'streamlabs.currencycode', '')));
+                    } else {
+                        $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.nocurrencycode'));
+                    }
+
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.usage1'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.usage2'));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('ERASE')) {
+                    $.setIniDbString('settings', 'streamlabs.currencycode', '');
+                    Packages.com.illusionaryone.TwitchAlertsAPIv1.instance().SetCurrencyCode("");
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.success-erase'));
+                } else {
+                    $.setIniDbString('settings', 'streamlabs.currencycode', subAction);
+                    Packages.com.illusionaryone.TwitchAlertsAPIv1.instance().SetCurrencyCode(subAction);
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.success', subAction));
+                }
+            }
         }
     });
 
