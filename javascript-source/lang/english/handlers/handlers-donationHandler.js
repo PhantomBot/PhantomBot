@@ -3,7 +3,7 @@ $.lang.register('donationhandler.donation.newreward', 'Thank you very much (name
 $.lang.register('donationhandler.lastdonation.no-donations', 'There are presently no tips.');
 $.lang.register('donationhandler.lastdonation.404', 'Cannot find last tip!');
 $.lang.register('donationhandler.lastdonation.success', 'The last tip was from (name) in the amount of $(amount) (currency).');
-$.lang.register('donationhandler.donations.usage', 'usage: !streamlabs (announce | rewardmultiplier n.n | message | lastmessage)');
+$.lang.register('donationhandler.donations.usage', 'usage: !streamlabs (announce | rewardmultiplier n.n | message | lastmessage | currencycode)');
 $.lang.register('donationhandler.donations.announce.disable', 'Tips will no longer be announced.');
 $.lang.register('donationhandler.donations.announce.enable', 'Tips will now be announced.');
 $.lang.register('donationhandler.donations.reward.usage', 'usage: !streamlabs rewardmultiplier n.n  Set to 0 to disable');
@@ -18,3 +18,9 @@ $.lang.register('donationhandler.enabled.donators', 'The donators group has been
 $.lang.register('donationhandler.disabled.donators', 'The donators group has been disabled.');
 $.lang.register('donationhandler.donators.min', 'The minimum before being promoted to a Donator was set to $1');
 $.lang.register('donationhandler.donators.min.usage', 'usage: !streamlabs minmumbeforepromotion (amount)');
+$.lang.register('donationhandler.streamlabs.currencycode', 'The currency code for Streamlabs donations is $1');
+$.lang.register('donationhandler.streamlabs.nocurrencycode', 'There is no currency code set for Streamlabs. All donations will appear in their original currency');
+$.lang.register('donationhandler.streamlabs.currencycode.usage1', 'To change the currency code, use !streamlabs currencycode (code)');
+$.lang.register('donationhandler.streamlabs.currencycode.usage2', 'You must use a valid, all caps, 3-character currency code. You can type ERASE as the currency code to remove it. You can find a list at https://twitchalerts.readme.io/v1.0/docs/currency-codes');
+$.lang.register('donationhandler.streamlabs.currencycode.success', 'The currency code for Streamlabs donations is now set to $1');
+$.lang.register('donationhandler.streamlabs.currencycode.success-erase', 'The currency code for Streamlabs donations has been removed, all donations will now appear in their original currency');
