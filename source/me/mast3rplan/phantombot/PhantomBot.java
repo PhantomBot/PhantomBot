@@ -831,6 +831,11 @@ public class PhantomBot implements Listener {
             DiscordAPI.instance().connect(discordToken);
         }
 
+        /* Set Streamlabs currency code, if possible */
+        if (dataStore.HasKey("settings", "", "streamlabs.currencycode")) {
+            TwitchAlertsAPIv1.instance().SetCurrencyCode(dataStore.GetString("settings", "", "streamlabs.currencycode"));
+        }
+
         /* Check to see if all the Twitter info needed is there */
         if (!twitterUsername.isEmpty() && !twitterAccessToken.isEmpty() && !twitterConsumerToken.isEmpty() && !twitterConsumerSecret.isEmpty() && !twitterSecretToken.isEmpty()) {
             /* Set the Twitter tokens */
