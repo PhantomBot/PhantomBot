@@ -440,6 +440,20 @@
         }
     });
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/commands/customCommands.js')) {
+            if (!$.discord.commandExists(event.getArgs()[0])) {
+                $.discord.registerCommand('./discord/commands/customCommands.js', event.getArgs()[0], event.getArgs()[1]);
+            } else {
+                $.discord.setCommandPermission(event.getArgs()[0], event.getArgs()[1]);
+                $.discord.setCommandChannel(event.getArgs()[0], event.getArgs()[2]);
+            }
+        }
+    });
+
     /* Export the function to the $.discord api. */
     $.discord.loadCustomCommands = loadCustomCommands;
     $.discord.tags = tags;

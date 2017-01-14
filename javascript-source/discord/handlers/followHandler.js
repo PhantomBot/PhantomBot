@@ -8,6 +8,17 @@
 	    announce = false;
 
     /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/followHandler.js')) {
+            toggle = $.getIniDbBoolean('discordSettings', 'followToggle', false);
+            message = $.getIniDbString('discordSettings', 'followMessage', '(name) just followed!');
+            channelName = $.getIniDbString('discordSettings', 'followChannel', '');
+        }
+    });
+
+    /**
      * @event twitchFollowsInitialized
      */
     $.bind('twitchFollowsInitialized', function(event) {

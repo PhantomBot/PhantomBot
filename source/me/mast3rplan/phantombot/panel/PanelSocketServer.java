@@ -99,6 +99,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.gmt2001.TwitchAPIv3;
 
@@ -113,6 +115,8 @@ import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONStringer;
 
+import me.mast3rplan.phantombot.event.EventBus;
+import me.mast3rplan.phantombot.event.panelsocket.PanelWebSocketEvent;
 import me.mast3rplan.phantombot.PhantomBot;
 
 public class PanelSocketServer extends WebSocketServer {
@@ -256,8 +260,14 @@ public class PanelSocketServer extends WebSocketServer {
                 String table = jsonObject.getJSONObject("delkey").getString("table");
                 String key = jsonObject.getJSONObject("delkey").getString("key");
                 doDBDelKey(webSocket, uniqueID, table, key);
+            } else if (jsonObject.has("socket_event") && !sessionData.isReadOnly()) {
+                uniqueID = jsonObject.getString("socket_event");
+                String script = jsonObject.getString("script");
+                String arguments = jsonObject.getJSONObject("args").getString("arguments");
+                JSONArray args = jsonObject.getJSONObject("args").getJSONArray("args");
+                doWSEvent(webSocket, uniqueID, script, arguments, args);
             } else {
-                com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
+                com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed [" + jsonString + "]");
                 return;
             }
         } catch (JSONException ex) {
@@ -446,6 +456,32 @@ public class PanelSocketServer extends WebSocketServer {
             }
             return;
         }
+        jsonObject.object().key("query_id").value(id).endObject();
+        webSocket.send(jsonObject.toString());
+    }
+
+    private void doWSEvent(WebSocket webSocket, String id, String script, String arguments, JSONArray jsonArray) {
+        JSONStringer jsonObject = new JSONStringer();
+        List<String> tempArgs = new LinkedList<>();
+        String[] args = null;
+
+        for (Object str : jsonArray) {
+            tempArgs.add(str.toString());
+        }
+
+        if (tempArgs.size() > 0) {
+            int i = 0;
+            args = new String[tempArgs.size()];
+
+            for (String str : tempArgs) {
+                args[i] = str;
+                ++i;
+            }
+        }
+
+        EventBus.instance().postAsync(new PanelWebSocketEvent(id, script, arguments, args));
+        debugMsg("doWSEvent(" + id + "::" + script + ")");
+
         jsonObject.object().key("query_id").value(id).endObject();
         webSocket.send(jsonObject.toString());
     }

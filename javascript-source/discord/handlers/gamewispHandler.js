@@ -11,6 +11,21 @@
 	    tierToggle = $.getSetIniDbBoolean('discordSettings', 'gamewispTierToggle', false),
 	    announce = false;
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/gamewispHandler.js')) {
+            subMessage = $.getIniDbString('discordSettings', 'gamewispSubMessage', '(name) just subscribed via GameWisp at tier level (tier)!');
+            resubMessage = $.getIniDbString('discordSettings', 'gamewispReSubMessage', '(name) just subscribed for (months) months in a row via GameWisp!');
+            tierMessage = $.getIniDbString('discordSettings', 'gamewispTierMessage', '(name) upgraded to tier (tier) on GameWisp!');
+            channelName = $.getIniDbString('discordSettings', 'gamewispChannel', '');
+            subToggle = $.getIniDbBoolean('discordSettings', 'gamewispSubToggle', false);
+            resubToggle = $.getIniDbBoolean('discordSettings', 'gamewispReSubToggle', false);
+            tierToggle = $.getIniDbBoolean('discordSettings', 'gamewispTierToggle', false);
+        }
+    });
+
 	/**
      * @event gameWispSubscribe
      */

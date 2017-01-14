@@ -6,6 +6,19 @@
 	    channelName = $.getSetIniDbString('discordSettings', 'greetingsChannel', '');
 
 	/**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/systems/greetingsSystem.js')) {
+        	joinToggle = $.getIniDbBoolean('discordSettings', 'joinToggle', false);
+	    	partToggle = $.getIniDbBoolean('discordSettings', 'partToggle', false);
+	    	joinMessage = $.getIniDbString('discordSettings', 'joinMessage', '(name) just joined the server!');
+	    	partMessage = $.getIniDbString('discordSettings', 'partMessage', '(name) just left the server!');
+	    	channelName = $.getIniDbString('discordSettings', 'greetingsChannel', '');
+        }
+    });
+
+	/**
 	 * @event discordJoin
 	 */
 	$.bind('discordJoin', function(event) {

@@ -9,6 +9,18 @@
 	  	hosters = {},
 	  	announce = false;
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/hostHandler.js')) {
+            toggle = $.getIniDbBoolean('discordSettings', 'hostToggle', false);
+            hostMessage = $.getIniDbString('discordSettings', 'hostMessage', '(name) just hosted!');
+            autoHostMessage = $.getIniDbString('discordSettings', 'autohostMessage', '(name) just auto-hosted!');
+            channelName = $.getIniDbString('discordSettings', 'hostChannel', '');
+        }
+    });
+    
  	/**
  	 * @event twitchHostsInitialized
  	 */
