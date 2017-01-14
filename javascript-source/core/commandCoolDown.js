@@ -14,11 +14,11 @@
         modCooldown = $.getSetIniDbBoolean('cooldown', 'modCooldown', false),
         cooldown = [],
         cooldowns = [],
-		cooldowntypes = ["default","per-user","global","none"],
+        cooldowntypes = ["default","per-user","global","none"],
         i;
-		for(var l = 0;l < cooldowntypes.length;l++){
-			cooldowntypes[cooldowntypes[l]] = l;
-		}
+        for(var l = 0;l < cooldowntypes.length;l++){
+            cooldowntypes[cooldowntypes[l]] = l;
+        }
     /**
      * @function reloadCooldown 
      */
@@ -58,30 +58,30 @@
         }
         return 0;
     };
-	
-	function getCooldownType(command){
-		var typeNum = 0;
-		if ($.inidb.exists('cooldowntype', command.toLowerCase())) {
+    
+    function getCooldownType(command){
+        var typeNum = 0;
+        if ($.inidb.exists('cooldowntype', command.toLowerCase())) {
             typeNum = parseInt($.inidb.get('cooldowntype', command.toLowerCase()));
         }
         return cooldowntypes[typeNum];
-	}
-	
-	function setCooldownType(command,type){
-		var typeNum,typeString;
-		if(typeof type === "number"){
-			typeNum = type;
-			typeString = cooldowntypes[type];
-		}else{
-			typeString = type.toLowerCase();
-			typeNum = cooldowntypes[typeString];
-		}
-		var curString = getCooldownType(command);
-		if(curString !== typeString){
-			$.inidb.set('cooldowntype', command.toLowerCase(), typeNum);
-		}
-		return typeString;
-	}
+    }
+    
+    function setCooldownType(command,type){
+        var typeNum,typeString;
+        if(typeof type === "number"){
+            typeNum = type;
+            typeString = cooldowntypes[type];
+        }else{
+            typeString = type.toLowerCase();
+            typeNum = cooldowntypes[typeString];
+        }
+        var curString = getCooldownType(command);
+        if(curString !== typeString){
+            $.inidb.set('cooldowntype', command.toLowerCase(), typeNum);
+        }
+        return typeString;
+    }
 
     /**
      * @function set 
@@ -98,35 +98,35 @@
         time = ((time * 1000) + $.systemTime());
         command = command.toLowerCase();
 
-		var local_globalCooldown = globalCooldown;
-		var local_perUserCooldown = perUserCooldown;
-		var local_type = getCooldownType(command);
-		var local_override = local_type !== "default";
-		var local_none = local_type === "none";
-		if(local_override){
-			if(local_none){
-				local_globalCooldown = local_perUserCooldown = false;
-			}else{
-				local_globalCooldown = !(local_perUserCooldown = local_type === "per-user");
-			}
-		}
-		
-		if (!command.equals('adventure')) {
-			if (local_globalCooldown && (local_override || !hasCooldown)) {
-				cooldown[command] = {time: time};
-				$.consoleDebug('Pushed command !' + command + ' to global cooldown.');
-				return;
-			} else {
-				if (local_perUserCooldown) {
-					cooldowns.push({username: username, time: time, command: command});
-					$.consoleDebug('Pushed command !' + command + ' to user cooldown with username: ' + username + '.');
-					return;
-				}
-			}
-		}
-		
-		cooldown[command] = {time: time};
-		$.consoleDebug('Pushed command !' + command + ' to cooldown.');
+        var local_globalCooldown = globalCooldown;
+        var local_perUserCooldown = perUserCooldown;
+        var local_type = getCooldownType(command);
+        var local_override = local_type !== "default";
+        var local_none = local_type === "none";
+        if(local_override){
+            if(local_none){
+                local_globalCooldown = local_perUserCooldown = false;
+            }else{
+                local_globalCooldown = !(local_perUserCooldown = local_type === "per-user");
+            }
+        }
+        
+        if (!command.equals('adventure')) {
+            if (local_globalCooldown && (local_override || !hasCooldown)) {
+                cooldown[command] = {time: time};
+                $.consoleDebug('Pushed command !' + command + ' to global cooldown.');
+                return;
+            } else {
+                if (local_perUserCooldown) {
+                    cooldowns.push({username: username, time: time, command: command});
+                    $.consoleDebug('Pushed command !' + command + ' to user cooldown with username: ' + username + '.');
+                    return;
+                }
+            }
+        }
+        
+        cooldown[command] = {time: time};
+        $.consoleDebug('Pushed command !' + command + ' to cooldown.');
     };
 
      /**
@@ -137,22 +137,22 @@
      * @return number
      */
     function get(command, username, isMod) {
-		command = command.toLowerCase();
-		
+        command = command.toLowerCase();
+        
         var hasCooldown = $.inidb.exists('cooldown', command);
-		
-		var local_globalCooldown = globalCooldown;
-		var local_perUserCooldown = perUserCooldown;
-		var local_type = getCooldownType(command);
-		var local_override = local_type !== "default";
-		var local_none = local_type === "none";
-		if(local_override){
-			if(local_none){
-				return 0;
-			}else{
-				local_globalCooldown = !(local_perUserCooldown = local_type === "per-user");
-			}
-		}
+        
+        var local_globalCooldown = globalCooldown;
+        var local_perUserCooldown = perUserCooldown;
+        var local_type = getCooldownType(command);
+        var local_override = local_type !== "default";
+        var local_none = local_type === "none";
+        if(local_override){
+            if(local_none){
+                return 0;
+            }else{
+                local_globalCooldown = !(local_perUserCooldown = local_type === "per-user");
+            }
+        }
 
         if (commandCheck(command)) {
             if (command.equals('adventure')) {
@@ -185,13 +185,13 @@
             }
         }
 
-		if (cooldown[command] !== undefined) {
-			if (cooldown[command].time - $.systemTime() >= 0) {
-				if (permCheck(username, isMod)) return 0;
-				return parseInt(cooldown[command].time - $.systemTime());
-			}
-		}
-		set(command, hasCooldown, getCooldown(command)); return 0;
+        if (cooldown[command] !== undefined) {
+            if (cooldown[command].time - $.systemTime() >= 0) {
+                if (permCheck(username, isMod)) return 0;
+                return parseInt(cooldown[command].time - $.systemTime());
+            }
+        }
+        set(command, hasCooldown, getCooldown(command)); return 0;
     };
 
     /**
@@ -218,7 +218,7 @@
             command = event.getCommand(),
             args = event.getArgs(),
             cmd = args[0],
-			arg2 = args[1],
+            arg2 = args[1],
             time = parseInt(arg2);
 
         /**
@@ -297,24 +297,24 @@
             $.setIniDbBoolean('cooldown', 'modCooldown', modCooldown);
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set.togglemodcooldown', (modCooldown ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
         }
-		
-		/**
+        
+        /**
          * @commandpath cooltype [command] [type] - Set the cooldown type for a specific command (default, per-user, global or none)
-		 */
-		if (command.equalsIgnoreCase('cooltype')){
-			if(cmd === undefined || arg2 === undefined || !cooldowntypes.hasOwnProperty(arg2.toLowerCase())){
-				$.say($.whisperPrefix(sender) + '!cooltype [command] [type] - Set the cooldown type for a specific command (types: default, per-user, global or none)');
-				return;
-			}
-			
-			if (cmd.startsWith('!')) {
+         */
+        if (command.equalsIgnoreCase('cooltype')){
+            if(cmd === undefined || arg2 === undefined || !cooldowntypes.hasOwnProperty(arg2.toLowerCase())){
+                $.say($.whisperPrefix(sender) + '!cooltype [command] [type] - Set the cooldown type for a specific command (types: default, per-user, global or none)');
+                return;
+            }
+            
+            if (cmd.startsWith('!')) {
                 cmd = cmd.substring(1);
             }
-			
-			setCooldownType(cmd,arg2);
-			
-			$.say($.whisperPrefix(sender) + 'The cooldown type for !' + cmd.toLowerCase() + ' has been set to ' + arg2.toLowerCase() + '!');
-		}
+            
+            setCooldownType(cmd,arg2);
+            
+            $.say($.whisperPrefix(sender) + 'The cooldown type for !' + cmd.toLowerCase() + ' has been set to ' + arg2.toLowerCase() + '!');
+        }
 
         /**
         * Used for the panel
@@ -336,7 +336,7 @@
             $.registerChatCommand('./core/commandCoolDown.js', 'toggleperusercooldown', 1);
             $.registerChatCommand('./core/commandCoolDown.js', 'togglemodcooldown', 1);
             $.registerChatCommand('./core/commandCoolDown.js', 'reloadcooldown', 1);
-			$.registerChatCommand('./core/commandCoolDown.js', 'cooltype', 1);
+            $.registerChatCommand('./core/commandCoolDown.js', 'cooltype', 1);
         }
     });
     
