@@ -7,6 +7,17 @@
 	    channelName = $.getSetIniDbString('discordSettings', 'streamlabsChannel', ''),
 	    announce = false;
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/streamlabsHandler.js')) {
+            toggle = $.getIniDbBoolean('discordSettings', 'streamlabsToggle', false);
+            message = $.getIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
+            channelName = $.getIniDbString('discordSettings', 'streamlabsChannel', '');
+        }
+    });
+
 	/**
      * @event twitchAlertsDonationsInitialized
      */

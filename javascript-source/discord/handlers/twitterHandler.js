@@ -6,6 +6,16 @@
 	    channelName = $.getSetIniDbString('discordSettings', 'twitterChannel', ''),
 	    announce = false;
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/twitterHandler.js')) {
+            toggle = $.getIniDbBoolean('discordSettings', 'twitterToggle', false);
+            channelName = $.getIniDbString('discordSettings', 'twitterChannel', '');
+        }
+    });
+
 	/**
      * @event twitter
      */
