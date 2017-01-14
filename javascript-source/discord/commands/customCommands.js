@@ -449,7 +449,7 @@
                 $.discord.registerCommand('./discord/commands/customCommands.js', event.getArgs()[0], event.getArgs()[1]);
             } else {
                 $.discord.setCommandPermission(event.getArgs()[0], event.getArgs()[1]);
-                $.discord.setCommandChannel(event.getArgs()[0], event.getArgs()[2]);
+                $.discord.setCommandChannel(event.getArgs()[0], (event.getArgs()[2].length() === 0 ? '' : event.getArgs()[2]));
             }
         }
     });
