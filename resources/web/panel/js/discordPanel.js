@@ -25,11 +25,11 @@
     iconToggle['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
     iconToggle['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
 
-	/*
-	 * @function onMessage
-	 */
-	function onMessage(message) {
-		var msgObject;
+    /*
+     * @function onMessage
+     */
+    function onMessage(message) {
+        var msgObject;
 
         try {
             msgObject = JSON.parse(message.data);
@@ -103,7 +103,7 @@
             html += '</table>';
             $('#command-list').html(html);
         }
-	}
+    }
 
     /*
      * @function updateDiscordTable
@@ -135,7 +135,7 @@
         $('#command-channel-modal').val();
         $('#command-add-name-modal').val('');
         $('#command-add-response-modal').val('');
-        $('#command-add-permission-modal').val('1');
+        $('#command-add-permission-modal').val('0');
         $('#command-add-cooldown-modal').val('0');
         $('#command-add-channel-modal').val('');
     }
@@ -150,6 +150,7 @@
             sendDBDelete('discord_command', 'discordPermcom', cmd);
             sendDBDelete('discord_command', 'discordCooldown', cmd);
             sendDBDelete('discord_command', 'discordChannelcom', cmd);
+            sendWSEvent('discord', './discord/commands/customCommands.js', 'remove', [cmd]);
         } else {
             var command = ($('#command-name-modal').val().length === 0 ? $('#command-add-name-modal').val() : $('#command-name-modal').val()),
                 response = ($('#command-response-modal').val().length === 0 ?  $('#command-add-response-modal').val() : $('#command-response-modal').val()),
@@ -157,7 +158,7 @@
                 cooldown = ($('#command-cooldown-modal').val().length === 0 ? $('#command-add-cooldown-modal').val() : $('#command-cooldown-modal').val()),
                 channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val());
 
-            if (command.length === 0 || response.length === 0 || command.includes(' ') || permission < 1) {
+            if (command.length === 0 || response.length === 0 || command.includes(' ') || (permission != 1 && permission != 0)) {
                 setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);
                 return;
             }
@@ -168,7 +169,7 @@
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
             sendDBUpdate('discord_command', 'discordCooldown', command, cooldown.toString());
             if (channel.length > 0) {
-                sendDBUpdate('discord_command', 'discordChannelcom', command, channel.replace('#', '').toString());
+                sendDBUpdate('discord_command', 'discordChannelcom', command, channel.toString());
             }
             setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel]); }, TIMEOUT_WAIT_TIME);
         }
@@ -189,15 +190,15 @@
         $('#command-modal').modal();
     }
 
-	/*
-	 * @function doQuery
-	 */
-	function doQuery() {
+    /*
+     * @function doQuery
+     */
+    function doQuery() {
         sendDBKeys('discord_settings', 'discordSettings');
         sendDBKeysList('discord_commnads', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom']);
-	}
+    }
 
-	/* Import the HTML file for this panel. */
+    /* Import the HTML file for this panel. */
     $('#discordPanel').load('/panel/discord.html');
 
     /* Load the DB items for this panel, wait to ensure that we are connected. */
