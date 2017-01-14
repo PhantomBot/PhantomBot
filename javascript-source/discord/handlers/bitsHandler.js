@@ -7,6 +7,17 @@
 	    channelName = $.getSetIniDbString('discordSettings', 'bitsChannel', ''),
 	    announce = false;
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/bitsHandler.js')) {
+            toggle = $.getIniDbBoolean('discordSettings', 'bitsToggle', false);
+            message = $.getIniDbString('discordSettings', 'bitsMessage', '(name) just cheered (amount) bits!');
+            channelName = $.getIniDbString('discordSettings', 'bitsChannel', '');
+        }
+    });
+
 	/**
 	 * @event bits
 	 */

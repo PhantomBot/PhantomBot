@@ -1393,6 +1393,13 @@
             callHook('discordLeave', event, false);
         });
 
+        /**
+         * @event api-PanelWebSocketEvent
+         */
+        $api.on($script, 'panelWebSocket', function(event) {
+            callHook('panelWebSocket', event, false);
+        });
+
         $.log.event('init.js api\'s loaded.');
         consoleDebug('init.js api\'s loaded.');
         consoleLn('');

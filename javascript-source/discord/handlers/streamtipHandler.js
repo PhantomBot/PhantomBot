@@ -7,6 +7,17 @@
 	    channelName = $.getSetIniDbString('discordSettings', 'streamtipChannel', ''),
 	    announce = false;
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/streamtipsHanlder.js')) {
+            toggle = $.getIniDbBoolean('discordSettings', 'streamtipToggle', false);
+            message = $.getIniDbString('discordSettings', 'streamtipMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
+            channelName = $.getIniDbString('discordSettings', 'streamtipChannel', '');
+        }
+    });
+
 	/**
      * @event streamTipDonationInitialized
      */
