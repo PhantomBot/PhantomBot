@@ -4,7 +4,7 @@
 (function() {
     var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&]+)\)/),
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/),
-        reCustomArg = new RegExp(/\(([1-9]) (\(.+\))\)/),
+        reCustomArg = new RegExp(/\(([1-9])=([a-zA-Z1-9\)\(]+)\)/),
         reNormalCommandArg = new RegExp(/\(([1-9])\)/),
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
 
@@ -445,11 +445,15 @@
      */
     $.bind('panelWebSocket', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/commands/customCommands.js')) {
-            if (!$.discord.commandExists(event.getArgs()[0])) {
-                $.discord.registerCommand('./discord/commands/customCommands.js', event.getArgs()[0], event.getArgs()[1]);
+            if (event.getArguments().length() === 0) {
+                if (!$.discord.commandExists(event.getArgs()[0])) {
+                    $.discord.registerCommand('./discord/commands/customCommands.js', event.getArgs()[0], event.getArgs()[1]);
+                } else {
+                    $.discord.setCommandPermission(event.getArgs()[0], event.getArgs()[1]);
+                    $.discord.setCommandChannel(event.getArgs()[0], (event.getArgs()[2].length() === 0 ? '' : event.getArgs()[2]));
+                }
             } else {
-                $.discord.setCommandPermission(event.getArgs()[0], event.getArgs()[1]);
-                $.discord.setCommandChannel(event.getArgs()[0], event.getArgs()[2]);
+                $.discord.unregisterCommand(event.getArgs()[0]);
             }
         }
     });
