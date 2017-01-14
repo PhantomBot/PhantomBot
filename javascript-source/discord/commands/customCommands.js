@@ -445,9 +445,7 @@
      */
     $.bind('panelWebSocket', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/commands/customCommands.js')) {
-            $.consoleLn(event.getArgs()[0]);
             if (!$.discord.commandExists(event.getArgs()[0])) {
-                $.consoleLn(event.getArgs()[0] + '' + event.getArgs()[1]);
                 $.discord.registerCommand('./discord/commands/customCommands.js', event.getArgs()[0], event.getArgs()[1]);
             } else {
                 $.discord.setCommandPermission(event.getArgs()[0], event.getArgs()[1]);
