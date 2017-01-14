@@ -168,7 +168,7 @@
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
             sendDBUpdate('discord_command', 'discordCooldown', command, cooldown.toString());
             if (channel.length > 0) {
-                sendDBUpdate('discord_command', 'discordChannelcom', command, channel.toString());
+                sendDBUpdate('discord_command', 'discordChannelcom', command, channel.replace('#', '').toString());
             }
             setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel]); }, TIMEOUT_WAIT_TIME);
         }
