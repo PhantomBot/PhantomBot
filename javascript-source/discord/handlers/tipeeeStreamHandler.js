@@ -7,6 +7,17 @@
 	    channelName = $.getSetIniDbString('discordSettings', 'tipeeestreamChannel', ''),
 	    announce = false;
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/tipeeeStreamHandler.js')) {
+            toggle = $.getIniDbBoolean('discordSettings', 'tipeeestreamToggle', false);
+            message = $.getIniDbString('discordSettings', 'tipeeestreamMessage', 'Thank you very much (name) for the tip of (formattedamount) (currency)!');
+            channelName = $.getIniDbString('discordSettings', 'tipeeestreamChannel', '');
+        }
+    });
+
 	/**
      * @event tipeeeStreamDonationInitialized
      */

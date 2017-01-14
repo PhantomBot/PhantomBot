@@ -11,6 +11,21 @@
 	    channelName = $.getSetIniDbString('discordSettings', 'subChannel', ''),
 	    announce = false;
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/subscribeHandler.js')) {
+            subMessage = $.getIniDbString('discordSettings', 'subMessage', '(name) just subscribed!');
+            primeMessage = $.getIniDbString('discordSettings', 'primeMessage', '(name) just subscribed with Twitch Prime!');
+            resubMessage = $.getIniDbString('discordSettings', 'resubMessage', '(name) just subscribed for (months) months in a row!');
+            subToggle = $.getIniDbBoolean('discordSettings', 'subToggle', false);
+            primeToggle = $.getIniDbBoolean('discordSettings', 'primeToggle', false);
+            resubToggle = $.getIniDbBoolean('discordSettings', 'resubToggle', false);
+            channelName = $.getIniDbString('discordSettings', 'subChannel', '');
+        }
+    });
+
 	/**
 	 * @event newSubscriber
 	 */
