@@ -21,8 +21,8 @@
         levelWithTime = $.getIniDbBoolean('timeSettings', 'timeLevel');
         keepTimeWhenOffline = $.getIniDbBoolean('timeSettings', 'keepTimeWhenOffline');
         hoursForLevelUp = $.getIniDbNumber('timeSettings', 'timePromoteHours');
-        timeLevelWarning = $.getSetIniDbBoolean('timeSettings', 'timeLevelWarning', true);
-    };
+        timeLevelWarning = $.getIniDbBoolean('timeSettings', 'timeLevelWarning');
+    }
 
     /**
      * @function getCurLocalTimeString
@@ -61,7 +61,7 @@
         var dateFormat = new java.text.SimpleDateFormat(format);
         dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
         return dateFormat.format(new java.util.Date());
-    };
+    }
 
     /**
      * @function getLocalTimeString
@@ -74,7 +74,7 @@
         var dateFormat = new java.text.SimpleDateFormat(format);
         dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
         return dateFormat.format(new java.util.Date(utc_secs));
-    };
+    }
 
     /**
      * @function dateToString
@@ -95,7 +95,7 @@
         } else {
             return day + '-' + month + '-' + year + ' @ ' + hours + ':' + minutes;
         }
-    };
+    }
 
     /**
      * @function getTimeString
@@ -118,7 +118,7 @@
                 return (floor(~~cMins) + $.lang.get('common.minutes') + floor(cMins % 1 * 60) + $.lang.get('common.seconds'));
             }
         }
-    };
+    }
 
     /**
      * @function getTimeStringMinutes
@@ -137,7 +137,7 @@
         } else {
             return (floor(cHours) + $.lang.get('common.hours2') + floor(~~cMins) + $.lang.get('common.minutes2'));
         }
-    };
+    }
 
     /**
      * @function getUserTime
@@ -147,7 +147,7 @@
      */
     function getUserTime(username) {
         return ($.inidb.exists('time', username.toLowerCase()) ? $.inidb.get('time', username.toLowerCase()) : 0);
-    };
+    }
 
     /**
      * @function getUserTimeString
@@ -166,7 +166,7 @@
         } else {
             return ($.lang.get('user.time.string.minutes', floor(~~cMins)));
         }
-    };
+    }
 
     /**
      * @event command
