@@ -87,15 +87,9 @@
          * @commandpath togglewhispermode - Toggle whisper mode
          */
         if (command.equalsIgnoreCase('togglewhispermode')) {
-            if (whisperMode) {
-                $.inidb.set('settings', 'whisperMode', 'false');
-                whisperMode = false;
-                $.say($.whisperPrefix(sender) + $.lang.get('whisper.whispers.disabled'));
-            } else {
-                $.inidb.set('settings', 'whisperMode', 'true');
-                whisperMode = true;
-                $.say($.whisperPrefix(sender) + $.lang.get('whisper.whispers.enabled'));
-            }
+            whisperMode = !whisperMode;
+            $.setIniDbBoolean('settings', 'whisperMode', whisperMode);
+            $.say(whisperPrefix(sender) + (whisperMode ? $.lang.get('whisper.whispers.enabled') : $.lang.get('whisper.whispers.disabled')));
         }
     });
 

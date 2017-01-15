@@ -87,7 +87,7 @@
      * @returns {Number}
      */
     function strlen(str) {
-        if (str == null || str == undefined) {
+        if (str == null) {
             return 0;
         }
 
@@ -118,7 +118,7 @@
                 return;
             }
 
-            if (message.startsWith('@') && message.endsWith(',')) {
+            if (message.startsWith('@') && message.endsWith(', ')) {
                 return;
             }
 
@@ -147,6 +147,15 @@
     }
 
     /**
+     * @function systemTimeNano
+     * @export $
+     * @returns {Number}
+     */
+    function systemTimeNano() {
+        return parseInt(java.lang.System.nanoTime());
+    }
+
+    /**
      * @function rand
      * @export $
      * @param {Number} max
@@ -170,7 +179,7 @@
         if (min == max) {
             return min;
         }
-        return (rand(max - min + 1) + min);
+        return parseInt(rand(max - min + 1) + min);
     }
 
     /**
@@ -628,4 +637,5 @@
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
     $.hasKey = $.hasKey;
+    $.systemTimeNano = systemTimeNano;
 })();
