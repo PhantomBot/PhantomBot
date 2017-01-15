@@ -6,10 +6,10 @@ $.lang.register('donationhandler.lastdonation.success', 'The last tip was from (
 $.lang.register('donationhandler.donations.usage', 'usage: !streamlabs (announce | rewardmultiplier n.n | message | lastmessage | currencycode)');
 $.lang.register('donationhandler.donations.announce.disable', 'Tips will no longer be announced.');
 $.lang.register('donationhandler.donations.announce.enable', 'Tips will now be announced.');
-$.lang.register('donationhandler.donations.reward.usage', 'usage: !streamlabs rewardmultiplier n.n  Set to 0 to disable');
+$.lang.register('donationhandler.donations.reward.usage', 'Usage: !streamlabs rewardmultiplier [n.n]  Set to 0 to disable');
 $.lang.register('donationhandler.donations.reward.success', 'The reward for tips has been set to $1 $2 per whole amount of currency donated.');
-$.lang.register('donationhandler.donations.message.usage', 'usage: !streamlabs message [message...] Tags: (name) (amount) (currency) (message)');
-$.lang.register('donationhandler.donations.rewardmessage.usage', 'usage: !streamlabs rewardmessage [message...] Tags: (name) (amount) (currency) (points) (pointname) (message)');
+$.lang.register('donationhandler.donations.message.usage', 'Usage: !streamlabs message [message] Tags: (name) (amount) (currency) (message)');
+$.lang.register('donationhandler.donations.rewardmessage.usage', 'usage: !streamlabs rewardmessage [message] Tags: (name) (amount) (currency) (points) (pointname) (message)');
 $.lang.register('donationhandler.donations.message.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (message)');
 $.lang.register('donationhandler.donations.rewardmessage.no-name', 'A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (points) (pointname) (message)');
 $.lang.register('donationhandler.donations.message.success', 'Updated the message for tips when rewards are disabled.');
@@ -17,10 +17,7 @@ $.lang.register('donationhandler.donations.rewardmessage.success', 'Updated the 
 $.lang.register('donationhandler.enabled.donators', 'The donators group has been enabled.');
 $.lang.register('donationhandler.disabled.donators', 'The donators group has been disabled.');
 $.lang.register('donationhandler.donators.min', 'The minimum before being promoted to a Donator was set to $1');
-$.lang.register('donationhandler.donators.min.usage', 'usage: !streamlabs minmumbeforepromotion (amount)');
-$.lang.register('donationhandler.streamlabs.currencycode', 'The currency code for Streamlabs donations is $1');
-$.lang.register('donationhandler.streamlabs.nocurrencycode', 'There is no currency code set for Streamlabs. All donations will appear in their original currency');
-$.lang.register('donationhandler.streamlabs.currencycode.usage1', 'To change the currency code, use !streamlabs currencycode (code)');
-$.lang.register('donationhandler.streamlabs.currencycode.usage2', 'You must use a valid, all caps, 3-character currency code. You can type ERASE as the currency code to remove it. You can find a list at https://twitchalerts.readme.io/v1.0/docs/currency-codes');
-$.lang.register('donationhandler.streamlabs.currencycode.success', 'The currency code for Streamlabs donations is now set to $1');
+$.lang.register('donationhandler.donators.min.usage', 'Usage: !streamlabs minmumbeforepromotion [amount]');
+$.lang.register('donationhandler.streamlabs.currencycode.usage', 'Usage: !streamlabs currencycode [code] - You can find a valid list here: https://twitchalerts.readme.io/v1.0/docs/currency-codes');
+$.lang.register('donationhandler.streamlabs.currencycode.success', 'The currency code for Streamlabs donations is now set to: $1');
 $.lang.register('donationhandler.streamlabs.currencycode.success-erase', 'The currency code for Streamlabs donations has been removed, all donations will now appear in their original currency');
