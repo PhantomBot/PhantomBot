@@ -227,10 +227,11 @@ public class PhantomBot implements Listener {
     public static Boolean enableDebugging = false;
     public static Boolean enableDebuggingLogOnly = false;
     public static Boolean enableRhinoDebugger = false;
+    public static String timeZone = "GMT";
     public Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
-    public static String timeZone = "GMT";
+    
 
     /* Other Information */
     private Channel channel;
@@ -545,7 +546,7 @@ public class PhantomBot implements Listener {
         }
 
         /* Start a pubsub instance here. */
-        if (this.oauth.length() > 0 && dataStore.GetString("chatModerator", "", "moderationLogs").equals("true")) {
+        if (this.oauth.length() > 0 && checkDataStore("chatModerator", "moderationLogs")) {
             this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv3.instance().getChannelId(this.channelName), TwitchAPIv3.instance().getChannelId(this.botName), this.oauth);
         }
 
@@ -760,6 +761,20 @@ public class PhantomBot implements Listener {
     }
 
     /*
+     * Checks if a value is true in the datastore.
+     *
+     * @param String  Db table to check.
+     * @param String  Db key to check in that table.
+     */
+    public boolean checkDataStore(String table, String key) {
+        try {
+            return (dataStore.HasKey(table, "", key) && dataStore.GetString(table, "", key).equals("true"));
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    /*
      * Loads everything up.
      */
     private void init() {
@@ -832,8 +847,8 @@ public class PhantomBot implements Listener {
         }
 
         /* Set Streamlabs currency code, if possible */
-        if (dataStore.HasKey("settings", "", "streamlabs.currencycode")) {
-            TwitchAlertsAPIv1.instance().SetCurrencyCode(dataStore.GetString("settings", "", "streamlabs.currencycode"));
+        if (dataStore.HasKey("donations", "", "currencycode")) {
+            TwitchAlertsAPIv1.instance().SetCurrencyCode(dataStore.GetString("donations", "", "currencycode"));
         }
 
         /* Check to see if all the Twitter info needed is there */
@@ -1119,22 +1134,22 @@ public class PhantomBot implements Listener {
         this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
 
         /* Start the donations cache if the keys are not null and the module is enabled */
-        if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/donationHandler.js").equals("true")) {
+        if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && checkModuleEnabled("./handlers/donationHandler.js")) {
             this.twitchAlertsCache = DonationsCache.instance(this.chanName);
         }
 
         /* Start the streamtip cache if the keys are not null and the module is enabled */
-        if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/streamTipHandler.js").equals("true")) {
+        if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty() && checkModuleEnabled("./handlers/streamTipHandler.js")) {
             this.streamTipCache = StreamTipCache.instance(this.chanName);
         }
 
         /* Start the TipeeeStream cache if the keys are not null and the module is enabled. */
-        if (this.tipeeeStreamOAuth != null && !this.tipeeeStreamOAuth.isEmpty() && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/tipeeeStreamHandler.js").equals("true")) {
+        if (this.tipeeeStreamOAuth != null && !this.tipeeeStreamOAuth.isEmpty() && checkModuleEnabled("./handlers/tipeeeStreamHandler.js")) {
             this.tipeeeStreamCache = TipeeeStreamCache.instance(this.chanName);
         }
 
         /* Start the twitter cache if the keys are not null and the module is enabled */
-        if (this.twitterAuthenticated && PhantomBot.instance().getDataStore().GetString("modules", "", "./handlers/twitterHandler.js").equals("true")) {
+        if (this.twitterAuthenticated && checkModuleEnabled("./handlers/twitterHandler.js")) {
             this.twitterCache = TwitterCache.instance(this.chanName);
         }
 
@@ -1230,13 +1245,6 @@ public class PhantomBot implements Listener {
             argument = arguments.split(" ");
         }
 
-        /* Chat in a channel */
-        /*if (message.equalsIgnoreCase("chat") || message.equalsIgnoreCase("echo")) {
-            PhantomBot.getSession(channelName).say(message.replace("chat", "").replace("echo", ""), PhantomBot.getChannel(channelName));
-            // Need to be able to chat in a channel with multiple channels
-            return;
-        }*/
-
         /* Update the followed (followers) table. */
         if (message.equalsIgnoreCase("fixfollowedtable")) {
             TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, false);
@@ -1260,7 +1268,6 @@ public class PhantomBot implements Listener {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing followertest (User: " + randomUser + ")");
             EventBus.instance().postAsync(new TwitchFollowEvent(randomUser, PhantomBot.getChannel(this.channelName)));
-            //Need to add a custom channel here for multi channel support. followertest (channel). argument[1]
             return;
         }
 
@@ -1276,7 +1283,6 @@ public class PhantomBot implements Listener {
             print("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
             for (int i = 0; i < followCount; i++) {
                 EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.getChannel(this.channelName)));
-                //Need to add a custom channel here for multi channel support. followerstest (channel). argument[1]
             }
             return;
         }
@@ -1286,7 +1292,6 @@ public class PhantomBot implements Listener {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing subscribertest (User: " + randomUser + ")");
             EventBus.instance().postAsync(new NewSubscriberEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), randomUser));
-            //Need to add a custom channel here for multi channel support. subscribertest (channel). argument[1]
             return;
         }
 
@@ -1295,7 +1300,6 @@ public class PhantomBot implements Listener {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing primesubscribertest (User: " + randomUser + ")");
             EventBus.instance().postAsync(new NewPrimeSubscriberEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), randomUser));
-            //Need to add a custom channel here for multi channel support. subscribertest (channel). argument[1]
             return;
         }
 
@@ -1304,7 +1308,6 @@ public class PhantomBot implements Listener {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
             EventBus.instance().postAsync(new NewReSubscriberEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), randomUser, "10"));
-            //Need to add a custom channel here for multi channel support. resubscribertest (channel). argument[1]
             return;
         }
 
@@ -1312,7 +1315,6 @@ public class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("onlinetest")) {
             print("[CONSOLE] Executing onlinetest");
             EventBus.instance().postAsync(new TwitchOnlineEvent(PhantomBot.getChannel(this.channelName)));
-            //Need to add a custom channel here for multi channel support. onlinetest (channel). argument[1]
             return;
         }
 
@@ -1320,7 +1322,6 @@ public class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("offlinetest")) {
             print("[CONSOLE] Executing offlinetest");
             EventBus.instance().postAsync(new TwitchOfflineEvent(PhantomBot.getChannel(this.channelName)));
-            //Need to add a custom channel here for multi channel support. offlinetest (channel). argument[1]
             return;
         }
 
@@ -1328,7 +1329,6 @@ public class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("hosttest")) {
             print("[CONSOLE] Executing hosttest");
             EventBus.instance().postAsync(new TwitchHostedEvent(this.botName, PhantomBot.getChannel(this.channelName)));
-            //Need to add a custom channel here for multi channel support. hosttest (channel). argument[1]
             return;
         }
 
@@ -1336,7 +1336,6 @@ public class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("gamewispsubscribertest")) {
             print("[CONSOLE] Executing gamewispsubscribertest");
             EventBus.instance().postAsync(new GameWispSubscribeEvent(this.botName, 1));
-            //Need to add a custom channel here for multi channel support. gamewispsubscribertest (channel). argument[1]
             return;
         }
 
@@ -1344,7 +1343,6 @@ public class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("gamewispresubscribertest")) {
             print("[CONSOLE] Executing gamewispresubscribertest");
             EventBus.instance().postAsync(new GameWispAnniversaryEvent(this.botName, 2));
-            //Need to add a custom channel here for multi channel support. gamewispresubscribertest (channel). argument[1]
             return;
         }
 
@@ -1352,7 +1350,6 @@ public class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("bitstest")) {
             print("[CONSOLE] Executing bitstest");
             EventBus.instance().postAsync(new BitsEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), this.botName, "100"));
-            //Need to add a custom channel here for multi channel support. bitstest (channel). argument[1]
             return;
         }
 

@@ -7,13 +7,12 @@
  */
 (function() {
     var interval,
-        logDays = $.getSetIniDbNumber('settings', 'log_rotate_days', 90);
-
-    var logs = {
-        file: $.getSetIniDbBoolean('settings', 'log.file', false),
-        event: $.getSetIniDbBoolean('settings', 'log.event', true),
-        error: $.getSetIniDbBoolean('settings', 'log.error', true),
-    };
+        logDays = $.getSetIniDbNumber('settings', 'log_rotate_days', 90),
+        logs = {
+            file: $.getSetIniDbBoolean('settings', 'log.file', false),
+            event: $.getSetIniDbBoolean('settings', 'log.event', true),
+            error: $.getSetIniDbBoolean('settings', 'log.error', true)
+        };
 
     /**
     * function reloadLogs()
@@ -24,9 +23,9 @@
         logs = {
             file: $.getIniDbBoolean('settings', 'log.file'),
             event: $.getIniDbBoolean('settings', 'log.event'),
-            error: $.getIniDbBoolean('settings', 'log.error'),
+            error: $.getIniDbBoolean('settings', 'log.error')
         };
-    };
+    }
 
     /**
      * @function getLogDateString
@@ -40,7 +39,7 @@
                 return (i < 10 ? '0' + i : i);
             };
         return pad(now.getDate()) + '-' + pad(now.getMonth() + 1) + '-' + now.getFullYear();
-    };
+    }
 
     /**
      * @function getLogTimeString
@@ -54,7 +53,7 @@
         } else {
             return (new Date()).toTimeString();
         }
-    };
+    }
 
     /**
      * @function getLogEntryTimeDateString
@@ -106,7 +105,7 @@
 
         var now = new Date();
         $.writeToFile('[' + getLogEntryTimeDateString(now) + '] ' + message,'./logs/' + filePrefix + '/' + getLogDateString() + '.txt', true);
-    };
+    }
 
     /**
      * @function logEvent
@@ -134,7 +133,7 @@
 
         var now = new Date();
         $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile.trim() + '] ' + message,'./logs/event/' + getLogDateString() + '.txt', true);
-    };
+    }
 
     /**
      * @function logError
@@ -159,7 +158,7 @@
         var now = new Date();
         $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/error/' + getLogDateString() + '.txt', true);
         Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile.trim() + '] ' + message));
-    };
+    }
 
     /**
      * @function logWarning
@@ -167,7 +166,7 @@
      * @param {string} message
      */
     function logWarning(message) {
-        if (!logs.error) {// this will count as a error just not a bad error
+        if (!logs.error) {
             return;
         }
 
@@ -184,7 +183,7 @@
         var now = new Date();
         $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile.trim() + '] ' + message,'./logs/warning/' + getLogDateString() + '.txt', true);
         Packages.com.gmt2001.Console.warn.printlnRhino(java.util.Objects.toString(message));
-    };
+    }
 
     /**
      * @function logRotate
@@ -218,7 +217,7 @@
             }
         }
         $.log.event('Finished Log Rotation');
-    };
+    }
 
     /**
      * @event ircChannelMessage
@@ -245,21 +244,21 @@
         if (sender.equalsIgnoreCase('jtv')) {
             if (message.equalsIgnoreCase('clearchat')) {
                 logfile('private-messages', '' + $.lang.get('console.received.clearchat'));
-            } else if (message.indexOf('clearchat') != -1) {
+            } else if (message.indexOf('clearchat') !== -1) {
                 logEvent($.lang.get('console.received.purgetimeoutban', message.substring(10)));
-            } else if (message.indexOf('now in slow mode') != -1) {
+            } else if (message.indexOf('now in slow mode') !== -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
-            } else if (message.indexOf('no longer in slow mode') != -1) {
+            } else if (message.indexOf('no longer in slow mode') !== -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.slowmode.end'));
-            } else if (message.indexOf('now in subscribers-only') != -1) {
+            } else if (message.indexOf('now in subscribers-only') !== -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.subscriberonly.start'));
-            } else if (message.indexOf('no longer in subscribers-only') != -1) {
+            } else if (message.indexOf('no longer in subscribers-only') !== -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.subscriberonly.end'));
-            } else if (message.indexOf('now in r9k') != -1) {
+            } else if (message.indexOf('now in r9k') !== -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.r9k.start'));
-            } else if (message.indexOf('no longer in r9k') != -1) {
+            } else if (message.indexOf('no longer in r9k') !== -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.r9k.end'));
-            } else if (message.indexOf('hosting') != -1) {
+            } else if (message.indexOf('hosting') !== -1) {
                 var target = String(message).replace(/now hosting /ig, '').replace(/\./ig, '');
 
                 if (target.equalsIgnoreCase('-')) {
@@ -288,12 +287,7 @@
          * @commandpath log - Get current logging usage
          */
         if (command.equalsIgnoreCase('log')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
-            if (!action) {
+            if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('logging.usage'));
                 return;
             }
@@ -323,13 +317,8 @@
              * @commandpath log files - Toggle the logging of files
              */
             if (action.equalsIgnoreCase('files')) {
-                if (logs.file) {
-                    logs.file = false;
-                } else {
-                    logs.file = true;
-                }
+                logs.files = !logs.files;
                 $.setIniDbBoolean('settings', 'log.file', logs.file);
-                logEvent(sender + ' toggled logging for files');
                 $.say($.whisperPrefix(sender) + (logs.file ? $.lang.get('logging.enabled.files') : $.lang.get('logging.disabled.files')));
             }
 
@@ -337,13 +326,8 @@
              * @commandpath log events - Toggle the logging of events
              */
             if (action.equalsIgnoreCase('events')) {
-                if (logs.event) {
-                    logs.event = false;
-                } else {
-                    logs.event = true;
-                }
+                logs.event = !logs.event;
                 $.setIniDbBoolean('settings', 'log.event', logs.event);
-                logEvent(sender + ' toggled logging for event');
                 $.say($.whisperPrefix(sender) + (logs.event ? $.lang.get('logging.enabled.event') : $.lang.get('logging.disabled.event')));
             }
 
@@ -351,13 +335,8 @@
              * @commandpath log errors - Toggle the logging of errors
              */
             if (action.equalsIgnoreCase('errors')) {
-                if (logs.error) {
-                    logs.error = false;
-                } else {
-                    logs.error = true;
-                }
+                logs.error = !logs.error;
                 $.setIniDbBoolean('settings', 'log.error', logs.error);
-                logEvent(sender + ' toggled logging for error');
                 $.say($.whisperPrefix(sender) + (logs.error ? $.lang.get('logging.enabled.error') : $.lang.get('logging.disabled.error')));
             }
         }
