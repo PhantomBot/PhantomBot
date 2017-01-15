@@ -353,6 +353,8 @@ $.lang.register('timesystem.streamertime', 'It is currently $1 where $2 is locat
 $.lang.register('timesystem.take.error.toomuch', 'You can not take more than what $1 has in time.');
 $.lang.register('timesystem.take.success', 'Took $1 from $2. New balance is $3.');
 $.lang.register('timesystem.take.usage', 'Usage: "!time take [name] [amount]"');
+$.lang.register('timesystem.autolevel.chat.enabled', 'Auto level chat announcements are now enabled!');
+$.lang.register('timesystem.autolevel.chat.disabled', 'Auto level chat announcements are now disabled.');
 $.lang.register('get.long.time.string.short', ' $1 days, $2 hours and $3 minutes.');
 $.lang.register('get.long.time.string.long', '$1 months, $2 hours and $3 minutes.');
 $.lang.register('user.time.string.hours', ' $1 hours and $2 minutes');
