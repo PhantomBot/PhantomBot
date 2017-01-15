@@ -240,6 +240,8 @@ $.lang.register('common.disabled', 'disabled');
 $.lang.register('common.enabled', 'enabled');
 $.lang.register('common.user-error', 'You must specify a user to target with this command');
 $.lang.register('common.user.404', 'The user "$1" has not visited this channel yet.');
+$.lang.register('common.game.change', 'Changed the current game to $1!');
+$.lang.register('common.title.change', 'Changed the current title to $1!');
 $.lang.register('console.channel.ishosting', '$1 is currently hosting $2.');
 $.lang.register('console.received.clearchat', 'Received a clear chat notification from jtv');
 $.lang.register('console.received.host.end', 'Received an end host mode notification from jtv');
