@@ -74,8 +74,22 @@
             </div>
         </form>
 
-        <strong>Commands with Cooldowns</strong>
+        <strong>Commands with cooldowns</strong>
         <div id="cooldownList" style="height: 300px; overflow: auto;" />
+    </div>
+    
+    <h3>Command Cooldown Types</h3>
+    <div>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="cooldownTypeCmd">Cooldown Type Command</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldownType()">Submit</button>
+                <input type="text" class="form-control" id="cooldownTypeCmdInput" placeholder="command_name type" />
+            </div>
+        </form>
+        
+        <strong>Commands with cooldown types</strong>
+        <div id="cooldownTypeList" style="height: 300px; overflow: auto;">
     </div>
 </div>
 

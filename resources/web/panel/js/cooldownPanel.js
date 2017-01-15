@@ -168,6 +168,28 @@
             setTimeout(function() { $("#cooldownCmdInput").val(""); doQuery(); }, 1000);
         }
     }
+	
+	/**
+	 * @function deleteCooldownType
+	 * @param {String} command
+	 */
+	function deleteCooldownType(command){
+		$("#deleteCooldownType_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("cooltype " + command + " default");
+        setTimeout(function() { doQuery(); }, 500);
+	}
+	
+	/**
+     * @function addCooldownType
+     */
+	function addCooldownType(){
+		var input = $("#cooldownCmdTypeInput").val();
+        if (input.length > 0) {
+            sendCommand("cooltype " + input);
+            $("#cooldownCmdInput").val("Submitted");
+            setTimeout(function() { $("#cooldownCmdTypeInput").val(""); doQuery(); }, 1000);
+        }
+	}
 
     // Import the HTML file for this panel.
     $("#cooldownPanel").load("/panel/cooldown.html");
@@ -195,6 +217,8 @@
     $.cooldownDoQuery = doQuery;
     $.addCooldown = addCooldown;
     $.deleteCooldown = deleteCooldown;
+	$.addCooldownType = addCooldownType;
+	$.deleteCooldownType = deleteCooldownType;
     $.toggleGlobalCooldown = toggleGlobalCooldown;
     $.toggleModCooldown = toggleModCooldown;
     $.togglePerUserCooldown = togglePerUserCooldown;
