@@ -178,14 +178,13 @@
         var cooldownInfo = getCooldownInfo(command),
             commandHasGlobalCooldown = cooldownInfo[0],
             commandHasPerUserCooldown = cooldownInfo[1],
-            commandCooldownTypeOverriden = cooldownInfo[3],
             commandHasNoCooldown = cooldownInfo[4];
         
         if (commandHasNoCooldown) {
             $.consoleDebug('Did not push command !' + command + ' to cooldown because its cooldown type is set to none.');
         } else {
             if (!command.equals('adventure')) {
-                if (commandHasGlobalCooldown && (commandCooldownTypeOverriden || !hasCooldown)) {
+                if (commandHasGlobalCooldown && !hasCooldown) {
                     cooldown[command] = {time: time};
                     $.consoleDebug('Pushed command !' + command + ' to global cooldown.');
                     return;
@@ -217,7 +216,6 @@
         var cooldownInfo = getCooldownInfo(command),
             commandHasGlobalCooldown = cooldownInfo[0],
             commandHasPerUserCooldown = cooldownInfo[1],
-            commandCooldownTypeOverriden = cooldownInfo[3],
             commandHasNoCooldown = cooldownInfo[4];
 
         if (commandHasNoCooldown) {
@@ -231,7 +229,7 @@
                 }
             }
             return 0;
-        } else if (commandHasGlobalCooldown && (commandCooldownTypeOverriden || !hasCooldown)) {
+        } else if (commandHasGlobalCooldown && !hasCooldown) {
             if (cooldown[command] !== undefined){
                 if (cooldown[command].time - $.systemTime() >= 0) {
                     if (permCheck(username, isMod)) return 0;
