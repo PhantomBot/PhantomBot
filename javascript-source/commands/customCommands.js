@@ -55,7 +55,7 @@
 
         if (message.match(/\(pointtouser\)/)) {
             if (event.getArgs()[0] !== undefined) {
-                message = $.replace(message, '(pointtouser)', (event.getArgs()[0] + ' -> '));
+                message = $.replace(message, '(pointtouser)', (event.getArguments().split(' ')[0] + ' -> '));
             } else {
                 message = $.replace(message, '(pointtouser)', $.userPrefix(event.getSender(), true));
             }
@@ -186,7 +186,7 @@
         }
 
         if (message.match(/\(touser\)/g)) {
-            message = $.replace(message, '(touser)', (event.getArgs()[0] === undefined ? $.username.resolve(event.getSender()) : $.username.resolve(event.getArguments().split(' ')[0])));
+            message = $.replace(message, '(touser)', (event.getArgs()[0] === undefined ? $.username.resolve(event.getSender()) : event.getArguments().split(' ')[0]));
         }
 
         if (message.match(/\(echo\)/g)) {
@@ -288,7 +288,7 @@
         if (message.match(/\(writefile .+\)/)) {
             if (message.match(/\(writefile (.+), (.+), (.+)\)/)) {
                 var file = message.match(/\(writefile (.+), (.+), (.+)\)/)[1],
-                    append = message.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false,
+                    append = (message.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false),
                     string = message.match(/\(writefile (.+), (.+), (.+)\)/)[3];
                 $.writeToFile(string, './addons/' + file, append);
             }
