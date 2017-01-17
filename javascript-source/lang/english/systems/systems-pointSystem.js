@@ -32,6 +32,7 @@ $.lang.register('pointsystem.set.name.multiple.success', 'Name of multiple point
 $.lang.register('pointsystem.set.name.single.success', 'Name of a single point successfully changed from "$1" to "$2". To set the name for multiple $2 use !points setname multiple [name].');
 $.lang.register('pointsystem.set.name.usage', 'usage: !points setname [single | multiple | delete] [name].  Sets the single or multiple name for chat points or deletes the values.');
 $.lang.register('pointsystem.set.name.delete', 'Removed custom point names.');
+$.lang.register('pointsystem.set.name.duplicate', 'That is the current name of the custom point command.');
 $.lang.register('pointsystem.setbalance.error.negative', 'You can not set a balance to negative $1.');
 $.lang.register('pointsystem.setbalance.success', 'Set the $1 balance of $2 to $3.');
 $.lang.register('pointsystem.setbalance.usage', 'Usage: !points set [name] [amount]');
