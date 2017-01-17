@@ -46,7 +46,7 @@
 	 * @event twitchGameChange
 	 */  
 	$.bind('twitchGameChange', function(event) {
-		if (gameToggle === false || channelName == '') {
+		if (gameToggle === false || channelName == '' || $.isOnline($.channelName) == false) {
 			return;
 		}
 
