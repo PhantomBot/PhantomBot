@@ -23,6 +23,9 @@
      * @function updateSettings
      */
     function updateSettings() {
+        var tempPointNameSingle,
+            tempPointNameMultiple;
+
         pointsTimedGain = $.getIniDbBoolean('pointSettings', 'pointsTimedGain');
         onlineGain = $.getIniDbNumber('pointSettings', 'onlineGain');
         offlineGain = $.getIniDbNumber('pointSettings', 'offlineGain');
@@ -32,20 +35,16 @@
         pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
 
         if (!pointNameMultiple.equalsIgnoreCase('points') || !pointNameSingle.equalsIgnoreCase('point')) {
-            $.inidb.set('temppoints', 'pointsname', pointNameMultiple);
-            $.inidb.set('temppoints', 'pointsname2', pointNameSingle);
+            tempPointNameSingle = pointNameSingle;
+            tempPointNameMultiple = pointNameMultiple;
         }
 
         if (pointNameMultiple.equalsIgnoreCase('points') && pointNameSingle.equalsIgnoreCase('point')) {
             defaultPointsName(true);
-            //registerNewPointsCommands($.inidb.get('temppoints', 'pointsname'), $.inidb.get('temppoints', 'pointsname2'), false);
         } else {
             defaultPointsName(false);
-            registerNewPointsCommands($.inidb.get('temppoints', 'pointsname'), $.inidb.get('temppoints', 'pointsname2'), true);
+            registerNewPointsCommands(tempPointNameSingle, tempPointNameMultiple, true);
         }
-        var timeout = setTimeout(function () {
-            $.inidb.RemoveFile('temppoints');
-        }, 9000);
     };
 
     /**
@@ -70,6 +69,23 @@
             $.registerChatSubcommand('points', 'check', 7);
             $.registerChatSubcommand('points', 'bonus', 1);
             $.registerChatSubcommand('points', 'resetall', 1);
+
+            $.registerChatCommand('./systems/pointSystem.js', 'point', 7);
+            $.registerChatSubcommand('point', 'add', 1);
+            $.registerChatSubcommand('point', 'give', 1);
+            $.registerChatSubcommand('point', 'take', 1);
+            $.registerChatSubcommand('point', 'remove', 1);
+            $.registerChatSubcommand('point', 'set', 1);
+            $.registerChatSubcommand('point', 'all', 1); 
+            $.registerChatSubcommand('point', 'takeall', 1);
+            $.registerChatSubcommand('point', 'setname', 1);
+            $.registerChatSubcommand('point', 'setgain', 1);
+            $.registerChatSubcommand('point', 'setofflinegain', 1);
+            $.registerChatSubcommand('point', 'setinterval', 1);
+            $.registerChatSubcommand('point', 'user', 7);
+            $.registerChatSubcommand('point', 'check', 7);
+            $.registerChatSubcommand('point', 'bonus', 1);
+            $.registerChatSubcommand('point', 'resetall', 1);
         } else {
             $.unregisterChatCommand('points', 7);
             $.unregisterChatSubcommand('points', 'add', 1);
@@ -87,6 +103,23 @@
             $.unregisterChatSubcommand('points', 'check', 7);
             $.unregisterChatSubcommand('points', 'bonus', 1);
             $.unregisterChatSubcommand('points', 'resetall', 1);
+
+            $.unregisterChatCommand('point', 7);
+            $.unregisterChatSubcommand('point', 'add', 1);
+            $.unregisterChatSubcommand('point', 'give', 1);
+            $.unregisterChatSubcommand('point', 'take', 1);
+            $.unregisterChatSubcommand('point', 'remove', 1);
+            $.unregisterChatSubcommand('point', 'set', 1);
+            $.unregisterChatSubcommand('point', 'all', 1);
+            $.unregisterChatSubcommand('point', 'takeall', 1);
+            $.unregisterChatSubcommand('point', 'setname', 1);
+            $.unregisterChatSubcommand('point', 'setgain', 1);
+            $.unregisterChatSubcommand('point', 'setofflinegain', 1);
+            $.unregisterChatSubcommand('point', 'setinterval', 1);
+            $.unregisterChatSubcommand('point', 'user', 7);
+            $.unregisterChatSubcommand('point', 'check', 7);
+            $.unregisterChatSubcommand('point', 'bonus', 1);
+            $.unregisterChatSubcommand('point', 'resetall', 1);
         }
     }
 
@@ -530,9 +563,18 @@
                     (actionArg1 + '');
                     (actionArg2 + '');
 
+                    if (actionArg1 == undefined) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.usage'));
+                        return;
+                    }
                     if (actionArg1.equalsIgnoreCase('single') && actionArg2) {
                         temp = pointNameSingle;
-                        pointNameSingle = actionArg2;
+                        if (actionArg2.equalsIgnoreCase($.inidb.get('pointSettings', 'pointNameSingle'))) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.duplicate'));
+                            return;
+                        }
+                        $.unregisterChatCommand(pointNameSingle);
+                        pointNameSingle = actionArg2.toLowerCase();
                         $.inidb.set('pointSettings', 'pointNameSingle', pointNameSingle);
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.single.success', temp, pointNameSingle));
                         updateSettings();
@@ -540,7 +582,12 @@
                     }
                     if (actionArg1.equalsIgnoreCase('multiple') && actionArg2) {
                         temp = pointNameMultiple;
-                        pointNameMultiple = actionArg2;
+                        if (actionArg2.equalsIgnoreCase($.inidb.get('pointSettings', 'pointNameMultiple'))) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.duplicate'));
+                            return;
+                        }
+                        $.unregisterChatCommand(pointNameMultiple);
+                        pointNameMultiple = actionArg2.toLowerCase();
                         $.inidb.set('pointSettings', 'pointNameMultiple', pointNameMultiple);
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.multiple.success', temp, pointNameMultiple));
                         updateSettings();
@@ -549,6 +596,8 @@
                     if (actionArg1.equalsIgnoreCase('delete')) {
                         $.inidb.set('pointSettings', 'pointNameSingle', 'point');
                         $.inidb.set('pointSettings', 'pointNameMultiple', 'points');
+                        $.unregisterChatCommand(pointNameSingle);
+                        $.unregisterChatCommand(pointNameMultiple);
                         pointNameSingle = "point";
                         pointNameMultiple = "points";
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.delete'));
