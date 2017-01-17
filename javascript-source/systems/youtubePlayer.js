@@ -675,10 +675,12 @@
         /**
          * @function updateCurrentSongFile
          * @param {YoutubeVideo} youtubeVideo
+         * Note that the trailing space is for any broadcasting software which is "wrapping"
+         * the text constantly in a loop.
          */
         this.updateCurrentSongFile = function(youtubeVideo) {
             $.writeToFile(
-                youtubeVideo.getVideoTitle(),
+                youtubeVideo.getVideoTitle() + ' ',
                 baseFileOutputPath + 'currentsong.txt',
                 false
             );
