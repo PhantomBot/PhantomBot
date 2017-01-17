@@ -172,7 +172,7 @@ public class DiscordAPI {
      * @reutrn {String}
      */
     public String getUserMention(String username) {
-        if (userCache.containsKey(username.replace("@", "").toLowerCase())) {
+        if (userCache.containsKey(username.replace("@", "").toLowerCase()) && username.startsWith("@")) {
             return "<@" + userCache.get(username.replace("@", "").toLowerCase()) + ">";
         }
         return username;
