@@ -5,6 +5,7 @@
     var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&]+)\)/),
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/),
         reCustomArg = new RegExp(/\(([1-9])=([a-zA-Z1-9\)\(]+)\)/),
+        reCustomToUserArg = new RegExp(/\(touser=([a-zA-Z1-9]+)\)/),
         reNormalCommandArg = new RegExp(/\(([1-9])\)/),
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
 
@@ -41,6 +42,10 @@
             s = $.replace(s, s.match(reNormalCommandArg)[0], (event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1] === undefined ? '' : event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1]));
         }
 
+        if (s.match(reCustomToUserArg)) {
+            s = $.replace(s, s.match(reCustomToUserArg)[0], (event.getArgs()[0] ? $.discordAPI.getUserMention(event.getArgs().join(' ')) : s.match(reCustomToUserArg)[1]));
+        }
+
         if (s.match(/\(sender\)/)) {
             s = $.replace(s, '(sender)', event.getUsername());
         }
@@ -50,7 +55,7 @@
         }
 
         if (s.match(/\(touser\)/)) {
-            s = $.replace(s, '(touser)', (event.getArgs()[0] ? event.getArgs()[0] : event.getUsername()));
+            s = $.replace(s, '(touser)', (event.getArgs()[0] ? $.discordAPI.getUserMention(event.getArgs()[0]) : event.getUsername()));
         }
 
         if (s.match(/\(#\)/)) {
