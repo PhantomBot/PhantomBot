@@ -27,6 +27,7 @@ import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.Permission;
@@ -70,9 +71,10 @@ public class DiscordAPI {
     private final ConcurrentLinkedQueue<MessageDelete> deleteQueue = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<>();
     private final Map<String, TextChannel> channelMap = new HashMap<>();
+    private final Map<String, String> userCache = new HashMap<>();
     private final Timer messageTimer = new Timer();
-    private JDA jdaAPI = null;
     private String botID;
+    private JDA jdaAPI = null;
     
     public static DiscordAPI instance() {
         return instance;
@@ -151,6 +153,32 @@ public class DiscordAPI {
     }
 
     /*
+     * Used to resolve a users id by his username. This can be inaccurate if multiple users have the same name.
+     *
+     * @param {String} username
+     * @reutrn {String}
+     */
+    public String getUserId(String username) {
+        if (userCache.containsKey(username.toLowerCase())) {
+            return userCache.get(username.toLowerCase());
+        }
+        return username;
+    }
+
+    /*
+     * Used to resolve a users id and returns his name that can be mentioned.
+     *
+     * @param {String} username
+     * @reutrn {String}
+     */
+    public String getUserMention(String username) {
+        if (userCache.containsKey(username.replace("@", "").toLowerCase())) {
+            return "<@" + userCache.get(username.replace("@", "").toLowerCase()) + ">";
+        }
+        return username;
+    }
+
+    /*
      * Sends a text message to the given channel. This is private as it is behind the rate-limit logic.
      *
      * @param  channel  The name of a text channel to send a message to
@@ -189,6 +217,17 @@ public class DiscordAPI {
     }
 
     /*
+     * Builds a hashmap (cache) of all the current users in the discord server with their id's. This is used to ping users later on.
+     */
+    private void getUsers() {
+        if (jdaAPI != null) {
+            for (User user : jdaAPI.getUsers()) {
+                userCache.put(user.getUsername().toLowerCase(), user.getId());
+            }
+        }
+    }
+
+    /*
      * Get the command then will make the arguments for it. Works just like we do for Twitch.
      */
     private void commandEvent(String sender, String senderId, String message, String channel, String discrim, Boolean isAdmin) {
@@ -215,8 +254,9 @@ public class DiscordAPI {
             if (event instanceof ReadyEvent) {
                 ReadyEvent readyEvent = (ReadyEvent) event;
                 getTextChannels();
+                getUsers();
                 botID = jdaAPI.getSelfInfo().getId();
-                messageTimer.schedule(new MessageTask(), 100, 5);
+                messageTimer.schedule(new MessageTask(), 100, 1);
                 messageTimer.schedule(new DeleteTask(), 100, 5);
                 com.gmt2001.Console.out.println("Discord API is Ready");
             }
@@ -238,12 +278,16 @@ public class DiscordAPI {
             /* GuildMemberJoinEvent - Happens when a user joins the server. */
             if (event instanceof GuildMemberJoinEvent) {
                 GuildMemberJoinEvent joinEvent = (GuildMemberJoinEvent) event;
+                userCache.put(joinEvent.getUser().getUsername().toLowerCase(), joinEvent.getUser().getId());
                 EventBus.instance().post(new DiscordJoinEvent(joinEvent.getUser().getUsername(), joinEvent.getUser().getId(), joinEvent.getUser().getDiscriminator()));
             }
 
             /* GuildMemberLeaveEvent - Happens when a user leaves the server. */
             if (event instanceof GuildMemberLeaveEvent) {
                 GuildMemberLeaveEvent partEvent = (GuildMemberLeaveEvent) event;
+                if (userCache.containsKey(partEvent.getUser().getUsername().toLowerCase())) {
+                    userCache.remove(partEvent.getUser().getUsername().toLowerCase(), partEvent.getUser().getId());
+                }
                 EventBus.instance().post(new DiscordLeaveEvent(partEvent.getUser().getUsername(), partEvent.getUser().getId(), partEvent.getUser().getDiscriminator()));
             }
 
