@@ -50,6 +50,9 @@
  * // Delete from DB
  * { "dbdelkey" : "query_id", "delkey" : { "table" : "table_name", "key" : "key_name" } }
  *
+ * // Execute an Event
+ * { "socket_event" : "query_id", "script" : "script_name", "args" : { arguments : arguments, args : [ ] } }
+ *
  * ---------------------------------------------------------------------------
  *
  * Websocket pushes the following to the Panel Interface
@@ -83,6 +86,10 @@
  *
  * // Request an alert image to be displayed.
  * { "alert_image" : "filename[,duration_in_seconds]" }
+ *
+ * // Return from an Event being executed.
+ * { "query_id" : "query_id" }:
+
  */
 
 package me.mast3rplan.phantombot.panel;
@@ -99,6 +106,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.gmt2001.TwitchAPIv3;
 
@@ -113,6 +122,8 @@ import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONStringer;
 
+import me.mast3rplan.phantombot.event.EventBus;
+import me.mast3rplan.phantombot.event.panelsocket.PanelWebSocketEvent;
 import me.mast3rplan.phantombot.PhantomBot;
 
 /**
@@ -292,6 +303,12 @@ public class PanelSocketServer extends WebSocketServer {
                 String table = jsonObject.getJSONObject("delkey").getString("table");
                 String key = jsonObject.getJSONObject("delkey").getString("key");
                 doDBDelKey(webSocket, uniqueID, table, key);
+            } else if (jsonObject.has("socket_event") && !sessionData.isReadOnly()) {		
+                uniqueID = jsonObject.getString("socket_event");		
+                String script = jsonObject.getString("script");		
+                String arguments = jsonObject.getJSONObject("args").getString("arguments");		
+                JSONArray args = jsonObject.getJSONObject("args").getJSONArray("args");		
+                doWSEvent(webSocket, uniqueID, script, arguments, args);
             } else {
                 com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
                 return;
@@ -627,6 +644,41 @@ public class PanelSocketServer extends WebSocketServer {
         jsonObject.object().key("alert_image").value(imageInfo).endObject();
         debugMsg("alertImage(" + imageInfo +")");
         sendToAll(jsonObject.toString());
+    }
+
+    /**
+     * Executes an event directly.
+     *
+     * @param webSocket The websocket related to this call.
+     * @param id        The event ID to be sent.
+     * @param script    The script in which to execute the event.
+     * @param arguments Any arguments that are needed for the event.
+     * @param jsonArray Arguments provided in a JSONArray to be parsed out and processed.
+     */
+    private void doWSEvent(WebSocket webSocket, String id, String script, String arguments, JSONArray jsonArray) {
+        JSONStringer jsonObject = new JSONStringer();
+        List<String> tempArgs = new LinkedList<>();
+        String[] args = null;
+
+        for (Object str : jsonArray) {
+            tempArgs.add(str.toString());
+        }
+
+        if (tempArgs.size() > 0) {
+            int i = 0;
+            args = new String[tempArgs.size()];
+
+            for (String str : tempArgs) {
+                args[i] = str;
+                ++i;
+            }
+        }
+
+        EventBus.instance().postAsync(new PanelWebSocketEvent(id, script, arguments, args));
+        debugMsg("doWSEvent(" + id + "::" + script + ")");
+
+        jsonObject.object().key("query_id").value(id).endObject();
+        webSocket.send(jsonObject.toString());
     }
 
     /**
