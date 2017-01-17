@@ -347,6 +347,10 @@
             if (!$.isBot(sender)) {
                 return;
             }
+            $.unregisterChatCommand($.pointNameSingle);
+            $.unregisterChatCommand($.pointNameMultiple);
+            $.pointNameSingle = $.inidb.get('pointSettings', 'pointNameSingle');
+            $.pointNameMultiple = $.inidb.get('pointSettings', 'pointNameMultiple');
             $.updateSettings();
             return;
         }
