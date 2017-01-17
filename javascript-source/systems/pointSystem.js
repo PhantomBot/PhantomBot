@@ -125,12 +125,11 @@
 
     /**
      * @function registerPointCommands
-     * @param {string} [boolean]
      */
-    function registerNewPointsCommands(newName, newName2, boolean) {
+    function registerNewPointsCommands(newName, newName2, newCommand) {
         newName = newName.toLowerCase();
         newName2 = newName2.toLowerCase();
-        if (newName && boolean) {
+        if (newName && newCommand && !$.commandExists(newName)) {
             $.registerChatCommand('./systems/pointSystem.js', newName, 7);
             $.registerChatSubcommand(newName, 'add', 1);
             $.registerChatSubcommand(newName, 'give', 1);
@@ -147,7 +146,7 @@
             $.registerChatSubcommand(newName, 'bonus', 1);
             $.registerChatSubcommand(newName, 'resetall', 1);
         } 
-        if (newName2 && boolean) {
+        if (newName2 && newCommand && !$.commandExists(newNam2)) {
             $.registerChatCommand('./systems/pointSystem.js', newName2, 7);
             $.registerChatSubcommand(newName2, 'add', 1);
             $.registerChatSubcommand(newName2, 'give', 1);
@@ -166,7 +165,7 @@
             $.registerChatSubcommand(newName2, 'resetall', 1);
         }
 
-        if (newName && !boolean) {
+        if (newName && !newCommand) {
             $.unregisterChatCommand('./systems/pointSystem.js', newName, 7);
             $.unregisterChatSubcommand(newName, 'add', 1);
             $.unregisterChatSubcommand(newName, 'give', 1);
@@ -184,7 +183,7 @@
             $.unregisterChatSubcommand(newName, 'bonus', 1);
             $.unregisterChatSubcommand(newName, 'resetall', 1);
         } 
-        if (newName2 && !boolean) {
+        if (newName2 && !newCommand) {
             $.unregisterChatCommand('./systems/pointSystem.js', newName2, 7);
             $.unregisterChatSubcommand(newName2, 'add', 1);
             $.unregisterChatSubcommand(newName2, 'give', 1);
