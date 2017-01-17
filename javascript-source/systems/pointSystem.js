@@ -146,7 +146,7 @@
             $.registerChatSubcommand(newName, 'bonus', 1);
             $.registerChatSubcommand(newName, 'resetall', 1);
         } 
-        if (newName2 && newCommand && !$.commandExists(newNam2)) {
+        if (newName2 && newCommand && !$.commandExists(newName2)) {
             $.registerChatCommand('./systems/pointSystem.js', newName2, 7);
             $.registerChatSubcommand(newName2, 'add', 1);
             $.registerChatSubcommand(newName2, 'give', 1);
