@@ -636,6 +636,6 @@
     $.replace = replace;
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
-    $.hasKey = $.hasKey;
+    $.hasKey = hasKey;
     $.systemTimeNano = systemTimeNano;
 })();
