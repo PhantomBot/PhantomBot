@@ -16,6 +16,28 @@
 	}
 
 	/**
+	 * @function userMention
+	 *
+	 * @export $.discord
+	 * @param {string} username
+	 * @return {string}
+	 */
+	function userMention(username) {
+		return $.discordAPI.getUserMention(username.replace('@', ''));
+	}
+
+	/**
+	 * @function getUserMention
+	 *
+	 * @export $.discord
+	 * @param {string} username
+	 * @return {string}
+	 */
+	function getUserMention(username) {
+		return $.discordAPI.getUserMention(username.replace('@', ''));
+	}
+
+	/**
 	 * @function say
 	 *
 	 * @export $.discord
@@ -104,16 +126,21 @@
 		}
 	});
 
-    /* Export the function to the $.discord api. */
-	$.discord = {
-		say: say,
-		userPrefix: userPrefix
-	};
-
-	setTimeout(function() {
+	/**
+	 * @event initReady
+	 */
+	$.bind('initReady', function() {
 		$.discord.registerCommand('./discord/core/misc.js', 'module', 1);
 		$.discord.registerSubCommand('module', 'list', 1);
 		$.discord.registerSubCommand('module', 'enable', 1);
 		$.discord.registerSubCommand('module', 'disable', 1);
-	}, 5000);
+	});
+
+	/* Export the function to the $.discord api. */
+	$.discord = {
+		say: say,
+		userPrefix: userPrefix,
+		userMention: userMention,
+		getUserMention: getUserMention
+	};
 })();
