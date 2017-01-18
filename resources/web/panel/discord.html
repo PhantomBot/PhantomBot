@@ -116,11 +116,11 @@
     </div>
     </div>
 
-	<h3>TipeeeStream Alert Settings</h3>
+    <h3>TipeeeStream Alert Settings</h3>
     <div>
     <div id="_globalDiscordPanelDisabled" />
     <div id="_globalDiscordPanel">
-    	<table>
+        <table>
             <tr class="textList">
                 <td>Toggle TipeeeStream Alerts</td>
                 <td style="width: 25px"><div id="tipeeestreamToggleInput" /></td>
@@ -136,11 +136,12 @@
         </table>
         <br>
 
-    	<form role="form">
+        <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="tipeeeStreamMessageInput">Donation Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('tipeeestreamMessageInput', 'handlers/tipeeeStreamHandler.js', 'discordSettings', 'tipeeestreamMessage')">Submit</button>
-                <input type="text" class="form-control" id="tipeeestreamMessageInput" placeholder="Donation Message" />
+                <input type="text" class="form-control" id="tipeeestreamMessageInput" placeholder="Donation Message" data-toggle="tooltip" 
+                    title="Set a donation message for TipeeeStream. Available tags: (name), (currency), (amount), (message), and (formattedamount)"/>
             </div>
         </form>
 
@@ -148,7 +149,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="tipeeeStreamChannelInput">Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('tipeeestreamChannelInput', 'handlers/tipeeeStreamHandler.js', 'discordSettings', 'tipeeestreamChannel')">Submit</button>
-                <input type="text" class="form-control" id="tipeeestreamChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="tipeeestreamChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -158,7 +159,7 @@
     <div>
     <div id="_globalDiscordPanelDisabled" />
     <div id="_globalDiscordPanel">
-    	<table>
+        <table>
             <tr class="textList">
                 <td>Toggle StreamTip Alerts</td>
                 <td style="width: 25px"><div id="streamtipToggleInput" /></td>
@@ -174,11 +175,12 @@
         </table>
         <br>
 
-    	<form role="form">
+        <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Donation Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamtipMessageInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipMessage')">Submit</button>
-                <input type="text" class="form-control" id="streamtipMessageInput" placeholder="Donation Message" />
+                <input type="text" class="form-control" id="streamtipMessageInput" placeholder="Donation Message" data-toggle="tooltip" 
+                    title="Set a donation message for StreamTip. Available tags: (name), (currency), (amount), and (message)"/>
             </div>
         </form>
 
@@ -186,7 +188,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamtipChannelInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipChannel')">Submit</button>
-                <input type="text" class="form-control" id="streamtipChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="streamtipChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -196,35 +198,36 @@
     <div>
     <div id="_globalDiscordPanelDisabled" />
     <div id="_globalDiscordPanel">
-    	<table>
+        <table>
             <tr class="textList">
                 <td>Toggle StreamLabs Alerts</td>
                 <td style="width: 25px"><div id="streamlabsToggleInput" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('streamlabsToggleInput', 'handlers/streanmlabsHandler.js', 'discordSettings', 'streamlabsToggle', 'true')">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('streamlabsToggleInput', 'handlers/streamlabsHandler.js', 'discordSettings', 'streamlabsToggle', 'true')">
                         <i class="fa fa-circle" /></div>
                 </td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('streamlabsToggleInput', 'handlers/streanmlabsHandler.js', 'discordSettings', 'streamlabsToggle', 'false')">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('streamlabsToggleInput', 'handlers/streamlabsHandler.js', 'discordSettings', 'streamlabsToggle', 'false')">
                         <i class="fa fa-circle-o" /></div>
                 </td>
             </tr>
         </table>
         <br>
 
-    	<form role="form">
+        <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="streamlabsMessageInput">Donation Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamlabsMessageInput', 'handlers/streanmlabsHandler.js', 'discordSettings', 'streamlabsMessage')">Submit</button>
-                <input type="text" class="form-control" id="streamlabsMessageInput" placeholder="Donation Message" />
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamlabsMessageInput', 'handlers/streamlabsHandler.js', 'discordSettings', 'streamlabsMessage')">Submit</button>
+                <input type="text" class="form-control" id="streamlabsMessageInput" placeholder="Donation Message" data-toggle="tooltip" 
+                    title="Set a donation message for StreamTip. Available tags: (name), (currency), (amount), and (message)"/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="streamlabsChannelInput">Alert Channel</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamlabsChannelInput', 'handlers/streanmlabsHandler.js', 'discordSettings', 'streamlabsChannel')">Submit</button>
-                <input type="text" class="form-control" id="streamlabsChannelInput" placeholder="Channel Name" />
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamlabsChannelInput', 'handlers/streamlabsHandler.js', 'discordSettings', 'streamlabsChannel')">Submit</button>
+                <input type="text" class="form-control" id="streamlabsChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -234,7 +237,7 @@
     <div>
     <div id="_globalDiscordPanelDisabled" />
     <div id="_globalDiscordPanel">
-    	<table>
+        <table>
             <tr class="textList">
                 <td>Toggle Join Alerts</td>
                 <td style="width: 25px"><div id="joinToggleInput" /></td>
@@ -258,11 +261,12 @@
         </table>
         <br>
 
-    	<form role="form">
+        <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="joinMessageInput">Join Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('joinMessageInput', 'systems/greetingsSystem.js', 'discordSettings', 'joinMessage')">Submit</button>
-                <input type="text" class="form-control" id="joinMessageInput" placeholder="Join Message" />
+                <input type="text" class="form-control" id="joinMessageInput" placeholder="Join Message" data-toggle="tooltip" 
+                    title="Set a message for when a new user joins your server. Available tags: (name), and (@name)"/>
             </div>
         </form>
 
@@ -270,7 +274,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Part Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('partMessageInput', 'systems/greetingsSystem.js', 'discordSettings', 'partMessage')">Submit</button>
-                <input type="text" class="form-control" id="partMessageInput" placeholder="Part Message" />
+                <input type="text" class="form-control" id="partMessageInput" placeholder="Part Message" data-toggle="tooltip" 
+                    title="Set a message for when a new user leaves your server. Available tags: (name), and (@name)"/>
             </div>
         </form>
 
@@ -278,7 +283,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('greeetingsChannelInput', 'systems/greetingsSystem.js', 'discordSettings', 'greetingsChannel')">Submit</button>
-                <input type="text" class="form-control" id="greeetingsChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="greeetingsChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -288,7 +293,7 @@
     <div>
     <div id="_globalDiscordPanelDisabled" />
     <div id="_globalDiscordPanel">
-    	<table>
+        <table>
             <tr class="textList">
                 <td>Toggle Online Alerts</td>
                 <td style="width: 25px"><div id="onlineToggleInput" /></td>
@@ -312,11 +317,12 @@
         </table>
         <br>
 
-    	<form role="form">
+        <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="onlineMessageInput">Online Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('onlineMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'onlineMessage')">Submit</button>
-                <input type="text" class="form-control" id="onlineMessageInput" placeholder="Online Message" />
+                <input type="text" class="form-control" id="onlineMessageInput" placeholder="Online Message" data-toggle="tooltip" 
+                    title="Set a message for when you go live on Twitch. Available tags: (title), (game), (url), (name), and (follows)"/>
             </div>
         </form>
 
@@ -324,7 +330,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Game Change Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gameMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'gameMessage')">Submit</button>
-                <input type="text" class="form-control" id="gameMessageInput" placeholder="Game Change Message" />
+                <input type="text" class="form-control" id="gameMessageInput" placeholder="Game Change Message" data-toggle="tooltip" 
+                    title="Set a message for when you switch games on Twitch. Available tags: (title), (game), (url), (name), (uptime), and (follows)"/>
             </div>
         </form>
 
@@ -332,7 +339,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('onlineChannelInput', 'handlers/streamHandler.js', 'discordSettings', 'onlineChannel')">Submit</button>
-                <input type="text" class="form-control" id="onlineChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="onlineChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -342,7 +349,7 @@
     <div>
     <div id="_globalDiscordPanelDisabled" />
     <div id="_globalDiscordPanel">
-    	<table>
+        <table>
             <tr class="textList">
                 <td>Toggle Bits Alerts</td>
                 <td style="width: 25px"><div id="bitsToggleInput" /></td>
@@ -356,7 +363,7 @@
         </table>
         <br>
 
-    	<form role="form">
+        <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Bits Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('bitsMessageInput', 'handlers/bitsHandler.js', 'discordSettings', 'bitsMessage')">Submit</button>
@@ -368,7 +375,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('bitsChannelInput', 'handlers/bitsHandler.js', 'discordSettings', 'bitsChannel')">Submit</button>
-                <input type="text" class="form-control" id="bitsChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="bitsChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -378,7 +385,7 @@
     <div>
     <div id="_globalDiscordPanelDisabled" />
     <div id="_globalDiscordPanel">
-    	<table>
+        <table>
             <tr class="textList">
                 <td>Toggle Follower Alerts</td>
                 <td style="width: 25px"><div id="followToggleInput" /></td>
@@ -392,7 +399,7 @@
         </table>
         <br>
 
-    	<form role="form">
+        <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Follower Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('followMessageInput', 'handlers/followHandler.js', 'discordSettings', 'followMessage')">Submit</button>
@@ -404,7 +411,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('followChannelInput', 'handlers/followHandler.js', 'discordSettings', 'followChannel')">Submit</button>
-                <input type="text" class="form-control" id="followChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="followChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -414,7 +421,7 @@
     <div>
     <div id="_globalDiscordPanelDisabled" />
     <div id="_globalDiscordPanel">
-    	<table>
+        <table>
             <tr class="textList">
                 <td>Toggle Host Alerts</td>
                 <td style="width: 25px"><div id="hostToggleInput" /></td>
@@ -428,7 +435,7 @@
         </table>
         <br>
 
-    	<form role="form">
+        <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Host Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('hostMessageInput', 'handlers/hostHandler.js', 'discordSettings', 'hostMessage')">Submit</button>
@@ -440,7 +447,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('hostChannelInput', 'handlers/hostHandler.js', 'discordSettings', 'hostChannel')">Submit</button>
-                <input type="text" class="form-control" id="hostChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="hostChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -512,7 +519,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('subChannelInput', 'handlers/subscribeHandler.js', 'discordSettings', 'subChannel')">Submit</button>
-                <input type="text" class="form-control" id="subChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="subChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -590,7 +597,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispChannelInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispChannel')">Submit</button>
-                <input type="text" class="form-control" id="gamewispChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="gamewispChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -618,7 +625,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('twitterChannelInput', 'handlers/twitterHandler.js', 'discordSettings', 'twitterChannel')">Submit</button>
-                <input type="text" class="form-control" id="twitterChannelInput" placeholder="Channel Name" />
+                <input type="text" class="form-control" id="twitterChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
