@@ -3,11 +3,11 @@
  */
 (function() {
 	var onlineToggle = $.getSetIniDbBoolean('discordSettings', 'onlineToggle', false),
-	    onlineMessage = $.getSetIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch! (url)'),
+	    onlineMessage = $.getSetIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch with (game)! (url)'),
 	    gameToggle = $.getSetIniDbBoolean('discordSettings', 'gameToggle', false),
 	    gameMessage = $.getSetIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch to (game)! (url)'),
 	    channelName = $.getSetIniDbString('discordSettings', 'onlineChannel', ''),
-	    timeout = (480 * 6e4);
+	    timeout = (300 * 6e4);
 	    lastEvent = 0;
 
 	/**
@@ -18,15 +18,15 @@
 			return;
 		}
 
-		if ($.systemTime() - lastEvent >= timeout) {
+		if ($.systemTime() - $.getIniDbNumber('discordSettings', 'lastOnlineEvent', 0) >= timeout) {
 			var s = onlineMessage;
 
 			if (s.match(/\(name\)/)) {
-				s = $.replace(s, '(name)', $.channelName);
+				s = $.replace(s, '(name)', $.username.resolve($.channelName));
 			}
 
 			if (s.match(/\(url\)/)) {
-				s = $.replace(s, '(url)', ('https://www.twitch.tv/' + $.channelName));
+				s = $.replace(s, '(url)', ('https://twitch.tv/' + $.channelName));
 			}
 
 			if (s.match(/\(game\)/)) {
@@ -37,8 +37,12 @@
 				s = $.replace(s, '(title)', $.getStatus($.channelName));
 			}
 
+            if (s.match(/\(follows\)/)) {
+                s = $.replace(s, '(follows)', $.getFollows($.channelName).toString());
+            }
+
 			$.discord.say(channelName, s);
-			lastEvent = $.systemTime();
+            $.setIniDbNumber('discordSettings', 'lastOnlineEvent', $.systemTime());
 		}
 	});
 
@@ -53,11 +57,11 @@
 		var s = gameMessage;
 
 		if (s.match(/\(name\)/)) {
-			s = $.replace(s, '(name)', $.channelName);
+			s = $.replace(s, '(name)', $.username.resolve($.channelName));
 		}
 
 		if (s.match(/\(url\)/)) {
-			s = $.replace(s, '(url)', ('https://www.twitch.tv/' + $.channelName));
+			s = $.replace(s, '(url)', ('https://twitch.tv/' + $.channelName));
 		}
 
 		if (s.match(/\(game\)/)) {
@@ -71,6 +75,14 @@
 		if (s.match(/\(uptime\)/)) {
 			s = $.replace(s, '(uptime)', $.getStreamUptime($.channelName).toString());
 		}
+
+        if (s.match(/\(follows\)/)) {
+            s = $.replace(s, '(follows)', $.getFollows($.channelName).toString());
+        }
+
+        if (s.match(/\(viewers\)/)) {
+            s = $.replace(s, '(viewers)', $.getViewers($.channelName).toString());
+        }
 
 		$.discord.say(channelName, s);
 	});
