@@ -431,6 +431,7 @@
         $.inidb.RemoveFile('discordKeywords');
         $.inidb.RemoveFile('discordCommands');
         $.inidb.RemoveFile('discordCooldown');
+        $.inidb.del('modules', './handlers/discordHandler.js');
 
         $.consoleLn('Reloading blacklist and whitelist...');
         var keys = $.inidb.GetKeyList('blackList', ''),
