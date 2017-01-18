@@ -199,6 +199,8 @@ public class DiscordAPI {
                     com.gmt2001.Console.warn.println("Discord Rate Limit has been Exceeded [RateLimitedException]: " + ex.getMessage());
                 } catch (PermissionException ex) {
                     com.gmt2001.Console.err.println("ACTION REQUIRED: Discord Bot Account does not have Write Permission to Channel: " + channel);
+                } catch (UnsupportedOperationException ex) {
+                    com.gmt2001.Console.err.println("Failed to send a message to channel " + channel + ": " + ex.getMessage());
                 }
             }
         }
