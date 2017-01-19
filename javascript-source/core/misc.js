@@ -534,22 +534,24 @@
         var idx,
             output = '',
             maxlen,
+            hasNoLang = langKey.startsWith('NULL')
             pageCount = 0;
 
         if (display_page === undefined) {
             display_page = 0;
         }
 
-        maxlen = 440 - $.lang.get(langKey).length;
+        maxlen = 440 - (hasNoLang ? langKey.length : $.lang.get(langKey).length);
+        langKey = langKey.replace('NULL', '');
         for (idx in array) {
             output += array[idx];
             if (output.length >= maxlen) {
                 pageCount++;
                 if (display_page === 0 || display_page === pageCount) {
                     if (whisper) {
-                        $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
+                        $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
                     } else {
-                        $.say($.lang.get(langKey, output));
+                        $.say((hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
                     }
                 }
                 output = '';
@@ -562,9 +564,9 @@
         pageCount++;
         if (display_page === 0 || display_page === pageCount) {
             if (whisper) {
-                $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
+                $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
             } else {
-                $.say($.lang.get(langKey, output));
+                $.say((hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
             }
         }
         return pageCount;
