@@ -449,6 +449,10 @@
             $.inidb.del('whiteList', keys[i]);
         }
 
+        $.consoleLn('Updating host settings...');
+        $.inidb.set('settings', 'hostToggle', true);
+        $.inidb.set('settings', 'autoHostToggle', true);
+
         $.consoleLn('PhantomBot update 2.3.5 completed!');
         $.inidb.set('updates', 'installedv2.3.5s', 'true');
     }

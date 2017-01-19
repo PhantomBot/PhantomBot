@@ -71,6 +71,12 @@
                     if (panelMatch(msgObject['results'][idx]['key'], 'autoHostMessage')) {
                         $('#hostAutoAnnounceInput').val(msgObject['results'][idx]['value']).blur();
                     }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'hostToggle')) {
+                        $('#hostToggle').html(modeIcon[msgObject['results'][idx]['value']]);
+                    }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'autoHostToggle')) {
+                        $('#autoHostToggle').html(modeIcon[msgObject['results'][idx]['value']]);
+                    }
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostHistory')) {
                         hostHistory = msgObject['results'][idx]['value'];
                         $('#hostHistoryMode').html(modeIcon[msgObject['results'][idx]['value']]);
@@ -273,6 +279,15 @@
         }
     }
 
+    /** 
+     * @function toggle
+     */
+    function toggle(table, key, value) {
+        $('#' + key).html(spinIcon);
+        sendDBUpdate('hostraid_settings', table, key, value);
+        setTimeout(function() { doQuery(); sendCommand('reloadhost'); }, TIMEOUT_WAIT_TIME);
+    }
+
     // Import the HTML file for this panel.
     $('#hostraidPanel').load('/panel/hostraid.html');
 
@@ -309,4 +324,5 @@
     $.updateHostMinViewers = updateHostMinViewers;
     $.changeHostHistory = changeHostHistory;
     $.updateRaidMessage = updateRaidMessage;
+    $.toggle = toggle;
 })();
