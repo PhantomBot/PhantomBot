@@ -2270,6 +2270,26 @@ public class PhantomBot implements Listener {
     }
 
     /*
+     * versionCompare
+     */
+    private int versionCompare(String currentVersion, String newVersion) {
+        String[] version1 = currentVersion.split("\\.");
+        String[] version2 = newVersion.split("\\.");
+        int i = 0;
+
+        while (i < version1.length && i < version2.length && version1[i].equals(version2[i])) {
+            i++;
+        }
+
+        if (i < version1.length && i < version2.length) {
+            int diff = Integer.valueOf(version1[i]).compareTo(Integer.valueOf(version2[i]));
+            return Integer.signum(diff);
+        }
+
+        return Integer.signum(version1.length - version2.length);
+    }
+
+    /*
      * doCheckPhantomBotUpdate
      */
     private void doCheckPhantomBotUpdate() {
@@ -2278,6 +2298,12 @@ public class PhantomBot implements Listener {
             @Override
             public void run() {
                 String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
+
+                // Don't announce a new version if the current version is greater or equals to the current repo one.
+                if (versionCompare(RepoVersion.getPhantomBotVersion(), newVersionInfo[0].replace("v", "")) >= 0) {
+                    return;
+                }
+
                 if (newVersionInfo != null) {
                     try {
                         Thread.sleep(6000);
