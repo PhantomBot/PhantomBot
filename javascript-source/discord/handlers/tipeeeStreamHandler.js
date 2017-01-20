@@ -36,12 +36,12 @@
     	var jsonString = event.getJsonString(),
             JSONObject = Packages.org.json.JSONObject,
             donationObj = new JSONObject(jsonString),
-            donationID = donationObj.getString('id'),
+            donationID = donationObj.getInt('id'),
             paramObj = donationObj.getJSONObject('parameters'),
             donationUsername = paramObj.getString('username'),
             donationCurrency = paramObj.getString('currency'),
             donationMessage = paramObj.getString('message'),
-            donationAmount = paramObj.getString('amount'),
+            donationAmount = paramObj.getInt('amount'),
             donationFormattedAmount = donationObj.getString('formattedAmount'),
             s = message;
 
