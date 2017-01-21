@@ -407,6 +407,7 @@ public class Session {
                 if (message != null) {
                     session.sendQueue.add(new Message(message.message)); //add the message in the final queue, to make sure timeouts are not limiting us.
                     lastMessage = System.currentTimeMillis();
+                    com.gmt2001.Console.debug.println("message pushed from first queue to the second and last queue.");
                 }
             }
         }
