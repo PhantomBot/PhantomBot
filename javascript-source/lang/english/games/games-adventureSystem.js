@@ -1,4 +1,3 @@
-$.lang.register('adventuresystem.adventure.cooldown', 'The adventure is still cooling down! $1 to go.');
 $.lang.register('adventuresystem.adventure.usage', 'Usage: !adventure [$1].');
 $.lang.register('adventuresystem.alreadyjoined', 'You have already joined the adventure!');
 $.lang.register('adventuresystem.completed', 'The adventure ended! Survivors are: $1.');
