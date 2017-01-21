@@ -62,10 +62,10 @@
         }
 
         if (message.match(/\(currenttime/)) {
-            var timezone = message.match(/\(currenttime ([a-zA-Z\/]+), (.*)+\)/)[1],
-                format = message.match(/\(currenttime ([a-zA-Z\/]+), (.*)+\)/)[2];
+            var timezone = message.match(/\(currenttime ([a-zA-Z\/]+), (.*)\)/)[1],
+                format = message.match(/\(currenttime ([a-zA-Z\/]+), (.*)\)/)[2];
 
-            message = $.replace(message, message.match(/\(currenttime ([a-zA-Z\/]+), (.*)+\)/)[0], $.getCurrentLocalTimeString(format, timezone));
+            message = $.replace(message, message.match(/\(currenttime ([a-zA-Z\/]+), (.*)\)/)[0], $.getCurrentLocalTimeString(format, timezone));
         }
 
         if (message.match(/\(1\)/g)) {
