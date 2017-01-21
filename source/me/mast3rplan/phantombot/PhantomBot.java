@@ -451,6 +451,8 @@ public class PhantomBot implements Listener {
         PhantomBot.messageLimit = Double.parseDouble(this.pbProperties.getProperty("msglimit30", "18.75"));
         if (PhantomBot.messageLimit > 80.0) {
             PhantomBot.messageLimit = 80.0;
+        } else if (PhantomBot.messageLimit < 18.75) {
+            PhantomBot.messageLimit = 18.75;
         }
 
         /* Set the whisper limit for session.java to use. -- Currently Not Used -- */
