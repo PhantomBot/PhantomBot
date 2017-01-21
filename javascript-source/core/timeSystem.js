@@ -77,6 +77,19 @@
     }
 
     /**
+     * @function getCurrentLocalTimeString
+     * @export $
+     * @param {String} timeformat
+     * @param {String} timeZone
+     * @return {String}
+     */
+    function getCurrentLocalTimeString(format, timeZone) {
+        var dateFormat = new java.text.SimpleDateFormat(format);
+        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
+        return dateFormat.format(new java.util.Date());
+    }
+
+    /**
      * @function dateToString
      * @export $
      * @param {Date} date
@@ -404,4 +417,5 @@
     $.getLocalTimeString = getLocalTimeString;
     $.getTimeStringMinutes = getTimeStringMinutes;
     $.updateTimeSettings = updateTimeSettings;
+    $.getCurrentLocalTimeString = getCurrentLocalTimeString;
 })();

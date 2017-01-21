@@ -305,7 +305,7 @@
 
                     spamLimit = parseInt(actionArgs);
                     $.setIniDbNumber('discordSettings', 'spamLimit', spamLimit);
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.spam.limit.set'));
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.spam.limit.set', spamLimit));
                 }
             }
 
