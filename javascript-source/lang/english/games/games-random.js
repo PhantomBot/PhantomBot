@@ -163,7 +163,7 @@ $.lang.register('randomcommand.162', '(sender) go up to somebody you don\'t like
 $.lang.register('randomcommand.163', '(sender) hide in a tree next to a sidewalk and jump at people right after they pass.');
 $.lang.register('randomcommand.164', 'Sit and stare at this screen for 30 seconds.');
 $.lang.register('randomcommand.165', 'Have fun.');
-$.lang.register('randomcommand.166', 'Lie on the grass and look at clouds. Breath in. Life is beautiful.');
+$.lang.register('randomcommand.166', 'Lie on the grass and look at clouds. Breathe in. Life is beautiful.');
 $.lang.register('randomcommand.167', 'Kaioken!!!!');
 $.lang.register('randomcommand.168', 'POTATO');
 $.lang.register('randomcommand.169', 'When it is complete silence in class, during a test laugh real loud for no reason.');
