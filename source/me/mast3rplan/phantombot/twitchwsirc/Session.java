@@ -151,6 +151,7 @@ public class Session {
         } else {
             sayTimer.schedule(new SendMsg(), 100, 1); // start a timer for the final queue for the timeouts and messages.
         }
+        com.gmt2001.Console.debug.println("startTimers()::alternateBurst::" + alternateBurst);
     }
 
     /*
@@ -203,6 +204,7 @@ public class Session {
      */
     public void setAllowSendMessages(Boolean sendMessages) {
         this.sendMessages = sendMessages;
+        com.gmt2001.Console.debug.println("setAllowSendMessages(" + sendMessages + ")");
     }
 
     /*
@@ -244,6 +246,7 @@ public class Session {
      */
     public void saySilent(String message) {
         twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
+        com.gmt2001.Console.debug.println("saySilent::PRIVMSG #" + channelName + " :" + message);
     }
 
     /*
@@ -407,7 +410,6 @@ public class Session {
                 if (message != null) {
                     session.sendQueue.add(new Message(message.message)); //add the message in the final queue, to make sure timeouts are not limiting us.
                     lastMessage = System.currentTimeMillis();
-                    com.gmt2001.Console.debug.println("message pushed from first queue to the second and last queue.");
                 }
             }
         }
