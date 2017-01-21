@@ -132,6 +132,9 @@
                     $.consoleLn('[MUTED] ' + message);
                 }
             }
+        } else {
+            $.log.error('"$.session" object not generated, cannot send messages. Please reboot your bot to try to fix this.');
+            return;
         }
 
         $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
