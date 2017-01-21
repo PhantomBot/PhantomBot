@@ -103,7 +103,7 @@ public class ChannelHostCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException e) {
-            com.gmt2001.Console.out.println("ChannelHostCache.run: Failed to initial sleep: [InterruptedException] " + e.getMessage());
+            com.gmt2001.Console.debug.println("ChannelHostCache.run: Failed to initial sleep: [InterruptedException] " + e.getMessage());
         }
 
         while (!killed) {
@@ -135,17 +135,16 @@ public class ChannelHostCache implements Runnable {
                         }
                     }
 
-                    com.gmt2001.Console.out.println("ChannelHostCache.run: Failed to update hosts: " + e.getMessage());
+                    com.gmt2001.Console.debug.println("ChannelHostCache.run: Failed to update hosts: " + e.getMessage());
                 }
             } catch (Exception e) {
                 com.gmt2001.Console.err.printStackTrace(e);
-                com.gmt2001.Console.out.println("ChannelHostCache.run: Failed to update hosts::: " + e.getMessage());
             }
 
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException e) {
-                com.gmt2001.Console.out.println("ChannelHostCache.run: Failed to sleep: [InterruptedException] " + e.getMessage());
+                com.gmt2001.Console.debug.println("ChannelHostCache.run: Failed to sleep: [InterruptedException] " + e.getMessage());
             }
         }
     }
