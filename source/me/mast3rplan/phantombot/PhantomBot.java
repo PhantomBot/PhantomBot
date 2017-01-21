@@ -739,7 +739,7 @@ public class PhantomBot implements Listener {
      * Returns if Twitch WS-IRC Host Detection is connected.
      */
     public boolean wsHostIRCConnected() {
-        return this.wsHostIRC.isConnected();
+        return (this.wsHostIRC != null ? this.wsHostIRC.isConnected() : false);
     }
 
     /*
