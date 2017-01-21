@@ -25,9 +25,9 @@
     	}
 
     	if (event.getMentionUser() != null) {
-            $.discord.say(channelName, $.lang.get('discord.twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+            $.discord.say(channelName, $.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
         } else {
-            $.discord.say(channelName, $.lang.get('discord.twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+            $.discord.say(channelName, $.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
         }
     });
 
