@@ -1130,7 +1130,7 @@ public class PhantomBot implements Listener {
         this.followersCache = FollowersCache.instance(this.chanName);
         this.hostCache = ChannelHostCache.instance(this.chanName);
         this.subscribersCache = SubscribersCache.instance(this.chanName);
-        this.twitchCache = TwitchCache.instance(this.chanName);// This does not create a new instance for multiple channels. Not sure why.
+        this.twitchCache = TwitchCache.instance(this.chanName);
         this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
 
         /* Start the donations cache if the keys are not null and the module is enabled */
