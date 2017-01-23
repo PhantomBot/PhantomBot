@@ -238,9 +238,6 @@ public class PhantomBot implements Listener {
     private Session session;
     private String chanName;
     private Boolean timer = false;
-    private String keyStorePath = "";
-    private String keyStorePassword = "";
-    private String keyPassword = "";
     private SecureRandom random;
     private static HashMap<String, Channel> channels;
     private static HashMap<String, Session> sessions;

@@ -65,8 +65,6 @@
             $.registerChatSubcommand('points', 'setgain', 1);
             $.registerChatSubcommand('points', 'setofflinegain', 1);
             $.registerChatSubcommand('points', 'setinterval', 1);
-            $.registerChatSubcommand('points', 'user', 7);
-            $.registerChatSubcommand('points', 'check', 7);
             $.registerChatSubcommand('points', 'bonus', 1);
             $.registerChatSubcommand('points', 'resetall', 1);
 
@@ -82,8 +80,6 @@
             $.registerChatSubcommand('point', 'setgain', 1);
             $.registerChatSubcommand('point', 'setofflinegain', 1);
             $.registerChatSubcommand('point', 'setinterval', 1);
-            $.registerChatSubcommand('point', 'user', 7);
-            $.registerChatSubcommand('point', 'check', 7);
             $.registerChatSubcommand('point', 'bonus', 1);
             $.registerChatSubcommand('point', 'resetall', 1);
         } else {
@@ -99,8 +95,6 @@
             $.unregisterChatSubcommand('points', 'setgain', 1);
             $.unregisterChatSubcommand('points', 'setofflinegain', 1);
             $.unregisterChatSubcommand('points', 'setinterval', 1);
-            $.unregisterChatSubcommand('points', 'user', 7);
-            $.unregisterChatSubcommand('points', 'check', 7);
             $.unregisterChatSubcommand('points', 'bonus', 1);
             $.unregisterChatSubcommand('points', 'resetall', 1);
 
@@ -116,8 +110,6 @@
             $.unregisterChatSubcommand('point', 'setgain', 1);
             $.unregisterChatSubcommand('point', 'setofflinegain', 1);
             $.unregisterChatSubcommand('point', 'setinterval', 1);
-            $.unregisterChatSubcommand('point', 'user', 7);
-            $.unregisterChatSubcommand('point', 'check', 7);
             $.unregisterChatSubcommand('point', 'bonus', 1);
             $.unregisterChatSubcommand('point', 'resetall', 1);
         }
@@ -811,8 +803,6 @@
             $.registerChatSubcommand('points', 'setgain', 1);
             $.registerChatSubcommand('points', 'setofflinegain', 1);
             $.registerChatSubcommand('points', 'setinterval', 1);
-            $.registerChatSubcommand('points', 'user', 7);
-            $.registerChatSubcommand('points', 'check', 7);
             $.registerChatSubcommand('points', 'bonus', 1);
             $.registerChatSubcommand('points', 'resetall', 1);
 
