@@ -189,7 +189,7 @@ public class TipeeeStreamCache implements Runnable {
 
         if (firstUpdate && !killed) {
             firstUpdate = false;
-            EventBus.instance().post(new TipeeeStreamDonationInitializedEvent(PhantomBot.getChannel("#" + this.channel)));
+            EventBus.instance().post(new TipeeeStreamDonationInitializedEvent(PhantomBot.getChannel(this.channel)));
         }
 
         if (donations != null && !killed) {

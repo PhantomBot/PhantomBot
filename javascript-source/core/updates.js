@@ -117,6 +117,7 @@
                 './systems/ticketraffleSystem.js',
                 './systems/raidSystem.js',
                 './systems/youtubePlayer.js',
+                './systems/audioPanelSystem.js'
             ];
 
         if ($.inidb.FileExists('points') || $.inidb.FileExists('command') || $.inidb.FileExists('time')) {
@@ -320,7 +321,6 @@
 
         $.consoleLn('Disabling new modules...');
         $.inidb.set('modules', './handlers/bitsHandler.js', 'false');
-        $.inidb.set('modules', './systems/autoHostSystem.js', 'false');
 
         $.consoleLn('Setting up new default custom commands...');
         if (!$.inidb.exists('command', 'uptime')) {
@@ -350,14 +350,6 @@
 
         $.inidb.del('permcom', 'game set');
         $.inidb.del('permcom', 'title set');
-
-        $.consoleLn('Updating auto hosting settings...');
-        if ($.inidb.exists('autohost_config', 'force') && $.inidb.get('autohost_config', 'force') == true) {
-            $.inidb.set('autohost_config', 'force', false);
-        }
-        if ($.inidb.exists('autohost_config', 'host_time_minutes') && $.inidb.get('autohost_config', 'host_time_minutes') < 30) {
-            $.inidb.set('autohost_config', 'host_time_minutes', 0);
-        }
 
         $.consoleLn('Setting up new toggles...');
         $.inidb.set('adventureSettings', 'warningMessage', true);
@@ -451,7 +443,26 @@
 
         $.consoleLn('Updating host settings...');
         $.inidb.set('settings', 'hostToggle', true);
-        $.inidb.set('settings', 'autoHostToggle', true);
+
+        $.consoleLn('Disabling default discord modules.');
+        modules = [
+            './discord/handlers/bitsHandler.js',
+            './discord/handlers/followHandler.js',
+            './discord/handlers/subscribeHandler.js',
+            './discord/handlers/tipeeStreamHandler.js',
+            './discord/handlers/streamtipHandler.js',
+            './discord/handlers/streamlabsHandler.js',
+            './discord/handlers/hostHandler.js',
+            './discord/handlers/twitterHandler.js',
+            './discord/handlers/keywordHandler.js',
+            './discord/handlers/streamHandler.js',
+            './discord/handlers/gamewispHandler.js',
+            './discord/systems/greetingSystem.js',
+            './discord/commands/customCommands.js'
+        ];
+        for (i in modules) {
+            $.inidb.set('modules', modules[i], 'false');
+        }
 
         $.consoleLn('PhantomBot update 2.3.5 completed!');
         $.inidb.set('updates', 'installedv2.3.5s', 'true');
