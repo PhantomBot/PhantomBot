@@ -63,7 +63,7 @@
             s = $.replace(s, '(amount)', parseInt(donationAmount.toFixed(2)));
         }
 
-        if (s.match(/\(amount.toFixed(0)\)/)) {
+        if (s.match(/\(amount\.toFixed\(0\)\)/)) {
             s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount.toFixed(0)));
         }
 
