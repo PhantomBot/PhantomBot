@@ -701,7 +701,7 @@
             return;
         }
 
-        sendCommand(val);
+        sendCommand(val.replace('!', ''));
         $('#commandImput').val('command sent!');
         setTimeout(function() { $('#commandImput').val('') }, TIMEOUT_WAIT_TIME);
     }
