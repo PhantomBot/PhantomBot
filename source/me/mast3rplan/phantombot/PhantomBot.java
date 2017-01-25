@@ -434,7 +434,7 @@ public class PhantomBot implements Listener {
         this.panelPassword = this.pbProperties.getProperty("panelpassword", "panel");
 
         /* Enable/disable devCommands */
-        this.devCommands = this.pbProperties.getProperty("devcommands", "false").equalsIgnoreCase("true") ? true : false;
+        this.devCommands = this.pbProperties.getProperty("devcommands", "true").equalsIgnoreCase("true") ? true : false;
 
         /* Toggle for the old servers. */
         this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true") ? true : false;
