@@ -64,6 +64,7 @@ public class TwitchWSIRC extends WebSocketClient {
     private Channel channel;
     private long lastPing = 0L;
     private boolean sentPing = false;
+    private boolean pingRequest = false;
 
     private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "480000"));
     private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "600000"));
@@ -186,6 +187,13 @@ public class TwitchWSIRC extends WebSocketClient {
         eventBus.postAsync(new IrcConnectCompleteEvent(session));
         lastPing = System.currentTimeMillis();
         checkPingTime();
+
+        // I read in a post on the twitch dev forum that some guy had to request a first ping for Twitch to start sending pings to him. Maybe this is why people always disconnect a lot?
+        // This should not hurt anything, it will only be sent once since I added a check.
+        if (!pingRequest) {
+            this.send("PING :tmi.twitch.tv");
+            pingRequest = true;
+        }
     }
 
     /*
@@ -283,7 +291,7 @@ public class TwitchWSIRC extends WebSocketClient {
                 if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
                     com.gmt2001.Console.debug.println("Sending a PING to Twitch to Verify Connection");
                     sentPing = true;
-                    send("PING tmi.twitch.tv");
+                    send("PING :tmi.twitch.tv");
                 }
 
                 if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
