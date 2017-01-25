@@ -55,10 +55,10 @@
                     '    <td style="width: 10%">' + keyword + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 80%" type="text" id="inlineKeywordEdit_' + keyword + '"' +
+                    '            <input style="width: 80%" type="text" id="inlineKeywordEdit_' + keyword.replace(/[^a-z1-9]/ig, '_') + '"' +
                     '                   value="' + msgObject['results'][idx]['value'] + '" />' +
                     '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateKeyword(\'' + keyword + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="deleteKeyword_' + keyword + '" onclick="$.deleteKeyword(\'' + keyword + '\')"><i class="fa fa-trash" /> </button>' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteKeyword_' + keyword.replace(/[^a-z1-9]/ig, '_') + '" onclick="$.deleteKeyword(\'' + keyword + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -83,10 +83,10 @@
                     '    <td style="width: 10%">' + key + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 60%" type="text" id="editCooldown_' + key + '"' +
+                    '            <input style="width: 60%" type="text" id="editCooldown_' + key.replace(/[^a-z1-9]/ig, '_') + '"' +
                     '                   value="' + time + '" />' +
                     '              <button type="button" class="btn btn-default btn-xs" onclick="$.editKeyCooldown(\'' + key + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCooldown_' + key + '" onclick="$.deleteKeyCooldown(\'' + key + '\')"><i class="fa fa-trash" /> </button>' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCooldown_' + key.replace(/[^a-z1-9]/ig, '_') + '" onclick="$.deleteKeyCooldown(\'' + key + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -110,10 +110,10 @@
                     '    <td style="width: 10%">' + key + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 60%" type="text" id="editKeyPrice_' + key + '"' +
+                    '            <input style="width: 60%" type="text" id="editKeyPrice_' + key.replace(/[^a-z1-9]/ig, '_') + '"' +
                     '                   value="' + time + '" />' +
                     '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateKeyPrice(\'' + key + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="deleteKeyPrice_' + key + '" onclick="$.deleteKeyPrice(\'' + key + '\')"><i class="fa fa-trash" /> </button>' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteKeyPrice_' + key.replace(/[^a-z1-9]/ig, '_') + '" onclick="$.deleteKeyPrice(\'' + key + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -143,7 +143,7 @@
 
         if (keyword.length > 0 && response.length > 0) {
             $('#addKeywordInput').val('Submitting...');
-            $('#addKeywordResponseInput').val('Submitting...');
+            $('#addKeywordResponseInput').val('');
             sendDBUpdate('keywords_addkeyword', 'keywords', keyword, response);
             setTimeout(function() {
                 $('#addKeywordInput').val('');
@@ -158,8 +158,8 @@
      * @param {String} keywordIdx
      */
     function deleteKeyword(keyword) {
-        $('#deleteKeyword_' + keyword).html(spinIcon);
-        console.log(keyword);
+        $('#deleteKeyword_' + keyword.replace(/[^a-z1-9]/ig, '_')).html(spinIcon);
+
         sendDBDelete('keywords_delkeyword', 'keywords', keyword);
         sendDBDelete('keywords_delkeyword', 'coolkey', keyword);
         sendDBDelete('keywords_delkeyword', 'pricekey', keyword);
