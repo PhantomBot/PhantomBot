@@ -61,6 +61,39 @@
     }
 
     /**
+     * @function loadDefaultPl
+     */
+    function loadDefaultPl() {
+        if (currentPlaylist === null && connectedPlayerClient !== null) {
+            /** Pre-load last activated playlist */
+            currentPlaylist = new BotPlayList(activePlaylistname, true);
+            /** if the current playlist is "default" and it's empty, add some default songs. */
+            if (currentPlaylist.getPlaylistname().equals('default') && currentPlaylist.getplaylistLength() == 0) {
+                /** CyberPosix - Under The Influence (Outertone Free Release) */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('gotxnim9h8w', $.botName));
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+
+                /** Different Heaven & Eh!de - My Heart (Outertone 001 - Zero Release) */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('WFqO9DoZZjA', $.botName));
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+
+                /** Tobu - Higher (Outertone Release) */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+            }
+        }
+    }
+
+    /**
      * @class
      * @description This class holds information about a youtube video.
      * @param {string} searchQuery
@@ -994,6 +1027,7 @@
         connectedPlayerClient = new PlayerClientInterface();
 
         $.consoleLn($.lang.get('ytplayer.console.client.connected'));
+        loadDefaultPl();
         connectedPlayerClient.pushPlayList();
         $.youtubePlayerConnected = true;
     });
@@ -1704,35 +1738,7 @@
             $.registerChatSubcommand('wrongsong', 'user', 2);
 
             loadPanelPlaylist();
-
-            if (currentPlaylist == null) {
-                /** Pre-load last activated playlist */
-                currentPlaylist = new BotPlayList(activePlaylistname, true);
-
-                /** if the current playlist is "default" and it's empty, add some default songs. */
-                if (currentPlaylist.getPlaylistname().equals('default') && currentPlaylist.getplaylistLength() == 0) {
-                    /** CyberPosix - Under The Influence (Outertone Free Release) */
-                    try {
-                        currentPlaylist.addToPlaylist(new YoutubeVideo('gotxnim9h8w', $.botName));
-                    } catch (ex) {
-                        $.log.error("YoutubeVideo::exception: " + ex);
-                    }
-    
-                    /** Different Heaven & Eh!de - My Heart (Outertone 001 - Zero Release) */
-                    try {
-                        currentPlaylist.addToPlaylist(new YoutubeVideo('WFqO9DoZZjA', $.botName));
-                    } catch (ex) {
-                        $.log.error("YoutubeVideo::exception: " + ex);
-                    }
-    
-                    /** Tobu - Higher (Outertone Release) */
-                    try {
-                        currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
-                    } catch (ex) {
-                        $.log.error("YoutubeVideo::exception: " + ex);
-                    }
-                }
-            }
+            loadDefaultPl();
         }
     });
 })();

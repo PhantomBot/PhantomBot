@@ -184,6 +184,7 @@
      * @param {String} id
      */
     function deleteNotice(id) {
+        $('#deleteNotice_' + id).html(spinIcon);
         sendCommand('notice removesilent ' + id);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }

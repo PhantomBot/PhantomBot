@@ -224,7 +224,7 @@
             if (panelCheckQuery(msgObject, 'dashboard_gameTitle')) {
                 gameTitle = msgObject['results']['game'];
                 if (gameTitle === undefined || gameTitle === null) {
-                    gameTitle = "Game";
+                    gameTitle = "Some Game";
                 }
 
                 $('#gameTitleInput').val(gameTitle);
@@ -248,8 +248,9 @@
 
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
                 amount = msgObject['results'][gameTitle];
-                if (gameTitle === undefined || gameTitle === null || amount === null || amount === undefined) {
-                    $("#deathCounterValue").html(msgObject['results'][gameTitle]);
+                if (gameTitle == null || amount == null) {
+                    $("#deathCounterValue").html('0');
+                    return;
                 }
                 $("#deathCounterValue").html(msgObject['results'][gameTitle]);
             }

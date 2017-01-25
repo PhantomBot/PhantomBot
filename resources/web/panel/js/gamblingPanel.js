@@ -266,8 +266,8 @@
             sendCommand('reloadraffle');
             sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usetime');
         }, TIMEOUT_WAIT_TIME);
-        $('#raffle-keyword').val('');
-        $('#raffle-cost').val('');
+        $('#raffle-time-keyword').val('');
+        $('#raffle-time-cost').val('');
         $('#raffle-time-sub').html('1 Times');
         $('#raffle-time-reg').html('1 Times');
         $('#raffle-time-timer2').html('Until closed');
