@@ -81,6 +81,7 @@
             var donationSay = donationMessage;
             donationSay = donationSay.replace('(name)', donationUsername);
             donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
+            donationSay = donationSay.replace('(amount.toFixed(0))', donationAmount.toFixed(0));
             donationSay = donationSay.replace('(points)', rewardPoints.toString());
             donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
             donationSay = donationSay.replace('(currency)', donationCurrency);
