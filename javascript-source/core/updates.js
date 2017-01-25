@@ -58,6 +58,19 @@
         './systems/audioPanelSystem.js',
         './systems/queueSystem.js',
         './systems/bettingSystem.js',
+        './discord/handlers/bitsHandler.js',
+        './discord/handlers/followHandler.js',
+        './discord/handlers/subscribeHandler.js',
+        './discord/handlers/tipeeStreamHandler.js',
+        './discord/handlers/streamtipHandler.js',
+        './discord/handlers/streamlabsHandler.js',
+        './discord/handlers/hostHandler.js',
+        './discord/handlers/twitterHandler.js',
+        './discord/handlers/keywordHandler.js',
+        './discord/handlers/streamHandler.js',
+        './discord/handlers/gamewispHandler.js',
+        './discord/systems/greetingSystem.js',
+        './discord/commands/customCommands.js'
         ];
 
         $.consoleLn('Disabling default modules...');
