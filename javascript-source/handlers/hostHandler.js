@@ -97,6 +97,16 @@
             viewers = event.getUsers(),
             s = hostMessage;
 
+        // Always update the Host History even if announcements are off or if they recently
+        // hosted the channel and it would not be noted in chat.  This was the caster does
+        // have a log of all hosts that did occur, announced or not.
+        //
+        if ($.getIniDbBoolean('settings', 'hostHistory', false)) {
+            var now = $.systemTime();
+            var jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : viewers };
+            $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
+        }
+
         if (announceHosts === false) {
             return;
         }
@@ -132,11 +142,6 @@
         $.writeToFile(hoster, './addons/hostHandler/latestHost.txt', false);
         if (hostReward > 0 && viewers > hostMinViewerCount) {
             $.inidb.incr('points', hoster.toLowerCase(), hostReward);
-        }
-
-        if ($.getIniDbBoolean('settings', 'hostHistory', false)) {
-            var jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : viewers };
-            $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
         }
     });
 
