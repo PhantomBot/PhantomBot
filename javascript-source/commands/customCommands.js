@@ -711,7 +711,6 @@
 
         /**
          * @commandpath permcom [command] [groupId] - Set the permissions for a command
-         * @commandpath permcom [command] [subcommand] [groupId] - Set the permissions for a subcommand
          */
         if (command.equalsIgnoreCase('permcom')) {
             if (!action || !subAction) {
@@ -769,8 +768,6 @@
 
         /**
          * @commandpath pricecom [command] [amount] - Set the amount of points a command should cost
-         * @commandpath pricecom [command] [subcommand] [amount] - Set the amount of points a command should cost
-         * @commandpath pricecom [command] [subcommand] [subaction] [amount] - Set the amount of points a command should cost
          */
         if (command.equalsIgnoreCase('pricecom')) {
             if (!action || !subAction || args.length > 4) {

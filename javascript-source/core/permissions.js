@@ -775,7 +775,7 @@
          * @commandpath permission [username] [groupId] - Get your current permission or optionally set the user permission for a user.
          */
         if (command.equalsIgnoreCase('permission')) {
-            if (!$.isModv3(sender, event.getTags()) || !args[0]) {
+            if (args[0] === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.self.current', $.getUserGroupName(sender)));
                 return;
             }
@@ -793,6 +793,13 @@
                 return;
             }
 
+            if (groupId == 3) {
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.sub.error'));
+                return;
+            }
+
+            /**
+             * This command is admin only by default. Admins should be able to set peoples group to whatever they want.
             if (!isOwner(sender) && groupId < getUserGroupId(sender)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.error.abovegroup'));
                 return;
@@ -801,12 +808,7 @@
             if (!isOwner(sender) && groupId == getUserGroupId(sender)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.error.samegroup'));
                 return;
-            }
-
-            if (groupId == 3) {
-                $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.sub.error'));
-                return;
-            }
+            }*/
 
             $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.username.resolve(username), getGroupNameById(groupId) + " (" + groupId + ")"));
             $.inidb.set('group', username.toLowerCase(), groupId);
@@ -818,7 +820,7 @@
         }
 
         /**
-         * @commandpath permissionpoints [permissionID] [online|offline] [points] - Show/set the points gained for each permissions. -1 defaults to the global configuration.
+         * @commandpath permissionpoints [permissionID] [online / offline] [points] - Show/set the points gained for each permissions. -1 defaults to the global configuration.
          */
         if (command.equalsIgnoreCase('permissionpoints')) {
             var groupId,
@@ -892,24 +894,10 @@
     });
 
     /**
-    * Not needed!?
-    *
-    * setInterval(function () {
-    *   var len = subUsers.length,
-    *       now = $.systemTime();
-    *   while (len--) {
-    *     if (subUsers[len][1] < now) {
-    *       subUsers.splice(len, 1);
-    *     }
-    *   }
-    * }, checkSubscribersInterval);
-    */
-
-    /**
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/permissions.js', 'permission', 7);
+        $.registerChatCommand('./core/permissions.js', 'permission', 1);
         $.registerChatCommand('./core/permissions.js', 'permissions', 1);
         $.registerChatCommand('./core/permissions.js', 'permissionlist', 1);
         $.registerChatCommand('./core/permissions.js', 'permissionpoints', 1);
