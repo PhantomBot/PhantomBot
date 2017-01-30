@@ -69,7 +69,7 @@
         './discord/handlers/keywordHandler.js',
         './discord/handlers/streamHandler.js',
         './discord/handlers/gamewispHandler.js',
-        './discord/systems/greetingSystem.js',
+        './discord/systems/greetingsSystem.js',
         './discord/commands/customCommands.js'
         ];
 
@@ -470,7 +470,7 @@
             './discord/handlers/keywordHandler.js',
             './discord/handlers/streamHandler.js',
             './discord/handlers/gamewispHandler.js',
-            './discord/systems/greetingSystem.js',
+            './discord/systems/greetingsSystem.js',
             './discord/commands/customCommands.js'
         ];
         for (i in modules) {
