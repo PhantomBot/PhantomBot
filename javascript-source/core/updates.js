@@ -87,7 +87,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5s'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -424,7 +424,7 @@
     }
 
     /* version 2.3.5 updates */
-    if (!$.inidb.exists('updates', 'installedv2.3.5s') || $.inidb.get('updates', 'installedv2.3.5s') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv2.3.5ss') || $.inidb.get('updates', 'installedv2.3.5ss') != 'true') {
         $.consoleLn('Starting PhantomBot update 2.3.5 updates...');
 
         $.inidb.set('chatModerator', 'moderationLogs', 'false');
@@ -477,8 +477,13 @@
             $.inidb.set('modules', modules[i], 'false');
         }
 
+        $.inidb.set('permcom', 'permission', '1');
+        if ($.inidb.exists('permcom', 'group')) {
+            $.inidb.set('permcom', 'group', '1');
+        }
+
         $.consoleLn('PhantomBot update 2.3.5 completed!');
-        $.inidb.set('updates', 'installedv2.3.5s', 'true');
+        $.inidb.set('updates', 'installedv2.3.5ss', 'true');
     }
 
     /**
