@@ -213,7 +213,7 @@
                 handlePanel('./discord/handlers/gamewispHandler.js', '#_discord_gameWispHandler', moduleEnabled);
             }
             if (panelMatch(module, './discord/systems/greetingsSystem.js')) {
-                handlePanel('./discord/games/greetingsSystem.js', '#_discord_greetingSystem', moduleEnabled);
+                handlePanel('./discord/systems/greetingsSystem.js', '#_discord_greetingSystem', moduleEnabled);
             }
             if (panelMatch(module, './discord/commands/customCommands.js')) {
                 handlePanel('./discord/games/customCommands.js', '#_discord_customCommands', moduleEnabled);
