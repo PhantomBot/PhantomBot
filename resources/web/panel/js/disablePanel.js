@@ -212,8 +212,8 @@
             if (panelMatch(module, './discord/handlers/gamewispHandler.js')) {
                 handlePanel('./discord/handlers/gamewispHandler.js', '#_discord_gameWispHandler', moduleEnabled);
             }
-            if (panelMatch(module, './discord/systems/greetingSystem.js')) {
-                handlePanel('./discord/games/greetingSystem.js', '#_discord_greetingSystem', moduleEnabled);
+            if (panelMatch(module, './discord/systems/greetingsSystem.js')) {
+                handlePanel('./discord/games/greetingsSystem.js', '#_discord_greetingSystem', moduleEnabled);
             }
             if (panelMatch(module, './discord/commands/customCommands.js')) {
                 handlePanel('./discord/games/customCommands.js', '#_discord_customCommands', moduleEnabled);
