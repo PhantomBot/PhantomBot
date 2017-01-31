@@ -96,7 +96,7 @@
                         '<td>' + response.substring(0, 65) + '</td>' +
                         '<td>' + cooldown + ' sec</td>' +
                         '<td><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response + '\', \'' + permission + '\', \'' + cooldown + '\', \'' + channel + '\')"><i class="fa fa-pencil" /> </button>' +
-                        '<button type="button" id="delete_command_' + command + '" class="btn btn-default btn-xs" onclick="$.updateDiscordCommand(\'' + command + '\', \'true\')"><i class="fa fa-trash" /> </button></td> ' +
+                        '<button type="button" id="delete_command_' + command.replace(/[^a-z1-9_]/ig, '_') + '" class="btn btn-default btn-xs" onclick="$.updateDiscordCommand(\'' + command + '\', \'true\')"><i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
                 }
             }
@@ -145,7 +145,7 @@
      */
     function updateDiscordCommand(cmd, isToRemove) {
         if (isToRemove == 'true') {
-            $('#delete_command_' + cmd).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+            $('#delete_command_' + cmd.replace(/[^a-z1-9_]/ig, '_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
             sendDBDelete('discord_command', 'discordCommands', cmd);
             sendDBDelete('discord_command', 'discordPermcom', cmd);
             sendDBDelete('discord_command', 'discordCooldown', cmd);
@@ -158,12 +158,13 @@
                 cooldown = ($('#command-cooldown-modal').val().length === 0 ? $('#command-add-cooldown-modal').val() : $('#command-cooldown-modal').val()),
                 channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val());
 
-            if (command.length === 0 || response.length === 0 || command.includes(' ') || (permission != 1 && permission != 0)) {
+            if (command.length === 0 || response.length === 0 || command.match(/[\'\"\s]/ig) || (permission != 1 && permission != 0)) {
                 setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);
+                newPanelAlert('Cannot add a command with special symbols or spaces.', 'danger', 5000);
                 return;
             }
 
-            command = command.toLowerCase();
+            command = command.replace('!', '').toLowerCase();
 
             sendDBUpdate('discord_command', 'discordCommands', command, response.toString());
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
