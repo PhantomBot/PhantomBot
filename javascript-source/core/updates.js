@@ -43,6 +43,7 @@
         './handlers/twitterHandler.js',
         './handlers/streamTipHandler.js',
         './handlers/discordHandler.js',
+        './handlers/tipeeeStreamHandler.js',
         './systems/cleanupSystem.js',
         './systems/greetingSystem.js',
         './systems/pointSystem.js',
@@ -61,7 +62,7 @@
         './discord/handlers/bitsHandler.js',
         './discord/handlers/followHandler.js',
         './discord/handlers/subscribeHandler.js',
-        './discord/handlers/tipeeStreamHandler.js',
+        './discord/handlers/tipeeeStreamHandler.js',
         './discord/handlers/streamtipHandler.js',
         './discord/handlers/streamlabsHandler.js',
         './discord/handlers/hostHandler.js',
@@ -70,7 +71,11 @@
         './discord/handlers/streamHandler.js',
         './discord/handlers/gamewispHandler.js',
         './discord/systems/greetingsSystem.js',
-        './discord/commands/customCommands.js'
+        './discord/commands/customCommands.js',
+        './discord/games/8ball.js',
+        './discord/games/kill.js',
+        './discord/games/random.js',
+        './discord/games/roulette.js'
         ];
 
         $.consoleLn('Disabling default modules...');
@@ -438,6 +443,9 @@
         $.inidb.RemoveFile('discordCooldown');
         $.inidb.del('modules', './handlers/discordHandler.js');
 
+        $.consoleLn('Disabling new modules.');
+        $.inidb.set('modules', './handlers/tipeeeStreamHandler.js', 'false');
+
         $.consoleLn('Reloading blacklist and whitelist...');
         var keys = $.inidb.GetKeyList('blackList', ''),
             i;
@@ -462,16 +470,20 @@
             './discord/handlers/bitsHandler.js',
             './discord/handlers/followHandler.js',
             './discord/handlers/subscribeHandler.js',
-            './discord/handlers/tipeeStreamHandler.js',
             './discord/handlers/streamtipHandler.js',
             './discord/handlers/streamlabsHandler.js',
+            './discord/handlers/tipeeeStreamHandler.js',
             './discord/handlers/hostHandler.js',
             './discord/handlers/twitterHandler.js',
             './discord/handlers/keywordHandler.js',
             './discord/handlers/streamHandler.js',
             './discord/handlers/gamewispHandler.js',
             './discord/systems/greetingsSystem.js',
-            './discord/commands/customCommands.js'
+            './discord/commands/customCommands.js',
+            './discord/games/8ball.js',
+            './discord/games/kill.js',
+            './discord/games/random.js',
+            './discord/games/roulette.js'
         ];
         for (i in modules) {
             $.inidb.set('modules', modules[i], 'false');
