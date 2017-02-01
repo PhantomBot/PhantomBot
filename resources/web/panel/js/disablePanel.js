@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -188,8 +188,8 @@
             if (panelMatch(module, './discord/handlers/subscribeHandler.js')) {
                 handlePanel('./discord/handlers/subscribeHandler.js', '#_discord_subscribeHandler', moduleEnabled);
             }
-            if (panelMatch(module, './discord/handlers/tipeeStreamHandler.js')) {
-                handlePanel('./discord/handlers/tipeeStreamHandler.js', '#_discord_tipeeStreamHandler', moduleEnabled);
+            if (panelMatch(module, './discord/handlers/tipeeeStreamHandler.js')) {
+                handlePanel('./discord/handlers/tipeeeStreamHandler.js', '#_discord_tipeeeStreamHandler', moduleEnabled);
             }
             if (panelMatch(module, './discord/handlers/streamtipHandler.js')) {
                 handlePanel('./discord/handlers/streamtipHandler.js', '#_discord_streamTipHandler', moduleEnabled);

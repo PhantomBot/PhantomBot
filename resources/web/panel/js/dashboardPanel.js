@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@
                     moduleEnabled = moduleData[idx]['value'];
                     if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
                         html += "<tr class=\"textList\">" +
-                                "    <td>" + module + "</td>" +
+                                "    <td>" + (module.startsWith('./discord/') ? module + ' [Discord Module]' : module) + "</td>" +
 
                                 "    <td style=\"width: 25px\">" +
                                 "        <div id=\"moduleStatus_" + idx + "\">" + modeIcon[moduleEnabled] + "</div>" +
