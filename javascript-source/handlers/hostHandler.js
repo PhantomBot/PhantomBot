@@ -47,7 +47,7 @@
      * @event twitchAutoHosted
      */
     $.bind('twitchAutoHosted', function(event) {
-        var hoster = $.username.resolve(event.getHoster()),
+        var hoster = event.getHoster().toLowerCase(),
             viewers = event.getUsers(),
             s = autoHostMessage;
 
@@ -61,10 +61,12 @@
             } else {
                 return;
             }
+        } else {
+            hostList[hoster] = { hostTime: ($.systemTime() + hostTimeout) };
         }
 
         if (s.match(/\(name\)/)) {
-            s = $.replace(s, '(name)', hoster);
+            s = $.replace(s, '(name)', $.username.resolve(hoster));
         }
 
         if (s.match(/\(reward\)/)) {
@@ -93,7 +95,7 @@
      * @event twitchHosted
      */
     $.bind('twitchHosted', function(event) {
-        var hoster = $.username.resolve(event.getHoster()),
+        var hoster = event.getHoster().toLowerCase(),
             viewers = event.getUsers(),
             s = hostMessage;
 
@@ -117,10 +119,12 @@
             } else {
                 return;
             }
+        } else {
+            hostList[hoster] = { hostTime: ($.systemTime() + hostTimeout) };
         }
 
         if (s.match(/\(name\)/)) {
-            s = $.replace(s, '(name)', hoster);
+            s = $.replace(s, '(name)', $.username.resolve(hoster));
         }
 
         if (s.match(/\(reward\)/)) {

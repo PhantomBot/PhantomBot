@@ -67,10 +67,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.security.SecureRandom;
 import java.math.BigInteger;
 
-import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
 import me.mast3rplan.phantombot.cache.FollowersCache;
-import me.mast3rplan.phantombot.cache.SubscribersCache;
 import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.cache.DonationsCache;
 import me.mast3rplan.phantombot.cache.StreamTipCache;
@@ -200,8 +198,6 @@ public class PhantomBot implements Listener {
 
     /* Caches */
     private FollowersCache followersCache;
-    private ChannelHostCache hostCache = null;
-    private SubscribersCache subscribersCache;
     private ChannelUsersCache channelUsersCache;
     private DonationsCache twitchAlertsCache;
     private StreamTipCache streamTipCache;
@@ -1045,14 +1041,10 @@ public class PhantomBot implements Listener {
         PhantomBot.getSession(this.channelName).setAllowSendMessages(false);
 
         /* Shutdown all caches */
-        print("Terminating the Twitch channel host cache...");
-        ChannelHostCache.killall();
         print("Terminating the Twitch channel user cache...");
         ChannelUsersCache.killall();
         print("Terminating the Twitch channel follower cache...");
         FollowersCache.killall();
-        print("Terminating the Twitch channel subscriber cache...");
-        SubscribersCache.killall();
         print("Terminating the Streamlabs cache...");
         DonationsCache.killall();
         print("Terminating the StreamTip cache...");
@@ -1127,8 +1119,6 @@ public class PhantomBot implements Listener {
         /* Load the caches for each channels */
         this.emotesCache = EmotesCache.instance(this.chanName);
         this.followersCache = FollowersCache.instance(this.chanName);
-        this.hostCache = ChannelHostCache.instance(this.chanName);
-        this.subscribersCache = SubscribersCache.instance(this.chanName);
         this.twitchCache = TwitchCache.instance(this.chanName);
         this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
 
@@ -1158,11 +1148,7 @@ public class PhantomBot implements Listener {
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("followers", this.followersCache, 0);
-        Script.global.defineProperty("hosts", this.hostCache, 0);
-        Script.global.defineProperty("subscribers", this.subscribersCache, 0);
         Script.global.defineProperty("channelUsers", this.channelUsersCache, 0);
-        Script.global.defineProperty("donations", this.twitchAlertsCache, 0);
-        Script.global.defineProperty("streamtip", this.streamTipCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
     }
 
