@@ -34,7 +34,9 @@
     var announceInChat = false,
         playlists = [],
         sounds = [],
-        audioPanelLoaded = false;
+        soundQueue = [],
+        audioPanelLoaded = false,
+        isPlaying = false;
 
     /**
      * @function onMessage
@@ -271,10 +273,14 @@
      * @function playIonSound
      * @param {String} name
      */
-    function playIonSound(name)
-    {
-        $("#ionSoundPlaying").fadeIn(400);
-        ion.sound.play(name);
+    function playIonSound(name) {
+        if (!isPlaying) {
+            isPlaying = true;
+            $("#ionSoundPlaying").fadeIn(400);
+            ion.sound.play(name);
+        } else {
+            soundQueue.push(name);
+        }
     }
 
     /**
@@ -282,6 +288,7 @@
      */
     function clearIonSoundPlaying() {
         $("#ionSoundPlaying").fadeOut(400);
+        isPlaying = false;
     }
 
     /**
@@ -422,6 +429,18 @@
             doQuery();
         }
     }, 3e4);
+
+    // Queue for when multiple sounds are called at once. This will stop multiple sounds from playing at the same time.
+    setInterval(function() {
+        if (soundQueue.length > 0) {
+            for (var i in soundQueue) {
+                if (!isPlaying) {
+                    playIonSound(soundQueue[i]);
+                    soundQueue.splice(i, 1);
+                }
+            }
+        }
+    }, 1e3);
 
     // Export to HTML
     $.audioOnMessage = onMessage;
