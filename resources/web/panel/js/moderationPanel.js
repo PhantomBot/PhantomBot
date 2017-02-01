@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,7 +184,7 @@
                         case 'spamTrackerTime' :
                         case 'fakePurgeToggle' :
                         case 'fakePurgeMessage' :
-                            $("#" + modSetting + "Input").attr("placeholder", modValue).blur();
+                            $("#" + modSetting + "Input").val(modValue);
                             break;
                     }
 
@@ -201,131 +201,131 @@
                     modValue = msgObject['results'][idx]['value'];
 
                     if (panelMatch(modSetting, 'warningTimeLinks')) {
-                        $("#warningTimeLinks").attr("placeholder", modValue).blur();
+                        $("#warningTimeLinks").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'timeoutTimeLinks')) {
-                        $("#timeoutTimeLinks").attr("placeholder", modValue).blur();
+                        $("#timeoutTimeLinks").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'warningTimeFakePurge')) {
-                        $("#warningTimeFakePurge").attr("placeholder", modValue).blur();
+                        $("#warningTimeFakePurge").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'timeoutTimeFakePurge')) {
-                        $("#timeoutTimeFakePurge").attr("placeholder", modValue).blur();
+                        $("#timeoutTimeFakePurge").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'warningTimeCaps')) {
-                        $("#warningTimeCaps").attr("placeholder", modValue).blur();
+                        $("#warningTimeCaps").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'timeoutTimeCaps')) {
-                        $("#timeoutTimeCaps").attr("placeholder", modValue).blur();
+                        $("#timeoutTimeCaps").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'warningTimeSymbols')) {
-                        $("#warningTimeSymbols").attr("placeholder", modValue).blur();
+                        $("#warningTimeSymbols").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'timeoutTimeSymbols')) {
-                        $("#timeoutTimeSymbols").attr("placeholder", modValue).blur();
+                        $("#timeoutTimeSymbols").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'warningTimeSpam')) {
-                        $("#warningTimeSpam").attr("placeholder", modValue).blur();
+                        $("#warningTimeSpam").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'timeoutTimeSpam')) {
-                        $("#timeoutTimeSpam").attr("placeholder", modValue).blur();
+                        $("#timeoutTimeSpam").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'warningTimeEmotes')) {
-                        $("#warningTimeEmotes").attr("placeholder", modValue).blur();
+                        $("#warningTimeEmotes").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'timeoutTimeEmotes')) {
-                        $("#timeoutTimeEmotes").attr("placeholder", modValue).blur();
+                        $("#timeoutTimeEmotes").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'warningTimeColors')) {
-                        $("#warningTimeColors").attr("placeholder", modValue).blur();
+                        $("#warningTimeColors").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'timeoutTimeColors')) {
-                        $("#timeoutTimeColors").attr("placeholder", modValue).blur();
+                        $("#timeoutTimeColors").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'warningTimeLongMsg')) {
-                        $("#warningTimeLongMsg").attr("placeholder", modValue).blur();
+                        $("#warningTimeLongMsg").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'timeoutTimeLongMsg')) {
-                        $("#timeoutTimeLongMsg").attr("placeholder", modValue).blur();
+                        $("#timeoutTimeLongMsg").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'warningTimeSpamTracker')) {
-                        $("#warningTimeSpamTracker").attr("placeholder", modValue).blur();
+                        $("#warningTimeSpamTracker").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'timeoutTimeSpamTracker')) {
-                        $("#timeoutTimeSpamTracker").attr("placeholder", modValue).blur();
+                        $("#timeoutTimeSpamTracker").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'blacklistTimeoutTime')) {
-                        $("#blacklistTimeoutTime").attr("placeholder", modValue).blur();
+                        $("#blacklistTimeoutTime").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'blacklistMessage')) {
-                        $("#blacklistMessage").attr("placeholder", modValue).blur();
+                        $("#blacklistMessage").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentLinkMessage')) {
-                        $("#LinkMessageReason").attr("placeholder", modValue).blur();
+                        $("#LinkMessageReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentFakePurgeMessage')) {
-                        $("#FakePurgeReason").attr("placeholder", modValue).blur();
+                        $("#FakePurgeReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentSymbolsMessage')) {
-                        $("#SymbolMessageReason").attr("placeholder", modValue).blur();
+                        $("#SymbolMessageReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentCapMessage')) {
-                        $("#CapMessageReason").attr("placeholder", modValue).blur();
+                        $("#CapMessageReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentSpamMessage')) {
-                        $("#SpamMessageReason").attr("placeholder", modValue).blur();
+                        $("#SpamMessageReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentLongMessage')) {
-                        $("#LongMessageReason").attr("placeholder", modValue).blur();
+                        $("#LongMessageReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentColorMessage')) {
-                        $("#ColorMessageReason").attr("placeholder", modValue).blur();
+                        $("#ColorMessageReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentEmoteMessage')) {
-                        $("#EmoteMessageReason").attr("placeholder", modValue).blur();
+                        $("#EmoteMessageReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentBlacklistMessage')) {
-                        $("#BlacklistMessageReason").attr("placeholder", modValue).blur();
+                        $("#BlacklistMessageReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'silentSpamTrackerMessage')) {
-                        $("#SpamTrackerReason").attr("placeholder", modValue).blur();
+                        $("#SpamTrackerReason").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'msgCooldownSecs')) {
-                        $("#msgCooldownSec").attr("placeholder", modValue).blur();
+                        $("#msgCooldownSec").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'warningResetTime')) {
-                        $("#warningResetTime").attr("placeholder", modValue).blur();
+                        $("#warningResetTime").val(modValue);
                     }
 
                     if (panelMatch(modSetting, 'linksToggle')) {
@@ -754,7 +754,7 @@
         if (newValue.length > 0 && ((typeof newValue === 'number' && newValue > 1) || (typeof newValue === 'string'))) {
             sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
             $(tagId).val('');
-            $(tagId).attr("placeholder", newValue).blur();
+            $(tagId).attr("placeholder", newValue);
             setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
         }
     }
