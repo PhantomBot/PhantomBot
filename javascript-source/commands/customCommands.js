@@ -206,7 +206,7 @@
         }
 
         if (message.match(/\(touser\)/g)) {
-            message = $.replace(message, '(touser)', (event.getArgs()[0] === undefined ? $.username.resolve(event.getSender()) : event.getArguments().split(' ')[0].replace(/\./, '')));
+            message = $.replace(message, '(touser)', (event.getArgs()[0] === undefined ? $.username.resolve(event.getSender()) : String(event.getArgs()[0]).replace(/[^a-z1-9_@]/ig, '')));
         }
 
         if (message.match(/\(echo\)/g)) {
