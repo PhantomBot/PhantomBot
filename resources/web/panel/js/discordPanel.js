@@ -52,7 +52,7 @@
 
         if (panelCheckQuery(msgObject, 'discord_commnads')) {
             var keys = msgObject['results'],
-                html = '<table style="width: 100%"><tr><th>Command</th><th>Response</th><th>Cooldown</th><th></td>',
+                html = '<table style="width: 100%"><tr><th>Command</th><th>Response</th><th>Cooldown</th><th style="float: right;"></td>',
                 dataObj = {},
                 permission,
                 cooldown,
@@ -60,7 +60,6 @@
                 command,
                 channel;
                 
-
             for (i in keys) {
                 if (keys[i]['table'] == 'discordPermcom') {
                     if (dataObj[keys[i]['key']] === undefined) {
@@ -92,10 +91,10 @@
                     cooldown = (dataObj[command] !== undefined && dataObj[command].cooldown === undefined ? 0 : dataObj[command].cooldown);
 
                     html += '<tr>' +
-                        '<td>!' + command + '</td>' +
-                        '<td>' + response.substring(0, 65) + '</td>' +
-                        '<td>' + cooldown + ' sec</td>' +
-                        '<td><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response + '\', \'' + permission + '\', \'' + cooldown + '\', \'' + channel + '\')"><i class="fa fa-pencil" /> </button>' +
+                        '<td>!' + (command.length > 10 ?  command.substring(0, 10) + '...' : command) + '</td>' +
+                        '<td>' + (response.length > 50 ?  response.substring(0, 50) + '...' : response) + '</td>' +
+                        '<td>' + cooldown + ' sec '+ '</td>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response + '\', \'' + permission + '\', \'' + cooldown + '\', \'' + channel + '\')"><i class="fa fa-pencil" /> </button>' +
                         '<button type="button" id="delete_command_' + command.replace(/[^a-z1-9_]/ig, '_') + '" class="btn btn-default btn-xs" onclick="$.updateDiscordCommand(\'' + command + '\', \'true\')"><i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
                 }
@@ -160,7 +159,7 @@
 
             if (command.length === 0 || response.length === 0 || command.match(/[\'\"\s]/ig) || (permission != 1 && permission != 0)) {
                 setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);
-                newPanelAlert('Cannot add a command with special symbols or spaces.', 'danger', 5000);
+                newPanelAlert('Could not add command !' + command + '. Either the response was blank, the permission was invalid, or it contained a special symbol.', 'danger', 10000);
                 return;
             }
 
@@ -171,6 +170,8 @@
             sendDBUpdate('discord_command', 'discordCooldown', command, cooldown.toString());
             if (channel.length > 0) {
                 sendDBUpdate('discord_command', 'discordChannelcom', command, channel.replace('#', '').toString());
+            } else {
+                sendDBDelete('discord_command', 'discordChannelcom', command);
             }
             setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel]); }, TIMEOUT_WAIT_TIME);
         }

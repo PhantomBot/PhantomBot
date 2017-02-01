@@ -2299,7 +2299,7 @@ public class PhantomBot implements Listener {
                 String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
 
                 // Don't announce a new version if the current version is greater or equals to the current repo one.
-                if (versionCompare(RepoVersion.getPhantomBotVersion(), newVersionInfo[0].replace("v", "")) >= 0) {
+                if (versionCompare(RepoVersion.getPhantomBotVersion(), newVersionInfo[0].replace("v", "")) >= 0 && !isNightly()) {
                     return;
                 }
 
