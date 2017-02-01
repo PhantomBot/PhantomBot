@@ -99,7 +99,7 @@
                     var hostData = JSON.parse(msgObject['results'][idx]['value']);
                     html +='<tr style="textList">' +
                            '  <td>' + hostData['host'] + '</td>' +
-                           '  <td style="float: right">' + $.format.date(parseInt(hostData['time']), "MM.dd.yy hh:mm:ss") + '</td>' +
+                           '  <td style="float: right">' + $.format.date(parseInt(hostData['time']), "MM.dd.yy HH:mm:ss") + '</td>' +
                            '</tr>';
                 }
                 html += '</table>';
