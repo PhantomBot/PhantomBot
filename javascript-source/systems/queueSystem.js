@@ -91,7 +91,7 @@
          * @commandpath joinqueue [gamertag] - Adds you to the current queue
          */
         if (command.equalsIgnoreCase('joinqueue')) {
-        	joinQueue($.username.resolve(sender), action);
+        	joinQueue($.username.resolve(sender), args.join(' '));
         }
 
         if (command.equalsIgnoreCase('queue')) {
