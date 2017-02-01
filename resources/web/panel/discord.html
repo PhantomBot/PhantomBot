@@ -39,28 +39,32 @@
                 <div class="modal-body">
                     <lable><b>Command:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-name-modal" type="text" class="form-control" placeholder="Command" disabled />
+                        <input id="command-name-modal" type="text" class="form-control" placeholder="Command" data-toggle="tooltip" 
+                        title="This is the command name. It cannot be edited." disabled />
                     </div>
 
                     <lable><b>Response:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <textarea id="command-response-modal" type="text" class="form-control" placeholder="Message" />
+                        <textarea id="command-response-modal" type="text" class="form-control" placeholder="Message" data-toggle="tooltip" 
+                        title="This is the response of the command."/>
                     </div>
 
                     <lable><b>Permission:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-permission-modal" type="number" min="0" max="1" class="form-control" placeholder="Permission" data-toggle="tooltip" 
-                        title="0 is Everyone and 1 is Administrators" />
+                        title="Permission of the command, 0 means it will work everyone and 1 means it's only for administrators." />
                     </div>
 
                     <lable><b>Cooldown:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-cooldown-modal" type="number" class="form-control" placeholder="Cooldown" />
+                        <input id="command-cooldown-modal" type="number" class="form-control" placeholder="Cooldown" data-toggle="tooltip" 
+                        title="Cooldown of the command in seconds." />
                     </div>
 
                     <lable><b>Channel:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-channel-modal" type="text" class="form-control" placeholder="Channel Name" />
+                        <input id="command-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
+                        title="Channel that you only want this command to work in, leave it blank to make the command global."/>
                     </div> 
                </div>
                 <div class="modal-footer">
@@ -82,28 +86,32 @@
                 <div class="modal-body">
                     <lable><b>Command:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-add-name-modal" type="text" class="form-control" placeholder="Command"/>
+                        <input id="command-add-name-modal" type="text" class="form-control" placeholder="Command" data-toggle="tooltip" 
+                        title="Name that you want the command to be, this cannot be changed later."/>
                     </div>
 
                     <lable><b>Response:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <textarea id="command-add-response-modal" type="text" class="form-control" placeholder="Message"/>
+                        <textarea id="command-add-response-modal" type="text" class="form-control" placeholder="Message" data-toggle="tooltip" 
+                        title="Reponse of this command."/>
                     </div>
 
                     <lable><b>Permission:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-add-permission-modal" type="number" min="0" max="1" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
-                        title="0 is Everyone and 1 is Administrators" />
+                        title="Permission of the command, 0 means it will work everyone and 1 means it's only for administrators." />
                     </div>
 
                     <lable><b>Cooldown:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-add-cooldown-modal" type="number" class="form-control" value="0" placeholder="0" />
+                        <input id="command-add-cooldown-modal" type="number" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
+                        title="Cooldown of the command in seconds." />
                     </div>
 
                     <lable><b>Channel:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-add-channel-modal" type="text" class="form-control" placeholder="Channel Name" />
+                        <input id="command-add-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
+                        title="Channel that you only want this command to work in, leave it blank to make the command global."/>
                     </div> 
                </div>
                 <div class="modal-footer">
@@ -367,7 +375,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Bits Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('bitsMessageInput', 'handlers/bitsHandler.js', 'discordSettings', 'bitsMessage')">Submit</button>
-                <input type="text" class="form-control" id="bitsMessageInput" placeholder="Bits Message" />
+                <input type="text" class="form-control" id="bitsMessageInput" placeholder="Bits Message" data-toggle="tooltip" title="Set a message for when someone cheers in your channel. Available tags: (name) and (amount)"/>
             </div>
         </form>
 
@@ -403,7 +411,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Follower Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('followMessageInput', 'handlers/followHandler.js', 'discordSettings', 'followMessage')">Submit</button>
-                <input type="text" class="form-control" id="followMessageInput" placeholder="Follower Message" />
+                <input type="text" class="form-control" id="followMessageInput" placeholder="Follower Message" data-toggle="tooltip" title="Set a message for when someone follows you. Available tag: (name)"/>
             </div>
         </form>
 
@@ -439,7 +447,15 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Host Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('hostMessageInput', 'handlers/hostHandler.js', 'discordSettings', 'hostMessage')">Submit</button>
-                <input type="text" class="form-control" id="hostMessageInput" placeholder="Host Message" />
+                <input type="text" class="form-control" id="hostMessageInput" placeholder="Host Message" data-toggle="tooltip" title="Set a message for when someone hosts you. Available tags: (name) and (viewers)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label>Auto Host Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('autohostMessageInput', 'handlers/hostHandler.js', 'discordSettings', 'autohostMessage')">Submit</button>
+                <input type="text" class="form-control" id="autohostMessageInput" placeholder="Auto Host Message" data-toggle="tooltip" title="Set a message for when someone auto hosts you. Available tags: (name) and (viewers)"/>
             </div>
         </form>
 
@@ -495,7 +511,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Subscribe Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('subMessageInput', 'handlers/subscribeHandler.js', 'discordSettings', 'subMessage')">Submit</button>
-                <input type="text" class="form-control" id="subMessageInput" placeholder="Subscribe Message" />
+                <input type="text" class="form-control" id="subMessageInput" placeholder="Subscribe Message" data-toggle="tooltip" title="Set a message for when someone subscribes to you. Available tag: (name)"/>
             </div>
         </form>
 
@@ -503,7 +519,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Prime Subscribe Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('primeMessageInput', 'handlers/subscribeHandler.js', 'discordSettings', 'primeMessage')">Submit</button>
-                <input type="text" class="form-control" id="primeMessageInput" placeholder="Pime Subscribe Message" />
+                <input type="text" class="form-control" id="primeMessageInput" placeholder="Pime Subscribe Message" data-toggle="tooltip" title="Set a message for when someone subscribes to you with Prime. Available tag: (name)"/>
             </div>
         </form>
 
@@ -511,7 +527,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Re-Subscribe Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('resubMessageInput', 'handlers/subscribeHandler.js', 'discordSettings', 'resubMessage')">Submit</button>
-                <input type="text" class="form-control" id="resubMessageInput" placeholder="Re-Subscribe Message" />
+                <input type="text" class="form-control" id="resubMessageInput" placeholder="Re-Subscribe Message" data-toggle="tooltip" title="Set a message for when someone resubscribes to you. Available tags: (name) and (months)"/>
             </div>
         </form>
 
@@ -531,7 +547,7 @@
     <div id="_discord_gameWispHandler">
         <table>
             <tr class="textList">
-                <td>Toggle GameWisp Subdcriber Alerts</td>
+                <td>Toggle GameWisp Subscriber Alerts</td>
                 <td style="width: 25px"><div id="gamewispSubToggleInput" /></td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('gamewispSubToggleInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispSubToggle', 'true')">
@@ -573,7 +589,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Subscribe Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispSubMessageInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispSubMessage')">Submit</button>
-                <input type="text" class="form-control" id="gamewispSubMessageInput" placeholder="Subscribe Message" />
+                <input type="text" class="form-control" id="gamewispSubMessageInput" placeholder="Subscribe Message" data-toggle="tooltip" 
+                title="Set a message for when someone subscribes to you with GameWisp. Available tags: (name) and (tier)"/>
             </div>
         </form>
 
@@ -581,7 +598,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Tier-Up Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispReSubMessageInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispReSubMessage')">Submit</button>
-                <input type="text" class="form-control" id="gamewispReSubMessageInput" placeholder="Tier-Up Subscribe Message" />
+                <input type="text" class="form-control" id="gamewispReSubMessageInput" placeholder="Tier-Up Subscribe Message" data-toggle="tooltip" 
+                title="Set a message for when someone tiers up on GameWisp. Available tags: (name), (tier), and (months)"/>
             </div>
         </form>
 
@@ -589,7 +607,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Benefits Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispTierMessageInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispTierMessage')">Submit</button>
-                <input type="text" class="form-control" id="gamewispTierMessageInput" placeholder="Tier-Up Message" />
+                <input type="text" class="form-control" id="gamewispTierMessageInput" placeholder="Tier-Up Message"data-toggle="tooltip" 
+                title="Set a message for when someone tiers up on GameWisp. Available tags: (name) and (tier)" />
             </div>
         </form>
 
@@ -625,7 +644,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('twitterChannelInput', 'handlers/twitterHandler.js', 'discordSettings', 'twitterChannel')">Submit</button>
-                <input type="text" class="form-control" id="twitterChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
+                <input type="text" class="form-control" id="twitterChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in. Note that you have to have the Twitter module setup for Twitch for this to work, since it will use those settings."/>
             </div>
         </form>
     </div>
