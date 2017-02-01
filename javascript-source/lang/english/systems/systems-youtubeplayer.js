@@ -32,6 +32,7 @@ $.lang.register('ytplayer.command.playlist.listpl', 'Playlists: $1');
 $.lang.register('ytplayer.command.stealsong.this.success', '$1 copied the current song to the playlist.');
 $.lang.register('ytplayer.command.stealsong.other.success', '$1 copied the current song to the [$2] playlist.');
 $.lang.register('ytplayer.command.stealsong.refund', '$1 received a refund of $2 $3 on their song request!');
+$.lang.register('ytplayer.command.stealsong.duplicate', 'Song is already in the playlist!');
 $.lang.register('ytplayer.command.jumptosong.failed', 'Cannot find song at position $1 in playlist.');
 $.lang.register('ytplayer.command.songrequest.usage', 'usage: !songrequest [YouTube ID | YouTube link | search string]');
 $.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue (Position: $2 ID: $3)');

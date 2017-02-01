@@ -353,7 +353,7 @@
             var newKey;
             targetPlaylistName = (targetPlaylistName ? targetPlaylistName : this.playlistName);
             if (this.videoExistsInPlaylist(youtubeVideo, targetPlaylistName)) {
-                return -1;
+                return -2;
             }
             if (targetPlaylistName) {
                 newKey = (!$.inidb.exists(playlistDbPrefix + targetPlaylistName, 'lastkey') ? 0 : parseInt($.inidb.get(playlistDbPrefix + targetPlaylistName, 'lastkey')) + 1);
@@ -1481,11 +1481,17 @@
                 responseString;
 
             if (args.length == 0) {
-                currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo());
+                if (currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo()) == -2) {
+                    $.say($.lang.get('ytplayer.command.stealsong.duplicate'));
+                    return;
+                }
                 refundUser = currentPlaylist.getCurrentVideo().getOwner().toLowerCase();
                 responseString = $.lang.get('ytplayer.command.stealsong.this.success', $.username.resolve(sender));
             } else if ($.inidb.FileExists(playlistDbPrefix + args[0].toLowerCase())) {
-                currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo(), args[0].toLowerCase());
+                if (currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo(), args[0].toLowerCase()) == -2) {
+                    $.say($.lang.get('ytplayer.command.stealsong.duplicate'));
+                    return;
+                }
                 refundUser = currentPlaylist.getCurrentVideo().getOwner().toLowerCase();
                 responseString = $.lang.get('ytplayer.command.stealsong.other.success', $.username.resolve(sender), args[0]);
             } else {
