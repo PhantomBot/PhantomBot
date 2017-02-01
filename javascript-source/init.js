@@ -1015,38 +1015,10 @@
         });
 
         /**
-         * @event api-twitchUnhosted
-         */
-        $api.on($script, 'twitchUnhosted', function(event) {
-            callHook('twitchUnhosted', event, true);
-        });
-
-        /**
          * @event api-twitchHostsInitialized
          */
         $api.on($script, 'twitchHostsInitialized', function(event) {
             callHook('twitchHostsInitialized', event, true);
-        });
-
-        /**
-         * @event api-twitchSubscribe
-         */
-        $api.on($script, 'twitchSubscribe', function(event) {
-            callHook('twitchSubscribe', event, true);
-        });
-
-        /**
-         * @event api-twitchUnsubscribe
-         */
-        $api.on($script, 'twitchUnsubscribe', function(event) {
-            callHook('twitchUnsubscribe', event, true);
-        });
-
-        /**
-         * @event api-twitchSubscribesInitialized
-         */
-        $api.on($script, 'twitchSubscribesInitialized', function(event) {
-            callHook('twitchSubscribesInitialized', event, true);
         });
 
         /**
