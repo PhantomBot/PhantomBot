@@ -29,7 +29,7 @@ my (@fileList, @commandPathData);
 my ($moduleName, $commandName, $commandSubText, $commandOptions, $commandDesc, $commandSubCommands, $extractString);
 
 sub findWanted { if (/\.js$/s) { push @fileList, $File::Find::name; } } 
-find(\&findWanted, ".");
+find(\&findWanted, "./javascript-source/");
 
 my (@dateData) = localtime();
 printf "<!-- PhantomBot \@commandpath Parser. Executed on: %02d/%02d/%4d \@ %02d:%02d:%02d -->\n\n",
@@ -63,6 +63,9 @@ foreach $moduleName (sort @fileList) {
         }
         $commandSubCommands =~ s/\s+$//;
         $commandName = $commandName." ".$commandSubCommands if (length($commandSubCommands) > 0) ;
+        my $str = '';
+        my $find = 'javascript-source\/';
+        $moduleName =~ s/$find/$str/g;
       }
 
       print "<tr>\n";
