@@ -27,6 +27,8 @@ use strict;
 
 my (@fileList, @commandPathData);
 my ($moduleName, $commandName, $commandSubText, $commandOptions, $commandDesc, $commandSubCommands, $extractString);
+my $str = './';
+my $find = './javascript-source/';
 
 sub findWanted { if (/\.js$/s) { push @fileList, $File::Find::name; } } 
 find(\&findWanted, "./javascript-source/");
@@ -62,12 +64,10 @@ foreach $moduleName (sort @fileList) {
           $commandSubCommands = $commandSubText;
         }
         $commandSubCommands =~ s/\s+$//;
-        $commandName = $commandName." ".$commandSubCommands if (length($commandSubCommands) > 0) ;
-        my $str = '';
-        my $find = 'javascript-source\/';
-        $moduleName =~ s/$find/$str/g;
+        $commandName = $commandName." ".$commandSubCommands if (length($commandSubCommands) > 0) ;  
       }
-
+      
+      $moduleName =~ s/$find/$str/g;
       print "<tr>\n";
       print "    <td><a href='#' div class='tooltip' data-title='Click to Copy Module to Clipboard'>$moduleName</a></td>\n";
       print "    <td><a href='#' div class='tooltip' data-title='Click to Copy Command to Clipboard'>!$commandName</a></td>\n";
