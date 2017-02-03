@@ -265,6 +265,24 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('hosthistory.usage', $.getIniDbBoolean('settings', 'hostHistory') ? "on" : "off"));
             }
         }
+
+        /*
+         * @commandpath host [channel name] - Will host that channel. Make sure to add your bot as a channel editor on your Twitch dashboard for this to work.
+         */
+        if (command.equalsIgnoreCase('host')) {
+            if (action !== undefined) {
+                $.say('.host ' + action);
+            }
+        }
+
+        /*
+         * @commandpath unhost - Will unhost the channel that is being hosted. Make sure to add your bot as a channel editor on your Twitch dashboard for this to work.
+         */
+        if (command.equalsIgnoreCase('unhost')) {
+            if (action !== undefined) {
+                $.say('.unhost');
+            }
+        }
     });
 
     /*
@@ -280,6 +298,8 @@
             $.registerChatCommand('./handlers/hostHandler.js', 'hosthistory', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'hosttoggle', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'autohosttoggle', 1);
+            $.registerChatCommand('./handlers/hostHandler.js', 'host', 1);
+            $.registerChatCommand('./handlers/hostHandler.js', 'unhost', 1);
         }
     });
 
