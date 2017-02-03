@@ -26,6 +26,7 @@ import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import me.mast3rplan.phantombot.event.EventBus;
 
 import com.google.common.collect.Maps;
+import com.gmt2001.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -205,9 +206,12 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC, retrying within 10 seconds...");
+        com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC. Reconnecting...");
         com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-        session.reconnect();
+
+        // Log the reason and code for future debugging.
+        Logger.instance().log(Logger.LogType.Error, "[" + Logger.instance().logTimestamp() + "] [SOCKET] Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
+        this.session.reconnect();
     }
 
     /*
