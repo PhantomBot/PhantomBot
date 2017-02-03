@@ -39,6 +39,7 @@ import com.illusionaryone.GoogleURLShortenerAPIv1;
 import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.DiscordAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
+import com.nekres.MSNeventListener;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -192,6 +193,9 @@ public class PhantomBot implements Listener {
 
     /* Notice Timer and Handling */
     private NoticeTimer noticeTimer;
+
+	/* MSN listener (Now playing.., Listening to..)*/
+	private MSNeventListener osuListener;
 
     /* Discord Configuration */
     private String discordToken = "";
@@ -1144,6 +1148,9 @@ public class PhantomBot implements Listener {
 
         /* Start the notice timer and notice handler. */
         // this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+
+		/* Start the osu listener and capture MSN events */
+			this.osuListener = new MSNeventListener();
 
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
