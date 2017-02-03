@@ -520,12 +520,7 @@ public class TwitchWSIRCParser {
      *
      */
     private void reconnect() {
-        try {
-            Thread.sleep(30000);// wait 30 seconds to give time to the irc servers to reboot.
-            this.session.reconnect();
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+        com.gmt2001.Console.debug.println("Got the RECONNECT event from Twitch.");
     }
 
     /*
