@@ -70,7 +70,9 @@
                         $("#setPointNameInput").val(value);
                     } else if (panelMatch(key, 'pointNameMultiple')) {
                         $("#setPointsNameInput").val(value);
-                    }
+                    } else if (panelMatch(key, 'pointsMessage')) {
+                        $("#pointsMessageInput").val(value);
+                    } 
                 }
             }
 
@@ -323,6 +325,19 @@
         setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
     }
 
+    /*
+     * @function setPointsMessage
+     */
+    function setPointsMessage() {
+        var value = $("#pointsMessageInput").val();
+
+        if (value.length > 0) {
+            sendDBUpdate("points_settings", "pointSettings", "pointsMessage", value);
+        }
+        setTimeout(function() { doLiteQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { sendCommand('reloadpoints') }, TIMEOUT_WAIT_TIME);
+    }
+
     /**
      * @function modifyUserPoints
      * @param {String} action
@@ -462,4 +477,5 @@
     $.topListPoints = topListPoints;
     $.toggleModPriceCom = toggleModPriceCom;
     $.setInterval = setInterval;
+    $.setPointsMessage = setPointsMessage;
 })();
