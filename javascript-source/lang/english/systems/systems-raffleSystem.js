@@ -33,3 +33,4 @@ $.lang.register('rafflesystem.common.following', 'and you need to be following t
 $.lang.register('rafflesystem.common.timer', 'The raffle will close in $1 minutes.');
 $.lang.register('rafflesystem.common.message', 'no longer');
 $.lang.register('rafflesystem.open.keyword-exists', 'Keyword cannot be an existing command: $1');
+$.lang.register('rafflesystem.winner.404', 'Could not pick a winner. No one entered this raffle.');
