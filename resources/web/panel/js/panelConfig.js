@@ -3,9 +3,9 @@
 //Do NOT Modify! Overwritten when PhantomBot is restarted!
 var panelSettings = {
     panelPort   : 25004,
-    channelName : "scania_the_best",
-    auth        : "gt5FSgj6YiG9rKeOFqJcdvDyO5vEsc",
-    http        : "http://"
+    channelName : "",
+    auth        : "",
+    http        : ""
 };
 
 function getPanelPort() { return panelSettings.panelPort; }
