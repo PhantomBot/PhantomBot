@@ -121,6 +121,7 @@ connection.onmessage = function(e) {
     if (e.data.indexOf('poll_') !== -1) $.pollOnMessage(e);
     if (e.data.indexOf('gambling_') !== -1) $.gamblingOnMessage(e);
     if (e.data.indexOf('games_') !== -1) $.gamesOnMessage(e);
+    if (e.data.indexOf('queue_') !== -1) $.queueOnMessage(e);
     if (e.data.indexOf('twitter_') !== -1) $.twitterOnMessage(e);
     if (e.data.indexOf('discord_') !== -1) $.discordOnMessage(e);
 
@@ -444,13 +445,17 @@ function performCurrentPanelRefresh() {
              break;
          case 16 :
              newPanelAlert('Refreshing Data', 'success', 1000);
+             $.queueDoQuery();
+             break;
+         case 17 :
+             newPanelAlert('Refreshing Data', 'success', 1000);
              $.twitterDoQuery();
              break;
-         case 17 : 
+         case 18 : 
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.discordDoQuery();
              break;
-         case 18 : 
+         case 19 : 
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.audioDoQuery();
              break;
