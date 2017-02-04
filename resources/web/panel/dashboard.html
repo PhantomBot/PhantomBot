@@ -252,25 +252,6 @@
             </form>
         </div>
     </div>
-
-    <h3>Queue</h3>
-    <div>
-        <div id="_queuePanelDisabled" />
-        <div id="_queuePanel">
-        <form role="form">
-             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="amountQueue">Amount Of People To Select</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.queueCMD('clear')">Clear Queue</button>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.queueCMD('close')">Close Queue</button>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.queueCMD('open')">Open Queue</button>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.queueCMDNext('next')">Next</button>
-                <input type="text" class="form-control" id="amountQueue" placeholder="Amount" />
-            </div>
-        </form>
-    </div>
-    <label for="queueList">Queue List</label>
-        <div id="queueList" style="height: 150px; overflow: auto;" />
-    </div>
 </div>
 
 <!-- Run the Acordion -->
