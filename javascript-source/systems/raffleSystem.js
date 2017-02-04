@@ -297,8 +297,10 @@
 
         /* Push the panel stats */
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            $.inidb.setAutoCommit(false);
             $.inidb.set('raffleList', username, true);
-            $.inidb.incr('raffleresults', 'raffleEntries', 1);
+            $.inidb.set('raffleresults', 'raffleEntries', Object.keys(entered).length);
+            $.inidb.setAutoCommit(true);
         }
     }
 

@@ -266,6 +266,7 @@
             sendCommand('reloadraffle');
             sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usetime');
         }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         $('#raffle-time-keyword').val('');
         $('#raffle-time-cost').val('');
         $('#raffle-time-sub').html('1 Times');
@@ -277,6 +278,7 @@
         document.getElementById('raffle-time-regluck').value = 0;
         document.getElementById('raffle-time-subluck').value = 0;
         document.getElementById('raffle-time-timer').value = 0;
+
     }
 
     /**
@@ -301,6 +303,7 @@
             sendCommand('reloadraffle');
             sendCommand('raffle open ' + minimumTime + ' ' + keyword + ' ' + timer + ' ' + eligibility + ' -usepoints');
         }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         $('#raffle-keyword').val('');
         $('#raffle-cost').val('');
         $('#raffle-points-sub').html('1 Times');
@@ -335,6 +338,7 @@
             sendCommand('reloadraffle');
             sendCommand('raffle open ' + keyword + ' ' + timer + ' ' + eligibility);
         }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         $('#raffle-normal-keyword').val('');
         $('#raffle-normal-subluck2').html('1 Times');
         $('#raffle-normal-regluck2').html('1 Times');
@@ -466,14 +470,14 @@
         }
     }, INITIAL_WAIT_TIME);
 
-    // Query the DB every 25 seconds for updates.
+    // Query the DB every 20 seconds for updates.
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 14 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Gambling Data', 'success', 1000);
             doQuery();
         }
-    }, 2e5);
+    }, 2e4);
 
 
     // Export to HTML
