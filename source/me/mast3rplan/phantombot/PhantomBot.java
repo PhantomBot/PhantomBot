@@ -1142,6 +1142,12 @@ public class PhantomBot implements Listener {
             this.twitterCache = TwitterCache.instance(this.chanName);
         }
 
+        /* Start the MSN listener if the OS is microsoft windows.*/
+        if (SystemUtils.IS_OS_WINDOWS) {
+            MSNeventListener osuListener = new MSNeventListener();
+            osuListener.start();
+        }
+
         /* Start the notice timer and notice handler. */
         // this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
 
