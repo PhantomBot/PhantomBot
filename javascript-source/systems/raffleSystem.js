@@ -170,6 +170,7 @@
         if (firstWinner) {
             /* Check if anyone entered the raffle */
             if (entries.length === 0) {
+                $.say($.lang.get('rafflesystem.winner.404'));
                 return;
             }
 
