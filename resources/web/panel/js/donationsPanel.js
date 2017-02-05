@@ -82,7 +82,7 @@
                 for (idx in donationData) {
                     if (!isNaN(donationData[idx]['key'])) {
                         donationObj = JSON.parse(donationData[idx]['value']);
-                        if (donationObj['currency'] !== undefined) {
+                        if (donationObj['currency'] != null || donationObj['name'] != null) {
                             html += '<tr class="textList">' +
                                     '    <td>' + donationObj['name'] + '</td>' +
                                     '    <td>' + $.format.date(parseInt(donationObj['created_at']) * 1e3, 'MM.dd.yy hh:mm:ss') + '</td>' +
