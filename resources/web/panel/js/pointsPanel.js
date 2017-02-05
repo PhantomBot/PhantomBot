@@ -271,6 +271,12 @@
         var singleName = $("#setPointNameInput").val(),
             pluralName = $("#setPointsNameInput").val();
 
+        if (singleName.match(/\s/ig) || pluralName.match(/\s/ig)) {
+            $("#setPointsNameInput").val("Your points name cannot contain a space.");
+            setTimeout(function() { doLiteQuery(); }, TIMEOUT_WAIT_TIME * 2);
+            return;
+        }
+
         if (singleName.length != 0) {
             sendDBUpdate("points_settings", "pointSettings", "pointNameSingle", singleName);
         }
