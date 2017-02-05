@@ -430,15 +430,15 @@
         }
 
         if (s.match(/\(pointsstring\)/)) {
-            s = $.replace(s, '(pointsstring)', getPointsString(getUserPoints(username)));
+            s = $.replace(s, '(pointsstring)', String(getPointsString(getUserPoints(username))));
         }
 
         if (s.match(/\(points\)/)) {
-            s = $.replace(s, '(points)', getUserPoints(username));
+            s = $.replace(s, '(points)', String(getUserPoints(username)));
         }
 
         if (s.match(/\(pointsname\)/)) {
-            s = $.replace(s, '(pointsname)', pointNameMultiple);
+            s = $.replace(s, '(pointsname)', String(pointNameMultiple));
         }
 
         if (s.match(/\(time\)/)) {
