@@ -78,7 +78,8 @@
 
             if (panelCheckQuery(msgObject, 'dashboard_modules')) {
                 var html = "<table>",
-                    moduleData = msgObject['results'];
+                    discordHtml = "<table>",
+                    moduleData = msgObject['results'],
                     module = "",
                     moduleEnabled = "";
 
@@ -89,29 +90,53 @@
                     module = moduleData[idx]['key'];
                     moduleEnabled = moduleData[idx]['value'];
                     if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
-                        html += "<tr class=\"textList\">" +
-                                "    <td>" + (module.startsWith('./discord/') ? module + ' [Discord Module]' : module) + "</td>" +
-
-                                "    <td style=\"width: 25px\">" +
-                                "        <div id=\"moduleStatus_" + idx + "\">" + modeIcon[moduleEnabled] + "</div>" +
-                                "    </td>" +
-
-                                "    <td style=\"width: 25px\">" +
-                                "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
-                                "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
-                                "        </div>" +
-                                "    </td>" +
-
-                                "    <td style=\"width: 25px\">" +
-                                "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
-                                "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
-                                "        </div>" +
-                                "    </td>" +
-                                "</tr>";
+                        if (!module.includes('./discord')) {
+                            html += "<tr class=\"textList\">" +
+                                    "    <td>" + module + "</td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div id=\"moduleStatus_" + idx + "\">" + modeIcon[moduleEnabled] + "</div>" +
+                                    "    </td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                    "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
+                                    "        </div>" +
+                                    "    </td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
+                                    "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
+                                    "        </div>" +
+                                    "    </td>" +
+                                    "</tr>";
+                        } else {
+                            discordHtml += "<tr class=\"textList\">" +
+                                    "    <td>" + module + "</td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div id=\"moduleStatus_" + idx + "\">" + modeIcon[moduleEnabled] + "</div>" +
+                                    "    </td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                    "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
+                                    "        </div>" +
+                                    "    </td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
+                                    "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
+                                    "        </div>" +
+                                    "    </td>" +
+                                    "</tr>";
+                        }
                     }
                 }
                 html += "</table>";
+                discordHtml += "</table>";
                 $("#modulesList").html(html);
+                $("#discordModulesList").html(discordHtml);
                 $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
             }
 
