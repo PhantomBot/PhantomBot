@@ -191,7 +191,7 @@
     function getEmotesCount(event) {
         var emotes = event.getTags().get('emotes');
 
-        return ((emotes.match(patterns.emotes) === null ? 0 : (emotes.match(patterns.emotes).length) + $.emotesHandler.getEmotesMatchCount(event.getMessage())));
+        return ((emotes === null || emotes.match(patterns.emotes) === null ? 0 : (emotes.match(patterns.emotes).length) + $.emotesHandler.getEmotesMatchCount(event.getMessage())));
     }
 
     /**
@@ -206,7 +206,7 @@
             length = 0,
             i;
 
-        if (emotes !== null && emotes != '') {
+        if (emotes !== null && emotes != '{}') {
             emotes = emotes.replaceAll('[0-9]+:', '').replaceAll('/', ',').split(',');
             for (i = 0; i < emotes.length; i++) {
                 length += (parseInt(emotes[i].split('-')[1]) - parseInt(emotes[i].split('-')[0]) + 1);
