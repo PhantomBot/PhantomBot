@@ -177,6 +177,9 @@
             if (panelMatch(module, './games/gambling.js')) {
                 handlePanel('./games/gambling.js', '#_gamlbingPanel', moduleEnabled);
             }
+            if (panelMatch(module, './handlers/tipeeeStreamHandler.js')) {
+                handlePanel('./handlers/tipeeeStreamHandler.js', '#_tipeeeStreamDonationsPanel', moduleEnabled);
+            }
 
             // Discord modules.
             if (panelMatch(module, './discord/handlers/bitsHandler.js')) {
