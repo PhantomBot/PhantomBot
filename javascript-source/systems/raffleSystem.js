@@ -366,8 +366,6 @@
             action = args[0],
             subAction = args[1];
 
-        $.consoleLn('COMMAND FROM: ' + sender);
-
         if (command.equalsIgnoreCase('raffle')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.usage'));
