@@ -91,6 +91,10 @@
         if (args[i] !== undefined) {
             keyword = args[i].toLowerCase();
             i++;
+            
+            if (keyword.startsWith('!')) {
+                keyword = ('!' + keyword.match(/(!+)(.+)/)[2]);
+            }
 
             /* Ensure that keyword is not already a registered command. */
             if (keyword.startsWith('!') && $.commandExists(keyword.substring(1))) {
