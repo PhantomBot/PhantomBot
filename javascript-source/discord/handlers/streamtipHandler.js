@@ -2,38 +2,38 @@
  * This module is to handle StreamTip notifications.
  */
 (function() {
-	var toggle = $.getSetIniDbBoolean('discordSettings', 'streamtipToggle', false),
-	    message = $.getSetIniDbString('discordSettings', 'streamtipMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!'),
-	    channelName = $.getSetIniDbString('discordSettings', 'streamtipChannel', ''),
-	    announce = false;
+    var toggle = $.getSetIniDbBoolean('discordSettings', 'streamtipToggle', false),
+        message = $.getSetIniDbString('discordSettings', 'streamtipMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!'),
+        channelName = $.getSetIniDbString('discordSettings', 'streamtipChannel', ''),
+        announce = false;
 
     /**
      * @event panelWebSocket
      */
     $.bind('panelWebSocket', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/handlers/streamtipsHanlder.js')) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/streamtipHanlder.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'streamtipToggle', false);
             message = $.getIniDbString('discordSettings', 'streamtipMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
             channelName = $.getIniDbString('discordSettings', 'streamtipChannel', '');
         }
     });
 
-	/**
+    /**
      * @event streamTipDonationInitialized
      */
     $.bind('streamTipDonationInitialized', function(event) {
-    	announce = true;
+        announce = true;
     });
 
     /**
      * @event streamTipDonation
      */
     $.bind('streamTipDonation', function(event) {
-    	if (toggle === false || announce === false || channelName == '') {
-    		return;
-    	}
+        if (toggle === false || announce === false || channelName == '') {
+            return;
+        }
 
-    	var donationJsonStr = event.getJsonString(),
+        var donationJsonStr = event.getJsonString(),
             JSONObject = Packages.org.json.JSONObject,
             donationJson = new JSONObject(donationJsonStr),
             donationID = donationJson.getString("_id"),
@@ -56,11 +56,11 @@
         }
 
         if (s.match(/\(amount\)/g)) {
-            s = $.replace(s, '(amount)',  parseInt(donationAmount.toFixed(2)));
+            s = $.replace(s, '(amount)', parseInt(donationAmount).toFixed(2).toString());
         }
 
         if (s.match(/\(amount\.toFixed\(0\)\)/)) {
-            s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount.toFixed(0)));
+            s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount).toFixed(0).toString());
         }
 
         if (s.match(/\(currency\)/g)) {
