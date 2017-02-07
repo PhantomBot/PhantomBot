@@ -91,6 +91,10 @@
         if (args[i] !== undefined) {
             keyword = args[i].toLowerCase();
             i++;
+            
+            if (keyword.startsWith('!')) {
+                keyword = ('!' + keyword.match(/(!+)(.+)/)[2]);
+            }
 
             /* Ensure that keyword is not already a registered command. */
             if (keyword.startsWith('!') && $.commandExists(keyword.substring(1))) {
@@ -332,8 +336,10 @@
         if (useCommand) {
             if (register) {
                 $.registerChatCommand('./systems/raffleSystem.js', keyword.substring(1), 7);
+                $.inidb.set('raffle', 'command', keyword.substring(1));
             } else {
                 $.unregisterChatCommand(keyword.substring(1));
+                $.inidb.set('raffle', 'command', '');
             }
         }
     }
