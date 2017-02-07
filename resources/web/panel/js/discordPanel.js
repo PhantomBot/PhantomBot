@@ -207,7 +207,7 @@
     var interval = setInterval(function() {
         if (isConnected && TABS_INITIALIZED) {
             var active = $('#tabs').tabs('option', 'active');
-            if (active == 17) {
+            if (active == 18) {
                 doQuery();
                 clearInterval(interval);
             }
