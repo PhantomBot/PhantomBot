@@ -693,7 +693,7 @@
     /**
      * @function runCommand
      */
-    function runCommand() {
+    function runCustomCommand() {
         var val = $('#commandImput').val();
 
         if (val.length == 0) {
@@ -753,7 +753,7 @@
     $.deleteCommandPay = deleteCommandPay;
     $.editCooldown = editCooldown;
     $.commands = commands;
-    $.runCommand = runCommand;
+    $.runCustomCommand = runCustomCommand;
     $.toggleCooldownMsg = toggleCooldownMsg;
     $.togglePermcomMsg = togglePermcomMsg;
 })();
