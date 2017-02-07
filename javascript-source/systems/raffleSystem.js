@@ -332,8 +332,10 @@
         if (useCommand) {
             if (register) {
                 $.registerChatCommand('./systems/raffleSystem.js', keyword.substring(1), 7);
+                $.inidb.set('raffle', 'command', keyword.substring(1));
             } else {
                 $.unregisterChatCommand(keyword.substring(1));
+                $.inidb.set('raffle', 'command', '');
             }
         }
     }
@@ -359,6 +361,8 @@
             args = event.getArgs(),
             action = args[0],
             subAction = args[1];
+
+        $.consoleLn('COMMAND FROM: ' + sender);
 
         if (command.equalsIgnoreCase('raffle')) {
             if (action === undefined) {
