@@ -148,8 +148,7 @@
                     lastFollowTime = $.systemTime();
                     $.inidb.set('streamInfo', 'lastFollow', $.username.resolve(follower));
                 }
-
-                $.setIniDbBoolean('followed', follower, true);
+                
                 if (followReward > 0) {
                     $.inidb.incr('points', follower, followReward);
                 }
@@ -157,6 +156,10 @@
                 $.writeToFile($.username.resolve(follower), './addons/followHandler/latestFollower.txt', false);
             }
         }
+        
+        $.inidb.setAutoCommit(false);
+        $.setIniDbBoolean('followed', follower, true);
+        $.inidb.setAutoCommit(true);
     });
 
     /*
