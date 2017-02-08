@@ -112,7 +112,6 @@
 
 		delete queue[action.toLowerCase()];
 		$.say($.whisperPrefix(username) + $.lang.get('queuesystem.remove.removed', action));
-		
 	}
 
 	/*
@@ -303,10 +302,10 @@
 			}
 
 			/*
-			 * @commandpath queue open [max size] [title] - Opens a new queue. Use 0 as your max size if you want it to me infinit.
+			 * @commandpath queue open [max size] [title] - Opens a new queue. Max size is optional.
 			 */
 			if (action.equalsIgnoreCase('open')) {
-				open(sender, subAction, args.slice(2).join(' '));
+				open(sender, (isNaN(parseInt(subAction)) ? 0 : subAction), (isNaN(parseInt(subAction)) ? args.slice(1).join(' ') : args.slice(2).join(' ')));
 			}
 
 			/*

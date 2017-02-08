@@ -2,10 +2,10 @@
  * This module is to handle StreamLabs notifications.
  */
 (function() {
-	var toggle = $.getSetIniDbBoolean('discordSettings', 'streamlabsToggle', false),
-	    message = $.getSetIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!'),
-	    channelName = $.getSetIniDbString('discordSettings', 'streamlabsChannel', ''),
-	    announce = false;
+    var toggle = $.getSetIniDbBoolean('discordSettings', 'streamlabsToggle', false),
+        message = $.getSetIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!'),
+        channelName = $.getSetIniDbString('discordSettings', 'streamlabsChannel', ''),
+        announce = false;
 
     /**
      * @event panelWebSocket
@@ -18,25 +18,25 @@
         }
     });
 
-	/**
+    /**
      * @event twitchAlertsDonationsInitialized
      */
     $.bind('twitchAlertsDonationInitialized', function(event) {
-    	announce = true;
+        announce = true;
     });
 
     /**
      * @event twitchAlertsDonations
      */
     $.bind('twitchAlertsDonation', function(event) {
-    	if (toggle === false || announce === false || channelName == '') {
-    		return;
-    	}
+        if (toggle === false || announce === false || channelName == '') {
+            return;
+        }
 
-    	var donationJsonStr = event.getJsonString(),
+        var donationJsonStr = event.getJsonString(),
             JSONObject = Packages.org.json.JSONObject,
             donationJson = new JSONObject(donationJsonStr),
-			donationID = donationJson.getString("donation_id"),
+            donationID = donationJson.getString("donation_id"),
             donationCurrency = donationJson.getString("currency"),
             donationAmount = donationJson.getString("amount"),
             donationUsername = donationJson.getString("name"),
@@ -54,11 +54,11 @@
         }
 
         if (s.match(/\(amount\)/g)) {
-            s = $.replace(s, '(amount)', parseInt(donationAmount.toFixed(2)));
+            s = $.replace(s, '(amount)', parseInt(donationAmount).toFixed(2).toString());
         }
 
         if (s.match(/\(amount\.toFixed\(0\)\)/)) {
-            s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount.toFixed(0)));
+            s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount).toFixed(0).toString());
         }
 
         if (s.match(/\(currency\)/g)) {
