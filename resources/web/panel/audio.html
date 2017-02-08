@@ -119,5 +119,5 @@
 
 <!-- Run the Acordion -->
 <script>$("#audioAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
-<script>$(function() {var playlist = $.playlists; $("#playlistImput").autocomplete({source: playlist, minLength:2});});</script>
+<script>$(function(){setTimeout(function(){$("#playlistImput").autocomplete({source: $.playlists, minLength: 2});}, 2000);});</script>
 <script>handleInputFocus();</script>

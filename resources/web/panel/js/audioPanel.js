@@ -67,6 +67,19 @@
             }
         }
 
+        if (panelCheckQuery(msgObject, 'audio_ytplaylists')) {
+            if (msgObject['results'].length === 0) {
+                return;
+            }
+
+            playlists = [];
+
+            for (var idx in msgObject['results']) {
+                playlists.push(msgObject['results'][idx]['value']);
+            }
+            $.playlists = playlists; 
+        }
+
         if (msgObject['audio_panel_hook'] !== undefined) {
             playIonSound(msgObject['audio_panel_hook']);
         }
@@ -139,18 +152,6 @@
             $('#reloadSounds').html('Reload Audio Hooks');
         }
 
-        if (panelCheckQuery(msgObject, 'audio_ytplaylists')) {
-            if (msgObject['results'].length === 0) {
-                return;
-            }
-
-            playlists.splice(0);
-
-            for (var idx in msgObject['results']) {
-                playlists.push(msgObject['results'][idx]['value']);
-            } 
-        }
-
         if (panelCheckQuery(msgObject, 'audio_ytptoggle1')) {
             if (msgObject['results']['announceInChat'] == "true") {
                 announceInChat = "true";
@@ -185,13 +186,13 @@
      * @function doQuery
      */
     function doQuery(message) {
+        sendDBKeys('audio_ytplaylists', 'ytPanelPlaylist');
         sendDBQuery('audio_ytpMaxReqs', 'ytSettings', 'songRequestsMaxParallel');
         sendDBQuery('audio_ytpMaxLength', 'ytSettings', 'songRequestsMaxSecondsforVideo');
         sendDBQuery('audio_ytptoggle1', 'ytSettings', 'announceInChat');
         sendDBQuery('audio_ytpDJName', 'ytSettings', 'playlistDJname');
         sendDBKeys('audio_songblacklist', 'ytpBlacklistedSong');
         sendDBKeys('audio_userblacklist', 'ytpBlacklist');
-        sendDBKeys('audio_ytplaylists', 'ytPanelPlaylist');
         sendDBKeys('audio_hook', 'audio_hooks');
     }
 
