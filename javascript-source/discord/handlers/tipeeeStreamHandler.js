@@ -2,10 +2,10 @@
  * This module is to handle tipeeestream notifications.
  */
 (function() {
-	var toggle = $.getSetIniDbBoolean('discordSettings', 'tipeeestreamToggle', false),
-	    message = $.getSetIniDbString('discordSettings', 'tipeeestreamMessage', 'Thank you very much (name) for the tip of (formattedamount) (currency)!'),
-	    channelName = $.getSetIniDbString('discordSettings', 'tipeeestreamChannel', ''),
-	    announce = false;
+    var toggle = $.getSetIniDbBoolean('discordSettings', 'tipeeestreamToggle', false),
+        message = $.getSetIniDbString('discordSettings', 'tipeeestreamMessage', 'Thank you very much (name) for the tip of (formattedamount) (currency)!'),
+        channelName = $.getSetIniDbString('discordSettings', 'tipeeestreamChannel', ''),
+        announce = false;
 
     /**
      * @event panelWebSocket
@@ -18,22 +18,22 @@
         }
     });
 
-	/**
+    /**
      * @event tipeeeStreamDonationInitialized
      */
     $.bind('tipeeeStreamDonationInitialized', function(event) {
-    	announce = true;
+        announce = true;
     });
 
     /**
      * @event tipeeeStreamDonation
      */
     $.bind('tipeeeStreamDonation', function(event) {
-    	if (toggle === false || announce === false || channelName == '') {
-    		return;
-    	}
+        if (toggle === false || announce === false || channelName == '') {
+            return;
+        }
 
-    	var jsonString = event.getJsonString(),
+        var jsonString = event.getJsonString(),
             JSONObject = Packages.org.json.JSONObject,
             donationObj = new JSONObject(jsonString),
             donationID = donationObj.getInt('id'),
@@ -60,11 +60,11 @@
         }
 
         if (s.match(/\(amount\)/)) {
-            s = $.replace(s, '(amount)', parseInt(donationAmount.toFixed(2)));
+            s = $.replace(s, '(amount)', parseInt(donationAmount.toFixed(2)).toString());
         }
 
         if (s.match(/\(amount\.toFixed\(0\)\)/)) {
-            s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount.toFixed(0)));
+            s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount.toFixed(0)).toString());
         }
 
         if (s.match(/\(message\)/)) {

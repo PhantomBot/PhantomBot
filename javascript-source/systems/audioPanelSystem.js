@@ -265,4 +265,5 @@
     });
 
     $.loadAudioHookCommands = loadAudioHookCommands;
+    $.audioHookExists = audioHookExists;
 })();
