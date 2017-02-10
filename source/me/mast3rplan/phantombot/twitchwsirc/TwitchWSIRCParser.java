@@ -472,9 +472,9 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void userNotice(String message, String username, Map<String, String> tagMaps) {
-        if (tagMaps.containsKey("display-name") && tagMaps.containsKey("msg-param-months") && (tagMaps.containsKey("msg-id") && tagMaps.get("msg-id").equals("resub"))) {
-            scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, tagMaps.get("display-name"), tagMaps.get("msg-param-months")));
-            com.gmt2001.Console.debug.println(tagMaps.get("display-name") + " just subscribed for " + tagMaps.get("msg-param-months") + " months in a row!");
+        if ((tagMaps.containsKey("display-name") || tagMaps.containsKey("login")) && tagMaps.containsKey("msg-param-months") && (tagMaps.containsKey("msg-id") && tagMaps.get("msg-id").equals("resub"))) {
+            scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, (tagMaps.get("display-name").length() == 0 ? tagMaps.get("login") : tagMaps.get("display-name")), tagMaps.get("msg-param-months")));
+            com.gmt2001.Console.debug.println((tagMaps.get("display-name").length() == 0 ? tagMaps.get("login") : tagMaps.get("display-name")) + " just subscribed for " + tagMaps.get("msg-param-months") + " months in a row!");
         }
     }
 
