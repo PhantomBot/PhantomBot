@@ -517,11 +517,6 @@
                 return;
             }
 
-            if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-                return;
-            }
-
             /**
              * @commandpath module delete - Delete a module from the DB, use if a custom module is removed from the scripts directory.
              */
