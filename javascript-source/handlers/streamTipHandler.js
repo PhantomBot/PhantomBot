@@ -37,7 +37,7 @@
             $.mkDir(donationAddonDir);
         }
 
-        $.consoleLn(">> Enabling Stream tip donation announcements");
+        $.consoleLn(">> Enabling StreamTip donation announcements");
         $.log.event('Donation announcements enabled');
         announceDonations = true;
     });
