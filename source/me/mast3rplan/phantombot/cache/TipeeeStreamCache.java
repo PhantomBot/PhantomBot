@@ -167,13 +167,14 @@ public class TipeeeStreamCache implements Runnable {
                         (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
                         jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
                 } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("TipeeeStreamCache.updateCache: Failed to update donations: " + ex.getMessage());
-
+                    /* Kill this cache if the tipeeestream token is bad and disable the module. */
                     if (ex.getMessage().contains("authentification")) {
-                        com.gmt2001.Console.warn.println("TipeeeStreamCache.updateCache: Bad OAuth token disabling the TipeeeStream module.");
+                        com.gmt2001.Console.err.println("TipeeeStreamCache.updateCache: Bad API key disabling the TipeeeStream module.");
                         PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/tipeeestreamHandler.js", "false");
-                        this.kill();
+                    } else {
+                        com.gmt2001.Console.err.println("TipeeeStreamCache.updateCache: Failed to update donations: " + ex.getMessage());
                     }
+                    this.kill();
                 }
             }
         } else {

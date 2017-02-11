@@ -35,7 +35,7 @@
 		var hoster = event.getHoster(),
 		    viewers = event.getUsers(),
 		    now = $.systemTime(),
-		    s = autohostMessage;
+		    s = autoHostMessage;
 
 		if (toggle === false || announce === false || channelName == '') {
 			return;
