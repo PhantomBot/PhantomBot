@@ -61,7 +61,7 @@
 		    subAction = args[1];
 
 		/**
-		 * @discordcommandpath module enable [path] - Enables any modules in the bot, it should only be used to enable discord modules though.
+		 * @discordcommandpath module enable [path] - Enables any modules in the bot, it should only be used to enable Discord modules though.
 		 */
 		if (command.equalsIgnoreCase('module')) {
 			if (action === undefined || (subAction === undefined && !action.equalsIgnoreCase('list'))) {
@@ -93,7 +93,7 @@
 			}
 
 			/**
-		     * @discordcommandpath module disable [path] - Disables any modules in the bot, it should only be used to enable discord modules though.
+		     * @discordcommandpath module disable [path] - Disables any modules in the bot, it should only be used to enable Discord modules though.
 		     */
 			if (action.equalsIgnoreCase('disable')) {
 				var index = $.bot.getModuleIndex(subAction);
@@ -109,7 +109,7 @@
 			}
 
 			/**
-		     * @discordcommandpath module list - Lists all of the discord modules.
+		     * @discordcommandpath module list - Lists all of the Discord modules.
 		     */
 			if (action.equalsIgnoreCase('list')) {
 				var modules = $.bot.modules, 

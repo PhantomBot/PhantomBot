@@ -86,7 +86,7 @@
 	    	}
 
 	    	/**
-	    	 * @discordcommandpath cooldown toggleglobal - Toggles the global cooldown for discord commands.
+	    	 * @discordcommandpath cooldown toggleglobal - Toggles the global cooldown for Discord commands.
 	    	 */
 	    	if (action.equalsIgnoreCase('toggleglobal')) {
 	    		globalCooldown = !globalCooldown;
@@ -95,7 +95,7 @@
 	    	}
 
 	    	/**
-	    	 * @discordcommandpath cooldown globaltime [seconds] - Set the global cooldown time for discord commands.
+	    	 * @discordcommandpath cooldown globaltime [seconds] - Set the global cooldown time for Discord commands.
 	    	 */
 	    	if (action.equalsIgnoreCase('globaltime')) {
 	    		if (subAction === undefined || isNaN(parseInt(subAction))) {
