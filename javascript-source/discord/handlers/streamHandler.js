@@ -10,6 +10,19 @@
 	    timeout = (300 * 6e4);
 	    lastEvent = 0;
 
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/streamHandler.js')) {
+            onlineToggle = $.getIniDbBoolean('discordSettings', 'onlineToggle', false);
+            onlineMessage = $.getIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch with (game)! (url)');
+            gameToggle = $.getIniDbBoolean('discordSettings', 'gameToggle', false);
+            gameMessage = $.getIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch to (game)! (url)');
+            channelName = $.getIniDbString('discordSettings', 'onlineChannel', '');
+        }
+    });
+    
 	/**
 	 * @event twitchOnline
 	 */  
