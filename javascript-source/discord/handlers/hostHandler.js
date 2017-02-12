@@ -131,7 +131,7 @@
                     return;
                 }
 
-                hostMessage = args.slice(2).join(' ');
+                hostMessage = args.slice(1).join(' ');
                 $.inidb.set('discordSettings', 'hostMessage', hostMessage);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.hosthandler.host.message.set', hostMessage));
             }

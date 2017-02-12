@@ -78,7 +78,7 @@
         			return;
         		}
 
-        		message = args.slice(2).join(' ');
+        		message = args.slice(1).join(' ');
         		$.inidb.set('discordSettings', 'bitsMessage', message);
         		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.message.set', message));
         	}
