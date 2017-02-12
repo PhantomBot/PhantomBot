@@ -257,7 +257,7 @@
         }
 
         /**
-         * @discordcommandpath addcom [command] [response] - Adds a custom command to be used in your discord server.
+         * @discordcommandpath addcom [command] [response] - Adds a custom command to be used in your Discord server.
          */
         if (command.equalsIgnoreCase('addcom')) {
             if (action === undefined || subAction === undefined) {
