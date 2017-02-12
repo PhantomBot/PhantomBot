@@ -153,7 +153,7 @@
                     return;
                 }
 
-                if (audioHookExists(audioHook) === undefined) {
+                if (!audioHookExists(audioHook)) {
                     $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
                     return;
                 }
@@ -265,5 +265,4 @@
     });
 
     $.loadAudioHookCommands = loadAudioHookCommands;
-    $.audioHookExists = audioHookExists;
 })();
