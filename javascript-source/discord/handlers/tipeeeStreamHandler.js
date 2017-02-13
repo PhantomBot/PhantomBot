@@ -40,7 +40,7 @@
             paramObj = donationObj.getJSONObject('parameters'),
             donationUsername = paramObj.getString('username'),
             donationCurrency = paramObj.getString('currency'),
-            donationMessage = paramObj.getString('message'),
+            donationMessage = (paramObj.has('message') ? paramObj.getString('message') : ''),
             donationAmount = paramObj.getInt('amount'),
             donationFormattedAmount = donationObj.getString('formattedAmount'),
             s = message;
@@ -60,11 +60,11 @@
         }
 
         if (s.match(/\(amount\)/)) {
-            s = $.replace(s, '(amount)', parseInt(donationAmount.toFixed(2)).toString());
+            s = $.replace(s, '(amount)', parseInt(donationAmount.toFixed(2)));
         }
 
         if (s.match(/\(amount\.toFixed\(0\)\)/)) {
-            s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount.toFixed(0)).toString());
+            s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount.toFixed(0)));
         }
 
         if (s.match(/\(message\)/)) {
