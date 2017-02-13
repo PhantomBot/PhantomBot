@@ -90,7 +90,7 @@
                     module = moduleData[idx]['key'];
                     moduleEnabled = moduleData[idx]['value'];
                     if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
-                        if (!module.includes('./discord')) {
+                        if (module.indexOf('./discord') === -1) {
                             html += "<tr class=\"textList\">" +
                                     "    <td>" + module + "</td>" +
     
