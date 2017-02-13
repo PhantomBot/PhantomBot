@@ -56,7 +56,7 @@
             paramObj = donationObj.getJSONObject('parameters'),
             donationUsername = paramObj.getString('username'),
             donationCurrency = paramObj.getString('currency'),
-            donationMessage = paramObj.getString('message'),
+            donationMessage = (paramObj.has('message') ? paramObj.getString('message') : ''),
             donationAmount = paramObj.getInt('amount'),
             donationFormattedAmount = donationObj.getString('formattedAmount'),
             s = message;
