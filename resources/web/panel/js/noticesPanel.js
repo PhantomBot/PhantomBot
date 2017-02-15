@@ -28,6 +28,7 @@
    var refreshIcon = '<i class="fa fa-refresh" />',
        spinIcon = '<i style=\"color: #6136b1\" class="fa fa-spinner fa-spin" />',
        modeIcon = [],
+       isDeleting = false,
        settingIcon = [];
 
        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
@@ -81,6 +82,7 @@
 
                 html = '<table>';
                 for (var idx in msgObject['results']) {
+                    console.log('[DEBUG] KEY::' + msgObject['results'][idx]['key'] + '::VALUE::' + msgObject['results'][idx]['value']);
                     id = msgObject['results'][idx]['key'].match(/message_(\d+)/)[1];
                     html += '<tr style="textList">' +
                     '    <td style="width: 15%">Notice #' + id + '</td>' +
@@ -186,7 +188,11 @@
     function deleteNotice(id) {
         $('#deleteNotice_' + id).html(spinIcon);
         sendCommand('notice removesilent ' + id);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+
+        if (!isDeleting) { // Added this or the list goes crazy on the panel.
+            isDeleting = true; 
+            setTimeout(function() { doQuery(); isDeleting = false; }, TIMEOUT_WAIT_TIME * 4); 
+        }
     }
 
     /**
