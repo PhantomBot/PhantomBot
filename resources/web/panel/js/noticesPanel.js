@@ -82,7 +82,6 @@
 
                 html = '<table>';
                 for (var idx in msgObject['results']) {
-                    console.log('[DEBUG] KEY::' + msgObject['results'][idx]['key'] + '::VALUE::' + msgObject['results'][idx]['value']);
                     id = msgObject['results'][idx]['key'].match(/message_(\d+)/)[1];
                     html += '<tr style="textList">' +
                     '    <td style="width: 15%">Notice #' + id + '</td>' +
