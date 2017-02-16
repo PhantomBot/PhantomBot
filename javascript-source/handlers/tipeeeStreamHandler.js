@@ -73,7 +73,7 @@
 
         $.inidb.set('donations', 'last_donation_message', $.lang.get('main.donation.last.tip.message', donationUsername, donationCurrency, donationAmount));
 
-        $.writeToFile(donationUsername + ": " + donationAmount, dir + '/latestDonation.txt', false);
+        $.writeToFile(donationUsername + ": " + donationAmount + " ", dir + '/latestDonation.txt', false);
 
         if (toggle === true && announce === true) {
             if (s.match(/\(name\)/)) {

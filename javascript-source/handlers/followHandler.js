@@ -153,7 +153,7 @@
                     $.inidb.incr('points', follower, followReward);
                 }
 
-                $.writeToFile($.username.resolve(follower), './addons/followHandler/latestFollower.txt', false);
+                $.writeToFile($.username.resolve(follower) + ' ', './addons/followHandler/latestFollower.txt', false);
             }
         }
         
