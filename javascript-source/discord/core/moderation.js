@@ -63,7 +63,7 @@
      */
     function isWhiteList(username, message) {
         for (var i in whitelist) {
-            if (message.toLowerCase().includes(whitelist[i]) || username.includes(whitelist[i])) {
+            if (message.includes(whitelist[i]) || username === whitelist[i]) {
                 return true;
             }
         }
@@ -77,7 +77,7 @@
      */
     function hasBlackList(username, message) {
         for (var i in blacklist) {
-            if (message.toLowerCase().includes(blacklist[i])) {
+            if (message.includes(blacklist[i])) {
                 return true;
             }
         }
@@ -90,7 +90,7 @@
      * @param {String} username
      */
     function bulkDelete(username, channel) {
-        $.discordAPI.bulkDelete(username, channel, spam[username].messages);
+        $.discordAPI.resolveChannel(channel).deleteMessagesByIds(spam[username].messages).queue();
         delete spam[username];
     }
 
@@ -102,7 +102,7 @@
      * @param {String} message
      */
     function timeoutUser(username, channel, message) {
-        $.discordAPI.jda().getTextChannelById(channel).deleteMessageById(message);
+        $.discordAPI.resolveChannel(channel).deleteMessageById(message).queue();
     }
 
     /**
@@ -111,48 +111,44 @@
     $.bind('discordMessage', function(event) {
         var sender = event.getSenderId(),
             channel = event.getChannel(),
-            message = event.getMessage(),
+            message = event.getMessage().toLowerCase(),
             messageLength = message.length();
 
         if (event.isAdmin() == false && !hasPermit(sender) && !isWhiteList(sender, message)) {
-            if (hasBlackList(message)) {
-                timeoutUser(sender, event.getChannelId(), event.getMessageId());
-                return;
-            }
-
             if (linkToggle && $.discord.pattern.hasLink(message)) {
-                timeoutUser(sender, event.getChannelId(), event.getMessageId());
+                timeoutUser(sender, channel, event.getMessageId());
                 return;
             }
 
             if (longMessageToggle && messageLength > longMessageLimit) {
-                timeoutUser(sender, event.getChannelId(), event.getMessageId());
+                timeoutUser(sender, channel, event.getMessageId());
                 return;
             }
 
-            if (capsToggle && messageLength > capsTriggerLength && (($.discord.pattern.getCapsCount(message) / messageLength) * 100) > capsLimitPercent) {
-                timeoutUser(sender, event.getChannelId(), event.getMessageId());
+            if (capsToggle && messageLength > capsTriggerLength && (($.discord.pattern.getCapsCount(event.getMessage()) / messageLength) * 100) > capsLimitPercent) {
+                timeoutUser(sender, channel, event.getMessageId());
                 return;
             }
 
-            if (spamToggle) {
-                if (spam[sender] !== undefined) {
-                    if (spam[sender].time + 5000 >= $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
-                        spam[sender].total++;
-                        spam[sender].messages.push(event.getMessageId());
-                    } else if (spam[sender].time + 5000 <= $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
-                        spam[sender].time = $.systemTime();
-                        spam[sender].total = 1;
-                        spam[sender].messages = [];
-                    } else {
-                        bulkDelete(sender, channel);
-                    }
+            if (spamToggle) { 
+                if (spam[sender] !== undefined && spam[sender].time + 5000 > $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
+                    spam[sender].total++; spam[sender].messages.push(event.getMessageId());
+                } else if (spam[sender] !== undefined && spam[sender].time + 5000 < $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
+                    spam[sender].time = $.systemTime(); spam[sender].total = 1; spam[sender].messages = [event.getMessageId()];
                 } else {
-                    spam[sender] = { total: 1, time: $.systemTime(), lastClear: $.systemTime(), messages: [] };
+                    spam[sender].messages.push(event.getMessageId()); bulkDelete(sender, channel);
                 }
+            } else {
+                spam[sender] = { total: 1, time: $.systemTime(), messages: [event.getMessageId()] };
+                return;
             }
-            lastMessage = $.systemTime();
+
+            if (hasBlackList(message)) {
+                timeoutUser(sender, channel, event.getMessageId());
+                return;
+            }
         }
+        lastMessage = $.systemTime();
     });
 
     /**
