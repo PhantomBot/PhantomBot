@@ -16,9 +16,11 @@
  */
 package me.mast3rplan.phantombot.event.discord;
 
+import net.dv8tion.jda.core.entities.Member;
+
 public class DiscordLeaveEvent extends DiscordEvent {
 
-    public DiscordLeaveEvent(String sender, String senderId, String discrim) {
-        super(sender, senderId, discrim, null);
+    public DiscordLeaveEvent(Member sender) {
+        super(sender.getUser());
 	}
 }

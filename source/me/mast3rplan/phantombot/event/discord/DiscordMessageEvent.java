@@ -16,6 +16,9 @@
  */
 package me.mast3rplan.phantombot.event.discord;
 
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.Channel;
+
 public class DiscordMessageEvent extends DiscordEvent {
 
     private final String message;
@@ -23,12 +26,12 @@ public class DiscordMessageEvent extends DiscordEvent {
     private final String messageId;
     private final Boolean isAdmin;
 
-    public DiscordMessageEvent(String sender, String senderId, String discrim, String message, String messageId, String channel, String channelId, Boolean isAdmin) {
-        super(sender, senderId, discrim, channel);
+    public DiscordMessageEvent(User sender, Channel channel, String message, String messageId, Boolean isAdmin) {
+        super(sender, channel);
 
         this.message = message;
         this.messageId = messageId;
-        this.channelId = channelId;
+        this.channelId = channel.getId();
         this.isAdmin = isAdmin;
 	}
 
