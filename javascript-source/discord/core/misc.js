@@ -157,6 +157,7 @@
 		say: say,
 		userPrefix: userPrefix,
 		getUserMention: getUserMention,
+		userMention: getUserMention,
 		resolve: { 
 			global: getUserMentionOrChannel,
 			getUserMentionOrChannel: getUserMentionOrChannel
