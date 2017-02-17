@@ -350,12 +350,6 @@ public class TwitchPubSub {
                 return;
             }
     
-            if (messageObj.getString("type").equalsIgnoreCase("reconnect")) {
-                com.gmt2001.Console.debug.println("TwitchPubSubWS: Force reconnect required.");
-                twitchPubSub.reconnectWSS();
-                return;
-            }
-    
             if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                 com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                 reconAllowed = false;
