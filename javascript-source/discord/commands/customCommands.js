@@ -35,15 +35,15 @@
      */
     function tags(event, s) {
         if (s.match(reCustomArg)) {
-            s = $.replace(s, s.match(reCustomArg)[0], (event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1] === undefined ? s.match(reCustomArg)[2] : event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1]));
+            s = $.replace(s, s.match(reCustomArg)[0], (event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1] === undefined ? s.match(reCustomArg)[2] : $.discord.resolve.global(event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1])));
         }
 
         if (s.match(reNormalCommandArg)) {
-            s = $.replace(s, s.match(reNormalCommandArg)[0], (event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1] === undefined ? '' : event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1]));
+            s = $.replace(s, s.match(reNormalCommandArg)[0], (event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1] === undefined ? '' : $.discord.resolve.global(event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1])));
         }
 
         if (s.match(reCustomToUserArg)) {
-            s = $.replace(s, s.match(reCustomToUserArg)[0], (event.getArgs()[0] ? $.discordAPI.getUserMention(event.getArgs().join(' ')) : s.match(reCustomToUserArg)[1]));
+            s = $.replace(s, s.match(reCustomToUserArg)[0], (event.getArgs()[0] ? $.discord.username.resolve(event.getArgs().join(' ')) : s.match(reCustomToUserArg)[1]));
         }
 
         if (s.match(/\(sender\)/)) {
@@ -55,7 +55,11 @@
         }
 
         if (s.match(/\(touser\)/)) {
-            s = $.replace(s, '(touser)', (event.getArgs()[0] ? $.discordAPI.getUserMention(event.getArgs()[0]) : event.getUsername()));
+            s = $.replace(s, '(touser)', (event.getArgs()[0] ? $.discord.username.resolve(event.getArgs().join(' ')) : event.getMention()));
+        }
+
+        if (s.match(/\(random\)/)) {
+            s = $.replace(s, '(random)', $.discord.username.random());
         }
 
         if (s.match(/\(#\)/)) {
