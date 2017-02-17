@@ -138,7 +138,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
                     return;
                 } else {
-                    argsString = argsString.replace(action + ' ' + args[1], '').trim();
+                    argsString = args.slice(2).join(' ');
                     $.inidb.set('notices', 'message_' + args[1], argsString);
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-success'));
                     return;
@@ -156,7 +156,7 @@
                     //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
                     return;
                 } else {
-                    argsString = argsString.replace(action + ' ' + args[1], '').trim();
+                    argsString = args.slice(2).join(' ');
                     $.inidb.set('notices', 'message_' + args[1], argsString);
                     //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-success'));
                     return;
@@ -210,7 +210,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-usage'));
                     return;
                 } else {
-                    argsString = argsString.replace(action + '', '').trim();
+                    argsString = args.slice(1).join(' ');
                     $.inidb.set('notices', 'message_' + numberOfNotices, argsString);
                     numberOfNotices++;
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-success'));
@@ -226,7 +226,7 @@
                     //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-usage'));
                     return;
                 } else {
-                    argsString = argsString.replace(action + '', '').trim();
+                    argsString = args.slice(1).join(' ');
                     $.inidb.set('notices', 'message_' + numberOfNotices, argsString);
                     numberOfNotices++;
                     //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-success'));
