@@ -16,6 +16,9 @@
  */
 package me.mast3rplan.phantombot.event.discord;
 
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.Channel;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,8 +29,8 @@ public class DiscordCommandEvent extends DiscordEvent {
     private final Boolean isAdmin;
 	private String[] args;
 
-	public DiscordCommandEvent(String sender, String senderId, String discrim, String channel, String arguments, String command, Boolean isAdmin) {
-        super(sender, senderId, discrim, channel);
+	public DiscordCommandEvent(User sender, Channel channel, String command, String arguments, Boolean isAdmin) {
+        super(sender, channel);
 
 		this.command = command;
 		this.arguments = arguments;
