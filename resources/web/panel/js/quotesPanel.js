@@ -25,7 +25,8 @@
 
 (function() {
 
-    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />';
+    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />',
+        isDeleting = false;
 
     /**
      * @function onMessage
@@ -148,7 +149,11 @@
     function deleteQuote(id) {
         $('#deleteQuote_' + id).html(spinIcon);
         sendCommand('delquotesilent ' + id);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+
+        if (!isDeleting) {
+            isDeleting = true;
+            setTimeout(function() { doQuery(); isDeleting = false; }, TIMEOUT_WAIT_TIME * 4);
+        }
     }
 
     /**
@@ -185,7 +190,7 @@
         if (value.length > 0) {
             $('#addQuoteInput').val('Adding...').blur();
             sendCommand('addquotesilent ' + value);
-            setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 4);
+            setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
