@@ -92,7 +92,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -510,13 +510,35 @@
             $.inidb.del('aliases', 'point');
         }
 
-        $.inidb.del('modules', './handlers/discordHandler.js');
-
         $.consoleLn('PhantomBot update 2.3.5.1 completed!');
         $.inidb.set('updates', 'installedv2.3.5.1', 'true');
     }
 
+    /* version 2.3.5.2 updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.5.2') || $.inidb.get('updates', 'installedv2.3.5.2') != 'true') {
+        $.consoleLn('Starting PhantomBot update 2.3.5.2 updates...');
 
+        $.consoleLn('Reloading quotes... Please do not turn off your bot.');
+        var keys = $.inidb.GetKeyList('quotes', ''),
+            temp = [],
+            i;
+
+        for (i in keys) {
+            var quote = $.inidb.get('quotes', keys[i]);
+            if (quote != null) {
+                temp.push(quote);
+            }
+        }
+
+        $.inidb.RemoveFile('quotes');
+
+        for (i in temp) {
+            $.inidb.set('quotes', i, temp[i]);
+        }
+
+        $.consoleLn('PhantomBot update 2.3.5.2 completed!');
+        $.inidb.set('updates', 'installedv2.3.5.2', 'true');
+    }
 
     /**
      * @function getTableContents
