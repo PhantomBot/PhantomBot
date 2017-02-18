@@ -240,6 +240,15 @@ public class Session {
     }
 
     /*
+     * @function hasQueue
+     *
+     * @return {Boolean}
+     */
+    public Boolean queueIsEmpty() {
+        return messages.isEmpty();
+    }
+
+    /*
      * Chat in the channel without anything showing in the console. used for .mods atm.
      *
      * @param message
