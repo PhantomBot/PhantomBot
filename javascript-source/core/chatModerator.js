@@ -340,7 +340,7 @@
      * @param {boolean} filter
      */
     function sendMessage(username, message, filter) {
-        if (!filter && (messageTime - $.systemTime()) <= 0) {
+        if (!filter && (messageTime - $.systemTime()) <= 0 && $.session.queueIsEmpty() == true) {
             $.say($.userPrefix(username, true) + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         }
