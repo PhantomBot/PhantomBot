@@ -517,6 +517,11 @@
                 return;
             }
 
+            if (!action) {
+                $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
+                return;
+            }
+
             /**
              * @commandpath module delete - Delete a module from the DB, use if a custom module is removed from the scripts directory.
              */
@@ -857,8 +862,8 @@
             var sender = event.getSender().toLowerCase(),
                 command = event.getCommand().toLowerCase(),
                 args = event.getArgs(),
-                subCommand = (args[0] ? args[0] : ''),
-                subCommandAction = (args[1] ? args[1] : ''),
+                subCommand = (args[0] ? ' ' + args[0] : ''),
+                subCommandAction = (args[1] ? ' ' + args[1] : ''),
                 commandCost = 0,
                 isModv3 = $.isModv3(sender, event.getTags());
 
@@ -900,7 +905,7 @@
                 return;
             }
 
-            if ($.coolDown.get(command, sender, isModv3) > 0) {
+            if ($.coolDown.get(command, sender, isModv3) > 1000) {
                 if (coolDownMsgEnabled) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
                 }
@@ -914,7 +919,7 @@
                 return;
             }
 
-            if (($.inidb.exists('pricecom', command) || $.inidb.exists('pricecom', command + ' ' + subCommand) || $.inidb.exists('pricecom', (command + ' ' + subCommand + ' ' + subCommandAction)))) {
+            if ($.inidb.exists('pricecom', (command + subCommand + subCommandAction))) {
                 if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
                     if (isModuleEnabled('./systems/pointSystem.js')) {
                         commandCost = $.getCommandPrice(command, subCommand, subCommandAction);
