@@ -536,6 +536,8 @@
             $.inidb.set('quotes', i, temp[i]);
         }
 
+        $.inidb.del('modules', './handlers/discordHandler.js');
+
         $.consoleLn('PhantomBot update 2.3.5.2 completed!');
         $.inidb.set('updates', 'installedv2.3.5.2', 'true');
     }
