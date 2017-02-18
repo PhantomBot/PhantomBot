@@ -90,6 +90,27 @@
             s = $.replace(s, '(follows)', $.getFollows($.channelName).toString());
         }
 
+        if (s.match(/\(readfile/)) {
+            if (s.search(/\((readfile ([^)]+)\))/g) >= 0) {
+                s = $.replace(s, '(' + RegExp.$1, $.readFile('addons/' + RegExp.$2)[0]);
+            }
+        }
+
+        if (s.match(/\(count\)/g)) {
+            $.inidb.incr('commandCount', event.getCommand(), 1);
+            s = $.replace(s, '(count)', $.inidb.get('discordCommandCount', event.getCommand()));
+        }
+
+        if (s.match(/\(writefile (.+), ([a-z]), (.+)\)/)) {
+            var file = s.match(/\(writefile (.+), (.+), (.+)\)/)[1], append = (s.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false), string = s.match(/\(writefile (.+), (.+), (.+)\)/)[3];
+            $.writeToFile(string, './addons/' + file, append);
+            return null;
+        }
+
+        if (s.match(/\(lasttip\)/g)) {
+            s = $.replace(s, '(lasttip)', ($.inidb.exists('donations', 'last_donation_message') ? $.inidb.get('donations', 'last_donation_message') : 'No donations found.'));
+        }
+
         if (s.match(reCustomAPIJson) || s.match(reCustomAPI)) {
             s = api(event, s);
         }
@@ -256,7 +277,10 @@
          * Checks for custom commands, no command path needed here.
          */
         if ($.inidb.exists('discordCommands', command)) {
-            $.discord.say(channel, tags(event, $.inidb.get('discordCommands', command)));
+            var tag = tags(event, $.inidb.get('discordCommands', command));
+            if (tag !== null) {
+                $.discord.say(channel, tag);
+            }
             return;
         }
 
