@@ -2098,16 +2098,6 @@ public class PhantomBot implements Listener {
             }
         }
 
-        /* Check for a owner */
-        if (startProperties.getProperty("owner") == null) {
-            if (startProperties.getProperty("channel") != null) {
-                if (!startProperties.getProperty("channel").isEmpty()) {
-                    startProperties.setProperty("owner", startProperties.getProperty("channel"));
-                    changed = true;
-                }
-            }
-        }
-
         /* Make sure the oauth has been set correctly */
         if (startProperties.getProperty("oauth") != null) {
             if (!startProperties.getProperty("oauth").startsWith("oauth") && !startProperties.getProperty("oauth").isEmpty()) {
@@ -2128,6 +2118,19 @@ public class PhantomBot implements Listener {
         if (startProperties.getProperty("channel").startsWith("#")) {
             startProperties.setProperty("channel", startProperties.getProperty("channel").substring(1));
             changed = true;
+        } else if (startProperties.getProperty("channel").contains(".tv")) {
+            startProperties.setProperty("channel", startProperties.getProperty("channel").substring(startProperties.getProperty("channel").indexOf(".tv/") + 4).replaceAll("/", ""));
+            changed = true;
+        }
+
+        /* Check for the owner after the channel check is done. */
+        if (startProperties.getProperty("owner") == null) {
+            if (startProperties.getProperty("channel") != null) {
+                if (!startProperties.getProperty("channel").isEmpty()) {
+                    startProperties.setProperty("owner", startProperties.getProperty("channel"));
+                    changed = true;
+                }
+            }
         }
 
         /* Iterate the properties and delete entries for anything that does not have a 
