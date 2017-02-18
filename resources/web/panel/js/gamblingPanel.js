@@ -242,24 +242,25 @@
     function timeRaffleOpen() {
         var keyword = $('#raffle-time-keyword').val(),
             minimumTime = $('#raffle-time-cost').val(),
-            timer = $('#raffle-time-timer').val(),
-            reg = $('#raffle-time-regluck').val(),
-            sub = $('#raffle-time-subluck').val();
+            timer = $('#raffle-normal-timer').val(),
+            reg = $('#raffle-normal-regluck').val(),
+            sub = $('#raffle-normal-subluck').val();
 
         if (keyword.length == 0 && minimumTime.length == 0) {
             return;
         }
 
         if (sub == 0) {
-            sub = 1;
+            sub = 1
         }
 
         if (reg == 0) {
-            reg = 1;
+            reg = 1
         }
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
+        
         // For some slower drives sometimes this makes it before it has time to write the new data.
         setTimeout(function() {
             sendCommand('reloadraffle');
@@ -271,9 +272,13 @@
         $('#raffle-time-sub').html('1 Times');
         $('#raffle-time-reg').html('1 Times');
         $('#raffle-time-timer2').html('Until closed');
-        $('#raffle-time-timer').val('0');
-        $('#raffle-time-regluck').val('0');
-        $('#raffle-time-subluck').val('0');
+        $('#raffle-normal-timer').val('0');
+        $('#raffle-normal-regluck').val('0');
+        $('#raffle-normal-subluck').val('0');
+        document.getElementById('raffle-time-regluck').value = 0;
+        document.getElementById('raffle-time-subluck').value = 0;
+        document.getElementById('raffle-time-timer').value = 0;
+
     }
 
     /**
@@ -282,20 +287,12 @@
     function pointsRaffleOpen() {
         var keyword = $('#raffle-keyword').val(),
             minimumTime = $('#raffle-cost').val(),
-            timer = $('#raffle-points-timer').val(),
-            reg = $('#raffle-points-regluck').val(),
-            sub = $('#raffle-points-subluck').val();
+            timer = $('#raffle-normal-timer').val(),
+            reg = $('#raffle-normal-regluck').val(),
+            sub = $('#raffle-normal-subluck').val();
 
         if (keyword.length == 0 && minimumTime.length == 0) {
             return;
-        }
-
-        if (sub == 0) {
-            sub = 1;
-        }
-
-        if (reg == 0) {
-            reg = 1;
         }
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
@@ -312,9 +309,12 @@
         $('#raffle-points-sub').html('1 Times');
         $('#raffle-points-reg').html('1 Times');
         $('#raffle-points-timer2').html('Until closed');
-        $('#raffle-points-timer').val('0');
-        $('#raffle-points-regluck').val('0');
-        $('#raffle-points-subluck').val('0');
+        $('#raffle-normal-timer').val('0');
+        $('#raffle-normal-regluck').val('0');
+        $('#raffle-normal-subluck').val('0');
+        document.getElementById('raffle-points-regluck').value = 0;
+        document.getElementById('raffle-points-subluck').value = 0;
+        document.getElementById('raffle-points-timer').value = 0;
     }
 
     /**
@@ -328,14 +328,6 @@
 
         if (keyword.length == 0) {
             return;
-        }
-
-        if (sub == 0) {
-            sub = 1;
-        }
-
-        if (reg == 0) {
-            reg = 1;
         }
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
@@ -376,6 +368,7 @@
      */
     function raffleClose() {
         sendCommand('raffle close');
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -383,7 +376,7 @@
      */
     function raffleRepick() {
         sendCommand('raffle repick');
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**

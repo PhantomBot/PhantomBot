@@ -91,14 +91,16 @@
             return;
         }
 
-        if (force) {
-            $.say($.lang.get('ticketrafflesystem.raffle.repick', $.username.resolve($.randElement(entries))));
-            return;
+        var Winner = $.randElement(entries),
+            isFollowing = $.user.isFollower(Winner.toLowerCase()),
+            followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+        
+        if (!force) {
+            $.say($.lang.get('ticketrafflesystem.winner', $.username.resolve(Winner), followMsg));
+        } else {
+            $.say($.lang.get('ticketrafflesystem.raffle.repick', $.username.resolve(Winner), followMsg));
         }
-
-        var Winner = $.randElement(entries);
-        $.inidb.set('traffleresults', 'winner', $.username.resolve(Winner));
-        $.say($.lang.get('ticketrafflesystem.winner', $.username.resolve(Winner)));
+        $.inidb.set('traffleresults', 'winner', $.username.resolve(Winner) + ' ' + followMsg);
         $.log.event('Winner of the ticket raffle was ' + Winner);
     };
 
@@ -112,7 +114,7 @@
 
         if (times > maxEntries || times == 0 || times < 0) {
             if (msgToggle) {
-                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only, buy.amount', maxEntries));
+                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only.buy.amount', maxEntries));
             }
             return;
         }
@@ -129,14 +131,14 @@
             }
         }
 
-        if (followers) {
+        /*if (followers) {
             if (!$.user.isFollower(user)) {
                 if (msgToggle) {
                     $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.not.following'));
                 }
                 return;
             }
-        }
+        }*/
 
         if (cost > 0) {
             if ((times * cost) > $.getUserPoints(user)) {
