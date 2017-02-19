@@ -39,6 +39,7 @@ import com.illusionaryone.GoogleURLShortenerAPIv1;
 import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.DiscordAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
+import com.nekres.MSNeventListener;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -1140,6 +1141,12 @@ public class PhantomBot implements Listener {
         /* Start the twitter cache if the keys are not null and the module is enabled */
         if (this.twitterAuthenticated && checkModuleEnabled("./handlers/twitterHandler.js")) {
             this.twitterCache = TwitterCache.instance(this.chanName);
+        }
+
+        /* Start the MSN listener if the OS is microsoft windows.*/
+        if (SystemUtils.IS_OS_WINDOWS) {
+            MSNeventListener osuListener = new MSNeventListener();
+            osuListener.start();
         }
 
         /* Start the notice timer and notice handler. */
