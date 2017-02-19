@@ -63,7 +63,10 @@ foreach $moduleName (sort @fileList) {
         } else {
           $commandSubCommands = $commandSubText;
         }
+        ## Need to trim all this or it adds an extra space that Zack does not like.
         $commandSubCommands =~ s/\s+$//;
+        $commandDesc =~ s/\s+$//;
+        $commandName =~ s/\s+$//;
         $commandName = $commandName." ".$commandSubCommands if (length($commandSubCommands) > 0) ;  
       }
       
