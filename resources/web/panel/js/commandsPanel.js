@@ -33,7 +33,8 @@
         cooldownMsg = "false",
         permcomMsg = "true",
         disabledCommands = [],
-        commands = [];
+        commands = [],
+        cooldownTypeEnum = ['default','per-user','global','none'];
 
         modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
         modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
@@ -66,9 +67,11 @@
                 commandValue = "",
                 html = "<table>",
                 time = "",
-                foundData = false;
+                foundData = false,
+                isCooldownType = false;
 
-            if (panelCheckQuery(msgObject, 'commands_cooldown')) {
+            if (panelCheckQuery(msgObject, 'commands_cooldown') || (isCooldownType = panelCheckQuery(msgObject, 'commands_cooldownType'))) {
+                var cooldownTypeText = (isCooldownType ? 'Type' : '');
                 html = "<table>";
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
@@ -96,10 +99,10 @@
                     '    <td style="width: 10%">!' + commandName + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 60%" type="text" id="editCommandCooldown_' + commandName + '"' +
-                    '                   value="' + time + '" />' +
-                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.editCooldown(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCooldown_' + commandName + '" onclick="$.deleteCooldown(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
+                    '            <input style="width: 60%" type="text" id="editCommandCooldown' + cooldownTypeText + '_' + commandName + '"' +
+                    '                   value="' + (isCooldownType ? cooldownTypeEnum[time] : time) + '" />' +
+                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.editCooldown' + cooldownTypeText + '(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCooldown' + cooldownTypeText + '_' + commandName + '" onclick="$.deleteCooldown' + cooldownTypeText + '(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -111,7 +114,7 @@
                     html = "<i>No entries in cooldown table.</i>";
                 }
 
-                $("#cooldownList").html(html);
+                $("#cooldown" + cooldownTypeText + "List").html(html);
                 $("#toggleGlobalCooldown").html(modeIcon[globalCooldown]);
                 $("#togglePerUserCooldown").html(modeIcon[perUserCooldown]);
                 $("#toggleModCooldown").html(modeIcon[modCooldown]);
@@ -315,6 +318,7 @@
         sendDBKeys("commands_pricecom", "pricecom");
         sendDBKeys("commands_payment", "paycom");
         sendDBKeys("commands_cooldown", "cooldown");
+        sendDBKeys("commands_cooldownType", "cooldownType");
         sendDBKeys("commands_disabled", "disabledCommands");
         sendDBQuery("commands_cooldownmsg", "settings", "coolDownMsgEnabled");
         sendDBQuery("commands_permcommsg", "settings", "permComMsgEnabled");
@@ -425,9 +429,19 @@
     function editCooldown(command) {
         var value = $('#editCommandCooldown_' + command).val();
         if (value > 0) {
-            sendDBUpdate("commands_cooldown_edit", "cooldown", command.toLowerCase(), value);
+            sendCommand("silentcooldown " + command + " " + value);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
+    };
+    
+    /**
+     * @function editCooldownType
+     * @param {String} command
+     */
+    function editCooldownType(command) {
+        var value = $('#editCommandCooldownType_' + command).val();
+        sendCommand("silentcooltype " + command + " " + value);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     };
 
     /** 
@@ -454,7 +468,8 @@
 
         if (main.startsWith('!')) {
             main = main.replace('!', '');
-        } else if (alias.startsWith('!')) {
+        }
+        if (alias.startsWith('!')) {
             alias = alias.replace('!', '');
         }
 
@@ -671,6 +686,36 @@
             setTimeout(function() { $("#cooldownCmdInputCommand").val(""); $("#cooldownCmdInput").val(""); }, TIMEOUT_WAIT_TIME);
         }
     }
+	
+	/**
+     * @function deleteCooldownType
+     * @param {String} command
+     */
+    function deleteCooldownType(command) {
+        $("#deleteCooldownType_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        sendCommand("silentcooltype " + command + " default");
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /**
+     * @function addCooldownType
+     */
+    function addCooldownType() {
+        var input = $("#cooldownTypeCmdInput").val();
+        var command = $("#cooldownTypeCmdInputCommand").val();
+
+        if (command.startsWith('!')) {
+            command = command.replace('!', '');
+        }
+        
+        if (input.length != 0 && command.length != 0) {
+            sendCommand("silentcooltype " + command + " " + input);
+            $("#cooldownTypeCmdInput").val("Submitted");
+            $("#cooldownTypeCmdInputCommand").val("Submitted");
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { $("#cooldownTypeCmdInputCommand").val(""); $("#cooldownTypeCmdInput").val(""); }, TIMEOUT_WAIT_TIME);
+        }
+    }
 
     /**
      * @function commandEnable
@@ -744,6 +789,8 @@
     $.updateCommandPay = updateCommandPay;
     $.addCooldown = addCooldown;
     $.deleteCooldown = deleteCooldown;
+	$.addCooldownType = addCooldownType;
+	$.deleteCooldownType = deleteCooldownType;
     $.toggleGlobalCooldown = toggleGlobalCooldown;
     $.toggleModCooldown = toggleModCooldown;
     $.togglePerUserCooldown = togglePerUserCooldown;
@@ -752,6 +799,7 @@
     $.deleteCommandPrice = deleteCommandPrice;
     $.deleteCommandPay = deleteCommandPay;
     $.editCooldown = editCooldown;
+	$.editCooldownType = editCooldownType;
     $.commands = commands;
     $.runCustomCommand = runCustomCommand;
     $.toggleCooldownMsg = toggleCooldownMsg;

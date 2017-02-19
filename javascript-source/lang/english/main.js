@@ -262,6 +262,8 @@ $.lang.register('cooldown.per.user.toggle', 'per-user cooldown has been $1.');
 $.lang.register('cooldown.global.set', 'global cooldown set to $1 seconds.');
 $.lang.register('cooldown.removed', 'cooldown for command !$1 has been removed.');
 $.lang.register('cooldown.set', 'cooldown for command !$1 has been set to $2 seconds.');
+$.lang.register('cooldown.type', 'cooldown type for command !$1 has been set to $2.');
+$.lang.register('cooldown.type.usage', 'Usage: !cooltype [command] [default|per-user|global|none]');
 $.lang.register('init.cmsgset', 'Connected message set!');
 $.lang.register('init.module.404', 'That module does not exist or is not loaded!');
 $.lang.register('init.module.check.disabled', 'Module $1 is currently disabled!');
