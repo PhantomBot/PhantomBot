@@ -1,4 +1,4 @@
-$.lang.register('moderation.usage', 'Usage: !moderation [links / caps / spam / blacklist / whitelist]');
+$.lang.register('moderation.usage', 'Usage: !moderation [links / caps / spam / blacklist / whitelist / cleanup]');
 $.lang.register('moderation.links.usage', 'Usage: !moderation links [toggle / permittime]');
 $.lang.register('moderation.links.toggle', 'Link moderation has been $1.');
 $.lang.register('moderation.links.permit.time.usage', 'Usage: !moderation links permittime [seconds]');
