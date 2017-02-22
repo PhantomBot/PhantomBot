@@ -1,4 +1,4 @@
-$.lang.register('moderation.usage', 'Usage: !moderation [links / caps / spam / blacklist / whitelist]');
+$.lang.register('moderation.usage', 'Usage: !moderation [links / caps / spam / blacklist / whitelist / cleanup]');
 $.lang.register('moderation.links.usage', 'Usage: !moderation links [toggle / permittime]');
 $.lang.register('moderation.links.toggle', 'Link moderation has been $1.');
 $.lang.register('moderation.links.permit.time.usage', 'Usage: !moderation links permittime [seconds]');
@@ -33,3 +33,8 @@ $.lang.register('moderation.whitelist.remove.404', 'That phrase or username is n
 $.lang.register('moderation.whitelist.remove.success', 'Phrase or username removed from the whitelist!');
 $.lang.register('moderation.whitelist.list.404', 'The whitelist is empty.');
 $.lang.register('moderation.whitelist.list', 'Whitelist: ```$1```');
+$.lang.register('moderation.cleanup.usage', 'Usage: !moderation cleanup [channel] [amount]');
+$.lang.register('moderation.cleanup.err', 'You can only delete 1 to 10000 messages.');
+$.lang.register('moderation.cleanup.failed', 'Failed to perform bulk message deletion: Currently deleting messages.');
+$.lang.register('moderation.cleanup.failed.err', 'Failed to perform bulk message deletion.');
+$.lang.register('moderation.cleanup.done', 'Deleted $1 messages!');
