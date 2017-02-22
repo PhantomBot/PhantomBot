@@ -33,6 +33,8 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.MessageHistory;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.channel.text.update.TextChannelUpdateNameEvent;
@@ -49,6 +51,8 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
+
+import java.time.OffsetDateTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,6 +72,7 @@ public class DiscordAPI {
     private final Map<String, TextChannel> channelMap = new HashMap<>();
     private final Map<String, Member> userMap = new HashMap<>();
     private final List<Member> users = new ArrayList<>();
+    private Boolean isPurgingOn = false;
     private String botId;
     private JDA jdaAPI;
 
@@ -253,6 +258,70 @@ public class DiscordAPI {
     }
 
     /*
+     * @function massPurge
+     * @info Parts of this code is from: https://github.com/FlareBot
+     *
+     * @param {String} channelName
+     * @param {int}    amount
+     */
+    public Boolean massPurge(String channelName, int amount) {
+        TextChannel channel = resolveChannel(channelName);
+        isPurgingOn = true;
+
+        if (channel != null) {
+            try {
+                MessageHistory history = new MessageHistory(channel);
+                while (history.getRetrievedHistory().size() < amount) {
+                    if (history.retrievePast(Math.min(amount, 100)).complete().isEmpty()) {
+                        break;
+                    }
+                    amount -= Math.min(amount, 100);
+                }
+
+                List<Message> list = new ArrayList<>();
+                OffsetDateTime now = OffsetDateTime.now();
+                for (Message message : history.getRetrievedHistory()) {
+                    if (message.getCreationTime().plusWeeks(2).isAfter(now)) {
+                        list.add(message);
+                    }
+                    if (list.size() == 100) {
+                        channel.deleteMessages(list).complete();
+                        list.clear();
+                    }
+                }
+
+                if (!list.isEmpty()) {
+                    if (list.size() > 2) {
+                        channel.deleteMessages(list).complete();
+                    } else {
+                        for (Message message : list) {
+                            message.delete().complete();
+                        }
+                    }
+                }
+                isPurgingOn = false;
+                return true;
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.println("Failed to bulk delete messages: " + ex.getMessage());
+                isPurgingOn = false;
+                return false;
+            }
+        } else {
+            isPurgingOn = false;
+            return false;
+        }
+    }
+
+    /*
+     * @function isPurging
+     *
+     * @return {Boolean}
+     */
+    public Boolean isPurging() {
+        return isPurgingOn;
+    }
+
+    /*
      * Parses the message into a command that the bot can read.
      *
      * @param {User}    sender
@@ -316,8 +385,8 @@ public class DiscordAPI {
 
                 if (messageEvent.getMember().getUser().getId() != botId) {
                     try {
-                        Message message = new Message(messageEvent);
-                        new Thread(message).start();
+                        MessageTask messagetask = new MessageTask(messageEvent);
+                        new Thread(messagetask).start();
                     } catch (Exception ex) {
                         handleMessages(messageEvent);
                     }
@@ -376,10 +445,10 @@ public class DiscordAPI {
     /*
      * Class to handle messages we get from Discord on a new thread.
      */
-    private class Message implements Runnable {
+    private class MessageTask implements Runnable {
         private final MessageReceivedEvent event;
 
-        public Message(MessageReceivedEvent event) {
+        public MessageTask(MessageReceivedEvent event) {
             this.event = event;
         }
 
