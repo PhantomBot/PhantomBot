@@ -653,6 +653,7 @@
                         pointsRelatedModules.push('./games/slotMachine.js');
                         pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
                         pointsRelatedModules.push('./systems/raffleSystem.js');
+                        pointsRelatedModules.push('./games/gambling.js');
 
                         for (var i = 0; i < pointsRelatedModules.length; i++) {
                             index = getModuleIndex(pointsRelatedModules[i]);
@@ -690,6 +691,7 @@
                         pointsRelatedModules.push('./games/slotMachine.js');
                         pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
                         pointsRelatedModules.push('./systems/raffleSystem.js');
+                        pointsRelatedModules.push('./games/gambling.js');
 
                         for (var i = 0; i < pointsRelatedModules.length; i++) {
                             index = getModuleIndex(pointsRelatedModules[i]);
