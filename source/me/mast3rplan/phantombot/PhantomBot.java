@@ -529,6 +529,11 @@ public class PhantomBot implements Listener {
             TipeeeStreamAPIv1.instance().SetLimit(tipeeeStreamLimit);
         }
 
+        /* Set the YouTube API Key if provided. */
+        if (!this.youtubeKey.isEmpty()) {
+            YouTubeAPIv3.instance().SetAPIKey(this.youtubeKey);
+        }
+
         /* Start things and start loading the scripts. */
         this.init();
 
