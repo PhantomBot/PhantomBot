@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PhantomBot</title>
+        <link rel="icon" href="favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+
+        <div class="header">
+            <img id="logo" src="logo.png"/>
+            <h1>PhantomBot</h1>
+
+            <span>
+                <a target="_blank" href="https://twitter.com/PhantomBotApp" id="header-right">
+                    <i style="color: white" id="fontawesome" class="fa fa-twitter fa-lg" aria-hidden="true"></i>
+                </a>
+            </span>
+            <span>
+                <a target="_blank" href="https://community.phantombot.tv" id="header-right">
+                    <i data-toggle="tooltip" data-placement="left" title="Forums" style="color: white" id="fontawesome" class="fa fa-users fa-lg" aria-hidden="true"></i>
+                </a>
+            </span>
+        </div>
+
+        <div class="main">
+            <div class="launcher" data-toggle="tooltip" data-placement="right" title="The username and password are found in botlogin.txt, see the paneluser and panelpassword settings.">
+                <script>
+                    var urlInfo = window.location.host.split(":");
+                    var url = urlInfo[0];
+                    var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
+                    var protocol = window.location.href.indexOf("https://") == 0 ? "https" : "http";
+                    if (port.endsWith("0") && port !== '80') {
+                       port = (parseInt(port) + 5);
+                    }
+                    document.write('<a target="_blank" style="color: white;" href="' + protocol + '://' + urlInfo[0] + ':' + port + '/ytplayer">');
+                </script>
+                <span id="middle">
+                    <span id="spacer" />
+                    <i id="fontawesome" class="fa fa-youtube" aria-hidden="true"></i>
+                    <span id="spacer">Launch PhantomBot YouTube Player</span>
+                </span>
+                </a>
+                <span class="launcher-lock"><i class="fa fa-lock"></i></span>
+            </div>
+
+            <div class="launcher" data-toggle="tooltip" data-placement="right" title="The username and password are found in botlogin.txt, see the paneluser and panelpassword settings.">
+                <script>
+                    var urlInfo = window.location.host.split(":");
+                    var url = urlInfo[0];
+                    var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
+                    var protocol = window.location.href.indexOf("https://") == 0 ? "https" : "http";
+                    if (port.endsWith("0") && port !== '80') {
+                       port = (parseInt(port) + 5);
+                    }
+                    document.write('<a target="_blank" style="color: white;" href="' + protocol + '://' + urlInfo[0] + ':' + port + '/panel">');
+                </script>
+                <span id="middle">
+                    <span id="spacer" />
+                    <i id="fontawesome" class="fa fa-desktop" aria-hidden="true"></i>
+                    <span id="spacer">Launch PhantomBot Control Panel</span>
+                </span>
+                </a>
+                <span class="launcher-lock"><i class="fa fa-lock"></i></span>
+            </div>
+
+            <div class="launcher">
+                <script>
+                    var urlInfo = window.location.host.split(":");
+                    var url = urlInfo[0];
+                    var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
+                    var protocol = window.location.href.indexOf("https://") == 0 ? "https" : "http";
+                    if (port.endsWith("0") && port !== '80') {
+                       port = (parseInt(port) + 5);
+                    }
+                    document.write('<a target="_blank" style="color: white;" href="' + protocol + '://' + urlInfo[0] + ':' + port + '/playlist">');
+                </script>
+                <span id="middle">
+                    <span id="spacer" />
+                    <i id="fontawesome" class="fa fa-music" aria-hidden="true"></i>
+                    <span id="spacer">Launch PhantomBot YouTube Playlist Viewer</span>
+                </span>
+                </a>
+            </div>
+
+        </div>
+
+        <div id="copyright">
+            PhantomBot - A Free, Open Source, Multipurpose Twitch Chat Bot<br>
+            <a href="https://phantombot.tv">phantombot.tv</a>
+        </div>
+
+        <script>$(document).ready(function() { $('[data-toggle="tooltip"').tooltip(); });</script>
+
+    </body>
+</html>

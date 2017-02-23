@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PhantomBot YouTube Player Playlist Viewer</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/playlist/js/jquery-ui/jquery-ui.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <script src="/playlist/js/jquery-ui/external/jquery/jquery.min.js"></script>
+        <script src="/playlist/js/jquery-ui/jquery-ui.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/playlist/js/playerConfig.js"></script>
+        <script type="text/javascript" src="/playlist/js/ytPlaylist.js"></script>
+
+        <link rel="icon" href="favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel="stylesheet" type="text/css" href="/playlist/css/style.css">
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    </head>
+
+    <body>
+        <div class="header">
+            <img id="logo" src="/playlist/images/logo.png"/>
+            <div id="newAlert" class="alert" style="display:none"></div>
+        </div>
+             
+        <table>
+            <tr>
+                <td style="vertical-align: top">
+            
+                    <div id="currentsong">
+                        <div id="songTableTitle">Currently Playing</div>
+                        <table id="currentSongTable"> </table>
+                    </div>
+
+                    <div id="songlist">
+                        <div id="songTableTitle">Song Request Queue</div>
+                        <table id="songTable"> </table>
+                    </div>
+            
+                    <div id="playlist">
+                        <div id="playlistTableTitle">Current Playlist</div>
+                        <table id="playlistTable"> </table>
+                    </div>
+        
+                    <div id="copyright">
+                        YouTube Player Playlist Viewer by: 
+                        <a href="https://phantombot.tv">phantombot.tv</a>
+                    </div>
+                </td>
+            </tr>
+        </table>             
+    </body>
+</html>

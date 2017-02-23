@@ -1,0 +1,334 @@
+#logo {
+    height: 70px;
+    margin-left: 15px;
+    float: left;
+    display: inline-block;
+    margin-top: 17px;
+}
+
+.container {
+    position:relative;
+    padding:0 0 0 25px;
+}
+
+#container {
+    width: 100%;
+}
+
+.header {
+    background-color: #6441a5;
+    margin-top: -20px;
+    margin-bottom: 10px;
+    max-width: 100%;
+    height: 85px;
+    -webkit-box-shadow: 0px 3px 5px #000;
+    -moz-box-shadow:    0px 3px 5px #000;
+    box-shadow:         0px 3px 5px #000;
+    overflow: hidden;
+}
+
+a {
+    color: #6441a5;
+    text-decoration: none;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    background-color: rgb(20, 20, 20);
+}
+
+h1 {
+    color: white;
+    padding-top: 20px;
+    margin-left: 15px;
+    font-size: 26px;
+    font-family: "Roboto", arial;
+    display: inline-block;
+}
+
+.chat {
+    width: 300px;
+    height: 600px;
+    padding-top: 0px;
+    vertical-align: top;
+}
+
+.chatFrame {
+    border-style: solid;
+    border-color: #6441a5;
+    height: 600px;
+    width: 300px;
+    scrolling: no;
+    order: 1px;
+}
+
+#main {
+    display: inline;
+    float: left;
+    overflow: hidden;
+    width: 720px;
+    padding-top: 5px;
+}
+
+#player {
+    vertical-align: middle;
+    width: 250px;
+    height: 250px;
+    float: left;
+    display: block;
+}
+
+option:hover {
+    background-color:#cd201f;
+    cursor: pointer;
+}
+
+#selected {
+    background-color: #000;
+    padding: 5px;
+}
+
+.button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+#songlist {
+    display: inline;
+    float: left;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 10px;
+}
+
+#playlist {
+    display: inline;
+    float: left;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#copyright {
+    font-family: "Roboto", arial;
+    display: inline;
+    float: left;
+    width: 100%;
+    background-color: rgb(34, 34, 34);
+    color: grey;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#playerLink {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+#currentSong {
+    background-color: #444444;
+    color: #ffffff;
+    font-family: "Roboto", Sans-serif;
+    font-size: 18px;
+}
+
+.currentSong-small {
+    color: #ffffff;
+    font-family: "Roboto", Sans-serif;
+    font-size: 16px;
+}
+
+table {
+    border: 0px;
+    width: 100%;
+}
+
+#currentSongTable tr:nth-child(even) {
+    font-family: "Roboto", Sans-serif;
+    background: #CCC;
+    color: black;
+    font-size: 14px;
+}
+
+#currentSongTable tr:nth-child(odd) {
+    font-family: "Roboto", Sans-serif;
+    background: #FFF;
+    color: black;
+    font-size: 14px;
+}
+
+#currentSongTable td {
+    font-family: "Roboto", Sans-serif;
+    padding: 5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+#currentSongTable th {
+    font-family: "Roboto", Sans-serif;
+    padding: 5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+
+#songTable tr:nth-child(even) {
+    font-family: "Roboto", Sans-serif;
+    background: #CCC;
+    color: black;
+    font-size: 14px;
+}
+
+#songTable tr:nth-child(odd) {
+    font-family: "Roboto", Sans-serif;
+    background: #FFF;
+    color: black;
+    font-size: 14px;
+}
+
+#songTable td {
+    font-family: "Roboto", Sans-serif;
+    padding: 5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+#songTable th {
+    font-family: "Roboto", Sans-serif;
+    padding: 5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+#playerTable tr {
+    font-family: "Roboto", Sans-serif;
+    background: #444444;
+    color: white;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+#playerTable td {
+    font-family: "Roboto", Sans-serif;
+    padding: 5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+#songTableTitle {
+    font-family: "Roboto", Sans-serif;
+    background: #7451b5;
+    color: white;
+    font-size:14px;
+    width: 100%;
+    padding: 5px;
+}
+
+#playlistTableTitle {
+    font-family: "Roboto", Sans-serif;
+    background: #7451b5;
+    color: white;
+    font-size:14px;
+    width: 100%;
+    padding: 5px;
+}
+
+#playlistTable tr:nth-child(even) {
+    font-family: "Roboto", Sans-serif;
+    background: #CCC;
+    color: black;
+    font-size: 14px;
+}
+
+#playlistTable tr:nth-child(odd) {
+    font-family: "Roboto", Sans-serif;
+    background: #FFF;
+    color: black;
+    font-size: 14px;
+}
+
+#playlistTable td {
+    font-family: "Roboto", Sans-serif;
+    padding: 5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+#playlistTable th {
+    font-family: "Roboto", Sans-serif;
+    padding: 5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+#songProgressBar {
+    width: 250px;
+}
+
+#volumeControl {
+    width: 100px;
+}
+
+.controlTable {
+    box-shadow: 10px 10px 5px #111111;
+    background-color: #333333;
+    margin-top: 20px;
+    width: 300px;
+}
+.controlTable td {
+    background-color: #333333;
+    text-align: left;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.ui-slider .ui-slider-handle { 
+    visibility: hidden;
+}
+
+.alert-danger {
+    clear: left;
+    position: fixed;
+    right: 15px;
+    top: 14px;
+    height: 40px;
+    width: 60%;
+    text-align: center;
+    background-color: red;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.alert-success {
+    clear: left;
+    position: fixed;
+    right: 15px;
+    top: 14px;
+    height: 40px;
+    width: 60%;
+    text-align: center;
+    background-color: white;
+    color: #6441a5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+} 
+
+.modal-dialog {
+    background-color: #444444;
+    color: #dddddd;
+}

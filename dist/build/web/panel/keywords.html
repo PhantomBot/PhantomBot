@@ -1,0 +1,67 @@
+<!--
+
+ Copyright (C) 2017 phantombot.tv
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ @author IllusionaryOne
+-->
+
+<!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
+<div id="keywordsAccordion">
+    <h3>Keywords</h3>
+    <div>
+    <div id="_keywordsPanelDisabled" />
+    <div id="_keywordsPanel">
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addKeyword">Add Keyword</label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.addKeyword()">Submit</button>
+                <input type="text" class="form-control" id="addKeywordInput" placeholder="A New Keyword">
+                <input type="text" class="form-control" id="addKeywordResponseInput" placeholder="Response">
+            </div>
+        </form>
+        <div id="keywordsList" style="height: 100px; overflow: auto;" />
+    </div>
+    <br>
+
+    <form role="form">
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="cooldownKey">Keyword cooldown</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.addKeyCooldown()">Submit</button>
+            <input type="text" class="form-control" id="cooldownKeyInputCommand" placeholder="Command name" />
+            <input type="text" class="form-control" id="cooldownKeyInput" placeholder="Seconds" />
+        </div>
+    </form>
+    <div id="keywordsCooldownList" style="height: 100px; overflow: auto;" />
+    <br>
+
+    <form role="form">
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="cooldownKey">Keyword prices</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setKeyPrice()">Submit</button>
+            <input type="text" class="form-control" id="priceKeyInputKey" placeholder="Command name" />
+            <input type="number" min="0" class="form-control" id="priceKeyInput" placeholder="amount" />
+        </div>
+    </form>
+    <div id="keywordsPriceList" style="height: 100px; overflow: auto;" />
+</div>
+</div>
+
+<!-- Run the Acordion -->
+<script>$("#keywordsAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
+<script>handleInputFocus();</script>
