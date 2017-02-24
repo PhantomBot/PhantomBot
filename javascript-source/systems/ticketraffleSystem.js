@@ -30,6 +30,11 @@
             return;
         }
 
+        if (isNaN(parseInt(max)) || isNaN(parseInt(cost))) {
+            $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.usage'));
+            return;
+        }
+
         if (max) {
             maxEntries = parseInt(max);
         }

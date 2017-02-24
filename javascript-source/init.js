@@ -653,6 +653,7 @@
                         pointsRelatedModules.push('./games/slotMachine.js');
                         pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
                         pointsRelatedModules.push('./systems/raffleSystem.js');
+                        pointsRelatedModules.push('./games/gambling.js');
 
                         for (var i = 0; i < pointsRelatedModules.length; i++) {
                             index = getModuleIndex(pointsRelatedModules[i]);
@@ -690,6 +691,7 @@
                         pointsRelatedModules.push('./games/slotMachine.js');
                         pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
                         pointsRelatedModules.push('./systems/raffleSystem.js');
+                        pointsRelatedModules.push('./games/gambling.js');
 
                         for (var i = 0; i < pointsRelatedModules.length; i++) {
                             index = getModuleIndex(pointsRelatedModules[i]);
@@ -907,9 +909,9 @@
                 return;
             }
 
-            if ($.permCom(sender, command, subCommand) !== 0) {
+            if ($.permCom(sender, command, subCommand.trim()) !== 0) {
                 if (permComMsgEnabled) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command).toLowerCase() : $.getSubCommandGroupName(command, subCommand).toLowerCase())));
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand.trim()) ? $.getCommandGroupName(command).toLowerCase() : $.getSubCommandGroupName(command, subCommand.trim()).toLowerCase())));
                 }
                 return;
             }
