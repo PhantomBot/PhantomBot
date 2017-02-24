@@ -87,9 +87,9 @@
         }
         
         if (e1 == e2 || e2 == e3 || e3 == e1) {
-            message += $.lang.get('slotmachine.result.win', ($.getPointsString(Math.floor(prizes[Math.min(e1, e2, e3)] / 3)) + '.'));
+            message += $.lang.get('slotmachine.result.win', (e1 == e2 ? $.getPointsString(Math.floor(prizes[e1] * 0.3)) : $.getPointsString(Math.floor(prizes[e3] * 0.3))) + '.');
             $.say(message + $.gameMessages.getWin(sender, 'slot'));
-            $.inidb.incr('points', sender, Math.floor(prizes[Math.min(e1, e2, e3)] / 3));
+            $.inidb.incr('points', sender, (e1 == e2 ? (Math.floor(prizes[e1] * 0.3)) : (Math.floor(prizes[e3] * 0.3))));
             return;
         }
         $.say(message + $.gameMessages.getLose(sender, 'slot'));
