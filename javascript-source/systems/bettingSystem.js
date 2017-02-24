@@ -200,7 +200,7 @@
 			message(sender, $.lang.get('bettingsystem.bet.error.min', bet.minimum));
 			return;
 		} else if (bet.maximum < amount && bet.maximum !== 0) {
-			message(sender, $.lang.get('bettingsystem.bet.error.max'));
+			message(sender, $.lang.get('bettingsystem.bet.error.max', bet.maximum));
 			return;
 		} else if ($.getUserPoints(sender) < amount) {
 			message(sender, $.lang.get('bettingsystem.bet.error.points', $.pointNameMultiple));
