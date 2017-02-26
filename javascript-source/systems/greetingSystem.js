@@ -50,7 +50,7 @@
                 greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue;
             }
 
-        }, 3200);
+        }, 15000);
      }
 
     /**
