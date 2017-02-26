@@ -694,6 +694,21 @@ public class SqliteStore extends DataStore {
         }
     }
 
+    @Override
+    public void backupSQLite3(String filename) {
+        CheckConnection();
+
+        if (!new File ("./dbbackup").exists()) new File ("./dbbackup").mkdirs();
+
+        try (Statement statement = connection.createStatement()) {
+            statement.setQueryTimeout(10);
+            statement.executeUpdate("backup to ./dbbackup/" + filename);
+            com.gmt2001.Console.out.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
     private synchronized void incrAutoCommitCtr() {
         autoCommitCtr++;
     }
