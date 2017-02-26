@@ -51,6 +51,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -58,7 +59,9 @@ import java.util.TreeSet;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.Collections;
-
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.Iterator;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
@@ -116,6 +119,7 @@ import me.mast3rplan.phantombot.panel.PanelSocketSecureServer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC;
@@ -228,7 +232,6 @@ public class PhantomBot implements Listener {
     private Boolean interactive;
     private Boolean resetLogin = false;
     
-
     /* Other Information */
     private Channel channel;
     private Session session;
@@ -246,6 +249,9 @@ public class PhantomBot implements Listener {
     private TwitchPubSub pubSubEdge;
     private Properties pbProperties;
     private Boolean legacyServers = false;
+    private Boolean backupSQLiteAuto = false;
+    private int backupSQLiteHourFrequency = 0;
+    private int backupSQLiteKeepDays = 0;
 
     /*
      * PhantomBot Instance.
@@ -454,6 +460,11 @@ public class PhantomBot implements Listener {
         /* Set the client id for the twitch api to use */
         this.clientId = this.pbProperties.getProperty("clientid", "7wpchwtqz7pvivc3qbdn1kajz42tdmb");
 
+        /* Set any SQLite backup options. */
+        this.backupSQLiteAuto = this.pbProperties.getProperty("backupsqliteauto", "false").equalsIgnoreCase("true") ? true : false;
+        this.backupSQLiteHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupsqlitehourfreqency", "24"));
+        this.backupSQLiteKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupsqlitekeepdays", "5"));
+
         /* Load up a new SecureRandom for the scripts to use */
         random = new SecureRandom();
 
@@ -488,6 +499,7 @@ public class PhantomBot implements Listener {
                 sqlite2MySql();
             }
         } else {
+            dataStoreType = "sqlite3store";
             dataStore = SqliteStore.instance();
             /* Create indexes. */
             if (!dataStore.exists("settings", "tables_indexed")) {
@@ -516,6 +528,11 @@ public class PhantomBot implements Listener {
             TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchAlertsLimit);
         }
 
+        /* Set the YouTube API Key if provided. */
+        if (!this.youtubeKey.isEmpty()) {
+            YouTubeAPIv3.instance().SetAPIKey(this.youtubeKey);
+        }
+
         /* Set the StreamTip OAuth key, Client ID and limiter. */
         if (!streamTipOAuth.isEmpty() && !streamTipClientId.isEmpty()) {
             StreamTipAPI.instance().SetAccessToken(streamTipOAuth);
@@ -527,11 +544,6 @@ public class PhantomBot implements Listener {
         if (!tipeeeStreamOAuth.isEmpty()) {
             TipeeeStreamAPIv1.instance().SetOauth(tipeeeStreamOAuth);
             TipeeeStreamAPIv1.instance().SetLimit(tipeeeStreamLimit);
-        }
-
-        /* Set the YouTube API Key if provided. */
-        if (!this.youtubeKey.isEmpty()) {
-            YouTubeAPIv3.instance().SetAPIKey(this.youtubeKey);
         }
 
         /* Start things and start loading the scripts. */
@@ -1030,6 +1042,11 @@ public class PhantomBot implements Listener {
 
         /* Check for a update with PhantomBot */
         doCheckPhantomBotUpdate();
+
+        /* Perform SQLite datbase backups. */
+        if (this.backupSQLiteAuto) {
+            doBackupSQLiteDB();
+        }
     }
 
     /*
@@ -1148,7 +1165,9 @@ public class PhantomBot implements Listener {
         }
 
         /* Start the notice timer and notice handler. */
-        // this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+        if (pbProperties.getProperty("testnotices", "false").equals("true")) {
+            this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+        }
 
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
@@ -1233,6 +1252,15 @@ public class PhantomBot implements Listener {
             message = messageString.substring(0, messageString.indexOf(" "));
             arguments = messageString.substring(messageString.indexOf(" ") + 1);
             argument = arguments.split(" ");
+        }
+
+        if (message.equalsIgnoreCase("backupdb")) {
+            SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
+            datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
+            String timestamp = datefmt.format(new Date());
+
+            dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
+            return;
         }
 
         /* Update the followed (followers) table. */
@@ -1700,6 +1728,15 @@ public class PhantomBot implements Listener {
 
             if (command.equals("version")) {
                 PhantomBot.instance().getSession().say("@" + sender + ", Info: " + getBotInfo() + ". OS: " + System.getProperty("os.name"));
+                return;
+            }
+
+            if (command.equals("dbbackup")) {
+                SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
+                datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
+                String timestamp = datefmt.format(new Date());
+    
+                dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
                 return;
             }
 
@@ -2339,5 +2376,40 @@ public class PhantomBot implements Listener {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+    }
+
+    /**
+     * Backup the database, keeping so many days.
+     */
+    private void doBackupSQLiteDB() {
+  
+        if (!dataStoreType.equals("sqlite3store")) {
+            return;
+        }
+
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
+                datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
+                String timestamp = datefmt.format(new Date());
+
+                dataStore.backupSQLite3("phantombot.auto.backup." + timestamp + ".db");
+
+                try {
+                    Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
+                    while (dirIterator.hasNext()) {
+                        File backupFile = (File) dirIterator.next();
+                        if (FileUtils.isFileOlder(backupFile, System.currentTimeMillis() - (86400000 * backupSQLiteKeepDays))) {
+                           FileUtils.deleteQuietly(backupFile);
+                        }
+                    }
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.println("Failed to clean up database backup directory: " + ex.getMessage());
+                    return;
+                }
+            }
+        }, 0, backupSQLiteHourFrequency, TimeUnit.HOURS);       
     }
 }
