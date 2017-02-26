@@ -11,7 +11,7 @@
      * @event panelWebSocket
      */
     $.bind('panelWebSocket', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/handlers/streamtipHanlder.js')) {
+        if (event.getScript().equalsIgnoreCase('./discord/handlers/streamtipHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'streamtipToggle', false);
             message = $.getIniDbString('discordSettings', 'streamtipMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
             channelName = $.getIniDbString('discordSettings', 'streamtipChannel', '');
