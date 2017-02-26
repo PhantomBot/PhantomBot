@@ -105,7 +105,7 @@
         var optionIndex;
 
         if (!poll.pollRunning) {
-            $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.nopoll'));
+            return;
         }
 
         if (hasKey(poll.voters, sender.toLowerCase())) {
@@ -120,7 +120,6 @@
         }
 
         optionIndex--;
-        $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.vote.success', poll.options[optionIndex], poll.question));
         poll.voters.push(sender);
         poll.votes.push(optionIndex);
     };
