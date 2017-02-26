@@ -354,7 +354,6 @@
          * @commandpath YourBotName moderate - Trys to detect the bots moderator status. This is useful if you unmod and remod the bot while its on.
          * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel.
          * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set.
-         * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist.
          * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands.
          * @commandpath YourBotName togglepermcommessage - Toggles the no permission message.
          * @commandpath YourBotName togglecooldownmessage - Toggles the on command cooldown message.
@@ -415,38 +414,6 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg.removed'));
                 $.log.event(sender + ' removed the connect message!');
                 return;
-            }
-
-            if (action.equalsIgnoreCase('blacklist')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.usage', $.botName.toLowerCase()));
-                    return;
-                }
-
-                if (subAction.equalsIgnoreCase('add')) {
-                    if (!actionArgs) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.add.usage', $.botName.toLowerCase()));
-                        return;
-                    }
-
-                    $.inidb.set('botBlackList', actionArgs.toLowerCase(), 'true');
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.added', actionArgs));
-                    $.log.event(sender + ' added ' + actionArgs + ' to the bot blacklist.');
-                }
-
-                if (subAction.equalsIgnoreCase('remove')) {
-                    if (!actionArgs) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.remove.usage', $.botName.toLowerCase()));
-                        return;
-                    } else if (!$.inidb.exists('botBlackList', actionArgs.toLowerCase())) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.err'));
-                        return;
-                    }
-
-                    $.inidb.del('botBlackList', actionArgs.toLowerCase());
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.removed', actionArgs));
-                    $.log.event(sender + ' removed ' + actionArgs + ' to the bot blacklist.');
-                }
             }
 
             if (action.equalsIgnoreCase('togglepricecommods')) {
@@ -856,15 +823,15 @@
          * @event api-command
          */
         $api.on($script, 'command', function(event) {
-            var sender = event.getSender().toLowerCase(),
-                command = event.getCommand().toLowerCase(),
+            var sender = event.getSender(),
+                command = event.getCommand(),
                 args = event.getArgs(),
-                subCommand = (args[0] ? ' ' + args[0] : ''),
-                subCommandAction = (args[1] ? ' ' + args[1] : ''),
+                subCommand = (args[0] !== undefined && $.subCommandExists(command, args[0]) ? ' ' + args[0] : ''),
+                subCommandAction = (args[1] !== undefined && $.subCommandExists(command, args[0]) ? ' ' + args[1] : ''),
                 commandCost = 0,
                 isModv3 = $.isModv3(sender, event.getTags());
 
-            if ($.inidb.exists('botBlackList', sender) || ($.commandPause.isPaused() && !isModv3) || !$.commandExists(command)) {
+            if (($.commandPause.isPaused() && !isModv3) || !$.commandExists(command)) {
                 return;
             }
 
@@ -917,13 +884,11 @@
             }
 
             if ($.inidb.exists('pricecom', (command + subCommand + subCommandAction))) {
-                if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
-                    if (isModuleEnabled('./systems/pointSystem.js')) {
-                        commandCost = $.getCommandPrice(command, subCommand, subCommandAction);
-                        if ($.getUserPoints(sender) < commandCost) {
-                            $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
-                            return;
-                        }
+                if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3)) && isModuleEnabled('./systems/pointSystem.js')) {
+                    commandCost = $.getCommandPrice(command, subCommand, subCommandAction);
+                    if ($.getUserPoints(sender) < commandCost) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
+                        return;
                     }
                 }
             }
