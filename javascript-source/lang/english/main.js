@@ -220,8 +220,8 @@ $.lang.register('chatmoderator.timeouttime.emotes.usage', '!moderation timeoutim
 $.lang.register('chatmoderator.timeouttime.emotes', 'timeout time for emotes has been set to $1 seconds.');
 $.lang.register('chatmoderator.timeouttime.longmsg.usage', '!moderation timeoutime longmessages [time in seconds] (current timeout time for long messages is set to $1 seconds)');
 $.lang.register('chatmoderator.timeouttime.longmsg', 'timeout time for long messages has been set to $1 seconds.');
-$.lang.register('chatmoderator.timeouttime.fakepuge.usage', '!moderation timeoutime fakepurge [time in seconds] (current timeout time for fake purges is set to $1 seconds)');
-$.lang.register('chatmoderator.timeouttime.fakepuge', 'timeout time for fake purges has been set to $1 seconds.');
+$.lang.register('chatmoderator.timeouttime.fakepurge.usage', '!moderation timeoutime fakepurge [time in seconds] (current timeout time for fake purges is set to $1 seconds)');
+$.lang.register('chatmoderator.timeouttime.fakepurge', 'timeout time for fake purges has been set to $1 seconds.');
 $.lang.register('cmd.404', 'command !$1 does not exist or is not registered.');
 $.lang.register('cmd.adminonly', 'Only an Administrator has access to that command!');
 $.lang.register('cmd.casteronly', 'Only a Caster has access to that command!');
