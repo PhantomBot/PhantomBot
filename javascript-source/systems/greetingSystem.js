@@ -1,23 +1,21 @@
 /**
  * greetingSystem.js
  *
- * Enable users to set a greeting.
- * As soon as the bot notices their arrival it will post the greeting in the chat.
- * The channel owner can also set a default greeting. (beware the lurker callouts)
- *
  * Tags in greetings:
  * - (name) The username corresponding to the target user
  */
 (function() {
     var autoGreetEnabled = $.getSetIniDbBoolean('greeting', 'autoGreetEnabled', false),
         defaultJoinMessage = $.getSetIniDbString('greeting', 'defaultJoin', '(name) joined!'),
-        greetingCooldown = $.getSetIniDbNumber('greeting', 'cooldown', (6 * 36e5)); // 6 hours
+        greetingCooldown = $.getSetIniDbNumber('greeting', 'cooldown', (6 * 36e5)),  /* 6 Hours */
+        greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue,
+        lastAutoGreet = $.systemTime();
 
     /**
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function(event) {
-        if ($.isOnline($.channelName)) {
+        if (!$.isOnline($.channelName) && autoGreetEnabled) {
             var sender = event.getUser().toLowerCase(),
                 username = $.resolveRank(sender),
                 message = $.getIniDbString('greeting', sender, ''),
@@ -26,15 +24,34 @@
 
             if (lastUserGreeting + greetingCooldown < now) {
                 if (message) {
-                    $.say(message);
-                    $.inidb.set('greetingCoolDown', sender, now);
-                } else if (autoGreetEnabled) {
-                    $.say(defaultJoinMessage.replace('(name)', username));
+                    greetingQueue.add(message.replace('(name)', username));
                     $.inidb.set('greetingCoolDown', sender, now);
                 }
             }
         }
     });
+
+    /**
+     * @function doUserGreetings
+     * Provides timer function for sending greetings into chat. Will delete messages if the 
+     * host disables autoGreetings in the middle of a loop.  The reason for a delay is to
+     * ensure that the output queue does not become overwhelmed.
+     */
+    function doUserGreetings() {
+        setInterval(function() {
+            
+            /* Send a greeting out into chat. */
+            if (!greetingQueue.isEmpty() && autoGreetEnabled) {
+                $.say(greetingQueue.poll());
+            }
+
+            /* There are greetings, however, autoGreet has been disabled, so destroy the queue. */
+            if (!greetingQueue.isEmpty() && !autoGreetEnabled) {
+                greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue;
+            }
+
+        }, 15000);
+     }
 
     /**
      * @function greetingspanelupdate
@@ -90,9 +107,9 @@
             }
 
             /**
-             * @commandpath greeting toggledefault - Enable/disable the default greeting
+             * @commandpath greeting toggle - Enable/disable the greeting system.
              */
-            if (action.equalsIgnoreCase('toggledefault')) {
+            if (action.equalsIgnoreCase('toggle')) {
                 autoGreetEnabled = !autoGreetEnabled;
                 $.setIniDbBoolean('greeting', 'autoGreetEnabled', autoGreetEnabled);
                 if (autoGreetEnabled) {
@@ -103,30 +120,7 @@
             }
 
             /**
-             * @commandpath greeting setdefault [message] - Set the default greeting
-             */
-            if (action.equalsIgnoreCase('setdefault')) {
-                message = args.splice(1, args.length - 1).join(' ');
-                if (!message) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.usage'));
-                    return;
-                }
-
-                if (message.indexOf('(name)') < 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.noname'));
-                    return;
-                }
-
-                $.inidb.set('greeting', 'defaultJoin', message);
-                $.say($.whisperPrefix(sender) + $.lang.get(
-                    'greetingsystem.set.autogreet.success',
-                    message,
-                    (autoGreetEnabled ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))
-                ));
-            }
-
-            /**
-             * @commandpath greeting enable [message] - Set a personal greeting which overrides the system default
+             * @commandpath greeting enable [default | message] - Enable greetings and use the default or set a message.
              */
             if (action.equalsIgnoreCase('enable')) {
                 message = args.splice(1, args.length - 1).join(' ');
@@ -136,12 +130,16 @@
                     return;
                 }
 
-                $.inidb.set('greeting', sender, message);
-                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.personal.success', message));
+                if (message.equalsIgnoreCase('default')) {
+                    $.inidb.set('greeting', sender, defaultJoinMessage);
+                } else {
+                    $.inidb.set('greeting', sender, message);
+                }
+                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.personal.success', $.inidb.get('greeting', sender)));
             }
 
             /**
-             * @commandpath greeting disable - Delete personal greeting and return to the system default
+             * @commandpath greeting disable - Delete personal greeting and automated greeting at join
              */
             if (action.equalsIgnoreCase('disable')) {
                 if ($.inidb.exists('greeting', sender)) {
@@ -159,10 +157,12 @@
         if ($.bot.isModuleEnabled('./systems/greetingSystem.js')) {
             $.registerChatCommand('./systems/greetingSystem.js', 'greeting', 6);
             $.registerChatSubcommand('greeting', 'cooldown', 1);
-            $.registerChatSubcommand('greeting', 'toggledefault', 2);
+            $.registerChatSubcommand('greeting', 'toggle', 1);
             $.registerChatSubcommand('greeting', 'setdefault', 2);
             $.registerChatSubcommand('greeting', 'enable', 6);
             $.registerChatSubcommand('greeting', 'disable', 6);
+
+            doUserGreetings();
         }
     });
 
