@@ -134,7 +134,10 @@
             if (!channelData.isNull('game') && channelData.getInt('_http') == 200) {
                 return channelData.getString("game");
             }
-            $.log.error('Failed to get the current game: ' + channelData.getString('message'));
+            
+            if (!channelData.isNull('message')) {
+                $.log.error('Failed to get the current game: ' + channelData.getString('message'));
+            }
             return '';
         }
     }
