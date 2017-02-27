@@ -1022,7 +1022,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("changed", Boolean.valueOf(newSetup), 0);
         Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
-        Script.global.defineProperty("customAPI", CustomApi.instance(), 0);
+        Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
 
         /* open a new thread for when the bot is exiting */
         Thread thread = new Thread(new Runnable() {
