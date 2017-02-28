@@ -826,8 +826,7 @@
             var sender = event.getSender(),
                 command = event.getCommand(),
                 args = event.getArgs(),
-                subCommand = (args[0] !== undefined && $.subCommandExists(command, args[0]) ? ' ' + args[0] : ''),
-                subCommandAction = (args[1] !== undefined && $.subCommandExists(command, args[0]) ? ' ' + args[1] : ''),
+                subCommand = (args[0] !== undefined && $.subCommandExists(command, args[0]) ? args[0] : ''),
                 commandCost = 0,
                 isModv3 = $.isModv3(sender, event.getTags());
 
@@ -876,16 +875,16 @@
                 return;
             }
 
-            if ($.permCom(sender, command, subCommand.trim()) !== 0) {
+            if ($.permCom(sender, command, subCommand) !== 0) {
                 if (permComMsgEnabled) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand.trim()) ? $.getCommandGroupName(command).toLowerCase() : $.getSubCommandGroupName(command, subCommand.trim()).toLowerCase())));
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command).toLowerCase() : $.getSubCommandGroupName(command, subCommand).toLowerCase())));
                 }
                 return;
             }
 
-            if ($.inidb.exists('pricecom', (command + subCommand + subCommandAction))) {
+            if ($.inidb.exists('pricecom', (command + ' ' + subCommand).trim())) {
                 if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3)) && isModuleEnabled('./systems/pointSystem.js')) {
-                    commandCost = $.getCommandPrice(command, subCommand, subCommandAction);
+                    commandCost = $.getCommandPrice(command, subCommand, '');
                     if ($.getUserPoints(sender) < commandCost) {
                         $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
                         return;
