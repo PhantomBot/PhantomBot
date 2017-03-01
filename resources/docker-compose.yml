@@ -1,0 +1,26 @@
+version: '2'
+services:
+  phantombot:
+    build:
+      context: .
+    container_name: phantombot
+    image: phantombot/phantombot:latest
+    ports:
+      - "25000-25005:25000-25005"
+    restart: always
+    volumes:
+     - ./config:/opt/PhantomBot/config
+     - ./logs:/opt/PhantomBot/logs
+    environment:
+     # Twitch bot user
+     - PHANTOMBOT_USER=
+     # Twitch bot user OAuth token (https://twitchapps.com/tmi/)
+     - PHANTOMBOT_OAUTH=
+     # Twitch caster channel OAuth token (https://phantombot.tv/oauth/)
+     #- PHANTOMBOT_APIOAUTH=
+     # Twitch caster channel
+     - PHANTOMBOT_CHANNEL=
+     # Webinterface username
+     #- PHANTOMBOT_PANELUSER=
+     # Webinterface password
+     #- PHANTOMBOT_PANELPASSWORD=

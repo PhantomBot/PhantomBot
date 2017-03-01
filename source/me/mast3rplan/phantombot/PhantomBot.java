@@ -370,9 +370,9 @@ public class PhantomBot implements Listener {
         this.basePort = Integer.parseInt(this.pbProperties.getProperty("baseport", "25000"));
         this.webOAuth = this.pbProperties.getProperty("webauth");
         this.webOAuthThro = this.pbProperties.getProperty("webauthro");
-        this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true") ? true : false;
-        this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true") ? true : false;
-        this.useHttps = this.pbProperties.getProperty("usehttps", "false").equalsIgnoreCase("true") ? true : false;
+        this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true");
+        this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true");
+        this.useHttps = this.pbProperties.getProperty("usehttps", "false").equalsIgnoreCase("true");
 
         /* Set the datastore variables */
         this.dataStoreType = this.pbProperties.getProperty("datastore", "");
@@ -430,10 +430,10 @@ public class PhantomBot implements Listener {
         this.panelPassword = this.pbProperties.getProperty("panelpassword", "panel");
 
         /* Enable/disable devCommands */
-        this.devCommands = this.pbProperties.getProperty("devcommands", "true").equalsIgnoreCase("true") ? true : false;
+        this.devCommands = this.pbProperties.getProperty("devcommands", "true").equalsIgnoreCase("true");
 
         /* Toggle for the old servers. */
-        this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true") ? true : false;
+        this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
 
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
@@ -1088,9 +1088,11 @@ public class PhantomBot implements Listener {
                 Thread.sleep(1000);
             }
         } catch (InterruptedException ex) {
+            com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
+        com.gmt2001.Console.out.print("\r\n");
         print(this.botName + " now exiting.");
     }
 
@@ -1596,7 +1598,7 @@ public class PhantomBot implements Listener {
             };
 
             try {
-                FileOutputStream outputStream = new FileOutputStream("botlogin.txt");
+                FileOutputStream outputStream = new FileOutputStream("config/botlogin.txt");
                 outputProperties.putAll(pbProperties);
                 outputProperties.store(outputStream, "PhantomBot Configuration File");
                 outputStream.close();
@@ -1963,56 +1965,63 @@ public class PhantomBot implements Listener {
         /* Print the user dir */
         com.gmt2001.Console.out.println("The working directory is: " + System.getProperty("user.dir"));
 
+        /* Move botlogin.txt to config folder */
+        try {
+            if (new File("botlogin.txt").exists()) {
+                com.gmt2001.Console.out.println("Move botlogin.txt to config/botlogin.txt");
+                FileUtils.moveFile(new java.io.File("botlogin.txt"), new java.io.File("config/botlogin.txt"));
+            }
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.println("Failed to move botlogin.txt to config/botlogin.txt: " + ex.getMessage());
+        }
         /* Load up the bot info from the bot login file */
         try {
-            if (new File("./botlogin.txt").exists()) {
-                try {
-                    FileInputStream inputStream = new FileInputStream("botlogin.txt");
-                    startProperties.load(inputStream);
-                    inputStream.close();
-
-                    if (startProperties.getProperty("debugon", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Debug Mode Enabled via botlogin.txt");
-                        PhantomBot.enableDebugging = true;
-                    }
-
-                    if (startProperties.getProperty("debuglog", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Debug Log Only Mode Enabled via botlogin.txt");
-                        PhantomBot.enableDebugging = true;
-                        PhantomBot.enableDebuggingLogOnly = true;
-                    }
-
-                    if (startProperties.getProperty("reloadscripts", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Enabling Script Reloading");
-                        PhantomBot.reloadScripts = true;
-                    }
-                    if (startProperties.getProperty("wsircburstalt", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Using Alternate Burst Method for WS-IRC");
-                        PhantomBot.wsIRCAlternateBurst = true;
-                    }
-                    if (startProperties.getProperty("rhinodebugger", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
-                        PhantomBot.enableRhinoDebugger = true;
-                    }
-                } catch (IOException ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
-            } else {
-                
-                /* Fill in the Properties object with some default values. Note that some values are left 
-                 * unset to be caught in the upcoming logic to enforce settings.
-                 */
-                startProperties.setProperty("baseport", "25000");
-                startProperties.setProperty("usehttps", "false");
-                startProperties.setProperty("webenable", "true");
-                startProperties.setProperty("msglimit30", "18.75");
-                startProperties.setProperty("musicenable", "true");
-                startProperties.setProperty("whisperlimit60", "60.0");
+            if (new File("config/botlogin.txt").exists()) {
+                com.gmt2001.Console.out.println("Load configuration from File");
+                FileInputStream inputStream = new FileInputStream("config/botlogin.txt");
+                startProperties.load(inputStream);
+                inputStream.close();
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-
+        /* Load up the bot info from the environment */
+        for (Entry<String, String> v : System.getenv().entrySet()) {
+            String Prefix = "PHANTOMBOT_";
+            String Key = v.getKey().toUpperCase();
+            String Value = v.getValue();
+            if (Key.startsWith(Prefix) && Prefix.length() < Key.length()) {
+                Key = Key.substring(Prefix.length()).toLowerCase();
+                startProperties.setProperty(Key, Value);
+                com.gmt2001.Console.out.println("Load " + Key + " from environment");
+            }
+        }
+        /* Check to enable debug mode */
+        if (startProperties.getProperty("debugon", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Debug Mode Enabled");
+            PhantomBot.enableDebugging = true;
+        }
+        /* Check to enable debug to File */
+        if (startProperties.getProperty("debuglog", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
+            PhantomBot.enableDebugging = true;
+            PhantomBot.enableDebuggingLogOnly = true;
+        }
+        /* Check to enable Script Reloading */
+        if (startProperties.getProperty("reloadscripts", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Enabling Script Reloading");
+            PhantomBot.reloadScripts = true;
+        }
+        /* Check to enable Alternative Burst Method */
+        if (startProperties.getProperty("wsircburstalt", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Using Alternate Burst Method for WS-IRC");
+            PhantomBot.wsIRCAlternateBurst = true;
+        }
+        /* Check to enable Rhino Debugger */
+        if (startProperties.getProperty("rhinodebugger", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
+            PhantomBot.enableRhinoDebugger = true;
+        }
         /* Check to see if there's a webOauth set */
         if (startProperties.getProperty("webauth") == null) {
             startProperties.setProperty("webauth", generateWebAuth());
@@ -2174,7 +2183,7 @@ public class PhantomBot implements Listener {
             };
 
             try {
-                FileOutputStream outputStream = new FileOutputStream("botlogin.txt");
+                FileOutputStream outputStream = new FileOutputStream("config/botlogin.txt");
                 outputProperties.putAll(startProperties);
                 outputProperties.store(outputStream, "PhantomBot Configuration File");
                 outputStream.close();
@@ -2202,7 +2211,7 @@ public class PhantomBot implements Listener {
         pbProperties.setProperty("gamewisprefresh", newTokens[1]);
 
         try {
-            FileOutputStream outputStream = new FileOutputStream("botlogin.txt");
+            FileOutputStream outputStream = new FileOutputStream("config/botlogin.txt");
             outputProperties.putAll(pbProperties);
             outputProperties.store(outputStream, "PhantomBot Configuration File");
             outputStream.close();

@@ -43,6 +43,7 @@ bin/
 # Files created by the bot inside resources folder
 resources/bannedUsers.bin
 resources/botlogin.txt
+resources/config/botlogin.txt
 resources/phantombot.db
 resources/stacktrace.txt
 resources/stdio.txt
