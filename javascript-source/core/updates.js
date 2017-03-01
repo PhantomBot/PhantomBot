@@ -92,7 +92,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -540,6 +540,18 @@
 
         $.consoleLn('PhantomBot update 2.3.5.2 completed!');
         $.inidb.set('updates', 'installedv2.3.5.2', 'true');
+    }
+
+    /* version 2.3.5.3 updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.5.3') || $.inidb.get('updates', 'installedv2.3.5.3') != 'true') {
+        $.consoleLn('Starting PhantomBot update 2.3.5.3 updates...');
+
+        if (!$.inidb.exists('settings', 'followDelay') || ($.inidb.exists('settings', 'followDelay') && parseInt($.inidb.get('settings', 'followDelay')) < 5)) {
+            $.inidb.set('settings', 'followDelay', 5);
+        }
+
+        $.consoleLn('PhantomBot update 2.3.5.3 completed!');
+        $.inidb.set('updates', 'installedv2.3.5.3', 'true');
     }
 
     /**
