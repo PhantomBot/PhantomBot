@@ -33,4 +33,5 @@ $.lang.register('8ball.answer.32', 'Signs point to yes.');
 $.lang.register('8ball.answer.33', 'This is not the Bot you\'re looking for ༼ﾉ۞⌂۞༽ﾉ');
 $.lang.register('8ball.console.loaded', 'Found $1 8ball messages.');
 $.lang.register('8ball.response', 'Magic-8ball says... $1');
+$.lang.register('8ball.discord.response', 'Magic :8ball:: says... $1');
 $.lang.register('8ball.usage', 'Ask the magic-8ball a question with "!8ball [question]"');
