@@ -342,6 +342,7 @@
         sendDBDelete("commands_delcompermcom_" + command, "permcom", command);
         sendDBDelete("commands_delcomalias_" + command, "aliases", command);
         sendDBDelete("commands_delcomcooldown_" + command, "cooldown", command);
+        sendWSEvent('commands', './commands/customCommands.js', null, ['remove', command]);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadcommand " + command); }, TIMEOUT_WAIT_TIME);
     };
@@ -396,6 +397,7 @@
 
         $('#addCommandText').val('Command successfully added!'); 
         sendDBUpdate('addCustomCommand', 'command', command.toLowerCase(), commandText);
+        sendWSEvent('commands', './commands/customCommands.js', null, ['add', command, commandText]);
         setTimeout(function() { 
             $('#addCommandText').val(''); 
             $('#addCommandCommand').val(''); 
@@ -413,6 +415,7 @@
     value = value.replace(/''/g, '"');
         if (value.length > 0) {
             sendDBUpdate("addCustomCommand", "command", command.toLowerCase(), value);
+            sendWSEvent('commands', './commands/customCommands.js', null, ['edit', command.toLowerCase(), value]);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
         }
