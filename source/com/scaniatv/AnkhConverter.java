@@ -25,6 +25,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 import me.mast3rplan.phantombot.PhantomBot;
 
 public class AnkhConverter {
@@ -226,14 +229,28 @@ public class AnkhConverter {
 				ResultSet results = statement.executeQuery("select * from Quote;");
 
 				int id = PhantomBot.instance().getDataStore().GetKeyList("quotes", "").length;
+				Pattern quotepat = Pattern.compile("\"(.*)\"");
+				Pattern gamepat = Pattern.compile("\\[([a-zA-Z_:\\s]+)\\]");
+
 				while (results.next()) {
 					String quote = results.getString("Text");
 
-					String newquote = "[\"" + PhantomBot.instance().getSession().getNick() + "\",\"" + quote + "\",\"" + System.currentTimeMillis() + "\",\"Game\"]";
+					Matcher matchQuote = quotepat.matcher(quote);
+					Matcher matchGame = gamepat.matcher(quote);
+					String newquote = "";
+
+					if (matchQuote.find() == true) {
+						if (matchGame.find() == true) {
+							newquote = "[\"" + PhantomBot.instance().getSession().getNick() + "\",\"" + matchQuote.group(1) + "\",\"" + System.currentTimeMillis() + "\",\"" + matchGame.group(1) + "\"]";
+						} else {
+							newquote = "[\"" + PhantomBot.instance().getSession().getNick() + "\",\"" + matchQuote.group(1) + "\",\"" + System.currentTimeMillis() + "\",\"Some Game\"]";
+						}
+					} else {
+						newquote = "[\"" + PhantomBot.instance().getSession().getNick() + "\",\"" + quote + "\",\"" + System.currentTimeMillis() + "\",\"Some Game\"]";
+					}
 
 					id++;
 					PhantomBot.instance().getDataStore().set("quotes", new Integer(id).toString(), newquote.toString());
-					
 					com.gmt2001.Console.out.println("[SUCCESS] Moved quote: #" + id + " over!");
 				}
 				PhantomBot.instance().getDataStore().setAutoCommit(true);
