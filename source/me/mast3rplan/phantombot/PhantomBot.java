@@ -438,10 +438,10 @@ public class PhantomBot implements Listener {
         this.panelPassword = this.pbProperties.getProperty("panelpassword", "panel");
 
         /* Enable/disable devCommands */
-        this.devCommands = this.pbProperties.getProperty("devcommands", "true").equalsIgnoreCase("true") ? true : false;
+        this.devCommands = this.pbProperties.getProperty("devcommands", "false").equalsIgnoreCase("true");
 
         /* Toggle for the old servers. */
-        this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true") ? true : false;
+        this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
 
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
@@ -463,7 +463,7 @@ public class PhantomBot implements Listener {
         this.clientId = this.pbProperties.getProperty("clientid", "7wpchwtqz7pvivc3qbdn1kajz42tdmb");
 
         /* Set any SQLite backup options. */
-        this.backupSQLiteAuto = this.pbProperties.getProperty("backupsqliteauto", "false").equalsIgnoreCase("true") ? true : false;
+        this.backupSQLiteAuto = this.pbProperties.getProperty("backupsqliteauto", "false").equalsIgnoreCase("true");
         this.backupSQLiteHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupsqlitehourfreqency", "24"));
         this.backupSQLiteKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupsqlitekeepdays", "5"));
 
@@ -1228,7 +1228,7 @@ public class PhantomBot implements Listener {
     @Subscribe
     public void ircChannelMessage(IrcChannelMessageEvent event) {
         if (event.getMessage().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender());
+            devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender(), false);
         }
     }
 
@@ -1678,7 +1678,7 @@ public class PhantomBot implements Listener {
 
         /* Handle dev commands */
         if (event.getMsg().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMsg(), "no_id", botName);
+            devDebugCommands(event.getMsg(), "no_id", botName, true);
         }
     }
 
@@ -1709,13 +1709,13 @@ public class PhantomBot implements Listener {
     }
 
     /* Handles dev debug commands. */
-    public void devDebugCommands(String command, String id, String sender) {
+    public void devDebugCommands(String command, String id, String sender, boolean isConsole) {
         if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName) || sender.equalsIgnoreCase(botName))) {
             String arguments = "";
             String[] args = null;
             command = command.substring(12);
 
-            if (!command.contains("!") || !devCommands) {
+            if (!command.contains("!") || (!devCommands && !isConsole)) {
                 return;
             }
 
