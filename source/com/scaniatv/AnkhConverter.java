@@ -131,7 +131,7 @@ public class AnkhConverter {
 						try {
 							finalTime = (long) Math.floor(Long.parseLong(results.getString("MinutesWatched")) * 60);
 						} catch (Exception ex) {
-							finalTime = "";
+							finalTime = 0;
 						}
 					}
 
