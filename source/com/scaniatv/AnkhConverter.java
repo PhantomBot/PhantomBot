@@ -128,7 +128,11 @@ public class AnkhConverter {
 
 						finalTime = (long) Math.floor(finalDays + finalHours + finalMins + finalSecs);
 					} else {
-						finalTime = (long) Math.floor(Long.parseLong(results.getString("MinutesWatched")) * 60);
+						try {
+							finalTime = (long) Math.floor(Long.parseLong(results.getString("MinutesWatched")) * 60);
+						} catch (Exception ex) {
+							finalTime = "";
+						}
 					}
 
 					PhantomBot.instance().getDataStore().set("points", username, points);
