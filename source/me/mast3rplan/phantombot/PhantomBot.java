@@ -40,6 +40,7 @@ import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.DiscordAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.CustomAPI;
+import com.scaniatv.AnkhConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -437,7 +438,7 @@ public class PhantomBot implements Listener {
         this.panelPassword = this.pbProperties.getProperty("panelpassword", "panel");
 
         /* Enable/disable devCommands */
-        this.devCommands = this.pbProperties.getProperty("devcommands", "true").equalsIgnoreCase("true");
+        this.devCommands = this.pbProperties.getProperty("devcommands", "false").equalsIgnoreCase("true");
 
         /* Toggle for the old servers. */
         this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
@@ -462,7 +463,7 @@ public class PhantomBot implements Listener {
         this.clientId = this.pbProperties.getProperty("clientid", "7wpchwtqz7pvivc3qbdn1kajz42tdmb");
 
         /* Set any SQLite backup options. */
-        this.backupSQLiteAuto = this.pbProperties.getProperty("backupsqliteauto", "false").equalsIgnoreCase("true") ? true : false;
+        this.backupSQLiteAuto = this.pbProperties.getProperty("backupsqliteauto", "false").equalsIgnoreCase("true");
         this.backupSQLiteHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupsqlitehourfreqency", "24"));
         this.backupSQLiteKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupsqlitekeepdays", "5"));
 
@@ -1229,7 +1230,7 @@ public class PhantomBot implements Listener {
     @Subscribe
     public void ircChannelMessage(IrcChannelMessageEvent event) {
         if (event.getMessage().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender());
+            devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender(), false);
         }
     }
 
@@ -1256,6 +1257,19 @@ public class PhantomBot implements Listener {
             message = messageString.substring(0, messageString.indexOf(" "));
             arguments = messageString.substring(messageString.indexOf(" ") + 1);
             argument = arguments.split(" ");
+        }
+
+        if (message.equalsIgnoreCase("ankhtophantombot")) {
+            print("Not all of AnkhBot's data will be compatible with PhantomBot.");
+            print("This process will take a long time.");
+            print("Are you sure you want to convert AnkhBot's data to PhantomBot? [y/n]");
+            String check = System.console().readLine().trim();
+            if (check.equals("y")) {
+                AnkhConverter.instance();
+            } else {
+                print("No changes were made.");
+                return;
+            }
         }
 
         if (message.equalsIgnoreCase("backupdb")) {
@@ -1666,7 +1680,7 @@ public class PhantomBot implements Listener {
 
         /* Handle dev commands */
         if (event.getMsg().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMsg(), "no_id", botName);
+            devDebugCommands(event.getMsg(), "no_id", botName, true);
         }
     }
 
@@ -1697,13 +1711,13 @@ public class PhantomBot implements Listener {
     }
 
     /* Handles dev debug commands. */
-    public void devDebugCommands(String command, String id, String sender) {
+    public void devDebugCommands(String command, String id, String sender, boolean isConsole) {
         if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName) || sender.equalsIgnoreCase(botName))) {
             String arguments = "";
             String[] args = null;
             command = command.substring(12);
 
-            if (!command.contains("!") || !devCommands) {
+            if (!command.contains("!") || (!devCommands && !isConsole)) {
                 return;
             }
 
