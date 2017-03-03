@@ -176,7 +176,7 @@ public class AnkhConverter {
 					String cooldown = results.getString("Cooldown");
 
 					// ankh handles keywords with commands. Our commands only start with !.
-					if (command.startsWith("!") && !PhantomBot.instance().getDataStore().exists("command", command)) {
+					if (command.startsWith("!") && !PhantomBot.instance().getDataStore().exists("command", command) && !PhantomBot.instance().getDataStore().exists("permcom", command)) {
 						command = command.substring(1);
 						PhantomBot.instance().getDataStore().set("command", command, response);
 						PhantomBot.instance().getDataStore().set("cooldown", command, cooldown);
