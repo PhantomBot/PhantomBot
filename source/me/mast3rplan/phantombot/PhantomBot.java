@@ -40,6 +40,7 @@ import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.DiscordAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.CustomAPI;
+import com.scaniatv.AnkhConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -1254,6 +1255,19 @@ public class PhantomBot implements Listener {
             message = messageString.substring(0, messageString.indexOf(" "));
             arguments = messageString.substring(messageString.indexOf(" ") + 1);
             argument = arguments.split(" ");
+        }
+
+        if (message.equalsIgnoreCase("ankhtophantombot")) {
+            print("Not all of AnkhBot's data will be compatible with PhantomBot.");
+            print("This process will take a long time.");
+            print("Are you sure you want to convert AnkhBot's data to PhantomBot? [y/n]");
+            String check = System.console().readLine().trim();
+            if (check.equals("y")) {
+                AnkhConverter.instance();
+            } else {
+                print("No changes were made.");
+                return;
+            }
         }
 
         if (message.equalsIgnoreCase("backupdb")) {
