@@ -1,3 +1,4 @@
 .dockerignore
 Dockerfile
+docker-compose.yml
 launch*
