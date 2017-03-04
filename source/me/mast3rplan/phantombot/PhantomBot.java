@@ -243,7 +243,6 @@ public class PhantomBot implements Listener {
     private static HashMap<String, Channel> channels;
     private static HashMap<String, Session> sessions;
     private static HashMap<String, String> apiOAuths;
-    public static Boolean wsIRCAlternateBurst = false;
     private static Boolean newSetup = false;
     private Boolean devCommands = true;
     private Boolean joined = false;
@@ -2038,10 +2037,6 @@ public class PhantomBot implements Listener {
                     if (startProperties.getProperty("reloadscripts", "false").equals("true")) {
                         com.gmt2001.Console.out.println("Enabling Script Reloading");
                         PhantomBot.reloadScripts = true;
-                    }
-                    if (startProperties.getProperty("wsircburstalt", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Using Alternate Burst Method for WS-IRC");
-                        PhantomBot.wsIRCAlternateBurst = true;
                     }
                     if (startProperties.getProperty("rhinodebugger", "false").equals("true")) {
                         com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
