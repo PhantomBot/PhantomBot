@@ -826,7 +826,7 @@
             var sender = event.getSender(),
                 command = event.getCommand(),
                 args = event.getArgs(),
-                subCommand = (args[0] !== undefined && $.subCommandExists(command, args[0]) ? args[0] : ''),
+                subCommand = (args[0] !== undefined && $.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : ''),
                 commandCost = 0,
                 isModv3 = $.isModv3(sender, event.getTags());
 
