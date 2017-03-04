@@ -1642,7 +1642,7 @@ public class PhantomBot implements Listener {
             };
 
             try {
-                FileOutputStream outputStream = new FileOutputStream("config/botlogin.txt");
+                FileOutputStream outputStream = new FileOutputStream("botlogin.txt");
                 outputProperties.putAll(pbProperties);
                 outputProperties.store(outputStream, "PhantomBot Configuration File");
                 outputStream.close();
@@ -2018,20 +2018,11 @@ public class PhantomBot implements Listener {
         /* Print the user dir */
         com.gmt2001.Console.out.println("The working directory is: " + System.getProperty("user.dir"));
 
-        /* Move botlogin.txt to config folder */
-        try {
-            if (new File("botlogin.txt").exists()) {
-                com.gmt2001.Console.out.println("Move botlogin.txt to config/botlogin.txt");
-                FileUtils.moveFile(new java.io.File("botlogin.txt"), new java.io.File("config/botlogin.txt"));
-            }
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to move botlogin.txt to config/botlogin.txt: " + ex.getMessage());
-        }
         /* Load up the bot info from the bot login file */
         try {
-            if (new File("config/botlogin.txt").exists()) {
+            if (new File("botlogin.txt").exists()) {
                 com.gmt2001.Console.out.println("Load configuration from File");
-                FileInputStream inputStream = new FileInputStream("config/botlogin.txt");
+                FileInputStream inputStream = new FileInputStream("botlogin.txt");
                 startProperties.load(inputStream);
                 inputStream.close();
             }
@@ -2236,7 +2227,7 @@ public class PhantomBot implements Listener {
             };
 
             try {
-                FileOutputStream outputStream = new FileOutputStream("config/botlogin.txt");
+                FileOutputStream outputStream = new FileOutputStream("botlogin.txt");
                 outputProperties.putAll(startProperties);
                 outputProperties.store(outputStream, "PhantomBot Configuration File");
                 outputStream.close();
@@ -2264,7 +2255,7 @@ public class PhantomBot implements Listener {
         pbProperties.setProperty("gamewisprefresh", newTokens[1]);
 
         try {
-            FileOutputStream outputStream = new FileOutputStream("config/botlogin.txt");
+            FileOutputStream outputStream = new FileOutputStream("botlogin.txt");
             outputProperties.putAll(pbProperties);
             outputProperties.store(outputStream, "PhantomBot Configuration File");
             outputStream.close();

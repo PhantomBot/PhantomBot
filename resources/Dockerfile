@@ -5,7 +5,13 @@ ARG BASEDIR=/opt/${project_name}
 
 RUN mkdir -p "${BASEDIR}"
 
-VOLUME "${BASEDIR}/config" "${BASEDIR}/logs"
+VOLUME \
+    "${BASEDIR}/addons" \
+    "${BASEDIR}/botlogin.txt" \
+    "${BASEDIR}/config" \
+    "${BASEDIR}/logs" \
+    "${BASEDIR}/phantombot.db" \
+    "${BASEDIR}/phantombot.db-journal"
 
 COPY . "$BASEDIR"
 

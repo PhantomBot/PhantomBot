@@ -9,8 +9,11 @@ services:
       - "25000-25005:25000-25005"
     restart: always
     volumes:
-     - ./config:/opt/PhantomBot/config
-     - ./logs:/opt/PhantomBot/logs
+     - /opt/PhantomBot/addons
+     - /opt/PhantomBot/botlogin.txt
+     - /opt/PhantomBot/logs
+     - /opt/PhantomBot/phantombot.db
+     - /opt/PhantomBot/phantombot.db-journal
     environment:
      # Twitch bot user
      - PHANTOMBOT_USER=
