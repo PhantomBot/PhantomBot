@@ -144,6 +144,10 @@
      * @param {string} username
      */
     function close(username) {
+        /* Clear the timer if there is one active. */
+        clearInterval(timeout);
+        clearInterval(interval);
+        
         /* Check if there's a raffle opened */
         if (!status) {
             $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.close.error.closed'));
@@ -151,10 +155,6 @@
         }
 
         $.say($.lang.get('rafflesystem.close.success'));
-
-        /* Clear the timer if there is one active. */
-        clearInterval(timeout);
-        clearInterval(interval);
 
         /* Close the raffle and clears the old data */
         clear();
