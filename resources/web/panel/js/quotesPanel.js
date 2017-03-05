@@ -59,7 +59,6 @@
                 html = '<table>';
                 for (var idx in msgObject['results']) {
                     id = msgObject['results'][idx]['key'];
-                    console.log(id);
                     quoteData = JSON.parse(msgObject['results'][idx]['value']);
                     quoteDataClean = JSON.parse(msgObject['results'][idx]['value']);
                     quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C').replace(/'/g, '%27');
