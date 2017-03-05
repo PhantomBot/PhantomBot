@@ -241,7 +241,7 @@ public class AnkhConverter {
 
 					if (matchQuote.find() == true) {
 						if (matchGame.find() == true) {
-							newquote = "[\"" + PhantomBot.instance().getSession().getNick() + "\",\"" + matchQuote.group(1).replaceAll("\"", "''") + "\",\"" + System.currentTimeMillis() + "\",\"" + matchGame.group(1) + "\"]";
+							newquote = "[\"" + PhantomBot.instance().getSession().getNick() + "\",\"" + matchQuote.group(1).replaceAll("\"", "''") + "\",\"" + System.currentTimeMillis() + "\",\"" + matchGame.group(1).replaceAll("\"", "''") + "\"]";
 						} else {
 							newquote = "[\"" + PhantomBot.instance().getSession().getNick() + "\",\"" + matchQuote.group(1).replaceAll("\"", "''") + "\",\"" + System.currentTimeMillis() + "\",\"Some Game\"]";
 						}
