@@ -252,8 +252,25 @@ public class DiscordAPI {
         TextChannel textChannel = resolveChannel(channel);
 
         if (textChannel != null) {
-            com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [CHAT] " + message);
-            textChannel.sendMessage(message).queue();
+            try {
+                com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [CHAT] " + message);
+                textChannel.sendMessage(message).queue();
+            } catch (NullPointerException ex) {
+                // If the bot is ever kicked from the server the channel instance will be there, but null for JDA.
+                // This will get the channels again and the users.
+                com.gmt2001.Console.debug.println("Failed to send a message to Discord. This is caused when a session is killed.");
+                channelMap.clear();
+                userMap.clear();
+                users.clear();
+                botId = jdaAPI.getSelfUser().getId();
+                getTextChannels();
+                getUserNames();
+
+                textChannel = resolveChannel(channel);
+                if (textChannel != null) {
+                    textChannel.sendMessage(message).queue();
+                }
+            }
         }
     }
 
