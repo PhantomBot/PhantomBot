@@ -532,9 +532,11 @@
 
         $.inidb.RemoveFile('quotes');
 
+        $.inidb.setAutoCommit(false);
         for (i in temp) {
             $.inidb.set('quotes', i, temp[i]);
         }
+        $.inidb.setAutoCommit(true);
 
         $.inidb.del('modules', './handlers/discordHandler.js');
 
@@ -603,8 +605,10 @@
     function restoreTableContents(tableName, contents) {
         var i;
 
+        $.inidb.setAutoCommit(false);
         for (i in contents) {
             $.inidb.set(tableName, i, contents[i]);
         }
+        $.inidb.setAutoCommit(true);
     }
 })();
