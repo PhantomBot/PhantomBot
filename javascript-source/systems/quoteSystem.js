@@ -28,6 +28,9 @@
         var newKey = $.inidb.GetKeyList('quotes', '').length,
             game = ($.getGame($.channelName) != '' ? $.getGame($.channelName) : "Some Game");
 
+        if ($.inidb.exists('quotes', newKey)) {
+            newKey++;
+        }
         $.inidb.set('quotes', newKey, JSON.stringify([username, quote, $.systemTime(), game + '']));
         return newKey;
     };
