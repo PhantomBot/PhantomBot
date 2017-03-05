@@ -59,6 +59,7 @@
                 html = '<table>';
                 for (var idx in msgObject['results']) {
                     id = msgObject['results'][idx]['key'];
+                    console.log(id);
                     quoteData = JSON.parse(msgObject['results'][idx]['value']);
                     quoteDataClean = JSON.parse(msgObject['results'][idx]['value']);
                     quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C').replace(/'/g, '%27');
@@ -152,7 +153,7 @@
 
         if (!isDeleting) {
             isDeleting = true;
-            setTimeout(function() { doQuery(); isDeleting = false; }, TIMEOUT_WAIT_TIME * 4);
+            setTimeout(function() { doQuery(); isDeleting = false; }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
@@ -222,7 +223,9 @@
         var active = $('#tabs').tabs('option', 'active');
         if (active == 10 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Quotes Data', 'success', 1000);
-            doQuery();
+            if (!isDeleting) {
+                doQuery();
+            }
         }
     }, 3e4);
 
