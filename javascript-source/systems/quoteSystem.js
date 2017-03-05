@@ -5,7 +5,8 @@
  */
 (function() {
     
-    var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true);
+    var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true),
+        isDeleting = false;
 
     /**
      * @function updateQuote
@@ -41,10 +42,16 @@
             quotes = [],
             i;
 
+        if (isDeleting) {
+            return -1;
+        }
+        
         if ($.inidb.exists('quotes', quoteId)) {
+            isDeleting = true;
             $.inidb.del('quotes', quoteId);
             quoteKeys = $.inidb.GetKeyList('quotes', '');
 
+            $.inidb.setAutoCommit(false);
             for (i in quoteKeys) {
                 quotes.push($.inidb.get('quotes', quoteKeys[i]));
                 $.inidb.del('quotes', quoteKeys[i]);
@@ -53,7 +60,8 @@
             for (i in quotes) {
                 $.inidb.set('quotes', i, quotes[i]);
             }
-
+            $.inidb.setAutoCommit(true);
+            isDeleting = false;
             return (quotes.length ? quotes.length : 0);
         } else {
             return -1;
