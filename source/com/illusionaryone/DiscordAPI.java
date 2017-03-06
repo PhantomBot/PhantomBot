@@ -28,6 +28,8 @@ import me.mast3rplan.phantombot.script.ScriptEventManager;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -54,6 +56,9 @@ import javax.security.auth.login.LoginException;
 
 import java.time.OffsetDateTime;
 
+import java.awt.Color;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -275,6 +280,68 @@ public class DiscordAPI {
     }
 
     /*
+     * Sends a message to a specific channel in embed.
+     *
+     * @param {String} channel
+     * @param {String} message
+     */
+    public void sendMessageEmbed(String channel, String color, String message) {
+        TextChannel textChannel = resolveChannel(channel);
+
+        if (textChannel != null) {
+            try {
+                com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [EMBED] " + message);
+                textChannel.sendMessage(new EmbedBuilder().setColor(getColor(color)).setDescription(message).build()).queue();
+            } catch (NullPointerException ex) {
+                // If the bot is ever kicked from the server the channel instance will be there, but null for JDA.
+                // This will get the channels again and the users.
+                com.gmt2001.Console.debug.println("Failed to send a message to Discord. This is caused when a session is killed.");
+                channelMap.clear();
+                userMap.clear();
+                users.clear();
+                botId = jdaAPI.getSelfUser().getId();
+                getTextChannels();
+                getUserNames();
+
+                textChannel = resolveChannel(channel);
+                if (textChannel != null) {
+                    textChannel.sendMessage(new EmbedBuilder().setColor(getColor(color)).setDescription(message).build()).queue();
+                }
+            }
+        }
+    }
+
+    /*
+     * @function getColor
+     *
+     * @param  {String} color
+     * @return {Color}
+     */
+    public Color getColor(String color) {
+        Matcher match = Pattern.compile("(\\d+), (\\d+), (\\d+)").matcher(color);
+        if (match.find() == true) {
+            return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(1)), Integer.parseInt(match.group(3)));
+        } else {
+            switch (color) {
+                case "black": return Color.black;
+                case "blue": return Color.blue;
+                case "cyan": return Color.cyan;
+                case "gray": return Color.gray;
+                case "green": return Color.green;
+                case "magenta": return Color.magenta;
+                case "orange": return Color.orange;
+                case "pink": return Color.pink;
+                case "red": return Color.red;
+                case "white": return Color.white;
+                case "yellow": return Color.yellow;
+                case "dark_green": return Color.green.darker().darker().darker();
+                case "light_red": return Color.red.brighter();
+                default: return Color.gray;
+            }
+        }
+    }
+
+    /*
      * @function massPurge
      * @info Parts of this code is from: https://github.com/FlareBot
      *
@@ -319,9 +386,12 @@ public class DiscordAPI {
                 isPurgingOn = false;
                 return true;
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Failed to bulk delete messages: " + ex.getMessage());
                 isPurgingOn = false;
-                return false;
+                if (!ex.getMessage().contains("Unknown Message")) {
+                    com.gmt2001.Console.err.println("Failed to bulk delete messages: " + ex.getMessage());
+                    return false;
+                }
+                return true;
             }
         } else {
             isPurgingOn = false;

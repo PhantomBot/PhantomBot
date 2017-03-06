@@ -105,6 +105,107 @@
         $.discordAPI.resolveChannel(channel).deleteMessageById(message).queue();
     }
 
+    /*
+     * @function embedTimeout
+     *
+     * @param {String} username
+     * @param {String} creator
+     * @param {String} reason
+     * @param {String} time
+     * @param {String} message
+     */
+    function embedTimeout(username, creator, reason, time, message) {
+        var toSend = '',
+            obj = {},
+            i;
+
+        obj['**Timeout_placed_on:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Creator:**'] = creator;
+        obj['**Reason:**'] = reason;
+        obj['**Time:**'] = time + ' seconds.';
+        obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
+
+        var keys = Object.keys(obj);
+        for (i in keys) {
+            if (obj[keys[i]] != '') {
+                toSend += keys[i].replace(/_/g, ' ') + ' ' + obj[keys[i]] + '\r\n\r\n';
+            }
+        }
+        $.discordAPI.sendMessageEmbed("#moderation", 'yellow', toSend);
+    }
+
+    /*
+     * @function embedBanned
+     *
+     * @param {String} username
+     * @param {String} creator
+     * @param {String} reason
+     * @param {String} message
+     */
+    function embedBanned(username, creator, reason, message) {
+        var toSend = '',
+            obj = {},
+            i;
+
+        obj['**Ban_placed_on:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Creator:**'] = creator;
+        obj['**Reason:**'] = reason;
+        obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
+
+        var keys = Object.keys(obj);
+        for (i in keys) {
+            if (obj[keys[i]] != '') {
+                toSend += keys[i].replace(/_/g, ' ') + ' ' + obj[keys[i]] + '\r\n\r\n';
+            }
+        }
+        $.discordAPI.sendMessageEmbed("#moderation", 'red', toSend);
+    }
+    
+    /*
+     * @event Timeout
+     */
+    $.bind('Timeout', function(event) {
+        var username = $.username.resolve(event.getUsername()),
+            creator = $.username.resolve(event.getCreator()),
+            message = event.getMessage(),
+            reason = event.getReason(),
+            time = parseInt(event.getTime());
+
+        embedTimeout(username, creator, reason, time, message);
+    });
+
+    /*
+     * @event Timeout
+     */
+    $.bind('UnTimeout', function(event) {
+        var username = $.username.resolve(event.getUsername()),
+            creator = $.username.resolve(event.getCreator());
+
+        $.discordAPI.sendMessageEmbed("#moderation", 'green', '**Timeout removed from:** ' + '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')' + ' \r\n\r\n **Creator:** ' + creator);
+    });
+
+    /*
+     * @event Timeout
+     */
+    $.bind('UnBanned', function(event) {
+        var username = $.username.resolve(event.getUsername()),
+            creator = $.username.resolve(event.getCreator());
+
+        $.discordAPI.sendMessageEmbed("#moderation", 'green', '**Ban removed from:** ' + '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')' + ' \r\n\r\n **Creator:** ' + creator);
+    });
+
+    /*
+     * @event Banned
+     */
+    $.bind('Banned', function(event) {
+        var username = $.username.resolve(event.getUsername()),
+            creator = $.username.resolve(event.getCreator()),
+            message = event.getMessage(),
+            reason = event.getReason();
+
+        embedBanned(username, creator, reason, message);
+    });
+
     /**
      * @event discordMessage
      */
@@ -440,7 +541,7 @@
                 if ($.discordAPI.isPurging() == true) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.failed'));
                 } else {
-                    if ($.discordAPI.massPurge(subAction, parseInt(actionArgs)) == true) {
+                    if ($.discordAPI.massPurge(subAction, (parseInt(actionArgs) < 10000 ? parseInt(actionArgs + 1) : parseInt(actionArgs))) == true) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.done', actionArgs));
                     } else {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.failed.err'));

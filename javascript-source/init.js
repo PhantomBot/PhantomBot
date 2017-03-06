@@ -1333,6 +1333,35 @@
             callHook('panelWebSocket', event, false);
         });
 
+        /**
+         * @event api-TimeoutEvent
+         */
+        $api.on($script, 'Timeout', function(event) {
+            callHook('Timeout', event, false);
+        });
+
+        /**
+         * @event api-UnTimeoutEvent
+         */
+        $api.on($script, 'UnTimeout', function(event) {
+            callHook('UnTimeout', event, false);
+        });
+
+
+        /**
+         * @event api-BannedEvent
+         */
+        $api.on($script, 'Banned', function(event) {
+            callHook('Banned', event, false);
+        });
+
+        /**
+         * @event api-UnBannedEvent
+         */
+        $api.on($script, 'UnBanned', function(event) {
+            callHook('UnBanned', event, false);
+        });
+
         $.log.event('init.js api\'s loaded.');
         consoleDebug('init.js api\'s loaded.');
         consoleLn('');
