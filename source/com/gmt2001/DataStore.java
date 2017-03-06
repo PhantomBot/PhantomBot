@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -225,7 +225,7 @@ public class DataStore {
     }
 
     public void decr(String fName, String section, String key, int amount) {
-        int ival = GetInteger(fName, "", key);
+        int ival = GetInteger(fName, section, key);
         ival -= amount;
         SetInteger(fName, section, key, ival);
     }
@@ -250,5 +250,8 @@ public class DataStore {
     }
 
     public void setAutoCommit(boolean mode) {
+    }
+
+    public void backupSQLite3(String filename) {
     }
 }

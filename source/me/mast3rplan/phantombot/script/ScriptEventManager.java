@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,8 @@ public class ScriptEventManager implements Listener {
         "me.mast3rplan.phantombot.event.emotes",
         "me.mast3rplan.phantombot.event.gamewisp",
         "me.mast3rplan.phantombot.event.twitter",
-        "me.mast3rplan.phantombot.event.discord"
+        "me.mast3rplan.phantombot.event.discord",
+        "me.mast3rplan.phantombot.event.panelsocket"
     };
 
     private ScriptEventManager() {

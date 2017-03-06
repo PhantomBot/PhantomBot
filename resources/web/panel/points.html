@@ -1,6 +1,6 @@
 <!--
 
- Copyright (C) 2016 phantombot.tv
+ Copyright (C) 2017 phantombot.tv
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,74 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="pointsAccordion">
+    <h3>Points Configuration</h3>
+    <div>
+    <div id="_pointsConfigPanelDisabled" />
+    <div id="_pointsConfigPanel">
+        <table>
+            <tr class="textList">
+                <td>Toggle command costs for moderators</td>
+                <td style="width: 25px"><div id="priceComMods" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleModPriceCom();"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Alternate Point Name</label>
+            <button type="button" class="btn btn-danger inline pull-right" onclick="$.clearPointName()">Delete Names</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointName()">Update</button>
+            <input type="text" data-toggle="tooltip" title="Name given to a single point. Do not make both points name the same, or it will cause issues" class="form-control"
+                   id="setPointNameInput" placeholder="Singular Point Name" />
+            <input type="text" data-toggle="tooltip" 
+            title="Name given to zero and two or more points. Do not make both points name the same, or it will cause issues" class="form-control"
+                   id="setPointsNameInput" placeholder="Plural Point Name" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="pointsMessage">Set Points Message</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointsMessage()">Update</button>
+            <input type="text" class="form-control" id="pointsMessageInput" placeholder="Points Message" data-toggle="tooltip" 
+            title="Set a message for when users use the !points command. Tags: (userprefix), (user), (points), (pointsname), (pointsstring), (time), and (rank)" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Online Points Payout Interval (Minutes)</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setinterval')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setinterval" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Offline Points Payout Interval (Minutes)</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflineinterval')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflineinterval" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Online Points Gain</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setgain')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setgain" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setPointName">Set Offline Points Gain</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflinegain')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflinegain" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="topListAmountPoints">Top Points List Amount</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.topListPoints()">Update</button>
+            <input type="number" min="0" class="form-control" id="topListAmountPoints" placeholder="Amount" />
+        </div>
+    </div>
+    </div>
+    
     <h3>Modify User Points</h3>
     <div>
     <div id="_userPointConfigPanelDisabled" />
@@ -61,66 +129,6 @@
         </div>
         <br>
         <div id="userPointsTable" style="height: 510px; overflow: auto;" />
-    </div>
-</div>
-
-    <h3>Points Configuration</h3>
-    <div>
-    <div id="_pointsConfigPanelDisabled" />
-    <div id="_pointsConfigPanel">
-        <table>
-            <tr class="textList">
-                <td>Make Moderators & Administrators pay for commands</td>
-                <td style="width: 25px"><div id="priceComMods" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
-                         onclick="$.toggleModPriceCom();"><i class="fa fa-refresh" />
-                     </div>
-                </td>
-            </tr>
-        </table>
-
-        <br>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Alternate Point Name</label>
-            <button type="button" class="btn btn-danger inline pull-right" onclick="$.clearPointName()">Delete Names</button>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointName()">Update</button>
-            <input type="text" data-toggle="tooltip" title="Name given to a single point." class="form-control"
-                   id="setPointNameInput" placeholder="Singular Point Name" />
-            <input type="text" data-toggle="tooltip" title="Name given to zero and two or more points." class="form-control"
-                   id="setPointsNameInput" placeholder="Plural Point Name" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Online Points Payout Interval (Minutes)</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setinterval')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setinterval" placeholder="Points" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Offline Points Payout Interval (Minutes)</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflineinterval')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflineinterval" placeholder="Points" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Online Points Gain</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setgain')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setgain" placeholder="Points" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Offline Points Gain</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflinegain')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflinegain" placeholder="Points" />
-        </div>
-
-        <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="topListAmountPoints">Top Points List Amount</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.topListPoints()">Update</button>
-            <input type="number" min="0" class="form-control" id="topListAmountPoints" placeholder="Amount" />
-        </div>
     </div>
     </div>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,12 +66,6 @@
             }
 
             if (panelCheckQuery(msgObject, 'games_slotmachineemotes')) {
-                for (idx in msgObject['results']) {
-                    $('#slotEmotes' + idx + 'Input').val(msgObject['results'][idx]['value']);
-                }
-            }
-
-            if (panelCheckQuery(msgObject, 'games_slotmachine')) {
                 for (idx in msgObject['results']) {
                     $('#slotEmotes' + idx + 'Input').val(msgObject['results'][idx]['value']);
                 }
@@ -396,16 +390,14 @@
             if (argument == 'Min') {
                 sendDBUpdate('games_gambling_min', 'gambling', 'min', value);
             }
-            if (argument == 'WinRange') {
+            if (argument == 'WinRange' && value <= 100) {
                 sendDBUpdate('games_gambling_range', 'gambling', 'winRange', value);
             }
-            if (argument == 'WinPercent') {
+            if (argument == 'WinPercent' && value <= 100) {
                 sendDBUpdate('games_gambling_percent', 'gambling', 'winGainPercent', value);
             }
         }
-        $('#gambling' + argument).val(value);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-        setTimeout(function() { sendCommand('reloadgamble') }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); sendCommand('reloadgamble'); }, TIMEOUT_WAIT_TIME);
     };
 
     // Import the HTML file for this panel.

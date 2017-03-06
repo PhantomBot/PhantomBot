@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@
 
 (function() {
 
-    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />';
+    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />',
+        isDeleting = false;
 
     /**
      * @function onMessage
@@ -148,7 +149,11 @@
     function deleteQuote(id) {
         $('#deleteQuote_' + id).html(spinIcon);
         sendCommand('delquotesilent ' + id);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+
+        if (!isDeleting) {
+            isDeleting = true;
+            setTimeout(function() { doQuery(); isDeleting = false; }, TIMEOUT_WAIT_TIME * 2);
+        }
     }
 
     /**
@@ -185,7 +190,7 @@
         if (value.length > 0) {
             $('#addQuoteInput').val('Adding...').blur();
             sendCommand('addquotesilent ' + value);
-            setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 4);
+            setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
@@ -217,7 +222,9 @@
         var active = $('#tabs').tabs('option', 'active');
         if (active == 10 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Quotes Data', 'success', 1000);
-            doQuery();
+            if (!isDeleting) {
+                doQuery();
+            }
         }
     }, 3e4);
 

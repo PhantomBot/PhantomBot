@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,12 @@
                     if (panelMatch(msgObject['results'][idx]['key'], 'autoHostMessage')) {
                         $('#hostAutoAnnounceInput').val(msgObject['results'][idx]['value']).blur();
                     }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'hostToggle')) {
+                        $('#hostToggle').html(modeIcon[msgObject['results'][idx]['value']]);
+                    }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'autoHostToggle')) {
+                        $('#autoHostToggle').html(modeIcon[msgObject['results'][idx]['value']]);
+                    }
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostHistory')) {
                         hostHistory = msgObject['results'][idx]['value'];
                         $('#hostHistoryMode').html(modeIcon[msgObject['results'][idx]['value']]);
@@ -93,7 +99,7 @@
                     var hostData = JSON.parse(msgObject['results'][idx]['value']);
                     html +='<tr style="textList">' +
                            '  <td>' + hostData['host'] + '</td>' +
-                           '  <td style="float: right">' + $.format.date(parseInt(hostData['time']), "MM.dd.yy hh:mm:ss") + '</td>' +
+                           '  <td style="float: right">' + $.format.date(parseInt(hostData['time']), "MM.dd.yy HH:mm:ss") + '</td>' +
                            '</tr>';
                 }
                 html += '</table>';
@@ -273,6 +279,15 @@
         }
     }
 
+    /** 
+     * @function toggle
+     */
+    function toggle(table, key, value) {
+        $('#' + key).html(spinIcon);
+        sendDBUpdate('hostraid_settings', table, key, value);
+        setTimeout(function() { doQuery(); sendCommand('reloadhost'); }, TIMEOUT_WAIT_TIME);
+    }
+
     // Import the HTML file for this panel.
     $('#hostraidPanel').load('/panel/hostraid.html');
 
@@ -309,4 +324,5 @@
     $.updateHostMinViewers = updateHostMinViewers;
     $.changeHostHistory = changeHostHistory;
     $.updateRaidMessage = updateRaidMessage;
+    $.toggle = toggle;
 })();

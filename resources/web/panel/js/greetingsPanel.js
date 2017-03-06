@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,9 +71,6 @@
                     if (panelMatch(key, 'autoGreetEnabled')) {
                         greetingToggle = value;
                         $('#globalGreetings').html(settingIcon[value]);
-                    }
-                    if (panelMatch(key, 'defaultJoin')) {
-                        $('#greetingDefaultInput').val(value);
                     }
                     if (panelMatch(key, 'cooldown')) {
                         $('#greetingCooldownInput').val((value / 36e5));
@@ -479,6 +476,15 @@
                 value = String(value * 36e5);
                 sendDBUpdate('greetings_update', 'greeting', 'cooldown', value);
                 setTimeout(function() { doQuery(); sendCommand('greetingspanelupdate'); }, TIMEOUT_WAIT_TIME);
+                return;
+            }
+        }
+
+        if (key == 'followDelay') {
+            if (parseInt(value) < 5) {
+                document.getElementById(inputId).type = 'text';
+                $('#' + inputId).val('Follow delay cannot be less than 5 seconds!');
+                setTimeout(function() { doQuery(); document.getElementById(inputId).type = 'number'; }, TIMEOUT_WAIT_TIME * 4);
                 return;
             }
         }

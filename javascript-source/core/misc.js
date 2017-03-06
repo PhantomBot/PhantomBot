@@ -87,7 +87,7 @@
      * @returns {Number}
      */
     function strlen(str) {
-        if (str == null || str == undefined) {
+        if (str == null) {
             return 0;
         }
 
@@ -118,7 +118,7 @@
                 return;
             }
 
-            if (message.startsWith('@') && message.endsWith(',')) {
+            if (message.startsWith('@') && message.endsWith(', ')) {
                 return;
             }
 
@@ -132,6 +132,9 @@
                     $.consoleLn('[MUTED] ' + message);
                 }
             }
+        } else {
+            $.log.error('"$.session" object not generated, cannot send messages. Please reboot your bot to try to fix this.');
+            return;
         }
 
         $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
@@ -144,6 +147,15 @@
      */
     function systemTime() {
         return parseInt(java.lang.System.currentTimeMillis());
+    }
+
+    /**
+     * @function systemTimeNano
+     * @export $
+     * @returns {Number}
+     */
+    function systemTimeNano() {
+        return parseInt(java.lang.System.nanoTime());
     }
 
     /**
@@ -170,7 +182,7 @@
         if (min == max) {
             return min;
         }
-        return (rand(max - min + 1) + min);
+        return parseInt(rand(max - min + 1) + min);
     }
 
     /**
@@ -525,22 +537,24 @@
         var idx,
             output = '',
             maxlen,
+            hasNoLang = langKey.startsWith('NULL')
             pageCount = 0;
 
         if (display_page === undefined) {
             display_page = 0;
         }
 
-        maxlen = 440 - $.lang.get(langKey).length;
+        maxlen = 440 - (hasNoLang ? langKey.length : $.lang.get(langKey).length);
+        langKey = langKey.replace('NULL', '');
         for (idx in array) {
             output += array[idx];
             if (output.length >= maxlen) {
                 pageCount++;
                 if (display_page === 0 || display_page === pageCount) {
                     if (whisper) {
-                        $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
+                        $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
                     } else {
-                        $.say($.lang.get(langKey, output));
+                        $.say((hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
                     }
                 }
                 output = '';
@@ -553,9 +567,9 @@
         pageCount++;
         if (display_page === 0 || display_page === pageCount) {
             if (whisper) {
-                $.say($.whisperPrefix(sender) + $.lang.get(langKey, output));
+                $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
             } else {
-                $.say($.lang.get(langKey, output));
+                $.say((hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
             }
         }
         return pageCount;
@@ -627,5 +641,6 @@
     $.replace = replace;
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
-    $.hasKey = $.hasKey;
+    $.hasKey = hasKey;
+    $.systemTimeNano = systemTimeNano;
 })();

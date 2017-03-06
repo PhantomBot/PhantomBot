@@ -182,10 +182,15 @@
             i;
         for (i in list) {
             if (path.equalsIgnoreCase('.')) {
-                if (list[i].equalsIgnoreCase('util') || list[i].equalsIgnoreCase('lang') || list[i].equalsIgnoreCase('init.js') || list[i].equalsIgnoreCase('dev')) {
+                if (list[i].equalsIgnoreCase('core') || list[i].equalsIgnoreCase('lang') || list[i].equalsIgnoreCase('init.js') || list[i].equalsIgnoreCase('discord')) {
+                    continue;
+                }
+            } else if (path.equalsIgnoreCase('./discord')) {
+                if (list[i].equalsIgnoreCase('core')) {
                     continue;
                 }
             }
+
             if ($.isDirectory('./scripts/' + path + '/' + list[i])) {
                 loadScriptRecursive(path + '/' + list[i], silent, (force ? force : false));
             } else {
@@ -349,7 +354,6 @@
          * @commandpath YourBotName moderate - Trys to detect the bots moderator status. This is useful if you unmod and remod the bot while its on.
          * @commandpath YourBotName connectmessage [message] - Sets a message that will be said when the bot joins the channel.
          * @commandpath YourBotName removeconnectmessage - Removes the connect message if one has been set.
-         * @commandpath YourBotName blacklist [add / remove] [username] - Adds or Removes a user from the bot blacklist.
          * @commandpath YourBotName togglepricecommods - Toggles if mods pay for commands.
          * @commandpath YourBotName togglepermcommessage - Toggles the no permission message.
          * @commandpath YourBotName togglecooldownmessage - Toggles the on command cooldown message.
@@ -410,38 +414,6 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg.removed'));
                 $.log.event(sender + ' removed the connect message!');
                 return;
-            }
-
-            if (action.equalsIgnoreCase('blacklist')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.usage', $.botName.toLowerCase()));
-                    return;
-                }
-
-                if (subAction.equalsIgnoreCase('add')) {
-                    if (!actionArgs) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.add.usage', $.botName.toLowerCase()));
-                        return;
-                    }
-
-                    $.inidb.set('botBlackList', actionArgs.toLowerCase(), 'true');
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.added', actionArgs));
-                    $.log.event(sender + ' added ' + actionArgs + ' to the bot blacklist.');
-                }
-
-                if (subAction.equalsIgnoreCase('remove')) {
-                    if (!actionArgs) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.remove.usage', $.botName.toLowerCase()));
-                        return;
-                    } else if (!$.inidb.exists('botBlackList', actionArgs.toLowerCase())) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.err'));
-                        return;
-                    }
-
-                    $.inidb.del('botBlackList', actionArgs.toLowerCase());
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.blacklist.removed', actionArgs));
-                    $.log.event(sender + ' removed ' + actionArgs + ' to the bot blacklist.');
-                }
             }
 
             if (action.equalsIgnoreCase('togglepricecommods')) {
@@ -507,11 +479,6 @@
          * @commandpath module - Display the usage for !module
          */
         if (command.equalsIgnoreCase('module')) {
-            if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.module.usage'));
                 return;
@@ -653,6 +620,7 @@
                         pointsRelatedModules.push('./games/slotMachine.js');
                         pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
                         pointsRelatedModules.push('./systems/raffleSystem.js');
+                        pointsRelatedModules.push('./games/gambling.js');
 
                         for (var i = 0; i < pointsRelatedModules.length; i++) {
                             index = getModuleIndex(pointsRelatedModules[i]);
@@ -690,6 +658,7 @@
                         pointsRelatedModules.push('./games/slotMachine.js');
                         pointsRelatedModules.push('./systems/ticketRaffleSystem.js');
                         pointsRelatedModules.push('./systems/raffleSystem.js');
+                        pointsRelatedModules.push('./games/gambling.js');
 
                         for (var i = 0; i < pointsRelatedModules.length; i++) {
                             index = getModuleIndex(pointsRelatedModules[i]);
@@ -753,6 +722,7 @@
         loadScript('./core/updates.js');
         loadScript('./core/fileSystem.js');
         loadScript('./core/lang.js');
+        loadScript('./core/commandPause.js');
         loadScript('./core/logging.js');
         loadScript('./core/commandRegister.js');
         loadScript('./core/whisper.js');
@@ -769,6 +739,21 @@
 
         // Load all other modules
         loadScriptRecursive('.');
+
+        // Check if the discord token has been set.
+        if (!$.hasDiscordToken) {
+            // Load the discord core scripts.
+            loadScript('./discord/core/misc.js');
+            loadScript('./discord/core/patternDetector.js');
+            loadScript('./discord/core/moderation.js');
+            loadScript('./discord/core/registerCommand.js');
+            loadScript('./discord/core/commandCooldown.js');
+
+            $.log.event('Discord Core loaded, initializing modules...');
+
+            // Load the other discord modules
+            loadScriptRecursive('./discord');
+        }
 
         // Register custom commands and aliases.
         $.addComRegisterCommands();
@@ -838,15 +823,14 @@
          * @event api-command
          */
         $api.on($script, 'command', function(event) {
-            var sender = event.getSender().toLowerCase(),
-                command = event.getCommand().toLowerCase(),
+            var sender = event.getSender(),
+                command = event.getCommand(),
                 args = event.getArgs(),
-                subCommand = (args[0] ? args[0] : ''),
-                subCommandAction = (args[1] ? args[1] : ''),
+                subCommand = (args[0] !== undefined && $.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : ''),
                 commandCost = 0,
                 isModv3 = $.isModv3(sender, event.getTags());
 
-            if ($.inidb.exists('botBlackList', sender) || ($.commandPause.isPaused() && !isModv3) || !$.commandExists(command)) {
+            if (($.commandPause.isPaused() && !isModv3) || !$.commandExists(command)) {
                 return;
             }
 
@@ -884,7 +868,7 @@
                 return;
             }
 
-            if ($.coolDown.get(command, sender, isModv3) > 0) {
+            if ($.coolDown.get(command, sender, isModv3) > 1000) {
                 if (coolDownMsgEnabled) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
                 }
@@ -898,14 +882,12 @@
                 return;
             }
 
-            if (($.inidb.exists('pricecom', command) || $.inidb.exists('pricecom', command + ' ' + subCommand) || $.inidb.exists('pricecom', (command + ' ' + subCommand + ' ' + subCommandAction)))) {
-                if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3))) {
-                    if (isModuleEnabled('./systems/pointSystem.js')) {
-                        commandCost = $.getCommandPrice(command, subCommand, subCommandAction);
-                        if ($.getUserPoints(sender) < commandCost) {
-                            $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
-                            return;
-                        }
+            if ($.inidb.exists('pricecom', (command + ' ' + subCommand).trim())) {
+                if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3)) && isModuleEnabled('./systems/pointSystem.js')) {
+                    commandCost = $.getCommandPrice(command, subCommand, '');
+                    if ($.getUserPoints(sender) < commandCost) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
+                        return;
                     }
                 }
             }
@@ -921,6 +903,34 @@
                 }
             }
             handleInitCommands(event);
+        });
+
+        /**
+         * @event api-DiscordCommandEvent
+         */
+        $api.on($script, 'discordCommand', function(event) {
+            var command = event.getCommand(),
+                channel = event.getChannel(),
+                isAdmin = event.isAdmin(),
+                args = event.getArgs();
+
+            if ($.discord.commandExists(command) === false) {
+                return;
+            }
+
+            if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
+                return;
+            }
+
+            if (isAdmin == false && $.discord.command.coolDown(command) !== 0) {
+                return;
+            }
+
+            if ($.discord.getCommandChannel(command) !== '' && !$.discord.getCommandChannel(command).equalsIgnoreCase(channel)) {
+                return;
+            }
+
+            callHook('discordCommand', event, false);
         });
 
         /**
@@ -966,38 +976,10 @@
         });
 
         /**
-         * @event api-twitchUnhosted
-         */
-        $api.on($script, 'twitchUnhosted', function(event) {
-            callHook('twitchUnhosted', event, true);
-        });
-
-        /**
          * @event api-twitchHostsInitialized
          */
         $api.on($script, 'twitchHostsInitialized', function(event) {
             callHook('twitchHostsInitialized', event, true);
-        });
-
-        /**
-         * @event api-twitchSubscribe
-         */
-        $api.on($script, 'twitchSubscribe', function(event) {
-            callHook('twitchSubscribe', event, true);
-        });
-
-        /**
-         * @event api-twitchUnsubscribe
-         */
-        $api.on($script, 'twitchUnsubscribe', function(event) {
-            callHook('twitchUnsubscribe', event, true);
-        });
-
-        /**
-         * @event api-twitchSubscribesInitialized
-         */
-        $api.on($script, 'twitchSubscribesInitialized', function(event) {
-            callHook('twitchSubscribesInitialized', event, true);
         });
 
         /**
@@ -1324,10 +1306,31 @@
         });
 
         /**
-         * @event api-DiscordEvent
+         * @event api-DiscordMessageEvent
          */
-        $api.on($script, 'discord', function(event) {
-            callHook('discord', event, false);
+        $api.on($script, 'discordMessage', function(event) {
+            callHook('discordMessage', event, false);
+        });
+
+        /**
+         * @event api-discordJoinEvent
+         */
+        $api.on($script, 'discordJoin', function(event) {
+            callHook('discordJoin', event, false);
+        });
+
+        /**
+         * @event api-discordLeaveEvent
+         */
+        $api.on($script, 'discordLeave', function(event) {
+            callHook('discordLeave', event, false);
+        });
+
+        /**
+         * @event api-PanelWebSocketEvent
+         */
+        $api.on($script, 'panelWebSocket', function(event) {
+            callHook('panelWebSocket', event, false);
         });
 
         $.log.event('init.js api\'s loaded.');
@@ -1373,6 +1376,10 @@
         isModuleLoaded: isModuleLoaded,
         isModuleEnabled: isModuleEnabled,
         getModule: getModule,
+        getModuleIndex: getModuleIndex,
+        modules: modules,
+        hooks: hooks,
+        getHookIndex: getHookIndex
     };
 
     // Start init

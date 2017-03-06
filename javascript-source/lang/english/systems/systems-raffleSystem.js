@@ -5,11 +5,11 @@ $.lang.register('rafflesystem.open.points', 'A raffle is now opened! Type $1 to 
 $.lang.register('rafflesystem.open', 'A raffle is now opened! Type $1 to enter$2! $3');
 $.lang.register('rafflesystem.close.error.closed', 'There is no raffle in progress.');
 $.lang.register('rafflesystem.close.success', 'The raffle is now closed! No more entries will be counted.');
-$.lang.register('rafflesystem.winner', 'The winner of this raffle is $1!');
+$.lang.register('rafflesystem.winner', 'The winner of this raffle is $1! $2');
 $.lang.register('rafflesystem.whisper.winner', 'You won the raffle in channel $1!');
 $.lang.register('rafflesystem.whisper.winner.repick', 'You were repicked for the raffle winner in channel $1!');
 $.lang.register('rafflesystem.repick.error', 'There are no more users in the raffle list.');
-$.lang.register('rafflesystem.repick', 'New winner is $1!');
+$.lang.register('rafflesystem.repick', 'New winner is $1! $2');
 $.lang.register('rafflesystem.enter.404', 'You already entered this raffle.');
 $.lang.register('rafflesystem.enter.following', 'You need to be following to enter this raffle.');
 $.lang.register('rafflesystem.enter.subscriber', 'You need to be subscribed to enter this raffle.');
@@ -33,3 +33,6 @@ $.lang.register('rafflesystem.common.following', 'and you need to be following t
 $.lang.register('rafflesystem.common.timer', 'The raffle will close in $1 minutes.');
 $.lang.register('rafflesystem.common.message', 'no longer');
 $.lang.register('rafflesystem.open.keyword-exists', 'Keyword cannot be an existing command: $1');
+$.lang.register('rafflesystem.winner.404', 'Could not pick a winner. No one entered this raffle.');
+$.lang.register('rafflesystem.isfollowing', '[Follower]');
+$.lang.register('rafflesystem.isnotfollowing', '[Not a follower]');

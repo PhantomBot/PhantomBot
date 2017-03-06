@@ -37,7 +37,7 @@
             $.mkDir(donationAddonDir);
         }
 
-        $.consoleLn(">> Enabling Stream tip donation announcements");
+        $.consoleLn(">> Enabling StreamTip donation announcements");
         $.log.event('Donation announcements enabled');
         announceDonations = true;
     });
@@ -74,13 +74,14 @@
 
         $.inidb.set('donations', 'last_donation_message', $.lang.get('main.donation.last.tip.message', donationUsername, donationCurrency, donationAmount.toFixed(2)));
 
-        $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), donationAddonDir + "/latestDonation.txt", false);
+        $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2) + " ", donationAddonDir + "/latestDonation.txt", false);
 
         if (announceDonations) {
             var rewardPoints = Math.round(donationAmount * donationReward);
             var donationSay = donationMessage;
             donationSay = donationSay.replace('(name)', donationUsername);
             donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
+            donationSay = donationSay.replace('(amount.toFixed(0))', donationAmount.toFixed(0));
             donationSay = donationSay.replace('(points)', rewardPoints.toString());
             donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
             donationSay = donationSay.replace('(currency)', donationCurrency);

@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,15 +143,14 @@ public class DonationsCache implements Runnable {
                                         (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
                                          jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
                 } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("Donations.updateCache: Failed to update donations: " + ex.getMessage());
-
-                    /* Kill this cache if the streamtip token is bad and disable the module. */
+                    /* Kill this cache if the streamlabs token is bad and disable the module. */
                     if (ex.getMessage().contains("message=Unauthorized")) {
-                        com.gmt2001.Console.warn.println("DonationsCache.updateCache: Bad OAuth token disabling the StreamLabs module.");
+                        com.gmt2001.Console.err.println("DonationsCache.updateCache: Bad API key disabling the StreamLabs module.");
                         PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/donationHandler.js", "false");
-                        this.kill();
-                        this.killall();
+                    } else {
+                        com.gmt2001.Console.err.println("Donations.updateCache: Failed to update donations: " + ex.getMessage());
                     }
+                    this.kill();
                 }
             }
         } else {
@@ -160,14 +159,14 @@ public class DonationsCache implements Runnable {
             } catch (Exception ex) {
                 if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
                     checkLastFail();
-                    com.gmt2001.Console.debug.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.warn.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
                 }
             }
         }
 
         if (firstUpdate && !killed) {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchAlertsDonationInitializedEvent(PhantomBot.getChannel("#" + this.channel)));
+            EventBus.instance().post(new TwitchAlertsDonationInitializedEvent(PhantomBot.getChannel(this.channel)));
         }
 
         if (donations != null && !killed) {

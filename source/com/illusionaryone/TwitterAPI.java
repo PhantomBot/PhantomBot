@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,7 +176,7 @@ public class TwitterAPI {
         }
 
         try {
-            Status status = twitter.updateStatus(statusString.replaceAll("@", ""));
+            Status status = twitter.updateStatus(statusString.replaceAll("@", "").replaceAll("#", ""));
             com.gmt2001.Console.debug.println("TwitterAPI::updateStatus: Success");
             return "true";
         } catch (TwitterException ex) {
@@ -198,7 +198,7 @@ public class TwitterAPI {
         }
 
         try {
-            StatusUpdate statusUpdate = new StatusUpdate(statusString.replaceAll("@", ""));
+            StatusUpdate statusUpdate = new StatusUpdate(statusString.replaceAll("@", "").replaceAll("#", ""));
             statusUpdate.setMedia(new File(filename));
             Status status = twitter.updateStatus(statusUpdate);
             com.gmt2001.Console.debug.println("TwitterAPI::updateStatus: Success");

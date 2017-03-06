@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,6 +142,9 @@ public class NEWHTTPSServer {
             server.start();
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
+            com.gmt2001.Console.warn.println("Failed to create a new HTTPS server on port: " + myPort + ".");
+            com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + myPort + " on your system.");
+            com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file if you need port " + myPort + " for something else.");
             com.gmt2001.Console.err.logStackTrace(ex);
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());

@@ -91,6 +91,10 @@
         if (args[i] !== undefined) {
             keyword = args[i].toLowerCase();
             i++;
+            
+            if (keyword.startsWith('!')) {
+                keyword = ('!' + keyword.match(/(!+)(.+)/)[2]);
+            }
 
             /* Ensure that keyword is not already a registered command. */
             if (keyword.startsWith('!') && $.commandExists(keyword.substring(1))) {
@@ -140,6 +144,10 @@
      * @param {string} username
      */
     function close(username) {
+        /* Clear the timer if there is one active. */
+        clearInterval(timeout);
+        clearInterval(interval);
+        
         /* Check if there's a raffle opened */
         if (!status) {
             $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.close.error.closed'));
@@ -147,10 +155,6 @@
         }
 
         $.say($.lang.get('rafflesystem.close.success'));
-
-        /* Clear the timer if there is one active. */
-        clearInterval(timeout);
-        clearInterval(interval);
 
         /* Close the raffle and clears the old data */
         clear();
@@ -170,15 +174,19 @@
         if (firstWinner) {
             /* Check if anyone entered the raffle */
             if (entries.length === 0) {
+                $.say($.lang.get('rafflesystem.winner.404'));
                 return;
             }
 
-            var username = $.randElement(entries);
-            $.say($.lang.get('rafflesystem.winner', username));
-            $.inidb.set('raffleresults', 'winner', username);
+            var username = $.randElement(entries),
+                isFollowing = $.user.isFollower(username.toLowerCase()),
+                followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnofollowing'));
+
+            $.say($.lang.get('rafflesystem.winner', username, followMsg));
+            $.inidb.set('raffleresults', 'winner', username + ' ' + followMsg);
 
             /* whisper the winner if the toggle is on */
-            if (whisperWinner) {
+            if (whisperWinner && isFollowing) {
                 $.say($.whisperPrefix(username, true) + $.lang.get('rafflesystem.whisper.winner', $.channelName));
             }
 
@@ -202,13 +210,15 @@
         }
 
         /* Pick a new winner */
-        var username = $.randElement(entries);
+        var username = $.randElement(entries),
+            isFollowing = $.user.isFollower(username.toLowerCase()),
+            followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
         
-        $.say($.lang.get('rafflesystem.repick', username));
-        $.inidb.set('raffleresults', 'winner', username);
+        $.say($.lang.get('rafflesystem.repick', username, followMsg));
+        $.inidb.set('raffleresults', 'winner', username + ' ' + followMsg);
 
         /* whisper the winner if the toggle is on */
-        if (whisperWinner) {
+        if (whisperWinner && isFollowing) {
             $.say($.whisperPrefix(username, true) + $.lang.get('rafflesystem.whisper.winner.repick', $.channelName));
         }
 
@@ -257,10 +267,10 @@
         }
 
         /* Check if the user is following the channel. */
-        if (followers && !$.user.isFollower(username)) {
+        /*if (followers && !$.user.isFollower(username)) {
             message(username, $.lang.get('rafflesystem.enter.following'));
             return;
-        }
+        }*/
 
         /* Check the entry fee */
         if (entryFee > 0 && usePoints !== null) {
@@ -282,6 +292,7 @@
 
         /* Push the user into the array */
         entered[username] = true;
+        entries.push(username);
         if (subscriberBonus > 0 && $.isSubv3(username, tags)) {
             for (var i = 0; i < subscriberBonus; i++) {
                 entries.push(username);
@@ -290,14 +301,14 @@
             for (var i = 0; i < regularBonus; i++) {
                 entries.push(username);
             }
-        } else {
-            entries.push(username);
         }
 
         /* Push the panel stats */
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
+            $.inidb.setAutoCommit(false);
             $.inidb.set('raffleList', username, true);
-            $.inidb.incr('raffleresults', 'raffleEntries', 1);
+            $.inidb.set('raffleresults', 'raffleEntries', Object.keys(entered).length);
+            $.inidb.setAutoCommit(true);
         }
     }
 
@@ -329,8 +340,10 @@
         if (useCommand) {
             if (register) {
                 $.registerChatCommand('./systems/raffleSystem.js', keyword.substring(1), 7);
+                $.inidb.set('raffle', 'command', keyword.substring(1));
             } else {
                 $.unregisterChatCommand(keyword.substring(1));
+                $.inidb.set('raffle', 'command', '');
             }
         }
     }

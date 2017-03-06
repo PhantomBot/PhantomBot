@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,7 +212,11 @@ public class TwitchCache implements Runnable {
 
             } else {
                 success = false;
-                com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
+                if (streamObj.has("message")) {
+                    com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
+                } else {
+                    com.gmt2001.Console.warn.println("TwitchCache::updateCache: Failed to update.");
+                }
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
@@ -265,7 +269,11 @@ public class TwitchCache implements Runnable {
                 }
             } else {
                 success = false;
-                com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
+                if (streamObj.has("message")) {
+                    com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
+                } else {
+                    com.gmt2001.Console.warn.println("TwitchCache::updateCache: Failed to update.");
+                }
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());

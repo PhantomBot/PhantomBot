@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,8 @@
 
             if (panelCheckQuery(msgObject, 'dashboard_modules')) {
                 var html = "<table>",
-                    moduleData = msgObject['results'];
+                    discordHtml = "<table>",
+                    moduleData = msgObject['results'],
                     module = "",
                     moduleEnabled = "";
 
@@ -89,29 +90,53 @@
                     module = moduleData[idx]['key'];
                     moduleEnabled = moduleData[idx]['value'];
                     if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
-                        html += "<tr class=\"textList\">" +
-                                "    <td>" + module + "</td>" +
-
-                                "    <td style=\"width: 25px\">" +
-                                "        <div id=\"moduleStatus_" + idx + "\">" + modeIcon[moduleEnabled] + "</div>" +
-                                "    </td>" +
-
-                                "    <td style=\"width: 25px\">" +
-                                "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
-                                "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
-                                "        </div>" +
-                                "    </td>" +
-
-                                "    <td style=\"width: 25px\">" +
-                                "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
-                                "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
-                                "        </div>" +
-                                "    </td>" +
-                                "</tr>";
+                        if (module.indexOf('./discord') === -1) {
+                            html += "<tr class=\"textList\">" +
+                                    "    <td>" + module + "</td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div id=\"moduleStatus_" + idx + "\">" + modeIcon[moduleEnabled] + "</div>" +
+                                    "    </td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                    "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
+                                    "        </div>" +
+                                    "    </td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
+                                    "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
+                                    "        </div>" +
+                                    "    </td>" +
+                                    "</tr>";
+                        } else {
+                            discordHtml += "<tr class=\"textList\">" +
+                                    "    <td>" + module + "</td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div id=\"moduleStatus_" + idx + "\">" + modeIcon[moduleEnabled] + "</div>" +
+                                    "    </td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                    "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
+                                    "        </div>" +
+                                    "    </td>" +
+    
+                                    "    <td style=\"width: 25px\">" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
+                                    "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
+                                    "        </div>" +
+                                    "    </td>" +
+                                    "</tr>";
+                        }
                     }
                 }
                 html += "</table>";
+                discordHtml += "</table>";
                 $("#modulesList").html(html);
+                $("#discordModulesList").html(discordHtml);
                 $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
             }
 
@@ -193,7 +218,7 @@
                 if (msgObject['results']['lastFollow'] == null) {
                     $("#lastFollow").html("");
                 } else {
-                    $("#lastFollow").html("<spam class=\"purplePill\">Latest Follow: " + msgObject['results']['lastFollow'] + "</spam>");
+                    $("#lastFollow").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Follower\">Follow: " + msgObject['results']['lastFollow'] + "</span>");
                 }
             }
 
@@ -201,7 +226,7 @@
                 if (msgObject['results']['lastReSub'] == null) {
                     $("#lastReSub").html("");
                 } else {
-                    $("#lastReSub").html("<spam class=\"purplePill\">Latest ReSub: " + msgObject['results']['lastReSub'] + "</spam>");
+                    $("#lastReSub").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Re-Subscriber\">ReSub: " + msgObject['results']['lastReSub'] + "</span>");
                 }
             }
 
@@ -209,7 +234,7 @@
                 if (msgObject['results']['lastSub'] == null) {
                     $("#lastSub").html("");
                 } else {
-                    $("#lastSub").html("<spam class=\"purplePill\">Latest Sub: " + msgObject['results']['lastSub'] + "</spam>");
+                    $("#lastSub").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Subscriber\">Sub: " + msgObject['results']['lastSub'] + "</span>");
                 }
             }
 
@@ -217,14 +242,14 @@
                 if (msgObject['results']['lastDonator'] == null) {
                     $("#lastDonator").html("");
                 } else {
-                    $("#lastDonator").html("<spam class=\"purplePill\">Latest Donator: " + msgObject['results']['lastDonator'] + "</spam>");
+                    $("#lastDonator").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Donator\">Donator: " + msgObject['results']['lastDonator'] + "</span>");
                 }
             }
  
             if (panelCheckQuery(msgObject, 'dashboard_gameTitle')) {
                 gameTitle = msgObject['results']['game'];
                 if (gameTitle === undefined || gameTitle === null) {
-                    gameTitle = "Game";
+                    gameTitle = "Some Game";
                 }
 
                 $('#gameTitleInput').val(gameTitle);
@@ -248,8 +273,9 @@
 
             if (panelCheckQuery(msgObject, 'dashboard_deathctr')) {
                 amount = msgObject['results'][gameTitle];
-                if (gameTitle === undefined || gameTitle === null || amount === null || amount === undefined) {
-                    $("#deathCounterValue").html(msgObject['results'][gameTitle]);
+                if (gameTitle == null || amount == null) {
+                    $("#deathCounterValue").html('0');
+                    return;
                 }
                 $("#deathCounterValue").html(msgObject['results'][gameTitle]);
             }
@@ -281,23 +307,6 @@
             if (panelCheckQuery(msgObject, 'dashboard_logRotate')) {
                 $('#logRotateInput').val(msgObject['results']['log_rotate_days']);
             }
-
-            if (panelCheckQuery(msgObject, 'dashboard_queuelist')) {
-                var queueList = msgObject['results'],
-                    html = "",
-                    username = "";
-
-                html = "<table>";
-                for (var idx = 0; idx < queueList.length; idx++) {
-                    username = queueList[idx]['key'];
-                    html += "<tr class=\"textList\">" +
-                            "    <td style=\"vertical-align: middle; width: 50%\">" + username + "</td>" +
-                            "    <td style=\"vertical-align: middle width: 25%\">" +
-                            "</tr>";
-                }
-                html += "</table>";
-                $("#queueList").html(html);
-            }
         }
     }
 
@@ -321,7 +330,6 @@
         sendDBQuery("dashboard_deathctr", "deaths", gameTitle);
         sendDBKeys("dashboard_highlights", "highlights");
         sendDBKeys("dashboard_modules", "modules");
-        sendDBKeys("dashboard_queuelist", "queueList");
 
         if (!panelStatsEnabled) {
             sendDBQuery("dashboard_panelStatsEnabled", "panelstats", "enabled");

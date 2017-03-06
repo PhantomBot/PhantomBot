@@ -1,6 +1,6 @@
 <!--
 
- Copyright (C) 2016 phantombot.tv
+ Copyright (C) 2017 phantombot.tv
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -47,15 +47,7 @@
                 <input type="number" min="0" class="form-control" id="greetingCooldownInput" placeholder="hours" />
             </div>
         </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="greetingDefault">Greeting Message</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('greetingDefaultInput', 'greeting', 'defaultJoin')">Submit</button>
-                <input type="text" class="form-control" id="greetingDefaultInput" placeholder="Greeting Message" />
-            </div>
-        </form>
+        <i>Users have to set their own message to be greeted when joining the channel.</i>
     </div>
     </div>
 
@@ -226,8 +218,8 @@
 
     <h3>TipeeeStream Settings</h3>
     <div>
-    <div id="_tipeeestreamAlertsPanelDisabled" />
-    <div id="_tipeeestreamdonationAlertsPanel">
+    <div id="_tipeeeStreamDonationsPanelDisabled" />
+    <div id="_tipeeeStreamDonationsPanel">
         <table>
             <tr class="textList">
                 <td>Toggle Donation Alerts</td>
@@ -317,13 +309,22 @@
             </tr>
         </table>
         <br>
-
+        
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subReward">Reward</label>
+                <label for="subReward">Subscribing Reward</label>
+                    <button type="button" class="btn btn-primary inline pull-right" 
+                          onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Submit</button>
+                    <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Points" />
+              </div>
+        </form>
+      
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="reSubReward">Resubscribing Reward</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Submit</button>
-                <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('reSubRewardInput', 'subscribeHandler', 'reSubscribeReward')">Submit</button>
+                <input type="number" min="0" class="form-control" id="reSubRewardInput" placeholder="Points" />
             </div>
         </form>
 

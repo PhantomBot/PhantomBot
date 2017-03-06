@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,9 +59,9 @@
             if (panelCheckQuery(msgObject, 'global_streamOnline')) {
                 streamOnline = (panelMatch(msgObject['results']['streamOnline'], 'true'));
                 if (streamOnline) {
-                    $('#streamOnline').html('<span data-toggle="tooltip" title="Stream Online"><img src="/panel/images/online.png" /></span>');
-                } else {
-                    $('#streamOnline').html('<span data-toggle="tooltip" title="Stream Offline"><img src="/panel/images/offline.png" /></span>');
+                    $('#streamOnline').html('<span class="greenPill" data-toggle="tooltip" title="Stream Online"><i class="fa fa-twitch fa-lg" /></span>');
+                  } else {
+                    $('#streamOnline').html('');
                 }
             }
 

@@ -1,171 +1,424 @@
 (function() {
-	var queue = [],
-	    queueStatus = false,
-	    queueSize = $.getSetIniDbNumber('settings', 'queueSize', 100);
+	var isOpened = false,
+	 	info = {},
+		queue = {};
 
-	function joinQueue(user, gamertag) {
-		if (!queueStatus) {
-			$.say($.whisperPrefix(user) + $.lang.get('queuesystem.queue.closed'));
+	/*
+	 * @function open
+	 *
+	 * @param {String} username
+	 * @param {Number} size
+	 * @param {String} title
+	 */
+	function open(username, size, title) {
+		if (isOpened === true) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.open.error.opened'));
+			return;
+		} else if (size === undefined || isNaN(parseInt(size))) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.open.error.usage'));
+			return;
+		} else if (title === undefined) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.open.usage'));
+			return;
+		} else if (Object.keys(queue).length !== 0) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.open.error.clear'));
 			return;
 		}
 
-		if (!gamertag) {
-			$.say($.whisperPrefix(user) + $.lang.get('queuesystem.err.missing.tag'));
+		info = {
+			size: parseInt(size),
+			time: new Date(),
+			title: title
+		};
+
+		if (parseInt(size) === 0) {
+			$.say($.lang.get('queuesystem.open.normal', title));
+		} else {
+			$.say($.lang.get('queuesystem.open.limit', size, title));
+		}
+		isOpened = true;
+	}
+
+	/*
+	 * @function close
+	 *
+	 * @param {String} username
+	 */
+	function close(username) {
+		if (isOpened === false) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.close.error'));
 			return;
 		}
 
-		var i,
-		    j = 1;
+		$.say($.lang.get('queuesystem.close.success'));
+		isOpened = false;
+	}
 
-		for (i in queue) {
-			if (queue[i].user.equalsIgnoreCase(user)) {
-				$.say($.whisperPrefix(user) + $.lang.get('queuesystem.err.in.queue'));
-				return;
+	/*
+	 * @function clear
+	 *
+	 * @param {String} username
+	 */
+	function clear(username) {
+		queue = {};
+		info = {};
+		isOpened = false;
+		$.inidb.RemoveFile('queue');
+		$.say($.whisperPrefix(username) + $.lang.get('queuesystem.clear.success'));
+	}
+
+	/*
+	 * @function join
+	 *
+	 * @param {String} username
+	 * @param {String} action
+	 */
+	function join(username, action, command) {
+		if (queue[username] !== undefined) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.join.error.joined'));
+			$.returnCommandCost(username, command, $.isMod(username));
+			return;
+		} else if (info.size !== 0 && (info.size <= Object.keys(queue).length)) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.join.error.full'));
+			$.returnCommandCost(username, command, $.isMod(username));
+			return;
+		} else if (isOpened === false) {
+			$.returnCommandCost(username, command, $.isMod(username));
+			return;
+		}
+
+		queue[username] = {
+			tag: (action === undefined ? '' : action),
+			position: Object.keys(queue).length,
+			time: new Date(),
+			username: username
+		};
+
+		var temp = { 'tag' : String((action === undefined ? '' : action)), 'time': String(date(new Date(), true)), 'position': String(Object.keys(queue).length), 'username': String(username) };
+		$.inidb.set('queue', username, JSON.stringify(temp));
+	}
+
+	/*
+	 * @function remove
+	 *
+	 * @param {String} username
+	 * @param {String} action
+	 */
+	function remove(username, action) {
+		if (action === undefined) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.remove.usage'));
+			return;
+		} else if (queue[action.toLowerCase()] === undefined) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.remove.404'));
+			return;
+		}
+
+		delete queue[action.toLowerCase()];
+		$.say($.whisperPrefix(username) + $.lang.get('queuesystem.remove.removed', action));
+	}
+
+	/*
+	 * @function stats
+	 *
+	 * @param {String} username
+	 */
+	function stats(username) {
+		if (isOpened === true) {
+			$.say($.lang.get('queuesystem.info.success', info.title, Object.keys(queue).length, info.size, date(info.time)));
+		} else {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.close.error'));
+		}
+	}
+
+	/*
+	 * @function date
+	 *
+	 * @param  {Number} time
+	 * @return {String}
+	 */
+	function date(time, simple) {
+		var date = new Date(time),
+			format = new java.text.SimpleDateFormat('HH:mm:ss z'),
+			seconds = Math.floor((new Date() - time) / 1000),
+			string = $.getTimeString(seconds);
+
+		format.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT')));
+		if (simple === undefined) {
+			return format.format(date) + ' ' + $.lang.get('queuesystem.time.info', string);
+		} else {
+			return format.format(date);
+		}
+	}
+
+	/*
+	 * @function position
+	 *
+	 * @param {String} username
+	 * @param {String} action
+	 */
+	function position(username, action) {
+		if (action === undefined) {
+			if (queue[username] !== undefined) {
+				$.say($.whisperPrefix(username) + $.lang.get('queuesystem.position.self', queue[username].position, date(queue[username].time)));
+			} else {
+				$.say($.whisperPrefix(username) + $.lang.get('queuesystem.position.self.error'));
 			}
+		} else {
+			action = action.toLowerCase();
+			if (queue[action] !== undefined) {
+				$.say($.whisperPrefix(username) + $.lang.get('queuesystem.position.other', action, queue[action].position, date(queue[action].time)));
+			} else {
+				$.say($.whisperPrefix(username) + $.lang.get('queuesystem.position.other.error', action));
+			}
+		}
+	}
 
-			if (queue[i].user) {
-				j++;
+	/*
+	 * @function list
+	 *
+	 * @param {String} username
+	 */
+	function list(username) {
+		var keys = Object.keys(queue),
+			temp = [],
+			id = 1,
+			i;
+
+		for (i in keys) {
+			temp.push('#' + (id++) + ': ' + queue[keys[i]].username);
+		}
+
+		if (temp.length !== 0) {
+			if (temp.length < 10) {
+				$.say($.lang.get('queuesystem.queue.list', temp.join(', ')));
+			} else {
+				$.say($.lang.get('queuesystem.queue.list.limited', temp.splice(0, 5).join(', '), (temp.length - 5)));
+			}
+		} else {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.queue.list.empty'));
+		}
+	}
+
+	/*
+	 * @function next
+	 *
+	 * @param {String} username
+	 * @param {String} action
+	 */
+	function next(username, action) {
+		var total = (action === undefined || isNaN(parseInt(action)) ? 1 : parseInt(action)),
+			keys = Object.keys(queue),
+			temp = [],
+			t = 1,
+			i;
+
+		for (i in keys) {
+			if (total >= t && temp.length < 400) {
+				temp.push('#' + t + ': ' + queue[keys[i]].username);
+				t++;
+			} else {
+				break;
 			}
 		}
 
-		if (j >= queueSize) {
-			$.say($.whisperPrefix(user) + $.lang.get('queuesystem.err.queue.full'));
-			return;
+		if (temp.length !== 0) {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.queue.next', temp.join(', ')));
+		} else {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.queue.list.empty'));
 		}
+	}
 
-		queue.push({user: user, gamertag: gamertag});
-        $.inidb.set('queueList', user, 'true');
-		$.say($.whisperPrefix(user) + $.lang.get('queuesystem.added.queue'));
-	};
+	/*
+	 * @function resetPosition
+	 */
+	function resetPosition(splice) {
+		var keys = Object.keys(queue),
+			t = 0,
+			i;
 
-	function clearQueue(user, notify) {
-		queue = [];
-        $.inidb.RemoveFile('queueList');
-		if (notify) {
-		    $.say($.whisperPrefix(user) + $.lang.get('queuesystem.queue.cleared'));
-		}
-	};
-
-	function getPlayers(user, amount) {
-		if (amount == null) {
-			amount = 1;
-		}
-
-		var list,
-		    i,
-		    t = 1,
-		    queueList = [],
-		    temp = [];
-
-		for (i in queue) {
-			queueList.push({
-				player: queue[i].user,
-				gamertag: queue[i].gamertag,
-			});
-		}
-
-		queue.splice(0, amount);
-		list = queueList.splice(0, amount);
-
-        /**Can't lang this because it gets pushed to a array. */
-		for (i in list) {
-			temp.push('#' + t + ' Player: ' + list[i].player + ' GamerTag: ' + list[i].gamertag);
+		for (i in keys) {
+			if (splice !== -1 && t <= splice) {
+				$.inidb.del('queue', keys[i]);
+				delete queue[keys[i]];
+			}
 			t++;
 		}
 
-		return temp.join(', ');
-	};
+		keys = Object.keys(queue);
+		t = 1;
+		$.inidb.setAutoCommit(false);
+		for (i in keys) {
+			queue[keys[i]].position = t;
+			var temp = JSON.parse($.inidb.get('queue', keys[i]));
+			temp.position = t;
+			$.inidb.set('queue', keys[i], JSON.stringify(temp));
+			t++;
+		}
+		$.inidb.setAutoCommit(true);
+	}
 
-    /**
-     * @event command
+	/*
+	 * @function pick
+	 *
+	 * @param {String} username
+	 * @param {String} action
+	 */
+	function pick(username, action) {
+		var total = (action === undefined || isNaN(parseInt(action)) ? 1 : parseInt(action)),
+			keys = Object.keys(queue),
+			temp = [],
+			t = 1,
+			i;
+
+		for (i in keys) {
+			if (total >= t && temp.length < 400) {
+				temp.push('#' + t + ': ' + queue[keys[i]].username + (queue[keys[i]].tag !== '' ? ' ' + $.lang.get('queuesystem.gamertag', queue[keys[i]].tag) : ''));
+				t++;
+			} else {
+				break;
+			}
+		}
+
+		if (temp.length !== 0) {
+			$.say($.lang.get('queuesystem.pick', temp.join(', ')));
+		} else {
+			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.queue.list.empty'));
+		}
+
+		resetPosition(t - 2);
+	}
+
+	/*
+	 * @event command
+	 */
+	$.bind('command', function(event) {
+		var sender = event.getSender(),
+			command = event.getCommand(),
+			args = event.getArgs(),
+			action = args[0],
+			subAction = args[1];
+
+		if (command.equalsIgnoreCase('queue')) {
+			if (action === undefined) {
+				$.say($.whisperPrefix(sender) + $.lang.get('queuesystem.usage'));
+				return;
+			}
+
+			/*
+			 * @commandpath queue open [max size] [title] - Opens a new queue. Max size is optional.
+			 */
+			if (action.equalsIgnoreCase('open')) {
+				open(sender, (isNaN(parseInt(subAction)) ? 0 : subAction), (isNaN(parseInt(subAction)) ? args.slice(1).join(' ') : args.slice(2).join(' ')));
+			}
+
+			/*
+			 * @commandpath queue close - Closes the current queue that is opened.
+			 */
+			else if (action.equalsIgnoreCase('close')) {
+				close(sender);
+			}
+
+			/*
+			 * @commandpath queue clear - Closes and resets the current queue.
+			 */
+			else if (action.equalsIgnoreCase('clear')) {
+				clear(sender);
+			}
+
+			/*
+			 * @commandpath queue remove [username] - Removes that username from the queue.
+			 */
+			else if (action.equalsIgnoreCase('remove')) {
+				remove(sender, subAction);
+			}
+
+			/*
+			 * @commandpath queue list - Gives you the current queue list. Note that if the queue list is very long it will only show the first 5 users in the queue.
+			 */
+			else if (action.equalsIgnoreCase('list')) {
+				list(sender);
+			}
+
+			/*
+			 * @commandpath queue next [amount] - Shows the players that are to be picked next. Note if the amount is not specified it will only show one.
+			 */
+			else if (action.equalsIgnoreCase('next')) {
+				next(sender, subAction);
+			}
+
+			/*
+			 * @commandpath queue pick [amount] - Picks the players next in line from the queue. Note if the amount is not specified it will only pick one.
+			 */
+			else if (action.equalsIgnoreCase('pick')) {
+				pick(sender, subAction);
+			}
+
+			/*
+			 * @commandpath queue position [username] - Tells what position that user is in the queue and at what time he joined.
+			 */
+			else if (action.equalsIgnoreCase('position')) {
+				position(sender, subAction);
+			}
+
+			/*
+			 * @commandpath queue info - Gives you the current information about the queue that is opened
+			 */
+			else if (action.equalsIgnoreCase('info')) {
+				stats(sender);
+			}
+		}
+
+		/*
+		 * @commandpath joinqueue [gamertag] - Adds you to the current queue. Note that the gamertag part is optional.
+		 */
+		if (command.equalsIgnoreCase('joinqueue')) {
+			join(sender, args.join(' '), command);
+		}
+	});
+
+	$.bind('initReady', function() {
+		if ($.bot.isModuleEnabled('./systems/queueSystem.js')) {
+			$.registerChatCommand('./systems/queueSystem.js', 'joinqueue', 7);
+			$.registerChatCommand('./systems/queueSystem.js', 'queue', 7);
+
+			$.registerChatSubcommand('queue', 'open', 1);
+			$.registerChatSubcommand('queue', 'close', 1);
+			$.registerChatSubcommand('queue', 'clear', 1);
+			$.registerChatSubcommand('queue', 'remove', 1);
+			$.registerChatSubcommand('queue', 'pick', 1);
+			$.registerChatSubcommand('queue', 'list', 7);
+			$.registerChatSubcommand('queue', 'next', 7);
+			$.registerChatSubcommand('queue', 'info', 7);
+			$.registerChatSubcommand('queue', 'position', 7);
+		}
+	});
+
+	/**
+     * @event panelWebSocket
      */
-    $.bind('command', function(event) {
-        var sender = event.getSender(),
-            command = event.getCommand(),
-            argString = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./systems/queueSystem.js')) {
+        	var action = event.getArgs()[0];
 
-        /**
-         * @commandpath joinqueue [gamertag] - Adds you to the current queue
-         */
-        if (command.equalsIgnoreCase('joinqueue')) {
-        	joinQueue($.username.resolve(sender), action);
-        }
-
-        if (command.equalsIgnoreCase('queue')) {
-        	if (!action) {
-        		$.say($.whisperPrefix(sender) + $.lang.get('queuesystem.queue.usage'));
-        		return;
-        	}
-
-        	/**
-             * @commandpath queue open - Opens and clears the previous queue
-             */
         	if (action.equalsIgnoreCase('open')) {
-        		if (queueStatus) {
-        			$.say($.whisperPrefix(sender) + $.lang.get('queuesystem.err.queue.opened'));
-        			return;
+        		open($.channelName, event.getArgs()[1], event.getArgs().slice(2).join(' '));
+        	} else if (action.equalsIgnoreCase('close')) {
+        		close($.channelName);
+        	} else if (action.equalsIgnoreCase('pick')) {
+        		pick($.channelName, event.getArgs()[1]);
+        	} else if (action.equalsIgnoreCase('remove')) {
+        		if (event.getArgs()[1] !== undefined && queue[event.getArgs()[1]] !== undefined) {
+        			$.consoleLn('remove:' + event.getArgs()[1]);
+        			delete queue[event.getArgs()[1].toLowerCase()];
+        			$.inidb.del('queue', event.getArgs()[1].toLowerCase());
+        			resetPosition(-1);
         		}
-        		queueStatus = true;
-        		clearQueue(sender, false);
-        		$.say($.lang.get('queuesystem.queue.opened'));
-        		return;
-        	}
-
-        	/**
-             * @commandpath queue close - Closes the current queue, but does not clear it
-             */
-        	if (action.equalsIgnoreCase('close')) {
-        		if (!queueStatus) {
-        			$.say($.whisperPrefix(sender) + 'there is no queue opened.');
-        			return;
-        		}
-        		queueStatus = false;
-        		$.say($.lang.get('queuesystem.err.queue.closed'));
-        		return;
-        	}
-
-        	/**
-             * @commandpath queue clear - Clears the queue
-             */
-        	if (action.equalsIgnoreCase('clear')) {
-        		clearQueue(sender, true);
-        		return;
-        	}
-
-        	/**
-             * @commandpath queue next [amount] - Gives you the next players up
-             */
-        	if (action.equalsIgnoreCase('next')) {
-        		$.say('Selected Players: ' + getPlayers(sender, subAction));
-        		return;
-        	}
-
-        	/**
-             * @commandpath queue maxsize [amount] - Sets the queue max size
-             */
-        	if (action.equalsIgnoreCase('maxsize')) {
-        		if (!subAction) {
-        			$.say($.whisperPrefix(sender) + $.lang.get('queuesystem.queue.size.usage'));
-        			return;
-        		}
-
-        		queueSize = parseInt(subAction);
-        		$.inidb.set('settings', 'queueSize', queueSize);
-        		$.say($.whisperPrefix(sender) + $.lang.get('queuesystem.queue.size.set', queueSize));
-        	}
-        }
-    });
-
-    /**
-     * @event initReady
-     */
-    $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/queueSystem.js')) {
-            $.registerChatCommand('./systems/queueSystem.js', 'queue', 2);
-            $.registerChatCommand('./systems/queueSystem.js', 'joinqueue', 7);
+        	} else if (action.equalsIgnoreCase('clear')) {
+        		queue = {};
+				info = {};
+				isOpened = false;
+				$.inidb.RemoveFile('queue');
+			}
         }
     });
 })();

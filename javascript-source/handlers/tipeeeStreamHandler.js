@@ -4,36 +4,36 @@
  * Gets donation from the TipeeeStream API and posts them in Twitch chat.
  */
 (function() {
-	var message = $.getSetIniDbString('tipeeeStreamHandler', 'message', $.lang.get('tipeeestream.donation.new')),
-	    toggle = $.getSetIniDbBoolean('tipeeeStreamHandler', 'toggle', false),
-	    reward = $.getSetIniDbFloat('tipeeeStreamHandler', 'reward', 0),
-	    group = $.getSetIniDbBoolean('tipeeeStreamHandler', 'group', false),
-	    groupMin = $.getSetIniDbNumber('tipeeeStreamHandler', 'groupMin', 5),
-	    dir = './addons/tipeeeStream',
-	    announce = false;
+    var message = $.getSetIniDbString('tipeeeStreamHandler', 'message', $.lang.get('tipeeestream.donation.new')),
+        toggle = $.getSetIniDbBoolean('tipeeeStreamHandler', 'toggle', false),
+        reward = $.getSetIniDbFloat('tipeeeStreamHandler', 'reward', 0),
+        group = $.getSetIniDbBoolean('tipeeeStreamHandler', 'group', false),
+        groupMin = $.getSetIniDbNumber('tipeeeStreamHandler', 'groupMin', 5),
+        dir = './addons/tipeeeStream',
+        announce = false;
 
-	/*
-	 * @function reloadTipeeeStream
-	 */
-	function reloadTipeeeStream() {
-		message = $.getIniDbString('tipeeeStreamHandler', 'message');
-	    toggle = $.getIniDbBoolean('tipeeeStreamHandler', 'toggle');
-	    reward = $.getIniDbFloat('tipeeeStreamHandler', 'reward');
-	    group = $.getIniDbBoolean('tipeeeStreamHandler', 'group');
-	    groupMin = $.getIniDbNumber('tipeeeStreamHandler', 'groupMin');
-	}
+    /*
+     * @function reloadTipeeeStream
+     */
+    function reloadTipeeeStream() {
+        message = $.getIniDbString('tipeeeStreamHandler', 'message');
+        toggle = $.getIniDbBoolean('tipeeeStreamHandler', 'toggle');
+        reward = $.getIniDbFloat('tipeeeStreamHandler', 'reward');
+        group = $.getIniDbBoolean('tipeeeStreamHandler', 'group');
+        groupMin = $.getIniDbNumber('tipeeeStreamHandler', 'groupMin');
+    }
 
-	/*
-	 * @event tipeeeStreamDonationInitialized
-	 */
-	$.bind('tipeeeStreamDonationInitialized', function(event) {
-		if (!$.bot.isModuleEnabled('./handlers/tipeeeStreamHandler.js')) {
+    /*
+     * @event tipeeeStreamDonationInitialized
+     */
+    $.bind('tipeeeStreamDonationInitialized', function(event) {
+        if (!$.bot.isModuleEnabled('./handlers/tipeeeStreamHandler.js')) {
             return;
         }
 
         if (!$.isDirectory(dir)) {
-        	$.consoleDebug('>> Creating the TipeeeStream Handler Directory: ' + dir);
-        	$.mkDir(dir);
+            $.consoleDebug('>> Creating the TipeeeStream Handler Directory: ' + dir);
+            $.mkDir(dir);
         }
 
         $.consoleLn('>> Enabling TipeeeStream donation announcements');
@@ -42,22 +42,22 @@
     });
 
     /*
-	 * @event tipeeeStreamDonation
-	 */
-	$.bind('tipeeeStreamDonation', function(event) {
-		if (!$.bot.isModuleEnabled('./handlers/tipeeeStreamHandler.js')) {
+     * @event tipeeeStreamDonation
+     */
+    $.bind('tipeeeStreamDonation', function(event) {
+        if (!$.bot.isModuleEnabled('./handlers/tipeeeStreamHandler.js')) {
             return;
         }
 
         var jsonString = event.getJsonString(),
             JSONObject = Packages.org.json.JSONObject,
             donationObj = new JSONObject(jsonString),
-            donationID = donationObj.getString('id'),
+            donationID = donationObj.getInt('id'),
             paramObj = donationObj.getJSONObject('parameters'),
             donationUsername = paramObj.getString('username'),
             donationCurrency = paramObj.getString('currency'),
-            donationMessage = paramObj.getString('message'),
-            donationAmount = paramObj.getString('amount'),
+            donationMessage = (paramObj.has('message') ? paramObj.getString('message') : ''),
+            donationAmount = paramObj.getInt('amount'),
             donationFormattedAmount = donationObj.getString('formattedAmount'),
             s = message;
 
@@ -73,52 +73,56 @@
 
         $.inidb.set('donations', 'last_donation_message', $.lang.get('main.donation.last.tip.message', donationUsername, donationCurrency, donationAmount));
 
-        $.writeToFile(donationUsername + ": " + donationAmount, dir + '/latestDonation.txt', false);
+        $.writeToFile(donationUsername + ": " + donationAmount + " ", dir + '/latestDonation.txt', false);
 
         if (toggle === true && announce === true) {
-        	if (s.match(/\(name\)/)) {
-        		s = $.replace(s, '(name)', donationUsername);
-        	}
+            if (s.match(/\(name\)/)) {
+                s = $.replace(s, '(name)', donationUsername);
+            }
 
-        	if (s.match(/\(currency\)/)) {
-        		s = $.replace(s, '(currency)', donationCurrency);
-        	}
+            if (s.match(/\(currency\)/)) {
+                s = $.replace(s, '(currency)', donationCurrency);
+            }
 
-        	if (s.match(/\(amount\)/)) {
-        		s = $.replace(s, '(amount)', donationAmount);
-        	}
+            if (s.match(/\(amount\)/)) {
+                s = $.replace(s, '(amount)', parseInt(donationAmount.toFixed(2)));
+            }
 
-        	if (s.match(/\(message\)/)) {
-        		s = $.replace(s, '(message)', donationMessage);
-        	}
+            if (s.match(/\(amount\.toFixed\(0\)\)/)) {
+                s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount.toFixed(0)));
+            }
 
-        	if (s.match(/\(formattedamount\)/)) {
-        		s = $.replace(s, '(formattedamount)', donationFormattedAmount);
-        	}
+            if (s.match(/\(message\)/)) {
+                s = $.replace(s, '(message)', donationMessage);
+            }
 
-        	if (s.match(/\(reward\)/)) {
-        		s = $.replace(s, '(reward)', $.getPointsString(Math.floor(parseFloat(donationAmount) * reward)));
-        	}
+            if (s.match(/\(formattedamount\)/)) {
+                s = $.replace(s, '(formattedamount)', donationFormattedAmount);
+            }
 
-        	$.say(s);
+            if (s.match(/\(reward\)/)) {
+                s = $.replace(s, '(reward)', $.getPointsString(Math.floor(parseFloat(donationAmount) * reward)));
+            }
+
+            $.say(s);
         }
 
         if (reward > 0) {
-        	$.inidb.incr('points', donationUsername.toLowerCase(), Math.floor(parseFloat(donationAmount) * reward));
+            $.inidb.incr('points', donationUsername.toLowerCase(), Math.floor(parseFloat(donationAmount) * reward));
         }
 
         if (group === true) {
-        	donationUsername = donationUsername.toLowerCase();
-        	$.inidb.incr('donations', donationUsername, donationAmount);
-        	if ($.inidb.exists('donations', donationUsername) && $.inidb.get('donations', donationUsername) >= groupMin) {
-        		if ($.getUserGroupId(donationUsername) > 3) {
-        			$.setUserGroupById(donationUsername, '4');
-        		}
-        	}
+            donationUsername = donationUsername.toLowerCase();
+            $.inidb.incr('donations', donationUsername, donationAmount);
+            if ($.inidb.exists('donations', donationUsername) && $.inidb.get('donations', donationUsername) >= groupMin) {
+                if ($.getUserGroupId(donationUsername) > 3) {
+                    $.setUserGroupById(donationUsername, '4');
+                }
+            }
         }
     });
 
-	/*
+    /*
      * @event command
      */
     $.bind('command', function(event) {
@@ -207,7 +211,7 @@
         }
     });
 
-	/**
+    /**
      * @event initReady
      */
     $.bind('initReady', function() {

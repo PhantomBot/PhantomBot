@@ -9,7 +9,7 @@
         donationMessage = $.getSetIniDbString('donations', 'message', $.lang.get('donationhandler.donation.new')),
         donationGroup = $.getSetIniDbBoolean('donations', 'donationGroup', false),
         donationGroupMin = $.getSetIniDbNumber('donations', 'donationGroupMin', 5),
-        donationAddonDir = "./addons/donationHandler",
+        donationAddonDir = './addons/donationHandler',
         announceDonationsAllowed = false;
 
     /*
@@ -32,11 +32,11 @@
         }
 
         if (!$.isDirectory(donationAddonDir)) {
-            $.consoleDebug(">> Creating Donation Handler Directory: " + donationAddonDir);
+            $.consoleDebug('>> Creating Donation Handler Directory: ' + donationAddonDir);
             $.mkDir(donationAddonDir);
         }
 
-        $.consoleLn(">> Enabling StreamLabs donation announcements");
+        $.consoleLn('>> Enabling StreamLabs donation announcements');
         $.log.event('Donation announcements enabled');
         announceDonationsAllowed = true;
     });
@@ -72,7 +72,7 @@
 
         $.inidb.set('donations', 'last_donation_message', $.lang.get('main.donation.last.tip.message', donationUsername, donationCurrency, donationAmount.toFixed(2)));
 
-        $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2), donationAddonDir + "/latestDonation.txt", false);
+        $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2) + " ", donationAddonDir + "/latestDonation.txt", false);
 
         if (announceDonations && announceDonationsAllowed) {
             var rewardPoints = Math.round(donationAmount * donationReward);
@@ -80,6 +80,7 @@
 
             donationSay = donationSay.replace('(name)', donationUsername);
             donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
+            donationSay = donationSay.replace('(amount.toFixed(0))', donationAmount.toFixed(0));
             donationSay = donationSay.replace('(points)', rewardPoints.toString());
             donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
             donationSay = donationSay.replace('(currency)', donationCurrency);
@@ -178,7 +179,7 @@
                 }
 
                 var message = args.splice(1).join(' ');
-                if (message.search(/\(name\)/) == -1) {
+                if (message.search(/\(name\)/) === -1) {
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.message.no-name'));
                     return;
                 }
@@ -188,6 +189,27 @@
                 donationMessage = $.getIniDbString('donations', 'message');
 
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.message.success', message));
+            }
+
+            /*
+             * @commandpath streamlabs currencycode [currencycode] - Set a currency code to convert all Streamlabs donations to.
+             * @commandpath streamlabs currencycode erase - Removes the currency code.
+             */
+            if (action.equalsIgnoreCase('currencycode')) {
+                if (subAction === undefined) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.usage'));
+                    return;
+                }
+
+                if (subAction.equalsIgnoreCase('erase')) {
+                    $.inidb.del('donations', 'currencycode');
+                    Packages.com.illusionaryone.TwitchAlertsAPIv1.instance().SetCurrencyCode('');
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.success-erase'));
+                } else {
+                    $.setIniDbString('donations', 'currencycode', subAction);
+                    Packages.com.illusionaryone.TwitchAlertsAPIv1.instance().SetCurrencyCode(subAction);
+                    $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.success', subAction));
+                }
             }
         }
     });

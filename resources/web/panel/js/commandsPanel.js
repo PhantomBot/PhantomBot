@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -342,6 +342,7 @@
         sendDBDelete("commands_delcompermcom_" + command, "permcom", command);
         sendDBDelete("commands_delcomalias_" + command, "aliases", command);
         sendDBDelete("commands_delcomcooldown_" + command, "cooldown", command);
+        sendWSEvent('commands', './commands/customCommands.js', null, ['remove', command]);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadcommand " + command); }, TIMEOUT_WAIT_TIME);
     };
@@ -390,12 +391,13 @@
             $('#addCommandText').val('');
             setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
-        } else if (command.startsWith('!')) {
-            command = command.replace('!', '');
         }
+
+        command = command.replace(/[^a-zA-Z0-9]/g, '');
 
         $('#addCommandText').val('Command successfully added!'); 
         sendDBUpdate('addCustomCommand', 'command', command.toLowerCase(), commandText);
+        sendWSEvent('commands', './commands/customCommands.js', null, ['add', command, commandText]);
         setTimeout(function() { 
             $('#addCommandText').val(''); 
             $('#addCommandCommand').val(''); 
@@ -413,6 +415,7 @@
     value = value.replace(/''/g, '"');
         if (value.length > 0) {
             sendDBUpdate("addCustomCommand", "command", command.toLowerCase(), value);
+            sendWSEvent('commands', './commands/customCommands.js', null, ['edit', command.toLowerCase(), value]);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
         }
@@ -437,8 +440,8 @@
         var main = $('#aliasCommandInput').val();
         var alias = $('#aliasCommandInputAlias').val();
 
-        if (main.match(/;/) || main.match(/-/) || main.match(/ /)) {
-            $("#aliasCommandInputAlias").val("[ERROR] Alias name can not contain special symbols, or spaces.");
+        if (main.match(/[^a-zA-Z0-9]/g) || alias.match(/[^a-zA-Z0-9]/)) {
+            $("#aliasCommandInputAlias").val("[ERROR] Alias name can not contain symbols or spaces.");
             $("#aliasCommandInput").val("");
             setTimeout(function() { $('#aliasCommandInputAlias').val(""); }, TIMEOUT_WAIT_TIME * 10);
             return;
@@ -450,12 +453,6 @@
             $("#aliasCommandInput").val("[ERROR] Please enter a value.");
             setTimeout(function() { $("#aliasCommandInput").val(""); }, TIMEOUT_WAIT_TIME * 2);
             return;
-        }
-
-        if (main.startsWith('!')) {
-            main = main.replace('!', '');
-        } else if (alias.startsWith('!')) {
-            alias = alias.replace('!', '');
         }
 
         sendDBUpdate("addCommandAlias", "aliases", main.toLowerCase(), alias.toLowerCase());
@@ -693,7 +690,7 @@
     /**
      * @function runCommand
      */
-    function runCommand() {
+    function runCustomCommand() {
         var val = $('#commandImput').val();
 
         if (val.length == 0) {
@@ -701,7 +698,7 @@
             return;
         }
 
-        sendCommand(val);
+        sendCommand(val.replace('!', ''));
         $('#commandImput').val('command sent!');
         setTimeout(function() { $('#commandImput').val('') }, TIMEOUT_WAIT_TIME);
     }
@@ -753,7 +750,7 @@
     $.deleteCommandPay = deleteCommandPay;
     $.editCooldown = editCooldown;
     $.commands = commands;
-    $.runCommand = runCommand;
+    $.runCustomCommand = runCustomCommand;
     $.toggleCooldownMsg = toggleCooldownMsg;
     $.togglePermcomMsg = togglePermcomMsg;
 })();

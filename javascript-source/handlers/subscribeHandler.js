@@ -221,7 +221,7 @@
             }
             
             reSubReward = parseInt(action);
-            $.setIniDbNumber('subscribeHandler', 'reSubscribeReward', subReward);
+            $.setIniDbNumber('subscribeHandler', 'reSubscribeReward', reSubReward);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.set'));
         }
 

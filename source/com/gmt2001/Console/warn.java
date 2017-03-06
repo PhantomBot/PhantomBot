@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,6 @@ import java.util.TimeZone;
 
 import me.mast3rplan.phantombot.PhantomBot;
 
-/**
- *
- * @author Gary Tekulsky
- */
 public class warn {
 
     private static final warn instance = new warn();
@@ -74,7 +70,7 @@ public class warn {
 
         Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Warning, "");
-        System.out.println("[" + logTimestamp.log() + "] [INFO] " + o);
+        System.out.println("[" + logTimestamp.log() + "] [INFO] " + stackInfo + o.toString());
     }
 
     public static void println(Object o, Boolean logOnly) {
@@ -89,7 +85,7 @@ public class warn {
         Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Warning, "");
         if (!logOnly) {
-            System.out.println("[" + logTimestamp.log() + "] [INFO] " + o);
+            System.out.println("[" + logTimestamp.log() + "] [INFO] " + stackInfo + o.toString());
         }
     }
 

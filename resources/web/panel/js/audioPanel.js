@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,9 @@
     var announceInChat = false,
         playlists = [],
         sounds = [],
-        audioPanelLoaded = false;
+        soundQueue = [],
+        audioPanelLoaded = false,
+        isPlaying = false;
 
     /**
      * @function onMessage
@@ -63,6 +65,19 @@
             if (panelCheckQuery(msgObject, 'audio_panel_hook')) {
                 logMsg('Will Play: ' + msgObject['audio_panel_hook']);
             }
+        }
+
+        if (panelCheckQuery(msgObject, 'audio_ytplaylists')) {
+            if (msgObject['results'].length === 0) {
+                return;
+            }
+
+            playlists = [];
+
+            for (var idx in msgObject['results']) {
+                playlists.push(msgObject['results'][idx]['value']);
+            }
+            $.playlists = playlists; 
         }
 
         if (msgObject['audio_panel_hook'] !== undefined) {
@@ -137,18 +152,6 @@
             $('#reloadSounds').html('Reload Audio Hooks');
         }
 
-        if (panelCheckQuery(msgObject, 'audio_ytplaylists')) {
-            if (msgObject['results'].length === 0) {
-                return;
-            }
-
-            playlists.splice(0);
-
-            for (var idx in msgObject['results']) {
-                playlists.push(msgObject['results'][idx]['value']);
-            } 
-        }
-
         if (panelCheckQuery(msgObject, 'audio_ytptoggle1')) {
             if (msgObject['results']['announceInChat'] == "true") {
                 announceInChat = "true";
@@ -183,13 +186,13 @@
      * @function doQuery
      */
     function doQuery(message) {
+        sendDBKeys('audio_ytplaylists', 'ytPanelPlaylist');
         sendDBQuery('audio_ytpMaxReqs', 'ytSettings', 'songRequestsMaxParallel');
         sendDBQuery('audio_ytpMaxLength', 'ytSettings', 'songRequestsMaxSecondsforVideo');
         sendDBQuery('audio_ytptoggle1', 'ytSettings', 'announceInChat');
         sendDBQuery('audio_ytpDJName', 'ytSettings', 'playlistDJname');
         sendDBKeys('audio_songblacklist', 'ytpBlacklistedSong');
         sendDBKeys('audio_userblacklist', 'ytpBlacklist');
-        sendDBKeys('audio_ytplaylists', 'ytPanelPlaylist');
         sendDBKeys('audio_hook', 'audio_hooks');
     }
 
@@ -271,10 +274,14 @@
      * @function playIonSound
      * @param {String} name
      */
-    function playIonSound(name)
-    {
-        $("#ionSoundPlaying").fadeIn(400);
-        ion.sound.play(name);
+    function playIonSound(name) {
+        if (!isPlaying) {
+            isPlaying = true;
+            $("#ionSoundPlaying").fadeIn(400);
+            ion.sound.play(name);
+        } else {
+            soundQueue.push(name);
+        }
     }
 
     /**
@@ -282,6 +289,7 @@
      */
     function clearIonSoundPlaying() {
         $("#ionSoundPlaying").fadeOut(400);
+        isPlaying = false;
     }
 
     /**
@@ -417,11 +425,23 @@
     // Query the DB every 30 seconds for updates.
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
-        if (active == 17 && isConnected && !isInputFocus()) {
+        if (active == 19 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Audio Data', 'success', 1000);
             doQuery();
         }
     }, 3e4);
+
+    // Queue for when multiple sounds are called at once. This will stop multiple sounds from playing at the same time.
+    setInterval(function() {
+        if (soundQueue.length > 0) {
+            for (var i in soundQueue) {
+                if (!isPlaying) {
+                    playIonSound(soundQueue[i]);
+                    soundQueue.splice(i, 1);
+                }
+            }
+        }
+    }, 1e3);
 
     // Export to HTML
     $.audioOnMessage = onMessage;

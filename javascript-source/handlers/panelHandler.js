@@ -27,7 +27,7 @@
      * @function updateViewerCount
      */
     function updateViewerCount() {
-        $.inidb.set('panelstats', 'viewerCount', $.users.length);
+        $.inidb.set('panelstats', 'viewerCount', $.getViewers($.channelName));
     }
 
     /*

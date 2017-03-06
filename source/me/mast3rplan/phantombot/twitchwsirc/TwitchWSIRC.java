@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import me.mast3rplan.phantombot.event.EventBus;
 
 import com.google.common.collect.Maps;
+import com.gmt2001.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,6 +65,7 @@ public class TwitchWSIRC extends WebSocketClient {
     private Channel channel;
     private long lastPing = 0L;
     private boolean sentPing = false;
+    private boolean pingRequest = false;
 
     private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "480000"));
     private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "600000"));
@@ -186,6 +188,13 @@ public class TwitchWSIRC extends WebSocketClient {
         eventBus.postAsync(new IrcConnectCompleteEvent(session));
         lastPing = System.currentTimeMillis();
         checkPingTime();
+
+        // I read in a post on the twitch dev forum that some guy had to request a first ping for Twitch to start sending pings to him. Maybe this is why people always disconnect a lot?
+        // This should not hurt anything, it will only be sent once since I added a check.
+        if (!pingRequest) {
+            this.send("PING :tmi.twitch.tv");
+            pingRequest = true;
+        }
     }
 
     /*
@@ -197,9 +206,12 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC, retrying within 10 seconds...");
+        com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC. Reconnecting...");
         com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-        session.reconnect();
+
+        // Log the reason and code for future debugging.
+        Logger.instance().log(Logger.LogType.Error, "[" + Logger.instance().logTimestamp() + "] [SOCKET] Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
+        this.session.reconnect();
     }
 
     /*
@@ -283,7 +295,7 @@ public class TwitchWSIRC extends WebSocketClient {
                 if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
                     com.gmt2001.Console.debug.println("Sending a PING to Twitch to Verify Connection");
                     sentPing = true;
-                    send("PING tmi.twitch.tv");
+                    send("PING :tmi.twitch.tv");
                 }
 
                 if (System.currentTimeMillis() - lastPing >= pingWaitTime) {

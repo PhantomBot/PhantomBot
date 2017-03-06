@@ -6,8 +6,6 @@ $.lang.register('pointsystem.add.error.negative', 'You can not give negative $1.
 $.lang.register('pointsystem.take.error.negative', 'You can not take negative $1.');
 $.lang.register('pointsystem.add.success', 'Sent $1 to $2. New balance is $3.');
 $.lang.register('pointsystem.add.usage', 'Usage: !points add [name] [amount]');
-$.lang.register('pointsystem.get.self.nopoints', 'You currently have no $1. Stay in the chat to start gaining $1!');
-$.lang.register('pointsystem.get.self.withtime', 'You currently have $2, and you have been in chat for $3.');
 $.lang.register('pointsystem.user.success', ' $1 currently has $2.');
 $.lang.register('pointsystem.makeitrain.error.invalid', 'Sorry, but it\'s not possible to rain $1 at the moment.');
 $.lang.register('pointsystem.makeitrain.error.needpoints', 'You can not afford to make it rain $1.');
@@ -32,6 +30,7 @@ $.lang.register('pointsystem.set.name.multiple.success', 'Name of multiple point
 $.lang.register('pointsystem.set.name.single.success', 'Name of a single point successfully changed from "$1" to "$2". To set the name for multiple $2 use !points setname multiple [name].');
 $.lang.register('pointsystem.set.name.usage', 'usage: !points setname [single | multiple | delete] [name].  Sets the single or multiple name for chat points or deletes the values.');
 $.lang.register('pointsystem.set.name.delete', 'Removed custom point names.');
+$.lang.register('pointsystem.set.name.duplicate', 'That is the current name of the custom point command.');
 $.lang.register('pointsystem.setbalance.error.negative', 'You can not set a balance to negative $1.');
 $.lang.register('pointsystem.setbalance.success', 'Set the $1 balance of $2 to $3.');
 $.lang.register('pointsystem.setbalance.usage', 'Usage: !points set [name] [amount]');
@@ -47,3 +46,5 @@ $.lang.register('pointsystem.err.negative', 'you can not gift less then 0 $1');
 $.lang.register('pointsystem.err.penalty', 'Usage: !penalty (user) (time in minutes)');
 $.lang.register('pointsystem.penalty.set', 'User: $1 will not gain points for te next $2.');
 $.lang.register('pointsystem.reset.all', 'All points were deleted.');
+$.lang.register('pointsystem.message.usage', 'Usage: !points setmessage [message] - Tags: (userprefix), (user), (points), (pointsname), (pointsstring), (time), and (rank)');
+$.lang.register('pointsystem.message.set', 'Points message set to: $1');

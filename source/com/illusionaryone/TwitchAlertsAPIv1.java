@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ public class TwitchAlertsAPIv1 {
     private static final int iHTTPTimeout = 2 * 1000;
     private String sAccessToken = "";
     private int iDonationPullLimit = 5;
+    private String sCurrencyCode = "";
 
     public static TwitchAlertsAPIv1 instance() {
         return instance;
@@ -170,11 +171,20 @@ public class TwitchAlertsAPIv1 {
     }
 
     /*
+     * Sets a new currency code to convert all records to.
+     *
+     * @param sCurrencyCode
+     */
+    public void SetCurrencyCode(String sCurrencyCode) {
+        this.sCurrencyCode = sCurrencyCode;
+    }
+
+    /*
      * Pulls donation information.
      *
      * @return
      */
     public JSONObject GetDonations() {
-        return readJsonFromUrl(sAPIURL + "/donations?access_token=" + this.sAccessToken + "&limit=" + this.iDonationPullLimit);
+        return readJsonFromUrl(sAPIURL + "/donations?access_token=" + this.sAccessToken + "&limit=" + this.iDonationPullLimit + "&currency=" + this.sCurrencyCode);
     }
 }

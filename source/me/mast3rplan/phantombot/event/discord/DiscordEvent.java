@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,51 +18,70 @@ package me.mast3rplan.phantombot.event.discord;
 
 import me.mast3rplan.phantombot.event.Event;
 
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.Channel;
+
 public class DiscordEvent extends Event {
+	private final User user;
+	private final Channel channel;
+	private final String channelName;
+	private final String sender;
+	private final String username;
+	private final String discrim;
+	private final String mention;
+	private final String senderId;
 
-    private final String discordChannel;
-    private final String discordUser;
-    private final String discordUserMentionAs;
-    private final String discordMessage;
-    private final String discordDiscrim;
-    private final String discordId;
-    private final Boolean isAdmin;
+	public DiscordEvent(User user) {
+		this.user = user;
+		this.channel = null;
+		this.channelName = null;
+		this.username = user.getName();
+		this.discrim = user.getDiscriminator();
+		this.senderId = user.getId();
+		this.sender = (username + "#" + discrim);
+		this.mention = "<@" + senderId + ">";
+	}
 
-    public DiscordEvent(String discordChannel, String discordUser, String discordUserMentionAs, String discordDiscrim, String discordId, Boolean isAdmin, String discordMessage) {
-        this.discordChannel = discordChannel;
-        this.discordUser = discordUser;
-        this.discordUserMentionAs = discordUserMentionAs;
-        this.discordMessage = discordMessage;
-        this.discordDiscrim = discordDiscrim;
-        this.isAdmin = isAdmin;
-        this.discordId = discordId;
-    }
+	public DiscordEvent(User user, Channel channel) {
+		this.user = user;
+		this.channel = channel;
+		this.username = user.getName();
+		this.discrim = user.getDiscriminator();
+		this.channelName = channel.getName();
+		this.senderId = user.getId();
+		this.sender = (username + "#" + discrim);
+		this.mention = "<@" + senderId + ">";
+	}
 
-    public String getDiscordChannel() {
-        return this.discordChannel;
-    }
+	public String getSender() {
+		return this.sender.toLowerCase();
+	}
 
-    public String getDiscordUser() {
-        return this.discordUser;
-    }
+	public String getUsername() {
+		return this.username;
+	}
 
-    public String getDiscordUserMentionAs() {
-        return this.discordUserMentionAs;
-    }
+	public String getMention() {
+		return this.mention;
+	}
 
-    public String getDiscordMessage() {
-        return this.discordMessage;
-    }
+	public String getChannel() {
+		return this.channelName;
+	}
 
-    public String getDiscriminator() {
-        return this.discordDiscrim;
-    }
+	public String getDiscriminator() {
+		return this.discrim;
+	}
 
-    public String getId() {
-        return this.discordId;
-    }
+	public String getSenderId() {
+		return this.senderId;
+	}
 
-    public Boolean isAdmin() {
-        return this.isAdmin;
-    }
+	public User getDiscordUser() {
+		return this.user;
+	}
+
+	public Channel getDiscordChannel() {
+		return this.channel;
+	}
 }

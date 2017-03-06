@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
  */
 package me.mast3rplan.phantombot.twitchwsirc;
 
-import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchAutoHostedEvent;
@@ -54,6 +53,8 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+
+import me.mast3rplan.phantombot.PhantomBot;
 
 public class TwitchWSHostIRC {
     private static final Map<String, TwitchWSHostIRC> instances = Maps.newHashMap();
@@ -323,7 +324,7 @@ public class TwitchWSHostIRC {
                 try {
                     Thread.sleep(30 * 1000);
                 } catch (InterruptedException ex) {
-                    com.gmt2001.Console.out.println("TwitchWSIRC: Failed to sleep: [InterruptedException] " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("TwitchWSIRC: Failed to sleep: [InterruptedException] " + ex.getMessage());
                 }
                 eventBus.post(new TwitchHostsInitializedEvent());
                 return;
@@ -331,10 +332,11 @@ public class TwitchWSHostIRC {
 
             if (message.contains("Error logging in") || message.contains("Login authentication failed") && badOauth == false) {
                 com.gmt2001.Console.out.println("");
-                com.gmt2001.Console.out.println("API OAuth not allowed to gather host data, please update to support auto-host and viewer count capture.");
-                com.gmt2001.Console.out.println("Current method will be decommissioned in the near future, resulting in no host data being collected!");
-                com.gmt2001.Console.out.println("Please obtain new API OAuth at https://phantombot.tv/oauth");
+                com.gmt2001.Console.out.println("API OAuth not allowed to gather host data.");
+                com.gmt2001.Console.out.println("Please obtain new API OAuth at: https://phantombot.tv/oauth");
+                com.gmt2001.Console.out.println("Now disabling host module.");
                 com.gmt2001.Console.out.println("");
+                PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
                 badOauth = true;
                 return;
             }

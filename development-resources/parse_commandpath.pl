@@ -27,9 +27,11 @@ use strict;
 
 my (@fileList, @commandPathData);
 my ($moduleName, $commandName, $commandSubText, $commandOptions, $commandDesc, $commandSubCommands, $extractString);
+my $str = './';
+my $find = './javascript-source/';
 
 sub findWanted { if (/\.js$/s) { push @fileList, $File::Find::name; } } 
-find(\&findWanted, ".");
+find(\&findWanted, "./javascript-source/");
 
 my (@dateData) = localtime();
 printf "<!-- PhantomBot \@commandpath Parser. Executed on: %02d/%02d/%4d \@ %02d:%02d:%02d -->\n\n",
@@ -61,10 +63,14 @@ foreach $moduleName (sort @fileList) {
         } else {
           $commandSubCommands = $commandSubText;
         }
+        ## Need to trim all this or it adds an extra space that Zack does not like.
         $commandSubCommands =~ s/\s+$//;
-        $commandName = $commandName." ".$commandSubCommands if (length($commandSubCommands) > 0) ;
+        $commandDesc =~ s/\s+$//;
+        $commandName =~ s/\s+$//;
+        $commandName = $commandName." ".$commandSubCommands if (length($commandSubCommands) > 0) ;  
       }
-
+      
+      $moduleName =~ s/$find/$str/g;
       print "<tr>\n";
       print "    <td><a href='#' div class='tooltip' data-title='Click to Copy Module to Clipboard'>$moduleName</a></td>\n";
       print "    <td><a href='#' div class='tooltip' data-title='Click to Copy Command to Clipboard'>!$commandName</a></td>\n";

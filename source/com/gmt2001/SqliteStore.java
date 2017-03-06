@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -691,6 +691,21 @@ public class SqliteStore extends DataStore {
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.debug.println("SQLite commit was attempted too early, will perform later.");
+        }
+    }
+
+    @Override
+    public void backupSQLite3(String filename) {
+        CheckConnection();
+
+        if (!new File ("./dbbackup").exists()) new File ("./dbbackup").mkdirs();
+
+        try (Statement statement = connection.createStatement()) {
+            statement.setQueryTimeout(10);
+            statement.executeUpdate("backup to ./dbbackup/" + filename);
+            com.gmt2001.Console.out.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

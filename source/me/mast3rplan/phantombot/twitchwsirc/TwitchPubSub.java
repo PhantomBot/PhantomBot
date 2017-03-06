@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -350,13 +350,7 @@ public class TwitchPubSub {
                 return;
             }
     
-            if (messageObj.getString("type").equalsIgnoreCase("reconnect")) {
-                com.gmt2001.Console.debug.println("TwitchPubSubWS: Force reconnect required.");
-                twitchPubSub.reconnectWSS();
-                return;
-            }
-    
-            if (messageObj.getString("error").length() > 0) {
+            if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                 com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                 reconAllowed = false;
                 return;

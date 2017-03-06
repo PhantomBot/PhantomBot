@@ -55,12 +55,12 @@
         var string = data[key.toLowerCase()],
             i;
 
-        if (!string) {
-            $.log.warn('Language string missing for "' + key + '". This could be due to a update to the lang files.');
-            return ''; // Don't say anything in chat.
+        if (string === undefined) {
+            $.log.warn('Lang string for key "' + key + '" was not found.');
+            return '';
         }
 
-        if (string.equals('<<EMPTY_PLACEHOLDER>>')) {
+        if (string == '<<EMPTY_PLACEHOLDER>>') {
             return '';
         }
 
@@ -79,23 +79,23 @@
       * @returns {Number}
       */
      function paramCount(key) {
-         var string = data[key.toLowerCase()],
-             i,
-             ctr = 0;
+        var string = data[key.toLowerCase()],
+            i,
+            ctr = 0;
  
-         if (!string) {
-             return 0;
-         }
+        if (!string) {
+            return 0;
+        }
  
-         for (i = 1; i < 99; i++) {
-             if (string.indexOf("$" + i) >= 0) {
-                 ctr++;
-             } else {
-                 break;
-             }
-         }
-         return ctr;
-     }
+        for (i = 1; i < 99; i++) {
+            if (string.indexOf("$" + i) >= 0) {
+                ctr++;
+            } else {
+                break;
+            }
+        }
+        return ctr;
+    }
 
     /**
      * @function exists

@@ -6,9 +6,8 @@
 (function() {
     var JFile = java.io.File,
         JFileInputStream = java.io.FileInputStream,
-        JFileOutputStream = java.io.FileOutputStream;
-
-    var fileHandles = [];
+        JFileOutputStream = java.io.FileOutputStream,
+        fileHandles = [];
 
     /**
      * @function readFile
@@ -29,7 +28,7 @@
             $.log.error('Failed to open \'' + path + '\': ' + e);
         }
         return lines;
-    };
+    }
 
     /**
      * @function mkDir
@@ -40,7 +39,7 @@
     function mkDir(path) {
         var dir = new JFile(path);
         return dir.mkdir();
-    };
+    }
 
     /**
      * @function moveFile
@@ -59,7 +58,7 @@
                 $.log.error("moveFile(" + file + ", " + path + ") failed: " + ex);
             }
         }
-    };
+    }
 
     /**
      * @function saveArray
@@ -80,19 +79,22 @@
         } catch (e) {
             $.log.error('Failed to write to \'' + path + '\': ' + e);
         }
-    };
+    }
 
     /**
      * @function closeOpenFiles
      */
     function closeOpenFiles() {
+        var dateFormat = new java.text.SimpleDateFormat('MM-dd-yyyy'),
+            date = dateFormat.format(new java.util.Date());
+
         for (var key in fileHandles) {
-            if (fileHandles[key].lastWrite + 36e5 <= $.systemTime()) { 
+            if (!fileHandles[key].startDate.equals(date)) { 
                 fileHandles[key].fos.close();
                 delete fileHandles[key];
             }
         }
-    };
+    }
 
     /**
      * @function writeToFile
@@ -102,7 +104,9 @@
      * @param {boolean} append
      */
     function writeToFile(line, path, append) {
-        var fos,
+        var dateFormat = new java.text.SimpleDateFormat('MM-dd-yyyy'),
+            date = dateFormat.format(new java.util.Date()),
+            fos,
             ps;
 
         closeOpenFiles();
@@ -110,25 +114,23 @@
         if (fileHandles[path] !== undefined && append) {
             fos = fileHandles[path].fos;
             ps = fileHandles[path].ps;
-            fileHandles[path].lastWrite = $.systemTime();
         } else {
             fos = new JFileOutputStream(path, append);
             ps = new java.io.PrintStream(fos);
             fileHandles[path] = { 
                 fos: fos,
                 ps: ps,
-                lastWrite: $.systemTime()
+                startDate: date
             };
         }
     
         try {
             ps.println(line);
             fos.flush();
-            // ps.close(); This makes the file reset everytime. 
         } catch (e) {
             $.log.error('Failed to write to \'' + path + '\': ' + e);
         }
-    };
+    }
 
     /**
      * @function touchFile
@@ -142,7 +144,7 @@
         } catch (e) {
             $.log.error('Failed to touch \'' + path + '\': ' + e);
         }
-    };
+    }
 
     /**
      * @function deleteFile
@@ -161,7 +163,7 @@
         } catch (e) {
             $.log.error('Failed to delete \'' + path + '\': ' + e);
         }
-    };
+    }
 
     /**
      * @function fileExists
@@ -176,7 +178,7 @@
         } catch (e) {
             return false;
         }
-    };
+    }
 
     /**
      * @function findFiles
@@ -202,7 +204,7 @@
             $.log.error('Failed to search in \'' + directory + '\': ' + e);
         }
         return [];
-    };
+    }
 
     /**
      * @function isDirectory
@@ -217,7 +219,7 @@
         } catch (e) {
             return false;
         }
-    };
+    }
 
     /**
      * @function findSize
@@ -228,7 +230,7 @@
     function findSize(file) {
         var fileO = new JFile(file);
         return fileO.length();
-    };
+    }
 
     /** Export functions to API */
     $.deleteFile = deleteFile;

@@ -1,6 +1,6 @@
 <!--
 
- Copyright (C) 2016 phantombot.tv
+ Copyright (C) 2017 phantombot.tv
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -149,9 +149,17 @@
         </form>
     </div>
 
-    <h3>Modules</h3>
+    <h3>Twitch Modules</h3>
     <div>
         <div id="modulesList" style="height: 300px; overflow: auto;" />
+    </div>
+
+    <h3>Discord Modules</h3>
+
+    <div>
+        <i>These are modules for our discord integration. If you do not have your bot connected to discord the enable buttons will not work and the modules
+            may not show up.</i>
+        <div id="discordModulesList" style="height: 300px; overflow: auto;" />
     </div>
 
 
@@ -190,7 +198,7 @@
                         <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('sub')"><i class="fa fa-minus fa-1x" /></button>
                     </td>
                     <td style="width: 30px">
-                        <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('reset')"><i class="fa fa-power-off fa-1x" /></button>
+                        <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('reset')"><i class="fa fa-eraser fa-1x" /></button>
                     </td>
                 </tr>
             </table>
@@ -251,25 +259,6 @@
                 </div>
             </form>
         </div>
-    </div>
-
-    <h3>Queue</h3>
-    <div>
-        <div id="_queuePanelDisabled" />
-        <div id="_queuePanel">
-        <form role="form">
-             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="amountQueue">Amount Of People To Select</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.queueCMD('clear')">Clear Queue</button>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.queueCMD('close')">Close Queue</button>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.queueCMD('open')">Open Queue</button>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.queueCMDNext('next')">Next</button>
-                <input type="text" class="form-control" id="amountQueue" placeholder="Amount" />
-            </div>
-        </form>
-    </div>
-    <label for="queueList">Queue List</label>
-        <div id="queueList" style="height: 150px; overflow: auto;" />
     </div>
 </div>
 

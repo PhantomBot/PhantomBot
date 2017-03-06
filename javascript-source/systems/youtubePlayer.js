@@ -61,6 +61,39 @@
     }
 
     /**
+     * @function loadDefaultPl
+     */
+    function loadDefaultPl() {
+        if (currentPlaylist === null && connectedPlayerClient !== null) {
+            /** Pre-load last activated playlist */
+            currentPlaylist = new BotPlayList(activePlaylistname, true);
+            /** if the current playlist is "default" and it's empty, add some default songs. */
+            if (currentPlaylist.getPlaylistname().equals('default') && currentPlaylist.getplaylistLength() == 0) {
+                /** CyberPosix - Under The Influence (Outertone Free Release) */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('gotxnim9h8w', $.botName));
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+
+                /** Different Heaven & Eh!de - My Heart (Outertone 001 - Zero Release) */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('WFqO9DoZZjA', $.botName));
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+
+                /** Tobu - Higher (Outertone Release) */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+            }
+        }
+    }
+
+    /**
      * @class
      * @description This class holds information about a youtube video.
      * @param {string} searchQuery
@@ -320,7 +353,7 @@
             var newKey;
             targetPlaylistName = (targetPlaylistName ? targetPlaylistName : this.playlistName);
             if (this.videoExistsInPlaylist(youtubeVideo, targetPlaylistName)) {
-                return -1;
+                return -2;
             }
             if (targetPlaylistName) {
                 newKey = (!$.inidb.exists(playlistDbPrefix + targetPlaylistName, 'lastkey') ? 0 : parseInt($.inidb.get(playlistDbPrefix + targetPlaylistName, 'lastkey')) + 1);
@@ -675,10 +708,12 @@
         /**
          * @function updateCurrentSongFile
          * @param {YoutubeVideo} youtubeVideo
+         * Note that the trailing space is for any broadcasting software which is "wrapping"
+         * the text constantly in a loop.
          */
         this.updateCurrentSongFile = function(youtubeVideo) {
             $.writeToFile(
-                youtubeVideo.getVideoTitle(),
+                youtubeVideo.getVideoTitle() + ' ',
                 baseFileOutputPath + 'currentsong.txt',
                 false
             );
@@ -992,6 +1027,7 @@
         connectedPlayerClient = new PlayerClientInterface();
 
         $.consoleLn($.lang.get('ytplayer.console.client.connected'));
+        loadDefaultPl();
         connectedPlayerClient.pushPlayList();
         $.youtubePlayerConnected = true;
     });
@@ -1445,11 +1481,17 @@
                 responseString;
 
             if (args.length == 0) {
-                currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo());
+                if (currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo()) == -2) {
+                    $.say($.lang.get('ytplayer.command.stealsong.duplicate'));
+                    return;
+                }
                 refundUser = currentPlaylist.getCurrentVideo().getOwner().toLowerCase();
                 responseString = $.lang.get('ytplayer.command.stealsong.this.success', $.username.resolve(sender));
             } else if ($.inidb.FileExists(playlistDbPrefix + args[0].toLowerCase())) {
-                currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo(), args[0].toLowerCase());
+                if (currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo(), args[0].toLowerCase()) == -2) {
+                    $.say($.lang.get('ytplayer.command.stealsong.duplicate'));
+                    return;
+                }
                 refundUser = currentPlaylist.getCurrentVideo().getOwner().toLowerCase();
                 responseString = $.lang.get('ytplayer.command.stealsong.other.success', $.username.resolve(sender), args[0]);
             } else {
@@ -1702,35 +1744,7 @@
             $.registerChatSubcommand('wrongsong', 'user', 2);
 
             loadPanelPlaylist();
-
-            if (currentPlaylist == null) {
-                /** Pre-load last activated playlist */
-                currentPlaylist = new BotPlayList(activePlaylistname, true);
-
-                /** if the current playlist is "default" and it's empty, add some default songs. */
-                if (currentPlaylist.getPlaylistname().equals('default') && currentPlaylist.getplaylistLength() == 0) {
-                    /** CyberPosix - Under The Influence (Outertone Free Release) */
-                    try {
-                        currentPlaylist.addToPlaylist(new YoutubeVideo('gotxnim9h8w', $.botName));
-                    } catch (ex) {
-                        $.log.error("YoutubeVideo::exception: " + ex);
-                    }
-    
-                    /** Different Heaven & Eh!de - My Heart (Outertone 001 - Zero Release) */
-                    try {
-                        currentPlaylist.addToPlaylist(new YoutubeVideo('WFqO9DoZZjA', $.botName));
-                    } catch (ex) {
-                        $.log.error("YoutubeVideo::exception: " + ex);
-                    }
-    
-                    /** Tobu - Higher (Outertone Release) */
-                    try {
-                        currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
-                    } catch (ex) {
-                        $.log.error("YoutubeVideo::exception: " + ex);
-                    }
-                }
-            }
+            loadDefaultPl();
         }
     });
 })();

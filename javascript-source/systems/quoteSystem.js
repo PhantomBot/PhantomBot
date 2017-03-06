@@ -5,7 +5,8 @@
  */
 (function() {
     
-    var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true);
+    var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true),
+        isDeleting = false;
 
     /**
      * @function updateQuote
@@ -27,6 +28,9 @@
         var newKey = $.inidb.GetKeyList('quotes', '').length,
             game = ($.getGame($.channelName) != '' ? $.getGame($.channelName) : "Some Game");
 
+        if ($.inidb.exists('quotes', newKey)) {
+            newKey++;
+        }
         $.inidb.set('quotes', newKey, JSON.stringify([username, quote, $.systemTime(), game + '']));
         return newKey;
     };
@@ -41,10 +45,16 @@
             quotes = [],
             i;
 
+        if (isDeleting) {
+            return -1;
+        }
+        
         if ($.inidb.exists('quotes', quoteId)) {
+            isDeleting = true;
             $.inidb.del('quotes', quoteId);
             quoteKeys = $.inidb.GetKeyList('quotes', '');
 
+            $.inidb.setAutoCommit(false);
             for (i in quoteKeys) {
                 quotes.push($.inidb.get('quotes', quoteKeys[i]));
                 $.inidb.del('quotes', quoteKeys[i]);
@@ -53,7 +63,8 @@
             for (i in quotes) {
                 $.inidb.set('quotes', i, quotes[i]);
             }
-
+            $.inidb.setAutoCommit(true);
+            isDeleting = false;
             return (quotes.length ? quotes.length : 0);
         } else {
             return -1;
@@ -165,7 +176,7 @@
                     return;
                 }
                 quote = args.splice(1).join(' ');
-                $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(target)), quote)));
+                $.say($.lang.get('quotesystem.add.success', $.username.resolve(target), saveQuote(String($.username.resolve(target)), quote)));
                 $.log.event(sender + ' added a quote "' + quote + '".');
                 return;
             }

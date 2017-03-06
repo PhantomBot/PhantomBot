@@ -1,6 +1,6 @@
 <!--
 
- Copyright (C) 2016 phantombot.tv
+ Copyright (C) 2017 phantombot.tv
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -55,13 +55,45 @@
                 <input type="text" class="form-control" id="raiderChannelInput" placeholder="Twitch Channel">
             </div>
         </form> 
-        </div>
+    </div>
     </div>
 
     <h3>Hosts</h3>
     <div>
     <div id="_hostAlertsPanelDisabled" />
     <div id="_hostAlertsPanel">
+        <table>
+            <tr class="textList">
+                <td>Toggle Host Announcements</td>
+                <td style="width: 25px"><div id="hostToggle" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button"
+                         onclick="$.toggle('settings', 'hostToggle', 'true');"><i class="fa fa-circle" />
+                     </div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button"
+                         onclick="$.toggle('settings', 'hostToggle', 'false');"><i class="fa fa-circle-o" />
+                     </div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Toggle Auto Host Announcements</td>
+                <td style="width: 25px"><div id="autoHostToggle" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button"
+                         onclick="$.toggle('settings', 'autoHostToggle', 'true');"><i class="fa fa-circle" />
+                     </div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button"
+                         onclick="$.toggle('settings', 'autoHostToggle', 'false');"><i class="fa fa-circle-o" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="hostAnnounce">Host Message</label>

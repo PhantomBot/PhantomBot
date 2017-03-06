@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 phantombot.tv
+ * Copyright (C) 2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,9 @@
             }
             if (panelMatch(module, './systems/youtubePlayer.js')) {
                 handlePanel('./systems/youtubePlayer.js', '#_youtubePlayerPanel', moduleEnabled);
+            }
+            if (panelMatch(module, './systems/audioPanelSystem.js')) {
+                handlePanel('./systems/audioPanelSystem.js', '#_audioPanel', moduleEnabled);
             }
             if (panelMatch(module, './commands/customCommands.js')) {
                 handlePanel('./commands/customCommands.js', '#_editCustomCommandsPanel', moduleEnabled);
@@ -174,6 +177,51 @@
             if (panelMatch(module, './games/gambling.js')) {
                 handlePanel('./games/gambling.js', '#_gamlbingPanel', moduleEnabled);
             }
+            if (panelMatch(module, './handlers/tipeeeStreamHandler.js')) {
+                handlePanel('./handlers/tipeeeStreamHandler.js', '#_tipeeeStreamDonationsPanel', moduleEnabled);
+            }
+
+            // Discord modules.
+            if (panelMatch(module, './discord/handlers/bitsHandler.js')) {
+                handlePanel('./discord/handlers/bitsHandler.js', '#_discord_bitsHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/followHandler.js')) {
+                handlePanel('./discord/handlers/followHandler.js', '#_discord_followHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/subscribeHandler.js')) {
+                handlePanel('./discord/handlers/subscribeHandler.js', '#_discord_subscribeHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/tipeeeStreamHandler.js')) {
+                handlePanel('./discord/handlers/tipeeeStreamHandler.js', '#_discord_tipeeeStreamHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/streamtipHandler.js')) {
+                handlePanel('./discord/handlers/streamtipHandler.js', '#_discord_streamTipHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/streamlabsHandler.js')) {
+                handlePanel('./discord/handlers/streamlabsHandler.js', '#_discord_streamLabsHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/hostHandler.js')) {
+                handlePanel('./discord/handlers/hostHandler.js', '#_discord_hostHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/twitterHandler.js')) {
+                handlePanel('./discord/handlers/twitterHandler.js', '#_discord_twitterHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/keywordHandler.js')) {
+                handlePanel('./discord/handlers/keywordHandler.js', '#_discord_keywordHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/streamHandler.js')) {
+                handlePanel('./discord/handlers/streamHandler.js', '#_discord_streamHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/gamewispHandler.js')) {
+                handlePanel('./discord/handlers/gamewispHandler.js', '#_discord_gameWispHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/systems/greetingsSystem.js')) {
+                handlePanel('./discord/systems/greetingsSystem.js', '#_discord_greetingSystem', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/commands/customCommands.js')) {
+                handlePanel('./discord/games/customCommands.js', '#_discord_customCommands', moduleEnabled);
+            }
+
         }            
     }
 

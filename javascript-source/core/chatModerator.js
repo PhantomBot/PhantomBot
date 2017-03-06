@@ -124,7 +124,7 @@
         spamTrackerLastMsg = 0,
         messageTime = 0,
         warning = '',
-        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'ig'),
+        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'g'),
         i;
 
     /**
@@ -271,7 +271,7 @@
         blackList = [];
 
         for (i = 0; i < keys.length; i++) {
-            blackList.push($.inidb.get('blackList', keys[i]));
+            blackList.push(keys[i]);
         }
     }
 
@@ -283,7 +283,7 @@
         whiteList = [];
         
         for (i = 0; i < keys.length; i++) {
-            whiteList.push($.inidb.get('whiteList', keys[i]));
+            whiteList.push(keys[i]);
         }
     }
 
@@ -297,15 +297,10 @@
     function timeoutUserFor(username, time, reason) {
         $.say('.timeout ' + username + ' ' + time + ' ' + reason);
         setTimeout(function() {
-            $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+            if ($.session.isLimited() == false) {
+                $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+            }
         }, 1000);
-
-        // Only send one timeout if we are near the max message limit of 20 messages in 30 seconds.
-        // if (!$.session.isLimited()) {
-        //     setTimeout(function() {
-        //         $.say('.timeout ' + username + ' ' + time + ' ' + reason);
-        //     }, 1000);
-        // }
     }
 
     /**
@@ -340,7 +335,7 @@
      * @param {boolean} filter
      */
     function sendMessage(username, message, filter) {
-        if (!filter && (messageTime - $.systemTime()) <= 0) {
+        if (!filter && (messageTime - $.systemTime()) <= 0 && $.session.hasQueue() == true && $.session.isLimited() == false) {
             $.say($.userPrefix(username, true) + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         }
@@ -395,7 +390,7 @@
      */
     function checkBlackList(sender, message) {
         for (i in blackList) {
-            if (message.includes(blackList[i].toLowerCase())) {
+            if (message.includes(blackList[i])) {
                 timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
                 warning = $.lang.get('chatmoderator.timeout');
                 sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
@@ -849,40 +844,27 @@
                     return;
                 }
                 var word = argString.replace(action, '').trim().toLowerCase();
-                $.inidb.set('blackList', 'phrase_' + blackList.length, word);
+
+                $.inidb.set('blackList', word, 'true');
                 blackList.push(word);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.added'));
                 $.log.event('"' + word + '" was added to the blacklist by ' + sender);
             }
 
             /**
-             * @commandpath blacklist remove [id] - Removes a word from the blacklist based on ID.
+             * @commandpath blacklist remove [word] - Removes a word from the blacklist.
              */
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
+                } else if (!$.inidb.exists('blackList', argString.replace(action, '').trim().toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
-                $.inidb.del('blackList', 'phrase_' + parseInt(subAction));
+                $.inidb.del('blackList', argString.replace(action, '').trim().toLowerCase());
                 loadBlackList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.removed'));
-            }
-
-            /**
-             * @commandpath blacklist show [id] - Shows the blacklist word related to the ID.
-             */
-            if (action.equalsIgnoreCase('show')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.show.usage'));
-                    return;
-                } else if (!$.inidb.exists('blackList', 'phrase_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
-                    return;
-                }
-                $.say($.whisperPrefix(sender) + $.inidb.get('blackList', 'phrase_' + parseInt(subAction)));
             }
         }
 
@@ -904,40 +886,26 @@
                     return;
                 }
                 var link = argString.replace(action, '').trim().toLowerCase();
-                $.inidb.set('whiteList', 'link_' + whiteList.length, link);
+                $.inidb.set('whiteList', link, 'true');
                 whiteList.push(link);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));
                 $.log.event('"' + link + '" was added the the whitelist by ' + sender);
             }
 
             /**
-             * @commandpath whitelist remove [id] - Removes a link from the whitelist based on ID.
+             * @commandpath whitelist remove [link] - Removes a link from the whitelist.
              */
             if (action.equalsIgnoreCase('remove')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
+                } else if (!$.inidb.exists('whiteList', argString.replace(action, '').trim().toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
-                $.inidb.del('whiteList', 'link_' + parseInt(subAction));
+                $.inidb.del('whiteList', argString.replace(action, '').trim().toLowerCase());
                 loadWhiteList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.removed'));
-            }
-
-            /**
-             * @commandpath whitelist show [id] - Shows a link in the whitelist based on ID.
-             */
-            if (action.equalsIgnoreCase('show')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.show.usage'));
-                    return;
-                } else if (!$.inidb.exists('whiteList', 'link_' + parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
-                    return;
-                }
-                $.say($.whisperPrefix(sender) + $.inidb.get('whiteList', 'link_' + parseInt(subAction)));
             }
         }
 

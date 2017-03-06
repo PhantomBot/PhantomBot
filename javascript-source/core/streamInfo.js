@@ -67,7 +67,7 @@
             return string;
         }
         return '';
-    };
+    }
 
     /**
      * @function getPlayTime()
@@ -83,7 +83,7 @@
         } else {
             return null;
         }
-    };
+    }
 
     /**
      * @function isOnline
@@ -97,7 +97,7 @@
         } else {
             return !$.twitch.GetStream(channelName).isNull('stream');
         }
-    };
+    }
 
     /**
      * @function getStatus
@@ -113,11 +113,13 @@
 
             if (!channelData.isNull('status') && channelData.getInt('_http') == 200) {
                 return channelData.getString('status');
+            } else if (channelData.isNull('status') && channelData.getInt('_http') == 200) {
+                return $.lang.get('common.twitch.no.status');
             }
             $.log.error('Failed to get the current status: ' + channelData.getString('message'));
             return '';
         }
-    };
+    }
 
     /**
      * @function getGame
@@ -133,11 +135,16 @@
 
             if (!channelData.isNull('game') && channelData.getInt('_http') == 200) {
                 return channelData.getString("game");
+            } else if (channelData.isNull('game') && channelData.getInt('_http') == 200) {
+                return $.lang.get('common.twitch.no.game');
             }
-            $.log.error('Failed to get the current game: ' + channelData.getString('message'));
+            
+            if (!channelData.isNull('message')) {
+                $.log.error('Failed to get the current game: ' + channelData.getString('message'));
+            }
             return '';
         }
-    };
+    }
 
     /**
      * @function getStreamUptimeSeconds
@@ -166,7 +173,7 @@
                 return 0;
             }
         }
-    };
+    }
 
     /**
      * @function getStreamUptime
@@ -185,7 +192,7 @@
                     time;
     
                 if (stream.isNull('stream')) {
-                    return false;
+                    return '';
                 }
 
                 createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
@@ -200,7 +207,7 @@
                 time;
     
             if (stream.isNull('stream')) {
-                return false;
+                return '';
             }
     
             createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
@@ -208,10 +215,10 @@
                 time = now - createdAtDate;
                 return $.getTimeString(time / 1000);
             } else {
-                return false;
+                return '';
             }
         }
-    };
+    }
 
     /**
      * @function getStreamDownTime
@@ -228,7 +235,7 @@
             return $.getTimeString(time / 1000);
         }
         return 0;
-    };
+    }
 
     /**
      * @function getStreamStartedAt
@@ -254,7 +261,7 @@
             createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
             return $.dateToString(createdAtDate);
         }
-    };
+    }
 
     /**
      * @function getViewers
@@ -274,7 +281,7 @@
                 return 0;
             }
         }
-    };
+    }
 
     /**
      * @function getFollows
@@ -290,7 +297,7 @@
         } else {
             return 0;
         }
-    };
+    }
 
     /**
      * @function getFollowAge
@@ -316,7 +323,7 @@
         } else {
             $.say($.lang.get('followhandler.follow.age.time', $.userPrefix(sender, true), username, channelName, dateFinal));
         }
-    };
+    }
 
     /**
      * @function getChannelAge
@@ -341,7 +348,7 @@
         } else {
             $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]), dateFinal));
         }
-    };
+    }
 
     /**
      * @function getSubscriberCount
@@ -366,7 +373,7 @@
         }
 
         return count;
-    };
+    }
 
     /**
      * @function updateGame
@@ -381,27 +388,25 @@
 
         if (http.getBoolean('_success')) {
             if (http.getInt('_http') == 200) {
+                if (!silent) {
+                    $.say($.lang.get('common.game.change', http.getString('game')));
+                }
+
                 $.twitchcache.setGameTitle(http.getString('game'));
                 $.inidb.set('streamInfo', 'game', http.getString('game'));
-                if (!silent) {
-                    $.say('Changed the game to "' + http.getString('game') + '"!');
-                }
                 $.log.event($.username.resolve(sender) + ' changed the current game to ' + http.getString('game'));
-
                 if ($.bot.isModuleEnabled('./commands/deathctrCommand.js')) {
                     $.deathUpdateFile(game);
                 }
             } else {
-                $.say($.whisperPrefix(sender) + 'Failed to change the game. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
-                $.consoleDebug(http.getString('message'));
+                $.log.error('Failed to change the game. The Twitch API might be having issues.');
                 $.log.error(http.getString('message'));
             }
         } else {
-            $.say($.whisperPrefix(sender) + 'Failed to change the game. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
-            $.consoleDebug(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
+            $.log.error('Failed to change the game. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
-    };
+    }
 
     /**
      * @function updateStatus
@@ -416,23 +421,21 @@
 
         if (http.getBoolean('_success')) {
             if (http.getInt('_http') == 200) {
+                if (!silent) {
+                    $.say($.lang.get('common.title.change', http.getString('status')));
+                }
                 $.twitchcache.setStreamStatus(http.getString('status'));
                 $.inidb.set('streamInfo', 'title', http.getString('status'));
-                if (!silent) {
-                    $.say('Changed the title to "' + http.getString('status') + '"!');
-                }
                 $.log.event(sender + ' changed the current status to ' + http.getString('status'));
             } else {
-                $.say($.whisperPrefix(sender) + 'Failed to change the status. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
-                $.consoleDebug(http.getString('message'));
+                $.log.error('Failed to change the status. The Twitch API might be having issues.');
                 $.log.error(http.getString('message'));
             }
         } else {
-            $.say($.whisperPrefix(sender) + 'Failed to change the status. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
-            $.consoleDebug(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
+            $.log.error('Failed to change the status. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
-    };
+    }
 
     /** Export functions to API */
     $.getPlayTime = getPlayTime;

@@ -1,6 +1,6 @@
 <!--
 
- Copyright (C) 2016 phantombot.tv
+ Copyright (C) 2017 phantombot.tv
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@
         <span id="ionSoundLoaded"><span style="float: right" class="redPill-sm">Initalizing</span></span>
         <span id="reloadSounds" style="float: right; margin-right: 10px" class="bluePill-sm" onclick="$.reloadAudioHooks()">Reload Audio Hooks</span>
     </h3>
+    <div>
+    <div id="_audioPanelDisabled">Panel disabled due to module being disabled (./systems/audioPanelSystem.js)</div>
+    <div id="_audioPanel">
 
     <div>
         <table>
@@ -38,11 +41,14 @@
             </tr>
         </table>
     </div>
-
+    </div>
+    </div>
+    
     <h3>YouTube Player</h3>
     <div>
-    <div id="_youtubePlayerPanelDisabled">This module is disabled.</div>
+    <div id="_youtubePlayerPanelDisabled">Panel disabled due to module being disabled (./systems/youtubePlayer.js)</div>
     <div id="_youtubePlayerPanel">
+
         <span id="youTubeLauncher">
             <button type="button" class="btn btn-primary inline pull-left" onclick="$.launchYouTubePlayer()">Launch YouTube Player</button>
         </span>
@@ -113,5 +119,5 @@
 
 <!-- Run the Acordion -->
 <script>$("#audioAccordion").accordion( { clearStyle: true, heightStyle: "panel", icons: null } );</script>
-<script>$(function() {var playlist = $.playlists; $("#playlistImput").autocomplete({source: playlist, minLength:2});});</script>
+<script>$(function(){setTimeout(function(){$("#playlistImput").autocomplete({source: $.playlists, minLength: 2});}, 2000);});</script>
 <script>handleInputFocus();</script>

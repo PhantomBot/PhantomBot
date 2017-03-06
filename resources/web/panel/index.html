@@ -1,6 +1,6 @@
 <!--
 
- Copyright (C) 2016 phantombot.tv
+ Copyright (C) 2017 phantombot.tv
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -102,7 +102,9 @@
                 <li> <a href="#hostraid">Hosts & Raids</a> </li>
                 <li> <a href="#gambling">Giveaways</a> </li>
                 <li> <a href="#games">Games</a> </li>
+                <li> <a href="#queue">Queue</a> </li>
                 <li> <a href="#twitter">Twitter</a> </li>
+                <li> <a href="#discord">Discord</a> </li>
                 <li> <a href="#audio">Audio</a> </li>
                 <li> <a href="#help">Information</a> </li>
             </ul>
@@ -187,9 +189,19 @@
                 <script type="text/javascript" src="panel/js/gamesPanel.js"></script>
             </div>
 
+            <div role="tabpanel" class="tab-pane" id="queue">
+                <div id="queuePanel"></div>
+                <script type="text/javascript" src="panel/js/queuePanel.js"></script>
+            </div>
+
             <div role="tabpanel" class="tab-pane" id="twitter">
                 <div id="twitterPanel"></div>
                 <script type="text/javascript" src="panel/js/twitterPanel.js"></script>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="discord">
+                <div id="discordPanel"></div>
+                <script type="text/javascript" src="panel/js/discordPanel.js"></script>
             </div>
 
             <!-- Must be the last two -->
@@ -220,7 +232,7 @@
                <i class="fa fa-twitch"></i>
             </div>
             <!-- <span id="iframeLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading Twitch Chat</span> -->
-            <script>
+             <script>
                 $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
                                          "src=\"https://www.twitch.tv/" + getChannelName().toLowerCase() + "/chat?popout=\">");
                 /*$("#chat").hide(); ** This breaks things in firefox. */

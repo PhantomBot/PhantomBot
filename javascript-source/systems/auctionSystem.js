@@ -116,7 +116,7 @@
             return;
         }
 
-        if (!parseInt(amount)) {
+        if (!(amount = parseInt(amount))) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.bid.usage'));
             return;
         } else if (amount < auction.minimum) {
@@ -131,12 +131,10 @@
         }
 
         auction.topUser = user;
-        auction.topPoints = parseInt(amount);
+        auction.topPoints = amount;
 
         $.inidb.set('auctionresults', 'winner', auction.topUser);
         $.inidb.set('auctionresults', 'amount', auction.topPoints);
-
-        $.say($.lang.get('auctionsystem.bid', user, $.getPointsString(amount), $.getPointsString(auction.topPoints + auction.increments)))
     };
 
     /**

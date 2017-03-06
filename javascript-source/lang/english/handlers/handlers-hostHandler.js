@@ -16,3 +16,5 @@ $.lang.register('hosthandler.set.hostrewardminviewers.usage', 'Usage: !hostrewar
 $.lang.register('hosthistory.usage', 'usage: !hosthistory [on / off] (Currently $1)');
 $.lang.register('hosthistory.change', 'Host History is now $1');
 $.lang.register('hosthandler.host.usage', 'Usage: !host (channel)');
+$.lang.register('hosthandler.host.toggle', 'Host announcements are now $1');
+$.lang.register('hosthandler.auto.host.toggle', 'Auto-Host announcements are now $1');
