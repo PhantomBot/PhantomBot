@@ -117,7 +117,6 @@
                 alreadyStarted = true;
                 $.inidb.set('panelstats', 'enabled', 'true');
                 $.setIniDbBoolean('panelstats', 'streamOnline', $.isOnline($.channelName));
-                updateAll();
                 interval = setInterval(function() { updateAll(); }, 3e4);
             } else {
                 $.inidb.set('panelstats', 'enabled', 'false');
