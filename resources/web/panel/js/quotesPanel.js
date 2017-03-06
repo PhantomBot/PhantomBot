@@ -61,7 +61,7 @@
                     id = msgObject['results'][idx]['key'];
                     quoteData = JSON.parse(msgObject['results'][idx]['value']);
                     quoteDataClean = JSON.parse(msgObject['results'][idx]['value']);
-                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C').replace(/'/g, '%27');
+                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C').replace(/'/g, '%27').replace(/"/g, '%28');
                     html += '<tr style="textList">' +
                             '    <td rowspan="2" style="width: 25px">' +
                             '        <div id="deleteQuote_' + id + '" type=\"button\" class=\"btn btn-default btn-xs\"' +
@@ -167,14 +167,14 @@
             quoteArray = quoteData.split(',');
         if (value.length > 0) {
             if (panelMatch(field, 'quote')) {
-                quoteArray[1] = value
+                quoteArray[1] = String(value).replace(/"/g, '\'\'');
             }
             if (panelMatch(field, 'game')) {
-                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'');
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'').replace(/%28/g, '\'\''); 
                 quoteArray[3] = value;
             }
             if (panelMatch(field, 'user')) {
-                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'');
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'').replace(/%28/g, '\'\'');
                 quoteArray[0] = value;
             }
             sendDBUpdate('quotes_update', 'quotes', id, JSON.stringify(quoteArray));
@@ -189,7 +189,7 @@
         var value = $('#addQuoteInput').val();
         if (value.length > 0) {
             $('#addQuoteInput').val('Adding...').blur();
-            sendCommand('addquotesilent ' + value);
+            sendCommand('addquotesilent ' + String(value).replace(/"/g, '\'\''));
             setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 2);
         }
     }

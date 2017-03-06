@@ -124,6 +124,38 @@
     </div>
     </div>
 
+    <h3>Moderation Logs Settings</h3>
+    <div>
+    <div id=""/>
+    <div id="">
+        <i>Enabling this feature requires a bot restart after.</i>
+        <table>
+            <tr class="textList">
+                <td>Toggle Moderation Logs</td>
+                <td style="width: 25px"><div id="modLogsInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('modLogsInput', 'core/moderation.js', 'discordSettings', 'modLogs', 'true')">
+                        <i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('modLogsInput', 'core/moderation.js', 'discordSettings', 'modLogs', 'false')">
+                        <i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="modLogChannelInput">Channel name</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('modLogChannelInput', 'core/moderation.js', 'discordSettings', 'modLogChannel')">Submit</button>
+                <input type="text" class="form-control" id="modLogChannelInput" placeholder="Channel name" data-toggle="tooltip" 
+                    title="Channel that Twitch moderation logs will be said in."/>
+            </div>
+        </form>
+    </div>
+    </div>
+
     <h3>TipeeeStream Alert Settings</h3>
     <div>
     <div id="_discord_tipeeeStreamHandlerDisabled" />

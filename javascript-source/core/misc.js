@@ -359,7 +359,7 @@
      * @returns {boolean}
      */
     function getIniDbBoolean(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key)) {
+        if ($.inidb.exists(fileName, key) == true) {
             return ($.inidb.get(fileName, key) == 'true');
         } else {
             return (defaultValue);
@@ -375,7 +375,7 @@
      * @returns {boolean}
      */
     function getSetIniDbBoolean(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key)) {
+        if ($.inidb.exists(fileName, key) == true) {
             return ($.inidb.get(fileName, key) == 'true');
         } else {
             $.inidb.set(fileName, key, defaultValue.toString());
@@ -403,7 +403,7 @@
      * @param {string}
      */
     function getIniDbString(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key)) {
+        if ($.inidb.exists(fileName, key) == true) {
             return ($.inidb.get(fileName, key));
         } else {
             return (defaultValue);
@@ -418,7 +418,7 @@
      * @param {string}
      */
     function getSetIniDbString(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key)) {
+        if ($.inidb.exists(fileName, key) == true) {
             return ($.inidb.get(fileName, key));
         } else {
             $.inidb.set(fileName, key, defaultValue);
@@ -445,7 +445,7 @@
      * @param {number}
      */
     function getIniDbNumber(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key)) {
+        if ($.inidb.exists(fileName, key) == true) {
             return parseInt($.inidb.get(fileName, key));
         } else {
             return defaultValue;
@@ -460,7 +460,7 @@
      * @param {number}
      */
     function getSetIniDbNumber(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key)) {
+        if ($.inidb.exists(fileName, key) == true) {
             return parseInt($.inidb.get(fileName, key));
         } else {
             $.inidb.set(fileName, key, defaultValue.toString());
@@ -487,7 +487,7 @@
      * @param {number}
      */
     function getIniDbFloat(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key)) {
+        if ($.inidb.exists(fileName, key) == true) {
             return parseFloat($.inidb.get(fileName, key));
         } else {
             return defaultValue;
@@ -502,7 +502,7 @@
      * @param {number}
      */
     function getSetIniDbFloat(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key)) {
+        if ($.inidb.exists(fileName, key) == true) {
             return parseFloat($.inidb.get(fileName, key));
         } else {
             $.inidb.set(fileName, key, defaultValue.toString());
