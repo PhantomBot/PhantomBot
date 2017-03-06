@@ -73,14 +73,17 @@
 	 * @param {String} username
 	 * @param {String} action
 	 */
-	function join(username, action) {
+	function join(username, action, command) {
 		if (queue[username] !== undefined) {
 			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.join.error.joined'));
+			$.returnCommandCost(username, command, $.isMod(username));
 			return;
 		} else if (info.size !== 0 && (info.size <= Object.keys(queue).length)) {
 			$.say($.whisperPrefix(username) + $.lang.get('queuesystem.join.error.full'));
+			$.returnCommandCost(username, command, $.isMod(username));
 			return;
 		} else if (isOpened === false) {
+			$.returnCommandCost(username, command, $.isMod(username));
 			return;
 		}
 
@@ -369,7 +372,7 @@
 		 * @commandpath joinqueue [gamertag] - Adds you to the current queue. Note that the gamertag part is optional.
 		 */
 		if (command.equalsIgnoreCase('joinqueue')) {
-			join(sender, args.join(' '));
+			join(sender, args.join(' '), command);
 		}
 	});
 

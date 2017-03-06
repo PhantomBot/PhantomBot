@@ -251,4 +251,7 @@ public class DataStore {
 
     public void setAutoCommit(boolean mode) {
     }
+
+    public void backupSQLite3(String filename) {
+    }
 }

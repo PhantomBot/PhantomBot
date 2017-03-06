@@ -16,83 +16,72 @@
  */
 
 /*
- * Twitch WS-IRC Client
- * @author: illusionaryone
+ * @author illusionaryone
  */
 package me.mast3rplan.phantombot.twitchwsirc;
 
-import me.mast3rplan.phantombot.PhantomBot;
-import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
+import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.event.EventBus;
+import me.mast3rplan.phantombot.PhantomBot;
 
 import org.java_websocket.WebSocket;
-import com.google.common.collect.Maps;
 
-import java.util.Timer;
+import java.net.InetSocketAddress;
+
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.TimerTask;
 import java.util.HashMap;
+import java.util.Timer;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.channels.*;
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import java.net.URI;
 
 public class Session {
-
-    private static final Map<String, Session> instances = Maps.newHashMap();
-    public static Session session;
+    private static final Map<String, Session> instances = new HashMap<>();
     private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedQueue<Message> sendQueue = new ConcurrentLinkedQueue<>();
-    private final Timer sayTimer = new Timer();
-    private final Boolean alternateBurst;
-    private Long lastWrite = System.currentTimeMillis(); //last time a message was sent.
-    private Long nextWrite = System.currentTimeMillis(); //next time that we are allowed to write.
-    private int burst = 1; //current messages being sent in 2.5 seconds.
+    private final ConcurrentLinkedDeque<Message> queue = new ConcurrentLinkedDeque<>();
     private Boolean sendMessages = false;
     private TwitchWSIRC twitchWSIRC;
+    private long lastReconnect = 0;
+    private int chatLineCtr = 0;
+    private String channelName;
     private EventBus eventBus;
     private Channel channel;
-    private String channelName;
     private String botName;
+    private int writes = 0;
     private String oAuth;
-    private int chatLineCtr = 0;
-    private Long lastTry = 0L;
-    private Long lastModTry = 0L;
-
+    
     /*
-     * Creates an instance for a Session
+     * @function instance
      *
-     * @param  botName  The name of the PhantomBot instance
-     * @param  botName      Botname and name of the instance
-     * @param  oAuth        OAUTH login
-     * @param  Channel      Channel instance  
-     * @param  eventBus     Eventbus
+     * @param  {Channel} channel
+     * @param  {String} channelName
+     * @param  {String} botName
+     * @param  {String} oAuth
+     * @param  {EventBus} eventBus
+     * @return {Object}
      */
     public static Session instance(Channel channel, String channelName, String botName, String oAuth, EventBus eventBus) {
         Session instance = instances.get(botName);
+        
         if (instance == null) {
             instance = new Session(channel, channelName, botName, oAuth, eventBus);
             instances.put(botName, instance);
-            session = instance;
-            return instance;
         }
         return instance;
     }
 
     /*
-     * Constructor for the Session object.
+     * @function Session
      *
-     * @param  channelName  Twitch Channel
-     * @param  botName      Botname and name of the instance
-     * @param  oAuth        OAUTH login
-     * @param  Channel      Channel instance  
-     * @param  eventBus     Eventbus
+     * @param  {Channel} channel
+     * @param  {String} channelName
+     * @param  {String} botName
+     * @param  {String} oAuth
+     * @param  {EventBus} eventBus
+     * @return {Object}
      */
     private Session(Channel channel, String channelName, String botName, String oAuth, EventBus eventBus) {
         this.channelName = channelName.toLowerCase();
@@ -100,40 +89,38 @@ public class Session {
         this.channel = channel;
         this.botName = botName;
         this.oAuth = oAuth;
-        this.alternateBurst = PhantomBot.wsIRCAlternateBurst;
 
         try {
             this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
-            if (!twitchWSIRC.connectWSS(false)) {
-                com.gmt2001.Console.err.println("Unable to login to Twitch. PhantomBot will exit.");
-                System.exit(0);
+            if (!this.twitchWSIRC.connectWSS(false)) {
+                throw new Exception("Error when connecting to Twitch.");
             }
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed, PhantomBot will exit: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to create a new TwitchWSIRC instance: " + ex.getMessage());
             System.exit(0);
         }
     }
 
     /*
-     * Trys to reconnect to Twitch.
+     * @function reconnect
      */
     public void reconnect() {
         Boolean reconnected = false;
 
         while (!reconnected) {
-            if (lastTry + 10000L <= System.currentTimeMillis()) {
-                lastTry = System.currentTimeMillis();
+            if (lastReconnect + 10000L <= System.currentTimeMillis()) {
+                lastReconnect = System.currentTimeMillis();
                 try {
                     this.twitchWSIRC.delete();
                     this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
                     reconnected = this.twitchWSIRC.connectWSS(true);
                 } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("Failed to reconnect to TwitchWSIRC... PhantomBot will now exit: " + ex.getMessage());
+                    com.gmt2001.Console.err.println("Error when reconnecting to Twitch: " + ex.getMessage());
                     System.exit(0);
                 }
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.debug.println("Sleep failed during reconnect: " + ex.getMessage());
             }
@@ -141,275 +128,211 @@ public class Session {
     }
 
     /*
-     * Starts the timers.
-     *
+     * @function startTimers
      */
     public void startTimers() {
-        sayTimer.schedule(new MessageTask(this), 100, 1); // start a timer queue for normal messages.
-        if (alternateBurst) {
-            sayTimer.schedule(new SendMsgAlternate(), 100, 1); // start a timer for the final queue for the timeouts and messages.
-        } else {
-            sayTimer.schedule(new SendMsg(), 100, 1); // start a timer for the final queue for the timeouts and messages.
-        }
-        com.gmt2001.Console.debug.println("startTimers()::alternateBurst::" + alternateBurst);
+        new Timer().schedule(new MessageHandler(this), 500, 1);
+        new Timer().schedule(new QueueHandler(this), 500, 1);
     }
 
     /*
-     * leaves the channel.
+     * @function getNick
      *
-     */
-    private void leave() {
-        twitchWSIRC.send("PART #" + channelName.toLowerCase());
-    }
-
-    /*
-     * joins the channel.
-     *
-     */
-    private void join() {
-        twitchWSIRC.send("JOIN #" + channelName.toLowerCase());
-    }
-
-    /*
-     * rejoins the channel. used with $.session in init.js and for the RECONNECT event from Twitch.
-     *
-     */
-    public void rejoin() {
-        leave();
-        join();
-        com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");
-    }
-
-    /*
-     * Returns the IRC Nick (login) for this Session.
-     *
-     * @return  String  The name of the PhantomBot instance, also the Twitch login ID.
+     * @return {String}
      */
     public String getNick() {
         return this.botName.toLowerCase();
     }
 
     /*
+     * @function getSession
      *
-     * @return  Session  Returns the session
+     * @return {Session}
      */
     public Session getSession() {
-        return session;
+        return this;
     }
 
     /*
-     * Set if messages are allowed to be sent to Twitch WSIRC.
+     * @function setAllowSendMessages
      *
-     * @param  Boolean  Are messages allowed to be sent?
+     * @param {Boolean} sendMessages
      */
     public void setAllowSendMessages(Boolean sendMessages) {
         this.sendMessages = sendMessages;
-        com.gmt2001.Console.debug.println("setAllowSendMessages(" + sendMessages + ")");
     }
 
     /*
-     * Can messages be sent to WSIRC?
+     * @function getAllowSendMessages
      *
-     * @return  Boolean  Are messages allowed to be sent?
+     * @return {Boolean}
      */
     public Boolean getAllowSendMessages() {
-        return sendMessages;
+        return this.sendMessages;
     }
 
     /*
-     * Close the connection to WSIRC.
+     * @function close
      */
     public void close() {
         this.twitchWSIRC.delete();
     }
-    public void close(String channelName) {
-        this.twitchWSIRC.delete(channelName);
-    }
 
     /*
-     * Chat in the channel
+     * @function getChannel
      *
-     * @param message
-     */
-    public void say(String message) {
-        if (message.startsWith(".timeout ")) { //check if the message starts with a "." for timeouts. ".timeout <user>".
-            sendQueue.add(new Message(message));
-            return;
-        }
-        messages.add(new Message(message));
-    }
-
-    /*
-     * Chat in the channel without anything showing in the console. used for .mods atm.
-     *
-     * @param message
-     */
-    public void saySilent(String message) {
-        twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
-        com.gmt2001.Console.debug.println("saySilent::PRIVMSG #" + channelName + " :" + message);
-    }
-
-    /*
-     * Send a message over WSIRC
-     */
-    public void sendWSMessages() {
-        if (sendQueue.isEmpty() || nextWrite > System.currentTimeMillis()) { // check to make sure the queue is not empty, and make sure we are not sending too many messages too fast.
-            return;
-        }
-        if (System.currentTimeMillis() - lastWrite < 2500) { // Only thing that could trigger this are timeouts. Normal messages wont even come close to this limit.
-            if (burst == 19) {
-                nextWrite = System.currentTimeMillis() + 30500; // wait 30.5 seconds in case we ever hit 19 messages. then burst them out at a max of 19 in 30 seconds.
-                burst = 1;
-                return;
-            }
-            burst++;//add messages being sent in 2.5 seconds.
-        } else {
-            burst = 1;
-            lastWrite = System.currentTimeMillis();
-        }
-
-        Message message = session.sendQueue.poll();
-        if (message != null && sendMessages) { //make sure the message is not null, and make sure we are allowed to send messages.
-            twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message.message);// send the message to Twitch.
-            com.gmt2001.Console.out.println("[CHAT] " + message.message);//print the message in the console once its sent to Twitch.
-        } else {
-            if (!sendMessages && message != null) {
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("[ERROR] " + getNick() + " is not detected as a moderator!");
-                if (lastModTry + 60000 <= System.currentTimeMillis()) {
-                    lastModTry = System.currentTimeMillis();
-                    com.gmt2001.Console.out.println("[INFO] Trying to automatically detect moderator status now.");
-                    saySilent(".mods");
-                } else {
-                    com.gmt2001.Console.out.println("[INFO] Will try to automatically detect moderator status in 60 seconds.");
-                }
-                com.gmt2001.Console.out.println();
-            }
-        }
-    }
-
-    /*
-     * Send a message over WSIRC
-     */
-    private void sendWSMessagesAlternate() {
-        if (sendQueue.isEmpty() || nextWrite > System.currentTimeMillis()) {
-            return;
-        }
-        if (System.currentTimeMillis() - lastWrite < 3000) {
-            if (burst == 5) {
-                nextWrite = System.currentTimeMillis() + 8000;
-                burst = 1;
-                return;
-            }
-            burst++;
-        } else {
-            burst = 1;
-            lastWrite = System.currentTimeMillis();
-        }
-
-        Message message = session.sendQueue.poll();
-        if (message != null && sendMessages) { //make sure the message is not null, and make sure we are allowed to send messages.
-            twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message.message);// send the message to Twitch.
-            com.gmt2001.Console.out.println("[CHAT] " + message.message);//print the message in the console once its sent to Twitch.
-        } else {
-            if (!sendMessages && message != null) {
-                com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("[ERROR] " + getNick() + " is not detected as a moderator!");
-                if (lastModTry + 60000 <= System.currentTimeMillis()) {
-                    lastModTry = System.currentTimeMillis();
-                    com.gmt2001.Console.out.println("[INFO] Trying to automatically detect moderator status now.");
-                    saySilent(".mods");
-                } else {
-                    com.gmt2001.Console.out.println("[INFO] Will try to automatically detect moderator status in 60 seconds.");
-                }
-                com.gmt2001.Console.out.println();
-            }
-        }
-    }
-
-    /* Returns the Channel object related to this Session.
-     *
-     * @return  Channel      The related Channel object.
+     * @return {Channel}
      */
     public Channel getChannel(String dummy) {
         return this.channel; 
     }
 
     /*
-     * Increments the chat line counter.
+     * @function chatLinesIncr
      */
     public void chatLinesIncr() {
         this.chatLineCtr++;
     }
 
     /*
-     * Resets the chat line counter.
+     * @function chatLinesReset
      */
     public void chatLinesReset() {
         this.chatLineCtr = 0;
     }
 
     /*
-     * Retruns the chat line counter.
+     * @function chatLinesGet
      *
-     * @return    int    Number of lines in chat (PRIVMSG)
+     * @return {Int}
      */
     public int chatLinesGet() {
         return this.chatLineCtr;
     }
 
-    /* 
-     * Send the messages that are in the current queue. or return if the queue is empty.
+    /*
+     * @function hasQueue
      *
+     * @return {Boolean}
      */
-    class SendMsg extends TimerTask {
-        @Override
-        public void run() {
-            sendWSMessages();
-        }
+    public Boolean hasQueue() {
+        return this.messages.isEmpty();
     }
 
-    /* 
-     * Send the messages that are in the current queue. or return if the queue is empty.
+    /*
+     * @function isLimited
      *
+     * @return {Boolean}
      */
-    class SendMsgAlternate extends TimerTask {
-        @Override
-        public void run() {
-            sendWSMessagesAlternate();
-        }
+    public Boolean isLimited() {
+        return this.writes > 7;
     }
 
-
-    /* Message Throttling.  The following classes implement timers which work to ensure that PhantomBot
-     * does not send messages too quickly.
+    /*
+     * @function say
+     *
+     * @param {String} message
      */
-    class Message {
-        public String message;
+    public void say(String message) {
+        if (message.startsWith(".timeout")) {
+            this.queue.addFirst(new Message(message, true));
+            return;
+        }
+        this.messages.add(new Message(message, false));
+    }
 
-        public Message(String message) {
+    /*
+     * @function saySilent
+     *
+     * @param {String} message
+     */
+    public void saySilent(String message) {
+        this.twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
+    }
+
+    /*
+     * @function send
+     *
+     * @param {String} message
+     */
+    public void send(String message) {
+        this.twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
+        com.gmt2001.Console.out.println("[CHAT] " + message);
+    }
+
+    /*
+     * @class Message
+     */
+    private class Message {
+        private final Boolean hasPriority;
+        private final String message;
+        private final long queueTime;
+
+        public Message(String message, Boolean hasPriority) {
             this.message = message;
+            this.hasPriority = hasPriority;
+            this.queueTime = (System.currentTimeMillis() + 6000);
         }
     }
-     
-    class MessageTask extends TimerTask {
-        private final Session session;
-        private final double messageLimit = PhantomBot.getMessageInterval();
-        private long lastMessage = 0;
 
-        public MessageTask(Session session) {
-            super();
+    /*
+     * @class QueueHandler
+     */
+    private class QueueHandler extends TimerTask {
+        private final Session session;
+        private long lastWrite = System.currentTimeMillis();
+        private long nextWrite = System.currentTimeMillis();
+        private long time = 0;
+
+        public QueueHandler(Session session) {
             this.session = session;
-            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         }
 
         @Override
         public void run() {
-            if (System.currentTimeMillis() - lastMessage >= messageLimit) {
-                Message message = session.messages.poll();
+            time = System.currentTimeMillis();
+
+            if (!this.session.queue.isEmpty() && (nextWrite - time) < 0) {
+                if ((lastWrite - time) > 0) {
+                    if (writes == 19) {
+                        nextWrite = (time + (lastWrite - time));
+                        return;
+                    }
+                    writes++;
+                } else {
+                    writes = 1;
+                    lastWrite = (time + 30200);
+                }
+
+                Message message = this.session.queue.poll();
+                if (message != null && this.session.sendMessages && ((message.queueTime - time) > 0 || message.hasPriority)) {
+                    this.session.send(message.message);
+                    return;
+                }
+                writes--;
+            }
+        }
+    }
+
+    /*
+     * @class MessageHandler
+     */
+    private class MessageHandler extends TimerTask {
+        private final Session session;
+        private long lastWrite = 0;
+        private double limit = PhantomBot.getMessageInterval();
+
+        public MessageHandler(Session session) {
+            this.session = session;
+        }
+
+        @Override
+        public void run() {
+            if (System.currentTimeMillis() - lastWrite >= limit) {
+                Message message = this.session.messages.poll();
                 if (message != null) {
-                    session.sendQueue.add(new Message(message.message)); //add the message in the final queue, to make sure timeouts are not limiting us.
-                    lastMessage = System.currentTimeMillis();
+                    this.session.queue.add(new Message(message.message, false));
+                    lastWrite = System.currentTimeMillis();
                 }
             }
         }

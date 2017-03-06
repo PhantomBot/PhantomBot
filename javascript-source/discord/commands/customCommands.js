@@ -35,15 +35,15 @@
      */
     function tags(event, s) {
         if (s.match(reCustomArg)) {
-            s = $.replace(s, s.match(reCustomArg)[0], (event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1] === undefined ? s.match(reCustomArg)[2] : event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1]));
+            s = $.replace(s, s.match(reCustomArg)[0], (event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1] === undefined ? s.match(reCustomArg)[2] : $.discord.resolve.global(event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1])));
         }
 
         if (s.match(reNormalCommandArg)) {
-            s = $.replace(s, s.match(reNormalCommandArg)[0], (event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1] === undefined ? '' : event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1]));
+            s = $.replace(s, s.match(reNormalCommandArg)[0], (event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1] === undefined ? '' : $.discord.resolve.global(event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1])));
         }
 
         if (s.match(reCustomToUserArg)) {
-            s = $.replace(s, s.match(reCustomToUserArg)[0], (event.getArgs()[0] ? $.discordAPI.getUserMention(event.getArgs().join(' ')) : s.match(reCustomToUserArg)[1]));
+            s = $.replace(s, s.match(reCustomToUserArg)[0], (event.getArgs()[0] ? $.discord.username.resolve(event.getArgs().join(' ')) : s.match(reCustomToUserArg)[1]));
         }
 
         if (s.match(/\(sender\)/)) {
@@ -55,7 +55,11 @@
         }
 
         if (s.match(/\(touser\)/)) {
-            s = $.replace(s, '(touser)', (event.getArgs()[0] ? $.discordAPI.getUserMention(event.getArgs()[0]) : event.getUsername()));
+            s = $.replace(s, '(touser)', (event.getArgs()[0] ? $.discord.username.resolve(event.getArgs().join(' ')) : event.getMention()));
+        }
+
+        if (s.match(/\(random\)/)) {
+            s = $.replace(s, '(random)', $.discord.username.random());
         }
 
         if (s.match(/\(#\)/)) {
@@ -84,6 +88,27 @@
 
         if (s.match(/\(follows\)/g)) {
             s = $.replace(s, '(follows)', $.getFollows($.channelName).toString());
+        }
+
+        if (s.match(/\(readfile/)) {
+            if (s.search(/\((readfile ([^)]+)\))/g) >= 0) {
+                s = $.replace(s, '(' + RegExp.$1, $.readFile('addons/' + RegExp.$2)[0]);
+            }
+        }
+
+        if (s.match(/\(count\)/g)) {
+            $.inidb.incr('commandCount', event.getCommand(), 1);
+            s = $.replace(s, '(count)', $.inidb.get('discordCommandCount', event.getCommand()));
+        }
+
+        if (s.match(/\(writefile (.+), ([a-z]), (.+)\)/)) {
+            var file = s.match(/\(writefile (.+), (.+), (.+)\)/)[1], append = (s.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false), string = s.match(/\(writefile (.+), (.+), (.+)\)/)[3];
+            $.writeToFile(string, './addons/' + file, append);
+            return null;
+        }
+
+        if (s.match(/\(lasttip\)/g)) {
+            s = $.replace(s, '(lasttip)', ($.inidb.exists('donations', 'last_donation_message') ? $.inidb.get('donations', 'last_donation_message') : 'No donations found.'));
         }
 
         if (s.match(reCustomAPIJson) || s.match(reCustomAPI)) {
@@ -252,7 +277,10 @@
          * Checks for custom commands, no command path needed here.
          */
         if ($.inidb.exists('discordCommands', command)) {
-            $.discord.say(channel, tags(event, $.inidb.get('discordCommands', command)));
+            var tag = tags(event, $.inidb.get('discordCommands', command));
+            if (tag !== null) {
+                $.discord.say(channel, tag);
+            }
             return;
         }
 

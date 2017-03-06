@@ -16,74 +16,80 @@
  */
 package com.illusionaryone;
 
+import com.gmt2001.UncaughtExceptionHandler;
+
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.discord.DiscordMessageEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordCommandEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordJoinEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordLeaveEvent;
+import me.mast3rplan.phantombot.script.ScriptEventManager;
 
-import com.gmt2001.UncaughtExceptionHandler;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
-import net.dv8tion.jda.MessageBuilder;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.events.Event;
-import net.dv8tion.jda.events.InviteReceivedEvent;
-import net.dv8tion.jda.events.ReadyEvent;
-import net.dv8tion.jda.events.channel.text.TextChannelCreateEvent;
-import net.dv8tion.jda.events.channel.text.TextChannelDeleteEvent;
-import net.dv8tion.jda.events.channel.text.TextChannelUpdateNameEvent;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.events.guild.member.GuildMemberLeaveEvent;
-import net.dv8tion.jda.utils.PermissionUtil;
-import net.dv8tion.jda.hooks.EventListener;
-import net.dv8tion.jda.utils.SimpleLog;
-import net.dv8tion.jda.utils.SimpleLog.Level;
-import net.dv8tion.jda.utils.PermissionUtil;
-import net.dv8tion.jda.exceptions.RateLimitedException;
-import net.dv8tion.jda.exceptions.PermissionException;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.MessageHistory;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.events.Event;
+import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.channel.text.update.TextChannelUpdateNameEvent;
+import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
+import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.utils.PermissionUtil;
+import net.dv8tion.jda.core.hooks.EventListener;
+import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
+
+import java.time.OffsetDateTime;
+
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Map;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /*
  * Communicates with the Discord API.
  *
  * @author illusionaryone
+ * @author ScaniaTV
  */
 public class DiscordAPI {
 
     private static final DiscordAPI instance = new DiscordAPI();
-    private final ConcurrentLinkedQueue<MessageDelete> deleteQueue = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<>();
     private final Map<String, TextChannel> channelMap = new HashMap<>();
-    private final Map<String, String> userCache = new HashMap<>();
-    private final Timer messageTimer = new Timer();
-    private String botID;
-    private JDA jdaAPI = null;
-    
+    private final Map<String, Member> userMap = new HashMap<>();
+    private final List<Member> users = new ArrayList<>();
+    private Boolean isPurgingOn = false;
+    private String botId;
+    private JDA jdaAPI;
+
+    /*
+     * Returns the current instance of the Discord API.
+     */
     public static DiscordAPI instance() {
         return instance;
     }
 
+    /*
+     * For the main class, will disable all of JDA's logging.
+     */
     private DiscordAPI() {
-        /* The SimpleLog statements disable all logging from JDA. */
         SimpleLog JDASocketLog = SimpleLog.getLog("JDASocket");
         JDASocketLog.setLevel(SimpleLog.Level.OFF);
+
         SimpleLog JDALog = SimpleLog.getLog("JDA");
         JDALog.setLevel(SimpleLog.Level.OFF);
 
@@ -93,157 +99,286 @@ public class DiscordAPI {
     /*
      * Attempts to connect to Discord with a provided token.
      *
-     * An error will be produced if the connection fails and the API connection is set to null so that
-     * no other methods will attempt to do anything.
+     * @param {String} token
      */
     public void connect(String token) {
         try {
-            jdaAPI = new JDABuilder().setBotToken(token).setAudioEnabled(false).addListener(new DiscordListener()).buildAsync();
+            jdaAPI = new JDABuilder(AccountType.BOT).setToken(token).addListener(new DiscordListener()).buildAsync();
         } catch (LoginException ex) {
-            com.gmt2001.Console.err.println("Failed to Login to Discord: " + ex.getMessage());
-            jdaAPI = null;
+            com.gmt2001.Console.err.println("Discord authentication failed: " + ex.getMessage());
+        } catch (RateLimitedException ex) {
+            com.gmt2001.Console.err.println("Discord authentication limit hit: " + ex.getMessage());
         }
     }
 
     /*
-     * Puts a text message into the queue to be sent. This queue restricts the sending of messages to once a second
-     * to attempt to not reach the Discord rate limit of 10 messages in 10 seconds.
-     *
-     * @param  channel  The name of a text channel to send a message to
-     * @param  message  The text to send to the channel
+     * Gets all of the text channel names and places them in a map for future use.
      */
-    public void sendMessage(String channel, String message) {
-        if (jdaAPI != null) {
-            messageQueue.add(new Message(channel, message)); 
+    private void getTextChannels() {
+        for (TextChannel channel : jdaAPI.getTextChannels()) {
+            addChannelToMap(channel);
         }
     }
 
     /*
-     * Returns the jda api, this is for the scripts.
-     *
-     * @return jda api.
+     * Gets all of the usernames and places them in a map for future use.
      */
-    public JDA jda() {
+    private void getUserNames() {
+        for (TextChannel channel : channelMap.values()) {
+            for (Member member : channel.getMembers()) {
+                addUserToMap(member);
+            } 
+        }
+    }
+
+    /*
+     * Adds a user to the userMap.
+     *
+     * @param {Member} member
+     */
+    private void addUserToMap(Member member) {
+        String username = (member.getNickname() == null ? member.getUser().getName() : member.getNickname()).toLowerCase();
+
+        if (resolveUser(username) == null) {
+            userMap.put(username, member);
+            if (member.getNickname() != null) {
+                userMap.put(member.getUser().getName(), member);
+            }
+            users.add(member);
+        }
+    }
+
+    /*
+     * Removes a user from the userMap
+     *
+     * @param {Member} member
+     */
+    private void removeUserFromMap(Member member) {
+        String username = (member.getNickname() == null ? member.getUser().getName() : member.getNickname()).toLowerCase();
+
+        if (resolveUser(username) != null) {
+            userMap.remove(username);
+            users.remove(member);
+        }
+    }
+
+    /*
+     * Adds a channel to the channelMap.
+     *
+     * @param {TextChannel} channel
+     */
+    private void addChannelToMap(TextChannel channel) {
+        String channelName = channel.getName().toLowerCase();
+
+        if (resolveChannel(channelName) == null) {
+            channelMap.put(channelName, channel);
+        }
+    }
+
+    /*
+     * Removes a channel from the channelMap
+     *
+     * @param {TextChannel} channel
+     */
+    private void removeChannelFromMap(TextChannel channel) {
+        String channelName = channel.getName().toLowerCase();
+
+        if (resolveChannel(channelName) != null) {
+            channelMap.remove(channelName);
+        }
+    }
+
+    /*
+     * Returns the current JDA api.
+     */
+    public JDA getJDA() {
         return this.jdaAPI;
     }
 
     /*
-     * Gets the bots user Id.
-     *
-     * @return {string} the bot id.
+     * Returns a list of all the Discord users.
      */
-    public String getBotId() {
-        return this.botID;
+    public List getUserMembers() {
+        return this.users;
     }
 
     /*
-     * Used to delete a bunch of messages. Limit is 1 bulk / 1 second. This should handle that it also needs to be sent in a list.
+     * Will return that user if he exists.
      *
-     * @param {String} username
+     * @param  {String} username
+     * @return {Boolean}
+     */
+    public Boolean isUser(String username) {
+        return this.userMap.containsKey(username.replace("@", "").toLowerCase());
+    }
+
+    /*
+     * Will return that channel if he exists.
+     *
+     * @param  {String} channel
+     * @return {Boolean}
+     */
+    public Boolean isChannel(String channel) {
+        return this.channelMap.containsKey(channel.replace("#", "").toLowerCase());
+    }
+
+    /*
+     * Will return that user.
+     *
+     * @param  {String} username
+     * @return {Member}
+     */
+    public Member resolveUser(String username) {
+        return this.userMap.get(username.replace("@", "").toLowerCase());
+    }
+
+    /*
+     * Will return that channel.
+     *
+     * @param  {String} channel
+     * @return {TextChannel}
+     */
+    public TextChannel resolveChannel(String channel) {
+        return this.channelMap.get(channel.replace("#", "").toLowerCase());
+    }
+
+    /*
+     * Sends a message to a specific channel.
+     *
      * @param {String} channel
-     * @param {Array} messages
+     * @param {String} message
      */
-    public void bulkDelete(String username, String channel, String[] messages) {
-        List<String> list = new ArrayList<String>();
+    public void sendMessage(String channel, String message) {
+        TextChannel textChannel = resolveChannel(channel);
 
-        for (String message : messages) {
-            list.add(message);
-        }
-        deleteQueue.add(new MessageDelete(channel, list));
-    }
+        if (textChannel != null) {
+            try {
+                com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [CHAT] " + message);
+                textChannel.sendMessage(message).queue();
+            } catch (NullPointerException ex) {
+                // If the bot is ever kicked from the server the channel instance will be there, but null for JDA.
+                // This will get the channels again and the users.
+                com.gmt2001.Console.debug.println("Failed to send a message to Discord. This is caused when a session is killed.");
+                channelMap.clear();
+                userMap.clear();
+                users.clear();
+                botId = jdaAPI.getSelfUser().getId();
+                getTextChannels();
+                getUserNames();
 
-    /*
-     * Used to resolve a users id by his username. This can be inaccurate if multiple users have the same name.
-     *
-     * @param {String} username
-     * @reutrn {String}
-     */
-    public String getUserId(String username) {
-        if (userCache.containsKey(username.toLowerCase())) {
-            return userCache.get(username.toLowerCase());
-        }
-        return username;
-    }
-
-    /*
-     * Used to resolve a users id and returns his name that can be mentioned.
-     *
-     * @param {String} username
-     * @reutrn {String}
-     */
-    public String getUserMention(String username) {
-        if (userCache.containsKey(username.replace("@", "").toLowerCase()) && username.startsWith("@")) {
-            return "<@" + userCache.get(username.replace("@", "").toLowerCase()) + ">";
-        }
-        return username;
-    }
-
-    /*
-     * Sends a text message to the given channel. This is private as it is behind the rate-limit logic.
-     *
-     * @param  channel  The name of a text channel to send a message to
-     * @param  message  The text to send to the channel
-     */
-    private void println(String channel, String message) {
-        if (jdaAPI != null) {
-            if (channel.startsWith("#")) {
-                channel = channel.substring(1);
-            }
-            TextChannel textChannel = channelMap.get(channel);
-
-            if (textChannel != null) {
-                try {
-                    com.gmt2001.Console.out.println("[DISCORD] [#" + channel + "] [CHAT] " + message);
-                    textChannel.sendMessage(message);
-                } catch (RateLimitedException ex) {
-                    com.gmt2001.Console.warn.println("Discord Rate Limit has been Exceeded [RateLimitedException]: " + ex.getMessage());
-                } catch (PermissionException ex) {
-                    com.gmt2001.Console.err.println("ACTION REQUIRED: Discord Bot Account does not have Write Permission to Channel: " + channel);
-                } catch (UnsupportedOperationException ex) {
-                    com.gmt2001.Console.err.println("Failed to send a message to channel " + channel + ": " + ex.getMessage());
+                textChannel = resolveChannel(channel);
+                if (textChannel != null) {
+                    textChannel.sendMessage(message).queue();
                 }
             }
         }
     }
 
     /*
-     * Builds the internal hash map of the text channels that are available.  This hash ensures that messages are only sent
-     * to valid channels.
+     * @function massPurge
+     * @info Parts of this code is from: https://github.com/FlareBot
+     *
+     * @param {String} channelName
+     * @param {int}    amount
      */
-    private void getTextChannels() {
-        if (jdaAPI != null) {
-            for (TextChannel textChannel : jdaAPI.getTextChannels()) {
-                channelMap.put(textChannel.getName(), textChannel);
+    public Boolean massPurge(String channelName, int amount) {
+        TextChannel channel = resolveChannel(channelName);
+        isPurgingOn = true;
+
+        if (channel != null) {
+            try {
+                MessageHistory history = new MessageHistory(channel);
+                while (history.getRetrievedHistory().size() < amount) {
+                    if (history.retrievePast(Math.min(amount, 100)).complete().isEmpty()) {
+                        break;
+                    }
+                    amount -= Math.min(amount, 100);
+                }
+
+                List<Message> list = new ArrayList<>();
+                OffsetDateTime now = OffsetDateTime.now();
+                for (Message message : history.getRetrievedHistory()) {
+                    if (message.getCreationTime().plusWeeks(2).isAfter(now)) {
+                        list.add(message);
+                    }
+                    if (list.size() == 100) {
+                        channel.deleteMessages(list).complete();
+                        list.clear();
+                    }
+                }
+
+                if (!list.isEmpty()) {
+                    if (list.size() > 2) {
+                        channel.deleteMessages(list).complete();
+                    } else {
+                        for (Message message : list) {
+                            message.delete().complete();
+                        }
+                    }
+                }
+                isPurgingOn = false;
+                return true;
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.println("Failed to bulk delete messages: " + ex.getMessage());
+                isPurgingOn = false;
+                return false;
             }
+        } else {
+            isPurgingOn = false;
+            return false;
         }
     }
 
     /*
-     * Builds a hashmap (cache) of all the current users in the discord server with their id's. This is used to ping users later on.
+     * @function isPurging
+     *
+     * @return {Boolean}
      */
-    private void getUsers() {
-        if (jdaAPI != null) {
-            for (User user : jdaAPI.getUsers()) {
-                userCache.put(user.getUsername().toLowerCase(), user.getId());
-            }
-        }
+    public Boolean isPurging() {
+        return isPurgingOn;
     }
 
     /*
-     * Get the command then will make the arguments for it. Works just like we do for Twitch.
+     * Parses the message into a command that the bot can read.
+     *
+     * @param {User}    sender
+     * @param {Channel} channel
+     * @param {String}  message
      */
-    private void commandEvent(String sender, String senderId, String message, String channel, String discrim, Boolean isAdmin) {
-        String arguments = "";
+    private void commandEvent(User sender, Channel channel, String message, Boolean isAdmin) {
         String command = message.substring(1);
+        String arguments = "";
 
-        /* Does the command have arguments? */
         if (command.contains(" ")) {
             String commandString = command;
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
 
-        EventBus.instance().post(new DiscordCommandEvent(sender, senderId, discrim, channel, arguments, command, isAdmin));
+        ScriptEventManager.instance().runDirect(new DiscordCommandEvent(sender, channel, command, arguments, isAdmin));
+    }
+
+    /*
+     * Handles message we get from Discord.
+     *
+     * @param {MessageReceivedEvent} event
+     */
+    private void handleMessages(MessageReceivedEvent event) {
+        String channelName = event.getChannel().getName();
+        String username = event.getAuthor().getName();
+        String message = event.getMessage().getContent();
+        String messageId = event.getMessage().getId();
+        Channel channel = event.getTextChannel();
+        User sender = event.getAuthor();
+        Boolean isAdmin = PermissionUtil.checkPermission(channel, event.getMember(), Permission.ADMINISTRATOR);
+
+        com.gmt2001.Console.out.println("[DISCORD] [#" + channelName + "] " + username.toLowerCase() + ": " + message);
+
+        if (message.startsWith("!")) {
+            commandEvent(sender, channel, message, isAdmin);
+        }
+
+        EventBus.instance().post(new DiscordMessageEvent(sender, channel, message, messageId, isAdmin));
     }
 
     /*
@@ -252,195 +387,91 @@ public class DiscordAPI {
     private class DiscordListener implements EventListener {
         @Override
         public void onEvent(Event event) {
-            /* ReadyEvent - Happens when the bots fully connects to Discord. */
+            // ReadyEvent - This will handle getting all of the channel and users and storing them in a HashMap.
             if (event instanceof ReadyEvent) {
-                ReadyEvent readyEvent = (ReadyEvent) event;
+                botId = jdaAPI.getSelfUser().getId();
                 getTextChannels();
-                getUsers();
-                botID = jdaAPI.getSelfInfo().getId();
-                messageTimer.schedule(new MessageTask(), 100, 1);
-                messageTimer.schedule(new DeleteTask(), 100, 5);
+                getUserNames();
+                
                 com.gmt2001.Console.out.println("Discord API is Ready");
-            }
+            } else 
 
-            /* MessageReceivedEvent - Happens when a new messages is said in the Discord server. */
+            // MessageReceivedEvent - This will handle pasing the message and sending the events needed.
             if (event instanceof MessageReceivedEvent) {
                 MessageReceivedEvent messageEvent = (MessageReceivedEvent) event;
-                if (messageEvent.getAuthor().getId().equalsIgnoreCase(getBotId())) {
-                    return;
-                }
-                try {
-                    OnMessage onMessage = new OnMessage(messageEvent);
-                    new Thread(onMessage).start();
-                } catch (Exception ex) {
-                    handleMessages(messageEvent);
-                }
-            }
 
-            /* GuildMemberJoinEvent - Happens when a user joins the server. */
+                if (messageEvent.getMember().getUser().getId() != botId) {
+                    try {
+                        MessageTask messagetask = new MessageTask(messageEvent);
+                        new Thread(messagetask).start();
+                    } catch (Exception ex) {
+                        handleMessages(messageEvent);
+                    }
+                }
+            } else 
+
+            // GuildMemberJoinEvent - This will handle adding the user to the userMap and sending an event.
             if (event instanceof GuildMemberJoinEvent) {
-                GuildMemberJoinEvent joinEvent = (GuildMemberJoinEvent) event;
-                userCache.put(joinEvent.getUser().getUsername().toLowerCase(), joinEvent.getUser().getId());
-                EventBus.instance().post(new DiscordJoinEvent(joinEvent.getUser().getUsername(), joinEvent.getUser().getId(), joinEvent.getUser().getDiscriminator()));
-            }
+                GuildMemberJoinEvent guildMemberJoinEvent = (GuildMemberJoinEvent) event;
+                Member member = guildMemberJoinEvent.getMember();
 
-            /* GuildMemberLeaveEvent - Happens when a user leaves the server. */
+                addUserToMap(member);
+                EventBus.instance().post(new DiscordJoinEvent(member));
+            } else
+
+            // GuildMemberLeaveEvent - This will handle removing the user from the userMap and sending an event.
             if (event instanceof GuildMemberLeaveEvent) {
-                GuildMemberLeaveEvent partEvent = (GuildMemberLeaveEvent) event;
-                if (userCache.containsKey(partEvent.getUser().getUsername().toLowerCase())) {
-                    userCache.remove(partEvent.getUser().getUsername().toLowerCase(), partEvent.getUser().getId());
-                }
-                EventBus.instance().post(new DiscordLeaveEvent(partEvent.getUser().getUsername(), partEvent.getUser().getId(), partEvent.getUser().getDiscriminator()));
-            }
+                GuildMemberLeaveEvent guildMemberLeaveEvent = (GuildMemberLeaveEvent) event;
+                Member member = guildMemberLeaveEvent.getMember();
+                
+                removeUserFromMap(member);
+                EventBus.instance().post(new DiscordLeaveEvent(member));
+            } else 
 
-            /* TextChannelCreateEvent - Happens when a user creates a new channel, this will also add the channel to our cache so the bot does not need a reboot. */
+            // GuildMemberNickChangeEvent - This will handle adding the user to the userMap.
+            if (event instanceof GuildMemberNickChangeEvent) {
+                GuildMemberNickChangeEvent guildMemberNickChangeEvent = (GuildMemberNickChangeEvent) event;
+                Member member = guildMemberNickChangeEvent.getMember();
+
+                addUserToMap(member);
+            } else 
+
+            // TextChannelCreateEvent - This will handle adding the channel to the channelMap.
             if (event instanceof TextChannelCreateEvent) {
-                TextChannelCreateEvent channelEvent = (TextChannelCreateEvent) event;
-                channelMap.put(channelEvent.getChannel().getName(), channelEvent.getChannel());
-            }
+                TextChannelCreateEvent textChannelEvent = (TextChannelCreateEvent) event;
+                
+                addChannelToMap(textChannelEvent.getChannel());
+            } else 
 
-            /* TextChannelUpdateNameEvent - Happens when a user edits a channel name, this will also update the name in our cache so the bot does not need a reboot. */
+            // TextChannelUpdateNameEvent - This will handle adding the channel to the channelMap.
             if (event instanceof TextChannelUpdateNameEvent) {
-                TextChannelUpdateNameEvent channelEvent = (TextChannelUpdateNameEvent) event;
-                channelMap.put(channelEvent.getChannel().getName(), channelEvent.getChannel());
-                if (channelMap.containsKey(channelEvent.getOldName())) { 
-                    channelMap.remove(channelEvent.getOldName());
-                }
-            }
+                TextChannelUpdateNameEvent textChannelEvent = (TextChannelUpdateNameEvent) event;
+                
+                addChannelToMap(textChannelEvent.getChannel());
+            } else 
 
-            /* TextChannelDeleteEvent - Happens when a user deletes a channel, this will also remove the channel from our cache. */
+            // TextChannelDeleteEvent - This will handle removing the channel from the channelMap.
             if (event instanceof TextChannelDeleteEvent) {
-                TextChannelDeleteEvent channelEvent = (TextChannelDeleteEvent) event;
-                if (channelMap.containsKey(channelEvent.getChannel().getName())) {
-                    channelMap.remove(channelEvent.getChannel().getName());
-                }
+                TextChannelDeleteEvent textChannelEvent = (TextChannelDeleteEvent) event;
+                
+                removeChannelFromMap(textChannelEvent.getChannel());
             }
         }
     }
 
     /*
-     * Handles discord messages on a new thread.
+     * Class to handle messages we get from Discord on a new thread.
      */
-    private void handleMessages(MessageReceivedEvent event) {
-        TextChannel channels = event.getTextChannel();
-        String channel = channels.getName();
-        String sender = event.getAuthorName();
-        String channelId = channels.getId();
-        String senderId = event.getAuthor().getId();
-        String messageId = event.getMessage().getId();
-        String message = event.getMessage().getContent();
-        String discriminator = event.getAuthor().getDiscriminator();
-        Boolean isAdmin = PermissionUtil.checkPermission(event.getAuthor(), Permission.ADMINISTRATOR, event.getGuild());
-
-        com.gmt2001.Console.out.println("[DISCORD] [#" + channel + "] " + sender.toLowerCase() + ": " + message);
-        if (message.startsWith("!")) {
-            commandEvent(sender, senderId, message, channel, discriminator, isAdmin);
-        }
-
-        EventBus.instance().post(new DiscordMessageEvent(sender, senderId, discriminator, message, messageId, channel, channelId, isAdmin));
-    }
-
-    /*
-     * Message Class. Used for storing information about a queued message.
-     */
-    private class Message {
-        private final String channel;
-        private final String message;
-
-        public Message(String channel, String message) {
-            this.channel = channel;
-            this.message = message;
-        }
-
-        public String getChannel() {
-            return this.channel;
-        }
-
-        public String getMessage() {
-            return this.message;
-        }
-    }
-
-    /*
-     * Class to delete messages.
-     */
-    private class MessageDelete {
-        public final String channel;
-        public final List<String> list;
-
-        public MessageDelete(String channel, List<String> list) {
-            this.channel = channel;
-            this.list = list;
-        }
-    }
-
-    /*
-     * OnMessage Class. used to start a new thread when we get a message.
-     */
-    private class OnMessage implements Runnable {
+    private class MessageTask implements Runnable {
         private final MessageReceivedEvent event;
 
-        public OnMessage(MessageReceivedEvent event) {
-            this.event = (MessageReceivedEvent) event;
+        public MessageTask(MessageReceivedEvent event) {
+            this.event = event;
         }
 
         @Override
         public void run() {
             handleMessages(event);
-        }
-    }
-
-    /* 
-     * Used to delete a bulk of messages and not hit the API limit of 1 bulk / 1 second.
-     */
-    private class DeleteTask extends TimerTask {
-        private long lastDelete = 0;
-
-        public DeleteTask() {
-            super();
-            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        }
-
-        @Override
-        public void run() {
-            if (System.currentTimeMillis() - lastDelete >= 1050) {
-                DiscordAPI.MessageDelete message = deleteQueue.poll();
-                if (message != null) {
-                    try {
-                        if (channelMap.containsKey(message.channel)) {
-                            channelMap.get(message.channel).deleteMessagesByIds(message.list);
-                        }
-                    } catch (Exception ex) {
-                        com.gmt2001.Console.err.println("DiscordAPI::Failed to bulk delete messages [" + ex.getCause() + "]: " + ex.getMessage());
-                    }
-                    lastDelete = System.currentTimeMillis();
-                }
-            }
-        }
-    }
-
-    /*
-     * This is the timer task for sending messages. According to the API documentation, Discord allows
-     * 5 messages in 5 seconds, therefore, we just allow one message a second to be sent.
-     */
-    private class MessageTask extends TimerTask {
-        private final Double limit = ((5.0 / 5.0) * 1000);
-        private long lastMsgTime = 0;
-
-        public MessageTask() {
-            super();
-            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        }
-
-        @Override
-        public void run() {
-            if (System.currentTimeMillis() - lastMsgTime >= limit) {
-                DiscordAPI.Message message = messageQueue.poll();
-                if (message != null) {
-                    println(message.getChannel(), message.getMessage());
-                    lastMsgTime = System.currentTimeMillis();
-                }
-            }
         }
     }
 }

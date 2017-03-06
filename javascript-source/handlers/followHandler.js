@@ -18,7 +18,7 @@
         followMessage = $.getSetIniDbString('settings', 'followMessage', $.lang.get('followhandler.follow.message')),
         followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false),
         followTrainToggle = $.getSetIniDbBoolean('settings', 'followTrainToggle', false),
-        followDelay = $.getSetIniDbNumber('settings', 'followDelay', 0),
+        followDelay = $.getSetIniDbNumber('settings', 'followDelay', 5),
         follows = [],
         lastFollow = 0,
         timer = false,
@@ -153,7 +153,7 @@
                     $.inidb.incr('points', follower, followReward);
                 }
 
-                $.writeToFile($.username.resolve(follower), './addons/followHandler/latestFollower.txt', false);
+                $.writeToFile($.username.resolve(follower) + ' ', './addons/followHandler/latestFollower.txt', false);
             }
         }
         
@@ -220,7 +220,7 @@
          * @commandpath followdelay [message] - Set the delay in seconds between follow announcements
          */
         if (command.equalsIgnoreCase('followdelay')) {
-            if (action === undefined) {
+            if (action === undefined || isNaN(parseInt(action)) || parseInt(action) < 5) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followdelay.usage'));
                 return;
             }

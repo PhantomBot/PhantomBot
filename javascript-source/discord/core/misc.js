@@ -8,33 +8,49 @@
 	 * @function userPrefix
 	 *
 	 * @export $.discord
-	 * @param {string} username
-	 * @return {string}
+	 * @param  {string} username
+	 * @return {String}
 	 */
 	function userPrefix(username) {
 		return (username + ', ');
 	}
 
 	/**
-	 * @function userMention
-	 *
-	 * @export $.discord
-	 * @param {string} username
-	 * @return {string}
-	 */
-	function userMention(username) {
-		return $.discordAPI.getUserMention(username.replace('@', ''));
-	}
-
-	/**
 	 * @function getUserMention
 	 *
-	 * @export $.discord
-	 * @param {string} username
+	 * @export $.discord.username
+	 * @param  {string} username
 	 * @return {string}
 	 */
 	function getUserMention(username) {
-		return $.discordAPI.getUserMention(username.replace('@', ''));
+		return ($.discordAPI.isUser(username) == true ? $.discordAPI.resolveUser(username).getAsMention() : username);
+	}
+
+	/**
+	 * @function getUserMentionOrChannel
+	 *
+	 * @export $.discord.username
+	 * @param  {string} argument
+	 * @return {string}
+	 */
+	function getUserMentionOrChannel(argument) {
+		if ($.discordAPI.isUser(argument) == true) {
+			return $.discordAPI.resolveUser(argument).getAsMention();
+		} else if ($.discordAPI.isChannel(argument) == true) {
+			return $.discordAPI.resolveChannel(argument).getAsMention();
+		} else {
+			return argument;
+		}
+	}
+
+	/**
+	 * @function getRandomUser
+	 *
+	 * @export $.discord.username
+	 * @return {string}
+	 */
+	function getRandomUser() {
+		return ($.discordAPI.getUserMembers().get($.randRange(0, $.discordAPI.getUserMembers().size() - 1)).getAsMention());
 	}
 
 	/**
@@ -61,7 +77,7 @@
 		    subAction = args[1];
 
 		/**
-		 * @discordcommandpath module enable [path] - Enables any modules in the bot, it should only be used to enable Discord modules though.
+		 * @discordcommandpath module enable [path] - Enables any modules in the bot, it should only be used to enable discord modules though.
 		 */
 		if (command.equalsIgnoreCase('module')) {
 			if (action === undefined || (subAction === undefined && !action.equalsIgnoreCase('list'))) {
@@ -93,7 +109,7 @@
 			}
 
 			/**
-		     * @discordcommandpath module disable [path] - Disables any modules in the bot, it should only be used to enable Discord modules though.
+		     * @discordcommandpath module disable [path] - Disables any modules in the bot, it should only be used to enable discord modules though.
 		     */
 			if (action.equalsIgnoreCase('disable')) {
 				var index = $.bot.getModuleIndex(subAction);
@@ -109,7 +125,7 @@
 			}
 
 			/**
-		     * @discordcommandpath module list - Lists all of the Discord modules.
+		     * @discordcommandpath module list - Lists all of the discord modules.
 		     */
 			if (action.equalsIgnoreCase('list')) {
 				var modules = $.bot.modules, 
@@ -140,7 +156,17 @@
 	$.discord = {
 		say: say,
 		userPrefix: userPrefix,
-		userMention: userMention,
-		getUserMention: getUserMention
+		getUserMention: getUserMention,
+		userMention: getUserMention,
+		resolve: { 
+			global: getUserMentionOrChannel,
+			getUserMentionOrChannel: getUserMentionOrChannel
+		},
+		username: {
+			resolve: getUserMention,
+			random: getRandomUser,
+			getUserMention: getUserMention,
+			getRandomUser: getRandomUser
+		}
 	};
 })();

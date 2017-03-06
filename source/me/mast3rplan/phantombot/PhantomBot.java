@@ -39,6 +39,8 @@ import com.illusionaryone.GoogleURLShortenerAPIv1;
 import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.DiscordAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
+import com.scaniatv.CustomAPI;
+import com.scaniatv.AnkhConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,6 +53,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -58,7 +61,9 @@ import java.util.TreeSet;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.Collections;
-
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.Iterator;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
@@ -116,6 +121,7 @@ import me.mast3rplan.phantombot.panel.PanelSocketSecureServer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC;
@@ -228,7 +234,6 @@ public class PhantomBot implements Listener {
     private Boolean interactive;
     private Boolean resetLogin = false;
     
-
     /* Other Information */
     private Channel channel;
     private Session session;
@@ -238,7 +243,6 @@ public class PhantomBot implements Listener {
     private static HashMap<String, Channel> channels;
     private static HashMap<String, Session> sessions;
     private static HashMap<String, String> apiOAuths;
-    public static Boolean wsIRCAlternateBurst = false;
     private static Boolean newSetup = false;
     private Boolean devCommands = true;
     private Boolean joined = false;
@@ -246,6 +250,9 @@ public class PhantomBot implements Listener {
     private TwitchPubSub pubSubEdge;
     private Properties pbProperties;
     private Boolean legacyServers = false;
+    private Boolean backupSQLiteAuto = false;
+    private int backupSQLiteHourFrequency = 0;
+    private int backupSQLiteKeepDays = 0;
 
     /*
      * PhantomBot Instance.
@@ -430,10 +437,10 @@ public class PhantomBot implements Listener {
         this.panelPassword = this.pbProperties.getProperty("panelpassword", "panel");
 
         /* Enable/disable devCommands */
-        this.devCommands = this.pbProperties.getProperty("devcommands", "true").equalsIgnoreCase("true") ? true : false;
+        this.devCommands = this.pbProperties.getProperty("devcommands", "false").equalsIgnoreCase("true");
 
         /* Toggle for the old servers. */
-        this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true") ? true : false;
+        this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
 
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
@@ -453,6 +460,11 @@ public class PhantomBot implements Listener {
 
         /* Set the client id for the twitch api to use */
         this.clientId = this.pbProperties.getProperty("clientid", "7wpchwtqz7pvivc3qbdn1kajz42tdmb");
+
+        /* Set any SQLite backup options. */
+        this.backupSQLiteAuto = this.pbProperties.getProperty("backupsqliteauto", "false").equalsIgnoreCase("true");
+        this.backupSQLiteHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupsqlitehourfreqency", "24"));
+        this.backupSQLiteKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupsqlitekeepdays", "5"));
 
         /* Load up a new SecureRandom for the scripts to use */
         random = new SecureRandom();
@@ -488,6 +500,7 @@ public class PhantomBot implements Listener {
                 sqlite2MySql();
             }
         } else {
+            dataStoreType = "sqlite3store";
             dataStore = SqliteStore.instance();
             /* Create indexes. */
             if (!dataStore.exists("settings", "tables_indexed")) {
@@ -514,6 +527,11 @@ public class PhantomBot implements Listener {
         if (!twitchAlertsKey.isEmpty()) {
             TwitchAlertsAPIv1.instance().SetAccessToken(twitchAlertsKey);
             TwitchAlertsAPIv1.instance().SetDonationPullLimit(twitchAlertsLimit);
+        }
+
+        /* Set the YouTube API Key if provided. */
+        if (!this.youtubeKey.isEmpty()) {
+            YouTubeAPIv3.instance().SetAPIKey(this.youtubeKey);
         }
 
         /* Set the StreamTip OAuth key, Client ID and limiter. */
@@ -1004,6 +1022,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("changed", Boolean.valueOf(newSetup), 0);
         Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
+        Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
 
         /* open a new thread for when the bot is exiting */
         Thread thread = new Thread(new Runnable() {
@@ -1025,6 +1044,11 @@ public class PhantomBot implements Listener {
 
         /* Check for a update with PhantomBot */
         doCheckPhantomBotUpdate();
+
+        /* Perform SQLite datbase backups. */
+        if (this.backupSQLiteAuto) {
+            doBackupSQLiteDB();
+        }
     }
 
     /*
@@ -1143,7 +1167,9 @@ public class PhantomBot implements Listener {
         }
 
         /* Start the notice timer and notice handler. */
-        // this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+        if (pbProperties.getProperty("testnotices", "false").equals("true")) {
+            this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
+        }
 
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
@@ -1201,7 +1227,7 @@ public class PhantomBot implements Listener {
     @Subscribe
     public void ircChannelMessage(IrcChannelMessageEvent event) {
         if (event.getMessage().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender());
+            devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender(), false);
         }
     }
 
@@ -1228,6 +1254,28 @@ public class PhantomBot implements Listener {
             message = messageString.substring(0, messageString.indexOf(" "));
             arguments = messageString.substring(messageString.indexOf(" ") + 1);
             argument = arguments.split(" ");
+        }
+
+        if (message.equalsIgnoreCase("ankhtophantombot")) {
+            print("Not all of AnkhBot's data will be compatible with PhantomBot.");
+            print("This process will take a long time.");
+            print("Are you sure you want to convert AnkhBot's data to PhantomBot? [y/n]");
+            String check = System.console().readLine().trim();
+            if (check.equals("y")) {
+                AnkhConverter.instance();
+            } else {
+                print("No changes were made.");
+                return;
+            }
+        }
+
+        if (message.equalsIgnoreCase("backupdb")) {
+            SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
+            datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
+            String timestamp = datefmt.format(new Date());
+
+            dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
+            return;
         }
 
         /* Update the followed (followers) table. */
@@ -1629,7 +1677,7 @@ public class PhantomBot implements Listener {
 
         /* Handle dev commands */
         if (event.getMsg().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMsg(), "no_id", botName);
+            devDebugCommands(event.getMsg(), "no_id", botName, true);
         }
     }
 
@@ -1660,13 +1708,13 @@ public class PhantomBot implements Listener {
     }
 
     /* Handles dev debug commands. */
-    public void devDebugCommands(String command, String id, String sender) {
+    public void devDebugCommands(String command, String id, String sender, boolean isConsole) {
         if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName) || sender.equalsIgnoreCase(botName))) {
             String arguments = "";
             String[] args = null;
             command = command.substring(12);
 
-            if (!command.contains("!") || !devCommands) {
+            if (!command.contains("!") || (!devCommands && !isConsole)) {
                 return;
             }
 
@@ -1695,6 +1743,15 @@ public class PhantomBot implements Listener {
 
             if (command.equals("version")) {
                 PhantomBot.instance().getSession().say("@" + sender + ", Info: " + getBotInfo() + ". OS: " + System.getProperty("os.name"));
+                return;
+            }
+
+            if (command.equals("dbbackup")) {
+                SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
+                datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
+                String timestamp = datefmt.format(new Date());
+    
+                dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
                 return;
             }
 
@@ -1981,10 +2038,6 @@ public class PhantomBot implements Listener {
                         com.gmt2001.Console.out.println("Enabling Script Reloading");
                         PhantomBot.reloadScripts = true;
                     }
-                    if (startProperties.getProperty("wsircburstalt", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Using Alternate Burst Method for WS-IRC");
-                        PhantomBot.wsIRCAlternateBurst = true;
-                    }
                     if (startProperties.getProperty("rhinodebugger", "false").equals("true")) {
                         com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
                         PhantomBot.enableRhinoDebugger = true;
@@ -2098,16 +2151,6 @@ public class PhantomBot implements Listener {
             }
         }
 
-        /* Check for a owner */
-        if (startProperties.getProperty("owner") == null) {
-            if (startProperties.getProperty("channel") != null) {
-                if (!startProperties.getProperty("channel").isEmpty()) {
-                    startProperties.setProperty("owner", startProperties.getProperty("channel"));
-                    changed = true;
-                }
-            }
-        }
-
         /* Make sure the oauth has been set correctly */
         if (startProperties.getProperty("oauth") != null) {
             if (!startProperties.getProperty("oauth").startsWith("oauth") && !startProperties.getProperty("oauth").isEmpty()) {
@@ -2128,6 +2171,19 @@ public class PhantomBot implements Listener {
         if (startProperties.getProperty("channel").startsWith("#")) {
             startProperties.setProperty("channel", startProperties.getProperty("channel").substring(1));
             changed = true;
+        } else if (startProperties.getProperty("channel").contains(".tv")) {
+            startProperties.setProperty("channel", startProperties.getProperty("channel").substring(startProperties.getProperty("channel").indexOf(".tv/") + 4).replaceAll("/", ""));
+            changed = true;
+        }
+
+        /* Check for the owner after the channel check is done. */
+        if (startProperties.getProperty("owner") == null) {
+            if (startProperties.getProperty("channel") != null) {
+                if (!startProperties.getProperty("channel").isEmpty()) {
+                    startProperties.setProperty("owner", startProperties.getProperty("channel"));
+                    changed = true;
+                }
+            }
         }
 
         /* Iterate the properties and delete entries for anything that does not have a 
@@ -2331,5 +2387,40 @@ public class PhantomBot implements Listener {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+    }
+
+    /**
+     * Backup the database, keeping so many days.
+     */
+    private void doBackupSQLiteDB() {
+  
+        if (!dataStoreType.equals("sqlite3store")) {
+            return;
+        }
+
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
+                datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
+                String timestamp = datefmt.format(new Date());
+
+                dataStore.backupSQLite3("phantombot.auto.backup." + timestamp + ".db");
+
+                try {
+                    Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
+                    while (dirIterator.hasNext()) {
+                        File backupFile = (File) dirIterator.next();
+                        if (FileUtils.isFileOlder(backupFile, System.currentTimeMillis() - (86400000 * backupSQLiteKeepDays))) {
+                           FileUtils.deleteQuietly(backupFile);
+                        }
+                    }
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.println("Failed to clean up database backup directory: " + ex.getMessage());
+                    return;
+                }
+            }
+        }, 0, backupSQLiteHourFrequency, TimeUnit.HOURS);       
     }
 }

@@ -63,7 +63,7 @@
      */
     function isWhiteList(username, message) {
         for (var i in whitelist) {
-            if (message.toLowerCase().includes(whitelist[i]) || username.includes(whitelist[i])) {
+            if (message.includes(whitelist[i]) || username === whitelist[i]) {
                 return true;
             }
         }
@@ -77,7 +77,7 @@
      */
     function hasBlackList(username, message) {
         for (var i in blacklist) {
-            if (message.toLowerCase().includes(blacklist[i])) {
+            if (message.includes(blacklist[i])) {
                 return true;
             }
         }
@@ -90,7 +90,7 @@
      * @param {String} username
      */
     function bulkDelete(username, channel) {
-        $.discordAPI.bulkDelete(username, channel, spam[username].messages);
+        $.discordAPI.resolveChannel(channel).deleteMessagesByIds(spam[username].messages).queue();
         delete spam[username];
     }
 
@@ -102,7 +102,7 @@
      * @param {String} message
      */
     function timeoutUser(username, channel, message) {
-        $.discordAPI.jda().getTextChannelById(channel).deleteMessageById(message);
+        $.discordAPI.resolveChannel(channel).deleteMessageById(message).queue();
     }
 
     /**
@@ -111,48 +111,47 @@
     $.bind('discordMessage', function(event) {
         var sender = event.getSenderId(),
             channel = event.getChannel(),
-            message = event.getMessage(),
+            message = event.getMessage().toLowerCase(),
             messageLength = message.length();
 
         if (event.isAdmin() == false && !hasPermit(sender) && !isWhiteList(sender, message)) {
-            if (hasBlackList(message)) {
-                timeoutUser(sender, event.getChannelId(), event.getMessageId());
-                return;
-            }
-
             if (linkToggle && $.discord.pattern.hasLink(message)) {
-                timeoutUser(sender, event.getChannelId(), event.getMessageId());
+                timeoutUser(sender, channel, event.getMessageId());
                 return;
             }
 
             if (longMessageToggle && messageLength > longMessageLimit) {
-                timeoutUser(sender, event.getChannelId(), event.getMessageId());
+                timeoutUser(sender, channel, event.getMessageId());
                 return;
             }
 
-            if (capsToggle && messageLength > capsTriggerLength && (($.discord.pattern.getCapsCount(message) / messageLength) * 100) > capsLimitPercent) {
-                timeoutUser(sender, event.getChannelId(), event.getMessageId());
+            if (capsToggle && messageLength > capsTriggerLength && (($.discord.pattern.getCapsCount(event.getMessage()) / messageLength) * 100) > capsLimitPercent) {
+                timeoutUser(sender, channel, event.getMessageId());
                 return;
             }
 
             if (spamToggle) {
                 if (spam[sender] !== undefined) {
-                    if (spam[sender].time + 5000 >= $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
-                        spam[sender].total++;
-                        spam[sender].messages.push(event.getMessageId());
-                    } else if (spam[sender].time + 5000 <= $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
-                        spam[sender].time = $.systemTime();
-                        spam[sender].total = 1;
-                        spam[sender].messages = [];
+                    if (spam[sender].time + 5000 > $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
+                        spam[sender].total++; spam[sender].messages.push(event.getMessageId());
+                    } else if (spam[sender].time + 5000 < $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
+                        spam[sender] = { total: 1, time: $.systemTime(), messages: [event.getMessageId()] };
                     } else {
+                        spam[sender].messages.push(event.getMessageId()); 
                         bulkDelete(sender, channel);
+                        return;
                     }
                 } else {
-                    spam[sender] = { total: 1, time: $.systemTime(), lastClear: $.systemTime(), messages: [] };
+                    spam[sender] = { total: 1, time: $.systemTime(), messages: [event.getMessageId()] };
                 }
             }
-            lastMessage = $.systemTime();
+
+            if (hasBlackList(message)) {
+                timeoutUser(sender, channel, event.getMessageId());
+                return;
+            }
         }
+        lastMessage = $.systemTime();
     });
 
     /**
@@ -425,6 +424,29 @@
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.whitelist.list', temp.join('\r\n')));
                 }
             }
+
+            /**
+             * @discordcommandpath moderation cleanup [channel] [amount] - Will delete that amount of messages for that channel.
+             */
+            if (action.equalsIgnoreCase('cleanup')) {
+                if (subAction === undefined || (actionArgs == undefined || isNaN(parseInt(actionArgs)))) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.usage'));
+                    return;
+                } else if (parseInt(actionArgs) > 10000 || parseInt(actionArgs) < 1) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.err'));
+                    return;
+                }
+
+                if ($.discordAPI.isPurging() == true) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.failed'));
+                } else {
+                    if ($.discordAPI.massPurge(subAction, parseInt(actionArgs)) == true) {
+                        $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.done', actionArgs));
+                    } else {
+                        $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.failed.err'));
+                    }
+                }
+            }
         }
     });
 
@@ -441,6 +463,7 @@
             $.discord.registerSubCommand('moderation', 'spam', 1);
             $.discord.registerSubCommand('moderation', 'blacklist', 1);
             $.discord.registerSubCommand('moderation', 'whitelist', 1);
+            $.discord.registerSubCommand('moderation', 'cleanup', 1);
 
             setInterval(function() {
                 if (spam.length !== 0 && lastMessage - $.systemTime() <= 0) {

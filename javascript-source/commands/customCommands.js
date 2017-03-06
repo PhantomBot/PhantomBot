@@ -5,7 +5,8 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(currenttime|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /);
+        tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(currenttime|\(price\)|\(#\)|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
+        customCommands = [];
 
     /**
      * @function getCustomAPIValue
@@ -206,7 +207,7 @@
         }
 
         if (message.match(/\(touser\)/g)) {
-            message = $.replace(message, '(touser)', (event.getArgs()[0] === undefined ? $.username.resolve(event.getSender()) : String(event.getArgs()[0]).replace(/[^a-z1-9_@]/ig, '')));
+            message = $.replace(message, '(touser)', (event.getArgs()[0] === undefined ? $.username.resolve(event.getSender()) : String(event.getArgs()[0]).replace(/[^a-z0-9_@]/ig, '')));
         }
 
         if (message.match(/\(echo\)/g)) {
@@ -517,6 +518,7 @@
                 i;
             for (i in commands) {
                 if (!$.commandExists(commands[i])) {
+                    customCommands[commands[i]] = $.inidb.get('command', commands[i]);
                     $.registerChatCommand('./commands/customCommands.js', commands[i], 7);
                 }
             }
@@ -552,8 +554,8 @@
             aliasArgs;
 
         /** Used for custom commands */
-        if ($.inidb.exists('command', command)) {
-            var tag = tags(event, $.inidb.get('command', command), true);
+        if (customCommands[command] !== undefined) {
+            var tag = tags(event, customCommands[command], true);
             if (tag !== null) {
                 $.say(tag);
             }
@@ -597,6 +599,7 @@
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.success', action));
             $.inidb.set('command', action.toLowerCase(), argString);
+            customCommands[action.toLowerCase()] = argString;
             $.registerChatCommand('./commands/customCommands.js', action);
             $.log.event(sender + ' added command !' + action + ' with the message "' + argString + '"');
         }
@@ -629,6 +632,7 @@
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.success', action));
             $.inidb.set('command', action.toLowerCase(), argString);
+            customCommands[action.toLowerCase()] = argString;
             $.registerChatCommand('./commands/customCommands.js', action);
             $.log.event(sender + ' edited the command !' + action + ' with the message "' + argString + '"');
         }
@@ -658,6 +662,7 @@
             $.inidb.del('pricecom', action);
             $.inidb.del('aliases', action);
             $.unregisterChatCommand(action);
+            delete customCommands[action.toLowerCase()];
             $.log.event(sender + ' deleted the command !' + action);
         }
 
@@ -1013,6 +1018,23 @@
             $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
             $.registerChatCommand('./commands/customCommands.js', 'botcommands', 2);
+        }
+    });
+    
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./commands/customCommands.js')) {
+            if (event.getArgs()[0] == 'remove') {
+                if (customCommands[event.getArgs()[1].toLowerCase()] !== undefined) {
+                    delete customCommands[event.getArgs()[1].toLowerCase()];
+                }
+            } else if (event.getArgs()[0] == 'add') {
+                customCommands[event.getArgs()[1].toLowerCase()] = event.getArgs()[2];
+            } else if (event.getArgs()[0] == 'edit') {
+                customCommands[event.getArgs()[1].toLowerCase()] = event.getArgs()[2];
+            }
         }
     });
 

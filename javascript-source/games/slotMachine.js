@@ -19,7 +19,7 @@
     $.getSetIniDbString('slotmachineemotes', 'emote_1', 'KappaPride');
     $.getSetIniDbString('slotmachineemotes', 'emote_2', 'BloodTrail');
     $.getSetIniDbString('slotmachineemotes', 'emote_3', 'ResidentSleeper');
-    $.getSetIniDbString('slotmachineemotes', 'emote_4', 'deIlluminati');
+    $.getSetIniDbString('slotmachineemotes', 'emote_4', '4Head');
 
     /**
      * @function loadEmotes
@@ -87,9 +87,9 @@
         }
         
         if (e1 == e2 || e2 == e3 || e3 == e1) {
-            message += $.lang.get('slotmachine.result.win', ($.getPointsString(Math.floor(prizes[Math.min(e1, e2, e3)] / 3)) + '.'));
+            message += $.lang.get('slotmachine.result.win', (e1 == e2 ? $.getPointsString(Math.floor(prizes[e1] * 0.3)) : $.getPointsString(Math.floor(prizes[e3] * 0.3))) + '.');
             $.say(message + $.gameMessages.getWin(sender, 'slot'));
-            $.inidb.incr('points', sender, Math.floor(prizes[Math.min(e1, e2, e3)] / 3));
+            $.inidb.incr('points', sender, (e1 == e2 ? (Math.floor(prizes[e1] * 0.3)) : (Math.floor(prizes[e3] * 0.3))));
             return;
         }
         $.say(message + $.gameMessages.getLose(sender, 'slot'));
@@ -137,13 +137,7 @@
                  * @commandpath slot emotes [emote1] [emote2] [emote3] [emote4] [emote5] - Set the emotes for the slots.
                  */
                 if (args[0].equalsIgnoreCase('emotes')) {
-                    if (args.length != 6) {
-                        loadEmotes();
-                        $.say($.whisperPrefix(sender) + $.lang.get('slotmachine.emote.usage', emoteList.join(' ')));
-                        return;
-                    }
-
-                    if (isNaN(args[1]) || isNaN(args[2]) || isNaN(args[3]) || isNaN(args[4]) || isNaN(args[5])) {
+                    if (args.length < 6) {
                         loadEmotes();
                         $.say($.whisperPrefix(sender) + $.lang.get('slotmachine.emote.usage', emoteList.join(' ')));
                         return;

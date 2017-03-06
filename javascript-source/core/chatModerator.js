@@ -297,15 +297,10 @@
     function timeoutUserFor(username, time, reason) {
         $.say('.timeout ' + username + ' ' + time + ' ' + reason);
         setTimeout(function() {
-            $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+            if ($.session.isLimited() == false) {
+                $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+            }
         }, 1000);
-
-        // Only send one timeout if we are near the max message limit of 20 messages in 30 seconds.
-        // if (!$.session.isLimited()) {
-        //     setTimeout(function() {
-        //         $.say('.timeout ' + username + ' ' + time + ' ' + reason);
-        //     }, 1000);
-        // }
     }
 
     /**
@@ -340,7 +335,7 @@
      * @param {boolean} filter
      */
     function sendMessage(username, message, filter) {
-        if (!filter && (messageTime - $.systemTime()) <= 0) {
+        if (!filter && (messageTime - $.systemTime()) <= 0 && $.session.hasQueue() == true && $.session.isLimited() == false) {
             $.say($.userPrefix(username, true) + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         }

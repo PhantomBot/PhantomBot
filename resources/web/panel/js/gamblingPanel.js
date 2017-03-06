@@ -376,6 +376,7 @@
      */
     function raffleClose() {
         sendCommand('raffle close');
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -383,7 +384,7 @@
      */
     function raffleRepick() {
         sendCommand('raffle repick');
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
