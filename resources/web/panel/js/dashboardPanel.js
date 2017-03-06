@@ -90,7 +90,7 @@
                     module = moduleData[idx]['key'];
                     moduleEnabled = moduleData[idx]['value'];
                     if (module.indexOf('/core/') === -1 && module.indexOf('/lang/') === -1) {
-                        if (!module.includes('./discord')) {
+                        if (module.indexOf('./discord') === -1) {
                             html += "<tr class=\"textList\">" +
                                     "    <td>" + module + "</td>" +
     
@@ -218,7 +218,7 @@
                 if (msgObject['results']['lastFollow'] == null) {
                     $("#lastFollow").html("");
                 } else {
-                    $("#lastFollow").html("<spam class=\"purplePill\">Latest Follow: " + msgObject['results']['lastFollow'] + "</spam>");
+                    $("#lastFollow").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Follower\">Follow: " + msgObject['results']['lastFollow'] + "</span>");
                 }
             }
 
@@ -226,7 +226,7 @@
                 if (msgObject['results']['lastReSub'] == null) {
                     $("#lastReSub").html("");
                 } else {
-                    $("#lastReSub").html("<spam class=\"purplePill\">Latest ReSub: " + msgObject['results']['lastReSub'] + "</spam>");
+                    $("#lastReSub").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Re-Subscriber\">ReSub: " + msgObject['results']['lastReSub'] + "</span>");
                 }
             }
 
@@ -234,7 +234,7 @@
                 if (msgObject['results']['lastSub'] == null) {
                     $("#lastSub").html("");
                 } else {
-                    $("#lastSub").html("<spam class=\"purplePill\">Latest Sub: " + msgObject['results']['lastSub'] + "</spam>");
+                    $("#lastSub").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Subscriber\">Sub: " + msgObject['results']['lastSub'] + "</span>");
                 }
             }
 
@@ -242,7 +242,7 @@
                 if (msgObject['results']['lastDonator'] == null) {
                     $("#lastDonator").html("");
                 } else {
-                    $("#lastDonator").html("<spam class=\"purplePill\">Latest Donator: " + msgObject['results']['lastDonator'] + "</spam>");
+                    $("#lastDonator").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Donator\">Donator: " + msgObject['results']['lastDonator'] + "</span>");
                 }
             }
  

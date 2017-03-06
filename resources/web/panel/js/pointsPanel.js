@@ -354,19 +354,19 @@
 
         if (action == "take") {
             if (username.length > 0 && points.length > 0) {
-                sendDBDecr("points", "points", username, points);
+                sendDBDecr("points", "points", username.toLowerCase(), String(points));
             }
         }
 
         if (action == "add") {
             if (username.length > 0 && points.length > 0) {
-                sendDBIncr("points", "points", username, points);
+                sendDBIncr("points", "points", username.toLowerCase(), String(points));
             }
         }
 
         if (action == "set") {
             if (username.length > 0 && points.length != 0) {
-                sendDBUpdate("points", "points", username, points);
+                sendDBUpdate("points", "points", username.toLowerCase(), String(points));
             }
         }
         $("#adjustUserPointsNameInput").val('');

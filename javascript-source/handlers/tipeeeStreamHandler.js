@@ -56,7 +56,7 @@
             paramObj = donationObj.getJSONObject('parameters'),
             donationUsername = paramObj.getString('username'),
             donationCurrency = paramObj.getString('currency'),
-            donationMessage = paramObj.getString('message'),
+            donationMessage = (paramObj.has('message') ? paramObj.getString('message') : ''),
             donationAmount = paramObj.getInt('amount'),
             donationFormattedAmount = donationObj.getString('formattedAmount'),
             s = message;
@@ -73,7 +73,7 @@
 
         $.inidb.set('donations', 'last_donation_message', $.lang.get('main.donation.last.tip.message', donationUsername, donationCurrency, donationAmount));
 
-        $.writeToFile(donationUsername + ": " + donationAmount, dir + '/latestDonation.txt', false);
+        $.writeToFile(donationUsername + ": " + donationAmount + " ", dir + '/latestDonation.txt', false);
 
         if (toggle === true && announce === true) {
             if (s.match(/\(name\)/)) {

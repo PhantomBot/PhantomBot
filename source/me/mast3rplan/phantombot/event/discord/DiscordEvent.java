@@ -18,21 +18,39 @@ package me.mast3rplan.phantombot.event.discord;
 
 import me.mast3rplan.phantombot.event.Event;
 
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.Channel;
+
 public class DiscordEvent extends Event {
+	private final User user;
+	private final Channel channel;
+	private final String channelName;
 	private final String sender;
 	private final String username;
 	private final String discrim;
-	private final String channel;
 	private final String mention;
 	private final String senderId;
 
-	public DiscordEvent(String sender, String senderId, String discrim, String channel) {
-		this.sender = (sender + "#" + discrim);
+	public DiscordEvent(User user) {
+		this.user = user;
+		this.channel = null;
+		this.channelName = null;
+		this.username = user.getName();
+		this.discrim = user.getDiscriminator();
+		this.senderId = user.getId();
+		this.sender = (username + "#" + discrim);
 		this.mention = "<@" + senderId + ">";
-		this.discrim = discrim;
+	}
+
+	public DiscordEvent(User user, Channel channel) {
+		this.user = user;
 		this.channel = channel;
-		this.username = sender;
-		this.senderId = senderId;
+		this.username = user.getName();
+		this.discrim = user.getDiscriminator();
+		this.channelName = channel.getName();
+		this.senderId = user.getId();
+		this.sender = (username + "#" + discrim);
+		this.mention = "<@" + senderId + ">";
 	}
 
 	public String getSender() {
@@ -48,7 +66,7 @@ public class DiscordEvent extends Event {
 	}
 
 	public String getChannel() {
-		return this.channel;
+		return this.channelName;
 	}
 
 	public String getDiscriminator() {
@@ -57,5 +75,13 @@ public class DiscordEvent extends Event {
 
 	public String getSenderId() {
 		return this.senderId;
+	}
+
+	public User getDiscordUser() {
+		return this.user;
+	}
+
+	public Channel getDiscordChannel() {
+		return this.channel;
 	}
 }

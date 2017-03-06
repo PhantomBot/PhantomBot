@@ -113,6 +113,8 @@
 
             if (!channelData.isNull('status') && channelData.getInt('_http') == 200) {
                 return channelData.getString('status');
+            } else if (channelData.isNull('status') && channelData.getInt('_http') == 200) {
+                return $.lang.get('common.twitch.no.status');
             }
             $.log.error('Failed to get the current status: ' + channelData.getString('message'));
             return '';
@@ -133,8 +135,13 @@
 
             if (!channelData.isNull('game') && channelData.getInt('_http') == 200) {
                 return channelData.getString("game");
+            } else if (channelData.isNull('game') && channelData.getInt('_http') == 200) {
+                return $.lang.get('common.twitch.no.game');
             }
-            $.log.error('Failed to get the current game: ' + channelData.getString('message'));
+            
+            if (!channelData.isNull('message')) {
+                $.log.error('Failed to get the current game: ' + channelData.getString('message'));
+            }
             return '';
         }
     }

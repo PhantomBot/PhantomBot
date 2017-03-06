@@ -99,7 +99,8 @@
             subAction = args[2],
             actionArgs = args[3],
             audioHook = args[1],
-            audioHookListStr;
+            audioHookListStr,
+            isModv3 = $.isModv3(sender, event.getTags());
 
         /* Control Panel call to update the Audio Hooks DB. */
         if (command.equalsIgnoreCase('reloadaudiopanelhooks')) {
@@ -153,9 +154,21 @@
                     return;
                 }
 
-                if (audioHookExists(audioHook) === undefined) {
+                if (!audioHookExists(audioHook)) {
                     $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
                     return;
+                }
+
+                // Moved this from init since only this command can have three commands. Why slow down all of the command with 
+                // 3 db calls just for this?
+                if ((((isModv3 && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isModv3)) && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
+                    var commandCost = $.getCommandPrice(command, subCommand, action);
+                    if ($.getUserPoints(sender) < commandCost) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
+                        return;
+                    } else {
+                        $.inidb.decr('points', sender, commandCost);
+                    }
                 }
 
                 if (messageToggle) {

@@ -10,6 +10,7 @@
         noticeToggle = $.getSetIniDbBoolean('noticeSettings', 'noticetoggle', false),
         numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
         noticeOffline = $.getSetIniDbBoolean('noticeSettings', 'noticeOfflineToggle', false),
+        isReloading = false,
         messageCount = 0,
         RandomNotice = 0,
         lastNoticeSent = 0,
@@ -19,23 +20,29 @@
      * @function reloadNotices
      */
     function reloadNotices() {
-        var keys = $.inidb.GetKeyList('notices', ''),
-            count = 0,
-            i;
-
-        for (i = 0; i < keys.length; i++) {
-            $.inidb.set('tempnotices', keys[i], $.inidb.get('notices', keys[i]));
+        if (!isReloading) {
+            isReloading = true;
+            var keys = $.inidb.GetKeyList('notices', ''),
+                count = 0,
+                temp = [],
+                i;
+    
+            for (i = 0; i < keys.length; i++) {
+                if ($.inidb.get('notices', keys[i]) != null) {
+                    temp[i] = $.inidb.get('notices', keys[i])
+                }
+            }
+    
+            $.inidb.RemoveFile('notices');
+    
+            for (i = 0; i < temp.length; i++) {
+                $.inidb.set('notices', 'message_' + count, temp[i]);
+                count++;
+            }
+    
+            numberOfNotices = $.inidb.GetKeyList('notices', '').length;
+            isReloading = false;
         }
-
-        $.inidb.RemoveFile('notices');
-        keys = $.inidb.GetKeyList('tempnotices', '');
-
-        for (i = 0; i < keys.length; i++) {
-            $.inidb.set('notices', 'message_' + count, $.inidb.get('tempnotices', keys[i]));
-            count++;
-        }
-
-        $.inidb.RemoveFile('tempnotices');
     };
 
     /**
@@ -45,6 +52,10 @@
         var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
             CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
             notice = $.inidb.get('notices', 'message_' + RandomNotice);
+
+        if (notice == null) {
+            return;
+        }
 
         RandomNotice++;
 
@@ -127,7 +138,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
                     return;
                 } else {
-                    argsString = argsString.replace(action + ' ' + args[1], '').trim();
+                    argsString = args.slice(2).join(' ');
                     $.inidb.set('notices', 'message_' + args[1], argsString);
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-success'));
                     return;
@@ -145,7 +156,7 @@
                     //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
                     return;
                 } else {
-                    argsString = argsString.replace(action + ' ' + args[1], '').trim();
+                    argsString = args.slice(2).join(' ');
                     $.inidb.set('notices', 'message_' + args[1], argsString);
                     //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-edit-success'));
                     return;
@@ -199,7 +210,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-usage'));
                     return;
                 } else {
-                    argsString = argsString.replace(action + '', '').trim();
+                    argsString = args.slice(1).join(' ');
                     $.inidb.set('notices', 'message_' + numberOfNotices, argsString);
                     numberOfNotices++;
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-success'));
@@ -215,7 +226,7 @@
                     //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-usage'));
                     return;
                 } else {
-                    argsString = argsString.replace(action + '', '').trim();
+                    argsString = args.slice(1).join(' ');
                     $.inidb.set('notices', 'message_' + numberOfNotices, argsString);
                     numberOfNotices++;
                     //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-add-success'));

@@ -39,7 +39,7 @@
         		random = $.randRange(1, responseCount);
         	} while (random == lastRandom);
 
-        	$.discord.say(channel, $.lang.get('8ball.response', $.lang.get('8ball.answer.' + random)));
+        	$.discord.say(channel, $.lang.get('8ball.discord.response', $.lang.get('8ball.answer.' + random)));
         	lastRandom = random;
         }
     });
