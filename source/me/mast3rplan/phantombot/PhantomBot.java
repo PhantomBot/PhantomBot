@@ -2017,50 +2017,47 @@ public class PhantomBot implements Listener {
 
         /* Load up the bot info from the bot login file */
         try {
-            if (new File("./botlogin.txt").exists()) {
-                try {
-                    FileInputStream inputStream = new FileInputStream("botlogin.txt");
-                    startProperties.load(inputStream);
-                    inputStream.close();
-
-                    if (startProperties.getProperty("debugon", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Debug Mode Enabled via botlogin.txt");
-                        PhantomBot.enableDebugging = true;
-                    }
-
-                    if (startProperties.getProperty("debuglog", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Debug Log Only Mode Enabled via botlogin.txt");
-                        PhantomBot.enableDebugging = true;
-                        PhantomBot.enableDebuggingLogOnly = true;
-                    }
-
-                    if (startProperties.getProperty("reloadscripts", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Enabling Script Reloading");
-                        PhantomBot.reloadScripts = true;
-                    }
-                    if (startProperties.getProperty("rhinodebugger", "false").equals("true")) {
-                        com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
-                        PhantomBot.enableRhinoDebugger = true;
-                    }
-                } catch (IOException ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
-            } else {
-                
-                /* Fill in the Properties object with some default values. Note that some values are left 
-                 * unset to be caught in the upcoming logic to enforce settings.
-                 */
-                startProperties.setProperty("baseport", "25000");
-                startProperties.setProperty("usehttps", "false");
-                startProperties.setProperty("webenable", "true");
-                startProperties.setProperty("msglimit30", "18.75");
-                startProperties.setProperty("musicenable", "true");
-                startProperties.setProperty("whisperlimit60", "60.0");
+            if (new File("botlogin.txt").exists()) {
+                com.gmt2001.Console.out.println("Load configuration from File");
+                FileInputStream inputStream = new FileInputStream("botlogin.txt");
+                startProperties.load(inputStream);
+                inputStream.close();
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-
+        /* Load up the bot info from the environment */
+        for (Entry<String, String> v : System.getenv().entrySet()) {
+            String Prefix = "PHANTOMBOT_";
+            String Key = v.getKey().toUpperCase();
+            String Value = v.getValue();
+            if (Key.startsWith(Prefix) && Prefix.length() < Key.length()) {
+                Key = Key.substring(Prefix.length()).toLowerCase();
+                startProperties.setProperty(Key, Value);
+                com.gmt2001.Console.out.println("Load " + Key + " from environment");
+            }
+        }
+        /* Check to enable debug mode */
+        if (startProperties.getProperty("debugon", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Debug Mode Enabled");
+            PhantomBot.enableDebugging = true;
+        }
+        /* Check to enable debug to File */
+        if (startProperties.getProperty("debuglog", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
+            PhantomBot.enableDebugging = true;
+            PhantomBot.enableDebuggingLogOnly = true;
+        }
+        /* Check to enable Script Reloading */
+        if (startProperties.getProperty("reloadscripts", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Enabling Script Reloading");
+            PhantomBot.reloadScripts = true;
+        }
+        /* Check to enable Rhino Debugger */
+        if (startProperties.getProperty("rhinodebugger", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
+            PhantomBot.enableRhinoDebugger = true;
+        }
         /* Check to see if there's a webOauth set */
         if (startProperties.getProperty("webauth") == null) {
             startProperties.setProperty("webauth", generateWebAuth());
