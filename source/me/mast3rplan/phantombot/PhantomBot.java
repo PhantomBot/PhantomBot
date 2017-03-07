@@ -377,9 +377,9 @@ public class PhantomBot implements Listener {
         this.basePort = Integer.parseInt(this.pbProperties.getProperty("baseport", "25000"));
         this.webOAuth = this.pbProperties.getProperty("webauth");
         this.webOAuthThro = this.pbProperties.getProperty("webauthro");
-        this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true") ? true : false;
-        this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true") ? true : false;
-        this.useHttps = this.pbProperties.getProperty("usehttps", "false").equalsIgnoreCase("true") ? true : false;
+        this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true");
+        this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true");
+        this.useHttps = this.pbProperties.getProperty("usehttps", "false").equalsIgnoreCase("true");
 
         /* Set the datastore variables */
         this.dataStoreType = this.pbProperties.getProperty("datastore", "");
@@ -752,7 +752,7 @@ public class PhantomBot implements Listener {
      * Returns if Twitch WS-IRC Host Detection is connected.
      */
     public boolean wsHostIRCConnected() {
-        return (this.wsHostIRC != null ? this.wsHostIRC.isConnected() : false);
+        return (this.wsHostIRC != null && this.wsHostIRC.isConnected());
     }
 
     /*
@@ -763,11 +763,7 @@ public class PhantomBot implements Listener {
      */
     public boolean checkModuleEnabled(String module) {
         try {
-            if (dataStore.GetString("modules", "", module).equals("true")) {
-                return true;
-            } else {
-                return false;
-            }
+            return dataStore.GetString("modules", "", module).equals("true");
         } catch (NullPointerException ex) {
             return false;
         }
@@ -984,7 +980,6 @@ public class PhantomBot implements Listener {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-        data = "";
 
         /* check if the console is interactive */
         if (interactive) {
@@ -1010,7 +1005,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("ytplayer", youtubeSocketServer, 0);
-        Script.global.defineProperty("panelsocketserver", (Boolean.valueOf(useHttps) ? panelSocketSecureServer : panelSocketServer), 0);
+        Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : panelSocketServer), 0);
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
@@ -1019,7 +1014,7 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightly(), 0);
         Script.global.defineProperty("version", botVersion(), 0);
-        Script.global.defineProperty("changed", Boolean.valueOf(newSetup), 0);
+        Script.global.defineProperty("changed", newSetup, 0);
         Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
@@ -1107,9 +1102,11 @@ public class PhantomBot implements Listener {
                 Thread.sleep(1000);
             }
         } catch (InterruptedException ex) {
+            com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
+        com.gmt2001.Console.out.print("\r\n");
         print(this.botName + " now exiting.");
     }
 
@@ -1423,8 +1420,7 @@ public class PhantomBot implements Listener {
         /* Change the apiOAuth token */
         if (message.equalsIgnoreCase("apioauth")) {
             System.out.print("Please enter you're oauth token that you generated from https://phantombot.tv/oauth while logged as the caster: ");
-            String newToken = System.console().readLine().trim();
-            apiOAuth = newToken;
+            apiOAuth = System.console().readLine().trim();
             pbProperties.setProperty("apioauth", apiOAuth);
             changed = true;
         }
@@ -1437,28 +1433,23 @@ public class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your MySQL host name: ");
-                String newHost = System.console().readLine().trim();
-                mySqlHost = newHost;
+                mySqlHost = System.console().readLine().trim();
                 pbProperties.setProperty("mysqlhost", mySqlHost);
 
                 com.gmt2001.Console.out.print("Please enter your MySQL port: ");
-                String newPost = System.console().readLine().trim();
-                mySqlPort = newPost;
+                mySqlPort = System.console().readLine().trim();
                 pbProperties.setProperty("mysqlport", mySqlPort);
 
                 com.gmt2001.Console.out.print("Please enter your MySQL db name: ");
-                String newName = System.console().readLine().trim();
-                mySqlName = newName;
+                mySqlName = System.console().readLine().trim();
                 pbProperties.setProperty("mysqlname", mySqlName);
 
                 com.gmt2001.Console.out.print("Please enter a username for MySQL: ");
-                String newUser = System.console().readLine().trim();
-                mySqlUser = newUser;
+                mySqlUser = System.console().readLine().trim();
                 pbProperties.setProperty("mysqluser", mySqlUser);
 
                 com.gmt2001.Console.out.print("Please enter a password for MySQL: ");
-                String newPass = System.console().readLine().trim();
-                mySqlPass = newPass;
+                mySqlPass = System.console().readLine().trim();
                 pbProperties.setProperty("mysqlpass", mySqlPass);
 
                 dataStoreType = "MySQLStore";
@@ -1479,13 +1470,11 @@ public class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your GameWisp OAuth key: ");
-                String newToken = System.console().readLine().trim();
-                gameWispOAuth = newToken;
+                gameWispOAuth = System.console().readLine().trim();
                 pbProperties.setProperty("gamewispauth", gameWispOAuth);
 
                 com.gmt2001.Console.out.print("Please enter your GameWisp refresh key: ");
-                String newToken2 = System.console().readLine().trim();
-                gameWispRefresh = newToken2;
+                gameWispRefresh = System.console().readLine().trim();
                 pbProperties.setProperty("gamewisprefresh", gameWispRefresh);
 
                 print("PhantomBot GameWisp setup done, PhantomBot will exit.");
@@ -1503,8 +1492,7 @@ public class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your StreamLabs OAuth key: ");
-                String newToken = System.console().readLine().trim();
-                twitchAlertsKey = newToken;
+                twitchAlertsKey = System.console().readLine().trim();
                 pbProperties.setProperty("twitchalertskey", twitchAlertsKey);
 
                 print("PhantomBot StreamLabs setup done, PhantomBot will exit.");
@@ -1522,13 +1510,11 @@ public class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your StreamTip Api OAuth: ");
-                String newToken = System.console().readLine().trim();
-                streamTipOAuth = newToken;
+                streamTipOAuth = System.console().readLine().trim();
                 pbProperties.setProperty("streamtipkey", streamTipOAuth);
 
                 com.gmt2001.Console.out.print("Please enter your StreamTip Client Id: ");
-                String newId = System.console().readLine().trim();
-                streamTipClientId = newId;
+                streamTipClientId = System.console().readLine().trim();
                 pbProperties.setProperty("streamtipid", streamTipClientId);
 
                 print("PhantomBot StreamTip setup done, PhantomBot will exit.");
@@ -1546,8 +1532,7 @@ public class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your TipeeeStream Api OAuth: ");
-                String newToken = System.console().readLine().trim();
-                tipeeeStreamOAuth = newToken;
+                tipeeeStreamOAuth = System.console().readLine().trim();
                 pbProperties.setProperty("tipeeestreamkey", tipeeeStreamOAuth);
 
                 print("PhantomBot TipeeeStream setup done, PhantomBot will exit.");
@@ -1566,13 +1551,11 @@ public class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter a username of your choice: ");
-                String newUser = System.console().readLine().trim();
-                panelUsername = newUser;
+                panelUsername = System.console().readLine().trim();
                 pbProperties.setProperty("paneluser", panelUsername);
 
                 com.gmt2001.Console.out.print("Please enter a password of your choice: ");
-                String newPass = System.console().readLine().trim();
-                panelPassword = newPass;
+                panelPassword = System.console().readLine().trim();
                 pbProperties.setProperty("panelpassword", panelPassword);
 
                 print("PhantomBot Web Panel setup done, PhantomBot will exit.");
@@ -1590,28 +1573,23 @@ public class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your Twitter username: ");
-                String newUser = System.console().readLine().trim();
-                twitterUsername = newUser;
+                twitterUsername = System.console().readLine().trim();
                 pbProperties.setProperty("twitterUser", twitterUsername);
 
                 com.gmt2001.Console.out.print("Please enter your consumer key: ");
-                String newConsumerKey = System.console().readLine().trim();
-                twitterConsumerToken = newConsumerKey;
+                twitterConsumerToken = System.console().readLine().trim();
                 pbProperties.setProperty("twitter_consumer_key", twitterConsumerToken);
 
                 com.gmt2001.Console.out.print("Please enter your consumer secret: ");
-                String newConsumerSecret = System.console().readLine().trim();
-                twitterConsumerSecret = newConsumerSecret;
+                twitterConsumerSecret = System.console().readLine().trim();
                 pbProperties.setProperty("twitter_consumer_secret", twitterConsumerSecret);
 
                 com.gmt2001.Console.out.print("Please enter your access token: ");
-                String newAccess = System.console().readLine().trim();
-                twitterAccessToken = newAccess;
+                twitterAccessToken = System.console().readLine().trim();
                 pbProperties.setProperty("twitter_access_token", twitterAccessToken);
 
                 com.gmt2001.Console.out.print("Please enter your access token secret: ");
-                String newSecretAccess = System.console().readLine().trim();
-                twitterSecretToken = newSecretAccess;
+                twitterSecretToken = System.console().readLine().trim();
                 pbProperties.setProperty("twitter_secret_token", twitterSecretToken);
 
                 /* Delete the old Twitter file if it exists */
@@ -1644,7 +1622,6 @@ public class PhantomBot implements Listener {
                 outputProperties.store(outputStream, "PhantomBot Configuration File");
                 outputStream.close();
 
-                reset = false;
                 dataStore.SaveAll(true);
 
                 print("");
@@ -2288,7 +2265,7 @@ public class PhantomBot implements Listener {
      */
     public void doRefreshGameWispToken() {
 
-        long curTime = System.currentTimeMillis() / 1000l;
+        long curTime = System.currentTimeMillis() / 1000L;
 
         if (!dataStore.exists("settings", "gameWispRefreshTime")) {
             dataStore.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
@@ -2298,7 +2275,7 @@ public class PhantomBot implements Listener {
         service.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                long curTime = System.currentTimeMillis() / 1000l;
+                long curTime = System.currentTimeMillis() / 1000L;
                 String lastRunStr = dataStore.GetString("settings", "", "gameWispRefreshTime");
 
                 long lastRun = Long.parseLong(lastRunStr);
@@ -2364,9 +2341,7 @@ public class PhantomBot implements Listener {
 
                     print("Creating cache file for Control Panel...");
 
-                    if (!new File ("./web/panel/js/games.js").exists()) {
-                        new File ("./web/panel/js").mkdirs();
-                    }
+                    if (!new File ("./web/panel/js").exists()) new File ("./web/panel/js").mkdirs();
 
                     String string = "// PhantomBot Control Panel Game List\r\n// Generated by PhantomBot Core\r\n\r\n$.gamesList = [";
                     Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -2418,9 +2393,8 @@ public class PhantomBot implements Listener {
                     }
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.println("Failed to clean up database backup directory: " + ex.getMessage());
-                    return;
                 }
             }
-        }, 0, backupSQLiteHourFrequency, TimeUnit.HOURS);       
+        }, 0, backupSQLiteHourFrequency, TimeUnit.HOURS);
     }
 }
