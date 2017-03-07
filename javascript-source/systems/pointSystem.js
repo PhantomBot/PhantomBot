@@ -766,7 +766,7 @@
     // Set the timer for the points payouts
     var interval = setInterval(function() {
         runPointsPayout();
-    }, 3000);
+    }, 6e4);
 
     /**
      * @event initReady
