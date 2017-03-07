@@ -49,8 +49,8 @@
                  */
             } else if (action.equalsIgnoreCase('link')) {
                 var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-                        text = '',
-                        i;
+                    text = '',
+                    i;
 
                 for (i = 0; i < 8; i++) {
                     text += code.charAt(Math.floor(Math.random() * code.length));
