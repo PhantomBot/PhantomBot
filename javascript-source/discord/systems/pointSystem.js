@@ -27,7 +27,7 @@
                 if (twitchName === null) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.linkrequired'));
                 } else {
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.replace($.replace($.getPointsMessage(twitchName, $.username.resolve(twitchName)), "@" + twitchName + ", ",  ""), "/w " + twitchName,  ""));
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.replace($.replace($.getPointsMessage(twitchName, $.username.resolve(twitchName)), "@" + $.username.resolve(twitchName) + ", ",  ""), "/w " + twitchName,  ""));
                 }
             } else if ($.user.isKnown(action.toLowerCase())) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('pointsystem.user.success', $.username.resolve(action), getPointsString(getUserPoints(action.toLowerCase()))));
