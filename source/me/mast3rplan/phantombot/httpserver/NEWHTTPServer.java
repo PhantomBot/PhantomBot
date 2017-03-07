@@ -21,23 +21,22 @@
  */
 package me.mast3rplan.phantombot.httpserver;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.InetSocketAddress;
-import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.PhantomBot;
-import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
+import com.gmt2001.HttpLang;
+import com.sun.net.httpserver.BasicAuthenticator;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.BasicAuthenticator;
-import com.sun.net.httpserver.Headers;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import me.mast3rplan.phantombot.PhantomBot;
 import org.json.JSONStringer;
 
 public class NEWHTTPServer {
@@ -384,6 +383,11 @@ public class NEWHTTPServer {
                 FileInputStream fileStream = new FileInputStream(inputFile);
                 byte[] outputBytes = new byte[fileStream.available()];
                 fileStream.read(outputBytes);
+
+                if (uriPath.endsWith(".html") || uriPath.endsWith(".js")) {
+                    outputBytes = HttpLang.instance().replaceLangTags(new String(outputBytes)).getBytes();
+                }
+
                 sendData(inferContentType(uriPath), outputBytes, exchange);
             } catch (FileNotFoundException ex) {
                 sendHTMLError(404, "Not Found", exchange);
