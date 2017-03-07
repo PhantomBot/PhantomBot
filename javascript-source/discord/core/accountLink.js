@@ -44,12 +44,14 @@
      * @export $.discord
      * @param {string} user
      * @param {string} discriminator
-     * @return {string}
+     * @return {string or null}
      */
     function discordToTwitch(user, discriminator) {
         if ($.inidb.exists("discordToTwitch", user + "#" + discriminator)) {
             return $.inidb.get("discordToTwitch", user + "#" + discriminator);
         }
+
+        return null;
     }
 
     /**
@@ -57,7 +59,7 @@
      *
      * @export $.discord
      * @param {JDA.User} user
-     * @return {string}
+     * @return {string or null}
      */
     function discordToTwitchU(user) {
         return discordToTwitch(user.getName(), user.getDiscriminator());
@@ -75,7 +77,7 @@
                 action = args[0];
 
         /**
-         * @discordcommandpath module enable [path] - Enables any modules in the bot, it should only be used to enable discord modules though.
+         * @discordcommandpath accountlink - Checks the current account linking status of the sender
          */
         if (command.equalsIgnoreCase('accountlink')) {
             var uusername = sender.getName() + "#" + sender.getDiscriminator(),
@@ -87,6 +89,9 @@
                 } else {
                     $.discord.say(channel, $.lang.get("discord.accountlink.usage.nolink"));
                 }
+                /**
+                 * @discordcommandpath accountlink link - Starts the process of linking an account. Completing this will overwrite existing links
+                 */
             } else if (action.equalsIgnoreCase("link")) {
                 var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
                         text = '',
@@ -103,10 +108,66 @@
                 } else {
                     sayPrivateU(sender, $.lang.get("discord.accountlink.link", $.botName, text));
                 }
+                /**
+                 * @discordcommandpath accountlink remove - Removes account links from the sender
+                 */
             } else if (action.equalsIgnoreCase("remove")) {
                 $.inidb.del("discordToTwitch", uusername);
                 sayPrivateU(sender, $.lang.get("discord.accountlink.link.remove"));
             }
+        }
+    });
+
+    /**
+     * @event ircPrivateMessage
+     */
+    $.bind('ircPrivateMessage', function (event) {
+        var sender = event.getSender(),
+                message = event.getMessage();
+
+        if (sender.equalsIgnoreCase('jtv') || sender.equalsIgnoreCase('twitchnotify')) {
+            return;
+        }
+
+        /**
+         * @commandpath accountlink link [code] - Completes an account link
+         */
+        if (message.startsWith('!accountlink link ')) {
+            var code = message.substring(18);
+
+
+            if ($.strlen(code) < 8) {
+                return;
+            }
+
+            var ts = Packages.com.gmt2001.TempStore.instance(),
+                    sections = ts.GetCategoryList("discord.accountlink.pending"),
+                    tm = $.systemTime(),
+                    i,
+                    success = false;
+
+            for (i = 0; i < sections.length; i++) {
+                if (ts.HasKey("discord.accountlink.pending", sections[i], code) && ts.GetInteger("discord.accountlink.pending", sections[i], code) >= tm) {
+                    $.inidb.set("discordToTwitch", sections[i], sender.toLowerCase());
+
+                    success = true;
+                    var user = Packages.com.illusionaryone.DiscordAPI.instance().resolveUser(sections[i].substring(0, sections[i].indexOf("#")));
+
+                    if ((user.getUser().getName() + "#" + user.getUser().getDiscriminator()).equals(sections[i])) {
+                        sayPrivateU(user.getUser(), $.lang.get("discord.accountlink.link.success", $.username.resolve(sender)));
+                    } else {
+                        $.say('/w ' + sender + ' ' + $.lang.get("discord.accountlink.link.success", $.username.resolve(sender)));
+                    }
+
+                    ts.RemoveSection("discord.accountlink.pending", sections[i]);
+                }
+            }
+
+            if (!success) {
+                $.say('/w ' + sender + ' ' + $.lang.get("discord.accountlink.link.fail"));
+            }
+
+            $.log.file('whispers', '' + sender + ': ' + message);
         }
     });
 
@@ -149,5 +210,5 @@
     $.discord.sayPrivate = sayPrivate;
     $.discord.sayPrivateU = sayPrivateU;
     $.discord.discordToTwitch = discordToTwitch;
-    $.discord.discordToTwitch = discordToTwitchU;
+    $.discord.discordToTwitchU = discordToTwitchU;
 })();
