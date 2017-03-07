@@ -115,6 +115,14 @@
         }
 
         if ((typeof data === 'string' && data.length > 0) || typeof data === 'number') {
+            if (key == 'modLogs') {
+                if (value == 'true') {
+                    sendDBUpdate('discord_update', 'chatModerator', 'moderationLogs', 'true');
+                } else {
+                    sendDBUpdate('discord_update', 'chatModerator', 'moderationLogs', 'false');
+                }
+            }
+            
             sendDBUpdate('discord_update', table, key, data.toString());
 
             setTimeout(function() { sendWSEvent('discord', './discord/' + script); doQuery(); }, TIMEOUT_WAIT_TIME);

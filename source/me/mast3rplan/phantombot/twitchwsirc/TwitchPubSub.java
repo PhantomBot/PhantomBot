@@ -85,16 +85,6 @@ public class TwitchPubSub {
     }
 
     /*
-     * @function instance
-     *
-     * @param  {string}  channel
-     * @return {Object}
-     */
-    public static TwitchPubSub instance(String channel) {
-        return instances.get(channel);
-    }
-
-    /*
      * Constructor for the PubSub class.
      *
      * @param {string}  channel    Name of the channel to start the instance on. As of right now you can onyl start one instance.
