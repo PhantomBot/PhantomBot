@@ -291,12 +291,12 @@ public class DiscordAPI {
     public void sendPrivateMessage(User u, String message) {
         try {
             if (!u.hasPrivateChannel()) {
-                u.openPrivateChannel().queue();
+                u.openPrivateChannel().complete(true);
             }
 
             com.gmt2001.Console.out.println("[DISCORD] [@" + u.getName() + "#" + u.getDiscriminator() + "] [DM] " + message);
             u.getPrivateChannel().sendMessage(message).queue();
-        } catch (NullPointerException ex) {
+        } catch (RateLimitedException | NullPointerException ex) {
             com.gmt2001.Console.debug.println("Failed to send a DM message to Discord.");
             com.gmt2001.Console.err.logStackTrace(ex);
         }

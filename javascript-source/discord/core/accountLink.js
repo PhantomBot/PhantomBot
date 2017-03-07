@@ -151,6 +151,7 @@
         $.discord.registerCommand('./discord/core/accountLink.js', 'accountlink', 0);
         $.discord.registerSubCommand('accountlink', 'link', 0);
         $.discord.registerSubCommand('accountlink', 'remove', 0);
+        $.registerChatCommand('./discord/core/accountLink.js', 'accountlink', 0);
     });
 
     /* Export the function to the $.discord api. */
