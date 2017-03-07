@@ -3,6 +3,7 @@
         timeouts = {},
         whiteList = [],
         blackList = [],
+        regexBlackList = [],
         spamTracker = {},
 
         linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', false),
@@ -269,9 +270,14 @@
     function loadBlackList() {
         var keys = $.inidb.GetKeyList('blackList', '');
         blackList = [];
+        regexBlackList = [];
 
         for (i = 0; i < keys.length; i++) {
-            blackList.push(keys[i]);
+            if (keys[i].startsWith('regex:')) {
+                regexBlackList.push(new RegExp(keys[i]));
+            } else {
+                blackList.push(keys[i]);
+            }
         }
     }
 
@@ -389,6 +395,14 @@
      * @param {string} message
      */
     function checkBlackList(sender, message) {
+        for (i in regexBlackList) {
+            if (message.match(regexBlackList[i])) {
+                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
+                warning = $.lang.get('chatmoderator.timeout');
+                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
+                return true;
+            }
+        }
         for (i in blackList) {
             if (message.includes(blackList[i])) {
                 timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
@@ -836,17 +850,17 @@
             }
 
             /**
-             * @commandpath blacklist add [word] - Adds a word to the blacklist
+             * @commandpath blacklist add [word] - Adds a word to the blacklist. Use regex: at the start to specify a regex blacklist.
              */
             if (action.equalsIgnoreCase('add')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.add.usage'));
                     return;
                 }
-                var word = argString.replace(action, '').trim().toLowerCase();
+                var word = args.slice(1).join(' ').toLowerCase();
 
                 $.inidb.set('blackList', word, 'true');
-                blackList.push(word);
+                loadBlackList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.added'));
                 $.log.event('"' + word + '" was added to the blacklist by ' + sender);
             }
@@ -858,11 +872,11 @@
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('blackList', argString.replace(action, '').trim().toLowerCase())) {
+                } else if (!$.inidb.exists('blackList', args.slice(1).join(' ').toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
-                $.inidb.del('blackList', argString.replace(action, '').trim().toLowerCase());
+                $.inidb.del('blackList', args.slice(1).join(' ').toLowerCase());
                 loadBlackList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.removed'));
             }
