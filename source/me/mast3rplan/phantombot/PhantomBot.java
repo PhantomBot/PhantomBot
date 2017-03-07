@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import com.gmt2001.IniStore;
 import com.gmt2001.SqliteStore;
 import com.gmt2001.TempStore;
 import com.gmt2001.MySQLStore;
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.Logger;
 import com.google.common.eventbus.Subscribe;
@@ -516,11 +516,10 @@ public class PhantomBot implements Listener {
         }
 
         /* Set the client Id in the Twitch api. */
-        TwitchAPIv3.instance().SetClientID(this.clientId);
-
+        TwitchAPIv5.instance().SetClientID(this.clientId);
         /* Set the oauth key in the Twitch api. */
         if (!this.apiOAuth.isEmpty()) {
-            TwitchAPIv3.instance().SetOAuth(this.apiOAuth);
+            TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
         }
 
         /* Set the TwitchAlerts OAuth key and limiter. */
@@ -560,7 +559,7 @@ public class PhantomBot implements Listener {
 
         /* Start a pubsub instance here. */
         if (this.oauth.length() > 0 && checkDataStore("chatModerator", "moderationLogs")) {
-            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv3.instance().getChannelId(this.channelName), TwitchAPIv3.instance().getChannelId(this.botName), this.oauth);
+            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.oauth);
         }
 
         /* Check if the OS is Linux. */
@@ -999,7 +998,7 @@ public class PhantomBot implements Listener {
         /* Export all these to the $. api in the scripts. */
         Script.global.defineProperty("inidb", dataStore, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
-        Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
+        Script.global.defineProperty("twitch", TwitchAPIv5.instance(), 0);
         Script.global.defineProperty("botName", botName, 0);
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("channels", channels, 0);
@@ -1277,13 +1276,13 @@ public class PhantomBot implements Listener {
 
         /* Update the followed (followers) table. */
         if (message.equalsIgnoreCase("fixfollowedtable")) {
-            TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, false);
+            TwitchAPIv5.instance().FixFollowedTable(channelName, dataStore, false);
             return;
         }
 
         /* Update the followed (followers) table - forced. */
         if (message.equalsIgnoreCase("fixfollowedtable-force")) {
-            TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, true);
+            TwitchAPIv5.instance().FixFollowedTable(channelName, dataStore, true);
             return;
         }
 
@@ -2181,7 +2180,6 @@ public class PhantomBot implements Listener {
                 requiredPropertiesErrorMessage += requiredProperty + " ";
             }
         }
-        
         if (!requiredPropertiesErrorMessage.isEmpty()) {
             com.gmt2001.Console.err.println();
             com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);

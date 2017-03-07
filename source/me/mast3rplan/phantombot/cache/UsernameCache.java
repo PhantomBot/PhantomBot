@@ -16,7 +16,7 @@
  */
 package me.mast3rplan.phantombot.cache;
 
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,7 +62,7 @@ public class UsernameCache {
             }
 
             try {
-                JSONObject user = TwitchAPIv3.instance().GetUser(lusername);
+                JSONObject user = TwitchAPIv5.instance().GetUser(lusername);
 
                 if (user.getBoolean("_success")) {
                     if (user.getInt("_http") == 200) {
