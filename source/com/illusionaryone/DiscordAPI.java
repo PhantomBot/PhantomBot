@@ -291,7 +291,7 @@ public class DiscordAPI {
     public void sendPrivateMessage(User u, String message) {
         try {
             if (!u.hasPrivateChannel()) {
-                u.openPrivateChannel();
+                u.openPrivateChannel().queue();
             }
 
             com.gmt2001.Console.out.println("[DISCORD] [@" + u.getName() + "#" + u.getDiscriminator() + "] [DM] " + message);
