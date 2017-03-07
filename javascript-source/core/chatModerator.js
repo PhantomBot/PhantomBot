@@ -274,7 +274,7 @@
 
         for (i = 0; i < keys.length; i++) {
             if (keys[i].startsWith('regex:')) {
-                regexBlackList.push(new RegExp(keys[i]));
+                regexBlackList.push(new RegExp(keys[i].replace('regex:', '')));
             } else {
                 blackList.push(keys[i]);
             }
