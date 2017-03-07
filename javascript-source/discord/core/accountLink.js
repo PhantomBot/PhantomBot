@@ -56,7 +56,7 @@
                     text += code.charAt(Math.floor(Math.random() * code.length));
                 }
 
-                Packages.com.gmt2001.TempStore.instance().SetInteger('discord.accountlink.pending', userId, text, $.systemTime() + (10 * 60 * 1000));
+                Packages.com.gmt2001.TempStore.instance().SetLong('discord.accountlink.pending', userId, text, java.lang.System.currentTimeMillis() + (10 * 60 * 1000));
 
                 if (islinked) {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.relink', $.channelName, text));
@@ -95,12 +95,12 @@
 
             var ts = Packages.com.gmt2001.TempStore.instance(),
                 sections = ts.GetCategoryList('discord.accountlink.pending'),
-                tm = $.systemTime(),
+                tm = java.lang.System.currentTimeMillis(),
                 i,
                 success = false;
 
             for (i = 0; i < sections.length; i++) {
-                if (ts.HasKey('discord.accountlink.pending', sections[i], code) && ts.GetInteger('discord.accountlink.pending', sections[i], code) >= tm) {
+                if (ts.HasKey('discord.accountlink.pending', sections[i], code) && ts.GetLong('discord.accountlink.pending', sections[i], code) >= tm) {
                     $.inidb.set('discordToTwitch', sections[i], sender.toLowerCase());
 
                     success = true;
@@ -121,7 +121,7 @@
     var interval = setInterval(function () {
         var ts = Packages.com.gmt2001.TempStore.instance(),
             sections = ts.GetCategoryList('discord.accountlink.pending'),
-            tm = $.systemTime(),
+            tm = java.lang.System.currentTimeMillis(),
             keys,
             i,
             b,
@@ -132,7 +132,7 @@
 
             removed = 0;
             for (b = 0; b < keys.length; b++) {
-                if (ts.GetInteger('discord.accountlink.pending', sections[i], keys[b]) < tm) {
+                if (ts.GetLong('discord.accountlink.pending', sections[i], keys[b]) < tm) {
                     ts.RemoveKey('discord.accountlink.pending', sections[i], keys[b]);
                     removed++;
                 }
