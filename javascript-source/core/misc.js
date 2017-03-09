@@ -47,7 +47,7 @@
      * @returns {boolean}
      */
     function isKnown(username) {
-        return $.inidb.exists('visited', username.toLowerCase());
+        return $.inidb.exists('visited', username.replace('@', '').toLowerCase());
     }
 
     /**
