@@ -73,6 +73,17 @@
 	}
 
 	/**
+	 * @function message
+	 *
+	 * @export $.discord
+	 * @param {string} username
+	 * @param {string} message
+	 */
+	function message(username, message) {
+		$.discordAPI.sendPrivateMessage(username, message);
+	}
+
+	/**
 	 * @function setGame
 	 *
 	 * @export $.discord
@@ -236,6 +247,7 @@
 		userPrefix: userPrefix,
 		setStream: setStream,
 		setGame: setGame,
+		message: message,
 		say: say,
 		resolve: { 
 			global: getUserMentionOrChannel,

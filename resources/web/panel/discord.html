@@ -354,6 +354,16 @@
                     <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('gameToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'gameToggle', 'false')"><i class="fa fa-circle-o" /></div>
                 </td>
             </tr>
+            <tr class="textList">
+                <td>Toggle Bot Stream Status</td>
+                <td style="width: 25px"><div data-toggle="tooltip" title="If enabled the bot will be marked as streaming when you go live." id="botGameToggleInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('botGameToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'botGameToggle', 'true')"><i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('botGameToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'botGameToggle', 'false')"><i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
         </table>
         <br>
 
