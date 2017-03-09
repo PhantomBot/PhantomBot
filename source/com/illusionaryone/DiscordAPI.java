@@ -37,6 +37,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.channel.text.update.TextChannelUpdateNameEvent;
@@ -51,6 +52,7 @@ import net.dv8tion.jda.core.utils.PermissionUtil;
 import net.dv8tion.jda.core.hooks.EventListener;
 import net.dv8tion.jda.core.utils.SimpleLog;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.managers.Presence;
 
 import javax.security.auth.login.LoginException;
 
@@ -191,6 +193,32 @@ public class DiscordAPI {
         if (resolveChannel(channelName) != null) {
             channelMap.remove(channelName);
         }
+    }
+
+    /*
+     * Will set the bots game on Discord.
+     *
+     * @param {String} name
+     */
+    public void setGame(String name) {
+        this.jdaAPI.getPresence().setGame(Game.of(name));
+    }
+
+    /*
+     * Will set the bots game on Discord marked as streaming.
+     *
+     * @param {String} name
+     * @param {String} url
+     */
+    public void setStream(String name, String url) {
+        this.jdaAPI.getPresence().setGame(Game.of(name, url));
+    }
+
+    /*
+     * Will remove the bots game on Discord.
+     */
+    public void removeGame() {
+        this.jdaAPI.getPresence().setGame(null);
     }
 
     /*
