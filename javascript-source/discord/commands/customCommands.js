@@ -97,7 +97,7 @@
         }
 
         if (s.match(/\(count\)/g)) {
-            $.inidb.incr('commandCount', event.getCommand(), 1);
+            $.inidb.incr('discordCommandCount', event.getCommand(), 1);
             s = $.replace(s, '(count)', $.inidb.get('discordCommandCount', event.getCommand()));
         }
 
