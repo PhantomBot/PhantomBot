@@ -132,7 +132,7 @@ public class TempStore extends DataStore {
     @Override
     public String[] GetKeysByLikeKeys(String fName, String section, String search) {
         AddFile(fName);
-    
+
         Set<String> o = files.get(fName).data.get(section).keySet();
         String[] s = new String[o.size()];
 
@@ -154,7 +154,7 @@ public class TempStore extends DataStore {
             retVal[j] = s[j];
         }
         return retVal;
-    } 
+    }
 
     @Override
     public Object GetObject(String fName, String section, String key) {
@@ -193,6 +193,16 @@ public class TempStore extends DataStore {
 
     @Override
     public void SetString(String fName, String section, String key, String value) {
+        SetObject(fName, section, key, value);
+    }
+
+    @Override
+    public long GetLong(String fName, String section, String key) {
+        return (Long) GetObject(fName, section, key);
+    }
+
+    @Override
+    public void SetLong(String fName, String section, String key, long value) {
         SetObject(fName, section, key, value);
     }
 

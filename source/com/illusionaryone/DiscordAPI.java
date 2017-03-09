@@ -16,49 +16,41 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.UncaughtExceptionHandler;
-
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.security.auth.login.LoginException;
 import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.event.discord.DiscordMessageEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordCommandEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordJoinEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordLeaveEvent;
+import me.mast3rplan.phantombot.event.discord.DiscordMessageEvent;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
-
+import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Channel;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.MessageHistory;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.events.channel.text.update.TextChannelUpdateNameEvent;
 import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
+import net.dv8tion.jda.core.events.channel.text.update.TextChannelUpdateNameEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.utils.PermissionUtil;
-import net.dv8tion.jda.core.hooks.EventListener;
-import net.dv8tion.jda.core.utils.SimpleLog;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
-
-import javax.security.auth.login.LoginException;
-
-import java.time.OffsetDateTime;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
+import net.dv8tion.jda.core.hooks.EventListener;
+import net.dv8tion.jda.core.utils.PermissionUtil;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 /*
  * Communicates with the Discord API.
@@ -127,7 +119,7 @@ public class DiscordAPI {
         for (TextChannel channel : channelMap.values()) {
             for (Member member : channel.getMembers()) {
                 addUserToMap(member);
-            } 
+            }
         }
     }
 
@@ -233,6 +225,22 @@ public class DiscordAPI {
     }
 
     /*
+     * Will return that user.
+     *
+     * @param  {String} userId
+     * @return {Member}
+     */
+    public Member resolveUserId(String userId) {
+        for (Member m : users) {
+            if (m.getUser().getId().equals(userId)) {
+                return m;
+            }
+        }
+
+        return null;
+    }
+
+    /*
      * Will return that channel.
      *
      * @param  {String} channel
@@ -272,6 +280,46 @@ public class DiscordAPI {
                 }
             }
         }
+    }
+
+    /*
+     * Sends a private message to a specific user.
+     *
+     * @param {User u} m
+     * @param {String} message
+     */
+    public void sendPrivateMessage(User u, String message) {
+        try {
+            if (!u.hasPrivateChannel()) {
+                u.openPrivateChannel().complete(true);
+            }
+
+            com.gmt2001.Console.out.println("[DISCORD] [@" + u.getName() + "#" + u.getDiscriminator() + "] [DM] " + message);
+            u.getPrivateChannel().sendMessage(message).queue();
+        } catch (RateLimitedException | NullPointerException ex) {
+            com.gmt2001.Console.debug.println("Failed to send a DM message to Discord.");
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
+    }
+
+    /*
+     * Sends a private message to a specific user.
+     *
+     * @param {Member} m
+     * @param {String} message
+     */
+    public void sendPrivateMessage(Member m, String message) {
+        sendPrivateMessage(m.getUser(), message);
+    }
+
+    /*
+     * Sends a private message to a specific user.
+     *
+     * @param {String} user
+     * @param {String} message
+     */
+    public void sendPrivateMessage(String user, String message) {
+        sendPrivateMessage(resolveUser(user), message);
     }
 
     /*
@@ -392,9 +440,9 @@ public class DiscordAPI {
                 botId = jdaAPI.getSelfUser().getId();
                 getTextChannels();
                 getUserNames();
-                
+
                 com.gmt2001.Console.out.println("Discord API is Ready");
-            } else 
+            } else
 
             // MessageReceivedEvent - This will handle pasing the message and sending the events needed.
             if (event instanceof MessageReceivedEvent) {
@@ -408,7 +456,7 @@ public class DiscordAPI {
                         handleMessages(messageEvent);
                     }
                 }
-            } else 
+            } else
 
             // GuildMemberJoinEvent - This will handle adding the user to the userMap and sending an event.
             if (event instanceof GuildMemberJoinEvent) {
@@ -423,10 +471,10 @@ public class DiscordAPI {
             if (event instanceof GuildMemberLeaveEvent) {
                 GuildMemberLeaveEvent guildMemberLeaveEvent = (GuildMemberLeaveEvent) event;
                 Member member = guildMemberLeaveEvent.getMember();
-                
+
                 removeUserFromMap(member);
                 EventBus.instance().post(new DiscordLeaveEvent(member));
-            } else 
+            } else
 
             // GuildMemberNickChangeEvent - This will handle adding the user to the userMap.
             if (event instanceof GuildMemberNickChangeEvent) {
@@ -434,26 +482,26 @@ public class DiscordAPI {
                 Member member = guildMemberNickChangeEvent.getMember();
 
                 addUserToMap(member);
-            } else 
+            } else
 
             // TextChannelCreateEvent - This will handle adding the channel to the channelMap.
             if (event instanceof TextChannelCreateEvent) {
                 TextChannelCreateEvent textChannelEvent = (TextChannelCreateEvent) event;
-                
+
                 addChannelToMap(textChannelEvent.getChannel());
-            } else 
+            } else
 
             // TextChannelUpdateNameEvent - This will handle adding the channel to the channelMap.
             if (event instanceof TextChannelUpdateNameEvent) {
                 TextChannelUpdateNameEvent textChannelEvent = (TextChannelUpdateNameEvent) event;
-                
+
                 addChannelToMap(textChannelEvent.getChannel());
-            } else 
+            } else
 
             // TextChannelDeleteEvent - This will handle removing the channel from the channelMap.
             if (event instanceof TextChannelDeleteEvent) {
                 TextChannelDeleteEvent textChannelEvent = (TextChannelDeleteEvent) event;
-                
+
                 removeChannelFromMap(textChannelEvent.getChannel());
             }
         }
