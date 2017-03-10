@@ -64,13 +64,13 @@
                     val = keys[i]['value'];
 
                 html += '<tr style="textList">' +
-                    '    <td style="width: 15%">' + name + '</td>' +
+                    '    <td style="width: 15%">' + (name.length > 10 ?  name.substring(0, 10) + '...' : name) + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 85%" type="text" id="editKey_' + val.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '"' +
-                    '                   value="' + (val.length > 80 ?  val.substring(0, 80) + '...' : val) + '" />' +
-                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.editKeyword(\'' + name + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="removeKeyword_' + val.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '" onclick="$.removeKeyword(\'' + name + '\')"><i class="fa fa-trash" /> </button>' +
+                    '            <input style="width: 90%" type="text" id="editKeyword_' + name.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '"' +
+                    '                   value="' + val + '" />' +
+                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" id="removeKeyword_' + name.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '" onclick="$.removeKeyword(\'' + name + '\')"><i class="fa fa-trash" /> </button>' +
+                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" onclick="$.editKeyword(\'' + name + '\')"><i class="fa fa-pencil" /> </button> ' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -271,7 +271,7 @@
      * @function editKeyword
      */
     function editKeyword(keyword) {
-        var value = $('#' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).val();
+        var value = $('#editKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).val();
 
         if (value.length > 0) {
             sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
@@ -283,7 +283,7 @@
      * @function removeKeyword
      */
     function removeKeyword(keyword) {
-        $('#' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+        $('#removeKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
         sendDBDelete('discord_keyword', 'discordKeywords', keyword);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -298,6 +298,8 @@
         if (keyword.length > 0 && value.length > 0) {
             sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
         }
+        $('#custom-keyword').val('');
+        $('#custom-keyword-value').val('');
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
