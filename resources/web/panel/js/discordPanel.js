@@ -50,7 +50,37 @@
             }
         }
 
-        if (panelCheckQuery(msgObject, 'discord_commnads')) {
+        if (panelCheckQuery(msgObject, 'discord_keywords')) {
+            var keys = msgObject['results'],
+                html = '<table>';
+
+            if (keys.length === 0) {
+                $('#keyword-list').html('<i>There are no keywords defined.</i>');
+                return;
+            }
+
+            for (i in keys) {
+                var name = keys[i]['key'],
+                    val = keys[i]['value'];
+
+                html += '<tr style="textList">' +
+                    '    <td style="width: 15%">' + name + '</td>' +
+                    '    <td style="vertical-align: middle">' +
+                    '        <form onkeypress="return event.keyCode != 13">' +
+                    '            <input style="width: 85%" type="text" id="editKey_' + val.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '"' +
+                    '                   value="' + (val.length > 80 ?  val.substring(0, 80) + '...' : val) + '" />' +
+                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.editKeyword(\'' + name + '\')"><i class="fa fa-pencil" /> </button> ' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="removeKeyword_' + val.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '" onclick="$.removeKeyword(\'' + name + '\')"><i class="fa fa-trash" /> </button>' +
+                    '             </form>' +
+                    '        </form>' +
+                    '    </td>' +
+                    '</tr>';
+            }
+            html += '</table>';
+            $('#keyword-list').html(html);
+        }
+
+        if (panelCheckQuery(msgObject, 'discord_commands')) {
             var keys = msgObject['results'],
                 html = '<table style="width: 100%"><tr><th>Command</th><th>Response</th><th>Cooldown</th><th style="float: right;"></td>',
                 dataObj = {},
@@ -59,7 +89,12 @@
                 response,
                 command,
                 channel;
-                
+            
+            if (keys.length === 0) {
+                $('#commands-list').html('<i>There are no commands defined.</i>');
+                return;
+            }
+
             for (i in keys) {
                 if (keys[i]['table'] == 'discordPermcom') {
                     if (dataObj[keys[i]['key']] === undefined) {
@@ -114,6 +149,15 @@
             html += '</table>';
             $('#command-list').html(html);
         }
+    }
+
+    /*
+     * @function doQuery
+     */
+    function doQuery() {
+        sendDBKeys('discord_settings', 'discordSettings');
+        sendDBKeys('discord_keywords', 'discordKeywords');
+        sendDBKeysList('discord_commands', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom']);
     }
 
     /*
@@ -224,11 +268,37 @@
     }
 
     /*
-     * @function doQuery
+     * @function editKeyword
      */
-    function doQuery() {
-        sendDBKeys('discord_settings', 'discordSettings');
-        sendDBKeysList('discord_commnads', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom']);
+    function editKeyword(keyword) {
+        var value = $('#' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).val();
+
+        if (value.length > 0) {
+            sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /*
+     * @function removeKeyword
+     */
+    function removeKeyword(keyword) {
+        $('#' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+        sendDBDelete('discord_keyword', 'discordKeywords', keyword);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /*
+     * @function addKeyword
+     */
+    function addKeyword() {
+        var keyword = $('#custom-keyword').val(),
+            value = $('#custom-keyword-value').val();
+
+        if (keyword.length > 0 && value.length > 0) {
+            sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /* Import the HTML file for this panel. */
@@ -260,4 +330,7 @@
     $.openCommandModal = openCommandModal;
     $.discordOnMessage = onMessage;
     $.discordDoQuery = doQuery;
+    $.editKeyword = editKeyword;
+    $.removeKeyword = removeKeyword;
+    $.addKeyword = addKeyword;
 })();

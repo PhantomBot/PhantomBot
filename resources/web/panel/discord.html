@@ -148,6 +148,24 @@
     </div>
     </div>
 
+    <h3>Custom Keywords</h3>
+    <div>
+    <div id="_discord_customKeywordsDisabled" />
+    <div id="_discord_customKeywords">
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addCustomKeyword">Add a keyword</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addKeyword()">Submit</button>
+                <input type="text" class="form-control" id="custom-keyword" placeholder="Keyword name" />
+                <input type="text" class="form-control" id="custom-keyword-value" placeholder="Keyword response" />
+            </div>
+        </form>
+        <br><br>
+        <div id="keyword-list" style="height: 250px; overflow: auto;"/>
+    </div>
+    </div>
+
     <h3>Moderation Logs Settings</h3>
     <div>
     <div id=""/>
