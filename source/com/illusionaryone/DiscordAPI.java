@@ -16,7 +16,6 @@
  */
 package com.illusionaryone;
 
-
 import java.time.OffsetDateTime;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -184,12 +183,12 @@ public class DiscordAPI {
      * @param {Member} member
      */
     private void addUserToMap(Member member) {
-        String username = (member.getNickname() == null ? member.getUser().getName() : member.getNickname()).toLowerCase();
+        String username = (member.getNickname() == null ? member.getUser().getName().toLowerCase() : member.getNickname()).toLowerCase();
 
         if (resolveUser(username) == null) {
             userMap.put(username, member);
             if (member.getNickname() != null) {
-                userMap.put(member.getUser().getName(), member);
+                userMap.put(member.getUser().getName().toLowerCase(), member);
             }
             users.add(member);
         }
@@ -201,7 +200,7 @@ public class DiscordAPI {
      * @param {Member} member
      */
     private void removeUserFromMap(Member member) {
-        String username = (member.getNickname() == null ? member.getUser().getName() : member.getNickname()).toLowerCase();
+        String username = (member.getNickname() == null ? member.getUser().getName().toLowerCase() : member.getNickname()).toLowerCase();
 
         if (resolveUser(username) != null) {
             userMap.remove(username);
@@ -259,8 +258,7 @@ public class DiscordAPI {
                 roles.add(newRole);
             }
         }
-
-        if (roles.size() > 0 && username != null) {
+        if (roles.size() > 0 && newUsername != null) {
             try {
                 guildController.addRolesToMember(newUsername, roles).queue();
                 return true;
