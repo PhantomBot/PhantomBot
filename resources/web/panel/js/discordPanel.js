@@ -79,6 +79,18 @@
                     } else {
                         dataObj[keys[i]['key']].channel = keys[i]['value'];
                     }
+                } else if (keys[i]['table'] == 'discordPricecom') {
+                    if (dataObj[keys[i]['key']] === undefined) {
+                        dataObj[keys[i]['key']] = { cost: keys[i]['value'] };
+                    } else {
+                        dataObj[keys[i]['key']].cost = keys[i]['value'];
+                    }
+                } else if (keys[i]['table'] == 'discordAliascom') {
+                    if (dataObj[keys[i]['key']] === undefined) {
+                        dataObj[keys[i]['key']] = { alias: keys[i]['value'] };
+                    } else {
+                        dataObj[keys[i]['key']].alias = keys[i]['value'];
+                    }
                 }
             }
 
@@ -157,13 +169,17 @@
             sendDBDelete('discord_command', 'discordPermcom', cmd);
             sendDBDelete('discord_command', 'discordCooldown', cmd);
             sendDBDelete('discord_command', 'discordChannelcom', cmd);
+            sendDBDelete('discord_command', 'discordPricecom', cmd);
+            sendDBDelete('discord_command', 'discordAliascom', cmd);
             sendWSEvent('discord', './discord/commands/customCommands.js', 'remove', [cmd]);
         } else {
             var command = ($('#command-name-modal').val().length === 0 ? $('#command-add-name-modal').val() : $('#command-name-modal').val()),
                 response = ($('#command-response-modal').val().length === 0 ?  $('#command-add-response-modal').val() : $('#command-response-modal').val()),
                 permission = ($('#command-permission-modal').val().length === 0 ?  $('#command-add-permission-modal').val() : $('#command-permission-modal').val()),
                 cooldown = ($('#command-cooldown-modal').val().length === 0 ? $('#command-add-cooldown-modal').val() : $('#command-cooldown-modal').val()),
-                channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val());
+                channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val()),
+                price = ($('#command-cost-modal').val().length === 0 ? $('#command-add-cost-modal').val() : $('#command-cost-modal').val()),
+                alias = ($('#command-alias-modal').val().length === 0 ? $('#command-add-alias-modal').val() : $('#command-alias-modal').val());
 
             if (command.length === 0 || response.length === 0 || command.match(/[\'\"\s]/ig) || (permission != 1 && permission != 0)) {
                 setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);
@@ -172,16 +188,23 @@
             }
 
             command = command.replace('!', '').toLowerCase();
+            alias = alias.replace('!', '').toLowerCase();
 
             sendDBUpdate('discord_command', 'discordCommands', command, response.toString());
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
             sendDBUpdate('discord_command', 'discordCooldown', command, cooldown.toString());
+            sendDBUpdate('discord_command', 'discordPricecom', command, price.toString());
             if (channel.length > 0) {
                 sendDBUpdate('discord_command', 'discordChannelcom', command, channel.replace('#', '').toString());
             } else {
                 sendDBDelete('discord_command', 'discordChannelcom', command);
             }
-            setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel]); }, TIMEOUT_WAIT_TIME);
+            if (alias.length > 0) {
+                sendDBUpdate('discord_command', 'discordAliascom', command, alias.toString());
+            } else {
+                sendDBDelete('discord_command', 'discordAliascom', command);
+            }
+            setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel, alias, price]); }, TIMEOUT_WAIT_TIME);
         }
 
         setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);

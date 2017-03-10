@@ -16,56 +16,50 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.UncaughtExceptionHandler;
+
+import java.time.OffsetDateTime;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.awt.Color;
+import java.util.Map;
+
+import javax.security.auth.login.LoginException;
 
 import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.event.discord.DiscordMessageEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordCommandEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordJoinEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordLeaveEvent;
+import me.mast3rplan.phantombot.event.discord.DiscordMessageEvent;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 
+import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Channel;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.MessageHistory;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.events.channel.text.update.TextChannelUpdateNameEvent;
 import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
+import net.dv8tion.jda.core.events.channel.text.update.TextChannelUpdateNameEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.utils.PermissionUtil;
-import net.dv8tion.jda.core.hooks.EventListener;
-import net.dv8tion.jda.core.utils.SimpleLog;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import net.dv8tion.jda.core.managers.Presence;
-
-import javax.security.auth.login.LoginException;
-
-import java.time.OffsetDateTime;
-
-import java.awt.Color;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
+import net.dv8tion.jda.core.hooks.EventListener;
+import net.dv8tion.jda.core.utils.PermissionUtil;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 /*
  * Communicates with the Discord API.
@@ -193,6 +187,60 @@ public class DiscordAPI {
         if (resolveChannel(channelName) != null) {
             channelMap.remove(channelName);
         }
+    }
+
+    /*
+     * Will return that user.
+     *
+     * @param  {String} userId
+     * @return {Member}
+     */
+    public Member resolveUserId(String userId) {
+        for (Member member : users) {
+            if (member.getUser().getId().equals(userId)) {
+                return member;
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Sends a private message to a specific user.
+     *
+     * @param {User} user
+     * @param {String} message
+     */
+    public void sendPrivateMessage(User user, String message) {
+        try {
+            if (!user.hasPrivateChannel()) {
+                user.openPrivateChannel().complete(true);
+            }
+
+            com.gmt2001.Console.out.println("[DISCORD] [@" + user.getName() + "#" + user.getDiscriminator() + "] [DM] " + message);
+            user.getPrivateChannel().sendMessage(message).queue();
+        } catch (RateLimitedException | NullPointerException ex) {
+            com.gmt2001.Console.err.println("Failed to send a DM message to Discord: " + ex.getMessage());
+        }
+    }
+
+    /*
+     * Sends a private message to a specific user.
+     *
+     * @param {Member} member
+     * @param {String} message
+     */
+    public void sendPrivateMessage(Member member, String message) {
+        sendPrivateMessage(member.getUser(), message);
+    }
+
+    /*
+     * Sends a private message to a specific user.
+     *
+     * @param {String} user
+     * @param {String} message
+     */
+    public void sendPrivateMessage(String user, String message) {
+        sendPrivateMessage(resolveUser(user), message);
     }
 
     /*

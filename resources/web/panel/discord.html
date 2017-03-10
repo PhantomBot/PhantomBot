@@ -55,6 +55,12 @@
                         title="Permission of the command, 0 means it will work everyone and 1 means it's only for administrators." />
                     </div>
 
+                    <lable><b>Cost:</b></lable>
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <input id="command-cost-modal" type="number" min="0" max="1" class="form-control" placeholder="Cost" data-toggle="tooltip" 
+                        title="The cost of this command, note that users have to have their Discord linked in the bot with !accountlink" />
+                    </div>
+
                     <lable><b>Cooldown:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-cooldown-modal" type="number" class="form-control" placeholder="Cooldown" data-toggle="tooltip" 
@@ -65,6 +71,12 @@
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
                         title="Channel that you only want this command to work in, leave it blank to make the command global."/>
+                    </div>
+
+                    <lable><b>Alias:</b></lable>
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <input id="command-alias-modal" type="text" class="form-control" placeholder="Alias name" data-toggle="tooltip" 
+                        title="Make an alias for this command."/>
                     </div> 
                </div>
                 <div class="modal-footer">
@@ -102,6 +114,12 @@
                         title="Permission of the command, 0 means it will work everyone and 1 means it's only for administrators." />
                     </div>
 
+                    <lable><b>Cost:</b></lable>
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <input id="command-add-cost-modal" type="number" min="0" max="1" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
+                        title="The cost of this command, note that users have to have their Discord linked in the bot with !accountlink" />
+                    </div>
+
                     <lable><b>Cooldown:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-add-cooldown-modal" type="number" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
@@ -112,6 +130,12 @@
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-add-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
                         title="Channel that you only want this command to work in, leave it blank to make the command global."/>
+                    </div>
+
+                    <lable><b>Alias:</b></lable>
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <input id="command-add-alias-modal" type="text" class="form-control" placeholder="Alias name" data-toggle="tooltip" 
+                        title="Make an alias for this command."/>
                     </div> 
                </div>
                 <div class="modal-footer">

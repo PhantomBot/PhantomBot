@@ -747,6 +747,7 @@
             loadScript('./discord/core/patternDetector.js');
             loadScript('./discord/core/moderation.js');
             loadScript('./discord/core/registerCommand.js');
+            loadScript('./discord/core/accountLink.js');
             loadScript('./discord/core/commandCooldown.js');
 
             $.log.event('Discord Core loaded, initializing modules...');
@@ -909,13 +910,18 @@
          * @event api-DiscordCommandEvent
          */
         $api.on($script, 'discordCommand', function(event) {
-            var command = event.getCommand(),
+            var username = event.getUsername(),
+                command = event.getCommand(),
                 channel = event.getChannel(),
                 isAdmin = event.isAdmin(),
                 args = event.getArgs();
 
-            if ($.discord.commandExists(command) === false) {
+            if ($.discord.commandExists(command) === false && ($.discord.aliasExists(command) === false || $.discord.aliasExists(command) === true && $.discord.commandExists($.discord.getCommandAlias(command)) === false)) {
                 return;
+            }
+
+            if ($.discord.aliasExists(command) === true) {
+                command = event.setCommand($.discord.getCommandAlias(command));
             }
 
             if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
@@ -926,11 +932,20 @@
                 return;
             }
 
+            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(username) < $.discord.getCommandCost(command)) {
+                return;
+            }
+
             if ($.discord.getCommandChannel(command) !== '' && !$.discord.getCommandChannel(command).equalsIgnoreCase(channel)) {
                 return;
             }
 
             callHook('discordCommand', event, false);
+
+            // Do this last to not slow down the command hook.
+            if ($.discord.getCommandCost(command) > 0) {
+                $.discord.decrUserPoints(username, $.discord.getCommandCost(command));
+            }
         });
 
         /**
