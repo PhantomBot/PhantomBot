@@ -440,7 +440,7 @@
         var main = $('#aliasCommandInput').val();
         var alias = $('#aliasCommandInputAlias').val();
 
-        if (main.match(/[^a-zA-Z0-9]/g) || alias.match(/[^a-zA-Z0-9]/)) {
+        if (main.match(/[^a-zA-Z0-9]/g) || alias.match(/[^a-zA-Z0-9\s]/)) {
             $("#aliasCommandInputAlias").val("[ERROR] Alias name can not contain symbols or spaces.");
             $("#aliasCommandInput").val("");
             setTimeout(function() { $('#aliasCommandInputAlias').val(""); }, TIMEOUT_WAIT_TIME * 10);

@@ -16,46 +16,59 @@
         
         if ($.bot.isModuleEnabled('./handlers/keywordHandler.js')) {
             for (i in keys) {
-                if (message.match(keys[i].toLowerCase())) {
+                if (message.includes(keys[i].toLowerCase())) {
                     key = keys[i].toLowerCase();
                     origKey = keys[i];
                     break;
                 }
             }
 
-            /** Make sure the keyword is in spaces and not in a word */
-            if (message.match('\\b' + key + '\\b') && !message.match(/!keyword/)) {
-                keyword = $.inidb.get('keywords', origKey);
-
-                if ($.coolDownKeywords.get(key, event.getSender()) > 0) {
-                    $.consoleDebug('[COOLDOWN] Keyword ' + key + ' was not sent because its on a cooldown.');
+            // Some users use special symbols that may break regex so this will fix that.
+            try {
+                if (!message.match('\\b' + key + '\\b') || message.includes(/!keyword/)) {
                     return;
                 }
-
-                /** Is this keyword using a command tag? */
-                if (keyword.match(/command:/g)) {
-                    var keyString = keyword.substring(8),
-                        arguments = '';
-
-                    if (keyString.contains(' ')) {
-                        keyword = keyString.substring(0, keyString.indexOf(' '));
-                        arguments = keyString.substring(keyString.indexOf(' ') + 1);
-                        keyString = keyword;
-                    }
-
-                    ScriptEventManager.instance().runDirect(new CommandEvent(event.getSender(), keyString, arguments));
-                    return;
-                }
-
-                if ($.inidb.exists('pricekey', key) && ((($.isMod(sender) && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !$.isModv3(sender, event.getTags())))) {
-                    if ($.getUserPoints(event.getSender()) < $.inidb.get('pricekey', key)) {
+            } catch (ex) {
+                if (ex.message.toLowerCase().includes('invalid quantifier') || ex.message.toLowerCase().includes('syntax')) {
+                    if (!message.includes(keys[i]) || message.includes('!keyword')) {
                         return;
                     }
-                    $.inidb.decr('points', event.getSender(), parseInt($.inidb.get('pricekey', key)));
+                } else {
+                    $.log.error('Failed to send keyword "' + keys[i] + '": ' + ex.message);
+                    return;
+                }
+            }
+
+            keyword = $.inidb.get('keywords', origKey);
+
+            if ($.coolDownKeywords.get(key, event.getSender()) > 0) {
+                $.consoleDebug('[COOLDOWN] Keyword ' + key + ' was not sent because its on a cooldown.');
+                return;
+            }
+
+            /** Is this keyword using a command tag? */
+            if (keyword.match(/command:/g)) {
+                var keyString = keyword.substring(8),
+                    arguments = '';
+
+                if (keyString.contains(' ')) {
+                    keyword = keyString.substring(0, keyString.indexOf(' '));
+                    arguments = keyString.substring(keyString.indexOf(' ') + 1);
+                    keyString = keyword;
                 }
 
-                $.say($.tags(event, keyword, false));
+                ScriptEventManager.instance().runDirect(new CommandEvent(event.getSender(), keyString, arguments));
+                return;
             }
+
+            if ($.inidb.exists('pricekey', key) && ((($.isMod(event.getSender()) && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(event.getSender())) || !$.isModv3(event.getSender(), event.getTags())))) {
+                if ($.getUserPoints(event.getSender()) < $.inidb.get('pricekey', key)) {
+                    return;
+                }
+                $.inidb.decr('points', event.getSender(), parseInt($.inidb.get('pricekey', key)));
+            }
+
+            $.say($.tags(event, keyword, false));
         }
     });
 

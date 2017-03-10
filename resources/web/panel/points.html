@@ -83,6 +83,12 @@
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
+            <label for="setActiveBonus">Set Active Bonus</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setactivebonus')">Update</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setactivebonus" placeholder="Points" />
+        </div>
+
+        <div class="form-group" onkeypress="return event.keyCode != 13">
             <label for="topListAmountPoints">Top Points List Amount</label>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.topListPoints()">Update</button>
             <input type="number" min="0" class="form-control" id="topListAmountPoints" placeholder="Amount" />

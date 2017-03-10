@@ -215,6 +215,9 @@
             if (panelMatch(module, './discord/handlers/gamewispHandler.js')) {
                 handlePanel('./discord/handlers/gamewispHandler.js', '#_discord_gameWispHandler', moduleEnabled);
             }
+            if (panelMatch(module, './discord/handlers/keywordHandler.js')) {
+                handlePanel('./discord/handlers/keywordHandler.js', '#_discord_customkeywords', moduleEnabled);
+            }
             if (panelMatch(module, './discord/systems/greetingsSystem.js')) {
                 handlePanel('./discord/systems/greetingsSystem.js', '#_discord_greetingSystem', moduleEnabled);
             }

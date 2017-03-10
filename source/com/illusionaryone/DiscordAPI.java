@@ -16,21 +16,29 @@
  */
 package com.illusionaryone;
 
+
 import java.time.OffsetDateTime;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.awt.Color;
 import java.util.Map;
+
 import javax.security.auth.login.LoginException;
+
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.discord.DiscordCommandEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordJoinEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordLeaveEvent;
 import me.mast3rplan.phantombot.event.discord.DiscordMessageEvent;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
+
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Member;
@@ -38,6 +46,9 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
@@ -48,9 +59,11 @@ import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.exceptions.PermissionException;
 import net.dv8tion.jda.core.hooks.EventListener;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.core.managers.GuildController;
 
 /*
  * Communicates with the Discord API.
@@ -63,8 +76,11 @@ public class DiscordAPI {
     private static final DiscordAPI instance = new DiscordAPI();
     private final Map<String, TextChannel> channelMap = new HashMap<>();
     private final Map<String, Member> userMap = new HashMap<>();
+    private final Map<String, Role> roleMap = new HashMap<>();
     private final List<Member> users = new ArrayList<>();
+    private GuildController guildController = null;
     private Boolean isPurgingOn = false;
+    private Guild guild = null;
     private String botId;
     private JDA jdaAPI;
 
@@ -108,6 +124,10 @@ public class DiscordAPI {
      */
     private void getTextChannels() {
         for (TextChannel channel : jdaAPI.getTextChannels()) {
+            if (guildController == null) {
+                guildController = new GuildController(channel.getGuild());
+                guild = channel.getGuild();
+            }
             addChannelToMap(channel);
         }
     }
@@ -119,7 +139,42 @@ public class DiscordAPI {
         for (TextChannel channel : channelMap.values()) {
             for (Member member : channel.getMembers()) {
                 addUserToMap(member);
-            }
+            } 
+        }
+    }
+
+    /*
+     * Gets all of the roles in the server.
+     */
+    private void getRoles() {
+        for (Role role : guild.getRoles()) {
+            addRoleToMap(role);
+        }
+    }
+
+    /*
+     * Adds a role to the roleMap
+     *
+     * @param {Role} role
+     */
+    private void addRoleToMap(Role role) {
+        String name = role.getName().toLowerCase();
+
+        if (resolveRole(name) == null) {
+            roleMap.put(name, role);
+        }
+    }
+
+    /*
+     * Removes a role from the roleMap
+     *
+     * @param {Role} role
+     */
+    private void removeRoleFromMap(Role role) {
+        String name = role.getName().toLowerCase();
+
+        if (resolveRole(name) != null) {
+            roleMap.remove(name);
         }
     }
 
@@ -181,73 +236,44 @@ public class DiscordAPI {
     }
 
     /*
-     * Returns the current JDA api.
-     */
-    public JDA getJDA() {
-        return this.jdaAPI;
-    }
-
-    /*
-     * Returns a list of all the Discord users.
-     */
-    public List getUserMembers() {
-        return this.users;
-    }
-
-    /*
-     * Will return that user if he exists.
+     * Sets a role on a user
      *
-     * @param  {String} username
-     * @return {Boolean}
+     * @param {String} role
+     * @param {String} username
      */
-    public Boolean isUser(String username) {
-        return this.userMap.containsKey(username.replace("@", "").toLowerCase());
-    }
+    public Boolean setRole(String role, String username) {
+        Member newUsername = resolveUser(username);
+        List<Role> roles = new ArrayList<>();
+        Role newRole = null;
 
-    /*
-     * Will return that channel if he exists.
-     *
-     * @param  {String} channel
-     * @return {Boolean}
-     */
-    public Boolean isChannel(String channel) {
-        return this.channelMap.containsKey(channel.replace("#", "").toLowerCase());
-    }
-
-    /*
-     * Will return that user.
-     *
-     * @param  {String} username
-     * @return {Member}
-     */
-    public Member resolveUser(String username) {
-        return this.userMap.get(username.replace("@", "").toLowerCase());
-    }
-
-    /*
-     * Will return that user.
-     *
-     * @param  {String} userId
-     * @return {Member}
-     */
-    public Member resolveUserId(String userId) {
-        for (Member m : users) {
-            if (m.getUser().getId().equals(userId)) {
-                return m;
+        if (role.contains(",")) {
+            String[] split = role.split(",");
+            for (String r : split) {
+                if (isRole(r)) {
+                    roles.add(resolveRole(r));
+                }
+            }
+        } else {
+            newRole = resolveRole(role);
+            if (newRole != null) {
+                roles.add(newRole);
             }
         }
 
-        return null;
-    }
-
-    /*
-     * Will return that channel.
-     *
-     * @param  {String} channel
-     * @return {TextChannel}
-     */
-    public TextChannel resolveChannel(String channel) {
-        return this.channelMap.get(channel.replace("#", "").toLowerCase());
+        if (roles.size() > 0 && username != null) {
+            try {
+                guildController.addRolesToMember(newUsername, roles).queue();
+                return true;
+            } catch (IllegalArgumentException | PermissionException ex) {
+                com.gmt2001.Console.out.println("");
+                com.gmt2001.Console.err.println("Failed to changed role on user " + username + ", [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+                if (ex.getMessage().toLowerCase().contains("higher or equal")) {
+                    com.gmt2001.Console.warn.println("Please move the bot's role near the top of the roles list.");
+                }
+                com.gmt2001.Console.out.println("");
+            }
+        }
+        return false;
     }
 
     /*
@@ -285,31 +311,30 @@ public class DiscordAPI {
     /*
      * Sends a private message to a specific user.
      *
-     * @param {User u} m
+     * @param {User} user
      * @param {String} message
      */
-    public void sendPrivateMessage(User u, String message) {
+    public void sendPrivateMessage(User user, String message) {
         try {
-            if (!u.hasPrivateChannel()) {
-                u.openPrivateChannel().complete(true);
+            if (!user.hasPrivateChannel()) {
+                user.openPrivateChannel().complete(true);
             }
 
-            com.gmt2001.Console.out.println("[DISCORD] [@" + u.getName() + "#" + u.getDiscriminator() + "] [DM] " + message);
-            u.getPrivateChannel().sendMessage(message).queue();
+            com.gmt2001.Console.out.println("[DISCORD] [@" + user.getName() + "#" + user.getDiscriminator() + "] [DM] " + message);
+            user.getPrivateChannel().sendMessage(message).queue();
         } catch (RateLimitedException | NullPointerException ex) {
-            com.gmt2001.Console.debug.println("Failed to send a DM message to Discord.");
-            com.gmt2001.Console.err.logStackTrace(ex);
+            com.gmt2001.Console.err.println("Failed to send a DM message to Discord [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         }
     }
 
     /*
      * Sends a private message to a specific user.
      *
-     * @param {Member} m
+     * @param {Member} member
      * @param {String} message
      */
-    public void sendPrivateMessage(Member m, String message) {
-        sendPrivateMessage(m.getUser(), message);
+    public void sendPrivateMessage(Member member, String message) {
+        sendPrivateMessage(member.getUser(), message);
     }
 
     /*
@@ -320,6 +345,183 @@ public class DiscordAPI {
      */
     public void sendPrivateMessage(String user, String message) {
         sendPrivateMessage(resolveUser(user), message);
+    }
+
+    /*
+     * Will set the bots game on Discord.
+     *
+     * @param {String} name
+     */
+    public void setGame(String name) {
+        this.jdaAPI.getPresence().setGame(Game.of(name));
+    }
+
+    /*
+     * Will set the bots game on Discord marked as streaming.
+     *
+     * @param {String} name
+     * @param {String} url
+     */
+    public void setStream(String name, String url) {
+        this.jdaAPI.getPresence().setGame(Game.of(name, url));
+    }
+
+    /*
+     * Will remove the bots game on Discord.
+     */
+    public void removeGame() {
+        this.jdaAPI.getPresence().setGame(null);
+    }
+
+    /*
+     * Returns the current JDA api.
+     */
+    public JDA getJDA() {
+        return this.jdaAPI;
+    }
+
+    /*
+     * Returns a list of all the Discord users.
+     */
+    public List getUserMembers() {
+        return this.users;
+    }
+
+    /*
+     * Will return if that role exists.
+     *
+     * @param  {String} role
+     * @return {Boolean}
+     */
+    public Boolean isRole(String role) {
+        return this.roleMap.containsKey(role.toLowerCase());
+    }
+
+    /*
+     * Will return that user if he exists.
+     *
+     * @param  {String} username
+     * @return {Boolean}
+     */
+    public Boolean isUser(String username) {
+        return this.userMap.containsKey(username.replace("@", "").toLowerCase());
+    }
+
+    /*
+     * Will return that channel if he exists.
+     *
+     * @param  {String} channel
+     * @return {Boolean}
+     */
+    public Boolean isChannel(String channel) {
+        return this.channelMap.containsKey(channel.replace("#", "").toLowerCase());
+    }
+
+    /*
+     * Will return that user.
+     *
+     * @param  {String} username
+     * @return {Member}
+     */
+    public Member resolveUser(String username) {
+        return this.userMap.get(username.replace("@", "").toLowerCase());
+    }
+
+    /*
+     * Will return that channel.
+     *
+     * @param  {String} channel
+     * @return {TextChannel}
+     */
+    public TextChannel resolveChannel(String channel) {
+        return this.channelMap.get(channel.replace("#", "").toLowerCase());
+    }
+
+    /*
+     * Will return that role.
+     *
+     * @param  {String} role
+     * @return {Role}
+     */
+    public Role resolveRole(String role) {
+        return this.roleMap.get(role.toLowerCase());
+    }
+
+    /*
+     * Will return that user.
+     *
+     * @param  {String} userId
+     * @return {Member}
+     */
+    public Member resolveUserId(String userId) {
+        for (Member member : users) {
+            if (member.getUser().getId().equals(userId)) {
+                return member;
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Sends a message to a specific channel in embed.
+     *
+     * @param {String} channel
+     * @param {String} message
+     */
+    public void sendMessageEmbed(String channel, String color, String message) {
+        TextChannel textChannel = resolveChannel(channel);
+
+        if (textChannel != null) {
+            try {
+                com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [EMBED] " + message);
+                textChannel.sendMessage(new EmbedBuilder().setColor(getColor(color)).setDescription(message).build()).queue();
+            } catch (NullPointerException ex) {
+                // If the bot is ever kicked from the server the channel instance will be there, but null for JDA.
+                // This will get the channels again and the users.
+                com.gmt2001.Console.debug.println("Failed to send a message to Discord. This is caused when a session is killed.");
+                channelMap.clear();
+                userMap.clear();
+                users.clear();
+                botId = jdaAPI.getSelfUser().getId();
+                getTextChannels();
+                getUserNames();
+
+                textChannel = resolveChannel(channel);
+                if (textChannel != null) {
+                    textChannel.sendMessage(new EmbedBuilder().setColor(getColor(color)).setDescription(message).build()).queue();
+                }
+            }
+        }
+    }
+
+    /*
+     * @function getColor
+     *
+     * @param  {String} color
+     * @return {Color}
+     */
+    public Color getColor(String color) {
+        Matcher match = Pattern.compile("(\\d+), (\\d+), (\\d+)").matcher(color);
+        if (match.find() == true) {
+            return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(1)), Integer.parseInt(match.group(3)));
+        } else {
+            switch (color) {
+                case "black": return Color.black;
+                case "blue": return Color.blue;
+                case "cyan": return Color.cyan;
+                case "gray": return Color.gray;
+                case "green": return Color.green;
+                case "magenta": return Color.magenta;
+                case "orange": return Color.orange;
+                case "pink": return Color.pink;
+                case "red": return Color.red;
+                case "white": return Color.white;
+                case "yellow": return Color.yellow;
+                case "dark_green": return Color.green.darker().darker().darker();
+                case "light_red": return Color.red.brighter();
+                default: return Color.gray;
+            }
+        }
     }
 
     /*
@@ -367,9 +569,12 @@ public class DiscordAPI {
                 isPurgingOn = false;
                 return true;
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Failed to bulk delete messages: " + ex.getMessage());
                 isPurgingOn = false;
-                return false;
+                if (!ex.getMessage().contains("Unknown Message")) {
+                    com.gmt2001.Console.err.println("Failed to bulk delete messages: " + ex.getMessage());
+                    return false;
+                }
+                return true;
             }
         } else {
             isPurgingOn = false;
@@ -440,9 +645,10 @@ public class DiscordAPI {
                 botId = jdaAPI.getSelfUser().getId();
                 getTextChannels();
                 getUserNames();
-
+                getRoles();
+                
                 com.gmt2001.Console.out.println("Discord API is Ready");
-            } else
+            } else 
 
             // MessageReceivedEvent - This will handle pasing the message and sending the events needed.
             if (event instanceof MessageReceivedEvent) {
@@ -456,7 +662,7 @@ public class DiscordAPI {
                         handleMessages(messageEvent);
                     }
                 }
-            } else
+            } else 
 
             // GuildMemberJoinEvent - This will handle adding the user to the userMap and sending an event.
             if (event instanceof GuildMemberJoinEvent) {
@@ -471,10 +677,10 @@ public class DiscordAPI {
             if (event instanceof GuildMemberLeaveEvent) {
                 GuildMemberLeaveEvent guildMemberLeaveEvent = (GuildMemberLeaveEvent) event;
                 Member member = guildMemberLeaveEvent.getMember();
-
+                
                 removeUserFromMap(member);
                 EventBus.instance().post(new DiscordLeaveEvent(member));
-            } else
+            } else 
 
             // GuildMemberNickChangeEvent - This will handle adding the user to the userMap.
             if (event instanceof GuildMemberNickChangeEvent) {
@@ -482,26 +688,26 @@ public class DiscordAPI {
                 Member member = guildMemberNickChangeEvent.getMember();
 
                 addUserToMap(member);
-            } else
+            } else 
 
             // TextChannelCreateEvent - This will handle adding the channel to the channelMap.
             if (event instanceof TextChannelCreateEvent) {
                 TextChannelCreateEvent textChannelEvent = (TextChannelCreateEvent) event;
-
+                
                 addChannelToMap(textChannelEvent.getChannel());
-            } else
+            } else 
 
             // TextChannelUpdateNameEvent - This will handle adding the channel to the channelMap.
             if (event instanceof TextChannelUpdateNameEvent) {
                 TextChannelUpdateNameEvent textChannelEvent = (TextChannelUpdateNameEvent) event;
-
+                
                 addChannelToMap(textChannelEvent.getChannel());
-            } else
+            } else 
 
             // TextChannelDeleteEvent - This will handle removing the channel from the channelMap.
             if (event instanceof TextChannelDeleteEvent) {
                 TextChannelDeleteEvent textChannelEvent = (TextChannelDeleteEvent) event;
-
+                
                 removeChannelFromMap(textChannelEvent.getChannel());
             }
         }

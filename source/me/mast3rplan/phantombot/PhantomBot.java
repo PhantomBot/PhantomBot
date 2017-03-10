@@ -1226,6 +1226,10 @@ public class PhantomBot implements Listener {
         if (event.getMessage().startsWith("!debug !dev")) {
             devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender(), false);
         }
+
+        if (this.pubSubEdge != null) {
+            this.pubSubEdge.ircChannelMessageEvent(event);
+        }
     }
 
     /*
