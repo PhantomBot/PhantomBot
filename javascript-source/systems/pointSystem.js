@@ -73,6 +73,7 @@
             $.registerChatSubcommand(newName, 'setmessage', 1);
             $.registerChatSubcommand(newName, 'setactivebonus', 1);
         } 
+        
 
         if (newName2 && newCommand && !$.commandExists(newName2)) {
             $.registerChatCommand('./systems/pointSystem.js', newName2, 7);
@@ -97,7 +98,7 @@
 
         if (newName && newName != 'points' && !newCommand) {
             $.unregisterChatCommand(newName);
-        } 
+        }
 
         if (newName2 && newName2 != 'points' && !newCommand) {
             $.unregisterChatCommand(newName2);
@@ -292,7 +293,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.error.negative', pointNameMultiple));
             return;
         }
-        
+
         $.inidb.setAutoCommit(false);
         for (i in $.users) {
             $.inidb.incr('points', $.users[i][0].toLowerCase(), amount);
@@ -311,7 +312,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.take.error.negative', pointNameMultiple));
             return;
         }
-        
+
         $.inidb.setAutoCommit(false);
         for (i in $.users) {
             if (getUserPoints($.users[i][0].toLowerCase()) > amount) {
@@ -662,13 +663,13 @@
                         return;
                     }
                     setTempBonus(actionArg1, actionArg2);
-                } 
+                }
 
                 /**
                  * @commandpath points resetall - Deletes everyones points
                  */
                 else if (action.equalsIgnoreCase('resetall')) {
-                    $.inidb.RemoveFile('points'); 
+                    $.inidb.RemoveFile('points');
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.reset.all'));
                 }
 
@@ -685,7 +686,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.active.bonus.set', getPointsString(activeBonus)));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get("pointsystem.usage.invalid", "!" + command));
-                } 
+                }
             }
         }
 
@@ -795,7 +796,7 @@
             $.registerChatSubcommand('points', 'setactivebonus', 1);
 
             if (pointNameSingle != 'point' || pointNameMultiple != 'points') {
-               updateSettings(); 
+               updateSettings();
             }
         }
     });
@@ -805,6 +806,7 @@
     $.pointNameMultiple = pointNameMultiple;
     $.getUserPoints = getUserPoints;
     $.getPointsString = getPointsString;
+    $.getPointsMessage = getPointsMessage;
     $.updateSettings = updateSettings;
     $.setTempBonus = setTempBonus;
 })();
