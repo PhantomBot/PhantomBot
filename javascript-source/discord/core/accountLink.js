@@ -5,24 +5,25 @@
 (function () {
 
     /**
+     * @function resolveTwitchName
      * @function discordToTwitch
      *
      * @export $.discord
      * @param {string} userId (snowflake)
      * @return {string or null}
      */
-    function discordToTwitch(userId) {
-        if ($.inidb.exists('discordToTwitch', userId)) {
-            return $.inidb.get('discordToTwitch', userId);
+    function resolveTwitchName(userId) {
+        if (typeof userId === 'string' && isNaN(parseInt(userId))) {
+            userId = $.discordAPI.resolveUserId(userId);
         }
 
-        return null;
+        return ($.inidb.exists('discordToTwitch', userId) ? $.inidb.get('discordToTwitch', userId) : null); 
     }
 
     /**
      * @event discordCommand
      */
-    $.bind('discordCommand', function (event) {
+    $.bind('discordCommand', function(event) {
         var sender = event.getSender(),
             user = event.getDiscordUser(),
             channel = event.getChannel(),
@@ -32,7 +33,7 @@
             action = args[0];
 
         /**
-         * @discordcommandpath accountlink - Checks the current account linking status of the sender
+         * @discordcommandpath accountlink - Checks the current account linking status of the sender.
          */
         if (command.equalsIgnoreCase('accountlink')) {
             var userId = event.getSenderId(),
@@ -42,8 +43,9 @@
                 if (islinked) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.link', $.inidb.get('discordToTwitch', userId)));
                 } else {
-                    $.discord.say(channel, $.lang.get('discord.accountlink.usage.nolink'));
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
                 }
+
                 /**
                  * @discordcommandpath accountlink link - Starts the process of linking an account. Completing this will overwrite existing links
                  */
@@ -56,7 +58,7 @@
                     text += code.charAt(Math.floor(Math.random() * code.length));
                 }
 
-                Packages.com.gmt2001.TempStore.instance().SetLong('discord.accountlink.pending', userId, text, java.lang.System.currentTimeMillis() + (10 * 60 * 1000));
+                Packages.com.gmt2001.TempStore.instance().SetLong('discord.accountlink.pending', userId, text, java.lang.System.currentTimeMillis() + (10 * 6e4));
 
                 if (islinked) {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.relink', $.channelName, text));
@@ -64,7 +66,7 @@
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link', $.channelName, text));
                 }
                 /**
-                 * @discordcommandpath accountlink remove - Removes account links from the sender
+                 * @discordcommandpath accountlink remove - Removes account links from the sender.
                  */
             } else if (action.equalsIgnoreCase('remove')) {
                 $.inidb.del('discordToTwitch', userId);
@@ -83,22 +85,21 @@
             action = args[0];
 
         /**
-         * @commandpath accountlink link [code] - Completes an account link
+
+         * @commandpath accountlink link [code] - Completes an account link for Discord.
          */
         if (command.equalsIgnoreCase('accountlink')) {
             if (action.equalsIgnoreCase('link')) {
                 var code = args[1];
-
-
                 if ($.strlen(code) < 8) {
                     return;
                 }
 
                 var ts = Packages.com.gmt2001.TempStore.instance(),
-                        sections = ts.GetCategoryList('discord.accountlink.pending'),
-                        tm = java.lang.System.currentTimeMillis(),
-                        i,
-                        success = false;
+                    sections = ts.GetCategoryList('discord.accountlink.pending'),
+                    tm = java.lang.System.currentTimeMillis(),
+                    i,
+                    success = false;
 
                 for (i = 0; i < sections.length; i++) {
                     if (ts.HasKey('discord.accountlink.pending', sections[i], code) && ts.GetLong('discord.accountlink.pending', sections[i], code) >= tm) {
@@ -119,7 +120,8 @@
             }
         }
     });
-
+    
+    // Interval to clear our old codes that have not yet been registered.
     var interval = setInterval(function () {
         var ts = Packages.com.gmt2001.TempStore.instance(),
             sections = ts.GetCategoryList('discord.accountlink.pending'),
@@ -144,12 +146,12 @@
                 ts.RemoveSection('discord.accountlink.pending', sections[i]);
             }
         }
-    }, 10 * 60 * 1000);
+    }, 10 * 6e4);
 
     /**
      * @event initReady
      */
-    $.bind('initReady', function () {
+    $.bind('initReady', function() {
         $.discord.registerCommand('./discord/core/accountLink.js', 'accountlink', 0);
         $.discord.registerSubCommand('accountlink', 'link', 0);
         $.discord.registerSubCommand('accountlink', 'remove', 0);
@@ -157,5 +159,5 @@
     });
 
     /* Export the function to the $.discord api. */
-    $.discord.discordToTwitch = discordToTwitch;
+    $.discord.resolveTwitchName = resolveTwitchName;
 })();
