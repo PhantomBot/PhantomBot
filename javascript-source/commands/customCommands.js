@@ -259,10 +259,6 @@
             }
         }
 
-        if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
-            message = apiTags(event, message);
-        }
-
         if (message.match(/\(gameinfo\)/)) {
             if ($.getGame($.channelName) == ' ' || $.getGame($.channelName) == '') {
                 message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.no.game'));
@@ -338,6 +334,15 @@
                 $.writeToFile(string, './addons/' + file, append);
             }
             return null;
+        }
+
+        if (message.match(/\(encodeurl ([\w\W]+)\)/)) {
+            var m = message.match(/\(encodeurl ([\w\W]+)\)/);
+            s = $.replace(s, m[0], encodeURI(m[1]));
+        }
+
+        if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
+            message = apiTags(event, message);
         }
 
         return message;
