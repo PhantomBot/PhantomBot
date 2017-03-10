@@ -24,9 +24,9 @@ import java.util.List;
 
 public class DiscordCommandEvent extends DiscordEvent {
 
-	private final String command;
 	private final String arguments;
     private final Boolean isAdmin;
+    private String command;
 	private String[] args;
 
 	public DiscordCommandEvent(User sender, Channel channel, String command, String arguments, Boolean isAdmin) {
@@ -68,6 +68,11 @@ public class DiscordCommandEvent extends DiscordEvent {
             ++i;
         }
 	}
+
+    public String setCommand(String command) {
+        this.command = command;
+        return this.command;
+    }
 
 	public String getCommand() {
 		return this.command.toLowerCase();

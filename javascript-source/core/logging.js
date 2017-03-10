@@ -317,7 +317,7 @@
              * @commandpath log files - Toggle the logging of files
              */
             if (action.equalsIgnoreCase('files')) {
-                logs.files = !logs.files;
+                logs.file = !logs.file;
                 $.setIniDbBoolean('settings', 'log.file', logs.file);
                 $.say($.whisperPrefix(sender) + (logs.file ? $.lang.get('logging.enabled.files') : $.lang.get('logging.disabled.files')));
             }

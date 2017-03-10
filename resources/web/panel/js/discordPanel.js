@@ -50,7 +50,37 @@
             }
         }
 
-        if (panelCheckQuery(msgObject, 'discord_commnads')) {
+        if (panelCheckQuery(msgObject, 'discord_keywords')) {
+            var keys = msgObject['results'],
+                html = '<table>';
+
+            if (keys.length === 0) {
+                $('#keyword-list').html('<i>There are no keywords defined.</i>');
+                return;
+            }
+
+            for (i in keys) {
+                var name = keys[i]['key'],
+                    val = keys[i]['value'];
+
+                html += '<tr style="textList">' +
+                    '    <td style="width: 15%">' + (name.length > 10 ?  name.substring(0, 10) + '...' : name) + '</td>' +
+                    '    <td style="vertical-align: middle">' +
+                    '        <form onkeypress="return event.keyCode != 13">' +
+                    '            <input style="width: 90%" type="text" id="editKeyword_' + name.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '"' +
+                    '                   value="' + val + '" />' +
+                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" id="removeKeyword_' + name.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '" onclick="$.removeKeyword(\'' + name + '\')"><i class="fa fa-trash" /> </button>' +
+                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" onclick="$.editKeyword(\'' + name + '\')"><i class="fa fa-pencil" /> </button> ' +
+                    '             </form>' +
+                    '        </form>' +
+                    '    </td>' +
+                    '</tr>';
+            }
+            html += '</table>';
+            $('#keyword-list').html(html);
+        }
+
+        if (panelCheckQuery(msgObject, 'discord_commands')) {
             var keys = msgObject['results'],
                 html = '<table style="width: 100%"><tr><th>Command</th><th>Response</th><th>Cooldown</th><th style="float: right;"></td>',
                 dataObj = {},
@@ -59,7 +89,12 @@
                 response,
                 command,
                 channel;
-                
+            
+            if (keys.length === 0) {
+                $('#commands-list').html('<i>There are no commands defined.</i>');
+                return;
+            }
+
             for (i in keys) {
                 if (keys[i]['table'] == 'discordPermcom') {
                     if (dataObj[keys[i]['key']] === undefined) {
@@ -78,6 +113,18 @@
                         dataObj[keys[i]['key']] = { channel: keys[i]['value'] };
                     } else {
                         dataObj[keys[i]['key']].channel = keys[i]['value'];
+                    }
+                } else if (keys[i]['table'] == 'discordPricecom') {
+                    if (dataObj[keys[i]['key']] === undefined) {
+                        dataObj[keys[i]['key']] = { cost: keys[i]['value'] };
+                    } else {
+                        dataObj[keys[i]['key']].cost = keys[i]['value'];
+                    }
+                } else if (keys[i]['table'] == 'discordAliascom') {
+                    if (dataObj[keys[i]['key']] === undefined) {
+                        dataObj[keys[i]['key']] = { alias: keys[i]['value'] };
+                    } else {
+                        dataObj[keys[i]['key']].alias = keys[i]['value'];
                     }
                 }
             }
@@ -105,6 +152,15 @@
     }
 
     /*
+     * @function doQuery
+     */
+    function doQuery() {
+        sendDBKeys('discord_settings', 'discordSettings');
+        sendDBKeys('discord_keywords', 'discordKeywords');
+        sendDBKeysList('discord_commands', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom']);
+    }
+
+    /*
      * @function updateDiscordTable
      */
     function updateDiscordTable(htmlId, script, table, key, value) {
@@ -115,6 +171,14 @@
         }
 
         if ((typeof data === 'string' && data.length > 0) || typeof data === 'number') {
+            if (key == 'modLogs') {
+                if (value == 'true') {
+                    sendDBUpdate('discord_update', 'chatModerator', 'moderationLogs', 'true');
+                } else {
+                    sendDBUpdate('discord_update', 'chatModerator', 'moderationLogs', 'false');
+                }
+            }
+            
             sendDBUpdate('discord_update', table, key, data.toString());
 
             setTimeout(function() { sendWSEvent('discord', './discord/' + script); doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -149,13 +213,17 @@
             sendDBDelete('discord_command', 'discordPermcom', cmd);
             sendDBDelete('discord_command', 'discordCooldown', cmd);
             sendDBDelete('discord_command', 'discordChannelcom', cmd);
+            sendDBDelete('discord_command', 'discordPricecom', cmd);
+            sendDBDelete('discord_command', 'discordAliascom', cmd);
             sendWSEvent('discord', './discord/commands/customCommands.js', 'remove', [cmd]);
         } else {
             var command = ($('#command-name-modal').val().length === 0 ? $('#command-add-name-modal').val() : $('#command-name-modal').val()),
                 response = ($('#command-response-modal').val().length === 0 ?  $('#command-add-response-modal').val() : $('#command-response-modal').val()),
                 permission = ($('#command-permission-modal').val().length === 0 ?  $('#command-add-permission-modal').val() : $('#command-permission-modal').val()),
                 cooldown = ($('#command-cooldown-modal').val().length === 0 ? $('#command-add-cooldown-modal').val() : $('#command-cooldown-modal').val()),
-                channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val());
+                channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val()),
+                price = ($('#command-cost-modal').val().length === 0 ? $('#command-add-cost-modal').val() : $('#command-cost-modal').val()),
+                alias = ($('#command-alias-modal').val().length === 0 ? $('#command-add-alias-modal').val() : $('#command-alias-modal').val());
 
             if (command.length === 0 || response.length === 0 || command.match(/[\'\"\s]/ig) || (permission != 1 && permission != 0)) {
                 setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);
@@ -164,16 +232,23 @@
             }
 
             command = command.replace('!', '').toLowerCase();
+            alias = alias.replace('!', '').toLowerCase();
 
             sendDBUpdate('discord_command', 'discordCommands', command, response.toString());
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
             sendDBUpdate('discord_command', 'discordCooldown', command, cooldown.toString());
+            sendDBUpdate('discord_command', 'discordPricecom', command, price.toString());
             if (channel.length > 0) {
                 sendDBUpdate('discord_command', 'discordChannelcom', command, channel.replace('#', '').toString());
             } else {
                 sendDBDelete('discord_command', 'discordChannelcom', command);
             }
-            setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel]); }, TIMEOUT_WAIT_TIME);
+            if (alias.length > 0) {
+                sendDBUpdate('discord_command', 'discordAliascom', command, alias.toString());
+            } else {
+                sendDBDelete('discord_command', 'discordAliascom', command);
+            }
+            setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel, alias, price]); }, TIMEOUT_WAIT_TIME);
         }
 
         setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);
@@ -193,11 +268,39 @@
     }
 
     /*
-     * @function doQuery
+     * @function editKeyword
      */
-    function doQuery() {
-        sendDBKeys('discord_settings', 'discordSettings');
-        sendDBKeysList('discord_commnads', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom']);
+    function editKeyword(keyword) {
+        var value = $('#editKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).val();
+
+        if (value.length > 0) {
+            sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
+        }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /*
+     * @function removeKeyword
+     */
+    function removeKeyword(keyword) {
+        $('#removeKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+        sendDBDelete('discord_keyword', 'discordKeywords', keyword);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    }
+
+    /*
+     * @function addKeyword
+     */
+    function addKeyword() {
+        var keyword = $('#custom-keyword').val(),
+            value = $('#custom-keyword-value').val();
+
+        if (keyword.length > 0 && value.length > 0) {
+            sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
+        }
+        $('#custom-keyword').val('');
+        $('#custom-keyword-value').val('');
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /* Import the HTML file for this panel. */
@@ -229,4 +332,7 @@
     $.openCommandModal = openCommandModal;
     $.discordOnMessage = onMessage;
     $.discordDoQuery = doQuery;
+    $.editKeyword = editKeyword;
+    $.removeKeyword = removeKeyword;
+    $.addKeyword = addKeyword;
 })();
