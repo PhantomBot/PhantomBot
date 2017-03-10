@@ -46,6 +46,8 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
@@ -57,9 +59,11 @@ import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.exceptions.PermissionException;
 import net.dv8tion.jda.core.hooks.EventListener;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.core.managers.GuildController;
 
 /*
  * Communicates with the Discord API.
@@ -72,8 +76,11 @@ public class DiscordAPI {
     private static final DiscordAPI instance = new DiscordAPI();
     private final Map<String, TextChannel> channelMap = new HashMap<>();
     private final Map<String, Member> userMap = new HashMap<>();
+    private final Map<String, Role> roleMap = new HashMap<>();
     private final List<Member> users = new ArrayList<>();
+    private GuildController guildController = null;
     private Boolean isPurgingOn = false;
+    private Guild guild = null;
     private String botId;
     private JDA jdaAPI;
 
@@ -117,6 +124,10 @@ public class DiscordAPI {
      */
     private void getTextChannels() {
         for (TextChannel channel : jdaAPI.getTextChannels()) {
+            if (guildController == null) {
+                guildController = new GuildController(channel.getGuild());
+                guild = channel.getGuild();
+            }
             addChannelToMap(channel);
         }
     }
@@ -129,6 +140,41 @@ public class DiscordAPI {
             for (Member member : channel.getMembers()) {
                 addUserToMap(member);
             } 
+        }
+    }
+
+    /*
+     * Gets all of the roles in the server.
+     */
+    private void getRoles() {
+        for (Role role : guild.getRoles()) {
+            addRoleToMap(role);
+        }
+    }
+
+    /*
+     * Adds a role to the roleMap
+     *
+     * @param {Role} role
+     */
+    private void addRoleToMap(Role role) {
+        String name = role.getName().toLowerCase();
+
+        if (resolveRole(name) == null) {
+            roleMap.put(name, role);
+        }
+    }
+
+    /*
+     * Removes a role from the roleMap
+     *
+     * @param {Role} role
+     */
+    private void removeRoleFromMap(Role role) {
+        String name = role.getName().toLowerCase();
+
+        if (resolveRole(name) != null) {
+            roleMap.remove(name);
         }
     }
 
@@ -190,18 +236,76 @@ public class DiscordAPI {
     }
 
     /*
-     * Will return that user.
+     * Sets a role on a user
      *
-     * @param  {String} userId
-     * @return {Member}
+     * @param {String} role
+     * @param {String} username
      */
-    public Member resolveUserId(String userId) {
-        for (Member member : users) {
-            if (member.getUser().getId().equals(userId)) {
-                return member;
+    public Boolean setRole(String role, String username) {
+        Member newUsername = resolveUser(username);
+        List<Role> roles = new ArrayList<>();
+        Role newRole = null;
+
+        if (role.contains(",")) {
+            String[] split = role.split(",");
+            for (String r : split) {
+                if (isRole(r)) {
+                    roles.add(resolveRole(r));
+                }
+            }
+        } else {
+            newRole = resolveRole(role);
+            if (newRole != null) {
+                roles.add(newRole);
             }
         }
-        return null;
+
+        if (roles.size() > 0 && username != null) {
+            try {
+                guildController.addRolesToMember(newUsername, roles).queue();
+                return true;
+            } catch (IllegalArgumentException | PermissionException ex) {
+                com.gmt2001.Console.out.println("");
+                com.gmt2001.Console.err.println("Failed to changed role on user " + username + ", [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+                if (ex.getMessage().toLowerCase().contains("higher or equal")) {
+                    com.gmt2001.Console.warn.println("Please move the bot's role near the top of the roles list.");
+                }
+                com.gmt2001.Console.out.println("");
+            }
+        }
+        return false;
+    }
+
+    /*
+     * Sends a message to a specific channel.
+     *
+     * @param {String} channel
+     * @param {String} message
+     */
+    public void sendMessage(String channel, String message) {
+        TextChannel textChannel = resolveChannel(channel);
+
+        if (textChannel != null) {
+            try {
+                com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [CHAT] " + message);
+                textChannel.sendMessage(message).queue();
+            } catch (NullPointerException ex) {
+                // If the bot is ever kicked from the server the channel instance will be there, but null for JDA.
+                // This will get the channels again and the users.
+                com.gmt2001.Console.debug.println("Failed to send a message to Discord. This is caused when a session is killed.");
+                channelMap.clear();
+                userMap.clear();
+                users.clear();
+                botId = jdaAPI.getSelfUser().getId();
+                getTextChannels();
+                getUserNames();
+
+                textChannel = resolveChannel(channel);
+                if (textChannel != null) {
+                    textChannel.sendMessage(message).queue();
+                }
+            }
+        }
     }
 
     /*
@@ -219,7 +323,7 @@ public class DiscordAPI {
             com.gmt2001.Console.out.println("[DISCORD] [@" + user.getName() + "#" + user.getDiscriminator() + "] [DM] " + message);
             user.getPrivateChannel().sendMessage(message).queue();
         } catch (RateLimitedException | NullPointerException ex) {
-            com.gmt2001.Console.err.println("Failed to send a DM message to Discord: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send a DM message to Discord [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         }
     }
 
@@ -284,6 +388,16 @@ public class DiscordAPI {
     }
 
     /*
+     * Will return if that role exists.
+     *
+     * @param  {String} role
+     * @return {Boolean}
+     */
+    public Boolean isRole(String role) {
+        return this.roleMap.containsKey(role.toLowerCase());
+    }
+
+    /*
      * Will return that user if he exists.
      *
      * @param  {String} username
@@ -324,35 +438,28 @@ public class DiscordAPI {
     }
 
     /*
-     * Sends a message to a specific channel.
+     * Will return that role.
      *
-     * @param {String} channel
-     * @param {String} message
+     * @param  {String} role
+     * @return {Role}
      */
-    public void sendMessage(String channel, String message) {
-        TextChannel textChannel = resolveChannel(channel);
+    public Role resolveRole(String role) {
+        return this.roleMap.get(role.toLowerCase());
+    }
 
-        if (textChannel != null) {
-            try {
-                com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [CHAT] " + message);
-                textChannel.sendMessage(message).queue();
-            } catch (NullPointerException ex) {
-                // If the bot is ever kicked from the server the channel instance will be there, but null for JDA.
-                // This will get the channels again and the users.
-                com.gmt2001.Console.debug.println("Failed to send a message to Discord. This is caused when a session is killed.");
-                channelMap.clear();
-                userMap.clear();
-                users.clear();
-                botId = jdaAPI.getSelfUser().getId();
-                getTextChannels();
-                getUserNames();
-
-                textChannel = resolveChannel(channel);
-                if (textChannel != null) {
-                    textChannel.sendMessage(message).queue();
-                }
+    /*
+     * Will return that user.
+     *
+     * @param  {String} userId
+     * @return {Member}
+     */
+    public Member resolveUserId(String userId) {
+        for (Member member : users) {
+            if (member.getUser().getId().equals(userId)) {
+                return member;
             }
         }
+        return null;
     }
 
     /*
@@ -538,6 +645,7 @@ public class DiscordAPI {
                 botId = jdaAPI.getSelfUser().getId();
                 getTextChannels();
                 getUserNames();
+                getRoles();
                 
                 com.gmt2001.Console.out.println("Discord API is Ready");
             } else 

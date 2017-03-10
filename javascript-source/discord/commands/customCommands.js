@@ -6,7 +6,6 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/),
         reCustomArg = new RegExp(/\(([1-9])=([a-zA-Z1-9\)\(]+)\)/),
         reCustomToUserArg = new RegExp(/\(touser=([a-zA-Z1-9]+)\)/),
-        reNormalCommandArg = new RegExp(/\(([1-9])\)/),
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
 
     /**
@@ -38,8 +37,14 @@
             s = $.replace(s, s.match(reCustomArg)[0], (event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1] === undefined ? s.match(reCustomArg)[2] : $.discord.resolve.global(event.getArgs()[parseInt(s.match(reCustomArg)[1]) - 1])));
         }
 
-        if (s.match(reNormalCommandArg)) {
-            s = $.replace(s, s.match(reNormalCommandArg)[0], (event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1] === undefined ? '' : $.discord.resolve.global(event.getArgs()[parseInt(s.match(reNormalCommandArg)[1]) - 1])));
+        if (s.match(/\(1\)/g)) {
+            for (var i = 1; i < 10; i++) {
+                if (s.includes('(' + i + ')')) {
+                    s = $.replace(s, '(' + i + ')', (event.getArgs()[i - 1] !== undefined ? event.getArgs()[i - 1] : ''));
+                } else {
+                    break;
+                }
+            }
         }
 
         if (s.match(reCustomToUserArg)) {
@@ -97,7 +102,7 @@
 
         if (s.match(/\(readfile/)) {
             if (s.search(/\((readfile ([^)]+)\))/g) >= 0) {
-                s = $.replace(s, '(' + RegExp.$1, $.readFile('addons/' + RegExp.$2)[0]);
+                s = $.replace(s, '(' + RegExp.$1, $.readFile('./addons/' + RegExp.$2)[0]);
             }
         }
 
@@ -125,6 +130,17 @@
 
         if (s.match(reCustomAPIJson) || s.match(reCustomAPI)) {
             s = api(event, s);
+        }
+
+        if (s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)/)) {
+            if ($.discord.setRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]) == true) {
+                s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
+                if (s.length === 0) {
+                    return null;
+                }
+            } else {
+                return null;
+            }
         }
 
         return s;
