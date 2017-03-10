@@ -31,7 +31,7 @@ var TIMEOUT_WAIT_TIME = 500;
 var YOUTUBE_IFRAME = false;
 
 var url = window.location.host.split(":");
-var addr = 'ws://' + url[0] + ':' + getPanelPort();
+var addr = (getProtocol() == 'https://' ? 'wss://' : 'ws://') + url[0] + ':' + getPanelPort();
 //var connection = new WebSocket(addr, []);
 var connection = new ReconnectingWebSocket(addr, null, {reconnectInterval: 5000});
 var isConnected = false;
