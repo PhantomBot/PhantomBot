@@ -108,6 +108,17 @@
 	}
 
 	/**
+	 * @function setRole
+	 *
+	 * @param {string} role
+	 * @param {string} username
+	 * @export $.discord
+	 */
+	function setRole(role, username) {
+		$.discordAPI.setRole(role, username);
+	}
+
+	/**
 	 * @event discordCommand
 	 */
 	$.bind('discordCommand', function(event) {
@@ -241,6 +252,7 @@
 		userPrefix: userPrefix,
 		setStream: setStream,
 		setGame: setGame,
+		setRole: setRole,
 		say: say,
 		resolve: { 
 			global: getUserMentionOrChannel,
