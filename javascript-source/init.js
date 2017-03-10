@@ -744,6 +744,7 @@
         if (!$.hasDiscordToken) {
             // Load the discord core scripts.
             loadScript('./discord/core/misc.js');
+            loadScript('./discord/core/accountLink.js');
             loadScript('./discord/core/patternDetector.js');
             loadScript('./discord/core/moderation.js');
             loadScript('./discord/core/registerCommand.js');
@@ -1254,7 +1255,7 @@
          */
         $api.on($script, 'gameWispAnniversary', function(event) {
             callHook('gameWispAnniversary', event, false);
-        }); 
+        });
 
         /**
          * @event api-twitterEvent
