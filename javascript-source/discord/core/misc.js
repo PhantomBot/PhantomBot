@@ -115,7 +115,7 @@
 	 * @export $.discord
 	 */
 	function setRole(role, username) {
-		$.discordAPI.setRole(role, username);
+		return $.discordAPI.setRole(role, username);
 	}
 
 	/**
