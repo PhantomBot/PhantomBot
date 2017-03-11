@@ -50,6 +50,8 @@ import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.role.RoleCreateEvent;
+import net.dv8tion.jda.core.events.role.RoleDeleteEvent;
 import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
 import net.dv8tion.jda.core.events.channel.text.update.TextChannelUpdateNameEvent;
@@ -258,6 +260,7 @@ public class DiscordAPI {
                 roles.add(newRole);
             }
         }
+
         if (roles.size() > 0 && newUsername != null) {
             try {
                 guildController.addRolesToMember(newUsername, roles).queue();
@@ -265,9 +268,6 @@ public class DiscordAPI {
             } catch (IllegalArgumentException | PermissionException ex) {
                 com.gmt2001.Console.out.println("");
                 com.gmt2001.Console.err.println("Failed to changed role on user " + username + ", [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-                if (ex.getMessage().toLowerCase().contains("higher or equal")) {
-                    com.gmt2001.Console.warn.println("Please move the bot's role near the top of the roles list.");
-                }
                 com.gmt2001.Console.out.println("");
             }
         }
@@ -288,15 +288,15 @@ public class DiscordAPI {
                 com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [CHAT] " + message);
                 textChannel.sendMessage(message).queue();
             } catch (NullPointerException ex) {
-                // If the bot is ever kicked from the server the channel instance will be there, but null for JDA.
-                // This will get the channels again and the users.
-                com.gmt2001.Console.debug.println("Failed to send a message to Discord. This is caused when a session is killed.");
+                com.gmt2001.Console.err.println("Failed to send a message to Discord [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
                 channelMap.clear();
                 userMap.clear();
+                roleMap.clear();
                 users.clear();
                 botId = jdaAPI.getSelfUser().getId();
                 getTextChannels();
                 getUserNames();
+                getRoles();
 
                 textChannel = resolveChannel(channel);
                 if (textChannel != null) {
@@ -321,7 +321,39 @@ public class DiscordAPI {
             com.gmt2001.Console.out.println("[DISCORD] [@" + user.getName() + "#" + user.getDiscriminator() + "] [DM] " + message);
             user.getPrivateChannel().sendMessage(message).queue();
         } catch (RateLimitedException | NullPointerException ex) {
-            com.gmt2001.Console.err.println("Failed to send a DM message to Discord [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send a DM to Discord [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+        }
+    }
+
+    /*
+     * Sends a message to a specific channel in embed.
+     *
+     * @param {String} channel
+     * @param {String} message
+     */
+    public void sendMessageEmbed(String channel, String color, String message) {
+        TextChannel textChannel = resolveChannel(channel);
+
+        if (textChannel != null) {
+            try {
+                com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [EMBED] " + message);
+                textChannel.sendMessage(new EmbedBuilder().setColor(getColor(color)).setDescription(message).build()).queue();
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.println("Failed to send a message to Discord [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+                channelMap.clear();
+                userMap.clear();
+                roleMap.clear();
+                users.clear();
+                botId = jdaAPI.getSelfUser().getId();
+                getTextChannels();
+                getUserNames();
+                getRoles();
+
+                textChannel = resolveChannel(channel);
+                if (textChannel != null) {
+                    textChannel.sendMessage(new EmbedBuilder().setColor(getColor(color)).setDescription(message).build()).queue();
+                }
+            }
         }
     }
 
@@ -461,38 +493,6 @@ public class DiscordAPI {
     }
 
     /*
-     * Sends a message to a specific channel in embed.
-     *
-     * @param {String} channel
-     * @param {String} message
-     */
-    public void sendMessageEmbed(String channel, String color, String message) {
-        TextChannel textChannel = resolveChannel(channel);
-
-        if (textChannel != null) {
-            try {
-                com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [EMBED] " + message);
-                textChannel.sendMessage(new EmbedBuilder().setColor(getColor(color)).setDescription(message).build()).queue();
-            } catch (NullPointerException ex) {
-                // If the bot is ever kicked from the server the channel instance will be there, but null for JDA.
-                // This will get the channels again and the users.
-                com.gmt2001.Console.debug.println("Failed to send a message to Discord. This is caused when a session is killed.");
-                channelMap.clear();
-                userMap.clear();
-                users.clear();
-                botId = jdaAPI.getSelfUser().getId();
-                getTextChannels();
-                getUserNames();
-
-                textChannel = resolveChannel(channel);
-                if (textChannel != null) {
-                    textChannel.sendMessage(new EmbedBuilder().setColor(getColor(color)).setDescription(message).build()).queue();
-                }
-            }
-        }
-    }
-
-    /*
      * @function getColor
      *
      * @param  {String} color
@@ -501,7 +501,7 @@ public class DiscordAPI {
     public Color getColor(String color) {
         Matcher match = Pattern.compile("(\\d+), (\\d+), (\\d+)").matcher(color);
         if (match.find() == true) {
-            return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(1)), Integer.parseInt(match.group(3)));
+            return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
         } else {
             switch (color) {
                 case "black": return Color.black;
@@ -569,7 +569,7 @@ public class DiscordAPI {
             } catch (Exception ex) {
                 isPurgingOn = false;
                 if (!ex.getMessage().contains("Unknown Message")) {
-                    com.gmt2001.Console.err.println("Failed to bulk delete messages: " + ex.getMessage());
+                    com.gmt2001.Console.err.println("Failed to bulk delete messages [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
                     return false;
                 }
                 return true;
@@ -707,6 +707,20 @@ public class DiscordAPI {
                 TextChannelDeleteEvent textChannelEvent = (TextChannelDeleteEvent) event;
                 
                 removeChannelFromMap(textChannelEvent.getChannel());
+            } else 
+
+            // RoleCreateEvent - This will handle adding new roles to the roleMap
+            if (event instanceof RoleCreateEvent) {
+                RoleCreateEvent roleCreateEvent = (RoleCreateEvent) event;
+
+                addRoleToMap(roleCreateEvent.getRole());
+            } else 
+
+            // RoleDeleteEvent - This will handle removing the role from the roleMap.
+            if (event instanceof RoleDeleteEvent) {
+                RoleDeleteEvent roleDeleteEvent = (RoleDeleteEvent) event;
+
+                removeRoleFromMap(roleDeleteEvent.getRole());
             }
         }
     }
