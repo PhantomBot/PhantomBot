@@ -320,7 +320,7 @@ public class PanelSocketServer extends WebSocketServer {
             } else if (jsonObject.has("dbkeyssearch")) {
                 uniqueID = jsonObject.getString("dbkeyssearch");
                 String table = jsonObject.getJSONObject("query").getString("table");
-                String limit = jsonObject.getJSONObject("query").getString("key");
+                String key = jsonObject.getJSONObject("query").getString("key");
                 doDBKeysSearch(webSocket, uniqueID, table, key);
             } else {
                 com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed [" + jsonString + "]");
