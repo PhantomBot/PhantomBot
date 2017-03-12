@@ -309,8 +309,21 @@ public class PanelSocketServer extends WebSocketServer {
                 String arguments = jsonObject.getJSONObject("args").getString("arguments");		
                 JSONArray args = jsonObject.getJSONObject("args").getJSONArray("args");		
                 doWSEvent(webSocket, uniqueID, script, arguments, args);
+            } else if (jsonObject.has("dbkeysbyorder")) {
+                uniqueID = jsonObject.getString("dbkeysbyorder");
+                String table = jsonObject.getJSONObject("query").getString("table");
+                String limit = jsonObject.getJSONObject("query").getString("limit");
+                String offset = jsonObject.getJSONObject("query").getString("offset");
+                String order = jsonObject.getJSONObject("query").getString("order");
+                System.out.println("LIMIT:" + limit + "::OFFSET:" + offset + "::ORDER:" + order);
+                doDBKeysByOrder(webSocket, uniqueID, table, limit, offset, order);
+            } else if (jsonObject.has("dbkeyssearch")) {
+                uniqueID = jsonObject.getString("dbkeyssearch");
+                String table = jsonObject.getJSONObject("query").getString("table");
+                String key = jsonObject.getJSONObject("query").getString("key");
+                doDBKeysSearch(webSocket, uniqueID, table, key);
             } else {
-                com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed ["+jsonString+"]");
+                com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed [" + jsonString + "]");
                 return;
             }
         } catch (JSONException ex) {
@@ -519,6 +532,77 @@ public class PanelSocketServer extends WebSocketServer {
 
         jsonObject.endArray().endObject();
         webSocket.send(jsonObject.toString());
+    }
+
+
+    /**
+     * Performs a query of the DataStore to return a list of values from multiple keys.
+     *
+     * @param webSocket The WebSocket which requested the data.
+     * @param id        The unique ID which is sent back to the WebSocket.
+     * @param table     Table name to query.
+     * @param limit     Limit you want to get sent.
+     * @param offset    the offset
+     * @param order     ASC or DESC
+     */
+    private void doDBKeysByOrder(WebSocket webSocket, String id, String table, String limit, String offset, String order) {
+        JSONStringer jsonObject = new JSONStringer();
+
+        jsonObject.object().key("query_id").value(id).key("results").array();
+
+        try {
+            String[] dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrder(table, "", order, limit, offset);
+            for (String dbKey : dbKeys) {
+                String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
+                jsonObject.object().key("table").value(table).key("key").value(dbKey).key("value").value(value).endObject();
+            }
+        } catch (NullPointerException ex) {
+            if (!dbCallNull) {
+                debugMsg("NULL returned from DB. DB Object not created yet.");
+            }
+            return;
+        }
+
+        jsonObject.endArray().endObject();
+        if (webSocket == null) {
+            sendToAll(jsonObject.toString());
+        } else {
+            webSocket.send(jsonObject.toString());
+        }
+    }
+
+    /**
+     * Performs a query of the DataStore to return a list of values from multiple keys.
+     *
+     * @param webSocket The WebSocket which requested the data.
+     * @param id        The unique ID which is sent back to the WebSocket.
+     * @param table     Table name to query.
+     * @param key       key to search
+     */
+    private void doDBKeysSearch(WebSocket webSocket, String id, String table, String key) {
+        JSONStringer jsonObject = new JSONStringer();
+
+        jsonObject.object().key("query_id").value(id).key("results").array();
+
+        try {
+            String[] dbKeys = PhantomBot.instance().getDataStore().GetKeysByLikeKeys(table, "", key);
+            for (String dbKey : dbKeys) {
+                String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
+                jsonObject.object().key("table").value(table).key("key").value(dbKey).key("value").value(value).endObject();
+            }
+        } catch (NullPointerException ex) {
+            if (!dbCallNull) {
+                debugMsg("NULL returned from DB. DB Object not created yet.");
+            }
+            return;
+        }
+
+        jsonObject.endArray().endObject();
+        if (webSocket == null) {
+            sendToAll(jsonObject.toString());
+        } else {
+            webSocket.send(jsonObject.toString());
+        }
     }
 
     /**
