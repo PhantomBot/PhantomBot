@@ -74,6 +74,11 @@ public class DataStore {
         return new String[] {
                };
     }
+    
+    public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
+        return new String[] {
+               };
+    }
 
     public String GetString(String fName, String section, String key) {
         return "";
