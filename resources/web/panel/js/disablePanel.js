@@ -230,6 +230,9 @@
             if (panelMatch(module, './discord/games/gambling.js')) {
                 handlePanel('./discord/games/gambling.js', '#_discord_gambling', moduleEnabled);
             }
+            if (panelMatch(module, './discord/games/roll.js')) {
+                handlePanel('./discord/games/roll.js', '#_discord_roll', moduleEnabled);
+            }
         }
     }
 

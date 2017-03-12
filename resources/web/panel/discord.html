@@ -210,8 +210,33 @@
             </div>
         </form>
     </div>
-    <br><br>
 
+    <br>
+    <div id="_discord_rollDisabled" />
+    <div id="_discord_roll">
+        <div><strong>Dice Roll Settings</strong></div><br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_max"><small>Roll Rewards</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setDiscordRollRewards()">Update</button>
+                <input style="width: 13%" type="number" min="0" id="discordRollRewards0Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 1's">
+                <input style="width: 13%" type="number" min="0" id="discordRollRewards1Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 2's">
+                <input style="width: 13%" type="number" min="0" id="discordRollRewards2Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 3's">
+                <input style="width: 12%" type="number" min="0" id="discordRollRewards3Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 4's">
+                <input style="width: 12%" type="number" min="0" id="discordRollRewards4Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 5's">
+                <input style="width: 12%" type="number" min="0" id="discordRollRewards5Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 6's">
+            </div>
+        </form>
+    </div>
+
+    <br>
     <div id="_discord_gamblingDisabled" />
     <div id="_discord_gambling">
         <div>

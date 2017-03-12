@@ -39,20 +39,26 @@
         }
 
         if (panelCheckQuery(msgObject, 'discord_gambling')) {
-            for (idx in msgObject['results']) {
-                $('#gamble_' + msgObject['results'][idx]['key']).val(msgObject['results'][idx]['value']);
+            for (i in msgObject['results']) {
+                $('#gamble_' + msgObject['results'][i]['key']).val(msgObject['results'][i]['value']);
             }
         }
 
         if (panelCheckQuery(msgObject, 'discord_slotmachine')) {
-            for (idx in msgObject['results']) {
-                $('#discordSlotRewards' + idx + 'Input').val(msgObject['results'][idx]['value']);
+            for (i in msgObject['results']) {
+                $('#discordSlotRewards' + i + 'Input').val(msgObject['results'][i]['value']);
+            }
+        }
+
+         if (panelCheckQuery(msgObject, 'discord_roll')) {
+            for (i in msgObject['results']) {
+                $('#discordRollRewards' + i + 'Input').val(msgObject['results'][i]['value']);
             }
         }
 
         if (panelCheckQuery(msgObject, 'discord_slotmachineemojis')) {
-            for (idx in msgObject['results']) {
-                $('#slotEmoji' + idx + 'Input').val(msgObject['results'][idx]['value']);
+            for (i in msgObject['results']) {
+                $('#slotEmoji' + i + 'Input').val(msgObject['results'][i]['value']);
             }
         }
 
@@ -103,6 +109,7 @@
                 html = '<table style="width: 100%"><tr><th>Command</th><th>Response</th><th>Cooldown</th><th style="float: right;"></td>',
                 dataObj = {},
                 permission,
+                cost,
                 cooldown,
                 response,
                 command,
@@ -154,12 +161,13 @@
                     permission = dataObj[command].permission;
                     channel = (dataObj[command] !== undefined && dataObj[command].channel === undefined ? '' : dataObj[command].channel);
                     cooldown = (dataObj[command] !== undefined && dataObj[command].cooldown === undefined ? 0 : dataObj[command].cooldown);
+                    cost = (dataObj[command] !== undefined && dataObj[command].cost === undefined ? 0 : dataObj[command].cost);
 
                     html += '<tr>' +
                         '<td>!' + (command.length > 10 ?  command.substring(0, 10) + '...' : command) + '</td>' +
                         '<td>' + (response.length > 50 ?  response.substring(0, 50) + '...' : response) + '</td>' +
                         '<td>' + cooldown + ' sec '+ '</td>' +
-                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response + '\', \'' + permission + '\', \'' + cooldown + '\', \'' + channel + '\')"><i class="fa fa-pencil" /> </button>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response + '\', \'' + permission + '\', \'' + cost + '\', \'' + cooldown + '\', \'' + channel + '\')"><i class="fa fa-pencil" /> </button>' +
                         '<button type="button" id="delete_command_' + command.replace(/[^a-z1-9_]/ig, '_') + '" class="btn btn-default btn-xs" onclick="$.updateDiscordCommand(\'' + command + '\', \'true\')"><i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
                 }
@@ -176,6 +184,7 @@
         sendDBKeys('discord_settings', 'discordSettings');
         sendDBKeys('discord_keywords', 'discordKeywords');
         sendDBKeys('discord_gambling', 'discordGambling');
+        sendDBKeys('discord_roll', 'discordRollReward');
         sendDBKeys('discord_slotmachine', 'discordSlotMachineReward');
         sendDBKeys('discord_slotmachineemojis', 'discordSlotMachineEmojis');
         sendDBKeysList('discord_commands', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom']);
@@ -221,6 +230,7 @@
         $('#command-add-response-modal').val('');
         $('#command-add-permission-modal').val('0');
         $('#command-add-cooldown-modal').val('0');
+        $('#command-add-cost-modal').val('0');
         $('#command-add-channel-modal').val('');
     }
 
@@ -278,12 +288,13 @@
     /*
      * @function openCommandModal
      */
-    function openCommandModal(command, response, permission, cooldown, channel) {
+    function openCommandModal(command, response, permission, cost, cooldown, channel) {
         $('#command-name-modal').val(command);
         $('#command-response-modal').val(response);
         $('#command-permission-modal').val(permission);
         $('#command-cooldown-modal').val(cooldown);
         $('#command-channel-modal').val(channel);
+        $('#command-cost-modal').val(cost);
 
         $('#command-modal').modal();
     }
@@ -325,7 +336,7 @@
     }
 
     /**
-     * @function setDiscordSlotRewards() {
+     * @function setDiscordSlotRewards
      */
     function setDiscordSlotRewards() {
         var val0 = $('#discordSlotRewards0Input').val(),
@@ -345,7 +356,7 @@
     }
 
     /**
-     * @function setSlotEmojis() {
+     * @function setSlotEmojis
      */
     function setSlotEmojis() {
         var val0 = $('#slotEmoji0Input').val(),
@@ -361,6 +372,28 @@
             sendDBUpdate('slotEmojis3', 'discordSlotMachineEmojis', 'emoji_3', val3);
             sendDBUpdate('slotEmojis4', 'discordSlotMachineEmojis', 'emoji_4', val4);
             setTimeout(function() { doQuery(); sendWSEvent('discord', './discord/games/slotMachine.js', null, null); }, TIMEOUT_WAIT_TIME);
+        }
+    }
+
+    /**
+     * @function setDiscordRollRewards 
+     */
+    function setDiscordRollRewards() {
+        var val0 = $('#discordRollRewards0Input').val(),
+            val1 = $('#discordRollRewards1Input').val(),
+            val2 = $('#discordRollRewards2Input').val(),
+            val3 = $('#discordRollRewards3Input').val(),
+            val4 = $('#discordRollRewards4Input').val(),
+            val5 = $('#discordRollRewards5Input').val();
+
+        if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0 && val5.length > 0) {
+            sendDBUpdate('rollRewards0', 'discordRollReward', 'rewards_0', val0);
+            sendDBUpdate('rollRewards1', 'discordRollReward', 'rewards_1', val1);
+            sendDBUpdate('rollRewards2', 'discordRollReward', 'rewards_2', val2);
+            sendDBUpdate('rollRewards3', 'discordRollReward', 'rewards_3', val3);
+            sendDBUpdate('rollRewards4', 'discordRollReward', 'rewards_4', val4);
+            sendDBUpdate('rollRewards5', 'discordRollReward', 'rewards_5', val5);
+            setTimeout(function() { doQuery(); sendWSEvent('discord', './discord/games/roll.js', null, null); }, TIMEOUT_WAIT_TIME);
         }
     }
 
@@ -398,4 +431,5 @@
     $.addKeyword = addKeyword;
     $.setDiscordSlotRewards = setDiscordSlotRewards;
     $.setSlotEmojis = setSlotEmojis;
+    $.setDiscordRollRewards = setDiscordRollRewards;
 })();
