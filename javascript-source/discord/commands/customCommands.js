@@ -128,6 +128,11 @@
             s = $.replace(s, '(lasttip)', ($.inidb.exists('donations', 'last_donation_message') ? $.inidb.get('donations', 'last_donation_message') : 'No donations found.'));
         }
 
+        if (s.match(/\(encodeurl ([\w\W]+)\)/)) {
+            var m = s.match(/\(encodeurl ([\w\W]+)\)/);
+            s = $.replace(s, m[0], encodeURI(m[1]));
+        }
+
         if (s.match(reCustomAPIJson) || s.match(reCustomAPI)) {
             s = api(event, s);
         }

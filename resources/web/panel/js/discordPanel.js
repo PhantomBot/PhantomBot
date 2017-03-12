@@ -38,11 +38,17 @@
             return;
         }
 
-        if (panelCheckQuery(msgObject, 'discord_slotmachine')) {
-                for (idx in msgObject['results']) {
-                    $('#discordSlotRewards' + idx + 'Input').val(msgObject['results'][idx]['value']);
-                }
+        if (panelCheckQuery(msgObject, 'discord_gambling')) {
+            for (idx in msgObject['results']) {
+                $('#gamble_' + msgObject['results'][idx]['key']).val(msgObject['results'][idx]['value']);
             }
+        }
+
+        if (panelCheckQuery(msgObject, 'discord_slotmachine')) {
+            for (idx in msgObject['results']) {
+                $('#discordSlotRewards' + idx + 'Input').val(msgObject['results'][idx]['value']);
+            }
+        }
 
         if (panelCheckQuery(msgObject, 'discord_slotmachineemojis')) {
             for (idx in msgObject['results']) {
@@ -169,6 +175,7 @@
     function doQuery() {
         sendDBKeys('discord_settings', 'discordSettings');
         sendDBKeys('discord_keywords', 'discordKeywords');
+        sendDBKeys('discord_gambling', 'discordGambling');
         sendDBKeys('discord_slotmachine', 'discordSlotMachineReward');
         sendDBKeys('discord_slotmachineemojis', 'discordSlotMachineEmojis');
         sendDBKeysList('discord_commands', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom']);
@@ -326,7 +333,7 @@
             val2 = $('#discordSlotRewards2Input').val(),
             val3 = $('#discordSlotRewards3Input').val(),
             val4 = $('#discordSlotRewards4Input').val();
-         console.log(val1);
+
         if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0) {
             sendDBUpdate('slotRewards0', 'discordSlotMachineReward', 'reward_0', val0);
             sendDBUpdate('slotRewards1', 'discordSlotMachineReward', 'reward_1', val1);

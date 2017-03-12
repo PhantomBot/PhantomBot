@@ -244,15 +244,8 @@
                         bitsToggle = value;
                         $('#bitsToggle').html(settingIcon[value]);
                     }
-                    if (panelMatch(key, 'rewardMultToggle')) {
-                        bitsRewardMultToggle = value;
-                        $('#bitsRewardMultToggle').html(settingIcon[value]);
-                    }
                     if (panelMatch(key, 'message')) {
                         $('#bitsMessage').val(value);
-                    }
-                    if (panelMatch(key, 'reward')) {
-                        $('#bitsReward').val(value);
                     }
                     if (panelMatch(key, 'minimum')) {
                         $('#bitsMinimum').val(value);
