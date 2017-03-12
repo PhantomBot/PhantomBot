@@ -170,11 +170,12 @@
     <div id="_discord_slotMachineDisabled" />
     <div id="_discord_slotMachine">
         <div>
-            <strong>Slot Rewards</strong>
+            <strong>Slot Settings</strong>
         </div>
         <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_max"><small>Slot Rewards</small></label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.setDiscordSlotRewards()">Update</button>
                 <input style="width: 15%" type="number" min="0" id="discordSlotRewards0Input" placeholder="Points"
@@ -191,12 +192,9 @@
         </form>
 
         <br>
-        <div>
-            <strong>Slot Emojis</strong>
-        </div>
-        <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_max"><small>Slot Emojis&nbsp;&nbsp;&nbsp;</small></label>
                 <button type="button" class="btn btn-primary inline pull-right" 
                         onclick="$.setSlotEmojis()">Update</button>
                 <input style="width: 15%" type="text" id="slotEmoji0Input" placeholder="Emoji"
@@ -212,11 +210,47 @@
             </div>
         </form>
     </div>
-    <br>
+    <br><br>
 
     <div id="_discord_gamblingDisabled" />
     <div id="_discord_gambling">
+        <div>
+            <strong>Gambling Settings</strong>
+        </div>
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_max"><small>Maximum Gambling Amount</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_max', 'games/gambling.js', 'discordGambling', 'max')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamble_max" placeholder="Amount">
+            </div>
+        </form>
 
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_min"><small>Minimum Gambling Amount</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_min', 'games/gambling.js', 'discordGambling', 'min')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamble_min" placeholder="Amount">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_winGainPercent"><small>Winning Percent</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_winGainPercent', 'games/gambling.js', 'discordGambling', 'winGainPercent')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamble_winGainPercent" placeholder="Amount" data-toggle="tooltip" 
+                        title="The percent of points the winner wins when gambling. Max is 100." >
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_winRange"><small>Winning Range</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_winRange', 'games/gambling.js', 'discordGambling', 'winRange')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamble_winRange" placeholder="Amount" data-toggle="tooltip" 
+                        title="Range from where people can win, anything under the number you put here will be a lost. Max is 100." >
+            </div>
+        </form>
     </div>
     </div>
 

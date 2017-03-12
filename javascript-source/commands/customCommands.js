@@ -338,7 +338,7 @@
 
         if (message.match(/\(encodeurl ([\w\W]+)\)/)) {
             var m = message.match(/\(encodeurl ([\w\W]+)\)/);
-            s = $.replace(s, m[0], encodeURI(m[1]));
+            message = $.replace(message, m[0], encodeURI(m[1]));
         }
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
