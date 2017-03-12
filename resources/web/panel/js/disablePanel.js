@@ -224,8 +224,16 @@
             if (panelMatch(module, './discord/commands/customCommands.js')) {
                 handlePanel('./discord/games/customCommands.js', '#_discord_customCommands', moduleEnabled);
             }
-
-        }            
+            if (panelMatch(module, './discord/games/slotMachine.js')) {
+                handlePanel('./discord/games/slotMachine.js', '#_discord_slotMachine', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/games/gambling.js')) {
+                handlePanel('./discord/games/gambling.js', '#_discord_gambling', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/games/roll.js')) {
+                handlePanel('./discord/games/roll.js', '#_discord_roll', moduleEnabled);
+            }
+        }
     }
 
     // Export Function
