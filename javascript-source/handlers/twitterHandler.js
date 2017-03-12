@@ -69,8 +69,7 @@
                     randNum = $.randRange(1, 9999);
                 } while (randNum == randPrev);
                 randPrev = randNum;
-                $.twitter.
-                (String(message).
+                $.twitter.updateStatus(String(message).
                                            replace('(title)', $.twitchcache.getStreamStatus()).
                                            replace('(game)', $.twitchcache.getGameTitle()).
                                            replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
