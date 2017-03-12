@@ -321,7 +321,10 @@ public class PanelSocketServer extends WebSocketServer {
                 uniqueID = jsonObject.getString("dbkeyssearch");
                 String table = jsonObject.getJSONObject("query").getString("table");
                 String key = jsonObject.getJSONObject("query").getString("key");
-                doDBKeysSearch(webSocket, uniqueID, table, key);
+                String limit = jsonObject.getJSONObject("query").getString("limit");
+                String offset = jsonObject.getJSONObject("query").getString("offset");
+                String order = jsonObject.getJSONObject("query").getString("order");
+                doDBKeysSearch(webSocket, uniqueID, table, key, limit, order, offset);
             } else {
                 com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed [" + jsonString + "]");
                 return;
@@ -579,13 +582,13 @@ public class PanelSocketServer extends WebSocketServer {
      * @param table     Table name to query.
      * @param key       key to search
      */
-    private void doDBKeysSearch(WebSocket webSocket, String id, String table, String key) {
+    private void doDBKeysSearch(WebSocket webSocket, String id, String table, String key, String order, String limit, String offset) {
         JSONStringer jsonObject = new JSONStringer();
 
         jsonObject.object().key("query_id").value(id).key("results").array();
 
         try {
-            String[] dbKeys = PhantomBot.instance().getDataStore().GetKeysByLikeKeys(table, "", key);
+            String[] dbKeys = PhantomBot.instance().getDataStore().GetKeysByLikeKeysOrder(table, "", key, order, limit, offset);
             for (String dbKey : dbKeys) {
                 String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
                 jsonObject.object().key("table").value(table).key("key").value(dbKey).key("value").value(value).endObject();
