@@ -165,6 +165,61 @@
     </div>
     </div>
 
+    <h3>Game Settings</h3>
+    <div>
+    <div id="_discord_slotMachineDisabled" />
+    <div id="_discord_slotMachine">
+        <div>
+            <strong>Slot Rewards</strong>
+        </div>
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setDiscordSlotRewards()">Update</button>
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards0Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for First Value">
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards1Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Second Value">
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards2Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Third Value">
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards3Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Fourth Value">
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards4Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Fifth Value">
+            </div>
+        </form>
+
+        <br>
+        <div>
+            <strong>Slot Emojis</strong>
+        </div>
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setSlotEmojis()">Update</button>
+                <input style="width: 15%" type="text" id="slotEmoji0Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for First Value">
+                <input style="width: 15%" type="text" id="slotEmoji1Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for Second Value">
+                <input style="width: 15%" type="text" id="slotEmoji2Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for Third Value">
+                <input style="width: 15%" type="text" id="slotEmoji3Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for Fourth Value">
+                <input style="width: 15%" type="text" id="slotEmoji4Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for Fifth Value">
+            </div>
+        </form>
+    </div>
+    <br>
+
+    <div id="_discord_gamblingDisabled" />
+    <div id="_discord_gambling">
+
+    </div>
+    </div>
+
     <h3>Moderation Log Settings</h3>
     <div>
         <i>Enabling this feature requires a bot restart after.</i>
