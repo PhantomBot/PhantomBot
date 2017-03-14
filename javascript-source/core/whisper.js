@@ -61,8 +61,8 @@
             return;
         }
 
-        if (message.startsWith('!') && $.isMod(sender) && hasKey($.users, sender, 0)) {
-            message = message.replace('!', '');
+        if (message.startsWith('!') /*&& $.isMod(sender) && hasKey($.users, sender, 0)*/) {
+            message = message.substring(1);
             if (message.includes(' ')) {
                 split = message.indexOf(' ');
                 command = message.substring(0, split).toLowerCase();
