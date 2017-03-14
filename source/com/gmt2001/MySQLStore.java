@@ -452,6 +452,55 @@ public class MySQLStore extends DataStore {
                };
     }
 
+     @Override
+    public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) { 
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+                    statement.setString(2, "%" + search + "%");
+                    
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+                        
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, "%" + search + "%");
+                    
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+                        
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new String[] {
+               };
+    }
+
     @Override
     public boolean HasKey(String fName, String section, String key) {
         CheckConnection();
