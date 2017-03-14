@@ -203,9 +203,20 @@ public class YTWebSocketServer extends WebSocketServer {
             jsonStatus = jsonObject.getJSONObject("status");
             if (jsonStatus.has("state")) {
                 dataInt = jsonStatus.getInt("state");
-                currentState = (dataInt == 200 ? currentState : dataInt);
-                playerState = YTPlayerState.getStateFromId(dataInt);
-                EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
+
+                /* If the current status is buffering and then we receive an unstarted event, then the player
+                 * is stuck. This normally happens with videos that are not allowed to play in the regioin
+                 * and are not returned as such by the API lookup. Skip the song.
+                 */
+                if (currentState == 3 && dataInt == -1) {
+                    currentState = dataInt;
+                    playerState = YTPlayerState.getStateFromId(dataInt);
+                    EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                } else {
+                    currentState = (dataInt == 200 ? currentState : dataInt);
+                    playerState = YTPlayerState.getStateFromId(dataInt);
+                    EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
+                }
             } else if (jsonStatus.has("ready")) {
                 currentState = -2;
                 EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEW));
