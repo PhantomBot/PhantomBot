@@ -51,7 +51,7 @@ import org.json.JSONObject;
 public class TwitchAlertsAPIv1 {
 
     private static final TwitchAlertsAPIv1 instance = new TwitchAlertsAPIv1();
-    private static final String sAPIURL = "https://www.twitchalerts.com/api/v1.0";
+    private static final String sAPIURL = "https://www.streamlabs.com/api/v1.0";
     private static final int iHTTPTimeout = 2 * 1000;
     private String sAccessToken = "";
     private int iDonationPullLimit = 5;
