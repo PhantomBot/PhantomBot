@@ -74,8 +74,9 @@
      */
     function updateModLinesDB(user) {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            $.inidb.incr('panelstats', 'timeoutCount', 1);
-            $.inidb.incr('panelmoduserstats', user, 1);
+            $.inidb.incr('panelmodstats', 'mod_' + $.getCurLocalTimeString('MM.dd.yy'), 1);
+            // $.inidb.incr('panelstats', 'timeoutCount', 1);
+            // $.inidb.incr('panelmoduserstats', user, 1);
         }
     }
 
