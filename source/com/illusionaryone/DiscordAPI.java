@@ -629,7 +629,7 @@ public class DiscordAPI {
             commandEvent(sender, channel, message, isAdmin);
         }
 
-        EventBus.instance().postAsync(new DiscordMessageEvent(sender, channel, message, messageId, isAdmin));
+        EventBus.instance().post(new DiscordMessageEvent(sender, channel, message, messageId, isAdmin));
     }
 
     /*
@@ -738,7 +738,6 @@ public class DiscordAPI {
         @Override
         public void run() {
             handleMessages(event);
-            return;
         }
     }
 }

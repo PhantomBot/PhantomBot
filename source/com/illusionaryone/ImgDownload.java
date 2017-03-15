@@ -18,20 +18,12 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.UncaughtExceptionHandler;
-
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.IOException;
 
 import java.net.URL;
 
@@ -52,28 +44,26 @@ public class ImgDownload {
     public static String downloadHTTP(String urlString, String filename) {
         try {
             URL url = new URL(urlString);
-            InputStream inputStream = new BufferedInputStream(url.openStream());
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    
-            byte[] buffer = new byte[1024];
-            int n = 0;
-    
-            while ((n = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, n);
+            ByteArrayOutputStream outputStream;
+            try (InputStream inputStream = new BufferedInputStream(url.openStream())) {
+                outputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int n = 0;
+                while ((n = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, n);
+                }   outputStream.close();
             }
-            outputStream.close();
-            inputStream.close();
             byte[] imgData = outputStream.toByteArray();
     
             if (!new File ("./addons/downloadHTTP").exists()) {
                 new File ("./addons/downloadHTTP").mkdirs();
             }
 
-            FileOutputStream fileOutputStream = new FileOutputStream("./addons/downloadHTTP/" + filename);
-            fileOutputStream.write(imgData);
-            fileOutputStream.close();
+            try (FileOutputStream fileOutputStream = new FileOutputStream("./addons/downloadHTTP/" + filename)) {
+                fileOutputStream.write(imgData);
+            }
             return new String("true");
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             com.gmt2001.Console.err.println("ImgDownload::downloadHTTP(" + urlString + ", " + filename + ") failed: " +
                                             ex.getMessage());
             return new String("false");
