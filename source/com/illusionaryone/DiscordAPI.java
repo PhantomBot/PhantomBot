@@ -629,7 +629,7 @@ public class DiscordAPI {
             commandEvent(sender, channel, message, isAdmin);
         }
 
-        EventBus.instance().post(new DiscordMessageEvent(sender, channel, message, messageId, isAdmin));
+        EventBus.instance().postAsync(new DiscordMessageEvent(sender, channel, message, messageId, isAdmin));
     }
 
     /*
