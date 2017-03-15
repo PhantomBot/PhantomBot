@@ -738,6 +738,7 @@ public class DiscordAPI {
         @Override
         public void run() {
             handleMessages(event);
+            return;
         }
     }
 }
