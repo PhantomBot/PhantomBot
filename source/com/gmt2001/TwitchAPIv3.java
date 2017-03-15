@@ -16,10 +16,6 @@
  */
 package com.gmt2001;
 
-import com.gmt2001.DataStore;
-import com.gmt2001.HttpRequest;
-import me.mast3rplan.phantombot.PhantomBot;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,13 +24,11 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONString;
 import org.json.JSONStringer;
 
 /**
@@ -154,6 +148,8 @@ public class TwitchAPIv3 {
             j.put("_exception", "");
             j.put("_exceptionMessage", "");
             j.put("_content", content);
+
+            com.gmt2001.Console.debug.println("TwitchAPIv3::GetData::DebugResponse: " + j.toString());
         } catch (JSONException ex) {
             if (ex.getMessage().contains("A JSONObject text must begin with")) {
                 j = new JSONObject("{}");
@@ -165,6 +161,8 @@ public class TwitchAPIv3 {
                 j.put("_exception", "");
                 j.put("_exceptionMessage", "");
                 j.put("_content", rawcontent);
+
+                com.gmt2001.Console.debug.println("TwitchAPIv3::GetData::InvalidJSONResponse: " + j.toString());
             } else {
                 com.gmt2001.Console.err.println("TwitchAPIv3::GetData::Exception: " + ex.getMessage());
             }
@@ -692,7 +690,7 @@ public class TwitchAPIv3 {
      * work.
      *
      * @param   String      Name of the channel to lookup data for
-     * @param   DataStore   Copy of database object 
+     * @param   DataStore   Copy of database object
      * @param   Boolean     Force the run even if the number of followers is too high
      */
     public void FixFollowedTable(String channel, DataStore dataStore, Boolean force) {
