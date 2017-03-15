@@ -359,7 +359,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Send the message to the scripts. */
-        eventBus.post(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
+        eventBus.postAsync(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
 
         /* Incrememnt the chat lines, this should be the last operation of this function. */
         this.session.chatLinesIncr();
@@ -543,6 +543,7 @@ public class TwitchWSIRCParser {
 
         public void run() {
             scriptEventManager.runDirect(new IrcModerationEvent(session, username, message, channel, tagsMap));
+            return;
         }
     }
 }
