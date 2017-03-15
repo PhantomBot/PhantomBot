@@ -21,32 +21,23 @@
 
 package com.scaniatv;
 
-import com.gmt2001.UncaughtExceptionHandler;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import javax.net.ssl.HttpsURLConnection;
-import org.apache.commons.io.IOUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class TipeeeStreamAPIv1 {
 
-	private static final TipeeeStreamAPIv1 instance = new TipeeeStreamAPIv1();
+    private static final TipeeeStreamAPIv1 instance = new TipeeeStreamAPIv1();
     private static final String url = "https://api.tipeeestream.com/v1.0/events.json";
     private static final int iHTTPTimeout = 2 * 1000;
     private String apiOauth = "";
