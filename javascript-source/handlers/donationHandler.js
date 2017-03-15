@@ -53,8 +53,8 @@
             JSONObject = Packages.org.json.JSONObject,
             donationJson = new JSONObject(donationJsonStr);
 
-        var donationID = donationJson.getString("donation_id"),
-            donationCreatedAt = donationJson.getString("created_at"),
+        var donationID = donationJson.get("donation_id"),
+            donationCreatedAt = donationJson.get("created_at"),
             donationCurrency = donationJson.getString("currency"),
             donationAmount = parseFloat(donationJson.getString("amount")),
             donationUsername = donationJson.getString("name"),
