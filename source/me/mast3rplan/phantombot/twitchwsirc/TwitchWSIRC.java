@@ -278,6 +278,7 @@ public class TwitchWSIRC extends WebSocketClient {
 
         public void run() {
             twitchWSIRCParser.parseData(message);
+            return;
         }
     }
 
