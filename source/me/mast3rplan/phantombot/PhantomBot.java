@@ -19,118 +19,105 @@ package me.mast3rplan.phantombot;
 
 import com.gmt2001.DataStore;
 import com.gmt2001.IniStore;
-import com.gmt2001.SqliteStore;
-import com.gmt2001.TempStore;
+import com.gmt2001.Logger;
 import com.gmt2001.MySQLStore;
+import com.gmt2001.SqliteStore;
 import com.gmt2001.TwitchAPIv3;
 import com.gmt2001.YouTubeAPIv3;
-import com.gmt2001.Logger;
 import com.google.common.eventbus.Subscribe;
-import de.simeonf.EventWebSocketSecureServer;
-import de.simeonf.EventWebSocketServer;
-import de.simeonf.MusicWebSocketSecureServer;
-import com.illusionaryone.TwitchAlertsAPIv1;
-import com.illusionaryone.StreamTipAPI;
-import com.illusionaryone.SingularityAPI;
+import com.illusionaryone.DiscordAPI;
 import com.illusionaryone.GameWispAPIv1;
-import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
 import com.illusionaryone.NoticeTimer;
-import com.illusionaryone.DiscordAPI;
-import com.scaniatv.TipeeeStreamAPIv1;
-import com.scaniatv.CustomAPI;
+import com.illusionaryone.SingularityAPI;
+import com.illusionaryone.StreamTipAPI;
+import com.illusionaryone.TwitchAlertsAPIv1;
+import com.illusionaryone.TwitterAPI;
 import com.scaniatv.AnkhConverter;
+import com.scaniatv.CustomAPI;
+import com.scaniatv.TipeeeStreamAPIv1;
+
+import de.simeonf.EventWebSocketServer;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+
 import java.security.SecureRandom;
+
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.Properties;
-import java.util.Enumeration;
+
 import java.util.Collections;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
-
-import java.util.concurrent.TimeUnit;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.TimeZone;
+import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import java.security.SecureRandom;
-import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
-import me.mast3rplan.phantombot.cache.FollowersCache;
-import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.cache.DonationsCache;
+import me.mast3rplan.phantombot.cache.EmotesCache;
+import me.mast3rplan.phantombot.cache.FollowersCache;
 import me.mast3rplan.phantombot.cache.StreamTipCache;
 import me.mast3rplan.phantombot.cache.TipeeeStreamCache;
-import me.mast3rplan.phantombot.cache.EmotesCache;
-import me.mast3rplan.phantombot.cache.TwitterCache;
 import me.mast3rplan.phantombot.cache.TwitchCache;
+import me.mast3rplan.phantombot.cache.TwitterCache;
+import me.mast3rplan.phantombot.cache.UsernameCache;
 import me.mast3rplan.phantombot.console.ConsoleInputListener;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.Listener;
+import me.mast3rplan.phantombot.event.bits.BitsEvent;
 import me.mast3rplan.phantombot.event.command.CommandEvent;
-import me.mast3rplan.phantombot.event.devcommand.DeveloperCommandEvent;
 import me.mast3rplan.phantombot.event.console.ConsoleInputEvent;
+import me.mast3rplan.phantombot.event.devcommand.DeveloperCommandEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
+import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
+import me.mast3rplan.phantombot.event.irc.channel.IrcChannelJoinEvent;
 import me.mast3rplan.phantombot.event.irc.channel.IrcChannelUserModeEvent;
-import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
-import me.mast3rplan.phantombot.event.irc.channel.IrcChannelJoinEvent;
-import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
-import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
-import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
-import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
-import me.mast3rplan.phantombot.event.streamtip.donate.StreamTipDonationEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
+import me.mast3rplan.phantombot.event.subscribers.NewPrimeSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewReSubscriberEvent;
 import me.mast3rplan.phantombot.event.subscribers.NewSubscriberEvent;
-import me.mast3rplan.phantombot.event.subscribers.NewPrimeSubscriberEvent;
-import me.mast3rplan.phantombot.event.bits.BitsEvent;
+import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
+import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
+import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
+import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
 import me.mast3rplan.phantombot.httpserver.HTTPServer;
-import me.mast3rplan.phantombot.httpserver.NEWHTTPServer;
 import me.mast3rplan.phantombot.httpserver.NEWHTTPSServer;
-import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
-import me.mast3rplan.phantombot.ytplayer.YTWebSocketServer;
+import me.mast3rplan.phantombot.httpserver.NEWHTTPServer;
+import me.mast3rplan.phantombot.panel.PanelSocketSecureServer;
+import me.mast3rplan.phantombot.panel.PanelSocketServer;
 import me.mast3rplan.phantombot.script.Script;
 import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.script.ScriptManager;
-import me.mast3rplan.phantombot.panel.PanelSocketServer;
-import me.mast3rplan.phantombot.panel.PanelSocketSecureServer;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FileExistsException;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-
-import me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC;
-import me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC;
-import me.mast3rplan.phantombot.twitchwsirc.TwitchPubSub;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
-import java.net.URI;
+import me.mast3rplan.phantombot.twitchwsirc.TwitchPubSub;
+import me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC;
+import me.mast3rplan.phantombot.ytplayer.YTWebSocketServer;
 
-public class PhantomBot implements Listener {
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.SystemUtils;
+
+public final class PhantomBot implements Listener {
     /* Bot Information */
     private String botName;
     private String channelName;
@@ -235,15 +222,15 @@ public class PhantomBot implements Listener {
     private Boolean resetLogin = false;
     
     /* Other Information */
+    private static HashMap<String, Channel> channels;
+    private static HashMap<String, Session> sessions;
+    private static HashMap<String, String> apiOAuths;
+    private static Boolean newSetup = false;
     private Channel channel;
     private Session session;
     private String chanName;
     private Boolean timer = false;
     private SecureRandom random;
-    private static HashMap<String, Channel> channels;
-    private static HashMap<String, Session> sessions;
-    private static HashMap<String, String> apiOAuths;
-    private static Boolean newSetup = false;
     private Boolean devCommands = true;
     private Boolean joined = false;
     private TwitchWSHostIRC wsHostIRC;
@@ -1020,11 +1007,8 @@ public class PhantomBot implements Listener {
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
 
         /* open a new thread for when the bot is exiting */
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                onExit();
-            }
+        Thread thread = new Thread(() -> {
+            onExit();
         });
 
         /* Get the un time for that new thread we just created */
@@ -1616,15 +1600,15 @@ public class PhantomBot implements Listener {
             Properties outputProperties = new Properties() {
                 @Override
                 public synchronized Enumeration<Object> keys() {
-                    return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+                    return Collections.enumeration(new TreeSet<>(super.keySet()));
                 }
             };
 
             try {
-                FileOutputStream outputStream = new FileOutputStream("botlogin.txt");
-                outputProperties.putAll(pbProperties);
-                outputProperties.store(outputStream, "PhantomBot Configuration File");
-                outputStream.close();
+                try (FileOutputStream outputStream = new FileOutputStream("botlogin.txt")) {
+                    outputProperties.putAll(pbProperties);
+                    outputProperties.store(outputStream, "PhantomBot Configuration File");
+                }
 
                 dataStore.SaveAll(true);
 
@@ -1632,7 +1616,7 @@ public class PhantomBot implements Listener {
                 print("Changes have been saved, now exiting PhantomBot.");
                 print("");
                 System.exit(0);
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
             return;
@@ -2198,16 +2182,16 @@ public class PhantomBot implements Listener {
             Properties outputProperties = new Properties() {
                 @Override
                 public synchronized Enumeration<Object> keys() {
-                    return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+                    return Collections.enumeration(new TreeSet<>(super.keySet()));
                 }
             };
 
             try {
-                FileOutputStream outputStream = new FileOutputStream("botlogin.txt");
-                outputProperties.putAll(startProperties);
-                outputProperties.store(outputStream, "PhantomBot Configuration File");
-                outputStream.close();
-            } catch (Exception ex) {
+                try (FileOutputStream outputStream = new FileOutputStream("botlogin.txt")) {
+                    outputProperties.putAll(startProperties);
+                    outputProperties.store(outputStream, "PhantomBot Configuration File");
+                }
+            } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
@@ -2220,7 +2204,7 @@ public class PhantomBot implements Listener {
         Properties outputProperties = new Properties() {
             @Override
             public synchronized Enumeration<Object> keys() {
-                return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+                return Collections.enumeration(new TreeSet<>(super.keySet()));
             }
         };
 
@@ -2231,10 +2215,10 @@ public class PhantomBot implements Listener {
         pbProperties.setProperty("gamewisprefresh", newTokens[1]);
 
         try {
-            FileOutputStream outputStream = new FileOutputStream("botlogin.txt");
-            outputProperties.putAll(pbProperties);
-            outputProperties.store(outputStream, "PhantomBot Configuration File");
-            outputStream.close();
+            try (FileOutputStream outputStream = new FileOutputStream("botlogin.txt")) {
+                outputProperties.putAll(pbProperties);
+                outputProperties.store(outputStream, "PhantomBot Configuration File");
+            }
             print("GameWisp Token has been refreshed.");
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("!!!! CRITICAL !!!! Failed to update GameWisp Refresh Tokens into botlogin.txt! Must manually add!");
@@ -2276,17 +2260,14 @@ public class PhantomBot implements Listener {
         }
 
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                long curTime = System.currentTimeMillis() / 1000L;
-                String lastRunStr = dataStore.GetString("settings", "", "gameWispRefreshTime");
-
-                long lastRun = Long.parseLong(lastRunStr);
-                if ((curTime - lastRun) > (10 * 24 * 60 * 60)) { // 10 days, token expires every 35.
-                    dataStore.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
-                    updateGameWispTokens(GameWispAPIv1.instance().refreshToken());
-                }
+        service.scheduleAtFixedRate(() -> {
+            long curTime1 = System.currentTimeMillis() / 1000L;
+            String lastRunStr = dataStore.GetString("settings", "", "gameWispRefreshTime");
+            long lastRun = Long.parseLong(lastRunStr);
+            if ((curTime1 - lastRun) > (10 * 24 * 60 * 60)) {
+                // 10 days, token expires every 35.
+                dataStore.set("settings", "gameWispRefreshTime", String.valueOf(curTime1));
+                updateGameWispTokens(GameWispAPIv1.instance().refreshToken());
             }
         }, 0, 1, TimeUnit.DAYS);
     }
@@ -2296,29 +2277,26 @@ public class PhantomBot implements Listener {
      */
     private void doCheckPhantomBotUpdate() {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
-                if (newVersionInfo != null) {
-                    try {
-                        Thread.sleep(6000);
-                        print("");
-                        print("New PhantomBot Release Detected: " + newVersionInfo[0]);
-                        print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
-                        print("Download Link: " + newVersionInfo[1]);
-                        print("A reminder will be provided in 24 hours!");
-                        print("");
-                    } catch (InterruptedException ex) {
-                        com.gmt2001.Console.err.printStackTrace(ex);
-                    }
-
-                    if (webEnabled) {
-                        dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
-                    }
-                } else {
-                    dataStore.del("settings", "newrelease_info");
+        service.scheduleAtFixedRate(() -> {
+            String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
+            if (newVersionInfo != null) {
+                try {
+                    Thread.sleep(6000);
+                    print("");
+                    print("New PhantomBot Release Detected: " + newVersionInfo[0]);
+                    print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
+                    print("Download Link: " + newVersionInfo[1]);
+                    print("A reminder will be provided in 24 hours!");
+                    print("");
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
+                
+                if (webEnabled) {
+                    dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                }
+            } else {
+                dataStore.del("settings", "newrelease_info");
             }
         }, 0, 24, TimeUnit.HOURS);
     }
@@ -2378,26 +2356,23 @@ public class PhantomBot implements Listener {
         }
 
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-                datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
-                String timestamp = datefmt.format(new Date());
-
-                dataStore.backupSQLite3("phantombot.auto.backup." + timestamp + ".db");
-
-                try {
-                    Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
-                    while (dirIterator.hasNext()) {
-                        File backupFile = (File) dirIterator.next();
-                        if (FileUtils.isFileOlder(backupFile, System.currentTimeMillis() - (86400000 * backupSQLiteKeepDays))) {
-                           FileUtils.deleteQuietly(backupFile);
-                        }
+        service.scheduleAtFixedRate(() -> {
+            SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
+            datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
+            String timestamp = datefmt.format(new Date());
+            
+            dataStore.backupSQLite3("phantombot.auto.backup." + timestamp + ".db");
+            
+            try {
+                Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
+                while (dirIterator.hasNext()) {
+                    File backupFile = (File) dirIterator.next();
+                    if (FileUtils.isFileOlder(backupFile, System.currentTimeMillis() - (86400000 * backupSQLiteKeepDays))) {
+                        FileUtils.deleteQuietly(backupFile);
                     }
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("Failed to clean up database backup directory: " + ex.getMessage());
                 }
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.println("Failed to clean up database backup directory: " + ex.getMessage());
             }
         }, 0, backupSQLiteHourFrequency, TimeUnit.HOURS);
     }
