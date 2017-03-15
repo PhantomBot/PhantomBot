@@ -73,30 +73,30 @@ public class TwitchAPIv3 {
         return GetData(type, url, post, "", isJson);
     }
 
-    @SuppressWarnings("UseSpecificCatch")
+    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String post,
+                                       String url, int responseCode, String exception,
+                                       String exceptionMessage, String jsonContent) {
+        jsonObject.put("_success", success);
+        jsonObject.put("_type", type);
+        jsonObject.put("_post", post);
+        jsonObject.put("_url", url);
+        jsonObject.put("_http", responseCode);
+        jsonObject.put("_exception", exception);
+        jsonObject.put("_exceptionMessage", exceptionMessage);
+        jsonObject.put("_content", jsonContent);
+    }
 
+    @SuppressWarnings("UseSpecificCatch")
     private JSONObject GetData(request_type type, String url, String post, String oauth, boolean isJson) {
         JSONObject j = new JSONObject("{}");
         InputStream i = null;
-        String rawcontent = "";
+        String content = "";
 
         try {
-            if (url.contains("?")) {
-                url += "&utcnow=" + System.currentTimeMillis();
-            } else {
-                url += "?utcnow=" + System.currentTimeMillis();
-            }
-
             URL u = new URL(url);
             HttpsURLConnection c = (HttpsURLConnection) u.openConnection();
-
             c.addRequestProperty("Accept", header_accept);
-
-            if (isJson) {
-                c.addRequestProperty("Content-Type", "application/json");
-            } else {
-                c.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            }
+            c.addRequestProperty("Content-Type", isJson ? "application/json" : "application/x-www-form-urlencoded");
 
             if (!clientid.isEmpty()) {
                 c.addRequestProperty("Client-ID", clientid);
@@ -111,9 +111,6 @@ public class TwitchAPIv3 {
             }
 
             c.setRequestMethod(type.name());
-
-            c.setUseCaches(false);
-            c.setDefaultUseCaches(false);
             c.setConnectTimeout(timeout);
             c.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
 
@@ -129,8 +126,6 @@ public class TwitchAPIv3 {
                 }
             }
 
-            String content;
-
             if (c.getResponseCode() == 200) {
                 i = c.getInputStream();
             } else {
@@ -143,88 +138,34 @@ public class TwitchAPIv3 {
                 content = IOUtils.toString(i, c.getContentEncoding());
             }
 
-            rawcontent = content;
-
             j = new JSONObject(content);
-            j.put("_success", true);
-            j.put("_type", type.name());
-            j.put("_url", url);
-            j.put("_post", post);
-            j.put("_http", c.getResponseCode());
-            j.put("_exception", "");
-            j.put("_exceptionMessage", "");
-            j.put("_content", content);
+            fillJSONObject(j, true, type.name(), post, url, c.getResponseCode(), "", "", content);
         } catch (JSONException ex) {
-            if (ex.getMessage().contains("A JSONObject text must begin with")) {
-                j = new JSONObject("{}");
-                j.put("_success", true);
-                j.put("_type", type.name());
-                j.put("_url", url);
-                j.put("_post", post);
-                j.put("_http", 0);
-                j.put("_exception", "");
-                j.put("_exceptionMessage", "");
-                j.put("_content", rawcontent);
-            } else {
-                com.gmt2001.Console.err.println("TwitchAPIv3::GetData::Exception: " + ex.getMessage());
-            }
+            fillJSONObject(j, false, type.name(), post, url, 0, "JSONException", ex.getMessage(), content);
+            com.gmt2001.Console.err.println("JSONException: " + ex.getMessage());
         } catch (NullPointerException ex) {
-            com.gmt2001.Console.err.println("TwitchAPIv3::GetData::Exception: " + ex.getMessage());
+            fillJSONObject(j, false, type.name(), post, url, 0, "NullPointerException", ex.getMessage(), content);
+            com.gmt2001.Console.err.println("NullPointerException: " + ex.getMessage());
         } catch (MalformedURLException ex) {
-            j.put("_success", false);
-            j.put("_type", type.name());
-            j.put("_url", url);
-            j.put("_post", post);
-            j.put("_http", 0);
-            j.put("_exception", "MalformedURLException");
-            j.put("_exceptionMessage", ex.getMessage());
-            j.put("_content", "");
-            com.gmt2001.Console.err.logStackTrace(ex);
+            fillJSONObject(j, false, type.name(), post, url, 0, "MalformedURLException", ex.getMessage(), content);
+            com.gmt2001.Console.err.println("MalformedURLException: " + ex.getMessage());
         } catch (SocketTimeoutException ex) {
-            j.put("_success", false);
-            j.put("_type", type.name());
-            j.put("_url", url);
-            j.put("_post", post);
-            j.put("_http", 0);
-            j.put("_exception", "SocketTimeoutException");
-            j.put("_exceptionMessage", ex.getMessage());
-            j.put("_content", "");
-            com.gmt2001.Console.err.logStackTrace(ex);
+            fillJSONObject(j, false, type.name(), post, url, 0, "SocketTimeoutException", ex.getMessage(), content);
+            com.gmt2001.Console.err.println("SocketTimeoutException: " + ex.getMessage());
         } catch (IOException ex) {
-            j.put("_success", false);
-            j.put("_type", type.name());
-            j.put("_url", url);
-            j.put("_post", post);
-            j.put("_http", 0);
-            j.put("_exception", "IOException");
-            j.put("_exceptionMessage", ex.getMessage());
-            j.put("_content", "");
-            com.gmt2001.Console.err.logStackTrace(ex);
+            fillJSONObject(j, false, type.name(), post, url, 0, "IOException", ex.getMessage(), content);
+            com.gmt2001.Console.err.println("IOException: " + ex.getMessage());
         } catch (Exception ex) {
-            j.put("_success", false);
-            j.put("_type", type.name());
-            j.put("_url", url);
-            j.put("_post", post);
-            j.put("_http", 0);
-            j.put("_exception", "Exception [" + ex.getClass().getName() + "]");
-            j.put("_exceptionMessage", ex.getMessage());
-            j.put("_content", "");
-            com.gmt2001.Console.err.logStackTrace(ex);
-        }
-
-        if (i != null) {
-            try {
-                i.close();
-            } catch (IOException ex) {
-                j.put("_success", false);
-                j.put("_type", type.name());
-                j.put("_url", url);
-                j.put("_post", post);
-                j.put("_http", 0);
-                j.put("_exception", "IOException");
-                j.put("_exceptionMessage", ex.getMessage());
-                j.put("_content", "");
-                com.gmt2001.Console.err.logStackTrace(ex);
+            fillJSONObject(j, false, type.name(), post, url, 0, ex.getClass().getName(), ex.getMessage(), content);
+            com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
+        } finally {
+            if (i != null) {
+                try {
+                    i.close();
+                } catch (IOException ex) {
+                    fillJSONObject(j, false, type.name(), post, url, 0, "IOException", ex.getMessage(), content);
+                    com.gmt2001.Console.err.println("IOException: " + ex.getMessage());
+                }
             }
         }
 
@@ -363,20 +304,12 @@ public class TwitchAPIv3 {
 
     public JSONObject SearchGame(String game) {
         try {
-            return GetData(request_type.GET, base_url + "/search/games?q=" + URLEncoder.encode(game, "UTF-8") + "&type=suggest", false);
+            String url = base_url + "/search/games?q=" + URLEncoder.encode(game, "UTF-8") + "&type=suggest";
+            return GetData(request_type.GET, url, false);
         } catch (UnsupportedEncodingException ex) {
             JSONObject j = new JSONObject("{}");
-
-            j.put("_success", false);
-            j.put("_type", "");
-            j.put("_url", "");
-            j.put("_post", "");
-            j.put("_http", 0);
-            j.put("_exception", "Exception [" + ex.getClass().getName() + "]");
-            j.put("_exceptionMessage", ex.getMessage());
-            j.put("_content", "");
-            com.gmt2001.Console.err.logStackTrace(ex);
-
+            fillJSONObject(j, false, "", "", base_url + "/search/games", 0, ex.getClass().getName(), ex.getMessage(), "");
+            com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
             return j;
         }
     }
@@ -393,13 +326,7 @@ public class TwitchAPIv3 {
     public JSONObject GetChannelFollows(String channel, int limit, int offset, boolean ascending) {
         limit = Math.max(0, Math.min(limit, 100));
         offset = Math.max(0, offset);
-
-        String dir = "desc";
-
-        if (ascending) {
-            dir = "asc";
-        }
-
+        String dir = ascending ? "asc" : "desc";
         return GetData(request_type.GET, base_url + "/channels/" + channel + "/follows?limit=" + limit + "&offset=" + offset + "&direction=" + dir, false);
     }
 
@@ -429,13 +356,7 @@ public class TwitchAPIv3 {
     public JSONObject GetChannelSubscriptions(String channel, int limit, int offset, boolean ascending, String oauth) {
         limit = Math.max(0, Math.min(limit, 100));
         offset = Math.max(0, offset);
-
-        String dir = "desc";
-
-        if (ascending) {
-            dir = "asc";
-        }
-
+        String dir = ascending ? "asc" : "desc";
         return GetData(request_type.GET, base_url + "/channels/" + channel + "/subscriptions?limit=" + limit + "&offset=" + offset + "&direction=" + dir, "", oauth, false);
     }
 
