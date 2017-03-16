@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.util.Map.Entry;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -31,7 +30,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class HttpRequest {
 
-    private static final int timeout = 5 * 1000;
+    private static final int TIMEOUT = 5 * 1000;
 
     public static enum RequestType {
 
@@ -57,14 +56,15 @@ public class HttpRequest {
 
             HttpURLConnection h = (HttpURLConnection) u.openConnection();
 
-            for (Entry<String, String> e : headers.entrySet()) {
+            headers.entrySet().stream().forEach((e) ->
+            {
                 h.addRequestProperty(e.getKey(), e.getValue());
-            }
+            });
 
             h.setRequestMethod(type.name());
             h.setUseCaches(false);
             h.setDefaultUseCaches(false);
-            h.setConnectTimeout(timeout);
+            h.setConnectTimeout(TIMEOUT);
             h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
             if (!post.isEmpty()) {
                 h.setDoOutput(true);
@@ -73,10 +73,10 @@ public class HttpRequest {
             h.connect();
 
             if (!post.isEmpty()) {
-                BufferedOutputStream stream = new BufferedOutputStream(h.getOutputStream());
-                stream.write(post.getBytes());
-                stream.flush();
-                stream.close();
+                try (BufferedOutputStream stream = new BufferedOutputStream(h.getOutputStream())) {
+                    stream.write(post.getBytes());
+                    stream.flush();
+                }
             }
 
             if (h.getResponseCode() < 400) {
