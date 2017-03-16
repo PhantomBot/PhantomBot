@@ -18,7 +18,7 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.DataStore;
+import com.gmt2001.datastore.DataStore;
 import com.gmt2001.UncaughtExceptionHandler;
 
 import me.mast3rplan.phantombot.PhantomBot;

@@ -17,11 +17,11 @@
 
 package me.mast3rplan.phantombot;
 
-import com.gmt2001.DataStore;
-import com.gmt2001.IniStore;
+import com.gmt2001.datastore.DataStore;
+import com.gmt2001.datastore.IniStore;
 import com.gmt2001.Logger;
-import com.gmt2001.MySQLStore;
-import com.gmt2001.SqliteStore;
+import com.gmt2001.datastore.MySQLStore;
+import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.TwitchAPIv3;
 import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
