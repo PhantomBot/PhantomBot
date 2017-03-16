@@ -33,10 +33,10 @@ import java.util.TimeZone;
  */
 public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-    private static final UncaughtExceptionHandler instance = new UncaughtExceptionHandler();
+    private static final UncaughtExceptionHandler INSTANCE = new UncaughtExceptionHandler();
 
     public static UncaughtExceptionHandler instance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override
