@@ -74,7 +74,7 @@ public class DataStore {
         return new String[] {
                };
     }
-    
+
     public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
         return new String[] {
                };
@@ -88,9 +88,13 @@ public class DataStore {
     }
 
     public void InsertString(String fName, String section, String key, String value) {
+        SetString(fName, section, key, value);
     }
 
     public void SetBatchString(String fName, String section, String[] key, String[] value) {
+        for (int i = 0; i < key.length; i++) {
+            SetString(fName, section, key[i], value[i]);
+        }
     }
 
     public Object GetObject(String fName, String section, String key) {
