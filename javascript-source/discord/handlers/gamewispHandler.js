@@ -2,14 +2,14 @@
  * This module is to handle gamewisp subscriber notifications.
  */
 (function() {
-	var subMessage = $.getSetIniDbString('discordSettings', 'gamewispSubMessage', '(name) just subscribed via GameWisp at tier level (tier)!'),
-	    resubMessage = $.getSetIniDbString('discordSettings', 'gamewispReSubMessage', '(name) just subscribed for (months) months in a row via GameWisp!'),
-	    tierMessage = $.getSetIniDbString('discordSettings', 'gamewispTierMessage', '(name) upgraded to tier (tier) on GameWisp!'),
-	    channelName = $.getSetIniDbString('discordSettings', 'gamewispChannel', ''),
-	    subToggle = $.getSetIniDbBoolean('discordSettings', 'gamewispSubToggle', false),
-	    resubToggle = $.getSetIniDbBoolean('discordSettings', 'gamewispReSubToggle', false),
-	    tierToggle = $.getSetIniDbBoolean('discordSettings', 'gamewispTierToggle', false),
-	    announce = false;
+    var subMessage = $.getSetIniDbString('discordSettings', 'gamewispSubMessage', '(name) just subscribed via GameWisp at tier level (tier)!'),
+        resubMessage = $.getSetIniDbString('discordSettings', 'gamewispReSubMessage', '(name) just subscribed for (months) months in a row via GameWisp!'),
+        tierMessage = $.getSetIniDbString('discordSettings', 'gamewispTierMessage', '(name) upgraded to tier (tier) on GameWisp!'),
+        channelName = $.getSetIniDbString('discordSettings', 'gamewispChannel', ''),
+        subToggle = $.getSetIniDbBoolean('discordSettings', 'gamewispSubToggle', false),
+        resubToggle = $.getSetIniDbBoolean('discordSettings', 'gamewispReSubToggle', false),
+        tierToggle = $.getSetIniDbBoolean('discordSettings', 'gamewispTierToggle', false),
+        announce = false;
 
     /**
      * @event panelWebSocket
@@ -26,16 +26,16 @@
         }
     });
 
-	/**
+    /**
      * @event gameWispSubscribe
      */
     $.bind('gameWispSubscribe', function(event) {
-    	var username = event.getUsername(),
-    	    tier = event.getTier(),
-    	    s = subMessage;
+        var username = event.getUsername(),
+            tier = event.getTier(),
+            s = subMessage;
 
-    	if (announce === false || subToggle === false || channelName == '') {
-        	return;
+        if (announce === false || subToggle === false || channelName == '') {
+            return;
         }
 
         if (s.match(/\(name\)/g)) {
@@ -43,22 +43,22 @@
         }
 
         if (s.match(/\(tier\)/g)) {
-            s = $.replace(s, '(tier)', tier);
+            s = $.replace(s, '(tier)', tier.toString());
         }
 
         $.discord.say(channelName, s);
     });
 
-	/**
+    /**
      * @event gameWispBenefits
      */
     $.bind('gameWispBenefits', function(event) {
-    	var username = event.getUsername(),
-    	    tier = event.getTier(),
-    	    s = tierMessage;
+        var username = event.getUsername(),
+            tier = event.getTier(),
+            s = tierMessage;
 
         if (announce === false || tierToggle === false || channelName == '' || parseInt(tier) < $.getGWTier(username)) {
-        	return;
+            return;
         }
 
         if (s.match(/\(name\)/g)) {
@@ -66,7 +66,7 @@
         }
 
         if (s.match(/\(tier\)/g)) {
-            s = $.replace(s, '(tier)', tier);
+            s = $.replace(s, '(tier)', tier.toString());
         }
 
         $.discord.say(channelName, s);
@@ -76,13 +76,12 @@
      * @event gameWispAnniversary
      */
     $.bind('gameWispAnniversary', function(event) {
-    	var username = event.getUsername(),
-    	    tier = event.getTier(),
-    	    months = event.getMonths(),
-    	    s = resubMessage;
+        var username = event.getUsername(),
+            months = event.getMonths(),
+            s = resubMessage;
 
-    	if (announce === false || resubToggle === false || channelName == '') {
-        	return;
+        if (announce === false || resubToggle === false || channelName == '') {
+            return;
         }
 
         if (s.match(/\(name\)/g)) {
@@ -90,21 +89,17 @@
         }
 
         if (s.match(/\(months\)/g)) {
-            s = $.replace(s, '(months)', months);
-        }
-
-        if (s.match(/\(tier\)/g)) {
-            s = $.replace(s, '(tier)', tier);
+            s = $.replace(s, '(months)', months.toString());
         }
 
         $.discord.say(channelName, s);
     });
 
     /**
-	 * @event discordCommand
-	 */
-	$.bind('discordCommand', function(event) {
-		var sender = event.getSender(),
+     * @event discordCommand
+     */
+    $.bind('discordCommand', function(event) {
+        var sender = event.getSender(),
             channel = event.getChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
@@ -114,99 +109,99 @@
             subAction = args[1];
 
         if (command.equalsIgnoreCase('gamewisphandler')) {
-        	if (action === undefined) {
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.usage'));
-        		return;
-        	}
+            if (action === undefined) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.usage'));
+                return;
+            }
 
-        	/**
-        	 * @discordcommandpath gamewisphandler subtoggle - Toggles GameWisp subscriber announcements.
-        	 */
-        	if (action.equalsIgnoreCase('subtoggle')) {
-        		subToggle = !subToggle;
-        		$.inidb.set('discordSettings', 'gamewispSubToggle', subToggle);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.sub.toggle', (subToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+            /**
+             * @discordcommandpath gamewisphandler subtoggle - Toggles GameWisp subscriber announcements.
+             */
+            if (action.equalsIgnoreCase('subtoggle')) {
+                subToggle = !subToggle;
+                $.inidb.set('discordSettings', 'gamewispSubToggle', subToggle);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.sub.toggle', (subToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
 
-        	}
+            }
 
-        	/**
-        	 * @discordcommandpath gamewisphandler resubtoggle - Toggles GameWisp re-subscriber announcements.
-        	 */
-        	if (action.equalsIgnoreCase('resubtoggle')) {
-        		resubToggle = !resubToggle;
-        		$.inidb.set('discordSettings', 'gamewispReSubToggle', resubToggle);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.resub.toggle', (resubToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+            /**
+             * @discordcommandpath gamewisphandler resubtoggle - Toggles GameWisp re-subscriber announcements.
+             */
+            if (action.equalsIgnoreCase('resubtoggle')) {
+                resubToggle = !resubToggle;
+                $.inidb.set('discordSettings', 'gamewispReSubToggle', resubToggle);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.resub.toggle', (resubToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
 
-        	}
+            }
 
-        	/**
-        	 * @discordcommandpath gamewisphandler tieruptoggle - Toggles GameWisp tier-up announcements.
-        	 */
-        	if (action.equalsIgnoreCase('tieruptoggle')) {
-        		tierToggle = !tierToggle;
-        		$.inidb.set('discordSettings', 'gamewispTierToggle', tierToggle);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.toggle', (tierToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));         
-        	}
+            /**
+             * @discordcommandpath gamewisphandler tieruptoggle - Toggles GameWisp tier-up announcements.
+             */
+            if (action.equalsIgnoreCase('tieruptoggle')) {
+                tierToggle = !tierToggle;
+                $.inidb.set('discordSettings', 'gamewispTierToggle', tierToggle);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.toggle', (tierToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));         
+            }
 
-        	/**
-        	 * @discordcommandpath gamewisphandler submessage [message] - Sets the GameWisp subscriber announcement message.
-        	 */
-        	if (action.equalsIgnoreCase('submessage')) {
-        		if (subAction === undefined) {
-        			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.sub.message.usage'));
-        			return;
-        		}
+            /**
+             * @discordcommandpath gamewisphandler submessage [message] - Sets the GameWisp subscriber announcement message.
+             */
+            if (action.equalsIgnoreCase('submessage')) {
+                if (subAction === undefined) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.sub.message.usage'));
+                    return;
+                }
 
-        		subMessage = args.slice(1).join(' ');
-        		$.inidb.set('discordSettings', 'gamewispSubMessage', subMessage);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.sub.message.set', subMessage));
-        	}
+                subMessage = args.slice(1).join(' ');
+                $.inidb.set('discordSettings', 'gamewispSubMessage', subMessage);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.sub.message.set', subMessage));
+            }
 
-        	/**
-        	 * @discordcommandpath gamewisphandler resubmessage [message] - Sets the GameWisp re-subscriber announcement message.
-        	 */
-        	if (action.equalsIgnoreCase('resubmessage')) {
-        		if (subAction === undefined) {
-        			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.resub.message.usage'));
-        			return;
-        		}
+            /**
+             * @discordcommandpath gamewisphandler resubmessage [message] - Sets the GameWisp re-subscriber announcement message.
+             */
+            if (action.equalsIgnoreCase('resubmessage')) {
+                if (subAction === undefined) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.resub.message.usage'));
+                    return;
+                }
 
-        		resubMessage = args.slice(1).join(' ');
-        		$.inidb.set('discordSettings', 'gamewispReSubMessage', resubMessage);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.resub.message.set', resubMessage));
-        	}
+                resubMessage = args.slice(1).join(' ');
+                $.inidb.set('discordSettings', 'gamewispReSubMessage', resubMessage);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.resub.message.set', resubMessage));
+            }
 
-        	/**
-        	 * @discordcommandpath gamewisphandler tierupmessage [message] - Sets the GameWisp tier-up announcement message.
-        	 */
-        	if (action.equalsIgnoreCase('tierupmessage')) {
-        		if (subAction === undefined) {
-        			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.message.usage'));
-        			return;
-        		}
+            /**
+             * @discordcommandpath gamewisphandler tierupmessage [message] - Sets the GameWisp tier-up announcement message.
+             */
+            if (action.equalsIgnoreCase('tierupmessage')) {
+                if (subAction === undefined) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.message.usage'));
+                    return;
+                }
 
-        		tierMessage = args.slice(1).join(' ');
-        		$.inidb.set('discordSettings', 'gamewispTierMessage', tierMessage);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.message.set', tierMessage));
-        	}
+                tierMessage = args.slice(1).join(' ');
+                $.inidb.set('discordSettings', 'gamewispTierMessage', tierMessage);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.message.set', tierMessage));
+            }
 
-        	/**
-        	 * @discordcommandpath gamewisphandler channel [channel name] - Sets the channel that announcements from this module will be said in.
-        	 */
-        	if (action.equalsIgnoreCase('channel')) {
-        		if (subAction === undefined) {
-        			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.channel.usage'));
-        			return;
-        		}
+            /**
+             * @discordcommandpath gamewisphandler channel [channel name] - Sets the channel that announcements from this module will be said in.
+             */
+            if (action.equalsIgnoreCase('channel')) {
+                if (subAction === undefined) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.channel.usage'));
+                    return;
+                }
 
-        		channelName = subAction.replace('#', '').toLowerCase();
-        		$.inidb.set('discordSettings', 'gamewispChannel', channelName);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.channel.set', channelName));
-        	}
+                channelName = subAction.replace('#', '').toLowerCase();
+                $.inidb.set('discordSettings', 'gamewispChannel', channelName);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.channel.set', channelName));
+            }
         }
     });
 
-	/**
+    /**
      * @event initReady
      */
     $.bind('initReady', function() {
