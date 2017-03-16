@@ -17,9 +17,6 @@
 package com.gmt2001.Console;
 
 import com.gmt2001.Logger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 import me.mast3rplan.phantombot.PhantomBot;
 
 /**
@@ -28,10 +25,10 @@ import me.mast3rplan.phantombot.PhantomBot;
  */
 public class out {
 
-    private static final out instance = new out();
+    private static final out INSTANCE = new out();
 
     public static out instance() {
-        return instance;
+        return INSTANCE;
     }
 
     private out() {
