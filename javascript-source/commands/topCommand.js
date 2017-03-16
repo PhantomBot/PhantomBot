@@ -4,7 +4,7 @@
  * Build and announce lists of top viewers (Highest points, highest time spent in the channel)
  */
 (function() {
-    var bots = ['moobot', 'nightbot', 'xanbot', 'hnlbot', 'ohbot', 'wizebot', 'vivbot', 'coebot', 'branebot', 'monstercat', 'curseappbot'], // Add your own name that you want to be in the list here.
+    var bots = ['moobot', 'nightbot', 'xanbot', 'hnlbot', 'ohbot', 'wizebot', 'vivbot', 'coebot', 'branebot', 'monstercat', 'curseappbot', 'revlobot'], // Add your own name that you want to be in the list here.
         amountPoints = $.getSetIniDbNumber('settings', 'topListAmountPoints', 5),
         amountTime = $.getSetIniDbNumber('settings', 'topListAmountTime', 5);
 
