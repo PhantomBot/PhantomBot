@@ -355,7 +355,7 @@
         }
 
         if (s.match(/\(rank\)/)) {
-            s = $.replace(s, '(rank)', ($.hasRank(username) ? $.getRank(username) : ''));
+            s = $.replace(s, '(rank)', ($.hasRank(username) ? String($.getRank(username)) : ''));
         }
 
         return s;
