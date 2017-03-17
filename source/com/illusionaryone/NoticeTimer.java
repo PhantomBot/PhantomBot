@@ -89,7 +89,7 @@ public class NoticeTimer implements Runnable {
         this.session = session;
         this.botname = PhantomBot.instance().getBotName();
 
-        this.noticeThread = new Thread(this);
+        this.noticeThread = new Thread(this, "com.illusionaryone.NoticeTimer");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.noticeThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());

@@ -397,6 +397,8 @@ public class TwitchWSHostIRC {
             service.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
+                    Thread.currentThread().setName("me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC::checkPingTime");
+
                     if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
                         com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
                         sentPing = true;
