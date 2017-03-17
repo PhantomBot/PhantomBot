@@ -84,7 +84,7 @@ public class TwitterCache implements Runnable {
         }
 
         this.channel = channel;
-        this.updateThread = new Thread(this);
+        this.updateThread = new Thread(this, "me.mast3rplan.phantombot.cache.TwitterCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -94,7 +94,7 @@ public class TwitterCache implements Runnable {
 
     /*
      * Thread run instance.  This is the main loop for the thread that is created to manage
-     * retrieving data from the Twitter API.  This loop runs every 15 seconds, calling the 
+     * retrieving data from the Twitter API.  This loop runs every 15 seconds, calling the
      * method to update data from Twitter.  That method checks against limits.
      */
     @Override

@@ -344,11 +344,11 @@ public class TwitchWSIRCParser {
                 }
             }
         }
-        
+
         /* Moderate the incoming message. Have it run in the background on a thread. */
         try {
             ModerationRunnable moderationRunnable = new ModerationRunnable(this.session, username, message, this.channel, tagsMap);
-            new Thread(moderationRunnable).start();
+            new Thread(moderationRunnable, "me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRCParser::ModerationRunnable").start();
         } catch (Exception ex) {
             scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
         }
