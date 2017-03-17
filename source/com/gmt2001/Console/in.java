@@ -40,6 +40,10 @@ public class in {
     private in() {
     }
 
+    public static String consoleReadLine() {
+        return System.console().readLine();
+    }
+
     public static String readLine() throws Exception {
         String s = br.readLine();
 
