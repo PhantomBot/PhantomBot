@@ -632,7 +632,7 @@ public class TwitchAPIv3 {
 
         try {
             FixFollowedTableRunnable fixFollowedTableRunnable = new FixFollowedTableRunnable(channel, dataStore, followerCount);
-            new Thread(fixFollowedTableRunnable).start();
+            new Thread(fixFollowedTableRunnable, "com.gmt2001.TwitchAPIv3::fixFollowedTable").start();
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to start thread for updating followed table.");
         }

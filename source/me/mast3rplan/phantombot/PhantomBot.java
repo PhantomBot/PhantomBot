@@ -1009,7 +1009,7 @@ public final class PhantomBot implements Listener {
         /* open a new thread for when the bot is exiting */
         Thread thread = new Thread(() -> {
             onExit();
-        });
+        }, "me.mast3rplan.phantombot.PhantomBot::onExit");
 
         /* Get the un time for that new thread we just created */
         Runtime.getRuntime().addShutdownHook(thread);
@@ -2261,6 +2261,8 @@ public final class PhantomBot implements Listener {
 
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(() -> {
+            Thread.currentThread().setName("me.mast3rplan.phantombot.PhantomBot::doRefreshGameWispToken");
+
             long curTime1 = System.currentTimeMillis() / 1000L;
             String lastRunStr = dataStore.GetString("settings", "", "gameWispRefreshTime");
             long lastRun = Long.parseLong(lastRunStr);
@@ -2278,6 +2280,8 @@ public final class PhantomBot implements Listener {
     private void doCheckPhantomBotUpdate() {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(() -> {
+            Thread.currentThread().setName("me.mast3rplan.phantombot.PhantomBot::doCheckPhantomBotUpdate");
+
             String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
             if (newVersionInfo != null) {
                 try {
@@ -2350,19 +2354,21 @@ public final class PhantomBot implements Listener {
      * Backup the database, keeping so many days.
      */
     private void doBackupSQLiteDB() {
-  
+
         if (!dataStoreType.equals("sqlite3store")) {
             return;
         }
 
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(() -> {
+            Thread.currentThread().setName("me.mast3rplan.phantombot.PhantomBot::doBackupSQLiteDB");
+
             SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
             datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
             String timestamp = datefmt.format(new Date());
-            
+
             dataStore.backupSQLite3("phantombot.auto.backup." + timestamp + ".db");
-            
+
             try {
                 Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
                 while (dirIterator.hasNext()) {
