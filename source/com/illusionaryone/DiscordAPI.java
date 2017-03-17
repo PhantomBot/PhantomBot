@@ -644,9 +644,9 @@ public class DiscordAPI {
                 getTextChannels();
                 getUserNames();
                 getRoles();
-                
+
                 com.gmt2001.Console.out.println("Discord API is Ready");
-            } else 
+            } else
 
             // MessageReceivedEvent - This will handle pasing the message and sending the events needed.
             if (event instanceof MessageReceivedEvent) {
@@ -655,12 +655,12 @@ public class DiscordAPI {
                 if (messageEvent.getMember().getUser().getId() != botId) {
                     try {
                         MessageTask messagetask = new MessageTask(messageEvent);
-                        new Thread(messagetask).start();
+                        new Thread(messagetask, "com.illusionaryone.DiscordAPI::MessageTask").start();
                     } catch (Exception ex) {
                         handleMessages(messageEvent);
                     }
                 }
-            } else 
+            } else
 
             // GuildMemberJoinEvent - This will handle adding the user to the userMap and sending an event.
             if (event instanceof GuildMemberJoinEvent) {

@@ -60,7 +60,7 @@ public class Script {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         if (this.fileWatcher != null) {
-            new Thread(fileWatcher).start();
+            new Thread(fileWatcher, "me.mast3rplan.phantombot.script.ScriptFileWatcher").start();
         }
     }
 

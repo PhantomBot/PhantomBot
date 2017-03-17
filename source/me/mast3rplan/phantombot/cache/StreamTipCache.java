@@ -64,7 +64,7 @@ public class StreamTipCache implements Runnable {
         }
 
         this.channel = channel;
-        this.updateThread = new Thread(this);
+        this.updateThread = new Thread(this, "me.mast3rplan.phantombot.cache.StreamTipCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
