@@ -133,7 +133,7 @@
                 <div id="pointsPanel"></div>
                 <script type="text/javascript" src="panel/js/pointsPanel.js"></script>
             </div>
-
+            
             <div role="tabpanel" class="tab-pane" id="viewers">
                 <div id="viewersPanel"></div>
                 <script type="text/javascript" src="panel/js/viewersPanel.js"></script>
@@ -217,6 +217,7 @@
             </div>
         </div>
 
+
         <script>
             $('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix').fadeIn(1000);
             TABS_INITIALIZED = true;
@@ -231,15 +232,31 @@
                </div>
                <i class="fa fa-twitch"></i>
             </div>
-            <!-- <span id="iframeLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading Twitch Chat</span> -->
              <script>
                 $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
                                          "src=\"https://www.twitch.tv/" + getChannelName().toLowerCase() + "/chat?popout=\">");
                 /*$("#chat").hide(); ** This breaks things in firefox. */
                 $("#chatsidebar").draggable({ iframeFix: true });
             </script>
+            
         </div>
-
+        <div class="ui-widget-content" id="videosidebar" name="video">
+            <div id="videosidebar-header" class="ui-widget-header">
+               <div class="button" style="float: left; padding-left: 5px;" onclick="$.toggleTwitchVideoRollup()">
+                   <i class="fa fa-bars"></i>
+               </div>
+               <div class="button" style="float: left; padding-left: 7px;" onclick="$.refreshVideo()">
+                   <i class="fa fa-refresh"></i>
+               </div>
+               <i class="fa fa-twitch"></i>
+            </div>
+             <script>
+                $("#videosidebar").append("<iframe id=\"video\" frameborder=\"0\" width=\"100%\" height=\"100%\" scrolling=\"no\" allowFullscreen=\"true\" src=\"https://player.twitch.tv/?channel=" + getChannelName() + "\"" + "</iframe>");
+                /*$("#video").hide(); ** This breaks things in firefox. */
+                $("#videosidebar").draggable({ iframeFix: true });
+            </script>
+            
+        </div>
         <br>
         <br>
         
