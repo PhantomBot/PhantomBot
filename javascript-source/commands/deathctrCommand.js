@@ -36,7 +36,7 @@
          */
         if (command.equalsIgnoreCase("deathctr")) {
 
-            if (!args) {
+            if (!args[0]) {
                 var deathCounter = parseInt($.inidb.get('deaths', game));
                 if (isNaN(deathCounter) || parseInt(deathCounter) == 0) {
                     $.say($.lang.get("deathcounter.none", $.ownerName, game));
