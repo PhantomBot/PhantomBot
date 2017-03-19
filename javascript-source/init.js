@@ -1390,7 +1390,7 @@
         $.registerChatCommand('./init.js', 'echo', 1);
         $.registerChatCommand('./init.js', 'reconnect', 1);
         $.registerChatCommand('./init.js', 'disconnect', 1);
-        $.registerChatCommand('./init.js', $.botName.toLowerCase(), 1);
+        $.registerChatCommand('./init.js', $.botName.toLowerCase(), 2);
         $.registerChatSubcommand($.botName.toLowerCase(), 'disconnect', 1);
         $.registerChatSubcommand($.botName.toLowerCase(), 'reconnect', 1);
         $.registerChatSubcommand($.botName.toLowerCase(), 'moderate', 2);
