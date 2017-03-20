@@ -96,7 +96,7 @@
                     '    <td style="width: 10%">!' + commandName + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 60%" type="text" id="editCommandCooldown_' + commandName + '"' +
+                    '            <input style="width: 60%" type="text" id="editCommandCooldown_' + commandName.replace(/[^\w\W]/g, '_SP_') + '"' +
                     '                   value="' + time + '" />' +
                     '              <button type="button" class="btn btn-default btn-xs" onclick="$.editCooldown(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
                     '              <button type="button" class="btn btn-default btn-xs" id="deleteCooldown_' + commandName + '" onclick="$.deleteCooldown(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
@@ -151,10 +151,10 @@
                             '    <td style="width: 15%">!' + commandName + '</td>' +
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input style="width: 85%" type="text" id="editCommand_' + commandNameSafe + '"' +
+                            '            <input style="width: 85%" type="text" id="editCommand_' + commandNameSafe.replace(/[^\w\W]/g, '_SP_')  + '"' +
                             '                   value="' + commandValue + '" />' +
                             '              <button type="button" class="btn btn-default btn-xs" onclick="$.editCustomCommand(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
-                            '              <button type="button" class="btn btn-default btn-xs" id="deleteCommand_' + commandNameSafe + '" onclick="$.deleteCommand(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
+                            '              <button type="button" class="btn btn-default btn-xs" id="deleteCommand_' + commandNameSafe.replace(/[^\w\W]/g, '_SP_') + '" onclick="$.deleteCommand(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                             '             </form>' +
                             '        </form>' +
                             '    </td>' +
@@ -175,7 +175,7 @@
                     commandValue = msgObject['results'][idx]['value'];
                     html += "<tr class=\"textList\">" +
                             "    <td style=\"width: 5%\">" +
-                            "        <div id=\"deleteAlias_" + commandName + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
+                            "        <div id=\"deleteAlias_" + commandName.replace(/[^\w\W]/g, '_SP_') + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
                             "             onclick=\"$.deleteAlias('" + commandName + "')\"><i class=\"fa fa-trash\" />" +
                             "        </div>" +
                             "    </td>" +
@@ -201,10 +201,10 @@
                     '    <td style="width: 10%">!' + commandName + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 60%" type="text" id="editCommandPrice_' + commandName + '"' +
+                    '            <input style="width: 60%" type="text" id="editCommandPrice_' + commandName.replace(/[^\w\W]/g, '_SP_') + '"' +
                     '                   value="' + commandValue + '" />' +
                     '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateCommandPrice(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCommandPrice_' + commandName + '" onclick="$.deleteCommandPrice(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCommandPrice_' + commandName.replace(/[^\w\W]/g, '_SP_') + '" onclick="$.deleteCommandPrice(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -227,10 +227,10 @@
                     '    <td style="width: 10%">!' + commandName + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 60%" type="text" id="editCommandPay_' + commandName + '"' +
+                    '            <input style="width: 60%" type="text" id="editCommandPay_' + commandName.replace(/[^\w\W]/g, '_SP_') + '"' +
                     '                   value="' + commandValue + '" />' +
                     '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateCommandPay(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCommandPay_' + commandName + '" onclick="$.deleteCommandPay(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
+                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCommandPay_' + commandName.replace(/[^\w\W]/g, '_SP_') + '" onclick="$.deleteCommandPay(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -334,7 +334,7 @@
      * @param {String} command
      */
     function deleteCommand(command) {
-        $("#deleteCommand_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCommand_" + command.replace(/[^\w\W]/g, '_SP_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         command = command.toLowerCase();
         sendDBDelete("commands_delcom_" + command, "command", command);
         sendDBDelete("commands_delcompermcom_" + command, "permcom", command);
@@ -352,7 +352,7 @@
      * @param {String} command
      */
     function deleteCommandPrice(command) {
-        $("#deleteCommandPrice_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCommandPrice_" + command.replace(/[^\w\W]/g, '_SP_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delcomprice_" + command, "pricecom", command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
@@ -363,7 +363,7 @@
      * @param {String} command
      */
     function deleteCommandPay(command) {
-        $("#deleteCommandPay_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCommandPay_" + command.replace(/[^\w\W]/g, '_SP_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delcompay_" + command, "paycom", command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
@@ -393,8 +393,6 @@
             return;
         }
 
-        command = command.replace(/[^a-zA-Z0-9]/g, '');
-
         $('#addCommandText').val('Command successfully added!'); 
         sendDBUpdate('addCustomCommand', 'command', command.toLowerCase(), commandText);
         sendWSEvent('commands', './commands/customCommands.js', null, ['add', command, commandText]);
@@ -411,7 +409,7 @@
      * @param {String} command
      */
     function editCustomCommand(command) {
-    var value = $('#editCommand_' + command.replace(/\?/g, '__QM__')).val();
+    var value = $('#editCommand_' + command.replace(/\?/g, '__QM__').replace(/[^\w\W]/g, '_SP_')).val();
     value = value.replace(/''/g, '"');
         if (value.length > 0) {
             sendDBUpdate("addCustomCommand", "command", command.toLowerCase(), value);
@@ -426,7 +424,7 @@
      * @param {String} command
      */
     function editCooldown(command) {
-        var value = $('#editCommandCooldown_' + command).val();
+        var value = $('#editCommandCooldown_' + command.replace(/[^\w\W]/g, '_SP_')).val();
         if (value > 0) {
             sendDBUpdate("commands_cooldown_edit", "cooldown", command.toLowerCase(), value);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
@@ -440,12 +438,7 @@
         var main = $('#aliasCommandInput').val();
         var alias = $('#aliasCommandInputAlias').val();
 
-        if (main.match(/[^a-zA-Z0-9]/g) || alias.match(/[^a-zA-Z0-9\s]/)) {
-            $("#aliasCommandInputAlias").val("[ERROR] Alias name can not contain symbols or spaces.");
-            $("#aliasCommandInput").val("");
-            setTimeout(function() { $('#aliasCommandInputAlias').val(""); }, TIMEOUT_WAIT_TIME * 10);
-            return;
-        } else if (alias.length == 0) {
+        if (alias.length == 0) {
             $("#aliasCommandInputAlias").val("[ERROR] Please enter a value.");
             setTimeout(function() { $("#aliasCommandInputAlias").val(""); }, TIMEOUT_WAIT_TIME * 2);
             return;
@@ -465,7 +458,7 @@
      * @param {String} command
      */
     function deleteAlias(command) {
-        $("#deleteAlias_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteAlias_" + command.replace(/[^\w\W]/g, '_SP_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         if (command.length != 0) {
             sendDBDelete("commands_delalias_" + command, "aliases", command);
         }
@@ -477,7 +470,7 @@
      * @function commandPermission
      */
     function commandPermission(command, group) {
-        $("#commandsList_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#commandsList_" + command.replace(/[^\w\W]/g, '_SP_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         if (command.length != 0 && group.length != 0) {
             sendCommand('permcomsilent ' + command.toLowerCase() + ' ' + String(group))
             //sendDBUpdate("commands_permcom", "permcom", command.toLowerCase(), String(group));
@@ -528,8 +521,8 @@
      * @function updateCommandPrice
      */
     function updateCommandPrice(command) {
-        var val = $('#editCommandPrice_' + command).val();
-        $('#editCommandPrice_' + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        var val = $('#editCommandPrice_' + command.replace(/[^\w\W]/g, '_SP_')).val();
+        $('#editCommandPrice_' + command.replace(/[^\w\W]/g, '_SP_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         if (val > 0) {
             sendDBUpdate("commands_editprice_" + command, "pricecom", command.toLowerCase(), val);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -541,8 +534,8 @@
      * @function updateCommandPay
      */
     function updateCommandPay(command) {
-        var val = $('#editCommandPay_' + command).val();
-        $('#editCommandPay_' + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        var val = $('#editCommandPay_' + command.replace(/[^\w\W]/g, '_SP_')).val();
+        $('#editCommandPay_' + command.replace(/[^\w\W]/g, '_SP_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         if (val.length > 0) {
             sendDBUpdate("commands_editpay_" + command, "paycom", command.toLowerCase(), val);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -644,7 +637,7 @@
      * @param {String} command
      */
     function deleteCooldown(command) {
-        $("#deleteCooldown_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCooldown_" + command.replace(/[^\w\W]/g, '_SP_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_cooldown_delete", "cooldown", command);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
