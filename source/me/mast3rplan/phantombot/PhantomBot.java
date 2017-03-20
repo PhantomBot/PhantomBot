@@ -2022,7 +2022,19 @@ public class PhantomBot implements Listener {
                 FileInputStream inputStream = new FileInputStream("botlogin.txt");
                 startProperties.load(inputStream);
                 inputStream.close();
+            } else {
+                /* Fill in the Properties object with some default values. Note that some values are left
+                 * unset to be caught in the upcoming logic to enforce settings.
+                 */
+                startProperties.setProperty("baseport", "25000");
+                startProperties.setProperty("usehttps", "false");
+                startProperties.setProperty("webenable", "true");
+                startProperties.setProperty("msglimit30", "18.75");
+                startProperties.setProperty("musicenable", "true");
+                startProperties.setProperty("whisperlimit60", "60.0");
             }
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
