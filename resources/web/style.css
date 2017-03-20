@@ -1,5 +1,5 @@
 body {
-    font-family: "Roboto", arial, sans-serif;
+    font-family: Roboto, Verdana, Arial, sans-serif;
     color: #aaa;
     padding: 0;
     margin: 0;
@@ -21,7 +21,6 @@ h1 {
     padding-top: 20px;
     margin-left: 15px;
     font-size: 26px;
-    font-family: "Roboto", arial;
     display: inline-block;
 }
 
@@ -34,19 +33,20 @@ table {
     border: 0px;
     width: 100%;
 }
-tr:nth-child(even) {
-    font-family: "Roboto", Sans-serif;
-    background: rgba(30, 30, 30, 0.3);
+
+tr:nth-child(even), tr:nth-child(odd) {
     color: #aaaaaa;
     font-size: 14px;
+}
+tr:nth-child(even) {
+    background: rgba(30, 30, 30, 0.3);
 }
 tr:nth-child(odd) {
-    font-family: "Roboto", Sans-serif;
     background: rgba(0, 0, 0, 0.3);
-    color: #aaaaaa;
-    font-size: 14px;
 }
-th, td {padding: 4px;}
+th, td {
+    padding: 4px;
+}
 
 a {
     color: #6441a5;
@@ -62,8 +62,8 @@ a {
 }
 
 .container {
-    position:relative;
-    padding:0 0 0 25px;
+    position: relative;
+    padding: 0 0 0 25px;
 }
 
 #container {
@@ -188,13 +188,21 @@ a {
     color: black;
 }
 
-.purplePill {background-color: rgb(100, 66, 166);}
+.purplePill {
+    background-color: rgb(100, 66, 166);
+}
 
-.redPill {background-color: #990000;}
+.redPill {
+    background-color: #990000;
+}
 
-.greenPill {background-color: green;}
+.greenPill {
+    background-color: green;
+}
 
-.bluePill {background-color: blue;}
+.bluePill {
+    background-color: blue;
+}
 
 .purplePill-sm, .redPill-sm, .greenPill-sm, .bluePill-sm {
     font-size: 70%;
@@ -208,14 +216,21 @@ a {
     border-radius: 5px; 
 }
 
-.purplePill-sm {background-color: rgb(100, 66, 166);}
+.purplePill-sm {
+    background-color: rgb(100, 66, 166);
+}
 
-.redPill-sm {background-color: #990000;}
+.redPill-sm {
+    background-color: #990000;
+}
 
-.greenPill-sm {background-color: green;}
+.greenPill-sm {
+    background-color: green;
+}
 
-.bluePill-sm {background-color: blue;}
-
+.bluePill-sm {
+    background-color: blue;
+}
 
 #panelLoader {
     font-size: 150%;
