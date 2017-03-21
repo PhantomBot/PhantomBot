@@ -159,6 +159,10 @@
             file="${build.dir}/web/panel/js/panelUtils.js"
             match="PANEL_VERSION = &quot;(.*)&quot;;"
             replace="PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
+        <replaceregexp
+            file="${build.dir}/Dockerfile"
+            match="ARG project_name=(.*)"
+            replace="ARG project_name=${ant.project.name}" />
         <echo level="info" message="staging files into distribution folder." />
         <copy todir="${version.folder}">
             <fileset dir="${build.dir}" />
