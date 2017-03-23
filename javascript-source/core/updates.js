@@ -570,6 +570,8 @@
         $.inidb.set('modules', './discord/games/gambling.js', 'false');
         $.inidb.set('modules', './discord/systems/pointSystem.js', 'false');
 
+        $.inidb.set('permcom', $.botName.toLowerCase(), '2');
+        
         $.consoleLn('PhantomBot update 2.3.6 completed!');
         $.inidb.set('updates', 'installedv2.3.6', 'true');
     }

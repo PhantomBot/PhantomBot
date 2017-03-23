@@ -25,7 +25,7 @@
 
             // Some users use special symbols that may break regex so this will fix that.
             try {
-                if (!message.match('\\b' + key + '\\b') || message.includes(/!keyword/)) {
+                if (!message.match('\\b' + key + '\\b') || message.includes('!keyword')) {
                     return;
                 }
             } catch (ex) {
