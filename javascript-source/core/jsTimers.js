@@ -17,11 +17,19 @@ var setTimeout,
      * @function setTimeout
      * @param {Function} fn
      * @param {Number} delay
+     * @param {String} name
+     
      * @returns {Number}
     */
-    setTimeout = function(fn, delay) {
-        var timer = new java.util.Timer(),
-            id = counter++;
+    setTimeout = function(fn, delay, name) {
+        var id = counter++,
+            timer;
+
+        if (name !== undefined) {
+            timer =  new java.util.Timer(name);
+        } else {
+            timer =  new java.util.Timer();
+        }
 
         registry[id] = new JavaAdapter(java.util.TimerTask, { run: fn });
         timer.schedule(registry[id], delay);
@@ -33,11 +41,19 @@ var setTimeout,
      * @function setInterval
      * @param {Function} fn
      * @param {Number} interval
+     * @param {String} name
+     *
      * @returns {Number}
-    */
-    setInterval = function(fn, interval) {
-        var timer = new java.util.Timer(),
-            id = counter++;
+     */
+    setInterval = function(fn, interval, name) {
+        var id = counter++,
+            timer;
+
+        if (name !== undefined) {
+            timer =  new java.util.Timer(name);
+        } else {
+            timer =  new java.util.Timer();
+        }
 
         registry[id] = new JavaAdapter(java.util.TimerTask, { run: fn });
         timer.schedule(registry[id], interval, interval);

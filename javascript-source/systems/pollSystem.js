@@ -74,7 +74,7 @@
 
         poll.pollRunning = true;
         poll.pollMaster = pollMaster;
-        poll.time = (isNaN(time) || time == 0 ? false : time * 1000);
+        poll.time = (isNaN(time) || time === 0 ? false : time * 1000);
         poll.callback = callback;
         poll.question = question;
         poll.options = options;
@@ -218,10 +218,10 @@
             }
 
             /**
-             * @commandpath poll open ["poll question"] ["option1, option2, ..."] [seconds] [min votes] - Starts a poll with question and options. Optionally provide seconds and min votes. If seconds are 0, defaults to 60
+             * @commandpath poll open ["poll question"] ["option1, option2, ..."] [seconds] [min votes] - Starts a poll with question and options. Optionally provide seconds and min votes.
              */
             if (action.equalsIgnoreCase('open')) {
-                var time = 60,
+                var time = 0,
                     question = '',
                     options = [],
                     minVotes = 1;
@@ -245,7 +245,7 @@
                     return;
                 }
 
-                if (isNaN(time) || !question || !options || options.length === 0 || isNaN(minVotes) || minVotes < 1) {
+                if (!question || !options || options.length === 0 || isNaN(minVotes) || minVotes < 1) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.open.usage'));
                     return;
                 }
