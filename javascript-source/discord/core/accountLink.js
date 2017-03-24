@@ -58,7 +58,7 @@
                     text += code.charAt(Math.floor(Math.random() * code.length));
                 }
 
-                Packages.com.gmt2001.TempStore.instance().SetLong('discord.accountlink.pending', userId, text, java.lang.System.currentTimeMillis() + (10 * 6e4));
+                Packages.com.gmt2001.datastore.TempStore.instance().SetLong('discord.accountlink.pending', userId, text, java.lang.System.currentTimeMillis() + (10 * 6e4));
 
                 if (islinked) {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.relink', $.channelName, text));
@@ -95,7 +95,7 @@
                     return;
                 }
 
-                var ts = Packages.com.gmt2001.TempStore.instance(),
+                var ts = Packages.com.gmt2001.datastore.TempStore.instance(),
                     sections = ts.GetCategoryList('discord.accountlink.pending'),
                     tm = java.lang.System.currentTimeMillis(),
                     i,
@@ -120,10 +120,10 @@
             }
         }
     });
-    
+
     // Interval to clear our old codes that have not yet been registered.
     var interval = setInterval(function () {
-        var ts = Packages.com.gmt2001.TempStore.instance(),
+        var ts = Packages.com.gmt2001.datastore.TempStore.instance(),
             sections = ts.GetCategoryList('discord.accountlink.pending'),
             tm = java.lang.System.currentTimeMillis(),
             keys,

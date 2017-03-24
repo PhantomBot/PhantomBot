@@ -194,7 +194,7 @@ public class PanelSocketServer extends WebSocketServer {
     public void onMessage(WebSocket webSocket, String jsonString) {
         try {
             MessageRunnable messageRunnable = new MessageRunnable(webSocket, jsonString);
-            new Thread(messageRunnable).start();
+            new Thread(messageRunnable, "me.mast3rplan.phantombot.panel.PanelSocketServer::MessageRunnable").start();
         } catch (Exception ex) {
             handleMessage(webSocket, jsonString);
         }
