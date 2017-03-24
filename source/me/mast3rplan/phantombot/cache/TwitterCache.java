@@ -101,11 +101,11 @@ public class TwitterCache implements Runnable {
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
 
-        /* Wait one minute before starting to poll Twitter. */
+        /* Wait 20 seconds before starting to poll Twitter. */
         try {
-            Thread.sleep(60 * 1000);
+            Thread.sleep(20 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.println("TwitterCache::run: " + ex.getMessage());
+            com.gmt2001.Console.err.println("TwitterCache::run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
@@ -122,7 +122,7 @@ public class TwitterCache implements Runnable {
             try {
                 Thread.sleep(15 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitterCache::run: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitterCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -147,6 +147,8 @@ public class TwitterCache implements Runnable {
         long delay_retweets = 0L;
         long delay_hometimeline = 0L;
         long delay_usertimeline = 0L;
+
+        com.gmt2001.Console.debug.println("TwitterCache::updateCache");
 
         /* Check DB for what data should be polled. */
         poll_retweets = getDBBoolean("poll_retweets");
