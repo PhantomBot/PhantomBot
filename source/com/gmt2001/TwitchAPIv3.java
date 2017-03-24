@@ -16,7 +16,7 @@
  */
 package com.gmt2001;
 
-import com.gmt2001.DataStore;
+import com.gmt2001.datastore.DataStore;
 import com.gmt2001.HttpRequest;
 import me.mast3rplan.phantombot.PhantomBot;
 
