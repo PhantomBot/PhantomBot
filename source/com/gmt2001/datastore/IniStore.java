@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.datastore;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,7 +43,7 @@ public class IniStore extends DataStore implements ActionListener {
     private final Date nextSave = new Date(0);
     private final Timer t;
     private final Timer t2;
-    private static final long saveInterval = 5 * 60 * 1000;
+    private static final long saveinterval = 5 * 60 * 1000;
     private static final IniStore instance = new IniStore();
     private String inifolder = "";
 
@@ -54,7 +54,7 @@ public class IniStore extends DataStore implements ActionListener {
     private IniStore() {
         inifolder = LoadConfigReal("");
 
-        t = new Timer((int) saveInterval, this);
+        t = new Timer((int) saveinterval, this);
         t2 = new Timer(1, this);
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -96,13 +96,13 @@ public class IniStore extends DataStore implements ActionListener {
 
                 String section = "";
 
-                f.data.put(section, new HashMap<String, String>());
+                f.data.put(section, new HashMap<>());
 
                 for (String line : lines) {
                     if (!line.trim().startsWith(";")) {
                         if (line.trim().startsWith("[") && line.trim().endsWith("]")) {
                             section = line.trim().substring(1, line.trim().length() - 1);
-                            f.data.put(section, new HashMap<String, String>());
+                            f.data.put(section, new HashMap<>());
                         } else if (!line.trim().isEmpty()) {
                             String[] spl = line.split("=", 2);
                             f.data.get(section).put(spl[0], spl[1]);
@@ -178,7 +178,7 @@ public class IniStore extends DataStore implements ActionListener {
         }
 
         IniFile f = new IniFile();
-        f.data.put("", new HashMap<String, String>());
+        f.data.put("", new HashMap<>());
 
         files.put(fName, f);
     }
@@ -218,7 +218,7 @@ public class IniStore extends DataStore implements ActionListener {
                     }
                 }
 
-                nextSave.setTime(new Date().getTime() + saveInterval);
+                nextSave.setTime(new Date().getTime() + saveinterval);
 
                 if (n.length > 0) {
                     com.gmt2001.Console.debug.println("Save complete");
@@ -368,9 +368,7 @@ public class IniStore extends DataStore implements ActionListener {
         }
 
         String[] retVal = new String[i];
-        for (int j = 0; j < i; j++) {
-            retVal[j] = s[j];
-        }
+        System.arraycopy(s, 0, retVal, 0, i);
         return retVal;
     }
 
@@ -400,9 +398,7 @@ public class IniStore extends DataStore implements ActionListener {
         }
 
         String[] retVal = new String[i];
-        for (int j = 0; j < i; j++) {
-            retVal[j] = s[j];
-        }
+        System.arraycopy(s, 0, retVal, 0, i);
         return retVal;
     }
 
@@ -415,7 +411,7 @@ public class IniStore extends DataStore implements ActionListener {
         section = validateSection(section);
 
         if (!files.get(fName).data.containsKey(section)) {
-            files.get(fName).data.put(section, new HashMap<String, String>());
+            files.get(fName).data.put(section, new HashMap<>());
         }
 
         for (int idx = 0; idx < keys.length; idx++) {
@@ -438,7 +434,7 @@ public class IniStore extends DataStore implements ActionListener {
         key = validateKey(key);
 
         if (!files.get(fName).data.containsKey(section)) {
-            files.get(fName).data.put(section, new HashMap<String, String>());
+            files.get(fName).data.put(section, new HashMap<>());
         }
 
         files.get(fName).data.get(section).put(key, value);
@@ -503,7 +499,7 @@ public class IniStore extends DataStore implements ActionListener {
 
         File sourceFile = new File("./" + inifolder + "/" + fNameSource + ".ini");
         File destFile = new File("./" + inifolder + "/" + fNameDest + ".ini");
-        
+
         sourceFile.renameTo(destFile);
 
         files.remove(fNameSource);
