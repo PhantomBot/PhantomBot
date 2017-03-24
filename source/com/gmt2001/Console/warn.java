@@ -24,10 +24,10 @@ import me.mast3rplan.phantombot.PhantomBot;
 
 public class warn {
 
-    private static final warn INSTANCE = new warn();
+    private static final warn instance = new warn();
 
     public static warn instance() {
-        return INSTANCE;
+        return instance;
     }
 
     private warn() {

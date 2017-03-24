@@ -27,18 +27,18 @@ import me.mast3rplan.phantombot.PhantomBot;
  */
 public class in {
 
-    private static final in INSTANCE = new in();
-    private static final BufferedReader BR = new BufferedReader(new InputStreamReader(System.in));
+    private static final in instance = new in();
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     public static in instance() {
-        return INSTANCE;
+        return instance;
     }
 
     private in() {
     }
 
     public static String readLine() throws Exception {
-        String s = BR.readLine();
+        String s = br.readLine();
 
         if (PhantomBot.enableDebugging) {
             Logger.instance().log(Logger.LogType.Input, "[" + logTimestamp.log() + "] " + s);

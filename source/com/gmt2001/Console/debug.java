@@ -24,10 +24,10 @@ import me.mast3rplan.phantombot.PhantomBot;
 
 public class debug {
 
-    private static final debug INSTANCE = new debug();
+    private static final debug instance = new debug();
 
     public static debug instance() {
-        return INSTANCE;
+        return instance;
     }
 
     private debug() {

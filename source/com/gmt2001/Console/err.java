@@ -28,10 +28,10 @@ import me.mast3rplan.phantombot.PhantomBot;
  */
 public class err {
 
-    private static final err INSTANCE = new err();
+    private static final err instance = new err();
 
     public static err instance() {
-        return INSTANCE;
+        return instance;
     }
 
     private err() {

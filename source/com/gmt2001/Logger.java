@@ -28,7 +28,7 @@ import me.mast3rplan.phantombot.PhantomBot;
 
 public class Logger implements Runnable {
 
-    private static final Logger INSTANCE = new Logger();
+    private static final Logger instance = new Logger();
     private final ConcurrentLinkedQueue<LogItem> queue;
     private boolean isRunning = false;
     private boolean disposed = false;
@@ -212,10 +212,10 @@ public class Logger implements Runnable {
     }
 
     public static Logger instance() {
-        if (!INSTANCE.isRunning) {
-            (new Thread(INSTANCE)).start();
+        if (!instance.isRunning) {
+            (new Thread(instance)).start();
         }
-        return INSTANCE;
+        return instance;
     }
 
     private Logger() {
