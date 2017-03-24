@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.datastore;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -123,9 +123,7 @@ public class TempStore extends DataStore {
         }
 
         String[] retVal = new String[i];
-        for (int j = 0; j < i; j++) {
-            retVal[j] = s[j];
-        }
+        System.arraycopy(s, 0, retVal, 0, i);
         return retVal;
     }
 
@@ -150,9 +148,7 @@ public class TempStore extends DataStore {
         }
 
         String[] retVal = new String[i];
-        for (int j = 0; j < i; j++) {
-            retVal[j] = s[j];
-        }
+        System.arraycopy(s, 0, retVal, 0, i);
         return retVal;
     }
 
@@ -173,7 +169,7 @@ public class TempStore extends DataStore {
         AddFile(fName);
 
         if (!files.get(fName).data.containsKey(section)) {
-            files.get(fName).data.put(section, new HashMap<String, Object>());
+            files.get(fName).data.put(section, new HashMap<>());
         }
 
         files.get(fName).data.get(section).put(key, value);

@@ -64,7 +64,7 @@ public class TipeeeStreamCache implements Runnable {
      */
     private TipeeeStreamCache(String channel) {
         this.channel = channel;
-        this.updateThread = new Thread(this);
+        this.updateThread = new Thread(this, "me.mast3rplan.phantombot.cache.TipeeeStreamCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());

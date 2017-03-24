@@ -213,7 +213,7 @@ public class Logger implements Runnable {
 
     public static Logger instance() {
         if (!instance.isRunning) {
-            (new Thread(instance)).start();
+            (new Thread(instance, "com.gmt2001.Logger")).start();
         }
         return instance;
     }
