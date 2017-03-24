@@ -56,8 +56,7 @@ public class HttpRequest {
 
             HttpURLConnection h = (HttpURLConnection) u.openConnection();
 
-            headers.entrySet().stream().forEach((e) ->
-            {
+            headers.entrySet().stream().forEach((e) -> {
                 h.addRequestProperty(e.getKey(), e.getValue());
             });
 
