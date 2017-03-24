@@ -24,8 +24,6 @@
         var sender = event.getSender(),
             username = $.username.resolve(sender),
             command = event.getCommand(),
-            argsString = event.getArguments().trim(),
-            argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length()),
             args = event.getArgs(),
             game = ($.getGame($.channelName) != '' ? $.getGame($.channelName) : "Some Game");
 
@@ -38,7 +36,7 @@
          */
         if (command.equalsIgnoreCase("deathctr")) {
 
-            if (argsString.isEmpty()) {
+            if (!args[0]) {
                 var deathCounter = parseInt($.inidb.get('deaths', game));
                 if (isNaN(deathCounter) || parseInt(deathCounter) == 0) {
                     $.say($.lang.get("deathcounter.none", $.ownerName, game));
@@ -46,7 +44,7 @@
                     $.say($.lang.get("deathcounter.counter", $.ownerName, game, deathCounter));
                 }
             } else {
-                if (argsString.equalsIgnoreCase("reset")) {
+                if (args[0].equalsIgnoreCase("reset")) {
                     var deathCounter = parseInt($.inidb.get('deaths', game));
                     if (isNaN(deathCounter) || parseInt(deathCounter) == 0) {
                         $.say($.whisperPrefix(sender) + $.lang.get("deathcounter.reset-nil", game));
@@ -59,11 +57,11 @@
                 }
 
                 if (args[0].equalsIgnoreCase("set")) {
-                    if (isNaN(parseInt(argsString2))) {
+                    if (isNaN(parseInt(args[1]))) {
                         $.say($.whisperPrefix(sender) + $.lang.get("deathcounter.set-error"));
                         return;
                     } else {
-                        var setDeath = parseInt(argsString2);
+                        var setDeath = parseInt(args[1]);
                         $.inidb.set('deaths', game, setDeath);
                         $.say($.whisperPrefix(sender) + $.lang.get("deathcounter.set-success", game, setDeath));
                         $.deathUpdateFilegame();
@@ -71,14 +69,14 @@
                     }
                 }
 
-                if (argsString.equalsIgnoreCase("add") || argsString.equalsIgnoreCase("incr") || argsString.equalsIgnoreCase("+")) {
+                if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("incr") || args[0].equalsIgnoreCase("+")) {
                     $.inidb.incr('deaths', game, 1);
                     $.say($.lang.get("deathcounter.add-success", $.ownerName, game, $.inidb.get('deaths', game)));
                     $.deathUpdateFile(game);
                     return;
                 }
 
-                if (argsString.equalsIgnoreCase("sub") || argsString.equalsIgnoreCase("decr") || argsString.equalsIgnoreCase("-")) {
+                if (args[0].equalsIgnoreCase("sub") || args[0].equalsIgnoreCase("decr") || args[0].equalsIgnoreCase("-")) {
                     if (isNaN($.inidb.get('deaths', game)) || parseInt($.inidb.get('deaths', game)) == 0) {
                         $.say($.lang.get("deathcounter.sub-zero", game));
                         return;

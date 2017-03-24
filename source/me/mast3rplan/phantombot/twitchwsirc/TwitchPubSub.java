@@ -153,12 +153,12 @@ public class TwitchPubSub {
     private class TwitchPubSubWS extends WebSocketClient {
         private final TwitchPubSubWS twitchPubSubWS;
         private final TwitchPubSub twitchPubSub;
-        private final Timer timer = new Timer();
+        private final Timer timer = new Timer("me.mast3rplan.phantombot.twitchwsirc.TwitchPubSub");
         private final int channelId;
         private final String oAuth;
         private final int botId;
         private final URI uri;
-    
+
         /*
          * Constructor for the PubSubWS class.
          *
@@ -169,7 +169,7 @@ public class TwitchPubSub {
          */
         private TwitchPubSubWS(URI uri, TwitchPubSub twitchPubSub, int channelId, int botId, String oAuth) {
             super(uri, new Draft_17(), null, 5000);
-    
+
             this.uri = uri;
             this.channelId = channelId;
             this.botId = botId;
@@ -177,7 +177,7 @@ public class TwitchPubSub {
             this.twitchPubSub = twitchPubSub;
             this.twitchPubSubWS = this;
             this.startTimer();
-            
+
             try {
                 SSLContext sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, null, null);
@@ -187,14 +187,14 @@ public class TwitchPubSub {
                 com.gmt2001.Console.err.println("TwitchPubSubWS failed to connect: " + ex.getMessage());
             }
         }
-    
+
         /*
          * Closes this class.
          */
         public void delete() {
             close();
         }
-    
+
         /*
          * Creates a connection with the PubSub websocket.
          *
