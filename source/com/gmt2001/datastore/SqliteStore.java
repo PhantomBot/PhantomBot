@@ -39,11 +39,11 @@ public class SqliteStore extends DataStore {
     private boolean safe_write = false;
     private boolean journal = true;
     private Connection connection = null;
-    private static final SqliteStore INSTANCE = new SqliteStore();
+    private static final SqliteStore instance = new SqliteStore();
     private int autoCommitCtr = 0;
 
     public static SqliteStore instance() {
-        return INSTANCE;
+        return instance;
     }
 
     private SqliteStore() {

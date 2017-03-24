@@ -24,10 +24,10 @@ import java.sql.Connection;
  */
 public class DataStore {
 
-    private static final DataStore INSTANCE = new DataStore();
+    private static final DataStore instance = new DataStore();
 
     public static DataStore instance() {
-        return INSTANCE;
+        return instance;
     }
 
     protected DataStore() {

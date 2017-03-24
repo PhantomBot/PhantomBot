@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class MySQLStore extends DataStore {
 
     private static Connection connection = null;
-    private static final MySQLStore INSTANCE = new MySQLStore();
+    private static final MySQLStore instance = new MySQLStore();
 
     private String db = "";
     private String user = "";
@@ -40,7 +40,7 @@ public class MySQLStore extends DataStore {
     private int autoCommitCtr = 0;
 
     public static MySQLStore instance() {
-        return INSTANCE;
+        return instance;
     }
 
     private MySQLStore() {
