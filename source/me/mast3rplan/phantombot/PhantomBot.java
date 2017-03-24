@@ -989,7 +989,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
         Script.global.defineProperty("botName", botName, 0);
         Script.global.defineProperty("channelName", channelName, 0);
-        Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("ytplayer", youtubeSocketServer, 0);
         Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : panelSocketServer), 0);
@@ -1091,7 +1090,7 @@ public final class PhantomBot implements Listener {
         }
 
         com.gmt2001.Console.out.print("\r\n");
-        print(this.botName + " now exiting.");
+        print(this.botName + " is now exiting.");
     }
 
     /*
@@ -1110,7 +1109,7 @@ public final class PhantomBot implements Listener {
         this.chanName = event.getChannel().getName();
         this.session = event.getSession();
 
-        //print("ircJoinComplete::" + this.chanName);
+        com.gmt2001.Console.debug.println("ircJoinComplete::" + this.chanName);
 
         /* Add the channel/session in the array for later use */
         PhantomBot.addChannel(this.chanName, event.getChannel());
@@ -1122,10 +1121,11 @@ public final class PhantomBot implements Listener {
         this.session.startTimers();
 
         /* Load the caches for each channels */
+        this.twitchCache = TwitchCache.instance(this.chanName);
         this.emotesCache = EmotesCache.instance(this.chanName);
         this.followersCache = FollowersCache.instance(this.chanName);
-        this.twitchCache = TwitchCache.instance(this.chanName);
-        this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
+        
+       
 
         /* Start the donations cache if the keys are not null and the module is enabled */
         if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && checkModuleEnabled("./handlers/donationHandler.js")) {
@@ -1152,10 +1152,13 @@ public final class PhantomBot implements Listener {
             this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
         }
 
+        /* This cache does nothing but keep users stored in memory which never gets used. I don't see a point. Going to leave a toggle if people use it. */
+        if (pbProperties.getProperty("channeluserscache", "false").equals("true")) {
+            this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
+        }
+
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
-        Script.global.defineProperty("followers", this.followersCache, 0);
-        Script.global.defineProperty("channelUsers", this.channelUsersCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
     }
 
@@ -1242,9 +1245,11 @@ public final class PhantomBot implements Listener {
         }
 
         if (message.equalsIgnoreCase("ankhtophantombot")) {
+            print("");
             print("Not all of AnkhBot's data will be compatible with PhantomBot.");
             print("This process will take a long time.");
             print("Are you sure you want to convert AnkhBot's data to PhantomBot? [y/n]");
+            print("");
             String check = System.console().readLine().trim();
             if (check.equals("y")) {
                 AnkhConverter.instance();
@@ -1255,6 +1260,7 @@ public final class PhantomBot implements Listener {
         }
 
         if (message.equalsIgnoreCase("backupdb")) {
+            print("[CONSOLE] Executing backupdb");
             SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
             datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
             String timestamp = datefmt.format(new Date());
@@ -1265,17 +1271,20 @@ public final class PhantomBot implements Listener {
 
         /* Update the followed (followers) table. */
         if (message.equalsIgnoreCase("fixfollowedtable")) {
+            print("[CONSOLE] Executing fixfollowedtable");
             TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, false);
             return;
         }
 
         /* Update the followed (followers) table - forced. */
         if (message.equalsIgnoreCase("fixfollowedtable-force")) {
+            print("[CONSOLE] Executing fixfollowedtable-force");
             TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, true);
             return;
         }
 
         if (message.equalsIgnoreCase("jointest")) {
+            print("[CONSOLE] Executing jointest");
             for (int i = 0 ; i < 30; i++) {
                 EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session, this.channel, generateRandomString(8)));
             }
