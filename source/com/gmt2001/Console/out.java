@@ -25,10 +25,10 @@ import me.mast3rplan.phantombot.PhantomBot;
  */
 public class out {
 
-    private static final out INSTANCE = new out();
+    private static final out instance = new out();
 
     public static out instance() {
-        return INSTANCE;
+        return instance;
     }
 
     private out() {
