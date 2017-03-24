@@ -19,19 +19,11 @@ package com.gmt2001;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import me.mast3rplan.phantombot.PhantomBot;
 
 public class Logger implements Runnable {
@@ -40,7 +32,7 @@ public class Logger implements Runnable {
     private final ConcurrentLinkedQueue<LogItem> queue;
     private boolean isRunning = false;
     private boolean disposed = false;
-    
+
     private FileOutputStream fosCore = null;
     private FileOutputStream fosError = null;
     private FileOutputStream fosWarning = null;
@@ -171,15 +163,13 @@ public class Logger implements Runnable {
                                 if (this.psCore == null) {
                                     this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
                                     this.psCore = new PrintStream(this.fosCore);
-                                } 
+                                }
                                 this.psCore.println(i.s);
                                 this.psCore.flush();
                                 break;
                         }
                     }
-                } catch (FileNotFoundException ex) {
-                    ex.printStackTrace(System.err);
-                } catch (SecurityException ex) {
+                } catch (FileNotFoundException | SecurityException ex) {
                     ex.printStackTrace(System.err);
                 } catch (NullPointerException ex) {
                     com.gmt2001.Console.err.println("Failed to log [NullPointerException]: " + ex.getMessage());
