@@ -43,18 +43,18 @@ public class IniStore extends DataStore implements ActionListener {
     private final Date nextSave = new Date(0);
     private final Timer t;
     private final Timer t2;
-    private static final long SAVEINTERVAL = 5 * 60 * 1000;
-    private static final IniStore INSTANCE = new IniStore();
+    private static final long saveinterval = 5 * 60 * 1000;
+    private static final IniStore instance = new IniStore();
     private String inifolder = "";
 
     public static IniStore instance() {
-        return INSTANCE;
+        return instance;
     }
 
     private IniStore() {
         inifolder = LoadConfigReal("");
 
-        t = new Timer((int) SAVEINTERVAL, this);
+        t = new Timer((int) saveinterval, this);
         t2 = new Timer(1, this);
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -218,7 +218,7 @@ public class IniStore extends DataStore implements ActionListener {
                     }
                 }
 
-                nextSave.setTime(new Date().getTime() + SAVEINTERVAL);
+                nextSave.setTime(new Date().getTime() + saveinterval);
 
                 if (n.length > 0) {
                     com.gmt2001.Console.debug.println("Save complete");

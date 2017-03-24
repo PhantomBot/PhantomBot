@@ -27,10 +27,10 @@ import java.util.Set;
 public class TempStore extends DataStore {
 
     private final HashMap<String, TempFile> files = new HashMap<>();
-    private static final TempStore INSTANCE = new TempStore();
+    private static final TempStore instance = new TempStore();
 
     public static TempStore instance() {
-        return INSTANCE;
+        return instance;
     }
 
     private TempStore() {
