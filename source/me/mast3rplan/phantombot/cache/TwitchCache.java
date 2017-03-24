@@ -141,7 +141,7 @@ public class TwitchCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitchCache.run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
