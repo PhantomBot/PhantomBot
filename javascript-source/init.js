@@ -1363,7 +1363,6 @@
             callHook('UnTimeout', event, false);
         });
 
-
         /**
          * @event api-BannedEvent
          */
@@ -1396,7 +1395,7 @@
         $.registerChatSubcommand($.botName.toLowerCase(), 'moderate', 2);
 
         // emit initReady event
-        callHook('initReady', null, true);
+        callHook('initReady', null, false);
 
         if ($.isNightly) {
             consoleLn('PhantomBot Nightly Build - No Support is Provided');
