@@ -163,10 +163,8 @@
      * @param {String} field
      */
     function updateQuote(id, quoteData, field) {
-        console.log('1');
         var value = $('#inlineQuoteEdit_' + field + '_' + id).val(),
             quoteArray = quoteData.split(',');
-            console.log('1');
         if (value.length > 0) {
             if (panelMatch(field, 'quote')) {
                 quoteArray[1] = value.replace(/"/g, '\'\'');
@@ -191,7 +189,7 @@
         var value = $('#addQuoteInput').val();
         if (value.length > 0) {
             $('#addQuoteInput').val('Adding...').blur();
-            sendCommand('addquotesilent ' + value);
+            sendCommand('addquotesilent ' + String(value).replace(/"/g, '\'\''));
             setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 2);
         }
     }
