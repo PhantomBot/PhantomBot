@@ -111,7 +111,7 @@
      */
     $.bind('initReady', function() {
         $.registerChatCommand('./commands/deathctrCommand.js', 'deathctr', 7);
-        $.consoleLn('111111111111111');
+
         $.registerChatSubcommand('deathctr', 'reset', 2);
         $.registerChatSubcommand('deathctr', 'set', 2);
         $.registerChatSubcommand('deathctr', 'add', 2);
