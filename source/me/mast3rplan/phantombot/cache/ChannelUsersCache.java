@@ -89,7 +89,7 @@ public class ChannelUsersCache implements Runnable {
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
         try {
-            Thread.sleep(20 * 1000);
+            Thread.sleep(30 * 1000);
         } catch (InterruptedException e) {
             com.gmt2001.Console.debug.println("ChannelUsersCache.run: Failed to initial sleep: [InterruptedException] " + e.getMessage());
         }
