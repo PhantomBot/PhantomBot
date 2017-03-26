@@ -98,7 +98,7 @@ public class DonationsCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+            com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
@@ -112,13 +112,13 @@ public class DonationsCache implements Runnable {
                     com.gmt2001.Console.debug.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
+                com.gmt2001.Console.err.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
             }
 
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+                com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -127,6 +127,8 @@ public class DonationsCache implements Runnable {
         Map<String, String> newCache = Maps.newHashMap();
         JSONObject jsonResult;
         JSONArray donations = null;
+
+        com.gmt2001.Console.debug.println("DonationsCache::updateCache");
 
         jsonResult = TwitchAlertsAPIv1.instance().GetDonations();
 

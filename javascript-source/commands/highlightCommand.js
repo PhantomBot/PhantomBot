@@ -6,80 +6,75 @@
  */
 (function() {
 
+    /*
+     * @event command
+     */
     $.bind('command', function(event) {
         var command = event.getCommand(),
             sender = event.getSender(),
             args = event.getArgs(),
-            action = args[0],
-            hours,
-            minutes,
-            timestamp,
-            keys,
-            localDate,
-            arr,
-            streamUptimeMinutes;
+            action = args[0];
 
-        /**
+        /*
          * @commandpath highlight [description] - Marks a highlight using the given description and with the current date stamp
-         * @commandpath gethighlights - Get a list of current highlights
-         * @commandpath showhighlights - Get a list of current highlights
-         * @commandpath clearhighlights - Clear the current highlights
          */
-        if (command.equalsIgnoreCase("highlight")) {
+        if (command.equalsIgnoreCase('highlight')) {
             if (!$.isOnline($.channelName)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.offline'));
                 return;
-            }
-
-            if (args.length == 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.usage', $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT"));
+            } else if (args.length === 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.usage', $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT'));
                 return;
             }
 
-            streamUptimeMinutes = parseInt(getStreamUptimeSeconds($.channelName) / 60);
-            hours = parseInt(streamUptimeMinutes / 60);
-            minutes = parseInt(streamUptimeMinutes % 60);
-            if (minutes < 10) {
-                minutes = "0" + minutes;
-            }
-            timestamp = hours + ":" + minutes;
-            localDate = getCurLocalTimeString("'['dd-MM-yyyy']'");
-            $.inidb.set('highlights', timestamp, localDate + ' ' + args.splice(0).join(' '));
+            var streamUptimeMinutes = parseInt($.getStreamUptimeSeconds($.channelName) / 60),
+                hours = parseInt(streamUptimeMinutes / 60),
+                minutes = (parseInt(streamUptimeMinutes % 60) < 10 ? '0' + parseInt(streamUptimeMinutes % 60) : parseInt(streamUptimeMinutes % 60)),
+                timestamp = hours + ':' + minutes,
+                localDate = $.getCurLocalTimeString('\'[\'dd-MM-yyyy\']\'');
+            
             $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.success', timestamp));
-            $.log.event(sender + ' added a highlight at ' + timestamp);
+            $.inidb.set('highlights', timestamp, localDate + ' ' + args.join(' '));
+            return;
         }
 
-        if (command.equalsIgnoreCase("gethighlights") || command.equalsIgnoreCase("showhighlights")) {
+        /*
+         * @commandpath showhighlights - Get a list of current highlights
+         */
+        if (command.equalsIgnoreCase('gethighlights') || command.equalsIgnoreCase('showhighlights')) {
             if (!$.inidb.FileExists('highlights')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.gethighlights.no-highlights'));
                 return;
             }
 
-            keys = $.inidb.GetKeyList('highlights', '');
-            arr = [];
-            for (var i = keys.length - 1; i >= 0; i--) {
-                arr.push("[" + keys[i] + " > " + $.inidb.get("highlights", keys[i]) + "] ");
+            var keys = $.inidb.GetKeyList('highlights', ''),
+                temp = [];
+
+            for (var i in keys) {
+                temp.push('[' + keys[i] + ': ' + $.inidb.get('highlights', keys[i]) + '] ');
             }
 
-            $.paginateArray(arr, 'highlightcommand.highlights', ' ', true, sender);
+            $.paginateArray(temp, 'highlightcommand.highlights', ' ', true, sender);
+            return;
         }
 
-        if (command.equalsIgnoreCase("clearhighlights")) {
-            $.inidb.RemoveFile("highlights");
-            $.inidb.ReloadFile("highlights");
+        /*
+         * @commandpath clearhighlights - Clear the current highlights
+         */
+        if (command.equalsIgnoreCase('clearhighlights')) {
             $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.clearhighlights.success'));
-            $.log.event(sender + ' cleared highlights');
+            $.inidb.RemoveFile('highlights');
             return;
         }
     });
-
+    
+    /*
+     * @event initReady
+     */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./commands/highlightCommand.js')) {
-            $.registerChatCommand('./commands/highlightCommand.js', 'highlight', 2);
-            
-            $.registerChatCommand('./commands/highlightCommand.js', 'gethighlights', 2);
-            $.registerChatCommand('./commands/highlightCommand.js', 'showhighlights', 2);
-            $.registerChatCommand('./commands/highlightCommand.js', 'clearhighlights', 1);
-        }
+        $.registerChatCommand('./commands/highlightCommand.js', 'highlight', 2);
+        $.registerChatCommand('./commands/highlightCommand.js', 'gethighlights', 2);
+        $.registerChatCommand('./commands/highlightCommand.js', 'showhighlights', 2);
+        $.registerChatCommand('./commands/highlightCommand.js', 'clearhighlights', 1);
     });
 })();

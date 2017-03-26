@@ -114,7 +114,7 @@ public class TipeeeStreamCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println("TipeeeStreamCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+            com.gmt2001.Console.debug.println("TipeeeStreamCache.run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
@@ -128,13 +128,13 @@ public class TipeeeStreamCache implements Runnable {
                     com.gmt2001.Console.debug.println("TipeeeStreamCache.run: Failed to update donations: " + ex.getMessage());
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
+                com.gmt2001.Console.err.println("TipeeeStreamCache.run: Failed to update donations: " + ex.getMessage());
             }
 
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("TipeeeStreamCache.run: Failed to sleep: [InterruptedException] " + ex.getMessage());
+                com.gmt2001.Console.debug.println("TipeeeStreamCache.run: Failed to sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -148,7 +148,10 @@ public class TipeeeStreamCache implements Runnable {
         JSONObject object;
         JSONArray donations = null;
 
+        com.gmt2001.Console.debug.println("TipeeeStreamCache::updateCache");
+
         jsonResult = TipeeeStreamAPIv1.instance().GetDonations();
+
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {
                 if (jsonResult.has("datas")) {
