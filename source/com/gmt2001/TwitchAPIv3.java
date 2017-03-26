@@ -22,14 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
@@ -136,24 +133,14 @@ public class TwitchAPIv3 {
 
             j = new JSONObject(content);
             fillJSONObject(j, true, type.name(), post, url, c.getResponseCode(), "", "", content);
-        } catch (JSONException ex) {
-            fillJSONObject(j, false, type.name(), post, url, 0, "JSONException", ex.getMessage(), content);
-            com.gmt2001.Console.err.println("JSONException: " + ex.getMessage());
-        } catch (NullPointerException ex) {
-            fillJSONObject(j, false, type.name(), post, url, 0, "NullPointerException", ex.getMessage(), content);
-            com.gmt2001.Console.err.println("NullPointerException: " + ex.getMessage());
-        } catch (MalformedURLException ex) {
-            fillJSONObject(j, false, type.name(), post, url, 0, "MalformedURLException", ex.getMessage(), content);
-            com.gmt2001.Console.err.println("MalformedURLException: " + ex.getMessage());
-        } catch (SocketTimeoutException ex) {
-            fillJSONObject(j, false, type.name(), post, url, 0, "SocketTimeoutException", ex.getMessage(), content);
-            com.gmt2001.Console.err.println("SocketTimeoutException: " + ex.getMessage());
-        } catch (IOException ex) {
-            fillJSONObject(j, false, type.name(), post, url, 0, "IOException", ex.getMessage(), content);
-            com.gmt2001.Console.err.println("IOException: " + ex.getMessage());
         } catch (Exception ex) {
-            fillJSONObject(j, false, type.name(), post, url, 0, ex.getClass().getName(), ex.getMessage(), content);
-            com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
+            Throwable rootCause = ex;
+            while(rootCause.getCause() != null &&  rootCause.getCause() != rootCause) {
+                rootCause = rootCause.getCause();
+            }
+
+            fillJSONObject(j, false, type.name(), post, url, 0, ex.getClass().getName() + "@" + rootCause.getStackTrace()[0].getLineNumber(), ex.getMessage(), content);
+            com.gmt2001.Console.err.println(ex.getClass().getName() + "@" + rootCause.getStackTrace()[0].getLineNumber() + ": " + ex.getMessage());
         } finally {
             if (i != null) {
                 try {
