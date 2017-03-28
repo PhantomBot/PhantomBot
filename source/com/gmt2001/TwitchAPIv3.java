@@ -135,7 +135,7 @@ public class TwitchAPIv3 {
             fillJSONObject(j, true, type.name(), post, url, c.getResponseCode(), "", "", content);
         } catch (Exception ex) {
             Throwable rootCause = ex;
-            while(rootCause.getCause() != null &&  rootCause.getCause() != rootCause) {
+            while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
                 rootCause = rootCause.getCause();
             }
 
