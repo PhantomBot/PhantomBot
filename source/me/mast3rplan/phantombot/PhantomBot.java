@@ -1091,6 +1091,10 @@ public final class PhantomBot implements Listener {
 
         com.gmt2001.Console.out.print("\r\n");
         print(this.botName + " is now exiting.");
+
+        if (com.gmt2001.Console.Console.isRunning()) {
+            com.gmt2001.Console.Console.instance().stop();
+        }
     }
 
     /*
@@ -1250,7 +1254,7 @@ public final class PhantomBot implements Listener {
             print("This process will take a long time.");
             print("Are you sure you want to convert AnkhBot's data to PhantomBot? [y/n]");
             print("");
-            String check = com.gmt2001.Console.in.consoleReadLine().trim();
+            String check = com.gmt2001.Console.in.readLine().trim();
             if (check.equals("y")) {
                 AnkhConverter.instance();
             } else {
@@ -1404,7 +1408,7 @@ public final class PhantomBot implements Listener {
         /* Reset the bot login */
         if (message.equalsIgnoreCase("reset")) {
             print("Are you sure you want to reset the bot login? [y/n]");
-            String check = com.gmt2001.Console.in.consoleReadLine().trim();
+            String check = com.gmt2001.Console.in.readLine().trim();
             if (check.equals("y")) {
                 reset = true;
                 changed = true;
@@ -1417,7 +1421,7 @@ public final class PhantomBot implements Listener {
         /* Change the apiOAuth token */
         if (message.equalsIgnoreCase("apioauth")) {
             com.gmt2001.Console.out.print("Please enter you're oauth token that you generated from https://phantombot.tv/oauth while logged as the caster: ");
-            apiOAuth = com.gmt2001.Console.in.consoleReadLine().trim();
+            apiOAuth = com.gmt2001.Console.in.readLine().trim();
             pbProperties.setProperty("apioauth", apiOAuth);
             changed = true;
         }
@@ -1430,23 +1434,23 @@ public final class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your MySQL host name: ");
-                mySqlHost = com.gmt2001.Console.in.consoleReadLine().trim();
+                mySqlHost = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("mysqlhost", mySqlHost);
 
                 com.gmt2001.Console.out.print("Please enter your MySQL port: ");
-                mySqlPort = com.gmt2001.Console.in.consoleReadLine().trim();
+                mySqlPort = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("mysqlport", mySqlPort);
 
                 com.gmt2001.Console.out.print("Please enter your MySQL db name: ");
-                mySqlName = com.gmt2001.Console.in.consoleReadLine().trim();
+                mySqlName = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("mysqlname", mySqlName);
 
                 com.gmt2001.Console.out.print("Please enter a username for MySQL: ");
-                mySqlUser = com.gmt2001.Console.in.consoleReadLine().trim();
+                mySqlUser = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("mysqluser", mySqlUser);
 
                 com.gmt2001.Console.out.print("Please enter a password for MySQL: ");
-                mySqlPass = com.gmt2001.Console.in.consoleReadLine().trim();
+                mySqlPass = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("mysqlpass", mySqlPass);
 
                 dataStoreType = "MySQLStore";
@@ -1467,11 +1471,11 @@ public final class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your GameWisp OAuth key: ");
-                gameWispOAuth = com.gmt2001.Console.in.consoleReadLine().trim();
+                gameWispOAuth = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("gamewispauth", gameWispOAuth);
 
                 com.gmt2001.Console.out.print("Please enter your GameWisp refresh key: ");
-                gameWispRefresh = com.gmt2001.Console.in.consoleReadLine().trim();
+                gameWispRefresh = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("gamewisprefresh", gameWispRefresh);
 
                 print("PhantomBot GameWisp setup done, PhantomBot will exit.");
@@ -1489,7 +1493,7 @@ public final class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your StreamLabs OAuth key: ");
-                twitchAlertsKey = com.gmt2001.Console.in.consoleReadLine().trim();
+                twitchAlertsKey = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("twitchalertskey", twitchAlertsKey);
 
                 print("PhantomBot StreamLabs setup done, PhantomBot will exit.");
@@ -1507,11 +1511,11 @@ public final class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your StreamTip Api OAuth: ");
-                streamTipOAuth = com.gmt2001.Console.in.consoleReadLine().trim();
+                streamTipOAuth = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("streamtipkey", streamTipOAuth);
 
                 com.gmt2001.Console.out.print("Please enter your StreamTip Client Id: ");
-                streamTipClientId = com.gmt2001.Console.in.consoleReadLine().trim();
+                streamTipClientId = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("streamtipid", streamTipClientId);
 
                 print("PhantomBot StreamTip setup done, PhantomBot will exit.");
@@ -1529,7 +1533,7 @@ public final class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your TipeeeStream Api OAuth: ");
-                tipeeeStreamOAuth = com.gmt2001.Console.in.consoleReadLine().trim();
+                tipeeeStreamOAuth = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("tipeeestreamkey", tipeeeStreamOAuth);
 
                 print("PhantomBot TipeeeStream setup done, PhantomBot will exit.");
@@ -1548,11 +1552,11 @@ public final class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter a username of your choice: ");
-                panelUsername = com.gmt2001.Console.in.consoleReadLine().trim();
+                panelUsername = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("paneluser", panelUsername);
 
                 com.gmt2001.Console.out.print("Please enter a password of your choice: ");
-                panelPassword = com.gmt2001.Console.in.consoleReadLine().trim();
+                panelPassword = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("panelpassword", panelPassword);
 
                 print("PhantomBot Web Panel setup done, PhantomBot will exit.");
@@ -1570,23 +1574,23 @@ public final class PhantomBot implements Listener {
                 print("");
 
                 com.gmt2001.Console.out.print("Please enter your Twitter username: ");
-                twitterUsername = com.gmt2001.Console.in.consoleReadLine().trim();
+                twitterUsername = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("twitterUser", twitterUsername);
 
                 com.gmt2001.Console.out.print("Please enter your consumer key: ");
-                twitterConsumerToken = com.gmt2001.Console.in.consoleReadLine().trim();
+                twitterConsumerToken = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("twitter_consumer_key", twitterConsumerToken);
 
                 com.gmt2001.Console.out.print("Please enter your consumer secret: ");
-                twitterConsumerSecret = com.gmt2001.Console.in.consoleReadLine().trim();
+                twitterConsumerSecret = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("twitter_consumer_secret", twitterConsumerSecret);
 
                 com.gmt2001.Console.out.print("Please enter your access token: ");
-                twitterAccessToken = com.gmt2001.Console.in.consoleReadLine().trim();
+                twitterAccessToken = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("twitter_access_token", twitterAccessToken);
 
                 com.gmt2001.Console.out.print("Please enter your access token secret: ");
-                twitterSecretToken = com.gmt2001.Console.in.consoleReadLine().trim();
+                twitterSecretToken = com.gmt2001.Console.in.readLine().trim();
                 pbProperties.setProperty("twitter_secret_token", twitterSecretToken);
 
                 /* Delete the old Twitter file if it exists */
@@ -2086,7 +2090,7 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("\r\n");
 
                 com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
-                startProperties.setProperty("user", com.gmt2001.Console.in.consoleReadLine().trim());
+                startProperties.setProperty("user", com.gmt2001.Console.in.readLine().trim());
 
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
@@ -2094,7 +2098,7 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
                 com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
                 com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
-                startProperties.setProperty("oauth", com.gmt2001.Console.in.consoleReadLine().trim());
+                startProperties.setProperty("oauth", com.gmt2001.Console.in.readLine().trim());
 
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
@@ -2102,19 +2106,19 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
                 com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
                 com.gmt2001.Console.out.print("Please enter your OAuth token: ");
-                startProperties.setProperty("apioauth", com.gmt2001.Console.in.consoleReadLine().trim());
+                startProperties.setProperty("apioauth", com.gmt2001.Console.in.readLine().trim());
 
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
-                startProperties.setProperty("channel", com.gmt2001.Console.in.consoleReadLine().trim());
+                startProperties.setProperty("channel", com.gmt2001.Console.in.readLine().trim());
 
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
-                startProperties.setProperty("paneluser", com.gmt2001.Console.in.consoleReadLine().trim());
+                startProperties.setProperty("paneluser", com.gmt2001.Console.in.readLine().trim());
 
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("6. Please enter a custom password for the web panel: ");
-                startProperties.setProperty("panelpassword", com.gmt2001.Console.in.consoleReadLine().trim());
+                startProperties.setProperty("panelpassword", com.gmt2001.Console.in.readLine().trim());
 
                 changed = true;
                 newSetup = true;

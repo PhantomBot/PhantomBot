@@ -14,26 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.mast3rplan.phantombot.console;
+package com.gmt2001.lanterna.gui2;
 
-import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.event.console.ConsoleInputEvent;
+import com.gmt2001.Console.in;
+import com.googlecode.lanterna.gui2.TextBox;
+import com.googlecode.lanterna.input.KeyStroke;
+import static com.googlecode.lanterna.input.KeyType.Enter;
 
-public class ConsoleInputListener extends Thread {
+/**
+ *
+ * @author gmt2001
+ */
+public class InputTextBox extends TextBox
+{
+
+    public InputTextBox() {
+        super();
+    }
 
     @Override
-    @SuppressWarnings("SleepWhileInLoop")
-    public void run() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+    public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
+        if (!this.isReadOnly()) {
+            if (keyStroke.getKeyType() == Enter) {
+                in.queueInput(this.getText());
+                this.setText("");
 
-        while (true) {
-            try {
-                String msg = com.gmt2001.Console.in.readLine();
-                EventBus.instance().post(new ConsoleInputEvent(msg));
-                Thread.sleep(10);
-            } catch (Exception e) {
-                com.gmt2001.Console.err.logStackTrace(e);
+                return Result.HANDLED;
             }
         }
+
+        return super.handleKeyStroke(keyStroke);
     }
 }

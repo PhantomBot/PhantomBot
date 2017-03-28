@@ -18,8 +18,12 @@ package com.gmt2001.Console;
 
 import com.gmt2001.Logger;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import me.mast3rplan.phantombot.PhantomBot;
+import me.mast3rplan.phantombot.event.EventBus;
+import me.mast3rplan.phantombot.event.console.ConsoleInputEvent;
 
 /**
  *
@@ -29,6 +33,7 @@ public class in {
 
     private static final in instance = new in();
     private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static final ConcurrentLinkedQueue<String> inputQueue = new ConcurrentLinkedQueue<>();
 
     public static in instance() {
         return instance;
@@ -37,12 +42,22 @@ public class in {
     private in() {
     }
 
+    public static String readLine() {
+        return queueReadLine();
+    }
+
     public static String consoleReadLine() {
         return System.console().readLine();
     }
 
-    public static String readLine() throws Exception {
-        String s = br.readLine();
+    public static String brReadLine() {
+        String s = "";
+
+        try {
+            s = br.readLine();
+        } catch (IOException e) {
+            err.logStackTrace(e);
+        }
 
         if (PhantomBot.enableDebugging) {
             Logger.instance().log(Logger.LogType.Input, "[" + logTimestamp.log() + "] " + s);
@@ -50,5 +65,27 @@ public class in {
         }
 
         return s;
+    }
+
+    @SuppressWarnings("SleepWhileInLoop")
+    public static String queueReadLine() {
+        while (true) {
+            try {
+                String msg = inputQueue.poll();
+
+                if (msg != null) {
+                    return msg;
+                }
+
+                Thread.sleep(10);
+            } catch (Exception e) {
+                com.gmt2001.Console.err.logStackTrace(e);
+                return "";
+            }
+        }
+    }
+
+    public static void queueInput(String input) {
+        inputQueue.add(input);
     }
 }

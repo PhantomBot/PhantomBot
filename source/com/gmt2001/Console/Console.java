@@ -16,9 +16,15 @@
  */
 package com.gmt2001.Console;
 
+import com.gmt2001.lanterna.gui2.InputTextBox;
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.SimpleTheme;
+import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.DefaultWindowManager;
+import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.EmptySpace;
+import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
@@ -32,8 +38,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -43,57 +47,75 @@ import org.apache.commons.lang3.StringUtils;
 public class Console implements Runnable
 {
 
-    private static final Console INSTANCE = new Console();
-    private static final int MAXLINES = 50;
+    private static final Console instance = new Console();
     private volatile boolean isRunning = false;
+    private int maxlines = 50;
     private final ConcurrentLinkedQueue<String> consoleQueue = new ConcurrentLinkedQueue<>();
 
-    public static Console instance()
-    {
-        if (!INSTANCE.isRunning)
-        {
-            new Thread(INSTANCE, "com.gmt2001.Console.Console").start();
+    public static Console instance() {
+        if (!instance.isRunning) {
+            new Thread(instance, "com.gmt2001.Console.Console").start();
         }
 
-        return INSTANCE;
+        return instance;
     }
 
-    private Console()
-    {
+    public static boolean isRunning() {
+        return instance.isRunning;
     }
 
-    public void stop()
-    {
+    private Console() {
+    }
+
+    public void stop() {
         this.isRunning = false;
     }
 
     @Override
     @SuppressWarnings("SleepWhileInLoop")
-    public void run()
-    {
+    public void run() {
         this.isRunning = true;
 
         TerminalFactory f = new DefaultTerminalFactory();
-        try (Terminal t = f.createTerminal(); Screen s = new TerminalScreen(t))
-        {
+        try (Terminal t = f.createTerminal(); Screen s = new TerminalScreen(t)) {
             MultiWindowTextGUI g = new MultiWindowTextGUI(s, new DefaultWindowManager(), new EmptySpace());
             s.startScreen();
 
             TerminalSize tSize = t.getTerminalSize();
-            Panel pOut = new Panel();
+            Panel p = new Panel();
+            p.setLayoutManager(new LinearLayout(Direction.VERTICAL));
+
             TextBox tbOut = new TextBox();
             tbOut.setPreferredSize(new TerminalSize(tSize.getColumns(), tSize.getRows() - 1));
             tbOut.setReadOnly(true);
 
-            while (this.isRunning)
-            {
-                if (!consoleQueue.isEmpty())
-                {
+            InputTextBox tbIn = new InputTextBox();
+            tbIn.setPreferredSize(new TerminalSize(tSize.getColumns(), 1));
+            tbIn.setVerticalFocusSwitching(false);
+            tbIn.setTheme(SimpleTheme.makeTheme(false, TextColor.ANSI.CYAN, TextColor.ANSI.WHITE, TextColor.ANSI.CYAN, TextColor.ANSI.WHITE,
+                    TextColor.ANSI.MAGENTA, TextColor.ANSI.RED, TextColor.ANSI.WHITE));
+
+            p.addComponent(tbOut);
+            p.addComponent(tbIn);
+            BasicWindow w = new BasicWindow();
+            w.setComponent(p);
+            w.setFocusedInteractable(tbIn);
+            g.addWindow(w);
+
+            maxlines = tSize.getRows() - 1;
+
+            while (this.isRunning) {
+                if (!consoleQueue.isEmpty()) {
                     List<String> ls = new ArrayList<>(Arrays.asList(tbOut.getText().split("\n")));
-                    while (!consoleQueue.isEmpty())
-                    {
-                        addLine(ls, consoleQueue.poll());
+                    
+                    while (!consoleQueue.isEmpty()) {
+                        ls.add(consoleQueue.poll());
                     }
+
+                    while (ls.size() >= maxlines) {
+                        ls.remove(0);
+                    }
+
                     tbOut.setText(StringUtils.join(ls, "\n"));
                 }
                 
@@ -101,26 +123,8 @@ public class Console implements Runnable
             }
 
             s.stopScreen();
-        } catch (IOException | InterruptedException ex)
-        {
+        } catch (IOException | InterruptedException ex) {
             err.logStackTrace(ex);
         }
-    }
-
-    private List<String> addLine(List<String> existings, String news)
-    {
-        if (news == null)
-        {
-            return existings;
-        }
-
-        while (existings.size() >= MAXLINES)
-        {
-            existings.remove(0);
-        }
-
-        existings.add(news);
-
-        return existings;
     }
 }
