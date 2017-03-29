@@ -195,6 +195,8 @@
                 if (userCache[username] - lastPayout > 0) {
                     delete userCache[username];
                     amount += activeBonus;
+                } else {
+                    delete userCache[username];
                 }
             }
 
