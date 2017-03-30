@@ -62,10 +62,10 @@
         }
 
         if (message.match(/\(currenttime/)) {
-            var timezone = message.match(/\(currenttime ([a-zA-Z\/]+), (.*)\)/)[1],
-                format = message.match(/\(currenttime ([a-zA-Z\/]+), (.*)\)/)[2];
+            var timezone = message.match(/\(currenttime ([\w\W]+), (.*)\)/)[1],
+                format = message.match(/\(currenttime ([\w\W]+), (.*)\)/)[2];
 
-            message = $.replace(message, message.match(/\(currenttime ([a-zA-Z\/]+), (.*)\)/)[0], $.getCurrentLocalTimeString(format, timezone));
+            message = $.replace(message, message.match(/\(currenttime ([\w\W]+), (.*)\)/)[0], $.getCurrentLocalTimeString(format, timezone));
         }
 
         if (message.match(/\(1\)/g)) {
@@ -332,7 +332,10 @@
                     string = message.match(/\(writefile (.+), (.+), (.+)\)/)[3];
                 $.writeToFile(string, './addons/' + file, append);
             }
-            return null;
+            message = $.replace(message, message.match(/\(writefile (.+), (.+), (.+)\)/)[0], '');
+            if (message == '') {
+                return null;
+            }
         }
 
         if (message.match(/\(encodeurl ([\w\W]+)\)/)) {
@@ -591,7 +594,7 @@
             }
 
             action = action.replace('!', '').toLowerCase();
-            argsString = args.slice(0).join(' ');
+            argsString = args.slice(1).join(' ');
 
             if ($.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.error'));
@@ -628,7 +631,7 @@
             } 
 
             action = action.replace('!', '').toLowerCase();
-            argsString = args.slice(0).join(' ');
+            argsString = args.slice(1).join(' ');
             
             if (!$.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', action));
