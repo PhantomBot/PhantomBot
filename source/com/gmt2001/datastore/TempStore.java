@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.datastore;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -123,16 +123,14 @@ public class TempStore extends DataStore {
         }
 
         String[] retVal = new String[i];
-        for (int j = 0; j < i; j++) {
-            retVal[j] = s[j];
-        }
+        System.arraycopy(s, 0, retVal, 0, i);
         return retVal;
     }
 
     @Override
     public String[] GetKeysByLikeKeys(String fName, String section, String search) {
         AddFile(fName);
-    
+
         Set<String> o = files.get(fName).data.get(section).keySet();
         String[] s = new String[o.size()];
 
@@ -150,11 +148,9 @@ public class TempStore extends DataStore {
         }
 
         String[] retVal = new String[i];
-        for (int j = 0; j < i; j++) {
-            retVal[j] = s[j];
-        }
+        System.arraycopy(s, 0, retVal, 0, i);
         return retVal;
-    } 
+    }
 
     @Override
     public Object GetObject(String fName, String section, String key) {
@@ -173,7 +169,7 @@ public class TempStore extends DataStore {
         AddFile(fName);
 
         if (!files.get(fName).data.containsKey(section)) {
-            files.get(fName).data.put(section, new HashMap<String, Object>());
+            files.get(fName).data.put(section, new HashMap<>());
         }
 
         files.get(fName).data.get(section).put(key, value);
@@ -193,6 +189,16 @@ public class TempStore extends DataStore {
 
     @Override
     public void SetString(String fName, String section, String key, String value) {
+        SetObject(fName, section, key, value);
+    }
+
+    @Override
+    public long GetLong(String fName, String section, String key) {
+        return (Long) GetObject(fName, section, key);
+    }
+
+    @Override
+    public void SetLong(String fName, String section, String key, long value) {
         SetObject(fName, section, key, value);
     }
 

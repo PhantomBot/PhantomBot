@@ -1,8 +1,17 @@
 /**
- * Handles all the random stuff for the discord module.
+ * Handles the main things for the Discord modules. This is like the core if you would like to call it that.
  *
+ * Command permissions for the registerCommand function:
+ *  - 1 means only administrators can access the command.
+ *	- 0 means everyone can access the command.
+ *	
+ * Guidelines for merging thing on our repo for this module: 
+ * 	- Please try not to call the $.discordAPI function out of this script, move all the main functions here and export the function to the $.discord API.
+ * 	- To register command to our command list https://phantombot.tv/commands/discord please add a comment starting with @discordcommandpath before the command info.
+ * 	- Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
+	var embedReg = new RegExp(/\(embed\s([\w\W]+),\s(.*)\)/);
 
 	/**
 	 * @function userPrefix
@@ -29,7 +38,7 @@
 	/**
 	 * @function getUserMentionOrChannel
 	 *
-	 * @export $.discord.username
+	 * @export $.discord.resolve
 	 * @param  {string} argument
 	 * @return {string}
 	 */
@@ -61,7 +70,52 @@
 	 * @param {string} message
 	 */
 	function say(channel, message) {
-		$.discordAPI.sendMessage(channel, message);
+		if (message.match(embedReg)) {
+			$.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
+		} else {
+			$.discordAPI.sendMessage(channel, message);
+		}
+	}
+
+	/**
+	 * @function setGame
+	 *
+	 * @export $.discord
+	 * @param {string} game
+	 */
+	function setGame(game) {
+		$.discordAPI.setGame(game);
+	}
+
+	/**
+	 * @function setGame
+	 *
+	 * @export $.discord
+	 * @param {string} game
+	 * @param {string} url
+	 */
+	function setStream(game, url) {
+		$.discordAPI.setStream(game, url);
+	}
+
+	/**
+	 * @function removeGame
+	 *
+	 * @export $.discord
+	 */
+	function removeGame() {
+		$.discordAPI.removeGame();
+	}
+
+	/**
+	 * @function setRole
+	 *
+	 * @param {string} role
+	 * @param {string} username
+	 * @export $.discord
+	 */
+	function setRole(role, username) {
+		return $.discordAPI.setRole(role, username);
 	}
 
 	/**
@@ -140,6 +194,40 @@
 				say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.list', list.join('\r\n')));
 			}
 		}
+
+		/**
+		 * @discordcommandpath setgame [game name] - Sets the bot game.
+		 */
+		if (command.equalsIgnoreCase('setgame')) {
+			if (action === undefined) {
+				say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.set.usage'));
+				return;
+			}
+
+			setGame(args.join(' '));
+			say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.set', args.join(' ')));
+		}
+
+		/**
+		 * @discordcommandpath setstream [twitch url] [game name] - Sets the bot game and marks it as streaming.
+		 */
+		if (command.equalsIgnoreCase('setstream')) {
+			if (action === undefined) {
+				say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.stream.set.usage'));
+				return;
+			}
+
+			setStream(action, args.slice(1).join(' '));
+			say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.stream.set', action, args.slice(1).join(' ')));
+		}
+
+		/**
+		 * @discordcommandpath removegame - Removes the bot's game and streaming status if set.
+		 */
+		if (command.equalsIgnoreCase('removegame')) {
+			removeGame();
+			say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.removed'));
+		}
 	});
 
 	/**
@@ -147,17 +235,25 @@
 	 */
 	$.bind('initReady', function() {
 		$.discord.registerCommand('./discord/core/misc.js', 'module', 1);
+		$.discord.registerCommand('./discord/core/misc.js', 'setgame', 1);
+		$.discord.registerCommand('./discord/core/misc.js', 'setstream', 1);
+		$.discord.registerCommand('./discord/core/misc.js', 'removegame', 1);
 		$.discord.registerSubCommand('module', 'list', 1);
 		$.discord.registerSubCommand('module', 'enable', 1);
 		$.discord.registerSubCommand('module', 'disable', 1);
 	});
 
 	/* Export the function to the $.discord api. */
+	/* There are the same functions twice in here - that's normal and wanted. */
 	$.discord = {
-		say: say,
-		userPrefix: userPrefix,
 		getUserMention: getUserMention,
 		userMention: getUserMention,
+		removeGame: removeGame,
+		userPrefix: userPrefix,
+		setStream: setStream,
+		setGame: setGame,
+		setRole: setRole,
+		say: say,
 		resolve: { 
 			global: getUserMentionOrChannel,
 			getUserMentionOrChannel: getUserMentionOrChannel

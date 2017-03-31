@@ -20,3 +20,11 @@ $.lang.register('discord.customcommands.channelcom.global', 'Command !$1 will no
 $.lang.register('discord.customcommands.channelcom.success', 'Command !$1 will now only work in channel #$2.');
 $.lang.register('discord.customcommands.commands', 'Commands: $1');
 $.lang.register('discord.customcommands.bot.commands', 'Bot Commands: $1');
+$.lang.register('discord.customcommands.pricecom.usage', 'Usage: !pricecom [command] [amount]');
+$.lang.register('discord.customcommands.pricecom.success', 'Cost for command !$1 has been set to $2.');
+$.lang.register('discord.customcommands.aliascom.usage', 'Usage: !aliascom [alias] [command]');
+$.lang.register('discord.customcommands.aliascom.success', 'Command !$2 has been aliased to !$1');
+$.lang.register('discord.customcommands.delalias.usage', 'Usage: !delalias [alias]');
+$.lang.register('discord.customcommands.delalias.success', 'Alias !$1 has been removed.');
+$.lang.register('discord.customcommands.404', 'That command does not exist.');
+$.lang.register('discord.customcommands.alias.404', 'That alias does not exist.');

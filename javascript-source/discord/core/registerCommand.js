@@ -3,7 +3,8 @@
  *
  */
 (function() {
-	var commands = {};
+	var commands = {},
+		aliases = {};
 
 	/**
 	 * @function commandExists
@@ -14,6 +15,17 @@
 	 */
 	function commandExists(command) {
 		return (commands[command] !== undefined);
+	}
+
+	/**
+	 * @function aliasExists
+	 * 
+	 * @export $.discord
+	 * @param {string} command
+	 * @return {boolean}
+	 */
+	function aliasExists(command) {
+		return (aliases[command] !== undefined && aliases[command] !== '');
 	}
 
 	/**
@@ -61,6 +73,61 @@
 	}
 
 	/**
+	 * @function setCommandCost
+	 * 
+	 * @export $.discord
+	 * @param {string} command
+	 * @param {int}    cost
+	 */
+	function setCommandCost(command, cost) {
+		if (commandExists(command)) {
+			commands[command].cost = parseInt(cost);
+		}
+	}
+
+	/**
+	 * @function setCommandAlias
+	 * 
+	 * @export $.discord
+	 * @param {string} command
+	 * @param {string} alias
+	 */
+	function setCommandAlias(command, alias) {
+		if (commandExists(command)) {
+			commands[command].alias = alias.toLowerCase();
+			aliases[commands[command].alias] = command.toLowerCase();
+		}
+	}
+
+	/**
+	 * @function removeAlias
+	 * 
+	 * @export $.discord
+	 * @param {string} command
+	 * @param {string} alias
+	 */
+	function removeAlias(command, alias) {
+		if (commandExists(command)) {
+			delete aliases[commands[command].alias];
+			commands[command].alias = '';
+		}
+	}
+
+	/**
+	 * @function getCommandCost
+	 * 
+	 * @export $.discord
+	 * @param {string} command
+	 * @return {int}
+	 */
+	function getCommandCost(command) {
+		if (commandExists(command)) {
+			return commands[command].cost;
+		}
+		return 0;
+	}
+
+	/**
 	 * @function getCommandPermission
 	 * 
 	 * @export $.discord
@@ -104,6 +171,20 @@
 	}
 
 	/**
+	 * @function getCommandAlias
+	 * 
+	 * @export $.discord
+	 * @param {string} command
+	 * @return {string}
+	 */
+	function getCommandAlias(command) {
+		if (aliasExists(command)) {
+			return aliases[command];
+		}
+		return '';
+	}
+
+	/**
 	 * @function registerCommand
 	 * 
 	 * @export $.discord
@@ -116,10 +197,16 @@
 
 			commands[command] = {
 				permission: $.getSetIniDbNumber('discordPermcom', command, permission),
-				scriptFile: scriptFile,
+				cost: ($.inidb.exists('dicordPricecom', command) ? $.inidb.get('dicordPricecom', command) : 0),
+				alias: ($.inidb.exists('discordAliascom', command) ? $.inidb.get('discordAliascom', command) : ''),
 				channel: ($.inidb.exists('discordChannelcom', command) ? $.inidb.get('discordChannelcom', command) : ''),
+				scriptFile: scriptFile,
 				subCommand: {}
 			};
+
+			if (commands[command].alias !== '') {
+				aliases[commands[command].alias] = command
+			}
 		}
 	}
 
@@ -135,7 +222,7 @@
 		if (commandExists(command) && !subCommandExists(command, subCommand)) {
 
 			commands[command].subCommand[subCommand] = {
-				permission: $.getSetIniDbNumber('discordPermcom', command + ' ' + subCommand, permission)
+				permission: $.getSetIniDbNumber('discordPermcom', (command + ' ' + subCommand), permission)
 			};
 		}
 	}
@@ -161,6 +248,9 @@
 	 */
 	function unregisterCommand(command) {
 		if (commandExists(command)) {
+			if (commands[command].alias !== '') {
+				delete aliases[commands[command].alias];
+			}
 			delete commands[command];
 		}
 	}
@@ -178,4 +268,10 @@
 	$.discord.setCommandPermission = setCommandPermission;
 	$.discord.getCommandChannel = getCommandChannel;
 	$.discord.setCommandChannel = setCommandChannel;
+	$.discord.setCommandCost = setCommandCost;
+	$.discord.getCommandCost = getCommandCost;
+	$.discord.getCommandAlias = getCommandAlias;
+	$.discord.setCommandAlias = setCommandAlias;
+	$.discord.aliasExists = aliasExists;
+	$.discord.removeAlias = removeAlias;
 })();

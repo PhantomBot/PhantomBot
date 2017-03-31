@@ -61,7 +61,7 @@
                     id = msgObject['results'][idx]['key'];
                     quoteData = JSON.parse(msgObject['results'][idx]['value']);
                     quoteDataClean = JSON.parse(msgObject['results'][idx]['value']);
-                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C').replace(/'/g, '%27');
+                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C').replace(/"/g, '\'\'').replace(/'/g, '%27');
                     html += '<tr style="textList">' +
                             '    <td rowspan="2" style="width: 25px">' +
                             '        <div id="deleteQuote_' + id + '" type=\"button\" class=\"btn btn-default btn-xs\"' +
@@ -106,7 +106,7 @@
                             '    <td colspan="4" style="vertical-align">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
                             '            <input style="width: 89%" type="text" id="inlineQuoteEdit_quote_' + id + '"' +
-                            '                   value="' + quoteData[1] + '" />' +
+                            '                   value="' + quoteData[1].replace(/"/g, '\'\'') + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'quote\')">' +
                             '                <i class="fa fa-pencil" />' +
@@ -167,7 +167,7 @@
             quoteArray = quoteData.split(',');
         if (value.length > 0) {
             if (panelMatch(field, 'quote')) {
-                quoteArray[1] = value
+                quoteArray[1] = value.replace(/"/g, '\'\'');
             }
             if (panelMatch(field, 'game')) {
                 quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'');
@@ -189,7 +189,7 @@
         var value = $('#addQuoteInput').val();
         if (value.length > 0) {
             $('#addQuoteInput').val('Adding...').blur();
-            sendCommand('addquotesilent ' + value);
+            sendCommand('addquotesilent ' + String(value).replace(/"/g, '\'\''));
             setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 2);
         }
     }

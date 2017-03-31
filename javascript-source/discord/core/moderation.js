@@ -17,7 +17,27 @@
         longMessageLimit = $.getSetIniDbNumber('discordSettings', 'longMessageLimit', 600),
 
         spamToggle = $.getSetIniDbBoolean('discordSettings', 'spamToggle', false),
+        spamLimit = $.getSetIniDbNumber('discordSettings', 'spamLimit', 5),
+
+        modLogs = $.getSetIniDbBoolean('discordSettings', 'modLogs', false),
+        modLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
+
+    /**
+     * @function reload
+     */
+    function reload() {
+        linkToggle = $.getSetIniDbBoolean('discordSettings', 'linkToggle', false),
+        linkPermit = $.getSetIniDbNumber('discordSettings', 'linkPermit', 60);
+        capsToggle = $.getSetIniDbBoolean('discordSettings', 'capToggle', false);
+        capsLimitPercent = $.getSetIniDbNumber('discordSettings', 'capsLimitPercent', 50);
+        capsTriggerLength = $.getSetIniDbNumber('discordSettings', 'capsTriggerLength', 15);
+        longMessageToggle = $.getSetIniDbBoolean('discordSettings', 'longMessageToggle', false);
+        longMessageLimit = $.getSetIniDbNumber('discordSettings', 'longMessageLimit', 600);
+        spamToggle = $.getSetIniDbBoolean('discordSettings', 'spamToggle', false);
         spamLimit = $.getSetIniDbNumber('discordSettings', 'spamLimit', 5);
+        modLogs = $.getSetIniDbBoolean('discordSettings', 'modLogs', false);
+        modLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
+    }
 
     /**
      * @function loadBlackList
@@ -63,7 +83,7 @@
      */
     function isWhiteList(username, message) {
         for (var i in whitelist) {
-            if (message.includes(whitelist[i]) || username === whitelist[i]) {
+            if (message.includes(whitelist[i]) || username == whitelist[i]) {
                 return true;
             }
         }
@@ -104,6 +124,123 @@
     function timeoutUser(username, channel, message) {
         $.discordAPI.resolveChannel(channel).deleteMessageById(message).queue();
     }
+
+    /*
+     * @function embedTimeout
+     *
+     * @param {String} username
+     * @param {String} creator
+     * @param {String} reason
+     * @param {String} time
+     * @param {String} message
+     */
+    function embedTimeout(username, creator, reason, time, message) {
+        var toSend = '',
+            obj = {},
+            i;
+
+        obj['**Timeout_placed_on:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Creator:**'] = creator;
+        obj['**Reason:**'] = reason;
+        obj['**Time:**'] = time + ' seconds.';
+        obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
+
+        var keys = Object.keys(obj);
+        for (i in keys) {
+            if (obj[keys[i]] != '') {
+                toSend += keys[i].replace(/_/g, ' ') + ' ' + obj[keys[i]] + '\r\n\r\n';
+            }
+        }
+        $.discordAPI.sendMessageEmbed(modLogChannel, 'yellow', toSend);
+    }
+
+    /*
+     * @function embedBanned
+     *
+     * @param {String} username
+     * @param {String} creator
+     * @param {String} reason
+     * @param {String} message
+     */
+    function embedBanned(username, creator, reason, message) {
+        var toSend = '',
+            obj = {},
+            i;
+
+        obj['**Ban_placed_on:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Creator:**'] = creator;
+        obj['**Reason:**'] = reason;
+        obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
+
+        var keys = Object.keys(obj);
+        for (i in keys) {
+            if (obj[keys[i]] != '') {
+                toSend += keys[i].replace(/_/g, ' ') + ' ' + obj[keys[i]] + '\r\n\r\n';
+            }
+        }
+        $.discordAPI.sendMessageEmbed(modLogChannel, 'red', toSend);
+    }
+    
+    /*
+     * @event Timeout
+     */
+    $.bind('Timeout', function(event) {
+        var username = $.username.resolve(event.getUsername()),
+            creator = $.username.resolve(event.getCreator()),
+            message = event.getMessage(),
+            reason = event.getReason(),
+            time = parseInt(event.getTime());
+
+        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+            return;
+        }
+
+        embedTimeout(username, creator, reason, time, message);
+    });
+
+    /*
+     * @event Timeout
+     */
+    $.bind('UnTimeout', function(event) {
+        var username = $.username.resolve(event.getUsername()),
+            creator = $.username.resolve(event.getCreator());
+
+        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+            return;
+        }
+
+        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Timeout removed from:** ' + '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')' + ' \r\n\r\n **Creator:** ' + creator);
+    });
+
+    /*
+     * @event Timeout
+     */
+    $.bind('UnBanned', function(event) {
+        var username = $.username.resolve(event.getUsername()),
+            creator = $.username.resolve(event.getCreator());
+
+        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+            return;
+        }
+
+        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Ban removed from:** ' + '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')' + ' \r\n\r\n **Creator:** ' + creator);
+    });
+
+    /*
+     * @event Banned
+     */
+    $.bind('Banned', function(event) {
+        var username = $.username.resolve(event.getUsername()),
+            creator = $.username.resolve(event.getCreator()),
+            message = event.getMessage(),
+            reason = event.getReason();
+
+        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+            return;
+        }
+
+        embedBanned(username, creator, reason, message);
+    });
 
     /**
      * @event discordMessage
@@ -440,16 +577,55 @@
                 if ($.discordAPI.isPurging() == true) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.failed'));
                 } else {
-                    if ($.discordAPI.massPurge(subAction, parseInt(actionArgs)) == true) {
+                    if ($.discordAPI.massPurge(subAction, (parseInt(actionArgs) < 10000 ? parseInt(actionArgs + 1) : parseInt(actionArgs))) == true) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.done', actionArgs));
                     } else {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.failed.err'));
                     }
                 }
             }
+
+            if (action.equalsIgnoreCase('logs')) {
+                if (subAction === undefined) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.toggle.usage'));
+                    return;
+                }
+
+                /**
+                 * @discordcommandpath moderation logs toggle - Will toggle if Twitch moderation logs are to be said in Discord. Requires a bot restart.
+                 */
+                if (subAction.equalsIgnoreCase('toggle')) {
+                    modLogs = !modLogs;
+                    $.setIniDbBoolean('discordSettings', 'modLogs', modLogs);
+                    $.setIniDbBoolean('chatModerator', 'moderationLogs', modLogs);
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.toggle', (modLogs ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+                }
+
+                /**
+                 * @discordcommandpath moderation logs channel [channel name] - Will make Twitch moderator action be announced in that channel.
+                 */
+                if (subAction.equalsIgnoreCase('channel')) {
+                    if (actionArgs === undefined) {
+                        $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.channel.usage'));
+                        return;
+                    }
+
+                    modLogChannel = modLogChannel.toLowerCase().replace('#', '');
+                    $.setIniDbString('discordSettings', 'modLogChannel', modLogChannel);
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.channel.set', modLogChannel));
+                }
+            }
         }
     });
-
+    
+    /**
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/core/moderation.js')) {
+            reload();
+        }
+    });
 
     /**
      * @event initReady
@@ -464,6 +640,7 @@
             $.discord.registerSubCommand('moderation', 'blacklist', 1);
             $.discord.registerSubCommand('moderation', 'whitelist', 1);
             $.discord.registerSubCommand('moderation', 'cleanup', 1);
+            $.discord.registerSubCommand('moderation', 'logs', 1);
 
             setInterval(function() {
                 if (spam.length !== 0 && lastMessage - $.systemTime() <= 0) {

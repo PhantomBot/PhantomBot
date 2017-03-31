@@ -22,6 +22,7 @@
 
 package me.mast3rplan.phantombot.twitchwsirc;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.common.collect.Maps;
 import com.gmt2001.Logger;
 
@@ -47,11 +48,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import me.mast3rplan.phantombot.PhantomBot;
+import me.mast3rplan.phantombot.event.EventBus;
+import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
+import me.mast3rplan.phantombot.event.moderation.*;
 
 import java.net.URI;
 
 public class TwitchPubSub {
     private static final Map<String, TwitchPubSub> instances = Maps.newHashMap();
+    private final Map<String, String> messageCache = Maps.newHashMap();
+    private final Map<String, Long> timeoutCache = Maps.newHashMap();
     private final int channelId;
     private final String oAuth;
     private final int botId;
@@ -103,6 +109,17 @@ public class TwitchPubSub {
     }
 
     /*
+     * @event IrcChannelMessageEvent
+     */
+    @Subscribe
+    public void ircChannelMessageEvent(IrcChannelMessageEvent event) {
+        if (messageCache.size() > 100) {
+            messageCache.clear();
+        }
+        messageCache.put(event.getSender(), event.getMessage());
+    }
+
+    /*
      * Try to reconnect to the PubSub websocket when the connection is closed with some logic.
      */
     @SuppressWarnings("SleepWhileInLoop")
@@ -136,12 +153,12 @@ public class TwitchPubSub {
     private class TwitchPubSubWS extends WebSocketClient {
         private final TwitchPubSubWS twitchPubSubWS;
         private final TwitchPubSub twitchPubSub;
-        private final Timer timer = new Timer();
+        private final Timer timer = new Timer("me.mast3rplan.phantombot.twitchwsirc.TwitchPubSub");
         private final int channelId;
         private final String oAuth;
         private final int botId;
         private final URI uri;
-    
+
         /*
          * Constructor for the PubSubWS class.
          *
@@ -152,7 +169,7 @@ public class TwitchPubSub {
          */
         private TwitchPubSubWS(URI uri, TwitchPubSub twitchPubSub, int channelId, int botId, String oAuth) {
             super(uri, new Draft_17(), null, 5000);
-    
+
             this.uri = uri;
             this.channelId = channelId;
             this.botId = botId;
@@ -160,7 +177,7 @@ public class TwitchPubSub {
             this.twitchPubSub = twitchPubSub;
             this.twitchPubSubWS = this;
             this.startTimer();
-            
+
             try {
                 SSLContext sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, null, null);
@@ -170,14 +187,14 @@ public class TwitchPubSub {
                 com.gmt2001.Console.err.println("TwitchPubSubWS failed to connect: " + ex.getMessage());
             }
         }
-    
+
         /*
          * Closes this class.
          */
         public void delete() {
             close();
         }
-    
+
         /*
          * Creates a connection with the PubSub websocket.
          *
@@ -239,19 +256,28 @@ public class TwitchPubSub {
                             String args1 = args.getString(0);
                             String args2 = (args.length() == 2 || args.length() == 3 ? args.getString(1) : "");
                             String args3 = (args.length() == 3 ? args.getString(2) : "");
-    
+                            
+                            if (timeoutCache.containsKey(data.getString("target_user_id")) && (timeoutCache.get(data.getString("target_user_id")) - System.currentTimeMillis()) > 0) {
+                                return;
+                            }
+
+                            timeoutCache.put(data.getString("target_user_id"), System.currentTimeMillis() + 1500);
                             switch (action) {
                                 case "timeout":
                                     this.log(args1 + " has been timed out by " + creator + " for " + args2 + " seconds. " + (args3.length() == 0 ? "" : "Reason: " + args3)); 
+                                    EventBus.instance().post(new TimeoutEvent(args1, creator, System.currentTimeMillis(), args2, args3, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : "")));
                                     break;
                                 case "untimeout":
                                     this.log(args1 + " has been un-timed out by " + creator + ".");
+                                    EventBus.instance().post(new UnTimeoutEvent(args1, creator, System.currentTimeMillis()));
                                     break;
                                 case "ban":
                                     this.log(args1 + " has been banned by " + creator + ". " + (args2.length() == 0 ? "" : "Reason: " + args2));
+                                    EventBus.instance().post(new BannedEvent(args1, creator, System.currentTimeMillis(), args2, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : "")));
                                     break;
                                 case "unban":
                                     this.log(args1 + " has been un-banned by " + creator + ".");
+                                    EventBus.instance().post(new UnBannedEvent(args1, creator, System.currentTimeMillis()));
                                     break;
                                 case "mod":
                                     this.log(args1 + " has been modded by " + creator + ".");
@@ -344,7 +370,7 @@ public class TwitchPubSub {
         public void onMessage(String message) {
             JSONObject messageObj = new JSONObject(message);
     
-            // com.gmt2001.Console.out.println("[PubSub Raw Message] " + messageObj);
+            com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
     
             if (!messageObj.has("type")) {
                 return;

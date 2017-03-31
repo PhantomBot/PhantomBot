@@ -344,11 +344,11 @@ public class TwitchWSIRCParser {
                 }
             }
         }
-        
+
         /* Moderate the incoming message. Have it run in the background on a thread. */
         try {
             ModerationRunnable moderationRunnable = new ModerationRunnable(this.session, username, message, this.channel, tagsMap);
-            new Thread(moderationRunnable).start();
+            new Thread(moderationRunnable, "me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRCParser::ModerationRunnable").start();
         } catch (Exception ex) {
             scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
         }
@@ -359,7 +359,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Send the message to the scripts. */
-        eventBus.post(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
+        eventBus.postAsync(new IrcChannelMessageEvent(this.session, username, message, this.channel, tagsMap));
 
         /* Incrememnt the chat lines, this should be the last operation of this function. */
         this.session.chatLinesIncr();
@@ -543,6 +543,7 @@ public class TwitchWSIRCParser {
 
         public void run() {
             scriptEventManager.runDirect(new IrcModerationEvent(session, username, message, channel, tagsMap));
+            return;
         }
     }
 }
