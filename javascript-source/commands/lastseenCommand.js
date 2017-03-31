@@ -1,45 +1,38 @@
-/**
+/*
  * lastseenCommand.js
  *
- * This module stores the dates of when users have last been interacting with the chat
+ * This module stores the dates of when users have last seen in the channel.
  */
 (function() {
-    /**
+    /*
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function(event) {
         $.inidb.set('lastseen', event.getUser().toLowerCase(), $.systemTime());
     });
 
-    /**
+    /*
      * @event ircChannelLeave
      */
     $.bind('ircChannelLeave', function(event) {
         $.inidb.set('lastseen', event.getUser().toLowerCase(), $.systemTime());
     });
 
-    /**
-     * @event ircChannelMessage
-     */
-    $.bind('ircChannelMessage', function(event) {
-        $.inidb.set('lastseen', event.getSender().toLowerCase(), $.systemTime());
-    });
-
-    /**
+    /*
      * @event command
      */
     $.bind('command', function(event) {
-        var sender = event.getSender().toLowerCase(),
+        var sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
             target = args[0],
             date;
 
-        /**
-         * @commandpath lastseen [username] - Find out when the given user last interacted with the chat
+        /*
+         * @commandpath lastseen [username] - Find out when the given user was last seen in the channel
          */
         if (command.equalsIgnoreCase('lastseen')) {
-            if (!target || target == '') {
+            if (target === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('lastseen.usage'));
                 return;
             }
@@ -55,12 +48,10 @@
         }
     });
 
-    /**
+    /*
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./commands/lastseenCommand.js')) {
-            $.registerChatCommand('./commands/lastseenCommand.js', 'lastseen', 6);
-        }
+        $.registerChatCommand('./commands/lastseenCommand.js', 'lastseen', 7);
     });
 })();

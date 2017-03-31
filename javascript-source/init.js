@@ -744,9 +744,11 @@
         if (!$.hasDiscordToken) {
             // Load the discord core scripts.
             loadScript('./discord/core/misc.js');
+            loadScript('./discord/core/accountLink.js');
             loadScript('./discord/core/patternDetector.js');
             loadScript('./discord/core/moderation.js');
             loadScript('./discord/core/registerCommand.js');
+            loadScript('./discord/core/accountLink.js');
             loadScript('./discord/core/commandCooldown.js');
 
             $.log.event('Discord Core loaded, initializing modules...');
@@ -909,13 +911,18 @@
          * @event api-DiscordCommandEvent
          */
         $api.on($script, 'discordCommand', function(event) {
-            var command = event.getCommand(),
+            var username = event.getUsername(),
+                command = event.getCommand(),
                 channel = event.getChannel(),
                 isAdmin = event.isAdmin(),
                 args = event.getArgs();
 
-            if ($.discord.commandExists(command) === false) {
+            if ($.discord.commandExists(command) === false && ($.discord.aliasExists(command) === false || $.discord.aliasExists(command) === true && $.discord.commandExists($.discord.getCommandAlias(command)) === false)) {
                 return;
+            }
+
+            if ($.discord.aliasExists(command) === true) {
+                command = event.setCommand($.discord.getCommandAlias(command));
             }
 
             if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
@@ -926,11 +933,20 @@
                 return;
             }
 
+            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(username) < $.discord.getCommandCost(command)) {
+                return;
+            }
+
             if ($.discord.getCommandChannel(command) !== '' && !$.discord.getCommandChannel(command).equalsIgnoreCase(channel)) {
                 return;
             }
 
             callHook('discordCommand', event, false);
+
+            // Do this last to not slow down the command hook.
+            if ($.discord.getCommandCost(command) > 0) {
+                $.discord.decrUserPoints(username, $.discord.getCommandCost(command));
+            }
         });
 
         /**
@@ -1239,7 +1255,7 @@
          */
         $api.on($script, 'gameWispAnniversary', function(event) {
             callHook('gameWispAnniversary', event, false);
-        }); 
+        });
 
         /**
          * @event api-twitterEvent
@@ -1333,6 +1349,34 @@
             callHook('panelWebSocket', event, false);
         });
 
+        /**
+         * @event api-TimeoutEvent
+         */
+        $api.on($script, 'Timeout', function(event) {
+            callHook('Timeout', event, false);
+        });
+
+        /**
+         * @event api-UnTimeoutEvent
+         */
+        $api.on($script, 'UnTimeout', function(event) {
+            callHook('UnTimeout', event, false);
+        });
+
+        /**
+         * @event api-BannedEvent
+         */
+        $api.on($script, 'Banned', function(event) {
+            callHook('Banned', event, false);
+        });
+
+        /**
+         * @event api-UnBannedEvent
+         */
+        $api.on($script, 'UnBanned', function(event) {
+            callHook('UnBanned', event, false);
+        });
+
         $.log.event('init.js api\'s loaded.');
         consoleDebug('init.js api\'s loaded.');
         consoleLn('');
@@ -1345,13 +1389,13 @@
         $.registerChatCommand('./init.js', 'echo', 1);
         $.registerChatCommand('./init.js', 'reconnect', 1);
         $.registerChatCommand('./init.js', 'disconnect', 1);
-        $.registerChatCommand('./init.js', $.botName.toLowerCase(), 1);
+        $.registerChatCommand('./init.js', $.botName.toLowerCase(), 2);
         $.registerChatSubcommand($.botName.toLowerCase(), 'disconnect', 1);
         $.registerChatSubcommand($.botName.toLowerCase(), 'reconnect', 1);
         $.registerChatSubcommand($.botName.toLowerCase(), 'moderate', 2);
 
         // emit initReady event
-        callHook('initReady', null, true);
+        callHook('initReady', null, false);
 
         if ($.isNightly) {
             consoleLn('PhantomBot Nightly Build - No Support is Provided');

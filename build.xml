@@ -164,8 +164,8 @@
             <fileset dir="${build.dir}" />
         </copy>
     </target>
-     
-    <target depends="compile.src.test,post.compile" name="test"></target>
+
+    <target depends="compile.src.test,post.compile" name="test"/>
      
     <target name="run" depends="jar">
         <java fork="true" classname="me.mast3rplan.phantombot.PhantomBot" dir="${build.dir}">

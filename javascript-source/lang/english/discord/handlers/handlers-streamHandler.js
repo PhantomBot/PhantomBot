@@ -1,4 +1,4 @@
-$.lang.register('discord.streamhandler.usage', 'Usage: !streamhandler [toggleonline / onlinemessage / togglegame / gamemessage / channel]');
+$.lang.register('discord.streamhandler.usage', 'Usage: !streamhandler [toggleonline / onlinemessage / togglegame / gamemessage / togglebotstatus / channel]');
 $.lang.register('discord.streamhandler.online.toggle', 'Online announcements have been $1.');
 $.lang.register('discord.streamhandler.online.message.usage', 'Usage: !streamhandler onlinemessage [message] - Tags: (name) (url) (game) (title)');
 $.lang.register('discord.streamhandler.online.message.set', 'Online announcement message set to: $1');
@@ -7,3 +7,4 @@ $.lang.register('discord.streamhandler.game.message.usage', 'Usage: !streamhandl
 $.lang.register('discord.streamhandler.game.message.set', 'Game change announcement message set to: $1');
 $.lang.register('discord.streamhandler.channel.usage', 'Usage: !streamhandler channel [channel name]');
 $.lang.register('discord.streamhandler.channel.set', 'Stream annoucements will now be made in channel #$1');
+$.lang.register('discord.streamhandler.bot.game.toggle', 'Bot stream status has been $1.');

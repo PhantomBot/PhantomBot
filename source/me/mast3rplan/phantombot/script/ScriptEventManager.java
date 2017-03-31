@@ -60,6 +60,7 @@ public class ScriptEventManager implements Listener {
         "me.mast3rplan.phantombot.event.gamewisp",
         "me.mast3rplan.phantombot.event.twitter",
         "me.mast3rplan.phantombot.event.discord",
+        "me.mast3rplan.phantombot.event.moderation",
         "me.mast3rplan.phantombot.event.panelsocket"
     };
 

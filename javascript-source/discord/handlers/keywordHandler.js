@@ -13,11 +13,25 @@
             keyword,
             i;
 
-        for (i in keys) {
-            if (message.match('\\b' + keys[i] + '\\b') && !message.includes('!keyword')) {
-                keyword = $.inidb.get('discordKeywords', keys[i]);
-                $.discord.say(channel, $.discord.tags(event, keyword));
-                break;
+        for (i in keys) {  
+            // Some users use special symbols that may break regex so this will fix that.
+            try {
+                if (message.match('\\b' + keys[i] + '\\b') && !message.includes('!keyword')) {
+                    keyword = $.inidb.get('discordKeywords', keys[i]);
+                    $.discord.say(channel, $.discord.tags(event, keyword));
+                    break;
+                }
+            } catch (ex) {
+                if (ex.message.toLowerCase().includes('invalid quantifier') || ex.message.toLowerCase().includes('syntax')) {
+                    if (message.includes(keys[i]) && !message.includes('!keyword')) {
+                       keyword = $.inidb.get('discordKeywords', keys[i]);
+                        $.discord.say(channel, $.discord.tags(event, keyword));
+                        break; 
+                    }
+                } else {
+                    $.log.error('Failed to send keyword "' + keys[i] + '": ' + ex.message);
+                    break;
+                }
             }
         }
     });

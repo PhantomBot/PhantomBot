@@ -5,7 +5,8 @@
 
 (function() {
     var alreadyStarted = false,
-        interval;
+        interval,
+        follower = false;
 
     /*
      * @event twitchOnline
@@ -13,6 +14,7 @@
     $.bind('twitchOnline', function(event) {
         $.setIniDbBoolean('panelstats', 'streamOnline', true);
         $.inidb.set('streamInfo', 'downtime', 0);
+        $.inidb.set('panelstats', 'newFollowers', 0);
     });
 
     /*
@@ -21,6 +23,7 @@
     $.bind('twitchOffline', function(event) {
         $.setIniDbBoolean('panelstats', 'streamOnline', false);
         $.inidb.set('streamInfo', 'downtime', $.systemTime());
+        $.inidb.set('panelstats', 'newFollowers', 0);
     });
 
     /*
@@ -28,6 +31,20 @@
      */
     function updateViewerCount() {
         $.inidb.set('panelstats', 'viewerCount', $.getViewers($.channelName));
+    }
+
+    /*
+     * @function updateChatterCount
+     */
+    function updateChatterCount() {
+        $.inidb.set('panelstats', 'chatterCount', $.users.length);
+    }
+
+    /*
+     * @function updateFollowerCount
+     */
+    function updateFollowerCount() {
+        $.inidb.set('panelstats', 'followerCount', $.getFollows($.channelName));
     }
 
     /*
@@ -58,7 +75,8 @@
     function updateModLinesDB(user) {
         if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
             $.inidb.incr('panelmodstats', 'mod_' + $.getCurLocalTimeString('MM.dd.yy'), 1);
-            $.inidb.incr('panelmoduserstats', user, 1);
+            // $.inidb.incr('panelstats', 'timeoutCount', 1);
+            // $.inidb.incr('panelmoduserstats', user, 1);
         }
     }
 
@@ -102,7 +120,28 @@
         updateStreamUptime();
         getTitlePanel();
         getGamePanel();
+        updateChatterCount();
+        updateFollowerCount();
+        if ($.twitchCacheReady.equals('true')) { 
+            $.setIniDbNumber('panelstats', 'viewCount', $.twitchcache.getViews()); 
+        }
     }
+
+    /*
+     * @event twitchFollow
+     */
+    $.bind('twitchFollow', function(event) {
+        if (follower) {
+            $.inidb.incr('panelstats', 'newFollowers', 1);
+        }
+    });
+
+    /*
+     * @event twitchFollowsInitialized
+     */
+    $.bind('twitchFollowsInitialized', function() {
+        follower = true;
+    });
 
     /*
      * @event initReady
@@ -116,13 +155,14 @@
             if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
                 alreadyStarted = true;
                 $.inidb.set('panelstats', 'enabled', 'true');
+                $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
                 $.setIniDbBoolean('panelstats', 'streamOnline', $.isOnline($.channelName));
-                updateAll();
-                interval = setInterval(function() { updateAll(); }, 3e4);
+                interval = setInterval(function() {  updateAll(); }, 3e4);
             } else {
                 $.inidb.set('panelstats', 'enabled', 'false');
             }
         }
+        setTimeout(function() { updateAll(); }, 1000);
     });
 
     /*
@@ -130,6 +170,6 @@
      */
     $.panelDB = {
         updateChatLinesDB: updateChatLinesDB,
-        updateModLinesDB: updateModLinesDB,
+        updateModLinesDB: updateModLinesDB
     };
 })();

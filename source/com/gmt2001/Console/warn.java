@@ -20,10 +20,6 @@ import com.gmt2001.Logger;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 import me.mast3rplan.phantombot.PhantomBot;
 
 public class warn {
@@ -38,9 +34,7 @@ public class warn {
     }
 
     public static void print(Object o) {
-        String stackInfo = "";
-        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
-        String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+        String stackInfo;
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
@@ -60,9 +54,7 @@ public class warn {
     }
 
     public static void println(Object o) {
-        String stackInfo = "";
-        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
-        String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+        String stackInfo;
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
@@ -74,9 +66,7 @@ public class warn {
     }
 
     public static void println(Object o, Boolean logOnly) {
-        String stackInfo = "";
-        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
-        String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+        String stackInfo;
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();

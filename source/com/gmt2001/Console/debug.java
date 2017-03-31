@@ -17,13 +17,9 @@
 package com.gmt2001.Console;
 
 import com.gmt2001.Logger;
-import java.lang.StackTraceElement;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 import me.mast3rplan.phantombot.PhantomBot;
 
 public class debug {
@@ -33,15 +29,13 @@ public class debug {
     public static debug instance() {
         return instance;
     }
-    
+
     private debug() {
     }
 
     private debug(Object o) {
         if (PhantomBot.enableDebugging) {
-            String stackInfo = "";
-            String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
-            String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+            String stackInfo;
             String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
             int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
@@ -77,9 +71,7 @@ public class debug {
 
     public static void println(Object o) {
         if (PhantomBot.enableDebugging) {
-            String stackInfo = "";
-            String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
-            String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+            String stackInfo;
             String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
             int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
@@ -96,9 +88,7 @@ public class debug {
 
     public static void println(Object o, Boolean force) {
         if (PhantomBot.enableDebugging || force) {
-            String stackInfo = "";
-            String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
-            String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+            String stackInfo;
             String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
             int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
@@ -126,9 +116,9 @@ public class debug {
         if (PhantomBot.enableDebugging) {
             Writer trace = new StringWriter();
             PrintWriter ptrace = new PrintWriter(trace);
-    
+
             e.printStackTrace(ptrace);
-    
+
             Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + trace.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
         }
