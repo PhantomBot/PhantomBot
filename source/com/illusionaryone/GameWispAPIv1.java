@@ -18,35 +18,23 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.UncaughtExceptionHandler;
-
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
+import me.mast3rplan.phantombot.PhantomBot;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-
-import me.mast3rplan.phantombot.PhantomBot;
 
 /*
  * Communicates with the GameWisp v1 API server.

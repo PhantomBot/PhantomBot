@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.datastore;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,56 +22,127 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
-
-import me.mast3rplan.phantombot.PhantomBot;
+import org.sqlite.SQLiteConfig;
 
 /**
  *
  * @author gmt2001
  */
-public class MySQLStore extends DataStore {
+public class SqliteStore extends DataStore {
 
-    private static Connection connection = null;
-    private static final MySQLStore instance = new MySQLStore();
-
-    private String db = "";
-    private String user = "";
-    private String pass = "";
+    private String dbname = "phantombot.db";
+    private int cache_size = -50000;
+    private boolean safe_write = false;
+    private boolean journal = true;
+    private Connection connection = null;
+    private static final SqliteStore instance = new SqliteStore();
     private int autoCommitCtr = 0;
 
-    public static MySQLStore instance() {
+    public static SqliteStore instance() {
         return instance;
     }
 
-    private MySQLStore() {
+    private SqliteStore() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException ex) {
-            com.gmt2001.Console.err.println(ex.getMessage());
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println(ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        Object o[] = LoadConfigReal("");
+
+        dbname = (String) o[0];
+        cache_size = (int) o[1];
+        safe_write = (boolean) o[2];
+        journal = (boolean) o[3];
+        connection = (Connection) o[4];
     }
 
     @Override
-    public Connection CreateConnection(String db, String user, String pass) {
-        this.db = db;
-        this.user = user;
-        this.pass = pass;
+    public void LoadConfig(String configStr) {
+        Object o[] = LoadConfigReal(configStr);
+
+        dbname = (String) o[0];
+        cache_size = (int) o[1];
+        safe_write = (boolean) o[2];
+        journal = (boolean) o[3];
+        connection = (Connection) o[4];
+    }
+
+    private static Object[] LoadConfigReal(String configStr) {
+        if (configStr.isEmpty()) {
+            configStr = "sqlite3config.txt";
+        }
+
+        String dbname = "phantombot.db";
+        int cache_size = -50000;
+        boolean safe_write = false;
+        boolean journal = true;
+        Connection connection = null;
+
         try {
-            connection = DriverManager.getConnection(db, user, pass);
-            connection.setAutoCommit(getAutoCommitCtr() == 0);
-            com.gmt2001.Console.out.println("Connected to MySQL");
-            return connection;
+            File f = new File("./" + configStr);
+
+            if (f.exists()) {
+                String data = FileUtils.readFileToString(new File("./" + configStr));
+                String[] lines = data.replaceAll("\\r", "").split("\\n");
+
+                for (String line : lines) {
+                    if (line.startsWith("dbname=") && line.length() > 8) {
+                        dbname = line.substring(7);
+                    }
+                    if (line.startsWith("cachesize=") && line.length() > 11) {
+                        cache_size = Integer.parseInt(line.substring(10));
+                    }
+                    if (line.startsWith("safewrite=") && line.length() > 11) {
+                        safe_write = line.substring(10).equalsIgnoreCase("true") || line.substring(10).equalsIgnoreCase("1");
+                    }
+                    if (line.startsWith("journal=") && line.length() > 9) {
+                        journal = line.substring(8).equalsIgnoreCase("true");
+                    }
+                }
+
+                connection = CreateConnection(dbname, cache_size, safe_write, journal, true);
+            }
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return new Object[] {
+                   dbname, cache_size, safe_write, journal, connection
+               };
+    }
+
+    private static Connection CreateConnection(String dbname, int cache_size, boolean safe_write, boolean journal, boolean autocommit) {
+        Connection connection = null;
+
+        try {
+            SQLiteConfig config = new SQLiteConfig();
+            config.setCacheSize(cache_size);
+            config.setSynchronous(safe_write ? SQLiteConfig.SynchronousMode.FULL : SQLiteConfig.SynchronousMode.NORMAL);
+            config.setTempStore(SQLiteConfig.TempStore.MEMORY);
+            config.setJournalMode(journal ? SQLiteConfig.JournalMode.TRUNCATE : SQLiteConfig.JournalMode.OFF);
+            connection = DriverManager.getConnection("jdbc:sqlite:" + dbname.replaceAll("\\\\", "/"), config.toProperties());
+            connection.setAutoCommit(autocommit);
         } catch (SQLException ex) {
-            com.gmt2001.Console.err.println("Failure to Connect to MySQL: " + ex.getMessage());
-            return null;
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return connection;
+    }
+
+    public void CloseConnection() {
+        try {
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
+        } catch (SQLException ex) {
+           com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -93,7 +164,7 @@ public class MySQLStore extends DataStore {
     private void CheckConnection() {
         try {
             if (connection == null || connection.isClosed() || !connection.isValid(10)) {
-                connection = CreateConnection(db, user, pass);
+                connection = CreateConnection(dbname, cache_size, safe_write, journal, getAutoCommitCtr() == 0);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -110,7 +181,7 @@ public class MySQLStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
 
-                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (variable));");
+                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section string, variable string, value string);");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -199,8 +270,8 @@ public class MySQLStore extends DataStore {
         try (Statement statement = connection.createStatement()) {
             statement.setQueryTimeout(10);
 
-            DatabaseMetaData md = connection.getMetaData();
-            try (ResultSet rs = md.getTables(null, null, "phantombot_" + fName, null)) {
+            try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='phantombot_" + fName + "';")) {
+
                 return rs.next();
             }
         } catch (SQLException ex) {
@@ -217,12 +288,14 @@ public class MySQLStore extends DataStore {
         try (Statement statement = connection.createStatement()) {
             statement.setQueryTimeout(10);
 
-            DatabaseMetaData md = connection.getMetaData();
-            try (ResultSet rs = md.getTables(null, null, "%", null)) {
+            try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';")) {
+
                 ArrayList<String> s = new ArrayList<>();
+
                 while (rs.next()) {
-                    s.add(rs.getString(3));
+                    s.add(rs.getString("name").substring(11));
                 }
+
                 return s.toArray(new String[s.size()]);
             }
         } catch (SQLException ex) {
@@ -312,6 +385,55 @@ public class MySQLStore extends DataStore {
     }
 
     @Override
+    public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) {
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+    
+                    try (ResultSet rs = statement.executeQuery()) {
+    
+                        ArrayList<String> s = new ArrayList<>();
+    
+                        while (rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+    
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                    statement.setQueryTimeout(10);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+
+                        ArrayList<String> s = new ArrayList<>();
+
+                        while (rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new String[] {
+               };
+    }
+
+    @Override
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
         CheckConnection();
 
@@ -323,7 +445,7 @@ public class MySQLStore extends DataStore {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
-
+  
                     try (ResultSet rs = statement.executeQuery()) {
                         ArrayList<String> s = new ArrayList<>();
 
@@ -366,16 +488,16 @@ public class MySQLStore extends DataStore {
 
         fName = validateFname(fName);
 
-        if (FileExists(fName)) {
+        if (FileExists(fName)) { 
             if (section.length() > 0) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
-
+                    
                     try (ResultSet rs = statement.executeQuery()) {
                         ArrayList<String> s = new ArrayList<>();
-
+                        
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
@@ -385,13 +507,62 @@ public class MySQLStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE '%?%';")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ?;")) {
                     statement.setQueryTimeout(10);
-                    statement.setString(1, search);
-
+                    statement.setString(1, "%" + search + "%");
+                    
                     try (ResultSet rs = statement.executeQuery()) {
                         ArrayList<String> s = new ArrayList<>();
+                        
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
 
+        return new String[] {
+               };
+    }
+
+    @Override
+    public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) { 
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+                    statement.setString(2, "%" + search + "%");
+                    
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+                        
+                        while(rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, "%" + search + "%");
+                    
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<String> s = new ArrayList<>();
+                        
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
@@ -566,6 +737,27 @@ public class MySQLStore extends DataStore {
     }
 
     @Override
+    public void InsertString(String fName, String section, String key, String value) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        AddFile(fName);
+
+        try {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
+                statement.setQueryTimeout(10);
+                statement.setString(1, section);
+                statement.setString(2, key);
+                statement.setString(3, value);
+                statement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
     public void CreateIndexes() {
         CheckConnection();
         String[] tableNames = GetFileList();
@@ -594,10 +786,24 @@ public class MySQLStore extends DataStore {
             } else {
                 incrAutoCommitCtr();
                 connection.setAutoCommit(mode);
-                com.gmt2001.Console.debug.println(getAutoCommitCtr());
             }
         } catch (SQLException ex) {
-            com.gmt2001.Console.debug.println("MySQL commit was attempted too early, will perform later.");
+            com.gmt2001.Console.debug.println("SQLite commit was attempted too early, will perform later.");
+        }
+    }
+
+    @Override
+    public void backupSQLite3(String filename) {
+        CheckConnection();
+
+        if (!new File ("./dbbackup").exists()) new File ("./dbbackup").mkdirs();
+
+        try (Statement statement = connection.createStatement()) {
+            statement.setQueryTimeout(10);
+            statement.executeUpdate("backup to ./dbbackup/" + filename);
+            com.gmt2001.Console.out.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

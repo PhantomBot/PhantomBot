@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.datastore;
 
 import java.sql.Connection;
 
@@ -60,12 +60,22 @@ public class DataStore {
                };
     }
 
+    public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
+        return new String[] {
+               };
+    }
+
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
         return new String[] {
                };
     }
 
     public String[] GetKeysByLikeKeys(String fName, String section, String search) {
+        return new String[] {
+               };
+    }
+
+    public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
         return new String[] {
                };
     }
@@ -78,9 +88,13 @@ public class DataStore {
     }
 
     public void InsertString(String fName, String section, String key, String value) {
+        SetString(fName, section, key, value);
     }
 
     public void SetBatchString(String fName, String section, String[] key, String[] value) {
+        for (int i = 0; i < key.length; i++) {
+            SetString(fName, section, key[i], value[i]);
+        }
     }
 
     public Object GetObject(String fName, String section, String key) {

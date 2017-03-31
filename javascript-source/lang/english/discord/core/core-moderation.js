@@ -1,4 +1,4 @@
-$.lang.register('moderation.usage', 'Usage: !moderation [links / caps / spam / blacklist / whitelist / cleanup]');
+$.lang.register('moderation.usage', 'Usage: !moderation [links / caps / spam / blacklist / whitelist / cleanup / logs]');
 $.lang.register('moderation.links.usage', 'Usage: !moderation links [toggle / permittime]');
 $.lang.register('moderation.links.toggle', 'Link moderation has been $1.');
 $.lang.register('moderation.links.permit.time.usage', 'Usage: !moderation links permittime [seconds]');
@@ -38,3 +38,7 @@ $.lang.register('moderation.cleanup.err', 'You can only delete 1 to 10000 messag
 $.lang.register('moderation.cleanup.failed', 'Failed to perform bulk message deletion: Currently deleting messages.');
 $.lang.register('moderation.cleanup.failed.err', 'Failed to perform bulk message deletion.');
 $.lang.register('moderation.cleanup.done', 'Deleted $1 messages!');
+$.lang.register('moderation.logs.toggle.usage', 'Usage: !moderation logs [toggle / channel] - Will toggle if Twitch moderation logs are to be said in Discord.');
+$.lang.register('moderation.logs.toggle', 'Twitch moderation logs have been $1. **[Requires bot restart]**');
+$.lang.register('moderation.logs.channel.usage', 'Usage: !moderation logs channel [channel name]');
+$.lang.register('moderation.logs.channel.set', 'Twitch moderation log announcements will now be made in channel #$1');

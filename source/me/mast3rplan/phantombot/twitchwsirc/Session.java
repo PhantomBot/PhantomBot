@@ -131,8 +131,8 @@ public class Session {
      * @function startTimers
      */
     public void startTimers() {
-        new Timer().schedule(new MessageHandler(this), 500, 1);
-        new Timer().schedule(new QueueHandler(this), 500, 1);
+        new Timer("me.mast3rplan.phantombot.twitchwsirc.Session::MessageHandler").schedule(new MessageHandler(this), 500, 1);
+        new Timer("me.mast3rplan.phantombot.twitchwsirc.Session::QueueHandler").schedule(new QueueHandler(this), 500, 1);
     }
 
     /*

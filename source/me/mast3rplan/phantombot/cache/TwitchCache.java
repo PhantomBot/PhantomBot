@@ -69,6 +69,7 @@ public class TwitchCache implements Runnable {
     private String previewLink = "";
     private long streamUptimeSeconds = 0L;
     private int viewerCount = 0;
+    private int views = 0;
 
     /*
      * Creates an instance for a channel.
@@ -98,7 +99,7 @@ public class TwitchCache implements Runnable {
         }
 
         this.channel = channel;
-        this.updateThread = new Thread(this);
+        this.updateThread = new Thread(this, "me.mast3rplan.phantombot.cache.TwitchCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -134,13 +135,13 @@ public class TwitchCache implements Runnable {
                     com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
             }
 
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -202,6 +203,7 @@ public class TwitchCache implements Runnable {
                     viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
                     this.viewerCount = viewerCount;
 
+
                 } else {
                     streamUptimeSeconds = 0L;
                     this.streamUptimeSeconds = streamUptimeSeconds;
@@ -248,6 +250,12 @@ public class TwitchCache implements Runnable {
                     }
                 } else {
                     success = false;
+                }
+
+                if (streamObj.has("views")) {
+                    /* Get the view count. */
+                    views = streamObj.getInt("views");
+                    this.views = views;
                 }
 
                 /* Get the title. */
@@ -369,6 +377,13 @@ public class TwitchCache implements Runnable {
      */
     public int getViewerCount() {
         return this.viewerCount;
+    }
+
+    /* 
+     * Returns the views count.
+     */
+    public int getViews() {
+        return this.views;
     }
 
     /*

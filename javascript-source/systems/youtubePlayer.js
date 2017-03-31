@@ -220,9 +220,17 @@
             videoLength = jsonData["time"];
         } else {
             var data = null;
+            var attempts = 0;
+            // We do not need an infinite loop here. 5 attempts is enough.
             do {
                 data = $.youtube.SearchForVideo(searchQuery);
-            } while (data[0].length() < 11 && data[1] != "No Search Results Found");
+                attempts++;
+            } while (data[0].length() < 11 && data[1] != "No Search Results Found" && attempts < 5);
+
+            // Hit 5 trys and nothing was found
+            if (data[0].length() < 11) {
+                throw 'No data returned.';
+            }
 
             videoId = data[0];
             videoTitle = data[1];

@@ -7,8 +7,9 @@ $.lang.register('bettingsystem.close.usage', 'Usage: !bet close [winning option]
 $.lang.register('bettingsystem.close.success', 'Bet is now closed! Calculating results and giving points to the winners!');
 $.lang.register('bettingsystem.close.semi.success', 'The bet is now closed! Waiting on a winning option.');
 $.lang.register('bettingsystem.close.success.winners', 'A total of $1 players won this bet! And a total of $2 was won!');
-$.lang.register('bettingsystem.save.format', 'Title: "$1", Options: "$2", Total Bets: $3, Total Entries: $4, Points Won: $5.');
-$.lang.register('bettingsystem.global.usage', 'Usage: !bet [open / close / save / saveformat / lookup / togglemessages / gain]');
+$.lang.register('bettingsystem.save.format', 'Title: "$1", Options: "$2", Total Points: $3, Total Entries: $4, Points Won: $5.');
+$.lang.register('bettingsystem.results', 'Current bet: Title: "$1", Options: "$2", Total Points: $3, Total Entries: $4');
+$.lang.register('bettingsystem.global.usage', 'Usage: !bet [open / close / save / saveformat / lookup / results / togglemessages / gain]');
 $.lang.register('bettingsystem.bet.usage', 'Usage: !bet [amount] [option]');
 $.lang.register('bettingsystem.bet.error.neg', 'You cannot bet negative $1!');
 $.lang.register('bettingsystem.bet.error.min', 'The minimum bet you can place is $1.');
@@ -22,7 +23,7 @@ $.lang.register('bettingsystem.saveformat.usage', 'Usage: !bet saveformat [date 
 $.lang.register('bettingsystem.saveformat.set', 'Save format has been changed to $1.');
 $.lang.register('bettingsystem.gain.usage', 'Usage: !bet gain [percent]');
 $.lang.register('bettingsystem.gain.set', 'Gain percent has been set to $1%');
-$.lang.register('bettingsystem.lookup.usage', 'Usage: !bet lookup [$1]');
+$.lang.register('bettingsystem.lookup.usage', 'Usage: !bet lookup [$1] - use _# after the date if you made multiple bets that day.');
 $.lang.register('bettingsystem.lookup.show', 'Bet from [$1] $2');
 $.lang.register('bettingsystem.lookup.null', 'No bets were made on that day.');
 $.lang.register('bettingsystem.now', 'now');

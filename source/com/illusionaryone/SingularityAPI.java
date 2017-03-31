@@ -18,8 +18,6 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.UncaughtExceptionHandler;
-
 import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
@@ -27,37 +25,20 @@ import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
 import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.KeyManagementException;
-import java.io.IOException;
-import java.lang.IllegalArgumentException;
-import java.lang.InterruptedException;
 import java.security.cert.CertificateException;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
 import java.security.cert.X509Certificate;
-import java.net.URISyntaxException;
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.net.ssl.SSLSession;
 
 import io.socket.emitter.Emitter;
 import io.socket.client.IO;
-import io.socket.client.IO.Options;
-import io.socket.client.Manager;
-import io.socket.client.On;
-import io.socket.client.Socket;
-import io.socket.client.Url;
+import io.socket.client.Socket;;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 /*
  * @author illusionaryone
@@ -299,5 +280,4 @@ public class SingularityAPI {
             return true;
         }
     }
-
 }

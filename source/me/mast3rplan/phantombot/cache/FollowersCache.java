@@ -67,7 +67,7 @@ public class FollowersCache implements Runnable {
         }
 
         this.channel = channel;
-        this.updateThread = new Thread(this);
+        this.updateThread = new Thread(this, "me.mast3rplan.phantombot.cache.FollowersCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -276,6 +276,7 @@ public class FollowersCache implements Runnable {
                     }
                 }
             };
+            thread.setName("me.mast3rplan.phantombot.cache.FollowersCache::updateCache" + i);
             threads.add(thread);
             thread.start();
         }

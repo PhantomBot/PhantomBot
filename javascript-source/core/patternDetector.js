@@ -6,14 +6,14 @@
  */
 (function() {
     var patterns = {
-            link: new RegExp('((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)'
+            link: new RegExp('((?:(http|https|rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)'
              + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_'
              + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?'
              + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+'
              + '(?:'
              + '(?:aero|arpa|app|a[cdefgilmnoqrstuwxz])'
-             + '|(?:biz|bar|best|bingo|bot|b[abdefghijmnorstvwyz])'
-             + '|(?:cat|com|coop|cash|chat|codes|cool|c[acdfghiklmnoruvxyz])'
+             + '|(?:biz|b[abdefghijmnorstvwyz])'
+             + '|(?:com|c[acdfghiklmnoruvxyz])'
              + '|d[ejkmoz]'
              + '|(?:edu|e[cegrstu])'
              + '|(?:fyi|f[ijkmor])'
@@ -28,9 +28,9 @@
              + '|(?:org|om)'
              + '|(?:pro|p[aefghklmnrstwy])'
              + '|qa'
-             + '|(?:rodeo|rocks|r[eouw])'
-             + '|(?:stream|support|sale|s[abcdeghijklmnortuvyz])'
-             + '|(?:tel|travel|top|t[cdfghjklmnoprtvwz])'
+             + '|(?:r[eouw])'
+             + '|(?:s[abcdeghijklmnortuvyz])'
+             + '|(?:t[cdfghjklmnoprtvwz])'
              + '|u[agkmsyz]'
              + '|(?:vote|video|v[aceginu])'
              + '|(?:xxx)'
@@ -206,7 +206,7 @@
             length = 0,
             i;
 
-        if (emotes !== null && emotes != '{}') {
+        if (emotes !== null && emotes.length > 0) {
             emotes = emotes.replaceAll('[0-9]+:', '').replaceAll('/', ',').split(',');
             for (i = 0; i < emotes.length; i++) {
                 length += (parseInt(emotes[i].split('-')[1]) - parseInt(emotes[i].split('-')[0]) + 1);
