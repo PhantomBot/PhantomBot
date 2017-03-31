@@ -64,7 +64,7 @@ public class DonationsCache implements Runnable {
         }
 
         this.channel = channel;
-        this.updateThread = new Thread(this);
+        this.updateThread = new Thread(this, "me.mast3rplan.phantombot.cache.DonationsCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -98,7 +98,7 @@ public class DonationsCache implements Runnable {
         try {
             Thread.sleep(30 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+            com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
@@ -112,13 +112,13 @@ public class DonationsCache implements Runnable {
                     com.gmt2001.Console.debug.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
+                com.gmt2001.Console.err.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
             }
 
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+                com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -128,13 +128,15 @@ public class DonationsCache implements Runnable {
         JSONObject jsonResult;
         JSONArray donations = null;
 
+        com.gmt2001.Console.debug.println("DonationsCache::updateCache");
+
         jsonResult = TwitchAlertsAPIv1.instance().GetDonations();
 
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {
                 donations = jsonResult.getJSONArray("data");
                 for (int i = 0; i < donations.length(); i++) {
-                    newCache.put(donations.getJSONObject(i).getString("donation_id"), donations.getJSONObject(i).getString("donation_id"));
+                    newCache.put(donations.getJSONObject(i).get("donation_id").toString(), donations.getJSONObject(i).get("donation_id").toString());
                 }
             } else {
                 try {
@@ -171,7 +173,7 @@ public class DonationsCache implements Runnable {
 
         if (donations != null && !killed) {
             for (int i = 0; i < donations.length(); i++) {
-                if (cache == null || !cache.containsKey(donations.getJSONObject(i).getString("donation_id"))) {
+                if (cache == null || !cache.containsKey(donations.getJSONObject(i).get("donation_id").toString())) {
                     EventBus.instance().post(new TwitchAlertsDonationEvent(donations.getJSONObject(i).toString(), PhantomBot.getChannel(this.channel)));
                 }
             }

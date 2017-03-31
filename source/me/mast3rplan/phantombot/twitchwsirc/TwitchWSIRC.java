@@ -235,11 +235,11 @@ public class TwitchWSIRC extends WebSocketClient {
             com.gmt2001.Console.debug.println("Got a PONG from Twitch");
             return;
         }
-        
+
         if (message.startsWith(":") || message.startsWith("@")) {
             try {
                 MessageRunnable messageRunnable = new MessageRunnable(message);
-                new Thread(messageRunnable).start();
+                new Thread(messageRunnable, "me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC::MessageRunnable").start();
             } catch (Exception ex) {
                 twitchWSIRCParser.parseData(message);
             }
@@ -278,6 +278,7 @@ public class TwitchWSIRC extends WebSocketClient {
 
         public void run() {
             twitchWSIRCParser.parseData(message);
+            return;
         }
     }
 
@@ -292,6 +293,8 @@ public class TwitchWSIRC extends WebSocketClient {
         service.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                Thread.currentThread().setName("me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC::checkPingTime");
+
                 if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
                     com.gmt2001.Console.debug.println("Sending a PING to Twitch to Verify Connection");
                     sentPing = true;

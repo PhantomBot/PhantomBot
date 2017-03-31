@@ -55,6 +55,12 @@
                         title="Permission of the command, 0 means it will work everyone and 1 means it's only for administrators." />
                     </div>
 
+                    <lable><b>Cost:</b></lable>
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <input id="command-cost-modal" type="number" min="0" max="1" class="form-control" placeholder="Cost" data-toggle="tooltip" 
+                        title="The cost of this command, note that users have to have their Discord linked in the bot with !accountlink" />
+                    </div>
+
                     <lable><b>Cooldown:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-cooldown-modal" type="number" class="form-control" placeholder="Cooldown" data-toggle="tooltip" 
@@ -65,6 +71,12 @@
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
                         title="Channel that you only want this command to work in, leave it blank to make the command global."/>
+                    </div>
+
+                    <lable><b>Alias:</b></lable>
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <input id="command-alias-modal" type="text" class="form-control" placeholder="Alias name" data-toggle="tooltip" 
+                        title="Make an alias for this command."/>
                     </div> 
                </div>
                 <div class="modal-footer">
@@ -102,6 +114,12 @@
                         title="Permission of the command, 0 means it will work everyone and 1 means it's only for administrators." />
                     </div>
 
+                    <lable><b>Cost:</b></lable>
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <input id="command-add-cost-modal" type="number" min="0" max="1" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
+                        title="The cost of this command, note that users have to have their Discord linked in the bot with !accountlink" />
+                    </div>
+
                     <lable><b>Cooldown:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-add-cooldown-modal" type="number" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
@@ -112,6 +130,12 @@
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-add-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
                         title="Channel that you only want this command to work in, leave it blank to make the command global."/>
+                    </div>
+
+                    <lable><b>Alias:</b></lable>
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <input id="command-add-alias-modal" type="text" class="form-control" placeholder="Alias name" data-toggle="tooltip" 
+                        title="Make an alias for this command."/>
                     </div> 
                </div>
                 <div class="modal-footer">
@@ -122,6 +146,166 @@
         </div>
         </div>
     </div>
+    </div>
+
+    <h3>Custom Keywords</h3>
+    <div>
+    <div id="_discord_customKeywordsDisabled" />
+    <div id="_discord_customKeywords">
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="addCustomKeyword">Add a keyword</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addKeyword()">Submit</button>
+                <input type="text" class="form-control" id="custom-keyword" placeholder="Keyword name" />
+                <input type="text" class="form-control" id="custom-keyword-value" placeholder="Keyword response" />
+            </div>
+        </form>
+        <div id="keyword-list" style="height: 250px; overflow: auto;"/>
+    </div>
+    </div>
+
+    <h3>Game Settings</h3>
+    <div>
+    <div id="_discord_slotMachineDisabled" />
+    <div id="_discord_slotMachine">
+        <div>
+            <strong>Slot Settings</strong>
+        </div>
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_max"><small>Slot Rewards</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setDiscordSlotRewards()">Update</button>
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards0Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for First Value">
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards1Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Second Value">
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards2Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Third Value">
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards3Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Fourth Value">
+                <input style="width: 15%" type="number" min="0" id="discordSlotRewards4Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Fifth Value">
+            </div>
+        </form>
+
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_max"><small>Slot Emojis&nbsp;&nbsp;&nbsp;</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setSlotEmojis()">Update</button>
+                <input style="width: 15%" type="text" id="slotEmoji0Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for First Value">
+                <input style="width: 15%" type="text" id="slotEmoji1Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for Second Value">
+                <input style="width: 15%" type="text" id="slotEmoji2Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for Third Value">
+                <input style="width: 15%" type="text" id="slotEmoji3Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for Fourth Value">
+                <input style="width: 15%" type="text" id="slotEmoji4Input" placeholder="Emoji"
+                       data-toggle="tooltip" title="Emoji for Fifth Value">
+            </div>
+        </form>
+    </div>
+
+    <br>
+    <div id="_discord_rollDisabled" />
+    <div id="_discord_roll">
+        <div><strong>Dice Roll Settings</strong></div><br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_max"><small>Roll Rewards</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" 
+                        onclick="$.setDiscordRollRewards()">Update</button>
+                <input style="width: 13%" type="number" min="0" id="discordRollRewards0Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 1's">
+                <input style="width: 13%" type="number" min="0" id="discordRollRewards1Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 2's">
+                <input style="width: 13%" type="number" min="0" id="discordRollRewards2Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 3's">
+                <input style="width: 12%" type="number" min="0" id="discordRollRewards3Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 4's">
+                <input style="width: 12%" type="number" min="0" id="discordRollRewards4Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 5's">
+                <input style="width: 12%" type="number" min="0" id="discordRollRewards5Input" placeholder="Points"
+                       data-toggle="tooltip" title="Points for Double 6's">
+            </div>
+        </form>
+    </div>
+
+    <br>
+    <div id="_discord_gamblingDisabled" />
+    <div id="_discord_gambling">
+        <div>
+            <strong>Gambling Settings</strong>
+        </div>
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_max"><small>Maximum Gambling Amount</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_max', 'games/gambling.js', 'discordGambling', 'max')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamble_max" placeholder="Amount">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_min"><small>Minimum Gambling Amount</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_min', 'games/gambling.js', 'discordGambling', 'min')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamble_min" placeholder="Amount">
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_winGainPercent"><small>Winning Percent</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_winGainPercent', 'games/gambling.js', 'discordGambling', 'winGainPercent')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamble_winGainPercent" placeholder="Amount" data-toggle="tooltip" 
+                        title="The percent of points the winner wins when gambling. Max is 100." >
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="gamble_winRange"><small>Winning Range</small></label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_winRange', 'games/gambling.js', 'discordGambling', 'winRange')">Submit</button>
+                <input type="number" min="1" class="form-control" id="gamble_winRange" placeholder="Amount" data-toggle="tooltip" 
+                        title="Range from where people can win, anything under the number you put here will be a lost. Max is 100." >
+            </div>
+        </form>
+    </div>
+    </div>
+
+    <h3>Moderation Log Settings</h3>
+    <div>
+        <i>Enabling this feature requires a bot restart after.</i>
+        <table>
+            <tr class="textList">
+                <td>Toggle Moderation Logs</td>
+                <td style="width: 25px"><div id="modLogsInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('modLogsInput', 'core/moderation.js', 'discordSettings', 'modLogs', 'true')">
+                        <i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('modLogsInput', 'core/moderation.js', 'discordSettings', 'modLogs', 'false')">
+                        <i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="modLogChannelInput">Channel name</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('modLogChannelInput', 'core/moderation.js', 'discordSettings', 'modLogChannel')">Submit</button>
+                <input type="text" class="form-control" id="modLogChannelInput" placeholder="Channel name" data-toggle="tooltip" 
+                    title="Channel that Twitch moderation logs will be said in."/>
+            </div>
+        </form>
     </div>
 
     <h3>TipeeeStream Alert Settings</h3>
@@ -320,6 +504,16 @@
                 </td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('gameToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'gameToggle', 'false')"><i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
+            <tr class="textList">
+                <td>Toggle Bot Stream Status</td>
+                <td style="width: 25px"><div data-toggle="tooltip" title="If enabled the bot will be marked as streaming when you go live." id="botGameToggleInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('botGameToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'botGameToggle', 'true')"><i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('botGameToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'botGameToggle', 'false')"><i class="fa fa-circle-o" /></div>
                 </td>
             </tr>
         </table>

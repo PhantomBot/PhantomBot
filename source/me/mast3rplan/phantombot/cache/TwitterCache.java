@@ -84,7 +84,7 @@ public class TwitterCache implements Runnable {
         }
 
         this.channel = channel;
-        this.updateThread = new Thread(this);
+        this.updateThread = new Thread(this, "me.mast3rplan.phantombot.cache.TwitterCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -94,18 +94,18 @@ public class TwitterCache implements Runnable {
 
     /*
      * Thread run instance.  This is the main loop for the thread that is created to manage
-     * retrieving data from the Twitter API.  This loop runs every 15 seconds, calling the 
+     * retrieving data from the Twitter API.  This loop runs every 15 seconds, calling the
      * method to update data from Twitter.  That method checks against limits.
      */
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
 
-        /* Wait one minute before starting to poll Twitter. */
+        /* Wait 30 seconds before starting to poll Twitter. */
         try {
-            Thread.sleep(60 * 1000);
+            Thread.sleep(30 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.println("TwitterCache::run: " + ex.getMessage());
+            com.gmt2001.Console.err.println("TwitterCache::run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
@@ -122,7 +122,7 @@ public class TwitterCache implements Runnable {
             try {
                 Thread.sleep(15 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitterCache::run: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitterCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -147,6 +147,8 @@ public class TwitterCache implements Runnable {
         long delay_retweets = 0L;
         long delay_hometimeline = 0L;
         long delay_usertimeline = 0L;
+
+        com.gmt2001.Console.debug.println("TwitterCache::updateCache");
 
         /* Check DB for what data should be polled. */
         poll_retweets = getDBBoolean("poll_retweets");

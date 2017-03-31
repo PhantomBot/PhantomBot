@@ -76,7 +76,7 @@
 		 * @commandpath gamblesetmax [amount] - Set how many points people can gamble.
 		 */
 		if (command.equalsIgnoreCase('gamblesetmax')) {
-			if (!action) {
+			if (action === undefined || isNaN(parseInt(action)) || action < 1) {
 				$.say($.whisperPrefix(sender) + $.lang.get('gambling.set.max.usage'));
 				return;
 			}
@@ -89,7 +89,7 @@
 		 * @commandpath gamblesetmin [amount] - Set the minumum amount of points people can gamble.
 		 */
 		if (command.equalsIgnoreCase('gamblesetmin')) {
-			if (!action) {
+			if (action === undefined || isNaN(parseInt(action)) || action < 1) {
 				$.say($.whisperPrefix(sender) + $.lang.get('gambling.set.min.usage'));
 				return;
 			}
@@ -102,7 +102,7 @@
 		 * @commandpath gamblesetwinningrange [range] - Set the winning range from 0-100.
 		 */
 		if (command.equalsIgnoreCase('gamblesetwinningrange')) {
-			if (!action || action.includes('-')) {
+			if (action === undefined || isNaN(parseInt(action)) || action.includes('-') || action < 1 || action > 100) {
 				$.say($.whisperPrefix(sender) + $.lang.get('gambling.win.range.usage'));
 				return;
 			}
@@ -115,7 +115,7 @@
 		 * @commandpath gamblesetgainpercent [amount in percent] - Set the winning gain percent.
 		 */
 		if (command.equalsIgnoreCase('gamblesetgainpercent')) {
-			if (!action) {
+			if (action === undefined || isNaN(parseInt(action)) || action < 1 || action > 100) {
 				$.say($.whisperPrefix(sender) + $.lang.get('gambling.percent.usage'));
 				return;
 			}
