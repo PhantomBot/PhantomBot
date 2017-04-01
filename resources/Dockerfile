@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk
 
-ARG project_name=PhantomBot
-ARG BASEDIR=/opt/${project_name}
+ARG PROJECT_NAME=PhantomBot
+ARG BASEDIR=/opt/${PROJECT_NAME}
 
 RUN mkdir -p "${BASEDIR}"
 
@@ -15,9 +15,9 @@ VOLUME \
 
 COPY . "$BASEDIR"
 
-WORKDIR "$BASEDIR"
+WORKDIR "${BASEDIR}"
 
-EXPOSE 25000 25002 25003 25004 25005
+EXPOSE 25000 25001 25002 25003 25004 25005
 
 ENTRYPOINT [ \
     "java", \
