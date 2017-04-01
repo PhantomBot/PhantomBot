@@ -77,8 +77,8 @@
             s = $.replace(s, '(viewers)', viewers.toString());
         }
 
-        if (s.match(/\/w/)) {
-            s = $.replace(s, '/w', ' /w');
+        if (s.match(/^\/w/)) {
+            s = s.replace('/w', ' /w');
         }
 
         if (autoHostToggle === true) {
@@ -135,8 +135,8 @@
             s = $.replace(s, '(viewers)', viewers.toString());
         }
 
-        if (s.match(/\/w/)) {
-            s = $.replace(s, '/w', ' /w');
+        if (s.match(/^\/w/)) {
+            s = s.replace('/w', ' /w');
         }
 
         if (hostToggle === true) {
