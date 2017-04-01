@@ -17,6 +17,7 @@
 package com.gmt2001.Console;
 
 import com.gmt2001.lanterna.gui2.InputTextBox;
+import com.gmt2001.lanterna.gui2.LimitedLineTextBox;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.SimpleTheme;
@@ -27,7 +28,6 @@ import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -35,10 +35,8 @@ import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.TerminalFactory;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -49,7 +47,6 @@ public class Console implements Runnable
 
     private static final Console instance = new Console();
     private volatile boolean isRunning = false;
-    private int maxlines = 50;
     private final ConcurrentLinkedQueue<String> consoleQueue = new ConcurrentLinkedQueue<>();
 
     public static Console instance() {
@@ -85,7 +82,7 @@ public class Console implements Runnable
             Panel p = new Panel();
             p.setLayoutManager(new LinearLayout(Direction.VERTICAL));
 
-            TextBox tbOut = new TextBox();
+            LimitedLineTextBox tbOut = new LimitedLineTextBox();
             tbOut.setPreferredSize(new TerminalSize(tSize.getColumns(), tSize.getRows() - 1));
             tbOut.setReadOnly(true);
 
@@ -102,21 +99,17 @@ public class Console implements Runnable
             w.setFocusedInteractable(tbIn);
             g.addWindow(w);
 
-            maxlines = tSize.getRows() - 1;
-
             while (this.isRunning) {
                 if (!consoleQueue.isEmpty()) {
-                    List<String> ls = new ArrayList<>(Arrays.asList(tbOut.getText().split("\n")));
+                    List<String> ls = new ArrayList<>();
                     
                     while (!consoleQueue.isEmpty()) {
                         ls.add(consoleQueue.poll());
                     }
 
-                    while (ls.size() >= maxlines) {
-                        ls.remove(0);
+                    if (!ls.isEmpty()) {
+                        tbOut.limitedAddLines(ls);
                     }
-
-                    tbOut.setText(StringUtils.join(ls, "\n"));
                 }
                 
                 Thread.sleep(100);
