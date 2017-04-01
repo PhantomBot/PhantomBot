@@ -99,7 +99,7 @@
         for (i in follows) {
             if (!running && ($.systemTime() - lastFollow) > (followDelay * 1e3)) {
                 running = true;
-                $.say(follows[i].replace('/w', ' /w'));
+                $.say(follows[i].replace(/^\/w/, ' /w'));
                 lastFollow = $.systemTime();
                 follows.splice(i, 1);
                 running = false;
