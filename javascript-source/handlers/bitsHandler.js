@@ -40,6 +40,8 @@
 		if (bits >= minimum) {
 			$.say(s);
 		}
+		$.writeToFile(username + ' ', './addons/bitsHandler/latestCheer.txt', false);
+		$.writeToFile(username + ': ' + bits + ' ', './addons/bitsHandler/latestCheer&Bits.txt', false);
 	});
 
 	/*
