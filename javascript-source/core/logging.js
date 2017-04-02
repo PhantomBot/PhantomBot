@@ -6,46 +6,45 @@
  * Use the $.logging API for getting log-like date and time strings
  */
 (function() {
-    var interval,
-        logDays = $.getSetIniDbNumber('settings', 'log_rotate_days', 90),
+    var logDays = $.getSetIniDbNumber('settings', 'log_rotate_days', 30),
         logs = {
-            file: $.getSetIniDbBoolean('settings', 'log.file', false),
+            file: $.getSetIniDbBoolean('settings', 'log.file', true),
             event: $.getSetIniDbBoolean('settings', 'log.event', true),
             error: $.getSetIniDbBoolean('settings', 'log.error', true)
         };
 
-    /**
-    * function reloadLogs()
-    */
+    /*
+     * function reloadLogs()
+     */
     function reloadLogs() {
         $.getIniDbNumber('settings', 'log_rotate_days');
-
-        logs = {
-            file: $.getIniDbBoolean('settings', 'log.file'),
-            event: $.getIniDbBoolean('settings', 'log.event'),
-            error: $.getIniDbBoolean('settings', 'log.error')
-        };
+        logs.file = $.getIniDbBoolean('settings', 'log.file');
+        logs.event = $.getIniDbBoolean('settings', 'log.event');
+        logs.error = $.getIniDbBoolean('settings', 'log.error');
     }
 
-    /**
+    /*
      * @function getLogDateString
+     *
      * @export $.logging
-     * @param {Number} [timeStamp]
-     * @returns {string}
+     * @param  {Number} timeStamp
+     * @return {String}
      */
     function getLogDateString(timeStamp) {
         var now = (timeStamp ? new Date(timeStamp) : new Date()),
             pad = function(i) {
                 return (i < 10 ? '0' + i : i);
             };
+
         return pad(now.getDate()) + '-' + pad(now.getMonth() + 1) + '-' + now.getFullYear();
     }
 
-    /**
+    /*
      * @function getLogTimeString
+     *
      * @export $.logging
-     * @param {Number} [timeStamp]
-     * @returns {string}
+     * @param  {Number} timeStamp
+     * @return {String}
      */
     function getLogTimeString(timeStamp) {
         if (timeStamp) {
@@ -55,74 +54,58 @@
         }
     }
 
-    /**
+    /*
      * @function getLogEntryTimeDateString
+     *
      * @export $.logging
-     * @param {Date}
+     * @return {String}
      */
-    function getLogEntryTimeDateString(now) {
-        var timezone,
-            timezoneMatch;
+    function getLogEntryTimeDateString() {
+        var dateFormat = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
 
-        timezoneMatch = now.toString().match(/\((\w+)\)/);
-        if (timezoneMatch === null) {
-            timezoneMatch = now.toString().match(/\((\w+-\d+)\)/);
-            if (timezoneMatch === null) {
-                timezone = '';
-            } else {
-                timezone = ' ' + timezoneMatch[1];
-            }
-        } else {
-            timezone = ' ' + timezoneMatch[1];
-        }
-
-        var pad = function(i) {
-                return (i < 10 ? '0' + i : i);
-            }; 
-            padms = function(i) {
-                return (i < 10 ? '00' + i : i < 100 ? '0' + i : i);
-            }; 
-        return pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + '-' + now.getFullYear() + ' @ ' +
-                   pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':'  + pad(now.getSeconds()) + '.' + padms(now.getMilliseconds()) + 
-                   timezone;
+        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT')));
+        return dateFormat.format(new Date());
     }
 
-    /**
+    /*
      * @function logfile
+     *
      * @export $
-     * @param {string} filePrefix
-     * @param {string} message
-     * @param {string} [sender]
+     * @param {String} filePrefix
+     * @param {String} message
+     * @param {String} sender
      */
     function logfile(filePrefix, message, sender) {
-        if (!logs.file || message.equalsIgnoreCase('.mods')) {
+        if (logs.file === false || message.indexOf('.mods') !== -1) {
             return;
         }
 
-        if (!$.isDirectory('./logs/' + filePrefix)) {
+        if (!$.isDirectory('./logs/' + filePrefix + '/')) {
+            if (!$.isDirectory('./logs/')) {
+                $.mkDir('./logs');
+            }
             $.mkDir('./logs/' + filePrefix);
         }
 
-        var now = new Date();
-        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] ' + message,'./logs/' + filePrefix + '/' + getLogDateString() + '.txt', true);
+        $.writeToFile('[' + getLogEntryTimeDateString() + '] ' + message, './logs/' + filePrefix + '/' + getLogDateString() + '.txt', true);
     }
 
-    /**
+    /*
      * @function logEvent
+     *
      * @export $
      * @param {string} message
      */
     function logEvent(message) {
-        if (!logs.event || message.indexOf('specialuser') != -1) {
+        if (logs.event === false || message.indexOf('specialuser') !== -1) {
             return;
         }
 
-        if (!$.isDirectory('./logs/event')) {
+        if (!$.isDirectory('./logs/events')) {
+            if (!$.isDirectory('./logs/')) {
+                $.mkDir('./logs');
+            }
             $.mkDir('./logs/event');
-        }
-
-        if (!$.fileExists('./logs/event/' + getLogDateString() + '.txt')) {
-            $.touchFile('./logs/event/' + getLogDateString() + '.txt');
         }
 
         try {
@@ -131,21 +114,24 @@
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
-        var now = new Date();
-        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile.trim() + '] ' + message,'./logs/event/' + getLogDateString() + '.txt', true);
+        $.writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/event/' + getLogDateString() + '.txt', true);
     }
 
-    /**
+    /*
      * @function logError
+     *
      * @export $
-     * @param {string} message
+     * @param {String} message
      */
     function logError(message) {
-        if (!logs.error) {
+        if (logs.error === false) {
             return;
         }
 
-        if (!$.isDirectory('./logs/error')) {
+        if (!$.isDirectory('./logs/error/')) {
+            if (!$.isDirectory('./logs/')) {
+                $.mkDir('./logs');
+            }
             $.mkDir('./logs/error');
         }
 
@@ -155,22 +141,25 @@
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
-        var now = new Date();
-        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile + '] ' + message,'./logs/error/' + getLogDateString() + '.txt', true);
+        $.writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile + '] ' + message, './logs/error/' + getLogDateString() + '.txt', true);
         Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile.trim() + '] ' + message));
     }
 
-    /**
+    /*
      * @function logWarning
+     *
      * @export $
-     * @param {string} message
+     * @param {String} message
      */
     function logWarning(message) {
-        if (!logs.error) {
+        if (logs.error === false) {
             return;
         }
 
-        if (!$.isDirectory('./logs/warning')) {
+        if (!$.isDirectory('./logs/warning/')) {
+            if (!$.isDirectory('./logs/')) {
+                $.mkDir('./logs');
+            }
             $.mkDir('./logs/warning');
         }
 
@@ -180,12 +169,11 @@
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
-        var now = new Date();
-        $.writeToFile('[' + getLogEntryTimeDateString(now) + '] [' + sourceFile.trim() + '] ' + message,'./logs/warning/' + getLogDateString() + '.txt', true);
+        $.writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/warning/' + getLogDateString() + '.txt', true);
         Packages.com.gmt2001.Console.warn.printlnRhino(java.util.Objects.toString(message));
     }
 
-    /**
+    /*
      * @function logRotate
      */
     function logRotate() {
@@ -200,7 +188,6 @@
             checkDate = $.systemTime() - rotateDays;
 
         if (rotateDays === 0) {
-            $.log.event('Log Rotation is Disabled');
             return;
         }
 
@@ -219,14 +206,14 @@
         $.log.event('Finished Log Rotation');
     }
 
-    /**
+    /*
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
         logfile('chat', '' + event.getSender() + ': ' + event.getMessage());
     });
 
-    /**
+    /*
      * @event ircPrivateMessage
      */
     $.bind('ircPrivateMessage', function(event) {
@@ -237,7 +224,7 @@
             return;
         }
 
-        if (message.indexOf('the moderators if this room') == -1) {
+        if (message.indexOf('the moderators if this room') === -1) {
             logfile('private-messages', '' + sender + ': ' + message);
         }
 
@@ -274,7 +261,7 @@
         }
     });
 
-    /**
+    /*
      * @event command
      */
     $.bind('command', function(event) {
@@ -283,9 +270,6 @@
             args = event.getArgs(),
             action = args[0];
 
-        /**
-         * @commandpath log - Get current logging usage
-         */
         if (command.equalsIgnoreCase('log')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('logging.usage'));
@@ -320,6 +304,7 @@
                 logs.file = !logs.file;
                 $.setIniDbBoolean('settings', 'log.file', logs.file);
                 $.say($.whisperPrefix(sender) + (logs.file ? $.lang.get('logging.enabled.files') : $.lang.get('logging.disabled.files')));
+                return;
             }
 
             /**
@@ -329,6 +314,7 @@
                 logs.event = !logs.event;
                 $.setIniDbBoolean('settings', 'log.event', logs.event);
                 $.say($.whisperPrefix(sender) + (logs.event ? $.lang.get('logging.enabled.event') : $.lang.get('logging.disabled.event')));
+                return;
             }
 
             /**
@@ -342,31 +328,31 @@
         }
     });
 
-    interval = setInterval(function() { 
+    var interval = setInterval(function() { 
         logRotate(); 
     }, 24 * 60 * 6e4);
 
-    /**
+    /*
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./core/logging.js')) {
-            $.registerChatCommand('./core/logging.js', 'log', 1);
-            logRotate();
-        }
+        $.registerChatCommand('./core/logging.js', 'log', 1);
+
+        logRotate();
     });
 
-    /** Export functions to API */
+    /* Export functions to API */
     $.logging = {
+        getLogEntryTimeDateString: getLogEntryTimeDateString,
         getLogDateString: getLogDateString,
-        getLogTimeString: getLogTimeString,
+        getLogTimeString: getLogTimeString
     };
 
     $.log = {
         file: logfile,
         event: logEvent,
         error: logError,
-        warn: logWarning,
+        warn: logWarning
     };
 
     $.reloadLogs = reloadLogs;
