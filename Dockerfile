@@ -3,18 +3,19 @@ FROM openjdk:8-jdk
 ARG PROJECT_NAME=PhantomBot
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
-ARG VERSION=master
 
 RUN mkdir -p "${BASEDIR}" "${BUILDDIR}" \
     && apt-get update -q \
     && apt-get install -yqq ant \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && git clone --branch "${VERSION}" https://github.com/PhantomBot/PhantomBot.git "${BUILDDIR}" \
-    && cd "${BUILDDIR}" \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY . "${BUILDDIR}"
+
+RUN cd "${BUILDDIR}" \
     && ant jar \
     && cp -aR "${BUILDDIR}/dist/build" "${BASEDIR}/" \
-    && rm -rf "${BUILDDIR}" "${BASEDIR}/\{launch*,Dockerfile,docker-compose.yml\}"
+    && rm -rf "${BUILDDIR}" "${BASEDIR}/launch*"
 
 VOLUME \
     "${BASEDIR}/addons" \
