@@ -1,194 +1,29 @@
 version: '2'
 services:
-  phantombot-latest:
-    build:
-      context: .
-      args:
-       - VERSION=master
+  phantombot:
+    #build:
+    #  context: .
+    container_name: phantombot
     image: phantombot/phantombot:latest
-  phantombot-v2.3.5.3:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.5.3
-    image: phantombot/phantombot:v2.3.5.3
-  phantombot-v2.3.5.2:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.5.2
-    image: phantombot/phantombot:v2.3.5.2
-  phantombot-v2.3.5.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.5.1
-    image: phantombot/phantombot:v2.3.5.1
-  phantombot-v2.3.5:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.5
-    image: phantombot/phantombot:v2.3.5
-  phantombot-v2.3.4.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.4.1
-    image: phantombot/phantombot:v2.3.4.1
-  phantombot-v2.3.4:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.4
-    image: phantombot/phantombot:v2.3.4
-  phantombot-v2.3.4:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.4
-    image: phantombot/phantombot:v2.3.4
-  phantombot-v2.3.3:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.3
-    image: phantombot/phantombot:v2.3.3
-  phantombot-v2.3.2:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.2
-    image: phantombot/phantombot:v2.3.2
-  phantombot-v2.3.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3.1
-    image: phantombot/phantombot:v2.3.1
-  phantombot-v2.3:
-    build:
-      context: .
-      args:
-       - VERSION=v2.3
-    image: phantombot/phantombot:v2.3
-  phantombot-v2.2:
-    build:
-      context: .
-      args:
-       - VERSION=v2.2
-    image: phantombot/phantombot:v2.2
-  phantombot-v2.1.0.3:
-    build:
-      context: .
-      args:
-       - VERSION=v2.1.0.3
-    image: phantombot/phantombot:v2.1.0.3
-  phantombot-v2.1.0.2:
-    build:
-      context: .
-      args:
-       - VERSION=v2.1.0.2
-    image: phantombot/phantombot:v2.1.0.2
-  phantombot-v2.1.0.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.1.0.1
-    image: phantombot/phantombot:v2.1.0.1
-  phantombot-v2.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.1
-    image: phantombot/phantombot:v2.1
-  phantombot-v2.0.9:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.9
-    image: phantombot/phantombot:v2.0.9
-  phantombot-v2.0.8:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.8
-    image: phantombot/phantombot:v2.0.8
-  phantombot-v2.0.7.2:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.7.2
-    image: phantombot/phantombot:v2.0.7.2
-  phantombot-v2.0.7.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.7.1
-    image: phantombot/phantombot:v2.0.7.1
-  phantombot-v2.0.7:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.7
-    image: phantombot/phantombot:v2.0.7
-  phantombot-v2.0.6.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.6.1
-    image: phantombot/phantombot:v2.0.6.1
-  phantombot-v2.0.6:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.6
-    image: phantombot/phantombot:v2.0.6
-  phantombot-v2.0.5.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.5.1
-    image: phantombot/phantombot:v2.0.5.1
-  phantombot-v2.0.5:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.5
-    image: phantombot/phantombot:v2.0.5
-  phantombot-v2.0.4.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.4.1
-    image: phantombot/phantombot:v2.0.4.1
-  phantombot-v2.0.4:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.4
-    image: phantombot/phantombot:v2.0.4
-  phantombot-v2.0.3:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.3
-    image: phantombot/phantombot:v2.0.3
-  phantombot-v2.0.2:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.2
-    image: phantombot/phantombot:v2.0.2
-  phantombot-v2.0.1:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0.1
-    image: phantombot/phantombot:v2.0.1
-  phantombot-v2.0:
-    build:
-      context: .
-      args:
-       - VERSION=v2.0
-    image: phantombot/phantombot:v2.0
+    ports:
+      - "25000-25005:25000-25005"
+    restart: always
+    volumes:
+      - /opt/PhantomBot/addons
+      - /opt/PhantomBot/botlogin.txt
+      - /opt/PhantomBot/logs
+      - /opt/PhantomBot/phantombot.db
+      - /opt/PhantomBot/phantombot.db-journal
+    environment:
+      # Twitch bot user
+      - PHANTOMBOT_USER=
+      # Twitch bot user OAuth token (https://twitchapps.com/tmi/)
+      - PHANTOMBOT_OAUTH=
+      # Twitch caster channel OAuth token (https://phantombot.tv/oauth/)
+      #- PHANTOMBOT_APIOAUTH=
+      # Twitch caster channel
+      - PHANTOMBOT_CHANNEL=
+      # Webinterface username
+      #- PHANTOMBOT_PANELUSER=
+      # Webinterface password
+      #- PHANTOMBOT_PANELPASSWORD=
