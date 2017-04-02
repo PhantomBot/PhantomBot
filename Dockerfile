@@ -3,27 +3,36 @@ FROM openjdk:8-jdk
 ARG PROJECT_NAME=PhantomBot
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
+ARG DATADIR=${BASEDIR}_data
 
-RUN mkdir -p "${BASEDIR}" "${BUILDDIR}" \
+RUN mkdir -p "${BASEDIR}" "${BUILDDIR}" "${DATADIR}" \
     && apt-get update -q \
     && apt-get install -yqq ant \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf \
+        /var/lib/apt/lists/* \
+        /tmp/* \
+        /var/tmp/*
 
 COPY . "${BUILDDIR}"
 
 RUN cd "${BUILDDIR}" \
     && ant jar \
-    && cp -aR "${BUILDDIR}/dist/build" "${BASEDIR}/" \
-    && rm -rf "${BUILDDIR}" "${BASEDIR}/launch*"
+    && cp -a "${BUILDDIR}/dist/build/." "${BASEDIR}/" \
+    && cd "${BASEDIR}" \
+    && rm -rf \
+        "${BUILDDIR}" \
+        "${BASEDIR}/launch\*" \
+    && mv "${BASEDIR}/addons" "${DATADIR}/" \
+    && mv "${BASEDIR}/config" "${DATADIR}/" \
+    && mv "${BASEDIR}/logs" "${DATADIR}/" \
+    && ln -s "${DATADIR}/addons" \
+    && ln -s "${DATADIR}/botlogin.txt" \
+    && ln -s "${DATADIR}/config" \
+    && ln -s "${DATADIR}/logs" \
+    && ln -s "${DATADIR}/phantombot.db"
 
-VOLUME \
-    "${BASEDIR}/addons" \
-    "${BASEDIR}/botlogin.txt" \
-    "${BASEDIR}/config" \
-    "${BASEDIR}/logs" \
-    "${BASEDIR}/phantombot.db" \
-    "${BASEDIR}/phantombot.db-journal"
+VOLUME "${DATADIR}"
 
 WORKDIR "${BASEDIR}"
 
