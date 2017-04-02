@@ -86,6 +86,7 @@
         }
 
         $.writeToFile(hoster + ' ', './addons/hostHandler/latestHost.txt', false);
+        $.writeToFile(hoster + ' ', './addons/hostHandler/latestHostOrAutoHost.txt', false);
         if (autoHostReward > 0 && viewers >= hostMinViewerCount) {
             $.inidb.incr('points', hoster.toLowerCase(), autoHostReward);
         }
@@ -143,7 +144,8 @@
             $.say(s);
         }
 
-        $.writeToFile(hoster + ' ', './addons/hostHandler/latestHost.txt', false);
+        $.writeToFile(hoster + ' ', './addons/hostHandler/latestAutoHost.txt', false);
+        $.writeToFile(hoster + ' ', './addons/hostHandler/latestHostOrAutoHost.txt', false);
         if (hostReward > 0 && viewers >= hostMinViewerCount) {
             $.inidb.incr('points', hoster.toLowerCase(), hostReward);
         }

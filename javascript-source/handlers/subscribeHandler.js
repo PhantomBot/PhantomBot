@@ -50,6 +50,7 @@
             $.say(message);
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber, true);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
             if (subReward > 0) {
                 $.inidb.incr('points', subscriber, subReward);
@@ -74,6 +75,7 @@
             $.say(message);
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber, true);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
             if (subReward > 0) {
                 $.inidb.incr('points', subscriber, subReward);
@@ -110,6 +112,8 @@
             $.say(message);
             $.addSubUsersList(resubscriber);
             $.restoreSubscriberStatus(resubscriber, true);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestResub.txt', false);
+            $.writeToFile(subscriber + ': ' + months + ' ', './addons/subscribeHandler/latestResub&Months.txt', false);
             $.inidb.set('streamInfo', 'lastReSub', resubscriber);
             if (reSubReward > 0) {
                 $.inidb.incr('points', resubscriber, reSubReward);
