@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import me.mast3rplan.phantombot.RepoVersion;
+import org.apache.commons.lang3.SystemUtils;
 
 /**
  *
@@ -75,6 +77,8 @@ public class Console implements Runnable
         this.isRunning = true;
 
         TerminalFactory f = new DefaultTerminalFactory();
+        ((DefaultTerminalFactory)f).setPreferTerminalEmulator(SystemUtils.IS_OS_WINDOWS);
+        ((DefaultTerminalFactory)f).setTerminalEmulatorTitle("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + (RepoVersion.getNightlyBuild().equals("nightly_build") ? " (Nightly)" : ""));
         try (Terminal t = f.createTerminal(); Screen s = new TerminalScreen(t)) {
             MultiWindowTextGUI g = new MultiWindowTextGUI(s, new DefaultWindowManager(), new EmptySpace());
             s.startScreen();
