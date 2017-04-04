@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import me.mast3rplan.phantombot.PhantomBot;
-import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.event.console.ConsoleInputEvent;
 
 /**
  *
@@ -43,7 +41,11 @@ public class in {
     }
 
     public static String readLine() {
-        return queueReadLine();
+        if (PhantomBot.useLanterna) {
+            return queueReadLine();
+        } else {
+            return brReadLine();
+        }
     }
 
     public static String consoleReadLine() {
@@ -77,7 +79,7 @@ public class in {
                     return msg;
                 }
 
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (Exception e) {
                 com.gmt2001.Console.err.logStackTrace(e);
                 return "";

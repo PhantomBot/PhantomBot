@@ -39,11 +39,19 @@ public class out {
             Logger.instance().log(Logger.LogType.Output, "[" + logTimestamp.log() + "] " + o.toString());
         }
 
-        System.out.print(o);
+        if (PhantomBot.useLanterna) {
+            printQueue("" + o);
+        } else {
+            printConsole("" + o);
+        }
     }
 
     public static void println() {
-        System.out.println();
+        if (PhantomBot.useLanterna) {
+            printlnQueue("");
+        } else {
+            printlnConsole("");
+        }
     }
 
     public static void println(Object o) {
@@ -52,6 +60,26 @@ public class out {
             Logger.instance().log(Logger.LogType.Output, "");
         }
 
-        System.out.println("[" + logTimestamp.log() + "] " + o);
+        if (PhantomBot.useLanterna) {
+            printlnQueue("[" + logTimestamp.log() + "] " + o);
+        } else {
+            printlnConsole("[" + logTimestamp.log() + "] " + o);
+        }
+    }
+
+    private static void printlnQueue(String s) {
+        Console.instance().queueOutput(s);
+    }
+    
+    private static void printQueue(String s) {
+        printlnQueue(s);
+    }
+
+    private static void printlnConsole(String s) {
+        System.out.println(s);
+    }
+
+    private static void printConsole(String s) {
+        System.out.print(s);
     }
 }

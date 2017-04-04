@@ -216,6 +216,7 @@ public final class PhantomBot implements Listener {
     public static Boolean enableDebugging = false;
     public static Boolean enableDebuggingLogOnly = false;
     public static Boolean enableRhinoDebugger = false;
+    public static Boolean useLanterna = true;
     public static String timeZone = "GMT";
     public Boolean isExiting = false;
     private Boolean interactive;
@@ -1980,6 +1981,12 @@ public final class PhantomBot implements Listener {
 
     /* Load up main */
     public static void main(String[] args) throws IOException {
+        PhantomBot.useLanterna = (System.getProperty("oldconsole") == null) && (System.getProperty("interactive") != null);
+
+        if (PhantomBot.useLanterna) {
+            com.gmt2001.Console.Console.instance();
+        }
+
         /* List of properties that must exist. */
         String requiredProperties[] = new String[] { "oauth", "channel", "owner", "user" };
         String requiredPropertiesErrorMessage = "";

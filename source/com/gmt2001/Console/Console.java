@@ -71,6 +71,7 @@ public class Console implements Runnable
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.isRunning = true;
 
         TerminalFactory f = new DefaultTerminalFactory();
@@ -119,5 +120,9 @@ public class Console implements Runnable
         } catch (IOException | InterruptedException ex) {
             err.logStackTrace(ex);
         }
+    }
+
+    public void queueOutput(String line) {
+        consoleQueue.add(line);
     }
 }
