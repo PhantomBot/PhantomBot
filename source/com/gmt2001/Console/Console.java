@@ -98,7 +98,7 @@ public class Console implements Runnable
             tbIn.setPreferredSize(new TerminalSize(tSize.getColumns() - 3, 1));
             tbIn.setVerticalFocusSwitching(false);
             tbIn.setTheme(SimpleTheme.makeTheme(false, TextColor.ANSI.CYAN, TextColor.ANSI.WHITE, TextColor.ANSI.CYAN, TextColor.ANSI.WHITE,
-                    TextColor.ANSI.MAGENTA, TextColor.ANSI.RED, TextColor.ANSI.WHITE));
+                    TextColor.ANSI.GREEN, TextColor.ANSI.RED, TextColor.ANSI.WHITE));
 
             p.addComponent(tbOut);
             p.addComponent(tbIn);
