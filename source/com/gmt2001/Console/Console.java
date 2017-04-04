@@ -78,7 +78,7 @@ public class Console implements Runnable
 
         TerminalFactory f = new DefaultTerminalFactory();
         ((DefaultTerminalFactory)f).setPreferTerminalEmulator(SystemUtils.IS_OS_WINDOWS);
-        ((DefaultTerminalFactory)f).setTerminalEmulatorTitle("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + (RepoVersion.getNightlyBuild().equals("nightly_build") ? " (Nightly)" : ""));
+        ((DefaultTerminalFactory)f).setTerminalEmulatorTitle("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + "(" + RepoVersion.getRepoVersion() + (RepoVersion.getNightlyBuild().equals("nightly_build") ? ", Nightly" : "") + ")");
         try (Terminal t = f.createTerminal(); Screen s = new TerminalScreen(t)) {
             MultiWindowTextGUI g = new MultiWindowTextGUI(s, new DefaultWindowManager(), new EmptySpace());
             s.startScreen();
@@ -103,6 +103,7 @@ public class Console implements Runnable
             w.setComponent(p);
             w.setFocusedInteractable(tbIn);
             g.addWindow(w);
+            g.updateScreen();
 
             while (this.isRunning) {
                 if (!consoleQueue.isEmpty()) {
@@ -115,6 +116,10 @@ public class Console implements Runnable
                     if (!ls.isEmpty()) {
                         tbOut.limitedAddLines(ls);
                     }
+                }
+
+                if (g.isPendingUpdate()) {
+                    g.updateScreen();
                 }
                 
                 Thread.sleep(100);
