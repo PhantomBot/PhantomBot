@@ -18,6 +18,7 @@
         voteArray = [],
         skipCount,
         playlistDJname = $.getSetIniDbString('ytSettings', 'playlistDJname', $.botName),
+        currentSong = $.inidb.set('streamInfo', 'currentSong', 'Not Playing'),
 
         /* enum for player status */
         playerStateEnum = {
@@ -720,11 +721,13 @@
          * the text constantly in a loop.
          */
         this.updateCurrentSongFile = function(youtubeVideo) {
+            currentSong = youtubeVideo.getVideoTitle() + ' ';
             $.writeToFile(
-                youtubeVideo.getVideoTitle() + ' ',
+                currentSong,
                 baseFileOutputPath + 'currentsong.txt',
                 false
             );
+            $.inidb.set('streamInfo', 'currentSong', currentSong);
         };
 
         /**
@@ -1050,6 +1053,7 @@
         if (!songRequestsEnabled) {
             $.say($.lang.get('ytplayer.songrequests.disabled'));
         }
+        $.inidb.set('streamInfo', 'currentSong', 'Not Playing');
         $.youtubePlayerConnected = false;
     });
 
