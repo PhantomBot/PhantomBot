@@ -76,6 +76,8 @@ public class in {
                 String msg = inputQueue.poll();
 
                 if (msg != null) {
+                    out.println(" -> "msg);
+
                     return msg;
                 }
 

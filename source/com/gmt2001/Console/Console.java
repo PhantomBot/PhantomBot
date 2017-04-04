@@ -33,10 +33,12 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.TerminalFactory;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.RepoVersion;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -78,7 +80,7 @@ public class Console implements Runnable
 
         TerminalFactory f = new DefaultTerminalFactory();
         ((DefaultTerminalFactory)f).setPreferTerminalEmulator(SystemUtils.IS_OS_WINDOWS);
-        ((DefaultTerminalFactory)f).setTerminalEmulatorTitle("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + "(" + RepoVersion.getRepoVersion() + (RepoVersion.getNightlyBuild().equals("nightly_build") ? ", Nightly" : "") + ")");
+        ((DefaultTerminalFactory)f).setTerminalEmulatorTitle("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getRepoVersion() + (RepoVersion.getNightlyBuild().equals("nightly_build") ? ", Nightly" : "") + ")");
         try (Terminal t = f.createTerminal(); Screen s = new TerminalScreen(t)) {
             MultiWindowTextGUI g = new MultiWindowTextGUI(s, new DefaultWindowManager(), new EmptySpace());
             s.startScreen();
@@ -88,11 +90,11 @@ public class Console implements Runnable
             p.setLayoutManager(new LinearLayout(Direction.VERTICAL));
 
             LimitedLineTextBox tbOut = new LimitedLineTextBox();
-            tbOut.setPreferredSize(new TerminalSize(tSize.getColumns(), tSize.getRows() - 1));
+            tbOut.setPreferredSize(new TerminalSize(tSize.getColumns() - 3, tSize.getRows() - 4));
             tbOut.setReadOnly(true);
 
             InputTextBox tbIn = new InputTextBox();
-            tbIn.setPreferredSize(new TerminalSize(tSize.getColumns(), 1));
+            tbIn.setPreferredSize(new TerminalSize(tSize.getColumns() - 3, 1));
             tbIn.setVerticalFocusSwitching(false);
             tbIn.setTheme(SimpleTheme.makeTheme(false, TextColor.ANSI.CYAN, TextColor.ANSI.WHITE, TextColor.ANSI.CYAN, TextColor.ANSI.WHITE,
                     TextColor.ANSI.MAGENTA, TextColor.ANSI.RED, TextColor.ANSI.WHITE));
@@ -120,6 +122,12 @@ public class Console implements Runnable
 
                 if (g.isPendingUpdate()) {
                     g.updateScreen();
+                }
+
+                try {
+                    g.processInput();
+                } catch (EOFException ex) {
+                    System.exit(0);
                 }
                 
                 Thread.sleep(100);
