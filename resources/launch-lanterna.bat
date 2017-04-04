@@ -18,6 +18,5 @@ IF %jver% LSS 18000 (
     pause
     exit
 )
-java -Dnewconsole -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar
+Start "" javaw -Dnewconsole -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar
 endlocal
-pause
