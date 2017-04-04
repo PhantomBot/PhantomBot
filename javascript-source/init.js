@@ -1125,13 +1125,6 @@
         });
 
         /**
-         * @event api-ircChannelJoinUpdate
-         */
-        $api.on($script, 'ircChannelJoinUpdate', function(event) {
-            callHook('ircChannelJoinUpdate', event, true);
-        });
-
-        /**
          * @event api-yTPlayerConnect
          */
         $api.on($script, 'yTPlayerConnect', function(event) {
