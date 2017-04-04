@@ -66,6 +66,7 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
      * least one item is given, the first one in the array will be initially selected
      * @param items Items to populate the new combo box with
      */
+    @SafeVarargs
     public ComboBox(V... items) {
         this(Arrays.asList(items));
     }

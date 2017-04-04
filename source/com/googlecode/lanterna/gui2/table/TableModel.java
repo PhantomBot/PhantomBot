@@ -138,6 +138,7 @@ public class TableModel<V> {
      * @param values Data to associate with the new row, mapped column by column in order
      * @return Itself
      */
+    @SuppressWarnings("unchecked")
     public synchronized TableModel<V> addRow(V... values) {
         addRow(Arrays.asList(values));
         return this;

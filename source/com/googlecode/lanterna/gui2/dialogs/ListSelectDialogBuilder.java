@@ -112,6 +112,7 @@ public class ListSelectDialogBuilder<T> extends AbstractDialogBuilder<ListSelect
      * @param items Items to add to the list box
      * @return Itself
      */
+    @SuppressWarnings("unchecked")
     public ListSelectDialogBuilder<T> addListItems(T... items) {
         this.content.addAll(Arrays.asList(items));
         return this;
