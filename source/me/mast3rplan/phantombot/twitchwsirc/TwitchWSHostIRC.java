@@ -97,11 +97,11 @@ public class TwitchWSHostIRC {
             twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
             if (!twitchWSHostIRCWS.connectWSS()) {
                 com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed. Exiting PhantomBot");
-                System.exit(0);
+                me.mast3rplan.phantombot.PhantomBot.instance().exit();
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed. Exiting PhantomBot.");
-            System.exit(0);
+            me.mast3rplan.phantombot.PhantomBot.instance().exit();
         }
     }
 
@@ -157,7 +157,7 @@ public class TwitchWSHostIRC {
                     reconnected = twitchWSHostIRCWS.connectWSS();
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.println("Failed to reconnect to Twitch Data Host Feed. Exiting PhantomBot: " + ex.getMessage());
-                    System.exit(0);
+                    me.mast3rplan.phantombot.PhantomBot.instance().exit();
                 }
             } else {
                 try {

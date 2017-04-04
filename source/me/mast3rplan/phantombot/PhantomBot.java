@@ -17,6 +17,7 @@
 
 package me.mast3rplan.phantombot;
 
+import com.gmt2001.Console.err;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.IniStore;
 import com.gmt2001.Logger;
@@ -218,7 +219,7 @@ public final class PhantomBot implements Listener {
     public static Boolean enableRhinoDebugger = false;
     public static Boolean useLanterna = true;
     public static String timeZone = "GMT";
-    public Boolean isExiting = false;
+    public volatile Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
     
@@ -479,7 +480,7 @@ public final class PhantomBot implements Listener {
             /* Check to see if we can create a connection */
             if (dataStore.CreateConnection(this.mySqlConn, this.mySqlUser, this.mySqlPass) == null) {
                 print("Could not create a connection with MySql. PhantomBot now shutting down...");
-                System.exit(0);
+                exit();
             }
             /* Convert to MySql */
             if (IniStore.instance().GetFileList().length > 0) {
@@ -1007,12 +1008,12 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
 
         /* open a new thread for when the bot is exiting */
-        Thread thread = new Thread(() -> {
+        Thread exitThread = new Thread(() -> {
             onExit();
         }, "me.mast3rplan.phantombot.PhantomBot::onExit");
 
         /* Get the un time for that new thread we just created */
-        Runtime.getRuntime().addShutdownHook(thread);
+        Runtime.getRuntime().addShutdownHook(exitThread);
 
         /* And finally try to load init, that will then load the scripts */
         try {
@@ -1030,12 +1031,32 @@ public final class PhantomBot implements Listener {
         }
     }
 
+    public void exit() {
+        if (PhantomBot.useLanterna) {
+            try {
+                Thread exitThread = new Thread(() -> {
+                    onExit();
+                }, "me.mast3rplan.phantombot.PhantomBot::onExitL");
+                exitThread.start();
+                exitThread.join();
+            } catch (InterruptedException ex) {
+                err.logStackTrace(ex);
+            }
+        }
+
+        System.exit(0);
+    }
+
     /*
      * Used for exiting the bot
      *
      */
     @SuppressWarnings("SleepWhileInLoop")
     public void onExit() {
+        if (isExiting) {
+            return;
+        }
+
         print(this.botName + " is now shutting down...");
         isExiting = true;
 
@@ -1094,6 +1115,12 @@ public final class PhantomBot implements Listener {
         print(this.botName + " is now exiting.");
 
         if (com.gmt2001.Console.Console.isRunning()) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                err.logStackTrace(ex);
+            }
+
             com.gmt2001.Console.Console.instance().stop();
         }
     }
@@ -1629,7 +1656,7 @@ public final class PhantomBot implements Listener {
                 print("");
                 print("Changes have been saved, now exiting PhantomBot.");
                 print("");
-                System.exit(0);
+                exit();
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -1646,7 +1673,7 @@ public final class PhantomBot implements Listener {
         /* Exit phantombot */
         if (message.equalsIgnoreCase("exit")) {
             print("[CONSOLE] Executing exit");
-            System.exit(0);
+            exit();
             return;
         }
 
@@ -1716,7 +1743,7 @@ public final class PhantomBot implements Listener {
             if (command.equals("exit")) {
                 Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". ShutDown: " + botName + ". Id: " + id);
                 Logger.instance().log(Logger.LogType.Debug, "");
-                System.exit(0);
+                exit();
                 return;
             }
 
@@ -1783,7 +1810,7 @@ public final class PhantomBot implements Listener {
         if (backupFile.exists()) {
             print("A phantombot.db.backup file already exists. Please rename or remove this file first.");
             print("Exiting PhantomBot");
-            System.exit(0);
+            exit();
         }
 
         print("Wiping Existing MySQL Tables...");
@@ -2132,6 +2159,12 @@ public final class PhantomBot implements Listener {
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
                 com.gmt2001.Console.out.println("[ERROR] Failed to setup PhantomBot. Now exiting...");
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex2) {
+                    err.logStackTrace(ex2);
+                }
                 System.exit(0);
             }
         }
@@ -2194,6 +2227,12 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.err.println();
             com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);
             com.gmt2001.Console.err.println("Exiting PhantomBot");
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                err.logStackTrace(ex);
+            }
             System.exit(0);
         }
 

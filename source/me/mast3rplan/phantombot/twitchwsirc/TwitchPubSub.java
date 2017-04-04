@@ -104,7 +104,7 @@ public class TwitchPubSub {
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchPubSub connection error: " + ex.getMessage());
-            System.exit(0);
+            me.mast3rplan.phantombot.PhantomBot.instance().exit();
         }
     }
 
@@ -135,7 +135,7 @@ public class TwitchPubSub {
                     reconnected = this.twitchPubSubWS.connectWSS(true);
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.println("TwitchPubSub failed to reconnect: " + ex.getMessage());
-                    System.exit(0);
+                    me.mast3rplan.phantombot.PhantomBot.instance().exit();
                 }
             }
 

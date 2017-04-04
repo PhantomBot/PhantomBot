@@ -381,7 +381,7 @@
             if (action.equalsIgnoreCase('disconnect') || action.equalsIgnoreCase('remove')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
                 $.log.event(username + ' removed the bot from chat!');
-                setTimeout(function () { java.lang.System.exit(0); }, 100);
+                setTimeout(function () { Packages.me.mast3rplan.phantombot.PhantomBot.instance().exit(); }, 100);
                 return;
             }
 
@@ -472,7 +472,7 @@
                 return;
             }
             $.log.event(username + ' removed the bot from chat!');
-            java.lang.System.exit(0);
+            Packages.me.mast3rplan.phantombot.PhantomBot.instance().exit()();
         }
 
         /**
