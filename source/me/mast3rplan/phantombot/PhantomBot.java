@@ -2010,7 +2010,7 @@ public final class PhantomBot implements Listener {
 
     /* Load up main */
     public static void main(String[] args) throws IOException {
-        PhantomBot.useLanterna = (System.getProperty("oldconsole") == null) && (System.getProperty("interactive") != null);
+        PhantomBot.useLanterna = (System.getProperty("newconsole") != null) && (System.getProperty("interactive") != null);
 
         if (PhantomBot.useLanterna) {
             com.gmt2001.Console.Console.instance();
