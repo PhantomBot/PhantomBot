@@ -38,9 +38,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.RepoVersion;
 import org.apache.commons.lang3.SystemUtils;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -52,6 +52,7 @@ public class Console implements Runnable
     private static final Console instance = new Console();
     private volatile boolean isRunning = false;
     private final ConcurrentLinkedQueue<String> consoleQueue = new ConcurrentLinkedQueue<>();
+    private DateTime nextDraw = DateTime.now();
 
     public static Console instance() {
         if (!instance.isRunning) {
@@ -120,8 +121,9 @@ public class Console implements Runnable
                     }
                 }
 
-                if (g.isPendingUpdate()) {
+                if (g.isPendingUpdate() || nextDraw.isAfterNow()) {
                     g.updateScreen();
+                    nextDraw = DateTime.now().plusSeconds(1);
                 }
 
                 try {
