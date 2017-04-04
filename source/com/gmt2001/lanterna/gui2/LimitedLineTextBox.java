@@ -35,14 +35,24 @@ public class LimitedLineTextBox extends TextBox
 
     public synchronized void limitedAddLines(List<String> lines) {
         int maxlines = this.getPreferredSize().getRows();
+        int maxcols = this.getPreferredSize().getColumns();
 
         List<String> ls = new ArrayList<>(Arrays.asList(this.getText().split("\n")));
 
         lines.stream().map((line) -> line.split("\n")).forEach((s) -> {
-            ls.addAll(Arrays.asList(s));
+            List<String> sls = Arrays.asList(s);
+
+            sls.forEach((s2) -> {
+                while (s2.length() > maxcols) {
+                    ls.add(s2.substring(0, maxcols - 1));
+                    s2 = s2.substring(maxcols - 1);
+                }
+
+                ls.add(s2);
+            });
         });
 
-        while (ls.size() >= maxlines) {
+        while (ls.size() > maxlines) {
             ls.remove(0);
         }
 
