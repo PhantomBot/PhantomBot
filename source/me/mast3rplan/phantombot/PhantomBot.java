@@ -1035,12 +1035,15 @@ public final class PhantomBot implements Listener {
      */
     @SuppressWarnings("SleepWhileInLoop")
     public void onExit() {
-        print(this.botName + " is now shutting down...");
+        print(this.botName + " is shutting down...");
         isExiting = true;
 
         print("Stopping all events and message dispatching...");
+
         /* Gonna need a way to pass this to all channels */
-        PhantomBot.getSession(this.channelName).setAllowSendMessages(false);
+        if (PhantomBot.getSession(this.channelName) != null) {
+            PhantomBot.getSession(this.channelName).setAllowSendMessages(false);
+        }
 
         /* Shutdown all caches */
         print("Terminating the Twitch channel user cache...");
@@ -1080,7 +1083,7 @@ public final class PhantomBot implements Listener {
         }
 
         try {
-            for (int i = 10; i > 0; i--) {
+            for (int i = 5; i > 0; i--) {
                 com.gmt2001.Console.out.print("\rWaiting for everthing else to shutdown... " + i + " ");
                 Thread.sleep(1000);
             }
@@ -1090,7 +1093,7 @@ public final class PhantomBot implements Listener {
         }
 
         com.gmt2001.Console.out.print("\r\n");
-        print(this.botName + " is now exiting.");
+        print(this.botName + " is exiting.");
     }
 
     /*
