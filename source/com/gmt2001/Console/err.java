@@ -45,16 +45,45 @@ public class err {
         stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
-        System.err.print("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+
+        if (PhantomBot.useLanterna) {
+            printQueue("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+        } else {
+            printConsole("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+        }
     }
 
     public static void println() {
-        System.err.println();
+        if (PhantomBot.useLanterna) {
+            printlnQueue("");
+        } else {
+            printlnConsole("");
+        }
+    }
+
+    private static void printlnQueue(String s) {
+        Console.instance().queueOutput(s);
+    }
+
+    private static void printQueue(String s) {
+        printlnQueue(s);
+    }
+
+    private static void printlnConsole(String s) {
+        System.err.println(s);
+    }
+
+    private static void printConsole(String s) {
+        System.err.print(s);
     }
 
     public static void printlnRhino(Object o) {
         // Do not write to a log file as the JS Rhino files already do this. //
-        System.out.println("[" + logTimestamp.log() + "] [ERROR] " + o);
+        if (PhantomBot.useLanterna) {
+            printlnQueue("[" + logTimestamp.log() + "] [ERROR] " + o);
+        } else {
+            printlnConsole("[" + logTimestamp.log() + "] [ERROR] " + o);
+        }
     }
 
     public static void println(Object o) {
@@ -66,7 +95,12 @@ public class err {
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
-        System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+
+        if (PhantomBot.useLanterna) {
+            printlnQueue("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+        } else {
+            printlnConsole("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+        }
     }
 
     public static void println(Object o, Boolean logOnly) {
@@ -79,13 +113,26 @@ public class err {
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
         if (!logOnly) {
-            System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+            if (PhantomBot.useLanterna) {
+                printlnQueue("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+            } else {
+                printlnConsole("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+            }
         }
     }
 
     public static void printStackTrace(Throwable e) {
         if (PhantomBot.enableDebugging) {
-            e.printStackTrace(System.err);
+            Writer trace = new StringWriter();
+            PrintWriter ptrace = new PrintWriter(trace);
+
+            e.printStackTrace(ptrace);
+
+            if (PhantomBot.useLanterna) {
+                printlnQueue(trace.toString());
+            } else {
+                printlnConsole(trace.toString());
+            }
         }
         logStackTrace(e);
     }
