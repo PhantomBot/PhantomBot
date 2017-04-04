@@ -16,10 +16,18 @@
  */
 package com.gmt2001.lanterna.gui2;
 
+import com.gmt2001.Console.err;
 import com.gmt2001.Console.in;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.input.KeyStroke;
+import static com.googlecode.lanterna.input.KeyType.Character;
 import static com.googlecode.lanterna.input.KeyType.Enter;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 /**
  *
@@ -40,6 +48,20 @@ public class InputTextBox extends TextBox
                 this.setText("");
 
                 return Result.HANDLED;
+            }
+            if (keyStroke.getKeyType() == Character && keyStroke.isCtrlDown() && keyStroke.getCharacter().toString().equalsIgnoreCase("V")) {
+                Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+                Transferable t = c.getContents(null);
+
+                if (t != null && t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                    try {
+                        this.setText(this.getText() + t.getTransferData(DataFlavor.stringFlavor));
+
+                        return Result.HANDLED;
+                    } catch (UnsupportedFlavorException | IOException ex) {
+                        err.logStackTrace(ex);
+                    }
+                }
             }
         }
 
