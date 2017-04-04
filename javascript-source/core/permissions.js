@@ -573,36 +573,18 @@
     }
 
     /**
-     * @event ircChannelJoinUpdate
-     */
-    $.bind('ircChannelJoinUpdate', function(event) {
-        var username = event.getUser().toLowerCase();
-
-        if (!$.user.isKnown(username)) {
-            $.setIniDbBoolean('visited', username, true);
-        }
-
-        lastJoinPart = $.systemTime();
-
-        if (!userExists(username.toLowerCase())) {
-            users.push([username, $.systemTime()]);
-            $.checkGameWispSub(username);
-        }
-    });
-    
-    /**
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function(event) {
         var username = event.getUser().toLowerCase();
 
-        if (!$.user.isKnown(username)) {
-            $.setIniDbBoolean('visited', username, true);
-        }
+        if (!userExists(username)) {
+            if (!$.user.isKnown(username)) {
+                $.setIniDbBoolean('visited', username, true);
+            }
+    
+            lastJoinPart = $.systemTime();
 
-        lastJoinPart = $.systemTime();
-
-        if (!userExists(username.toLowerCase())) {
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }
@@ -614,13 +596,11 @@
     $.bind('ircChannelMessage', function(event) {
         var username = event.getSender().toLowerCase();
         
-        if (!$.user.isKnown(username)) {
-            $.setIniDbBoolean('visited', username, true);
-        }
-  
-        lastJoinPart = $.systemTime();
-        
         if (!userExists(username)) {
+            if (!$.user.isKnown(username)) {
+                $.setIniDbBoolean('visited', username, true);
+            }
+        
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }

@@ -68,7 +68,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import me.mast3rplan.phantombot.cache.ChannelUsersCache;
 import me.mast3rplan.phantombot.cache.DonationsCache;
 import me.mast3rplan.phantombot.cache.EmotesCache;
 import me.mast3rplan.phantombot.cache.FollowersCache;
@@ -191,7 +190,6 @@ public final class PhantomBot implements Listener {
 
     /* Caches */
     private FollowersCache followersCache;
-    private ChannelUsersCache channelUsersCache;
     private DonationsCache twitchAlertsCache;
     private StreamTipCache streamTipCache;
     private EmotesCache emotesCache;
@@ -1046,8 +1044,6 @@ public final class PhantomBot implements Listener {
         }
 
         /* Shutdown all caches */
-        print("Terminating the Twitch channel user cache...");
-        ChannelUsersCache.killall();
         print("Terminating the Twitch channel follower cache...");
         FollowersCache.killall();
         print("Terminating the Streamlabs cache...");
@@ -1153,11 +1149,6 @@ public final class PhantomBot implements Listener {
         /* Start the notice timer and notice handler. */
         if (pbProperties.getProperty("testnotices", "false").equals("true")) {
             this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
-        }
-
-        /* This cache does nothing but keep users stored in memory which never gets used. I don't see a point. Going to leave a toggle if people use it. */
-        if (pbProperties.getProperty("channeluserscache", "false").equals("true")) {
-            this.channelUsersCache = ChannelUsersCache.instance(this.chanName);
         }
 
         /* Export these to the $. api for the sripts to use */
