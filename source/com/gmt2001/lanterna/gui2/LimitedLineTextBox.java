@@ -43,7 +43,7 @@ public class LimitedLineTextBox extends TextBox
             List<String> sls = Arrays.asList(s);
 
             sls.forEach((s2) -> {
-                while (s2.length() > maxcols) {
+                while (s2.length() >= maxcols) {
                     ls.add(s2.substring(0, maxcols - 1));
                     s2 = s2.substring(maxcols - 1);
                 }
