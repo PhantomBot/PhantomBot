@@ -10,6 +10,7 @@
     <property name="reference" location="libraries" />
     <property name="build" location="build" />
     <property name="classes" location="${build}/classes" />
+    <property name="embedded-resources" location="embedded-resources" />
     <property name="dist" location="dist" />
     <property name="version.name" value="${ant.project.name}-${version}" />
     <property name="version.folder" location="${dist}/${version.name}" />
@@ -129,6 +130,7 @@
     <target depends="compile.src,post.compile,git.revision" name="jar">
         <jar destfile="${build.dir}/${ant.project.name}.jar">
             <fileset dir="${classes}" />
+            <fileset dir="${embedded-resources}" />
             <manifest>
                 <attribute name="Bundle-Name" value="${ant.project.name}" />
                 <attribute name="Bundle-Version" value="${version}" />
