@@ -28,6 +28,7 @@ import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.Window.Hint;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -82,6 +83,7 @@ public class Console implements Runnable
         TerminalFactory f = new DefaultTerminalFactory();
         ((DefaultTerminalFactory)f).setPreferTerminalEmulator(SystemUtils.IS_OS_WINDOWS);
         ((DefaultTerminalFactory)f).setTerminalEmulatorTitle("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getRepoVersion() + (RepoVersion.getNightlyBuild().equals("nightly_build") ? ", Nightly" : "") + ")");
+        ((DefaultTerminalFactory)f).setInitialTerminalSize(new TerminalSize(120, 35));
         try (Terminal t = f.createTerminal(); Screen s = new TerminalScreen(t)) {
             MultiWindowTextGUI g = new MultiWindowTextGUI(s, new DefaultWindowManager(), new EmptySpace());
             s.startScreen();
@@ -91,20 +93,23 @@ public class Console implements Runnable
             p.setLayoutManager(new LinearLayout(Direction.VERTICAL));
 
             LimitedLineTextBox tbOut = new LimitedLineTextBox();
-            tbOut.setPreferredSize(new TerminalSize(tSize.getColumns() - 3, tSize.getRows() - 4));
+            tbOut.setPreferredSize(new TerminalSize(tSize.getColumns() - 2, tSize.getRows() - 3));
             tbOut.setReadOnly(true);
 
             InputTextBox tbIn = new InputTextBox();
-            tbIn.setPreferredSize(new TerminalSize(tSize.getColumns() - 3, 1));
+            tbIn.setPreferredSize(new TerminalSize(tSize.getColumns() - 2, 1));
             tbIn.setVerticalFocusSwitching(false);
             tbIn.setTheme(SimpleTheme.makeTheme(false, TextColor.ANSI.CYAN, TextColor.ANSI.WHITE, TextColor.ANSI.CYAN, TextColor.ANSI.WHITE,
                     TextColor.ANSI.GREEN, TextColor.ANSI.RED, TextColor.ANSI.WHITE));
 
             p.addComponent(tbOut);
             p.addComponent(tbIn);
+            ArrayList<Hint> hints = new ArrayList<>();
+            hints.add(Hint.FULL_SCREEN);
             BasicWindow w = new BasicWindow();
             w.setComponent(p);
             w.setFocusedInteractable(tbIn);
+            w.setHints(hints);
             g.addWindow(w);
             g.updateScreen();
 
