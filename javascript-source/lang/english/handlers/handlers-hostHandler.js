@@ -13,6 +13,8 @@ $.lang.register('hosthandler.set.autohostmessage.success', 'New autohoster messa
 $.lang.register('hosthandler.set.autohostmessage.usage', 'Usage: !autohostmessage (message) - Tags: (name)');
 $.lang.register('hosthandler.set.hostrewardminviewers.success', 'A minimum of $1 viewers are required to provide a hosting reward.');
 $.lang.register('hosthandler.set.hostrewardminviewers.usage', 'Usage: !hostrewardminviewers [count]');
+$.lang.register('hosthandler.set.hostminviewers.success', 'A minimum of $1 viewers are required to provide a hosting alert.');
+$.lang.register('hosthandler.set.hostminviewers.usage', 'Usage: !hostminviewers [amount]');
 $.lang.register('hosthistory.usage', 'usage: !hosthistory [on / off] (Currently $1)');
 $.lang.register('hosthistory.change', 'Host History is now $1');
 $.lang.register('hosthandler.host.usage', 'Usage: !host (channel)');
