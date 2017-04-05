@@ -65,6 +65,9 @@
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostMinViewerCount')) {
                         $('#hostMinViewersInput').val(msgObject['results'][idx]['value']).blur();
                     }
+                    if (panelMatch(msgObject['results'][idx]['key'], 'hostMinCount')) {
+                        $('#hostMinViewersAlertInput').val(msgObject['results'][idx]['value']).blur();
+                    }
                     if (panelMatch(msgObject['results'][idx]['key'], 'hostMessage')) {
                         $('#hostAnnounceInput').val(msgObject['results'][idx]['value']).blur();
                     }
@@ -193,9 +196,9 @@
     function updateHostAnnounce() {
         var value = $('#hostAnnounceInput').val();
         if (value.length > 0) {
+            console.log(value);
             sendDBUpdate('hostraid_settings', 'settings', 'hostMessage', value);
             sendCommand('reloadhost');
-            $('#hostAnnounceInput').attr('placeholder', 'Updating...').blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
@@ -208,7 +211,6 @@
         if (value.length > 0) {
             sendDBUpdate('hostraid_settings', 'settings', 'autoHostMessage', value);
             sendCommand('reloadhost');
-            $('#hostAutoAnnounceInput').attr('placeholder', 'Updating...').blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
@@ -221,7 +223,6 @@
         if (value.length > 0) {
             sendDBUpdate('hostraid_settings', 'settings', 'hostReward', value);
             sendCommand('reloadhost');
-            $('#hostRewardInput').attr('placeholder', value).blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
@@ -234,7 +235,6 @@
         if (value.length > 0) {
             sendDBUpdate('hostraid_settings', 'settings', 'autoHostReward', value);
             sendCommand('reloadhost');
-            $('#autoHostRewardInput').attr('placeholder', value).blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
@@ -247,11 +247,21 @@
         if (value.length > 0) {
             sendDBUpdate('hostraid_settings', 'settings', 'hostMinViewerCount', value);
             sendCommand('reloadhost');
-            $('#hostMinViewersInput').attr('placeholder', value).blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
 
+    /** 
+     * @function updateHostMinViewers
+     */
+    function hostMinViewersAlert() {
+        var value = $('#hostMinViewersAlertInput').val();
+        if (value.length > 0) {
+            sendDBUpdate('hostraid_settings', 'settings', 'hostMinCount', value);
+            sendCommand('reloadhost');
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+    }
 
     /**
      * @function changeHostHistory
@@ -274,7 +284,6 @@
         var value = $('#raidMessageInput').val();
         if (value.length > 0) {
             sendDBUpdate('hostraid_settings', 'settings', 'raidMessage', value);
-            $('#raidMessageInput').attr('placeholder', 'Updating...').blur();
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
     }
@@ -325,4 +334,5 @@
     $.changeHostHistory = changeHostHistory;
     $.updateRaidMessage = updateRaidMessage;
     $.toggle = toggle;
+    $.hostMinViewersAlert = hostMinViewersAlert;
 })();
