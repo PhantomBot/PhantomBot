@@ -139,8 +139,8 @@ public class TwitchAPIv3 {
                 rootCause = rootCause.getCause();
             }
 
-            fillJSONObject(j, false, type.name(), post, url, 0, ex.getClass().getName() + "@" + rootCause.getStackTrace()[0].getLineNumber(), ex.getMessage(), content);
-            com.gmt2001.Console.err.println(ex.getClass().getName() + "@" + rootCause.getStackTrace()[0].getLineNumber() + ": " + ex.getMessage());
+            fillJSONObject(j, false, type.name(), post, url, 0, ex.getClass().getSimpleName(), ex.getMessage(), content);
+            com.gmt2001.Console.err.println("[" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         } finally {
             if (i != null) {
                 try {
