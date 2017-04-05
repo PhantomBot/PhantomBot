@@ -58,7 +58,7 @@
     </div>
     </div>
 
-    <h3>Hosts</h3>
+    <h3>Host Settings</h3>
     <div>
     <div id="_hostAlertsPanelDisabled" />
     <div id="_hostAlertsPanel">
@@ -140,6 +140,17 @@
                 <input type="number" min="0" class="form-control" id="hostMinViewersInput" placeholder="Points" />
             </div>
             <small><b>Warning:</b> Twitch does not always provide viewer counts if the channel hosting you has stopped streaming which may result in providing no reward to a broadcaster that stops streaming prior to hosting you.</small>
+        </form>
+
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="hostMinViewersAlert">Minimum Viewers for Host Alert</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.hostMinViewersAlert()">Submit</button>
+                <input type="number" min="0" class="form-control" id="hostMinViewersAlertInput" placeholder="Points" />
+            </div>
+            <small><b>Warning:</b> Twitch does not always provide viewer counts if the channel hosting you has stopped streaming which may result in providing an alert to a broadcaster that stops streaming prior to hosting you.</small>
         </form>
 
     </div>
