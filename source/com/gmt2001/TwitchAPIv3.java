@@ -140,7 +140,7 @@ public class TwitchAPIv3 {
             }
 
             fillJSONObject(j, false, type.name(), post, url, 0, ex.getClass().getSimpleName(), ex.getMessage(), content);
-            com.gmt2001.Console.err.println("[" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to get data [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         } finally {
             if (i != null) {
                 try {
