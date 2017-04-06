@@ -33,9 +33,9 @@
             action = args[0];
 
         /**
-         * @discordcommandpath accountlink - Checks the current account linking status of the sender.
+         * @discordcommandpath account - Checks the current account linking status of the sender.
          */
-        if (command.equalsIgnoreCase('accountlink')) {
+        if (command.equalsIgnoreCase('account')) {
             var userId = event.getSenderId(),
                 islinked = $.inidb.exists('discordToTwitch', userId);
 
@@ -47,7 +47,7 @@
                 }
 
                 /**
-                 * @discordcommandpath accountlink link - Starts the process of linking an account. Completing this will overwrite existing links
+                 * @discordcommandpath account link - Starts the process of linking an account. Completing this will overwrite existing links
                  */
             } else if (action.equalsIgnoreCase('link')) {
                 var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
@@ -66,7 +66,7 @@
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link', $.channelName, text));
                 }
                 /**
-                 * @discordcommandpath accountlink remove - Removes account links from the sender.
+                 * @discordcommandpath account remove - Removes account links from the sender.
                  */
             } else if (action.equalsIgnoreCase('remove')) {
                 $.inidb.del('discordToTwitch', userId);
@@ -85,10 +85,9 @@
             action = args[0];
 
         /**
-
-         * @commandpath accountlink link [code] - Completes an account link for Discord.
+         * @commandpath account link [code] - Completes an account link for Discord.
          */
-        if (command.equalsIgnoreCase('accountlink')) {
+        if (command.equalsIgnoreCase('account')) {
             if (action.equalsIgnoreCase('link')) {
                 var code = args[1];
                 if ($.strlen(code) < 8) {
@@ -152,10 +151,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.discord.registerCommand('./discord/core/accountLink.js', 'accountlink', 0);
+        $.discord.registerCommand('./discord/core/accountLink.js', 'account', 0);
+        $.registerChatCommand('./discord/core/accountLink.js', 'account', 7);
         $.discord.registerSubCommand('accountlink', 'link', 0);
         $.discord.registerSubCommand('accountlink', 'remove', 0);
-        $.registerChatCommand('./discord/core/accountLink.js', 'accountlink', 7);
     });
 
     /* Export the function to the $.discord api. */
