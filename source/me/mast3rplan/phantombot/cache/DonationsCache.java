@@ -132,8 +132,6 @@ public class DonationsCache implements Runnable {
 
         jsonResult = TwitchAlertsAPIv1.instance().GetDonations();
 
-        com.gmt2001.Console.debug.println("DonationsCache.JSON::" + jsonResult);
-
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {
                 donations = jsonResult.getJSONArray("data");
