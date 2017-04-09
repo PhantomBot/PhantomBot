@@ -23,7 +23,6 @@
      *
      * @param  {Number} id
      * @param  {Number} amount
-     * @return {Number}
      */
     function decrUserPoints(id, amount) {
         var username = $.discord.resolveTwitchName(id);
