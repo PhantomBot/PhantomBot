@@ -13,7 +13,7 @@
      * @return {string or null}
      */
     function resolveTwitchName(userId) {
-        if (typeof userId === 'string' && isNaN(parseInt(userId))) {
+        if (typeof userId === 'string') {
             userId = $.discordAPI.resolveUserId(userId);
         }
 
