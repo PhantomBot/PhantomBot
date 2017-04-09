@@ -7,7 +7,13 @@
      * @return {Number}
      */
     function getUserPoints(id) {
-        username = $.discord.resolveTwitchName(id).toLowerCase();
+        username = $.discord.resolveTwitchName(id);
+
+        if (username === null) {
+            return 0;
+        }
+
+        username = username.toLowerCase();
 
         return ($.inidb.exists('points', username) ? parseInt($.inidb.get('points', username)) : 0);
     }
@@ -20,9 +26,11 @@
      * @return {Number}
      */
     function decrUserPoints(id, amount) {
-        username = $.discord.resolveTwitchName(id).toLowerCase();
+        username = $.discord.resolveTwitchName(id);
 
-        $.inidb.decr('points', username, amount);
+        if (username !== null) {
+            $.inidb.decr('points', username.toLowerCase(), amount);
+        }
     }
 
     /**
