@@ -7,7 +7,7 @@
      * @return {Number}
      */
     function getUserPoints(id) {
-        username = $.discord.resolveTwitchName(id);
+        var username = $.discord.resolveTwitchName(id);
 
         if (username === null) {
             return 0;
@@ -26,7 +26,7 @@
      * @return {Number}
      */
     function decrUserPoints(id, amount) {
-        username = $.discord.resolveTwitchName(id);
+        var username = $.discord.resolveTwitchName(id);
 
         if (username !== null) {
             $.inidb.decr('points', username.toLowerCase(), amount);
