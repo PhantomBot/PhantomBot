@@ -54,8 +54,6 @@ resources/scripts/*
 genTwitterTokens/classes/generatetwittertokens
 
 # IntelliJ Project files
-dist/
-build/
 out/
 .idea
 *.iml

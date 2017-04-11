@@ -1,0 +1,22 @@
+Good day dear PhantomBot user!
+
+You can find the german translation for PhantomBot under
+
+https://github.com/X00LA/PhantomBot-German-Translation
+
+the PhantomBot forum post, you can find under
+
+https://community.phantombot.tv/topic/797/german-translation-github/11
+
+
+If any problems, questions, errors or suggestions for improvement emerge,
+you can post this on the PhantomBot Forums or on GitHub.
+
+You are also cordially invited to participate in the translation.
+
+Enjoy streaming and PhantomBot!
+
+X00LA
+
+Here also a big thanks to the devs of PhantomBot
+for this great Twitch-Chat-Bot!

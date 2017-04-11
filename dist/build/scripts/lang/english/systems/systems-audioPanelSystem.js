@@ -1,0 +1,16 @@
+$.lang.register('audiohook.usage', 'usage: !audiohook [play / list / customcommand / togglemessages]');
+$.lang.register('audiohook.play.usage', 'usage: !audiohook play [audio_hook]');
+$.lang.register('audiohook.play.404', 'Audiohook does not exist: $1');
+$.lang.register('audiohook.play.success', 'Sent audio hook: $1');
+$.lang.register('audiohook.list', 'Audio Hooks: $1');
+$.lang.register('audiohook.list.total', 'Total Pages: $1');
+$.lang.register('audiohook.toggle', 'audio messages have been set to $1.');
+$.lang.register('audiohook.customcommand.usage', 'Usage: !audiohook customcommand [add / remove] [command] [sound name]');
+$.lang.register('audiohook.customcommand.add.usage', 'Usage: !audiohook customcommand add [command] [sound name]');
+$.lang.register('audiohook.customcommand.add.error.exists', 'that command already exists or it is a alias.');
+$.lang.register('audiohook.customcommand.add.list', 'command !$1 will now give a list of all the audio hook commands.');
+$.lang.register('audiohook.customcommand.add.error.fx.null', 'that audio hook does not exist. Use: "!audioHook list" to see the audio list.');
+$.lang.register('audiohook.customcommand.add.success', 'command !$1 will now trigger the audio hook $2!');
+$.lang.register('audiohook.customcommand.remove.usage', 'Usage: !audiohook customcommand remove [command]');
+$.lang.register('audiohook.customcommand.remove.error.404', 'that command does not exists.');
+$.lang.register('audiohook.customcommand.remove.success', 'command !$1 has been removed.');
