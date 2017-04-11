@@ -85,18 +85,18 @@ public class NEWHTTPSServer {
         try {
             server = HttpsServer.create(new InetSocketAddress(serverPort), 0);
             SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-  
+
             char ksPassword[] = this.httpsPassword.toCharArray();
             KeyStore ks = KeyStore.getInstance("JKS");
             FileInputStream inputStream = new FileInputStream(this.httpsFileName);
             ks.load(inputStream, ksPassword);
-  
+
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             kmf.init(ks, ksPassword);
-  
+
             TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
             tmf.init(ks);
-  
+
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             server.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
                 public void configure (HttpsParameters params) {
@@ -107,22 +107,22 @@ public class NEWHTTPSServer {
                         params.setNeedClientAuth(false);
                         params.setCipherSuites(engine.getEnabledCipherSuites());
                         params.setProtocols(engine.getEnabledProtocols());
-  
+
                         // get the default parameters
                         SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
                         params.setSSLParameters(defaultSSLParameters);
-  
+
                     } catch (Exception ex) {
-                        System.out.println("Failed to create HTTPS port");
+                        com.gmt2001.Console.out.println("Failed to create HTTPS port");
                     }
                 }
             });
-  
+
             server.createContext("/", new HTTPSServerHandler());
-  
+
             HttpContext panelContext = server.createContext("/panel", new PanelHandler());
             HttpContext ytContext = server.createContext("/ytplayer", new YTPHandler());
-  
+
             BasicAuthenticator auth = new BasicAuthenticator("PhantomBot Web Utilities") {
                 @Override
                 public boolean checkCredentials(String user, String pwd) {
@@ -131,7 +131,7 @@ public class NEWHTTPSServer {
             };
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
-  
+
             server.start();
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());

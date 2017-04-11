@@ -77,7 +77,7 @@ public class NEWHTTPServer {
             com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + myPort + " on your system.");
             com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file if you need port " + myPort + " for something else.");
             com.gmt2001.Console.err.logStackTrace(ex);
-            System.exit(0);
+            me.mast3rplan.phantombot.PhantomBot.instance().exit();
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to create HTTP Server: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);

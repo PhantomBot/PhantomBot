@@ -303,11 +303,11 @@ public class PanelSocketServer extends WebSocketServer {
                 String table = jsonObject.getJSONObject("delkey").getString("table");
                 String key = jsonObject.getJSONObject("delkey").getString("key");
                 doDBDelKey(webSocket, uniqueID, table, key);
-            } else if (jsonObject.has("socket_event") && !sessionData.isReadOnly()) {		
-                uniqueID = jsonObject.getString("socket_event");		
-                String script = jsonObject.getString("script");		
-                String arguments = jsonObject.getJSONObject("args").getString("arguments");		
-                JSONArray args = jsonObject.getJSONObject("args").getJSONArray("args");		
+            } else if (jsonObject.has("socket_event") && !sessionData.isReadOnly()) {
+                uniqueID = jsonObject.getString("socket_event");
+                String script = jsonObject.getString("script");
+                String arguments = jsonObject.getJSONObject("args").getString("arguments");
+                JSONArray args = jsonObject.getJSONObject("args").getJSONArray("args");
                 doWSEvent(webSocket, uniqueID, script, arguments, args);
             } else if (jsonObject.has("dbkeysbyorder")) {
                 uniqueID = jsonObject.getString("dbkeysbyorder");
@@ -315,7 +315,7 @@ public class PanelSocketServer extends WebSocketServer {
                 String limit = jsonObject.getJSONObject("query").getString("limit");
                 String offset = jsonObject.getJSONObject("query").getString("offset");
                 String order = jsonObject.getJSONObject("query").getString("order");
-                System.out.println("LIMIT:" + limit + "::OFFSET:" + offset + "::ORDER:" + order);
+                com.gmt2001.Console.out.println("LIMIT:" + limit + "::OFFSET:" + offset + "::ORDER:" + order);
                 doDBKeysByOrder(webSocket, uniqueID, table, limit, offset, order);
             } else if (jsonObject.has("dbkeyssearch")) {
                 uniqueID = jsonObject.getString("dbkeyssearch");

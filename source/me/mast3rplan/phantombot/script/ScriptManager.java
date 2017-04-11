@@ -47,7 +47,7 @@ public class ScriptManager {
             }
             if (!PhantomBot.reloadScripts) {
                 com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
-                System.exit(0);
+                me.mast3rplan.phantombot.PhantomBot.instance().exit();
             }
             throw new IOException(ex.getMessage());
         }
@@ -75,7 +75,7 @@ public class ScriptManager {
             }
             if (!PhantomBot.reloadScripts) {
                 com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
-                System.exit(0);
+                me.mast3rplan.phantombot.PhantomBot.instance().exit();
             }
             throw new IOException(ex.getMessage());
         }

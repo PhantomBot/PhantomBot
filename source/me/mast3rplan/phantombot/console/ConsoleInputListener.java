@@ -32,7 +32,7 @@ public class ConsoleInputListener extends Thread {
                 EventBus.instance().post(new ConsoleInputEvent(msg));
                 Thread.sleep(10);
             } catch (Exception e) {
-                com.gmt2001.Console.err.printStackTrace(e);
+                com.gmt2001.Console.err.logStackTrace(e);
             }
         }
     }

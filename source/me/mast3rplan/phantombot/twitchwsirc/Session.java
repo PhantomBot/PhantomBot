@@ -97,7 +97,7 @@ public class Session {
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to create a new TwitchWSIRC instance: " + ex.getMessage());
-            System.exit(0);
+            me.mast3rplan.phantombot.PhantomBot.instance().exit();
         }
     }
 
@@ -116,7 +116,7 @@ public class Session {
                     reconnected = this.twitchWSIRC.connectWSS(true);
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.println("Error when reconnecting to Twitch: " + ex.getMessage());
-                    System.exit(0);
+                    me.mast3rplan.phantombot.PhantomBot.instance().exit();
                 }
             }
             try {
