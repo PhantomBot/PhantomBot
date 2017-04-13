@@ -1,7 +1,7 @@
 # Development Setup Guide  
 This guide is for the people that would like to contribute to PhantomBot and do it well. <3
 
-Please have a read on [CODESTYLE.md](https://github.com/PhantomBot/PhantomBot/blob/master/CODESTYLE.md), any code that does not apply to these rules will not get merged.
+Please have a read on [CODESTYLE.md](/CODESTYLE.md), any code that does not apply to these rules will not get merged.
 
 ## General (All other IDE's)
 This section is for all IDE's not mentioned in this guide.  
