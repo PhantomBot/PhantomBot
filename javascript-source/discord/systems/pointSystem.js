@@ -1,5 +1,37 @@
 (function () {
 
+    /*
+     * @function getUserPoints
+     *
+     * @param  {Number} id
+     * @return {Number}
+     */
+    function getUserPoints(id) {
+        var username = $.discord.resolveTwitchName(id);
+
+        if (username === null) {
+            return 0;
+        }
+
+        username = username.toLowerCase();
+
+        return ($.inidb.exists('points', username) ? parseInt($.inidb.get('points', username)) : 0);
+    }
+
+    /*
+     * @function decrUserPoints
+     *
+     * @param  {Number} id
+     * @param  {Number} amount
+     */
+    function decrUserPoints(id, amount) {
+        var username = $.discord.resolveTwitchName(id);
+
+        if (username !== null) {
+            $.inidb.decr('points', username.toLowerCase(), amount);
+        }
+    }
+
     /**
      * @event discordCommand
      */
@@ -35,8 +67,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/systems/pointSystem.js')) {
-            $.discord.registerCommand('./discord/systems/pointSystem.js', 'points', 0);
-        }
+        $.discord.registerCommand('./discord/systems/pointSystem.js', 'points', 0);
     });
+
+    /* Export to the API */
+    $.discord.getUserPoints = getUserPoints;
+    $.discord.decrUserPoints = decrUserPoints;
 })();
