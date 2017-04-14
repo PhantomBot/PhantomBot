@@ -134,8 +134,8 @@
         }
 
         if ($.bot.isModuleEnabled('./handlers/followHandler.js')) {
-            if (!$.inidb.exists('followed', follower) && followToggle) {
-                if (announceFollows) {
+            if (!$.inidb.exists('followed', follower)) {
+                if (announceFollows && followToggle) {
                     runFollow(s.replace('(name)', $.username.resolve(follower)).replace('(reward)', $.getPointsString(followReward)));
                     followTrain++;
 
@@ -146,13 +146,13 @@
                         }, 8e3);
                     }
                     lastFollowTime = $.systemTime();
-                    $.inidb.set('streamInfo', 'lastFollow', $.username.resolve(follower));
                 }
                 
                 if (followReward > 0) {
                     $.inidb.incr('points', follower, followReward);
                 }
 
+                $.inidb.set('streamInfo', 'lastFollow', $.username.resolve(follower));
                 $.writeToFile($.username.resolve(follower) + ' ', './addons/followHandler/latestFollower.txt', false);
             }
         }
