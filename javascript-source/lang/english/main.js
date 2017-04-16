@@ -227,7 +227,7 @@ $.lang.register('cmd.adminonly', 'Only an Administrator has access to that comma
 $.lang.register('cmd.casteronly', 'Only a Caster has access to that command!');
 $.lang.register('cmd.modonly', 'Only a Moderator has access to that command!');
 $.lang.register('cmd.needpoints', 'That command costs $1, which you don\'t have.');
-$.lang.register('cmd.perm.404', 'only a $1 or higher has access to that command.');
+$.lang.register('cmd.perm.404', 'you do not have access to that command. Only $1 or higher can access it.');
 $.lang.register('commandlist.commands', 'Commands (page $1 of $2): $3');
 $.lang.register('commandlist.more', ' >> Type "!commands $1" for more');
 $.lang.register('commandlist.nocommands', 'There are currently no commands available to you');
@@ -257,13 +257,12 @@ $.lang.register('console.received.slowmode.start', 'Received a start slow mode (
 $.lang.register('console.received.subscriberonly.end', 'Received an end subscribers-only mode notification from jtv');
 $.lang.register('console.received.subscriberonly.start', 'Received a start subscribers-only mode notification from jtv');
 $.lang.register('cooldown.set.togglemodcooldown', 'Command cooldowns have been $1 for moderators.');
-$.lang.register('cooldown.set.usage', 'Usage: !cooldown [command] [time in seconds]');
-$.lang.register('cooldown.global.usage', 'Usage: !globalcooldowntime [time in seconds]');
-$.lang.register('cooldown.global.toggle', 'global cooldown has been $1.');
-$.lang.register('cooldown.per.user.toggle', 'per-user cooldown has been $1.');
-$.lang.register('cooldown.global.set', 'global cooldown set to $1 seconds.');
-$.lang.register('cooldown.removed', 'cooldown for command !$1 has been removed.');
-$.lang.register('cooldown.set', 'cooldown for command !$1 has been set to $2 seconds.');
+$.lang.register('cooldown.coolcom.usage', 'Usage: !coolcom [command] [seconds] [type (global / user)] - Using -1 for the seconds removes the cooldown.');
+$.lang.register('cooldown.coolcom.set', 'Cooldown for command !$1 has been set to $2 seconds.');
+$.lang.register('cooldown.coolcom.remove', 'Cooldown for command !$1 has been removed.');
+$.lang.register('cooldown.cooldown.usage', 'Usage: !cooldown [togglemoderators / setdefault]');
+$.lang.register('cooldown.default.set', 'The default cooldown for commands without one has been set to $1 seconds.');
+$.lang.register('cooldown.default.usage', 'Usage: !cooldown setdefault [seconds] - Set a cooldown for commands that don\'t have one.');
 $.lang.register('init.cmsgset', 'Connected message set!');
 $.lang.register('init.module.404', 'That module does not exist or is not loaded!');
 $.lang.register('init.module.check.disabled', 'Module $1 is currently disabled!');
@@ -330,7 +329,7 @@ $.lang.register('permissions.grouppoints.showgroup.online', '$1 gains $2 $3 onli
 $.lang.register('permissions.grouppoints.showgroup.offline', '$1 gains $2 $3 offline.');
 $.lang.register('permissions.grouppoints.set.online', 'Set permission $1 to gain $2 $3 online.');
 $.lang.register('permissions.grouppoints.set.offline', 'Set permission $1 to gain $2 $3 offline.');
-$.lang.register('permissions.grouppoints.set.sub.error', 'You cannot promote anyone to Subscriber, this status is from Twitch is GameWisp.');
+$.lang.register('permissions.grouppoints.set.sub.error', 'You cannot promote anyone to Subscriber, this status is from Twitch or GameWisp.');
 $.lang.register('timesystem.uptime.offline', '$1 is currently offline.');
 $.lang.register('timesystem.uptime', '$1 has been live for $2!');
 $.lang.register('timesystem.add.error.negative', 'You can not give negative time.');

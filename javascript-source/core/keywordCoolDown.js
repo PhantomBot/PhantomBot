@@ -7,7 +7,7 @@
  */
 
 (function() {
-    var modCooldown = $.getSetIniDbBoolean('cooldown', 'modCooldown', false),
+    var modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false),
         cooldown = [];
 
     /**
