@@ -138,12 +138,10 @@
                 }
                 html += "</tbody></table>";
                 
-                setTimeout(function() { 
-                    $('#userTimeTable').html(html);
-                    $('.tableTime').footable({
-                        'on': { 'postdraw.ft.table': function(e, ft) { $("#userTimeTableTitle").html("User Time Table"); } }
-                    });
-                }, TIMEOUT_WAIT_TIME);
+                $('#userTimeTable').html(html);
+                $('.tableTime').footable({
+                    'on': { 'postdraw.ft.table': function(e, ft) { $("#userTimeTableTitle").html("User Time Table"); } }
+                });
                 handleInputFocus();
             }
         }
