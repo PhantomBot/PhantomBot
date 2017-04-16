@@ -15,7 +15,8 @@
         lastRecon = 0,
         pricecomMods = ($.inidb.exists('settings', 'pricecomMods') && $.inidb.get('settings', 'pricecomMods').equals('true') ? true : false),
         coolDownMsgEnabled = ($.inidb.exists('settings', 'coolDownMsgEnabled') && $.inidb.get('settings', 'coolDownMsgEnabled').equals('true') ? true : false),
-        permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') && $.inidb.get('settings', 'permComMsgEnabled').equals('true') ? true : false);
+        permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') && $.inidb.get('settings', 'permComMsgEnabled').equals('true') ? true : false),
+        lastMsg = 0;
 
     /* Make these null to start */
     $.session = null;
@@ -832,7 +833,7 @@
                 commandCost = 0,
                 isModv3 = $.isModv3(sender, event.getTags());
 
-            if (($.commandPause.isPaused() && !isModv3) || !$.commandExists(command)) {
+            if (!$.commandExists(command) || ($.commandPause.isPaused() && !isModv3)) {
                 return;
             }
 
@@ -870,16 +871,18 @@
                 return;
             }
 
-            if ($.coolDown.get(command, sender, isModv3) > 1000) {
-                if (coolDownMsgEnabled) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor($.coolDown.get(command, sender) / 1000)));
+            if ($.coolDown.get(command, sender, isModv3) !== 0) {
+                if (coolDownMsgEnabled && lastMsg < $.systemTime()) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, Math.floor(($.coolDown.get(command, sender, isModv3) - $.systemTime()) / 1000)));
+                    lastMsg = ($.systemTime() + 5000);
                 }
                 return;
             }
 
             if ($.permCom(sender, command, subCommand) !== 0) {
-                if (permComMsgEnabled) {
+                if (permComMsgEnabled && lastMsg < $.systemTime()) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command).toLowerCase() : $.getSubCommandGroupName(command, subCommand).toLowerCase())));
+                    lastMsg = ($.systemTime() + 5000);
                 }
                 return;
             }
@@ -888,7 +891,10 @@
                 if ((((isModv3 && pricecomMods && !$.isBot(sender)) || !isModv3)) && isModuleEnabled('./systems/pointSystem.js')) {
                     commandCost = $.getCommandPrice(command, subCommand, '');
                     if ($.getUserPoints(sender) < commandCost) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
+                        if (lastMsg < $.systemTime()) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString(commandCost)));
+                            lastMsg = ($.systemTime() + 5000);
+                        }
                         return;
                     }
                 }
@@ -933,7 +939,7 @@
                 return;
             }
 
-            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(event.getSenderId()) < $.discord.getCommandCost(command)) {
+            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(username) < $.discord.getCommandCost(command)) {
                 return;
             }
 
@@ -945,7 +951,7 @@
 
             // Do this last to not slow down the command hook.
             if ($.discord.getCommandCost(command) > 0) {
-                $.discord.decrUserPoints(event.getSenderId(), $.discord.getCommandCost(command));
+                $.discord.decrUserPoints(username, $.discord.getCommandCost(command));
             }
         });
 
