@@ -129,7 +129,7 @@
 
         /* Clear the old raffle data */
         entries = [];
-        register(true, keyword.includes('!'));
+        $.raffleCommand = keyword;
         $.inidb.RemoveFile('raffleList');
         $.inidb.set('raffleresults', 'raffleEntries', 0);
 
@@ -178,9 +178,9 @@
                 return;
             }
 
-            var username = $.randElement(entries),
+            var username = $.randElement(entries);
                 isFollowing = $.user.isFollower(username.toLowerCase()),
-                followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnofollowing'));
+                followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
 
             $.say($.lang.get('rafflesystem.winner', username, followMsg));
             $.inidb.set('raffleresults', 'winner', username + ' ' + followMsg);
@@ -317,7 +317,6 @@
      * @info resets the raffle information
      */
     function clear() {
-        register(false, keyword.includes('!'));
         keyword = '';
         followMessage = '';
         timerMessage = '';
@@ -328,31 +327,14 @@
         entryFee = 0;
         timerTime = 0;
         entered = [];
-    }
-
-    /**
-     * @function register
-     * @info binds a new ircChannelMessage event
-     *
-     * @param {boolean} register
-     */
-    function register(register, useCommand) {
-        if (useCommand) {
-            if (register) {
-                $.registerChatCommand('./systems/raffleSystem.js', keyword.substring(1), 7);
-                $.inidb.set('raffle', 'command', keyword.substring(1));
-            } else {
-                $.unregisterChatCommand(keyword.substring(1));
-                $.inidb.set('raffle', 'command', '');
-            }
-        }
+        $.raffleCommand = null;
     }
 
     /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
-        if (status === true && !keyword.includes('!') && event.getMessage().equalsIgnoreCase(keyword)) {
+        if (status === true && event.getMessage().equalsIgnoreCase(keyword)) {
             enter(event.getSender(), event.getTags());
         }
     });
@@ -498,13 +480,6 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.timer.set', messageInterval));
                 return;
             }
-        }
-        
-        /**
-         * @info command for entering the raffle.
-         */
-        if (command.equalsIgnoreCase(keyword.substring(1))) {
-            enter(sender, event.getTags());
         }
     });
 

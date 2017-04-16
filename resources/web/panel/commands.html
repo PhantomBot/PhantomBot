@@ -193,23 +193,6 @@
     <div>
         <table>
             <tr class="textList">
-                <td>Global cooldown</td>
-                <td style="width: 25px"><div id="toggleGlobalCooldown" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
-                         onclick="$.toggleGlobalCooldown();"><i class="fa fa-refresh" />
-                     </div>
-                </td>
-            </tr>
-            <tr class="textList">
-                <td>Per-user cooldown</td>
-                <td style="width: 25px"><div id="togglePerUserCooldown" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
-                         onclick="$.togglePerUserCooldown();"><i class="fa fa-refresh" />
-                     </div>
-                </td>
-            </tr>
             <tr class="textList">
                 <td>Mod cooldown</td>
                 <td style="width: 25px"><div id="toggleModCooldown" /></td>
@@ -233,9 +216,10 @@
         <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="globalCooldownTime">Global cooldown time</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setGlobalCooldownTime()">Submit</button>
-                <input type="number" min="0" class="form-control" id="globalCooldownTimeInput" placeholder="Seconds" />
+                <label for="defaultCooldownInput">Default Cooldown</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setDefaultCooldown()">Submit</button>
+                <input type="number" min="0" class="form-control" id="defaultCooldownInput" placeholder="Seconds" data-toggle="tooltip" title="Default cooldown applied to all commands
+                that don't have a cooldown set."/>
             </div>
         </form>
 
@@ -246,9 +230,17 @@
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldown()">Submit</button>
                 <input type="text" class="form-control" id="cooldownCmdInputCommand" placeholder="Command name" />
                 <input type="number" min="0" class="form-control" id="cooldownCmdInput" placeholder="Seconds" />
+            
+            <div class="checkbox pull-right">
+                <label>
+                    <input type="checkbox" id="globalCooldownCheck" value="global" checked data-toggle="tooltip" title="When this is checked the cooldown will be applied to everyone
+                    in the channel, if it is not the cooldown will be applied on a per-user base.">Global
+                </label>
+            </div>
             </div>
         </form>
-        <br>
+
+        <br><br>
         <strong>Commands with Cooldowns</strong>
         <div id="cooldownList" style="height: 200px; overflow: auto;" />
     </div>

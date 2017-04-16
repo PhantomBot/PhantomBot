@@ -72,34 +72,16 @@
                 html = "<table>";
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
-                    time = msgObject['results'][idx]['value'];
-
-                    if (panelMatch(commandName, 'globalCooldown')) {
-                        globalCooldown = msgObject['results'][idx]['value'];
-                        continue;
-                    }
-                    if (panelMatch(commandName, 'globalCooldownTime')) {
-                        globalCooldownTime = msgObject['results'][idx]['value'];
-                        continue;
-                    }
-                    if (panelMatch(commandName, 'modCooldown')) {
-                        modCooldown = msgObject['results'][idx]['value'];
-                        continue;
-                    }
-                    if (panelMatch(commandName, 'perUserCooldown')) {
-                        perUserCooldown  = msgObject['results'][idx]['value'];
-                        continue;
-                    }
+                    time = JSON.parse(msgObject['results'][idx]['value']).seconds;
 
                     foundData = true;
                     html += '<tr style="textList">' +
                     '    <td style="width: 10%">!' + commandName + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 60%" type="text" id="editCommandCooldown_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '"' +
-                    '                   value="' + time + '" />' +
-                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.editCooldown(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '              <button type="button" class="btn btn-default btn-xs" id="deleteCooldown_' + commandName + '" onclick="$.deleteCooldown(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
+                    '            <input style="width: 95%" type="text" id="editCommandCooldown_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '"' +
+                    '                   value="' + time + ' seconds. (Global: ' + JSON.parse(msgObject['results'][idx]['value']).isGlobal + ')" disabled/>' +
+                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" id="deleteCooldown_' + commandName + '" onclick="$.deleteCooldown(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -110,12 +92,26 @@
                 if (!foundData) {
                     html = "<i>No entries in cooldown table.</i>";
                 }
+                $("#cooldownList").html(html);   
+            }
 
-                $("#cooldownList").html(html);
-                $("#toggleGlobalCooldown").html(modeIcon[globalCooldown]);
-                $("#togglePerUserCooldown").html(modeIcon[perUserCooldown]);
+            if (panelCheckQuery(msgObject, 'commands_cooldownsettings')) {
+                for (idx in msgObject['results']) {
+                    commandName = msgObject['results'][idx]['key'];
+                    time = msgObject['results'][idx]['value'];
+
+                    if (panelMatch(commandName, 'modCooldown')) {
+                        modCooldown = msgObject['results'][idx]['value'];
+                        console.log('sdfsdffsdfsddfs');
+                        continue;
+                    }
+
+                    if (panelMatch(commandName, 'defaultCooldownTime')) {
+                        $('#defaultCooldownInput').val(msgObject['results'][idx]['value']);
+                        continue;
+                    }
+                }
                 $("#toggleModCooldown").html(modeIcon[modCooldown]);
-                $('#globalCooldownTimeInput').attr('placeholder', globalCooldownTime).blur();
             }
 
             if (panelCheckQuery(msgObject, 'commands_cooldownmsg')) {
@@ -315,6 +311,7 @@
         sendDBKeys("commands_pricecom", "pricecom");
         sendDBKeys("commands_payment", "paycom");
         sendDBKeys("commands_cooldown", "cooldown");
+        sendDBKeys("commands_cooldownsettings", "cooldownSettings");
         sendDBKeys("commands_disabled", "disabledCommands");
         sendDBQuery("commands_cooldownmsg", "settings", "coolDownMsgEnabled");
         sendDBQuery("commands_permcommsg", "settings", "permComMsgEnabled");
@@ -419,19 +416,6 @@
             sendWSEvent('commands', './commands/customCommands.js', null, ['edit', command.toLowerCase(), value]);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
             setTimeout(function() { sendCommand("reloadcommand"); }, TIMEOUT_WAIT_TIME);
-        }
-    };
-
-    /**
-     * @function editCooldown
-     * @param {String} command
-     */
-    function editCooldown(command) {
-        var value = $('#editCommandCooldown_' + command.replace(/[^a-zA-Z0-9_]/g, '_SP_')).val();
-        if (value > 0) {
-            command = command.replace('!', '');
-            sendDBUpdate("commands_cooldown_edit", "cooldown", command.toLowerCase(), value);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
     };
 
@@ -552,20 +536,6 @@
     };
 
     /**
-     * @function toggleGlobalCooldown
-     */
-    function toggleGlobalCooldown() {
-        $("#toggleGlobalCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        if (globalCooldown == "true") {
-            sendDBUpdate("commands_cooldown_toggle", "cooldown", "globalCooldown", "false");
-        } else if (globalCooldown == "false") {
-            sendDBUpdate("commands_cooldown_toggle", "cooldown", "globalCooldown", "true");
-        }
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
-        setTimeout(function() { sendCommand("reloadcooldown"); }, TIMEOUT_WAIT_TIME * 2);
-    };
-
-    /**
      * @function toggleCooldownMsg
      */
     function toggleCooldownMsg() {
@@ -599,44 +569,22 @@
     function toggleModCooldown() {
         $("#toggleModCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         if (modCooldown == "true") {
-            sendDBUpdate("commands_cooldown_toggle", "cooldown", "modCooldown", "false");
+            sendDBUpdate("commands_cooldown_toggle", "cooldownSettings", "modCooldown", "false");
         } else if (modCooldown == "false") {
-            sendDBUpdate("commands_cooldown_toggle", "cooldown", "modCooldown", "true");
+            sendDBUpdate("commands_cooldown_toggle", "cooldownSettings", "modCooldown", "true");
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         setTimeout(function() { sendCommand("reloadcooldown"); }, TIMEOUT_WAIT_TIME * 2);
     };
 
     /**
-     * @function togglePerUserCooldown
-     */
-    function togglePerUserCooldown() {
-        $("#togglePerUserCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        if (perUserCooldown == "true") {
-            sendDBUpdate("commands_cooldown_toggle", "cooldown", "perUserCooldown", "false");
-        } else if (perUserCooldown == "false") {
-            sendDBUpdate("commands_cooldown_toggle", "cooldown", "perUserCooldown", "true");
-        }
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
-        setTimeout(function() { sendCommand("reloadcooldown"); }, TIMEOUT_WAIT_TIME * 2);
-    }
-
-
-    /**
      * @function setGlobalCooldownTime
      */
-    function setGlobalCooldownTime() {
-        var newValue = $("#globalCooldownTimeInput").val();
+    function setDefaultCooldown() {
+        var newValue = $("#defaultCooldownInput").val();
         if (newValue.length > 0) {
-            sendDBUpdate("commands_cooldown_time", "cooldown", "globalCooldownTime", String(newValue));
-            $("#globalCooldownTimeInput").val('');
-            $("#globalCooldownTimeInput").attr('placeholder', newValue).blur();
-            setTimeout(function() { sendCommand("reloadcooldown"); }, TIMEOUT_WAIT_TIME * 2);
-            setTimeout(function() { 
-                doQuery();  
-                $("#globalCooldownTimeInput").attr('placeholder', newValue).blur();
-                $("#globalCooldownTimeInput").val('');
-            }, TIMEOUT_WAIT_TIME * 2);
+            sendDBUpdate("commands_cooldown_time", "cooldownSettings", "defaultCooldownTime", String(newValue));
+            setTimeout(function() { doQuery();  }, TIMEOUT_WAIT_TIME * 2);
         }
     }
 
@@ -647,6 +595,7 @@
     function deleteCooldown(command) {
         $("#deleteCooldown_" + command.replace(/[^a-zA-Z0-9_]/g, '_SP_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_cooldown_delete", "cooldown", command);
+        sendWSEvent('cooldown', './core/commandCoolDown.js', null, ['remove', command]);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -656,17 +605,16 @@
     function addCooldown() {
         var input = $("#cooldownCmdInput").val();
         var command = $("#cooldownCmdInputCommand").val();
+        var checked = $("#globalCooldownCheck").is(':checked');
 
         if (command.startsWith('!')) {
             command = command.replace('!', '');
         }
         
         if (input.length > 0 && command.length != 0) {
-            sendDBUpdate("commands_cooldown_add", "cooldown", String(command), String(input));
-            $("#cooldownCmdInput").val("Submitted");
-            $("#cooldownCmdInputCommand").val("Submitted");
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-            setTimeout(function() { $("#cooldownCmdInputCommand").val(""); $("#cooldownCmdInput").val(""); }, TIMEOUT_WAIT_TIME);
+            sendDBUpdate("commands_cooldown_add", "cooldown", String(command), JSON.stringify({command: String(command.toLowerCase()), seconds: String(input), isGlobal: String(checked)}));
+            setTimeout(function() { doQuery(); sendWSEvent('cooldown', './core/commandCoolDown.js', null, ['add', command.toLowerCase(), input, checked]); }, TIMEOUT_WAIT_TIME);
+            setTimeout(function() { $("#cooldownCmdInputCommand").val(""); $("#cooldownCmdInput").val(""); $("#globalCooldownCheck").prop('checked', true); }, 5);
         }
     }
 
@@ -742,14 +690,11 @@
     $.updateCommandPay = updateCommandPay;
     $.addCooldown = addCooldown;
     $.deleteCooldown = deleteCooldown;
-    $.toggleGlobalCooldown = toggleGlobalCooldown;
     $.toggleModCooldown = toggleModCooldown;
-    $.togglePerUserCooldown = togglePerUserCooldown;
-    $.setGlobalCooldownTime = setGlobalCooldownTime;
+    $.setDefaultCooldown = setDefaultCooldown;
     $.commandEnable = commandEnable;
     $.deleteCommandPrice = deleteCommandPrice;
     $.deleteCommandPay = deleteCommandPay;
-    $.editCooldown = editCooldown;
     $.commands = commands;
     $.runCustomCommand = runCustomCommand;
     $.toggleCooldownMsg = toggleCooldownMsg;
