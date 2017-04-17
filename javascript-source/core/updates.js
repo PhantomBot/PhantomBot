@@ -580,8 +580,6 @@
     if (!$.inidb.exists('updates', 'installedv2.3.6s') || $.inidb.get('updates', 'installedv2.3.6s') != 'true') {
         $.consoleLn('Starting PhantomBot update 2.3.6s updates...');
 
-        $.inidb.set('cooldownSettings', 'modCooldown', $.inidb.get('cooldown', 'modCooldown'));
-        $.inidb.set('cooldownSettings', 'defaultCooldownTime', $.inidb.get('cooldown', 'globalCooldownTime'));
         $.inidb.del('cooldown', 'globalCooldownTime');
         $.inidb.del('cooldown', 'modCooldown');
         $.inidb.del('cooldown', 'perUserCooldown');
