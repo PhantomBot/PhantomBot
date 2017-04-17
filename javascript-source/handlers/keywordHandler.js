@@ -16,7 +16,7 @@
         
         if ($.bot.isModuleEnabled('./handlers/keywordHandler.js')) {
             for (i in keys) {
-                if (message.includes(keys[i].toLowerCase())) {
+                if (message.match(keys[i].toLowerCase())) {
                     key = keys[i].toLowerCase();
                     origKey = keys[i];
                     break;
