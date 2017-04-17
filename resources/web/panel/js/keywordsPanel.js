@@ -137,7 +137,7 @@
     /** 
      * @function addKeyword
      */
-    function addKeyword() {
+    function addKeywordnew() {
         var keyword = $('#addKeywordInput').val(),
             response = $('#addKeywordResponseInput').val();
 
@@ -282,7 +282,7 @@
     // Export to HTML
     $.keywordsOnMessage = onMessage;
     $.keywordsDoQuery = doQuery;
-    $.addKeyword = addKeyword;
+    $.addKeywordnew = addKeywordnew;
     $.deleteKeyword = deleteKeyword;
     $.updateKeyword = updateKeyword;
     $.addKeyCooldown = addKeyCooldown;
