@@ -315,7 +315,6 @@ public class PanelSocketServer extends WebSocketServer {
                 String limit = jsonObject.getJSONObject("query").getString("limit");
                 String offset = jsonObject.getJSONObject("query").getString("offset");
                 String order = jsonObject.getJSONObject("query").getString("order");
-                System.out.println("LIMIT:" + limit + "::OFFSET:" + offset + "::ORDER:" + order);
                 doDBKeysByOrder(webSocket, uniqueID, table, limit, offset, order);
             } else if (jsonObject.has("dbkeyssearch")) {
                 uniqueID = jsonObject.getString("dbkeyssearch");
