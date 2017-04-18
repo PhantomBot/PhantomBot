@@ -1,175 +1,133 @@
 /*
- * panelHandler.js
- * Provides statistics and other bits of useful information to the Web Panel.
+ * deathCounter.js
+ *
+ * A death counter.
  */
 
 (function() {
-    var alreadyStarted = false,
-        interval,
-        follower = false;
-
     /*
-     * @event twitchOnline
+     * @function deathUpdateFile
+     *
+     * @param {String} game
      */
-    $.bind('twitchOnline', function(event) {
-        $.setIniDbBoolean('panelstats', 'streamOnline', true);
-        $.inidb.set('streamInfo', 'downtime', 0);
-        $.inidb.set('panelstats', 'newFollowers', 0);
-    });
+    function deathUpdateFile(game) {
+        var deathFile = './addons/deathctr/deathctr.txt',
+            deathCounter = parseInt($.inidb.get('deaths', game));
 
-    /*
-     * @event twitchOffline
-     */
-    $.bind('twitchOffline', function(event) {
-        $.setIniDbBoolean('panelstats', 'streamOnline', false);
-        $.inidb.set('streamInfo', 'downtime', $.systemTime());
-        $.inidb.set('panelstats', 'newFollowers', 0);
-    });
-
-    /*
-     * @function updateViewerCount
-     */
-    function updateViewerCount() {
-        $.inidb.set('panelstats', 'viewerCount', $.getViewers($.channelName));
-    }
-
-    /*
-     * @function updateChatterCount
-     */
-    function updateChatterCount() {
-        $.inidb.set('panelstats', 'chatterCount', $.users.length);
-    }
-
-    /*
-     * @function updateFollowerCount
-     */
-    function updateFollowerCount() {
-        $.inidb.set('panelstats', 'followerCount', $.getFollows($.channelName));
-    }
-
-    /*
-     * @function updateStreamUptime
-     */
-    function updateStreamUptime() {
-        if ($.twitchCacheReady.equals('true')) {
-            var uptimeSec = $.twitchcache.getStreamUptimeSeconds(),
-                hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
-                min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
-            $.inidb.set('panelstats', 'streamUptime', hrs + ':' + min);
+        if (!$.isDirectory('./addons/deathctr/')) {
+            $.mkDir('./addons/deathctr');
         }
-    }
-
-    /*
-     * @function updateChatLinesDB
-     */
-    function updateChatLinesDB(user) {
-        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            $.inidb.incr('panelchatstats', 'chat_' + $.getCurLocalTimeString('MM.dd.yy'), 1);
-            $.inidb.incr('panelchatuserstats', user, 1);
+        if (isNaN(deathCounter)) {
+            deathCounter = 0;
         }
+
+        $.writeToFile(deathCounter.toFixed(0), deathFile, false);
     }
 
     /*
-     * @function updateChatLinesDB
+     * @event command
      */
-    function updateModLinesDB(user) {
-        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            $.inidb.incr('panelmodstats', 'mod_' + $.getCurLocalTimeString('MM.dd.yy'), 1);
-            // $.inidb.incr('panelstats', 'timeoutCount', 1);
-            // $.inidb.incr('panelmoduserstats', user, 1);
+    $.bind('command', function(event) {
+        var sender = event.getSender(),
+            command = event.getCommand(),
+            args = event.getArgs(),
+            action = args[0],
+            game = ($.getGame($.channelName) != '' ? $.getGame($.channelName) : 'Some Game');
+
+        /*
+         * @commandpath deathctr - Display the current number of deaths in game being played.
+         */
+        if (command.equalsIgnoreCase('deathctr')) {
+            if (action === undefined) {
+                var deathCounter = parseInt($.inidb.get('deaths', game));
+                if (isNaN(parseInt(deathCounter)) || parseInt(deathCounter) === 0) {
+                    $.say($.lang.get('deathcounter.none', $.ownerName, game));
+                } else {
+                    $.say($.lang.get('deathcounter.counter', $.ownerName, game, deathCounter));
+                }
+            } else {
+                /*
+                 * @commandpath deathctr reset - Reset the death counter for the game being played.
+                 */
+                if (action.equalsIgnoreCase('reset')) {
+                    var deathCounter = parseInt($.inidb.get('deaths', game));
+                    if (isNaN(parseInt(deathCounter)) || parseInt(deathCounter) === 0) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.reset-nil', game));
+                    } else { 
+                        $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.reset', game, deathCounter));
+                        $.inidb.set('deaths', game, 0);
+                        $.deathUpdateFile(game);
+                    }
+                    return;
+                }
+
+                /*
+                 * @commandpath deathctr set [number] - Set the death counter for the game being played.
+                 */
+                if (action.equalsIgnoreCase('set')) {
+                    if (isNaN(parseInt(args[1]))) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.set-error'));
+                        return;
+                    } else {
+                        var setDeath = parseInt(args[1]);
+                        $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.set-success', game, setDeath));
+                        $.inidb.set('deaths', game, setDeath);
+                        $.deathUpdateFilegame();
+                        return;
+                    }
+                }
+
+                /*
+                 * @commandpath deathctr incr - Add one to the death counter for the game being played.
+                 */
+                if (action.equalsIgnoreCase('add') || action.equalsIgnoreCase('incr') || action.equalsIgnoreCase('+')) {
+                    
+                    $.say($.lang.get('deathcounter.add-success', $.ownerName, game, ($.inidb.exists('deaths', game) ? (parseInt($.inidb.get('deaths', game)) + 1) : 0)));
+                    $.inidb.incr('deaths', game, 1);
+                    $.deathUpdateFile(game);
+                    return;
+                }
+
+                /*
+                 * @commandpath deathctr decr - Subtract one from the death counter for the game being played.
+                 */
+                if (action.equalsIgnoreCase('sub') || action.equalsIgnoreCase('decr') || action.equalsIgnoreCase('-')) {
+                    if (isNaN(parseInt($.inidb.get('deaths', game))) || parseInt($.inidb.get('deaths', game)) === 0) {
+                        $.say($.lang.get('deathcounter.sub-zero', game));
+                        return;
+                    }
+
+                    $.say($.lang.get('deathcounter.sub-success', game, ($.inidb.exists('deaths', game) ? (parseInt($.inidb.get('deaths', game)) - 1) : 0)));
+                    $.inidb.decr('deaths', game, 1);
+                    $.deathUpdateFile(game);
+                    return;
+                }
+            }
         }
-    }
-
-    /*
-     * @function updatePlayTime
-     */
-    function updatePlayTime() {
-        var playTimeStart = $.getIniDbNumber('panelstats', 'playTimeStart', 0),
-            currentTime = new Date(),
-            diffTime;
-
-        if (playTimeStart === 0) {
-            playTimeStart = currentTime;
-        }
-        diffTime = Math.floor((currentTime - playTimeStart) / 1000);
-        hrs = (diffTime / 3600 < 10 ? "0" : "") + Math.floor(diffTime / 3600),
-        min = ((diffTime % 3600) / 60 < 10 ? "0" : "") + Math.floor((diffTime % 3600) / 60);
-        $.inidb.set('panelstats', 'playTime', hrs + ":" + min);
-    }
-
-    /*
-     * @function getTitlePanel
-     */
-    function getTitlePanel() {
-        $.inidb.set('streamInfo', 'title', $.getStatus($.channelName));
-    }
-
-    /*
-     * @function getGamePanel
-     */
-    function getGamePanel() {
-        $.inidb.set('streamInfo', 'game', $.getGame($.channelName));
-    }
-
-    /*
-     * @function updateAll()
-     */
-    function updateAll() {
-        updateViewerCount();
-        updatePlayTime();
-        updateStreamUptime();
-        getTitlePanel();
-        getGamePanel();
-        updateChatterCount();
-        updateFollowerCount();
-        if ($.twitchCacheReady.equals('true')) { 
-            $.setIniDbNumber('panelstats', 'viewCount', $.twitchcache.getViews()); 
-        }
-    }
-
-    /*
-     * @event twitchFollow
-     */
-    $.bind('twitchFollow', function(event) {
-        if (follower) {
-            $.inidb.incr('panelstats', 'newFollowers', 1);
-        }
-    });
-
-    /*
-     * @event twitchFollowsInitialized
-     */
-    $.bind('twitchFollowsInitialized', function() {
-        follower = true;
     });
 
     /*
      * @event initReady
-     *
-     * If the module is enabled, run a timer to update the panelstats DB table.
-     * Runs every minute to reduce wear and tear on the DB.  If disabled,
-     * set the table as such.
      */
     $.bind('initReady', function() {
-        if (!alreadyStarted) {
-            if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-                alreadyStarted = true;
-                $.inidb.set('panelstats', 'enabled', 'true');
-                $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
-                $.setIniDbBoolean('panelstats', 'streamOnline', $.isOnline($.channelName));
-                interval = setInterval(function() {  updateAll(); }, 3e4);
-            } else {
-                $.inidb.set('panelstats', 'enabled', 'false');
-            }
-        }
-        setTimeout(function() { updateAll(); }, 1000);
+        $.registerChatCommand('./commands/deathctrCommand.js', 'deathctr', 7);
+
+        $.registerChatSubcommand('deathctr', 'reset', 2);
+        $.registerChatSubcommand('deathctr', 'set', 2);
+        $.registerChatSubcommand('deathctr', 'add', 2);
+        $.registerChatSubcommand('deathctr', 'incr', 2);
+        $.registerChatSubcommand('deathctr', '+', 2);
+        $.registerChatSubcommand('deathctr', 'sub', 2);
+        $.registerChatSubcommand('deathctr', 'decr', 2);
+        $.registerChatSubcommand('deathctr', '-', 2);
+
+        setTimeout(function() {
+            deathUpdateFile(($.getGame($.channelName) != '' ? $.getGame($.channelName) : 'Some Game'));
+        }, 10000);
     });
 
     /*
-     * Export functions to API
+     * Export functions to API 
      */
-    $.panelDB = {
-        updateChatLinesDB: updateChatLinesDB,
-        updateModLinesDB: updateModLinesDB
-    };
+    $.deathUpdateFile = deathUpdateFile;
 })();
