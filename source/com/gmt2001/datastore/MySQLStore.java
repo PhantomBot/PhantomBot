@@ -306,14 +306,14 @@ public class MySQLStore extends DataStore {
     }
 
      @Override
-    public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
+    public String[] GetKeysByOrder(String fName, String section, String order) {
         CheckConnection();
 
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable " + order + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
     
@@ -331,7 +331,7 @@ public class MySQLStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY variable " + order + ";")) {
                     statement.setQueryTimeout(10);
 
                     try (ResultSet rs = statement.executeQuery()) {
