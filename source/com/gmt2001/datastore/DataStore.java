@@ -60,7 +60,7 @@ public class DataStore {
                };
     }
 
-    public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
+    public String[] GetKeysByOrder(String fName, String section, String order) {
         return new String[] {
                };
     }
