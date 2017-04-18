@@ -1,0 +1,12 @@
+$.lang.register('queuesystem.queue.closed', 'Die Warteschlange ist aktuell geschlossen.');
+$.lang.register('queuesystem.err.missing.tag', 'Du musst deinen Gamertag angeben.');
+$.lang.register('queuesystem.err.in.queue', 'Du bist bereits in der Warteschlange.');
+$.lang.register('queuesystem.err.queue.full', 'Die Warteschlange ist aktuell voll.');
+$.lang.register('queuesystem.added.queue', 'Du wurdest zur Warteschlange hinzugefügt!');
+$.lang.register('queuesystem.queue.cleared', 'Warteschlange wurde bereinigt!');
+$.lang.register('queuesystem.queue.usage', 'Verwendung: !queue [open / close / clear / next [Wert] / maxsize]');
+$.lang.register('queuesystem.err.queue.opened', 'Eine Warteschlange ist bereits geöffnet.');
+$.lang.register('queuesystem.queue.opened', 'Warteschlange ist nun geöffnet! Benutze !joinqueue (Gamertag) um ihr beizutreten!');
+$.lang.register('queuesystem.err.queue.closed', 'Warteschlange ist nun geschlossen!');
+$.lang.register('queuesystem.queue.size.usage', 'Verwendung: !queue maxsize (Wert)');
+$.lang.register('queuesystem.queue.size.set', 'Warteschlangengröße ist gesetzt auf $1 Spieler.');

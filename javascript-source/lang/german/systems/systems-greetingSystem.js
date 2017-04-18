@@ -1,0 +1,11 @@
+$.lang.register('greetingsystem.set.autogreet.enabled', 'Automatische Begrüßung aktiviert. $1 wird nun jeden Grüßen.');
+$.lang.register('greetingsystem.set.autogreet.disabled', 'Automatische Begrüßung deaktiviert. $1 wird nun niemanden mehr Grüßen.');
+$.lang.register('greetingsystem.set.autogreet.usage', 'Verwendung: !greeting setdefault [Nachricht].  Benutze "(name)" um den Benutzernamen einzufügen');
+$.lang.register('greetingsystem.set.autogreet.noname', 'The default greeting message need the tag "(name)" to know where to put the user\'s username.');
+$.lang.register('greetingsystem.set.autogreet.success', 'Standardbegrüßung geändert in "$1". Automatische Begrüßung ist aktuell $2.');
+$.lang.register('greetingsystem.set.personal.success', 'Persönliche Begrüßung geändert in "$1".');
+$.lang.register('greetingsystem.remove.personal.success', 'Deine persönliche Begrüßungsnachricht wurde erfolgreich entfernt.');
+$.lang.register('greetingsystem.generalusage.admin', 'Verwendung: !greeting toggledefault, !greeting setdefault [Nachricht], !greeting enable [Nachricht], !greeting disable.');
+$.lang.register('greetingsystem.generalusage.other', 'Verwendung "!greeting enable [Nachricht]" damit der Bot dich begrüßt wenn du den Chat betrittst. Benutze "!greeting disable" um die Begrüßung zu deaktivieren.');
+$.lang.register('greetingsystem.cooldown.usage', 'Verwendung: !greeting cooldown [Minuten]');
+$.lang.register('greetingsystem.cooldown.success', 'Begrüßungs-Cooldown gesetzt auf $1 Minuten ($2 Stunden).');
