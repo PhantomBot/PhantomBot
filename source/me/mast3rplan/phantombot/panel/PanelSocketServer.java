@@ -313,8 +313,9 @@ public class PanelSocketServer extends WebSocketServer {
                 uniqueID = jsonObject.getString("dbkeysbyorder");
                 String table = jsonObject.getJSONObject("query").getString("table");
                 String limit = jsonObject.getJSONObject("query").getString("limit");
+                String offset = jsonObject.getJSONObject("query").getString("offset");
                 String order = jsonObject.getJSONObject("query").getString("order");
-                doDBKeysByOrder(webSocket, uniqueID, table, limit, order);
+                doDBKeysByOrder(webSocket, uniqueID, table, limit, offset, order);
             } else if (jsonObject.has("dbkeyssearch")) {
                 uniqueID = jsonObject.getString("dbkeyssearch");
                 String table = jsonObject.getJSONObject("query").getString("table");
@@ -543,20 +544,17 @@ public class PanelSocketServer extends WebSocketServer {
      * @param id        The unique ID which is sent back to the WebSocket.
      * @param table     Table name to query.
      * @param limit     Limit you want to get sent.
+     * @param offset    the offset
      * @param order     ASC or DESC
      */
-    private void doDBKeysByOrder(WebSocket webSocket, String id, String table, String limit, String order) {
+    private void doDBKeysByOrder(WebSocket webSocket, String id, String table, String limit, String offset, String order) {
         JSONStringer jsonObject = new JSONStringer();
 
-        try {
-            String[] dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrder(table, "", order);
-            int total = 0;
+        jsonObject.object().key("query_id").value(id).key("results").array();
 
-            jsonObject.object().key("query_id").value(id).key("results").key("total").value(dbKeys.length().toString()).array();
+        try {
+            String[] dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrder(table, "", order, limit, offset);
             for (String dbKey : dbKeys) {
-                if (total++ >= limit) {
-                    break;
-                }
                 String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
                 jsonObject.object().key("table").value(table).key("key").value(dbKey).key("value").value(value).endObject();
             }
