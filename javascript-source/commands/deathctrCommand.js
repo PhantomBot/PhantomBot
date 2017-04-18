@@ -121,7 +121,9 @@
         $.registerChatSubcommand('deathctr', 'decr', 2);
         $.registerChatSubcommand('deathctr', '-', 2);
 
-        deathUpdateFile(($.getGame($.channelName) != '' ? $.getGame($.channelName) : 'Some Game'));
+        setTimeout(function() {
+            deathUpdateFile(($.getGame($.channelName) != '' ? $.getGame($.channelName) : 'Some Game'));
+        }, 10000);
     });
 
     /*

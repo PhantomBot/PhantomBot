@@ -155,14 +155,12 @@
             if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
                 alreadyStarted = true;
                 $.inidb.set('panelstats', 'enabled', 'true');
-                $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
-                $.setIniDbBoolean('panelstats', 'streamOnline', $.isOnline($.channelName));
+                 $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
                 interval = setInterval(function() {  updateAll(); }, 3e4);
             } else {
                 $.inidb.set('panelstats', 'enabled', 'false');
             }
         }
-        setTimeout(function() { updateAll(); }, 1000);
     });
 
     /*
