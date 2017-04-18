@@ -50,7 +50,7 @@
      */
     $.bind('twitchAutoHosted', function(event) {
         var hoster = event.getHoster().toLowerCase(),
-            viewers = event.getUsers(),
+            viewers = parseInt(event.getUsers()),
             s = autoHostMessage;
 
         if (announceHosts === false) {
@@ -99,7 +99,7 @@
      */
     $.bind('twitchHosted', function(event) {
         var hoster = event.getHoster().toLowerCase(),
-            viewers = event.getUsers(),
+            viewers = parseInt(event.getUsers()),
             s = hostMessage;
 
         // Always update the Host History even if announcements are off or if they recently
