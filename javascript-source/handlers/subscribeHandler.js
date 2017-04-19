@@ -47,6 +47,10 @@
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
             }
+
+            if (message.match(/\(plan\)/g)) {
+                message = $.replace(message, '(plan)', event.getPlan());
+            }
             $.say(message);
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber, true);

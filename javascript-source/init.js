@@ -966,70 +966,70 @@
          * @event api-twitchFollow
          */
         $api.on($script, 'twitchFollow', function(event) {
-            callHook('twitchFollow', event, true);
+            callHook('twitchFollow', event, false);
         });
 
         /**
          * @event api-twitchUnFollow
          */
         $api.on($script, 'twitchUnfollow', function(event) {
-            callHook('twitchUnfollow', event, true);
+            callHook('twitchUnfollow', event, false);
         });
 
         /**
          * @event api-twitchFollowsInitialized
          */
         $api.on($script, 'twitchFollowsInitialized', function(event) {
-            callHook('twitchFollowsInitialized', event, true);
+            callHook('twitchFollowsInitialized', event, false);
         });
 
         /**
          * @event api-twitchHosted
          */
         $api.on($script, 'twitchHosted', function(event) {
-            callHook('twitchHosted', event, true);
+            callHook('twitchHosted', event, false);
         });
 
         /**
          * @event api-twitchAutoHosted
          */
         $api.on($script, 'twitchAutoHosted', function(event) {
-            callHook('twitchAutoHosted', event, true);
+            callHook('twitchAutoHosted', event, false);
         });
 
         /**
          * @event api-twitchHostsInitialized
          */
         $api.on($script, 'twitchHostsInitialized', function(event) {
-            callHook('twitchHostsInitialized', event, true);
+            callHook('twitchHostsInitialized', event, false);
         });
 
         /**
          * @event api-ircChannelJoin
          */
         $api.on($script, 'ircChannelJoin', function(event) {
-            callHook('ircChannelJoin', event, true);
+            callHook('ircChannelJoin', event, false);
         });
 
         /**
          * @event api-ircChannelLeave
          */
         $api.on($script, 'ircChannelLeave', function(event) {
-            callHook('ircChannelLeave', event, true);
+            callHook('ircChannelLeave', event, false);
         });
 
         /**
          * @event api-ircConnectComplete
          */
         $api.on($script, 'ircConnectComplete', function(event) {
-            callHook('ircConnectComplete', event, true);
+            callHook('ircConnectComplete', event, false);
         });
 
         /**
          * @event api-ircJoinComplete
          */
         $api.on($script, 'ircJoinComplete', function(event) {
-            callHook('ircJoinComplete', event, true);
+            callHook('ircJoinComplete', event, false);
         });
 
         /**
@@ -1085,42 +1085,42 @@
          * @event api-twitchAlertsDonation
          */
         $api.on($script, 'twitchAlertsDonation', function(event) {
-            callHook('twitchAlertsDonation', event, true);
+            callHook('twitchAlertsDonation', event, false);
         });
 
         /**
          * @event api-twitchAlertsDonationInitialized
          */
         $api.on($script, 'twitchAlertsDonationInitialized', function(event) {
-            callHook('twitchAlertsDonationInitialized', event, true);
+            callHook('twitchAlertsDonationInitialized', event, false);
         });
 
         /**
          * @event api-streamTipDonation
          */
         $api.on($script, 'streamTipDonation', function(event) {
-            callHook('streamTipDonation', event, true);
+            callHook('streamTipDonation', event, false);
         });
 
         /**
          * @event api-streamTipDonationInitialized
          */
         $api.on($script, 'streamTipDonationInitialized', function(event) {
-            callHook('streamTipDonationInitialized', event, true);
+            callHook('streamTipDonationInitialized', event, false);
         });
 
         /**
          * @event api-tipeeeStreamDonationInitialized
          */
         $api.on($script, 'tipeeeStreamDonationInitialized', function(event) {
-            callHook('tipeeeStreamDonationInitialized', event, true);
+            callHook('tipeeeStreamDonationInitialized', event, false);
         });
 
         /**
          * @event api-tipeeeStreamDonation
          */
         $api.on($script, 'tipeeeStreamDonation', function(event) {
-            callHook('tipeeeStreamDonation', event, true);
+            callHook('tipeeeStreamDonation', event, false);
         });
 
         /**

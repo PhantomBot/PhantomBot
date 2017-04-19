@@ -66,6 +66,7 @@ public class TwitchWSIRCParser {
     private Channel channel;
     private Session session;
     private EventBus eventBus;
+    private boolean useTwitchNotify;
 
     /**
      * Constructor for TwitchWSIRCParser object.  Performs construction
@@ -83,6 +84,7 @@ public class TwitchWSIRCParser {
         this.channel = channel;
         this.session = session;
         this.eventBus = eventBus;
+        this.useTwitchNotify = true;
 
         parserMap.put("001", new TwitchWSIRCCommand() {
             public void exec(String message, String username, Map<String, String> tagsMap) {
@@ -289,7 +291,7 @@ public class TwitchWSIRCParser {
 
         /* Check to see if the user is subscribing to the channel */
         if (message.endsWith("subscribed!") || message.endsWith("Prime!")) {
-            if (username.equalsIgnoreCase("twitchnotify")) {
+            if (useTwitchNotify && username.equalsIgnoreCase("twitchnotify")) {
                 if (message.endsWith("Prime!")) {
                     scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
                 } else {
@@ -484,11 +486,26 @@ public class TwitchWSIRCParser {
      * @param String username
      * @param Map<String, String> tagsMap
      */
-    private void userNotice(String message, String username, Map<String, String> tagMaps) {
-        if ((tagMaps.containsKey("display-name") || tagMaps.containsKey("login")) && tagMaps.containsKey("msg-param-months") && (tagMaps.containsKey("msg-id") && tagMaps.get("msg-id").equals("resub"))) {
-            scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, (tagMaps.get("display-name").length() == 0 ? tagMaps.get("login") : tagMaps.get("display-name")), tagMaps.get("msg-param-months")));
-            com.gmt2001.Console.debug.println((tagMaps.get("display-name").length() == 0 ? tagMaps.get("login") : tagMaps.get("display-name")) + " just subscribed for " + tagMaps.get("msg-param-months") + " months in a row!");
+    private void userNotice(String message, String username, Map<String, String> tagsMap) {
+        if (tagsMap.containsKey("msg-id")) {
+            if (tagsMap.get("msg-id").equalsIgnoreCase("resub")) {
+                scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, tagsMap.get("display-name"), tagsMap.get("msg-param-months")));
+            } else {
+                if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
+                    if (!this.useTwitchNotify) {
+                        if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("prime")) {
+                            scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, tagsMap.get("display-name")));
+                        } else {
+                            scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, tagsMap.get("display-name"), tagsMap.get("msg-param-sub-plan-name")));
+                        }
+                    }
+                }
+                // Don't look for Twitch notify. Both events will still be active when this new feature comes out.
+                // For more information please see: https://discuss.dev.twitch.tv/t/subscriptions-beta-changes/10023
+                this.useTwitchNotify = !tagsMap.containsKey("msg-param-sub-plan");
+            }
         }
+        com.gmt2001.Console.debug.println("USERNOTICE: " + tagsMap);
     }
 
     /*

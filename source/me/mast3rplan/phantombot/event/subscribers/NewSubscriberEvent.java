@@ -25,17 +25,20 @@ public class NewSubscriberEvent extends SubscriberEvent {
 	private final String subscriber;
     private final Channel channel;
     private final Session session;
+    private final String plan;
 
 	public NewSubscriberEvent(String subscriber) {
         this.subscriber = subscriber;
         this.channel = null;
         this.session = null;
+        this.plan = null;
     }
 
     public NewSubscriberEvent(Channel channel, String subscriber) {
         this.subscriber = subscriber;
         this.channel = channel;
         this.session = null;
+        this.plan = null;
     }
 
     public NewSubscriberEvent(Session session, Channel channel, String subscriber) {
@@ -43,6 +46,15 @@ public class NewSubscriberEvent extends SubscriberEvent {
         this.subscriber = subscriber;
         this.channel = channel;
         this.session = session;
+        this.plan = null;
+    }
+
+    public NewSubscriberEvent(Session session, Channel channel, String subscriber, String plan) {
+        super(channel, session);
+        this.subscriber = subscriber;
+        this.channel = channel;
+        this.session = session;
+        this.plan = plan;
     }
 
     public String getSubscriber() {
@@ -55,5 +67,9 @@ public class NewSubscriberEvent extends SubscriberEvent {
 
     public Session getSession() {
         return this.session;
+    }
+
+    public String getPlan() {
+        return this.plan;
     }
 }
