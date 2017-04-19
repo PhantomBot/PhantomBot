@@ -1,12 +1,12 @@
-#Code Style
-#General
+# Code Style 
+## General 
 When implementing new code or making changes to the current create a branch with the following name: `YOURUSERNAME_WHAT_YOU_ARE_DOING`.
 That way there'll be no pollution on the master branch and everyone can see what is being done already and by who.  
 
 Whenever you wish to have your code pushed to the master branch please create a pull request for the development team to review and merge.
 Also make sure to leave a comment on what your code is going to be doing or changing to PhantomBot.
 
-##Naming Conventions
+## Naming Conventions
 The below is written about functions, but basically also aplies to classes.
 
 1. Self-explanatory names: a function `getName()` will tell the developer what it returns as well as `setAddress()`, `isMale()`, etc.
@@ -17,7 +17,7 @@ The below is written about functions, but basically also aplies to classes.
 
 4. Names should be verbs if the function changes the state of the program, and nouns if they're used to return a certain value
 
-##Chat Limits
+## Chat Limits
 Keep in mind that Twitch does enforce a rule regarding how many lines may be sent to chat within a period of time and that includes whispers.
 In fact, that many bots have been banned from whispering.  Twitch doesn't only look for how many whispers occur, but has algorithms to look
 for other factors and bots have been banned because of it.  Keep this in mind when deciding how much output you are adding to a chat
@@ -25,15 +25,15 @@ and/or whispers.  While PhantomBot does perform a self-enforced rate limit on wh
 It is also possible to fill up the outbound queue with too many deliverable messages which can cause PhantomBot to slow down or to respond
 to other commands much more slowly.
 
-##API Development
+## API Development
 When developing an interface to a third party API, please ensure that you are thinking about any rate limits that the service may have.
 Also be sure to review any and all documentation that they may have in reference to terms of service to ensure that your usage of an API
 falls within their accepted guidelines and practices.
 
-#JavaScript
+# JavaScript
 
-##Files and folders
-###./javascript-source
+## Files and folders
+### ./javascript-source
 This is the source in wich to develop any of the javascript modules.
 The scriptset is split up into the following top-level directories.
 
@@ -44,11 +44,11 @@ The scriptset is split up into the following top-level directories.
 - **handlers**: Modules that handle automation like follow alerts or point payouts on hosts
 - **systems**: Modules that may act like API for other modules, but are not necessary for the bot to work proper.
 
-##Module File Setup
+## Module File Setup
 In ./development-resources there's a template (module-template.js) wich you can copy to instantly get started with the new code style!  
 This file should give you enough insight on the general layout of the modules code.
 
-##Code specific rules
+## Code specific rules
 - 4 space indents. Make sure you code lines up with the current one or it will be rejected. Do not use tabs.
 - Encapsulate all code in `(function(){ /* Your code */ })();` and export globally needed code to $ by function assignment.
 - Do not assign variables and functions to the `$` global. Do not use the $ api if you variable is local.
@@ -65,13 +65,13 @@ This file should give you enough insight on the general layout of the modules co
 - Use `'` and not `"` as most as you can, please. 
 - If it is easier, you may process your JavaScript through [JS-Beautify](https://www.npmjs.com/package/js-beautify). The default options meet our standard.
 
-##If statements 
+## If statements 
 - Please don't leave spaces inside at the start and end of your if statements.
 - Examples: 
         Proper if statement: `if (something) {`
         Bad if statements: `if(something){`, `if ( something ) {` and `if( something ){` etc.
 
-##@commandpath tags
+## @commandpath tags
 The `@commandpath` tag is used for describing all possible paths per command.  
 These are used to allow `parse_commandpath.pl` to be able to parse the source and extract information on all commands.
 

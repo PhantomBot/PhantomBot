@@ -348,7 +348,20 @@ public class TwitchWSIRCParser {
         /* Moderate the incoming message. Have it run in the background on a thread. */
         try {
             ModerationRunnable moderationRunnable = new ModerationRunnable(this.session, username, message, this.channel, tagsMap);
-            new Thread(moderationRunnable, "me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRCParser::ModerationRunnable").start();
+            Thread thread = new Thread(moderationRunnable);
+            thread.start();
+            thread.setName("ModerationRunnable-" + thread.getId());
+            long startThreadT = System.currentTimeMillis();
+
+            while (thread.isAlive()) {
+                thread.join(2000);
+                if (((System.currentTimeMillis() - startThreadT) > 8000) && thread.isAlive()) {
+                    thread.interrupt();
+                    thread.join();
+                }
+            }
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.out.println("Interrupted Exception");
         } catch (Exception ex) {
             scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
         }

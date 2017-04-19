@@ -1,9 +1,9 @@
-#Development Setup Guide
+# Development Setup Guide  
 This guide is for the people that would like to contribute to PhantomBot and do it well. <3
 
-Please have a read on [CODESTYLE.md](https://github.com/PhantomBot/PhantomBot/blob/master/CODESTYLE.md), any code that does not apply to these rules will not get merged.
+Please have a read on [CODESTYLE.md](/CODESTYLE.md), any code that does not apply to these rules will not get merged.
 
-##General (All other IDE's)
+## General (All other IDE's)
 This section is for all IDE's not mentioned in this guide.  
 It's very global, so you might need to take some extra steps to get it to work for you.
 
@@ -14,8 +14,8 @@ It's very global, so you might need to take some extra steps to get it to work f
 
 DONE! Happy coding <3
 
-##JetBrains IntelliJ
-This section also applies to JetBrains PHPStorm, wich is great for JavaScript, but lacks Java support.  
+## JetBrains IntelliJ  
+This section also applies to JetBrains PHPStorm, wich is great for JavaScript, but lacks Java support.
 You can get JetBrains IntelliJ [here](https://www.jetbrains.com/idea/).
 
 1. Fork the [PhantomBot repository](https://github.com/PhantomBot/PhantomBot).
@@ -32,7 +32,7 @@ You can get JetBrains IntelliJ [here](https://www.jetbrains.com/idea/).
 
 DONE! Happy coding <3
 
-##Netbeans
+## Netbeans  
 You can get Netbeans [here](https://netbeans.org/downloads/).
 
 1. Open up NetBeans. 
@@ -52,7 +52,7 @@ You can get Netbeans [here](https://netbeans.org/downloads/).
 
 DONE! Happy coding <3
 
-##Eclipse
+## Eclipse  
 You can get Eclipse [here](https://www.eclipse.org/downloads/).
 
 1. Open up Eclipse
