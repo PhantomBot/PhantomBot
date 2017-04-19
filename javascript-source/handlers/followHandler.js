@@ -80,6 +80,10 @@
                 $.inidb.set('streamInfo', 'lastFollow', follower);
             }
         }
+
+        $.inidb.setAutoCommit(false);
+        $.setIniDbBoolean('followed', follower, true);
+        $.inidb.setAutoCommit(true);
     });
 
     /*
