@@ -192,7 +192,6 @@
     $.bind('initReady', function() {
         $.registerChatCommand('./handlers/followHandler.js', 'followreward', 1);
         $.registerChatCommand('./handlers/followHandler.js', 'followtoggle', 1);
-        $.registerChatCommand('./handlers/followHandler.js', 'followtraintoggle', 1);
         $.registerChatCommand('./handlers/followHandler.js', 'followdelay', 1);
         $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
         $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
