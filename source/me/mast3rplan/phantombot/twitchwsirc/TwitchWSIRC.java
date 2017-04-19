@@ -239,7 +239,20 @@ public class TwitchWSIRC extends WebSocketClient {
         if (message.startsWith(":") || message.startsWith("@")) {
             try {
                 MessageRunnable messageRunnable = new MessageRunnable(message);
-                new Thread(messageRunnable, "me.mast3rplan.phantombot.twitchwsirc.TwitchWSIRC::MessageRunnable").start();
+                Thread thread = new Thread(messageRunnable);
+                thread.start();
+                thread.setName("MessageRunnable-" + thread.getId());
+                long startThreadT = System.currentTimeMillis();
+
+                while (thread.isAlive()) {
+                    thread.join(2000);
+                    if (((System.currentTimeMillis() - startThreadT) > 10000) && thread.isAlive()) {
+                        thread.interrupt();
+                        thread.join();
+                    }
+                }
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.debug.println("Interrupted Exception");
             } catch (Exception ex) {
                 twitchWSIRCParser.parseData(message);
             }
