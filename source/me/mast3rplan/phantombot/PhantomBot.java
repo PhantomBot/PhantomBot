@@ -1992,7 +1992,6 @@ public final class PhantomBot implements Listener {
         /* Load up the bot info from the bot login file */
         try {
             if (new File("botlogin.txt").exists()) {
-                com.gmt2001.Console.out.println("Load configuration from File");
                 FileInputStream inputStream = new FileInputStream("botlogin.txt");
                 startProperties.load(inputStream);
                 inputStream.close();
@@ -2020,7 +2019,6 @@ public final class PhantomBot implements Listener {
             if (Key.startsWith(Prefix) && Prefix.length() < Key.length()) {
                 Key = Key.substring(Prefix.length()).toLowerCase();
                 startProperties.setProperty(Key, Value);
-                com.gmt2001.Console.out.println("Load " + Key + " from environment");
             }
         }
         /* Check to enable debug mode */
