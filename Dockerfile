@@ -24,11 +24,9 @@ RUN cd "${BUILDDIR}" \
         "${BUILDDIR}" \
         "${BASEDIR}/launch\*" \
     && mv "${BASEDIR}/addons" "${DATADIR}/" \
-    && mv "${BASEDIR}/config" "${DATADIR}/" \
     && mv "${BASEDIR}/logs" "${DATADIR}/" \
     && ln -s "${DATADIR}/addons" \
     && ln -s "${DATADIR}/botlogin.txt" \
-    && ln -s "${DATADIR}/config" \
     && ln -s "${DATADIR}/logs" \
     && ln -s "${DATADIR}/phantombot.db"
 
