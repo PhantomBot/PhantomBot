@@ -395,7 +395,7 @@
                 $.say(getPointsMessage(sender, username));
             } else {
                 if (action && $.user.isKnown(action.toLowerCase())) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.username.resolve(action), getPointsString(getUserPoints(action.toLowerCase()))));
+                    $.say(getPointsMessage($.username.resolve(action), username));
                 }
 
                 /**

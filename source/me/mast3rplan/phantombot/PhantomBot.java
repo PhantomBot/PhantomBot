@@ -1171,13 +1171,8 @@ public final class PhantomBot implements Listener {
             if (message.startsWith("The moderators of this room are: ")) {
                 String[] moderators = message.substring(33).split(", ");
 
-                /* Check to see if the bot is a moderator */
-                for (String moderator : moderators) {
-                    if (moderator.equalsIgnoreCase(this.botName)) {
-                        /* Allow the bot to sends message to this session */
-                        event.getSession().setAllowSendMessages(true);
-                    }
-                }
+                /* Don't even check to see if the bot is a moderator */
+                event.getSession().setAllowSendMessages(true);
             }
         }
     }
