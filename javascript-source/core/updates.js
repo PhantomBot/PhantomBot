@@ -184,7 +184,7 @@
             './handlers/wordCounter.js',
             './systems/ranksSystem.js',
             './systems/auctionSystem.js',
-            './commands/highlightCommand.js',
+            './commands/highlightCommand.js'
         ]; //ADD NEW MODULES IN 2.0.5 TO BE DISABLED PLEASE.
 
         $.consoleLn('Starting PhantomBot version 2.0.5 updates...');
@@ -279,7 +279,7 @@
         var newDefaultDisabledModules = [
             './handlers/twitterHandler.js',
             './systems/audioPanelSystem.js',
-            './systems/queueSystem.js',
+            './systems/queueSystem.js'
         ]; //ADD NEW MODULES IN 2.0.8 TO BE DISABLED PLEASE.
 
         $.consoleLn('Disabling new default modules...');
@@ -589,6 +589,7 @@
             seconds,
             i;
 
+        $.consoleLn('Updating cooldowns...');
         for (i in keys) {
             seconds = $.inidb.get('cooldown', keys[i]);
             $.inidb.set('cooldown', keys[i], JSON.stringify({command: String(keys[i]), seconds: String(seconds), isGlobal: 'true'}));
