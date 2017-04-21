@@ -115,6 +115,7 @@
 
         if (tier > $.getGWTier(username)) {
             $.addGWSubUsersList(username, tier);
+            $.restoreSubscriberStatus(username, false);
             if (subShowMessages) {
                 $.say(tierUpMessage.replace('(name)', resolvename).replace('(tier)', tier));
             }
