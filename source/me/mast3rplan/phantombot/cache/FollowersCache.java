@@ -17,105 +17,62 @@
 package me.mast3rplan.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv3;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import me.mast3rplan.phantombot.PhantomBot;
-import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
+
 import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowsInitializedEvent;
-import me.mast3rplan.phantombot.event.twitch.follower.TwitchUnfollowEvent;
-import org.json.JSONArray;
+import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
+import me.mast3rplan.phantombot.event.EventBus;
+import me.mast3rplan.phantombot.PhantomBot;
+
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class FollowersCache implements Runnable {
 
-    private static final Map<String, FollowersCache> instances = Maps.newHashMap();
+    private static final Map<String, FollowersCache> instances = new HashMap<>();
+    private final Thread updateThread;
+    private final String channelName;
+    private Map<String, String> cache = new HashMap<>();
+    private Date timeoutExpire = new Date();
+    private Date lastFail = new Date();
+    private Boolean firstUpdate = true;
+    private Boolean hasFail = false;
+    private Boolean killed = false;
+    private int numfail = 0;
+    
+    /*
+     * @function instance
+     *
+     * @param  {String} channelName
+     * @return {Object}
+     */
+    public static FollowersCache instance(String channelName) {
+        FollowersCache instance = instances.get(channelName);
 
-    public static FollowersCache instance(String channel) {
-        FollowersCache instance = instances.get(channel);
         if (instance == null) {
-            instance = new FollowersCache(channel);
-
-            instances.put(channel, instance);
-            return instance;
+            instance = new FollowersCache(channelName);
+            instances.put(channelName, instance);
         }
-
         return instance;
     }
 
-    private Map<String, JSONObject> cache = Maps.newHashMap();
-    private final String channel;
-    private int count = 0;
-    private final Thread updateThread;
-    private boolean firstUpdate = true;
-    private Date timeoutExpire = new Date();
-    private Date nextFull = new Date();
-    private Date lastFail = new Date();
-    private int numfail = 0;
-    private boolean hasFail = false;
-    private boolean killed = false;
-
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    private FollowersCache(String channel) {
-        if (channel.startsWith("#")) {
-            channel = channel.substring(1);
-        }
-
-        this.channel = channel;
+    /*
+     * @function FollowersCache
+     *
+     * @param {String} channelName
+     */
+    private FollowersCache(String channelName) {
         this.updateThread = new Thread(this, "me.mast3rplan.phantombot.cache.FollowersCache");
+        this.channelName = channelName;
 
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
-        updateThread.start();
-    }
-
-    public int quickUpdate(String channel) throws Exception {
-        JSONObject j = TwitchAPIv3.instance().GetChannelFollows(channel, 100, 0, false);
-
-        if (j.getBoolean("_success")) {
-            if (j.getInt("_http") == 200) {
-                int i = j.getInt("_total");
-
-                Map<String, JSONObject> newCache = Maps.newHashMap();
-                JSONArray followers = j.getJSONArray("follows");
-
-                for (int b = 0; b < followers.length(); b++) {
-                    JSONObject follower = followers.getJSONObject(b);
-                    newCache.put(follower.getJSONObject("user").getString("name"), follower);
-                }
-
-                for (String key : newCache.keySet()) {
-                    if (cache == null || !cache.containsKey(key)) {
-                        cache.put(key, newCache.get(key));
-                        EventBus.instance().post(new TwitchFollowEvent(key, PhantomBot.getChannel("#" + this.channel)));
-                    }
-                }
-
-                this.count = cache.size();
-
-                return i;
-            } else {
-                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("_http") + " " + j.getString("error") + ". req="
-                                    + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
-                                    + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
-            }
-        } else {
-            throw new Exception("[" + j.getString("_exception") + "] " + j.getString("_exceptionMessage"));
-        }
-    }
-
-    public boolean is(String username) {
-        return cache.containsKey(username);
-    }
-
-    public JSONObject get(String username) {
-        return cache.get(username);
+        this.updateThread.start();
     }
 
     @Override
@@ -123,234 +80,115 @@ public class FollowersCache implements Runnable {
     public void run() {
         try {
             Thread.sleep(30 * 1000);
-        } catch (InterruptedException e) {
-            com.gmt2001.Console.debug.println("FollowersCache.run: Failed to initial sleep: [InterruptedException] " + e.getMessage());
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.println("FollowersCache.run: Failed to initial sleep [InterruptedException]: " + ex.getMessage());
         }
-
-        try {
-            try {
-                quickUpdate(channel);
-            } catch (Exception e) {
-                if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]")) {
-                    Calendar c = Calendar.getInstance();
-
-                    if (lastFail.after(new Date())) {
-                        numfail++;
-                    } else {
-                        numfail = 1;
-                    }
-
-                    c.add(Calendar.MINUTE, 1);
-
-                    lastFail = c.getTime();
-
-                    if (numfail >= 5) {
-                        timeoutExpire = c.getTime();
-                    }
-                }
-
-                com.gmt2001.Console.debug.println("FollowersCache.run: Failed to update followers: " + e.getMessage());
-            }
-        } catch (Exception e) {
-            com.gmt2001.Console.err.printStackTrace(e);
-        }
-
-        EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channel)));
 
         while (!killed) {
             try {
                 try {
                     if (new Date().after(timeoutExpire)) {
-                        /*
-                         * int newCount =
-                         */
-                        quickUpdate(channel);
-
-                        /*
-                         * if (new Date().after(timeoutExpire) &&
-                         * (Math.abs(newCount - count) > 30 || firstUpdate ||
-                         * new Date().after(nextFull))) {
-                         * this.updateCache(newCount); }
-                         */
-
-                        /*
-                         * if (firstUpdate) { firstUpdate = false;
-                         * EventBus.instance().post(new
-                         * TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channel)));
-                         * }
-                         */
+                        updateCache();
                     }
-                } catch (Exception e) {
-                    if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]")) {
-                        Calendar c = Calendar.getInstance();
-
-                        if (lastFail.after(new Date())) {
-                            numfail++;
-                        } else {
-                            numfail = 1;
-                        }
-
-                        c.add(Calendar.MINUTE, 1);
-
-                        lastFail = c.getTime();
-
-                        if (numfail >= 5) {
-                            timeoutExpire = c.getTime();
-                        }
-                    }
-
-                    com.gmt2001.Console.debug.println("FollowersCache.run: Failed to update followers: " + e.getMessage());
+                } catch (Exception ex) {
+                    checkLastFail();
+                    com.gmt2001.Console.debug.println("FollowersCache.run: Failed to update followers: " + ex.getMessage());
                 }
-            } catch (Exception e) {
-                com.gmt2001.Console.err.printStackTrace(e);
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.println("FollowersCache.run: Failed to update followers [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
 
             try {
                 Thread.sleep(30 * 1000);
-            } catch (InterruptedException e) {
-                com.gmt2001.Console.debug.println("FollowersCache.run: Failed to sleep: [InterruptedException] " + e.getMessage());
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.println("FollowersCache.run: Failed to sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
 
-    private void updateCache(int newCount) throws Exception {
-        Map<String, JSONObject> newCache = Maps.newHashMap();
+    /*
+     * @function updateCache
+     */
+    private void updateCache() throws Exception {
+        com.gmt2001.Console.debug.println("FollowersCache::updateCache");
 
-        final List<JSONObject> responses = Lists.newArrayList();
-        List<Thread> threads = Lists.newArrayList();
+        JSONObject jsonObject = TwitchAPIv3.instance().GetChannelFollows(this.channelName, 100, 0, false);
+        Map<String, String> newCache = new HashMap<>();
 
-        hasFail = false;
+        if (jsonObject.getBoolean("_success")) {
+            if (jsonObject.getInt("_http") == 200) {
+                JSONArray jsonArray = jsonObject.getJSONArray("follows");
+                
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String follower = jsonArray.getJSONObject(i).getJSONObject("user").getString("name");
 
-        Calendar c = Calendar.getInstance();
-
-        c.add(Calendar.HOUR, 1);
-
-        nextFull = c.getTime();
-
-        for (int i = 0; i < Math.ceil(newCount / 100.0); i++) {
-            final int offset = i * 100;
-            Thread thread = new Thread() {
-                @Override
-                public void run() {
-                    JSONObject j = TwitchAPIv3.instance().GetChannelFollows(channel, 100, offset, true);
-
-                    if (j.getBoolean("_success")) {
-                        if (j.getInt("_http") == 200) {
-                            responses.add(j);
-
-                        } else {
-                            try {
-                                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
-                                                    + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
-                                                    + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
-                            } catch (Exception e) {
-                                com.gmt2001.Console.debug.println("FollowersCache.updateCache: Failed to update followers: " + e.getMessage());
-                            }
-                        }
-                    } else {
-                        try {
-                            throw new Exception("[" + j.getString("_exception") + "] " + j.getString("_exceptionMessage"));
-                        } catch (Exception e) {
-                            if ((e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]")) && !hasFail) {
-                                hasFail = true;
-
-                                Calendar c = Calendar.getInstance();
-
-                                if (lastFail.after(new Date())) {
-                                    numfail++;
-                                } else {
-                                    numfail = 1;
-                                }
-
-                                c.add(Calendar.MINUTE, 1);
-
-                                lastFail = c.getTime();
-
-                                if (numfail >= 5) {
-                                    timeoutExpire = c.getTime();
-                                }
-                            }
-
-                            com.gmt2001.Console.debug.println("FollowersCache.updateCache: Failed to update followers: " + e.getMessage());
-                        }
+                    if (!cache.containsKey(follower)) {
+                        EventBus.instance().post(new TwitchFollowEvent(follower, PhantomBot.getChannel(this.channelName)));
                     }
+                    newCache.put(follower, follower);
                 }
-            };
-            thread.setName("me.mast3rplan.phantombot.cache.FollowersCache::updateCache" + i);
-            threads.add(thread);
-            thread.start();
-        }
-
-        for (Thread thread : threads) {
-            thread.join();
-        }
-
-        for (JSONObject response : responses) {
-            JSONArray followers = response.getJSONArray("follows");
-
-            if (followers.length() == 0) {
-                break;
+            } else {
+                throw new Exception("[HTTPErrorException] HTTP " + jsonObject.getInt("_http") + " " + jsonObject.getString("error") + ". req="
+                    + jsonObject.getString("_type") + " " + jsonObject.getString("_url") + " " + jsonObject.getString("_post") + "  "
+                    + (jsonObject.has("message") && !jsonObject.isNull("message") ? "message=" + jsonObject.getString("message") : "content=" + jsonObject.getString("_content")));
             }
-
-            for (int j = 0; j < followers.length(); j++) {
-                JSONObject follower = followers.getJSONObject(j);
-                newCache.put(follower.getJSONObject("user").getString("name"), follower);
-            }
+        } else {
+            throw new Exception("[" + jsonObject.getString("_exception") + "] " + jsonObject.getString("_exceptionMessage"));
         }
 
-        List<String> followers = Lists.newArrayList();
-        List<String> unfollowers = Lists.newArrayList();
-
-        for (String key : newCache.keySet()) {
-            if (cache == null || !cache.containsKey(key)) {
-                followers.add(key);
-            }
-        }
-
-        if (cache != null) {
-            for (String key : cache.keySet()) {
-                if (!newCache.containsKey(key)) {
-                    unfollowers.add(key);
-                }
-            }
-        }
-
-        this.cache = newCache;
-        this.count = newCache.size();
-
-        if (firstUpdate) {
+        if (!killed && firstUpdate) {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channel)));
+            EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channelName)));
         }
+        setCache(newCache);
+    }
 
-        for (String follower : followers) {
-            EventBus.instance().post(new TwitchFollowEvent(follower, PhantomBot.getChannel(this.channel)));
-        }
+    /*
+     * @function checkLastFail
+     */
+    private void checkLastFail() {
+        Calendar cal = Calendar.getInstance();
+        numfail = (lastFail.after(new Date()) ? numfail + 1 : 1);
 
-        for (String follower : unfollowers) {
-            EventBus.instance().post(new TwitchUnfollowEvent(follower, PhantomBot.getChannel(this.channel)));
+        cal.add(Calendar.MINUTE, 1);
+        lastFail = cal.getTime();
+
+        if (numfail > 5) {
+            timeoutExpire = cal.getTime();
         }
     }
 
-    public void addFollower(String username) {
-        cache.put(username, null);
-    }
-
-    public void setCache(Map<String, JSONObject> cache) {
+    /*
+     * @function setCache
+     *
+     * @param {Map} cache
+     */
+    public void setCache(Map<String, String> cache) {
         this.cache = cache;
     }
 
-    public Map<String, JSONObject> getCache() {
-        return cache;
+    /*
+     * @function getCache
+     *
+     * @return {Map}
+     */
+    public Map<String, String> getCache() {
+        return this.cache;
     }
 
+    /*
+     * @function kill
+     */
     public void kill() {
-        killed = true;
+        this.killed = true;
     }
 
+    /*
+     * @function killall
+     */
     public static void killall() {
-        for (Entry<String, FollowersCache> instance : instances.entrySet()) {
-            instance.getValue().kill();
+        for (FollowersCache instance : instances.values()) {
+            instance.kill();
         }
     }
 }
