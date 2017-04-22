@@ -179,7 +179,7 @@
 		if (commandExists(command)) {
 			return commands[command].channel[channel];
 		}
-		return null;
+		return undefined;
 	}
 
 	/**
