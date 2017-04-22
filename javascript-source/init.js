@@ -809,7 +809,7 @@
                 if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
                     if (event.getAdd().toString().equals('true')) {
                         if (!modeO && !$.inidb.exists('settings', 'connectedMsg')) {
-                            consoleLn($.username.resolve($.botName) + ' ready!');
+                            consoleLn($.botName + ' ready!');
                         } else {
                             if (!modeO && !connectedMsg && $.inidb.exists('settings', 'connectedMsg')) {
                                 $.say($.inidb.get('settings', 'connectedMsg'));
@@ -921,6 +921,7 @@
                 command = event.getCommand(),
                 channel = event.getChannel(),
                 isAdmin = event.isAdmin(),
+                sender = event.getSenderId(),
                 args = event.getArgs();
 
             if ($.discord.commandExists(command) === false && ($.discord.aliasExists(command) === false || $.discord.aliasExists(command) === true && $.discord.commandExists($.discord.getCommandAlias(command)) === false)) {
@@ -935,7 +936,7 @@
                 return;
             }
 
-            if (isAdmin == false && $.discord.command.coolDown(command) !== 0) {
+            if (isAdmin == false && $.discord.cooldown.get(command, sender) !== 0) {
                 return;
             }
 
@@ -943,8 +944,14 @@
                 return;
             }
 
-            if ($.discord.getCommandChannel(command) !== '' && !$.discord.getCommandChannel(command).equalsIgnoreCase(channel)) {
+            $.consoleLn($.discord.getCommandChannel(command, channel));
+            $.consoleLn($.discord.getCommandChannel(command, '_default_global_'));
+            if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
                 return;
+            } else {
+                if (($.discord.getCommandChannel(command, channel) !== undefined && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channel)) && $.discord.getCommandChannel(command, '_default_global_') != '') {
+                    return;
+                }
             }
 
             callHook('discordCommand', event, false);

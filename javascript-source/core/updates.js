@@ -96,7 +96,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 'installed2.3.6s'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 'installed2.3.6ss'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -184,7 +184,7 @@
             './handlers/wordCounter.js',
             './systems/ranksSystem.js',
             './systems/auctionSystem.js',
-            './commands/highlightCommand.js',
+            './commands/highlightCommand.js'
         ]; //ADD NEW MODULES IN 2.0.5 TO BE DISABLED PLEASE.
 
         $.consoleLn('Starting PhantomBot version 2.0.5 updates...');
@@ -279,7 +279,7 @@
         var newDefaultDisabledModules = [
             './handlers/twitterHandler.js',
             './systems/audioPanelSystem.js',
-            './systems/queueSystem.js',
+            './systems/queueSystem.js'
         ]; //ADD NEW MODULES IN 2.0.8 TO BE DISABLED PLEASE.
 
         $.consoleLn('Disabling new default modules...');
@@ -577,26 +577,36 @@
     }
 
     /* version 2.3.6s updates */
-    if (!$.inidb.exists('updates', 'installedv2.3.6s') || $.inidb.get('updates', 'installedv2.3.6s') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv2.3.6ss') || $.inidb.get('updates', 'installedv2.3.6ss') != 'true') {
         $.consoleLn('Starting PhantomBot update 2.3.6s updates...');
 
         $.inidb.del('cooldown', 'globalCooldownTime');
         $.inidb.del('cooldown', 'modCooldown');
         $.inidb.del('cooldown', 'perUserCooldown');
         $.inidb.del('cooldown', 'globalCooldown');
+        $.inidb.del('discordCooldown', 'globalCooldown');
+        $.inidb.del('discordCooldown', 'globalCooldownTime');
 
         var keys = $.inidb.GetKeyList('cooldown', ''),
             seconds,
             i;
 
+        $.consoleLn('Updating cooldowns...');
         for (i in keys) {
             seconds = $.inidb.get('cooldown', keys[i]);
             $.inidb.set('cooldown', keys[i], JSON.stringify({command: String(keys[i]), seconds: String(seconds), isGlobal: 'true'}));
         }
 
+        $.consoleLn('Updating Discord cooldowns...');
+        for (i in keys) {
+            seconds = $.inidb.get('discordCooldown', keys[i]);
+            $.inidb.set('discordCooldown', keys[i], JSON.stringify({command: String(keys[i]), seconds: String(seconds), isGlobal: 'true'}));
+        }
+
         $.consoleLn('PhantomBot update 2.3.6s completed!');
-        $.inidb.set('updates', 'installedv2.3.6s', 'true');
+        $.inidb.set('updates', 'installedv2.3.6ss', 'true');
     }
+    
     /**
      * @function getTableContents
      * @param {string} tableName

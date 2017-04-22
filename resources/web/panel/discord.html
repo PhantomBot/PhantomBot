@@ -65,12 +65,15 @@
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-cooldown-modal" type="number" class="form-control" placeholder="Cooldown" data-toggle="tooltip" 
                         title="Cooldown of the command in seconds." />
+                        <input type="checkbox" id="command-edit-global" checked data-toggle="tooltip" 
+                        title="When checked, cooldowns will be applied to everyone in the server, and not just per-user." > Global</input>
                     </div>
 
                     <lable><b>Channel:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
-                        title="Channel that you only want this command to work in, leave it blank to make the command global."/>
+                        title="Channel that you only want this command to work in, leave it blank to make the command global. 
+                        If you want multiple channels separate them with a comma and space. Never use a #"/>
                     </div>
 
                     <lable><b>Alias:</b></lable>
@@ -124,12 +127,15 @@
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-add-cooldown-modal" type="number" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
                         title="Cooldown of the command in seconds." />
+                        <input type="checkbox" id="command-add-global" checked data-toggle="tooltip" 
+                        title="When checked, cooldowns will be applied to everyone in the server, and not just per-user." > Global</input>
                     </div>
 
                     <lable><b>Channel:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
                         <input id="command-add-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
-                        title="Channel that you only want this command to work in, leave it blank to make the command global."/>
+                        title="Channel that you only want this command to work in, leave it blank to make the command global. 
+                        If you want multiple channels separate them with a comma and space. Never use a #"/>
                     </div>
 
                     <lable><b>Alias:</b></lable>

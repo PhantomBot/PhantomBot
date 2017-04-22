@@ -65,11 +65,23 @@
 	 * @export $.discord
 	 * @param {string} command
 	 * @param {string} channel
+	 * @param {boolean} isToRemove
 	 */
-	function setCommandChannel(command, channel) {
+	function setCommandChannel(command, channel, isToRemove) {
 		if (commandExists(command)) {
-			commands[command].channel = channel;
+			if (isToRemove === true) {
+				delete commands[command].channel[channel];
+			} else {
+				commands[command].channel[channel] = channel;
+			}
 		}
+	}
+
+	/**
+	 * @function clearChannelCommands
+	 */
+	function clearChannelCommands(command) {
+		commands[command].channel = [];
 	}
 
 	/**
@@ -163,11 +175,11 @@
 	 * @param {string} command
 	 * @return {string}
 	 */
-	function getCommandChannel(command) {
+	function getCommandChannel(command, channel) {
 		if (commandExists(command)) {
-			return commands[command].channel;
+			return commands[command].channel[channel];
 		}
-		return '';
+		return undefined;
 	}
 
 	/**
@@ -199,13 +211,25 @@
 				permission: $.getSetIniDbNumber('discordPermcom', command, permission),
 				cost: ($.inidb.exists('dicordPricecom', command) ? $.inidb.get('dicordPricecom', command) : 0),
 				alias: ($.inidb.exists('discordAliascom', command) ? $.inidb.get('discordAliascom', command) : ''),
-				channel: ($.inidb.exists('discordChannelcom', command) ? $.inidb.get('discordChannelcom', command) : ''),
+				channel: [],
 				scriptFile: scriptFile,
 				subCommand: {}
 			};
 
+			if ($.inidb.exists('discordChannelcom', command)) {
+				var keys = $.inidb.get('discordChannelcom', command).split(', '),
+					i;
+
+				for (i in keys) {
+					commands[command].channel[keys[i]] = keys[i];
+				}
+			} else {
+				commands[command].channel['_default_global_'] = '';
+			}
+				
+
 			if (commands[command].alias !== '') {
-				aliases[commands[command].alias] = command
+				aliases[commands[command].alias] = command;
 			}
 		}
 	}
@@ -274,4 +298,5 @@
 	$.discord.setCommandAlias = setCommandAlias;
 	$.discord.aliasExists = aliasExists;
 	$.discord.removeAlias = removeAlias;
+	$.discord.clearChannelCommands = clearChannelCommands;
 })();
