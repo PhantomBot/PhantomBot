@@ -120,7 +120,7 @@
      * @return {Number}
      */
     function set(command, hasCooldown, seconds, isMod, username) {
-        seconds = ((parseInt(seconds) * 1000) + $.systemTime());
+        seconds = ((parseInt(seconds) * 1e3) + $.systemTime());
 
         if (hasCooldown) {
             if (username === undefined) {

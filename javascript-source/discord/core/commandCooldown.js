@@ -3,129 +3,232 @@
  *
  */
 (function() {
-	var globalCooldown = $.getSetIniDbBoolean('discordCooldown', 'globalCooldown', true),
-	    globalCooldownTime = $.getSetIniDbNumber('discordCooldown', 'globalCooldownTime', 90),
-	    cooldown = {};
+    var defaultCooldownTime = $.getSetIniDbNumber('discordCooldownSettings', 'defaultCooldownTime', 5),
+        defaultCooldowns = [],
+        cooldowns = [];
 
-	/**
-	 * @function setCoolDown
-	 *
-	 * @export $.discord.command
-	 * @param {string} command
-	 * @param {boolean} hasCoolown
-	 * @param {int} time
-	 */
-	function setCoolDown(command, hasCooldown, time) {
-		if (time === null || time == 0) {
-			return;
-		}
+    /*
+     * @class Cooldown
+     *
+     * @param {String}  command
+     * @param {Number}  seconds
+     * @param {Boolean} isGlobal
+     */
+    function Cooldown(command, seconds, isGlobal) {
+        this.isGlobal = isGlobal;
+        this.command = command;
+        this.seconds = seconds;
+        this.cooldowns = [];
+        this.time = 0;
+    }
 
-		time = parseInt(time * 1e3) + $.systemTime();
-		command = command.toLowerCase();
+    /*
+     * @function loadCooldowns
+     */
+    function loadCooldowns() {
+        var commands = $.inidb.GetKeyList('discordCooldown', ''),
+            json,
+            i;
 
-		if (globalCooldown === true && hasCooldown == false) {
-			cooldown[command] = {
-				time: time
-			};
-		} else {
-			if (hasCooldown == true) {
-				cooldown[command] = {
-					time: time
-				};
-			}
-		}
-	}
+        for (i in commands) {
+            json = JSON.parse($.inidb.get('discordCooldown', commands[i]));
 
-	/**
-	 * @function coolDown
-	 *
-	 * @export $.discord.command
-	 * @param {string} command
-	 * @return {int}
-	 */
-	function coolDown(command) {
-		var hasCooldown = $.inidb.exists('discordCooldown', command);
+            cooldowns[commands[i]] = new Cooldown(json.command, json.seconds, (json.isGlobal == true));
+        }
+    }
 
-		if (globalCooldown === true && hasCooldown == false) {
-			if (cooldown[command] !== undefined) {
-				if (cooldown[command].time - $.systemTime() >= 0) {
-					return 1;
-				}
-			}
-			setCoolDown(command, hasCooldown, globalCooldownTime);
-		} else {
-			if (hasCooldown == true) {
-				if (cooldown[command] !== undefined) {
-					if (cooldown[command].time - $.systemTime() >= 0) {
-						return 1;
-					}
-				}
-				setCoolDown(command, hasCooldown, $.inidb.get('discordCooldown', command));
-			}
-		}
+    /*
+     * @function get 
+     *
+     * @export $.coolDown
+     * @param  {String}  command
+     * @param  {String}  username
+     * @return {Number}
+     */
+    function get(command, username) {
+        var cooldown = cooldowns[command];
 
-		return 0;
-	}
+        if (cooldown !== undefined) {
+            if (cooldown.isGlobal) {
+                if (cooldown.time > $.systemTime()) {
+                    return cooldown.time;
+                } else {
+                    return set(command, true, cooldown.seconds);
+                }
+            } else {
+                if (cooldown.cooldowns[username] !== undefined && cooldown.cooldowns[username] > $.systemTime()) {
+                    return cooldown.cooldowns[username];
+                } else {
+                    return set(command, true, cooldown.seconds, username);
+                }
+            }
+        } else {
+            if (defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
+                return defaultCooldowns[command];
+            } else {
+                return set(command, false, defaultCooldownTime);
+            }
+        }
+    }
 
-	/**
-	 * @event discordCommand
-	 */
-	$.bind('discordCommand', function(event) {
-		var sender = event.getSender(),
-		    channel = event.getChannel(),
-		    command = event.getCommand(),
-		    mention = event.getMention(),
-		    args = event.getArgs(),
-		    action = args[0],
-		    subAction = args[1];
+    /*
+     * @function set 
+     *
+     * @export $.coolDown
+     * @param  {String}  command
+     * @param  {Boolean} hasCooldown
+     * @param  {Number}  seconds
+     * @param  {String}  username
+     * @return {Number}
+     */
+    function set(command, hasCooldown, seconds, username) {
+        seconds = ((parseInt(seconds) * 1e3) + $.systemTime());
 
-	    if (command.equalsIgnoreCase('cooldown')) {
-	    	if (action === undefined) {
-	    		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.commandcooldown.cooldown.usage'));
-	    		return;
-	    	}
+        if (hasCooldown) {
+            if (username === undefined) {
+                cooldowns[command].time = seconds;
+            } else {
+                cooldowns[command].cooldowns[username] = seconds;
+            }
+        } else {
+            defaultCooldowns[command] = seconds;
+        }
+        return 0;
+    }
 
-	    	/**
-	    	 * @discordcommandpath cooldown toggleglobal - Toggles the global cooldown for Discord commands.
-	    	 */
-	    	if (action.equalsIgnoreCase('toggleglobal')) {
-	    		globalCooldown = !globalCooldown;
-	    		$.inidb.set('discordCooldown', 'globalCooldown', globalCooldown);
-	    		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.commandcooldown.cooldown.toggle.global', (globalCooldown === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
-	    	}
+    /*
+     * @function add
+     *
+     * @export $.coolDown
+     * @param {String}  command
+     * @param {Number}  seconds
+     * @param {Boolean} isGlobal
+     */
+    function add(command, seconds, isGlobal) {
+        if (cooldowns[command] === undefined) {
+            cooldowns[command] = new Cooldown(command, seconds, isGlobal);
+            $.inidb.set('discordCooldown', command, JSON.stringify({command: String(command), seconds: String(seconds), isGlobal: String(isGlobal)}));
+        } else {
+            cooldowns[command].isGlobal = isGlobal;
+            cooldowns[command].seconds = seconds;
+            $.inidb.set('discordCooldown', command, JSON.stringify({command: String(command), seconds: String(seconds), isGlobal: String(isGlobal)}));
+        }
+    }
 
-	    	/**
-	    	 * @discordcommandpath cooldown globaltime [seconds] - Set the global cooldown time for Discord commands.
-	    	 */
-	    	if (action.equalsIgnoreCase('globaltime')) {
-	    		if (subAction === undefined || isNaN(parseInt(subAction))) {
-	    			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.commandcooldown.cooldown.global.time.usage'));
-	    			return;
-	    		}
+    /*
+     * @function remove
+     *
+     * @export $.coolDown
+     * @param {String}  command
+     */
+    function remove(command) {
+        $.inidb.del('discordCooldown', command);
+        if (cooldowns[command] !== undefined) {
+            delete cooldowns[command];
+        }
+    }
 
-	    		globalCooldownTime = parseInt(subAction);
-	    		$.inidb.set('discordCooldown', 'globalCooldownTime', globalCooldownTime);
-	    		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.commandcooldown.cooldown.global.time.set', globalCooldownTime));
-	    	}
-	    }
-	});
+    /*
+     * @function clear
+     *
+     * @export $.coolDown
+     * @param {String}  command
+     */
+    function clear(command) {
+        if (cooldowns[command] !== undefined) {
+            cooldowns[command].time = 0;
+        }
+    }
 
-	/**
-	 * @event initReady
-	 */
-	$.bind('initReady', function() {
-		if ($.bot.isModuleEnabled('./discord/core/commandCooldown.js')) {
-			$.discord.registerCommand('./discord/core/commandCooldown.js', 'cooldown', 1);
-			$.discord.registerSubCommand('cooldown', 'toggleglobal', 1);
-			$.discord.registerSubCommand('cooldown', 'globaltime', 1);
-			
-			// $.unbind('initReady'); Needed or not?
-		}
-	});
+    /*
+     * @event discordCommand
+     */
+    $.bind('discordCommand', function(event) {
+        var sender = event.getSender(),
+            command = event.getCommand(),
+            channel = event.getChannel(),
+            mention = event.getMention(),
+            args = event.getArgs(),
+            action = args[0],
+            subAction = args[1],
+            actionArgs = args[2];
 
-    /* Export the function to the $.discord api. */
-    $.discord.command = {
-    	setCoolDown: setCoolDown,
-    	coolDown: coolDown
+        /*
+         * @commandpath coolcom [command] [seconds] [type (global / user)] - Sets a cooldown for a command, default is global. Using -1 for the seconds removes the cooldown.
+         */
+        if (command.equalsIgnoreCase('coolcom')) {
+            if (action === undefined || isNaN(parseInt(subAction))) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.usage'));
+                return;
+            }
+
+            actionArgs = (actionArgs !== undefined && actionArgs == 'user' ? false : true);
+            action = action.replace('!', '').toLowerCase();
+            subAction = parseInt(subAction);
+
+            if (subAction > -1) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.set', action, subAction)); 
+                add(action, subAction, actionArgs);
+            } else {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.remove', action));
+                remove(action);
+            }
+            clear(command);
+            return;
+        }
+
+        if (command.equalsIgnoreCase('cooldown')) {
+            if (action === undefined) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.cooldown.usage'));
+                return;
+            }
+
+            /*
+             * @discordcommandpath cooldown setdefault [seconds] - Sets a default global cooldown for commands without a cooldown.
+             */
+            if (action.equalsIgnoreCase('setdefault')) {
+                if (isNaN(parseInt(subAction))) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.default.usage'));
+                    return;
+                }
+
+                defaultCooldownTime = parseInt(subAction);
+                $.setIniDbNumber('discordCooldownSettings', 'defaultCooldownTime', defaultCooldownTime);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.default.set', defaultCooldownTime));
+            }
+        }
+    });
+
+    /*
+     * @event initReady
+     */
+    $.bind('initReady', function() {
+        $.discord.registerCommand('./discord/core/commandCoolDown.js', 'coolcom', 1);
+
+        $.discord.registerCommand('./discord/core/commandCoolDown.js', 'cooldown', 1);
+        $.discord.registerSubCommand('cooldown', 'setdefault', 1);
+        loadCooldowns();
+    });
+
+    /*
+     * @event panelWebSocket
+     */
+    $.bind('panelWebSocket', function(event) {
+        if (event.getScript().equalsIgnoreCase('./discord/core/commandCoolDown.js')) {
+            if (event.getArgs()[0] == 'add') {
+                add(event.getArgs()[1], event.getArgs()[2], event.getArgs()[3].equals('true'));
+            } else {
+                remove(event.getArgs()[1]);
+            }
+        }
+    });
+
+    /* Export to the $. API */
+    $.discord.cooldown = {
+        remove: remove,
+        clear: clear,
+        get: get,
+        set: set,
+        add: add
     };
 })();
