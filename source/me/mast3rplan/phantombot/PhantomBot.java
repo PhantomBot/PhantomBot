@@ -1124,8 +1124,6 @@ public final class PhantomBot implements Listener {
         this.emotesCache = EmotesCache.instance(this.chanName);
         this.followersCache = FollowersCache.instance(this.chanName);
         
-       
-
         /* Start the donations cache if the keys are not null and the module is enabled */
         if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && checkModuleEnabled("./handlers/donationHandler.js")) {
             this.twitchAlertsCache = DonationsCache.instance(this.chanName);
@@ -1174,6 +1172,7 @@ public final class PhantomBot implements Listener {
                 /* Check to see if the bot is a moderator */
                 for (String moderator : moderators) {
                     if (moderator.equalsIgnoreCase(this.botName)) {
+                        EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session, this.channel, this.session.getNick(), "O", true));
                         /* Allow the bot to sends message to this session */
                         event.getSession().setAllowSendMessages(true);
                     }

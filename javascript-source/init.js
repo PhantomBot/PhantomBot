@@ -809,7 +809,7 @@
                 if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
                     if (event.getAdd().toString().equals('true')) {
                         if (!modeO && !$.inidb.exists('settings', 'connectedMsg')) {
-                            consoleLn($.username.resolve($.botName) + ' ready!');
+                            consoleLn($.botName + ' ready!');
                         } else {
                             if (!modeO && !connectedMsg && $.inidb.exists('settings', 'connectedMsg')) {
                                 $.say($.inidb.get('settings', 'connectedMsg'));
