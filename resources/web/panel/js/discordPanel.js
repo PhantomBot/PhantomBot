@@ -113,7 +113,8 @@
                 cooldown,
                 response,
                 command,
-                channel;
+                channel,
+                global;
             
             if (keys.length === 0) {
                 $('#commands-list').html('<i>There are no commands defined.</i>');
@@ -129,9 +130,10 @@
                     }
                 } else if (keys[i]['table'] == 'discordCooldown') {
                     if (dataObj[keys[i]['key']] === undefined) {
-                        dataObj[keys[i]['key']] = { cooldown: keys[i]['value'] };
+                        dataObj[keys[i]['key']] = { cooldown: JSON.parse(keys[i]['value']).seconds, isGlobal: (JSON.parse(keys[i]['value']).isGlobal == 'true') };
                     } else {
-                        dataObj[keys[i]['key']].cooldown = keys[i]['value'];
+                        dataObj[keys[i]['key']].cooldown = JSON.parse(keys[i]['value']).seconds;
+                        dataObj[keys[i]['key']].isGlobal = (JSON.parse(keys[i]['value']).isGlobal == 'true');
                     }
                 } else if (keys[i]['table'] == 'discordChannelcom') {
                     if (dataObj[keys[i]['key']] === undefined) {
@@ -162,12 +164,13 @@
                     channel = (dataObj[command] !== undefined && dataObj[command].channel === undefined ? '' : dataObj[command].channel);
                     cooldown = (dataObj[command] !== undefined && dataObj[command].cooldown === undefined ? 0 : dataObj[command].cooldown);
                     cost = (dataObj[command] !== undefined && dataObj[command].cost === undefined ? 0 : dataObj[command].cost);
+                    global = (dataObj[command] !== undefined && dataObj[command].isGlobal === undefined ? true : dataObj[command].isGlobal);
 
                     html += '<tr>' +
                         '<td>!' + (command.length > 10 ?  command.substring(0, 10) + '...' : command) + '</td>' +
                         '<td>' + (response.length > 50 ?  response.substring(0, 50) + '...' : response) + '</td>' +
                         '<td>' + cooldown + ' sec '+ '</td>' +
-                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response + '\', \'' + permission + '\', \'' + cost + '\', \'' + cooldown + '\', \'' + channel + '\')"><i class="fa fa-pencil" /> </button>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response + '\', \'' + permission + '\', \'' + cost + '\', \'' + cooldown + '\', \'' + channel + '\', \'' + global +'\')"><i class="fa fa-pencil" /> </button>' +
                         '<button type="button" id="delete_command_' + command.replace(/[^a-z1-9_]/ig, '_') + '" class="btn btn-default btn-xs" onclick="$.updateDiscordCommand(\'' + command + '\', \'true\')"><i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
                 }
@@ -232,13 +235,15 @@
         $('#command-add-cooldown-modal').val('0');
         $('#command-add-cost-modal').val('0');
         $('#command-add-channel-modal').val('');
+        $('#command-add-global').prop('checked', true);
+        $('#command-edit-global').prop('checked', true);
     }
 
     /*
      * @function updateDiscordCommand
      */
     function updateDiscordCommand(cmd, isToRemove) {
-        if (isToRemove == 'true') {
+        if ((typeof isToRemove === 'string' ? isToRemove == 'true' : isToRemove == true)) {
             $('#delete_command_' + cmd.replace(/[^a-z1-9_]/ig, '_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
             sendDBDelete('discord_command', 'discordCommands', cmd);
             sendDBDelete('discord_command', 'discordPermcom', cmd);
@@ -254,7 +259,8 @@
                 cooldown = ($('#command-cooldown-modal').val().length === 0 ? $('#command-add-cooldown-modal').val() : $('#command-cooldown-modal').val()),
                 channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val()),
                 price = ($('#command-cost-modal').val().length === 0 ? $('#command-add-cost-modal').val() : $('#command-cost-modal').val()),
-                alias = ($('#command-alias-modal').val().length === 0 ? $('#command-add-alias-modal').val() : $('#command-alias-modal').val());
+                alias = ($('#command-alias-modal').val().length === 0 ? $('#command-add-alias-modal').val() : $('#command-alias-modal').val()),
+                checked = ($('#command-add-global').is(':checked'));
 
             if (command.length === 0 || response.length === 0 || command.match(/[\'\"\s]/ig) || (permission != 1 && permission != 0)) {
                 setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);
@@ -267,7 +273,7 @@
 
             sendDBUpdate('discord_command', 'discordCommands', command, response.toString());
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
-            sendDBUpdate('discord_command', 'discordCooldown', command, cooldown.toString());
+            sendDBUpdate('discord_command', 'discordCooldown', command, JSON.stringify({command: String(command), seconds: String(cooldown), isGlobal: String(checked)}));
             sendDBUpdate('discord_command', 'discordPricecom', command, price.toString());
             if (channel.length > 0) {
                 sendDBUpdate('discord_command', 'discordChannelcom', command, channel.replace('#', '').toString());
@@ -288,13 +294,14 @@
     /*
      * @function openCommandModal
      */
-    function openCommandModal(command, response, permission, cost, cooldown, channel) {
+    function openCommandModal(command, response, permission, cost, cooldown, channel, checked) {
         $('#command-name-modal').val(command);
         $('#command-response-modal').val(response);
         $('#command-permission-modal').val(permission);
         $('#command-cooldown-modal').val(cooldown);
         $('#command-channel-modal').val(channel);
         $('#command-cost-modal').val(cost);
+        $('#command-edit-global').prop('checked', checked == 'true');
 
         $('#command-modal').modal();
     }

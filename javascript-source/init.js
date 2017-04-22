@@ -921,6 +921,7 @@
                 command = event.getCommand(),
                 channel = event.getChannel(),
                 isAdmin = event.isAdmin(),
+                sender = event.getSenderId(),
                 args = event.getArgs();
 
             if ($.discord.commandExists(command) === false && ($.discord.aliasExists(command) === false || $.discord.aliasExists(command) === true && $.discord.commandExists($.discord.getCommandAlias(command)) === false)) {
@@ -935,7 +936,7 @@
                 return;
             }
 
-            if (isAdmin == false && $.discord.command.coolDown(command) !== 0) {
+            if (isAdmin == false && $.discord.cooldown.get(command, sender) !== 0) {
                 return;
             }
 
