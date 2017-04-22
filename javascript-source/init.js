@@ -944,8 +944,6 @@
                 return;
             }
 
-            $.consoleLn($.discord.getCommandChannel(command, channel));
-            $.consoleLn($.discord.getCommandChannel(command, '_default_global_'));
             if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
                 return;
             } else {
