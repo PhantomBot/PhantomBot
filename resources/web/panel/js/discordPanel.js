@@ -275,9 +275,7 @@
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
             sendDBUpdate('discord_command', 'discordCooldown', command, JSON.stringify({command: String(command), seconds: String(cooldown), isGlobal: String(checked)}));
             sendDBUpdate('discord_command', 'discordPricecom', command, price.toString());
-            if (channel.length > 0) {
-                sendDBUpdate('discord_command', 'discordChannelcom', command, channel.replace('#', '').toString());
-            } else {
+            if (channel.length === 0) {
                 sendDBDelete('discord_command', 'discordChannelcom', command);
             }
             if (alias.length > 0) {

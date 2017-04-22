@@ -944,8 +944,14 @@
                 return;
             }
 
-            if ($.discord.getCommandChannel(command) !== '' && !$.discord.getCommandChannel(command).equalsIgnoreCase(channel)) {
+            $.consoleLn($.discord.getCommandChannel(command, channel));
+            $.consoleLn($.discord.getCommandChannel(command, '_default_global_'));
+            if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
                 return;
+            } else {
+                if (($.discord.getCommandChannel(command, channel) !== undefined && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channel)) && $.discord.getCommandChannel(command, '_default_global_') != '') {
+                    return;
+                }
             }
 
             callHook('discordCommand', event, false);
