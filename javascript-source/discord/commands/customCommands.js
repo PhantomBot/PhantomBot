@@ -447,6 +447,7 @@
             }
 
             $.inidb.set('discordChannelcom', action, subAction);
+            $.discord.clearChannelCommands(action);
             $.discord.setCommandChannel(action, subAction, false);
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.success', action, subAction));
         }
