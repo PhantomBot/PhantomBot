@@ -116,8 +116,8 @@
             $.say(message);
             $.addSubUsersList(resubscriber);
             $.restoreSubscriberStatus(resubscriber, true);
-            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestResub.txt', false);
-            $.writeToFile(subscriber + ': ' + months + ' ', './addons/subscribeHandler/latestResub&Months.txt', false);
+            $.writeToFile(resubscriber + ' ', './addons/subscribeHandler/latestResub.txt', false);
+            $.writeToFile(resubscriber + ': ' + months + ' ', './addons/subscribeHandler/latestResub&Months.txt', false);
             $.inidb.set('streamInfo', 'lastReSub', resubscriber);
             if (reSubReward > 0) {
                 $.inidb.incr('points', resubscriber, reSubReward);
@@ -218,8 +218,8 @@
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.set'));
 
         }
-		
-		/**
+        
+        /**
          * @commandpath resubscribereward [points] - Set an award for resubscribers.
          */
         if (command.equalsIgnoreCase('resubscribereward')) {
