@@ -46,7 +46,7 @@ public class NewPrimeSubscriberEvent extends SubscriberEvent {
     }
 
     public String getSubscriber() {
-        return this.subscriber;
+        return this.subscriber.toLowerCase();
     }
 
     public Channel getChannel() {
