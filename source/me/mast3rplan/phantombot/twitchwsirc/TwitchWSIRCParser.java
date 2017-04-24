@@ -489,14 +489,14 @@ public class TwitchWSIRCParser {
     private void userNotice(String message, String username, Map<String, String> tagsMap) {
         if (tagsMap.containsKey("msg-id")) {
             if (tagsMap.get("msg-id").equalsIgnoreCase("resub")) {
-                scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, tagsMap.get("display-name"), tagsMap.get("msg-param-months")));
+                scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, tagsMap.get("login"), tagsMap.get("msg-param-months")));
             } else {
                 if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
                     if (!this.useTwitchNotify) {
                         if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("prime")) {
-                            scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, tagsMap.get("display-name")));
+                            scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, tagsMap.get("login")));
                         } else {
-                            scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, tagsMap.get("display-name"), tagsMap.get("msg-param-sub-plan-name")));
+                            scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan-name")));
                         }
                     }
                     // Don't look for Twitch notify. Both events will still be active when this new feature comes out.
