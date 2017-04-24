@@ -50,7 +50,7 @@ public class NewReSubscriberEvent extends SubscriberEvent {
     }
 
     public String getReSubscriber() {
-        return this.resubscriber;
+        return this.resubscriber.toLowerCase();
     }
 
     public String getMonths() {
