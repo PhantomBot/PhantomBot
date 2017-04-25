@@ -430,14 +430,14 @@ public final class PhantomBot implements Listener {
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
          * for moderators.  For non-moderators, the maximum is 20 messages in 30 seconds. While it is not recommended
-         * to go above anything higher than 18.75 in case the bot is ever de-modded, the option is available but is
+         * to go above anything higher than 20 in case the bot is ever de-modded, the option is available but is
          * capped at 80.0. 
          */
-        PhantomBot.messageLimit = Double.parseDouble(this.pbProperties.getProperty("msglimit30", "18.75"));
+        PhantomBot.messageLimit = Double.parseDouble(this.pbProperties.getProperty("msglimit30", "20.0"));
         if (PhantomBot.messageLimit > 80.0) {
             PhantomBot.messageLimit = 80.0;
-        } else if (PhantomBot.messageLimit < 18.75) {
-            PhantomBot.messageLimit = 18.75;
+        } else if (PhantomBot.messageLimit < 20.0) {
+            PhantomBot.messageLimit = 20.0;
         }
 
         /* Set the whisper limit for session.java to use. -- Currently Not Used -- */
