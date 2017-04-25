@@ -152,7 +152,7 @@ public class TwitchWSHostIRC {
             if (lastTry + 10000L <= System.currentTimeMillis()) {
                 lastTry = System.currentTimeMillis();
                 try {
-                    com.gmt2001.Console.out.println("Reconnecting to Twitch Host Data Feed");
+                    com.gmt2001.Console.out.println("Reconnecting to Twitch Host Data Feed...");
                     this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
                     reconnected = twitchWSHostIRCWS.connectWSS();
                 } catch (Exception ex) {
@@ -342,27 +342,28 @@ public class TwitchWSHostIRC {
             }
 
             if (message.startsWith(":jtv!jtv@jtv.tmi.twitch.tv")) {
+                com.gmt2001.Console.debug.println("PRIVMSG::" + message);
                 Matcher matcher = hostPattern.matcher(message);
                 if (matcher.find()) {
-                    eventBus.post(new TwitchHostedEvent(matcher.group(1), Integer.parseInt(matcher.group(2))));
+                    eventBus.postAsync(new TwitchHostedEvent(matcher.group(1), Integer.parseInt(matcher.group(2))));
                     return;
                 }
 
                 matcher = hostPatternNoViewers.matcher(message);
                 if (matcher.find()) {
-                    eventBus.post(new TwitchHostedEvent(matcher.group(1)));
+                    eventBus.postAsync(new TwitchHostedEvent(matcher.group(1)));
                     return;
                 }
 
                 matcher = autoHostPattern.matcher(message);
                 if (matcher.find()) {
-                    eventBus.post(new TwitchAutoHostedEvent(matcher.group(1), Integer.parseInt(matcher.group(2))));
+                    eventBus.postAsync(new TwitchAutoHostedEvent(matcher.group(1), Integer.parseInt(matcher.group(2))));
                     return;
                 }
 
                 matcher = autoHostPatternNoViewers.matcher(message);
                 if (matcher.find()) {
-                    eventBus.post(new TwitchAutoHostedEvent(matcher.group(1)));
+                    eventBus.postAsync(new TwitchAutoHostedEvent(matcher.group(1)));
                     return;
                 }
             }
@@ -402,7 +403,7 @@ public class TwitchWSHostIRC {
                     if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
                         com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
                         sentPing = true;
-                        send("PING tmi.twitch.tv");
+                        send("PING :tmi.twitch.tv");
                     }
 
                     if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
