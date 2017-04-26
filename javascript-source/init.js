@@ -790,10 +790,12 @@
          * @event api-ircJoinComplete
          */
         $api.on($script, 'ircJoinComplete', function(event) {
-            connected = true;
-            $.channel = event.getChannel();
+            callHook('ircJoinComplete', event, false);
+
             $.session = event.getSession();
+            $.channel = event.getChannel();
             connectedMsg = false;
+            connected = true;
         });
 
         /**
@@ -1028,13 +1030,6 @@
          */
         $api.on($script, 'ircConnectComplete', function(event) {
             callHook('ircConnectComplete', event, false);
-        });
-
-        /**
-         * @event api-ircJoinComplete
-         */
-        $api.on($script, 'ircJoinComplete', function(event) {
-            callHook('ircJoinComplete', event, false);
         });
 
         /**
