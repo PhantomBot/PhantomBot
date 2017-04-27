@@ -358,6 +358,15 @@ public class DiscordAPI {
     }
 
     /*
+     * Retuns a new embed builder.
+     *
+     * @return {EmbedBuilder}
+     */
+    public EmbedBuilder getMessageEmbedBuilder() {
+        return new EmbedBuilder();
+    }
+
+    /*
      * Sends a private message to a specific user.
      *
      * @param {Member} member
