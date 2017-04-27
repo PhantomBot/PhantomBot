@@ -133,6 +133,16 @@
             s = $.replace(s, m[0], encodeURI(m[1]));
         }
 
+        if (s.match(/\(math (.*)\)/)) {
+            var mathStr = s.match(/\(math (.*)\)/)[1].replace(/\s/g, '');
+
+            if (mathStr.length === 0) {
+                return null;
+            }
+
+            s = $.replace(s, s.match(/\(math (.*)\)/)[0], String(eval(mathStr)));
+        }
+
         if (s.match(reCustomAPIJson) || s.match(reCustomAPI)) {
             s = api(event, s);
         }
