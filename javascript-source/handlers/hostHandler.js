@@ -228,7 +228,7 @@
          */
         if (command.equalsIgnoreCase('hostminviewers')) {
             if (isNaN(parseInt(action))) {
-                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostminviewers.usage'));
+                $.say($.whisperPrefix(sender) + $.lang.get('hosthandler.set.hostminviewers.usage', hostMinCount));
                 return;
             }
 
@@ -318,6 +318,7 @@
             $.registerChatCommand('./handlers/hostHandler.js', 'autohosttoggle', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'host', 1);
             $.registerChatCommand('./handlers/hostHandler.js', 'unhost', 1);
+            $.registerChatCommand('./handlers/hostHandler.js', 'hostminviewers', 1);
         }
     });
 
