@@ -105,6 +105,7 @@ import me.mast3rplan.phantombot.panel.PanelSocketServer;
 import me.mast3rplan.phantombot.script.Script;
 import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
+import me.mast3rplan.phantombot.script.ScriptFileWatcher;
 import me.mast3rplan.phantombot.script.ScriptManager;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 import me.mast3rplan.phantombot.twitchwsirc.Session;
@@ -1055,6 +1056,7 @@ public final class PhantomBot implements Listener {
         ScriptApi.instance().kill();
 
         print("Terminating all script modules...");
+        ScriptFileWatcher.instance().stop();
         HashMap<String, Script> scripts = ScriptManager.getScripts();
         for (Entry<String, Script> script : scripts.entrySet()) {
             script.getValue().kill();
@@ -1658,7 +1660,7 @@ public final class PhantomBot implements Listener {
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
-        ScriptEventManager.instance().runDirect(new CommandEvent(username, command, arguments, null, channel));
+        ScriptEventManager.instance().runDirect(new CommandEvent(username, command, arguments, new HashMap<>(), channel));
     }
 
     /* Handle commands */

@@ -16,16 +16,38 @@
  */
 package me.mast3rplan.phantombot.script;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ScriptFileWatcher implements Runnable {
 
-    private final Script script;
+    private final ArrayList<ScriptFile> scripts = new ArrayList<>();
+    private static final ScriptFileWatcher instance = new ScriptFileWatcher();
+    private boolean started = false;
+    private boolean run = true;
+    private final Object o = new Object();
 
-    public ScriptFileWatcher(Script script) {
-        this.script = script;
+    public static ScriptFileWatcher instance() {
+        if (!instance.started) {
+            new Thread(instance, "me.mast3rplan.phantombot.script.ScriptFileWatcher").start();
+        }
 
+        return instance;
+    }
+
+    private ScriptFileWatcher() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+    }
+
+    public void addScript(Script s) {
+        ScriptFile sf = new ScriptFile(s);
+        synchronized(o) {
+            scripts.add(sf);
+        }
+    }
+
+    public void stop() {
+        this.run = false;
     }
 
     @Override
@@ -33,23 +55,45 @@ public class ScriptFileWatcher implements Runnable {
         "SleepWhileInLoop", "UseSpecificCatch"
     })
     public void run() {
-        File file = script.getFile();
-        long lastUpdate = file.lastModified();
-        boolean run = true;
+        this.started = true;
+        
         while (run) {
             try {
-                Thread.sleep(100);
-                if (file.lastModified() != lastUpdate) {
-                    lastUpdate = file.lastModified();
-                    script.reload();
-                }
+                Thread.sleep(10000);
 
-                if (script.isKilled()) {
-                    run = false;
+                Iterator<ScriptFile> it = scripts.iterator();
+                while (it.hasNext())
+                {
+                    ScriptFile sf = it.next();
+
+                    if (sf.script.isKilled()) {
+                        synchronized(o) {
+                            scripts.remove(sf);
+                        }
+                        continue;
+                    }
+                    
+                    if (sf.script.getFile().lastModified() != sf.lastModified) {
+                        synchronized(o) {
+                            sf.lastModified = sf.script.getFile().lastModified();
+                        }
+                        
+                        sf.script.reload();
+                    }
                 }
             } catch (Exception e) {
                 com.gmt2001.Console.err.printStackTrace(e);
             }
+        }
+    }
+
+    private class ScriptFile {
+        public Script script;
+        public long lastModified;
+
+        public ScriptFile(Script s) {
+            this.script = s;
+            this.lastModified = s.getFile().lastModified();
         }
     }
 }

@@ -33,24 +33,13 @@ public class Script {
     @SuppressWarnings("rawtypes")
     private final List<ScriptDestroyable> destroyables = Lists.newArrayList();
     private final NativeObject vars = new NativeObject();
-    private final ScriptFileWatcher fileWatcher;
     private final File file;
     private Context context;
     private boolean killed = false;
     private int fileNotFoundCount = 0;
+    private boolean watcherRegistered = false;
 
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public Script(File file) {
-
-        if (PhantomBot.reloadScripts) {
-            this.fileWatcher = new ScriptFileWatcher(this);
-        } else {
-            if (file.getPath().indexOf("/lang/") != -1) {
-                this.fileWatcher = new ScriptFileWatcher(this);
-            } else {
-                this.fileWatcher = null;
-            }
-        }
         this.file = file;
 
         if (!file.getName().endsWith(".js") || file.getName().startsWith(".")) {
@@ -58,10 +47,6 @@ public class Script {
         }
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-
-        if (this.fileWatcher != null) {
-            new Thread(fileWatcher, "me.mast3rplan.phantombot.script.ScriptFileWatcher").start();
-        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -81,7 +66,7 @@ public class Script {
             }
             fileNotFoundCount = 0;
         } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+            if (ex.getMessage().contains("This could be a caching issue")) {
                 fileNotFoundCount++;
                 if (fileNotFoundCount == 1) {
                     return;
@@ -118,7 +103,7 @@ public class Script {
             }
             fileNotFoundCount = 0;
         } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+            if (ex.getMessage().contains("This could be a caching issue")) {
                 fileNotFoundCount++;
                 if (fileNotFoundCount == 1) {
                     return;
@@ -143,6 +128,11 @@ public class Script {
 
         if (!file.getName().endsWith(".js")) {
             return;
+        }
+
+        if (!watcherRegistered && (PhantomBot.reloadScripts || file.getPath().contains("/lang/") || file.getPath().contains("\\lang\\"))) {
+            ScriptFileWatcher.instance().addScript(this);
+            watcherRegistered = true;
         }
 
         /* Enable Error() in JS to provide an object with fileName and lineNumber. */
