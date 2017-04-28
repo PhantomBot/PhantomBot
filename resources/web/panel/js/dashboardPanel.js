@@ -590,6 +590,16 @@
             $("#chatsidebar").fadeIn(1000);
         }
     }
+        function toggleTwitchVideo() {
+        if ($("#videosidebar").is(":visible")) {
+            $("#videosidebar").fadeOut(1000);
+        } else {
+            $("#videosidebar").fadeIn(1000);
+        }
+    }
+    function refreshVideo() {
+        document.getElementById("video").src="https://player.twitch.tv/?channel=" + getChannelName() + "\"";
+    }
 
     /**
      * @function toggleTwitchChatRollup
@@ -606,7 +616,23 @@
             $(function() { $("#chatsidebar").resizable('enable'); });
         }
     }
-
+    
+    /**
+     * @function toggleTwitchVideoRollup
+     */
+    function toggleTwitchVideoRollup() {
+        if ($("#video").is(":visible")) {
+            $(function() { $("#videosidebar").resizable('disable'); });
+            videoHeight = $("#videosidebar").height();
+            $("#video").fadeOut(1000);
+            setTimeout(function() { $("#videosidebar").height(20); }, 1000);
+        } else {
+            $("#videosidebar").height(videoHeight);
+            $("#video").fadeIn(1000);
+            $(function() { $("#videosidebar").resizable('enable'); });
+        }
+    }
+    
     /**
      * @function queueCMD
      */
@@ -662,7 +688,10 @@
     $.multiLinkTimerOff = multiLinkTimerOff;
     $.toggleCommand = toggleCommand;
     $.toggleTwitchChat = toggleTwitchChat;
+    $.toggleTwitchVideo = toggleTwitchVideo;
+    $.refreshVideo = refreshVideo
     $.toggleTwitchChatRollup = toggleTwitchChatRollup;
+    $.toggleTwitchVideoRollup = toggleTwitchVideoRollup;
     $.toggleLog = toggleLog;
     $.enableModule = enableModule;
     $.disableModule = disableModule;

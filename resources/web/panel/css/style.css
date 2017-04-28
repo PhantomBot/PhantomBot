@@ -342,13 +342,35 @@ td {
 #chatsidebar {
     position: absolute;
     top: 82px;
-    right: 10px;
+    right: 2px;
     bottom: 0;
     height: 650px;
     width: 360px;
     border: none !important;
     outline: none !important;
     background: transparent;
+}
+#videosidebar {
+    position: absolute;
+    top: 82px;
+    right: 365px;
+    bottom: 0;
+    height: 460px;
+    width: 620px;
+    border: none !important;
+    outline: none !important;
+    background: transparent;
+}
+#video {
+    height: 95%;
+    width: 100%;
+}
+#videosidebar-header {
+    margin: 0;
+    text-align: right;
+    padding-right: 5px;
+    background: rgb(36, 36, 36);
+    color: rgb(100, 66, 166);
 }
 #chat {
     height: 95%;
