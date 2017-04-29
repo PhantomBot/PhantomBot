@@ -39,6 +39,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -286,6 +287,38 @@ public class DiscordAPI {
         if (textChannel != null) {
             try {
                 com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [CHAT] " + message);
+                textChannel.sendMessage(message).queue();
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.println("Failed to send a message to Discord [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+                channelMap.clear();
+                userMap.clear();
+                roleMap.clear();
+                users.clear();
+                botId = jdaAPI.getSelfUser().getId();
+                getTextChannels();
+                getUserNames();
+                getRoles();
+
+                textChannel = resolveChannel(channel);
+                if (textChannel != null) {
+                    textChannel.sendMessage(message).queue();
+                }
+            }
+        }
+    }
+
+    /*
+     * Sends a message to a specific channel.
+     *
+     * @param {String} channel
+     * @param {MessageEmbed} message
+     */
+    public void sendMessage(String channel, MessageEmbed message) {
+        TextChannel textChannel = resolveChannel(channel);
+
+        if (textChannel != null) {
+            try {
+                com.gmt2001.Console.out.println("[DISCORD] [#" + textChannel.getName() + "] [EMBED] " + message.getDescription());
                 textChannel.sendMessage(message).queue();
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.println("Failed to send a message to Discord [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
