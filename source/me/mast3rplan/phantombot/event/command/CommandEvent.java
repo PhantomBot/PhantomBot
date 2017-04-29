@@ -62,8 +62,13 @@ public class CommandEvent extends Event {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
-        this.tags = tags;
         this.channel = null;
+
+        if (tags == null) {
+            this.tags = new HashMap<>();
+        } else {
+            this.tags = tags;
+        }
         parse();
     }
 
@@ -81,8 +86,13 @@ public class CommandEvent extends Event {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
-        this.tags = tags;
         this.channel = channel;
+
+        if (tags == null) {
+            this.tags = new HashMap<>();
+        } else {
+            this.tags = tags;
+        }
         parse();
     }
 
