@@ -20,4 +20,4 @@ $.lang.register('gamewisptier.bonuspoints.usage.tier', 'usage: !gamewisptier bon
 $.lang.register('gamewisptier.bonuspoints.success', 'Changed GameWisp bonuspoint percent multiplier for tier $1 from $2 to $3');
 $.lang.register('gamewisptier.subbonuspoints.usage', 'usage: !gamewisptier subbonuspoints [tier] [number]');
 $.lang.register('gamewisptier.subbonuspoints.usage.tier', 'usage: !gamewisptier subbonuspoints [tier] [number] (Tier $1 is currently $2)');
-$.lang.register('gamewisptier.subbonuspoints', 'Changed GameWisp sub/resub bonus points for tier $1 from $2 to $3');
+$.lang.register('gamewisptier.subbonuspoints.success', 'Changed GameWisp sub/resub bonus points for tier $1 from $2 to $3');
