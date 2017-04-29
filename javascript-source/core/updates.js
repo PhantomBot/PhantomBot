@@ -96,7 +96,7 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 'installed2.3.6ss'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 'installed2.3.6ss', 'installed2.3.6b'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -605,6 +605,46 @@
 
         $.consoleLn('PhantomBot update 2.3.6s completed!');
         $.inidb.set('updates', 'installedv2.3.6ss', 'true');
+    }
+
+    /* version 2.3.6b updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.6b') || $.inidb.get('updates', 'installedv2.3.6b') != 'true') {
+        $.consoleLn('Starting PhantomBot update 2.3.6b updates...');
+
+        $.consoleLn('Fixing uppercase usernames in tables.');
+
+        var keys = $.inidb.GetKeyList('points', ''),
+            i;
+
+        $.inidb.setAutoCommit(false);
+        for (i in keys) {
+            if (keys[i].match(/[A-Z]/)) {
+                $.inidb.incr('points', keys[i].toLowerCase(), $.inidb.get('points', keys[i]));
+                $.inidb.del('points', keys[i]);
+                $.consoleLn('[points] ' + keys[i] + ' -> ' + keys[i].toLowerCase() + '::' + $.inidb.get('points', keys[i].toLowerCase()));
+            } else if (keys[i].match(/[^a-zA-Z0-9_]/)) {
+                $.inidb.del('points', keys[i]);
+                $.consoleLn('[points] [remove] ' + keys[i]);
+            }
+        }
+
+        keys = $.inidb.GetKeyList('group', '');
+
+        for (i in keys) {
+            if (keys[i].match(/[A-Z]/)) {
+                $.inidb.set('group', keys[i].toLowerCase(), $.inidb.get('group', keys[i]));
+                $.inidb.del('group', keys[i]);
+                $.consoleLn('[permission] ' + keys[i] + ' -> ' + keys[i].toLowerCase() + '::' + $.inidb.get('group', keys[i].toLowerCase()));
+            } else if (keys[i].match(/[^a-zA-Z0-9_]/)) {
+                $.inidb.del('group', keys[i]);
+                $.consoleLn('[permission] [remove] ' + keys[i]);
+            }
+        }
+        $.inidb.setAutoCommit(true);
+        $.inidb.SaveAll(true);
+
+        $.consoleLn('PhantomBot update 2.3.6b completed!');
+        $.inidb.set('updates', 'installedv2.3.6b', 'true');
     }
     
     /**
