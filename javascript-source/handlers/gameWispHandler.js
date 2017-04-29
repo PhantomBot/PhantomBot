@@ -402,7 +402,7 @@
 
                 newValue = parseInt(args[2]);
                 if (isNaN(newValue) || newValue < 1) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + 'usage.tier', tierLevel, oldValue));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.usage.tier', tierLevel, oldValue));
                     return;
                 }
 
