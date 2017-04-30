@@ -792,8 +792,14 @@
         $api.on($script, 'ircJoinComplete', function(event) {
             callHook('ircJoinComplete', event, false);
 
-            $.session = event.getSession();
-            $.channel = event.getChannel();
+            if ($.session == null) {
+                $.session = event.getSession();
+            }
+
+            if ($.channel == null) {
+                $.channel = event.getChannel();
+            }
+            
             connectedMsg = false;
             connected = true;
         });
