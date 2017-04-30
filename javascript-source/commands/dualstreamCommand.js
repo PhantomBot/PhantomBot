@@ -4,7 +4,7 @@
         timerInterval = $.getSetIniDbNumber('dualStreamCommand', 'timerInterval', 20),
         reqMessages = $.getSetIniDbNumber('dualStreamCommand', 'reqMessages', 10),
         messageCount = 0,
-        lastSent = 0;
+        lastSent = $.systemTime();
 
     /*
      * @function reloadMulti
@@ -154,7 +154,7 @@
          */
         var interval = setInterval(function() {
             if (timerToggle && !otherChannels.equals('Channel-1 Channel-2')) {
-                if ($.isOnline($.channelName) && messageCount >= reqMessages && ($.systemTime() + (timerInterval * 6e4)) - lastSent <= 0) {
+                if ($.isOnline($.channelName) && messageCount >= reqMessages && ($.systemTime() > lastSent + (timerInterval * 6e4))) {
                     $.say($.lang.get('dualstreamcommand.link') + $.username.resolve($.channelName) + '/' + otherChannels.split(' ').join('/'));
                     lastSent = $.systemTime();
                     messageCount = 0;
