@@ -508,19 +508,41 @@
          * @return {boolean}
          */
         this.jumpToSong = function(playlistPosition) {
-            if ($.inidb.exists(playListDbId, playlistPosition)) {
+            playlistPosition--;
+
+            if (currentPlaylist.getRequestAtIndex(playlistPosition) != null) {
                 previousVideo = currentVideo;
                 try {
-                    currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playlistPosition), $.ownerName);
+                    currentVideo = currentPlaylist.getRequestAtIndex(playlistPosition);
                 } catch (ex) {
                     $.log.error("YoutubeVideo::exception: " + ex);
                     return false;
                 }
-                connectedPlayerClient.play(currentVideo);
-                return true;
             } else {
-                return false;
+                if (defaultPlaylist.length == 0 || defaultPlaylist.length < playlistPosition) {
+                    return false;
+                }
+
+                previousVideo = currentVideo;
+                try {
+                    var playListIndex = defaultPlaylist[playlistPosition];                    
+                    currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                    return false;
+                }
             }
+
+            connectedPlayerClient.play(currentVideo);
+            this.updateCurrentSongFile(currentVideo);
+
+            if (announceInChat) {
+                $.say($.lang.get('ytplayer.announce.nextsong', currentVideo.getVideoTitle(), currentVideo.getOwner()));
+            }
+
+            skipCount = 0;
+            voteArray = [];
+            return true;
         };
 
         /**
