@@ -1150,6 +1150,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* Export these to the $. api for the sripts to use */
+        Script.global.defineProperty("session", this.session, 0);
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
     }
