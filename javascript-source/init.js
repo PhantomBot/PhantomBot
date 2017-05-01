@@ -8,8 +8,7 @@
  * use "$.bind('initReady', FUNCTION);" to execute code after loading all scripts (like registering commands)
  */
 (function() {
-    var connected = false,
-        modeO = false,
+    var modeO = false,
         modules = [],
         hooks = [],
         lastRecon = 0,
@@ -17,10 +16,6 @@
         coolDownMsgEnabled = ($.inidb.exists('settings', 'coolDownMsgEnabled') && $.inidb.get('settings', 'coolDownMsgEnabled').equals('true') ? true : false),
         permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') && $.inidb.get('settings', 'permComMsgEnabled').equals('true') ? true : false),
         lastMsg = 0;
-
-    /* Make these null to start */
-    $.session = null;
-    $.channel = null;
 
     /* Reloads the init vars */
     function reloadInit() {
