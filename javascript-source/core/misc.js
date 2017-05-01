@@ -112,31 +112,23 @@
      * @param {string} message
      */
     function say(message) {
-        if ($.session !== null) {
-            if (message.startsWith('.')) {
-                $.session.say(message);
-                return;
-            }
-
-            if (message.startsWith('@') && message.endsWith(', ')) {
-                return;
-            }
-
-            if (respond && (!action || message.startsWith('/w'))) {
-                $.session.say(message);
-            } else {
-                if (respond && action) {
-                    $.session.say('/me ' + message);
-                }
-                if (!respond) {
-                    $.consoleLn('[MUTED] ' + message);
-                }
-            }
-        } else {
-            $.log.error('"$.session" object not generated, cannot send messages. Please reboot your bot to try to fix this.');
+        if (message.startsWith('.')) {
+            $.session.say(message);
+            return;
+        } else if (message.endsWith(', ')) {
             return;
         }
 
+        if (respond && (!action || message.startsWith('/w'))) {
+            $.session.say(message);
+        } else {
+            if (respond && action) {
+                $.session.say('/me ' + message);
+            }
+            if (!respond) {
+                $.consoleLn('[MUTED] ' + message);
+            }
+        }
         $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
     }
 

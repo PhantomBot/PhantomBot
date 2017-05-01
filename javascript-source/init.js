@@ -787,45 +787,20 @@
         });
 
         /**
-         * @event api-ircJoinComplete
-         */
-        $api.on($script, 'ircJoinComplete', function(event) {
-            callHook('ircJoinComplete', event, false);
-
-            if ($.session == null) {
-                $.session = event.getSession();
-            }
-
-            if ($.channel == null) {
-                $.channel = event.getChannel();
-            }
-            
-            connectedMsg = false;
-            connected = true;
-        });
-
-        /**
          * @event api-ircChannelUserMode
          */
         $api.on($script, 'ircChannelUserMode', function(event) {
             callHook('ircChannelUserMode', event, true);
-            if (!connected) {
-                return;
-            }
-
-            if (event.getChannel().getName().equalsIgnoreCase($.channel.getName())) {
-                if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
-                    if (event.getAdd().toString().equals('true')) {
-                        if (!modeO && !$.inidb.exists('settings', 'connectedMsg')) {
-                            consoleLn($.botName + ' ready!');
+            if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('o')) {
+                if (event.getAdd().toString().equals('true')) {
+                    if (modeO == false) {
+                        if (!$.inidb.exists('settings', 'connectedMsg')) {
+                            consoleLn($.botName + ' ready!'); 
                         } else {
-                            if (!modeO && !connectedMsg && $.inidb.exists('settings', 'connectedMsg')) {
-                                $.say($.inidb.get('settings', 'connectedMsg'));
-                                connectedMsg = true;
-                            }
+                            $.say($.inidb.get('settings', 'connectedMsg'));
                         }
-                        modeO = true;
                     }
+                    modeO = true;
                 }
             }
         });
@@ -1036,6 +1011,13 @@
          */
         $api.on($script, 'ircConnectComplete', function(event) {
             callHook('ircConnectComplete', event, false);
+        });
+
+        /**
+         * @event api-ircJoinComplete
+         */
+        $api.on($script, 'ircJoinComplete', function(event) {
+            callHook('ircJoinComplete', event, false);
         });
 
         /**
