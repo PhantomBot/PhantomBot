@@ -228,7 +228,8 @@ public class NoticeTimer implements Runnable {
 
         /* Check to see if any notices even exist. */
         String message0 = dataStore.GetString("notices", "notice_0", "message");
-        if (message0 == null && lastNoticeID == 0) {
+        if (message0 == null) {
+            lastNoticeID = -1;
             return;
         }
         if (message0.length() == 0 && lastNoticeID == 0) {
