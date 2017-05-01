@@ -1974,6 +1974,12 @@ public final class PhantomBot implements Listener {
         String requiredProperties[] = new String[] { "oauth", "channel", "owner", "user" };
         String requiredPropertiesErrorMessage = "";
 
+        if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 1.8) {
+            System.out.println("Detected Java " + System.getProperty("java.version") + ". " +
+                               "PhantomBot requires Java 8 or newer.");
+            System.exit(1);
+        }
+
         /* Properties configuration */
         Properties startProperties = new Properties();
 
@@ -1982,6 +1988,10 @@ public final class PhantomBot implements Listener {
 
         /* Print the user dir */
         com.gmt2001.Console.out.println("The working directory is: " + System.getProperty("user.dir"));
+
+        com.gmt2001.Console.out.println("Detected Java " + System.getProperty("java.version") + " running on " +
+                                        System.getProperty("os.name") + " " + System.getProperty("os.version") +
+                                        " (" + System.getProperty("os.arch") + ")");
 
         /* Load up the bot info from the bot login file */
         try {

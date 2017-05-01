@@ -45,7 +45,7 @@ public class Script {
         if (PhantomBot.reloadScripts) {
             this.fileWatcher = new ScriptFileWatcher(this);
         } else {
-            if (file.getPath().indexOf("/lang/") != -1) {
+            if (file.getPath().indexOf(System.getProperty("file.separator") + "lang" + System.getProperty("file.separator")) != -1) {
                 this.fileWatcher = new ScriptFileWatcher(this);
             } else {
                 this.fileWatcher = null;
