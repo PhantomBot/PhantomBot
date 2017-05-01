@@ -610,6 +610,12 @@
         if (command.startsWith('!')) {
             command = command.replace('!', '');
         }
+
+        if (command.match(/\s/)) {
+            $("#cooldownCmdInputCommand").val("Cooldowns cannot have a space, please set the cooldown on the default command.");
+            setTimeout(function() { $("#cooldownCmdInputCommand").val(""); $("#cooldownCmdInput").val(""); $("#globalCooldownCheck").prop('checked', true); }, TIMEOUT_WAIT_TIME * 3);
+            return;
+        }
         
         if (input.length > 0 && command.length != 0) {
             sendDBUpdate("commands_cooldown_add", "cooldown", String(command), JSON.stringify({command: String(command.toLowerCase()), seconds: String(input), isGlobal: String(checked)}));
