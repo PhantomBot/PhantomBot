@@ -28,6 +28,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import java.nio.charset.StandardCharsets;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -143,6 +144,7 @@ public class NEWHTTPServer {
     class HTTPServerHandler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
             Boolean hasPassword = false;
+            Boolean doRefresh = false;
             String myPassword = "";
             String myHdrUser = "";
             String myHdrMessage = "";
@@ -198,6 +200,8 @@ public class NEWHTTPServer {
                         if (myPassword.equals(serverWebAuth)) {
                             hasPassword = true;
                         }
+                    } else if (query.startsWith("refresh")) {
+                        doRefresh = true;
                     }
                 }
             }
@@ -207,7 +211,11 @@ public class NEWHTTPServer {
                     handleIniStore(uriPath, exchange, hasPassword);
                 } else if (uriPath.startsWith("/dbquery")) {
                     handleDBQuery(uriPath, uriQueryList, exchange, hasPassword);
-                } else if (uriPath.startsWith("/addons") || uriPath.startsWith("/logs")) {
+                } else if (uriPath.startsWith("/addons") && !doRefresh) {
+                    handleFile(uriPath, exchange, hasPassword, true);
+                } else if (uriPath.startsWith("/addons") && doRefresh) {
+                    handleRefresh(uriPath, exchange, hasPassword, true);
+                } else if (uriPath.startsWith("/logs")) {
                     handleFile(uriPath, exchange, hasPassword, true);
                 } else if (uriPath.equals("/playlist")) {
                     handleFile("/web/playlist/index.html", exchange, hasPassword, false);
@@ -394,6 +402,40 @@ public class NEWHTTPServer {
                     com.gmt2001.Console.err.println("HTTP Server: handleFile(): " + ex.getMessage());
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
+            } catch (IOException ex) {
+                sendHTMLError(500, "Server Error", exchange);
+                com.gmt2001.Console.err.println("HTTP Server: handleFile(): " + ex.getMessage());
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
+    }
+
+    private void handleRefresh(String uriPath, HttpExchange exchange, Boolean hasPassword, Boolean needsPassword) {
+        if (needsPassword) {
+            if (!hasPassword) {
+                sendHTMLError(403, "Access Denied", exchange);
+                return;
+            }
+        }
+
+        File inputFile = new File("." + uriPath);
+
+        if (inputFile.isDirectory()) {
+            sendHTMLError(500, "Server Error: Refresh does not support a directory, only a file", exchange);
+            com.gmt2001.Console.err.println("HTTP Server: handleFile(): Refresh does not support a directory, only a file.");
+        } else {
+            try {
+                FileInputStream fileStream = new FileInputStream(inputFile);
+                byte[] fileRawData  = new byte[fileStream.available()];
+                fileStream.read(fileRawData);
+                String fileStringData = new String(fileRawData, StandardCharsets.UTF_8);
+
+                String refreshString = "<html><head><meta http-equiv=\"refresh\" content=\"2\" /></head>" +
+                                       "<body>" + fileStringData + "</body></html>";
+                
+                sendData("text/html", refreshString, exchange);
+            } catch (FileNotFoundException ex) {
+                sendHTMLError(404, "Not Found", exchange);
             } catch (IOException ex) {
                 sendHTMLError(500, "Server Error", exchange);
                 com.gmt2001.Console.err.println("HTTP Server: handleFile(): " + ex.getMessage());
