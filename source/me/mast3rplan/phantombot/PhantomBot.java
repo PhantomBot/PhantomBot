@@ -1286,9 +1286,15 @@ public final class PhantomBot implements Listener {
 
         /* tests a follow event */
         if (message.equalsIgnoreCase("followertest")) {
-            String randomUser = generateRandomString(10);
-            print("[CONSOLE] Executing followertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new TwitchFollowEvent(randomUser, PhantomBot.getChannel(this.channelName)));
+            String user;
+            if (argument != null) {
+                user = argument[0];
+            } else {
+                user = generateRandomString(10);
+            }
+
+            print("[CONSOLE] Executing followertest (User: " + user + ")");
+            EventBus.instance().postAsync(new TwitchFollowEvent(user, PhantomBot.getChannel(this.channelName)));
             return;
         }
 
