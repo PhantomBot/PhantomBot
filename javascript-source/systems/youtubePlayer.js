@@ -508,19 +508,41 @@
          * @return {boolean}
          */
         this.jumpToSong = function(playlistPosition) {
-            if ($.inidb.exists(playListDbId, playlistPosition)) {
+            playlistPosition--;
+
+            if (currentPlaylist.getRequestAtIndex(playlistPosition) != null) {
                 previousVideo = currentVideo;
                 try {
-                    currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playlistPosition), $.ownerName);
+                    currentVideo = currentPlaylist.getRequestAtIndex(playlistPosition);
                 } catch (ex) {
                     $.log.error("YoutubeVideo::exception: " + ex);
                     return false;
                 }
-                connectedPlayerClient.play(currentVideo);
-                return true;
             } else {
-                return false;
+                if (defaultPlaylist.length == 0 || defaultPlaylist.length < playlistPosition) {
+                    return false;
+                }
+
+                previousVideo = currentVideo;
+                try {
+                    var playListIndex = defaultPlaylist[playlistPosition];                    
+                    currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                    return false;
+                }
             }
+
+            connectedPlayerClient.play(currentVideo);
+            this.updateCurrentSongFile(currentVideo);
+
+            if (announceInChat) {
+                $.say($.lang.get('ytplayer.announce.nextsong', currentVideo.getVideoTitle(), currentVideo.getOwner()));
+            }
+
+            skipCount = 0;
+            voteArray = [];
+            return true;
         };
 
         /**
@@ -1134,29 +1156,19 @@
             }
 
             /**
-             * @commandpath ytp volume [0-100] [+/-] - Set volume in player. +/- raises/lowers by 2. No value to display current volume.
+             * @commandpath ytp volume [0-100] - Set volume in player. No value to display current volume.
              */
             if (action.equalsIgnoreCase('volume')) {
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
                 } 
-                if (actionArgs[0]) {
-                    if (!isNaN(parseInt(actionArgs[0]))) {
-                        connectedPlayerClient.setVolume(actionArgs[0]);
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', actionArgs[0]));
-                        return;
-                    } if (actionArgs[0].equals('+')) {
-                        connectedPlayerClient.setVolume($.getIniDbNumber('ytSettings', 'volume') + 2);
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', $.getIniDbNumber('ytSettings', 'volume')));
-                        return;
-                    } if (actionArgs[0].equals('-')) {
-                        connectedPlayerClient.setVolume($.getIniDbNumber('ytSettings', 'volume') - 2);
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', $.getIniDbNumber('ytSettings', 'volume')));
-                        return;
-                    } 
+                if (actionArgs[0] && !isNaN(parseInt(actionArgs[0]))) {
+                    connectedPlayerClient.setVolume(actionArgs[0]);
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', actionArgs[0]));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.get', connectedPlayerClient.getVolume()));
                 }
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.get', connectedPlayerClient.getVolume()));
                 return;
             }
 
