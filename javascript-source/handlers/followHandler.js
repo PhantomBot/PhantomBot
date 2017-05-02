@@ -54,31 +54,33 @@
     $.bind('twitchFollow', function(event) {
         var follower = event.getFollower(),
             s = followMessage;
+
+        if ($.inidb.exists('followed', follower)) {
+            return;
+        }
+
         
         if (announceFollows === true && followToggle === true) {
-            if (!$.inidb.exists('follows', follower)) {
-
-                if (s.match(/\(name\)/)) {
-                    s = $.replace(s, '(name)', $.username.resolve(follower));
-                }
-
-                if (s.match(/\(reward\)/)) {
-                    s = $.replace(s, '(reward)', $.getPointsString(followReward));
-                }
-
-                if (s.match(/^\/w/)) {
-                    s = s.replace('/w', ' /w');
-                }
-
-                followQueue.add(s);
-
-                if (followReward > 0) {
-                    $.inidb.incr('points', follower, followReward);
-                }
-                
-                $.writeToFile(follower + ' ', './addons/followHandler/latestFollower.txt', false);
-                $.inidb.set('streamInfo', 'lastFollow', follower);
+            if (s.match(/\(name\)/)) {
+                s = $.replace(s, '(name)', $.username.resolve(follower));
             }
+
+            if (s.match(/\(reward\)/)) {
+                s = $.replace(s, '(reward)', $.getPointsString(followReward));
+            }
+
+            if (s.match(/^\/w/)) {
+                s = s.replace('/w', ' /w');
+            }
+
+            followQueue.add(s);
+
+            if (followReward > 0) {
+                $.inidb.incr('points', follower, followReward);
+            }
+            
+            $.writeToFile(follower + ' ', './addons/followHandler/latestFollower.txt', false);
+            $.inidb.set('streamInfo', 'lastFollow', follower);
         }
 
         $.inidb.setAutoCommit(false);
