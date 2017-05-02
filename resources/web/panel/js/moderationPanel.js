@@ -580,6 +580,11 @@
     function deleteBlacklist(key) {
         /* this was giving errors if it contained a symbol other then _ */
         var newkey = key.replace(/[^a-z1-9]/ig, '_');
+
+        /* Properly handle \b from regex patterns. */
+        var wordBoundaryRegEx = new RegExp('\b', 'g');
+        key = key.replace(wordBoundaryRegEx, '\\b');
+
         $("#delete_blackList_" + newkey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
 
         sendDBDelete("commands_delblacklist_" + key, "blackList", key);
