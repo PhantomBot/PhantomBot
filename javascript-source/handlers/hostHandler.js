@@ -83,7 +83,7 @@
             s = s.replace('/w', ' /w');
         }
 
-        if (autoHostToggle === true && hostMinCount >= viewers) {
+        if (autoHostToggle === true && viewers >= hostMinCount) {
             $.say(s);
         }
 
@@ -142,7 +142,7 @@
             s = s.replace('/w', ' /w');
         }
 
-        if (hostToggle === true && hostMinCount >= viewers) {
+        if (hostToggle === true && viewers >= hostMinCount) {
             $.say(s);
         }
 
