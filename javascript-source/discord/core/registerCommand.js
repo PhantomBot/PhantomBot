@@ -209,7 +209,7 @@
 
 			commands[command] = {
 				permission: $.getSetIniDbNumber('discordPermcom', command, permission),
-				cost: ($.inidb.exists('dicordPricecom', command) ? $.inidb.get('dicordPricecom', command) : 0),
+				cost: ($.inidb.exists('discordPricecom', command) ? $.inidb.get('discordPricecom', command) : 0),
 				alias: ($.inidb.exists('discordAliascom', command) ? $.inidb.get('discordAliascom', command) : ''),
 				channel: [],
 				scriptFile: scriptFile,
