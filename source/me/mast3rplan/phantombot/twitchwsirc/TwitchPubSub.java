@@ -22,7 +22,6 @@
 
 package me.mast3rplan.phantombot.twitchwsirc;
 
-import com.google.common.eventbus.Subscribe;
 import com.google.common.collect.Maps;
 import com.gmt2001.Logger;
 
@@ -111,7 +110,6 @@ public class TwitchPubSub {
     /*
      * @event IrcChannelMessageEvent
      */
-    @Subscribe
     public void ircChannelMessageEvent(IrcChannelMessageEvent event) {
         if (messageCache.size() > 100) {
             messageCache.clear();
