@@ -543,11 +543,6 @@ public final class PhantomBot implements Listener {
             this.wsHostIRC = TwitchWSHostIRC.instance(this.channelName, this.apiOAuth, EventBus.instance());
         }
 
-        /* Start a pubsub instance here. */
-        if (this.oauth.length() > 0 && checkDataStore("chatModerator", "moderationLogs")) {
-            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv3.instance().getChannelId(this.channelName), TwitchAPIv3.instance().getChannelId(this.botName), this.oauth);
-        }
-
         /* Check if the OS is Linux. */
         if (SystemUtils.IS_OS_LINUX && !interactive) {
             try {
@@ -1109,6 +1104,11 @@ public final class PhantomBot implements Listener {
         this.session = event.getSession();
 
         com.gmt2001.Console.debug.println("ircJoinComplete::" + this.chanName);
+
+        /* Start a pubsub instance here. */
+        if (this.oauth.length() > 0 && checkDataStore("chatModerator", "moderationLogs")) {
+            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv3.instance().getChannelId(this.channelName), TwitchAPIv3.instance().getChannelId(this.botName), this.oauth);
+        }
 
         /* Add the channel/session in the array for later use */
         PhantomBot.addChannel(this.chanName, event.getChannel());
