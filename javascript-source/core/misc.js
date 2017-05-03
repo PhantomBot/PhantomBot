@@ -108,7 +108,6 @@
 
     /**
      * @function say
-     *
      * @export $
      * @param {string} message
      */
