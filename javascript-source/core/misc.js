@@ -112,10 +112,7 @@
      * @param {string} message
      */
     function say(message) {
-        if ($.session === undefined) {
-            $.log.error('Object "$.session" has not been set, please restart your bot.');
-            return;
-        } else if (message.startsWith('.')) {
+        if (message.startsWith('.')) {
             $.session.say(message);
             return;
         } else if (message.endsWith(', ')) {
