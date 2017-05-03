@@ -136,8 +136,6 @@
                 var script = null,
                     enabled;
 
-                /* Checks if the script was already loaded, if so force reload it. This is used for the lang system. */
-                // $.consoleLn('$api.getScript()::' + $api.getScript($script, scriptFile));
                 if ($api.getScript($script, scriptFile) != null) {
                     script = $api.reloadScriptR($script, scriptFile);
                 } else {
