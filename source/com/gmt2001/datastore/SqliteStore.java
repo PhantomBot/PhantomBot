@@ -41,6 +41,7 @@ public class SqliteStore extends DataStore {
     private Connection connection = null;
     private static final SqliteStore instance = new SqliteStore();
     private int autoCommitCtr = 0;
+    private boolean use_indexes = false;
 
     public static SqliteStore instance() {
         return instance;
@@ -59,7 +60,8 @@ public class SqliteStore extends DataStore {
         cache_size = (int) o[1];
         safe_write = (boolean) o[2];
         journal = (boolean) o[3];
-        connection = (Connection) o[4];
+        use_indexes = (boolean) o[4];
+        connection = (Connection) o[5];
     }
 
     @Override
@@ -70,7 +72,8 @@ public class SqliteStore extends DataStore {
         cache_size = (int) o[1];
         safe_write = (boolean) o[2];
         journal = (boolean) o[3];
-        connection = (Connection) o[4];
+        use_indexes = (boolean) o[4];
+        connection = (Connection) o[5];
     }
 
     private static Object[] LoadConfigReal(String configStr) {
@@ -82,6 +85,7 @@ public class SqliteStore extends DataStore {
         int cache_size = -50000;
         boolean safe_write = false;
         boolean journal = true;
+        boolean use_indexes = false;
         Connection connection = null;
 
         try {
@@ -104,6 +108,9 @@ public class SqliteStore extends DataStore {
                     if (line.startsWith("journal=") && line.length() > 9) {
                         journal = line.substring(8).equalsIgnoreCase("true");
                     }
+                    if (line.startsWith("useindex=") && line.length() > 10) {
+                        use_indexes = line.substring(9).equalsIgnoreCase("true");
+                    }
                 }
 
                 connection = CreateConnection(dbname, cache_size, safe_write, journal, true);
@@ -113,7 +120,7 @@ public class SqliteStore extends DataStore {
         }
 
         return new Object[] {
-                   dbname, cache_size, safe_write, journal, connection
+                   dbname, cache_size, safe_write, journal, use_indexes, connection
                };
     }
 
@@ -184,6 +191,14 @@ public class SqliteStore extends DataStore {
                 statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section string, variable string, value string);");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            }
+
+            if (use_indexes) {
+                try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (variable);")) {
+                    statement.execute();
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
         }
     }
@@ -763,13 +778,27 @@ public class SqliteStore extends DataStore {
         String[] tableNames = GetFileList();
         for (String tableName : tableNames) {
             tableName = validateFname(tableName);
-            com.gmt2001.Console.out.println("    Indexing Table: " + tableName);
             try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (variable);")) {
                 statement.execute();
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
+    }
+
+    @Override
+    public void DropIndexes() {
+        CheckConnection();
+        String[] tableNames = GetFileList();
+        for (String tableName : tableNames) {
+            tableName = validateFname(tableName);
+            try (PreparedStatement statement = connection.prepareStatement("DROP INDEX IF EXISTS " + tableName + "_idx")) {
+                statement.execute();
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
     }
 
     @Override
@@ -815,5 +844,9 @@ public class SqliteStore extends DataStore {
     }
     private synchronized int getAutoCommitCtr() {
         return autoCommitCtr;
+    }
+
+    public boolean getUseIndexes() {
+        return use_indexes;
     }
 }

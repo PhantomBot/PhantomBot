@@ -487,17 +487,20 @@ public final class PhantomBot implements Listener {
         } else {
             dataStoreType = "sqlite3store";
             dataStore = SqliteStore.instance();
-            /* Create indexes. */
-            if (!dataStore.exists("settings", "tables_indexed")) {
-                print("Creating SQLite3 Indexes. This might take time...");
-                dataStore.CreateIndexes();
-                dataStore.set("settings", "tables_indexed", "true");
-                print("Completed Creating SQLite3 Indexes!");
-            }
-            /* Convert the initstore to sqlite if the inistore exists and the db is empty */
+
+            /* Convert the inistore to sqlite if the inistore exists and the db is empty */
             if (IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0) {
                 ini2Sqlite(true);
             }
+
+            /* Handle index operations. */
+            com.gmt2001.Console.out.println("Checking database indexes, please wait...");
+            if (SqliteStore.instance().getUseIndexes()) {
+                dataStore.CreateIndexes();
+            } else {
+                dataStore.DropIndexes();
+            }
+
         }
 
         /* Set the client Id in the Twitch api. */
@@ -541,11 +544,6 @@ public final class PhantomBot implements Listener {
         /* Start a host checking instance. */
         if (apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
             this.wsHostIRC = TwitchWSHostIRC.instance(this.channelName, this.apiOAuth, EventBus.instance());
-        }
-
-        /* Start a pubsub instance here. */
-        if (this.oauth.length() > 0 && checkDataStore("chatModerator", "moderationLogs")) {
-            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv3.instance().getChannelId(this.channelName), TwitchAPIv3.instance().getChannelId(this.botName), this.oauth);
         }
 
         /* Check if the OS is Linux. */
@@ -1109,6 +1107,11 @@ public final class PhantomBot implements Listener {
         this.session = event.getSession();
 
         com.gmt2001.Console.debug.println("ircJoinComplete::" + this.chanName);
+
+        /* Start a pubsub instance here. */
+        if (this.oauth.length() > 0 && checkDataStore("chatModerator", "moderationLogs")) {
+            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv3.instance().getChannelId(this.channelName), TwitchAPIv3.instance().getChannelId(this.botName), this.oauth);
+        }
 
         /* Add the channel/session in the array for later use */
         PhantomBot.addChannel(this.chanName, event.getChannel());

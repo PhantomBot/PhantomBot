@@ -259,6 +259,9 @@ public class DataStore {
     public void CreateIndexes() {
     }
 
+    public void DropIndexes() {
+    }
+
     public Connection CreateConnection(String db, String user, String pass) {
         return null;
     }
