@@ -918,7 +918,7 @@
                 return;
             }
 
-            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(username) < $.discord.getCommandCost(command)) {
+            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(username) > $.discord.getCommandCost(command)) {
                 return;
             }
 
@@ -934,7 +934,7 @@
 
             // Do this last to not slow down the command hook.
             if ($.discord.getCommandCost(command) > 0) {
-                $.discord.decrUserPoints(username, $.discord.getCommandCost(command));
+                $.discord.decrUserPoints(sender, $.discord.getCommandCost(command));
             }
         });
 
