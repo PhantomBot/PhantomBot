@@ -1114,6 +1114,8 @@ public final class PhantomBot implements Listener {
         PhantomBot.addChannel(this.chanName, event.getChannel());
         PhantomBot.addSession(this.chanName, this.session);
 
+        Script.global.defineProperty("session", this.session, 0);
+
         /* Say .mods in the channel to check if the bot is a moderator */
         this.session.saySilent(".mods");
         /* Start the message timers for this session */
@@ -1150,7 +1152,6 @@ public final class PhantomBot implements Listener {
         }
 
         /* Export these to the $. api for the sripts to use */
-        Script.global.defineProperty("session", this.session, 0);
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
     }
