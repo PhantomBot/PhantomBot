@@ -932,7 +932,6 @@
 
             callHook('discordCommand', event, false);
 
-            // Do this last to not slow down the command hook.
             if ($.discord.getCommandCost(command) > 0) {
                 $.discord.decrUserPoints(sender, $.discord.getCommandCost(command));
             }
