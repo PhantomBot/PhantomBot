@@ -503,6 +503,7 @@ public class TwitchWSIRCParser {
                 }
             }
         }
+        
         com.gmt2001.Console.debug.println("USERNOTICE: " + tagsMap);
     }
 
