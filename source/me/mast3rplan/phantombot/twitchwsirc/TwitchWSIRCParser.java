@@ -84,7 +84,7 @@ public class TwitchWSIRCParser {
         this.channel = channel;
         this.session = session;
         this.eventBus = eventBus;
-        useTwitchNotify = true;
+        this.useTwitchNotify = PhantomBot.useTwitchNotify;
 
         parserMap.put("001", new TwitchWSIRCCommand() {
             public void exec(String message, String username, Map<String, String> tagsMap) {
@@ -290,18 +290,15 @@ public class TwitchWSIRCParser {
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
 
         /* Check to see if the user is subscribing to the channel */
-        if (message.endsWith("subscribed!") || message.endsWith("Prime!")) {
-            if (useTwitchNotify && username.equalsIgnoreCase("twitchnotify")) {
+        if (username.equalsIgnoreCase("twitchnotify")) {
+            if (useTwitchNotify) {
                 if (message.endsWith("Prime!")) {
                     scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
                 } else {
                     scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
                 }
-                com.gmt2001.Console.debug.println(message.substring(0, message.indexOf(" ", 1)) + " just subscribed!");
-                return;
-            } else if (!useTwitchNotify && username.equalsIgnoreCase("twitchnotify")) {
-                com.gmt2001.Console.debug.println("UseTwitchNotify Disabled");
             }
+            return;
         }
 
         /* Check to see if the users disaplay name. Used in the scripts. */
@@ -365,7 +362,7 @@ public class TwitchWSIRCParser {
                 }
             }
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.out.println("Interrupted Exception");
+            com.gmt2001.Console.debug.println("Interrupted Exception");
         } catch (Exception ex) {
             scriptEventManager.runDirect(new IrcModerationEvent(this.session, username, message, this.channel, tagsMap));
         }
@@ -494,16 +491,11 @@ public class TwitchWSIRCParser {
                 scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, tagsMap.get("login"), tagsMap.get("msg-param-months")));
             } else {
                 if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
-                    if (!useTwitchNotify) {
-                        if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("prime")) {
-                            scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, tagsMap.get("login")));
-                        } else {
-                            scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan-name")));
-                        }
+                    if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
+                        scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, tagsMap.get("login")));
+                    } else {
+                        scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan-name")));
                     }
-                    // Don't look for Twitch notify. Both events will still be active when this new feature comes out.
-                    // For more information please see: https://discuss.dev.twitch.tv/t/subscriptions-beta-changes/10023
-                    useTwitchNotify = !tagsMap.containsKey("msg-param-sub-plan");
                 }
             }
         }
