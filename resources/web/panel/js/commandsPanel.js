@@ -76,11 +76,12 @@
 
                     foundData = true;
                     html += '<tr style="textList">' +
-                    '    <td style="width: 10%">!' + commandName + '</td>' +
+                    '    <td style="width: 10%" >!' + commandName + '</td>' +
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 95%" type="text" id="editCommandCooldown_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '"' +
-                    '                   value="' + time + ' seconds. (Global: ' + JSON.parse(msgObject['results'][idx]['value']).isGlobal + ')" disabled/>' +
+                    '            <input style="width: 95%" type="text" data-toggle="tooltip" title="Click to edit the cooldown." onclick="$.editCooldown(\'' + commandName + '\', \'' + time + '\', \''+ JSON.parse(msgObject['results'][idx]['value']).isGlobal+ '\')"' +
+                    '                       id="editCommandCooldown_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '"' +
+                    '                   value="' + time + ' seconds. (Global: ' + JSON.parse(msgObject['results'][idx]['value']).isGlobal + ')" />' +
                     '              <button style="float: right;" type="button" class="btn btn-default btn-xs" id="deleteCooldown_' + commandName + '" onclick="$.deleteCooldown(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
@@ -102,7 +103,6 @@
 
                     if (panelMatch(commandName, 'modCooldown')) {
                         modCooldown = msgObject['results'][idx]['value'];
-                        console.log('sdfsdffsdfsddfs');
                         continue;
                     }
 
@@ -624,6 +624,13 @@
         }
     }
 
+    function editCooldown(command, time, global) {
+        $("#cooldownCmdInput").val(time);
+        $("#cooldownCmdInputCommand").val(command);
+        $("#cooldownCmdInputCommand").focus();
+        $("#globalCooldownCheck").prop('checked', global == 'true');
+    }
+
     /**
      * @function commandEnable
      * @param {String} commandName
@@ -705,4 +712,5 @@
     $.runCustomCommand = runCustomCommand;
     $.toggleCooldownMsg = toggleCooldownMsg;
     $.togglePermcomMsg = togglePermcomMsg;
+    $.editCooldown = editCooldown;
 })();
