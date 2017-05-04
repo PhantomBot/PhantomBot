@@ -175,7 +175,7 @@ public class TwitchWSIRCParser {
      * @param  String  Incoming single line of a raw IRC message
      */
     private void parseLine(String rawMessage) {
-        com.gmt2001.Console.out.println("rawMessage::" + rawMessage);
+        //com.gmt2001.Console.out.println("rawMessage::" + rawMessage);
         Map<String, String> tagsMap = null;
         String messageParts[] = rawMessage.split(" :", 3);
         String userName = "";
