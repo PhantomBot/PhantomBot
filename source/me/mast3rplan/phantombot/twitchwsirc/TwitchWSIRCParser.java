@@ -85,6 +85,8 @@ public class TwitchWSIRCParser {
         this.channel = channel;
         this.session = session;
         this.eventBus = eventBus;
+
+        // This is only a temp thing.
         this.useTwitchNotify = PhantomBot.useTwitchNotify;
 
         parserMap.put("001", new TwitchWSIRCCommand() {
@@ -292,6 +294,7 @@ public class TwitchWSIRCParser {
 
         /* Check to see if the user is subscribing to the channel */
         if (username.equalsIgnoreCase("twitchnotify")) {
+            // This is only a temp thing.
             if (useTwitchNotify) {
                 if (message.endsWith("Prime!")) {
                     scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
