@@ -214,6 +214,7 @@ public final class PhantomBot implements Listener {
     public static Boolean enableDebugging = false;
     public static Boolean enableDebuggingLogOnly = false;
     public static Boolean enableRhinoDebugger = false;
+    public static Boolean useTwitchNotify;
     public static String timeZone = "GMT";
     public Boolean isExiting = false;
     private Boolean interactive;
@@ -223,7 +224,6 @@ public final class PhantomBot implements Listener {
     private static HashMap<String, Channel> channels;
     private static HashMap<String, Session> sessions;
     private static HashMap<String, String> apiOAuths;
-    private static Boolean useTwitchNotify;
     private static Boolean newSetup = false;
     private Channel channel;
     private Session session;
