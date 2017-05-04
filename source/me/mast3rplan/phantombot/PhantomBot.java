@@ -1225,7 +1225,7 @@ public final class PhantomBot implements Listener {
         String message = event.getMsg();
         Boolean changed = false;
         Boolean reset = false;
-        String arguments;
+        String arguments = "";
         String[] argument = null;
 
         /* Check to see if the message is null or has nothing in it */
@@ -1239,6 +1239,14 @@ public final class PhantomBot implements Listener {
             message = messageString.substring(0, messageString.indexOf(" "));
             arguments = messageString.substring(messageString.indexOf(" ") + 1);
             argument = arguments.split(" ");
+        }
+
+        if (message.equalsIgnoreCase("faketwitchmsg")) {
+            if (argument != null) {
+                com.gmt2001.Console.out.println(">> Faking Twitch IRC [" + arguments + "]");
+                this.session.fakeTwitchMessage(arguments + "_"); // Need a junk character to strip off //
+            }
+            return;
         }
 
         if (message.equalsIgnoreCase("ankhtophantombot")) {

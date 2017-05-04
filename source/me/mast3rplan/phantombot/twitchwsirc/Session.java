@@ -337,4 +337,11 @@ public class Session {
             }
         }
     }
+
+    /*
+     * @function fakeTwitchMessage
+     */
+    public void fakeTwitchMessage(String message) {
+        twitchWSIRC.onMessage(message);
+    }
 }
