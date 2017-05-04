@@ -84,7 +84,7 @@ public class TwitchWSIRCParser {
         this.channel = channel;
         this.session = session;
         this.eventBus = eventBus;
-        this.useTwitchNotify = true;
+        useTwitchNotify = true;
 
         parserMap.put("001", new TwitchWSIRCCommand() {
             public void exec(String message, String username, Map<String, String> tagsMap) {
@@ -175,7 +175,7 @@ public class TwitchWSIRCParser {
      * @param  String  Incoming single line of a raw IRC message
      */
     private void parseLine(String rawMessage) {
-        //com.gmt2001.Console.out.println("rawMessage::" + rawMessage);
+        com.gmt2001.Console.out.println("rawMessage::" + rawMessage);
         Map<String, String> tagsMap = null;
         String messageParts[] = rawMessage.split(" :", 3);
         String userName = "";
@@ -299,6 +299,8 @@ public class TwitchWSIRCParser {
                 }
                 com.gmt2001.Console.debug.println(message.substring(0, message.indexOf(" ", 1)) + " just subscribed!");
                 return;
+            } else if (!useTwitchNotify && username.equalsIgnoreCase("twitchnotify")) {
+                com.gmt2001.Console.debug.println("UseTwitchNotify Disabled");
             }
         }
 
@@ -492,7 +494,7 @@ public class TwitchWSIRCParser {
                 scriptEventManager.runDirect(new NewReSubscriberEvent(this.session, this.channel, tagsMap.get("login"), tagsMap.get("msg-param-months")));
             } else {
                 if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
-                    if (!this.useTwitchNotify) {
+                    if (!useTwitchNotify) {
                         if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("prime")) {
                             scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, tagsMap.get("login")));
                         } else {
@@ -501,7 +503,7 @@ public class TwitchWSIRCParser {
                     }
                     // Don't look for Twitch notify. Both events will still be active when this new feature comes out.
                     // For more information please see: https://discuss.dev.twitch.tv/t/subscriptions-beta-changes/10023
-                    this.useTwitchNotify = !tagsMap.containsKey("msg-param-sub-plan");
+                    useTwitchNotify = !tagsMap.containsKey("msg-param-sub-plan");
                 }
             }
         }
