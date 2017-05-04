@@ -452,7 +452,7 @@ public final class PhantomBot implements Listener {
         this.backupSQLiteHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupsqlitehourfreqency", "24"));
         this.backupSQLiteKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupsqlitekeepdays", "5"));
 
-        // This is only a temp thing until Twitch moves over to USERNOTICE.
+        /* This is only a temp thing until Twitch moves over to USERNOTICE. */
         PhantomBot.useTwitchNotify = this.pbProperties.getProperty("usetwitchnotify", "true").equals("true");
 
         /* Load up a new SecureRandom for the scripts to use */
