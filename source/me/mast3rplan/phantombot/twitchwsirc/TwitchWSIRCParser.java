@@ -47,6 +47,7 @@ import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.command.CommandEvent;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.cache.UsernameCache;
+import me.mast3rplan.phantombot.PhantomBot;
 
 /*
  * Create an interface that is used to create event handling methods.
