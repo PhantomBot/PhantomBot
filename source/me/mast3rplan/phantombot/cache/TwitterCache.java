@@ -103,7 +103,7 @@ public class TwitterCache implements Runnable {
 
         /* Wait 30 seconds before starting to poll Twitter. */
         try {
-            Thread.sleep(30 * 1000);
+            Thread.sleep(20 * 1000);
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.println("TwitterCache::run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
         }

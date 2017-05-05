@@ -498,13 +498,12 @@ public final class PhantomBot implements Listener {
             }
 
             /* Handle index operations. */
-            com.gmt2001.Console.out.println("Checking database indexes, please wait...");
-            if (SqliteStore.instance().getUseIndexes()) {
+            com.gmt2001.Console.debug.println("Checking database indexes, please wait...");
+            if (dataStore.getUseIndexes()) {
                 dataStore.CreateIndexes();
             } else {
                 dataStore.DropIndexes();
             }
-
         }
 
         /* Set the client Id in the Twitch api. */
