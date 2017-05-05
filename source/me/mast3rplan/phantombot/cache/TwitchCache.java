@@ -217,12 +217,19 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("message")) {
                     com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
                 } else {
-                    com.gmt2001.Console.warn.println("TwitchCache::updateCache: Failed to update.");
+                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
                 }
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
             success = false;
+        }
+
+        // Wait a bit here.
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.debug.println(ex);
         }
 
         try {
@@ -280,7 +287,7 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("message")) {
                     com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
                 } else {
-                    com.gmt2001.Console.warn.println("TwitchCache::updateCache: Failed to update.");
+                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
                 }
             }
         } catch (Exception ex) {
