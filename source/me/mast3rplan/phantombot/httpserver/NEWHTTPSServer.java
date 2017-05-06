@@ -260,7 +260,7 @@ public class NEWHTTPSServer {
                 } else if (uriPath.equals("/")) {
                     handleFile("/web/index.html", exchange, hasPassword, false);
                 } else {
-                    handleFile("/web" + uriPath, exchange, hasPassword, true);
+                    handleFile("/web" + uriPath, exchange, hasPassword, false);
                 }
             }
   
