@@ -1019,11 +1019,20 @@
             if (event.getArgs()[0] == 'remove') {
                 if (customCommands[event.getArgs()[1].toLowerCase()] !== undefined) {
                     delete customCommands[event.getArgs()[1].toLowerCase()];
+                    $.unregisterChatCommand(event.getArgs()[1].toLowerCase());
+                    $.coolDown.remove(event.getArgs()[1].toLowerCase());
                 }
             } else if (event.getArgs()[0] == 'add') {
                 customCommands[event.getArgs()[1].toLowerCase()] = event.getArgs()[2];
+                $.registerChatCommand('./commands/customCommands.js', event.getArgs()[1].toLowerCase());
+                if (event.getArgs()[3] != null && event.getArgs()[3].equalsIgnoreCase('cooldown')) {
+                    $.coolDown.add(event.getArgs()[1].toLowerCase(), parseInt(event.getArgs()[4]), event.getArgs()[5].equals('true'));
+                }
             } else if (event.getArgs()[0] == 'edit') {
                 customCommands[event.getArgs()[1].toLowerCase()] = event.getArgs()[2];
+                if (event.getArgs()[3] != null && event.getArgs()[3].equalsIgnoreCase('cooldown')) {
+                    $.coolDown.add(event.getArgs()[1].toLowerCase(), parseInt(event.getArgs()[4]), event.getArgs()[5].equals('true'));
+                }
             }
         }
     });
