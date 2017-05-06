@@ -224,7 +224,7 @@ public class NEWHTTPServer {
                 } else if (uriPath.equals("/alerts")) {
                     handleFile("/web/alerts/index.html", exchange, hasPassword, false);
                 } else {
-                    handleFile("/web" + uriPath, exchange, hasPassword, false);
+                    handleFile("/web" + uriPath, exchange, hasPassword, true);
                 }
             }
 
