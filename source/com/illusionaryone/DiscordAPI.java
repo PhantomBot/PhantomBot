@@ -62,6 +62,7 @@ import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.exceptions.PermissionException;
+import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 import net.dv8tion.jda.core.hooks.EventListener;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -353,7 +354,7 @@ public class DiscordAPI {
 
             com.gmt2001.Console.out.println("[DISCORD] [@" + user.getName() + "#" + user.getDiscriminator() + "] [DM] " + message);
             user.getPrivateChannel().sendMessage(message).queue();
-        } catch (RateLimitedException | NullPointerException ex) {
+        } catch (RateLimitedException | NullPointerException | ErrorResponseException ex) {
             com.gmt2001.Console.err.println("Failed to send a DM to Discord [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         }
     }
