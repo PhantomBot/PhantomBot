@@ -253,8 +253,10 @@
 
         if (message.match(/\(readfilerand/)) {
             if (message.search(/\((readfilerand ([^)]+)\))/g) >= 0) {
-                var results = $.readFile('./addons/' + RegExp.$2);
-                message = $.replace(message, '(' + RegExp.$1, $.randElement(results));
+                var path = RegExp.$2;
+                var path2 = RegExp.$1;
+                var results = $.arrayShuffle($.readFile('./addons/' + path.trim()));
+                message = $.replace(message, '(' + path2.trim(), $.randElement(results));
             }
         }
 
