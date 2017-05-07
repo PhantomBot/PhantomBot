@@ -610,7 +610,7 @@
                         return;
                     }
 
-                    modLogChannel = args.splice(2).toLowerCase().replace('#', '');
+                    modLogChannel = args.splice(2).join(' ').replace('#', '').toLowerCase();
                     $.setIniDbString('discordSettings', 'modLogChannel', modLogChannel);
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.channel.set', modLogChannel));
                 }
