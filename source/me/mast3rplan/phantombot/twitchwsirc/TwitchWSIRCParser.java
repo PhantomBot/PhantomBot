@@ -298,7 +298,7 @@ public class TwitchWSIRCParser {
             if (useTwitchNotify) {
                 if (message.endsWith("Prime!")) {
                     scriptEventManager.runDirect(new NewPrimeSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
-                } else {
+                } else if (message.endsWith("subscribed!")) {
                     scriptEventManager.runDirect(new NewSubscriberEvent(this.session, channel, message.substring(0, message.indexOf(" ", 1))));
                 }
             }
