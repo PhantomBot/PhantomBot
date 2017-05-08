@@ -66,8 +66,10 @@
             var keys = msgObject['results'];
 
             for (i in keys) {
-                if (keys[i]['value'] !== 'true' && keys[i]['value'] !== 'false') {
+                if (keys[i]['value'] !== 'true' && keys[i]['value'] !== 'false' && keys[i]['key'] !== 'hostChannel') {
                     $('#' + keys[i]['key'] + 'Input').val(keys[i]['value']);
+                } else if (keys[i]['key'] === 'hostChannel') {
+                    $('#hostdChannelInput').val(keys[i]['value']);
                 } else {
                     $('#' + keys[i]['key'] + 'Input').html(iconToggle[keys[i]['value']]);
                 }
@@ -199,6 +201,7 @@
     function updateDiscordTable(htmlId, script, table, key, value) {
         var data = (value !== undefined ? value : $('#' + htmlId).val());
 
+        console.log(htmlId + ';' + script + ';' + table + ';' + key + '');
         if (value !== undefined) {
             $('#' + htmlId).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
         }
@@ -212,7 +215,8 @@
                 }
             }
             
-            sendDBUpdate('discord_update', table, key, data.toString());
+            console.log(table + ':' + key + ':' + data);
+            sendDBUpdate('discord_update', table, key, String(data));
 
             setTimeout(function() { sendWSEvent('discord', './discord/' + script); doQuery(); }, TIMEOUT_WAIT_TIME);
         } else {
