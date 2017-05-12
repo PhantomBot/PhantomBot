@@ -15,7 +15,10 @@
      */
     function updateQuote(quoteid, quote) {
         // Specify String() for objects as they were being treated as an object rather than a String on stringify().
-        quote = String(quote).replace(/"/g, '\'\'');
+        quote[0] = String(quote[0]).replace(/"/g, '\'\'');
+        quote[1] = String(quote[1]).replace(/"/g, '\'\'');
+        quote[3] = String(quote[3]).replace(/"/g, '\'\'');
+
         $.inidb.set('quotes', quoteid, JSON.stringify([String(quote[0]), String(quote[1]), String(quote[2]), String(quote[3])]));
     }
 
