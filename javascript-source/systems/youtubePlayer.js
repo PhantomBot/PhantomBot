@@ -839,7 +839,13 @@
         this.pushPlayList = function() {
             var jsonList = {},
                 playList = [],
+                jsonString,
+                jsonData,
                 youtubeObject,
+                videoId,
+                videoTitle,
+                videoLength,
+                youTubeDbId,
                 i;
 
             if (currentPlaylist) {
@@ -849,12 +855,42 @@
                 playList = currentPlaylist.getReadOnlyPlaylistData();
 
                 for (i = 0; i < playList.length; i++) {
-                    youtubeObject = new YoutubeVideo($.inidb.get(currentPlaylist.getplayListDbId(), playList[i]), $.botName);
-                    jsonList['playlist'].push({
-                        "song": youtubeObject.getVideoId() + '',
-                        "title": youtubeObject.getVideoTitle() + '',
-                        "duration": youtubeObject.getVideoLengthMMSS() + ''
-                    });
+
+                    youTubeDbId = $.inidb.get(currentPlaylist.getplayListDbId(), playList[i]);
+
+                    if ($.inidb.exists('ytcache', youTubeDbId)) {
+                        jsonString = $.inidb.get('ytcache', youTubeDbId);
+                        jsonData = JSON.parse(jsonString);
+                        videoId = jsonData["id"];
+                        videoTitle = jsonData["title"];
+                        videoLength = jsonData["time"];
+
+                        min = (videoLength / 60 < 10 ? "0" : "") + Math.floor(videoLength / 60);
+                        sec = (videoLength % 60 < 10 ? "0" : "") + Math.floor(videoLength % 60);
+                        videoLength = min + ':' + sec;
+
+                        jsonList['playlist'].push({ "song": videoId, "title": videoTitle, "duration": videoLength });
+                    } else {
+                        try {
+                            youtubeObject = new YoutubeVideo(youTubeDbId, $.botName);
+                            videoId = youtubeObject.getVideoId() + '';
+                            videoTitle = youtubeObject.getVideoTitle() + '';
+                            videoLength = youtubeObject.getVideoLengthMMSS() + '';
+
+                            // Store in the YTCache so that we do not have to hit the API again later.
+                            jsonData = {};
+                            jsonData["id"] = videoId;
+                            jsonData["title"] = videoTitle;
+                            jsonData["time"] = youtubeObject.getVideoLength();
+                            jsonString = JSON.stringify(jsonData);
+                            $.inidb.set('ytcache', videoId, jsonString);
+
+                            jsonList['playlist'].push({ "song": videoId, "title": videoTitle, "duration": videoLength });
+                        } catch (ex) {
+                            $.log.error('YouTube API Failed Lookup: Playlist [' + jsonList['playlistname'] + 
+                                        '] Index [' + playList[i] + '] YT ID [' + youTubeDbId + '] Error [' + ex + ']');
+                        }
+                    }
                 }
                 client.playList(JSON.stringify(jsonList));
             }
@@ -1421,7 +1457,6 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.load.success', requestedPlaylist.getPlaylistname()));
                     }
                     currentPlaylist.loadNewPlaylist(actionArgs[0]);
-                    connectedPlayerClient.pushPlayList();
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.load.usage'));
                 }
