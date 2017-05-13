@@ -95,7 +95,7 @@
         if (command.equalsIgnoreCase('account')) {
             if (action.equalsIgnoreCase('link')) {
                 var code = args[1];
-                if (code === undefined || code.length < 8) {
+                if (code === undefined || code.length() < 8) {
                     return;
                 }
 
