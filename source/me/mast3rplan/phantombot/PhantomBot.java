@@ -1994,9 +1994,8 @@ public final class PhantomBot implements Listener {
         String requiredProperties[] = new String[] { "oauth", "channel", "owner", "user" };
         String requiredPropertiesErrorMessage = "";
 
-        if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 1.8) {
-            System.out.println("Detected Java " + System.getProperty("java.version") + ". " +
-                               "PhantomBot requires Java 8 or newer.");
+        if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 1.8 || Float.valueOf(System.getProperty("java.specification.version")) >= (float) 1.9) {
+            System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 8. Java 9 will not work.");
             System.exit(1);
         }
 
