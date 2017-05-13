@@ -3,6 +3,8 @@
  *
  */
 (function () {
+    var accounts = {},
+        interval;
 
     /**
      * @function resolveTwitchName
@@ -46,9 +48,9 @@
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
                 }
 
-                /**
-                 * @discordcommandpath account link - Starts the process of linking an account. Completing this will overwrite existing links
-                 */
+            /**
+             * @discordcommandpath account link - Starts the process of linking an account. Completing this will overwrite existing links
+             */
             } else if (action.equalsIgnoreCase('link')) {
                 var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
                     text = '',
@@ -58,16 +60,19 @@
                     text += code.charAt(Math.floor(Math.random() * code.length));
                 }
 
-                Packages.com.gmt2001.datastore.TempStore.instance().SetLong('discord.accountlink.pending', userId, text, java.lang.System.currentTimeMillis() + (10 * 6e4));
+                accounts[userId] = {
+                    time: $.systemTime(),
+                    code: text
+                };
 
                 if (islinked) {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.relink', $.channelName, text));
                 } else {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link', $.channelName, text));
                 }
-                /**
-                 * @discordcommandpath account remove - Removes account links from the sender.
-                 */
+            /**
+             * @discordcommandpath account remove - Removes account links from the sender.
+             */
             } else if (action.equalsIgnoreCase('remove')) {
                 $.inidb.del('discordToTwitch', userId);
                 $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.remove'));
@@ -90,71 +95,50 @@
         if (command.equalsIgnoreCase('account')) {
             if (action.equalsIgnoreCase('link')) {
                 var code = args[1];
-                if ($.strlen(code) < 8) {
+                if (code === undefined || code.length < 8) {
                     return;
                 }
 
-                var ts = Packages.com.gmt2001.datastore.TempStore.instance(),
-                    sections = ts.GetCategoryList('discord.accountlink.pending'),
-                    tm = java.lang.System.currentTimeMillis(),
-                    i,
-                    success = false;
+                var keys = Object.keys(accounts),
+                    i;
 
-                for (i = 0; i < sections.length; i++) {
-                    if (ts.HasKey('discord.accountlink.pending', sections[i], code) && ts.GetLong('discord.accountlink.pending', sections[i], code) >= tm) {
-                        $.inidb.set('discordToTwitch', sections[i], sender.toLowerCase());
+                for (i in keys) {
+                    if (accounts[keys[i]].code == code && (accounts[keys[i]].time + 6e5) > $.systemTime()) {
+                        $.inidb.set('discordToTwitch', keys[i], sender.toLowerCase());
 
-                        success = true;
-                        var user = $.discordAPI.resolveUserId(sections[i]);
+                        delete accounts[keys[i]];
 
-                        $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.success', $.username.resolve(sender)));
-
-                        ts.RemoveSection('discord.accountlink.pending', sections[i]);
+                        $.discordAPI.sendPrivateMessage($.discordAPI.resolveUserId(keys[i]), $.lang.get('discord.accountlink.link.success', $.username.resolve(sender)));
+                        return;
                     }
                 }
 
-                if (!success) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('discord.accountlink.link.fail'));
-                }
+                $.say($.whisperPrefix(sender) + $.lang.get('discord.accountlink.link.fail'));
             }
         }
     });
-
-    // Interval to clear our old codes that have not yet been registered.
-    var interval = setInterval(function () {
-        var ts = Packages.com.gmt2001.datastore.TempStore.instance(),
-            sections = ts.GetCategoryList('discord.accountlink.pending'),
-            tm = java.lang.System.currentTimeMillis(),
-            keys,
-            i,
-            b,
-            removed;
-
-        for (i = 0; i < sections.length; i++) {
-            keys = ts.GetKeyList('discord.accountlink.pending', sections[i]);
-
-            removed = 0;
-            for (b = 0; b < keys.length; b++) {
-                if (ts.GetLong('discord.accountlink.pending', sections[i], keys[b]) < tm) {
-                    ts.RemoveKey('discord.accountlink.pending', sections[i], keys[b]);
-                    removed++;
-                }
-            }
-
-            if (removed >= keys.length) {
-                ts.RemoveSection('discord.accountlink.pending', sections[i]);
-            }
-        }
-    }, 10 * 6e4);
 
     /**
      * @event initReady
      */
     $.bind('initReady', function() {
         $.discord.registerCommand('./discord/core/accountLink.js', 'account', 0);
-        $.registerChatCommand('./discord/core/accountLink.js', 'account', 7);
         $.discord.registerSubCommand('accountlink', 'link', 0);
         $.discord.registerSubCommand('accountlink', 'remove', 0);
+
+        $.registerChatCommand('./discord/core/accountLink.js', 'account', 7);
+
+        // Interval to clear our old codes that have not yet been registered.
+        interval = setInterval(function() {
+            var keys = Object.keys(accounts),
+                i;
+    
+            for (i in keys) {
+                if ((accounts[keys[i]].time + 6e5) < $.systemTime()) {
+                    delete accounts[keys[i]];
+                }
+            }
+        }, 6e4);
     });
 
     /* Export the function to the $.discord api. */
