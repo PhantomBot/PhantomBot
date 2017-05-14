@@ -42,12 +42,18 @@ public class UsernameCache {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
+    public String stripCharacters(String username) {
+        return username.replaceAll("[^a-zA-Z0-9_]", "");
+    }
+
     public String resolve(String username) {
         return resolve(username, new HashMap<String, String>());
     }
 
     public String resolve(String username, Map<String, String> tags) {
         String lusername = username.toLowerCase();
+
+        lusername = stripCharacters(lusername);
 
         if (cache.containsKey(lusername)) {
             return cache.get(lusername);
