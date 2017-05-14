@@ -11,7 +11,7 @@
  * 	- Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
-	var embedReg = new RegExp(/\(embed\s([\w\W]+),\s(.*)\)/);
+	var embedReg = new RegExp(/\(embed\s([\w\s\d]+),\s(.*)\)/);
 
 	/**
 	 * @function userPrefix
@@ -152,7 +152,7 @@
 					try {
 						if (hookIndex !== -1) {
 							$.bot.hooks[hookIndex].handler(null);
-							say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', $.bot.modules[index].scriptFile));
+							say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', $.bot.modules[index].getModuleName()));
 						}
 					} catch (ex) {
 						$.log.error('[DISCORD] Unable to call initReady for enabled module (' + $.bot.modules[index].scriptFile +'): ' + ex.message);
@@ -172,7 +172,7 @@
 					$.setIniDbBoolean('modules', $.bot.modules[index].scriptFile, false);
 					$.bot.modules[index].enabled = false;
 
-					say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.disabled', $.bot.modules[index].scriptFile));
+					say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.disabled', $.bot.modules[index].getModuleName()));
 				} else {
 					say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.404', subAction));
 				}
