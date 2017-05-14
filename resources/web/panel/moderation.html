@@ -530,7 +530,7 @@
         <form role="form">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="toggleModerationFakePurge" onclick="$.toggleModerations('FakePurge', 'fakePurgeToggle')">Moderate spam
+                    <input type="checkbox" id="toggleModerationFakePurge" onclick="$.toggleModerations('FakePurge', 'fakePurgeToggle')">Moderate purges
                 </label>
             </div>
         </form>
@@ -868,46 +868,10 @@
     <h3>Blacklist</h3>
     <div>
         <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="addModBlacklist">Phrase</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addModBlacklist()">Blacklist</button>
-                <input type="text" class="form-control" id="addModBlacklistInput" placeholder="Phrase" 
-                    data-toggle="tooltip" title="Adding a blacklist word or phrase will timeout anyone who uses that phrase in chat." />
-            </div>
-        </form>
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="blacklistMessage">Message</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                     onclick="$.updateRedrawModSetting('#blacklistMessage', 'blacklistMessage')">Submit</button>
-                <input type="text" class="form-control" id="blacklistMessage" placeholder="Loading..."
-                     data-toggle="tooltip" title="Message said in chat when a user is punished for using a blacklisted phrase" />
-            </div>
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="BlacklistMessageReason">Ban Reason</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                     onclick="$.banReason('#BlacklistMessageReason', 'BlacklistMessage')">Submit</button>
-                <input type="text" class="form-control" id="BlacklistMessageReason" placeholder="Loading..."
-                     data-toggle="tooltip" title="Message sent to your moderators and the user that was punished. And used when silent mode is enabled" />
-            </div>
-        </form>
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="blacklistTimeoutTime">Timeout duration</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                     onclick="$.updateRedrawModSetting('#blacklistTimeoutTime', 'blacklistTimeoutTime')">Submit</button>
-                <input type="number" min="1" class="form-control" id="blacklistTimeoutTime" placeholder="Loading..."
-                     data-toggle="tooltip" title="Set how long a user will get timed out when using a blacklisted phrase." />
-            </div>
-        </form>
-        <form role="form">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="toggleSilentTimeoutBlacklist" onclick="$.toggleSilentTimeout('Blacklist')">Silent mode
-                </label>
-            </div>
+            <button type="button" class="btn btn-primary inline pull-right" data-toggle="modal" data-target="#blacklistModal">Add Blacklist</button>
         </form>
 
+        <br><br>
         <strong>Blacklist</strong>
         <div id="blacklistModSettings" style="height: 150px; overflow: auto;" />
     </div>
@@ -926,7 +890,71 @@
         <strong>Whitelist</strong>
         <div id="whitelistModSettings" style="height: 150px; overflow: auto;" />
     </div>
+</div>
 
+<!-- blacklist modal -->
+<div id="blacklistModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"></button>
+                <h4 class="modal-title">Add a Blacklist</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <lable><b>Phrase</b></lable>
+                        <textarea type="text" rows="3" class="form-control" id="blacklistWord" placeholder="" data-toggle="tooltip" title="Blacklist a word, phrase, or regex."/>
+                        <label><input type="checkbox" id="useRegex" data-toggle="tooltip" title="Check this box if you're using a regular expression."> Regex</label>
+                    </div>
+
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <lable><b>Message</b></lable>
+                        <input type="text" class="form-control" id="" data-toggle="tooltip" value="You were timed out for using a blacklisted word." 
+                        title="Message to be said in chat when someone uses the blacklisted word."/>
+                    </div>
+                    
+                    <div class="form-group" onkeypress="return event.keyCode != 13">
+                        <lable for="blacklistReason"><b>Ban Reason</b></lable>
+                        <input type="text" class="form-control" id="blacklistReason" data-toggle="tooltip" value="Using a blacklisted word." 
+                        title="Reason shown to all moderators and the target user when using the blacklisted word."/>
+                    </div>
+                    
+                    <div class="form" onkeypress="return event.keyCode != 13">
+                        <lable for="blacklistTimeout"><b>Timeout Time</b></lable>
+                        <input type="number" class="form-control" id="blacklistTimeout" value="600" data-toggle="tooltip" title="Timeout time given for this blacklist word."/>
+                    </div>
+    
+                    <form role="form">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="">Exclude regulars
+                            </label>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="">Exclude subscribers
+                            </label>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="">Silent mode
+                            </label>
+                        </div>
+                    </form>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Run the Acordion -->
