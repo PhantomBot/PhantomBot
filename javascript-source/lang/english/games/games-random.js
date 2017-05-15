@@ -26,7 +26,7 @@ $.lang.register('randomcommand.25', 'Real men know when to run like a little bit
 $.lang.register('randomcommand.26', 'If I get reincarnated…. I wanna be a clam.');
 $.lang.register('randomcommand.27', 'Why don’t we drink to me and my reflection in your lovely eyes?');
 $.lang.register('randomcommand.28', 'I can show you what color your brain is.');
-$.lang.register('randomcommand.29', 'And while you’re waiting for us to kill you, we highly recommend p*ssing yourself, Followed by a course of praying to your impudent god. And cowarding in the corner and begging, always good. But if you act now, theres still time for an old-fashioned Suicide!! Thank you London! We love you! goodnight!!');
+$.lang.register('randomcommand.29', 'And while you\'re waiting for us to kill you, we highly recommend p*ssing yourself, Followed by a course of praying to your impudent god. And cowering in the corner and begging, always good. But if you act now, theres still time for an old-fashioned Suicide!! Thank you London! We love you! goodnight!!');
 $.lang.register('randomcommand.30', 'If you die, don’t come crying to me about it.');
 $.lang.register('randomcommand.31', 'From this point on, all your opinions will be rejected!');
 $.lang.register('randomcommand.32', 'Kakarot! Is That A Vegetable?! I Hate Vegetables!');
@@ -35,7 +35,7 @@ $.lang.register('randomcommand.34', 'I know as much of games as hugs and puppies
 $.lang.register('randomcommand.35', '(sender) not just a pervert…He/She\'s A SUPER PERVERT');
 $.lang.register('randomcommand.36', 'When you meet with scary people, you must always protect your wallet and anus!');
 $.lang.register('randomcommand.37', 'Women’s minds and Autumn Winds change often.');
-$.lang.register('randomcommand.38', 'I’m literally haemorrhaging generosity.');
+$.lang.register('randomcommand.38', 'I’m literally hemorrhaging generosity.');
 $.lang.register('randomcommand.39', 'They were traps? I thought they were attractions.');
 $.lang.register('randomcommand.40', 'Okay, here’s the plan: We go in, start hitting people, and see where it takes us.');
 $.lang.register('randomcommand.41', 'The key in turning people on is a girl with a lolita face and big breasts.');
@@ -50,7 +50,7 @@ $.lang.register('randomcommand.49', 'What I want to do most? Let’s see… Just
 $.lang.register('randomcommand.50', 'Please everyone! Send me your energy!! \(-o-)/');
 $.lang.register('randomcommand.51', '(random) vs. (random)  who will win?! Only the one with the smallest penis will win this match! KappaRoss');
 $.lang.register('randomcommand.52', '(sender), during your last physical it was discovered you have Athletes Foot, and we now believe it is affecting your brain.');
-$.lang.register('randomcommand.53', 'When you have a swimsuit tan. You could jump in the pool naked and no one would know you weren’t wearing anything.');
+$.lang.register('randomcommand.53', 'When you have a swimsuit tan. You could jump in the pool naked and no one would know you weren\’t wearing anything.');
 $.lang.register('randomcommand.54', 'I came to laugh at you - Chars Aznabal (Gundam)');
 $.lang.register('randomcommand.55', 'You\'re thinking in Japanese! If you must think, do it in German!');
 $.lang.register('randomcommand.56', '*bursts into tears* I can\'t talk about it! It\'s so horrible! They were-- they were-- the milk! Oh God, the milk!');
@@ -59,14 +59,14 @@ $.lang.register('randomcommand.58', 'Now I understand the relieved, I feel very 
 $.lang.register('randomcommand.59', 'Come on, scribbles on the bathroom wall, please show me the path to true enlightenment!');
 $.lang.register('randomcommand.60', 'Please don\'t worry, (sender), I only came here to obliterate you- not rob you.');
 $.lang.register('randomcommand.61', '... if you let the fly live, the spider is going to die. You can\'t save both without one suffering..It\'s your choice (sender).');
-$.lang.register('randomcommand.62', 'Bansai, bathtoy, wise guy, waterboy, lights shine bright in the o-town tonight');
+$.lang.register('randomcommand.62', 'Banzai, bath toy, wise guy, water boy, lights shine bright in the o-town tonight');
 $.lang.register('randomcommand.63', 'Faye faye smoke smoke, faye faye puff puff! Yay!');
 $.lang.register('randomcommand.64', 'Total slaughter, total slaughter. I won\'t leave a single man alive. La dee da dee dide, genocide. La dee da dee dud, an ocean of blood. Let\'s begin the killing time.');
 $.lang.register('randomcommand.65', 'Someone once told me...that watching the birds made them want to go on a journey...');
 $.lang.register('randomcommand.66', 'I wouldn\'t mind if you want to kill me, but I might struggle a bit.');
 $.lang.register('randomcommand.67', 'I think I know, I don\'t think I know, I don\'t think I think I know, I don\'t think I think.');
 $.lang.register('randomcommand.68', 'I love to stand in line at ATM machines, and when people put in their PIN, I yell GOT IT then run away');
-$.lang.register('randomcommand.69', 'Like a weird neighbour, stalkers are there!');
+$.lang.register('randomcommand.69', 'Like a weird neighbor, stalkers are there!');
 $.lang.register('randomcommand.70', 'OK think of a number. Add 12 to the number. Subtract 2. Divide that number by 5. Add 20. Did you get 12? Neither did I. I just wanted to see if you would do it!');
 $.lang.register('randomcommand.71', 'If somebody throws skittles at me and yells "TASTE THE RAINBOW", I\'m gonna throw a 2 liter bottle of Dr.Pepper and yell "TRUST ME I\'M THE DOCTOR."');
 $.lang.register('randomcommand.72', 'A few days ago I very sternly told the voices in my head to stop talking to Me. Now they are sending me txt mgs say that they r sorry and want to get back2gethr.');
@@ -84,9 +84,9 @@ $.lang.register('randomcommand.83', 'I think there\'s something wrong with my gu
 $.lang.register('randomcommand.84', 'I got a special care pkg. in the mail. It had duct tape, a meat tenderizer, a hole punch and a note saying "Don\'t get caught"! (sigh) I love my friends!');
 $.lang.register('randomcommand.85', 'Backwards this read you making am I why exactly is that, never? you to nice been ever I have when since (now read it backwards).');
 $.lang.register('randomcommand.86', 'What happens in an exam : Tik tok, Mind block, Pen stop, Eye pop, Full shock, Jaw drop, Time up, No Luck');
-$.lang.register('randomcommand.87', '(sender) I dare you to walk up to any officer and say: I didnt do it I didnt kill her, the assassination wasnt part of the plan.\' Then run fast! I bet they\'ll chase you.');
+$.lang.register('randomcommand.87', '(sender) I dare you to walk up to any officer and say: I didn\'t do it I didn\'t kill her, the assassination wasn\'t part of the plan. Then run fast! I bet they\'ll chase you.');
 $.lang.register('randomcommand.88', 'I\'m bored & in need of some adventure. I say we get drunk, get stupid, get a stick, go poke something with teeth and see if we can outrun it.');
-$.lang.register('randomcommand.89', 'Why do people always think my friends and I are high? WE\'RE NOT ON DRUGS! We\'re just crazy, and loud, and random, and scooby doo (but that\'s a different story).');
+$.lang.register('randomcommand.89', 'Why do people always think my friends and I are high? WE\'RE NOT ON DRUGS! We\'re just crazy, and loud, and random, and Scooby Doo (but that\'s a different story).');
 $.lang.register('randomcommand.90', 'Smile and people will wonder what your up to. But grin like crazy and they will want to know what the hell you just did.');
 $.lang.register('randomcommand.91', 'Isn\'t it funny how everyone thinks they are the normal one in their family?');
 $.lang.register('randomcommand.92', '(random) I\'m sorry for what I did to your mother in bed, she said it be fine if I used the spoon, but it all went wrong!!');
@@ -152,7 +152,7 @@ $.lang.register('randomcommand.151', 'Why are a wise man and a wise guy opposite
 $.lang.register('randomcommand.152', 'Why do overlook and oversee mean opposite things?');
 $.lang.register('randomcommand.153', 'If horrific means to make horrible, does terrific mean to make terrible?');
 $.lang.register('randomcommand.154', '"I am." is reportedly the shortest sentence in the English language. Could it be that "I Do." is the longest sentence?');
-$.lang.register('randomcommand.155', 'If lawyers are disbarred and clergymen defrocked, doesn\'t it follow that electricians can be delighted, musicians denoted, cowboys deranged, models deposed, tree surgeons debarked and drycleaners depressed?');
+$.lang.register('randomcommand.155', 'If lawyers are disbarred and clergymen defrocked, doesn\'t it follow that electricians can be delighted, musicians denoted, cowboys deranged, models deposed, tree surgeons debarked and dry cleaners depressed?');
 $.lang.register('randomcommand.156', 'Do Roman paramedics refer to IV\'s as "4\'s"?');
 $.lang.register('randomcommand.157', 'Why is it that if someone tells you that there are 1 billion stars in the universe you will believe them, but if they tell you a wall has wet paint you will have to touch it to be sure?');
 $.lang.register('randomcommand.158', 'If people from Poland are called "Poles", why aren\'t people from Holland called "Holes?"');
@@ -222,7 +222,7 @@ $.lang.register('randomcommand.221', 'Write a story with the ending: \"Everybody
 $.lang.register('randomcommand.222', 'Make a lot of noise. When someone asks what you are doing say you\'re in stealth mode.');
 $.lang.register('randomcommand.223', 'Smile.');
 $.lang.register('randomcommand.224', 'Go into a store and try to buy the most expensive thing with monopoly money!');
-$.lang.register('randomcommand.225', 'Replace mayo in a mayo jar with yogurt and eat it in a public resturaunt.');
+$.lang.register('randomcommand.225', 'Replace mayo in a mayo jar with yogurt and eat it in a public restaurant.');
 $.lang.register('randomcommand.226', 'Take a wet paint sign off a bench watch someone sit on it.');
 $.lang.register('randomcommand.227', 'Walk into your friends house, and get a glass of milk, then just walk out.');
 $.lang.register('randomcommand.228', 'Turn on music and go crazy.');
@@ -251,7 +251,7 @@ $.lang.register('randomcommand.250', 'Buy a new T.V., and have fun with the box.
 $.lang.register('randomcommand.251', 'Draw a little smiley face on a paper and talk to it in front of people...');
 $.lang.register('randomcommand.252', 'Hand out lemons wearing a shirt that says life.');
 $.lang.register('randomcommand.253', 'Try to make a porter potty fly.');
-$.lang.register('randomcommand.254', 'Donate money to hopitals, children homes, and give till it you feel you have gave enough.');
+$.lang.register('randomcommand.254', 'Donate money to hospitals, children homes, and give till it you feel you have gave enough.');
 $.lang.register('randomcommand.255', 'Go to the cereal aisle and build a fort and see how big you can get it without getting in trouble.');
 $.lang.register('randomcommand.256', 'Eat a potato... and when your done with that eat another potato.');
 $.lang.register('randomcommand.257', 'Secret softener... a useful tool the lord of secrets thought... a wonderful item to thwart a cockatrice\'s plans of adding more statues to the roost and in turn returning the elements to dust eventually as time flows along.');
