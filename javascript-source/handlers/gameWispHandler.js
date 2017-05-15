@@ -361,7 +361,7 @@
         }
 
         /*
-         * @commandpath gamewisp tier - Base command for GameWisp tier options.
+         * @commandpath gamewisptier - Base command for GameWisp tier options.
          */
         if (command.equalsIgnoreCase('gamewisptier')) {
             var tierLevel = 0,
@@ -375,9 +375,9 @@
             }
 
             /*
-             * @commandpath gamewisptier songrequest [tier] [number] - Set/view number of additional song requests per tier.
-             * @commandpath gamewisptier bonuspoints [tier] [points] - Set/view point percentage bonus, use whole numbers (30 = 30%).
-             * @commandpath gamewisptier subbonuspoints [tier] [points] - Set/view bonus points to give for sub or resubbing per tier.
+             * @commandpath gamewisptier songrequests [tier number] [number] - Set/view number of additional song requests per tier.
+             * @commandpath gamewisptier bonuspoints [tier number] [points] - Set/view point percentage bonus, use whole numbers (30 = 30%).
+             * @commandpath gamewisptier subbonuspoints [tier number] [points] - Set/view bonus points to give for sub or resubbing per tier.
              *
              * NOTE: When adding more options, ensure that the primary key of tierData and the database key and lang file entries
              * match the subcommand. This function will then take care of all of the rest for you.
