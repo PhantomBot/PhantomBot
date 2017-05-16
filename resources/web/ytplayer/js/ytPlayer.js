@@ -13,6 +13,7 @@ var showChat = false;
 var loadedChat = false;
 var volumeSlider = null;
 var progressSlider = null;
+var lastSent = 0;
 
 var url = window.location.host.split(":");
 var addr = (getProtocol() == 'https://' ? 'wss://' : 'ws://') + url[0] + ':' + getPlayerPort();
@@ -85,6 +86,13 @@ function onPlayerStateChange(event) {
         playerObject.pauseVideo();
         startPaused = false;
     }
+
+    // This is to stop people from spamming the button and cause a loop.
+    if ((lastSent + 200) > new Date().getMilliseconds()) {
+        return;
+    }
+
+    lastSent = new Date().getMilliseconds();
 
     var jsonObject = {};
     jsonObject["status"] = { "state" : event.data };
