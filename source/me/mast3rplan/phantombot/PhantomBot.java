@@ -111,6 +111,7 @@ import me.mast3rplan.phantombot.twitchwsirc.Session;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchPubSub;
 import me.mast3rplan.phantombot.twitchwsirc.TwitchWSHostIRC;
 import me.mast3rplan.phantombot.ytplayer.YTWebSocketServer;
+import me.mast3rplan.phantombot.ytplayer.YTWebSocketSecureServer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -201,6 +202,7 @@ public final class PhantomBot implements Listener {
 
     /* Socket Servers */
     private YTWebSocketServer youtubeSocketServer;
+    private YTWebSocketSecureServer youtubeSocketSecureServer;
     private EventWebSocketServer eventWebSocketServer;
     private PanelSocketServer panelSocketServer;
     private PanelSocketSecureServer panelSocketSecureServer;
@@ -412,6 +414,21 @@ public final class PhantomBot implements Listener {
         /* Set the SSL info */
         this.httpsFileName = this.pbProperties.getProperty("httpsFileName", "");
         this.httpsPassword = this.pbProperties.getProperty("httpsPassword", "");
+
+        /* Verify SSL file if useHttps is enabled. */
+        if (this.useHttps) {
+            if (this.httpsFileName.equals("")) {
+                com.gmt2001.Console.err.println("HTTPS is enabled but the Java Keystore (httpsFileName) is not defined.");
+                com.gmt2001.Console.err.println("Terminating PhantomBot");
+                System.exit(1);
+            }
+ 
+            if (!new File (httpsFileName).exists()) {
+                com.gmt2001.Console.err.println("HTTPS is enabled but the Java Keystore (httpsFileName) is not present: " + httpsFileName);
+                com.gmt2001.Console.err.println("Terminating PhantomBot");
+                System.exit(1);
+            }
+        }
 
         /* Set the timeZone */
         PhantomBot.timeZone = this.pbProperties.getProperty("logtimezone", "GMT");
@@ -784,11 +801,19 @@ public final class PhantomBot implements Listener {
 
             /* Is the music toggled on? */
             if (musicEnabled) {
-                /* Set the music player server */
-                youtubeSocketServer = new YTWebSocketServer((basePort + 3), youtubeOAuth, youtubeOAuthThro);
-                /* Start this youtube socket server */
-                youtubeSocketServer.start();
-                print("YouTubeSocketServer accepting connections on port: " + (basePort + 3));
+                if (useHttps) {
+                    /* Set the music player server */
+                    youtubeSocketSecureServer = new YTWebSocketSecureServer((basePort + 3), youtubeOAuth, youtubeOAuthThro, httpsFileName, httpsPassword);
+                    /* Start this youtube socket server */
+                    youtubeSocketSecureServer.start();
+                    print("YouTubeSocketSecureServer accepting connections on port: " + (basePort + 3) + " (SSL)");
+                } else {
+                    /* Set the music player server */
+                    youtubeSocketServer = new YTWebSocketServer((basePort + 3), youtubeOAuth, youtubeOAuthThro);
+                    /* Start this youtube socket server */
+                    youtubeSocketServer.start();
+                    print("YouTubeSocketServer accepting connections on port: " + (basePort + 3));
+                }
             }
 
             /* Checks if the user wants the legacy servers, this is off by default. */
@@ -989,7 +1014,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("botName", botName, 0);
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
-        Script.global.defineProperty("ytplayer", youtubeSocketServer, 0);
+        Script.global.defineProperty("ytplayer", (useHttps ? youtubeSocketSecureServer : youtubeSocketServer), 0);
         Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : panelSocketServer), 0);
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
