@@ -15,7 +15,7 @@ var volumeSlider = null;
 var progressSlider = null;
 
 var url = window.location.host.split(":");
-var addr = 'ws://' + url[0] + ':' + getPlayerPort();
+var addr = (getProtocol() == 'https://' ? 'wss://' : 'ws://') + url[0] + ':' + getPlayerPort();
 var connection = new WebSocket(addr, []);
 var currentVolume = 0;
 
