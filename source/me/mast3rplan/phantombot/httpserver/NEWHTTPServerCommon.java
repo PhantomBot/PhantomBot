@@ -93,10 +93,13 @@ public class NEWHTTPServerCommon {
     public static void handle(HttpExchange exchange, String serverPassword, String serverWebAuth) throws IOException {
         Boolean hasPassword = false;
         Boolean doRefresh = false;
+        Boolean doMarquee = false;
         String myPassword = "";
         String myHdrUser = "";
         String myHdrMessage = "";
         String[] uriQueryList = null;
+        int marqueeWidth = 420;
+        int msgLength = 40;
 
         // Get the path and query string from the URI
         URI uriData = exchange.getRequestURI();
@@ -150,6 +153,22 @@ public class NEWHTTPServerCommon {
                     }
                 } else if (query.startsWith("refresh")) {
                     doRefresh = true;
+                } else if (query.startsWith("marquee")) {
+                    doMarquee = true;
+                } else if (query.startsWith("width")) {
+                    String[] splitData = query.split("=");
+                    try {
+                        marqueeWidth = Integer.parseInt(splitData[1]);
+                    } catch (NumberFormatException ex) {
+                        marqueeWidth = 420;
+                    }
+                } else if (query.startsWith("cutoff")) {
+                    String[] splitData = query.split("=");
+                    try {
+                        msgLength = Integer.parseInt(splitData[1]);
+                    } catch (NumberFormatException ex) {
+                        msgLength = 40;
+                    }
                 }
             }
         }
@@ -159,10 +178,12 @@ public class NEWHTTPServerCommon {
                 handleIniStore(uriPath, exchange, hasPassword);
             } else if (uriPath.startsWith("/dbquery")) {
                 handleDBQuery(uriPath, uriQueryList, exchange, hasPassword);
-            } else if (uriPath.startsWith("/addons") && !doRefresh) {
+            } else if (uriPath.startsWith("/addons") && !doRefresh && !doMarquee) {
                 handleFile(uriPath, exchange, hasPassword, true);
+            } else if (uriPath.startsWith("/addons") && doMarquee) {
+                handleRefresh(uriPath, exchange, true, hasPassword, true, marqueeWidth, msgLength);
             } else if (uriPath.startsWith("/addons") && doRefresh) {
-                handleRefresh(uriPath, exchange, hasPassword, true);
+                handleRefresh(uriPath, exchange, false, hasPassword, true, 0, 0);
             } else if (uriPath.startsWith("/logs")) {
                 handleFile(uriPath, exchange, hasPassword, true);
             } else if (uriPath.equals("/playlist")) {
@@ -356,7 +377,7 @@ public class NEWHTTPServerCommon {
         }
     }
 
-    private static void handleRefresh(String uriPath, HttpExchange exchange, Boolean hasPassword, Boolean needsPassword) {
+    private static void handleRefresh(String uriPath, HttpExchange exchange, Boolean doMarquee, Boolean hasPassword, Boolean needsPassword, int marqueeWidth, int msgLength) {
         if (needsPassword) {
             if (!hasPassword) {
                 sendHTMLError(403, "Access Denied", exchange);
@@ -367,17 +388,49 @@ public class NEWHTTPServerCommon {
         File inputFile = new File("." + uriPath);
 
         if (inputFile.isDirectory()) {
-            sendHTMLError(500, "Server Error: Refresh does not support a directory, only a file", exchange);
-            com.gmt2001.Console.err.println("HTTP Server: handleFile(): Refresh does not support a directory, only a file.");
+            sendHTMLError(500, "Server Error: Refresh/Marquee does not support a directory, only a file", exchange);
+            com.gmt2001.Console.err.println("HTTP Server: handleFile(): Refresh/Marquee does not support a directory, only a file.");
         } else {
             try {
                 FileInputStream fileStream = new FileInputStream(inputFile);
                 byte[] fileRawData  = new byte[fileStream.available()];
                 fileStream.read(fileRawData);
                 String fileStringData = new String(fileRawData, StandardCharsets.UTF_8);
+                String refreshString = "";
 
-                String refreshString = "<html><head><meta http-equiv=\"refresh\" content=\"2\" /></head>" +
-                                       "<body>" + fileStringData + "</body></html>";
+                if (doMarquee) {
+                    refreshString = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /><style>" +
+                                    "body { margin: 5px; }" + 
+                                    ".marquee { "+
+                                    "    height: 25px;" +
+                                    "    width: " + marqueeWidth + "px;" +
+                                    "    overflow: hidden;" +
+                                    "    position: relative;" +
+                                    "}" +
+                                    ".marquee div {" +
+                                    "    display: block;" +
+                                    "    width: 200%;" +
+                                    "    height: 25px;" +
+                                    "    position: absolute;" +
+                                    "    overflow: hidden;" +
+                                    "    animation: marquee 5s linear infinite;" +
+                                    "}" +
+                                    ".marquee span {" +
+                                    "    float: left;" +
+                                    "    width: 50%;" +
+                                    "}" +
+                                    "@keyframes marquee {" +
+                                    "    0% { left: 0; }" +
+                                    "    100% { left: -100%; }" +
+                                    "}" +
+                                    "</style></head><body><div class=\"marquee\"><div>" +
+                                    "<span>" + fileStringData.substring(0, Math.min(fileStringData.length(), msgLength)) + "&nbsp;</span>" +
+                                    "<span>" + fileStringData.substring(0, Math.min(fileStringData.length(), msgLength)) + "&nbsp;</span>" +
+                                    "</div></div></body></html>";
+                } else {
+                    refreshString = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head>" +
+                                    "<body>" + fileStringData + "</body></html>";
+                }
                 
                 sendData("text/html", refreshString, exchange);
             } catch (FileNotFoundException ex) {
