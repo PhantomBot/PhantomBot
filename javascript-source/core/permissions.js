@@ -617,6 +617,9 @@
             if (users[i][0].equals(username.toLowerCase())) {
                 users.splice(i, 1);
                 restoreSubscriberStatus(username.toLowerCase(), true);
+
+                // Remove this user's display name from the cache.
+                $.username.removeUser(username);
             }
         }
     });
