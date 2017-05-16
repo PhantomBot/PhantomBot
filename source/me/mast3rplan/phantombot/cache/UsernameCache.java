@@ -121,4 +121,12 @@ public class UsernameCache {
             }
         }
     }
+
+    public void removeUser(String userName) {
+        userName = userName.toLowerCase();
+
+        if (cache.containsKey(userName)) {
+            cache.remove(userName);
+        }
+    }
 }
