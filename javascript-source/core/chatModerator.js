@@ -1,6 +1,6 @@
 (function() {
-    var permitList = {},
-        timeouts = {},
+    var permitList = [],
+        timeouts = [],
         whiteList = [],
         blackList = [],
         regexBlackList = [],
@@ -31,7 +31,7 @@
 
         longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', false),
         longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message.'),
-        longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 300),
+        longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 325),
 
         colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
         colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using colored text.'),
@@ -122,10 +122,9 @@
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
         warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
         resetTime = (warningResetTime * 6e4),
-        spamTrackerLastMsg = 0,
         messageTime = 0,
         warning = '',
-        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'g'),
+        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'i'),
         i;
 
     /**
@@ -252,14 +251,30 @@
         loadWhiteList();
     }
 
-    /**
+    /*
      * @interval
-     * Check to see if no one has chatted in 5 minutes. If so clear the array. because this can get big in large channels.
      */
     setInterval(function() {
+        var keys,
+            i;
+
         if (spamTracker.length !== 0) {
-            if (spamTrackerLastMsg - $.systemTime() <= 0) {
-                spamTracker = {};
+            keys = Object.keys(spamTracker);
+
+            for (i in keys) {
+                if (spamTracker[keys[i]].time < $.systemTime()) {
+                    delete spamTracker[keys[i]];
+                }
+            }
+        }
+
+        if (timeouts.length !== 0) {
+            keys = Object.keys(timeouts);
+
+            for (i in keys) {
+                if (timeouts[keys[i]] < $.systemTime()) {
+                    delete timeouts[keys[i]];
+                }
             }
         }
     }, 8e4);
@@ -565,7 +580,6 @@
                     sendMessage(sender, spamTrackerMessage, silentTimeout.SpamTracker);
                     delete spamTracker[sender];
                 }
-                spamTrackerLastMsg = ($.systemTime() + 3e5);
             }
         }
     }
