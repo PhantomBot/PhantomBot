@@ -147,146 +147,22 @@ public class NEWHTTPSServer {
         server.stop(2);
         com.gmt2001.Console.out.println("HTTPS Server stopped on port " + serverPort);
     }
-  
+
     class YTPHandler implements HttpHandler {
-        public void handle(HttpExchange httpExchange) throws IOException {
-            HttpsExchange exchange = (HttpsExchange) httpExchange;
-            URI uriData = exchange.getRequestURI();
-            String uriPath = uriData.getPath();
-  
-            // Get the Request Method (GET/PUT)
-            String requestMethod = exchange.getRequestMethod();
-  
-            // Get any data from the body, although, we just discard it, this is required
-            InputStream inputStream = exchange.getRequestBody();
-            while (inputStream.read() != -1) { inputStream.skip(0x10000); }
-            inputStream.close();
-  
-            if (requestMethod.equals("GET")) {
-                if (uriPath.equals("/ytplayer")) {
-                    NEWHTTPServerCommon.handleFile("/web/ytplayer/index.html", exchange, false, false);
-                } else {
-                    NEWHTTPServerCommon.handleFile("/web/" + uriPath, exchange, false, false);
-                }
-             }
+        public void handle(HttpExchange exchange) throws IOException {
+            NEWHTTPServerCommon.handleYTP(exchange);
         }
     }
-  
+
     class PanelHandler implements HttpHandler {
-        public void handle(HttpExchange httpExchange) throws IOException {
-            HttpsExchange exchange = (HttpsExchange) httpExchange;
-            URI uriData = exchange.getRequestURI();
-            String uriPath = uriData.getPath();
-
-  
-            // Get the Request Method (GET/PUT)
-            String requestMethod = exchange.getRequestMethod();
-  
-            // Get any data from the body, although, we just discard it, this is required
-            InputStream inputStream = exchange.getRequestBody();
-            while (inputStream.read() != -1) { inputStream.skip(0x10000); }
-            inputStream.close();
-  
-            if (requestMethod.equals("GET")) {
-                if (uriPath.equals("/panel")) {
-                    NEWHTTPServerCommon.handleFile("/web/panel/index.html", exchange, false, false);
-                } else {
-                    NEWHTTPServerCommon.handleFile("/web/" + uriPath, exchange, false, false);
-                }
-             }
+        public void handle(HttpExchange exchange) throws IOException {
+            NEWHTTPServerCommon.handlePanel(exchange);
         }
     }
-  
-  
+
     class HTTPSServerHandler implements HttpHandler {
-        public void handle(HttpExchange httpExchange) throws IOException {
-            HttpsExchange exchange = (HttpsExchange) httpExchange;
-            Boolean hasPassword = false;
-            Boolean doRefresh = false;
-            String myPassword = "";
-            String myHdrUser = "";
-            String myHdrMessage = "";
-            String[] uriQueryList = null;
-  
-            // Get the path and query string from the URI
-            URI uriData = exchange.getRequestURI();
-            String uriPath = uriData.getPath();
-            String uriQuery = uriData.getQuery();
-  
-            if (uriQuery != null) {
-                uriQueryList = uriQuery.split("&");
-            } 
-  
-            // Get the headers
-            Headers headers = exchange.getRequestHeaders();
-  
-            // Get the Request Method (GET/PUT)
-            String requestMethod = exchange.getRequestMethod();
-  
-            // Get any data from the body, although, we just discard it, this is required
-            InputStream inputStream = exchange.getRequestBody();
-            while (inputStream.read() != -1) { inputStream.skip(0x10000); }
-            inputStream.close();
-  
-            if (headers.containsKey("password")) {
-                myPassword = headers.getFirst("password");
-                if (myPassword.equals(serverPassword) || myPassword.equals("oauth:" + serverPassword)) {
-                    hasPassword = true;
-                }
-            }
-            if (headers.containsKey("webauth")) {
-                myPassword = headers.getFirst("webauth");
-                if (myPassword.equals(serverWebAuth)) {
-                    hasPassword = true;
-                }
-            }
-            if (headers.containsKey("user")) {
-                myHdrUser = headers.getFirst("user");
-            }
-            if (headers.containsKey("message")) {
-                myHdrMessage = headers.getFirst("message");
-            }
-
-            // Check the uriQueryList for the webauth
-            if (uriQuery != null) {
-                for (String query : uriQueryList) {
-                    if (query.startsWith("webauth=")) {
-                        String[] webAuthData = query.split("=");
-                        myPassword = webAuthData[1];
-                        if (myPassword.equals(serverWebAuth)) {
-                            hasPassword = true;
-                        }
-                    } else if (query.startsWith("refresh")) {
-                        doRefresh = true;
-                    }
-                }
-            }
-
-            if (requestMethod.equals("GET")) {
-                if (uriPath.startsWith("/inistore")) {
-                    NEWHTTPServerCommon.handleIniStore(uriPath, exchange, hasPassword);
-                } else if (uriPath.startsWith("/dbquery")) {
-                    NEWHTTPServerCommon.handleDBQuery(uriPath, uriQueryList, exchange, hasPassword);
-                } else if (uriPath.startsWith("/addons") && !doRefresh) {
-                    NEWHTTPServerCommon.handleFile(uriPath, exchange, hasPassword, true);
-                } else if (uriPath.startsWith("/addons") && doRefresh) {
-                    NEWHTTPServerCommon.handleRefresh(uriPath, exchange, hasPassword, true);
-                } else if (uriPath.startsWith("/logs")) {
-                    NEWHTTPServerCommon.handleFile(uriPath, exchange, hasPassword, true);
-                } else if (uriPath.equals("/playlist")) {
-                    NEWHTTPServerCommon.handleFile("/web/playlist/index.html", exchange, hasPassword, false);
-                } else if (uriPath.equals("/")) {
-                    NEWHTTPServerCommon.handleFile("/web/index.html", exchange, hasPassword, false);
-                } else if (uriPath.equals("/alerts")) {
-                    NEWHTTPServerCommon.handleFile("/web/alerts/index.html", exchange, hasPassword, false);
-                } else {
-                    NEWHTTPServerCommon.handleFile("/web" + uriPath, exchange, hasPassword, false);
-                }
-            }
-
-            if (requestMethod.equals("PUT")) {
-                NEWHTTPServerCommon.handlePutRequest(myHdrUser, myHdrMessage, exchange, hasPassword);
-            }
-        }  
+        public void handle(HttpExchange exchange) throws IOException {
+            NEWHTTPServerCommon.handle(exchange, serverPassword, serverWebAuth);
+        }
     }
 }
