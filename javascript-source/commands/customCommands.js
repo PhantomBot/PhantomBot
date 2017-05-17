@@ -451,7 +451,11 @@
                     } else {
                         for (var i = 0; i < jsonCheckList.length - 1; i++) {
                             if (i == 0) {
-                                jsonObject = new JSONObject(origCustomAPIResponse).getJSONObject(jsonCheckList[i]);
+                                try {
+                                    jsonObject = new JSONObject(origCustomAPIResponse).getJSONObject(jsonCheckList[i]);
+                                } catch (ex) {
+                                    jsonObject = jsonObject.getJSONArray(jsonCheckList[i]);
+                                }
                             } else if (!isNaN(jsonCheckList[i + 1])) {
                                 try {
                                     jsonObject = jsonObject.getJSONArray(jsonCheckList[i]);
