@@ -131,7 +131,11 @@ public class Session {
      * @function startTimers
      */
     public void startTimers() {
-        new Timer("me.mast3rplan.phantombot.twitchwsirc.Session::MessageHandler").schedule(new MessageHandler(this), 500, 1);
+        if (PhantomBot.useMessageQueue) {
+            new Timer("me.mast3rplan.phantombot.twitchwsirc.Session::MessageHandler").schedule(new MessageHandler(this), 500, 1);
+        } else {
+            new Timer("me.mast3rplan.phantombot.twitchwsirc.Session::MessageHandlerNoLimit").schedule(new MessageHandlerNoLimit(this), 500, 1);  
+        }
         new Timer("me.mast3rplan.phantombot.twitchwsirc.Session::QueueHandler").schedule(new QueueHandler(this), 500, 1);
     }
 
@@ -271,7 +275,7 @@ public class Session {
         public Message(String message, Boolean hasPriority) {
             this.message = message;
             this.hasPriority = hasPriority;
-            this.queueTime = (System.currentTimeMillis() + 6000);
+            this.queueTime = (System.currentTimeMillis() + 3000);
         }
     }
 
@@ -292,8 +296,8 @@ public class Session {
         public void run() {
             time = System.currentTimeMillis();
 
-            if (!this.session.queue.isEmpty() && (nextWrite - time) < 0) {
-                if ((lastWrite - time) > 0) {
+            if (!this.session.queue.isEmpty() && nextWrite < time) {
+                if (lastWrite > time) {
                     if (writes == 19) {
                         nextWrite = (time + (lastWrite - time));
                         return;
@@ -305,7 +309,7 @@ public class Session {
                 }
 
                 Message message = this.session.queue.poll();
-                if (message != null && this.session.sendMessages && ((message.queueTime - time) > 0 || message.hasPriority)) {
+                if (message != null && this.session.sendMessages && (message.queueTime > time || message.hasPriority)) {
                     this.session.send(message.message);
                     return;
                 }
@@ -334,6 +338,25 @@ public class Session {
                     this.session.queue.add(new Message(message.message, false));
                     lastWrite = System.currentTimeMillis();
                 }
+            }
+        }
+    }
+
+    /*
+     * @class MessageHandlerNoLimit
+     */
+    private class MessageHandlerNoLimit extends TimerTask {
+        private final Session session;
+
+        public MessageHandlerNoLimit(Session session) {
+            this.session = session;
+        }
+
+        @Override
+        public void run() {
+            Message message = this.session.messages.poll();
+            if (message != null) {
+                this.session.queue.add(new Message(message.message, false));
             }
         }
     }
