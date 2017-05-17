@@ -218,6 +218,7 @@ public final class PhantomBot implements Listener {
     public static Boolean enableRhinoDebugger = false;
     public static Boolean useTwitchNotify;
     public static String timeZone = "GMT";
+    public static Boolean useMessageQueue = true;
     public Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
@@ -448,15 +449,18 @@ public final class PhantomBot implements Listener {
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
          * for moderators.  For non-moderators, the maximum is 20 messages in 30 seconds. While it is not recommended
-         * to go above anything higher than 20 in case the bot is ever de-modded, the option is available but is
+         * to go above anything higher than 19 in case the bot is ever de-modded, the option is available but is
          * capped at 80.0. 
          */
-        PhantomBot.messageLimit = Double.parseDouble(this.pbProperties.getProperty("msglimit30", "20.0"));
+        PhantomBot.messageLimit = Double.parseDouble(this.pbProperties.getProperty("msglimit30", "19.0"));
         if (PhantomBot.messageLimit > 80.0) {
             PhantomBot.messageLimit = 80.0;
-        } else if (PhantomBot.messageLimit < 20.0) {
-            PhantomBot.messageLimit = 20.0;
+        } else if (PhantomBot.messageLimit < 19.0) {
+            PhantomBot.messageLimit = 19.0;
         }
+
+        // If this is false the bot won't limit the bot to 1 message every 1.5 second. It will still limit to 19/30 though.
+        PhantomBot.useMessageQueue = this.pbProperties.getProperty("usemessagequeue", "true").equals("true");
 
         /* Set the whisper limit for session.java to use. -- Currently Not Used -- */
         PhantomBot.whisperLimit = Double.parseDouble(this.pbProperties.getProperty("whisperlimit60", "60.0"));
