@@ -454,7 +454,7 @@
                                 try {
                                     jsonObject = new JSONObject(origCustomAPIResponse).getJSONObject(jsonCheckList[i]);
                                 } catch (ex) {
-                                    jsonObject = jsonObject.getJSONArray(jsonCheckList[i]);
+                                    jsonObject = new JSONObject(origCustomAPIResponse).getJSONArray(jsonCheckList[i]);
                                 }
                             } else if (!isNaN(jsonCheckList[i + 1])) {
                                 try {
