@@ -31,10 +31,11 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import java.util.concurrent.Executors;
+
 import java.security.KeyStore;
 
 import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
-
 
 public class PanelSocketSecureServer extends PanelSocketServer {
 
@@ -44,7 +45,7 @@ public class PanelSocketSecureServer extends PanelSocketServer {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         try {
-            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+            SSLContext sslContext = SSLContext.getInstance("TLS");
 
             char ksPassword[] = keyPassword.toCharArray();
             KeyStore ks = KeyStore.getInstance("JKS");
@@ -59,7 +60,7 @@ public class PanelSocketSecureServer extends PanelSocketServer {
 
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext));
+            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool()));
         } catch(Exception e) {
             com.gmt2001.Console.out.println("PanelSocketSecureServer Exception: " + e.getMessage());
         }
