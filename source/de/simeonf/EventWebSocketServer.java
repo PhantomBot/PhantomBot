@@ -45,11 +45,6 @@ public class EventWebSocketServer extends WebSocketServer implements Listener {
     }
 
     @Override
-    public void onStart() {
-
-    }
-
-    @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
     }
 

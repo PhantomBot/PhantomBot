@@ -154,14 +154,6 @@ public class PanelSocketServer extends WebSocketServer {
     }
 
     /**
-     * Override for the WebSocketServer class which is called when the server fully starts.
-     */
-    @Override
-    public void onStart() {
-
-    }
-
-    /**
      * Override for the WebSocketServer class which is called upon a new connection.
      *
      * @param webSocket       The WebSocket object for this connection.
