@@ -13,7 +13,7 @@ var showChat = false;
 var loadedChat = false;
 var volumeSlider = null;
 var progressSlider = null;
-var lastSent = 0;
+var lastSkipButtonPress = 0;
 
 var url = window.location.host.split(":");
 var addr = (getProtocol() == 'https://' ? 'wss://' : 'ws://') + url[0] + ':' + getPlayerPort();
@@ -86,13 +86,6 @@ function onPlayerStateChange(event) {
         playerObject.pauseVideo();
         startPaused = false;
     }
-
-    // This is to stop people from spamming the button and cause a loop.
-    if ((lastSent + 200) > new Date().getMilliseconds()) {
-        return;
-    }
-
-    lastSent = new Date().getMilliseconds();
 
     var jsonObject = {};
     jsonObject["status"] = { "state" : event.data };
@@ -319,10 +312,19 @@ function randomizePlaylist(d) {
 
 function skipSong(d) {
     debugMsg("skipSong()");
+
+    var curTime = Date.now();
+    // This is to stop people from spamming the button and cause a loop.
+    if (Date.now() - lastSkipButtonPress < 1000) {
+        return;
+    }
+
     var jsonObject = {};
     jsonObject["command"] = "skipsong";
     connection.send(JSON.stringify(jsonObject));
     debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
+
+    lastSkipButtonPress = Date.now();
 }
 
 function handlePause(d) {
