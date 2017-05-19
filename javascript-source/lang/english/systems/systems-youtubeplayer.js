@@ -82,6 +82,7 @@ $.lang.register('ytplayer.command.skip.success', 'Skip requested! Current song w
 $.lang.register('ytplayer.command.skip.disabled', 'The vote functionality is currently disabled.');
 $.lang.register('ytplayer.command.skip.failure', 'You have already requested a skip for the current song.');
 $.lang.register('ytplayer.command.skip.skipping', 'The votes are counted, and the users have spoken!!! Skipping the current song!.');
+$.lang.register('ytplayer.command.skip.delay', 'Skip is not allowed for a moment, please try again later.');
 $.lang.register('ytplayer.command.votecount.set', 'Minimum votes now needed for viewers to skip songs: $1');
 $.lang.register('ytplayer.command.votecount.negative', 'The number of votes needed must be positive!');
 $.lang.register('ytplayer.command.votecount.usage', '!ytp votecount [amount]  ---  Current setting: $1');
