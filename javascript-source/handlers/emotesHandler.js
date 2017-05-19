@@ -132,18 +132,7 @@
             return 0;
         }
 
-        var total = 0,
-            sequences,
-            i;
-
-        for (i in emotesRegExpList) {
-            sequences = message.match(emotesRegExpList[i]);
-            if (sequences !== null) {
-                total += sequences.length;
-            }
-        }
-
-        return total;
+        return (message.match(emotesRegExpList) !== null ? message.match(emotesRegExpList).length : 0);
     }
 
     /**
@@ -151,6 +140,6 @@
      */
     $.emotesHandler = {
         getEmotesRegExp: getEmotesRegExp,
-        getEmotesMatchCount: getEmotesMatchCount,
+        getEmotesMatchCount: getEmotesMatchCount
     };
 })();

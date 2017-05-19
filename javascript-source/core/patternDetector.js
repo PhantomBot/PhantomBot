@@ -119,9 +119,10 @@
      * @info this gets the emote count from the ircv3 tags and the emotes cache if enabled.
      */
     function getEmotesCount(event) {
-        var emotes = event.getTags().get('emotes');
+        var emotes = event.getTags().get('emotes'),
+            extraEmotes = $.emotesHandler.getEmotesMatchCount(event.getMessage());
 
-        return ((emotes === null || emotes.match(patterns.emotes) === null ? 0 : (emotes.match(patterns.emotes).length) + $.emotesHandler.getEmotesMatchCount(event.getMessage())));
+        return ((emotes === null || emotes.match(patterns.emotes) === null ? extraEmotes : (emotes.match(patterns.emotes).length) + extraEmotes));
     }
 
     /**
