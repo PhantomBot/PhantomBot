@@ -136,11 +136,6 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     @Override
-    public void onStart() {
-
-    }
-
-    @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
         wsSessionMap.put(genSessionKey(webSocket), new wsSession(false, false, webSocket));
     }

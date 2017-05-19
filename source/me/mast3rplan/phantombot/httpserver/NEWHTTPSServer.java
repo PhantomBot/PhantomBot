@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
+
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
@@ -127,6 +129,7 @@ public class NEWHTTPSServer {
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
   
+            server.setExecutor(Executors.newCachedThreadPool());
             server.start();
         } catch (KeyManagementException ex) {
             com.gmt2001.Console.err.println("SSL certificate failed to load");

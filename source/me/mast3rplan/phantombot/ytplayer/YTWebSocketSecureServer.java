@@ -44,7 +44,7 @@ public class YTWebSocketSecureServer extends YTWebSocketServer {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         try {
-            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+            SSLContext sslContext = SSLContext.getInstance("TLS");
 
             char ksPassword[] = keyPassword.toCharArray();
             KeyStore ks = KeyStore.getInstance("JKS");

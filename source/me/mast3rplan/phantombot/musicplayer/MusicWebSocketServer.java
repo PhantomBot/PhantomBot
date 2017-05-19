@@ -40,11 +40,6 @@ public class MusicWebSocketServer extends WebSocketServer {
     }
 
     @Override
-    public void onStart() {
-
-    }
-
-    @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
         EventBus.instance().postAsync(new MusicPlayerConnectEvent());
     }
