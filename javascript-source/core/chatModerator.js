@@ -1443,16 +1443,18 @@
                         return;
                     }
 
+                    var toggle = args[2].equalsIgnoreCase('true');
+
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        silentTimeout.Links = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Caps = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Symbols = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Spam = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Colors = args[2].equalsIgnoreCase('true');
-                        silentTimeout.LongMsg = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Blacklist = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Emotes = args[2].equalsIgnoreCase('true');
-                        silentTimeout.SpamTracker = args[2].equalsIgnoreCase('true');
+                        silentTimeout.Links = toggle;
+                        silentTimeout.Caps = toggle;
+                        silentTimeout.Symbols = toggle;
+                        silentTimeout.Spam = toggle;
+                        silentTimeout.Colors = toggle;
+                        silentTimeout.LongMsg = toggle;
+                        silentTimeout.Blacklist = toggle;
+                        silentTimeout.Emotes = toggle;
+                        silentTimeout.SpamTracker = toggle;
                         $.inidb.set('chatModerator', 'silentTimeoutLinks', silentTimeout.Links);
                         $.inidb.set('chatModerator', 'silentTimeoutCaps', silentTimeout.Caps);
                         $.inidb.set('chatModerator', 'silentTimeoutSymbols', silentTimeout.Symbols);
@@ -1463,7 +1465,7 @@
                         $.inidb.set('chatModerator', 'silentTimeoutColors', silentTimeout.Colors);
                         $.inidb.set('chatModerator', 'silentTimeoutSpamTacker', silentTimeout.SpamTracker);
                         $.inidb.set('chatModerator', 'silentTimeoutFakePurge', silentTimeout.FakePurge);
-                        $.say($.whisperPrefix(sender) + (args[0] ? $.lang.get('chatmoderator.silenttimeout.true') : $.lang.get('chatmoderator.silenttimeout.false')));
+                        $.say($.whisperPrefix(sender) + (toggle ? $.lang.get('chatmoderator.silenttimeout.true') : $.lang.get('chatmoderator.silenttimeout.false')));
                     }
                 }
             }
