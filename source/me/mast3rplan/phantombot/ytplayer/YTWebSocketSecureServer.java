@@ -31,6 +31,8 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import java.util.concurrent.Executors;
+
 import java.security.KeyStore;
 
 import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
@@ -59,7 +61,7 @@ public class YTWebSocketSecureServer extends YTWebSocketServer {
 
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext));
+            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool(), 200));
         } catch(Exception e) {
             com.gmt2001.Console.out.println("YTWebSocketSecureServer Exception: " + e.getMessage());
         }
