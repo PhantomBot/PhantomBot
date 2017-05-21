@@ -259,7 +259,7 @@
             var langSubCommandHelper = ['submessage', 'resubmessage', 'togglemessage', 'reward', 'resubreward'];
 
             if (!args[0]) {
-                $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.usage', langSubCommandHelper.join(' | ')));
+                $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.useage', langSubCommandHelper.join(' | ')));
                 return;
             }
 
@@ -268,7 +268,7 @@
              */
             if (args[0].equalsIgnoreCase('submessage')) {
                 if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.submessage.usage', subMessage));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.submessage.useage', subMessage));
                     return;
                 }
                 subMessage = args.splice(1).join(' ');
@@ -282,7 +282,7 @@
              */
             if (args[0].equalsIgnoreCase('resubmessage')) {
                 if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.resubmessage.usage', reSubMessage));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.resubmessage.useage', reSubMessage));
                     return;
                 }
                 reSubMessage = args.splice(1).join(' ');
@@ -296,7 +296,7 @@
              */
             if (args[0].equalsIgnoreCase('tierupmessage')) {
                 if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.tierupmessage.usage', tierUpMessage));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.tierupmessage.useage', tierUpMessage));
                     return;
                 }
                 tierUpMessage = args.splice(1).join(' ');
@@ -310,7 +310,7 @@
              */
             if (args[0].equalsIgnoreCase('togglemessage')) {
                 if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.togglemessage.usage', subShowMessages));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.togglemessage.useage', subShowMessages));
                     return;
                 }
                 if (args[1].equalsIgnoreCase("on")) {
@@ -318,7 +318,7 @@
                 } else if (args[1].equalsIgnoreCase("off")) {
                     $.setIniDbBoolean('gameWispSubHandler', 'subscriberShowMessages', false);
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.togglemessage.usage', subShowMessages));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.togglemessage.useage', subShowMessages));
                     return;
                 }
                 $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.togglemessage.success', subShowMessages));
@@ -330,11 +330,11 @@
              */
             if (args[0].equalsIgnoreCase('reward')) {
                 if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.reward.usage', subReward));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.reward.useage', subReward));
                     return;
                 }
                 if (isNaN(args[1])) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.reward.usage', subReward));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.reward.useage', subReward));
                     return;
                 }
                 subReward = parseInt(args[1]);
@@ -347,11 +347,11 @@
              */
             if (args[0].equalsIgnoreCase('resubreward')) {
                 if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.resubreward.usage', reSubReward));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.resubreward.useage', reSubReward));
                     return;
                 }
                 if (isNaN(args[1])) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.resubreward.usage', reSubReward));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisp.resubreward.useage', reSubReward));
                     return;
                 }
                 reSubReward = parseInt(args[1]);
@@ -370,7 +370,7 @@
                 subCommands = ['songrequests', 'bonuspoints', 'subbonuspoints'];
 
             if (!args[0]) {
-                $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.usage', subCommands.join(' | ')));
+                $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.useage', subCommands.join(' | ')));
                 return;
             }
 
@@ -384,25 +384,25 @@
              */
             if (subCommands.indexOf(args[0] + '') !== -1) {
                 if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.useage'));
                     return;
                 }
 
                 tierLevel = parseInt(args[1]);
                 if (isNaN(tierLevel) || tierLevel < 1 || tierLevel > 6) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.useage'));
                     return;
                 }
 
                 oldValue = tierData[args[0]][tierLevel];
                 if (args.length < 3) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.usage.tier', tierLevel, oldValue));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.useage.tier', tierLevel, oldValue));
                     return;
                 }
 
                 newValue = parseInt(args[2]);
                 if (isNaN(newValue) || newValue < 1) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.usage.tier', tierLevel, oldValue));
+                    $.say($.whisperPrefix(sender) + $.lang.get('gamewisptier.' + args[0] + '.useage.tier', tierLevel, oldValue));
                     return;
                 }
 
