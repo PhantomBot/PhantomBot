@@ -28,7 +28,7 @@ $.lang.register('pointsystem.set.interval.usage', 'Usage: !points setinterval [a
 $.lang.register('pointsystem.set.name.both.success', 'The name of the points have now been changed from "$1" to "$2". Set the name for a single $2 using !points setname single [name].');
 $.lang.register('pointsystem.set.name.multiple.success', 'Name of multiple points successfully changed from "$1" to "$2". To set the name for a single $2 use !points setname single [name].');
 $.lang.register('pointsystem.set.name.single.success', 'Name of a single point successfully changed from "$1" to "$2". To set the name for multiple $2 use !points setname multiple [name].');
-$.lang.register('pointsystem.set.name.usage', 'usage: !points setname [single | multiple | delete] [name].  Sets the single or multiple name for chat points or deletes the values.');
+$.lang.register('pointsystem.set.name.usage', 'Usage: !points setname [single | multiple | delete] [name].  Sets the single or multiple name for chat points or deletes the values.');
 $.lang.register('pointsystem.set.name.delete', 'Removed custom point names.');
 $.lang.register('pointsystem.set.name.duplicate', 'That is the current name of the custom point command.');
 $.lang.register('pointsystem.setbalance.error.negative', 'You can not set a balance to negative $1.');
@@ -37,12 +37,12 @@ $.lang.register('pointsystem.setbalance.usage', 'Usage: !points set [name] [amou
 $.lang.register('pointsystem.take.error.toomuch', 'You can not take more than what $1 has in $2.');
 $.lang.register('pointsystem.take.success', 'Took $1 from $2. New balance is $3.');
 $.lang.register('pointsystem.take.usage', 'Usage: !points take [name] [amount]');
-$.lang.register('pointsystem.gift.usage', 'usage: !gift [user] [amount]');
+$.lang.register('pointsystem.gift.usage', 'Usage: !gift [user] [amount]');
 $.lang.register('pointsystem.gift.shortpoints', 'Sorry! You do not have enough points to send that gift!');
 $.lang.register('pointsystem.gift.404', 'Sorry! That user does not seem to be registered with the chat yet!');
 $.lang.register('pointsystem.gift.success', '$1 has sent a gift of $2 to $3.');
 $.lang.register('pointsystem.usage.invalid', 'Invalid option passed to $1 command');
-$.lang.register('pointsystem.err.negative', 'you can not gift less then 0 $1');
+$.lang.register('pointsystem.err.negative', 'You can not gift less then 0 $1');
 $.lang.register('pointsystem.err.penalty', 'Usage: !penalty (user) (time in minutes)');
 $.lang.register('pointsystem.penalty.set', 'User: $1 will not gain points for the next $2.');
 $.lang.register('pointsystem.reset.all', 'All points were deleted.');
