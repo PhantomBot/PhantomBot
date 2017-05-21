@@ -137,7 +137,7 @@
          */
         if (command.equalsIgnoreCase('tipeeestream')) {
             if (action === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('tipeeestream.donations.useage'));
+                $.say($.whisperPrefix(sender) + $.lang.get('tipeeestream.donations.usage'));
                 return;
             }
 
@@ -155,7 +155,7 @@
              */
             if (action.equalsIgnoreCase('minmumbeforepromotion')) {
                 if (subAction === undefined) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('tipeeestream.donators.min.useage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('tipeeestream.donators.min.usage'));
                     return;
                 }
 
@@ -178,7 +178,7 @@
              */
             if (action.equalsIgnoreCase('rewardmultiplier')) {
                 if (isNaN(parseFloat(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('tipeeestream.donations.reward.useage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('tipeeestream.donations.reward.usage'));
                     return;
                 }
 
@@ -192,7 +192,7 @@
              */
             if (action.equalsIgnoreCase('message')) {
                 if (subAction === undefined) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('tipeeestream.donations.message.useage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('tipeeestream.donations.message.usage'));
                     return;
                 }
 
