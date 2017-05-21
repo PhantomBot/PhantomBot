@@ -3,7 +3,6 @@
         timeouts = [],
         whiteList = [],
         blackList = [],
-        regexBlackList = [],
         spamTracker = {},
 
         linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', false),
@@ -122,7 +121,7 @@
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
         warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
         resetTime = (warningResetTime * 6e4),
-        messageTime = 0,
+        messageTime = $.systemTime(),
         warning = '',
         youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'i'),
         i;
@@ -241,10 +240,9 @@
             FakePurge: $.getSetIniDbNumber('chatModerator', 'timeoutTimeFakePurge')
         };
 
-        blacklistTimeoutTime = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime');
         blacklistMessage = $.getIniDbString('chatModerator', 'blacklistMessage');
         warningResetTime = $.getIniDbNumber('chatModerator', 'warningResetTime');
-        msgCooldownSec = $.getIniDbNumber('chatModerator', 'msgCooldownSec');
+        msgCooldownSec = $.getIniDbNumber('chatModerator', 'msgCooldownSecs');
         resetTime = (warningResetTime * 6e4);
 
         loadBlackList();
@@ -284,15 +282,15 @@
      */
     function loadBlackList() {
         var keys = $.inidb.GetKeyList('blackList', '');
-        blackList = [];
-        regexBlackList = [];
+            blackList = [];
 
         for (i = 0; i < keys.length; i++) {
-            if (keys[i].startsWith('regex:')) {
-                regexBlackList.push(new RegExp(keys[i].replace('regex:', '')));
-            } else {
-                blackList.push(keys[i]);
+            var json = JSON.parse($.inidb.get('blackList', keys[i]));
+
+            if (json.isRegex) {
+                json.phrase = new RegExp(json.phrase.replace('regex:', ''));
             }
+            blackList.push(json);
         }
     }
 
@@ -301,7 +299,7 @@
      */
     function loadWhiteList() {
         var keys = $.inidb.GetKeyList('whiteList', '');
-        whiteList = [];
+            whiteList = [];
         
         for (i = 0; i < keys.length; i++) {
             whiteList.push(keys[i]);
@@ -317,10 +315,11 @@
      */
     function timeoutUserFor(username, time, reason) {
         $.say('.timeout ' + username + ' ' + time + ' ' + reason);
-        setTimeout(function() {
+        var timeout = setTimeout(function() {
             if ($.session.isLimited() == false) {
                 $.say('.timeout ' + username + ' ' + time + ' ' + reason);
             }
+            clearInterval(timeout);
         }, 1000);
     }
 
@@ -356,7 +355,7 @@
      * @param {boolean} filter
      */
     function sendMessage(username, message, filter) {
-        if (filter === false && messageTime <= $.systemTime() && $.session.hasQueue() == true && $.session.isLimited() == false) {
+        if (filter == false && messageTime <= $.systemTime() && $.session.hasQueue() == true && $.session.isLimited() == false) {
             $.say('@' + username + ', ' + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         }
@@ -406,21 +405,28 @@
      * @param {string} sender
      * @param {string} message
      */
-    function checkBlackList(sender, message) {
-        for (i in regexBlackList) {
-            if (message.match(regexBlackList[i])) {
-                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                warning = $.lang.get('chatmoderator.timeout');
-                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                return true;
-            }
-        }
+    function checkBlackList(sender, event, message) {
         for (i in blackList) {
-            if (message.indexOf(blackList[i]) !== -1) {
-                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                warning = $.lang.get('chatmoderator.timeout');
-                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                return true;
+            if (blackList[i].isRegex) {
+                if (blackList[i].phrase.test(message)) {
+                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
+                        return false;
+                    }
+                    timeoutUser(sender, blackList[i].timeout, blackList[i].banReason);
+                    warning = $.lang.get('chatmoderator.timeout');
+                    sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    return true;
+                }
+            } else {
+                if (message.indexOf(blackList[i].phrase) !== -1) {
+                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
+                        return false;
+                    }
+                    timeoutUser(sender, blackList[i].timeout, blackList[i].banReason);
+                    warning = $.lang.get('chatmoderator.timeout');
+                    sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    return true;
+                }
             }
         }
         return false;
@@ -557,7 +563,7 @@
             }
 
             // Blacklist
-            if (message !== null && checkBlackList(sender, message)) {
+            if (message !== null && checkBlackList(sender, event, message)) {
                 return;
             }
 
@@ -876,16 +882,31 @@
             }
 
             /**
-             * @commandpath blacklist add [word] - Adds a word to the blacklist. Use regex: at the start to specify a regex blacklist.
+             * @commandpath blacklist add [timeout time] [word] - Adds a word to the blacklist. Use regex: at the start to specify a regex blacklist.
              */
             if (action.equalsIgnoreCase('add')) {
-                if (!subAction) {
+                if (!subAction || !args[2] || isNaN(parseInt(subAction))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.add.usage'));
                     return;
                 }
-                var word = args.slice(1).join(' ').toLowerCase();
+                var word = args.slice(2).join(' '),
+                    isRegex = word.startsWith('regex:'),
+                    timeout = parseInt(subAction),
+                    obj = {};
 
-                $.inidb.set('blackList', word, 'true');
+                obj = {
+                    id: String(($.inidb.GetKeyList('blackList', '').length + 1)),
+                    timeout: String(timeout),
+                    isRegex: isRegex,
+                    phrase: String(word),
+                    isSilent: false,
+                    excludeRegulars: false,
+                    excludeSubscribers: false,
+                    message: String(blacklistMessage),
+                    banReason: String(silentTimeout.BlacklistMessage)
+                };
+
+                $.inidb.set('blackList', word, JSON.stringify(obj));
                 loadBlackList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.added'));
                 $.log.event('"' + word + '" was added to the blacklist by ' + sender);
@@ -898,7 +919,7 @@
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('blackList', args.slice(1).join(' ').toLowerCase())) {
+                } else if (!$.inidb.exists('blackList', args.slice(1).join(' '))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
@@ -1338,7 +1359,7 @@
             }
 
             /**
-             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / blacklist / spamtracker / fakepurge / all] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
+             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker / fakepurge / all] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
              */
             if (action.equalsIgnoreCase('silenttimeout')) {
                 if (!subAction) {
@@ -1452,7 +1473,6 @@
                         silentTimeout.Spam = toggle;
                         silentTimeout.Colors = toggle;
                         silentTimeout.LongMsg = toggle;
-                        silentTimeout.Blacklist = toggle;
                         silentTimeout.Emotes = toggle;
                         silentTimeout.SpamTracker = toggle;
                         $.inidb.set('chatModerator', 'silentTimeoutLinks', silentTimeout.Links);
@@ -1460,7 +1480,6 @@
                         $.inidb.set('chatModerator', 'silentTimeoutSymbols', silentTimeout.Symbols);
                         $.inidb.set('chatModerator', 'silentTimeoutSpam', silentTimeout.Spam);
                         $.inidb.set('chatModerator', 'silentTimeoutEmotes', silentTimeout.Emotes);
-                        $.inidb.set('chatModerator', 'silentTimeoutBlacklist', silentTimeout.Blacklist);
                         $.inidb.set('chatModerator', 'silentTimeoutLongMsg', silentTimeout.LongMsg);
                         $.inidb.set('chatModerator', 'silentTimeoutColors', silentTimeout.Colors);
                         $.inidb.set('chatModerator', 'silentTimeoutSpamTacker', silentTimeout.SpamTracker);
@@ -1726,7 +1745,7 @@
             }
 
             /**
-             * @commandpath moderation blacklistmessage [message] - Sets the blacklist warning message
+             * @commandpath moderation blacklistmessage [message] - Sets the blacklist warning message that will be default for blacklists you add from chat. This can be custom on the panel.
              */
             if (action.equalsIgnoreCase('blacklistmessage')) {
                 if (!subAction) {
@@ -1838,6 +1857,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.trigger.length.usage'));
                     return;
                 }
+
                 symbolsTriggerLength = parseInt(subAction);
                 $.inidb.set('chatModerator', 'symbolsTriggerLength', symbolsTriggerLength);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.trigger.length.set', symbolsTriggerLength));
@@ -1874,10 +1894,10 @@
             }
 
             /**
-             * @commandpath moderation messagecooldown [seconds] - Sets a cooldown in seconds on the timeout messages (minimum is 10 seconds)
+             * @commandpath moderation messagecooldown [seconds] - Sets a cooldown in seconds on the timeout messages (minimum is 30 seconds)
              */
             if (action.equalsIgnoreCase('messagecooldown')) {
-                if (!subAction) {
+                if (!subAction || parseInt(subAction) < 30) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.msgcooldown.usage'));
                     return;
                 }
@@ -1897,19 +1917,6 @@
                 warningResetTime = parseInt(subAction);
                 $.inidb.set('chatModerator', 'warningResetTime', warningResetTime);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningresettime.set', warningResetTime));
-            }
-
-            /**
-             * @commandpath moderation blacklisttimeouttime [seconds] - Sets the timeout time for the blacklist
-             */
-            if (action.equalsIgnoreCase('blacklisttimeouttime')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklisttimeouttime.usage', blacklistTimeoutTime));
-                    return;
-                }
-                blacklistTimeoutTime = parseInt(subAction);
-                $.inidb.set('chatModerator', 'blacklistTimeoutTime', blacklistTimeoutTime);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklisttimeouttime.set', blacklistTimeoutTime));
             }
         }
     });

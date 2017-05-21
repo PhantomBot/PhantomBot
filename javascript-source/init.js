@@ -8,7 +8,8 @@
  * use "$.bind('initReady', FUNCTION);" to execute code after loading all scripts (like registering commands)
  */
 (function() {
-    var modeO = false,
+    var connected = false,
+        modeO = false,
         modules = [],
         hooks = [],
         lastRecon = 0,
@@ -16,6 +17,10 @@
         coolDownMsgEnabled = ($.inidb.exists('settings', 'coolDownMsgEnabled') && $.inidb.get('settings', 'coolDownMsgEnabled').equals('true') ? true : false),
         permComMsgEnabled = ($.inidb.exists('settings', 'permComMsgEnabled') && $.inidb.get('settings', 'permComMsgEnabled').equals('true') ? true : false),
         lastMsg = 0;
+
+    /* Make these null to start */
+    $.session = null;
+    $.channel = null;
 
     /* Reloads the init vars */
     function reloadInit() {
@@ -136,6 +141,8 @@
                 var script = null,
                     enabled;
 
+                /* Checks if the script was already loaded, if so force reload it. This is used for the lang system. */
+                // $.consoleLn('$api.getScript()::' + $api.getScript($script, scriptFile));
                 if ($api.getScript($script, scriptFile) != null) {
                     script = $api.reloadScriptR($script, scriptFile);
                 } else {
@@ -712,8 +719,8 @@
         // Load core scripts
         loadScript('./core/misc.js');
         loadScript('./core/jsTimers.js');
-        loadScript('./core/chatModerator.js');
         loadScript('./core/updates.js');
+        loadScript('./core/chatModerator.js');
         loadScript('./core/fileSystem.js');
         loadScript('./core/lang.js');
         loadScript('./core/commandPause.js');
@@ -726,6 +733,7 @@
         loadScript('./core/patternDetector.js');
         loadScript('./core/permissions.js');
         loadScript('./core/streamInfo.js');
+        loadScript('./core/panel.js');
         loadScript('./core/timeSystem.js');
         loadScript('./core/panelCommands.js');
 
@@ -930,6 +938,7 @@
 
             callHook('discordCommand', event, false);
 
+            // Do this last to not slow down the command hook.
             if ($.discord.getCommandCost(command) > 0) {
                 $.discord.decrUserPoints(sender, $.discord.getCommandCost(command));
             }

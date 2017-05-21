@@ -132,7 +132,9 @@
             return 0;
         }
 
-        return (message.match(emotesRegExpList) !== null ? message.match(emotesRegExpList).length : 0);
+        var matched = message.match(emotesRegExpList);
+
+        return (matched !== null ? matched.length : 0);
     }
 
     /**

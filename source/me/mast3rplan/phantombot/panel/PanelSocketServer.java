@@ -389,7 +389,11 @@ public class PanelSocketServer extends WebSocketServer {
         Collection<WebSocket> con = connections();
         synchronized (con) {
             for (WebSocket c : con) {
-                c.send(text);
+                if (c.isOpen()) {
+                    c.send(text);
+                } else {
+                    com.gmt2001.Console.debug.println("Failed to send a message to the panel socket: Socket is currently not opened.");
+                }
             }
         }
     }

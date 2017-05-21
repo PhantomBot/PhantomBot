@@ -208,7 +208,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Get username if present. */
-        if (messageParts[0].contains("!")) {
+        if (messageParts[0].indexOf("!") != -1) {
             userName = messageParts[0].substring(messageParts[0].indexOf("!") + 1, messageParts[0].indexOf("@"));
         }
 
