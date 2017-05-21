@@ -1,6 +1,6 @@
 // Win messages for the slot machine (slotMachine.js) mini game:
 $.lang.register('slot.win.1', 'Congratulations!');
-$.lang.register('slot.win.2', 'On a scale of 1 easy to 10 easy, this was 2 easy');
+$.lang.register('slot.win.2', 'On a scale of 1 to 10, this was 2 easy');
 $.lang.register('slot.win.3', 'Aw, yeah!');
 $.lang.register('slot.win.4', 'You got lucky.');
 $.lang.register('slot.win.5', 'GOOOOOOOAAAAAL!!');
@@ -87,7 +87,7 @@ $.lang.register('slot.lost.62', 'You with the keyboard! I won DESPITE you. You s
 
 // Win messages for the roll (roll.js) mini game:
 $.lang.register('roll.win.1', 'Congratulations!');
-$.lang.register('roll.win.2', 'On a scale of 1 easy to 10 easy, this was 2 easy');
+$.lang.register('roll.win.2', 'On a scale of 1 to 10, this was 2 easy');
 $.lang.register('roll.win.3', 'Aw, yeah!');
 $.lang.register('roll.win.4', 'You got lucky.');
 $.lang.register('roll.win.5', 'GOOOOOOOAAAAAL!!');
