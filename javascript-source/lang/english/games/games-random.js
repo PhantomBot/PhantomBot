@@ -72,7 +72,7 @@ $.lang.register('randomcommand.71', 'If somebody throws skittles at me and yells
 $.lang.register('randomcommand.72', 'A few days ago I very sternly told the voices in my head to stop talking to Me. Now they are sending me txt mgs say that they r sorry and want to get back2gethr.');
 $.lang.register('randomcommand.73', 'Things to do at Walmart: hide behind teddy bears and make evil laughing noises when little kids come by.');
 $.lang.register('randomcommand.74', 'Ever feel like beating someone with a baseball bat to the point of almost unconsciousness, then setting them on fire? No? Just me?');
-$.lang.register('randomcommand.75', 'I\'m not crazy.. don\'t you judge me! Your just jealous cause I get texts from the flying gummy bears and you don\'t!');
+$.lang.register('randomcommand.75', 'I\'m not crazy.. don\'t you judge me! You\'re just jealous cause I get texts from the flying gummy bears and you don\'t!');
 $.lang.register('randomcommand.76', 'I saw a flying cow yesterday. It was purple and I named him Phillip...I wish the dancing unicorn had seen him but she was too busy laughing at Steve the snake');
 $.lang.register('randomcommand.77', 'I was sitting there when I got attacked by the purple hedgehogs, neon dragons, and glow-in-the-dark leprechauns that kid-napped the unicorn and strawberry king');
 $.lang.register('randomcommand.78', 'I have decided to stop pretending and just be that ninja with the magical penguins and dinosaurs and unicorns that everyone KNOWS I am.');

@@ -1,5 +1,5 @@
 $.lang.register('discord.customcommands.addcom.usage', 'Usage: !addcom [command] [response]');
-$.lang.register('discord.customcommands.addcom.err', 'That command already exist.');
+$.lang.register('discord.customcommands.addcom.err', 'That command already exists.');
 $.lang.register('discord.customcommands.addcom.success', 'Command !$1 has been added!');
 $.lang.register('discord.customcommands.editcom.usage', 'Usage: !editcom [command] [response]');
 $.lang.register('discord.customcommands.editcom.404', 'That command does not exist.');
@@ -15,7 +15,7 @@ $.lang.register('discord.customcommands.coolcom.usage', 'Usage: !coolcom [comman
 $.lang.register('discord.customcommands.coolcom.404', 'That command does not exist.');
 $.lang.register('discord.customcommands.coolcom.removed', 'Cooldown for command !$1 has been removed.');
 $.lang.register('discord.customcommands.coolcom.success', 'Cooldown for command !$1 has been set to $2 seconds.');
-$.lang.register('discord.customcommands.channelcom.usage', 'Usage: !channelcom [command] [channel / --global / --list] - Spectate  the channels with a comma and space for multiple.');
+$.lang.register('discord.customcommands.channelcom.usage', 'Usage: !channelcom [command] [channel / --global / --list] - Separate the channels with a comma and space for multiple.');
 $.lang.register('discord.customcommands.channelcom.global', 'Command !$1 will now work in every channel.');
 $.lang.register('discord.customcommands.channelcom.success', 'Command !$1 will now only work in channel(s): #$2.');
 $.lang.register('discord.customcommands.channelcom.404', 'No channels are set on that command.');
