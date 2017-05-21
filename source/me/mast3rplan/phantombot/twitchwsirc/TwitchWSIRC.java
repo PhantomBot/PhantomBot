@@ -222,28 +222,24 @@ public class TwitchWSIRC extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         if (message.startsWith("PING")) {
-            sentPing = false;
-            lastPing = System.currentTimeMillis();
             com.gmt2001.Console.debug.println("Got a PING from Twitch");
+            lastPing = System.currentTimeMillis();
+            sentPing = false;
             sendPong();
             return;
-        }
-
-        if (message.startsWith(":tmi.twitch.tv PONG")) {
-            sentPing = false;
-            lastPing = System.currentTimeMillis();
+        } else if (message.startsWith(":tmi.twitch.tv PONG")) {
             com.gmt2001.Console.debug.println("Got a PONG from Twitch");
+            lastPing = System.currentTimeMillis();
+            sentPing = false;
             return;
-        }
-
-        if (message.startsWith(":") || message.startsWith("@")) {
+        } else {
             try {
                 MessageRunnable messageRunnable = new MessageRunnable(message);
                 Thread thread = new Thread(messageRunnable);
                 thread.start();
                 thread.setName("MessageRunnable-" + thread.getId());
                 long startThreadT = System.currentTimeMillis();
-
+    
                 while (thread.isAlive()) {
                     thread.join(2000);
                     if (((System.currentTimeMillis() - startThreadT) > 10000) && thread.isAlive()) {
