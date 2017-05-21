@@ -17,6 +17,7 @@
         voteCount = $.getSetIniDbNumber('ytSettings', 'voteCount', 0),
         voteArray = [],
         skipCount,
+        lastSkipTime = 0,
         playlistDJname = $.getSetIniDbString('ytSettings', 'playlistDJname', $.botName),
 
         /* enum for player status */
@@ -1604,9 +1605,16 @@
             action = args[0];
             
             if (!action) {
-                currentPlaylist.nextVideo();
-                connectedPlayerClient.pushSongList();
-                return;
+                if ($.systemTime() - lastSkipTime > 1000) {
+                    lastSkipTime = $.systemTime + 10000; // Make sure that no one can skip while we wait to reset the value.
+                    currentPlaylist.nextVideo();
+                    connectedPlayerClient.pushSongList();
+                    lastSkipTime = $.systemTime();
+                    return;
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.skip.delay'));
+                    return;
+                }
             } else {
                 
                 /**
