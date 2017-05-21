@@ -52,7 +52,7 @@
             nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
             nonAlphaCount: /([^a-z0-9 ])/ig,
             capsCount: /([A-Z])/g,
-            fakePurge: /(^<message \w+>$)/i
+            fakePurge: new RegExp('(^<message \w+>)|(^<\w+ deleted>)', 'i')
         };
 
     /**
@@ -120,9 +120,10 @@
      */
     function getEmotesCount(event) {
         var emotes = event.getTags().get('emotes'),
+            matched = emotes.match(patterns.emotes),
             extraEmotes = $.emotesHandler.getEmotesMatchCount(event.getMessage());
 
-        return ((emotes === null || emotes.match(patterns.emotes) === null ? extraEmotes : (emotes.match(patterns.emotes).length) + extraEmotes));
+        return (matched === null ? extraEmotes : (matched.length + extraEmotes));
     }
 
     /**
@@ -136,7 +137,7 @@
             str = message,
             i;
 
-        if (emotes !== null && emotes.length() > 0) {
+        if (emotes.length() > 0) {
             emotes = emotes.replaceAll('[0-9]+:', '').split('/');
             for (i in emotes) {
                 str = str.replace(getWordAt(message, parseInt(emotes[i].split('-')[0])), '');

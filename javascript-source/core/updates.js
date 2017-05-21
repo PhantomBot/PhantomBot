@@ -96,7 +96,10 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 'installed2.3.6ss', 'installed2.3.6b'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 
+        'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 
+        'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 
+        'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -541,6 +544,7 @@
             $.inidb.set('quotes', i, temp[i]);
         }
         $.inidb.setAutoCommit(true);
+        $.inidb.SaveAll(true);
 
         $.inidb.del('modules', './handlers/discordHandler.js');
 
@@ -646,7 +650,45 @@
         $.consoleLn('PhantomBot update 2.3.6b completed!');
         $.inidb.set('updates', 'installedv2.3.6b', 'true');
     }
-    
+
+    /* version 2.3.7 updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.7') || $.inidb.get('updates', 'installedv2.3.7') != 'true') {
+        $.consoleLn('Starting PhantomBot update 2.3.7 updates...');
+
+        var keys = $.inidb.GetKeyList('blackList', ''),
+            timeout = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
+            message = $.getIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase.'),
+            messageB = $.getIniDbString('chatModerator', 'silentBlacklistMessage', 'Fake purge. (Automated by ' + $.botName + ')'),
+            obj = {},
+            i;
+
+        if ($.getIniDbNumber('chatModerator', 'msgCooldownSecs', 45) == 45) {
+            $.inidb.set('chatModerator', 'msgCooldownSecs', 30);
+        }
+
+        $.consoleLn('Updating blacklist...');
+        $.inidb.setAutoCommit(false);
+        for (i in keys) {
+            obj = {
+                id: String(i),
+                timeout: String(timeout),
+                isRegex: keys[i].startsWith('regex:'),
+                phrase: String(keys[i]),
+                isSilent: false,
+                excludeRegulars: false,
+                excludeSubscribers: false,
+                message: String(message),
+                banReason: String(messageB)
+            };
+            $.inidb.set('blackList', keys[i], JSON.stringify(obj));
+        }
+        $.inidb.setAutoCommit(true);
+        $.inidb.SaveAll(true);
+
+        $.consoleLn('PhantomBot update 2.3.7 completed!');
+        $.inidb.set('updates', 'installedv2.3.7', 'true');
+    }
+
     /**
      * @function getTableContents
      * @param {string} tableName
@@ -701,5 +743,6 @@
             $.inidb.set(tableName, i, contents[i]);
         }
         $.inidb.setAutoCommit(true);
+        $.inidb.SaveAll(true);
     }
 })();
