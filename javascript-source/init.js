@@ -733,7 +733,6 @@
         loadScript('./core/patternDetector.js');
         loadScript('./core/permissions.js');
         loadScript('./core/streamInfo.js');
-        loadScript('./core/panel.js');
         loadScript('./core/timeSystem.js');
         loadScript('./core/panelCommands.js');
 
