@@ -16,7 +16,7 @@ $.lang.register('slot.win.14', 'It\'s easy to win. Anybody can win.');
 $.lang.register('slot.win.15', 'Winning is great, sure, but if you are really going to do something in life, the secret is learning how to lose.');
 $.lang.register('slot.win.16', 'A winner is just a loser who tried one more time.');
 $.lang.register('slot.win.17', 'Sugoi~!');
-$.lang.register('slot.win.18', 'This thing must of been rigged!');
+$.lang.register('slot.win.18', 'This thing must have been rigged!');
 $.lang.register('slot.win.19', 'The Goddess Fortuna smiles upon you.');
 $.lang.register('slot.win.20', '?!......... (Seriously?!)');
 
@@ -43,7 +43,7 @@ $.lang.register('slot.lost.19', 'Did you know that games of chance is the same w
 $.lang.register('slot.lost.20', 'L-O-S-E-R...');
 $.lang.register('slot.lost.21', 'Dreams shattered :(');
 $.lang.register('slot.lost.22', 'Looks like you\'ve activated my trap card Kappa');
-$.lang.register('slot.lost.23', 'You\’re not obligated to win. You’re obligated to keep trying.');
+$.lang.register('slot.lost.23', 'You\'re not obligated to win. You\'re obligated to keep trying.');
 $.lang.register('slot.lost.24', 'This is not the end, this is not even the beginning of the end, this is just perhaps the end of the beginning.');
 $.lang.register('slot.lost.25', 'Sometimes not getting what you want is a brilliant stroke of luck.');
 $.lang.register('slot.lost.26', 'Winning takes talent, to repeat takes character.');
@@ -103,7 +103,7 @@ $.lang.register('roll.win.14', 'It\'s easy to win. Anybody can win.');
 $.lang.register('roll.win.15', 'Winning is great, sure, but if you are really going to do something in life, the secret is learning how to lose.');
 $.lang.register('roll.win.16', 'A winner is just a loser who tried one more time.');
 $.lang.register('roll.win.17', 'Sugoi~!');
-$.lang.register('roll.win.18', 'This thing must of been rigged!');
+$.lang.register('roll.win.18', 'This thing must have been rigged!');
 $.lang.register('roll.win.19', 'The Goddess Fortuna smiles upon you.');
 $.lang.register('roll.win.20', '?!......... (Seriously?!)');
 
@@ -130,7 +130,7 @@ $.lang.register('roll.lost.19', 'Did you know that games of chance is the same w
 $.lang.register('roll.lost.20', 'L-O-S-E-R...');
 $.lang.register('roll.lost.21', 'Dreams shattered :(');
 $.lang.register('roll.lost.22', 'Looks like you\'ve activated my trap card Kappa');
-$.lang.register('roll.lost.23', 'You\’re not obligated to win. You’re obligated to keep trying.');
+$.lang.register('roll.lost.23', 'You\'re not obligated to win. You\'re obligated to keep trying.');
 $.lang.register('roll.lost.24', 'This is not the end, this is not even the beginning of the end, this is just perhaps the end of the beginning.');
 $.lang.register('roll.lost.25', 'Sometimes not getting what you want is a brilliant stroke of luck.');
 $.lang.register('roll.lost.26', 'Winning takes talent, to repeat takes character.');
