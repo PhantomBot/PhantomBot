@@ -37,6 +37,7 @@ import com.illusionaryone.TwitterAPI;
 import com.scaniatv.AnkhConverter;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
+import com.scaniatv.RevloConverter;
 
 import de.simeonf.EventWebSocketServer;
 
@@ -1275,6 +1276,13 @@ public final class PhantomBot implements Listener {
                 this.session.fakeTwitchMessage(arguments + "_"); // Need a junk character to strip off //
             }
             return;
+        }
+
+        if (message.equalsIgnoreCase("revloconvert")) {
+            print("[CONSOLE] Executing revloconvert");
+            if (arguments.length() > 0) {
+                new RevloConverter(arguments);
+            }
         }
 
         if (message.equalsIgnoreCase("ankhtophantombot")) {
