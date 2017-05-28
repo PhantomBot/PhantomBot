@@ -1097,6 +1097,7 @@
         loadDefaultPl();
         connectedPlayerClient.pushPlayList();
         $.youtubePlayerConnected = true;
+        $.ytplayer.setClientConnected(true);
     });
 
     /**
@@ -1105,6 +1106,7 @@
     $.bind('yTPlayerDisconnect', function(event) {
         connectedPlayerClient = null;
 
+        $.ytplayer.setClientConnected(false);
         $.consoleLn($.lang.get('ytplayer.console.client.disconnected'));
         if (!songRequestsEnabled) {
             $.say($.lang.get('ytplayer.songrequests.disabled'));
