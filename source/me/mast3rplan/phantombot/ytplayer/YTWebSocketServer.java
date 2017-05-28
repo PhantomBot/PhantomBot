@@ -124,6 +124,7 @@ public class YTWebSocketServer extends WebSocketServer {
     private String authStringRO;
     private int currentVolume = 0;
     private int currentState = -10;
+    private boolean clientConnected = false;
 
     private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
 
@@ -196,6 +197,10 @@ public class YTWebSocketServer extends WebSocketServer {
 
         if (!sessionData.isAuthenticated()) {
             authResult(false, webSocket);
+            return;
+        }
+
+        if (!clientConnected && !sessionData.isPlayer()) {
             return;
         }
 
@@ -368,6 +373,10 @@ public class YTWebSocketServer extends WebSocketServer {
 
     private static String genSessionKey(WebSocket webSocket) {
         return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
+    }
+
+    public void setClientConnected(boolean clientConnected) {
+        this.clientConnected = clientConnected;
     }
 
     // Class for storing Session data.
