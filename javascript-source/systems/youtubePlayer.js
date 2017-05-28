@@ -1097,6 +1097,7 @@
         loadDefaultPl();
         connectedPlayerClient.pushPlayList();
         $.youtubePlayerConnected = true;
+        $.ytplayer.setClientConnected(true);
     });
 
     /**
@@ -1105,6 +1106,7 @@
     $.bind('yTPlayerDisconnect', function(event) {
         connectedPlayerClient = null;
 
+        $.ytplayer.setClientConnected(false);
         $.consoleLn($.lang.get('ytplayer.console.client.disconnected'));
         if (!songRequestsEnabled) {
             $.say($.lang.get('ytplayer.songrequests.disabled'));
@@ -1194,20 +1196,30 @@
 
             /**
              * @commandpath ytp volume [0-100] - Set volume in player. No value to display current volume.
+             * @commandpath ytp volume [0-100] [+/-] - Set volume in player. +/- raises/lowers by 2. No value to display current volume.
              */
             if (action.equalsIgnoreCase('volume')) {
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
                 } 
-                if (actionArgs[0] && !isNaN(parseInt(actionArgs[0]))) {
+            }
+            if (actionArgs[0]) {
+                if (!isNaN(parseInt(actionArgs[0]))) {
                     connectedPlayerClient.setVolume(actionArgs[0]);
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', actionArgs[0]));
-                } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.get', connectedPlayerClient.getVolume()));
-                }
-                return;
+                    return;
+                } if (actionArgs[0].equals('+')) {
+                    connectedPlayerClient.setVolume($.getIniDbNumber('ytSettings', 'volume') + 2);
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', $.getIniDbNumber('ytSettings', 'volume')));
+                    return;
+                } if (actionArgs[0].equals('-')) {
+                    connectedPlayerClient.setVolume($.getIniDbNumber('ytSettings', 'volume') - 2);
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', $.getIniDbNumber('ytSettings', 'volume')));
+                    return;
+                } 
             }
+            $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.get', connectedPlayerClient.getVolume()));
 
             /**
             * @commandpath ytp votecount - Set the amount of votes needed for the !skip command to work
