@@ -2138,6 +2138,7 @@ public final class PhantomBot implements Listener {
         /* Make a new botlogin with the botName, oauth or channel is not found */
         if (startProperties.getProperty("user") == null || startProperties.getProperty("oauth") == null || startProperties.getProperty("channel") == null) {
             try {
+
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
                 com.gmt2001.Console.out.print("If you have any issues please report them on our forum or Tweet at us!\r\n");
@@ -2148,36 +2149,72 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("\r\n");
 
-                com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
-                startProperties.setProperty("user", System.console().readLine().trim());
+                // Bot name.
+                do {
+                    com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
+
+                    startProperties.setProperty("user", System.console().readLine().trim());
+                } while (startProperties.getProperty("user", "").length() <= 0);
+
+                // Twitch oauth.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
+                    com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
+                    com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
+                    com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
+                    com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
+                    
+                    startProperties.setProperty("oauth", System.console().readLine().trim());
+                } while (startProperties.getProperty("oauth", "").length() <= 0);
+                
+                // api oauth.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
+                    com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
+                    com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
+                    com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
+                    com.gmt2001.Console.out.print("Please enter your OAuth token: ");
+                    
+                    startProperties.setProperty("apioauth", System.console().readLine().trim());
+                } while (startProperties.getProperty("apioauth", "").length() <= 0);
+
+                // Channel name.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
+
+                    startProperties.setProperty("channel", System.console().readLine().trim());
+                } while (startProperties.getProperty("channel", "").length() <= 0);
+
+                // Panel username.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
+
+                    startProperties.setProperty("paneluser", System.console().readLine().trim());
+                } while (startProperties.getProperty("paneluser", "").length() <= 0);
+
+                // Panel password.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("6. Please enter a custom password for the web panel: ");
+
+                    startProperties.setProperty("panelpassword", System.console().readLine().trim());
+                } while (startProperties.getProperty("panelpassword", "").length() <= 0);
 
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
-                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
-                com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
-                com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
-                com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
-                startProperties.setProperty("oauth", System.console().readLine().trim());
+                com.gmt2001.Console.out.print("PhantomBot will launch in 5 seconds.\r\n");
+                com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the panel here: http://localhost:25005/panel \r\n");
+                com.gmt2001.Console.out.print("If you're running the bot on a server, make sure to open the following ports: \r\n");
+                com.gmt2001.Console.out.print("25003, 25004, and 25005. You can change 'localhost' to your server ip to access the panel. \r\n");
 
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
-                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
-                com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
-                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
-                com.gmt2001.Console.out.print("Please enter your OAuth token: ");
-                startProperties.setProperty("apioauth", System.console().readLine().trim());
-
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
-                startProperties.setProperty("channel", System.console().readLine().trim());
-
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
-                startProperties.setProperty("paneluser", System.console().readLine().trim());
-
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("6. Please enter a custom password for the web panel: ");
-                startProperties.setProperty("panelpassword", System.console().readLine().trim());
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.debug.println("Failed to sleep in setup: " + ex.getMessage());
+                }
 
                 changed = true;
                 newSetup = true;
