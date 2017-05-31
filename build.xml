@@ -31,7 +31,7 @@
         </fileset>
     </path>
 
-    <condition property="nightly_build" value="${nightly}" else="not_nightly">
+    <condition property="nightly_build" value="true" else="false">
         <and>
             <isset property="nightly" />
             <length string="${nightly}" trim="yes" length="0" when="greater" />
@@ -74,18 +74,11 @@
     <target depends="init,git.revision" name="pre.compile">
         <echo>${ant.project.name} Version ${version} (${repository.version}) (${nightly_build})</echo>
         <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
+
         <replaceregexp
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            match="repoVersion = &quot;(.*)&quot;;"
-            replace="repoVersion = &quot;${repository.version}&quot;;" />
-        <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            match="nightlyBuild = &quot;(.*)&quot;;"
-            replace="nightlyBuild = &quot;${nightly_build}&quot;;" />
-        <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            match="phantomBotVersion = &quot;(.*)&quot;;"
-            replace="phantomBotVersion = &quot;${version}&quot;;" />
+            match="nightlyBuild = (.*);"
+            replace="nightlyBuild = ${nightly_build};" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -114,16 +107,8 @@
     <target name="post.compile">
         <replaceregexp
             file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            match="repoVersion = &quot;(.*)&quot;;"
-            replace="repoVersion = &quot;@repository.version@&quot;;" />
-        <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            match="nightlyBuild = &quot;(.*)&quot;;"
-            replace="nightlyBuild = &quot;@nightly.build@&quot;;" />
-        <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            match="phantomBotVersion = &quot;(.*)&quot;;"
-            replace="phantomBotVersion = &quot;@phantombot.version@&quot;;" />
+            match="nightlyBuild = (.*);"
+            replace="nightlyBuild = false;" />
     </target>
 
     <target depends="compile.src,post.compile,git.revision" name="jar">

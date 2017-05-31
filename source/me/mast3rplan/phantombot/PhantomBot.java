@@ -592,7 +592,7 @@ public final class PhantomBot implements Listener {
      * @return {boolean}
      */
     public Boolean isNightly() {
-        return RepoVersion.getNightlyBuild().equals("nightly_build");
+        return RepoVersion.getNightlyBuild();
     }
 
     /*
