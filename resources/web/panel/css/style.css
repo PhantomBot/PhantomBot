@@ -503,6 +503,9 @@ td {
     outline:none;
     background: rgb(28, 28, 36);
 }
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+    float: none;
+}
 
 .ui-draggable .ui-dialog-titlebar {
     background: transparent;
