@@ -34,6 +34,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.illusionaryone.SimpleScramble;
 
 /**
  * Communicates with YouTube via the version 3 API
@@ -43,7 +44,9 @@ import org.json.JSONObject;
 public class YouTubeAPIv3 {
 
     private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
-    private String apikey = "AIzaSyCzHxG53pxE0hWrWBIMMGm75PRHBQ8ZP8c";
+    private final SimpleScramble simpleScramble = new SimpleScramble();
+    private String scramblekey = "ZARRKwMxPRhrCX4RSiZTYlEcIANwPns+ZwZbCAg4dwVpG2gSLlpA";
+    private String apikey = simpleScramble.simpleFixedUnscramble(scramblekey);
 
     private enum request_type {
 
@@ -446,5 +449,13 @@ public class YouTubeAPIv3 {
         return new int[] {
                    0, 0, 0
                };
+    }
+
+    public int max() {
+        return Integer.parseInt(simpleScramble.simpleFixedUnscramble("FHgb"));
+    }
+
+    public boolean checkapi() {
+        return !apikey.equals(simpleScramble.simpleFixedUnscramble(scramblekey));
     }
 }
