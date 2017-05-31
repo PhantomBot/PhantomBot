@@ -302,7 +302,7 @@
                             $.log.error("importPlaylistFile::skipped [" + importedList[i] + "]: " + ex);
                             failCount++;
                         }
-                        if (importCount >= 150) {
+                        if (importCount == $.youtube.max() && !$.youtube.checkapi()) {
                             break;
                         }
                     }
