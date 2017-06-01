@@ -35,6 +35,18 @@
         <and>
             <isset property="nightly" />
             <length string="${nightly}" trim="yes" length="0" when="greater" />
+            <equals arg1="${nightly}" arg2="nightly_build" />
+        </and>
+    </condition>
+    <condition property="nightly" value="not_nightly">
+        <and>
+            <not>
+                <and>
+                    <isset property="nightly" />
+                    <equals arg1="${nightly}" arg2="nightly_build" />
+                </and>
+            </not>
+            <isfalse value="${nightly_build}" />
         </and>
     </condition>
     
@@ -72,7 +84,7 @@
     </target>
 
     <target depends="init,git.revision" name="pre.compile">
-        <echo>${ant.project.name} Version ${version} (${repository.version}) (${nightly_build})</echo>
+        <echo>${ant.project.name} Version ${version} (${repository.version}) (${nightly})</echo>
         <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
 
         <replaceregexp
