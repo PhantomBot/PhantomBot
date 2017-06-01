@@ -372,6 +372,7 @@
      */
     function apiTags(event, message) {
         var JSONObject = Packages.org.json.JSONObject,
+            JSONArray = Packages.org.json.JSONArray,
             command = event.getCommand(),
             args = event.getArgs(),
             origCustomAPIResponse = '',
@@ -454,16 +455,28 @@
                                 try {
                                     jsonObject = new JSONObject(origCustomAPIResponse).getJSONObject(jsonCheckList[i]);
                                 } catch (ex) {
-                                    jsonObject = new JSONObject(origCustomAPIResponse).getJSONArray(jsonCheckList[i]);
+                                    try {
+                                        jsonObject = new JSONArray(origCustomAPIResponse).get(jsonCheckList[i]);
+                                    } catch (ex) {
+                                        return $.lang.get('customcommands.customapijson.err', command);
+                                    }
                                 }
                             } else if (!isNaN(jsonCheckList[i + 1])) {
                                 try {
                                     jsonObject = jsonObject.getJSONArray(jsonCheckList[i]);
                                 } catch (ex) {
-                                    jsonObject = jsonObject.getJSONObject(jsonCheckList[i]);
+                                    try {
+                                        jsonObject = jsonObject.getJSONObject(jsonCheckList[i]);
+                                    } catch (ex) {
+                                        return $.lang.get('customcommands.customapijson.err', command);
+                                    }
                                 }
                             } else {
-                                jsonObject = jsonObject.getJSONObject(jsonCheckList[i]);
+                                try {
+                                    jsonObject = jsonObject.getJSONObject(jsonCheckList[i]);
+                                } catch (ex) {
+                                    return $.lang.get('customcommands.customapijson.err', command);
+                                }
                             }
                         }
                         try {
