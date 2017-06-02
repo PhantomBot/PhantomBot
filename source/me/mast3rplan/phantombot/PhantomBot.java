@@ -52,6 +52,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import java.net.BindException;
+import java.net.ServerSocket;
+
 import java.security.SecureRandom;
 
 import java.text.SimpleDateFormat;
@@ -325,6 +328,35 @@ public final class PhantomBot implements Listener {
      */
     private void print(String message) {
         com.gmt2001.Console.out.println(message);
+    }
+
+    /*
+     * Checks port availability.
+     *
+     * @param {int} port
+     */
+    public void checkPortAvailabity(int port) {
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(port);
+            serverSocket.setReuseAddress(true);
+        } catch (IOException e) {
+            com.gmt2001.Console.err.println("Port is already in use: " + port);
+            com.gmt2001.Console.err.println("Ensure that another copy of PhantomBot is not running.");
+            com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in botlogin.txt");
+            com.gmt2001.Console.err.println("PhantomBot will now exit.");
+            System.exit(0);
+        } finally {
+            if (serverSocket != null) {
+                try {
+                    serverSocket.close();
+                } catch (IOException e) {
+                    com.gmt2001.Console.err.println("Unable to close port for testing: " + port);
+                    com.gmt2001.Console.err.println("PhantomBot will now exit.");
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     /*
@@ -793,61 +825,75 @@ public final class PhantomBot implements Listener {
     private void init() {
         /* Is the web toggle enabled? */
         if (webEnabled) {
-            if (legacyServers) {
-                /* open a normal non ssl server */
-                httpServer = new HTTPServer(basePort, oauth);
-                /* Start this http server  */
-                httpServer.start();
-            }
-
-            /* Is the music toggled on? */
-            if (musicEnabled) {
-                if (useHttps) {
-                    /* Set the music player server */
-                    youtubeSocketSecureServer = new YTWebSocketSecureServer((basePort + 3), youtubeOAuth, youtubeOAuthThro, httpsFileName, httpsPassword);
-                    /* Start this youtube socket server */
-                    youtubeSocketSecureServer.start();
-                    print("YouTubeSocketSecureServer accepting connections on port: " + (basePort + 3) + " (SSL)");
-                } else {
-                    /* Set the music player server */
-                    youtubeSocketServer = new YTWebSocketServer((basePort + 3), youtubeOAuth, youtubeOAuthThro);
-                    /* Start this youtube socket server */
-                    youtubeSocketServer.start();
-                    print("YouTubeSocketServer accepting connections on port: " + (basePort + 3));
+            try {
+                if (legacyServers) {
+                    checkPortAvailabity(basePort);
+                    /* open a normal non ssl server */
+                    httpServer = new HTTPServer(basePort, oauth);
+                    /* Start this http server  */
+                    httpServer.start();
                 }
-            }
+    
+                /* Is the music toggled on? */
+                if (musicEnabled) {
+                    checkPortAvailabity(basePort + 3);
+                    if (useHttps) {
+                        /* Set the music player server */
+                        youtubeSocketSecureServer = new YTWebSocketSecureServer((basePort + 3), youtubeOAuth, youtubeOAuthThro, httpsFileName, httpsPassword);
+                        /* Start this youtube socket server */
+                        youtubeSocketSecureServer.start();
+                        print("YouTubeSocketSecureServer accepting connections on port: " + (basePort + 3) + " (SSL)");
+                    } else {
+                        /* Set the music player server */
+                        youtubeSocketServer = new YTWebSocketServer((basePort + 3), youtubeOAuth, youtubeOAuthThro);
+                        /* Start this youtube socket server */
+                        youtubeSocketServer.start();
+                        print("YouTubeSocketServer accepting connections on port: " + (basePort + 3));
+                    }
+                }
 
-            /* Checks if the user wants the legacy servers, this is off by default. */
-            if (legacyServers) {
-                /* Create a event server to get all the events. */
-                eventWebSocketServer = new EventWebSocketServer((basePort + 2));
-                /* Start this event server */
-                 eventWebSocketServer.start();
-                print("EventSocketServer accepting connections on port: " + (basePort + 2));
-                /* make the event bus register this event server */
-                EventBus.instance().register(eventWebSocketServer);
-            }
+                /* Checks if the user wants the legacy servers, this is off by default. */
+                if (legacyServers) {
+                    checkPortAvailabity(basePort + 2);
+                    /* Create a event server to get all the events. */
+                    eventWebSocketServer = new EventWebSocketServer((basePort + 2));
+                    /* Start this event server */
+                    eventWebSocketServer.start();
+                    print("EventSocketServer accepting connections on port: " + (basePort + 2));
+                    /* make the event bus register this event server */
+                    EventBus.instance().register(eventWebSocketServer);
+                }
 
-            if (useHttps) {
-                /* Set up the panel socket server */
-                panelSocketSecureServer = new PanelSocketSecureServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword);
-                /* Start the panel socket server */
-                panelSocketSecureServer.start();
-                print("PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
+                if (useHttps) {
+                    checkPortAvailabity(basePort + 4);
+                    checkPortAvailabity(basePort + 5);
 
-                /* Set up a new https server */
-                newHttpsServer = new NEWHTTPSServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
-                print("New HTTPS server accepting connection on port: " + (basePort + 5) + " (SSL)");
-            } else {
-                /* Set up the panel socket server */
-                panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
-                /* Start the panel socket server */
-                panelSocketServer.start();
-                print("PanelSocketServer accepting connections on port: " + (basePort + 4));
+                    /* Set up the panel socket server */
+                    panelSocketSecureServer = new PanelSocketSecureServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword);
+                    /* Start the panel socket server */
+                    panelSocketSecureServer.start();
+                    print("PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
 
-                /* Set up a new http server */
-                newHttpServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
-                print("New HTTP server accepting connection on port: " + (basePort + 5));
+                    /* Set up a new https server */
+                    newHttpsServer = new NEWHTTPSServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
+                    print("New HTTPS server accepting connection on port: " + (basePort + 5) + " (SSL)");
+                } else {
+                    checkPortAvailabity(basePort + 4);
+                    checkPortAvailabity(basePort + 5);
+
+                    /* Set up the panel socket server */
+                    panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
+                    /* Start the panel socket server */
+                    panelSocketServer.start();
+                    print("PanelSocketServer accepting connections on port: " + (basePort + 4));
+
+                    /* Set up a new http server */
+                    newHttpServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
+                    print("New HTTP server accepting connection on port: " + (basePort + 5));
+                }
+            } catch (Exception ex) {
+                print("Exception occurred in one of the socket based services, PhantomBot will now exit.");
+                System.exit(0);
             }
         }
 
