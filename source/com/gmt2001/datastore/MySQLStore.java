@@ -355,6 +355,55 @@ public class MySQLStore extends DataStore {
     }
 
     @Override
+    public String[] GetKeysByOrderValue(String fName, String section, String order, String limit, String offset) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) {
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+    
+                    try (ResultSet rs = statement.executeQuery()) {
+    
+                        ArrayList<String> s = new ArrayList<>();
+    
+                        while (rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+    
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY value " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                    statement.setQueryTimeout(10);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+
+                        ArrayList<String> s = new ArrayList<>();
+
+                        while (rs.next()) {
+                            s.add(rs.getString("variable"));
+                        }
+
+                        return s.toArray(new String[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new String[] {
+               };
+    }
+
+    @Override
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
         CheckConnection();
 

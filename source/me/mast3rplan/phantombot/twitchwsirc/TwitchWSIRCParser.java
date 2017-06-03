@@ -278,11 +278,6 @@ public class TwitchWSIRCParser {
         /* Print the parsed message in the console. */
         com.gmt2001.Console.out.println(username + ": " + message);
 
-        // Once Twitch removes TwitchNotify this can go (May 24).
-        if (username.equalsIgnoreCase("twitchnotify")) {
-            return;
-        }
-
         /* Check to see if the users disaplay name. Used in the scripts. */
         if (tagsMap.containsKey("display-name")) {
             usernameCache.addUser(username, tagsMap.get("display-name"));
@@ -330,6 +325,9 @@ public class TwitchWSIRCParser {
 
         /* Send the message to the scripts. */
         eventBus.postAsync(new IrcChannelMessageEvent(session, username, message, channel, tagsMap));
+
+        /* Send an event to check if a user is a sub. */
+        // eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "user-check " + username, tagsMap));
 
         /* Print the IRCv3 tags if debug mode is on, this is last so it doesn't slow down the code above. */
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
