@@ -122,6 +122,14 @@ public class UsernameCache {
         }
     }
 
+    public boolean hasUser(String userName) {
+        return cache.containsKey(userName);
+    }
+
+    public String get(String userName) {
+        return (hasUser(userName) ? cache.get(userName) : userName);
+    }
+
     public void removeUser(String userName) {
         userName = userName.toLowerCase();
 
