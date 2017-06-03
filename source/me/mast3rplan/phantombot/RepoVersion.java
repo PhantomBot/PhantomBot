@@ -16,24 +16,44 @@
  */
 package me.mast3rplan.phantombot;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+
 public class RepoVersion {
-
-    private static final String phantomBotVersion = "@phantombot.version@";
-    private static final String repoVersion = "@repository.version@";
-    private static final String nightlyBuild = "@nightly.build@";
-
+    
+    private static final boolean nightlyBuild = false;
+    
     private RepoVersion() {
     }
-
+    
+    protected static String getValue(String key) {
+        try {
+            String path = PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            JarFile jar = new JarFile(new File(path));
+            Manifest mf = new Manifest(jar.getManifest());
+            Attributes attrib = mf.getMainAttributes();
+            String value = attrib.getValue(key);
+            if (value != null) {
+                return value;
+            }
+        } catch (IOException e) {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }
+        return null;
+    }
+    
     public static String getPhantomBotVersion() {
-        return phantomBotVersion;
+        return getValue("Bundle-Version");
     }
-
+    
     public static String getRepoVersion() {
-        return repoVersion;
+        return getValue("Bundle-Revision");
     }
-
-    public static String getNightlyBuild() {
+    
+    public static boolean getNightlyBuild() {
         return nightlyBuild;
     }
 }
