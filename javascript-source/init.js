@@ -1035,41 +1035,6 @@
         });
 
         /**
-         * @event api-musicPlayerConnect
-         */
-        $api.on($script, 'musicPlayerConnect', function(event) {
-            callHook('musicPlayerConnect', event, false);
-        });
-
-        /**
-         * @event api-musicPlayerCurrentId
-         */
-        $api.on($script, 'musicPlayerCurrentId', function(event) {
-            callHook('musicPlayerCurrentId', event, false);
-        });
-
-        /**
-         * @event api-musicPlayerCurrentVolume
-         */
-        $api.on($script, 'musicPlayerCurrentVolume', function(event) {
-            callHook('musicPlayerCurrentVolume', event, false);
-        });
-
-        /**
-         * @event api-musicPlayerDisconnect
-         */
-        $api.on($script, 'musicPlayerDisconnect', function(event) {
-            callHook('musicPlayerDisconnect', event, false);
-        });
-
-        /**
-         * @event api-musicPlayerState
-         */
-        $api.on($script, 'musicPlayerState', function(event) {
-            callHook('musicPlayerState', event, false);
-        });
-
-        /**
          * @event api-twitchAlertsDonation
          */
         $api.on($script, 'twitchAlertsDonation', function(event) {
