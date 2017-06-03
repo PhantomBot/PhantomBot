@@ -2,7 +2,8 @@
     var currentHostTarget = '',
         respond = getSetIniDbBoolean('settings', 'response_@chat', true),
         action = getSetIniDbBoolean('settings', 'response_action', false),
-        secureRandom = new java.security.SecureRandom();
+        secureRandom = new java.security.SecureRandom(),
+        reg = new RegExp(/^@\w+,$/);
 
     /* 
      * @function reloadMisc
@@ -115,7 +116,7 @@
         if (message.startsWith('.')) {
             $.session.say(message);
             return;
-        } else if (message.endsWith(', ')) {
+        } else if (reg.test(message)) {
             return;
         }
 
