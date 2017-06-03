@@ -37,7 +37,7 @@
      * @returns {Array}
      */
     function getTop5(iniName) {
-        var keys = $.inidb.GetKeyList(iniName, ''),
+        var keys = $.inidb.GetKeysByOrderValue(iniName, '', 'DESC', 0, 25),
             list = [],
             i;
 
@@ -55,9 +55,9 @@
         });
 
         if (iniName == 'points') {
-            return list.splice(0, amountPoints);
+            return list.slice(0, amountPoints);
         } else {
-            return list.splice(0, amountTime);
+            return list.slice(0, amountTime);
         }
     }
 
