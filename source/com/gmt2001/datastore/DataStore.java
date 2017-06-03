@@ -64,6 +64,10 @@ public class DataStore {
         return new String[] {
                };
     }
+    public String[] GetKeysByOrderValue(String fName, String section, String order, String limit, String offset) {
+        return new String[] {
+               };
+    }
 
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
         return new String[] {
