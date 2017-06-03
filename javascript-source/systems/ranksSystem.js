@@ -120,10 +120,11 @@
      * @function resolveRank
      * @export $
      * @param {string} username
+     * @param {boolean} resolveName
      * @returns {string}
      */
     function resolveRank(username) {
-        return (getRank(username.toLowerCase()) + ' ' + $.username.resolve(username)).trim();
+        return (getRank(username.toLowerCase()) + ' ' + ($.username.hasUser(username) == true ? $.username.get(username) : username)).trim();
     }
 
     /**
