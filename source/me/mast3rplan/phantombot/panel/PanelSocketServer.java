@@ -145,11 +145,11 @@ public class PanelSocketServer extends WebSocketServer {
      * @param authString   The authorization string to use for read/write connectivity.
      * @param authStringRO The authorizatin string to use for read-only connectivity.
      */
-    public PanelSocketServer(int port, String authString, String authStringRO) {
+    public PanelSocketServer(int port, String authString, String authStringRO) throws Exception {
         super(new InetSocketAddress(port));
         this.authString = authString;
         this.authStringRO = authStringRO;
-
+    
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 

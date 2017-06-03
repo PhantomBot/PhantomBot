@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.net.URI;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
@@ -70,7 +71,7 @@ public class NEWHTTPSServer {
     private String     httpsFileName;
     private int        serverPort;
 
-    public NEWHTTPSServer(int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword, final String fileName, final String password) {
+    public NEWHTTPSServer(int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword, final String fileName, final String password) throws Exception {
         serverPort = myPort;
         serverPassword = myPassword.replace("oauth:", "");
         serverWebAuth = myWebAuth;
@@ -132,16 +133,21 @@ public class NEWHTTPSServer {
             server.setExecutor(Executors.newCachedThreadPool());
             server.start();
         } catch (KeyManagementException ex) {
-            com.gmt2001.Console.err.println("SSL certificate failed to load");
+            com.gmt2001.Console.err.logStackTrace(ex);
+            throw new Exception("NEWHTTPSServer Failed to Load SSL Certificate");
+        } catch (BindException ex) {
+            com.gmt2001.Console.err.println("Failed to bind to port for HTTPS Server on port " + myPort);
+            com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + myPort + " on your system");
+            com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file to a different value, such as " + (myPort + 1000));
+            throw new Exception("Failed to Create NEWHTTPSServer on Port " + myPort);
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
-            com.gmt2001.Console.warn.println("Failed to create a new HTTPS server on port: " + myPort + ".");
-            com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + myPort + " on your system.");
-            com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file if you need port " + myPort + " for something else.");
             com.gmt2001.Console.err.logStackTrace(ex);
+            throw new Exception("Failed to Create NEWHTTPSServer on Port " + myPort);
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
+            throw new Exception("Failed to Create NEWHTTPSServer on Port " + myPort);
         }
     }
 
