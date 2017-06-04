@@ -17,11 +17,12 @@
 
 package me.mast3rplan.phantombot;
 
+import com.gmt2001.Logger;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.IniStore;
-import com.gmt2001.Logger;
 import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
+import com.gmt2001.datastore.H2Store;
 import com.gmt2001.TwitchAPIv3;
 import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
@@ -529,7 +530,7 @@ public final class PhantomBot implements Listener {
             }
             /* Check to see if we can create a connection */
             if (dataStore.CreateConnection(this.mySqlConn, this.mySqlUser, this.mySqlPass) == null) {
-                print("Could not create a connection with MySql. PhantomBot now shutting down...");
+                print("Could not create a connection with MySQL Server. PhantomBot now shutting down...");
                 System.exit(0);
             }
             /* Convert to MySql */
@@ -537,6 +538,13 @@ public final class PhantomBot implements Listener {
                 ini2MySql(true);
             } else if (SqliteStore.instance().GetFileList().length > 0) {
                 sqlite2MySql();
+            }
+        } else if (dataStoreType.equalsIgnoreCase("h2store")) {
+            dataStore = H2Store.instance();
+
+            if (dataStore.CreateConnection("", "", "") == null) {
+                print("Could not create a connection with H2 Database. PhantomBot now shutting down...");
+                System.exit(0);
             }
         } else {
             dataStoreType = "sqlite3store";
