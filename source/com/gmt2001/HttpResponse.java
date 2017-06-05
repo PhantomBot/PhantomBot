@@ -24,7 +24,7 @@ import java.util.HashMap;
  * @author gmt2001
  */
 public class HttpResponse {
-
+ 
     public RequestType type;
     public String url;
     public String post;
