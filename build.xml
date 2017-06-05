@@ -182,6 +182,8 @@
 
     <target name="clean" depends="git.revision,post.compile">
         <delete dir="${build}" />
+        <delete dir="${build.dir}" />
+        <delete dir="./resources/scripts" />
     </target>
 
     <target name="distclean" depends="clean">
