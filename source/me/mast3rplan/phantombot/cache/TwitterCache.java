@@ -34,12 +34,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.List;
+import java.util.ArrayList;
 
 import twitter4j.Status;
 
 import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitter.TwitterEvent;
+import me.mast3rplan.phantombot.event.twitter.TwitterRetweetEvent;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
 
 /*
@@ -136,6 +138,7 @@ public class TwitterCache implements Runnable {
         Boolean poll_mentions = false;
         Boolean poll_hometimeline = false;
         Boolean poll_usertimeline = false;
+        Boolean reward_retweets = false;
 
         long presentTime = 0L;
         long last_retweetTime = 0L;
@@ -155,9 +158,10 @@ public class TwitterCache implements Runnable {
         poll_mentions = getDBBoolean("poll_mentions");
         poll_hometimeline = getDBBoolean("poll_hometimeline");
         poll_usertimeline = getDBBoolean("poll_usertimeline");
+        reward_retweets = getDBBoolean("reward_toggle");
 
         /* If nothing to poll, then time to leave. */
-        if (!poll_retweets && !poll_mentions && !poll_hometimeline && !poll_usertimeline) {
+        if (!reward_retweets && !poll_retweets && !poll_mentions && !poll_hometimeline && !poll_usertimeline) {
             return;
         }
 
@@ -182,8 +186,8 @@ public class TwitterCache implements Runnable {
 
         /* Handle each type of data from the Twitter API. */
         presentTime = System.currentTimeMillis() / 1000L;
-        if (poll_retweets) {
-            handleRetweets(last_retweetTime, delay_retweets, presentTime);
+        if (poll_retweets || reward_retweets) {
+            handleRetweets(last_retweetTime, delay_retweets, presentTime, poll_retweets, reward_retweets);
         }
         if (poll_mentions) {
             handleMentions(last_mentionsTime, delay_mentions, presentTime);
@@ -199,11 +203,13 @@ public class TwitterCache implements Runnable {
     /*
      * Handles retweets with the Twitter API.
      *
-     * @param  long  The last time this API was polled.
-     * @param  long  The delay to occur between polls.
-     * @param  long  The present time stamp in seconds.
+     * @param  long     The last time this API was polled.
+     * @param  long     The delay to occur between polls.
+     * @param  long     The present time stamp in seconds.
+     * @param  boolean  Display the most recent retweet in chat.
+     * @param  boolean  Scan all retweets for rewards.
      */
-    private void handleRetweets(long lastTime, long delay, long presentTime) {
+    private void handleRetweets(long lastTime, long delay, long presentTime, boolean poll_retweets, boolean reward_retweets) {
         if (presentTime - lastTime < delay) {
             return;
         }
@@ -217,11 +223,26 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
 
+        /* Poll latest retweet. */
+        if (poll_retweets) {
+            String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+
+            updateDBString("last_retweets", tweet);
+            EventBus.instance().post(new TwitterEvent(tweet, getChannel()));
+        }
+
+        /* Scan all retweets to perform a posssible points payout. */
+        if (reward_retweets) {
+            ArrayList<String> userNameList = new ArrayList<>();
+            for (Status status : statuses) {
+                userNameList.add(status.getUser().getName());
+            }
+            EventBus.instance().post(new TwitterRetweetEvent(userNameList.toArray(new String[userNameList.size()]), getChannel()));
+        }
+
+        /* Update DB with the last Tweet ID processed. */
         updateDBLong("lastid_retweets", twitterID);
-        updateDBString("last_retweets", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet, getChannel()));
     }
 
     /*
