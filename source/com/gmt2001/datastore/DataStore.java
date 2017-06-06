@@ -69,6 +69,10 @@ public class DataStore {
                };
     }
 
+    public String GetKeyByValue(String fName, String section, String value) {
+        return "";
+    }
+
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
         return new String[] {
                };
