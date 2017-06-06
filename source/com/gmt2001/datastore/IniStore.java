@@ -373,6 +373,25 @@ public class IniStore extends DataStore implements ActionListener {
     }
 
     @Override
+    public String GetKeyByValue(String fName, String section, String value) {
+        if (!LoadFile(fName, false)) {
+            return null;
+        }
+
+        section = validateSection(section);
+        Set<String> o = files.get(fName).data.get(section).keySet();
+
+        Iterator<String> it = o.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            if (files.get(fName).data.get(section).get(key).toLowerCase().equals(value.toLowerCase())) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public String[] GetKeysByLikeKeys(String fName, String section, String search) {
         fName = validatefName(fName);
 
