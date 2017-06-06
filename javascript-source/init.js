@@ -1217,6 +1217,13 @@
         });
 
         /**
+         * @event api-twitterRetweetEvent
+         */
+        $api.on($script, 'twitterRetweet', function(event) {
+            callHook('twitterRetweet', event, false);
+        });
+
+        /**
          * @event api-twitchOnlineEvent
          */
         $api.on($script, 'twitchOnline', function(event) {

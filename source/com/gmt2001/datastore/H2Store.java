@@ -597,6 +597,53 @@ public class H2Store extends DataStore {
     }
 
     @Override
+    public String GetKeyByValue(String fName, String section, String value) {
+        CheckConnection();
+
+        String result = null;
+
+        fName = validateFname(fName);
+
+        if (!FileExists(fName)) {
+            return result;
+        }
+
+        if (section.length() > 0) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value=?;")) {
+                statement.setQueryTimeout(10);
+                statement.setString(1, section);
+                statement.setString(2, value);
+
+                try (ResultSet rs = statement.executeQuery()) {
+
+                    if (rs.next()) {
+                        result = rs.getString("variable");
+                    }
+                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        } else {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value=?;")) {
+                statement.setQueryTimeout(10);
+                statement.setString(1, value);
+
+                try (ResultSet rs = statement.executeQuery()) {
+
+                    if (rs.next()) {
+                        result = rs.getString("variable");
+                    }
+                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        return result;
+
+    }
+
+    @Override
     public String GetString(String fName, String section, String key) {
         CheckConnection();
 
