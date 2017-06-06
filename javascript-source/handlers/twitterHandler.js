@@ -68,15 +68,16 @@
         }
 
         var userNameArray = event.getUserNameArray(),
+            i,
             twitterUserName,
             rewardNameArray = [],
             lastRetweet,
             reward = $.getIniDbNumber('twitter', 'reward_points'),
-            cooldown = $.getIniDbNumber('twitter', 'reward_cooldown') * 3.6e6,
+            cooldown = $.getIniDbFloat('twitter', 'reward_cooldown') * 3.6e6,
             now = $.systemTime();
 
-        for (twitterUserName in userNameList) {
-            twitterUserName = twitterUserName.toLowerCase();
+        for (i in userNameArray) {
+            twitterUserName = userNameArray[i].toLowerCase();
             userName = $.inidb.GetKeyByValue('twitter_mapping', '', twitterUserName);
             if (userName === null) {
                 continue;
@@ -91,7 +92,7 @@
         } 
 
         if (rewardNameArray.length > 0 && $.getIniDbBoolean('twitter', 'reward_announce')) {
-            $.say($.lang.get('twitter.reward.announcement', rewardNameArray.join(', '), reward, $.getPointsString(reward)));
+            $.say($.lang.get('twitter.reward.announcement', rewardNameArray.join(', '), $.getPointsString(reward)));
         }
     });
 
@@ -217,7 +218,7 @@
                             setCommandVal = $.getIniDbBoolean('twitter', 'reward_' + setCommandArg, false);
                             setCommandVal = setCommandVal ? 'on' : 'off';
                         } else {
-                            setCommandVal = $.getIniDbNumber('twitter', 'reward_' + setCommandArg);
+                            setCommandVal = $.getIniDbFloat('twitter', 'reward_' + setCommandArg);
                         }
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.reward.' + setCommandArg + '.usage', setCommandVal));
                         return;
