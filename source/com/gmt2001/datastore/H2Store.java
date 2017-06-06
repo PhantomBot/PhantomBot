@@ -60,9 +60,9 @@ public class H2Store extends DataStore {
     @Override
     public Connection CreateConnection(String db, String user, String pass) {
         try {
-            connection = DriverManager.getConnection("jdbc:h2:./phantombot.h2;DB_CLOSE_ON_EXIT=true", "", "");
+            connection = DriverManager.getConnection("jdbc:h2:./phantombot.h2;DB_CLOSE_ON_EXIT=true;MAX_LENGTH_INPLACE_LOB=2048", "", "");
             connection.setAutoCommit(true);
-            if (!firstConnection) {
+            if (firstConnection) {
                 com.gmt2001.Console.out.println("Connected to H2 Database");
                 firstConnection = false;
             }
@@ -103,11 +103,11 @@ public class H2Store extends DataStore {
 
         fName = validateFname(fName);
 
+        // Creates a database with 3 columns, the section and variable are used as keys.  value is a 2GB CLOB of text.
         if (!FileExists(fName)) {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
-
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT);");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section varchar(255), variable varchar(255) NOT NULL, value LONGTEXT);");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
