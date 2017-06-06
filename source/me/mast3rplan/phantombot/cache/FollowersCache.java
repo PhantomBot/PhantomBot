@@ -16,6 +16,7 @@
  */
 package me.mast3rplan.phantombot.cache;
 
+import com.gmt2001.datastore.DataStore;
 import com.gmt2001.TwitchAPIv3;
 
 import java.util.Calendar;
@@ -34,9 +35,9 @@ import org.json.JSONArray;
 public class FollowersCache implements Runnable {
 
     private static final Map<String, FollowersCache> instances = new HashMap<>();
+    private final DataStore dataStore = PhantomBot.instance().getDataStore();
     private final Thread updateThread;
     private final String channelName;
-    private Map<String, String> cache = new HashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private Boolean firstUpdate = true;
@@ -120,12 +121,12 @@ public class FollowersCache implements Runnable {
                 JSONArray jsonArray = jsonObject.getJSONArray("follows");
                 
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    String follower = jsonArray.getJSONObject(i).getJSONObject("user").getString("name");
+                    String follower = jsonArray.getJSONObject(i).getJSONObject("user").getString("name").toLowerCase();
 
-                    if (!cache.containsKey(follower)) {
+                    if (!dataStore.exists("followed", follower)) {
                         EventBus.instance().post(new TwitchFollowEvent(follower, PhantomBot.getChannel(this.channelName)));
+                        dataStore.set("followed", follower, "true");
                     }
-                    newCache.put(follower, follower);
                 }
             } else {
                 throw new Exception("[HTTPErrorException] HTTP " + jsonObject.getInt("_http") + " " + jsonObject.getString("error") + ". req="
@@ -140,7 +141,6 @@ public class FollowersCache implements Runnable {
             firstUpdate = false;
             EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channelName)));
         }
-        setCache(newCache);
     }
 
     /*
@@ -156,24 +156,6 @@ public class FollowersCache implements Runnable {
         if (numfail > 5) {
             timeoutExpire = cal.getTime();
         }
-    }
-
-    /*
-     * @function setCache
-     *
-     * @param {Map} cache
-     */
-    public void setCache(Map<String, String> cache) {
-        this.cache = cache;
-    }
-
-    /*
-     * @function getCache
-     *
-     * @return {Map}
-     */
-    public Map<String, String> getCache() {
-        return this.cache;
     }
 
     /*

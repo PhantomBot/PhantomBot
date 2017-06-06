@@ -55,11 +55,6 @@
         var follower = event.getFollower(),
             s = followMessage;
 
-        if ($.inidb.exists('followed', follower)) {
-            return;
-        }
-
-        
         if (announceFollows === true && followToggle === true) {
             if (s.match(/\(name\)/)) {
                 s = $.replace(s, '(name)', $.username.resolve(follower));
@@ -82,10 +77,6 @@
             $.writeToFile(follower + ' ', './addons/followHandler/latestFollower.txt', false);
             $.inidb.set('streamInfo', 'lastFollow', follower);
         }
-
-        $.inidb.setAutoCommit(false);
-        $.setIniDbBoolean('followed', follower, true);
-        $.inidb.setAutoCommit(true);
     });
 
     /*
