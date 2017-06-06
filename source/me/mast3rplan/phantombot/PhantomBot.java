@@ -102,6 +102,7 @@ import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
 import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
+import me.mast3rplan.phantombot.event.twitter.TwitterRetweetEvent;
 import me.mast3rplan.phantombot.httpserver.HTTPServer;
 import me.mast3rplan.phantombot.httpserver.NEWHTTPSServer;
 import me.mast3rplan.phantombot.httpserver.NEWHTTPServer;
@@ -1322,6 +1323,16 @@ public final class PhantomBot implements Listener {
             message = messageString.substring(0, messageString.indexOf(" "));
             arguments = messageString.substring(messageString.indexOf(" ") + 1);
             argument = arguments.split(" ");
+        }
+
+        if (message.equalsIgnoreCase("retweettest")) {
+            if (argument == null) {
+                com.gmt2001.Console.out.println(">> retweettest requires a Twitter ID (or Twitter IDs)");
+                return;
+            }
+            com.gmt2001.Console.out.println(">> Sending retweet test event");
+            EventBus.instance().postAsync(new TwitterRetweetEvent(argument, this.channel));
+            return;
         }
 
         if (message.equalsIgnoreCase("faketwitchmsg")) {
