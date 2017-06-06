@@ -56,7 +56,7 @@ All Java source code is under this directory.  The following is a brief descript
 - **org/json**: JSON parser.
 
 ## Code specific rules
-- 4 space indents.  Make sure your code lines up with the current code of it will be rejected.  Do not use tabs.
+- 4 space indents.  Make sure your code lines up with the current code or it will be rejected.  Do not use tabs.
 - If creating new classes, ensure that they are sensible.
 - Camel case for variable and method names. (thisIsCamelCase)
 - Camel case, but capitalized, class names. (ThisIsCamelCase)
