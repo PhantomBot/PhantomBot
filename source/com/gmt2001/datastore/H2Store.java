@@ -104,13 +104,19 @@ public class H2Store extends DataStore {
         fName = validateFname(fName);
 
         // Creates a database with 3 columns, the section and variable are used as keys.  value is a 2GB CLOB of text.
-        if (!FileExists(fName)) {
-            try (Statement statement = connection.createStatement()) {
-                statement.setQueryTimeout(10);
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section varchar(255), variable varchar(255) NOT NULL, value LONGTEXT);");
+        try (Statement statement = connection.createStatement()) {
+            statement.setQueryTimeout(10);
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section varchar(255), variable varchar(255) NOT NULL, value LONGTEXT);");
+
+            // Creates an index for the table.
+            try (Statement indexStmt = connection.createStatement()) {
+                indexStmt.setQueryTimeout(10);
+                indexStmt.executeUpdate("CREATE INDEX IF NOT EXISTS phantombot_" + fName + "_idx ON phantombot_" + fName + "(VARIABLE);");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -751,13 +757,27 @@ public class H2Store extends DataStore {
         String[] tableNames = GetFileList();
         for (String tableName : tableNames) {
             tableName = validateFname(tableName);
-            com.gmt2001.Console.out.println("    Indexing Table: " + tableName);
-            try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (variable);")) {
+            try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (VARIABLE);")) {
                 statement.execute();
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
+    }
+
+    @Override
+    public void DropIndexes() {
+        CheckConnection();
+        String[] tableNames = GetFileList();
+        for (String tableName : tableNames) {
+            tableName = validateFname(tableName);
+            try (PreparedStatement statement = connection.prepareStatement("DROP INDEX IF EXISTS " + tableName + "_idx")) {
+                statement.execute();
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
     }
 
     @Override
