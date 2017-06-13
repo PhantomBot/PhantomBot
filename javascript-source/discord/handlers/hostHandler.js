@@ -47,6 +47,7 @@
 			}
 			hosters[hoster].time = now + 216e5;
 		} else {
+                        hosters[hoster] = {};
 			hosters[hoster].time = now + 216e5;
 		}
 
@@ -74,12 +75,15 @@
 			return;
 		}
 
+                
+
 		if (hosters[hoster] !== undefined) {
 			if (hosters[hoster].time > now) {
 				return;
 			}
 			hosters[hoster].time = now + 216e5;
 		} else {
+                        hosters[hoster] = {};
 			hosters[hoster].time = now + 216e5;
 		}
 
