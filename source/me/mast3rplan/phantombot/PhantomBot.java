@@ -1466,8 +1466,14 @@ public final class PhantomBot implements Listener {
 
         /* Test the host event */
         if (message.equalsIgnoreCase("hosttest")) {
-            print("[CONSOLE] Executing hosttest");
-            EventBus.instance().postAsync(new TwitchHostedEvent(this.botName, PhantomBot.getChannel(this.channelName)));
+            String randomUser = "";
+            if (argument == null) {
+                randomUser = generateRandomString(10);
+            } else {
+                randomUser = argument[0];
+            }
+            print("[CONSOLE] Executing hosttest " + randomUser);
+            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser, PhantomBot.getChannel(this.channelName)));
             return;
         }
 
