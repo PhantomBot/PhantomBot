@@ -147,14 +147,14 @@ public class UsernameCache {
             return cache.get(lusername).getUserID();
         } else {
             if (new Date().before(timeoutExpire)) {
-                return "-1";
+                return "0";
             }
             lookupUserData(lusername);
             if (hasUser(lusername)) {
                 return cache.get(lusername).getUserID();
             }
         }
-        return "-1";
+        return "0";
     }
 
     public void removeUser(String userName) {
