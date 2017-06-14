@@ -17,7 +17,7 @@
 package me.mast3rplan.phantombot.cache;
 
 import com.gmt2001.datastore.DataStore;
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -113,7 +113,7 @@ public class FollowersCache implements Runnable {
     private void updateCache() throws Exception {
         com.gmt2001.Console.debug.println("FollowersCache::updateCache");
 
-        JSONObject jsonObject = TwitchAPIv3.instance().GetChannelFollows(this.channelName, 100, 0, false);
+        JSONObject jsonObject = TwitchAPIv5.instance().GetChannelFollows(this.channelName, 100, 0, false);
         Map<String, String> newCache = new HashMap<>();
 
         if (jsonObject.getBoolean("_success")) {
