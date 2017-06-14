@@ -99,7 +99,7 @@
         versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 
         'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 
         'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 
-        'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7'];
+        'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7', 'installedv2.3.7b'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -652,13 +652,13 @@
     }
 
     /* version 2.3.7 updates */
-    if (!$.inidb.exists('updates', 'installedv2.3.7') || $.inidb.get('updates', 'installedv2.3.7') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv2.3.7b') || $.inidb.get('updates', 'installedv2.3.7b') != 'true') {
         $.consoleLn('Starting PhantomBot update 2.3.7 updates...');
 
         var keys = $.inidb.GetKeyList('blackList', ''),
             timeout = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
             message = $.getIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase.'),
-            messageB = $.getIniDbString('chatModerator', 'silentBlacklistMessage', 'Fake purge. (Automated by ' + $.botName + ')'),
+            messageB = $.getIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted word. (Automated by ' + $.botName + ')'),
             obj = {},
             i;
 
@@ -667,7 +667,6 @@
         }
 
         $.consoleLn('Updating blacklist...');
-        $.inidb.setAutoCommit(false);
         for (i in keys) {
             obj = {
                 id: String(i),
@@ -682,11 +681,9 @@
             };
             $.inidb.set('blackList', keys[i], JSON.stringify(obj));
         }
-        $.inidb.setAutoCommit(true);
-        $.inidb.SaveAll(true);
 
         $.consoleLn('PhantomBot update 2.3.7 completed!');
-        $.inidb.set('updates', 'installedv2.3.7', 'true');
+        $.inidb.set('updates', 'installedv2.3.7b', 'true');
     }
 
     /**

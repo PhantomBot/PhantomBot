@@ -53,7 +53,7 @@
             nonAlphaCount: /([^a-z0-9 ])/ig,
             capsCount: /([A-Z])/g,
             meCheck: /^\/me/,
-            fakePurge: new RegExp('(^<message \w+>)|(^<\w+ deleted>)', 'i')
+            fakePurge: new RegExp(/^<message \w+>|^<\w+ deleted>/i)
         };
 
     /**
@@ -197,7 +197,7 @@
      * @returns {boolean}
      */
     function getFakePurge(event) {
-        return patterns.fakePurge.test(event.getMessage().replace(meCheck, ''));
+        return patterns.fakePurge.test(event.getMessage());
     }
 
     /** Export functions to API */
