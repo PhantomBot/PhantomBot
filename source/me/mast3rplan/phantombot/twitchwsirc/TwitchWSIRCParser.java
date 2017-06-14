@@ -279,8 +279,8 @@ public class TwitchWSIRCParser {
         com.gmt2001.Console.out.println(username + ": " + message);
 
         /* Check to see if the users disaplay name. Used in the scripts. */
-        if (tagsMap.containsKey("display-name")) {
-            usernameCache.addUser(username, tagsMap.get("display-name"));
+        if (tagsMap.containsKey("display-name") && tagsMap.containsKey("user-id")) {
+            usernameCache.addUser(username, tagsMap.get("display-name"), tagsMap.get("user-id"));
         }
 
         /* Check to see if the user is donating/cheering bits. */

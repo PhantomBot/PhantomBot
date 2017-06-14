@@ -37,7 +37,7 @@ import java.util.TimeZone;
 
 import org.json.JSONObject;
 
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 
 import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.twitchwsirc.Channel;
@@ -165,7 +165,7 @@ public class TwitchCache implements Runnable {
 
         /* Retrieve Stream Information */
         try {
-            JSONObject streamObj = TwitchAPIv3.instance().GetStream(this.channel);
+            JSONObject streamObj = TwitchAPIv5.instance().GetStream(this.channel);
 
             if (streamObj.getBoolean("_success") && streamObj.getInt("_http") == 200) {
 
@@ -233,7 +233,7 @@ public class TwitchCache implements Runnable {
         }
 
         try {
-            JSONObject streamObj = TwitchAPIv3.instance().GetChannel(this.channel);
+            JSONObject streamObj = TwitchAPIv5.instance().GetChannel(this.channel);
 
             if (streamObj.getBoolean("_success") && streamObj.getInt("_http") == 200) {
 
