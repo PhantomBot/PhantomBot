@@ -16,7 +16,7 @@
  */
 package me.mast3rplan.phantombot.cache;
 
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,13 +33,51 @@ public class UsernameCache {
         return instance;
     }
 
-    private final Map<String, String> cache = Maps.newHashMap();
+    private final Map<String, UserData> cache = Maps.newHashMap();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
 
     private UsernameCache() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+    }
+
+    private void lookupUserData(String username) {
+        try {
+            JSONObject user = TwitchAPIv5.instance().GetUser(username);
+
+            if (user.getBoolean("_success")) {
+                if (user.getInt("_http") == 200) {
+                    if (user.getJSONArray("users").length() > 0) {
+                        String displayName = user.getJSONArray("users").getJSONObject(0).getString("display_name").replaceAll("\\\\s", " ");
+                        String userID = user.getJSONArray("users").getJSONObject(0).getString("_id");
+                        cache.put(username, new UserData(displayName, userID));
+                    }
+                } else {
+                    com.gmt2001.Console.debug.println("UsernameCache.updateCache: Failed to get username [" + username + "] http error [" + user.getInt("_http") + "]");
+                }
+            } else {
+                if (user.getString("_exception").equalsIgnoreCase("SocketTimeoutException") || user.getString("_exception").equalsIgnoreCase("IOException")) {
+                    Calendar c = Calendar.getInstance();
+
+                    if (lastFail.after(new Date())) {
+                        numfail++;
+                    } else {
+                        numfail = 1;
+                    }
+
+                    c.add(Calendar.MINUTE, 1);
+
+                    lastFail = c.getTime();
+
+                    if (numfail >= 5) {
+                        timeoutExpire = c.getTime();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }
     }
 
     public String resolve(String username) {
@@ -49,75 +87,48 @@ public class UsernameCache {
     public String resolve(String username, Map<String, String> tags) {
         String lusername = username.toLowerCase();
 
-        if (cache.containsKey(lusername)) {
-            return cache.get(lusername);
+        if (hasUser(lusername)) {
+            return cache.get(lusername).getUserName();
         } else {
-            if (tags.containsKey("display-name") && tags.get("display-name").equalsIgnoreCase(lusername)) {
-                cache.put(lusername, tags.get("display-name"));
+            if (username.equalsIgnoreCase("jtv") || username.equalsIgnoreCase("twitchnotify")) {
+                return username;
+            }
+
+            if (tags.containsKey("display-name") && tags.get("display-name").equalsIgnoreCase(lusername) && tags.containsKey("user-id")) {
+                cache.put(lusername, new UserData(tags.get("display-name"), tags.get("user-id")));
                 return tags.get("display-name");
             }
 
-            if (username.equalsIgnoreCase("jtv") || username.equalsIgnoreCase("twitchnotify") || new Date().before(timeoutExpire)) {
+            /* While the user-id should always be present, this is just a stop-gap measure. */
+            if (tags.containsKey("display-name") && tags.get("display-name").equalsIgnoreCase(lusername)) {
+                return tags.get("display-name");
+            }
+
+            if (new Date().before(timeoutExpire)) {
                 return username;
             }
 
-            try {
-                JSONObject user = TwitchAPIv3.instance().GetUser(lusername);
-
-                if (user.getBoolean("_success")) {
-                    if (user.getInt("_http") == 200) {
-                        String displayName = user.getString("display_name").replaceAll("\\\\s", " ");
-                        cache.put(lusername, displayName);
-
-                        return displayName;
-                    } else {
-                        if (user.getInt("_http") == 404 && user.has("message") && !user.isNull("message")) {
-                            if (user.getString("message").endsWith("does not exist")) {
-                                com.gmt2001.Console.debug.println("UsernameCache.updateCache: " + user.getString("message"));
-                                return username;
-                            }
-                        }
-                        try {
-                            throw new Exception("[HTTPErrorException] HTTP " + user.getInt("_http") + " " + user.getString("error") + ". req="
-                                                + user.getString("_type") + " " + user.getString("_url") + " " + user.getString("_post") + "   "
-                                                + (user.has("message") && !user.isNull("message") ? "message=" + user.getString("message") : "content=" + user.getString("_content")));
-                        } catch (Exception e) {
-                              com.gmt2001.Console.debug.println("UsernameCache.updateCache: Failed to get username: " + e.getMessage());
-                              return username;
-                        }
-                    }
-                } else {
-                    if (user.getString("_exception").equalsIgnoreCase("SocketTimeoutException") || user.getString("_exception").equalsIgnoreCase("IOException")) {
-                        Calendar c = Calendar.getInstance();
-
-                        if (lastFail.after(new Date())) {
-                            numfail++;
-                        } else {
-                            numfail = 1;
-                        }
-
-                        c.add(Calendar.MINUTE, 1);
-
-                        lastFail = c.getTime();
-
-                        if (numfail >= 5) {
-                            timeoutExpire = c.getTime();
-                        }
-                    }
-
-                    return username;
-                }
-            } catch (Exception e) {
-                com.gmt2001.Console.err.printStackTrace(e);
-                return username;
+            lookupUserData(lusername);
+            if (hasUser(lusername)) {
+                return cache.get(lusername).getUserName();
+            } else {
+                return lusername;
             }
         }
     }
 
-    public void addUser(String userName, String displayName) {
+    public void addUser(String userName, String displayName, int userID) {
         if (displayName.length() > 0) {
-            if (!cache.containsKey(userName)) {
-                cache.put(userName, displayName.replaceAll("\\\\s", " "));
+            if (!hasUser(userName)) {
+                cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
+            }
+        }
+    }
+
+    public void addUser(String userName, String displayName, String userID) {
+        if (displayName.length() > 0 && userID.length() > 0) {
+            if (!hasUser(userName)) {
+                cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
             }
         }
     }
@@ -127,14 +138,67 @@ public class UsernameCache {
     }
 
     public String get(String userName) {
-        return (hasUser(userName) ? cache.get(userName) : userName);
+        return (hasUser(userName) ? cache.get(userName).getUserName() : userName);
+    }
+
+    public String getID(String userName) {
+        String lusername = userName.toLowerCase();
+        if (hasUser(lusername)) {
+            return cache.get(lusername).getUserID();
+        } else {
+            if (new Date().before(timeoutExpire)) {
+                return "-1";
+            }
+            lookupUserData(lusername);
+            if (hasUser(lusername)) {
+                return cache.get(lusername).getUserID();
+            }
+        }
+        return "-1";
     }
 
     public void removeUser(String userName) {
         userName = userName.toLowerCase();
 
-        if (cache.containsKey(userName)) {
+        if (hasUser(userName)) {
             cache.remove(userName);
+        }
+    }
+
+    /*
+     * Internal object for tracking user data.
+     * Note that while Twitch represents the userID as a String, it is an integer value.  We 
+     * define this as an int here to conserve memory usage.  The maximum value of an unsigned
+     * int within Java is 4,294,967,295 which should serve as a large enough data type.
+     */
+    private class UserData {
+        private String userName;
+        private int userID;
+
+        public UserData(String userName, int userID) {
+            this.userName = userName;
+            this.userID = userID;
+        }
+        public UserData(String userName, String userID) {
+            this.userName = userName;
+            this.userID = Integer.parseUnsignedInt(userID);
+        }
+
+        public void putUserName(String userName) {
+            this.userName = userName;
+        }
+        public void putUserID(int userID) {
+            this.userID = userID;
+        }
+        public void putUserID(String userID) {
+            this.userID = Integer.parseUnsignedInt(userID);
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+        public String getUserID() {
+            return Integer.toUnsignedString(userID);
         }
     }
 }
