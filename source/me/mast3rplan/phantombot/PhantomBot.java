@@ -23,7 +23,7 @@ import com.gmt2001.datastore.IniStore;
 import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.datastore.H2Store;
-import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
 import com.illusionaryone.DiscordAPI;
@@ -566,11 +566,11 @@ public final class PhantomBot implements Listener {
         }
 
         /* Set the client Id in the Twitch api. */
-        TwitchAPIv3.instance().SetClientID(this.clientId);
+        TwitchAPIv5.instance().SetClientID(this.clientId);
 
         /* Set the oauth key in the Twitch api. */
         if (!this.apiOAuth.isEmpty()) {
-            TwitchAPIv3.instance().SetOAuth(this.apiOAuth);
+            TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
         }
 
         /* Set the TwitchAlerts OAuth key and limiter. */
@@ -1066,7 +1066,7 @@ public final class PhantomBot implements Listener {
         /* Export all these to the $. api in the scripts. */
         Script.global.defineProperty("inidb", dataStore, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
-        Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
+        Script.global.defineProperty("twitch", TwitchAPIv5.instance(), 0);
         Script.global.defineProperty("botName", botName, 0);
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
@@ -1194,7 +1194,7 @@ public final class PhantomBot implements Listener {
 
         /* Start a pubsub instance here. */
         if (this.oauth.length() > 0 && checkDataStore("chatModerator", "moderationLogs")) {
-            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv3.instance().getChannelId(this.channelName), TwitchAPIv3.instance().getChannelId(this.botName), this.oauth);
+            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.oauth);
         }
 
         /* Add the channel/session in the array for later use */
@@ -1378,14 +1378,14 @@ public final class PhantomBot implements Listener {
         /* Update the followed (followers) table. */
         if (message.equalsIgnoreCase("fixfollowedtable")) {
             print("[CONSOLE] Executing fixfollowedtable");
-            TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, false);
+            TwitchAPIv5.instance().FixFollowedTable(channelName, dataStore, false);
             return;
         }
 
         /* Update the followed (followers) table - forced. */
         if (message.equalsIgnoreCase("fixfollowedtable-force")) {
             print("[CONSOLE] Executing fixfollowedtable-force");
-            TwitchAPIv3.instance().FixFollowedTable(channelName, dataStore, true);
+            TwitchAPIv5.instance().FixFollowedTable(channelName, dataStore, true);
             return;
         }
 
