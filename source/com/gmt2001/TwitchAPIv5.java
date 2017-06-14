@@ -180,7 +180,7 @@ public class TwitchAPIv5 {
     }
 
     /**
-     * Determines the ID of a username, if this fails it returns -1.
+     * Determines the ID of a username, if this fails it returns "0".
      *
      * @param channel
      * @return
@@ -700,17 +700,6 @@ public class TwitchAPIv5 {
      * @return  int      the channel id.
      */
     public int getChannelId(String channel) {
-        JSONObject jsonObject = GetChannel(channel);
-        int channelId = 0;
-        if (jsonObject.getBoolean("_success")) {
-            if (jsonObject.getInt("_http") == 200) {
-                channelId = jsonObject.getInt("_id");
-            } else {
-                com.gmt2001.Console.debug.println("TwitchAPIv5: ID get HTTP failure: " + jsonObject.getInt("_id"));
-            }
-        } else {
-            com.gmt2001.Console.debug.println("TwitchAPIv5: ID get fail");
-        }
-        return channelId;
+        return Integer.parseUnsignedInt(UsernameCache.instance().getID(channel));
     }
 }
