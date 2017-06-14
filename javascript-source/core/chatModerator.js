@@ -412,7 +412,7 @@
                     if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
                         return false;
                     }
-                    timeoutUser(sender, blackList[i].timeout, blackList[i].banReason);
+                    timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
                     warning = $.lang.get('chatmoderator.timeout');
                     sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                     return true;
@@ -422,7 +422,7 @@
                     if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
                         return false;
                     }
-                    timeoutUser(sender, blackList[i].timeout, blackList[i].banReason);
+                    timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
                     warning = $.lang.get('chatmoderator.timeout');
                     sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                     return true;
