@@ -40,8 +40,6 @@ import com.scaniatv.CustomAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.RevloConverter;
 
-import de.simeonf.EventWebSocketServer;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -104,8 +102,7 @@ import me.mast3rplan.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import me.mast3rplan.phantombot.event.twitch.online.TwitchOnlineEvent;
 import me.mast3rplan.phantombot.event.twitter.TwitterRetweetEvent;
 import me.mast3rplan.phantombot.httpserver.HTTPServer;
-import me.mast3rplan.phantombot.httpserver.NEWHTTPSServer;
-import me.mast3rplan.phantombot.httpserver.NEWHTTPServer;
+import me.mast3rplan.phantombot.httpserver.HTTPSServer;
 import me.mast3rplan.phantombot.panel.PanelSocketSecureServer;
 import me.mast3rplan.phantombot.panel.PanelSocketServer;
 import me.mast3rplan.phantombot.script.Script;
@@ -209,12 +206,10 @@ public final class PhantomBot implements Listener {
     /* Socket Servers */
     private YTWebSocketServer youtubeSocketServer;
     private YTWebSocketSecureServer youtubeSocketSecureServer;
-    private EventWebSocketServer eventWebSocketServer;
     private PanelSocketServer panelSocketServer;
     private PanelSocketSecureServer panelSocketSecureServer;
     private HTTPServer httpServer;
-    private NEWHTTPServer newHttpServer;
-    private NEWHTTPSServer newHttpsServer;
+    private HTTPSServer httpsServer;
 
     /* PhantomBot Information */
     private static PhantomBot instance;
@@ -835,14 +830,6 @@ public final class PhantomBot implements Listener {
         /* Is the web toggle enabled? */
         if (webEnabled) {
             try {
-                if (legacyServers) {
-                    checkPortAvailabity(basePort);
-                    /* open a normal non ssl server */
-                    httpServer = new HTTPServer(basePort, oauth);
-                    /* Start this http server  */
-                    httpServer.start();
-                }
-    
                 /* Is the music toggled on? */
                 if (musicEnabled) {
                     checkPortAvailabity(basePort + 3);
@@ -861,18 +848,6 @@ public final class PhantomBot implements Listener {
                     }
                 }
 
-                /* Checks if the user wants the legacy servers, this is off by default. */
-                if (legacyServers) {
-                    checkPortAvailabity(basePort + 2);
-                    /* Create a event server to get all the events. */
-                    eventWebSocketServer = new EventWebSocketServer((basePort + 2));
-                    /* Start this event server */
-                    eventWebSocketServer.start();
-                    print("EventSocketServer accepting connections on port: " + (basePort + 2));
-                    /* make the event bus register this event server */
-                    EventBus.instance().register(eventWebSocketServer);
-                }
-
                 if (useHttps) {
                     checkPortAvailabity(basePort + 4);
                     checkPortAvailabity(basePort + 5);
@@ -884,8 +859,8 @@ public final class PhantomBot implements Listener {
                     print("PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
 
                     /* Set up a new https server */
-                    newHttpsServer = new NEWHTTPSServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
-                    print("New HTTPS server accepting connection on port: " + (basePort + 5) + " (SSL)");
+                    httpsServer = new HTTPSServer((basePort), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
+                    print("HTTPS server accepting connection on ports: " + basePort + " " + (basePort + 5) + " (SSL)");
                 } else {
                     checkPortAvailabity(basePort + 4);
                     checkPortAvailabity(basePort + 5);
@@ -897,8 +872,8 @@ public final class PhantomBot implements Listener {
                     print("PanelSocketServer accepting connections on port: " + (basePort + 4));
 
                     /* Set up a new http server */
-                    newHttpServer = new NEWHTTPServer((basePort + 5), oauth, webOAuth, panelUsername, panelPassword);
-                    print("New HTTP server accepting connection on port: " + (basePort + 5));
+                    httpServer = new HTTPServer((basePort), oauth, webOAuth, panelUsername, panelPassword);
+                    print("HTTP server accepting connection on ports: " + basePort + " " + (basePort + 5));
                 }
             } catch (Exception ex) {
                 print("Exception occurred in one of the socket based services, PhantomBot will now exit.");
@@ -1148,14 +1123,10 @@ public final class PhantomBot implements Listener {
         /* Check to see if web is enabled */
         if (webEnabled) {
             print("Shutting down all web socket servers...");
-            if (legacyServers) {
-                httpServer.dispose();
-                eventWebSocketServer.dispose();
-            }
             if (!useHttps) {
-                newHttpServer.close();
+                httpServer.close();
             } else {
-                newHttpsServer.close();
+                httpsServer.close();
             }
             youtubeSocketServer.dispose();
         }
