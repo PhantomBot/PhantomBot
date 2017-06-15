@@ -1695,6 +1695,7 @@ public final class PhantomBot implements Listener {
 
         /* Check to see if any settings have been changed */
         if (changed && !reset) {
+            @SuppressWarnings("serial")
             Properties outputProperties = new Properties() {
                 @Override
                 public synchronized Enumeration<Object> keys() {
@@ -2330,6 +2331,7 @@ public final class PhantomBot implements Listener {
 
         /* Check to see if anything changed */
         if (changed) {
+            @SuppressWarnings("serial")
             Properties outputProperties = new Properties() {
                 @Override
                 public synchronized Enumeration<Object> keys() {
@@ -2352,6 +2354,7 @@ public final class PhantomBot implements Listener {
     }
 
     public void updateGameWispTokens(String[] newTokens) {
+        @SuppressWarnings("serial")
         Properties outputProperties = new Properties() {
             @Override
             public synchronized Enumeration<Object> keys() {
@@ -2521,9 +2524,9 @@ public final class PhantomBot implements Listener {
             dataStore.backupSQLite3("phantombot.auto.backup." + timestamp + ".db");
 
             try {
-                Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
+                Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
                 while (dirIterator.hasNext()) {
-                    File backupFile = (File) dirIterator.next();
+                    File backupFile = dirIterator.next();
                     if (FileUtils.isFileOlder(backupFile, System.currentTimeMillis() - (86400000 * backupSQLiteKeepDays))) {
                         FileUtils.deleteQuietly(backupFile);
                     }

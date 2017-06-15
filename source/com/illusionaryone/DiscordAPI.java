@@ -456,7 +456,7 @@ public class DiscordAPI {
     /*
      * Returns a list of all the Discord users.
      */
-    public List getUserMembers() {
+    public List<Member> getUserMembers() {
         return this.users;
     }
 
