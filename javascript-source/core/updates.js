@@ -623,7 +623,7 @@
         $.inidb.setAutoCommit(false);
         for (i in keys) {
             if (keys[i].match(/[A-Z]/)) {
-                $.inidb.incr('points', keys[i].toLowerCase(), $.inidb.get('points', keys[i]));
+                $.inidb.incr('points', keys[i].toLowerCase(), parseInt($.inidb.get('points', keys[i])));
                 $.inidb.del('points', keys[i]);
                 $.consoleLn('[points] ' + keys[i] + ' -> ' + keys[i].toLowerCase() + '::' + $.inidb.get('points', keys[i].toLowerCase()));
             } else if (keys[i].match(/[^a-zA-Z0-9_]/)) {
