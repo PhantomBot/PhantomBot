@@ -42,7 +42,7 @@ import me.mast3rplan.phantombot.PhantomBot;
 
 import org.json.JSONStringer;
 
-public class NEWHTTPServerCommon {
+public class HTTPServerCommon {
 
     public static void handleYTP(HttpExchange exchange) throws IOException {
         URI uriData = exchange.getRequestURI();
@@ -83,9 +83,9 @@ public class NEWHTTPServerCommon {
 
         if (requestMethod.equals("GET")) {
             if (uriPath.equals("/panel")) {
-                NEWHTTPServerCommon.handleFile("/web/panel/index.html", exchange, false, false);
+                HTTPServerCommon.handleFile("/web/panel/index.html", exchange, false, false);
             } else {
-                NEWHTTPServerCommon.handleFile("/web/" + uriPath, exchange, false, false);
+                HTTPServerCommon.handleFile("/web/" + uriPath, exchange, false, false);
             }
         }
     }

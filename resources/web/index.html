@@ -39,9 +39,6 @@
                     var url = urlInfo[0];
                     var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
                     var protocol = window.location.href.indexOf("https://") == 0 ? "https" : "http";
-                    if (port.endsWith("0") && port !== '80') {
-                       port = (parseInt(port) + 5);
-                    }
                     document.write('<a target="_blank" style="color: white;" href="' + protocol + '://' + urlInfo[0] + ':' + port + '/ytplayer">');
                 </script>
                 <span id="middle">
@@ -59,9 +56,6 @@
                     var url = urlInfo[0];
                     var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
                     var protocol = window.location.href.indexOf("https://") == 0 ? "https" : "http";
-                    if (port.endsWith("0") && port !== '80') {
-                       port = (parseInt(port) + 5);
-                    }
                     document.write('<a target="_blank" style="color: white;" href="' + protocol + '://' + urlInfo[0] + ':' + port + '/panel">');
                 </script>
                 <span id="middle">
@@ -79,9 +73,6 @@
                     var url = urlInfo[0];
                     var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
                     var protocol = window.location.href.indexOf("https://") == 0 ? "https" : "http";
-                    if (port.endsWith("0") && port !== '80') {
-                       port = (parseInt(port) + 5);
-                    }
                     document.write('<a target="_blank" style="color: white;" href="' + protocol + '://' + urlInfo[0] + ':' + port + '/playlist">');
                 </script>
                 <span id="middle">
