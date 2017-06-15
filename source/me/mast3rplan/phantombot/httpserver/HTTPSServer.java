@@ -63,15 +63,16 @@ import com.sun.net.httpserver.HttpsParameters;
 
 import org.json.JSONStringer;
 
-public class NEWHTTPSServer {
+public class HTTPSServer {
     private HttpsServer server;
+    private HttpsServer server2;
     private String     serverPassword;
     private String     serverWebAuth;
     private String     httpsPassword;
     private String     httpsFileName;
     private int        serverPort;
 
-    public NEWHTTPSServer(int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword, final String fileName, final String password) throws Exception {
+    public HTTPSServer(int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword, final String fileName, final String password) throws Exception {
         serverPort = myPort;
         serverPassword = myPassword.replace("oauth:", "");
         serverWebAuth = myWebAuth;
@@ -134,44 +135,114 @@ public class NEWHTTPSServer {
             server.start();
         } catch (KeyManagementException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("NEWHTTPSServer Failed to Load SSL Certificate");
+            throw new Exception("HTTPSServer Failed to Load SSL Certificate");
         } catch (BindException ex) {
             com.gmt2001.Console.err.println("Failed to bind to port for HTTPS Server on port " + myPort);
             com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + myPort + " on your system");
             com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file to a different value, such as " + (myPort + 1000));
-            throw new Exception("Failed to Create NEWHTTPSServer on Port " + myPort);
+            throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create NEWHTTPSServer on Port " + myPort);
+            throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create NEWHTTPSServer on Port " + myPort);
+            throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
+        }
+
+        try {
+            server2 = HttpsServer.create(new InetSocketAddress(serverPort + 5), 0);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+
+            KeyStore ks = KeyStore.getInstance("JKS");
+            FileInputStream inputStream = new FileInputStream(this.httpsFileName);
+            ks.load(inputStream, password.toCharArray());
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            kmf.init(ks, password.toCharArray());
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(ks);
+
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+            server2.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
+                public void configure (HttpsParameters params) {
+                    try {
+                        // initialise the SSL context
+                        SSLContext c = SSLContext.getDefault();
+                        SSLEngine engine = c.createSSLEngine();
+                        params.setNeedClientAuth(false);
+                        params.setCipherSuites(engine.getEnabledCipherSuites());
+                        params.setProtocols(engine.getEnabledProtocols());
+
+                        // get the default parameters
+                        SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
+                        params.setSSLParameters(defaultSSLParameters);
+
+                    } catch (Exception ex) {
+                        System.out.println("Failed to create HTTPS port");
+                    }
+                }
+            });
+
+            server2.createContext("/", new HTTPSServerHandler());
+
+            HttpContext panelContext = server2.createContext("/panel", new PanelHandler());
+            HttpContext ytContext = server2.createContext("/ytplayer", new YTPHandler());
+
+            BasicAuthenticator auth = new BasicAuthenticator("PhantomBot Web Utilities") {
+                @Override
+                public boolean checkCredentials(String user, String pwd) {
+                    return user.equals(panelUser) && pwd.equals(panelPassword);
+                }
+            };
+            ytContext.setAuthenticator(auth);
+            panelContext.setAuthenticator(auth);
+
+            server2.setExecutor(Executors.newCachedThreadPool());
+            server2.start();
+        } catch (KeyManagementException ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+            throw new Exception("HTTPSServer Failed to Load SSL Certificate");
+        } catch (BindException ex) {
+            com.gmt2001.Console.err.println("Failed to bind to port for HTTPS Server on port " + (myPort + 5));
+            com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + (myPort + 5) + " on your system");
+            com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file to a different value, such as " + (myPort + 1000));
+            throw new Exception("Failed to Create HTTPSServer on Port " + (myPort + 5));
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
+            com.gmt2001.Console.err.logStackTrace(ex);
+            throw new Exception("Failed to Create HTTPSServer on Port " + (myPort + 5));
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
+            com.gmt2001.Console.err.logStackTrace(ex);
+            throw new Exception("Failed to Create HTTPSServer on Port " + (myPort + 5));
         }
     }
 
     public void close() {
-        com.gmt2001.Console.out.println("HTTPS Server closing down on port " + serverPort + " with 2 second delay.");
-        server.stop(2);
-        com.gmt2001.Console.out.println("HTTPS Server stopped on port " + serverPort);
+        com.gmt2001.Console.out.println("HTTPS Server closing down on ports " + serverPort +  " " + (serverPort + 5) + " with 5 second delay per server.");
+        server.stop(5);
+        server2.stop(5);
+        com.gmt2001.Console.out.println("HTTPS Server stopped on ports " + serverPort + " " + (serverPort + 5));
     }
 
     class YTPHandler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
-            NEWHTTPServerCommon.handleYTP(exchange);
+            HTTPServerCommon.handleYTP(exchange);
         }
     }
 
     class PanelHandler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
-            NEWHTTPServerCommon.handlePanel(exchange);
+            HTTPServerCommon.handlePanel(exchange);
         }
     }
 
     class HTTPSServerHandler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
-            NEWHTTPServerCommon.handle(exchange, serverPassword, serverWebAuth);
+            HTTPServerCommon.handle(exchange, serverPassword, serverWebAuth);
         }
     }
 }
