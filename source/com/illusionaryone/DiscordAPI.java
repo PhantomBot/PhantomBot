@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,12 +27,12 @@ import java.util.Map;
 
 import javax.security.auth.login.LoginException;
 
-import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.event.discord.DiscordCommandEvent;
-import me.mast3rplan.phantombot.event.discord.DiscordJoinEvent;
-import me.mast3rplan.phantombot.event.discord.DiscordLeaveEvent;
-import me.mast3rplan.phantombot.event.discord.DiscordMessageEvent;
-import me.mast3rplan.phantombot.script.ScriptEventManager;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.discord.DiscordCommandEvent;
+import tv.phantombot.event.discord.DiscordJoinEvent;
+import tv.phantombot.event.discord.DiscordLeaveEvent;
+import tv.phantombot.event.discord.DiscordMessageEvent;
+import tv.phantombot.script.ScriptEventManager;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;

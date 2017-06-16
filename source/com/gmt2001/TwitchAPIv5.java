@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ package com.gmt2001;
 
 import com.gmt2001.datastore.DataStore;
 
-import me.mast3rplan.phantombot.cache.UsernameCache;
+import tv.phantombot.cache.UsernameCache;
 
 import java.io.IOException;
 import java.io.InputStream;

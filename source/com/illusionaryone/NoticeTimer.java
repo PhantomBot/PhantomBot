@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,11 @@ package com.illusionaryone;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.UncaughtExceptionHandler;
 
-import me.mast3rplan.phantombot.PhantomBot;
-import me.mast3rplan.phantombot.cache.TwitchCache;
-import me.mast3rplan.phantombot.event.command.CommandEvent;
-import me.mast3rplan.phantombot.script.ScriptEventManager;
-import me.mast3rplan.phantombot.twitchwsirc.Session;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.cache.TwitchCache;
+import tv.phantombot.event.command.CommandEvent;
+import tv.phantombot.script.ScriptEventManager;
+import tv.phantombot.twitchwsirc.Session;
 
 import com.google.common.collect.Maps;
 
