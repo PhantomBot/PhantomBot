@@ -56,6 +56,11 @@
         <div class="header">
             <img id="logo" src="panel/images/logo.png"/>
             <span id="header-right">
+                <script>
+                    if (window.location.port == getPanelPort() + 1) {
+                        document.write('<i data-toggle="tooltip" data-placement="left" title="Next release port ' + (window.location.port) + ' will be decommissioned, please use ' + (window.location.port - 5) + '." class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;');
+                    }
+                </script>
                 <i data-toggle="tooltip" data-placement="left" title="Refresh Current Panel Data" class="fa fa-refresh fa-lg" aria-hidden="true" onclick="performCurrentPanelRefresh()"></i>
             </span>
             <div id="newPanelAlert" class="alert" style="display:none"></div>
