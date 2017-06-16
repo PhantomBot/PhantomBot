@@ -197,7 +197,7 @@
      * @returns {boolean}
      */
     function getFakePurge(event) {
-        return patterns.fakePurge.test(event.getMessage());
+        return patterns.fakePurge.test(event.getMessage().replace(patterns.meCheck, ''));
     }
 
     /** Export functions to API */

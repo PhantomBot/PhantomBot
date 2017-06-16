@@ -251,9 +251,10 @@ public class Session {
      * @param {String} message
      */
     public void saySilent(String message) {
-        if (this.twitchWSIRC.isOpen()) {
+        // The socket should always be opened, if it's not, something needs fixing.
+        //if (this.twitchWSIRC.isOpen()) {
             this.twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
-        }
+        //}
     }
 
     /*
@@ -262,10 +263,11 @@ public class Session {
      * @param {String} message
      */
     public void send(String message) {
-        if (this.twitchWSIRC.isOpen()) {
+        // The socket should always be opened, if it's not, something needs fixing.
+        //if (this.twitchWSIRC.isOpen()) {
             this.twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
             com.gmt2001.Console.out.println("[CHAT] " + message);
-        }
+        //}
     }
 
     /*
