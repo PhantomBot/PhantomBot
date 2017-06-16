@@ -88,7 +88,7 @@
         <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
 
         <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            file="source/tv/phantombot/RepoVersion.java"
             match="nightlyBuild = (.*);"
             replace="nightlyBuild = ${nightly_build};" />
     </target>
@@ -118,7 +118,7 @@
     
     <target name="post.compile">
         <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            file="source/tv/phantombot/RepoVersion.java"
             match="nightlyBuild = (.*);"
             replace="nightlyBuild = false;" />
     </target>
@@ -136,7 +136,7 @@
                 <attribute name="Implementation-Revision" value="${git.revision}" />
                 <attribute name="Implementation-URL" value="https://phantombot.tv" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
-                <attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot" />
+                <attribute name="Main-Class" value="tv.phantombot.PhantomBot" />
             </manifest>
         </jar>
             
@@ -165,7 +165,7 @@
     <target depends="compile.src.test,post.compile" name="test"/>
      
     <target name="run" depends="jar">
-        <java fork="true" classname="me.mast3rplan.phantombot.PhantomBot" dir="${build.dir}">
+        <java fork="true" classname="tv.phantombot.PhantomBot" dir="${build.dir}">
             <classpath>
                 <path refid="classpath" />
                 <path location="${build.dir}/${ant.project.name}.jar" />
