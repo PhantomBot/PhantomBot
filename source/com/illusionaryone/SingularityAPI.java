@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2017 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
  */
 package com.illusionaryone;
 
-import me.mast3rplan.phantombot.PhantomBot;
-import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispChangeEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispBenefitsEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispSubscribeEvent;
-import me.mast3rplan.phantombot.event.gamewisp.GameWispAnniversaryEvent;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.gamewisp.GameWispChangeEvent;
+import tv.phantombot.event.gamewisp.GameWispBenefitsEvent;
+import tv.phantombot.event.gamewisp.GameWispSubscribeEvent;
+import tv.phantombot.event.gamewisp.GameWispAnniversaryEvent;
 
 import java.security.cert.CertificateException;
 
