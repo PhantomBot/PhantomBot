@@ -172,22 +172,6 @@
             </classpath>
         </java>
     </target>
-
-    <!-- Updater -->
-    <target name="compile">
-        <mkdir dir="./build/updater/classes"/>
-        <javac includeantruntime="false" srcdir="./build/updater/" destdir="./build/updater/classes"/>
-    </target>
-
-    <target name="jar" depends="compile">
-        <mkdir dir="./build/updater"/>
-        <jar destfile="./build/updater/PhantomBotUpdater.jar" basedir="./build/updater/classes">
-            <manifest>
-                <attribute name="Main-Class" value="com.scaniatv.PhantomBotUpdater"/>
-            </manifest>
-        </jar>
-    </target>
-     
      
     <target depends="jar" name="dist">
         <delete file="${dist}/${version.name}.zip" />
