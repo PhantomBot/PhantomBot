@@ -1082,6 +1082,11 @@ public final class PhantomBot implements Listener {
         if (this.backupSQLiteAuto) {
             doBackupSQLiteDB();
         }
+
+        /* Warn the user that the baseport + 5 is being decomissioned. */
+        print("");
+        print("DEPRECATION NOTICE: The web server running on port " + (basePort + 5) + " will be removed in the next release, please start to use port " + basePort + ".");
+        print("");
     }
 
     /*
