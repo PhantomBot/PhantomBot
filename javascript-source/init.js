@@ -1385,6 +1385,6 @@
         getHookIndex: getHookIndex
     };
 
-    // Start init
+    // Start init.
     startInit();
 })();
