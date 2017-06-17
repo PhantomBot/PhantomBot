@@ -1605,6 +1605,11 @@
          * @commandpath playsong [position in playlist] - Jump to a song in the current playlist by position in playlist.
          */
         if (command.equalsIgnoreCase('jumptosong') || command.equalsIgnoreCase('playsong')) {
+            if (args[0] === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.jumptosong.usage', command.toLowerCase()));
+                return;
+            }
+
             if (!currentPlaylist.jumpToSong(args[0])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.jumptosong.failed', args[0]));
             }
