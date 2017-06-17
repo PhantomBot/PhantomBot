@@ -13,10 +13,9 @@ var showChat = false;
 var loadedChat = false;
 var volumeSlider = null;
 var progressSlider = null;
-var lastSkipButtonPress = 0;
 
 var url = window.location.host.split(":");
-var addr = (getProtocol() == 'https://' ? 'wss://' : 'ws://') + url[0] + ':' + getPlayerPort();
+var addr = 'ws://' + url[0] + ':' + getPlayerPort();
 var connection = new WebSocket(addr, []);
 var currentVolume = 0;
 
@@ -312,19 +311,10 @@ function randomizePlaylist(d) {
 
 function skipSong(d) {
     debugMsg("skipSong()");
-
-    var curTime = Date.now();
-    // This is to stop people from spamming the button and cause a loop.
-    if (Date.now() - lastSkipButtonPress < 1000) {
-        return;
-    }
-
     var jsonObject = {};
     jsonObject["command"] = "skipsong";
     connection.send(JSON.stringify(jsonObject));
     debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
-
-    lastSkipButtonPress = Date.now();
 }
 
 function handlePause(d) {
@@ -332,11 +322,11 @@ function handlePause(d) {
     if (playerPaused) {
         playerPaused = false;
         playerObject.playVideo();
-            $("#playPauseDiv").html("<i class=\"fa fa-play\" />");
+            $("#playPauseDiv").html("<i class=\"fa fa-pause\" />");
     } else {
         playerPaused = true;
         playerObject.pauseVideo();
-            $("#playPauseDiv").html("<i class=\"fa fa-pause\" />");
+            $("#playPauseDiv").html("<i class=\"fa fa-play\" />");
     }
 }
 
