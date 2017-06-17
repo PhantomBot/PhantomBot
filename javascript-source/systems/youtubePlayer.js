@@ -974,8 +974,8 @@
      * @event yTPlayerRandomize
      */
     $.bind('yTPlayerRandomize', function(event) {
-        var EventBus = Packages.tv.phantombot.event.EventBus,
-            CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+        var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
+            CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
 
         EventBus.instance().post(new CommandEvent($.botName, 'ytp', 'togglerandom'));
     });
@@ -1203,23 +1203,25 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
                 } 
+
+                if (actionArgs[0]) {
+                    if (!isNaN(parseInt(actionArgs[0]))) {
+                        connectedPlayerClient.setVolume(actionArgs[0]);
+                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', actionArgs[0]));
+                        return;
+                    } if (actionArgs[0].equals('+')) {
+                        connectedPlayerClient.setVolume($.getIniDbNumber('ytSettings', 'volume') + 2);
+                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', $.getIniDbNumber('ytSettings', 'volume')));
+                        return;
+                    } if (actionArgs[0].equals('-')) {
+                        connectedPlayerClient.setVolume($.getIniDbNumber('ytSettings', 'volume') - 2);
+                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', $.getIniDbNumber('ytSettings', 'volume')));
+                        return;
+                    } 
+                }
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.get', connectedPlayerClient.getVolume()));
+                return;
             }
-            if (actionArgs[0]) {
-                if (!isNaN(parseInt(actionArgs[0]))) {
-                    connectedPlayerClient.setVolume(actionArgs[0]);
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', actionArgs[0]));
-                    return;
-                } if (actionArgs[0].equals('+')) {
-                    connectedPlayerClient.setVolume($.getIniDbNumber('ytSettings', 'volume') + 2);
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', $.getIniDbNumber('ytSettings', 'volume')));
-                    return;
-                } if (actionArgs[0].equals('-')) {
-                    connectedPlayerClient.setVolume($.getIniDbNumber('ytSettings', 'volume') - 2);
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.set', $.getIniDbNumber('ytSettings', 'volume')));
-                    return;
-                } 
-            }
-            $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.volume.get', connectedPlayerClient.getVolume()));
 
             /**
             * @commandpath ytp votecount - Set the amount of votes needed for the !skip command to work
