@@ -1,460 +1,468 @@
 /*
- * newPlayer.js
- * ------------
- * Interface for the YouTube Player for PhantomBot.
+ * Copyright (C) 2017 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-var DEBUG_MODE = false;
 
-var startPaused = false;
-var playerPaused = false;
-var playerMuted = false;
-var connectedToWS = false;
-var showChat = false;
-var loadedChat = false;
-var volumeSlider = null;
-var progressSlider = null;
+/* 
+ * @author IllusionaryOne
+ */
 
-var url = window.location.host.split(":");
-var addr = 'ws://' + url[0] + ':' + getPlayerPort();
-var connection = new WebSocket(addr, []);
-var currentVolume = 0;
+/*
+ * audioPanel.js
+ * Drives the Audio Panel
+ */
+(function() {
 
-if (window.location.href.indexOf('start_paused') !== -1) {
-    startPaused = true;
-}
+    /**
+     * Sounds Object
+     *
+     * name is used by Ion.Sound to find files to play.
+     * desc is used to generate the buttons for the audio panel.
+     */
+    var announceInChat = false,
+        playlists = [],
+        sounds = [],
+        soundQueue = [],
+        audioPanelLoaded = false,
+        isPlaying = false;
 
-var documentElement = document.createElement('script');
-documentElement.src = "https://www.youtube.com/iframe_api";
+    /**
+     * @function onMessage
+     */
+    function onMessage(message) {
+        var msgObject,
+            html = '',
+            keyword = '';
 
-var scriptTag = document.getElementsByTagName('script')[0];
-scriptTag.parentNode.insertBefore(documentElement, scriptTag);
-
-var playerObject;
-function onYouTubeIframeAPIReady() {
-    playerObject = new YT.Player('player', {
-        height: '200',
-        width: '200',
-        videoId: '',
-        playerVars: {
-            iv_load_policy: 3,
-            controls: 0,
-            showinfo: 0,
-            showsearch: 0,
-            autoplay: 1
-        },
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-    });
-}
-
-function debugMsg(message) {
-    if (DEBUG_MODE) console.log("YouTubePlayer::" + message);
-}
-
-function onPlayerReady(event) {
-    debugMsg("onPlayerReady()");
-
-    var jsonObject = {};
-    jsonObject["authenticate"] = getAuth();
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("onPlayerReady::connection.send(" + JSON.stringify(jsonObject)+")");
-
-    readyEvent();
-    playerObject.setVolume(5); // Be safe with the caster
-}
-
-function readyEvent() {
-    debugMsg("readyEvent()");
-    var jsonObject = {};
-    if (startPaused) {
-        jsonObject["status"] = { "readypause" : true };
-    } else {
-        jsonObject["status"] = { "ready" : true };
-    }
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("readyEvent::connection.send(" + JSON.stringify(jsonObject)+")");
-}
-
-function onPlayerStateChange(event) {
-    debugMsg("onPlayerStateChange(" + event.data + ")");
-
-    if (event.data === 1 && startPaused) {
-        playerPaused = true;
-        playerObject.pauseVideo();
-        startPaused = false;
-    }
-
-    var jsonObject = {};
-    jsonObject["status"] = { "state" : event.data };
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("onPlayerStateChange::connection.send(" + JSON.stringify(jsonObject)+")");
-}
-
-connection.onopen = function(data) {
-    debugMsg("connection.onopen()");
-    connectedToWS = true;
-}
-
-connection.onclose = function(data) {
-    debugMsg("connection.onclose()");
-    newSongAlert('WebSocket has been closed', 'Restart player when bot is restored', 'danger', 0);
-    connectedToWS = false;
-}
-
-connection.onmessage = function(e) {
-    try {
-        var messageObject = JSON.parse(e.data);
-    } catch (ex) {
-        console.log('YouTubePlayer::connection.onmessage: badJson(' + e.data + '): ' + ex.message);
-        return;
-    }
-    debugMsg("connection.onmessage("+ e.data + ")");
-
-    if (messageObject['authresult'] == false) {
-        if (!messageObject['authresult']) {
-            newSongAlert('WS Auth Failed', 'Reload page, if that fails, restart bot', 'danger', 0);
-            return;
-        }
-        return;
-    }
-
-    if (messageObject['command']) {
-        if (messageObject['command']['play']) {
-            handlePlay(messageObject['command']['play'], messageObject['command']['title'], 
-                       messageObject['command']['duration'], messageObject['command']['requester']);
+        try {
+            msgObject = JSON.parse(message.data);
+        } catch (ex) {
             return;
         }
 
-        if (messageObject['command']['setvolume']) {
-            handleSetVolume(parseInt(messageObject['command']['setvolume']));
-            return;
+        if (panelHasQuery(msgObject)) {
+            if (panelCheckQuery(msgObject, 'audio_ytpMaxReqs')) {
+                $('#ytpMaxReqsInput').attr('placeholder', msgObject['results']['songRequestsMaxParallel']);
+            }
+            if (panelCheckQuery(msgObject, 'audio_ytpMaxLength')) {
+                $('#ytpMaxLengthInput').attr('placeholder', msgObject['results']['songRequestsMaxSecondsforVideo']);
+            }
+            if (panelCheckQuery(msgObject, 'audio_ytpDJName')) {
+                $('#ytpDJNameInput').attr('placeholder', msgObject['results']['playlistDJname']);
+            }
+            if (panelCheckQuery(msgObject, 'audio_panel_hook')) {
+                logMsg('Will Play: ' + msgObject['audio_panel_hook']);
+            }
         }
 
-        if (messageObject['command'].localeCompare('pause') == 0) {
-            handlePause(messageObject['command']);
-            return;
+        if (panelCheckQuery(msgObject, 'audio_ytplaylists')) {
+            if (msgObject['results'].length === 0) {
+                return;
+            }
+
+            playlists = [];
+
+            for (var idx in msgObject['results']) {
+                playlists.push(msgObject['results'][idx]['value']);
+            }
+            $.playlists = playlists; 
         }
 
-        if (messageObject['command'].localeCompare('querysong') == 0) {
-            handleQuerySong(messageObject['command']);
-            return;
+        if (msgObject['audio_panel_hook'] !== undefined) {
+            playIonSound(msgObject['audio_panel_hook']);
+        }
+
+        if (panelCheckQuery(msgObject, 'audio_songblacklist')) {
+            if (msgObject['results'].length === 0) {
+                $('#ytplayerBSong').html('<i>There are no blacklisted songs.</i>');
+                return;
+            }
+            var html = '<table>';
+            for (var idx in msgObject['results']) {
+                 var name = msgObject['results'][idx]['key'];
+                html += '<tr style="textList">' +
+                        '    <td style="vertical-align: middle: width: 50%">' + name + '</td>' +
+                        '    <td style="width: 1%">' +
+                        '        <button type="button" class="btn btn-default btn-xs" id="deleteBSong_' + name + '" onclick="$.deleteBSong(\'' + name + '\')"><i class="fa fa-trash" /> </button>' +
+                        '    </td>' +
+                        '</tr>';
+            }
+            html += '</table>';
+            $('#ytplayerBSong').html(html);
+            handleInputFocus();
+        }
+
+        if (panelCheckQuery(msgObject, 'audio_hook')) {
+            sounds = [];
+            for (var idx in msgObject['results']) {
+                sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
+            }
+
+            if (sounds.length === 0) {
+                $('#audioPanelButtons').html('No sounds configured, please click Reload Audio Hooks if sounds are installed.');
+                $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
+            } else {
+                setTimeout(function () {
+                    $(document).ready(function() {
+                        ion.sound({
+                            sounds: sounds,
+                            path: "/panel/js/ion-sound/sounds/",
+                            preload: true,
+                            volume: 1.0,
+                            ready_callback: ionSoundLoaded,
+                            ended_callback: clearIonSoundPlaying 
+                        });
+                    });
+                }, 2000);
+            }
+        }
+
+        if (panelCheckQuery(msgObject, 'audio_hook_reload')) {
+            sounds = [];
+            for (var idx in msgObject['results']) {
+                sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
+            }
+
+            if (sounds.length === 0) {
+                $('#audioPanelButtons').html('No sounds configured, please click Reload Audio Hooks if sounds are installed.');
+                $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
+            } else {
+                ion.sound({
+                    sounds: sounds,
+                    path: "/panel/js/ion-sound/sounds/",
+                    preload: true,
+                    volume: 1.0,
+                    ready_callback: ionSoundLoaded,
+                    ended_callback: clearIonSoundPlaying 
+                });
+            }
+            loadAudioPanel();
+            $('#reloadSounds').html('Reload Audio Hooks');
+        }
+
+        if (panelCheckQuery(msgObject, 'audio_ytptoggle1')) {
+            if (msgObject['results']['announceInChat'] == "true") {
+                announceInChat = "true";
+            }
+            if (msgObject['results']['announceInChat'] == "false") {
+                announceInChat = "false";
+            }
+        }
+
+        if (panelCheckQuery(msgObject, 'audio_userblacklist')) {
+            if (msgObject['results'].length === 0) {
+                $('#ytplayerBUser').html('<i>There are no blacklisted users.</i>');
+                return;
+            }
+            html = '<table>';
+            for (var idx in msgObject['results']) {
+                 var name = msgObject['results'][idx]['key'];
+                html += '<tr style="textList">' +
+                        '    <td style="vertical-align: middle: width: 50%">' + name + '</td>' +
+                        '    <td style="width: 1%">' +
+                        '        <button type="button" class="btn btn-default btn-xs" id="deleteUser_' + name + '" onclick="$.deleteUser(\'' + name + '\')"><i class="fa fa-trash" /> </button>' +
+                        '    </td>' +
+                        '</tr>';
+            }
+            html += '</table>';
+            $('#ytplayerBUser').html(html);
+            handleInputFocus();
         }
     }
 
-    if (messageObject['songlist']) {
-        handleSongList(messageObject);
-        return;
+    /**
+     * @function doQuery
+     */
+    function doQuery(message) {
+        sendDBKeys('audio_ytplaylists', 'ytPanelPlaylist');
+        sendDBQuery('audio_ytpMaxReqs', 'ytSettings', 'songRequestsMaxParallel');
+        sendDBQuery('audio_ytpMaxLength', 'ytSettings', 'songRequestsMaxSecondsforVideo');
+        sendDBQuery('audio_ytptoggle1', 'ytSettings', 'announceInChat');
+        sendDBQuery('audio_ytpDJName', 'ytSettings', 'playlistDJname');
+        sendDBKeys('audio_songblacklist', 'ytpBlacklistedSong');
+        sendDBKeys('audio_userblacklist', 'ytpBlacklist');
+        sendDBKeys('audio_hook', 'audio_hooks');
     }
 
-    if (messageObject['playlist']) {
-        handlePlayList(messageObject);
-        return;
+    /**
+     * @function reloadAudioHooks
+     * Note that there is not a query performed here because the command sends back a 
+     * doDBKeysQuery() call with the ID of audio_hook_reload.
+     */
+    function reloadAudioHooks() {
+        $('#reloadSounds').html('Please wait...');
+        sendCommand('reloadaudiopanelhooks');
     }
 
-    console.log('YouTubePlayer::connection.onmessage: unknownJson(' + e.data + ')');
-}
+    /** 
+     * @function deleteBSong
+     * @param {String} song
+     */
+    function deleteBSong(song) {
+        $("#deleteBSong_" + song).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        sendDBDelete("audio_bsong_" + song, "ytpBlacklistedSong", song);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    };
 
-function handlePlayList(d) {
-    debugMsg("handlePlayList(" + d + ")");
-    $("#playlistTableTitle").html("Current Playlist: " + d['playlistname']);
-    var tableData = "<tr><th /><th>Song Title</th><th>Duration</th><th>YouTube ID</th></tr>";
-    for (var i in d['playlist']) {
-        var id = d['playlist'][i]['song'];
-        var title = d['playlist'][i]['title'];
-        var duration = d['playlist'][i]['duration'];
-        tableData += "<tr>" +
-                     "<td width=\"15\"><divclass=\"button\" onclick=\"deletePLSong('" + id + "')\"><i class=\"fa fa-trash-o\" /></div></td>" +
-                     "<td>" + title + "</td><td>" + duration + "</td><td>" + id + "</td></tr>";
+    /** 
+     * @function blacklistSong
+     */
+    function blacklistSong() {
+        var song = $("#songBlacklist").val();
+        if (song.length != 0) {
+            sendDBUpdate("audio_song_" + song, "ytpBlacklistedSong", song.toLowerCase(), 'true');
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+        setTimeout(function() { $("#songBlacklist").val(''); }, TIMEOUT_WAIT_TIME);
+    };
+
+    /** 
+     * @function deleteUser
+     * @param {String} user
+     */
+    function deleteUser(user) {
+        $("#deleteBUser_" + user).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        sendDBDelete("audio_user_" + user, "ytpBlacklist", user);
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    };
+
+    /** 
+     * @function blacklistUser
+     */
+    function blacklistUser() {
+        var user = $("#userBlacklist").val();
+        if (user.length != 0) {
+            sendDBUpdate("audio_user_" + user, "ytpBlacklist", user.toLowerCase(), 'true');
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        }
+        setTimeout(function() { $("#userBlacklist").val(''); }, TIMEOUT_WAIT_TIME);
+    };
+
+    /**
+     * @function loadAudioPanel
+     */
+    function loadAudioPanel() {
+        $("#audioPanelButtons").html('');
+        for (var idx in sounds) {
+            $("#audioPanelButtons").append("<button type=\"button\" class=\"soundButton\"" +
+                                           "onclick=\"$.playIonSound('" + sounds[idx]['name'] + "');\">" +
+                                           sounds[idx]['desc'] + "</button>");
+        }
     }
-    $("#playlistTable").html(tableData);
-}
 
-function handleSongList(d) {
-    debugMsg("handleSongList(" + d + ")");
-    var tableData = "<tr><th /><th /><th>Song Title</th><th>Requester</th><th>Duration</th><th>YouTube ID</th></tr>";
-    for (var i in d['songlist']) {
-        var id = d['songlist'][i]['song'];
-        var title = d['songlist'][i]['title'];
-        var duration = d['songlist'][i]['duration'];
-        var requester = d['songlist'][i]['requester'];
-        tableData += "<tr>" +
-                     "    <td width=\"15\"><divclass=\"button\" onclick=\"deleteSong('" + id + "')\"><i class=\"fa fa-trash-o\" /></div></td>" +
-                     "    <td width=\"15\"><divclass=\"button\" onclick=\"stealSong('" + id + "')\"><i class=\"fa fa-bookmark\" /></div></td>" +
-                     "    <td>" + title + "</td>" +
-                     "    <td>" + requester + "</td>" +
-                     "    <td>" + duration + "</td>" +
-                     "<td style=\"{width: 10%; text-align: right}\">"  + id + "</td></tr>";
+    /**
+     * @function ionSoundLoaded
+     */
+    function ionSoundLoaded() {
+        $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
+        loadAudioPanel();
     }
-    $("#songTable").html(tableData);
-}
 
-function handlePlay(id, title, duration, requester) {
-    debugMsg("handlePlay(" + id + ", " + title + ", " + duration + ", " + requester + ")");
-    try {
-        playerObject.loadVideoById(id, 0, "medium");
-        newSongAlert('Now Playing', title, 'success', 4000);
-        var ytLink = "https://youtu.be/" + id;
-        $("#currentSong").html("<strong>" + title + "</strong><br>" +
-                               "<span class=\"currentSong-small\">" +
-                               "    <i class=\"fa fa-clock-o\">&nbsp;</i>" + duration + "<br>" +
-                               "    <i class=\"fa fa-youtube\">&nbsp;</i><a id=\"playerLink\" href=\"" + ytLink + "\">" + ytLink + "</a><br>" +
-                               "    <i class=\"fa fa-user\">&nbsp;</i>" + requester + 
-                               "</span>" +
-                               "<table class=\"controlTable\">" +
-                               "    <tr><td />" +
-                               "        <td><div id=\"playPauseDiv\" class=\"button\" onclick=\"handlePause()\"></div></td>" +
-                               "        <td colspan=\"2\"><div id=\"songProgressBar\"></div></td>" +
-                               "        <td><div class=\"button\" onclick=\"skipSong()\"><i class=\"fa fa-step-forward\" /></div></td>" +
-                               "        <td><div id=\"tooltip-random\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Toggle Randomized Playlist\" class=\"button\" onclick=\"randomizePlaylist()\"><i class=\"fa fa-random\" /></div></td>" +
-                               "    <td /></tr>" +
-                               "    <tr><td />" +
-                               "        <td><div id=\"mutedDiv\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Mute/Unmute\" class=\"button\" onclick=\"handleMute()\"></div></td>" +
-                               "        <td><div id=\"volumeControl\"></div></td>" +
-                               "        <td><div class=\"button\" data-toggle=\"modal\" data-target=\"#songRequestModal\"><i class=\"fa fa-plus\" /></div></td>" +
-                               "        <td><div id=\"tooltip-steal\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Steal Song\" class=\"button\" onclick=\"stealSong()\"><i class=\"fa fa-bookmark\" /></div></td>" +
-                               "        <td><div id=\"tooltip-chat\" data-placement=\"left\" data-toggle=\"tooltip\" title=\"Toggle Chat\" class=\"button\" onclick=\"toggleChat()\"><i class=\"fa fa-comment\" /></div></td>" +
-                               "    <td /></tr>" +
-                               "<table>" +
-                               "<div id=\"songRequestDiv\"</div>");
-
-        songRequestDiv();
-        $("#tooltip-random").tooltip();
-        $("#tooltip-steal").tooltip();
-        $("#tooltip-chat").tooltip();
-        $("#tooltip-sr").tooltip();
-
-        volumeSlider = $("#volumeControl").slider({
-            min: 0,
-            max: 100,
-            value: currentVolume,
-            range: "min",
-            slide: function (event, ui) { handleSetVolume(ui.value); handleCurrentVolume(currentVolume); }
-        }).height(10);
-
-        progressSlider = $("#songProgressBar").slider({
-            min: 0,
-            max: playerObject.getDuration(),
-            value: 0,
-            range: "min",
-            stop: function (event, ui) { playerSeekSong(ui.value); }
-        }).height(10);
-
-        if (playerMuted) {
-            $("#mutedDiv").html("<i class=\"fa fa-volume-off fa-lg\" style=\"color: #000000\" />");
+    /**
+     * @function playIonSound
+     * @param {String} name
+     */
+    function playIonSound(name) {
+        if (!isPlaying) {
+            isPlaying = true;
+            $("#ionSoundPlaying").fadeIn(400);
+            ion.sound.play(name);
         } else {
-            $("#mutedDiv").html("<i class=\"fa fa-volume-off fa-lg\" style=\"color: #ffffff\" />");
+            soundQueue.push(name);
         }
-       
-        if (playerPaused) {
-            $("#playPauseDiv").html("<i class=\"fa fa-pause\" />");
+    }
+
+    /**
+     * @function clearIonSoundPlaying
+     */
+    function clearIonSoundPlaying() {
+        $("#ionSoundPlaying").fadeOut(400);
+        isPlaying = false;
+    }
+
+    /**
+     * @function toggleYouTubePlayer
+     */
+    function toggleYouTubePlayer() {
+        if ($("#youTubePlayerIframe").is(":visible")) {
+            $("#youTubePlayerIframe").fadeOut(1000);
         } else {
-            $("#playPauseDiv").html("<i class=\"fa fa-play\" />");
+            $("#youTubePlayerIframe").fadeIn(1000);
         }
-
-        querySongList();
-    } catch (ex) {
-        console.log("YouTubePlayer::handlePlay::loadVideoById: " + ex.message);
     }
-}
 
-function deleteSong(id) {
-    debugMsg("deleteSong(" + id + ")");
-    var jsonObject = {};
-    jsonObject["deletesr"] = id;
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
-}
-
-function deletePLSong(id) {
-    debugMsg("deletePLSong(" + id + ")");
-    var jsonObject = {};
-    jsonObject["deletepl"] = id;
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
-}
-
-function stealSong(id) {
-    debugMsg("stealSong()");
-    var jsonObject = {};
-    jsonObject["command"] = 'stealsong';
-    if (id) {
-        jsonObject["youTubeID"] = id;
+    /**
+     * @function toggleYouTubePlayerPause
+     */
+    function toggleYouTubePlayerPause() {
+        sendCommand('ytp pause');
     }
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
-}
 
-function toggleChat() {
-    debugMsg("toggleChat()");
-    if (showChat) {
-        showChat = false;
-        $(".chatFrame").hide();
-    } else {
-        if (!loadedChat) {
-            $(".chat").html("<iframe class=\"chatFrame\" src=\"http://www.twitch.tv/" + getChannelName() + "/chat?popout=\">");
-            loadedChat = true;
+    /**
+     * @function toggleYouTubePlayerRequests
+     */
+    function toggleYouTubePlayerRequests() {
+        sendCommand('ytp togglerequests');
+    }
+
+    /**
+     * @function toggleYouTubePlayerNotify
+     */
+    function toggleYouTubePlayerNotify() {
+        if (announceInChat == "true") {
+            sendDBUpdate('audio_setting', 'ytSettings', 'announceInChat', "false");
+        } else {
+            sendDBUpdate('audio_setting', 'ytSettings', 'announceInChat', "true");
         }
-        showChat = true;
-        $(".chatFrame").show();
+        setTimeout(function() { doQuery(); sendCommand('reloadyt'); }, TIMEOUT_WAIT_TIME * 2);
     }
-}
 
-function randomizePlaylist(d) {
-    debugMsg("randomizePlaylist()");
-    var jsonObject = {};
-    jsonObject["command"] = "togglerandom";
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
-}
-
-function skipSong(d) {
-    debugMsg("skipSong()");
-    var jsonObject = {};
-    jsonObject["command"] = "skipsong";
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
-}
-
-function handlePause(d) {
-    debugMsg("handlePause()");
-    if (playerPaused) {
-        playerPaused = false;
-        playerObject.playVideo();
-            $("#playPauseDiv").html("<i class=\"fa fa-pause\" />");
-    } else {
-        playerPaused = true;
-        playerObject.pauseVideo();
-            $("#playPauseDiv").html("<i class=\"fa fa-play\" />");
+    /**
+     * @function setYouTubePlayerDJName
+     */
+    function setYouTubePlayerDJName() {
+        var value = $('#ytpDJNameInput').val();
+        if (value.length > 0) {
+            $('#ytpDJNameInput').val('Updating...');
+            sendDBUpdate('audio_setting', 'ytSettings', 'playlistDJname', value);
+            setTimeout(function() { doQuery(); $('#ytpDJNameInput').val(''); sendCommand('reloadyt'); }, TIMEOUT_WAIT_TIME * 2);
+        }
     }
-}
 
-function handleMute(d) {
-    debugMsg("handleMute()");
-    if (playerMuted) {
-        playerMuted = false;
-        playerObject.unMute();
-        $("#mutedDiv").html("<i class=\"fa fa-volume-off fa-lg\" style=\"color: #ffffff\" />");
-    } else {
-        playerMuted = true;
-        playerObject.mute();
-        $("#mutedDiv").html("<i class=\"fa fa-volume-off fa-lg\" style=\"color: #000000\" />");
+    /**
+     * @function setYouTubePlayerMaxReqs
+     */
+    function setYouTubePlayerMaxReqs() {
+        var value = $('#ytpMaxReqsInput').val();
+        if (value.length > 0) {
+            $('#ytpMaxReqsInput').val('');
+            $('#ytpMaxReqsInput').attr('placeholder', value);
+            sendDBUpdate('audio_setting', 'ytSettings', 'songRequestsMaxParallel', value);
+            sendCommand('reloadyt');
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        }
     }
-}
 
-function handleCurrentId(d) {
-    debugMsg("handleCurrentId()");
-    var jsonObject = {};
-    jsonObject["status"] = { "currentid" : playerObject.getVideoUrl().match(/[?&]v=([^&]+)/)[1] };
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("handleCurrentId::connection.send(" + JSON.stringify(jsonObject) + ")");
-}
-
-function handleSetVolume(d) {
-    debugMsg("handleSetVolume(" + d + ")");
-    currentVolume = d;
-    playerObject.setVolume(d);
-    if (volumeSlider != null) {
-        volumeSlider.slider("option", "value", currentVolume);
+    /**
+     * @function setYouTubePlayerMaxLength
+     */
+    function setYouTubePlayerMaxLength() {
+        var value = $('#ytpMaxLengthInput').val();
+        if (value.length > 0) {
+            $('#ytpMaxLengthInput').val('');
+            $('#ytpMaxLengthInput').attr('placeholder', value);
+            sendDBUpdate('audio_setting', 'ytSettings', 'songRequestsMaxSecondsforVideo', value);
+            sendCommand('reloadyt');
+            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
+        }
     }
-}
 
-function handleCurrentVolume(d) {
-    debugMsg("handleCurrentVolume()");
-    var jsonObject = {};
-    jsonObject["status"] = { "volume" : playerObject.getVolume() };
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("handleCurrentVolume::connection.send(" + JSON.stringify(jsonObject) + ")");
-}
-
-function queryPlayList() {
-    debugMsg("queryPlayList()");
-    var jsonObject = {};
-    jsonObject["query"] = "playlist";
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("queryPlayList::connection.send(" + JSON.stringify(jsonObject) + ")");
-}
-
-function querySongList() {
-    debugMsg("querySongList()");
-    var jsonObject = {};
-    jsonObject["query"] = "songlist";
-    connection.send(JSON.stringify(jsonObject));
-    debugMsg("querySongList::connection.send(" + JSON.stringify(jsonObject) + ")");
-}
-
-// Type is: success (green), info (blue), warning (yellow), danger (red)
-function newSongAlert(message, title, type, timeout) {
-  debugMsg("newSongAlert(" + message + ", " + title + ", " + type + ", " + timeout + ")");
-  $(".alert").fadeIn(1000);
-  $("#newSongAlert").show().html('<div class="alert alert-' + type + '"><button type="button" '+
-                      'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 
-                       message + ' [' + title + ']</span></div>');
-  if (timeout != 0) {
-      $(".alert-" + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
-  }
-}
-
-function updateSongProgressBar(seekTo) {
-    debugMsg("updateSongProgress: " +  playerObject.getCurrentTime());
-    if (progressSlider != null) {
-        progressSlider.slider("option", "value", playerObject.getCurrentTime());
-        progressSlider.slider("option", "max", playerObject.getDuration());
+    /**
+     * @function loadYtplaylist
+     */
+    function loadYtplaylist() {
+        var value = $('#playlistImput').val();
+        if (value.length > 0) {
+            $('#playlistImput').val('Loading...');
+            sendCommand('playlist playlistloadpanel ' + value);
+            setTimeout(function() { doQuery(); $('#playlistImput').val(''); }, TIMEOUT_WAIT_TIME * 4);
+        }
     }
-}
-setInterval(updateSongProgressBar, 2000);
 
-function playerSeekSong(seekPos) {
-   playerObject.seekTo(seekPos, true); 
-}
-
-function songRequestDiv() {
-    $("#songRequestDiv").html(
-        "<div class=\"modal fade\" id=\"songRequestModal\" aria-hidden=\"true\">" +
-        "    <div class=\"modal-dialog\">" +
-        "        <div class=\"modal-header\">" +
-        "            <div class=\"modal-title\" id=\"modalLabel\">YouTube Song Request</div>" +
-        "         </div>" +
-        "         <div class=\"modal-body\">" +
-        "             <form role=\"form\" onkeypress=\"return event.keyCode != 13\">" +
-        "                 <div class=\"form-group\">" +
-        "                     <label for=\"songRequestInput\">Search String / YouTube Link / YouTube ID</label>" +
-        "                     <input type=\"text\" class=\"form-control\" id=\"songRequestInput\" placeholder=\"Song Request\" />" +
-        "                 </div>" +
-        "             </form>" +
-        "         </div>" +
-        "         <div class=\"modal-footer\">" +
-        "             <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" onclick=\"getFormSongRequest()\">Submit</button>" +
-        "             <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>" +
-        "         </div>" +
-        "     </div>" +
-        "</div>");
-
-    // Reset the data form.
-    $("#songRequestDiv").on("hidden.bs.modal", function() {
-        $("#songRequestInput").val("");
-    });
-}
-function getFormSongRequest() {
-    var jsonObject = {};
-    jsonObject["command"] = "songrequest";
-    jsonObject["search"] = $("#songRequestInput").val();
-    connection.send(JSON.stringify(jsonObject));
-}
-
-function sendKeepAlive() {
-    var jsonObject = {};
-    if (!connectedToWS) {
-        return;
+    /**
+     * @function fillYouTubePlayerIframe
+     */
+    function fillYouTubePlayerIframe() {
+        $('#youTubePlayerIframe').html('<iframe id="youTubePlayer" frameborder="0" scrolling="auto" height="400" width="680"'+
+                                       '        src="' + getProtocol() + url[0] + ':' + window.location.port + '/ytplayer?start_paused">');
     }
-    jsonObject["status"] = { "state" : 200 };
-    try {
-        connection.send(JSON.stringify(jsonObject));
-        connectedToWS = true;
-    } catch (ex) {
-        console.log('YouTubePlayer::sendKeepAlive::exception: ' + ex.message);
-    }
-}
-setInterval(sendKeepAlive, 20000);
 
+    /**
+     * @function launchYouTubePlayer
+     */
+    function launchYouTubePlayer() {
+        window.open(getProtocol() + url[0] + ':' + window.location.port + '/ytplayer', 'PhantomBot YouTube Player',
+                    'menubar=no,resizeable=yes,scrollbars=yes,status=no,toolbar=no,height=700,width=900,location=no' );
+    }
+
+    /**
+     * function drawYouTubePlayer
+     */
+    function drawYouTubePlayer() {
+        if (YOUTUBE_IFRAME === true) {
+            fillYouTubePlayerIframe();
+            $('#youTubeLauncher').html('<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayer()">Hide/Show YouTube Player</button>' +
+                                       '<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerPause()">Toggle Pause</button>');
+        }
+    }
+
+    // Import the HTML file for this panel.
+    $("#audioPanel").load("/panel/audio.html");
+
+    // Load the DB items for this panel, wait to ensure that we are connected.
+    var interval = setInterval(function() {
+        if (TABS_INITIALIZED) {
+            drawYouTubePlayer();
+        }
+        if (isConnected && TABS_INITIALIZED) {
+            doQuery();
+            clearInterval(interval);
+        }
+    }, INITIAL_WAIT_TIME);
+
+    // Query the DB every 30 seconds for updates.
+    setInterval(function() {
+        var active = $('#tabs').tabs('option', 'active');
+        if (active == 19 && isConnected && !isInputFocus()) {
+            newPanelAlert('Refreshing Audio Data', 'success', 1000);
+            doQuery();
+        }
+    }, 3e4);
+
+    // Queue for when multiple sounds are called at once. This will stop multiple sounds from playing at the same time.
+    setInterval(function() {
+        if (soundQueue.length > 0) {
+            for (var i in soundQueue) {
+                if (!isPlaying) {
+                    playIonSound(soundQueue[i]);
+                    soundQueue.splice(i, 1);
+                }
+            }
+        }
+    }, 1e3);
+
+    // Export to HTML
+    $.audioOnMessage = onMessage;
+    $.audioDoQuery = doQuery;
+
+    // Export functions to HTML.
+    $.playIonSound = playIonSound;
+    $.toggleYouTubePlayer = toggleYouTubePlayer;
+    $.toggleYouTubePlayerPause = toggleYouTubePlayerPause;
+    $.toggleYouTubePlayerNotify = toggleYouTubePlayerNotify;
+    $.toggleYouTubePlayerRequests = toggleYouTubePlayerRequests;
+    $.setYouTubePlayerDJName = setYouTubePlayerDJName;
+    $.setYouTubePlayerMaxReqs = setYouTubePlayerMaxReqs;
+    $.setYouTubePlayerMaxLength = setYouTubePlayerMaxLength;
+    $.fillYouTubePlayerIframe = fillYouTubePlayerIframe;
+    $.launchYouTubePlayer = launchYouTubePlayer;
+    $.deleteBSong = deleteBSong;
+    $.blacklistSong = blacklistSong;
+    $.blacklistUser = blacklistUser;
+    $.deleteUser = deleteUser;
+    $.playlists = playlists;
+    $.loadYtplaylist = loadYtplaylist;
+    $.reloadAudioHooks = reloadAudioHooks;
+})();
