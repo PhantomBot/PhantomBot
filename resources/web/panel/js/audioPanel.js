@@ -386,14 +386,14 @@
      */
     function fillYouTubePlayerIframe() {
         $('#youTubePlayerIframe').html('<iframe id="youTubePlayer" frameborder="0" scrolling="auto" height="400" width="680"'+
-                                       '        src="' + getProtocol() + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer?start_paused">');
+                                       '        src="' + getProtocol() + url[0] + ':' + getPanelPort() + '/ytplayer?start_paused">');
     }
 
     /**
      * @function launchYouTubePlayer
      */
     function launchYouTubePlayer() {
-        window.open(getProtocol() + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer', 'PhantomBot YouTube Player',
+        window.open(getProtocol() + url[0] + ':' + getPanelPort() + '/ytplayer', 'PhantomBot YouTube Player',
                     'menubar=no,resizeable=yes,scrollbars=yes,status=no,toolbar=no,height=700,width=900,location=no' );
     }
 
