@@ -38,9 +38,10 @@
          * @commandpath deathctr - Display the current number of deaths in game being played.
          */
         if (command.equalsIgnoreCase('deathctr')) {
+            var deathCounter = parseInt($.inidb.get('deaths', game));
+            var noDeathExists = isNaN(parseInt(deathCounter)) || parseInt(deathCounter) === 0 ? (deathCounter = 0, true) : (false);
             if (action === undefined) {
-                var deathCounter = parseInt($.inidb.get('deaths', game));
-                if (isNaN(parseInt(deathCounter)) || parseInt(deathCounter) === 0) {
+                if (noDeathExists) {
                     $.say($.lang.get('deathcounter.none', $.ownerName, game));
                 } else {
                     $.say($.lang.get('deathcounter.counter', $.ownerName, game, deathCounter));
@@ -50,8 +51,7 @@
                  * @commandpath deathctr reset - Reset the death counter for the game being played.
                  */
                 if (action.equalsIgnoreCase('reset')) {
-                    var deathCounter = parseInt($.inidb.get('deaths', game));
-                    if (isNaN(parseInt(deathCounter)) || parseInt(deathCounter) === 0) {
+                    if (noDeathExists) {
                         $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.reset-nil', game));
                     } else { 
                         $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.reset', game, deathCounter));
@@ -72,7 +72,7 @@
                         var setDeath = parseInt(args[1]);
                         $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.set-success', game, setDeath));
                         $.inidb.set('deaths', game, setDeath);
-                        $.deathUpdateFilegame();
+                        $.deathUpdateFile(game);
                         return;
                     }
                 }
