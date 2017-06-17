@@ -501,8 +501,8 @@
         if (message.match(reCommandTag)) {
             commandToExec = message.match(reCommandTag)[1];
             if (commandToExec.length > 0) {
-                var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
-                var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+                var EventBus = Packages.tv.phantombot.event.EventBus;
+                var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
                 EventBus.instance().post(new CommandEvent(event.getSender(), commandToExec, message.replace(reCommandTag, '')));
                 return null;
             }

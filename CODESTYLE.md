@@ -44,15 +44,15 @@ All Java source code is under this directory.  The following is a brief descript
 
 - **com**: Contributed items from gmt2001, IllusionaryOne and ScaniaTV.  Items in here include: DataStore, Logger, various APIs.
 - **de**: Contributed items from SimeonF
-- **me/mast3rplan/phantombot**: Contains PhantomBot.java, the class with main()
-- **me/mast3rplan/phantombot/cache**: Data that is cached from API calls
-- **me/mast3rplan/phantombot/console**: Listener for console events
-- **me/mast3rplan/phantombot/event**: Event handling that uses the Guava Bus
-- **me/mast3rplan/phantombot/httpserver**: Web server code is contained here
-- **me/mast3rplan/phantombot/panel**: Control Panel WebSocket server
-- **me/mast3rplan/phantombot/script**: Handles the Rhino to Java interface
-- **me/mast3rplan/phantombot/twitchwsirc**: Twitch WebSocket handling
-- **me/mast3rplan/phantombot/ytplayer**: YouTube Player WebSocket server
+- **tv/phantombot**: Contains PhantomBot.java, the class with main()
+- **tv/phantombot/cache**: Data that is cached from API calls
+- **tv/phantombot/console**: Listener for console events
+- **tv/phantombot/event**: Event handling that uses the Guava Bus
+- **tv/phantombot/httpserver**: Web server code is contained here
+- **tv/phantombot/panel**: Control Panel WebSocket server
+- **tv/phantombot/script**: Handles the Rhino to Java interface
+- **tv/phantombot/twitchwsirc**: Twitch WebSocket handling
+- **tv/phantombot/ytplayer**: YouTube Player WebSocket server
 - **org/json**: JSON parser.
 
 ## Code specific rules

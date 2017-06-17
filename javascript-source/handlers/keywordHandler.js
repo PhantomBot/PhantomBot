@@ -1,7 +1,7 @@
 (function() {
     /* Package up the script manager for when the command tag is used in keywords. Not using the eventBus cause its really slow. */
-    var ScriptEventManager = Packages.me.mast3rplan.phantombot.script.ScriptEventManager,
-        CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+    var ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
+        CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
 
     /*
      * @event ircChannelMessage

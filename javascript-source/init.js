@@ -76,7 +76,7 @@
      * @param {string} message
      */
     function consoleDebug(message) {
-        if (Packages.me.mast3rplan.phantombot.PhantomBot.enableDebugging) {
+        if (Packages.tv.phantombot.PhantomBot.enableDebugging) {
             try {
                 throw new Error('debug');
             } catch (e) {
@@ -821,8 +821,8 @@
             }
 
             if ($.aliasExists(command) !== undefined) {
-                var ScriptEventManager = Packages.me.mast3rplan.phantombot.script.ScriptEventManager,
-                    CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent,
+                var ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
+                    CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
                     alias = $.getIniDbString('aliases', command),
                     aliasCmd,
                     aliasParams;
