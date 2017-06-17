@@ -2192,7 +2192,6 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
                 com.gmt2001.Console.out.print("Twitter: https://twitter.com/phantombotapp/\r\n");
                 com.gmt2001.Console.out.print("PhantomBot Knowledgebase: https://docs.phantombot.tv/\r\n");
-                com.gmt2001.Console.out.print("PhantomBot WebPanel: https://docs.phantombot.tv/kb/panel/\r\n");
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("\r\n");
 
