@@ -1,7 +1,7 @@
 (function() {
     var whisperMode = $.getSetIniDbBoolean('settings', 'whisperMode', false),
-        ScriptEventManager = Packages.me.mast3rplan.phantombot.script.ScriptEventManager,
-        CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+        ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
+        CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
 
     /** 
      * @function hasKey

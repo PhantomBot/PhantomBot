@@ -974,8 +974,8 @@
      * @event yTPlayerRandomize
      */
     $.bind('yTPlayerRandomize', function(event) {
-        var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus,
-            CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+        var EventBus = Packages.tv.phantombot.event.EventBus,
+            CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
 
         EventBus.instance().post(new CommandEvent($.botName, 'ytp', 'togglerandom'));
     });
