@@ -39,6 +39,7 @@ import com.scaniatv.AnkhConverter;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.RevloConverter;
+import com.scaniatv.GenerateLogs;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -1486,6 +1487,18 @@ public final class PhantomBot implements Listener {
             print("[CONSOLE] Executing debugoff: Disable Debug Mode");
             PhantomBot.setDebuggingLogOnly(false);
             return;
+        }
+
+        /* Writes the latest logs to a file. */
+        if (message.equalsIgnoreCase("dumplogs")) {
+            print("[CONSOLE] Executing dumplogs");
+            GenerateLogs.writeLogs();
+        }
+
+         /* Prints the latest logs in the console. */
+        if (message.equalsIgnoreCase("printlogs")) {
+            print("[CONSOLE] Executing printlogs");
+            GenerateLogs.printLogs();
         }
 
         /* enables debug mode - log only */
