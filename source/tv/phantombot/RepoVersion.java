@@ -23,37 +23,24 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 public class RepoVersion {
-    
-    private static final boolean nightlyBuild = false;
-    
+
+    private static final String phantomBotVersion = "@phantombot.version@";
+    private static final String repoVersion = "@repository.version@";
+    private static final String nightlyBuild = "@nightly.build@";
+
     private RepoVersion() {
     }
-    
-    protected static String getValue(String key) {
-        try {
-            String path = PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-            JarFile jar = new JarFile(new File(path));
-            Manifest mf = new Manifest(jar.getManifest());
-            Attributes attrib = mf.getMainAttributes();
-            String value = attrib.getValue(key);
-            if (value != null) {
-                return value;
-            }
-        } catch (IOException e) {
-            com.gmt2001.Console.err.printStackTrace(e);
-        }
-        return null;
-    }
-    
+
     public static String getPhantomBotVersion() {
-        return getValue("Bundle-Version");
+        return phantomBotVersion;
     }
-    
+
     public static String getRepoVersion() {
-        return getValue("Bundle-Revision");
+        return repoVersion;
     }
-    
+
     public static boolean getNightlyBuild() {
-        return nightlyBuild;
+        return nightlyBuild.equals("nightly_build");
     }
 }
+    
