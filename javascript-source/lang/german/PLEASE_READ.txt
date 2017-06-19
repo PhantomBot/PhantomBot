@@ -6,7 +6,7 @@ https://github.com/X00LA/PhantomBot-German-Translation
 
 the PhantomBot forum post, you can find under
 
-https://community.phantombot.tv/topic/797/german-translation-github/11
+https://community.phantombot.tv/t/german-translation-github/217
 
 
 If any problems, questions, errors or suggestions for improvement emerge,
