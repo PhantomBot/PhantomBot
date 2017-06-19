@@ -1359,7 +1359,7 @@
         if ($.isNightly) {
             consoleLn('PhantomBot Nightly Build - No Support is Provided');
             consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
-            consoleLn('https://community.phantombot.tv/category/23/bug-reports');
+            consoleLn('https://community.phantombot.tv/c/support/bug-reports');
         } else {
             consoleLn('For support please visit: https://community.phantombot.tv');
         }
