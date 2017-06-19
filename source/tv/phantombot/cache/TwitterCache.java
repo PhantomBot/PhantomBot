@@ -142,6 +142,7 @@ public class TwitterCache implements Runnable {
 
         long presentTime = 0L;
         long last_retweetTime = 0L;
+        long last_retweetRewardTime = 0L;
         long last_mentionsTime = 0L;
         long last_hometimelineTime = 0L;
         long last_usertimelineTime = 0L;
@@ -174,6 +175,7 @@ public class TwitterCache implements Runnable {
 
         /* Check DB for the last poll times. */
         last_retweetTime = getDBLong("lastpoll_retweets", poll_retweets, 0L);
+        last_retweetRewardTime = getDBLong("lastpoll_retweets_reward", reward_retweets, 0L);
         last_mentionsTime = getDBLong("lastpoll_mentions", poll_mentions, 0L);
         last_hometimelineTime = getDBLong("lastpoll_hometimeline", poll_hometimeline, 0L);
         last_usertimelineTime = getDBLong("lastpoll_usertimeline", poll_usertimeline, 0L);
@@ -186,8 +188,11 @@ public class TwitterCache implements Runnable {
 
         /* Handle each type of data from the Twitter API. */
         presentTime = System.currentTimeMillis() / 1000L;
-        if (poll_retweets || reward_retweets) {
-            handleRetweets(last_retweetTime, delay_retweets, presentTime, poll_retweets, reward_retweets);
+        if (poll_retweets) {
+            handleRetweets(last_retweetTime, delay_retweets, presentTime);
+        }
+        if (reward_retweets) {
+            handleRetweetRewards(last_retweetRewardTime, presentTime);
         }
         if (poll_mentions) {
             handleMentions(last_mentionsTime, delay_mentions, presentTime);
@@ -206,10 +211,8 @@ public class TwitterCache implements Runnable {
      * @param  long     The last time this API was polled.
      * @param  long     The delay to occur between polls.
      * @param  long     The present time stamp in seconds.
-     * @param  boolean  Display the most recent retweet in chat.
-     * @param  boolean  Scan all retweets for rewards.
      */
-    private void handleRetweets(long lastTime, long delay, long presentTime, boolean poll_retweets, boolean reward_retweets) {
+    private void handleRetweets(long lastTime, long delay, long presentTime) {
         if (presentTime - lastTime < delay) {
             return;
         }
@@ -225,33 +228,57 @@ public class TwitterCache implements Runnable {
         long twitterID = statuses.get(0).getId();
 
         /* Poll latest retweet. */
-        if (poll_retweets) {
-            String tweet = "[RT] " + statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
-
-            updateDBString("last_retweets", tweet);
-            EventBus.instance().post(new TwitterEvent(tweet, getChannel()));
-        }
-
-        /* Scan all retweets to perform a posssible points payout. */
-        if (reward_retweets) {
-            ArrayList<String> userNameList = new ArrayList<>();
-
-            for (Status status : statuses) {
-                List<Status>retweetStatuses = TwitterAPI.instance().getRetweets(status.getId());
-                if (retweetStatuses != null) {
-                    for (Status retweetStatus : retweetStatuses) {
-                        userNameList.add(retweetStatus.getUser().getName());
-                    }
-                }
-            }
-
-            if (!userNameList.isEmpty()) {
-                EventBus.instance().post(new TwitterRetweetEvent(userNameList.toArray(new String[userNameList.size()]), getChannel()));
-            }
-        }
+        String tweet = "[RT] " + statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        updateDBString("last_retweets", tweet);
+        EventBus.instance().post(new TwitterEvent(tweet, getChannel()));
 
         /* Update DB with the last Tweet ID processed. */
         updateDBLong("lastid_retweets", twitterID);
+    }
+
+    /*
+     * Handles retweet rewards with the Twitter API.  Due to the getRetweets() API call only 
+     * allowing 75 calls in 15 minutes, this call will run only once every five minutes and
+     * is not configurable in the bot.  Since we pull all retweets every 5 minutes, and that
+     * can return a maximum of 20; this means that we will reach 60 calls maximum in 15
+     * minutes, which is below the threshold.
+     *
+     * @param  long  The last time this API was polled.
+     * @param  long  The present time stamp in seconds.
+     */
+    private void handleRetweetRewards(long lastTime, long presentTime) {
+        if (presentTime - lastTime < 300) {
+            return;
+        }
+        updateDBLong("lastpoll_retweets_reward", presentTime);
+
+        long lastID = getDBLong("lastid_retweets_reward", true, 0L);
+        List<Status>statuses = TwitterAPI.instance().getRetweetsOfMe(lastID);
+
+        if (statuses == null) {
+            return;
+        }
+
+        long twitterID = statuses.get(0).getId();
+
+        /* Scan all retweets to perform a posssible points payout. */
+        ArrayList<String> userNameList = new ArrayList<>();
+
+        for (Status status : statuses) {
+            List<Status>retweetStatuses = TwitterAPI.instance().getRetweets(status.getId());
+            if (retweetStatuses != null) {
+                for (Status retweetStatus : retweetStatuses) {
+                    userNameList.add(retweetStatus.getUser().getName());
+                }
+            }
+        }
+
+        if (!userNameList.isEmpty()) {
+            EventBus.instance().post(new TwitterRetweetEvent(userNameList.toArray(new String[userNameList.size()]), getChannel()));
+        }
+
+        /* Update DB with the last Tweet ID processed. */
+        updateDBLong("lastid_retweets_reward", twitterID);
     }
 
     /*
