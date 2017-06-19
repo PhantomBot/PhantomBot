@@ -169,6 +169,14 @@ public class PanelSocketServer extends WebSocketServer {
     }
 
     /**
+     * Override for the WebSocketServer class which is called on start.
+     */
+    @Override
+    public void onStart() {
+        com.gmt2001.Console.debug.println("Server Started");
+    }
+
+    /**
      * Override for the WebSocketServer class which is called upon a disconnect.
      *
      * @param webSocket The WebSocket object for this disconnect.

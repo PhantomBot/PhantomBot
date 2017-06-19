@@ -142,6 +142,11 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     @Override
+    public void onStart() {
+        com.gmt2001.Console.debug.println("Server Started");
+    }
+
+    @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
         wsSession sessionData;
 
