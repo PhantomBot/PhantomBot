@@ -40,6 +40,10 @@ import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 public class PanelSocketSecureServer extends PanelSocketServer {
 
     public PanelSocketSecureServer(int port, String authString, String authStringRO, String keyFileName, String keyPassword) throws Exception {
+        this(port, authString, authStringRO, keyFileName, keyPassword, 200);
+    }
+
+    public PanelSocketSecureServer(int port, String authString, String authStringRO, String keyFileName, String keyPassword, int tasksAllowed) throws Exception {
         super(port, authString, authStringRO);
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
@@ -59,7 +63,7 @@ public class PanelSocketSecureServer extends PanelSocketServer {
 
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool()));
+            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool(), tasksAllowed));
         } catch(Exception ex) {
             com.gmt2001.Console.out.println("PanelSocketSecureServer Exception: " + ex.getMessage());
             throw new Exception("Failed to create PanelSocketSecureServer");
