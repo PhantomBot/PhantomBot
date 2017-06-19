@@ -226,7 +226,7 @@ public class TwitterCache implements Runnable {
 
         /* Poll latest retweet. */
         if (poll_retweets) {
-            String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+            String tweet = "[RT] " + statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
 
             updateDBString("last_retweets", tweet);
             EventBus.instance().post(new TwitterEvent(tweet, getChannel()));
@@ -235,10 +235,19 @@ public class TwitterCache implements Runnable {
         /* Scan all retweets to perform a posssible points payout. */
         if (reward_retweets) {
             ArrayList<String> userNameList = new ArrayList<>();
+
             for (Status status : statuses) {
-                userNameList.add(status.getUser().getName());
+                List<Status>retweetStatuses = TwitterAPI.instance().getRetweets(status.getId());
+                if (retweetStatuses != null) {
+                    for (Status retweetStatus : retweetStatuses) {
+                        userNameList.add(retweetStatus.getUser().getName());
+                    }
+                }
             }
-            EventBus.instance().post(new TwitterRetweetEvent(userNameList.toArray(new String[userNameList.size()]), getChannel()));
+
+            if (!userNameList.isEmpty()) {
+                EventBus.instance().post(new TwitterRetweetEvent(userNameList.toArray(new String[userNameList.size()]), getChannel()));
+            }
         }
 
         /* Update DB with the last Tweet ID processed. */
