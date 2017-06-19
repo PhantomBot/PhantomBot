@@ -14,7 +14,7 @@ Additional functionality is enabled through the use of third-party modules.
 * [Community Forums](https://community.phantombot.tv)
 * [Documentation & Installation Instructions](https://docs.phantombot.tv)
 * [PhantomBot Blog](https://blog.phantombot.tv)
-* [Follow us on Twitter](https://www.twitter.com/PhantomBotApp/ "PhantomBot Twitter")
+* [Follow us on Twitter](https://www.twitter.com/PhantomBotApp "PhantomBot Twitter")
 
 ## Screenshots
 
@@ -37,9 +37,11 @@ PhantomBot requires the following software to be installed:
 
 ## Installation
 Please refer to platform-specific installation documentation.
-* [Windows](https://docs.phantombot.tv/kb/setup-guide-windows)
-* [Linux](https://docs.phantombot.tv/kb/linux)
-* [macOS](https://docs.phantombot.tv/kb/macos)
+* [Windows](https://community.phantombot.tv/t/windows-setup-guide/60)
+* Linux:
+  * [Ubuntu 16.04](https://community.phantombot.tv/t/ubuntu-16-04-lts-setup-guide/61)
+  * [CentOS 7](https://community.phantombot.tv/t/centos-7-setup-guide/62)
+* [macOS](https://community.phantombot.tv/t/macos-setup-guide/63)
 
 ## Upgrading PhantomBot
 
