@@ -831,6 +831,10 @@ public final class PhantomBot implements Listener {
         /* Is the web toggle enabled? */
         if (webEnabled) {
             try {
+                checkPortAvailabity(basePort);
+                checkPortAvailabity(basePort + 4);
+                checkPortAvailabity(basePort + 5);
+
                 /* Is the music toggled on? */
                 if (musicEnabled) {
                     checkPortAvailabity(basePort + 3);
@@ -850,9 +854,6 @@ public final class PhantomBot implements Listener {
                 }
 
                 if (useHttps) {
-                    checkPortAvailabity(basePort + 4);
-                    checkPortAvailabity(basePort + 5);
-
                     /* Set up the panel socket server */
                     panelSocketSecureServer = new PanelSocketSecureServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword);
                     /* Start the panel socket server */
@@ -863,9 +864,6 @@ public final class PhantomBot implements Listener {
                     httpsServer = new HTTPSServer((basePort), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
                     print("HTTPS server accepting connection on ports: " + basePort + " " + (basePort + 5) + " (SSL)");
                 } else {
-                    checkPortAvailabity(basePort + 4);
-                    checkPortAvailabity(basePort + 5);
-
                     /* Set up the panel socket server */
                     panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
                     /* Start the panel socket server */
