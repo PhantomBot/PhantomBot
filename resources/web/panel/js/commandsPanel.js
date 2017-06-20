@@ -33,7 +33,8 @@
         cooldownMsg = "false",
         permcomMsg = "true",
         disabledCommands = [],
-        commands = [];
+        commands = [],
+        botCommands = [];
 
         modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
         modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
@@ -246,12 +247,15 @@
             }
 
             if (panelCheckQuery(msgObject, 'commands_permcom')) {
-                var commandTableData = msgObject['results'];
+                var commandTableData = msgObject['results'],
+                    botCommandsNew = [];
+
                 commandTableData.sort(sortCommandTable);
 
                 for (idx in commandTableData) {
                     commandName = commandTableData[idx]['key'];
                     commandValue = commandTableData[idx]['value'];
+                    botCommandsNew.push(commandName);
                     html += "<tr class=\"textList\">" +
                             "<td><strong>" + commandName + "</strong></td>";
 
@@ -295,6 +299,7 @@
 
                             "</tr>";
                 }
+                botCommands = botCommandsNew.slice();
                 html += "</table>";
                 $("#permCommandsList").html(html);
                 $('[data-toggle="tooltip"]').tooltip();
@@ -383,8 +388,13 @@
             $('#addCommandCommand').val('');
             setTimeout(function() { $('#addCommandText').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
-        } else if (command.match(/ /)) {
+        } else if (command.match(/\s+/)) {
             $('#addCommandCommand').val('[ERROR] Your command cannot contain a space.');
+            $('#addCommandText').val('');
+            setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
+            return;
+        } else if (botCommands.indexOf(command) !== -1) {
+            $('#addCommandCommand').val('[ERROR] Command already exists.');
             $('#addCommandText').val('');
             setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
