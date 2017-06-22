@@ -860,8 +860,10 @@ public final class PhantomBot implements Listener {
                 if (useHttps) {
                     /* Set up the panel socket server */
                     panelSocketSecureServer = new PanelSocketSecureServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword, socketServerTasksSize);
+                    // newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword);
                     /* Start the panel socket server */
                     panelSocketSecureServer.start();
+                    // newPanelSocketServer.start();
                     print("PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
 
                     /* Set up a new https server */
@@ -871,7 +873,7 @@ public final class PhantomBot implements Listener {
                     /* Set up the panel socket server */
                     panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
 
-                    /* Set up the NEW panel socket server - still needs SSL support */
+                    /* Set up the NEW panel socket server */
                     // newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
                     /* Start the panel socket server */
                     panelSocketServer.start();

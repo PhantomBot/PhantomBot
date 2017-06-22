@@ -143,18 +143,36 @@ public class NewPanelSocketServer {
     private boolean dbCallNull = false;
 
     /**
-     * Constructor for class which initializes the IWebsocketClient object.
+     * Constructor for class which initializes the WebsocketServer object.
      *
      * @param port         The port to bind to.
      * @param authString   The authorization string to use for read/write connectivity.
      * @param authStringRO The authorizatin string to use for read-only connectivity.
      */
     public NewPanelSocketServer(int port, String authString, String authStringRO) throws Exception {
+        this(port, authString, authStringRO, null, null);
+    }
+
+    /**
+     * Constructor for class which initializes the WebsocketServer object.
+     *
+     * @param port         The port to bind to.
+     * @param authString   The authorization string to use for read/write connectivity.
+     * @param authStringRO The authorizatin string to use for read-only connectivity.
+     * @param keyFileName  Name of the keyfile for SSL encryption.
+     * @param keyPassword  The password to unlock the keyfile.
+     */
+    public NewPanelSocketServer(int port, String authString, String authStringRO, String keyFileName, String keyPassword) throws Exception {
         this.authString = authString;
         this.authStringRO = authStringRO;
-    
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         server = new WebsocketServer(port);
+        if (keyFileName != null && keyPassword != null) {
+            server.setSsl(true);
+            server.setSSLParams("JKS", "SunX509", "TLS", keyFileName, keyPassword);
+        }
+
         server.addServerEventListener(new IClientEventListener() {
 
             @Override
@@ -171,14 +189,30 @@ public class NewPanelSocketServer {
             public void onClientClose(IWebsocketClient client) {
                 onClose(client);
             }
+
+            @Override
+            public void onServerError(IWebsocketClient client, String errorMessage) {
+                serverError(errorMessage);
+            }
+
+            @Override
+            public void onError(IWebsocketClient client, String errorMessage) {
+                clientError(client, errorMessage);
+            }
         });
     }
+     
 
     /**
      * Starts the created WebsocketServer
      */
-    public void start() {
-        server.start();
+    public void start() throws Exception {
+        try {
+            server.start();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to start WebSocket Server: " + ex.getMessage());
+            throw ex;
+        }
     }
 
     /**
@@ -200,6 +234,31 @@ public class NewPanelSocketServer {
     public void onClose(IWebsocketClient webSocket) {
         wsSessionMap.remove(genSessionKey(webSocket));
         com.gmt2001.Console.debug.println("Close from " + webSocket.getHostName() + ":" + webSocket.getPort());
+    }
+
+    /**
+     * Override for the IWebsocketClientServer class which is called upon a server error.
+     *
+     * @param String The error message from the socket server.
+     */
+    public void serverError(String errorMessage) {
+        com.gmt2001.Console.err.println("WebSocket Server Error, will attempt to restart server. Error: " + errorMessage);
+        try {
+            start();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("PhantomBot is Exiting...");
+            System.exit(0);
+        }
+    }
+
+    /**
+     * Override for the IWebsocketClientServer class which is called upon a client connection error.
+     *
+     * @param String The error message from the socket server.
+     */
+    public void clientError(IWebsocketClient webSocket, String errorMessage) {
+        /* TODO: This may also need to remove the session, will need to check more on this. */
+        com.gmt2001.Console.debug.println("Error from Client Socket: " + errorMessage);
     }
 
     /**
