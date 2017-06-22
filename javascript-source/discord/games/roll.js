@@ -109,9 +109,9 @@
     });
 
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
     	if (event.getScript().equalsIgnoreCase('./discord/games/roll.js')) {
     		loadRewards();
     	}
