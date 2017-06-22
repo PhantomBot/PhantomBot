@@ -313,6 +313,12 @@
             return;
         }
 
+        if (value.indexOf('.') !== -1 || parseInt(value) < 1) {
+            $("#setPointGainInput_" + action).val('Only natural numbers are allowed.');
+            setTimeout(function() { $("#setPointGainInput_" + action).val(''); }, TIMEOUT_WAIT_TIME * 3);
+            return;
+        }
+
         if (action == "setgain") {
             sendDBUpdate("points_settings", "pointSettings", "onlineGain", value);
         }
