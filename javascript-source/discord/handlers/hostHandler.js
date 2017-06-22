@@ -10,9 +10,9 @@
           announce = false;
 
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/hostHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'hostToggle', false);
             hostMessage = $.getIniDbString('discordSettings', 'hostMessage', '(name) just hosted!');

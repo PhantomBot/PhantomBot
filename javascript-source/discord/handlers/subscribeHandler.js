@@ -12,9 +12,9 @@
 	    announce = false;
 
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/subscribeHandler.js')) {
             subMessage = $.getIniDbString('discordSettings', 'subMessage', '(name) just subscribed!');
             primeMessage = $.getIniDbString('discordSettings', 'primeMessage', '(name) just subscribed with Twitch Prime!');
