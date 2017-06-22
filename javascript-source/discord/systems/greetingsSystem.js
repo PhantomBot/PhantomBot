@@ -6,9 +6,9 @@
 	    channelName = $.getSetIniDbString('discordSettings', 'greetingsChannel', '');
 
 	/**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/systems/greetingsSystem.js')) {
         	joinToggle = $.getIniDbBoolean('discordSettings', 'joinToggle', false);
 	    	partToggle = $.getIniDbBoolean('discordSettings', 'partToggle', false);
