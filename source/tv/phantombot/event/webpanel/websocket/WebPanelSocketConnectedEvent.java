@@ -19,6 +19,5 @@ package tv.phantombot.event.webpanel;
 public class WebPanelSocketConnectedEvent extends WebPanelSocketEvent {
 
 	public WebPanelSocketConnectedEvent() {
-		super();
 	}
 }
