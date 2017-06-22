@@ -124,7 +124,9 @@ import org.json.JSONException;
 import org.json.JSONStringer;
 
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.panelsocket.PanelWebSocketEvent;
+import tv.phantombot.event.webpanel.WebPanelSocketConnectedEvent;
+import tv.phantombot.event.webpanel.WebPanelSocketUpdateEvent;
+
 import tv.phantombot.PhantomBot;
 
 /**
@@ -278,6 +280,9 @@ public class NewPanelSocketServer {
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
                 doHandleCommand(webSocket, command, username, uniqueID);
                 return;
+            } else if (jsonObject.has("connected")) {
+                handleConnection(webSocket, jsonObject.has("query_id") ? jsonObject.getString("query_id") : "");
+                return;
             } else if (jsonObject.has("version")) {
                 uniqueID = jsonObject.getString("version");
                 doVersion(webSocket, uniqueID);
@@ -381,6 +386,22 @@ public class NewPanelSocketServer {
             jsonObject.object().key("query_id").value(id).endObject();
             webSocket.send(jsonObject.toString());
         }
+    }
+
+    /**
+     * handles event of when we are fully connected with the panel
+     *
+     * @param webSocket The WebSocket which provided the command.
+     * @param id Optional unique ID which is sent back to the WebSocket.
+     */
+    private void handleConnection(IWebsocketClient webSocket, String id) {
+        if (!id.isEmpty()) {
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object().key("query_id").value(id).endObject();
+            webSocket.send(jsonObject.toString());
+        }
+
+        EventBus.instance().postAsync(new WebPanelSocketConnectedEvent());
     }
 
     /**
@@ -732,7 +753,7 @@ public class NewPanelSocketServer {
             }
         }
 
-        EventBus.instance().postAsync(new PanelWebSocketEvent(id, script, arguments, args));
+        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(id, script, arguments, args));
         debugMsg("doWSEvent(" + id + "::" + script + ")");
 
         jsonObject.object().key("query_id").value(id).endObject();
