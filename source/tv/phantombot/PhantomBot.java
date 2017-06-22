@@ -106,6 +106,7 @@ import tv.phantombot.httpserver.HTTPServer;
 import tv.phantombot.httpserver.HTTPSServer;
 import tv.phantombot.panel.PanelSocketSecureServer;
 import tv.phantombot.panel.PanelSocketServer;
+import tv.phantombot.panel.NewPanelSocketServer;
 import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptApi;
 import tv.phantombot.script.ScriptEventManager;
@@ -208,6 +209,7 @@ public final class PhantomBot implements Listener {
     private YTWebSocketServer youtubeSocketServer;
     private YTWebSocketSecureServer youtubeSocketSecureServer;
     private PanelSocketServer panelSocketServer;
+    private NewPanelSocketServer newPanelSocketServer;
     private PanelSocketSecureServer panelSocketSecureServer;
     private HTTPServer httpServer;
     private HTTPSServer httpsServer;
@@ -868,8 +870,12 @@ public final class PhantomBot implements Listener {
                 } else {
                     /* Set up the panel socket server */
                     panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
+
+                    /* Set up the NEW panel socket server - still needs SSL support */
+                    // newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
                     /* Start the panel socket server */
                     panelSocketServer.start();
+                    // newPanelSocketServer.start();
                     print("PanelSocketServer accepting connections on port: " + (basePort + 4));
 
                     /* Set up a new http server */
@@ -1048,6 +1054,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("ytplayer", (useHttps ? youtubeSocketSecureServer : youtubeSocketServer), 0);
         Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : panelSocketServer), 0);
+        //Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : newPanelSocketServer), 0);
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
