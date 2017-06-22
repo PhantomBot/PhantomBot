@@ -12,9 +12,9 @@
 	    lastEvent = 0;
 
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamHandler.js')) {
             onlineToggle = $.getIniDbBoolean('discordSettings', 'onlineToggle', false);
             onlineMessage = $.getIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch with (game)! (url)');

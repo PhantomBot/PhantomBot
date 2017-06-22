@@ -1304,8 +1304,8 @@
         /**
          * @event api-PanelWebSocketEvent
          */
-        $api.on($script, 'panelWebSocket', function(event) {
-            callHook('panelWebSocket', event, false);
+        $api.on($script, 'webPanelSocketUpdate', function(event) {
+            callHook('webPanelSocketUpdate', event, false);
         });
 
         /**

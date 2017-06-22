@@ -61,7 +61,7 @@ public class ScriptEventManager implements Listener {
         "tv.phantombot.event.twitter",
         "tv.phantombot.event.discord",
         "tv.phantombot.event.moderation",
-        "tv.phantombot.event.panelsocket"
+        "tv.phantombot.event.webpanel"
     };
 
     private ScriptEventManager() {
