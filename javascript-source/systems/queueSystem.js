@@ -394,9 +394,9 @@
 	});
 
 	/**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./systems/queueSystem.js')) {
         	var action = event.getArgs()[0];
 

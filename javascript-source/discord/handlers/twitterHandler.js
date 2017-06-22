@@ -7,9 +7,9 @@
 	    announce = false;
 
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/twitterHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'twitterToggle', false);
             channelName = $.getIniDbString('discordSettings', 'twitterChannel', '');
