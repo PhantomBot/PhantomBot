@@ -583,9 +583,9 @@
     });
 
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/commands/customCommands.js')) {
             if (event.getArguments().length() === 0) {
                 if (!$.discord.commandExists(event.getArgs()[0])) {

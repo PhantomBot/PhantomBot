@@ -14,37 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.panelsocket;
+package tv.phantombot.event.webpanel;
 
-import tv.phantombot.event.Event;
+public class WebPanelSocketConnectedEvent extends WebPanelSocketEvent {
 
-public class PanelWebSocketEvent extends Event {
-
-	private final String id;
-	private final String script;
-	private final String arguments;
-	private final String[] args;
-
-	public PanelWebSocketEvent(String id, String script, String arguments, String[] args) {
-		this.id = id;
-		this.script = script;
-		this.arguments = arguments;
-		this.args = args;
-	}
-
-	public String getId() {
-		return this.id;
-	}
-
-	public String getScript() {
-		return this.script;
-	}
-
-	public String getArguments() {
-		return this.arguments;
-	}
-
-	public String[] getArgs() {
-		return this.args;
+	public WebPanelSocketConnectedEvent() {
 	}
 }

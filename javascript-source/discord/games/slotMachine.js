@@ -126,9 +126,9 @@
     });
     
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/games/slotMachine.js')) {
             loadRewards();
             loadEmojis();

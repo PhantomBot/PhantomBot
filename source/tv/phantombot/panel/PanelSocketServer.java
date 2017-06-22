@@ -28,6 +28,9 @@
  * // Get Version
  * { "version" : "unique_id" }
  *
+ * // Send connected event
+ * { "connected" : "unique_id" }
+ *
  * // Send command - if username is not provided, defaults to the botname.
  * { "command" : "command line", "username" : "user name", "query_id" : "query_id" }
  *
@@ -123,7 +126,8 @@ import org.json.JSONException;
 import org.json.JSONStringer;
 
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.panelsocket.PanelWebSocketEvent;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketConnectedEvent;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -270,6 +274,9 @@ public class PanelSocketServer extends WebSocketServer {
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
                 doHandleCommand(webSocket, command, username, uniqueID);
+                return;
+            } else if (jsonObject.has("connected")) {
+                handleConnection(jsonObject.has("query_id") ? jsonObject.getString("query_id") : "");
                 return;
             } else if (jsonObject.has("version")) {
                 uniqueID = jsonObject.getString("version");
@@ -421,6 +428,21 @@ public class PanelSocketServer extends WebSocketServer {
             jsonObject.object().key("query_id").value(id).endObject();
             webSocket.send(jsonObject.toString());
         }
+    }
+
+    /**
+     * handles event of when we are fully connected with the panel
+     *
+     * @param id Optional unique ID which is sent back to the WebSocket.
+     */
+    private void handleConnection(String id) {
+        if (!id.isEmpty()) {
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object().key("query_id").value(id).endObject();
+            webSocket.send(jsonObject.toString());
+        }
+
+        EventBus.postAsync(new WebPanelSocketConnectedEvent());
     }
 
     /**
@@ -772,7 +794,7 @@ public class PanelSocketServer extends WebSocketServer {
             }
         }
 
-        EventBus.instance().postAsync(new PanelWebSocketEvent(id, script, arguments, args));
+        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(id, script, arguments, args));
         debugMsg("doWSEvent(" + id + "::" + script + ")");
 
         jsonObject.object().key("query_id").value(id).endObject();
