@@ -40,9 +40,10 @@ public class RevloConverter {
 		// Turn off auto commit to make this process faster.
 		db.setAutoCommit(false);
 
-		// Skip the first line.
-		bufferedReader.readLine();
 		try {
+			// Skip the first line.
+			bufferedReader.readLine();
+
 			while ((brLine = bufferedReader.readLine()) != null) {
 				String[] spl = brLine.split(",");
 				
@@ -56,7 +57,7 @@ public class RevloConverter {
 				try {
 					bufferedReader.close();
 				} catch (IOException ex) {
-					com.gmt2001.Console.out.printStackStrace(ex);
+					com.gmt2001.Console.err.printStackTrace(ex);
 				}
 			}
 			// Set auto commit on again and save all files.
