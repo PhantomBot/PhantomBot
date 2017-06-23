@@ -144,6 +144,7 @@ public final class PhantomBot implements Listener {
     private Boolean webEnabled;
     private Boolean musicEnabled;
     private Boolean useHttps;
+    private Boolean testPanelServer;
     private int basePort;
 
     /* SSL information */
@@ -403,6 +404,7 @@ public final class PhantomBot implements Listener {
         this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true");
         this.useHttps = this.pbProperties.getProperty("usehttps", "false").equalsIgnoreCase("true");
         this.socketServerTasksSize = Integer.parseInt(this.pbProperties.getProperty("wstasksize", "200"));
+        this.testPanelServer = this.pbProperties.getProperty("testpanelserver", "false").equalsIgnoreCase("true");
 
         /* Set the datastore variables */
         this.dataStoreType = this.pbProperties.getProperty("datastore", "");
@@ -858,27 +860,34 @@ public final class PhantomBot implements Listener {
                 }
 
                 if (useHttps) {
-                    /* Set up the panel socket server */
-                    panelSocketSecureServer = new PanelSocketSecureServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword, socketServerTasksSize);
-                    // newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword);
-                    /* Start the panel socket server */
-                    panelSocketSecureServer.start();
-                    // newPanelSocketServer.start();
-                    print("PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
+                    if (testPanelServer) {
+                        newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword);
+                        newPanelSocketServer.start();
+                        print("TEST PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
+                    } else {
+                        /* Set up the panel socket server */
+                        panelSocketSecureServer = new PanelSocketSecureServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword, socketServerTasksSize);
+                        /* Start the panel socket server */
+                        panelSocketSecureServer.start();
+                        print("PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
+                    }
 
                     /* Set up a new https server */
                     httpsServer = new HTTPSServer((basePort), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
                     print("HTTPS server accepting connection on ports: " + basePort + " " + (basePort + 5) + " (SSL)");
                 } else {
-                    /* Set up the panel socket server */
-                    panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
-
-                    /* Set up the NEW panel socket server */
-                    // newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
-                    /* Start the panel socket server */
-                    panelSocketServer.start();
-                    // newPanelSocketServer.start();
-                    print("PanelSocketServer accepting connections on port: " + (basePort + 4));
+                    if (testPanelServer) {
+                        newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
+                        newPanelSocketServer.start();
+                        print("TEST PanelSocketServer accepting connections on port: " + (basePort + 4));
+                    } else {
+                        /* Set up the panel socket server */
+                        panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
+                        /* Set up the NEW panel socket server */
+                        /* Start the panel socket server */
+                        panelSocketServer.start();
+                        print("PanelSocketServer accepting connections on port: " + (basePort + 4));
+                    }
 
                     /* Set up a new http server */
                     httpServer = new HTTPServer((basePort), oauth, webOAuth, panelUsername, panelPassword);
@@ -1055,8 +1064,11 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("ytplayer", (useHttps ? youtubeSocketSecureServer : youtubeSocketServer), 0);
-        Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : panelSocketServer), 0);
-        //Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : newPanelSocketServer), 0);
+        if (testPanelServer) {
+            Script.global.defineProperty("panelsocketserver", newPanelSocketServer, 0);
+        } else {
+            Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : panelSocketServer), 0);
+        }
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
