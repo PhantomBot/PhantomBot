@@ -259,16 +259,16 @@ public class TwitterCache implements Runnable {
             return;
         }
 
-        long twitterID = statuses.get(0).getId();
-
-        /* Scan all retweets to perform a posssible points payout. */
+        /* This seems redundant but, Twitter provides the Tweet content of the Retweets in the
+         * getRetweetsOfMe() call. So, walk that list of Tweets to get at the Retweet information
+         * that includes the Screen Name (@screenName) of the person that performed the Retweet.
+         */
         ArrayList<String> userNameList = new ArrayList<>();
-
         for (Status status : statuses) {
             List<Status>retweetStatuses = TwitterAPI.instance().getRetweets(status.getId());
             if (retweetStatuses != null) {
-                for (Status retweetStatus : retweetStatuses) {
-                    userNameList.add(retweetStatus.getUser().getName());
+                    for (Status retweetStatus : retweetStatuses) {
+                        userNameList.add(retweetStatus.getUser().getScreenName());
                 }
             }
         }
@@ -278,6 +278,7 @@ public class TwitterCache implements Runnable {
         }
 
         /* Update DB with the last Tweet ID processed. */
+        long twitterID = statuses.get(0).getId();
         updateDBLong("lastid_retweets_reward", twitterID);
     }
 
