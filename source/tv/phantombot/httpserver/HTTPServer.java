@@ -45,7 +45,6 @@ import org.json.JSONStringer;
 
 public class HTTPServer {
     private HttpServer server;
-    private HttpServer server2;
     private String     serverPassword;
     private String     serverWebAuth;
     private int        serverPort;
@@ -88,45 +87,12 @@ public class HTTPServer {
             com.gmt2001.Console.err.logStackTrace(ex);
             throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
         }
-
-        try {
-            server2 = HttpServer.create(new InetSocketAddress(serverPort + 5), 0);
-            server2.createContext("/", new HTTPServerHandler());
-
-            HttpContext panelContext = server2.createContext("/panel", new PanelHandler());
-            HttpContext ytContext = server2.createContext("/ytplayer", new YTPHandler());
-
-            BasicAuthenticator auth = new BasicAuthenticator("PhantomBot Web Utilities") {
-                @Override
-                public boolean checkCredentials(String user, String pwd) {
-                    return user.equals(panelUser) && pwd.equals(panelPassword);
-                }
-            };
-            ytContext.setAuthenticator(auth);
-            panelContext.setAuthenticator(auth);
-
-            server2.start();
-        } catch (BindException ex) {
-            com.gmt2001.Console.err.println("Failed to bind to port for HTTPS Server on port " + (myPort + 5));
-            com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + (myPort + 5) + " on your system");
-            com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file to a different value, such as " + (myPort + 1000));
-            throw new Exception("Failed to Create HTTPSServer on Port " + (myPort + 5));
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
-            com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create HTTPSServer on Port " + (myPort + 5));
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
-            com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create HTTPSServer on Port " + (myPort + 5));
-        }
     }
 
     public void close() {
-        com.gmt2001.Console.out.println("HTTP server closing down on ports " + serverPort + " " + (serverPort + 5) + " with 5 second delay on each port.");
+        com.gmt2001.Console.out.println("HTTP server closing down on port " + serverPort + " with 5 second delay.");
         server.stop(5);
-        server2.stop(5);
-        com.gmt2001.Console.out.println("HTTP server stopped on ports " + serverPort +  " " + (serverPort + 5));
+        com.gmt2001.Console.out.println("HTTP server stopped on port " + serverPort);
     }
 
     class YTPHandler implements HttpHandler {

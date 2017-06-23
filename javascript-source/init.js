@@ -703,7 +703,9 @@
          * @commandpath echo [message] - In the console, can be used to chat as the bot. Also used by the webpanel to communicate with chat
          */
         if (command.equalsIgnoreCase('chat') || command.equalsIgnoreCase('echo')) {
-            $.say(event.getArguments());
+            if (argsString.length() > 0) {
+                $.say(argsString);
+            }
         }
     }
 
@@ -1302,10 +1304,17 @@
         });
 
         /**
-         * @event api-PanelWebSocketEvent
+         * @event api-WebPanelSocketUpdateEvent
          */
         $api.on($script, 'webPanelSocketUpdate', function(event) {
             callHook('webPanelSocketUpdate', event, false);
+        });
+
+        /**
+         * @event api-WebPanelSocketConnectedEvent
+         */
+        $api.on($script, 'webPanelSocketConnected', function(event) {
+            callHook('webPanelSocketConnected', event, false);
         });
 
         /**
