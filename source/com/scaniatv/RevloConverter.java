@@ -30,33 +30,39 @@ import java.io.BufferedReader;
 import tv.phantombot.PhantomBot;
 
 public class RevloConverter {
-	public RevloConverter(String fileName) {
+	public static void convert(String fileName) {
 		DataStore db = PhantomBot.instance().getDataStore();
-		BufferedReader bufferedReader;
-		String brLine;
-		int i = 0;
+		BufferedReader bufferedReader = null;
+		String brLine = "";
 
 		com.gmt2001.Console.out.println("Importing RevloBot points...");
 
+		// Turn off auto commit to make this process faster.
 		db.setAutoCommit(false);
+
 		try {
-			bufferedReader = new BufferedReader(new FileReader(fileName));
+			// Skip the first line.
+			bufferedReader.readLine();
 
 			while ((brLine = bufferedReader.readLine()) != null) {
-				if (i++ > 0) {
-					String[] spl = brLine.split(",");
-					
-					db.set("points", spl[0].toLowerCase(), spl[2]);
-					com.gmt2001.Console.out.println("Imported: " + spl[0] + " - Points: " + spl[2]);
-				}
+				String[] spl = brLine.split(",");
+				
+				db.set("points", spl[0].toLowerCase(), spl[2]);
+				com.gmt2001.Console.out.println("Imported: " + spl[0] + " - Points: " + spl[2]);
 			}
-
-			bufferedReader.close();
-			com.gmt2001.Console.out.println("RevloBot points import complete!");
 		} catch (IOException ex) {
 			com.gmt2001.Console.err.println("Failed to convert points from RevloBot [IOException] " + ex.getMessage());
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException ex) {
+					com.gmt2001.Console.err.printStackTrace(ex);
+				}
+			}
+			// Set auto commit on again and save all files.
+			db.setAutoCommit(true);
+			db.SaveAll(true);
 		}
-		db.setAutoCommit(true);
-		db.SaveAll(true);
 	}
 }
