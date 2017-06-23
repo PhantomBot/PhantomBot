@@ -79,7 +79,7 @@ public class GenerateLogs {
 
 		try {
 			if (new File(file).exists()) {
-				BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+				bufferedReader = new BufferedReader(new FileReader(file));
 		
 				while ((line = bufferedReader.readLine()) != null) {
 					data += (line + "\r\n");
@@ -92,7 +92,7 @@ public class GenerateLogs {
 				try {
 					bufferedReader.close();
 				} catch (IOException ex) {
-					com.gmt2001.Console.printStackStrace(ex);
+					com.gmt2001.Console.err.printStackTrace(ex);
 				}
 			}
 		}
@@ -120,7 +120,7 @@ public class GenerateLogs {
 				try {
 					bufferedWriter.close();
 				} catch (IOException ex) {
-					com.gmt2001.Console.out.printStackStrace(ex);
+					com.gmt2001.Console.err.printStackTrace(ex);
 				}
 			}
 		}
