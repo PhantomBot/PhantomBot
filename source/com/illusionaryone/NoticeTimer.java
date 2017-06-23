@@ -160,12 +160,24 @@ public class NoticeTimer implements Runnable {
         TwitchCache twitchCache = TwitchCache.instance(this.channel);
         DataStore dataStore = PhantomBot.instance().getDataStore();
 
+        /* Notices are disabled. */
+        String noticeToggle = dataStore.GetString("noticeSettings", "", "noticetoggle");
+        if (noticeToggle != null) {
+            if (noticeToggle.equals("false")) {
+                return;
+            }
+        } else {
+            return;
+        }
+
         /* If offline and the offline toggle is true, do not process the timers. */
         String offlineToggle = dataStore.GetString("noticeSettings", "", "noticeOfflineToggle");
         if (offlineToggle != null) {
             if (offlineToggle.equals("true") && !twitchCache.isStreamOnline()) {
                 return;
             }
+        } else {
+            return;
         }
 
         /* Determine which type of notice timer is being used and call the proper function to handle. */
