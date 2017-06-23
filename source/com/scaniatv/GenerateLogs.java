@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2017 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.scaniatv;
 
 import java.io.File;
@@ -56,21 +73,28 @@ public class GenerateLogs {
 	 * @return {String}
 	 */
 	private static String readFile(String file) {
+		BufferedReader bufferedReader = null;
 		String data = "";
 		String line = "";
 
 		try {
 			if (new File(file).exists()) {
-				BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+				bufferedReader = new BufferedReader(new FileReader(file));
 		
 				while ((line = bufferedReader.readLine()) != null) {
 					data += (line + "\r\n");
 				}
-	
-				bufferedReader.close();
 			}
 		} catch (IOException ex) {
 			com.gmt2001.Console.err.println("Failed to read log file: [" + file + "] [IOException] " + ex.getMessage());
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException ex) {
+					com.gmt2001.Console.err.printStackTrace(ex);
+				}
+			}
 		}
 
 		return data;
@@ -89,9 +113,16 @@ public class GenerateLogs {
 			bufferedWriter = new BufferedWriter(new FileWriter(file));
 
 			bufferedWriter.write(data);
-			bufferedWriter.close();
 		} catch (IOException ex) {
 			com.gmt2001.Console.err.println("Failed to write log file: [" + file + "] [IOException] " + ex.getMessage());
+		} finally {
+			if (bufferedWriter != null) {
+				try {
+					bufferedWriter.close();
+				} catch (IOException ex) {
+					com.gmt2001.Console.err.printStackTrace(ex);
+				}
+			}
 		}
 	}
 

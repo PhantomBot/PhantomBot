@@ -839,7 +839,6 @@ public final class PhantomBot implements Listener {
             try {
                 checkPortAvailabity(basePort);
                 checkPortAvailabity(basePort + 4);
-                checkPortAvailabity(basePort + 5);
 
                 /* Is the music toggled on? */
                 if (musicEnabled) {
@@ -874,7 +873,7 @@ public final class PhantomBot implements Listener {
 
                     /* Set up a new https server */
                     httpsServer = new HTTPSServer((basePort), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
-                    print("HTTPS server accepting connection on ports: " + basePort + " " + (basePort + 5) + " (SSL)");
+                    print("HTTPS server accepting connection on port: " + basePort + " (SSL)");
                 } else {
                     if (testPanelServer) {
                         newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
@@ -891,7 +890,7 @@ public final class PhantomBot implements Listener {
 
                     /* Set up a new http server */
                     httpServer = new HTTPServer((basePort), oauth, webOAuth, panelUsername, panelPassword);
-                    print("HTTP server accepting connection on ports: " + basePort + " " + (basePort + 5));
+                    print("HTTP server accepting connection on port: " + basePort);
                 }
             } catch (Exception ex) {
                 print("Exception occurred in one of the socket based services, PhantomBot will now exit.");
@@ -1104,11 +1103,6 @@ public final class PhantomBot implements Listener {
         if (this.backupSQLiteAuto) {
             doBackupSQLiteDB();
         }
-
-        /* Warn the user that the baseport + 5 is being decomissioned. */
-        print("");
-        print("DEPRECATION NOTICE: The web server running on port " + (basePort + 5) + " will be removed in the next release, please start to use port " + basePort + ".");
-        print("");
     }
 
     /*
@@ -1344,8 +1338,11 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("revloconvert")) {
             print("[CONSOLE] Executing revloconvert");
             if (arguments.length() > 0) {
-                new RevloConverter(arguments);
+                RevloConverter.convert(arguments);
+            } else {
+                print("You must specify the file name you want to convert.");
             }
+            return;
         }
 
         if (message.equalsIgnoreCase("ankhtophantombot")) {
