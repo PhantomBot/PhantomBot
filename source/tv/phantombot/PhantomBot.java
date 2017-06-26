@@ -272,9 +272,6 @@ public final class PhantomBot implements Listener {
      * @return  String  Display version of PhantomBot.
      */
     public String botVersion() {
-        if (isNightly()) {
-            return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " - Nightly Build";
-        }
         return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion();
     }
 
@@ -1097,7 +1094,9 @@ public final class PhantomBot implements Listener {
         }
 
         /* Check for a update with PhantomBot */
-        doCheckPhantomBotUpdate();
+        if (!isNightly()) {
+            doCheckPhantomBotUpdate();
+        }
 
         /* Perform SQLite datbase backups. */
         if (this.backupSQLiteAuto) {
