@@ -41,6 +41,20 @@
         return false;
     }
 
+    /*
+     * @function getMessageWrites
+     */
+    function getMessageWrites() {
+        return parseInt($.session.getWrites());
+    }
+
+    /*
+     * @function getMessageWrites
+     */
+    function getMessageQueue() {
+        return parseInt($.session.getQueue());
+    }
+
     /**
      * @function isKnown
      * @export $.user
@@ -636,4 +650,6 @@
     $.reloadMisc = reloadMisc;
     $.hasKey = hasKey;
     $.systemTimeNano = systemTimeNano;
+    $.getMessageWrites = getMessageWrites;
+    $.getMessageQueue = getMessageQueue;
 })();
