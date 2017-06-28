@@ -34,9 +34,11 @@
     };
 
     function kill(sender, user) {
+        var tries = 0;
         do {
+            tries++;
             rand = $.randRange(1, otherMessageCount);
-        } while (rand == lastRandom);
+        } while (rand == lastRandom && tries < 5);
         lang = $.lang.get('killcommand.other.' + rand, $.resolveRank(sender), $.resolveRank(user), jailTimeout, $.botName);
         if (lang.startsWith('(jail)')) {
             lang = $.replace(lang, '(jail)', '');
