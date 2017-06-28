@@ -40,7 +40,7 @@
         for (i in commands) {
             json = JSON.parse($.inidb.get('cooldown', commands[i]));
 
-            cooldowns[commands[i]] = new Cooldown(json.command, json.seconds, (json.isGlobal == true));
+            cooldowns[commands[i]] = new Cooldown(json.command, json.seconds, json.isGlobal.toString('true'));
         }
     }
 
