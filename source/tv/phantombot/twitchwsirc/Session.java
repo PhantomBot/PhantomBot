@@ -215,21 +215,21 @@ public class Session {
     }
 
     /*
-     * @function hasQueue
+     * @function getQueue
      *
-     * @return {Boolean}
+     * @return {int}
      */
-    public Boolean hasQueue() {
-        return this.messages.isEmpty();
+    public int getQueue() {
+        return this.messages.size();
     }
 
     /*
-     * @function isLimited
+     * @function getWrites
      *
-     * @return {Boolean}
+     * @return {int}
      */
-    public Boolean isLimited() {
-        return this.writes > 7;
+    public int getWrites() {
+        return this.writes;
     }
 
     /*

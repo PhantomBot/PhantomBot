@@ -316,7 +316,7 @@
     function timeoutUserFor(username, time, reason) {
         $.say('.timeout ' + username + ' ' + time + ' ' + reason);
         var timeout = setTimeout(function() {
-            if ($.session.isLimited() == false) {
+            if ($.getMessageWrites() < 7) {
                 $.say('.timeout ' + username + ' ' + time + ' ' + reason);
             }
             clearInterval(timeout);
@@ -355,7 +355,7 @@
      * @param {boolean} filter
      */
     function sendMessage(username, message, filter) {
-        if (filter == false && messageTime <= $.systemTime() && $.session.hasQueue() == true && $.session.isLimited() == false) {
+        if (filter == false && messageTime < $.systemTime() && $.getMessageQueue() === 0 && $.getMessageWrites() < 7) {
             $.say('@' + username + ', ' + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         }
@@ -467,6 +467,11 @@
             messageLength = message.length();
 
         if (!$.isModv3(sender, event.getTags())) {
+            // Blacklist
+            if (checkBlackList(sender, event, message)) {
+                return;
+            }
+
             // Links filter
             if (linksToggle && $.patternDetector.hasLinks(event)) {
                 if (checkYoutubePlayer(message) || checkPermitList(sender) || checkWhiteList(message)) {
@@ -559,11 +564,6 @@
 
                 timeout(sender, warningTime.Colors, timeoutTime.Colors, silentTimeout.ColorMessage);
                 sendMessage(sender, colorsMessage, silentTimeout.Colors);
-                return;
-            }
-
-            // Blacklist
-            if (message !== null && checkBlackList(sender, event, message)) {
                 return;
             }
 
