@@ -224,6 +224,7 @@ public final class PhantomBot implements Listener {
     public static Boolean enableRhinoDebugger = false;
     public static String timeZone = "GMT";
     public static Boolean useMessageQueue = true;
+    public static Boolean twitch_tcp_nodelay = true;
     public Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
@@ -478,6 +479,9 @@ public final class PhantomBot implements Listener {
 
         /* Toggle for the old servers. */
         this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
+
+        /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
+        PhantomBot.twitch_tcp_nodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
 
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
