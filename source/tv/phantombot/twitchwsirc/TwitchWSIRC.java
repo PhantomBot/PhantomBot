@@ -163,6 +163,7 @@ public class TwitchWSIRC extends WebSocketClient {
             sslContext.init(null, null, null);
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
             this.setSocket(sslSocketFactory.createSocket());
+            this.setTcpNoDelay(PhantomBot.twitch_tcp_nodelay);
             this.twitchWSIRCParser = new TwitchWSIRCParser(this.getConnection(), channelName, channel, session, eventBus);
             this.connect();
             return true;
