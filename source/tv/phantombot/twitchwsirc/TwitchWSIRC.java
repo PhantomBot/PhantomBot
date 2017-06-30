@@ -52,6 +52,8 @@ import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+import tv.phantombot.PhantomBot;
+
 public class TwitchWSIRC extends WebSocketClient {
 
     private static final Map<String, TwitchWSIRC> instances = Maps.newHashMap();
@@ -163,6 +165,7 @@ public class TwitchWSIRC extends WebSocketClient {
             sslContext.init(null, null, null);
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
             this.setSocket(sslSocketFactory.createSocket());
+            this.setTcpNoDelay(PhantomBot.twitch_tcp_nodelay);
             this.twitchWSIRCParser = new TwitchWSIRCParser(this.getConnection(), channelName, channel, session, eventBus);
             this.connect();
             return true;
