@@ -52,6 +52,8 @@ import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+import tv.phantombot.PhantomBot;
+
 public class TwitchWSIRC extends WebSocketClient {
 
     private static final Map<String, TwitchWSIRC> instances = Maps.newHashMap();
