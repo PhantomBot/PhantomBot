@@ -495,7 +495,7 @@ public class PanelSocketServer extends WebSocketServer {
 
         dbCallNull = false;
         jsonObject.object().key("query_id").value(id).key("results").object();
-        jsonObject.key("table").value(table).key(key).value(value).endObject().endObject();
+        jsonObject.key("table").value(table).key(key).value(value).key("value").value(value).endObject().endObject();
         webSocket.send(jsonObject.toString());
     }
 
