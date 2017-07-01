@@ -166,7 +166,7 @@ public class GitHubAPIv3 {
             return null;
         }
         String tagName = jsonArray.getJSONObject(0).getString("tag_name");
-        if (tagName.equals("v" + RepoVersion.getPhantomBotVersion())) {
+        if (tagName.equals("v" + RepoVersion.getPhantomBotVersion().split("-")[0])) {
             return null;
         }
 
