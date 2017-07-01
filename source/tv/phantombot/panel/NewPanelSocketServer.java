@@ -499,7 +499,7 @@ public class NewPanelSocketServer {
      * @param table     Table name to query.
      * @param key       Key to query with.
      */
-    private void doDBQuery(WebSocket webSocket, String id, String table, String key) {
+    private void doDBQuery(IWebsocketClient webSocket, String id, String table, String key) {
         JSONStringer jsonObject = new JSONStringer();
         String value = "";
 
