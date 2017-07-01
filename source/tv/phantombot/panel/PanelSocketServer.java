@@ -405,10 +405,10 @@ public class PanelSocketServer extends WebSocketServer {
         Collection<WebSocket> con = connections();
         synchronized (con) {
             for (WebSocket c : con) {
-                if (c.isOpen()) {
+                try {
                     c.send(text);
-                } else {
-                    com.gmt2001.Console.debug.println("Failed to send a message to the panel socket: Socket is currently not opened.");
+                } catch (Exception ex) {
+                    com.gmt2001.Console.debug.println("Failed to send a message to the panel socket: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                 }
             }
         }
@@ -530,7 +530,6 @@ public class PanelSocketServer extends WebSocketServer {
         } else {
             webSocket.send(jsonObject.toString());
         }
-       
     }
 
     /**

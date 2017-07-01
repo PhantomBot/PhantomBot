@@ -426,7 +426,11 @@ public class NewPanelSocketServer {
      */
     public void sendToAll(String text) {
         for (wsSession session: wsSessionMap.values()) {
-            session.getIWebsocketClient().send(text);
+            try {
+                session.getIWebsocketClient().send(text);
+            } catch (Exception ex) {
+                com.gmt2001.Console.debug.println("Failed to send a message to the panel socket: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
         }
     }
 
@@ -495,7 +499,7 @@ public class NewPanelSocketServer {
      * @param table     Table name to query.
      * @param key       Key to query with.
      */
-    private void doDBQuery(IWebsocketClient webSocket, String id, String table, String key) {
+    private void doDBQuery(WebSocket webSocket, String id, String table, String key) {
         JSONStringer jsonObject = new JSONStringer();
         String value = "";
 
@@ -511,7 +515,7 @@ public class NewPanelSocketServer {
 
         dbCallNull = false;
         jsonObject.object().key("query_id").value(id).key("results").object();
-        jsonObject.key("table").value(table).key(key).value(value).endObject().endObject();
+        jsonObject.key("table").value(table).key(key).value(value).key("value").value(value).endObject().endObject();
         webSocket.send(jsonObject.toString());
     }
 
