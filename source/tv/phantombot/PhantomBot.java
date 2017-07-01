@@ -1098,9 +1098,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* Check for a update with PhantomBot */
-        if (!isNightly()) {
-            doCheckPhantomBotUpdate();
-        }
+        doCheckPhantomBotUpdate();
 
         /* Perform SQLite datbase backups. */
         if (this.backupSQLiteAuto) {
