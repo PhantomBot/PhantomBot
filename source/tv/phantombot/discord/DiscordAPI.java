@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.illusionaryone;
+package tv.phantombot.discord;
 
 import sx.blah.discord.modules.Configuration;
 
@@ -27,17 +27,12 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.UserLeaveEvent;
 import sx.blah.discord.handle.impl.events.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.IRole;
 
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.RequestBuffer;
-
-import java.util.List;
 
 /*
  * Communicates with the Discord API.
@@ -45,180 +40,51 @@ import java.util.List;
  * @author Illusionaryone
  * @author ScaniaTV
  */
-public class Discord {
-    private static final Discord instance = new Discord();
-    private IDiscordClient discordAPI;
-    private IGuild guild;
+public class DiscordAPI extends DiscordUtil {
+    private static final DiscordAPI instance = new DiscordAPI();
+    public static IDiscordClient discordClient;
+    public static IGuild guild;
 
     /*
-     * @function instance
+     * Method to return this class object.
      *
      * @return {Object}
      */
-    public static Discord instance() {
+    public static DiscordAPI instance() {
         return instance;
     }
 
     /*
-     * @function Discord
+     * Class constructor
      */
-    private Discord() {
+    private DiscordAPI() {
         Configuration.LOAD_EXTERNAL_MODULES = false;
-
+        
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     /*
-     * @function connect
+     * Method to connect to Discord.
      *
      * @param {String} token
      */
     public void connect(String token) {
         try {
-            discordAPI = new ClientBuilder().withToken(token).registerListener(new DiscordEventListener()).login();
+            DiscordAPI.discordClient = new ClientBuilder().withToken(token).registerListener(new DiscordEventListener()).login();
         } catch (DiscordException ex) {
             com.gmt2001.Console.err.println("Failed to authenticate with Discord [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }
     }
 
     /*
-     * @function sendMessage
-     *
-     * @param {IChannel} channel
-     * @param {String} message
-     */
-    public void sendMessage(IChannel channel, String message) {
-        RequestBuffer.request(() -> {
-            try {
-                if (channel != null) {
-                    channel.sendMessage(message);
-                    com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [CHAT] " + message);
-                }
-            } catch (DiscordException ex) {
-                com.gmt2001.Console.err.println("Failed to send a message [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
-            }
-        });
-    }
-
-    /*
-     * @function sendMessage
-     *
-     * @param {String} channelName
-     * @param {String} message
-     */
-    public void sendMessage(String channelName, String message) {
-        sendMessage(getChannel(channelName), message);
-    }
-
-    /*
-     * @function sendPrivateMessage
-     *
-     * @param {IUser} user
-     * @param {String} message
-     */
-    public void sendPrivateMessage(IUser user, String message) {
-        RequestBuffer.request(() -> {
-            try {
-                if (user != null) {
-                    user.getOrCreatePMChannel().sendMessage(message);
-                    com.gmt2001.Console.out.println("[DISCORD] [@" + user.getName().toLowerCase() + "#" + user.getDiscriminator() + "] [DM] " + message);
-                }
-            } catch (DiscordException ex) {
-                com.gmt2001.Console.err.println("Failed to send a private message [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
-            }
-        });
-    }
-
-    /*
-     * @function sendPrivateMessage
-     *
-     * @param {String} userName
-     * @param {String} message
-     */
-    public void sendPrivateMessage(String userName, String message) {
-        sendPrivateMessage(getUser(userName), message);
-    }
-
-    /*
-     * @function getChannel
-     *
-     * @param  {String} channelName
-     * @return {IChannel}
-     */
-    public IChannel getChannel(String channelName) {
-        List<IChannel> channels = guild.getChannelsByName(channelName);
-
-        for (IChannel channel : channels) {
-            if (channel.getName().equalsIgnoreCase(channelName)) {
-                return channel;
-            }
-        }
-        return null;
-    }
-
-    /*
-     * @function getUser
-     *
-     * @param  {String} userName
-     * @return {IUser}
-     */
-    public IUser getUser(String userName) {
-        List<IUser> users = guild.getUsersByName(userName, true);
-
-        for (IUser user : users) {
-            if (user.getDisplayName(guild).equalsIgnoreCase(userName)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    /*
-     * @function getRole
-     *
-     * @param  {String} roleName
-     * @return {IRole}
-     */
-    public IRole getRole(String roleName) {
-        List<IRole> roles = guild.getRolesByName(roleName);
-
-        for (IRole role : roles) {
-            if (role.getName().equalsIgnoreCase(roleName)) {
-                return role;
-            }
-        }
-        return null;
-    }
-
-    /*
-     * @function isAdministrator
-     *
-     * @param  {IUser} user
-     * @return {Boolean}
-     */
-    public boolean isAdministrator(IUser user) {
-        return user.getPermissionsForGuild(guild).contains(Permissions.ADMINISTRATOR);
-    }
-
-    /*
-     * @function isModerator
-     *
-     * @param  {IUser} user
-     * @return {Boolean}
-     */
-    public boolean isModerator(IUser user) {
-        return user.getPermissionsForGuild(guild).contains(Permissions.KICK);
-    }
-
-    /*
-     * @function setGuild
+     * Method to set the guild object.
      */
     private void setGuild() {
-        this.guild = discordAPI.getGuilds().get(0);
+        DiscordAPI.guild = DiscordAPI.discordClient.getGuilds().get(0);
     }
 
     /*
-     * @function parseCommand
+     * Method to parse commands.
      *
      * @param {String} message
      */
@@ -237,7 +103,7 @@ public class Discord {
     }
 
     /*
-     * @class DiscordEventListener
+     * Class to listen to events.
      */
     private class DiscordEventListener {
 
@@ -259,7 +125,6 @@ public class Discord {
             String channel = iChannel.getName();
             boolean isAdmin = isAdministrator(iUsername);
             
-
             com.gmt2001.Console.out.println("[DISCORD] [#" + channel + "] " + username + ": " + message);
 
             if (message.startsWith("!")) {
