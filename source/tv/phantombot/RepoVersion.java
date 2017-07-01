@@ -32,7 +32,7 @@ public class RepoVersion {
     }
 
     public static String getPhantomBotVersion() {
-        return phantomBotVersion;
+        return phantomBotVersion.split("-")[0];
     }
 
     public static String getRepoVersion() {
