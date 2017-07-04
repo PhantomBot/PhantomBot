@@ -53,6 +53,17 @@
             message = $.replace(message, '(adminonlyedit)', '');
         }
 
+        if (message.match(/\(runcode/)) {
+            var code = message.match(/\(runcode (.*)\)/)[1];
+
+            try {
+                eval(code);
+            } catch (ex) {
+                $.log.error('Failed to run custom code: ' + ex.message);
+            }
+            return null;
+        }
+
         if (message.match(/\(pointtouser\)/)) {
             if (event.getArgs()[0] !== undefined) {
                 message = $.replace(message, '(pointtouser)', (event.getArguments().split(' ')[0] + ' -> '));
