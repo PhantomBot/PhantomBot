@@ -64,6 +64,39 @@ public class SqliteStore extends DataStore {
         connection = (Connection) o[5];
     }
 
+    private String sanitizeOrder(String order) {
+        if (order.equalsIgnoreCase("ASC")) {
+            return "ASC";
+        }
+        return "DESC";
+    }
+
+    private String sanitizeLimit(String limit) {
+        try {
+            int intValue = Integer.parseInt(limit);
+            return String.valueOf(intValue);
+        } catch (NumberFormatException ex) {
+            return String.valueOf(Integer.MAX_VALUE);
+        } catch (NullPointerException ex) {
+            return String.valueOf(Integer.MAX_VALUE);
+        } catch (Exception ex) {
+            return String.valueOf(Integer.MAX_VALUE);
+        }
+    }
+
+     private String sanitizeOffset(String offset) {
+        try {
+            int intValue = Integer.parseInt(offset);
+            return String.valueOf(intValue);
+        } catch (NumberFormatException ex) {
+            return "0";
+        } catch (NullPointerException ex) {
+            return "0";
+        } catch (Exception ex) {
+            return "0";
+        }
+    }
+
     @Override
     public void LoadConfig(String configStr) {
         Object o[] = LoadConfigReal(configStr);
@@ -404,10 +437,13 @@ public class SqliteStore extends DataStore {
         CheckConnection();
 
         fName = validateFname(fName);
+        order = sanitizeOrder(order);
+        limit = sanitizeLimit(limit);
+        offset = sanitizeOffset(offset);
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
     
@@ -425,7 +461,7 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -453,13 +489,16 @@ public class SqliteStore extends DataStore {
         CheckConnection();
 
         fName = validateFname(fName);
+        order = sanitizeOrder(order);
+        limit = sanitizeLimit(limit);
+        offset = sanitizeOffset(offset);
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
-    
+
                     try (ResultSet rs = statement.executeQuery()) {
     
                         ArrayList<String> s = new ArrayList<>();
@@ -474,7 +513,7 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY value " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -600,14 +639,17 @@ public class SqliteStore extends DataStore {
         CheckConnection();
 
         fName = validateFname(fName);
+        order = sanitizeOrder(order);
+        limit = sanitizeLimit(limit);
+        offset = sanitizeOffset(offset);
 
         if (FileExists(fName)) { 
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
-                    
+
                     try (ResultSet rs = statement.executeQuery()) {
                         ArrayList<String> s = new ArrayList<>();
                         
@@ -620,7 +662,7 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + ", " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
                     
