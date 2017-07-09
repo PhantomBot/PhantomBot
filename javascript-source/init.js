@@ -818,7 +818,10 @@
                 commandCost = 0,
                 isModv3 = $.isModv3(sender, event.getTags());
 
-            if (!$.commandExists(command) || ($.commandPause.isPaused() && !isModv3)) {
+            // Ensure that the command exists, is not paused and the associated module is enabled - however init.js items are not tracked
+            // in the getCommandScript() object, so, ignore any commands from init.js.
+            //
+            if ((!$.commandExists(command) || ($.commandPause.isPaused() && !isModv3)) || (!isModuleEnabled(getCommandScript(command)) && !getCommandScript(command).equals('./init.js'))) {
                 return;
             }
 
