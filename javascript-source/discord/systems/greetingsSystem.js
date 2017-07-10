@@ -31,7 +31,7 @@
 		    s = joinMessage;
 
 		if (s.match(/\(@name\)/)) {
-			s = $.replace(s, '(@name)', mention.getAsMention());
+			s = $.replace(s, '(@name)', mention);
 		}
 
 		if (s.match(/\(name\)/)) {
@@ -54,7 +54,7 @@
 		    s = partMessage;
 
 		if (s.match(/\(@name\)/)) {
-			s = $.replace(s, '(@name)', mention.getAsMention());
+			s = $.replace(s, '(@name)', mention);
 		}
 
 		if (s.match(/\(name\)/)) {
