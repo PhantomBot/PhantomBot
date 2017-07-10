@@ -155,7 +155,7 @@
         emotesLimit = $.getIniDbNumber('chatModerator', 'emotesLimit');
 
         longMessageToggle = $.getIniDbBoolean('chatModerator', 'longMessageToggle');
-        longMessageMessage = $.getIniDbBoolean('chatModerator', 'longMessageMessage');
+        longMessageMessage = $.getIniDbString('chatModerator', 'longMessageMessage');
         longMessageLimit = $.getIniDbNumber('chatModerator', 'longMessageLimit');
 
         colorsToggle = $.getIniDbBoolean('chatModerator', 'colorsToggle');
