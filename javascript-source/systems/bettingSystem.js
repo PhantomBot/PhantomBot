@@ -81,6 +81,7 @@
 	 */
 	function close(sender, option) {
 		if (option === undefined && bet.opened === true) {
+			clearInterval(timeout);
 			bet.opened = false;
 			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.close.error.usage'));
 			return;
@@ -88,7 +89,7 @@
 			if (sender == $.botName) return;
 			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.close.usage'));
 			return;
-		} else if (bet.options[option] === undefined) {
+		} else if (bet.options[option.toLowerCase()] === undefined) {
 			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.bet.null'));
 			return;
 		}
@@ -130,7 +131,6 @@
 	 *
 	 */
 	function stop() {
-		clearInterval(timeout);
 		bet.opened = false;
 		$.say($.lang.get('bettingsystem.close.semi.success'));
 	}
@@ -254,17 +254,10 @@
 				return;
 
 			/**
-			 * @commandpath bet stop - Stop the current bet.
-			 */
-			} else if (action.equalsIgnoreCase('stop')) {
-				stop();
-				return;
-
-			/**
 			 * @commandpath bet close ["winning option"] - Closes the current bet.
 			 */
 			} else if (action.equalsIgnoreCase('close')) {
-				close(sender, args.slice(1).join(' ').toLowerCase());
+				close(sender, args[1]);
 				return;
 
 			/**
@@ -355,7 +348,6 @@
             $.registerChatSubcommand('bet', 'current', 7);
             $.registerChatSubcommand('bet', 'results', 7);
             $.registerChatSubcommand('bet', 'open', 2);
-            $.registerChatSubcommand('bet', 'stop', 2);
             $.registerChatSubcommand('bet', 'close', 2);
             $.registerChatSubcommand('bet', 'save', 1);
             $.registerChatSubcommand('bet', 'saveformat', 1);
