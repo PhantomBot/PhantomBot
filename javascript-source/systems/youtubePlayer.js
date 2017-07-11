@@ -1290,8 +1290,8 @@
             }
 
             /**
-             * @commandpath ytp togglerequests - Toggle announcing now playing in the chat
-             * @commandpath ytp togglesr - Toggle announcing now playing in the chat
+             * @commandpath ytp togglerequests - Toggle song request ability for users below admin.
+             * @commandpath ytp togglesr - Toggle song request ability for users below admin.
              */
             if (action.equalsIgnoreCase('togglerequests') || action.equalsIgnoreCase('togglesr')) {
                 songRequestsEnabled = !songRequestsEnabled;
