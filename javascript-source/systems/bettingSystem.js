@@ -57,7 +57,7 @@
 		
 		if (timer !== undefined && !isNaN(parseInt(timer)) && timer > 0) {
 			bet.timer = timer;
-			setTimeout(function() {
+			timeout = setTimeout(function() {
 				stop();
 			}, timer * 6e4);
 		}
@@ -130,6 +130,7 @@
 	 *
 	 */
 	function stop() {
+		clearInterval(timeout);
 		bet.opened = false;
 		$.say($.lang.get('bettingsystem.close.semi.success'));
 	}
@@ -253,6 +254,13 @@
 				return;
 
 			/**
+			 * @commandpath bet stop - Stop the current bet.
+			 */
+			} else if (action.equalsIgnoreCase('stop')) {
+				stop();
+				return;
+
+			/**
 			 * @commandpath bet close ["winning option"] - Closes the current bet.
 			 */
 			} else if (action.equalsIgnoreCase('close')) {
@@ -347,6 +355,7 @@
             $.registerChatSubcommand('bet', 'current', 7);
             $.registerChatSubcommand('bet', 'results', 7);
             $.registerChatSubcommand('bet', 'open', 2);
+            $.registerChatSubcommand('bet', 'stop', 2);
             $.registerChatSubcommand('bet', 'close', 2);
             $.registerChatSubcommand('bet', 'save', 1);
             $.registerChatSubcommand('bet', 'saveformat', 1);
