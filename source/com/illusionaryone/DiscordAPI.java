@@ -543,25 +543,34 @@ public class DiscordAPI {
      */
     public Color getColor(String color) {
         Matcher match = Pattern.compile("(\\d+), (\\d+), (\\d+)").matcher(color);
-        if (match.find() == true) {
-            return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
-        } else {
-            switch (color) {
-                case "black": return Color.black;
-                case "blue": return Color.blue;
-                case "cyan": return Color.cyan;
-                case "gray": return Color.gray;
-                case "green": return Color.green;
-                case "magenta": return Color.magenta;
-                case "orange": return Color.orange;
-                case "pink": return Color.pink;
-                case "red": return Color.red;
-                case "white": return Color.white;
-                case "yellow": return Color.yellow;
-                case "dark_green": return Color.green.darker().darker().darker();
-                case "light_red": return Color.red.brighter();
-                default: return Color.gray;
+        Matcher matchTwo = Pattern.compile("(\\d+)\\s(\\d+)\\s(\\d+)").matcher(color);
+
+        try {
+            if (match.find() == true) {
+                return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
+            } else if (matchTwo.find() == true) {
+                return new Color(Integer.parseInt(matchTwo.group(1)), Integer.parseInt(matchTwo.group(2)), Integer.parseInt(matchTwo.group(3)));
+            } else {
+                switch (color) {
+                    case "black": return Color.black;
+                    case "blue": return Color.blue;
+                    case "cyan": return Color.cyan;
+                    case "gray": return Color.gray;
+                    case "green": return Color.green;
+                    case "magenta": return Color.magenta;
+                    case "orange": return Color.orange;
+                    case "pink": return Color.pink;
+                    case "red": return Color.red;
+                    case "white": return Color.white;
+                    case "yellow": return Color.yellow;
+                    case "dark_green": return Color.green.darker().darker().darker();
+                    case "light_red": return Color.red.brighter();
+                    default: return Color.gray;
+                }
             }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Bad RegEx Sent for getColor: " + ex.getMessage());
+            return Color.gray;
         }
     }
 
@@ -667,6 +676,13 @@ public class DiscordAPI {
         Boolean isAdmin = PermissionUtil.checkPermission(channel, event.getMember(), Permission.ADMINISTRATOR);
 
         com.gmt2001.Console.out.println("[DISCORD] [#" + channelName + "] " + username.toLowerCase() + ": " + message);
+
+        // Be sure that this is commented out before a release back into the master branch!  
+        /*
+        if (message.equals("!testjoin") && isAdmin) { 
+            EventBus.instance().post(new DiscordJoinEvent(event.getMember()));
+        }
+        */
 
         if (message.startsWith("!")) {
             commandEvent(sender, channel, message, isAdmin);
