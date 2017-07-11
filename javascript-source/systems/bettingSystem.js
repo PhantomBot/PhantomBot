@@ -57,7 +57,7 @@
 		
 		if (timer !== undefined && !isNaN(parseInt(timer)) && timer > 0) {
 			bet.timer = timer;
-			setTimeout(function() {
+			timeout = setTimeout(function() {
 				stop();
 			}, timer * 6e4);
 		}
@@ -81,6 +81,7 @@
 	 */
 	function close(sender, option) {
 		if (option === undefined && bet.opened === true) {
+			clearInterval(timeout);
 			bet.opened = false;
 			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.close.error.usage'));
 			return;
@@ -88,7 +89,7 @@
 			if (sender == $.botName) return;
 			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.close.usage'));
 			return;
-		} else if (bet.options[option] === undefined) {
+		} else if (bet.options[option.toLowerCase()] === undefined) {
 			$.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.bet.null'));
 			return;
 		}
@@ -256,7 +257,7 @@
 			 * @commandpath bet close ["winning option"] - Closes the current bet.
 			 */
 			} else if (action.equalsIgnoreCase('close')) {
-				close(sender, args.slice(1).join(' ').toLowerCase());
+				close(sender, args[1]);
 				return;
 
 			/**
