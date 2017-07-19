@@ -48,7 +48,7 @@
              + '(?:\\b|$)'
              + '|(\\.[a-z]+\\/|magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'i'),
             emotes: new RegExp('([0-9][0-9]-[0-9][0-9])|([0-9]-[0-9])', 'g'),
-            repeatedSeq: /(.)(\1+)/g,
+            repeatedSeq: /(.)(\1+)/ig,
             nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
             nonAlphaCount: /([^a-z0-9 ])/ig,
             capsCount: /([A-Z])/g,
@@ -84,7 +84,7 @@
     function getLongestRepeatedSequence(event) {
         var sequences = event.getMessage().match(patterns.repeatedSeq);
 
-        return (sequences === null ? 0 : sequences[0].length);
+        return (sequences === null ? 0 : sequences.sort(function(a, b) { return b.length - a.length; })[0].length);
     }
 
     /**
@@ -97,7 +97,7 @@
         var message = (event.getMessage() + ''),
             sequences = message.match(patterns.nonAlphaSeq);
 
-        return (sequences === null ? 0 : sequences[0].length);
+        return (sequences === null ? 0 : sequences.sort(function(a, b) { return b.length - a.length; })[0].length);
     }
 
     /**

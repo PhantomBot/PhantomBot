@@ -57,7 +57,7 @@
 		
 		if (timer !== undefined && !isNaN(parseInt(timer)) && timer > 0) {
 			bet.timer = timer;
-			setTimeout(function() {
+			timeout = setTimeout(function() {
 				stop();
 			}, timer * 6e4);
 		}
@@ -256,7 +256,7 @@
 			 * @commandpath bet close ["winning option"] - Closes the current bet.
 			 */
 			} else if (action.equalsIgnoreCase('close')) {
-				close(sender, args.slice(1).join(' ').toLowerCase());
+				close(sender, (args[0] === undefined ? undefined : args.slice(1).join(' ').toLowerCase().trim()));
 				return;
 
 			/**
@@ -330,10 +330,10 @@
 				return;
 
 			/**
-			 * @commandpath bet [amount] [option] - Bets on the option.
+			 * @commandpath bet [amount] [option] - Bets on that option.
 			 */
 			} else {
-				vote(sender, args[0], args.splice(1).join(' ').toLowerCase());
+				vote(sender, args[0], args.splice(1).join(' ').toLowerCase().trim());
 			}
 		}
 	});
