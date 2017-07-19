@@ -311,13 +311,14 @@
             var i = getHookIndex(getCommandScript(event.getCommand()), hook);
             if (i == -1) // Do not handle init.js commands here.
                 return;
-            if (isModuleEnabled(hooks[i].scriptFile) || alwaysRun) {
+            // Removed this check since it is also done on the command event. No need to check twice.
+            //if (isModuleEnabled(hooks[i].scriptFile) || alwaysRun) {
                 try {
                     hooks[i].handler(event);
                 } catch (e) {
                     $.log.error('(hook.call, ' + hook + ', ' + hooks[i].scriptFile + ') ' + e);
                 }
-            }
+            //}
         } else {
             for (i in hooks) {
                 if (hooks[i].hook.equalsIgnoreCase(hook) && (isModuleEnabled(hooks[i].scriptFile) || alwaysRun)) {
