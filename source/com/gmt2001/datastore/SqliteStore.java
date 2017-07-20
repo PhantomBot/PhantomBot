@@ -213,7 +213,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void AddFile(String fName) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -238,7 +239,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void RemoveKey(String fName, String section, String key) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -256,7 +258,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void RemoveSection(String fName, String section) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -273,7 +276,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void RemoveFile(String fName) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -290,7 +294,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void RenameFile(String fNameSource, String fNameDest) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fNameSource = validateFname(fNameSource);
         fNameDest = validateFname(fNameDest);
@@ -356,7 +361,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetCategoryList(String fName) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -385,7 +391,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeyList(String fName, String section) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -434,7 +441,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
         order = sanitizeOrder(order);
@@ -486,7 +494,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByOrderValue(String fName, String section, String order, String limit, String offset) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
         order = sanitizeOrder(order);
@@ -538,7 +547,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -587,7 +597,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByLikeKeys(String fName, String section, String search) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -636,7 +647,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
         order = sanitizeOrder(order);
@@ -688,7 +700,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public boolean HasKey(String fName, String section, String key) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -732,7 +745,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String GetKeyByValue(String fName, String section, String value) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         String result = null;
 
@@ -779,7 +793,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String GetString(String fName, String section, String key) {
-        CheckConnection();
+        // "FileExists" already checks the connections.
+        // CheckConnection();
 
         String result = null;
 
@@ -825,7 +840,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void SetBatchString(String fName, String section, String[] keys, String[] values) {
-        CheckConnection();
+        // "AddFile" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
         AddFile(fName);
@@ -860,7 +876,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void SetString(String fName, String section, String key, String value) {
-        CheckConnection();
+        // "AddFile" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
@@ -891,7 +908,8 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void InsertString(String fName, String section, String key, String value) {
-        CheckConnection();
+        // "AddFile" already checks the connections.
+        // CheckConnection();
 
         fName = validateFname(fName);
 
