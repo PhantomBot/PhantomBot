@@ -20,6 +20,7 @@ package tv.phantombot.discord;
 import sx.blah.discord.modules.Configuration;
 
 import sx.blah.discord.api.events.EventSubscriber;
+import sx.blah.discord.api.internal.ShardImpl;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.ClientBuilder;
 
@@ -42,9 +43,10 @@ import sx.blah.discord.util.DiscordException;
  */
 public class DiscordAPI extends DiscordUtil {
     private static final DiscordAPI instance = new DiscordAPI();
-    public static IDiscordClient discordClient;
+    public static IDiscordClient client;
+    public static ShardImpl shard;
     public static IGuild guild;
-
+    
     /*
      * Method to return this class object.
      *
@@ -70,17 +72,19 @@ public class DiscordAPI extends DiscordUtil {
      */
     public void connect(String token) {
         try {
-            DiscordAPI.discordClient = new ClientBuilder().withToken(token).registerListener(new DiscordEventListener()).login();
+            DiscordAPI.client = new ClientBuilder().withToken(token).registerListener(new DiscordEventListener()).login();
         } catch (DiscordException ex) {
-            com.gmt2001.Console.err.println("Failed to authenticate with Discord [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }
     }
 
     /*
-     * Method to set the guild object.
+     * Method to set the guild and shard objects.
      */
-    private void setGuild() {
-        DiscordAPI.guild = DiscordAPI.discordClient.getGuilds().get(0);
+    private void setGuildAndShard() {
+        // The bot should only be in one server, so this should be fine.
+        DiscordAPI.guild = DiscordAPI.client.getGuilds().get(0);
+        DiscordAPI.shard = (ShardImpl) DiscordAPI.client.getShards().get(0);
     }
 
     /*
@@ -106,12 +110,11 @@ public class DiscordAPI extends DiscordUtil {
      * Class to listen to events.
      */
     private class DiscordEventListener {
-
         @EventSubscriber
         public void onDiscordReadyEvent(ReadyEvent event) {
             com.gmt2001.Console.out.println("Successfully authenticated with Discord.");
 
-            setGuild();
+            setGuildAndShard();
         }
 
         @EventSubscriber

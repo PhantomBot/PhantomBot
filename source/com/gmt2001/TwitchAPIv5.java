@@ -367,6 +367,16 @@ public class TwitchAPIv5 {
     }
 
     /**
+     * Gets a streams object array. Each channel id should be seperated with a comma.
+     *
+     * @param channels
+     * @return
+     */
+    public JSONObject GetStreams(String channels) {
+        return GetData(request_type.GET, base_url + "/streams?channel=" + channels, false);
+    }
+
+    /**
      * Gets a user object by user name
      *
      * @param user
