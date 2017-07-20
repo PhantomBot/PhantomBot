@@ -26,7 +26,7 @@ import com.gmt2001.datastore.H2Store;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
-import com.IllusionaryOne.DiscordAPI;
+import com.illusionaryone.DiscordAPI;
 import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
