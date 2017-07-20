@@ -16,6 +16,8 @@
  */
 package tv.phantombot.discord;
 
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
+
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -25,12 +27,23 @@ import sx.blah.discord.handle.obj.IRole;
 
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.RequestBuffer;
+import sx.blah.discord.util.EmbedBuilder;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.util.List;
 
+import java.io.FileNotFoundException;
+import java.io.File;
+
+import java.time.LocalDateTime;
+
+import java.awt.Color;
+
 /*
- * Handles Discord requests.
+ * Has all of the methods to work with Discord4J.
  *
  * @author Illusionaryone
  * @author ScaniaTV
@@ -40,17 +53,18 @@ public class DiscordUtil {
      * Method to send a message to a channel.
      *
      * @param {IChannel} channel
-     * @param {String} message
+     * @param {String}   message
      */
     public void sendMessage(IChannel channel, String message) {
         RequestBuffer.request(() -> {
             try {
                 if (channel != null) {
-                    channel.sendMessage(message);
                     com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [CHAT] " + message);
+
+                    channel.sendMessage(message);
                 }
-            } catch (DiscordException ex) {
-                com.gmt2001.Console.err.println("Failed to send a message [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to send a message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         });
     }
@@ -68,18 +82,19 @@ public class DiscordUtil {
     /*
      * Method to send private messages to a user.
      *
-     * @param {IUser} user
+     * @param {IUser}  user
      * @param {String} message
      */
     public void sendPrivateMessage(IUser user, String message) {
         RequestBuffer.request(() -> {
             try {
                 if (user != null) {
-                    user.getOrCreatePMChannel().sendMessage(message);
                     com.gmt2001.Console.out.println("[DISCORD] [@" + user.getName().toLowerCase() + "#" + user.getDiscriminator() + "] [DM] " + message);
+
+                    user.getOrCreatePMChannel().sendMessage(message);  
                 }
-            } catch (DiscordException ex) {
-                com.gmt2001.Console.err.println("Failed to send a private message [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to send a private message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         });
     }
@@ -95,6 +110,86 @@ public class DiscordUtil {
     }
 
     /*
+     * Method to send embed messages.
+     *
+     * @param {IChannel} channel
+     * @param {String}   message
+     * @param {String}   color
+     */
+    public void sendMessageEmbed(IChannel channel, String message, String color) {
+        EmbedObject builder = new EmbedBuilder().withDescription(message).withColor(getColor(color)).build();
+
+        RequestBuffer.request(() -> {
+            try {
+                if (channel != null) {
+                    com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + message);
+
+                    channel.sendMessage(builder);
+                }
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
+    }
+
+    /*
+     * Method to send embed messages.
+     *
+     * @param {String} channelName
+     * @param {String} message
+     * @param {String} color
+     */
+    public void sendMessageEmbed(String channelName, String message, String color) {
+        sendMessageEmbed(getChannel(channelName), message, color);
+    }
+
+    /*
+     * Method to send a file to a channel.
+     *
+     * @param {IChannel} channel
+     * @param {String}   message
+     * @param {String}   fileLocation
+     */
+    public void sendFile(IChannel channel, String message, String fileLocation) {
+        RequestBuffer.request(() -> {
+            try {
+                if (channel != null) {
+                    com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message);
+
+                    if (message.isEmpty()) {
+                        channel.sendFile(new File(fileLocation));
+                    } else {
+                        channel.sendFile(message, new File(fileLocation));
+                    }
+                }
+            } catch (MissingPermissionsException | DiscordException | FileNotFoundException ex) {
+                com.gmt2001.Console.err.println("Failed to upload a file: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
+    }
+
+    /*
+     * Method to send a file to a channel.
+     *
+     * @param {String} channelName
+     * @param {String} message
+     * @param {String} fileLocation
+     */
+    public void sendFile(String channelName, String message, String fileLocation) {
+        sendFile(getChannel(channelName), message, fileLocation);
+    }
+
+    /*
+     * Method to send a file to a channel.
+     *
+     * @param {String} channelName
+     * @param {String} fileLocation
+     */
+    public void sendFile(String channelName, String fileLocation) {
+        sendFile(getChannel(channelName), "", fileLocation);
+    }
+
+    /*
      * Method to return a channel object by its name.
      *
      * @param  {String} channelName
@@ -104,7 +199,7 @@ public class DiscordUtil {
         List<IChannel> channels = DiscordAPI.guild.getChannelsByName(channelName);
 
         for (IChannel channel : channels) {
-            if (channel.getName().equalsIgnoreCase(channelName)) {
+            if (channel.getName().equals(channelName)) {
                 return channel;
             }
         }
@@ -121,7 +216,25 @@ public class DiscordUtil {
         List<IUser> users = DiscordAPI.guild.getUsersByName(userName, true);
 
         for (IUser user : users) {
-            if (user.getDisplayName(DiscordAPI.guild).equalsIgnoreCase(userName)) {
+            if (user.getDisplayName(DiscordAPI.guild).equals(userName)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Method to return a user object by its name and its discriminator.
+     *
+     * @param  {String} userName
+     * @param  {String} discriminator
+     * @return {IUser}
+     */
+    public IUser getUserWithDiscriminator(String userName, String discriminator) {
+        List<IUser> users = DiscordAPI.guild.getUsersByName(userName, true);
+
+        for (IUser user : users) {
+            if (user.getDisplayName(DiscordAPI.guild).equals(userName) && user.getDiscriminator().equals(discriminator)) {
                 return user;
             }
         }
@@ -138,7 +251,7 @@ public class DiscordUtil {
         List<IRole> roles = DiscordAPI.guild.getRolesByName(roleName);
 
         for (IRole role : roles) {
-            if (role.getName().equalsIgnoreCase(roleName)) {
+            if (role.getName().equals(roleName)) {
                 return role;
             }
         }
@@ -202,7 +315,7 @@ public class DiscordUtil {
     }
     
     /*
-     * Method to create a new role
+     * Method to create a new role.
      *
      * @param {String} roleName
      */
@@ -217,7 +330,7 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to delete a new role
+     * Method to delete a role.
      *
      * @param {IRole} role
      */
@@ -234,7 +347,7 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to delete a new role
+     * Method to delete a role.
      *
      * @param {String} roleName
      */
@@ -249,16 +362,127 @@ public class DiscordUtil {
      * @return {Boolean}
      */
     public boolean isAdministrator(IUser user) {
-        return user.getPermissionsForGuild(DiscordAPI.guild).contains(Permissions.ADMINISTRATOR);
+        if (user != null) {
+            return user.getPermissionsForGuild(DiscordAPI.guild).contains(Permissions.ADMINISTRATOR);
+        }
+        return false;
     }
 
     /*
-     * Method to check if someone is a moderator.
+     * Method to check if someone is an administrator.
      *
-     * @param  {IUser} user
+     * @param  {String} userName
      * @return {Boolean}
      */
-    public boolean isModerator(IUser user) {
-        return user.getPermissionsForGuild(DiscordAPI.guild).contains(Permissions.KICK);
+    public boolean isAdministrator(String userName) {
+        return isAdministrator(getUser(userName));
+    }
+
+    /*
+     * Method to bulk delete messages from a channel.
+     *
+     * @param {IChannel} channel
+     * @param {Number}   amount
+     */
+    public void bulkDelete(IChannel channel, int amount) {
+        // Discord4J says that getting messages can block the current thread if they need to be requested from Discord's API.
+        // So start this on a new thread to avoid that. Please note that you need to delete at least 2 messages.
+
+        if (channel != null) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    RequestBuffer.request(() -> {
+                        try {
+                            List<IMessage> messages = channel.getMessageHistoryFrom(LocalDateTime.now(), (amount < 2 ? 2 : amount));
+                        
+                            channel.bulkDelete(messages);
+                        } catch (DiscordException ex) {
+                            com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                        }
+                    });
+                }
+            }, "tv.phantombot.discord.util.DiscordUtil::bulkDelete");
+    
+            thread.start();
+        }
+    }
+
+    /*
+     * Method to bulk delete messages from a channel.
+     *
+     * @param {String} channelName
+     * @param {Number} amount
+     */
+    public void bulkDelete(String channelName, int amount) {
+        bulkDelete(getChannel(channelName), amount);
+    }
+
+    /*
+     * Method to set the current game.
+     *
+     * @param {String} game
+     */
+    public void setGame(String game) {
+        DiscordAPI.shard.changePlayingText(game);
+    }
+
+    /*
+     * Method to set the current game and stream.
+     *
+     * @param {String} game
+     * @param {String} url
+     */
+    public void setStream(String game, String url) {
+        DiscordAPI.shard.streaming(game, url);
+    }
+
+    /*
+     * Method to remove the current game or reset the streaming status.
+     *
+     */
+    public void removeGame() {
+        DiscordAPI.shard.online();
+    }
+
+    /*
+     * Method to get a color object.
+     *
+     * @param  {String} color
+     * @return {Color}
+     */
+    public Color getColor(String color) {
+        Matcher match = Pattern.compile("(\\d{1,3}),?\\s?(\\d{1,3}),?\\s?(\\d{1,3})").matcher(color);
+
+        if (match.find()) {
+            return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
+        } else {
+            switch (color) {
+                case "black": 
+                    return Color.black;
+                case "blue": 
+                    return Color.blue;
+                case "cyan": 
+                    return Color.cyan;
+                case "gray": 
+                    return Color.gray;
+                case "green": 
+                    return Color.green;
+                case "magenta": 
+                    return Color.magenta;
+                case "orange": 
+                    return Color.orange;
+                case "pink": 
+                    return Color.pink;
+                case "red": 
+                    return Color.red;
+                case "white": 
+                    return Color.white;
+                case "yellow": 
+                    return Color.yellow;
+                default: 
+                    return Color.gray;
+            }
+        }
     }
 }
