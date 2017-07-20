@@ -16,6 +16,27 @@
         moderatorsCache = [],
         lastJoinPart = $.systemTime();
 
+    /**
+     * @function updateUsersObject
+     * @param {Array} list
+     *
+     * This function properly rebuilds the users list from a list of usernames.
+     * The $.users object cannot be modified and if the users object is replaced,
+     * then it disassociates from the original list causing issues.
+     */
+    function updateUsersObject(newUsers) {
+        for (var i in newUsers) {
+            if (!userExists(newUsers[i])) {
+                users.push([newUsers[i], $.systemTime()]); 
+            }
+        }
+
+        for (var i = users.length - 1; i >= 0; i--) {
+            if (!hasKey(newUsers, users[i][0])) {
+                users.splice(i, 1);
+            }
+        }
+    }
 
     /** 
      * @function hasKey
@@ -941,4 +962,5 @@
     $.addModeratorToCache = addModeratorToCache;
     $.removeModeratorFromCache = removeModeratorFromCache;
     $.getGWTier = getGWTier;
+    $.updateUsersObject = updateUsersObject;
 })();
