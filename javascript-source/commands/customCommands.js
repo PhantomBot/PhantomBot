@@ -648,7 +648,7 @@
                     return;
                 } else {
                     if (!$.commandExists(argsString.match(reCommandTag)[1])) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.commandtag.invalid', checkCmd));
+                        $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.commandtag.invalid', argsString.match(reCommandTag)[1]));
                         return;
                     }
                 }
