@@ -19,6 +19,7 @@ package tv.phantombot.discord;
 
 import com.gmt2001.TwitchAPIv5;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ public class TwitchChannelCache implements Runnable {
 	private final Thread thread;
 	private boolean killed;
 	private Map<String, JSONObject> cache = new HashMap<>();
+	private Map<String, String> users = new HashMap<>();
 	
 	/*
 	 * Method to start and return this instance.
@@ -85,9 +87,9 @@ public class TwitchChannelCache implements Runnable {
 	/*
 	 * Method that updates the cache information.
 	 */
-	private void updateCache() throws Exception {
-		String[] channels = PhantomBot.instance().getDataStore().GetKeyList("discordLiveChannels", "");
+	private void updateCache() {
 		Map<String, JSONObject> newCache = new HashMap<>();
+		String[] channels = getChannels();
 
 		com.gmt2001.Console.debug.println("TwitchChannelCache::updateCache");
 
@@ -135,9 +137,58 @@ public class TwitchChannelCache implements Runnable {
 				com.gmt2001.Console.debug.println("Failed to update TwitchChannelCache cache. " + object);
 			}
 		} catch (Exception ex) {
-			// Just throw this for now.
-			throw ex;
+			com.gmt2001.Console.err.println("Failed update TwitchChannelCache cache. [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
 		}
+	}
+
+	/*
+	 * Method to get all channels ids
+	 *
+	 * @return {Array}
+	 */
+	private String[] getChannels() {
+		String[] channelNames = PhantomBot.instance().getDataStore().GetKeyList("discordLiveChannels", "");
+		Map<String, String> newCache = new HashMap<>();
+		Collection<String> values;
+		JSONObject object;
+		JSONArray users;
+
+		try {
+			// Loop through all channels. This isn't the best logic, but it will work for now.
+			for (String channel : channelNames) {
+				// If one channels is not in the cache, call the api to get all ids.
+				if (!this.users.containsKey(channel)) {
+					object = TwitchAPIv5.instance().GetUser(String.join(",", channelNames));
+					newCache = new HashMap<>();
+	
+					// Make sure the call was successful .
+					if (object.getBoolean("_success") && object.getInt("_http") == 200) {
+						users = object.getJSONArray("users");
+	
+						for (int i = 0; i < users.length(); i++) {
+							JSONObject user = users.getJSONObject(i);
+	
+							// Put the user in the cache.
+							newCache.put(user.getString("name"), user.getString("_id"));
+						}
+					} else {
+						com.gmt2001.Console.debug.println("Failed to get channel ids. " + object);
+					}
+					break;
+				} else {
+					newCache.put(channel, this.users.get(channel));
+				}
+			}
+		} catch (Exception ex) {
+			com.gmt2001.Console.err.println("Failed to get channel ids: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+		}
+
+		// Set the new users cache.
+		this.users = newCache;
+		// Get all the values.
+		values = this.users.values();
+
+		return values.toArray(new String[values.size()]);
 	}
 
 	/*
