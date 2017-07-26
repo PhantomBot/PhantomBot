@@ -418,10 +418,8 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
-            $.registerChatCommand('./handlers/gameWispHandler.js', 'gamewisp', 1);
-            $.registerChatCommand('./handlers/gameWispHandler.js', 'gamewisptier', 1);
-        }
+        $.registerChatCommand('./handlers/gameWispHandler.js', 'gamewisp', 1);
+        $.registerChatCommand('./handlers/gameWispHandler.js', 'gamewisptier', 1);
     });
 
     /** Export functions to API */

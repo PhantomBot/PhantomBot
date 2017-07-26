@@ -92,12 +92,11 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./games/killCommand.js')) {
-            if (selfMessageCount == 0 && otherMessageCount == 0) {
-               loadResponses();
-            }
-            $.registerChatCommand('./games/killCommand.js', 'kill', 7);
-            $.registerChatCommand('./games/killCommand.js', 'jailtimeouttime', 1);
+        if (selfMessageCount == 0 && otherMessageCount == 0) {
+           loadResponses();
         }
+        
+        $.registerChatCommand('./games/killCommand.js', 'kill', 7);
+        $.registerChatCommand('./games/killCommand.js', 'jailtimeouttime', 1);
     });
 })();

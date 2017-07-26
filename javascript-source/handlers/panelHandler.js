@@ -4,8 +4,7 @@
  */
 
 (function() {
-    var alreadyStarted = false,
-        interval,
+    var interval,
         follower = false;
 
     /*
@@ -151,16 +150,9 @@
      * set the table as such.
      */
     $.bind('initReady', function() {
-        if (!alreadyStarted) {
-            if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-                alreadyStarted = true;
-                $.inidb.set('panelstats', 'enabled', 'true');
-                 $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
-                interval = setInterval(function() {  updateAll(); }, 3e4);
-            } else {
-                $.inidb.set('panelstats', 'enabled', 'false');
-            }
-        }
+        $.inidb.set('panelstats', 'enabled', 'true');
+        $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
+        interval = setInterval(function() {  updateAll(); }, 3e4);
     });
 
     /*

@@ -307,19 +307,17 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/hostHandler.js')) {
-            $.registerChatCommand('./handlers/hostHandler.js', 'hostmessage', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'autohostmessage', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'hostreward', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'autohostreward', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'hostrewardminviewers', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'hosthistory', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'hosttoggle', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'autohosttoggle', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'host', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'unhost', 1);
-            $.registerChatCommand('./handlers/hostHandler.js', 'hostminviewers', 1);
-        }
+        $.registerChatCommand('./handlers/hostHandler.js', 'hostmessage', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'autohostmessage', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hostreward', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'autohostreward', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hostrewardminviewers', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hosthistory', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hosttoggle', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'autohosttoggle', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'host', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'unhost', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hostminviewers', 1);
     });
 
     $.updateHost = updateHost;

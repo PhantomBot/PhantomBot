@@ -18,6 +18,24 @@
     }
 
     /*
+     * @function runCommand
+     *
+     * @param {string} username
+     * @param {string} command
+     * @param {string} args
+     */
+    function runCommand(username, command, args, tags) {
+        var ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
+            CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+
+        if (tags !== undefined) {
+            ScriptEventManager.instance().runDirect(new CommandEvent(username, command, args, tags));
+        } else {
+            ScriptEventManager.instance().runDirect(new CommandEvent(username, command, args));
+        }  
+    }
+
+    /*
      * @function returnCommandCost
      *
      * @export $
@@ -547,6 +565,35 @@
         } else {
             return 2;
         }
+    }  
+
+     /*
+     * @function priceCom
+     *
+     * @export $
+     * @param {string} username
+     * @param {string} command
+     * @param {sub} subcommand
+     * @param {bool} isMod
+     * @returns 1 | 0
+     */
+    function priceCom(username, command, subCommand, isMod) {
+        var pointsModuleEnabled = $.bot.isModuleEnabled('./systems/pointSystem.js');
+
+        if ($.inidb.exists('pricecom', (command + ' ' + subCommand).trim())) {
+            if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(username)) || !isMod)) && pointsModuleEnabled) {
+                var cost = getCommandPrice(command, subCommand, '');
+                
+                if ($.getUserPoints(username) < cost) {
+                    return 1;
+                } else {
+                    $.inidb.decr('points', username, cost);
+                }
+            }
+        } else if ($.inidb.exists('paycom', command)) {
+            $.inidb.incr('points', username, $.inidb.get('paycom', command));
+        }
+        return 0;
     }
 
     /*
@@ -1074,6 +1121,10 @@
     $.addComRegisterAliases = addComRegisterAliases;
     $.returnCommandCost = returnCommandCost;
     $.permCom = permCom;
+    $.priceCom = priceCom;
     $.getCommandPrice = getCommandPrice;
     $.tags = tags;
+    $.command = {
+        run: runCommand
+    };
 })();

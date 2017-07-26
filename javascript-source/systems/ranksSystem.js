@@ -370,19 +370,16 @@
      *
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/ranksSystem.js')) {
-            $.registerChatCommand('./systems/ranksSystem.js', 'rank', 7);
-            $.registerChatCommand('./systems/ranksSystem.js', 'rankedit', 1);
+        $.registerChatCommand('./systems/ranksSystem.js', 'rank', 7);
+        $.registerChatCommand('./systems/ranksSystem.js', 'rankedit', 1);
 
-            $.registerChatSubcommand('rankedit', 'add', 1);
-            $.registerChatSubcommand('rankedit', 'del', 1);
-            $.registerChatSubcommand('rankedit', 'custom', 1);
-            $.registerChatSubcommand('rankedit', 'customdel', 1);
-
-            $.registerChatSubcommand('rank', 'set', 7);
-            $.registerChatSubcommand('rank', 'del', 7);
-     
-        }
+        $.registerChatSubcommand('rankedit', 'add', 1);
+        $.registerChatSubcommand('rankedit', 'del', 1);
+        $.registerChatSubcommand('rankedit', 'custom', 1);
+        $.registerChatSubcommand('rankedit', 'customdel', 1);
+        
+        $.registerChatSubcommand('rank', 'set', 7);
+        $.registerChatSubcommand('rank', 'del', 7);
     });
 
     /**

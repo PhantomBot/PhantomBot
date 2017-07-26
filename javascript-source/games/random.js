@@ -41,11 +41,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./games/random.js')) {
-            if (randomsCount == 0) {
-                loadResponses();
-            }
-            $.registerChatCommand('./games/random.js', 'random');
+        if (randomsCount == 0) {
+            loadResponses();
         }
+        
+        $.registerChatCommand('./games/random.js', 'random');
     });
 })();

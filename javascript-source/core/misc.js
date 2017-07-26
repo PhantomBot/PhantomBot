@@ -3,7 +3,8 @@
         respond = getSetIniDbBoolean('settings', 'response_@chat', true),
         action = getSetIniDbBoolean('settings', 'response_action', false),
         secureRandom = new java.security.SecureRandom(),
-        reg = new RegExp(/^@\w+,$/);
+        reg = new RegExp(/^@\w+,$/),
+        timeout = 0;
 
     /* 
      * @function reloadMisc
@@ -133,6 +134,32 @@
         } else if (reg.test(message)) {
             return;
         }
+
+        if (respond && (!action || message.startsWith('/w'))) {
+            $.session.say(message);
+        } else {
+            if (respond && action) {
+                $.session.say('/me ' + message);
+            }
+            if (!respond) {
+                $.consoleLn('[MUTED] ' + message);
+            }
+        }
+        $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
+    }
+
+    /**
+     * @function say
+     * @export $
+     * @param {string} message
+     * @param {boolean} run
+     */
+    function sayWithTimeout(message, run) {
+        if (((timeout + 10000) > systemTime()) || !run) {
+            return;
+        }
+
+        timeout = systemTime();
 
         if (respond && (!action || message.startsWith('/w'))) {
             $.session.say(message);
@@ -652,4 +679,5 @@
     $.systemTimeNano = systemTimeNano;
     $.getMessageWrites = getMessageWrites;
     $.getMessageQueue = getMessageQueue;
+    $.sayWithTimeout = sayWithTimeout;
 })();
