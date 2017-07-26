@@ -428,6 +428,7 @@
             var sender = event.getSender(),
                 command = event.getCommand(),
                 args = event.getArgs(),
+                subCommand = $.getSubCommandFromArguments(command, args),
                 isMod = $.isModv3(sender, event.getTags());
 
             // Check if the command exists or if the module is disabled.
@@ -457,8 +458,8 @@
             } 
 
             // Check the command permission.
-            if ($.permCom(sender, command, $.getSubCommandFromArguments(command, args)) !== 0) {
-                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, $.getSubCommandFromArguments(command, args)) ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, args[0].toLowerCase()))), $.getIniDbBoolean('settings', 'permComMsgEnabled', false));
+            if ($.permCom(sender, command, subCommand) !== 0) {
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, subCommand))), $.getIniDbBoolean('settings', 'permComMsgEnabled', false));
                 return;
             } else 
 
@@ -469,8 +470,8 @@
             } else 
 
             // Check the command cost.
-            if ($.priceCom(sender, command, $.getSubCommandFromArguments(command, args), isMod) !== 0) {
-                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, $.getSubCommandFromArguments(command, args), ''))), $.getIniDbBoolean('settings', 'priceComMsgEnabled', false));
+            if ($.priceCom(sender, command, subCommand, isMod) !== 0) {
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, subCommand, ''))), $.getIniDbBoolean('settings', 'priceComMsgEnabled', false));
                 return;
             }
 
