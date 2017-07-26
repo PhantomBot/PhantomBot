@@ -208,6 +208,17 @@
         return modules[scriptName];
     }
 
+     /*
+     * @function getHook
+     *
+     * @param  {String} scriptName
+     * @param  {String} hookName
+     * @return {Object}
+     */
+    function getHook(scriptName, hookName) {
+        return (hooks[hookName] !== undefined ? hooks[hookName].handlers[getHookIndex(scriptName, hookName)] : null);
+    }
+
     /*
      * @function getHookIndex
      *
@@ -220,34 +231,13 @@
             i;
             
         if (hook !== undefined) {
-            for (var i in hook.handlers) {
+            for (i in hook.handlers) {
                 if (hook.handlers[i].scriptName.equalsIgnoreCase(scriptName)) {
                     return i;
                 }
             }
         }
         return -1;
-    }
-
-    /*
-     * @function getHook
-     *
-     * @param  {String} scriptName
-     * @param  {String} hookName
-     * @return {Object}
-     */
-    function getHook(scriptName, hookName) {
-        var hook = hooks[hookName],
-            i;
-            
-        if (hook !== undefined) {
-            for (var i in hook.handlers) {
-                if (hook.handlers[i].scriptName.equalsIgnoreCase(scriptName)) {
-                    return hook.handlers[i];
-                }
-            }
-        }
-        return null;
     }
 
     /*
@@ -302,12 +292,10 @@
         if (hookName === 'command') {
             i = getHookIndex($.getCommandScript(event.getCommand()), hookName);
 
-            if (i !== -1) {
-                try {
-                    hook.handlers[i].handler(event);
-                } catch (ex) {
-                    $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
-                }
+            try {
+                hook.handlers[i].handler(event);
+            } catch (ex) {
+                $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
             }
         } else {
             for (i in hook.handlers) {
@@ -353,6 +341,7 @@
         // Load all the other modules.
         loadScriptRecursive('.');
 
+
         // Load Discord modules if need be.
         if (!$.hasDiscordToken) {
             loadScript('./discord/core/misc.js');
@@ -395,13 +384,6 @@
         });
 
         /*
-         * @event ircJoinComplete
-         */
-        $api.on($script, 'ircJoinComplete', function(event) {
-            callHook('ircJoinComplete', event, false);
-        });
-
-        /*
          * @event ircChannelUserMode
          */
         $api.on($script, 'ircChannelUserMode', function(event) {
@@ -434,7 +416,7 @@
             // Check if the command exists or if the module is disabled.
             if (!$.commandExists(command) || !isModuleEnabled($.getCommandScript(command))) {
                 return;
-            } 
+            } else 
 
             // Check if the command has an alias.
             if ($.aliasExists(command)) {
@@ -455,7 +437,7 @@
                     }
                 }
                 return;
-            } 
+            } else 
 
             // Check the command permission.
             if ($.permCom(sender, command, subCommand) !== 0) {
@@ -587,6 +569,13 @@
          */
         $api.on($script, 'ircChannelLeave', function(event) {
             callHook('ircChannelLeave', event, false);
+        });
+
+        /*
+         * @event ircJoinComplete
+         */
+        $api.on($script, 'ircJoinComplete', function(event) {
+            callHook('ircJoinComplete', event, false);
         });
 
         /*
