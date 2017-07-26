@@ -188,8 +188,6 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/keywordHandler.js')) {
-            $.registerChatCommand('./handlers/keywordHandler.js', 'keyword', 1);
-        }
+        $.registerChatCommand('./handlers/keywordHandler.js', 'keyword', 1);
     });
 })();

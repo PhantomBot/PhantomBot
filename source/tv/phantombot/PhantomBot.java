@@ -1060,9 +1060,9 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("inidb", dataStore, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv5.instance(), 0);
-        Script.global.defineProperty("botName", botName, 0);
-        Script.global.defineProperty("channelName", channelName, 0);
-        Script.global.defineProperty("ownerName", ownerName, 0);
+        Script.global.defineProperty("botName", botName.toLowerCase(), 0);
+        Script.global.defineProperty("channelName", channelName.toLowerCase(), 0);
+        Script.global.defineProperty("ownerName", ownerName.toLowerCase(), 0);
         Script.global.defineProperty("ytplayer", (useHttps ? youtubeSocketSecureServer : youtubeSocketServer), 0);
         if (testPanelServer) {
             Script.global.defineProperty("panelsocketserver", newPanelSocketServer, 0);

@@ -1925,15 +1925,15 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./core/chatmoderator.js')) {
+        if ($.bot.isModuleEnabled('./core/chatModerator.js')) {
             loadWhiteList();
             loadBlackList();
 
-            $.registerChatCommand('./core/chatmoderator.js', 'permit', 2);
-            $.registerChatCommand('./core/chatmoderator.js', 'moderation', 1);
-            $.registerChatCommand('./core/chatmoderator.js', 'mod', 1);
-            $.registerChatCommand('./core/chatmoderator.js', 'blacklist', 1);
-            $.registerChatCommand('./core/chatmoderator.js', 'whitelist', 1);
+            $.registerChatCommand('./core/chatModerator.js', 'permit', 2);
+            $.registerChatCommand('./core/chatModerator.js', 'moderation', 1);
+            $.registerChatCommand('./core/chatModerator.js', 'mod', 1);
+            $.registerChatCommand('./core/chatModerator.js', 'blacklist', 1);
+            $.registerChatCommand('./core/chatModerator.js', 'whitelist', 1);
         }
     });
 

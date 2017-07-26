@@ -488,20 +488,18 @@
      * @info event sent to register commands
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/raffleSystem.js')) {
-            $.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
-
-            $.registerChatSubcommand('raffle', 'open', 2);
-            $.registerChatSubcommand('raffle', 'close', 2);
-            $.registerChatSubcommand('raffle', 'repick', 2);
-            $.registerChatSubcommand('raffle', 'results', 7);
-            $.registerChatSubcommand('raffle', 'subscriberbonus', 1);
-            $.registerChatSubcommand('raffle', 'regularbonus', 1);
-            $.registerChatSubcommand('raffle', 'togglemessages', 1);
-            $.registerChatSubcommand('raffle', 'togglerepicks', 1);
-            $.registerChatSubcommand('raffle', 'message', 1);
-            $.registerChatSubcommand('raffle', 'messagetimer', 1);
-        }
+        $.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
+        
+        $.registerChatSubcommand('raffle', 'open', 2);
+        $.registerChatSubcommand('raffle', 'close', 2);
+        $.registerChatSubcommand('raffle', 'repick', 2);
+        $.registerChatSubcommand('raffle', 'results', 7);
+        $.registerChatSubcommand('raffle', 'subscriberbonus', 1);
+        $.registerChatSubcommand('raffle', 'regularbonus', 1);
+        $.registerChatSubcommand('raffle', 'togglemessages', 1);
+        $.registerChatSubcommand('raffle', 'togglerepicks', 1);
+        $.registerChatSubcommand('raffle', 'message', 1);
+        $.registerChatSubcommand('raffle', 'messagetimer', 1);
     });
 
     $.reloadRaffle = reloadRaffle;

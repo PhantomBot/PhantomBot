@@ -298,16 +298,14 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/quoteSystem.js')) {
-            $.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'searchquote', 7);
-            $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', 1);
-            $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'delquotesilent', 1);
-            $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'quote');
-            $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);
-        }
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'searchquote', 7);
+        $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', 1);
+        $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'delquotesilent', 1);
+        $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quote');
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);
     });
 })();

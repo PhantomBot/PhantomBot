@@ -288,13 +288,11 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/pollSystem.js')) {
-            $.registerChatCommand('./systems/pollSystem.js', 'poll', 2);
-            $.registerChatCommand('./systems/pollSystem.js', 'vote', 7);
-            $.registerChatSubcommand('poll', 'results', 2);
-            $.registerChatSubcommand('poll', 'open', 2);
-            $.registerChatSubcommand('poll', 'close', 2);
-        }
+        $.registerChatCommand('./systems/pollSystem.js', 'poll', 2);
+        $.registerChatCommand('./systems/pollSystem.js', 'vote', 7);
+        $.registerChatSubcommand('poll', 'results', 2);
+        $.registerChatSubcommand('poll', 'open', 2);
+        $.registerChatSubcommand('poll', 'close', 2);
     });
 
     /** Export functions to API */
