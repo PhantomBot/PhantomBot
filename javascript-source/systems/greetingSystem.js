@@ -154,16 +154,14 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/greetingSystem.js')) {
-            $.registerChatCommand('./systems/greetingSystem.js', 'greeting', 6);
-            $.registerChatSubcommand('greeting', 'cooldown', 1);
-            $.registerChatSubcommand('greeting', 'toggle', 1);
-            $.registerChatSubcommand('greeting', 'setdefault', 2);
-            $.registerChatSubcommand('greeting', 'enable', 6);
-            $.registerChatSubcommand('greeting', 'disable', 6);
-
-            doUserGreetings();
-        }
+        $.registerChatCommand('./systems/greetingSystem.js', 'greeting', 6);
+        $.registerChatSubcommand('greeting', 'cooldown', 1);
+        $.registerChatSubcommand('greeting', 'toggle', 1);
+        $.registerChatSubcommand('greeting', 'setdefault', 2);
+        $.registerChatSubcommand('greeting', 'enable', 6);
+        $.registerChatSubcommand('greeting', 'disable', 6);
+        
+        doUserGreetings();
     });
 
     $.greetingspanelupdate = greetingspanelupdate;

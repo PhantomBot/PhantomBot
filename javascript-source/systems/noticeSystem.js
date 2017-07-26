@@ -325,9 +325,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/noticeSystem.js')) {
-            $.registerChatCommand('./systems/noticeSystem.js', 'notice', 1);
-        }
+        $.registerChatCommand('./systems/noticeSystem.js', 'notice', 1);
     });
 
     $.reloadNoticeSettings = reloadNoticeSettings;

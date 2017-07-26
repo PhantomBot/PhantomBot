@@ -342,16 +342,14 @@
 	 * @event initReady
 	 */
 	$.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/bettingSystem.js')) {
-            $.registerChatCommand('./systems/bettingSystem.js', 'bet', 7);
-            $.registerChatSubcommand('bet', 'current', 7);
-            $.registerChatSubcommand('bet', 'results', 7);
-            $.registerChatSubcommand('bet', 'open', 2);
-            $.registerChatSubcommand('bet', 'close', 2);
-            $.registerChatSubcommand('bet', 'save', 1);
-            $.registerChatSubcommand('bet', 'saveformat', 1);
-            $.registerChatSubcommand('bet', 'gain', 1);
-        }
+        $.registerChatCommand('./systems/bettingSystem.js', 'bet', 7);
+        $.registerChatSubcommand('bet', 'current', 7);
+        $.registerChatSubcommand('bet', 'results', 7);
+        $.registerChatSubcommand('bet', 'open', 2);
+        $.registerChatSubcommand('bet', 'close', 2);
+        $.registerChatSubcommand('bet', 'save', 1);
+        $.registerChatSubcommand('bet', 'saveformat', 1);
+        $.registerChatSubcommand('bet', 'gain', 1);
     });
 
     /* export to the $ api */

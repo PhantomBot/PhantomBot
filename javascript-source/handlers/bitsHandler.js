@@ -98,12 +98,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/bitsHandler.js')) {
-        	$.registerChatCommand('./handlers/bitsHandler.js', 'bitstoggle', 1);
-        	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsmessage', 1);
-        	$.registerChatCommand('./handlers/bitsHandler.js', 'bitsminimum', 1);
-        	announceBits = true;
-        }
+        $.registerChatCommand('./handlers/bitsHandler.js', 'bitstoggle', 1);
+        $.registerChatCommand('./handlers/bitsHandler.js', 'bitsmessage', 1);
+        $.registerChatCommand('./handlers/bitsHandler.js', 'bitsminimum', 1);
+        announceBits = true;
     });
 
     $.reloadBits = reloadBits;

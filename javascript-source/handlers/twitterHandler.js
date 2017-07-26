@@ -561,16 +561,14 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
-            $.registerChatCommand('./handlers/twitterHandler.js', 'twitter', 7);
-            $.registerChatSubcommand('twitter', 'set', 1);
-            $.registerChatSubcommand('twitter', 'post', 1);
-            $.registerChatSubcommand('twitter', 'lasttweet', 7);
-            $.registerChatSubcommand('twitter', 'lastmention', 7);
-            $.registerChatSubcommand('twitter', 'lastretweet', 7);
-            $.registerChatSubcommand('twitter', 'id', 7);
-            $.registerChatSubcommand('twitter', 'register', 7);
-            $.registerChatSubcommand('twitter', 'unregister', 7);
-        }
+        $.registerChatCommand('./handlers/twitterHandler.js', 'twitter', 7);
+        $.registerChatSubcommand('twitter', 'set', 1);
+        $.registerChatSubcommand('twitter', 'post', 1);
+        $.registerChatSubcommand('twitter', 'lasttweet', 7);
+        $.registerChatSubcommand('twitter', 'lastmention', 7);
+        $.registerChatSubcommand('twitter', 'lastretweet', 7);
+        $.registerChatSubcommand('twitter', 'id', 7);
+        $.registerChatSubcommand('twitter', 'register', 7);
+        $.registerChatSubcommand('twitter', 'unregister', 7);
     });
 })();
