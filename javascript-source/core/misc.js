@@ -3,7 +3,7 @@
         respond = getSetIniDbBoolean('settings', 'response_@chat', true),
         action = getSetIniDbBoolean('settings', 'response_action', false),
         secureRandom = new java.security.SecureRandom(),
-        reg = new RegExp(/^@\w+,$/),
+        reg = new RegExp(/^@\w+,\s?$/),
         timeout = 0;
 
     /* 
@@ -128,10 +128,7 @@
      * @param {string} message
      */
     function say(message) {
-        if (message.startsWith('.')) {
-            $.session.say(message);
-            return;
-        } else if (reg.test(message)) {
+        if (reg.test(message)) {
             return;
         }
 
@@ -172,6 +169,17 @@
             }
         }
         $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
+    }
+
+    /**
+     * @function timeoutUserReason
+     * @export $
+     * @param {string} username
+     * @param {string} time
+     * @param {string} reason
+     */
+    function timeoutUserReason(username, time, reason) {
+        $.session.say('.timeout ' + username + ' ' + time + ' ' + reason);
     }
 
     /**
@@ -644,6 +652,7 @@
         isFollower: isFollower
     };
 
+    $.timeoutUserReason = timeoutUserReason;
     $.arrayShuffle = arrayShuffle;
     $.getCurrentHostTarget = getCurrentHostTarget;
     $.getIniDbBoolean = getIniDbBoolean;
