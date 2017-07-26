@@ -325,6 +325,23 @@
         }
     };
 
+    /**
+     * @function getSubCommandFromArguments
+     * @export $
+     * @param command
+     * @param args
+     */
+    function getSubCommandFromArguments(command, args) {
+        if (!commandExists(command) || args[0] === undefined) {
+            return '';
+        } else {
+            if (subCommandExists(command, args[0].toLowerCase())) {
+                return args[0].toLowerCase();
+            }
+            return '';
+        }
+    }
+
     /** Export functions to API */
     $.registerChatCommand = registerChatCommand;
     $.registerChatSubcommand = registerChatSubcommand;
@@ -342,4 +359,5 @@
     $.aliasExists = aliasExists;
     $.registerChatAlias = registerChatAlias;
     $.tempUnRegisterChatCommand = tempUnRegisterChatCommand;
+    $.getSubCommandFromArguments = getSubCommandFromArguments;
 })();

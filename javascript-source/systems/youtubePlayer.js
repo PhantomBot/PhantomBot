@@ -1816,27 +1816,25 @@
     });
 
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/youtubePlayer.js')) {
-            $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', 1);
-            $.registerChatCommand('./systems/youtubePlayer.js', 'musicplayer', 1);
-            $.registerChatCommand('./systems/youtubePlayer.js', 'playlist', 1);
-            $.registerChatCommand('./systems/youtubePlayer.js', 'stealsong', 1);
-            $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 1);
-            $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', 1);
-            $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
-            $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
-            $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
-            $.registerChatCommand('./systems/youtubePlayer.js', 'addsong');
-            $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
-            $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
-            $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
-            $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
-            
-            $.registerChatSubcommand('skipsong', 'vote', 7);
-            $.registerChatSubcommand('wrongsong', 'user', 2);
-
-            loadPanelPlaylist();
-            loadDefaultPl();
-        }
+        $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'musicplayer', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'playlist', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'stealsong', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'addsong');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
+        
+        $.registerChatSubcommand('skipsong', 'vote', 7);
+        $.registerChatSubcommand('wrongsong', 'user', 2);
+        
+        loadPanelPlaylist();
+        loadDefaultPl();
     });
 })();

@@ -283,11 +283,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/ticketRaffleSystem.js')) {
-            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'traffle', 2);
-            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'tickets', 7);
-            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'ticket', 7);
-        }
+        $.registerChatCommand('./systems/ticketRaffleSystem.js', 'traffle', 2);
+        $.registerChatCommand('./systems/ticketRaffleSystem.js', 'tickets', 7);
+        $.registerChatCommand('./systems/ticketRaffleSystem.js', 'ticket', 7);
     });
 
     $.reloadTRaffle = reloadTRaffle;

@@ -395,17 +395,16 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./core/timeSystem.js')) {
-            $.registerChatCommand('./core/timeSystem.js', 'streamertime');
-            $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
-            $.registerChatCommand('./core/timeSystem.js', 'time');
-            $.registerChatSubcommand('time', 'add', 1);
-            $.registerChatSubcommand('time', 'take', 1);
-            $.registerChatSubcommand('time', 'set', 1);
-            $.registerChatSubcommand('time', 'autolevel', 1);
-            $.registerChatSubcommand('time', 'promotehours', 1);
-            $.registerChatSubcommand('time', 'autolevelnotification', 1);
-        }
+        $.registerChatCommand('./core/timeSystem.js', 'streamertime');
+        $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
+        $.registerChatCommand('./core/timeSystem.js', 'time');
+        
+        $.registerChatSubcommand('time', 'add', 1);
+        $.registerChatSubcommand('time', 'take', 1);
+        $.registerChatSubcommand('time', 'set', 1);
+        $.registerChatSubcommand('time', 'autolevel', 1);
+        $.registerChatSubcommand('time', 'promotehours', 1);
+        $.registerChatSubcommand('time', 'autolevelnotification', 1);
     });
 
     /** Export functions to API */

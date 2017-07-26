@@ -200,9 +200,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/auctionSystem.js')) {
-            $.registerChatCommand('./systems/auctionSystem.js', 'auction', 2);
-            $.registerChatCommand('./systems/auctionSystem.js', 'bid', 7);
-        }
+        $.registerChatCommand('./systems/auctionSystem.js', 'auction', 2);
+        $.registerChatCommand('./systems/auctionSystem.js', 'bid', 7);
     });
 })();

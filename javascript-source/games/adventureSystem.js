@@ -511,23 +511,11 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./games/adventureSystem.js')) {
-            clearCurrentAdventure();
-            if (!moduleLoaded) {
-                loadStories();
-                moduleLoaded = true;
-            }
-            $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
-            $.registerChatSubcommand('adventure', 'set', 1);
-        }
-    });
+        $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
+        $.registerChatSubcommand('adventure', 'set', 1);
 
-    /**
-     * Warn the user if the points system is disabled and this is enabled.
-     */
-    if ($.bot.isModuleEnabled('./games/adventureSystem.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
-        $.log.warn("Disabled. ./systems/pointSystem.js is not enabled.");
-    }
+        loadStories();
+    });
 
     $.reloadAdventure = reloadAdventure;
 })();

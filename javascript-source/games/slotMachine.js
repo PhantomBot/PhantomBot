@@ -162,19 +162,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./games/slotMachine.js')) {
-            $.registerChatCommand('./games/slotMachine.js', 'slot', 7);
-            $.registerChatSubcommand('slot', 'rewards', 1);
-            $.registerChatSubcommand('slot', 'emotes', 1);
-        }
+        $.registerChatCommand('./games/slotMachine.js', 'slot', 7);
+        $.registerChatSubcommand('slot', 'rewards', 1);
+        $.registerChatSubcommand('slot', 'emotes', 1);
     });
-
-    /**
-     * Warn the user if the points system is disabled and this is enabled.
-     */
-    if ($.bot.isModuleEnabled('./games/slotMachine.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
-        $.log.error("Disabled. ./systems/pointSystem.js is not enabled.");
-    }
 
     $.loadPrizesSlot = loadPrizes;
 })();
