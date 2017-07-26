@@ -156,7 +156,7 @@
 
 						say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', module.getModuleName()));
 					} catch (ex) {
-						$.log.error('[DISCORD] Unable to call initReady for enabled module (' + module.scriptFile +'): ' + ex.message);
+						$.log.error('[DISCORD] Unable to call initReady for enabled module (' + module.scriptName +'): ' + ex.message);
 					}
 				} else {
 					say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.404', subAction));
@@ -183,13 +183,14 @@
 		     * @discordcommandpath module list - Lists all of the discord modules.
 		     */
 			if (action.equalsIgnoreCase('list')) {
-				var modules = $.bot.modules, 
+				var keys = Object.keys($.bot.modules),
+					modules = $.bot.modules,
 				    list = [],
 				    i;
 
-				for (i in modules) {
-					if (!modules[i].scriptFile.startsWith('./discord/core/') && modules[i].scriptFile.startsWith('./discord/')) {
-						list.push(modules[i].scriptFile + ' [' + (modules[i].enabled === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled')) + ']');
+				for (i in keys) {
+					if (!modules[keys[i]].scriptName.startsWith('./discord/core/') && modules[keys[i]].scriptName.startsWith('./discord/')) {
+						list.push(modules[keys[i]].scriptName + ' [' + (modules[keys[i]].isEnabled === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled')) + ']');
 					}
 				}
 				say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.list', list.join('\r\n')));
