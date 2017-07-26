@@ -5,7 +5,9 @@
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
         tagCheck = new RegExp(/\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(count\)|\(pointname\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
-        customCommands = [];
+        customCommands = [],
+        ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
+        CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
 
     /*
      * @function getCustomAPIValue
@@ -25,9 +27,6 @@
      * @param {string} args
      */
     function runCommand(username, command, args, tags) {
-        var ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
-            CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
-
         if (tags !== undefined) {
             ScriptEventManager.instance().runDirect(new CommandEvent(username, command, args, tags));
         } else {
@@ -578,10 +577,8 @@
      * @returns 1 | 0
      */
     function priceCom(username, command, subCommand, isMod) {
-        var pointsModuleEnabled = $.bot.isModuleEnabled('./systems/pointSystem.js');
-
         if ($.inidb.exists('pricecom', (command + ' ' + subCommand).trim())) {
-            if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(username)) || !isMod)) && pointsModuleEnabled) {
+            if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(username)) || !isMod)) && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
                 var cost = getCommandPrice(command, subCommand, '');
                 
                 if ($.getUserPoints(username) < cost) {
@@ -665,7 +662,7 @@
          */
         if (customCommands[command] !== undefined) {
             var tag = tags(event, customCommands[command], true);
-            if (tag !== null) {
+            if (tag !== null) {               
                 $.say(tag);
             }
             return;
