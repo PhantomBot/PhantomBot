@@ -140,22 +140,23 @@
 			}
 
 			if (action.equalsIgnoreCase('enable')) {
-				var index = $.bot.getModuleIndex(subAction);
+				var module = $.bot.getModule(subAction);
 
-				if (index > -1) {
-					$.setIniDbBoolean('modules', $.bot.modules[index].scriptFile, true);
-					$.bot.modules[index].enabled = true;
-					$.bot.loadScript($.bot.modules[index].scriptFile);
+				if (module !== undefined) {
+					$.setIniDbBoolean('modules', module.scriptName, true);
+                    $.bot.loadScript(module.scriptName);
+                    $.bot.modules[module.scriptName].isEnabled = true;
 
-					var hookIndex = $.bot.getHookIndex($.bot.modules[index].scriptFile, 'initReady');
+					var hookIndex = $.bot.getHookIndex(module.scriptName, 'initReady');
 
 					try {
 						if (hookIndex !== -1) {
-							$.bot.hooks[hookIndex].handler(null);
-							say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', $.bot.modules[index].getModuleName()));
+							$.bot.getHook(module.scriptName, 'initReady').handler();
 						}
+
+						say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', module.getModuleName()));
 					} catch (ex) {
-						$.log.error('[DISCORD] Unable to call initReady for enabled module (' + $.bot.modules[index].scriptFile +'): ' + ex.message);
+						$.log.error('[DISCORD] Unable to call initReady for enabled module (' + module.scriptFile +'): ' + ex.message);
 					}
 				} else {
 					say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.404', subAction));
@@ -166,13 +167,13 @@
 		     * @discordcommandpath module disable [path] - Disables any modules in the bot, it should only be used to enable discord modules though.
 		     */
 			if (action.equalsIgnoreCase('disable')) {
-				var index = $.bot.getModuleIndex(subAction);
+				var module = $.bot.getModule(subAction);
 
-				if (index > -1) {
-					$.setIniDbBoolean('modules', $.bot.modules[index].scriptFile, false);
-					$.bot.modules[index].enabled = false;
+				if (module !== undefined) {
+					$.setIniDbBoolean('modules', module.scriptName, false);
+                    $.bot.modules[module.scriptName].isEnabled = false;
 
-					say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.disabled', $.bot.modules[index].getModuleName()));
+					say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.disabled', module.getModuleName()));
 				} else {
 					say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.404', subAction));
 				}
