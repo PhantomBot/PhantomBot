@@ -314,10 +314,10 @@
      * @param {string} reason
      */
     function timeoutUserFor(username, time, reason) {
-        $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+        $.timeoutUserReason(username, time, reason);
         var timeout = setTimeout(function() {
             if ($.getMessageWrites() < 7) {
-                $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+                $.timeoutUserReason(username, time, reason);
             }
             clearInterval(timeout);
         }, 1000);
