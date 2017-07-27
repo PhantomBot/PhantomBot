@@ -154,7 +154,7 @@
                 if (files[i] == 'core' || files[i] == 'lang' || files[i] == 'discord' || files[i] == 'init.js') {
                     continue;
                 }
-            } else {
+            } else if (path === './discord') {
                 if (files[i] == 'core') {
                     continue;
                 }
