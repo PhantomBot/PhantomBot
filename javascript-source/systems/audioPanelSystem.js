@@ -10,7 +10,7 @@
      * @function updateAudioHookDB
      */
     function updateAudioHookDB() {
-        var audioHookFiles = $.findFiles('.config/audio-hooks/', ''),
+        var audioHookFiles = $.findFiles('./config/audio-hooks/', ''),
             audioHookNames = {},
             dbAudioHookNames,
             reFileExt = new RegExp(/\.mp3$|\.ogg$|\.aac$/);
