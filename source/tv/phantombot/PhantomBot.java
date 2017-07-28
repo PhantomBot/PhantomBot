@@ -1060,9 +1060,9 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("inidb", dataStore, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv5.instance(), 0);
-        Script.global.defineProperty("botName", botName.toLowerCase(), 0);
-        Script.global.defineProperty("channelName", channelName.toLowerCase(), 0);
-        Script.global.defineProperty("ownerName", ownerName.toLowerCase(), 0);
+        Script.global.defineProperty("botName", botName, 0);
+        Script.global.defineProperty("channelName", channelName, 0);
+        Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("ytplayer", (useHttps ? youtubeSocketSecureServer : youtubeSocketServer), 0);
         if (testPanelServer) {
             Script.global.defineProperty("panelsocketserver", newPanelSocketServer, 0);
@@ -2102,6 +2102,9 @@ public final class PhantomBot implements Listener {
 
     /* Load up main */
     public static void main(String[] args) throws IOException {
+        // Move user files.
+        moveUserConfig();
+
         /* List of properties that must exist. */
         String requiredProperties[] = new String[] { "oauth", "channel", "owner", "user" };
         String requiredPropertiesErrorMessage = "";
@@ -2126,8 +2129,8 @@ public final class PhantomBot implements Listener {
 
         /* Load up the bot info from the bot login file */
         try {
-            if (new File("botlogin.txt").exists()) {
-                FileInputStream inputStream = new FileInputStream("botlogin.txt");
+            if (new File("./config/botlogin.txt").exists()) {
+                FileInputStream inputStream = new FileInputStream("./config/botlogin.txt");
                 startProperties.load(inputStream);
                 inputStream.close();
             } else {
@@ -2180,13 +2183,13 @@ public final class PhantomBot implements Listener {
         /* Check to see if there's a webOauth set */
         if (startProperties.getProperty("webauth") == null) {
             startProperties.setProperty("webauth", generateWebAuth());
-            com.gmt2001.Console.debug.println("New webauth key has been generated for botlogin.txt");
+            com.gmt2001.Console.debug.println("New webauth key has been generated for ./config/botlogin.txt");
             changed = true;
         }
         /* Check to see if there's a webOAuthRO set */
         if (startProperties.getProperty("webauthro") == null) {
             startProperties.setProperty("webauthro", generateWebAuth());
-            com.gmt2001.Console.debug.println("New webauth read-only key has been generated for botlogin.txt");
+            com.gmt2001.Console.debug.println("New webauth read-only key has been generated for ./config/botlogin.txt");
             changed = true;
         }
         /* Check to see if there's a panelUsername set */
@@ -2204,13 +2207,13 @@ public final class PhantomBot implements Listener {
         /* Check to see if there's a youtubeOAuth set */
         if (startProperties.getProperty("ytauth") == null) {
             startProperties.setProperty("ytauth", generateWebAuth());
-            com.gmt2001.Console.debug.println("New YouTube websocket key has been generated for botlogin.txt");
+            com.gmt2001.Console.debug.println("New YouTube websocket key has been generated for ./config/botlogin.txt");
             changed = true;
         }
         /* Check to see if there's a youtubeOAuthThro set */
         if (startProperties.getProperty("ytauthro") == null) {
             startProperties.setProperty("ytauthro", generateWebAuth());
-            com.gmt2001.Console.debug.println("New YouTube read-only websocket key has been generated for botlogin.txt");
+            com.gmt2001.Console.debug.println("New YouTube read-only websocket key has been generated for ./config/botlogin.txt");
             changed = true;
         }
 
@@ -2374,7 +2377,7 @@ public final class PhantomBot implements Listener {
             };
 
             try {
-                try (FileOutputStream outputStream = new FileOutputStream("botlogin.txt")) {
+                try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
                     outputProperties.putAll(startProperties);
                     outputProperties.store(outputStream, "PhantomBot Configuration File");
                 }
@@ -2402,13 +2405,13 @@ public final class PhantomBot implements Listener {
         pbProperties.setProperty("gamewisprefresh", newTokens[1]);
 
         try {
-            try (FileOutputStream outputStream = new FileOutputStream("botlogin.txt")) {
+            try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
                 outputProperties.putAll(pbProperties);
                 outputProperties.store(outputStream, "PhantomBot Configuration File");
             }
             print("GameWisp Token has been refreshed.");
         } catch (IOException ex) {
-            com.gmt2001.Console.err.println("!!!! CRITICAL !!!! Failed to update GameWisp Refresh Tokens into botlogin.txt! Must manually add!");
+            com.gmt2001.Console.err.println("!!!! CRITICAL !!!! Failed to update GameWisp Refresh Tokens into ./config/botlogin.txt! Must manually add!");
             com.gmt2001.Console.err.println("!!!! CRITICAL !!!! gamewispauth = " + newTokens[0] + " gamewisprefresh = " + newTokens[1]);
         }
 
@@ -2568,5 +2571,57 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.err.println("Failed to clean up database backup directory: " + ex.getMessage());
             }
         }, 0, backupSQLiteHourFrequency, TimeUnit.HOURS);
+    }
+
+    /*
+     * Method that moves the db and botlogin into a new folder (config)
+     */
+    private static void moveUserConfig() {
+        // Check if the config folder exists.
+        if (!new File("./config/").isDirectory()) {
+            new File("./config/").mkdir();
+        }
+
+        // Move the db and login file. If one of these doesn't exist it means this is a new bot.
+        if (!new File("phantombot.db").exists() || !new File("botlogin.txt").exists()) {
+            return;
+        }
+
+        com.gmt2001.Console.out.println("Moving the phantombot.db and botlogin.txt files into ./config");
+        
+        try {
+            Files.move(Paths.get("botlogin.txt"), Paths.get("./config/botlogin.txt"));
+            Files.move(Paths.get("phantombot.db"), Paths.get("./config/phantombot.db"));
+
+            try {
+                new File("phantombot.db").delete();
+                new File("botlogin.txt").delete();
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.println("Failed to delete files [phantombot.db] [botlogin.txt] [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to move files [phantombot.db] [botlogin.txt] [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+        }
+
+        // Move audio hooks and alerts. These two files should always exists.
+        if (!new File("./web/panel/js/ion-sound/sounds").exists() || !new File("./web/alerts/data").exists()) {
+            return;
+        }
+
+        com.gmt2001.Console.out.println("Moving alerts and audio hooks into ./config");
+
+        try {
+            Files.move(Paths.get("./web/panel/js/ion-sound/sounds"), Paths.get("./config/audio-hooks"));
+            Files.move(Paths.get("./web/alerts/data"), Paths.get("./config/gif-alerts"));
+
+            try {
+                FileUtils.deleteDirectory(new File("./web/panel/js/ion-sound/sounds"));
+                FileUtils.deleteDirectory(new File("./web/alerts/data"));
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.println("Failed to delete old audio hooks and alerts [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to move audio hooks and alerts [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+        }
     }
 }

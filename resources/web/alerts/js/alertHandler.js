@@ -107,10 +107,10 @@ connection.onmessage = function(e) {
         } 
         imageFileBasename = imageFile.substring(0, imageFile.indexOf('.'));
         $("#imageLocation img").attr('src','');
-        $("#imageLocation").html('<img src="/alerts/data/' + imageFile + '">').fadeIn(1000);
+        $("#imageLocation").html('<img src="/config/' + imageFile + '">').fadeIn(1000);
 
         // If the file doesn't exist a DOM error is tossed to the Console.
-        var audioObj = new Audio('/alerts/data/' + imageFileBasename + '.mp3');
+        var audioObj = new Audio('/config/' + imageFileBasename + '.mp3');
         audioObj.volume = imageVolume;
         audioObj.play();
 
