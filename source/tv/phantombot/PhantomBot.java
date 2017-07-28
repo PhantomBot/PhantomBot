@@ -2287,9 +2287,9 @@ public final class PhantomBot implements Listener {
 
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("PhantomBot will launch in 5 seconds.\r\n");
-                com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the panel here: http://localhost:25005/panel \r\n");
+                com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the panel here: http://localhost:25000/panel \r\n");
                 com.gmt2001.Console.out.print("If you're running the bot on a server, make sure to open the following ports: \r\n");
-                com.gmt2001.Console.out.print("25003, 25004, and 25005. You can change 'localhost' to your server ip to access the panel. \r\n");
+                com.gmt2001.Console.out.print("25000, 25003, and 25004. You can change 'localhost' to your server ip to access the panel. \r\n");
 
                 try {
                     Thread.sleep(5000);
