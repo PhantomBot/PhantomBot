@@ -53,7 +53,7 @@
      * @param {String} message
      */
     function consoleLn(message) {
-        Packages.com.gmt2001.Console.out.println(message);
+        Packages.com.gmt2001.Console.out.println(java.util.Objects.toString(message));
     }
 
     /*
@@ -66,7 +66,7 @@
             try {
                 throw new Error();
             } catch (err) {
-                Packages.com.gmt2001.Console.debug.printlnRhino('[' + err.stack.split('\n')[1].trim() + '] ' + message);
+                Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + stackData.trim() + '] ' + message));
             }
         }
     }
@@ -340,7 +340,6 @@
 
         // Load all the other modules.
         loadScriptRecursive('.');
-
 
         // Load Discord modules if need be.
         if (!$.hasDiscordToken) {
