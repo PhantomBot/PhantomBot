@@ -265,16 +265,15 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/audioPanelSystem.js')) {
-            $.registerChatCommand('./systems/audioPanelSystem.js', 'reloadaudiopanelhooks', 30);
-            $.registerChatCommand('./systems/audioPanelSystem.js', 'audiohook', 1);
-            $.registerChatSubcommand('audiohook', 'play', 1);
-            $.registerChatSubcommand('audiohook', 'list', 1);
-            $.registerChatSubcommand('audiohook', 'togglemessages', 1);
-            $.registerChatSubcommand('audiohook', 'customcommand', 1);
-            loadAudioHookCommands();
-            updateAudioHookDB();
-        }
+        $.registerChatCommand('./systems/audioPanelSystem.js', 'reloadaudiopanelhooks', 30);
+        $.registerChatCommand('./systems/audioPanelSystem.js', 'audiohook', 1);
+        $.registerChatSubcommand('audiohook', 'play', 1);
+        $.registerChatSubcommand('audiohook', 'list', 1);
+        $.registerChatSubcommand('audiohook', 'togglemessages', 1);
+        $.registerChatSubcommand('audiohook', 'customcommand', 1);
+        
+        loadAudioHookCommands();
+        updateAudioHookDB();
     });
 
     $.loadAudioHookCommands = loadAudioHookCommands;
