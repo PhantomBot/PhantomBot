@@ -65,7 +65,7 @@
                     keyString = keyword;
                 }
 
-                ScriptEventManager.instance().runDirect(new CommandEvent(event.getSender(), keyString, arguments));
+                ScriptEventManager.instance().onEvent(new CommandEvent(event.getSender(), keyString, arguments));
                 return;
             }
 

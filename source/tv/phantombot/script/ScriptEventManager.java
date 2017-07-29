@@ -14,143 +14,136 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package tv.phantombot.script;
 
-import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
-import java.util.Iterator;
-import java.util.List;
+
 import java.util.concurrent.ConcurrentHashMap;
-import tv.phantombot.PhantomBot;
-import tv.phantombot.event.Event;
-import tv.phantombot.event.Listener;
+import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.lang3.text.WordUtils;
+import org.reflections.Reflections;
+
+import tv.phantombot.event.Listener;
+import tv.phantombot.event.Event;
+import tv.phantombot.PhantomBot;
 
 public class ScriptEventManager implements Listener {
-
     private static final ScriptEventManager instance = new ScriptEventManager();
+    private final ConcurrentHashMap<String, EventHandler> events = new ConcurrentHashMap<>();
+    private final List<String> classes = new ArrayList<>();
+    private boolean isKilled = false;
 
+    /*
+     * Method to get this instance.
+     *
+     * @return {Object}
+     */
     public static ScriptEventManager instance() {
         return instance;
     }
-    
-    private static final String[] eventPackages = new String[] {
-        "tv.phantombot.event.command",
-        "tv.phantombot.event.irc.message",
-        "tv.phantombot.event.irc",
-        "tv.phantombot.event.subscribers",
-        "tv.phantombot.event.bits",
-        "tv.phantombot.event.musicplayer",
-        "tv.phantombot.event.ytplayer",
-        "tv.phantombot.event.console",
-        "tv.phantombot.event.devcommand",
-        "tv.phantombot.event.twitch.follower",
-        "tv.phantombot.event.twitch.host",
-        "tv.phantombot.event.twitch.subscriber",
-        "tv.phantombot.event.twitch.online",
-        "tv.phantombot.event.twitch.offline",
-        "tv.phantombot.event.twitch.gamechange",
-        "tv.phantombot.event.irc.channel",
-        "tv.phantombot.event.irc.complete",
-        "tv.phantombot.event.irc.clearchat",
-        "tv.phantombot.event.twitchalerts.donate",
-        "tv.phantombot.event.streamtip.donate",
-        "tv.phantombot.event.tipeeestream.donate",
-        "tv.phantombot.event.emotes",
-        "tv.phantombot.event.gamewisp",
-        "tv.phantombot.event.twitter",
-        "tv.phantombot.event.discord",
-        "tv.phantombot.event.moderation",
-        "tv.phantombot.event.webpanel"
-    };
 
+    /*
+     * Class constructor.
+     */
     private ScriptEventManager() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+
+        Reflections reflections = new Reflections("tv.phantombot.event");
+        Set<Class<? extends Event>> classes = reflections.getSubTypesOf(Event.class);
+
+        for (Class<? extends Event> c : classes) {
+            this.classes.add(c.getName().substring(0, c.getName().lastIndexOf(".")));
+        }
     }
 
-    private static class EventHandlerEntry {
+    /*
+     * Method that handles events.
+     *
+     * @param {Event} event
+     */
+    @Subscribe
+    public void onEvent(Event event) {
+        if (!isKilled) {
+            try {
+                String eventName = event.getClass().getName();
+                EventHandler e = events.get(eventName);
 
+                e.handler.handle(event);
+
+                com.gmt2001.Console.debug.println("Dispatched event " + eventName);
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.println("Failed to dispatch event " + event.getClass().getName());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+    }
+
+    /*
+     * Method to register event handlers.
+     *
+     * @param {String} eventName
+     * @param {ScriptEventHandler} handler
+     */
+    public void register(String eventName, ScriptEventHandler handler) {
+        eventName = (WordUtils.capitalize(eventName) + "Event");
+        Class<? extends Event> event = null;
+
+        for (String c : classes) {
+            try {
+                event = Class.forName(c + "." + eventName).asSubclass(Event.class);
+                break;
+            } catch (ClassNotFoundException ex) {
+
+            }
+        }
+
+        if (event != null) {
+            events.put(event.getName(), new EventHandler(event, handler));
+        } else {
+            throw new RuntimeException("Event class not found for: " + eventName);
+        }
+    }
+
+    /*
+     * Method to unregister an event handler
+     *
+     * @param {ScriptEventHandler} handler
+     */
+    public void unregister(ScriptEventHandler handler) {
+        Set<Entry<String, EventHandler>> entries = events.entrySet();
+        EventHandler entry;
+
+        for (Entry<String, EventHandler> e : entries) {
+            entry = e.getValue();
+
+            if (entry.handler == handler) {
+                events.remove(e.getKey());
+            }
+        }
+    }
+
+    /*
+     * Method to kill this instance.
+     */
+    public void kill() {
+        this.isKilled = true;
+    }
+
+    /*
+     * Class for events.
+     */
+    private class EventHandler {
         Class<? extends Event> eventClass;
         ScriptEventHandler handler;
 
-        private EventHandlerEntry(Class<? extends Event> eventClass, ScriptEventHandler handler) {
+        private EventHandler(Class<? extends Event> eventClass, ScriptEventHandler handler) {
             this.eventClass = eventClass;
             this.handler = handler;
-        }
-    }
-    private final List<EventHandlerEntry> entries = Lists.newCopyOnWriteArrayList();
-    private final ConcurrentHashMap<String,EventHandlerEntry> hashEntries = new ConcurrentHashMap<String,EventHandlerEntry>();
-
-    public void runDirect(Event event) {
-        if (PhantomBot.instance().isExiting()) {
-            return;
-        }
-
-        try {
-            EventHandlerEntry entry = hashEntries.get(event.getClass().getName());
-            if (entry != null) {
-                entry.handler.handle(event);
-                com.gmt2001.Console.debug.println("Dispatched runDirect event " + entry.eventClass.getName());
-            }
-        } catch (Exception e) {
-            com.gmt2001.Console.err.println("Failed to dispatch runDirect event " + event.getClass().getName());
-            com.gmt2001.Console.err.printStackTrace(e);
-        }
-    }
-
-    @Subscribe
-    public void onEvent(Event event) {
-        if (PhantomBot.instance().isExiting()) {
-            return;
-        }
-
-        try {
-            for (EventHandlerEntry entry : entries) {
-                if (event.getClass().isAssignableFrom(entry.eventClass)) {
-                    entry.handler.handle(event);
-                    com.gmt2001.Console.debug.println("Dispatched event " + entry.eventClass.getName());
-                }
-            }
-        } catch (Exception e) {
-            com.gmt2001.Console.err.println("Failed to dispatch event " + event.getClass().getName());
-            com.gmt2001.Console.err.printStackTrace(e);
-        }
-    }
-
-    public void register(String eventName, ScriptEventHandler handler) {
-        Class<? extends Event> eventClass = null;
-        for (String eventPackage : eventPackages) {
-            try {
-                eventClass = Class.forName(eventPackage + "." + WordUtils.capitalize(eventName) + "Event").asSubclass(Event.class);
-                break;
-            } catch (ClassNotFoundException e) {
-            }
-        }
-
-        if (eventClass == null) {
-            throw new RuntimeException("Event class not found: " + eventName);
-        }
-
-        entries.add(new EventHandlerEntry(eventClass, handler));
-        hashEntries.put(eventClass.getName(), new EventHandlerEntry(eventClass, handler));
-    }
-
-    public void unregister(ScriptEventHandler handler) {
-        EventHandlerEntry entry;
-
-        Iterator<EventHandlerEntry> iterator = entries.iterator();
-        while (iterator.hasNext()) {
-            entry = iterator.next();
-            if (entry.handler == handler) {
-                entries.remove(entry);
-            }
-        }
- 
-        for (ConcurrentHashMap.Entry<String, EventHandlerEntry> hashEntry : hashEntries.entrySet()) {
-            entry = hashEntry.getValue();
-            if (entry.handler == handler) {
-                hashEntries.remove(hashEntry.getKey());
-            }
         }
     }
 }
