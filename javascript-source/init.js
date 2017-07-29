@@ -65,8 +65,8 @@
         if (Packages.me.mast3rplan.phantombot.PhantomBot.enableDebugging) {
             try {
                 throw new Error();
-            } catch (err) {
-                Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + stackData.trim() + '] ' + message));
+            } catch (ex) {
+                Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + ex.stack.split('\n')[1].trim() + '] ' + message));
             }
         }
     }
