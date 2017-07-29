@@ -30,7 +30,6 @@ import org.reflections.Reflections;
 
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.Event;
-import tv.phantombot.PhantomBot;
 
 public class ScriptEventManager implements Listener {
     private static final ScriptEventManager instance = new ScriptEventManager();
