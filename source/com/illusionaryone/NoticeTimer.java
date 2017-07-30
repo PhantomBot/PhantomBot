@@ -271,7 +271,7 @@ public class NoticeTimer implements Runnable {
                 command = commandString.substring(0, commandString.indexOf(" "));
                 arguments = commandString.substring(commandString.indexOf(" ") + 1);
             }
-            this.scriptEventManager.runDirect(new CommandEvent(botname, command, arguments));
+            this.scriptEventManager.onEvent(new CommandEvent(botname, command, arguments));
         } else {
             this.session.say(message);
         }
@@ -367,7 +367,7 @@ public class NoticeTimer implements Runnable {
                     command = commandString.substring(0, commandString.indexOf(" "));
                     arguments = commandString.substring(commandString.indexOf(" ") + 1);
                 }
-                this.scriptEventManager.runDirect(new CommandEvent(botname, command, arguments));
+                this.scriptEventManager.onEvent(new CommandEvent(botname, command, arguments));
             } else {
                 this.session.say(message);
             }

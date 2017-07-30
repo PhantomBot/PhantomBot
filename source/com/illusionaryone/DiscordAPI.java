@@ -658,7 +658,7 @@ public class DiscordAPI {
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
 
-        ScriptEventManager.instance().runDirect(new DiscordCommandEvent(sender, channel, command, arguments, isAdmin));
+        ScriptEventManager.instance().onEvent(new DiscordCommandEvent(sender, channel, command, arguments, isAdmin));
     }
 
     /*

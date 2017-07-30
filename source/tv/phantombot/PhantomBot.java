@@ -1116,7 +1116,8 @@ public final class PhantomBot implements Listener {
         isExiting = true;
 
         print("Stopping all events and message dispatching...");
-
+        ScriptEventManager.instance().kill();
+        
         /* Gonna need a way to pass this to all channels */
         if (PhantomBot.getSession(this.channelName) != null) {
             PhantomBot.getSession(this.channelName).setAllowSendMessages(false);
@@ -1791,7 +1792,7 @@ public final class PhantomBot implements Listener {
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
-        ScriptEventManager.instance().runDirect(new CommandEvent(username, command, arguments, null, channel));
+        ScriptEventManager.instance().onEvent(new CommandEvent(username, command, arguments, null, channel));
     }
 
     /* Handle commands */
@@ -1804,7 +1805,7 @@ public final class PhantomBot implements Listener {
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
-        ScriptEventManager.instance().runDirect(new CommandEvent(username, command, arguments));
+        ScriptEventManager.instance().onEvent(new CommandEvent(username, command, arguments));
     }
 
     /* Handles dev debug commands. */
@@ -1888,7 +1889,7 @@ public final class PhantomBot implements Listener {
                 return;
             }
 
-            ScriptEventManager.instance().runDirect(new DeveloperCommandEvent(sender, command, arguments, id));
+            ScriptEventManager.instance().onEvent(new DeveloperCommandEvent(sender, command, arguments, id));
             Logger.instance().log(Logger.LogType.Debug, "User: " + sender + " Issued Command: " + command + ". Id: " + id);
             Logger.instance().log(Logger.LogType.Debug, "");
         }

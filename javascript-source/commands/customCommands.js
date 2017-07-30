@@ -28,9 +28,9 @@
      */
     function runCommand(username, command, args, tags) {
         if (tags !== undefined) {
-            ScriptEventManager.instance().runDirect(new CommandEvent(username, command, args, tags));
+            ScriptEventManager.instance().onEvent(new CommandEvent(username, command, args, tags));
         } else {
-            ScriptEventManager.instance().runDirect(new CommandEvent(username, command, args));
+            ScriptEventManager.instance().onEvent(new CommandEvent(username, command, args));
         }  
     }
 
