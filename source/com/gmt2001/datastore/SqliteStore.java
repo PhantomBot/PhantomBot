@@ -441,9 +441,16 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        return GetKeysByOrderInternal(fName, section, order, limit, offset, false);
+    }
 
+    @Override
+    public String[] GetKeysByNumberOrder(String fName, String section, String order, String limit, String offset) {
+        return GetKeysByOrderInternal(fName, section, order, limit, offset, true);
+    }
+
+    private String[] GetKeysByOrderInternal(String fName, String section, String order, String limit, String offset, boolean isNumber) {
+        String statementStr;
         fName = validateFname(fName);
         order = sanitizeOrder(order);
         limit = sanitizeLimit(limit);
@@ -451,7 +458,12 @@ public class SqliteStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                if (isNumber) {
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(variable as INTEGER) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                } else {
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                }
+                try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
     
@@ -469,7 +481,12 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                if (isNumber) {
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(variable as INTEGER) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                } else {
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                }
+                try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -494,9 +511,16 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByOrderValue(String fName, String section, String order, String limit, String offset) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        return GetKeysByOrderValueInternal(fName, section, order, limit, offset, false);
+    }
 
+    @Override
+    public String[] GetKeysByNumberOrderValue(String fName, String section, String order, String limit, String offset) {
+        return GetKeysByOrderValueInternal(fName, section, order, limit, offset, true);
+    }
+
+    private String[] GetKeysByOrderValueInternal(String fName, String section, String order, String limit, String offset, boolean isNumber) {
+        String statementStr;
         fName = validateFname(fName);
         order = sanitizeOrder(order);
         limit = sanitizeLimit(limit);
@@ -504,7 +528,13 @@ public class SqliteStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                if (isNumber) {
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(value as INTEGER) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                } else {
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                }
+
+                try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
@@ -522,7 +552,12 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                if (isNumber) {
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(value as INTEGER) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                } else {
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                }
+                try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
 
                     try (ResultSet rs = statement.executeQuery()) {
