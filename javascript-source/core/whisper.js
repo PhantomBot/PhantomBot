@@ -71,7 +71,7 @@
                 command = message;
             }
 
-            ScriptEventManager.instance().runDirect(new CommandEvent(sender, command, arguments));            
+            ScriptEventManager.instance().onEvent(new CommandEvent(sender, command, arguments));            
             $.log.file('whispers', '' + sender + ': ' + message);
         }
     });

@@ -252,7 +252,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Send the command event with the ircv3 tags from Twitch. */
-        scriptEventManager.runDirect(new CommandEvent(username, command, arguments, tagsMap));
+        scriptEventManager.onEvent(new CommandEvent(username, command, arguments, tagsMap));
     }
 
     /*
@@ -285,7 +285,7 @@ public class TwitchWSIRCParser {
 
         /* Check to see if the user is donating/cheering bits. */
         if (tagsMap.containsKey("bits")) {
-            scriptEventManager.runDirect(new BitsEvent(session, channel, username, tagsMap.get("bits")));
+            scriptEventManager.onEvent(new BitsEvent(session, channel, username, tagsMap.get("bits")));
         }
 
         /* Check to see if the user is a channel subscriber. */
@@ -321,7 +321,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Send the moderation event. */
-        scriptEventManager.runDirect(new IrcModerationEvent(session, username, message, channel, tagsMap));
+        scriptEventManager.onEvent(new IrcModerationEvent(session, username, message, channel, tagsMap));
 
         /* Send the message to the scripts. */
         eventBus.postAsync(new IrcChannelMessageEvent(session, username, message, channel, tagsMap));
@@ -435,13 +435,13 @@ public class TwitchWSIRCParser {
     private void userNotice(String message, String username, Map<String, String> tagsMap) {
         if (tagsMap.containsKey("msg-id")) {
             if (tagsMap.get("msg-id").equalsIgnoreCase("resub")) {
-                scriptEventManager.runDirect(new NewReSubscriberEvent(session, channel, tagsMap.get("login"), tagsMap.get("msg-param-months")));
+                scriptEventManager.onEvent(new NewReSubscriberEvent(session, channel, tagsMap.get("login"), tagsMap.get("msg-param-months")));
             } else {
                 if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
                     if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
-                        scriptEventManager.runDirect(new NewPrimeSubscriberEvent(session, channel, tagsMap.get("login")));
+                        scriptEventManager.onEvent(new NewPrimeSubscriberEvent(session, channel, tagsMap.get("login")));
                     } else {
-                        scriptEventManager.runDirect(new NewSubscriberEvent(session, channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
+                        scriptEventManager.onEvent(new NewSubscriberEvent(session, channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
                     }
                 }
             }
