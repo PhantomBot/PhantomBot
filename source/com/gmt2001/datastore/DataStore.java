@@ -58,34 +58,66 @@ public class DataStore {
     }
 
     public String[] GetKeysByOrder(String fName) {
-        return this.GetKeysByOrder(fName, "", "DESC", "0", String.valueOf(Integer.MAX_VALUE));
+        return this.GetKeysByOrder(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
     }
 
     public String[] GetKeysByOrder(String fName, String section) {
-        return this.GetKeysByOrder(fName, section, "DESC", "0", String.valueOf(Integer.MAX_VALUE));
+        return this.GetKeysByOrder(fName, section, "DESC", String.valueOf(Integer.MAX_VALUE), "0");
     }
 
     public String[] GetKeysByOrder(String fName, String section, String order) {
-        return this.GetKeysByOrder(fName, section, order, "0", String.valueOf(Integer.MAX_VALUE));
+        return this.GetKeysByOrder(fName, section, order, String.valueOf(Integer.MAX_VALUE), "0");
     }
 
     public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
         return new String[] { };
     }
 
+    public String[] GetKeysByNumberOrder(String fName) {
+        return this.GetKeysByNumberOrder(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+    }
+
+    public String[] GetKeysByNumberOrder(String fName, String section) {
+        return this.GetKeysByNumberOrder(fName, section, "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+    }
+
+    public String[] GetKeysByNumberOrder(String fName, String section, String order) {
+        return this.GetKeysByNumberOrder(fName, section, order, String.valueOf(Integer.MAX_VALUE), "0");
+    }
+
+    public String[] GetKeysByNumberOrder(String fName, String section, String order, String limit, String offset) {
+        return new String[] { };
+    }
+
     public String[] GetKeysByOrderValue(String fName) {
-        return this.GetKeysByOrderValue(fName, "", "DESC", "0", String.valueOf(Integer.MAX_VALUE));
+        return this.GetKeysByOrderValue(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
     }
 
     public String[] GetKeysByOrderValue(String fName, String section) {
-        return this.GetKeysByOrderValue(fName, section, "DESC", "0", String.valueOf(Integer.MAX_VALUE));
+        return this.GetKeysByOrderValue(fName, section, "DESC", String.valueOf(Integer.MAX_VALUE), "0");
     }
 
     public String[] GetKeysByOrderValue(String fName, String section, String order) {
-        return this.GetKeysByOrderValue(fName, section, order, "0", String.valueOf(Integer.MAX_VALUE));
+        return this.GetKeysByOrderValue(fName, section, order, String.valueOf(Integer.MAX_VALUE), "0");
     }
 
     public String[] GetKeysByOrderValue(String fName, String section, String order, String limit, String offset) {
+        return new String[] { };
+    }
+
+    public String[] GetKeysByNumberOrderValue(String fName) {
+        return this.GetKeysByNumberOrderValue(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+    }
+
+    public String[] GetKeysByNumberOrderValue(String fName, String section) {
+        return this.GetKeysByNumberOrderValue(fName, section, "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+    }
+
+    public String[] GetKeysByNumberOrderValue(String fName, String section, String order) {
+        return this.GetKeysByNumberOrderValue(fName, section, order, String.valueOf(Integer.MAX_VALUE), "0");
+    }
+
+    public String[] GetKeysByNumberOrderValue(String fName, String section, String order, String limit, String offset) {
         return new String[] { };
     }
 
