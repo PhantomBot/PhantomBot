@@ -67,9 +67,9 @@
                     rank = ranksData[idx]['value'];
                     html += "<tr class=\"textList\">" +
                             "    <td><form onkeypress=\"return event.keyCode != 13\">" +
-                            "        <input type=\"text\" id=\"inlineRankHoursEdit_" + hours + "\"" +
+                            "        <input type=\"text\" class=\"rank-control\" id=\"inlineRankHoursEdit_" + hours + "\"" +
                             "               value=\"" + hours + "\" style=\"width: 10%\"/>" +
-                            "        <input type=\"text\" id=\"inlineRankNameEdit_" + hours + "\"" +
+                            "        <input type=\"text\" class=\"rank-control\" id=\"inlineRankNameEdit_" + hours + "\"" +
                             "               value=\"" + rank + "\" style=\"width: 50%\"/>" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" + 
                             "                onclick=\"$.updateRank('" + hours + "')\"><i class=\"fa fa-pencil\" />" +
@@ -103,7 +103,7 @@
                             "    </td>" +
                             "    <td style=\"width: 8em\">" + user + "</td>" +
                             "    <td><form onkeypress=\"return event.keyCode != 13\">" +
-                            "        <input type=\"text\" id=\"inlineRankCustomEdit_" + user + "\"" +
+                            "        <input type=\"text\" class=\"rank-control\" id=\"inlineRankCustomEdit_" + user + "\"" +
                             "               value=\"" + rank + "\" style=\"width: 80%\" />" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" + 
                             "                onclick=\"$.updateCustomRank('" + user + "')\"><i class=\"fa fa-pencil\" />" +
