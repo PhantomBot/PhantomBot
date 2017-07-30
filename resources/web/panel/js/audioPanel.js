@@ -118,7 +118,7 @@
                     $(document).ready(function() {
                         ion.sound({
                             sounds: sounds,
-                            path: "/panel/js/ion-sound/sounds/",
+                            path: "/config/audio-hooks/",
                             preload: true,
                             volume: 1.0,
                             ready_callback: ionSoundLoaded,
@@ -141,7 +141,7 @@
             } else {
                 ion.sound({
                     sounds: sounds,
-                    path: "/panel/js/ion-sound/sounds/",
+                    path: "/config/audio-hooks/",
                     preload: true,
                     volume: 1.0,
                     ready_callback: ionSoundLoaded,
