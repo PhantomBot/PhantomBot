@@ -10,7 +10,7 @@
      * @function updateAudioHookDB
      */
     function updateAudioHookDB() {
-        var audioHookFiles = $.findFiles('./web/panel/js/ion-sound/sounds', ''),
+        var audioHookFiles = $.findFiles('./config/audio-hooks/', ''),
             audioHookNames = {},
             dbAudioHookNames,
             reFileExt = new RegExp(/\.mp3$|\.ogg$|\.aac$/);
