@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -27,8 +27,8 @@
 
     var loggingMode = false,
         modeIcon = [];
-        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
 
     /*
      * onMessage
@@ -65,7 +65,7 @@
      * @param {String} mode
      */
     function changeLoggingStatus(mode) {
-        $("#loggingMode").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#loggingMode").html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("log " + mode);
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -78,7 +78,7 @@
         var active = $("#tabs").tabs("option", "active");
         if (active == 5 && isConnected) {
             doQuery();
-            clearInterval(interval); 
+            clearInterval(interval);
         }
     }, 200);
 

@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author ScaniaTV
  */
 (function() {
     var iconToggle = [],
         i;
 
-    iconToggle['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-    iconToggle['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+    iconToggle['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+    iconToggle['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
 
     /*
      * @function onMessage
@@ -117,7 +117,7 @@
                 command,
                 channel,
                 global;
-            
+
             if (keys.length === 0) {
                 $('#commands-list').html('<i>There are no commands defined.</i>');
                 return;
@@ -203,7 +203,7 @@
 
         console.log(htmlId + ';' + script + ';' + table + ';' + key + '');
         if (value !== undefined) {
-            $('#' + htmlId).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+            $('#' + htmlId).html('<i style="color: var(--main-color)" class="fa fa-spinner fa-spin"/>');
         }
 
         if ((typeof data === 'string' && data.length > 0) || typeof data === 'number') {
@@ -214,7 +214,7 @@
                     sendDBUpdate('discord_update', 'chatModerator', 'moderationLogs', 'false');
                 }
             }
-            
+
             console.log(table + ':' + key + ':' + data);
             sendDBUpdate('discord_update', table, key, String(data));
 
@@ -248,7 +248,7 @@
      */
     function updateDiscordCommand(cmd, isToRemove) {
         if ((typeof isToRemove === 'string' ? isToRemove == 'true' : isToRemove == true)) {
-            $('#delete_command_' + cmd.replace(/[^a-z1-9_]/ig, '_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+            $('#delete_command_' + cmd.replace(/[^a-z1-9_]/ig, '_')).html('<i style="color: var(--main-color)" class="fa fa-spinner fa-spin"/>');
             sendDBDelete('discord_command', 'discordCommands', cmd);
             sendDBDelete('discord_command', 'discordPermcom', cmd);
             sendDBDelete('discord_command', 'discordCooldown', cmd);
@@ -324,7 +324,7 @@
      * @function removeKeyword
      */
     function removeKeyword(keyword) {
-        $('#removeKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+        $('#removeKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).html('<i style="color: var(--main-color)" class="fa fa-spinner fa-spin"/>');
         sendDBDelete('discord_keyword', 'discordKeywords', keyword);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -373,7 +373,7 @@
             val2 = $('#slotEmoji2Input').val(),
             val3 = $('#slotEmoji3Input').val(),
             val4 = $('#slotEmoji4Input').val();
-         
+
         if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0) {
             sendDBUpdate('slotEmojis0', 'discordSlotMachineEmojis', 'emoji_0', val0);
             sendDBUpdate('slotEmojis1', 'discordSlotMachineEmojis', 'emoji_1', val1);
@@ -385,7 +385,7 @@
     }
 
     /**
-     * @function setDiscordRollRewards 
+     * @function setDiscordRollRewards
      */
     function setDiscordRollRewards() {
         var val0 = $('#discordRollRewards0Input').val(),

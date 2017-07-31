@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -26,12 +26,12 @@
 (function() {
 
    var refreshIcon = '<i class="fa fa-refresh" />',
-       spinIcon = '<i style=\"color: #6136b1\" class="fa fa-spinner fa-spin" />',
+       spinIcon = '<i style=\"color: var(--main-color)\" class="fa fa-spinner fa-spin" />',
        modeIcon = [],
        settingIcon = [];
 
-       modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-       modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+       modeIcon['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+       modeIcon['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
 
        settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
        settingIcon['true'] = "<i class=\"fa fa-circle\" />";
@@ -153,11 +153,11 @@
     function doQuery() {
         sendDBKeys('hostraid_hosthistory', 'hosthistory');
         sendDBKeys('hostraid_settings', 'settings');
-        sendDBKeys('hostraid_inraids', 'incommingRaids'); 
+        sendDBKeys('hostraid_inraids', 'incommingRaids');
         sendDBKeys('hostraid_outraids', 'outgoingRaids');
     }
 
-    /** 
+    /**
      * @function hostChannel
      */
     function hostChannel() {
@@ -168,7 +168,7 @@
         }
     }
 
-    /** 
+    /**
      * @function raidChannel
      */
     function raidChannel() {
@@ -179,7 +179,7 @@
         }
     }
 
-    /** 
+    /**
      * @function raiderChannel
      */
     function raiderChannel() {
@@ -190,7 +190,7 @@
         }
     }
 
-    /** 
+    /**
      * @function updateHostAnnounce
      */
     function updateHostAnnounce() {
@@ -203,7 +203,7 @@
         }
     }
 
-    /** 
+    /**
      * @function updateAutoHostAnnounce
      */
     function updateAutoHostAnnounce() {
@@ -215,7 +215,7 @@
         }
     }
 
-    /** 
+    /**
      * @function updateHostReward
      */
     function updateHostReward() {
@@ -227,7 +227,7 @@
         }
     }
 
-    /** 
+    /**
      * @function updateAutoHostReward
      */
     function updateAutoHostReward() {
@@ -239,7 +239,7 @@
         }
     }
 
-    /** 
+    /**
      * @function updateHostMinViewers
      */
     function updateHostMinViewers() {
@@ -251,7 +251,7 @@
         }
     }
 
-    /** 
+    /**
      * @function updateHostMinViewers
      */
     function hostMinViewersAlert() {
@@ -277,7 +277,7 @@
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
-    /** 
+    /**
      * @function updateRaidMessage
      */
     function updateRaidMessage() {
@@ -288,7 +288,7 @@
         }
     }
 
-    /** 
+    /**
      * @function toggle
      */
     function toggle(table, key, value) {
