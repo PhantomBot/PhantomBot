@@ -16,39 +16,79 @@
  */
 package tv.phantombot.script;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.List;
+
+import java.io.IOException;
 import java.io.File;
 
 public class ScriptFileWatcher implements Runnable {
+    private static final ScriptFileWatcher instance = new ScriptFileWatcher();
+    private final List<Script> scripts = new CopyOnWriteArrayList<>();
+    private final Thread thread;
+    private boolean isKilled = false;
 
-    private final Script script;
-
-    public ScriptFileWatcher(Script script) {
-        this.script = script;
-
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+    /*
+     * Method that returns this object.
+     *
+     * @return {Object}
+     */
+    public static ScriptFileWatcher instance() {
+        return instance;
     }
 
-    @Override
-    @SuppressWarnings( {
-        "SleepWhileInLoop", "UseSpecificCatch"
-    })
-    public void run() {
-        File file = script.getFile();
-        long lastUpdate = file.lastModified();
-        boolean run = true;
-        while (run) {
-            try {
-                Thread.sleep(100);
-                if (file.lastModified() != lastUpdate) {
-                    lastUpdate = file.lastModified();
-                    script.reload();
-                }
+    /*
+     * Class constructor.
+     */
+    private ScriptFileWatcher() {
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
-                if (script.isKilled()) {
-                    run = false;
+        this.thread = new Thread(this, "tv.phantombot.script.ScriptFileWatcher::run");
+        this.thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        this.thread.start();
+    }
+
+    /*
+     * Method to add scripts to the array list.
+     *
+     * @param {Script} script
+     */
+    public void addScript(Script script) {
+        scripts.add(script);
+    }
+
+    /*
+     * Method to kill this instance.
+     */
+    public void kill() {
+        this.isKilled = true;
+    }
+
+    /*
+     * Method that runs on a new thread to reload scripts.
+     */
+    @SuppressWarnings("SleepWhileInLoop")
+    public void run() {
+        while (!isKilled) {
+            try {
+                for (int i = 0; i < scripts.size(); i++) {
+                    Script script = scripts.get(i);
+                    File file = script.getFile();
+    
+                    if (script.isKilled()) {
+                        scripts.remove(i);
+                    } else {
+                        if (file.lastModified() != script.getLastModified()) {
+                            script.setLastModified(file.lastModified());
+                            script.reload();
+                        }
+                    }
+                    // Sleep a bit here to not gind the user's CPU.
+                    Thread.sleep(5);
                 }
-            } catch (Exception e) {
-                com.gmt2001.Console.err.printStackTrace(e);
+                Thread.sleep(500);
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
     }
