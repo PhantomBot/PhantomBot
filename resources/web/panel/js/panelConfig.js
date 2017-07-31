@@ -3,9 +3,9 @@
 //Do NOT Modify! Overwritten when PhantomBot is restarted!
 var panelSettings = {
     panelPort   : 25004,
-    channelName : "",
-    auth        : "",
-    http        : ""
+    channelName : "justalixe",
+    auth        : "1wu7jX76Os5cEDYtyzKJELLlUmvAUG",
+    http        : "http://"
 };
 
 function getPanelPort() { return panelSettings.panelPort; }

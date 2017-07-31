@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -28,8 +28,8 @@
         saveBets = false,
         toggleWarningMessage = false;
 
-        toggleIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-        toggleIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+        toggleIcon['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+        toggleIcon['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
     /**
      * @function onMessage
      */
@@ -97,7 +97,7 @@
                 for (idx in msgObject['results']) {
                     if (msgObject['results'][idx]['key'] == 'gain') {
                         $('#gainPercent').val(msgObject['results'][idx]['value']);
-                    } 
+                    }
 
                     if (msgObject['results'][idx]['key'] == 'format') {
                         $('#dateFormat').val(msgObject['results'][idx]['value']);
@@ -201,7 +201,7 @@
      * @function toggleSaveBets
      */
     function toggleSaveBets() {
-        $("#toggleSaveBets").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#toggleSaveBets").html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         if (saveBets == 'true') {
             sendDBUpdate('bet_dateformat', 'bettingSettings', 'save', 'false');
             saveBets = 'false';
@@ -217,7 +217,7 @@
      * @function toggleSaveBets
      */
     function toggleWarningMessages() {
-        $("#toggleWarningMessages").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#toggleWarningMessages").html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         if (toggleWarningMessage == 'true') {
             sendDBUpdate('bet_dateformat', 'bettingSettings', 'warningMessages', 'false');
             toggleWarningMessage = 'false';
@@ -261,7 +261,7 @@
             val2 = $('#slotRewards2Input').val(),
             val3 = $('#slotRewards3Input').val(),
             val4 = $('#slotRewards4Input').val();
-         
+
         if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0) {
             sendDBUpdate('slotRewards0', 'slotmachine', 'prizes_0', val0);
             sendDBUpdate('slotRewards1', 'slotmachine', 'prizes_1', val1);
@@ -282,7 +282,7 @@
             val2 = $('#slotEmotes2Input').val(),
             val3 = $('#slotEmotes3Input').val(),
             val4 = $('#slotEmotes4Input').val();
-         
+
         if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0) {
             sendDBUpdate('slotEmotes0', 'slotmachineemotes', 'emote_0', val0);
             sendDBUpdate('slotEmotes1', 'slotmachineemotes', 'emote_1', val1);
@@ -327,7 +327,7 @@
         var value = $('#adventure' + setting + 'Input').val();
 
         if (setting == 'warningMessage') {
-            $("#adventure" + setting).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+            $("#adventure" + setting).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
             if (l == 'true') {
                 sendDBUpdate('games_adventure', 'adventureSettings', setting, 'true');
             } else {
@@ -339,7 +339,7 @@
         }
 
         if (setting == 'enterMessage') {
-            $("#adventure" + setting).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+            $("#adventure" + setting).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
             if (l == 'true') {
                 sendDBUpdate('games_adventure', 'adventureSettings', setting, 'true');
             } else {

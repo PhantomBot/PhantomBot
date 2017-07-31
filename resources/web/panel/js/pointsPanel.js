@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -28,8 +28,8 @@
     var sortType = 'alpha_asc',
         priceComMods = false,
         modeIcon = [];
-        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
 
     /*
      * onMessage
@@ -54,10 +54,10 @@
                 for (idx in msgObject['results']) {
                     var key = "",
                         value = "";
-    
+
                     key = msgObject['results'][idx]['key'];
                     value = msgObject['results'][idx]['value'];
-    
+
                     if (panelMatch(key, 'onlineGain')) {
                         $("#setPointGainInput_setgain").val(value);
                     } else if (panelMatch(key, 'offlineGain')) {
@@ -88,7 +88,7 @@
                 $("#userPtsTableTitle").html("User Points Table (Refreshing <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>)");
 
                 pointsTableData.sort(sortPointsTable_alpha_asc);
-                
+
                 html = "<table class='table' data-paging='true' data-paging-size='8'" +
                        "       data-filtering='true' data-filter-delay='200'" +
                        "       data-sorting='true'" +
@@ -448,7 +448,7 @@
      * @function toggleModPriceCom
      */
     function toggleModPriceCom() {
-        $("#priceComMods").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#priceComMods").html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         if (priceComMods == "true") {
             sendDBUpdate("points_modprice", "settings", "pricecomMods", "false");
         } else {
