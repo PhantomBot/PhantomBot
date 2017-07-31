@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author ScaniaTV
  */
 
@@ -84,7 +84,7 @@
     	} else if (command == 'close') {
     		sendWSEvent('queue', './systems/queueSystem.js', null, ['close']);
     	} else if (command == 'remove') {
-    		$('#delete_user_' + args).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+    		$('#delete_user_' + args).html('<i style="color: var(--main-color)" class="fa fa-spinner fa-spin"/>');
     		sendWSEvent('queue', './systems/queueSystem.js', null, ['remove', args]);
     	} else if (command == 'open') {
     		var title = $('#queue-title').val(),
