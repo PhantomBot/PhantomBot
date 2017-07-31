@@ -111,6 +111,7 @@ import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptApi;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptManager;
+import tv.phantombot.script.ScriptFileWatcher;
 import tv.phantombot.twitchwsirc.Channel;
 import tv.phantombot.twitchwsirc.Session;
 import tv.phantombot.twitchwsirc.TwitchPubSub;
@@ -1116,8 +1117,9 @@ public final class PhantomBot implements Listener {
         isExiting = true;
 
         print("Stopping all events and message dispatching...");
+        ScriptFileWatcher.instance().kill();
         ScriptEventManager.instance().kill();
-        
+
         /* Gonna need a way to pass this to all channels */
         if (PhantomBot.getSession(this.channelName) != null) {
             PhantomBot.getSession(this.channelName).setAllowSendMessages(false);
