@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -25,7 +25,7 @@
 
 (function() {
 
-    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />',
+    var spinIcon = '<i style="color: var(--main-color)" class="fa fa-spinner fa-spin" />',
         isDeleting = false;
 
     /**
@@ -71,7 +71,7 @@
 
                             // ID and Date
                             '    <td>ID: ' + id + '</td>' +
-                            '    <td style="vertical-align: middle">' + 
+                            '    <td style="vertical-align: middle">' +
                             '        Date: ' + $.format.date(parseInt(quoteData[2]), 'MM.dd.yy') +
                             '    </td>' +
 
@@ -121,7 +121,7 @@
             }
         }
     }
- 
+
     /**
      * @function doQuery
      */
@@ -202,7 +202,7 @@
         $('#quoteMessageInput').val('');
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 4);
     }
-    
+
     // Import the HTML file for this panel.
     $("#quotesPanel").load("/panel/quotes.html");
 

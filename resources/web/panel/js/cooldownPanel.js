@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -81,7 +81,7 @@
                             "    <td style=\"width: 15px\">" +
                             "        <div id=\"deleteCooldown_" + command + "\" class=\"button\" " +
                             "             onclick=\"$.deleteCooldown('" + command + "')\"><i class=\"fa fa-trash\" />" +
-                            "    </td>" + 
+                            "    </td>" +
                             "    <td>" + command + "</td>" +
                             "    <td>" + time + "</td>" +
                             "</tr>";
@@ -92,7 +92,7 @@
                     html = "<i>No entries in cooldown table.</i>";
                 }
                 $("#cooldownList").html(html);
-    
+
                 $("#toggleGlobalCooldown").html(toggleIcon[globalCooldown]);
                 $("#togglePerUserCooldown").html(toggleIcon[perUserCooldown]);
                 $("#toggleModCooldown").html(toggleIcon[modCooldown]);
@@ -111,7 +111,7 @@
      * @function toggleGlobalCooldown
      */
     function toggleGlobalCooldown() {
-        $("#toggleGlobalCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#toggleGlobalCooldown").html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("toggleglobalcooldown");
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -120,7 +120,7 @@
      * @function toggleModCooldown
      */
     function toggleModCooldown() {
-        $("#toggleModCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#toggleModCooldown").html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("togglemodcooldown");
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -129,7 +129,7 @@
      * @function togglePerUserCooldown
      */
     function togglePerUserCooldown() {
-        $("#togglePerUserCooldown").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#togglePerUserCooldown").html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("toggleperusercooldown");
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -152,7 +152,7 @@
      * @param {String} command
      */
     function deleteCooldown(command) {
-        $("#deleteCooldown_" + command).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCooldown_" + command).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("cooldown " + command + " -1");
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -177,7 +177,7 @@
         var active = $("#tabs").tabs("option", "active");
         if (active == 4 && isConnected) {
             doQuery();
-            clearInterval(interval); 
+            clearInterval(interval);
         }
     }, 200);
 

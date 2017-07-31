@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -77,7 +77,7 @@
             for (var idx in msgObject['results']) {
                 playlists.push(msgObject['results'][idx]['value']);
             }
-            $.playlists = playlists; 
+            $.playlists = playlists;
         }
 
         if (msgObject['audio_panel_hook'] !== undefined) {
@@ -122,7 +122,7 @@
                             preload: true,
                             volume: 1.0,
                             ready_callback: ionSoundLoaded,
-                            ended_callback: clearIonSoundPlaying 
+                            ended_callback: clearIonSoundPlaying
                         });
                     });
                 }, 2000);
@@ -145,7 +145,7 @@
                     preload: true,
                     volume: 1.0,
                     ready_callback: ionSoundLoaded,
-                    ended_callback: clearIonSoundPlaying 
+                    ended_callback: clearIonSoundPlaying
                 });
             }
             loadAudioPanel();
@@ -198,7 +198,7 @@
 
     /**
      * @function reloadAudioHooks
-     * Note that there is not a query performed here because the command sends back a 
+     * Note that there is not a query performed here because the command sends back a
      * doDBKeysQuery() call with the ID of audio_hook_reload.
      */
     function reloadAudioHooks() {
@@ -206,17 +206,17 @@
         sendCommand('reloadaudiopanelhooks');
     }
 
-    /** 
+    /**
      * @function deleteBSong
      * @param {String} song
      */
     function deleteBSong(song) {
-        $("#deleteBSong_" + song).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteBSong_" + song).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("audio_bsong_" + song, "ytpBlacklistedSong", song);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     };
 
-    /** 
+    /**
      * @function blacklistSong
      */
     function blacklistSong() {
@@ -228,17 +228,17 @@
         setTimeout(function() { $("#songBlacklist").val(''); }, TIMEOUT_WAIT_TIME);
     };
 
-    /** 
+    /**
      * @function deleteUser
      * @param {String} user
      */
     function deleteUser(user) {
-        $("#deleteBUser_" + user).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteBUser_" + user).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("audio_user_" + user, "ytpBlacklist", user);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     };
 
-    /** 
+    /**
      * @function blacklistUser
      */
     function blacklistUser() {

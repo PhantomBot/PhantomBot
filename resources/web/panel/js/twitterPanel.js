@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -29,8 +29,8 @@
         settingIcon = [],
         settingMap = [];
 
-        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
 
         settingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
         settingIcon['true'] = "<i class=\"fa fa-circle\" />";
@@ -46,7 +46,7 @@
 
         settingMap['reward_toggle'] = 'Toggle Rewards';
         settingMap['reward_announce'] = 'Toggle Reward Announcements';
-        
+
 
     /**
      * @function onMessage
@@ -70,7 +70,7 @@
                 pollhtml = '<table>';
                 posthtml = '<table>';
                 rewardhtml = '<table>';
-           
+
                 for (idx in msgObject['results']) {
                     setting = msgObject['results'][idx]['key'];
                     value = msgObject['results'][idx]['value'];
@@ -110,7 +110,7 @@
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'true\', \'' + idx + '\')">' + settingIcon['true'] +
                                     '        </div>' +
                                     '    </td>' +
-    
+
                                     '    <td style="width: 25px">' +
                                     '        <div data-toggle="tooltip" title="Disable" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'false\', \'' + idx + '\')">' + settingIcon['false'] +
@@ -130,13 +130,13 @@
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Enable" class="button"' + 
+                                    '        <div data-toggle="tooltip" title="Enable" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'true\', \'' + idx + '\')">' + settingIcon['true'] +
                                     '        </div>' +
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Disable" class="button"' + 
+                                    '        <div data-toggle="tooltip" title="Disable" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'false\', \'' + idx + '\')">' + settingIcon['false'] +
                                     '        </div>' +
                                     '    </td>' +
@@ -154,13 +154,13 @@
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Enable" class="button"' + 
+                                    '        <div data-toggle="tooltip" title="Enable" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'true\', \'' + idx + '\')">' + settingIcon['true'] +
                                     '        </div>' +
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Disable" class="button"' + 
+                                    '        <div data-toggle="tooltip" title="Disable" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'false\', \'' + idx + '\')">' + settingIcon['false'] +
                                     '        </div>' +
                                     '    </td>' +
@@ -188,12 +188,12 @@
         sendDBKeys('twitter_config', 'twitter');
     }
 
-    /** 
+    /**
      * @function toggleTwitter
      * @param {String} module
      */
     function toggleTwitter(setting, value, idx) {
-        $("#twitterStatus_" + idx).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#twitterStatus_" + idx).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBUpdate('twitter_update', 'twitter', setting, value);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -206,7 +206,7 @@
         if (value.length > 0) {
             $('#postTweetInput').val('');
             sendCommand('twitter post ' + value);
-        } 
+        }
     }
 
     /**

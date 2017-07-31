@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -67,13 +67,13 @@
                     rank = ranksData[idx]['value'];
                     html += "<tr class=\"textList\">" +
                             "    <td><form onkeypress=\"return event.keyCode != 13\">" +
-                            "        <input type=\"text\" id=\"inlineRankHoursEdit_" + hours + "\"" +
+                            "        <input type=\"text\" class=\"input-control\" id=\"inlineRankHoursEdit_" + hours + "\"" +
                             "               value=\"" + hours + "\" style=\"width: 10%\"/>" +
-                            "        <input type=\"text\" id=\"inlineRankNameEdit_" + hours + "\"" +
+                            "        <input type=\"text\" class=\"input-control\" id=\"inlineRankNameEdit_" + hours + "\"" +
                             "               value=\"" + rank + "\" style=\"width: 50%\"/>" +
-                            "        <button type=\"button\" class=\"btn btn-default btn-xs\"" + 
+                            "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
                             "                onclick=\"$.updateRank('" + hours + "')\"><i class=\"fa fa-pencil\" />" +
-                            "        <button type=\"button\" class=\"btn btn-default btn-xs\" id=\"deleteRank_" + hours + "\"" + 
+                            "        <button type=\"button\" class=\"btn btn-default btn-xs\" id=\"deleteRank_" + hours + "\"" +
                             "                onclick=\"$.deleteRank('" + hours + "')\"><i class=\"fa fa-trash\" />" +
                             "        </button>" +
                             "    </form></td>" +
@@ -99,13 +99,13 @@
                             "    <td style=\"width: 15px\">" +
                             "        <div id=\"deleteCustomRankIcon_" + user + "\" class=\"button\"" +
                             "             onclick=\"$.deleteCustomRank('" + user + "')\"><i class=\"fa fa-trash\" />" +
-                            "        </div>" + 
+                            "        </div>" +
                             "    </td>" +
                             "    <td style=\"width: 8em\">" + user + "</td>" +
                             "    <td><form onkeypress=\"return event.keyCode != 13\">" +
-                            "        <input type=\"text\" id=\"inlineRankCustomEdit_" + user + "\"" +
+                            "        <input type=\"text\" class=\"input-control\" id=\"inlineRankCustomEdit_" + user + "\"" +
                             "               value=\"" + rank + "\" style=\"width: 80%\" />" +
-                            "        <button type=\"button\" class=\"btn btn-default btn-xs\"" + 
+                            "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
                             "                onclick=\"$.updateCustomRank('" + user + "')\"><i class=\"fa fa-pencil\" />" +
                             "        </button>" +
                             "    </form></td>" +
@@ -196,7 +196,7 @@
      * @param {String} rankKey
      */
     function deleteCustomRank(rankKey) {
-        $("#deleteCustomRankIcon_" + rankKey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteCustomRankIcon_" + rankKey).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("ranks_customDelete", "viewerRanks", rankKey);
         setTimeout(function() { doQuery() }, TIMEOUT_WAIT_TIME);
     }
@@ -235,7 +235,7 @@
      * @param {String} rankKey
      */
     function deleteRank(rankKey) {
-        $("#deleteRank_" + rankKey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteRank_" + rankKey).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("ranks_ranksDelete", "ranksMapping", rankKey);
         setTimeout(function() { doQuery(); sendCommand('rankreloadtable'); }, TIMEOUT_WAIT_TIME);
     }
