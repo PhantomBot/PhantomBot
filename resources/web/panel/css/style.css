@@ -1,3 +1,17 @@
+:root {
+    --header-background: #6441a5;
+    --main-background: #201c2b;
+    --ui-widget-content-border: #6136b1;
+    --ui-widget-content-background: #6136b1;
+    --ui-tabs-background: #19171c;
+    --ui-tabs-active-background: #6136b1;
+    --ui-state-hover-border: #6136b1;
+    --ui-state-hover-background: #383838;
+    --hyperlinks: #6441a5;
+}
+
+/* Do Not Edit Past Here (Unless you know what your doing)*/
+
 #logo {
     height: 70px;
     margin-left: 15px;
@@ -16,7 +30,7 @@
 }
 
 .header {
-    background-color: #6441a5;
+    background-color: var(--header-background);
     margin-top: -20px;
     margin-bottom: 10px;
     max-width: 100%;
@@ -39,7 +53,7 @@
 }
 
 a {
-    color: #6441a5;
+    color: var(--hyperlinks);
     text-decoration: none;
 }
 
@@ -48,7 +62,7 @@ body {
     color: #aaaaaa;
     padding: 0;
     margin: 0;
-    background: rgb(28, 28, 36);
+    background: var(--main-background);
 }
 
 .textList {
@@ -106,7 +120,7 @@ td {
     border: 0px;
     width: 800px;
     margin-bottom: 10px;
-    background: rgb(28, 28, 36);
+    background: var(--main-background);
 }
 .panelStatus tr {
     background: transparent;
@@ -327,7 +341,7 @@ td {
     text-align: center;
     vertical-align: middle;
 }
-    
+
 #iframeLoader {
     font-family: "Roboto", arial;
     position: absolute;
@@ -370,7 +384,7 @@ td {
 
 /* Bootstrap and JQuery Section */
 
-.ui-slider .ui-slider-handle { 
+.ui-slider .ui-slider-handle {
     visibility: hidden;
 }
 
@@ -406,7 +420,7 @@ td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-} 
+}
 
 .alert-info {
     clear: left;
@@ -438,6 +452,7 @@ td {
     -moz-border-radius: 0px;
     border-radius: 0px;
     border: none;
+    background: var(--main-background);
 }
 .tab-pane {
     -webkit-border-radius: 5px;
@@ -454,7 +469,7 @@ td {
 .ui-state-focus {
     outline: none;
 }
-.ui-tabs-vertical { 
+.ui-tabs-vertical {
     width: 55em;
 }
 .ui-tabs-vertical .ui-tabs-nav {
@@ -473,7 +488,7 @@ td {
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     border-radius: 0px;
-    background: rgb(28, 28, 36);
+    background: var(--ui-tabs-background);
 }
 .ui-tabs-vertical .ui-tabs-nav li a {
     display:block;
@@ -488,7 +503,7 @@ td {
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     border-radius: 0px;
-    background: #6136b1;
+    background: var(--ui-tabs-active-background);
 }
 .ui-tabs-vertical .ui-tabs-panel {
     padding: 1em;
@@ -496,12 +511,12 @@ td {
     width: 55em;
 }
 .ui-tabs-vertical .ui-tabs-nav .ui-state-hover, .ui-state-focus {
-    border-color: #6136b1;
-    background: rgb(56, 56, 56);
+    border-color: var(--ui-state-hover-border);
+    background: var(--ui-state-hover-background);
 }
 .ui-tabs-anchor:active, .ui-tabs-anchor:focus {
     outline:none;
-    background: rgb(28, 28, 36);
+    background: var(--main-background);
 }
 .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
     float: none;
@@ -515,13 +530,14 @@ td {
     border-radius: 0px;
 }
 .ui-widget-content {
-        border: 1px solid #6136b1;
+    border: 1px solid var(--ui-widget-content-border);
+    background: var(--ui-tabs-background);
 }
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
     border: 1px solid #444444;
-    background: rgb(28, 28, 36);
+    background: var(--ui-tabs-background);
 }
 .ui-state-hover,
 .ui-widget-content .ui-state-hover,
@@ -529,14 +545,14 @@ td {
 .ui-state-focus,
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
-    border: 1px solid #6136b1;
+    border: 1px solid var(--ui-widget-content-border);
     background: rgb(36, 36, 36);
 }
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
-    border: 1px solid #6136b1;
-    background: #6136b1;
+    border: 1px solid var(--ui-widget-content-border);
+    background: var(--ui-widget-content-background);
 }
 .ui-widget-header .ui-state-error {
     background: #ffc73d;
@@ -760,7 +776,7 @@ input, textarea {
     overflow-y: scroll;
     overflow-x: hidden;
     padding-right: 20px;
-} 
+}
 
 /* Overrides for FooTable */
 .footable .pagination > li > a,
