@@ -42,7 +42,6 @@
         './handlers/keywordHandler.js',
         './handlers/twitterHandler.js',
         './handlers/streamTipHandler.js',
-        './handlers/discordHandler.js',
         './handlers/tipeeeStreamHandler.js',
         './systems/cleanupSystem.js',
         './systems/greetingSystem.js',
@@ -99,7 +98,7 @@
         versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 
         'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 
         'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 
-        'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7', 'installedv2.3.7b'];
+        'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7', 'installedv2.3.7b', 'installedv2.3.9'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -428,8 +427,6 @@
             $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         }
 
-        // Disable the Discord Module by default. //
-        $.inidb.set('modules', './handlers/discordHandler.js', 'false');
 
         $.consoleLn('PhantomBot update 2.3.3 completed!');
         $.inidb.set('updates', 'installedv2.3.3ss', 'true');
@@ -688,6 +685,17 @@
 
         $.consoleLn('PhantomBot update 2.3.7 completed!');
         $.inidb.set('updates', 'installedv2.3.7b', 'true');
+    }
+
+    /* version 2.3.9 updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.9') || $.inidb.get('updates', 'installedv2.3.9') != 'true') {
+        $.consoleLn('Starting PhantomBot update 2.3.9 updates...');
+
+        $.consoleLn('Removing old discord handler...');
+        $.inidb.del('modules', './handlers/discordHandler.js');
+
+        $.consoleLn('PhantomBot update 2.3.9 completed!');
+        $.inidb.set('updates', 'installedv2.3.9', 'true');
     }
 
     /**
