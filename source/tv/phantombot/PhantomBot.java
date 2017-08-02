@@ -2130,6 +2130,14 @@ public final class PhantomBot implements Listener {
                                         System.getProperty("os.name") + " " + System.getProperty("os.version") +
                                         " (" + System.getProperty("os.arch") + ")");
 
+        /* If prompted, now that the version has been reported, exit. */
+        if (args.length > 0) {
+            if (args[0].equals("--version") || args[0].equals("-v")) {
+                com.gmt2001.Console.out.println("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getRepoVersion() + ")");
+                System.exit(1);
+            }
+        }
+
         /* Load up the bot info from the bot login file */
         try {
             if (new File("./config/botlogin.txt").exists()) {
