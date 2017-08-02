@@ -79,7 +79,7 @@
                             // User
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input type="text" id="inlineQuoteEdit_user_' + id + '"' +
+                            '            <input type="text" class="input-control" id="inlineQuoteEdit_user_' + id + '"' +
                             '                   value="' + quoteData[0] + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'user\')">' +
@@ -91,7 +91,7 @@
                             // Game
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input type="text" id="inlineQuoteEdit_game_' + id + '"' +
+                            '            <input type="text" class="input-control" id="inlineQuoteEdit_game_' + id + '"' +
                             '                   value="' + (quoteData.length == 4 ? quoteData[3] : 'Some Game') + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'game\')">' +
@@ -105,7 +105,7 @@
                             '<tr style="textList">' +
                             '    <td colspan="4" style="vertical-align">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input style="width: 89%" type="text" id="inlineQuoteEdit_quote_' + id + '"' +
+                            '            <input style="width: 89%" type="text" class="input-control" id="inlineQuoteEdit_quote_' + id + '"' +
                             '                   value="' + quoteData[1].replace(/"/g, '\'\'') + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'quote\')">' +
