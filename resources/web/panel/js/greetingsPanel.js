@@ -267,7 +267,7 @@
                     html = '<tr class="textList">' +
                            '    <td>Tier ' + tier + '</td>' +
                            '    <td style="vertical-align: middle">' +
-                           '        <input type="number" min="0" id="inline_' + key + '"' +
+                           '        <input type="number" class="input-control" min="0" id="inline_' + key + '"' +
                            '               placeholder="' + value + '" value="' + value + '"' +
                            '               style="width: 8em" />' +
                            '        <button type="button" class="btn btn-default btn-xs"' +
