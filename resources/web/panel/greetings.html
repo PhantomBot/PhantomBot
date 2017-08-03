@@ -14,7 +14,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  @author IllusionaryOne
 -->
 
@@ -54,7 +54,7 @@
     <h3>Follow Alert Settings</h3>
     <div>
     <div id="_followAlertsPanelDisabled" />
-    <div id="_followAlertsPanel"> 
+    <div id="_followAlertsPanel">
         <table>
             <tr class="textList">
                 <td>Toggle Follower Alerts</td>
@@ -71,13 +71,13 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="followerGreeting">Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('followerGreetingInput', 'settings', 'followMessage')">Submit</button>
                 <input type="text" class="form-control" id="followerGreetingInput" placeholder="Greeting Message"
                        data-toggle="tooltip" title="Tags: (name) (reward)"/>
             </div>
         </form>
-        
+
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="followerReward">Reward</label>
@@ -128,7 +128,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="donateReward">Multiplier Reward</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('donateRewardInput', 'donations', 'reward')">Submit</button>
                 <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
                        type="number" min="0" step="0.1" class="form-control" id="donateRewardInput" placeholder="Points" />
@@ -140,7 +140,7 @@
                 <label for="donationGroupMin">Promote Amount</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('donationGroupMin', 'donations', 'donationGroupMin')">Submit</button>
-                <input type="text" class="form-control" id="donationGroupMin" placeholder="Amount" 
+                <input type="text" class="form-control" id="donationGroupMin" placeholder="Amount"
                        data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
             </div>
         </form>
@@ -150,7 +150,7 @@
                 <label for="donateGreeting">Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('donateGreetingInput', 'donations', 'message')">Submit</button>
-                <input type="text" class="form-control" id="donateGreetingInput" placeholder="Donation Message" 
+                <input type="text" class="form-control" id="donateGreetingInput" placeholder="Donation Message"
                        data-toggle="tooltip" title="Tags: (name) (amount) (points) (pointname) (message) (currency)"/>
             </div>
         </form>
@@ -187,7 +187,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="streamtipdonateReward">Multiplier Reward</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('streamtipdonateRewardInput', 'streamtip', 'reward')">Submit</button>
                 <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
                        type="number" min="0" step="0.1" class="form-control" id="streamtipdonateRewardInput" placeholder="Points" />
@@ -199,7 +199,7 @@
                 <label for="streamtipdonationGroupMin">Promote Amount</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('streamtipdonationGroupMin', 'streamtip', 'donationGroupMin')">Submit</button>
-                <input type="text" class="form-control" id="streamtipdonationGroupMin" placeholder="Amount" 
+                <input type="text" class="form-control" id="streamtipdonationGroupMin" placeholder="Amount"
                        data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
             </div>
         </form>
@@ -209,7 +209,7 @@
                 <label for="streamtipdonateGreeting">Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('streamtipdonateGreetingInput', 'streamtip', 'message')">Submit</button>
-                <input type="text" class="form-control" id="streamtipdonateGreetingInput" placeholder="Donation Message" 
+                <input type="text" class="form-control" id="streamtipdonateGreetingInput" placeholder="Donation Message"
                        data-toggle="tooltip" title="Tags: (name) (amount) (points) (pointname) (message) (currency)"/>
             </div>
         </form>
@@ -246,7 +246,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="tipeeestreamdonateRewardInput">Multiplier Reward</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('tipeeestreamdonateRewardInput', 'tipeeeStreamHandler', 'reward')">Submit</button>
                 <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
                        type="number" min="0" step="0.1" class="form-control" id="tipeeestreamdonateRewardInput" placeholder="Points" />
@@ -258,7 +258,7 @@
                 <label for="tipeeestreamdonationGroupMin">Promote Amount</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('tipeeestreamdonationGroupMin', 'tipeeeStreamHandler', 'groupMin')">Submit</button>
-                <input type="text" class="form-control" id="tipeeestreamdonationGroupMin" placeholder="Amount" 
+                <input type="text" class="form-control" id="tipeeestreamdonationGroupMin" placeholder="Amount"
                        data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
             </div>
         </form>
@@ -268,7 +268,7 @@
                 <label for="tipeeestreamdonateGreeting">Message</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('tipeeestreamdonateGreetingInput', 'tipeeeStreamHandler', 'message')">Submit</button>
-                <input type="text" class="form-control" id="tipeeestreamdonateGreetingInput" placeholder="Donation Message" 
+                <input type="text" class="form-control" id="tipeeestreamdonateGreetingInput" placeholder="Donation Message"
                        data-toggle="tooltip" title="Tags: (name) (amount) (reward) (message) (currency) (formattedamount)"/>
             </div>
         </form>
@@ -309,20 +309,20 @@
             </tr>
         </table>
         <br>
-        
+
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="subReward">Subscribing Reward</label>
-                    <button type="button" class="btn btn-primary inline pull-right" 
+                    <button type="button" class="btn btn-primary inline pull-right"
                           onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Submit</button>
                     <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Points" />
               </div>
         </form>
-      
+
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="reSubReward">Resubscribing Reward</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('reSubRewardInput', 'subscribeHandler', 'reSubscribeReward')">Submit</button>
                 <input type="number" min="0" class="form-control" id="reSubRewardInput" placeholder="Points" />
             </div>
@@ -331,9 +331,9 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="subGreeting">Subscriber Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('subGreetingInput', 'subscribeHandler', 'subscribeMessage')">Submit</button>
-                <input type="text" class="form-control" id="subGreetingInput" placeholder="Greeting Message" 
+                <input type="text" class="form-control" id="subGreetingInput" placeholder="Greeting Message"
                        data-toggle="tooltip" title="Tags: (name) (reward)"/>
             </div>
         </form>
@@ -341,9 +341,9 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="primeSubGreeting">Prime Subscriber Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('primeSubGreetingInput', 'subscribeHandler', 'primeSubscribeMessage')">Submit</button>
-                <input type="text" class="form-control" id="primeSubGreetingInput" placeholder="Greeting Message" 
+                <input type="text" class="form-control" id="primeSubGreetingInput" placeholder="Greeting Message"
                        data-toggle="tooltip" title="Tags: (name) (reward)"/>
             </div>
         </form>
@@ -351,7 +351,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="resubGreeting">Resubscriber Message</label>
-                <button type="button" class="btn btn-primary inline pull-right"  
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('resubGreetingInput', 'subscribeHandler', 'reSubscribeMessage')">Submit</button>
                 <input type="text" class="form-control" id="resubGreetingInput" placeholder="Greeting Message"
                        data-toggle="tooltip" title="Tags: (name) (reward) (months) (customemote)" />
@@ -361,7 +361,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="resubEmote">Resubscriber Custom Emote</label>
-                <button type="button" class="btn btn-primary inline pull-right"  
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('resubEmoteInput', 'subscribeHandler', 'resubEmote')">Submit</button>
                 <input type="text" class="form-control" id="resubEmoteInput" placeholder="Emote name"
                        data-toggle="tooltip" title="Emote that the (customemote) that will be replaced with. The emote will be added the amount of months the user subscribed for." />
@@ -390,9 +390,9 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="bitsMessage">Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('bitsMessage', 'bitsSettings', 'message')">Submit</button>
-                <input type="text" class="form-control" id="bitsMessage" placeholder="Message" 
+                <input type="text" class="form-control" id="bitsMessage" placeholder="Message"
                        data-toggle="tooltip" title="Tags: (name) (reward) (amount)"/>
             </div>
         </form>
@@ -400,7 +400,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="bitsMinimum">Minimum</label>
-                <button type="button" class="btn btn-primary inline pull-right"  
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('bitsMinimum', 'bitsSettings', 'minimum')">Submit</button>
                 <input type="number" min="0" class="form-control" id="bitsMinimum" placeholder="Amount" data-toggle="tooltip" title="Set the minimum amount of bits a user needs to cheer before triggering the alert."/>
             </div>
@@ -430,9 +430,9 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gwSubGreeting">Subscriber Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('gwSubGreetingInput', 'gameWispSubHandler', 'subscribeMessage')">Submit</button>
-                <input type="text" class="form-control" id="gwSubGreetingInput" placeholder="Greeting Message" 
+                <input type="text" class="form-control" id="gwSubGreetingInput" placeholder="Greeting Message"
                        data-toggle="tooltip" title="Tags: (name) (tier) (reward)"/>
             </div>
         </form>
@@ -440,7 +440,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gwResubGreeting">Resubscriber Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('gwResubGreetingInput', 'gameWispSubHandler', 'reSubscribeMessage')">Submit</button>
                 <input type="text" class="form-control" id="gwResubGreetingInput" placeholder="Greeting Message"
                        data-toggle="tooltip" title="Tags: (name) (tier) (reward) (months)" />
@@ -450,7 +450,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gwTierupGreeting">Tier Up Announcement</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('gwTierupGreetingInput', 'gameWispSubHandler', 'tierUpMessage')">Submit</button>
                 <input type="text" class="form-control" id="gwTierupGreetingInput" placeholder="Greeting Message"
                        data-toggle="tooltip" title="Tags: (name) (tier)" />
@@ -483,11 +483,11 @@
     <div id="_gwTierPanel">
         <table style="background: transparent">
             <tr>
-                <td> <strong>Song Request Perks</strong> <div id="gameWispSongRequests" style="height: 200px; overflow: auto;" /> </td>
-                <td> <strong>Subscription Bonus Points Perks</strong> <div id="gameWispBonusPoints" style="height: 200px; overflow: auto;" /> </td>
+                <td> <strong>Song Request Perks</strong> <div id="gameWispSongRequests" style="height: 220px; overflow: auto;" /> </td>
+                <td> <strong>Subscription Bonus Points Perks</strong> <div id="gameWispBonusPoints" style="height: 220px; overflow: auto;" /> </td>
             </tr>
             <tr>
-                <td> <strong>Resubscription Bonus Points Perks</strong> <div id="gameWispSubBonusPoints" style="height: 200px; overflow: auto;" /> </td>
+                <td> <strong>Resubscription Bonus Points Perks</strong> <div id="gameWispSubBonusPoints" style="height: 220px; overflow: auto;" /> </td>
             </tr>
         </table>
     </div>
