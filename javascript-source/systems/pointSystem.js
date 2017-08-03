@@ -769,7 +769,7 @@
     // Set the timer for the points payouts
     var interval = setInterval(function() {
         runPointsPayout();
-    }, 6e4);
+    }, 6e4, 'scripts::systems::pointSystem.js');
 
     /**
      * @event initReady
