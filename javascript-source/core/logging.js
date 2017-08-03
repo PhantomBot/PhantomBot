@@ -330,7 +330,7 @@
 
     var interval = setInterval(function() { 
         logRotate(); 
-    }, 24 * 60 * 6e4);
+    }, 24 * 60 * 6e4, 'scripts::core::logging.js');
 
     /*
      * @event initReady
