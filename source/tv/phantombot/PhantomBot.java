@@ -344,7 +344,7 @@ public final class PhantomBot implements Listener {
         } catch (IOException e) {
             com.gmt2001.Console.err.println("Port is already in use: " + port);
             com.gmt2001.Console.err.println("Ensure that another copy of PhantomBot is not running.");
-            com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in botlogin.txt");
+            com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in ./config/botlogin.txt");
             com.gmt2001.Console.err.println("PhantomBot will now exit.");
             System.exit(0);
         } finally {
@@ -1743,7 +1743,7 @@ public final class PhantomBot implements Listener {
             };
 
             try {
-                try (FileOutputStream outputStream = new FileOutputStream("botlogin.txt")) {
+                try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
                     outputProperties.putAll(pbProperties);
                     outputProperties.store(outputStream, "PhantomBot Configuration File");
                 }
@@ -1931,12 +1931,12 @@ public final class PhantomBot implements Listener {
         }
         sqlite.CloseConnection();
         print("Finished Converting Tables.");
-        print("Moving phantombot.db to phantombot.db.backup");
+        print("Moving ./config/phantombot.db to phantombot.db.backup");
 
         try {
-            FileUtils.moveFile(new java.io.File("phantombot.db"), new java.io.File("phantombot.db.backup"));
+            FileUtils.moveFile(new java.io.File("./config/phantombot.db"), new java.io.File("phantombot.db.backup"));
         } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to move phantombot.db to phantombot.db.backup: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to move ./config/phantombot.db to phantombot.db.backup: " + ex.getMessage());
         }
         print("SQLite to MySQL Conversion is Complete");
     }
