@@ -152,7 +152,7 @@
     $.bind('initReady', function() {
         $.inidb.set('panelstats', 'enabled', 'true');
         $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
-        interval = setInterval(function() {  updateAll(); }, 3e4);
+        interval = setInterval(function() {  updateAll(); }, 3e4, 'scripts::handlers::panelHandler.js');
     });
 
     /*

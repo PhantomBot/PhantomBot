@@ -360,11 +360,11 @@
             $.inidb.setAutoCommit(false);
             for (i in $.users) {
                 username = $.users[i][0].toLowerCase();
-                $.inidb.incr('time', username, 61);
+                $.inidb.incr('time', username, 60);
             }
             $.inidb.setAutoCommit(true);
         }
-    }, 6e4);
+    }, 6e4, 'scripts::systems::timeSystem.js#1');
 
     // Interval for auto level to regular
     inter = setInterval(function() {
@@ -389,7 +389,7 @@
                 }
             }
         }
-    }, 9e5);
+    }, 9e5, 'scripts::systems::timeSystem.js#2');
 
     /**
      * @event initReady

@@ -138,7 +138,7 @@
                     delete accounts[keys[i]];
                 }
             }
-        }, 6e4);
+        }, 6e4, 'scripts::discord::core::accountLink.js');
     });
 
     /* Export the function to the $.discord api. */
