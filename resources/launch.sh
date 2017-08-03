@@ -30,4 +30,4 @@ else
     echo "You don't have Java installed! Download it from https://www.java.com/en/download/"
 fi
 
-java -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar
+java -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar ${1}
