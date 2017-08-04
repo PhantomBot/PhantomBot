@@ -275,7 +275,7 @@
                 }
             }
         }
-    }, 8e4);
+    }, 8e4, 'scripts::core::chatModerator.js');
 
     /**
      * @function loadBlackList
@@ -320,7 +320,7 @@
                 $.timeoutUserReason(username, time, reason);
             }
             clearInterval(timeout);
-        }, 1000);
+        }, 1000, 'scripts::core::chatModerator.js::timeout');
     }
 
     /**
