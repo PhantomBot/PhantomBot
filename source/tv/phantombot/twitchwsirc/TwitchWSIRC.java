@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -57,6 +58,7 @@ import tv.phantombot.PhantomBot;
 public class TwitchWSIRC extends WebSocketClient {
 
     private static final Map<String, TwitchWSIRC> instances = Maps.newHashMap();
+    private final ThreadPoolExecutor threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
     private final String channelName;
     private final String login;
     private final String oAuth;
@@ -69,8 +71,8 @@ public class TwitchWSIRC extends WebSocketClient {
     private boolean sentPing = false;
     private boolean pingRequest = false;
 
-    private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "480000"));
-    private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "600000"));
+    private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "240000"));
+    private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "300000"));
 
     /*
      * Creates an instance for a channel.
@@ -237,21 +239,11 @@ public class TwitchWSIRC extends WebSocketClient {
             return;
         } else {
             try {
-                MessageRunnable messageRunnable = new MessageRunnable(message);
-                Thread thread = new Thread(messageRunnable);
-                thread.start();
-                thread.setName("MessageRunnable-" + thread.getId());
-                long startThreadT = System.currentTimeMillis();
-    
-                while (thread.isAlive()) {
-                    thread.join(2000);
-                    if (((System.currentTimeMillis() - startThreadT) > 10000) && thread.isAlive()) {
-                        thread.interrupt();
-                        thread.join();
-                    }
+                if (threads.getActiveCount() < 4) {
+                    threads.execute(new MessageRunnable(message));
+                } else {
+                    twitchWSIRCParser.parseData(message);
                 }
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("Interrupted Exception");
             } catch (Exception ex) {
                 twitchWSIRCParser.parseData(message);
             }
