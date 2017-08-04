@@ -649,7 +649,7 @@
                         permitList = {};
                     }
                 }
-            }, 6e4);
+            }, 6e4, 'scripts::discord::core::moderation.js');
         }
     });
 })();

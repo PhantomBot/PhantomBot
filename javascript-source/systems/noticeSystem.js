@@ -319,7 +319,7 @@
                 }
             }
         }
-    }, 1e4);
+    }, 1e4, 'scripts::handlers::noticeSystem.js');
 
     /**
      * @event initReady

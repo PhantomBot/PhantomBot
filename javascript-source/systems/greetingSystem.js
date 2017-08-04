@@ -50,7 +50,7 @@
                 greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue;
             }
 
-        }, 15000);
+        }, 15000, 'scripts::systems::greetingSystem.js');
      }
 
     /**
