@@ -81,7 +81,7 @@
                     '    <td style="vertical-align: middle">' +
                     '        <form onkeypress="return event.keyCode != 13">' +
                     '            <input style="width: 95%" type="text" data-toggle="tooltip" title="Click to edit the cooldown." onclick="$.editCooldown(\'' + commandName + '\', \'' + time + '\', \''+ JSON.parse(msgObject['results'][idx]['value']).isGlobal+ '\')"' +
-                    '                       id="editCommandCooldown_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '"' +
+                    '                       class="input-control" id="editCommandCooldown_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '"' +
                     '                   value="' + time + ' seconds. (Global: ' + JSON.parse(msgObject['results'][idx]['value']).isGlobal + ')" />' +
                     '              <button style="float: right;" type="button" class="btn btn-default btn-xs" id="deleteCooldown_' + commandName + '" onclick="$.deleteCooldown(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
