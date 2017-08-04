@@ -25,7 +25,7 @@
         tgFunIncr = 1,
         tgExpIncr = 0.5,
         tgFoodDecr = 0.25,
-        currentAdventure = 1,
+        currentAdventure = {},
         stories = [],
         moduleLoaded = false,
         lastStory;
@@ -48,6 +48,11 @@
         var storyId = 1,
             chapterId,
             lines;
+
+        currentAdventure.users = [];
+        currentAdventure.survivors = [];
+        currentAdventure.caught = [];
+        currentAdventure.gameState = 0;
 
         stories = [];
 
