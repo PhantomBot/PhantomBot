@@ -795,7 +795,7 @@ input, textarea {
     transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
 
-#form-control {
+.form-control {
     margin-bottom: 5px;
 }
 
