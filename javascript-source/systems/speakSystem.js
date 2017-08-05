@@ -45,7 +45,7 @@ var TTS = {
             var action = parseInt(allArgs[0]);
             if (!isNaN(action)) {
                 $.setIniDbNumber('tts', 'cost', action)
-                chance = action;
+		cost = $.getSetIniDbNumber('tts', 'cost', action),
                 $.say('tts cost has been set to '+action);
             }
         }
