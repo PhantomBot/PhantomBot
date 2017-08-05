@@ -41,6 +41,9 @@ public class RevloConverter {
 		db.setAutoCommit(false);
 
 		try {
+			// Create a new reader.
+			bufferedReader = new BufferedReader(new FileReader(fileName));
+
 			// Skip the first line.
 			bufferedReader.readLine();
 
@@ -52,6 +55,8 @@ public class RevloConverter {
 			}
 		} catch (IOException ex) {
 			com.gmt2001.Console.err.println("Failed to convert points from RevloBot [IOException] " + ex.getMessage());
+		} catch (Exception ex) {
+			com.gmt2001.Console.err.println("Failed to convert points from RevloBot [Exception] " + ex.getMessage());
 		} finally {
 			if (bufferedReader != null) {
 				try {
