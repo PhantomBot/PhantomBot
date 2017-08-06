@@ -373,7 +373,7 @@
                         return;
                     }
                     if (parseInt(setCommandVal) <= 180) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.toosmall') + setCommandVal);
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.toosmall', setCommandVal));
                         return;
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.success', setCommandVal));
