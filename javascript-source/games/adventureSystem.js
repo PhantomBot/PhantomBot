@@ -518,6 +518,7 @@
     $.bind('initReady', function() {
         $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
         $.registerChatSubcommand('adventure', 'set', 1);
+        $.registerChatSubcommand('adventure', 'top5', 3);
 
         loadStories();
     });

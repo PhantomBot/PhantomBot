@@ -795,6 +795,10 @@ input, textarea {
     transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
 
+form-control {
+    margin-bottom: 5px;
+}
+
 /* Overrides for FooTable */
 .footable .pagination > li > a,
 .footable .pagination > li > span {
