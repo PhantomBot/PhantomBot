@@ -105,6 +105,20 @@ connection.onmessage = function(e) {
             imageFile = imageData;
             duration = 3000;
         } 
+        //START TTS
+        if (imageFile.substring(0,7) == "<voice>"){//Check if voice alert.
+            var textToSpeak = imageFile.substring(7);//Remove "<voice>"
+            //Pass text to window object.
+            var speech = new SpeechSynthesisUtterance(textToSpeak);
+            var voices = window.speechSynthesis.getVoices();
+            speech.default = false;
+            speech.voice = voices.filter(function(voice) { return voice.name == 'Microsoft Hazel Desktop - English (Great Britain)'; })[0];
+            speech.lang = 'en-GB'; //Also added as for some reason android devices used for testing loaded spanish language
+            speech.volume = 0.70;
+            window.speechSynthesis.speak(speech);
+            return;
+        }
+        //END TTS
         imageFileBasename = imageFile.substring(0, imageFile.indexOf('.'));
         $("#imageLocation img").attr('src','');
         $("#imageLocation").html('<img src="/config/gif-alerts/' + imageFile + '">').fadeIn(1000);
