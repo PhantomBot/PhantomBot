@@ -1,11 +1,13 @@
-FROM openjdk:8-jdk
+# Build container
+FROM openjdk:8-jdk as builder
 
 ARG PROJECT_NAME=PhantomBot
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
 
-RUN mkdir -p "${BASEDIR}" "${BUILDDIR}" "${DATADIR}" \
+ENV DEBIAN_FRONTEND=noninteractive
+RUN mkdir -p "${BUILDDIR}" \
     && apt-get update -q \
     && apt-get install -yqq ant \
     && apt-get clean \
@@ -17,12 +19,22 @@ RUN mkdir -p "${BASEDIR}" "${BUILDDIR}" "${DATADIR}" \
 COPY . "${BUILDDIR}"
 
 RUN cd "${BUILDDIR}" \
-    && ant jar \
-    && cp -a "${BUILDDIR}/dist/build/." "${BASEDIR}/" \
-    && cd "${BASEDIR}" \
+    && ant jar
+
+# Application container
+FROM openjdk:8-jre-alpine
+
+ARG PROJECT_NAME=PhantomBot
+ARG BASEDIR=/opt/${PROJECT_NAME}
+ARG BUILDDIR=${BASEDIR}_build
+ARG DATADIR=${BASEDIR}_data
+
+RUN mkdir -p "${BASEDIR}" "${DATADIR}" "${BASEDIR}/logs"
+
+COPY --from=builder "${BUILDDIR}/dist/build/." "${BASEDIR}/"
+
+RUN cd "${BASEDIR}" \
     && rm -rf \
-        "${BUILDDIR}" \
-        "${BASEDIR}/launch\*" \
     && mv "${BASEDIR}/addons" "${DATADIR}/" \
     && mv "${BASEDIR}/logs" "${DATADIR}/" \
     && ln -s "${DATADIR}/addons" \
