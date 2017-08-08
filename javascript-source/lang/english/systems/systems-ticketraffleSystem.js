@@ -8,7 +8,7 @@ $.lang.register('ticketrafflesystem.raffle.close.err', 'The ticket raffle ended.
 $.lang.register('ticketrafflesystem.raffle.repick', 'New winner is: $1! $2');
 $.lang.register('ticketrafflesystem.winner', 'The Winner of this ticket raffle is: $1! $2');
 $.lang.register('ticketrafflesystem.only.buy.amount', 'You can only buy $1 ticket(s)');
-$.lang.register('ticketrafflesystem.litmi.hit', 'You\'re only allowed to buy $1 ticket(s)');
+$.lang.register('ticketrafflesystem.limit.hit', 'You\'re only allowed to buy $1 ticket(s)');
 $.lang.register('ticketrafflesystem.err.not.following', 'You need to be following to enter.');
 $.lang.register('ticketrafflesystem.err.points', 'You don\'t have enough $1 to enter.');
 $.lang.register('ticketrafflesystem.entered', '$1 entries added to the ticket raffle! ($2 tickets in total)');
