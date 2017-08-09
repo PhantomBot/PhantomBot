@@ -13,7 +13,12 @@
         var command = event.getCommand(),
             sender = event.getSender(),
             args = event.getArgs(),
-            action = args[0];
+            action = args[0],
+            vodJsonStr,
+            uptime,
+            vodJsonObj,
+            vodURL,
+            twitchVODtime;
 
         /*
          * @commandpath highlight [description] - Marks a highlight using the given description and with the current date stamp
@@ -27,14 +32,25 @@
                 return;
             }
 
+            vodJsonStr = $.twitch.GetChannelVODs($.channelName, 'current') + '';
+            if (vodJsonStr.length === 0 || vodJsonStr === null) {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.vod.404'));
+                return;
+            }
+
+            uptime = $.getStreamUptime($.channelName);
+            twitchVODtime = $.makeTwitchVODTime(uptime);
+            vodJsonObj = JSON.parse(vodJsonStr);
+            vodURL = vodJsonObj.videos[0].url + twitchVODtime;
+
             var streamUptimeMinutes = parseInt($.getStreamUptimeSeconds($.channelName) / 60),
                 hours = parseInt(streamUptimeMinutes / 60),
                 minutes = (parseInt(streamUptimeMinutes % 60) < 10 ? '0' + parseInt(streamUptimeMinutes % 60) : parseInt(streamUptimeMinutes % 60)),
                 timestamp = hours + ':' + minutes,
-                localDate = $.getCurLocalTimeString('\'[\'dd-MM-yyyy\']\'');
+                localDate = getCurLocalTimeString('dd-MM-yyyy hh:mm');
             
             $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.success', timestamp));
-            $.inidb.set('highlights', timestamp, localDate + ' ' + args.join(' '));
+            $.inidb.set('highlights', localDate, vodURL + ' : ' + args.join(' '));
             return;
         }
 
