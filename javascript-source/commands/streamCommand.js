@@ -112,4 +112,9 @@
         $.registerChatCommand('./commands/streamCommand.js', 'settitle', 1);
         $.registerChatCommand('./commands/streamCommand.js', 'vod', 7);
     });
+
+    /*
+     * Export Methods
+     */
+    $.makeTwitchVODTime = makeTwitchVODTime;
 })();
