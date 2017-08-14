@@ -82,10 +82,10 @@ public class ScriptFileWatcher implements Runnable {
                             script.reload();
                         }
                     }
-                    // Sleep a bit here to not gind the user's CPU.
-                    Thread.sleep(5);
+                    // Sleep a bit here to not grind the user's CPU.
+                    Thread.sleep(1);
                 }
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
