@@ -147,6 +147,8 @@ public final class PhantomBot implements Listener {
     private Boolean useHttps;
     private Boolean testPanelServer;
     private int basePort;
+    private int ytSocketPort;
+    private int panelSocketPort;
 
     /* SSL information */
     private String httpsPassword = "password";
@@ -397,6 +399,8 @@ public final class PhantomBot implements Listener {
         this.youtubeOAuthThro = this.pbProperties.getProperty("ytauthro");
         this.youtubeKey = this.pbProperties.getProperty("youtubekey", "");
         this.basePort = Integer.parseInt(this.pbProperties.getProperty("baseport", "25000"));
+        this.ytSocketPort = Integer.parseInt(this.pbProperties.getProperty("ytsocketport", String.valueOf((this.basePort + 3))));
+        this.panelSocketPort = Integer.parseInt(this.pbProperties.getProperty("panelsocketport", String.valueOf((this.basePort + 4))));
         this.webOAuth = this.pbProperties.getProperty("webauth");
         this.webOAuthThro = this.pbProperties.getProperty("webauthro");
         this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true");
@@ -840,37 +844,37 @@ public final class PhantomBot implements Listener {
         if (webEnabled) {
             try {
                 checkPortAvailabity(basePort);
-                checkPortAvailabity(basePort + 4);
+                checkPortAvailabity(panelSocketPort);
 
                 /* Is the music toggled on? */
                 if (musicEnabled) {
-                    checkPortAvailabity(basePort + 3);
+                    checkPortAvailabity(ytSocketPort);
                     if (useHttps) {
                         /* Set the music player server */
-                        youtubeSocketSecureServer = new YTWebSocketSecureServer((basePort + 3), youtubeOAuth, youtubeOAuthThro, httpsFileName, httpsPassword, socketServerTasksSize);
+                        youtubeSocketSecureServer = new YTWebSocketSecureServer(ytSocketPort, youtubeOAuth, youtubeOAuthThro, httpsFileName, httpsPassword, socketServerTasksSize);
                         /* Start this youtube socket server */
                         youtubeSocketSecureServer.start();
-                        print("YouTubeSocketSecureServer accepting connections on port: " + (basePort + 3) + " (SSL)");
+                        print("YouTubeSocketSecureServer accepting connections on port: " + ytSocketPort + " (SSL)");
                     } else {
                         /* Set the music player server */
-                        youtubeSocketServer = new YTWebSocketServer((basePort + 3), youtubeOAuth, youtubeOAuthThro);
+                        youtubeSocketServer = new YTWebSocketServer(ytSocketPort, youtubeOAuth, youtubeOAuthThro);
                         /* Start this youtube socket server */
                         youtubeSocketServer.start();
-                        print("YouTubeSocketServer accepting connections on port: " + (basePort + 3));
+                        print("YouTubeSocketServer accepting connections on port: " + ytSocketPort);
                     }
                 }
 
                 if (useHttps) {
                     if (testPanelServer) {
-                        newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword);
+                        newPanelSocketServer = new NewPanelSocketServer(panelSocketPort, webOAuth, webOAuthThro, httpsFileName, httpsPassword);
                         newPanelSocketServer.start();
-                        print("TEST PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
+                        print("TEST PanelSocketSecureServer accepting connections on port: " + panelSocketPort + " (SSL)");
                     } else {
                         /* Set up the panel socket server */
-                        panelSocketSecureServer = new PanelSocketSecureServer((basePort + 4), webOAuth, webOAuthThro, httpsFileName, httpsPassword, socketServerTasksSize);
+                        panelSocketSecureServer = new PanelSocketSecureServer(panelSocketPort, webOAuth, webOAuthThro, httpsFileName, httpsPassword, socketServerTasksSize);
                         /* Start the panel socket server */
                         panelSocketSecureServer.start();
-                        print("PanelSocketSecureServer accepting connections on port: " + (basePort + 4) + " (SSL)");
+                        print("PanelSocketSecureServer accepting connections on port: " + panelSocketPort + " (SSL)");
                     }
 
                     /* Set up a new https server */
@@ -878,16 +882,16 @@ public final class PhantomBot implements Listener {
                     print("HTTPS server accepting connection on port: " + basePort + " (SSL)");
                 } else {
                     if (testPanelServer) {
-                        newPanelSocketServer = new NewPanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
+                        newPanelSocketServer = new NewPanelSocketServer(panelSocketPort, webOAuth, webOAuthThro);
                         newPanelSocketServer.start();
-                        print("TEST PanelSocketServer accepting connections on port: " + (basePort + 4));
+                        print("TEST PanelSocketServer accepting connections on port: " + panelSocketPort);
                     } else {
                         /* Set up the panel socket server */
-                        panelSocketServer = new PanelSocketServer((basePort + 4), webOAuth, webOAuthThro);
+                        panelSocketServer = new PanelSocketServer(panelSocketPort, webOAuth, webOAuthThro);
                         /* Set up the NEW panel socket server */
                         /* Start the panel socket server */
                         panelSocketServer.start();
-                        print("PanelSocketServer accepting connections on port: " + (basePort + 4));
+                        print("PanelSocketServer accepting connections on port: " + panelSocketPort);
                     }
 
                     /* Set up a new http server */
@@ -941,10 +945,10 @@ public final class PhantomBot implements Listener {
         String http = (useHttps ? "https://" : "http://");
 
         try {
-            data += "//Configuration for YTPlayer\r\n";
-            data += "//Automatically Generated by PhantomBot at Startup\r\n";
-            data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
-            data += "var playerPort = " + (basePort + 3) + ";\r\n";
+            data += "// Configuration for YTPlayer\r\n";
+            data += "// Automatically Generated by PhantomBot at Startup\r\n";
+            data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
+            data += "var playerPort = " + ytSocketPort + ";\r\n";
             data += "var channelName = \"" + channelName + "\";\r\n";
             data += "var auth=\"" + youtubeOAuth + "\";\r\n";
             data += "var http=\"" + http + "\";\r\n";
@@ -963,13 +967,13 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        /* Create configuration for YTPlayer v2.0 for the WS port. */
+        /* Create configuration for YTPlayer Playlist v2.0 for the WS port. */
         data = "";
         try {
             data += "//Configuration for YTPlayer\r\n";
             data += "//Automatically Generated by PhantomBot at Startup\r\n";
             data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
-            data += "var playerPort = " + (basePort + 3) + ";\r\n";
+            data += "var playerPort = " + ytSocketPort + ";\r\n";
             data += "var channelName = \"" + channelName + "\";\r\n";
             data += "var auth=\"" + youtubeOAuthThro + "\";\r\n";
             data += "var http=\"" + http + "\";\r\n";
@@ -991,11 +995,11 @@ public final class PhantomBot implements Listener {
         /* Create configuration for WebPanel for the WS port. */
         data = "";
         try {
-            data += "//Configuration for Control Panel\r\n";
-            data += "//Automatically Generated by PhantomBot at Startup\r\n";
-            data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
+            data += "// Configuration for Control Panel\r\n";
+            data += "// Automatically Generated by PhantomBot at Startup\r\n";
+            data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
             data += "var panelSettings = {\r\n";
-            data += "    panelPort   : " + (basePort + 4) + ",\r\n";
+            data += "    panelPort   : " + panelSocketPort + ",\r\n";
             data += "    channelName : \"" + channelName + "\",\r\n";
             data += "    auth        : \"" + webOAuth + "\",\r\n";
             data += "    http        : \"" + http + "\"\r\n";
@@ -1018,11 +1022,11 @@ public final class PhantomBot implements Listener {
         /* Create configuration for Read-Only Access to WS port. */
         data = "";
         try {
-            data += "//Configuration for Control Panel\r\n";
-            data += "//Automatically Generated by PhantomBot at Startup\r\n";
-            data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
+            data += "// Configuration for Control Panel\r\n";
+            data += "// Automatically Generated by PhantomBot at Startup\r\n";
+            data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
             data += "var panelSettings = {\r\n";
-            data += "    panelPort   : " + (basePort + 4) + ",\r\n";
+            data += "    panelPort   : " + panelSocketPort + ",\r\n";
             data += "    channelName : \"" + channelName + "\",\r\n";
             data += "    auth        : \"" + webOAuthThro + "\",\r\n";
             data += "    http        : \"" + http + "\"\r\n";
