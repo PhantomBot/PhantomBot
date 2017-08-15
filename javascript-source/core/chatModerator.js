@@ -314,10 +314,10 @@
      * @param {string} reason
      */
     function timeoutUserFor(username, time, reason) {
-        $.timeoutUserReason(username, time, reason);
+        $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
         var timeout = setTimeout(function() {
-            if ($.getMessageWrites() < 7) {
-                $.timeoutUserReason(username, time, reason);
+            if ($.getMessageWrites() < 50) {
+                $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
             }
             clearInterval(timeout);
         }, 1000, 'scripts::core::chatModerator.js::timeout');
@@ -355,8 +355,8 @@
      * @param {boolean} filter
      */
     function sendMessage(username, message, filter) {
-        if (filter == false && messageTime < $.systemTime() && $.getMessageQueue() === 0 && $.getMessageWrites() < 7) {
-            $.say('@' + username + ', ' + message + ' ' + warning);
+        if (filter == false && messageTime < $.systemTime() && $.getMessageWrites() < 7) {
+            $.session.sayNow('@' + username + ', ' + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         }
     }
