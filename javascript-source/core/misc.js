@@ -49,13 +49,6 @@
         return parseInt($.session.getWrites());
     }
 
-    /*
-     * @function getMessageWrites
-     */
-    function getMessageQueue() {
-        return parseInt($.session.getQueue());
-    }
-
     /**
      * @function isKnown
      * @export $.user
@@ -169,17 +162,6 @@
             }
         }
         $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
-    }
-
-    /**
-     * @function timeoutUserReason
-     * @export $
-     * @param {string} username
-     * @param {string} time
-     * @param {string} reason
-     */
-    function timeoutUserReason(username, time, reason) {
-        $.session.say('.timeout ' + username + ' ' + time + ' ' + reason);
     }
 
     /**
@@ -652,7 +634,6 @@
         isFollower: isFollower
     };
 
-    $.timeoutUserReason = timeoutUserReason;
     $.arrayShuffle = arrayShuffle;
     $.getCurrentHostTarget = getCurrentHostTarget;
     $.getIniDbBoolean = getIniDbBoolean;
@@ -687,6 +668,5 @@
     $.hasKey = hasKey;
     $.systemTimeNano = systemTimeNano;
     $.getMessageWrites = getMessageWrites;
-    $.getMessageQueue = getMessageQueue;
     $.sayWithTimeout = sayWithTimeout;
 })();

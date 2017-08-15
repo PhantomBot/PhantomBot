@@ -29,8 +29,9 @@ import org.java_websocket.WebSocket;
 
 import java.net.InetSocketAddress;
 
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.BlockingDeque;
 import java.util.TimerTask;
 import java.util.HashMap;
 import java.util.Timer;
@@ -38,10 +39,12 @@ import java.util.Map;
 
 import java.net.URI;
 
-public class Session {
+public class Session implements Runnable {
     private static final Map<String, Session> instances = new HashMap<>();
     private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedDeque<Message> queue = new ConcurrentLinkedDeque<>();
+    private final BlockingDeque<Message> queue = new LinkedBlockingDeque<>();
+    private final Thread thread;
+    private Boolean isKilled = false;
     private Boolean sendMessages = false;
     private TwitchWSIRC twitchWSIRC;
     private long lastReconnect = 0;
@@ -54,7 +57,7 @@ public class Session {
     private String oAuth;
     
     /*
-     * @function instance
+     * Method to start and get this instance.
      *
      * @param  {Channel} channel
      * @param  {String} channelName
@@ -74,7 +77,7 @@ public class Session {
     }
 
     /*
-     * @function Session
+     * Class constructor
      *
      * @param  {Channel} channel
      * @param  {String} channelName
@@ -89,6 +92,13 @@ public class Session {
         this.channel = channel;
         this.botName = botName;
         this.oAuth = oAuth;
+
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+
+        // Start a new thread for our final queue.
+        this.thread = new Thread(this, "tv.phantombot.twitchwsirc.Session::run");
+        this.thread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        this.thread.start();
 
         try {
             this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
@@ -106,6 +116,7 @@ public class Session {
      */
     public void reconnect() {
         Boolean reconnected = false;
+        sendMessages = false;
 
         while (!reconnected) {
             if (lastReconnect + 10000L <= System.currentTimeMillis()) {
@@ -114,6 +125,7 @@ public class Session {
                     this.twitchWSIRC.delete();
                     this.twitchWSIRC = TwitchWSIRC.instance(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, channel, this, eventBus);
                     reconnected = this.twitchWSIRC.connectWSS(true);
+                    sendMessages = reconnected;
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.println("Error when reconnecting to Twitch: " + ex.getMessage());
                     System.exit(0);
@@ -128,7 +140,7 @@ public class Session {
     }
 
     /*
-     * @function startTimers
+     * Method that starts the queue timers
      */
     public void startTimers() {
         if (PhantomBot.useMessageQueue) {
@@ -136,11 +148,10 @@ public class Session {
         } else {
             new Timer("tv.phantombot.twitchwsirc.Session::MessageHandlerNoLimit").schedule(new MessageHandlerNoLimit(this), 500, 1);  
         }
-        new Timer("tv.phantombot.twitchwsirc.Session::QueueHandler").schedule(new QueueHandler(this), 500, 1);
     }
 
     /*
-     * @function getNick
+     * Method that gets the bot name.
      *
      * @return {String}
      */
@@ -149,7 +160,7 @@ public class Session {
     }
 
     /*
-     * @function getSession
+     * Method that returns this object.
      *
      * @return {Session}
      */
@@ -158,32 +169,32 @@ public class Session {
     }
 
     /*
-     * @function setAllowSendMessages
+     * Method that sets if we are allowed to send messages.
      *
      * @param {Boolean} sendMessages
      */
-    public void setAllowSendMessages(Boolean sendMessages) {
+    public void setAllowSendMessages(boolean sendMessages) {
         this.sendMessages = sendMessages;
     }
 
     /*
-     * @function getAllowSendMessages
+     * Method that says if we are allowed to send messages.
      *
      * @return {Boolean}
      */
-    public Boolean getAllowSendMessages() {
+    public boolean getAllowSendMessages() {
         return this.sendMessages;
     }
 
     /*
-     * @function close
+     * Method that closes our connection with Twitch.
      */
     public void close() {
-        this.twitchWSIRC.delete();
+        twitchWSIRC.delete();
     }
 
     /*
-     * @function getChannel
+     * Method that gets the channel object.
      *
      * @return {Channel}
      */
@@ -192,21 +203,21 @@ public class Session {
     }
 
     /*
-     * @function chatLinesIncr
+     * Method that increases the current chat lines.
      */
     public void chatLinesIncr() {
         this.chatLineCtr++;
     }
 
     /*
-     * @function chatLinesReset
+     * Method that resets the current chat lines
      */
     public void chatLinesReset() {
         this.chatLineCtr = 0;
     }
 
     /*
-     * @function chatLinesGet
+     * Method that gets the current chat lines.
      *
      * @return {Int}
      */
@@ -215,16 +226,7 @@ public class Session {
     }
 
     /*
-     * @function getQueue
-     *
-     * @return {int}
-     */
-    public int getQueue() {
-        return this.messages.size();
-    }
-
-    /*
-     * @function getWrites
+     * Method that gets how many messages we have send in a 30 second periode.
      *
      * @return {int}
      */
@@ -233,41 +235,40 @@ public class Session {
     }
 
     /*
-     * @function say
+     * Method that queues messages in the normal queue.
      *
      * @param {String} message
      */
     public void say(String message) {
-        if (message.startsWith(".timeout")) {
-            this.queue.addFirst(new Message(message, true));
-            return;
-        }
-        this.messages.add(new Message(message, false));
+        messages.add(new Message(message, false));
     }
 
     /*
-     * @function saySilent
+     * Method to that sends a message to the final queue right away.
+     *
+     * @param {String} message
+     */
+    public void sayNow(String message) {
+        queue.addFirst(new Message(message, message.startsWith(".")));
+    }
+
+    /*
+     * Method that sends messages without printing anything in the console.
      *
      * @param {String} message
      */
     public void saySilent(String message) {
-        // The socket should always be opened, if it's not, something needs fixing.
-        //if (this.twitchWSIRC.isOpen()) {
-            this.twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
-        //}
+        twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
     }
 
     /*
-     * @function send
+     * Method that sends messages and prints it in the console.
      *
      * @param {String} message
      */
     public void send(String message) {
-        // The socket should always be opened, if it's not, something needs fixing.
-        //if (this.twitchWSIRC.isOpen()) {
-            this.twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
-            com.gmt2001.Console.out.println("[CHAT] " + message);
-        //}
+        twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
+        com.gmt2001.Console.out.println("[CHAT] " + message);
     }
 
     /*
@@ -276,50 +277,47 @@ public class Session {
     private class Message {
         private final Boolean hasPriority;
         private final String message;
-        private final long queueTime;
 
         public Message(String message, Boolean hasPriority) {
             this.message = message;
             this.hasPriority = hasPriority;
-            this.queueTime = (System.currentTimeMillis() + 3000);
         }
     }
 
     /*
-     * @class QueueHandler
+     * Run method. This is the final queue messages to through
      */
-    private class QueueHandler extends TimerTask {
-        private final Session session;
-        private long lastWrite = System.currentTimeMillis();
-        private long nextWrite = System.currentTimeMillis();
-        private long time = 0;
+    @Override
+    public void run() {
+        long lastWrite = System.currentTimeMillis();
+        long nextWrite = System.currentTimeMillis();
+        Message message;
+        long time = 0;
 
-        public QueueHandler(Session session) {
-            this.session = session;
-        }
-
-        @Override
-        public void run() {
-            time = System.currentTimeMillis();
-
-            if (!this.session.queue.isEmpty() && nextWrite < time) {
-                if (lastWrite > time) {
-                    if (writes == 19) {
-                        nextWrite = (time + (lastWrite - time));
-                        return;
+        while (!isKilled) {
+            try {
+                // Take an item from the queue, block if nothing is in it.
+                message = queue.take();
+                // Set the current time.
+                time = System.currentTimeMillis();
+                
+                // if the message is a timeout, and we sent less than 100, send the timeout.
+                if (sendMessages && (nextWrite < time || (message.hasPriority && writes < 99))) {
+                    if (lastWrite > time) {
+                        if (writes > 18 && !message.hasPriority) {
+                            nextWrite = (time + (lastWrite - time));
+                            continue;
+                        }
+                        writes++;
+                    } else {
+                        writes = 0;
+                        lastWrite = (time + 30200);
                     }
-                    writes++;
-                } else {
-                    writes = 1;
-                    lastWrite = (time + 30200);
+    
+                    send(message.message);
                 }
-
-                Message message = this.session.queue.poll();
-                if (message != null && this.session.sendMessages && (message.queueTime > time || message.hasPriority)) {
-                    this.session.send(message.message);
-                    return;
-                }
-                writes--;
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }
@@ -368,9 +366,17 @@ public class Session {
     }
 
     /*
-     * @function fakeTwitchMessage
+     * Method that emits a fake message.
      */
     public void fakeTwitchMessage(String message) {
         twitchWSIRC.onMessage(message);
+    }
+
+    /*
+     * Method to kill this.
+     */
+    public void kill() {
+        this.sendMessages = false;
+        this.isKilled = true;
     }
 }

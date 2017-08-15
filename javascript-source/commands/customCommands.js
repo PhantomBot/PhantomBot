@@ -373,6 +373,7 @@
             message = $.replace(message, m[0], encodeURI(m[1]));
         }
 
+
         if (message.match(/\(math (.*)\)/)) {
             var mathStr = message.match(/\(math (.*)\)/)[1].replace(/\s/g, '');
 
