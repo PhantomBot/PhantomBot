@@ -27,6 +27,8 @@ import java.io.BufferedReader;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import org.joda.time.DateTime;
+
 import tv.phantombot.PhantomBot;
 
 /*
@@ -42,10 +44,14 @@ public class GenerateLogs {
 
 		String logData = "";
 
-		logData += readFile("logs/error/" + getDate(false) + ".txt");
-		logData += readFile("logs/core-error/" + getDate(true) + ".txt");
+		// Need to clean this up later.
+		logData += PhantomBot.instance().getBotInformation() + "\r\n";
+		logData += readFile("logs/error/" + getDate(false, true) + ".txt");
+		logData += readFile("logs/core-error/" + getDate(true, true) + ".txt");
+		logData += readFile("logs/error/" + getDate(false, false) + ".txt");
+		logData += readFile("logs/core-error/" + getDate(true, false) + ".txt");
 
-		String fileName = ("errors_" + getDate(false) + "@" + System.currentTimeMillis() + ".txt");
+		String fileName = ("errors_" + getDate(false, false) + "@" + System.currentTimeMillis() + ".txt");
 
 		com.gmt2001.Console.out.println("Log file \"" + fileName + "\" was created in the main bot folder.");
 
@@ -60,8 +66,12 @@ public class GenerateLogs {
 
 		String logData = "";
 
-		logData += readFile("logs/error/" + getDate(false) + ".txt");
-		logData += readFile("logs/core-error/" + getDate(true) + ".txt");
+		// Need to clean this up later.
+		logData += PhantomBot.instance().getBotInformation() + "\r\n";
+		logData += readFile("logs/error/" + getDate(false, false) + ".txt");
+		logData += readFile("logs/core-error/" + getDate(true, false) + ".txt");
+		logData += readFile("logs/error/" + getDate(false, true) + ".txt");
+		logData += readFile("logs/core-error/" + getDate(true, true) + ".txt");
 
 		com.gmt2001.Console.out.println(logData);
 	}
@@ -74,7 +84,7 @@ public class GenerateLogs {
 	 */
 	private static String readFile(String file) {
 		BufferedReader bufferedReader = null;
-		String data = "";
+		String data = "----" + file + "----\r\n";
 		String line = "";
 
 		try {
@@ -113,6 +123,7 @@ public class GenerateLogs {
 			bufferedWriter = new BufferedWriter(new FileWriter(file));
 
 			bufferedWriter.write(data);
+			bufferedWriter.flush();
 		} catch (IOException ex) {
 			com.gmt2001.Console.err.println("Failed to write log file: [" + file + "] [IOException] " + ex.getMessage());
 		} finally {
@@ -129,12 +140,14 @@ public class GenerateLogs {
 	/*
 	 * Method to get the current date of log files.
 	 *
+	 * @param  {Boolean} isGMT
+	 * @param  {Boolean} minusDay
 	 * @return {String}
 	 */
-	private static String getDate(boolean isGMT) {
+	private static String getDate(boolean isGMT, boolean minusDay) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 		dateFormat.setTimeZone(java.util.TimeZone.getTimeZone((isGMT ? "GMT" : PhantomBot.timeZone)));
-        return dateFormat.format(new Date());
+        return (!minusDay ? dateFormat.format(new Date()) : dateFormat.format(new DateTime(new Date()).minusDays(1).toDate()));
 	}
 }

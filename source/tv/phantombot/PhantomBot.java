@@ -837,6 +837,16 @@ public final class PhantomBot implements Listener {
     }
 
     /*
+     * Method that returns the basic bot info.
+     *
+     * @return {String}
+     */
+    public String getBotInformation() {
+        return "Java Version: " + System.getProperty("java.version") + " - OS: " + System.getProperty("os.name") + " "
+                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ") - " + getBotInfo();
+    }
+
+    /*
      * Loads everything up.
      */
     private void init() {
