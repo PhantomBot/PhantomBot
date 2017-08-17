@@ -118,7 +118,7 @@ public class DiscordUtil {
      * @param {String}   message
      * @param {String}   color
      */
-    public void sendMessageEmbed(IChannel channel, String message, String color) {
+    public void sendMessageEmbed(IChannel channel, String color, String message) {
         RequestBuffer.request(() -> {
             try {
                 EmbedObject builder = new EmbedBuilder().withDescription(message).withColor(getColor(color)).build();
@@ -141,8 +141,8 @@ public class DiscordUtil {
      * @param {String} message
      * @param {String} color
      */
-    public void sendMessageEmbed(String channelName, String message, String color) {
-        sendMessageEmbed(getChannel(channelName), message, color);
+    public void sendMessageEmbed(String channelName, String color, String message) {
+        sendMessageEmbed(getChannel(channelName), color, message);
     }
 
     /*
