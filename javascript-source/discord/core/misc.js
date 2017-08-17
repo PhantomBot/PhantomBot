@@ -59,7 +59,7 @@
 	 * @return {string}
 	 */
 	function getRandomUser() {
-		return ($.discordAPI.getUserMembers().get($.randRange(0, $.discordAPI.getUserMembers().size() - 1)).mention());
+		return ($.discordAPI.getUsers().get($.randRange(0, $.discordAPI.getUsers().size() - 1)).mention());
 	}
 
 	/**

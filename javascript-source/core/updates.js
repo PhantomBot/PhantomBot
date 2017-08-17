@@ -443,7 +443,7 @@
         $.consoleLn('Removing old discord settings...');
         $.inidb.RemoveFile('discordSettings');
         $.inidb.RemoveFile('discordKeywords');
-        $.inidb.RemoveFile('discordChannelCommands');
+        $.inidb.RemoveFile('discordCommands');
         $.inidb.RemoveFile('discordCooldown');
         $.inidb.del('modules', './handlers/discordHandler.js');
 
