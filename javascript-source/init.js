@@ -781,6 +781,13 @@
         });
 
         /*
+         * @event twitterRetweetEvent
+         */
+        $api.on($script, 'twitterRetweet', function(event) {
+            callHook('twitterRetweet', event, false);
+        });
+
+        /*
          * @event twitchOnlineEvent
          */
         $api.on($script, 'twitchOnline', function(event) {
