@@ -35,6 +35,12 @@ import sx.blah.discord.handle.obj.IUser;
 
 import sx.blah.discord.util.DiscordException;
 
+import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
+import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
+import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
+import tv.phantombot.event.discord.channel.DiscordChannelPartEvent;
+import tv.phantombot.event.EventBus;
+
 /*
  * Communicates with the Discord API.
  *
@@ -102,8 +108,7 @@ public class DiscordAPI extends DiscordUtil {
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
 
-        //TODO: Update the discord event classes to work with Discord4J.
-        //EventBus.instance().post(new DiscordCommandEvent(user, channel, command, arguments, isAdmin));
+        EventBus.instance().postAsync(new DiscordChannelCommandEvent(user, channel, command, arguments, isAdmin));
     }
 
     /*
@@ -134,20 +139,17 @@ public class DiscordAPI extends DiscordUtil {
                 parseCommand(iUsername, iChannel, message, isAdmin);
             }
 
-            //TODO: Update the discord event classes to work with Discord4J.
-            //EventBus.instance().post(new DiscordMessageEvent(iUsername, iChannel, iMessage, isAdmin));
+            EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUsername, iChannel, iMessage, isAdmin));
         }
 
         @EventSubscriber
         public void onDiscordUserJoinEvent(UserJoinEvent event) {
-            //TODO: Update the discord event classes to work with Discord4J.
-            //EventBus.instance().post(new DiscordJoinEvent(event.getUser()));
+            EventBus.instance().postAsync(new DiscordChannelJoinEvent(event.getUser()));
         }
 
         @EventSubscriber
         public void onDiscordUserLeaveEvent(UserLeaveEvent event) {
-            //TODO: Update the discord event classes to work with Discord4J.
-            //EventBus.instance().post(new DiscordLeaveEvent(event.getUser()));
+            EventBus.instance().postAsync(new DiscordChannelPartEvent(event.getUser()));
         }
     }
 }

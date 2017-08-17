@@ -33,6 +33,8 @@ import sx.blah.discord.util.EmbedBuilder;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.io.FileNotFoundException;
@@ -117,16 +119,16 @@ public class DiscordUtil {
      * @param {String}   color
      */
     public void sendMessageEmbed(IChannel channel, String message, String color) {
-        EmbedObject builder = new EmbedBuilder().withDescription(message).withColor(getColor(color)).build();
-
         RequestBuffer.request(() -> {
             try {
+                EmbedObject builder = new EmbedBuilder().withDescription(message).withColor(getColor(color)).build();
+
                 if (channel != null) {
                     com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + message);
 
                     channel.sendMessage(builder);
                 }
-            } catch (MissingPermissionsException | DiscordException ex) {
+            } catch (MissingPermissionsException | DiscordException | IllegalArgumentException ex) {
                 com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         });
@@ -362,10 +364,7 @@ public class DiscordUtil {
      * @return {Boolean}
      */
     public boolean isAdministrator(IUser user) {
-        if (user != null) {
-            return user.getPermissionsForGuild(DiscordAPI.guild).contains(Permissions.ADMINISTRATOR);
-        }
-        return false;
+        return (user != null ? user.getPermissionsForGuild(DiscordAPI.guild).contains(Permissions.ADMINISTRATOR) : false);
     }
 
     /*
@@ -395,7 +394,7 @@ public class DiscordUtil {
                     RequestBuffer.request(() -> {
                         try {
                             List<IMessage> messages = channel.getMessageHistoryFrom(LocalDateTime.now(), (amount < 2 ? 2 : amount));
-                        
+                            
                             channel.bulkDelete(messages);
                         } catch (DiscordException ex) {
                             com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
@@ -416,6 +415,48 @@ public class DiscordUtil {
      */
     public void bulkDelete(String channelName, int amount) {
         bulkDelete(getChannel(channelName), amount);
+    }
+
+    /*
+     * Method to bulk delete messages from a channel.
+     *
+     * @param {IChannel} channel
+     * @param {Array}   list
+     */
+    public void bulkDeleteMessages(IChannel channel, IMessage[] list) {
+        // Discord4J says that getting messages can block the current thread if they need to be requested from Discord's API.
+        // So start this on a new thread to avoid that. Please note that you need to delete at least 2 messages.
+
+        if (channel != null) {
+            RequestBuffer.request(() -> {
+                try {
+                    List<IMessage> messages = Arrays.asList(list);
+                
+                    channel.bulkDelete(messages);
+                } catch (DiscordException ex) {
+                    com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                }
+            });
+        }
+    }
+
+    /*
+     * Method to bulk delete messages from a channel.
+     *
+     * @param {String} channelName
+     * @param {Array} messages
+     */
+    public void bulkDeleteMessages(String channelName, IMessage[] messages) {
+        bulkDeleteMessages(getChannel(channelName), messages);
+    }
+
+    /*
+     * Method to delete a message.
+     *
+     * @param {IMessage} message
+     */
+    public void deleteMessage(IMessage message) {
+        message.delete();
     }
 
     /*
@@ -451,7 +492,7 @@ public class DiscordUtil {
      * @param  {String} color
      * @return {Color}
      */
-    public Color getColor(String color) {
+    public Color getColor(String color) throws IllegalArgumentException {
         Matcher match = Pattern.compile("(\\d{1,3}),?\\s?(\\d{1,3}),?\\s?(\\d{1,3})").matcher(color);
 
         if (match.find()) {

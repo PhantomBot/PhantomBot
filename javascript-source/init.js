@@ -461,9 +461,9 @@
         });
 
         /*
-         * @event discordCommand
+         * @event discordChannelCommand
          */
-        $api.on($script, 'discordCommand', function(event) {
+        $api.on($script, 'discordChannelCommand', function(event) {
             var username = event.getUsername(),
                 command = event.getCommand(),
                 channel = event.getChannel(),
@@ -499,7 +499,7 @@
                 }
             }
 
-            callHook('discordCommand', event, false);
+            callHook('discordChannelCommand', event, false);
 
             // Do this last to not slow down the command hook.
             if ($.discord.getCommandCost(command) > 0) {
@@ -830,24 +830,24 @@
         });
 
         /*
-         * @event discordMessage
+         * @event discordChannelMessage
          */
-        $api.on($script, 'discordMessage', function(event) {
-            callHook('discordMessage', event, false);
+        $api.on($script, 'discordChannelMessage', function(event) {
+            callHook('discordChannelMessage', event, false);
         });
 
         /*
-         * @event discordJoin
+         * @event discordChannelJoin
          */
-        $api.on($script, 'discordJoin', function(event) {
-            callHook('discordJoin', event, false);
+        $api.on($script, 'discordChannelJoin', function(event) {
+            callHook('discordChannelJoin', event, false);
         });
 
         /*
-         * @event discordLeave
+         * @event discordChannelPart
          */
-        $api.on($script, 'discordLeave', function(event) {
-            callHook('discordLeave', event, false);
+        $api.on($script, 'discordChannelPart', function(event) {
+            callHook('discordChannelPart', event, false);
         });
 
         /*
