@@ -19,9 +19,9 @@
     });
 
 	/**
-	 * @event discordJoin
+	 * @event discordChannelJoin
 	 */
-	$.bind('discordJoin', function(event) {
+	$.bind('discordChannelJoin', function(event) {
 		if (joinToggle === false || channelName == '') {
 			return;
 		}
@@ -41,9 +41,9 @@
 	});
 
 	/**
-	 * @event discordLeave
+	 * @event discordChannelPart
 	 */
-	$.bind('discordLeave', function(event) {
+	$.bind('discordChannelPart', function(event) {
 		if (partToggle === false || channelName == '') {
 			return;
 		}
@@ -64,9 +64,9 @@
 	});
 
 	/**
-	 * @event discordCommand
+	 * @event discordChannelCommand
 	 */
-	$.bind('discordCommand', function(event) {
+	$.bind('discordChannelCommand', function(event) {
 		var sender = event.getSender(),
 			command = event.getCommand(),
 		    channel = event.getChannel(),

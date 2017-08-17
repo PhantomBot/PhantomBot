@@ -4,9 +4,9 @@
 (function() {
 
     /**
-     * @event discordMessage
+     * @event discordChannelMessage
      */
-    $.bind('discordMessage', function(event) {
+    $.bind('discordChannelMessage', function(event) {
         var message = event.getMessage().toLowerCase(),
             channel = event.getChannel(),
             keys = $.inidb.GetKeyList('discordKeywords', ''),
@@ -37,9 +37,9 @@
     });
 
     /**
-     * @event discordCommand
+     * @event discordChannelCommand
      */
-    $.bind('discordCommand', function(event) {
+    $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
             channel = event.getChannel(),
             command = event.getCommand(),

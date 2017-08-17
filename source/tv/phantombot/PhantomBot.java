@@ -26,7 +26,6 @@ import com.gmt2001.datastore.H2Store;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
-import com.illusionaryone.DiscordAPI;
 import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
@@ -118,6 +117,7 @@ import tv.phantombot.twitchwsirc.TwitchPubSub;
 import tv.phantombot.twitchwsirc.TwitchWSHostIRC;
 import tv.phantombot.ytplayer.YTWebSocketServer;
 import tv.phantombot.ytplayer.YTWebSocketSecureServer;
+import tv.phantombot.discord.DiscordAPI;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
