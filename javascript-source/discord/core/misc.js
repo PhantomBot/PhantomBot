@@ -11,7 +11,7 @@
  * 	- Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
-	var embedReg = new RegExp(/\(embed\s([\w\W\s\d]+),\s?([\w\W\s\d\n])\)/);
+	var embedReg = new RegExp(/\(embed\s([\w\W\s\d]+),\s?([\r\n\w\W]*)\)/);
 
 	/**
 	 * @function userPrefix
@@ -71,6 +71,7 @@
 	 */
 	function say(channel, message) {
 		if (message.match(embedReg)) {
+$.consoleLn('match > ' + message.match(embedReg)[1] + ' | ' + message.match(embedReg)[2]);
 			$.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
 		} else {
 			$.discordAPI.sendMessage(channel, message);
