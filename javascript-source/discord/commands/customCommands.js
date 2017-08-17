@@ -118,7 +118,7 @@
             s = $.replace(s, '(count)', $.inidb.get('discordCommandCount', event.getCommand()));
         }
 
-        if (s.match(/\(writefile (.+), ([a-z]), (.+)\)/)) {
+        if (s.match(/\(writefile ([\w\W^,]+), ([\w^,]+), ([\w\W^,]+)\)/)) {
             var file = s.match(/\(writefile (.+), (.+), (.+)\)/)[1], append = (s.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false), string = s.match(/\(writefile (.+), (.+), (.+)\)/)[3];
             $.writeToFile(string, './addons/' + file, append);
             return null;
