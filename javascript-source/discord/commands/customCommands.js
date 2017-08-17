@@ -294,7 +294,7 @@
      */
     function loadCustomCommands() {
         if ($.bot.isModuleEnabled('./discord/commands/customCommands.js')) {
-            var keys = $.inidb.GetKeyList('discordChannelCommands', ''),
+            var keys = $.inidb.GetKeyList('discordCommands', ''),
                 i;
 
             for (i = 0; i < keys.length; i++) {
@@ -319,8 +319,8 @@
         /**
          * Checks for custom commands, no command path needed here.
          */
-        if ($.inidb.exists('discordChannelCommands', command)) {
-            var tag = tags(event, $.inidb.get('discordChannelCommands', command));
+        if ($.inidb.exists('discordCommands', command)) {
+            var tag = tags(event, $.inidb.get('discordCommands', command));
             if (tag !== null) {
                 $.discord.say(channel, tag);
             }
@@ -343,7 +343,7 @@
                 return;
             }
 
-            $.inidb.set('discordChannelCommands', action, args.slice(1).join(' '));
+            $.inidb.set('discordCommands', action, args.slice(1).join(' '));
             $.discord.registerCommand('./discord/commands/customCommands.js', action, 0);
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.addcom.success', action));
         }
@@ -364,7 +364,7 @@
                 return;
             }
 
-            $.inidb.set('discordChannelCommands', action, args.slice(1).join(' '));
+            $.inidb.set('discordCommands', action, args.slice(1).join(' '));
             $.discord.registerCommand('./discord/commands/customCommands.js', action, 0);
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.editcom.success', action));
         }
@@ -385,7 +385,7 @@
                 return;
             }
 
-            $.inidb.del('discordChannelCommands', action);
+            $.inidb.del('discordCommands', action);
             $.discord.unregisterCommand(action);
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.delcom.success', action));
         }
@@ -536,7 +536,7 @@
          * @discordcommandpath commands - Shows all of the custom commands you created.
          */
         if (command.equalsIgnoreCase('commands')) {
-            var keys = $.inidb.GetKeyList('discordChannelCommands', ''),
+            var keys = $.inidb.GetKeyList('discordCommands', ''),
                 temp = [],
                 i;
 

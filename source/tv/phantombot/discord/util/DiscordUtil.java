@@ -487,6 +487,13 @@ public class DiscordUtil {
     }
 
     /*
+     * Method that gets all server members
+     */
+    public List<IUser> getUsers() {
+        return DiscordAPI.client.getUsers();
+    }
+
+    /*
      * Method to get a color object.
      *
      * @param  {String} color
