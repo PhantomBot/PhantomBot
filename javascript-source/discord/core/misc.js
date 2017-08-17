@@ -71,7 +71,6 @@
 	 */
 	function say(channel, message) {
 		if (message.match(embedReg)) {
-$.consoleLn('match > ' + message.match(embedReg)[1] + ' | ' + message.match(embedReg)[2]);
 			$.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
 		} else {
 			$.discordAPI.sendMessage(channel, message);
