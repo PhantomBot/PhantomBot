@@ -74,18 +74,18 @@ public class HTTPServer {
 
             server.start();
         } catch (BindException ex) {
-            com.gmt2001.Console.err.println("Failed to bind to port for HTTPS Server on port " + myPort);
+            com.gmt2001.Console.err.println("Failed to bind to port for HTTP Server on port " + myPort);
             com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + myPort + " on your system");
             com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file to a different value, such as " + (myPort + 1000));
-            throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
+            throw new Exception("Failed to Create HTTPServer on Port " + myPort);
         } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to create HTTP Server: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
+            throw new Exception("Failed to Create HTTPServer on Port " + myPort);
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to create HTTP Server: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
+            throw new Exception("Failed to Create HTTPServer on Port " + myPort);
         }
     }
 
