@@ -126,7 +126,11 @@
         $.discord.registerSubCommand('accountlink', 'link', 0);
         $.discord.registerSubCommand('accountlink', 'remove', 0);
 
-        $.registerChatCommand('./discord/core/accountLink.js', 'account', 7);
+        /* Not sure why this was here, leaving in case it is intentional but the command needs
+         * to be smarter.
+         *
+         * $.registerChatCommand('./discord/core/accountLink.js', 'account', 7);
+         */
 
         // Interval to clear our old codes that have not yet been registered.
         interval = setInterval(function() {
