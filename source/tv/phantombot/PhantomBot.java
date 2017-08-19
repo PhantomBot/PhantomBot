@@ -622,7 +622,7 @@ public final class PhantomBot implements Listener {
                 java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
                 int pid = Integer.parseInt(runtime.getName().split("@")[0]);
 
-                File file = new File("PhantomBot." + this.botName.toLowerCase() + ".pid");
+                File file = new File("PhantomBot." + this.botName + ".pid");
 
                 try (FileOutputStream fs = new FileOutputStream(file, false)) {
                     PrintStream ps = new PrintStream(fs);
@@ -2259,7 +2259,7 @@ public final class PhantomBot implements Listener {
                 do {
                     com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
 
-                    startProperties.setProperty("user", System.console().readLine().trim());
+                    startProperties.setProperty("user", System.console().readLine().trim().toLowerCase());
                 } while (startProperties.getProperty("user", "").length() <= 0);
 
                 // Twitch oauth.
