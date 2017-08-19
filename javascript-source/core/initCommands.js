@@ -1,5 +1,5 @@
 (function() {
-    var bot = $.botName;
+    var bot = $.botName.toLowerCase();
 
     /*
      * @event command
@@ -343,9 +343,9 @@
         $.registerChatCommand('./core/initCommands.js', 'echo', 1);
         $.registerChatCommand('./core/initCommands.js', 'reconnect', 1);
         $.registerChatCommand('./core/initCommands.js', 'disconnect', 1);
-        $.registerChatCommand('./core/initCommands.js', $.botName, 2);
-        $.registerChatSubcommand($.botName, 'disconnect', 1);
-        $.registerChatSubcommand($.botName, 'reconnect', 1);
-        $.registerChatSubcommand($.botName, 'moderate', 2);
+        $.registerChatCommand('./core/initCommands.js', bot, 2);
+        $.registerChatSubcommand(bot, 'disconnect', 1);
+        $.registerChatSubcommand(bot, 'reconnect', 1);
+        $.registerChatSubcommand(bot, 'moderate', 2);
     });
 })();
