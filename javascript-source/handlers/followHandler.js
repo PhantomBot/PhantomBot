@@ -194,7 +194,7 @@
         $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
         $.registerChatCommand('./handlers/followHandler.js', 'shoutout', 2);
 
-        setInterval(function() { runFollows(); }, 2e3, 'scripts::discord::core::accountLink.js');
+        setInterval(function() { runFollows(); }, 2e3, 'scripts::handlers::followHandler.js');
     });
 
     $.updateFollowConfig = updateFollowConfig;
