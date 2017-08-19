@@ -15,10 +15,6 @@
      * @return {string or null}
      */
     function resolveTwitchName(userId) {
-        if (typeof userId === 'string') {
-            userId = $.discordAPI.resolveUserId(userId);
-        }
-
         return ($.inidb.exists('discordToTwitch', userId) ? $.inidb.get('discordToTwitch', userId) : null); 
     }
 
@@ -93,7 +89,7 @@
          * @commandpath account link [code] - Completes an account link for Discord.
          */
         if (command.equalsIgnoreCase('account')) {
-            if (action.equalsIgnoreCase('link')) {
+            if (action !== undefined && action.equalsIgnoreCase('link')) {
                 var code = args[1];
                 if (code === undefined || code.length() < 8) {
                     return;
@@ -125,12 +121,9 @@
         $.discord.registerCommand('./discord/core/accountLink.js', 'account', 0);
         $.discord.registerSubCommand('accountlink', 'link', 0);
         $.discord.registerSubCommand('accountlink', 'remove', 0);
+        // This is used to veiry your account from Twitch. Do not remove it.
+        $.registerChatCommand('./discord/core/accountLink.js', 'account', 7);
 
-        /* Not sure why this was here, leaving in case it is intentional but the command needs
-         * to be smarter.
-         *
-         * $.registerChatCommand('./discord/core/accountLink.js', 'account', 7);
-         */
 
         // Interval to clear our old codes that have not yet been registered.
         interval = setInterval(function() {
