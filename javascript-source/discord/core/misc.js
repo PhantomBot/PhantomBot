@@ -13,7 +13,7 @@
 (function() {
 	var embedReg = new RegExp(/\(embed\s([\w\W\s\d]+),\s?([\r\n\w\W]*)\)/),
 		fileRegMsg = new RegExp(/\(file\s([\w\W]+),\s?([\r\n\w\W]*)\)/),
-		fileReg = new RegExp(/(file\s([\w\W]+)/);
+		fileReg = new RegExp(/\(file\s([\w\W]+)\)/);
 
 	/**
 	 * @function userPrefix
@@ -72,11 +72,11 @@
 	 * @param {string} message
 	 */
 	function say(channel, message) {
-		if (message.test(embedReg)) {
+		if (embedReg.test(message)) {
 			$.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
-		} else if (message.test(fileRegMsg)) {
+		} else if (fileRegMsg.test(message)) {
 			$.discordAPI.sendFile(channel, message.match(fileRegMsg)[2], message.match(fileRegMsg)[1]);
-		} else if (message.test(fileReg)) {
+		} else if (fileReg.test(message)) {
 			$.discordAPI.sendFile(channel, message.match(fileReg)[1]);
 		} else {
 			$.discordAPI.sendMessage(channel, message);
