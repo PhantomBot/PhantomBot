@@ -12,8 +12,8 @@
  */
 (function() {
 	var embedReg = new RegExp(/\(embed\s([\w\W\s\d]+),\s?([\r\n\w\W]*)\)/),
-		fileRegMsg = new RegExp(/\(file\s([\w\W])+,\s?([\r\n\w\W]*)\)/),
-		fileReg = new RegExp(/(file\s([\w\W])+/),
+		fileRegMsg = new RegExp(/\(file\s([\w\W]+),\s?([\r\n\w\W]*)\)/),
+		fileReg = new RegExp(/(file\s([\w\W]+)/),
 
 	/**
 	 * @function userPrefix
