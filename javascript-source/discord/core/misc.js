@@ -11,7 +11,9 @@
  * 	- Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
-	var embedReg = new RegExp(/\(embed\s([\w\W\s\d]+),\s?([\r\n\w\W]*)\)/);
+	var embedReg = new RegExp(/\(embed\s([\w\W\s\d]+),\s?([\r\n\w\W]*)\)/),
+		fileRegMsg = new RegExp(/\(file\s([\w\W])+,\s?([\r\n\w\W]*)\)/),
+		fileReg = new RegExp(/(file\s([\w\W])+/),
 
 	/**
 	 * @function userPrefix
@@ -44,9 +46,9 @@
 	 */
 	function getUserMentionOrChannel(argument) {
 		if ($.discordAPI.getUser(username) != null) {
-			return $.discordAPI.resolveUser(argument).mention();
+			return $.discordAPI.getUser(argument).mention();
 		} else if ($.discordAPI.getChannel(argument) != null) {
-			return $.discordAPI.resolveChannel(argument).mention();
+			return $.discordAPI.getChannel(argument).mention();
 		} else {
 			return argument;
 		}
@@ -70,8 +72,12 @@
 	 * @param {string} message
 	 */
 	function say(channel, message) {
-		if (message.match(embedReg)) {
+		if (message.test(embedReg)) {
 			$.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
+		} else if (message.test(fileRegMsg)) {
+			$.discordAPI.sendFile(channel, message.match(fileRegMsg)[2], message.match(fileRegMsg)[1]);
+		} else if (message.test(fileReg)) {
+			$.discordAPI.sendFile(channel, message.match(fileReg)[1]);
 		} else {
 			$.discordAPI.sendMessage(channel, message);
 		}
