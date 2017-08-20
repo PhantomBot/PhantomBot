@@ -104,7 +104,7 @@
 
                         delete accounts[keys[i]];
 
-                        $.discordAPI.sendPrivateMessage($.discordAPI.resolveUserId(keys[i]), $.lang.get('discord.accountlink.link.success', $.username.resolve(sender)));
+                        $.discordAPI.sendPrivateMessage(keys[i], $.lang.get('discord.accountlink.link.success', $.username.resolve(sender)));
                         return;
                     }
                 }
