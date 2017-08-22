@@ -56,7 +56,6 @@
 			$.setIniDbBoolean('clipsSettings', 'toggle', toggle);
 			$.say($.whisperPrefix(sender) + (toggle ? $.lang.get('cliphandler.toggle.on') : $.lang.get('cliphandler.toggle.off')));
 		}
-		
 
 		/*
 		 * @commandpath clipsmessage - Sets a message for when someone creates a clip.
@@ -71,14 +70,34 @@
 			$.setIniDbString('clipsSettings', 'message', message);
 			$.say($.whisperPrefix(sender) + $.lang.get('cliphandler.message.set', message));
 		}
+
+        /*
+         * @commandpath lastclip - Displays information about the last clip captured.
+         */
+        if (command.equalsIgnoreCase('lastclip')) {
+            var url = $.getIniDbString('streamInfo', 'last_clip_url', $.lang.get('cliphandler.noclip'));
+            $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.lastclip', url));
+        }
+
+        /*
+         * @commandpath topclip - Displays the top clip from the past day.
+         */
+        if (command.equalsIgnoreCase('topclip')) {
+            var url = $.getIniDbString('streamInfo', 'most_viewed_clip_url', $.lang.get('cliphandler.noclip'));
+            $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.topclip', url));
+        }
 	});
 
     /*
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./handlers/clipHandler.js', 'clipstoggle', 1);
-        $.registerChatCommand('./handlers/clipHandler.js', 'clipsmessage', 1);
+        if ($.bot.isModuleEnabled('./handlers/clipHandler.js')) {
+            $.registerChatCommand('./handlers/clipHandler.js', 'clipstoggle', 1);
+            $.registerChatCommand('./handlers/clipHandler.js', 'clipsmessage', 1);
+            $.registerChatCommand('./handlers/clipHandler.js', 'lastclip', 7);
+            $.registerChatCommand('./handlers/clipHandler.js', 'topclip', 7);
+        }
     });
 
     $.reloadClips = reloadClips;
