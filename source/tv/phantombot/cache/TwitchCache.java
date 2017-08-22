@@ -185,7 +185,7 @@ public class TwitchCache implements Runnable {
         if (clipsObj.has("clips")) {
             JSONArray clipsData = clipsObj.getJSONArray("clips");
             if (clipsData.length() > 0) {
-                setDBString("most_viewed_clip_url", clipsData.getJSONObject(0).getString("url");
+                setDBString("most_viewed_clip_url", clipsData.getJSONObject(0).getString("url"));
                 String lastTrackingIdStr = getDBString("last_clips_tracking_id");
                 int lastTrackingId = (lastTrackingIdStr == null ? 0 : Integer.parseInt(lastTrackingIdStr));
                 largestTrackingId = lastTrackingId;
