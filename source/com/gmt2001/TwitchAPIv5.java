@@ -563,6 +563,17 @@ public class TwitchAPIv5 {
     }
 
     /**
+     * Get the clips from today for a channel.
+     *
+     * @param channel
+     * @return JSONObject  clips object.
+     */
+    public JSONObject getClipsToday(String channel) {
+        /* Yes, the v5 endpoint for this does use the Channel Name and not the ID. */
+        return GetData(request_type.GET, base_url + "/clips/top?channel=" + channel + "&limit=100&period=day", false);
+    }
+
+    /**
      * Populates the followed table from a JSONArray. The database auto commit is disabled
      * as otherwise the large number of writes in a row can cause some delay.  We only
      * update the followed table if the user has an entry in the time table. This way we
