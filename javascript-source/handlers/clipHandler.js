@@ -4,7 +4,7 @@
  */
 (function() {
 	var toggle = $.getSetIniDbBoolean('clipsSettings', 'toggle', false),
-	    message = $.getIniDbString('clipsSettings', 'message', '(name) created a clip: (url)');
+	    message = $.getSetIniDbString('clipsSettings', 'message', '(name) created a clip: (url)');
 
 	/*
 	 * @function reloadClips
@@ -15,7 +15,7 @@
 	}
 
 	/*
-	 * @event BitsEvent
+	 * @event twitchClip
 	 */
 	$.bind('twitchClip', function(event) {
 		var creator = event.getCreator(),
@@ -54,7 +54,7 @@
 		if (command.equalsIgnoreCase('clipstoggle')) {
 			toggle = !toggle;
 			$.setIniDbBoolean('clipsSettings', 'toggle', toggle);
-			$.say($.whisperPrefix(sender) + (toggle ? $.lang.get('cliphandler.toggle.on') : $.lang.get('cliphandler.toggle.off')))
+			$.say($.whisperPrefix(sender) + (toggle ? $.lang.get('cliphandler.toggle.on') : $.lang.get('cliphandler.toggle.off')));
 		}
 		
 
@@ -69,7 +69,7 @@
 
 			message = argsString;
 			$.setIniDbString('clipsSettings', 'message', message);
-			$.say($.whisperPrefix(sender) + $.lang.get('bitshandler.message.set', message));
+			$.say($.whisperPrefix(sender) + $.lang.get('cliphandler.message.set', message));
 		}
 	});
 
