@@ -548,6 +548,20 @@ public class TwitchAPIv5 {
         return "ERROR";
     }
 
+   /**
+     * Checks to see if the bot account is verified by Twitch.
+     *
+     * @param  channel
+     * @return boolean  true if verified
+     */
+    public boolean getBotVerified(String channel) {
+        JSONObject jsonInput = GetData(request_type.GET, base_url + "/users/" + getIDFromChannel(channel) + "/chat", false);
+        if (jsonInput.has("is_verified_bot")) {
+            return jsonInput.getBoolean("is_verified_bot");
+        }
+        return false;
+    }
+
     /**
      * Populates the followed table from a JSONArray. The database auto commit is disabled
      * as otherwise the large number of writes in a row can cause some delay.  We only
