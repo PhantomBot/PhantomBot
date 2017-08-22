@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.gmt2001.TwitchAPIv5;
@@ -45,6 +46,7 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
+import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 
 /*
  * TwitchCache Class
@@ -115,6 +117,8 @@ public class TwitchCache implements Runnable {
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
+        /* Update the clips every other loop. */
+        boolean doUpdateClips = false;
 
         /* Check the DB for a previous Game and Stream Title */
         String gameTitle = getDBString("game");
@@ -138,11 +142,68 @@ public class TwitchCache implements Runnable {
                 com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
             }
 
+            if (doUpdateClips) {
+                doUpdateClips = false;
+                updateClips();
+            } else {
+                doUpdateClips = true;
+            }
+
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
+        }
+    }
+
+    /*
+     * Polls the Clips endppint, trying to find the most recent clip.  Note that because Twitch
+     * reports by the viewcount, and has a limit of 100 clips, it is possible to miss the most
+     * recent clip until it has views.
+     *
+     * We do not throw an exception because this is not a critical function unlike the gathering
+     * of data via the updateCache() method.
+     */
+    private void updateClips() {
+        /* Only hit the API if we need to. */
+        String doCheckClips = PhantomBot.instance().getDataStore().GetString("clipsSettings", "", "toggle");
+        if (doCheckClips == null) {
+            return;
+        }
+        if (doCheckClips.equals("false")) {
+            return;
+        }
+
+        JSONObject clipsObj = TwitchAPIv5.instance().getClipsToday(this.channel);
+        
+        String createdAt = "";
+        String clipURL = "";
+        String creator = "";
+        int largestTrackingId = 0;
+
+        if (clipsObj.has("clips")) {
+            JSONArray clipsData = clipsObj.getJSONArray("clips");
+            if (clipsData.length() > 0) {
+                String lastTrackingIdStr = getDBString("last_clips_tracking_id");
+                int lastTrackingId = (lastTrackingIdStr == null ? 0 : Integer.parseInt(lastTrackingIdStr));
+                largestTrackingId = lastTrackingId;
+                for (int i = 0; i < clipsData.length(); i++) {
+                    JSONObject clipData = clipsData.getJSONObject(i);
+                    int trackingId = Integer.parseInt(clipData.getString("tracking_id"));
+                    if (trackingId > largestTrackingId) {
+                        largestTrackingId = trackingId;
+                        createdAt = clipData.getString("created_at");
+                        clipURL = clipData.getString("url");
+                        creator = clipData.getJSONObject("curator").getString("display_name");
+                    }
+                }
+            }
+        }
+
+        if (clipURL.length() > 0) {
+            setDBString("last_clips_tracking_id", String.valueOf(largestTrackingId));
+            EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator, getChannel()));
         }
     }
 

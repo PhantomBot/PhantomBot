@@ -809,6 +809,13 @@
         });
 
         /*
+         * @event twitchClipEvent
+         */
+        $api.on($script, 'twitchClip', function(event) {
+            callHook('twitchClip', event, false);
+        });
+
+        /*
          * @event newSubscriber
          */
         $api.on($script, 'newSubscriber', function(event) {
