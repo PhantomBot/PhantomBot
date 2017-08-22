@@ -1112,6 +1112,9 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
+        /* Check for bot verification. */
+        print("Bot Verification Status: " + (TwitchAPIv5.instance().getBotVerified(this.botName) ? "" : " NOT ") + "Verified.");
+
         /* Check for a update with PhantomBot */
         doCheckPhantomBotUpdate();
 
