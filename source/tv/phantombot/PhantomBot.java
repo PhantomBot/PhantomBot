@@ -1217,11 +1217,6 @@ public final class PhantomBot implements Listener {
         PhantomBot.addChannel(this.chanName, event.getChannel());
         PhantomBot.addSession(this.chanName, this.session);
 
-        /* Say .mods in the channel to check if the bot is a moderator */
-        this.session.saySilent(".mods");
-        /* Start the message timers for this session */
-        this.session.startTimers();
-
         /* Load the caches for each channels */
         this.twitchCache = TwitchCache.instance(this.chanName);
         this.emotesCache = EmotesCache.instance(this.chanName);
@@ -1256,6 +1251,11 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("session", this.session, 0);
+
+        /* Say .mods in the channel to check if the bot is a moderator */
+        this.session.saySilent(".mods");
+        /* Start the message timers for this session */
+        this.session.startTimers();
     }
 
     /*
