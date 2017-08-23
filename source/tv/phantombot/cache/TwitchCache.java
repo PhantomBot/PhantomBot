@@ -166,7 +166,6 @@ public class TwitchCache implements Runnable {
      * of data via the updateCache() method.
      */
     private void updateClips() {
-        /* Only hit the API if we need to. */
         String doCheckClips = PhantomBot.instance().getDataStore().GetString("clipsSettings", "", "toggle");
         if (doCheckClips == null) {
             return;
@@ -185,7 +184,7 @@ public class TwitchCache implements Runnable {
         if (clipsObj.has("clips")) {
             JSONArray clipsData = clipsObj.getJSONArray("clips");
             if (clipsData.length() > 0) {
-                setDBString("most_viewed_clip_url", clipsData.getJSONObject(0).getString("url"));
+                setDBString("most_viewed_clip_url", "clips.twitch.tv/" + clipsData.getJSONObject(0).getString("slug"));
                 String lastTrackingIdStr = getDBString("last_clips_tracking_id");
                 int lastTrackingId = (lastTrackingIdStr == null ? 0 : Integer.parseInt(lastTrackingIdStr));
                 largestTrackingId = lastTrackingId;
@@ -195,7 +194,7 @@ public class TwitchCache implements Runnable {
                     if (trackingId > largestTrackingId) {
                         largestTrackingId = trackingId;
                         createdAt = clipData.getString("created_at");
-                        clipURL = clipData.getString("url");
+                        clipURL = "clips.twitch.tv/" + clipData.getString("slug");
                         creator = clipData.getJSONObject("curator").getString("display_name");
                     }
                 }
