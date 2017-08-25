@@ -104,7 +104,7 @@ public class ScriptEventManager implements Listener {
         if (event != null) {
             events.put(event.getName(), new EventHandler(event, handler));
         } else {
-            throw new RuntimeException("Event class not found for: " + eventName);
+            com.gmt2001.Console.err.println("Event class not found for: " + eventName);
         }
     }
 
