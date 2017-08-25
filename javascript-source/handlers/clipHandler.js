@@ -92,12 +92,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/clipHandler.js')) {
-            $.registerChatCommand('./handlers/clipHandler.js', 'clipstoggle', 1);
-            $.registerChatCommand('./handlers/clipHandler.js', 'clipsmessage', 1);
-            $.registerChatCommand('./handlers/clipHandler.js', 'lastclip', 7);
-            $.registerChatCommand('./handlers/clipHandler.js', 'topclip', 7);
-        }
+        $.registerChatCommand('./handlers/clipHandler.js', 'clipstoggle', 1);
+        $.registerChatCommand('./handlers/clipHandler.js', 'clipsmessage', 1);
+        $.registerChatCommand('./handlers/clipHandler.js', 'lastclip', 7);
+        $.registerChatCommand('./handlers/clipHandler.js', 'topclip', 7);
     });
 
     $.reloadClips = reloadClips;
