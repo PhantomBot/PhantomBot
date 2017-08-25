@@ -26,7 +26,6 @@ import com.gmt2001.datastore.H2Store;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
-import com.illusionaryone.DiscordAPI;
 import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
@@ -118,6 +117,7 @@ import tv.phantombot.twitchwsirc.TwitchPubSub;
 import tv.phantombot.twitchwsirc.TwitchWSHostIRC;
 import tv.phantombot.ytplayer.YTWebSocketServer;
 import tv.phantombot.ytplayer.YTWebSocketSecureServer;
+import tv.phantombot.discord.DiscordAPI;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -622,7 +622,7 @@ public final class PhantomBot implements Listener {
                 java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
                 int pid = Integer.parseInt(runtime.getName().split("@")[0]);
 
-                File file = new File("PhantomBot." + this.botName.toLowerCase() + ".pid");
+                File file = new File("PhantomBot." + this.botName + ".pid");
 
                 try (FileOutputStream fs = new FileOutputStream(file, false)) {
                     PrintStream ps = new PrintStream(fs);
@@ -834,6 +834,16 @@ public final class PhantomBot implements Listener {
         } catch (NullPointerException ex) {
             return false;
         }
+    }
+
+    /*
+     * Method that returns the basic bot info.
+     *
+     * @return {String}
+     */
+    public String getBotInformation() {
+        return "Java Version: " + System.getProperty("java.version") + " - OS: " + System.getProperty("os.name") + " "
+                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ") - " + getBotInfo();
     }
 
     /*
@@ -1102,6 +1112,12 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
+        // Moved this to debug only. People are already asking questions.
+        if (PhantomBot.enableDebugging) {
+            /* Check for bot verification. */
+            print("Bot Verification Status: " + (TwitchAPIv5.instance().getBotVerified(this.botName) ? "" : " NOT ") + "Verified.");
+        }
+
         /* Check for a update with PhantomBot */
         doCheckPhantomBotUpdate();
 
@@ -1201,11 +1217,6 @@ public final class PhantomBot implements Listener {
         PhantomBot.addChannel(this.chanName, event.getChannel());
         PhantomBot.addSession(this.chanName, this.session);
 
-        /* Say .mods in the channel to check if the bot is a moderator */
-        this.session.saySilent(".mods");
-        /* Start the message timers for this session */
-        this.session.startTimers();
-
         /* Load the caches for each channels */
         this.twitchCache = TwitchCache.instance(this.chanName);
         this.emotesCache = EmotesCache.instance(this.chanName);
@@ -1240,6 +1251,11 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("session", this.session, 0);
+
+        /* Say .mods in the channel to check if the bot is a moderator */
+        this.session.saySilent(".mods");
+        /* Start the message timers for this session */
+        this.session.startTimers();
     }
 
     /*
@@ -2249,7 +2265,7 @@ public final class PhantomBot implements Listener {
                 do {
                     com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
 
-                    startProperties.setProperty("user", System.console().readLine().trim());
+                    startProperties.setProperty("user", System.console().readLine().trim().toLowerCase());
                 } while (startProperties.getProperty("user", "").length() <= 0);
 
                 // Twitch oauth.
