@@ -468,7 +468,7 @@
                 command = event.getCommand(),
                 channel = event.getChannel(),
                 isAdmin = event.isAdmin(),
-                sender = event.getSenderId(),
+                senderId = event.getSenderId(),
                 args = event.getArgs();
 
             if ($.discord.commandExists(command) === false && ($.discord.aliasExists(command) === false || $.discord.aliasExists(command) === true && $.discord.commandExists($.discord.getCommandAlias(command)) === false)) {
@@ -483,11 +483,11 @@
                 return;
             }
 
-            if (isAdmin == false && $.discord.cooldown.get(command, sender) !== 0) {
+            if (isAdmin == false && $.discord.cooldown.get(command, senderId) !== 0) {
                 return;
             }
 
-            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(username) > $.discord.getCommandCost(command)) {
+            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(senderId) < $.discord.getCommandCost(command)) {
                 return;
             }
 
@@ -503,7 +503,7 @@
 
             // Do this last to not slow down the command hook.
             if ($.discord.getCommandCost(command) > 0) {
-                $.discord.decrUserPoints(sender, $.discord.getCommandCost(command));
+                $.discord.decrUserPoints(senderId, $.discord.getCommandCost(command));
             }
         });
 
@@ -806,13 +806,6 @@
          */
         $api.on($script, 'twitchGameChange', function(event) {
             callHook('twitchGameChange', event, false);
-        });
-
-        /*
-         * @event twitchClipEvent
-         */
-        $api.on($script, 'twitchClip', function(event) {
-            callHook('twitchClip', event, false);
         });
 
         /*

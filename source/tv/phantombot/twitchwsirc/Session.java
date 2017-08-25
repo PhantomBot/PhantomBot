@@ -317,7 +317,7 @@ public class Session implements Runnable {
                     send(message.message);
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
     }
