@@ -13,15 +13,12 @@
         if (emotesRegExpList.length === 0) { 
             loadEmoteCache(); 
         } 
-    }, 120e3);
+    }, 3e4, 'scripts::handlers::emotesHandler.js');
 
     /**
      * @event emotesGet
      */
     $.bind('emotesGet', function(event) {
-        if (!$.bot.isModuleEnabled('./handlers/emotesHandler.js')) {
-            return;
-        }
         buildEmotesDB(event.getBttvEmotes(), event.getBttvLocalEmotes(), event.getFfzEmotes(), event.getFfzLocalEmotes());
     });
 
@@ -42,8 +39,8 @@
             emote = jsonArray.getJSONObject(i).getString('code').replace('(', '\\(').replace(')', '\\)').replace('\'', '\\\'').replace('[', '\\[').replace(']', '\\]');
 
             // Check for emote at the beginning, middle and end of a string.
-            emoteRegExp = '(\\b' + emote + '\\b)';
-            newEmotesRegExpList.push(new RegExp(emoteRegExp, 'g'));
+            emoteRegExp = '\\b' + emote + '\\b';
+            newEmotesRegExpList.push(emoteRegExp);
         }
 
         if (bttvLocalEmotes.has('emotes')) {
@@ -52,8 +49,8 @@
                 emote = jsonArray.getJSONObject(i).getString('code').replace('(', '\\(').replace(')', '\\)').replace('\'', '\\\'').replace('[', '\\[').replace(']', '\\]');
 
                 // Check for emote at the beginning, middle and end of a string.
-                emoteRegExp = '(\\b' + emote + '\\b)';
-                newEmotesRegExpList.push(new RegExp(emoteRegExp, 'g'));
+                emoteRegExp = '\\b' + emote + '\\b';
+                newEmotesRegExpList.push(emoteRegExp);
             }
         }
 
@@ -65,8 +62,8 @@
                 emote = jsonArray.getJSONObject(j).getString('name').replace('(', '\\(').replace(')', '\\)').replace('\'', '\\\'').replace('[', '\\[').replace(']', '\\]');
 
                 // Check for emote at the beginning, middle and end of a string.
-                emoteRegExp = '(\\b' + emote + '\\b)';
-                newEmotesRegExpList.push(new RegExp(emoteRegExp, 'g'));
+                emoteRegExp = '\\b' + emote + '\\b';
+                newEmotesRegExpList.push(emoteRegExp);
             }
         }
 
@@ -77,17 +74,17 @@
                 emote = jsonArray.getJSONObject(i).getString('name').replace('(', '\\(').replace(')', '\\)').replace('\'', '\\\'').replace('[', '\\[').replace(']', '\\]');
 
                 // Check for emote at the beginning, middle and end of a string.
-                emoteRegExp = '(\\b' + emote + '\\b)';
-                newEmotesRegExpList.push(new RegExp(emoteRegExp, 'g'));
+                emoteRegExp = '\\b' + emote + '\\b';
+                newEmotesRegExpList.push(emoteRegExp);
             }
         }
 
-        emotesRegExpList = newEmotesRegExpList;
-        newEmotesRegExpList = [];
-        $.inidb.set('emotecache', 'regexp_cache', emotesRegExpList.join(','));
-
+        emotesRegExpList = new RegExp(newEmotesRegExpList.join('|'), 'g');
+        $.inidb.set('emotecache', 'regexp_cache', newEmotesRegExpList.join(','));
+        
         loaded = true;
-        $.consoleDebug("Built " + emotesRegExpList.length + " regular expressions for emote handling.");
+        $.consoleDebug("Built " + newEmotesRegExpList.length + " regular expressions for emote handling.");
+        newEmotesRegExpList = [];
     }
 
     /**
@@ -102,14 +99,14 @@
             newEmotesRegExpList = [];
 
         for (var i = 0; i < regExpList.length; i++) {
-            newEmotesRegExpList.push(new RegExp(regExpList[i]));
+            newEmotesRegExpList.push(regExpList[i]);
         }
 
-        emotesRegExpList = newEmotesRegExpList;
-        newEmotesRegExpList = [];
-
+        emotesRegExpList = new RegExp(newEmotesRegExpList.join('|'), 'g');
+        
         loaded = true;
-        $.consoleDebug("Built " + emotesRegExpList.length + " regular expressions for emote handling from cache.");
+        $.consoleDebug("Built " + newEmotesRegExpList.length + " regular expressions for emote handling from cache.");
+        newEmotesRegExpList = [];
     }
 
     /**
