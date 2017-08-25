@@ -305,7 +305,7 @@
                 /**
                  * @commandpath time autolevelnotification - Toggles if a chat announcement is made when a user is promoted to a regular.
                  */
-                if (command.equalsIgnoreCase('autolevelnotification')) {
+                if (action.equalsIgnoreCase('autolevelnotification')) {
                     timeLevelWarning = !timeLevelWarning;
                     $.setIniDbBoolean('timeSettings', 'timeLevelWarning', timeLevelWarning);
                     $.say($.whisperPrefix(sender) + (timeLevelWarning ? $.lang.get('timesystem.autolevel.chat.enabled') : $.lang.get('timesystem.autolevel.chat.disabled')));
