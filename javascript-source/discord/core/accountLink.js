@@ -15,17 +15,13 @@
      * @return {string or null}
      */
     function resolveTwitchName(userId) {
-        if (typeof userId === 'string') {
-            userId = $.discordAPI.resolveUserId(userId);
-        }
-
         return ($.inidb.exists('discordToTwitch', userId) ? $.inidb.get('discordToTwitch', userId) : null); 
     }
 
     /**
-     * @event discordCommand
+     * @event discordChannelCommand
      */
-    $.bind('discordCommand', function(event) {
+    $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
             user = event.getDiscordUser(),
             channel = event.getChannel(),
@@ -93,7 +89,7 @@
          * @commandpath account link [code] - Completes an account link for Discord.
          */
         if (command.equalsIgnoreCase('account')) {
-            if (action.equalsIgnoreCase('link')) {
+            if (action !== undefined && action.equalsIgnoreCase('link')) {
                 var code = args[1];
                 if (code === undefined || code.length() < 8) {
                     return;
@@ -108,7 +104,7 @@
 
                         delete accounts[keys[i]];
 
-                        $.discordAPI.sendPrivateMessage($.discordAPI.resolveUserId(keys[i]), $.lang.get('discord.accountlink.link.success', $.username.resolve(sender)));
+                        $.discordAPI.sendPrivateMessage(keys[i], $.lang.get('discord.accountlink.link.success', $.username.resolve(sender)));
                         return;
                     }
                 }
@@ -125,8 +121,9 @@
         $.discord.registerCommand('./discord/core/accountLink.js', 'account', 0);
         $.discord.registerSubCommand('accountlink', 'link', 0);
         $.discord.registerSubCommand('accountlink', 'remove', 0);
-
+        // This is used to veiry your account from Twitch. Do not remove it.
         $.registerChatCommand('./discord/core/accountLink.js', 'account', 7);
+
 
         // Interval to clear our old codes that have not yet been registered.
         interval = setInterval(function() {

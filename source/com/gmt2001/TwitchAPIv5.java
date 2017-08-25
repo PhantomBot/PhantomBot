@@ -548,6 +548,31 @@ public class TwitchAPIv5 {
         return "ERROR";
     }
 
+   /**
+     * Checks to see if the bot account is verified by Twitch.
+     *
+     * @param  channel
+     * @return boolean  true if verified
+     */
+    public boolean getBotVerified(String channel) {
+        JSONObject jsonInput = GetData(request_type.GET, base_url + "/users/" + getIDFromChannel(channel) + "/chat", false);
+        if (jsonInput.has("is_verified_bot")) {
+            return jsonInput.getBoolean("is_verified_bot");
+        }
+        return false;
+    }
+
+    /**
+     * Get the clips from today for a channel.
+     *
+     * @param channel
+     * @return JSONObject  clips object.
+     */
+    public JSONObject getClipsToday(String channel) {
+        /* Yes, the v5 endpoint for this does use the Channel Name and not the ID. */
+        return GetData(request_type.GET, base_url + "/clips/top?channel=" + channel + "&limit=100&period=day", false);
+    }
+
     /**
      * Populates the followed table from a JSONArray. The database auto commit is disabled
      * as otherwise the large number of writes in a row can cause some delay.  We only

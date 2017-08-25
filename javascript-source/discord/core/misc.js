@@ -11,7 +11,9 @@
  * 	- Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
-	var embedReg = new RegExp(/\(embed\s([\w\W\s\d]+),\s?(.*)\)/);
+	var embedReg = new RegExp(/\(embed\s([\w\W\s\d]+),\s?([\r\n\w\W]*)\)/),
+		fileRegMsg = new RegExp(/\(file\s([\w\W]+),\s?([\r\n\w\W]*)\)/),
+		fileReg = new RegExp(/\(file\s([\w\W]+)\)/);
 
 	/**
 	 * @function userPrefix
@@ -32,7 +34,7 @@
 	 * @return {string}
 	 */
 	function getUserMention(username) {
-		return ($.discordAPI.isUser(username) == true ? $.discordAPI.resolveUser(username).getAsMention() : username);
+		return ($.discordAPI.getUser(username) != null ? $.discordAPI.getUser(username).mention() : username);
 	}
 
 	/**
@@ -43,10 +45,10 @@
 	 * @return {string}
 	 */
 	function getUserMentionOrChannel(argument) {
-		if ($.discordAPI.isUser(argument) == true) {
-			return $.discordAPI.resolveUser(argument).getAsMention();
-		} else if ($.discordAPI.isChannel(argument) == true) {
-			return $.discordAPI.resolveChannel(argument).getAsMention();
+		if ($.discordAPI.getUser(username) != null) {
+			return $.discordAPI.getUser(argument).mention();
+		} else if ($.discordAPI.getChannel(argument) != null) {
+			return $.discordAPI.getChannel(argument).mention();
 		} else {
 			return argument;
 		}
@@ -59,7 +61,7 @@
 	 * @return {string}
 	 */
 	function getRandomUser() {
-		return ($.discordAPI.getUserMembers().get($.randRange(0, $.discordAPI.getUserMembers().size() - 1)).getAsMention());
+		return ($.discordAPI.getUsers().get($.randRange(0, $.discordAPI.getUsers().size() - 1)).mention());
 	}
 
 	/**
@@ -70,8 +72,12 @@
 	 * @param {string} message
 	 */
 	function say(channel, message) {
-		if (message.match(embedReg)) {
+		if (embedReg.test(message)) {
 			$.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
+		} else if (fileRegMsg.test(message)) {
+			$.discordAPI.sendFile(channel, message.match(fileRegMsg)[2], message.match(fileRegMsg)[1]);
+		} else if (fileReg.test(message)) {
+			$.discordAPI.sendFile(channel, message.match(fileReg)[1]);
 		} else {
 			$.discordAPI.sendMessage(channel, message);
 		}
@@ -115,13 +121,13 @@
 	 * @export $.discord
 	 */
 	function setRole(role, username) {
-		return $.discordAPI.setRole(role, username);
+		return $.discordAPI.addRole(role, username);
 	}
 
 	/**
-	 * @event discordCommand
+	 * @event discordChannelCommand
 	 */
-	$.bind('discordCommand', function(event) {
+	$.bind('discordChannelCommand', function(event) {
 		var sender = event.getSender(),
 		    channel = event.getChannel(),
 		    command = event.getCommand(),

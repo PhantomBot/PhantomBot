@@ -75,9 +75,9 @@
     });
 
     /**
-     * @event discordCommand
+     * @event discordChannelCommand
      */
-    $.bind('discordCommand', function(event) {
+    $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
             channel = event.getChannel(),
             command = event.getCommand(),
