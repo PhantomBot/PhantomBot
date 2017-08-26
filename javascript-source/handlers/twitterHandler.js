@@ -149,6 +149,7 @@
                                        replace('(title)', $.twitchcache.getStreamStatus()).
                                        replace('(game)', $.twitchcache.getGameTitle()).
                                        replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
+                $.updateGame($.channelName, $.twitchcache.getGameTitle(), $.ownerName);
             }
         }
     });
