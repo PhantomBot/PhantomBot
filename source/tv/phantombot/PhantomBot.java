@@ -842,8 +842,8 @@ public final class PhantomBot implements Listener {
      * @return {String}
      */
     public String getBotInformation() {
-        return "Java Version: " + System.getProperty("java.version") + " - OS: " + System.getProperty("os.name") + " "
-                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ") - " + getBotInfo();
+        return "\r\nJava Version: " + System.getProperty("java.runtime.version") + "\r\nOS Version: " + System.getProperty("os.name") + " "
+                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + getBotInfo() + "\r\n\r\n";
     }
 
     /*
@@ -1356,6 +1356,11 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.out.println(">> Faking Twitch IRC [" + arguments + "]");
                 this.session.fakeTwitchMessage(arguments + "_"); // Need a junk character to strip off //
             }
+            return;
+        }
+
+        if (message.equalsIgnoreCase("botinfo")) {
+            com.gmt2001.Console.out.print(getBotInformation());
             return;
         }
 
