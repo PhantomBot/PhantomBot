@@ -1843,7 +1843,7 @@
                     return;
                 }
                 symbolsGroupLimit = parseInt(subAction);
-                $.inidb.set('chatModerator', 'symbolsLimitPercent', symbolsGroupLimit);
+                $.inidb.set('chatModerator', 'symbolsGroupLimit', symbolsGroupLimit);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.group.limit.set', symbolsGroupLimit));
                 $.log.event(sender + ' changed the symbols group limit to ' + symbolsGroupLimit);
                 return;
@@ -1925,16 +1925,14 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./core/chatModerator.js')) {
-            loadWhiteList();
-            loadBlackList();
+        loadWhiteList();
+        loadBlackList();
 
-            $.registerChatCommand('./core/chatModerator.js', 'permit', 2);
-            $.registerChatCommand('./core/chatModerator.js', 'moderation', 1);
-            $.registerChatCommand('./core/chatModerator.js', 'mod', 1);
-            $.registerChatCommand('./core/chatModerator.js', 'blacklist', 1);
-            $.registerChatCommand('./core/chatModerator.js', 'whitelist', 1);
-        }
+        $.registerChatCommand('./core/chatModerator.js', 'permit', 2);
+        $.registerChatCommand('./core/chatModerator.js', 'moderation', 1);
+        $.registerChatCommand('./core/chatModerator.js', 'mod', 1);
+        $.registerChatCommand('./core/chatModerator.js', 'blacklist', 1);
+        $.registerChatCommand('./core/chatModerator.js', 'whitelist', 1);
     });
 
     /** Export functions to API */
