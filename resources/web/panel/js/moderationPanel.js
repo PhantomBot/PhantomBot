@@ -594,7 +594,7 @@
                     id: 'panel_' + phrase,
                     timeout: String(timeout),
                     isRegex: isRegex,
-                    phrase: (isRegex && !phrase.startsWith('regex:') ? ('regex:' + String(phrase)) : String(phrase)),
+                    phrase: (isRegex && !phrase.startsWith('regex:') ? ('regex:' + String(phrase)) : String(phrase.toLowerCase())),
                     isSilent: isSilent,
                     excludeRegulars: hasRegs,
                     excludeSubscribers: hasSubs,
@@ -605,7 +605,7 @@
                 if (currentBlacklist !== null && currentBlacklist.localeCompare((isRegex && !phrase.startsWith('regex:') ? ('regex:' + String(phrase)) : String(phrase))) !== 0) {
                     sendDBDelete("commands_delblacklist_" + currentBlacklist, "blackList", String(currentBlacklist));
                 }
-                sendDBUpdate("moderation_addBlacklist", "blackList", (isRegex && !phrase.startsWith('regex:') ? ('regex:' + String(phrase)) : String(phrase)), JSON.stringify(obj));
+                sendDBUpdate("moderation_addBlacklist", "blackList", (isRegex && !phrase.startsWith('regex:') ? ('regex:' + String(phrase)) : String(phrase.toLowerCase())), JSON.stringify(obj));
                 currentBlacklist = null;
                 setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
                 setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
