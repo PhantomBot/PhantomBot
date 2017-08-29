@@ -86,6 +86,10 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="phantomBotVersion = &quot;(.*)&quot;;"
             replace="phantomBotVersion = &quot;${version}&quot;;" />
+            <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="panelVersion = &quot;(.*)&quot;;"
+            replace="panelVersion = &quot;${webpanel.version}&quot;;" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -124,6 +128,10 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="phantomBotVersion = &quot;(.*)&quot;;"
             replace="phantomBotVersion = &quot;@phantombot.version@&quot;;" />
+            <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="panelVersion = &quot;(.*)&quot;;"
+            replace="panelVersion = &quot;@webpanel.version@&quot;;" />
     </target>
 
     <target depends="compile.src,post.compile,git.revision" name="jar">
