@@ -543,7 +543,8 @@
             for (i = 0; i < keys.length; i++) {
                 temp.push('!' + keys[i]);
             }
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.commands', temp.join(', ')));
+
+            $.paginateArray(temp, 'discord.customcommands.commands', ', ', channel, mention);
         }
 
         /**
@@ -555,11 +556,11 @@
                 i;
 
             for (i = 0; i < keys.length; i++) {
-                if (!keys[i].includes(' ')) {
+                if (keys[i].indexOf(' ') === -1) {
                     temp.push('!' + keys[i]);
                 }
             }
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.bot.commands', temp.join(', ')));
+            $.paginateArray(temp, 'discord.customcommands.bot.commands', ', ', channel, mention);
         }
     });
 
