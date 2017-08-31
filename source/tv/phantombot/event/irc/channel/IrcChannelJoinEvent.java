@@ -28,6 +28,11 @@ public class IrcChannelJoinEvent extends IrcChannelEvent {
         this.user = user;
     }
 
+    public IrcChannelJoinEvent(String user) {
+        super(null, null);
+        this.user = user;
+    }
+
     public String getUser() {
         return user;
     }
