@@ -34,6 +34,7 @@ import com.illusionaryone.SingularityAPI;
 import com.illusionaryone.StreamTipAPI;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
+import com.illusionaryone.CommandsAPIv1;
 import com.scaniatv.AnkhConverter;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
@@ -197,6 +198,9 @@ public final class PhantomBot implements Listener {
 
     /* Discord Configuration */
     private String discordToken = "";
+
+    /* PhantomBot Commands API Configuration */
+    private String commandsAPIToken = "";
 
     /* Caches */
     private FollowersCache followersCache;
@@ -441,6 +445,9 @@ public final class PhantomBot implements Listener {
         this.tipeeeStreamOAuth = this.pbProperties.getProperty("tipeeestreamkey", "");
         this.tipeeeStreamLimit = Integer.parseInt(this.pbProperties.getProperty("tipeeestreamlimit", "5"));
 
+        /* Set the PhantomBot Commands API variable */
+        this.commandsAPIToken = this.pbProperties.getProperty("cmdserviceapi", "");
+
         /* Set the MySql variables */
         this.mySqlName = this.pbProperties.getProperty("mysqlname", "");
         this.mySqlUser = this.pbProperties.getProperty("mysqluser", "");
@@ -604,6 +611,13 @@ public final class PhantomBot implements Listener {
             TipeeeStreamAPIv1.instance().SetOauth(tipeeeStreamOAuth);
             TipeeeStreamAPIv1.instance().SetLimit(tipeeeStreamLimit);
         }
+
+        /* Set the PhantomBot Commands authentication key. */
+        /* Disabled for right now until the service is up on the remote server.
+        if (!commandsAPIToken.isEmpty()) {
+            CommandsAPIv1.instance().setAPIKey(commandsAPIToken);
+        }
+        */
 
         /* Start things and start loading the scripts. */
         this.init();
@@ -1096,6 +1110,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
+        Script.global.defineProperty("commandsAPI", CommandsAPIv1.instance(), 0);
 
         /* open a new thread for when the bot is exiting */
         Thread thread = new Thread(() -> {
