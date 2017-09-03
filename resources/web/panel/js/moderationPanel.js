@@ -662,7 +662,7 @@
         /* this was giving errors if it contained a symbol other then _ */
         var newkey = key.replace(/[^a-zA-Z0-9]/ig, '_');
 
-        $("#delete_blackList_" + newkey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#delete_blackList_" + newkey).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
 
         sendDBDelete("commands_delblacklist_" + key, "blackList", key);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
@@ -675,7 +675,7 @@
      */
     function deleteWhitelist(key) {
         var newkey = key.replace(/[^a-z1-9]/ig, '_');
-        $("#delete_whiteList_" + newkey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#delete_whiteList_" + newkey).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("commands_delwhitelist_" + newkey, "whiteList", key);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
@@ -807,10 +807,10 @@
      * @param {String} newValue
      */
     function updateModSetting(tableKey, newValue) {
-        $("#modSetting_" + tableKey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#modSetting_" + tableKey).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
         setTimeout(function() {
-            $("#modSetting_" + tableKey).html("<strong><font style=\"color: #6136b1\">" + modSettingIcon[newValue] + "</font></strong>");
+            $("#modSetting_" + tableKey).html("<strong><font style=\"color: var(--main-color)\">" + modSettingIcon[newValue] + "</font></strong>");
         }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
