@@ -38,18 +38,18 @@ import org.json.JSONObject;
  *
  * @author illusionaryone
  */
-public class CommandsAPIv1 {
+public class DataRenderServiceAPIv1 {
 
-    private static final CommandsAPIv1 instance = new CommandsAPIv1();
-    private static final String sAPIURL = "http://192.168.1.218:8080";
+    private static final DataRenderServiceAPIv1 instance = new DataRenderServiceAPIv1();
+    private static final String sAPIURL = "http://localhost:8080";
     private static final int iHTTPTimeout = 2 * 1000;
     private static String sAPIKey = "";
 
-    public static CommandsAPIv1 instance() {
+    public static DataRenderServiceAPIv1 instance() {
         return instance;
     }
 
-    private CommandsAPIv1() {
+    private DataRenderServiceAPIv1() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
@@ -118,32 +118,32 @@ public class CommandsAPIv1 {
             fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
         } catch (JSONException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
-            com.gmt2001.Console.err.println("CommandsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.println("DataRenderServiceAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (UnsupportedEncodingException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "UnsupportedEncodingException", ex.getMessage(), jsonText);
-            com.gmt2001.Console.err.println("CommandsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.println("DataRenderServiceAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (NullPointerException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("CommandsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.println("DataRenderServiceAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (MalformedURLException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("CommandsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.println("DataRenderServiceAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (SocketTimeoutException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("CommandsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.println("DataRenderServiceAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (IOException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("CommandsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.println("DataRenderServiceAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (Exception ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("CommandsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.println("DataRenderServiceAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } finally {
             if (inputStream != null)
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
                     fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.err.println("CommandsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+                    com.gmt2001.Console.err.println("DataRenderServiceAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
                 }
         }
 
@@ -160,21 +160,22 @@ public class CommandsAPIv1 {
     }
 
     /*
-     * Sends custom command data to the API.
+     * Sends data to the API.
      *
      * @param   String  Input JSON string to send to the API service.
      * @param   String  The channel name to authenticate as.
-     * @return  String  Shortened URL or Long URL if there was an issue
+     * @param   String  The type of data to send.
+     * @return  String  Status string.
      */
-    public String postCommandData(String jsonString, String channelName) {
+    public String postData(String jsonString, String channelName, String type) {
         if (sAPIKey.length() == 0) {
-            return "no authorization key provided";
+            return "no_auth_key";
         }
-        JSONObject jsonObject = readJsonFromUrl(sAPIURL + "/upload/" + channelName, jsonString);
+        JSONObject jsonObject = readJsonFromUrl(sAPIURL + "/upload/" + type + "/" + channelName, jsonString);
         if (jsonObject.has("status")) {
             return jsonObject.getString("status");
         } else {
-            return "was unable to call the commands api";
+            return "launch_fail";
         }
     }
 }
