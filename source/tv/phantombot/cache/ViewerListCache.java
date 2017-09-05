@@ -126,8 +126,8 @@ public class ViewerListCache implements Runnable {
 				}
 
 				// Check for old users that left.
-				for (String user : cache) {
-					if (!this.cache.contains(user)) {
+				for (String user : this.cache) {
+					if (!cache.contains(user)) {
 						EventBus.instance().postAsync(new IrcChannelLeaveEvent(user));
 						com.gmt2001.Console.debug.println("User Left Channel [" + user + "#" + channelName + "]");
 					}
