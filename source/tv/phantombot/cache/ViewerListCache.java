@@ -118,16 +118,16 @@ public class ViewerListCache implements Runnable {
 				}
 
 				// Check for new users that joined.
-				for (String user : this.cache) {
-					if (!cache.contains(user)) {
+				for (String user : cache) {
+					if (!this.cache.contains(user)) {
 						EventBus.instance().postAsync(new IrcChannelJoinEvent(user));
 						com.gmt2001.Console.debug.println("User Joined Channel [" + user + "#" + channelName + "]");
 					}
 				}
 
 				// Check for old users that left.
-				for (String user : cache) {
-					if (this.cache.contains(user)) {
+				for (String user : this.cache) {
+					if (!cache.contains(user)) {
 						EventBus.instance().postAsync(new IrcChannelLeaveEvent(user));
 						com.gmt2001.Console.debug.println("User Left Channel [" + user + "#" + channelName + "]");
 					}
