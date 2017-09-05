@@ -11,6 +11,9 @@
             apiStatus,
             jsonObject = {};
 
+        /**
+         * @commandpath updatecommandsapi - Sends command data to the Render Data Service API.
+         */
         if (command.equalsIgnoreCase('updatecommandsapi')) {
             keys = $.inidb.GetKeyList('command', '');
 
@@ -22,8 +25,12 @@
             }
             apiStatus = $.dataRenderServiceAPI.postData(JSON.stringify(jsonObject), "illusionaryone", "commands");
             $.say($.whisperPrefix(sender) + $.lang.get('dataservicehandler.status.' + apiStatus));
+            return;
         }
 
+        /**
+         * @commandpath updatequotesapi - Sends quote data to the Render Data Service API.
+         */
         if (command.equalsIgnoreCase('updatequotesapi')) {
             keys = $.inidb.GetKeyList('quotes', '');
 
@@ -33,7 +40,17 @@
                 jsonObject['quotes'].push({ id: parseInt(keys[idx]), user: quoteObj[0] + '', quote: quoteObj[1] + '' });
             }
             apiStatus = $.dataRenderServiceAPI.postData(JSON.stringify(jsonObject), "illusionaryone", "quotes");
-            $.say($.whisperPrefix(sender) + $.lang.get('dataservicehandler.status.' + apiStatus));
+            $.say($.whisperPrefix(sender) + $.lang.get('dataservicehandler.update.status.' + apiStatus));
+            return;
+        }
+
+        /**
+         * @commandpath terminatedataserviceapi - Removes all account and PhantomBot data from the Render Data Service.
+         */
+        if (command.equalsIgnoreCase('terminatedataserviceapi')) {
+            apiStatus = $.dataRenderServiceAPI.deleteAllData("illusionaryone");
+            $.say($.whisperPrefix(sender) + $.lang.get('dataservicehandler.delete.status.' + apiStatus));
+            return;
         }
 
     });
@@ -45,6 +62,7 @@
         if ($.bot.isModuleEnabled('./handlers/dataServiceHandler.js')) {
             $.registerChatCommand('./handlers/dataServiceHandler.js', 'updatecommandsapi', 1);
             $.registerChatCommand('./handlers/dataServiceHandler.js', 'updatequotesapi', 1);
+            $.registerChatCommand('./handlers/dataServiceHandler.js', 'terminatedataserviceapi', 1);
         }
     });
 
