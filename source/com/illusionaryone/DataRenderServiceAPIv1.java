@@ -86,7 +86,8 @@ public class DataRenderServiceAPIv1 {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
-        HttpURLConnection urlConn;
+        HttpsURLConnection httpsUrlConn;
+        HttpURLConnection httpUrlConn;
         String jsonRequest = "";
         String jsonText = "";
 
@@ -94,28 +95,54 @@ public class DataRenderServiceAPIv1 {
             byte[] postRequest = jsonString.getBytes("UTF-8");
 
             urlRaw = new URL(urlAddress);
-            urlConn = (HttpURLConnection) urlRaw.openConnection();
-            urlConn.setDoInput(true);
-            urlConn.setDoOutput(true);
-            urlConn.setRequestMethod("POST");
-            urlConn.addRequestProperty("Authentication", sAPIKey);
-            urlConn.addRequestProperty("Content-Type", "application/json");
-            urlConn.addRequestProperty("Content-Length", String.valueOf(postRequest.length));
-            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
-                                       "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-            urlConn.connect();
-            urlConn.getOutputStream().write(postRequest);
 
-            if (urlConn.getResponseCode() == 200) {
-                inputStream = urlConn.getInputStream();
+            if (sAPIURL.startsWith("https://")) {
+                httpsUrlConn = (HttpsURLConnection) urlRaw.openConnection();
+                httpsUrlConn.setDoInput(true);
+                httpsUrlConn.setDoOutput(true);
+                httpsUrlConn.setRequestMethod("POST");
+                httpsUrlConn.addRequestProperty("Authentication", sAPIKey);
+                httpsUrlConn.addRequestProperty("Content-Type", "application/json");
+                httpsUrlConn.addRequestProperty("Content-Length", String.valueOf(postRequest.length));
+                httpsUrlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
+                                           "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+                httpsUrlConn.connect();
+                httpsUrlConn.getOutputStream().write(postRequest);
+    
+                if (httpsUrlConn.getResponseCode() == 200) {
+                    inputStream = httpsUrlConn.getInputStream();
+                } else {
+                    inputStream = httpsUrlConn.getErrorStream();
+                }
+    
+                BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+                jsonText = readAll(rd);
+                jsonResult = new JSONObject(jsonText);
+                fillJSONObject(jsonResult, true, "GET", urlAddress, httpsUrlConn.getResponseCode(), "", "", jsonText);
             } else {
-                inputStream = urlConn.getErrorStream();
+                httpUrlConn = (HttpURLConnection) urlRaw.openConnection();
+                httpUrlConn.setDoInput(true);
+                httpUrlConn.setDoOutput(true);
+                httpUrlConn.setRequestMethod("POST");
+                httpUrlConn.addRequestProperty("Authentication", sAPIKey);
+                httpUrlConn.addRequestProperty("Content-Type", "application/json");
+                httpUrlConn.addRequestProperty("Content-Length", String.valueOf(postRequest.length));
+                httpUrlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
+                                           "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+                httpUrlConn.connect();
+                httpUrlConn.getOutputStream().write(postRequest);
+   
+                if (httpUrlConn.getResponseCode() == 200) {
+                    inputStream = httpUrlConn.getInputStream();
+                } else {
+                    inputStream = httpUrlConn.getErrorStream();
+                }
+   
+                BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+                jsonText = readAll(rd);
+                jsonResult = new JSONObject(jsonText);
+                fillJSONObject(jsonResult, true, "GET", urlAddress, httpUrlConn.getResponseCode(), "", "", jsonText);
             }
-
-            BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
-            jsonText = readAll(rd);
-            jsonResult = new JSONObject(jsonText);
-            fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
         } catch (JSONException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
             com.gmt2001.Console.err.println("DataRenderServiceAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
@@ -172,6 +199,24 @@ public class DataRenderServiceAPIv1 {
             return "no_auth_key";
         }
         JSONObject jsonObject = readJsonFromUrl(sAPIURL + "/upload/" + type + "/" + channelName, jsonString);
+        if (jsonObject.has("status")) {
+            return jsonObject.getString("status");
+        } else {
+            return "launch_fail";
+        }
+    }
+
+    /*
+     * Deletes account and related data from the API.
+     *
+     * @param   String  The channel name to authenticate as.
+     * @return  String  Status string.
+     */
+    public String deleteAllData(String channelName) {
+        if (sAPIKey.length() == 0) {
+            return "no_auth_key";
+        }
+        JSONObject jsonObject = readJsonFromUrl(sAPIURL + "/delete/" + channelName, "");
         if (jsonObject.has("status")) {
             return jsonObject.getString("status");
         } else {
