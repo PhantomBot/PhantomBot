@@ -24,7 +24,7 @@
                 }
             }
             apiStatus = $.dataRenderServiceAPI.postData(JSON.stringify(jsonObject), "illusionaryone", "commands");
-            $.say($.whisperPrefix(sender) + $.lang.get('dataservicehandler.status.' + apiStatus));
+            $.say($.whisperPrefix(sender) + $.lang.get('dataservicehandler.update.status.' + apiStatus));
             return;
         }
 
