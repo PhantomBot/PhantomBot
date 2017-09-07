@@ -41,7 +41,7 @@ import org.json.JSONObject;
 public class DataRenderServiceAPIv1 {
 
     private static final DataRenderServiceAPIv1 instance = new DataRenderServiceAPIv1();
-    private static final String sAPIURL = "http://localhost:8080";
+    private static final String sAPIURL = "https://phantombot.illusionaryone.tv";
     private static final int iHTTPTimeout = 2 * 1000;
     private static String sAPIKey = "";
 
