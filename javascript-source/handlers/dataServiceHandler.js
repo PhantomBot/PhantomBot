@@ -23,7 +23,7 @@
                     jsonObject['commands'].push({ command: keys[idx] + '' });
                 }
             }
-            apiStatus = $.dataRenderServiceAPI.postData(JSON.stringify(jsonObject), "illusionaryone", "commands");
+            apiStatus = $.dataRenderServiceAPI.postData(JSON.stringify(jsonObject), $.channelName, "commands");
             $.say($.whisperPrefix(sender) + $.lang.get('dataservicehandler.update.status.' + apiStatus));
             return;
         }
@@ -39,7 +39,7 @@
                 var quoteObj = JSON.parse($.inidb.get('quotes', keys[idx]));
                 jsonObject['quotes'].push({ id: parseInt(keys[idx]), user: quoteObj[0] + '', quote: quoteObj[1] + '' });
             }
-            apiStatus = $.dataRenderServiceAPI.postData(JSON.stringify(jsonObject), "illusionaryone", "quotes");
+            apiStatus = $.dataRenderServiceAPI.postData(JSON.stringify(jsonObject), $.channelName, "quotes");
             $.say($.whisperPrefix(sender) + $.lang.get('dataservicehandler.update.status.' + apiStatus));
             return;
         }
@@ -48,7 +48,7 @@
          * @commandpath terminatedataserviceapi - Removes all account and PhantomBot data from the Render Data Service.
          */
         if (command.equalsIgnoreCase('terminatedataserviceapi')) {
-            apiStatus = $.dataRenderServiceAPI.deleteAllData("illusionaryone");
+            apiStatus = $.dataRenderServiceAPI.deleteAllData($.channelName);
             $.say($.whisperPrefix(sender) + $.lang.get('dataservicehandler.delete.status.' + apiStatus));
             return;
         }
