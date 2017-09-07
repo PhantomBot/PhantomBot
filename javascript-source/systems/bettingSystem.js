@@ -18,8 +18,8 @@
 	 */
 	function reloadBet() {
 		gain = $.getIniDbNumber('bettingSettings', 'gain');
-	    saveBets = $.getIniDbNumber('bettingSettings', 'save');
-	    saveFormat = $.getIniDbNumber('bettingSettings', 'format');
+	    saveBets = $.getIniDbBoolean('bettingSettings', 'save');
+	    saveFormat = $.getIniDbString('bettingSettings', 'format');
 	}
 
 	/**
