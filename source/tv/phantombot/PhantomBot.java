@@ -1267,6 +1267,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("session", this.session, 0);
+        Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
 
         /* Say .mods in the channel to check if the bot is a moderator */
         this.session.saySilent(".mods");
