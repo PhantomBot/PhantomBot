@@ -483,7 +483,7 @@ public class DiscordUtil {
      *
      */
     public void removeGame() {
-        DiscordAPI.shard.online();
+        DiscordAPI.shard.changePlayingText(null);
     }
 
     /*
