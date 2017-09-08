@@ -313,6 +313,26 @@ public class DataStore {
         SetInteger(fName, section, key, ival);
     }
 
+    public void decr(String fName, String key, long amount) {
+        decr(fName, "", key, amount);
+    }
+
+    public void incr(String fName, String section, String key, long amount) {
+        int ival = GetLong(fName, section, key);
+        ival += amount;
+        SetLong(fName, section, key, ival);
+    }
+
+    public void incr(String fName, String key, long amount) {
+        incr(fName, "", key, amount);
+    }
+
+    public void decr(String fName, String section, String key, long amount) {
+        int ival = GetLong(fName, section, key);
+        ival -= amount;
+        SetLong(fName, section, key, ival);
+    }
+
     public void decr(String fName, String key, int amount) {
         decr(fName, "", key, amount);
     }
