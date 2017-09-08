@@ -593,6 +593,20 @@
         $.inidb.set('group', $.botName.toLowerCase(), 0);
     }
 
+    /*
+     * @function doUserCacheCheck
+     */
+    function doUserCacheCheck() {
+        var i;
+
+        for (i in users) {
+            if (!$.usernameCache.hasUser(users[i])) {
+                $.username.removeUser(users[i]);
+                users.splice(i, 1);
+            }
+        }
+    }
+
     /**
      * @event ircChannelJoin
      */
@@ -917,6 +931,8 @@
         setTimeout(function() {
             loadModeratorsCache();
         }, 7000);
+        // Set an interval to refresh the viewer cache.
+        setInterval(doUserCacheCheck, 6e4);
     });
 
     /** Export functions to API */

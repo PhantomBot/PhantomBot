@@ -150,7 +150,7 @@ public class ViewerListCache implements Runnable {
 	 * @return {Boolean}
 	 */
 	public boolean hasUser(String username) {
-		return this.cache.contains(username);
+		return (!this.cache.isEmpty() ? this.cache.contains(username) : true);
 	}
 
 	/*
