@@ -145,7 +145,7 @@
         if (message.match(/\(countdown=[^)]+\)/g)) {
             var t = message.match(/\([^)]+\)/)[0], countdown, time;
             countdown = t.replace('(countdown=', '').replace(')', '');
-            time = (Date.parse(countdown) - Date.parse(new Date()));
+            time = (Date.parse(countdown) - Date.parse($.getLocalTime()));
             message = $.replace(message, t, $.getTimeString(time / 1000));
         }
 
