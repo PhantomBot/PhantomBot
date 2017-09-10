@@ -600,8 +600,8 @@
         var i;
 
         for (i in users) {
-            if (!$.usernameCache.hasUser(users[i])) {
-                $.username.removeUser(users[i]);
+            if (!$.usernameCache.hasUser(users[i][0])) {
+                $.username.removeUser(users[i][0]);
                 users.splice(i, 1);
             }
         }
@@ -927,10 +927,8 @@
         generateDefaultGroups();
         generateDefaultGroupPoints();
 
-        /* Load the moderators cache. This needs to load after the privmsg check. */
-        setTimeout(function() {
-            loadModeratorsCache();
-        }, 7000);
+        // Load the moderators cache. This needs to load after the privmsg check.
+        setTimeout(loadModeratorsCache, 7e3);
         // Set an interval to refresh the viewer cache.
         setInterval(doUserCacheCheck, 6e4);
     });
