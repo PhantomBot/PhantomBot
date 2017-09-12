@@ -41,9 +41,9 @@ import org.json.JSONObject;
 public class DataRenderServiceAPIv1 {
 
     private static final DataRenderServiceAPIv1 instance = new DataRenderServiceAPIv1();
-    private static final String sAPIURL = "https://phantombot.illusionaryone.tv";
     private static final int iHTTPTimeout = 2 * 1000;
     private static String sAPIKey = "";
+    private static String sAPIURL = "";
 
     public static DataRenderServiceAPIv1 instance() {
         return instance;
@@ -178,12 +178,21 @@ public class DataRenderServiceAPIv1 {
     }
 
     /*
-     * Sets a different API key than the default.
+     * Sets the API key.
      *
-     * @param  String  Google API Key
+     * @param  String  API Key
      */
     public void setAPIKey(String sAPIKey) {
         this.sAPIKey = sAPIKey;
+    }
+
+    /*
+     * Sets the URL for accessing the API.
+     *
+     * @param  String  URL
+     */
+    public void setAPIURL(String sAPIURL) {
+        this.sAPIURL = sAPIURL;
     }
 
     /*
