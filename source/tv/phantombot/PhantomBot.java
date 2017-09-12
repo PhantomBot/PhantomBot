@@ -202,6 +202,7 @@ public final class PhantomBot implements Listener {
 
     /* PhantomBot Commands API Configuration */
     private String dataRenderServiceAPIToken = "";
+    private String dataRenderServiceAPIURL = "";
 
     /* Caches */
     private FollowersCache followersCache;
@@ -447,8 +448,9 @@ public final class PhantomBot implements Listener {
         this.tipeeeStreamOAuth = this.pbProperties.getProperty("tipeeestreamkey", "");
         this.tipeeeStreamLimit = Integer.parseInt(this.pbProperties.getProperty("tipeeestreamlimit", "5"));
 
-        /* Set the PhantomBot Commands API variable */
+        /* Set the PhantomBot Commands API variables */
         this.dataRenderServiceAPIToken = this.pbProperties.getProperty("datarenderservicetoken", "");
+        this.dataRenderServiceAPIURL = this.pbProperties.getProperty("datarenderserviceurl", "https://phantombot.illusionaryone.tv");
 
         /* Set the MySql variables */
         this.mySqlName = this.pbProperties.getProperty("mysqlname", "");
@@ -616,6 +618,7 @@ public final class PhantomBot implements Listener {
 
         /* Set the PhantomBot Commands authentication key. */
         if (!dataRenderServiceAPIToken.isEmpty()) {
+            DataRenderServiceAPIv1.instance().setAPIURL(dataRenderServiceAPIURL);
             DataRenderServiceAPIv1.instance().setAPIKey(dataRenderServiceAPIToken);
         }
 
