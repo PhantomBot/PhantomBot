@@ -94,10 +94,11 @@
             if (panelMatch(module, './handlers/followHandler.js')) {
                 handlePanel('./handlers/followHandler.js', '#_followAlertsPanel', moduleEnabled);
             }
-            if (panelMatch(module, './handlers/donationHandler.js')) {
-                handlePanel('./handlers/donationHandler.js', '#_donationAlertsPanel', moduleEnabled);
-                handlePanel('./handlers/donationHandler.js', '#_donationsPanel', moduleEnabled);
-            }
+           // Removed this since the donation tab is used for more than one module now.
+           //if (panelMatch(module, './handlers/donationHandler.js')) {
+           //    handlePanel('./handlers/donationHandler.js', '#_donationAlertsPanel', moduleEnabled);
+           //    handlePanel('./handlers/donationHandler.js', '#_donationsPanel', moduleEnabled);
+           //}
             if (panelMatch(module, './handlers/streamTipHandler.js')) {
                 handlePanel('./handlers/streamTipHandler.js', '#_streamtipdonationAlertsPanel', moduleEnabled);
                 handlePanel('./handlers/streamTipHandler.js', '#_streamtipdonationsPanel', moduleEnabled);
