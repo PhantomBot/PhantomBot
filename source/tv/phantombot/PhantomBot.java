@@ -17,6 +17,8 @@
 
 package tv.phantombot;
 
+import com.google.common.eventbus.Subscribe;
+
 import com.gmt2001.Logger;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.IniStore;
@@ -25,7 +27,7 @@ import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.datastore.H2Store;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
-import com.google.common.eventbus.Subscribe;
+
 import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
@@ -35,7 +37,7 @@ import com.illusionaryone.StreamTipAPI;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.DataRenderServiceAPIv1;
-import com.scaniatv.AnkhConverter;
+
 import com.scaniatv.CustomAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.RevloConverter;
@@ -1392,21 +1394,6 @@ public final class PhantomBot implements Listener {
                 print("You must specify the file name you want to convert.");
             }
             return;
-        }
-
-        if (message.equalsIgnoreCase("ankhtophantombot")) {
-            print("");
-            print("Not all of AnkhBot's data will be compatible with PhantomBot.");
-            print("This process will take a long time.");
-            print("Are you sure you want to convert AnkhBot's data to PhantomBot? [y/n]");
-            print("");
-            String check = System.console().readLine().trim();
-            if (check.equals("y")) {
-                AnkhConverter.instance();
-            } else {
-                print("No changes were made.");
-                return;
-            }
         }
 
         if (message.equalsIgnoreCase("backupdb")) {
