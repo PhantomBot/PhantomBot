@@ -5,4 +5,4 @@ $.lang.register('discord.accountlink.link.relink', '**NOTE: This expires in 10 m
 $.lang.register('discord.accountlink.link.success', 'Your Discord account has been successfully linked to **https://twitch.tv/$1**.\nPlease note that if you change your name on Twitch, you will have to redo this.');
 $.lang.register('discord.accountlink.link.fail', 'Sorry, that is an invalid or expired token. Make sure you copy the account linking command EXACTLY. If you are sure you typed it correctly, please restart the account linking process from a chat channel in the Discord server.');
 $.lang.register('discord.accountlink.link.remove', 'Your Discord account has been unlinked from all Twitch accounts.\nTo link your Discord account to your Twitch account, use **!account link** in a regular chat channel on the Discord server');
-$.lang.register('discord.accountlink.linkrequired', 'Sorry, that command is only available in Discord after your Twitch account has been linked using **!account**');
+$.lang.register('discord.accountlink.linkrequired', 'Sorry, that command is only available in Discord after your Twitch account has been linked using **!account link**');
