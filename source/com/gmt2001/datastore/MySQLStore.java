@@ -359,7 +359,7 @@ public class MySQLStore extends DataStore {
         if (FileExists(fName)) {
             if (section.length() > 0) {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(variable as INTEGER) " + order + "  LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(variable as UNSIGNED) " + order + "  LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
                     statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable " + order + "  LIMIT " + limit + " OFFSET " + offset + ";";
                 }
@@ -382,7 +382,7 @@ public class MySQLStore extends DataStore {
                 }
             } else {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CASE(variable as INTEGER) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CASE(variable as UNSIGNED) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
                     statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
@@ -431,7 +431,7 @@ public class MySQLStore extends DataStore {
         if (FileExists(fName)) {
             if (section.length() > 0) {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(value as INTEGER) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(value as UNSIGNED) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
                     statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
@@ -454,7 +454,7 @@ public class MySQLStore extends DataStore {
                 }
             } else {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(value as INTEGER) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(value as UNSIGNED) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
                     statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
