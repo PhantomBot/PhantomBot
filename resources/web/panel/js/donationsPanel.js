@@ -94,7 +94,6 @@
                                         '    <td>' + $.format.date(new Date(donationObj['created_at']), 'MM.dd.yy hh:mm:ss') + '</td>' +
                                         '    <td style="float: right">' + donationObj['parameters']['currency'] + ' ' + parseInt(donationObj['parameters']['amount']).toFixed(2) + '</td>' +
                                         '</tr>';
-                            }
                         } else {
                             if (donationObj['user']['name'] !== undefined && donationObj['amount'] !== undefined) {
                                 html += '<tr class="textList">' +
