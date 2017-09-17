@@ -140,6 +140,8 @@ public class HTTPServerCommon {
         }
         if (headers.containsKey("message")) {
             myHdrMessage = headers.getFirst("message");
+            byte[] myHdrMessageBytes = myHdrMessage.getBytes(StandardCharsets.ISO_8859_1);
+            myHdrMessage = new String(myHdrMessageBytes, StandardCharsets.UTF_8);
         }
 
         // Check the uriQueryList for the webauth
@@ -562,6 +564,8 @@ public class HTTPServerCommon {
             sendHTMLError(400, "Missing Parameter", exchange);
             return;
         }
+
+com.gmt2001.Console.out.println(message);
 
         if (message.startsWith("!")) {
             PhantomBot.instance().handleCommand(user, message.substring(1));
