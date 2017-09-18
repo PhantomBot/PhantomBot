@@ -614,8 +614,8 @@
          * @function preparePlaylist
          * @return {boolean}
          */
-        this.preparePlaylist = function() {
-            $.inidb.set('ytSettings', 'activePlaylistname', 'default');
+        this.preparePlaylist = function(playlistName) {
+            $.inidb.set('ytSettings', 'activePlaylistname', playlistName);
             if (!$.inidb.exists('yt_playlists_registry', playListDbId) || !$.inidb.FileExists(playListDbId)) {
                 $.setIniDbBoolean('yt_playlists_registry', playListDbId, true);
                 $.inidb.AddFile(playListDbId);
@@ -803,7 +803,7 @@
             return this.loaded;
         }
 
-        this.preparePlaylist();
+        this.preparePlaylist(this.playlistName);
         if (loadDefault) {
             this.loadPlaylistKeys();
         }
