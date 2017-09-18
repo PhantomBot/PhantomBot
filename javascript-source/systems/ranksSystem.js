@@ -6,10 +6,9 @@
 
 (function() {
 
-    rankEligableTime = $.getSetIniDbNumber('settings', 'rankEligableTime', 50),
-    rankEligableCost = $.getSetIniDbNumber('settings', 'rankEligableCost', 200);
-
-    var ranksTimeTable;
+    var rankEligableTime = $.getSetIniDbNumber('settings', 'rankEligableTime', 50),
+        rankEligableCost = $.getSetIniDbNumber('settings', 'rankEligableCost', 200),
+        ranksTimeTable;
 
     /**
      * @function sortCompare
@@ -138,6 +137,8 @@
             levelTime,
             levelName,
             userTime = parseInt(parseInt($.inidb.get('time', sender)) / 3600),
+            rankEligableTime = $.getIniDbNumber('settings', 'rankEligableTime', 50),
+            rankEligableCost = $.getIniDbNumber('settings', 'rankEligableCost', 200),
             userLevel,
             timeUntilNextRank,
             nextLevel,
