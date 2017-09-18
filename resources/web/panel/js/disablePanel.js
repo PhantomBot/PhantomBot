@@ -181,6 +181,9 @@
             if (panelMatch(module, './handlers/tipeeeStreamHandler.js')) {
                 handlePanel('./handlers/tipeeeStreamHandler.js', '#_tipeeeStreamDonationsPanel', moduleEnabled);
             }
+            if (panelMatch(module, './handlers/streamElementsHandler.js')) {
+                handlePanel('./handlers/streamElementsHandler.js', '#_streamElementsDonationsPanel', moduleEnabled);
+            }
 
             // Discord modules.
             if (panelMatch(module, './discord/handlers/bitsHandler.js')) {
@@ -194,6 +197,9 @@
             }
             if (panelMatch(module, './discord/handlers/tipeeeStreamHandler.js')) {
                 handlePanel('./discord/handlers/tipeeeStreamHandler.js', '#_discord_tipeeeStreamHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/streamElementsHandler.js')) {
+                handlePanel('./discord/handlers/streamElementsHandler.js', '#_discord_streamElementsHandler', moduleEnabled);
             }
             if (panelMatch(module, './discord/handlers/streamtipHandler.js')) {
                 handlePanel('./discord/handlers/streamtipHandler.js', '#_discord_streamTipHandler', moduleEnabled);

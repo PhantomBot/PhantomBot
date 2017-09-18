@@ -44,7 +44,9 @@
         bitsToggle = false,
         bitsRewardMultToggle = false,
         tipeeestreamdonationToggle = false,
-        tipeeestreamdonationGroup = false;
+        tipeeestreamdonationGroup = false,
+        streamelementsdonationToggle = false,
+        streamelementsdonationGroup = false;
 
     /*
      * onMessage
@@ -166,6 +168,31 @@
                     }
                     if (panelMatch(key, 'message')) {
                         $('#tipeeestreamdonateGreetingInput').val(value);
+                    }
+                }
+            }
+
+            if (panelCheckQuery(msgObject, 'greetings_streamelements')) {
+                for (idx in msgObject['results']) {
+                    key = msgObject['results'][idx]['key'];
+                    value = msgObject['results'][idx]['value'];
+
+                    if (panelMatch(key, 'toggle')) {
+                        streamelementsdonationToggle = value;
+                        $('#streamelementsGreetings').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'group')) {
+                        streamelementsdonationGroup = value;
+                        $('#streamelementsdonationGroup').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'groupMin')) {
+                        $('#streamelementsdonationGroupMin').val(value);
+                    }
+                    if (panelMatch(key, 'reward')) {
+                        $('#streamelementsdonateRewardInput').val(value);
+                    }
+                    if (panelMatch(key, 'message')) {
+                        $('#streamelementsdonateGreetingInput').val(value);
                     }
                 }
             }
@@ -304,6 +331,7 @@
         sendDBKeys('greetings_gamewispTiers', 'gameWispTiers');
         sendDBKeys('greetings_bits', 'bitsSettings');
         sendDBKeys('greetings_tipeeestream', 'tipeeeStreamHandler');
+        sendDBKeys('greetings_streamelements', 'streamElementsHandler');
     }
 
     /**
@@ -371,6 +399,15 @@
             }
             setTimeout(function() { sendCommand('tipeeestreamreload'); }, TIMEOUT_WAIT_TIME);
         }
+        if (panelMatch(table, 'streamelements')) {
+            $('#streamelementsGreetings').html(spinIcon);
+            if (streamelementsdonationToggle == "true") {
+                sendDBUpdate('greetings_greeting', 'streamElementsHandler', 'toggle', 'false');
+            } else {
+                sendDBUpdate('greetings_greeting', 'streamElementsHandler', 'toggle', 'true');
+            }
+            setTimeout(function() { sendCommand('streamelementsreload'); }, TIMEOUT_WAIT_TIME);
+        }
         if (panelMatch(table, 'donationGroup')) {
             $('#donationGroup').html(spinIcon);
             if (donationGroup == "true") {
@@ -397,6 +434,15 @@
                 sendDBUpdate('greetings_greeting', 'tipeeeStreamHandler', 'group', 'true');
             }
             setTimeout(function() { sendCommand('tipeeestreamreload'); }, TIMEOUT_WAIT_TIME);
+        }
+        if (panelMatch(table, 'streamelementsdonationGroup')) {
+            $('#streamelementsdonationGroup').html(spinIcon);
+            if (streamelementsdonationGroup == "true") {
+                sendDBUpdate('greetings_greeting', 'streamElementsHandler', 'group', 'false');
+            } else {
+                sendDBUpdate('greetings_greeting', 'streamElementsHandler', 'group', 'true');
+            }
+            setTimeout(function() { sendCommand('streamelementsreload'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'subscriberWelcomeToggle')) {
             $('#subscriptionGreetings').html(spinIcon);
@@ -505,6 +551,9 @@
             }
             if (panelMatch(table, 'tipeeeStreamHandler')) {
                 sendCommand('tipeeestreamreload');
+            }
+            if (panelMatch(table, 'streamElementsHandler')) {
+                sendCommand('streamelementsreload');
             }
             if (panelMatch(table, 'gameWispSubHandler')) {
                 sendCommand('gamewisppanelupdate');
