@@ -24,9 +24,9 @@ import sx.blah.discord.api.internal.ShardImpl;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.ClientBuilder;
 
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.handle.impl.events.UserLeaveEvent;
-import sx.blah.discord.handle.impl.events.UserJoinEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -49,9 +49,9 @@ import tv.phantombot.event.EventBus;
  */
 public class DiscordAPI extends DiscordUtil {
     private static final DiscordAPI instance = new DiscordAPI();
-    public static IDiscordClient client;
-    public static ShardImpl shard;
-    public static IGuild guild;
+    private static IDiscordClient client;
+    private static ShardImpl shard;
+    private static IGuild guild;
     
     /*
      * Method to return this class object.
@@ -85,12 +85,39 @@ public class DiscordAPI extends DiscordUtil {
     }
 
     /*
+     * Method that will return the current shard.
+     *
+     * @return {ShardImpl}
+     */
+    public static ShardImpl getShard() {
+        return shard;
+    }
+
+    /*
+     * Method that will return the current guild.
+     *
+     * @return {IGuild}
+     */
+    public static IGuild getGuild() {
+        return guild;
+    }
+
+    /*
+     * Method that will return the current guild
+     *
+     * @return {IDiscordClient}
+     */
+    public static IDiscordClient getClient() {
+        return client;
+    }
+
+    /*
      * Method to set the guild and shard objects.
      */
     private void setGuildAndShard() {
         // The bot should only be in one server, so this should be fine.
-        DiscordAPI.guild = DiscordAPI.client.getGuilds().get(0);
-        DiscordAPI.shard = (ShardImpl) DiscordAPI.client.getShards().get(0);
+        DiscordAPI.guild = DiscordAPI.getClient().getGuilds().get(0);
+        DiscordAPI.shard = (ShardImpl) DiscordAPI.getClient().getShards().get(0);
     }
 
     /*
