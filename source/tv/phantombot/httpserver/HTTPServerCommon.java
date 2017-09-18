@@ -565,8 +565,6 @@ public class HTTPServerCommon {
             return;
         }
 
-com.gmt2001.Console.out.println(message);
-
         if (message.startsWith("!")) {
             PhantomBot.instance().handleCommand(user, message.substring(1));
         } else {

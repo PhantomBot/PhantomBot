@@ -641,6 +641,20 @@
         });
 
         /*
+         * @event streamElementsDonationInitialized
+         */
+        $api.on($script, 'streamElementsDonationInitialized', function(event) {
+            callHook('streamElementsDonationInitialized', event, false);
+        });
+
+        /*
+         * @event streamElementsDonation
+         */
+        $api.on($script, 'streamElementsDonation', function(event) {
+            callHook('streamElementsDonation', event, false);
+        });
+
+        /*
          * @event getEmotes
          */
         $api.on($script, 'emotesGet', function(event) {

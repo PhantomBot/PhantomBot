@@ -697,6 +697,9 @@
         $.consoleLn('Removing old emotes cache...');
         $.inidb.RemoveFile('emotecache');
 
+        $.inidb.set('modules', './discord/handlers/streamElementsHandler.js', 'false');
+        $.inidb.set('modules', './handlers/streamElementsHandler.js', 'false');
+
         $.consoleLn('PhantomBot update 2.3.9 completed!');
         $.inidb.set('updates', 'installedv2.3.9', 'true');
     }

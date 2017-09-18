@@ -40,6 +40,7 @@ import com.illusionaryone.DataRenderServiceAPIv1;
 
 import com.scaniatv.CustomAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
+import com.scaniatv.StreamElementsAPIv1;
 import com.scaniatv.RevloConverter;
 import com.scaniatv.GenerateLogs;
 
@@ -52,6 +53,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.charset.Charset;
 import java.nio.file.StandardOpenOption;
 
 import java.net.BindException;
@@ -63,9 +65,11 @@ import java.text.SimpleDateFormat;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TimeZone;
@@ -79,6 +83,7 @@ import tv.phantombot.cache.EmotesCache;
 import tv.phantombot.cache.FollowersCache;
 import tv.phantombot.cache.StreamTipCache;
 import tv.phantombot.cache.TipeeeStreamCache;
+import tv.phantombot.cache.StreamElementsCache;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.cache.TwitterCache;
 import tv.phantombot.cache.UsernameCache;
@@ -192,6 +197,10 @@ public final class PhantomBot implements Listener {
     private String tipeeeStreamOAuth = "";
     private int tipeeeStreamLimit = 5;
 
+    /* StreamElements Information */
+    private String streamElementsJWT = "";
+    private int streamElementsLimit = 5;
+
     /* GameWisp Information */
     private String gameWispOAuth;
     private String gameWispRefresh;
@@ -216,6 +225,7 @@ public final class PhantomBot implements Listener {
     private UsernameCache usernameCache;
     private TipeeeStreamCache tipeeeStreamCache;
     private ViewerListCache viewerListCache;
+    private StreamElementsCache streamElementCache;
     public static String twitchCacheReady = "false";
 
     /* Socket Servers */
@@ -450,6 +460,10 @@ public final class PhantomBot implements Listener {
         this.tipeeeStreamOAuth = this.pbProperties.getProperty("tipeeestreamkey", "");
         this.tipeeeStreamLimit = Integer.parseInt(this.pbProperties.getProperty("tipeeestreamlimit", "5"));
 
+        /* Set the StreamElements variables */
+        this.streamElementsJWT = this.pbProperties.getProperty("streamelementsjwt", "");
+        this.streamElementsLimit = Integer.parseInt(this.pbProperties.getProperty("streamelementslimit", "5"));
+
         /* Set the PhantomBot Commands API variables */
         this.dataRenderServiceAPIToken = this.pbProperties.getProperty("datarenderservicetoken", "");
         this.dataRenderServiceAPIURL = this.pbProperties.getProperty("datarenderserviceurl", "https://phantombot.illusionaryone.tv");
@@ -616,6 +630,12 @@ public final class PhantomBot implements Listener {
         if (!tipeeeStreamOAuth.isEmpty()) {
             TipeeeStreamAPIv1.instance().SetOauth(tipeeeStreamOAuth);
             TipeeeStreamAPIv1.instance().SetLimit(tipeeeStreamLimit);
+        }
+
+        /* Set the StreamElements JWT token. */
+        if (!streamElementsJWT.isEmpty()) {
+            StreamElementsAPIv1.instance().SetJWT(streamElementsJWT);
+            StreamElementsAPIv1.instance().SetLimit(streamElementsLimit);
         }
 
         /* Set the PhantomBot Commands authentication key. */
@@ -1166,12 +1186,30 @@ public final class PhantomBot implements Listener {
         }
 
         /* Shutdown all caches */
-        print("Terminating the Twitch channel follower cache...");
-        FollowersCache.killall();
-        print("Terminating the Streamlabs cache...");
-        DonationsCache.killall();
-        print("Terminating the StreamTip cache...");
-        StreamTipCache.killall();
+        if (followersCache != null) {
+            print("Terminating the Twitch channel follower cache...");
+            FollowersCache.killall();
+        }
+
+        if (twitchAlertsCache != null) {
+            print("Terminating the Streamlabs cache...");
+            DonationsCache.killall();
+        }
+
+        if (streamTipCache != null) {
+            print("Terminating the StreamTip cache...");
+            StreamTipCache.killall();
+        }
+
+        if (tipeeeStreamCache != null) {
+            print("Terminating the TipeeeStream cache...");
+            TipeeeStreamCache.killall();
+        }
+
+        if (streamElementCache != null) {
+            print("Terminating the StreamElementsCache cache...");
+            StreamElementsCache.killall();
+        }
 
         print("Terminating pending timers...");
         ScriptApi.instance().kill();
@@ -1256,6 +1294,11 @@ public final class PhantomBot implements Listener {
         /* Start the TipeeeStream cache if the keys are not null and the module is enabled. */
         if (this.tipeeeStreamOAuth != null && !this.tipeeeStreamOAuth.isEmpty() && checkModuleEnabled("./handlers/tipeeeStreamHandler.js")) {
             this.tipeeeStreamCache = TipeeeStreamCache.instance(this.chanName);
+        }
+
+        /* Start the StreamElements cache if the keys are not null and the module is enabled. */
+        if (this.streamElementsJWT != null && !this.streamElementsJWT.isEmpty() && checkModuleEnabled("./handlers/streamElementsHandler.js")) {
+            this.streamElementCache = StreamElementsCache.instance(this.chanName);
         }
 
         /* Start the twitter cache if the keys are not null and the module is enabled */
@@ -1361,6 +1404,26 @@ public final class PhantomBot implements Listener {
             message = messageString.substring(0, messageString.indexOf(" "));
             arguments = messageString.substring(messageString.indexOf(" ") + 1);
             argument = arguments.split(" ");
+        }
+
+        if (message.equalsIgnoreCase("exportpoints")) {
+            print("[CONSOLE] Executing exportpoints, this can take a bit of time.");
+
+            String[] headers = new String[] {"Username", "Seconds", "Points"};
+            String[] keys = dataStore.GetKeyList("points", "");
+            List<String[]> values = new ArrayList<String[]>();
+
+            for (int i = 0; i < keys.length; i++) {
+                String[] str = new String[3];
+                str[0] = keys[i];
+                str[1] = (dataStore.exists("time", keys[i]) ? dataStore.get("time", keys[i]) : "0");
+                str[2] = dataStore.get("points", keys[i]);
+
+                values.add(str);
+            }
+
+            toCSV(headers, values, "points_export.csv");
+            print("[CONSOLE] Points have been exported to points_export.csv");
         }
 
         if (message.equalsIgnoreCase("retweettest")) {
@@ -2183,7 +2246,7 @@ public final class PhantomBot implements Listener {
                 startProperties.setProperty("baseport", "25000");
                 startProperties.setProperty("usehttps", "false");
                 startProperties.setProperty("webenable", "true");
-                startProperties.setProperty("msglimit30", "18.75");
+                startProperties.setProperty("msglimit30", "19.0");
                 startProperties.setProperty("musicenable", "true");
                 startProperties.setProperty("whisperlimit60", "60.0");
             }
@@ -2665,6 +2728,48 @@ public final class PhantomBot implements Listener {
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to move audio hooks and alerts [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+        }
+    }
+
+    /*
+     * Method to export a Java list to a csv file.
+     *
+     * @param {String[]} headers
+     * @param {List}     values
+     * @param {String}   fileName
+     */
+    private void toCSV(String[] headers, List<String[]> values, String fileName) {
+        StringBuilder builder = new StringBuilder();
+        FileOutputStream stream = null;
+
+        // Append the headers.
+        builder.append(String.join(",", headers) + "\n");
+    
+        // Append all values.
+        for (String[] value : values) {
+            builder.append(String.join(",", value) + "\n");
+        }
+
+        // Write the data to a file.
+        try {
+            // Create a new stream.
+            stream = new FileOutputStream(new File(fileName));
+
+            // Write the content.
+            stream.write(builder.toString().getBytes(Charset.forName("UTF-8")));
+            stream.flush();
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.println("Failed writing data to file [IOException]: " + ex.getMessage());
+        } catch (SecurityException ex) {
+            com.gmt2001.Console.err.println("Failed writing data to file [SecurityException]: " + ex.getMessage());
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
         }
     }
 }

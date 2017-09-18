@@ -275,6 +275,65 @@
     </div>
     </div>
 
+    <h3>StreamElements Settings</h3>
+    <div>
+    <div id="_streamElementsDonationsPanelDisabled" />
+    <div id="_streamElementsDonationsPanel">
+        <table>
+            <tr class="textList">
+                <td>Toggle Donation Alerts</td>
+                <td style="width: 25px"><div id="streamelementsGreetings" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('streamelements', 'toggle');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+
+            <tr class="textList">
+                <td>Toggle Donator Promotion</td>
+                <td style="width: 25px"><div id="streamelementsdonationGroup" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('streamelementsdonationGroup', 'group');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="streamelementsdonateRewardInput">Multiplier Reward</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('streamelementsdonateRewardInput', 'streamElementsHandler', 'reward')">Submit</button>
+                <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
+                       type="number" min="0" step="0.1" class="form-control" id="streamelementsdonateRewardInput" placeholder="Points" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="streamelementsdonationGroupMin">Promote Amount</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('streamelementsdonationGroupMin', 'streamElementsHandler', 'groupMin')">Submit</button>
+                <input type="text" class="form-control" id="streamelementsdonationGroupMin" placeholder="Amount"
+                       data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="streamelementsdonateGreeting">Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('streamelementsdonateGreetingInput', 'streamElementsHandler', 'message')">Submit</button>
+                <input type="text" class="form-control" id="streamelementsdonateGreetingInput" placeholder="Donation Message"
+                       data-toggle="tooltip" title="Tags: (name) (amount) (reward) (message) (currency)"/>
+            </div>
+        </form>
+    </div>
+    </div>
+
     <h3>Subscriber Alert Settings</h3>
     <div>
     <div id="_twitchSubPanelDisabled" />
