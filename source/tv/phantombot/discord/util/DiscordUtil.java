@@ -192,13 +192,13 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to return a channel object by its name.
+     * Method to return a channel object by its name. This is case sensitive.
      *
      * @param  {String} channelName
      * @return {IChannel}
      */
     public IChannel getChannel(String channelName) {
-        List<IChannel> channels = DiscordAPI.guild.getChannelsByName(channelName);
+        List<IChannel> channels = DiscordAPI.getGuild().getChannelsByName(channelName);
 
         for (IChannel channel : channels) {
             if (channel.getName().equals(channelName)) {
@@ -209,16 +209,16 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to return a user object by its name.
+     * Method to return a user object by its name. This is case sensitive.
      *
      * @param  {String} userName
      * @return {IUser}
      */
     public IUser getUser(String userName) {
-        List<IUser> users = DiscordAPI.guild.getUsersByName(userName, true);
+        List<IUser> users = DiscordAPI.getGuild().getUsersByName(userName, true);
 
         for (IUser user : users) {
-            if (user.getDisplayName(DiscordAPI.guild).equals(userName)) {
+            if (user.getDisplayName(DiscordAPI.getGuild()).equals(userName)) {
                 return user;
             }
         }
@@ -226,17 +226,17 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to return a user object by its name and its discriminator.
+     * Method to return a user object by its name and its discriminator. This is case sensitive.
      *
      * @param  {String} userName
      * @param  {String} discriminator
      * @return {IUser}
      */
     public IUser getUserWithDiscriminator(String userName, String discriminator) {
-        List<IUser> users = DiscordAPI.guild.getUsersByName(userName, true);
+        List<IUser> users = DiscordAPI.getGuild().getUsersByName(userName, true);
 
         for (IUser user : users) {
-            if (user.getDisplayName(DiscordAPI.guild).equals(userName) && user.getDiscriminator().equals(discriminator)) {
+            if (user.getDisplayName(DiscordAPI.getGuild()).equals(userName) && user.getDiscriminator().equals(discriminator)) {
                 return user;
             }
         }
@@ -244,13 +244,13 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to return a role object by its name.
+     * Method to return a role object by its name. This is case sensitive.
      *
      * @param  {String} roleName
      * @return {IRole}
      */
     public IRole getRole(String roleName) {
-        List<IRole> roles = DiscordAPI.guild.getRolesByName(roleName);
+        List<IRole> roles = DiscordAPI.getGuild().getRolesByName(roleName);
 
         for (IRole role : roles) {
             if (role.getName().equals(roleName)) {
@@ -324,7 +324,7 @@ public class DiscordUtil {
     public void createRole(String roleName) {
     	RequestBuffer.request(() -> {
     		try {
-    			DiscordAPI.guild.createRole().changeName(roleName);
+    			DiscordAPI.getGuild().createRole().changeName(roleName);
     		} catch (MissingPermissionsException | DiscordException ex) {
     			com.gmt2001.Console.err.println("Failed to create role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
     		}
@@ -364,7 +364,7 @@ public class DiscordUtil {
      * @return {Boolean}
      */
     public boolean isAdministrator(IUser user) {
-        return (user != null ? user.getPermissionsForGuild(DiscordAPI.guild).contains(Permissions.ADMINISTRATOR) : false);
+        return (user != null ? user.getPermissionsForGuild(DiscordAPI.getGuild()).contains(Permissions.ADMINISTRATOR) : false);
     }
 
     /*
@@ -424,9 +424,6 @@ public class DiscordUtil {
      * @param {Array}   list
      */
     public void bulkDeleteMessages(IChannel channel, IMessage[] list) {
-        // Discord4J says that getting messages can block the current thread if they need to be requested from Discord's API.
-        // So start this on a new thread to avoid that. Please note that you need to delete at least 2 messages.
-
         if (channel != null) {
             RequestBuffer.request(() -> {
                 try {
@@ -465,7 +462,7 @@ public class DiscordUtil {
      * @param {String} game
      */
     public void setGame(String game) {
-        DiscordAPI.shard.changePlayingText(game);
+        DiscordAPI.getShard().changePlayingText(game);
     }
 
     /*
@@ -475,7 +472,7 @@ public class DiscordUtil {
      * @param {String} url
      */
     public void setStream(String game, String url) {
-        DiscordAPI.shard.streaming(game, url);
+        DiscordAPI.getShard().streaming(game, url);
     }
 
     /*
@@ -483,14 +480,14 @@ public class DiscordUtil {
      *
      */
     public void removeGame() {
-        DiscordAPI.shard.changePlayingText(null);
+        DiscordAPI.getShard().changePlayingText(null);
     }
 
     /*
      * Method that gets all server members
      */
     public List<IUser> getUsers() {
-        return DiscordAPI.client.getUsers();
+        return DiscordAPI.getClient().getUsers();
     }
 
     /*
