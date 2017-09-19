@@ -1426,6 +1426,49 @@ public final class PhantomBot implements Listener {
             print("[CONSOLE] Points have been exported to points_export.csv");
         }
 
+        if (message.equalsIgnoreCase("createcmdlist")) {
+        	print("[CONSOLE] Executing createcmdlist, this can take a bit of time.");
+
+        	String[] headers = new String[] {"Command", "Permission", "Module"};
+        	String[] keys = dataStore.GetKeyList("permcom", "");
+        	List<String[]> values = new ArrayList<String[]>();
+
+        	for (int i = 0; i < keys.length; i++) {
+        		String[] str = new String[3];
+        		str[0] = ("!" + keys[i]);
+        		str[1] = dataStore.get("groups", dataStore.get("permcom", keys[i]));
+        		str[2] = Script.callMethod("getCommandScript", (keys[i].contains(" ") ? keys[i].substring(0, keys[i].indexOf(" ")) : keys[i]));
+
+        		// If the module is disabled, return.
+        		if (str[2].contains("Undefined")) {
+        			continue;
+        		}
+        		values.add(str);
+        	}
+
+        	toCSV(headers, values, "command_list.csv");
+            print("[CONSOLE] Command list has been created under command_list.csv");
+        }
+
+        if (message.equalsIgnoreCase("createcustomcmdlist")) {
+        	print("[CONSOLE] Executing createcustomcmdlist, this can take a bit of time.");
+
+        	String[] headers = new String[] {"Command", "Permission"};
+        	String[] keys = dataStore.GetKeyList("command", "");
+        	List<String[]> values = new ArrayList<String[]>();
+
+        	for (int i = 0; i < keys.length; i++) {
+        		String[] str = new String[2];
+        		str[0] = ("!" + keys[i]);
+        		str[1] = dataStore.get("groups", dataStore.get("permcom", keys[i]));
+
+        		values.add(str);
+        	}
+
+        	toCSV(headers, values, "custom_command_list.csv");
+            print("[CONSOLE] Command list has been created under custom_command_list.csv");
+        }
+
         if (message.equalsIgnoreCase("retweettest")) {
             if (argument == null) {
                 com.gmt2001.Console.out.println(">> retweettest requires a Twitter ID (or Twitter IDs)");
