@@ -289,7 +289,7 @@
     function getGroupIdByName(groupName) {
         var i;
         for (i = 0; i < userGroups.length; i++) {
-            if (userGroups[i].equalsIgnoreCase(groupName.toLowerCase())) {
+            if (userGroups[i].equalsIgnoreCase(groupName)) {
                 return i;
             }
         }
@@ -593,36 +593,13 @@
         $.inidb.set('group', $.botName.toLowerCase(), 0);
     }
 
-    /*
-     * @function doUserCacheCheck
-     */
-    function doUserCacheCheck() {
-        var i;
-
-        for (i in users) {
-            if (!$.usernameCache.hasUser(users[i][0])) {
-                $.username.removeUser(users[i][0]);
-                users.splice(i, 1);
-            }
-        }
-    }
-
     /**
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function(event) {
-        var username = event.getUser().toLowerCase();
-
-        if (!userExists(username)) {
-            if (!$.user.isKnown(username)) {
-                $.setIniDbBoolean('visited', username, true);
-            }
-    
-            lastJoinPart = $.systemTime();
+        var username = event.getUser();
 
             users.push([username, $.systemTime()]);
-            $.checkGameWispSub(username);
-        }
     });
     
     /**
@@ -801,6 +778,10 @@
             var username = args[0],
                 groupId = parseInt(args[1]);
 
+            if (isNaN(groupId)) {
+                groupId = parseInt(getGroupIdByName(args[1]));
+            }
+
             if ((args.length < 2 && username === undefined) || args.length > 2 || (isNaN(groupId) && username === undefined) || $.outOfRange(groupId, 0, userGroups.length - 1)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.usage'));
                 return;
@@ -927,10 +908,10 @@
         generateDefaultGroups();
         generateDefaultGroupPoints();
 
-        // Load the moderators cache. This needs to load after the privmsg check.
-        setTimeout(loadModeratorsCache, 7e3);
-        // Set an interval to refresh the viewer cache.
-        setInterval(doUserCacheCheck, 6e4);
+        /* Load the moderators cache. This needs to load after the privmsg check. */
+        setTimeout(function() {
+            loadModeratorsCache();
+        }, 7000);
     });
 
     /** Export functions to API */
