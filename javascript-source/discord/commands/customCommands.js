@@ -148,12 +148,10 @@
         }
 
         if (s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)/)) {
-            if ($.discord.setRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]) == true) {
-                s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
-                if (s.length === 0) {
-                    return null;
-                }
-            } else {
+            $.discord.addRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]);
+            
+            s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
+            if (s.length === 0) {
                 return null;
             }
         }
@@ -544,7 +542,7 @@
                 temp.push('!' + keys[i]);
             }
 
-            $.paginateArray(temp, 'discord.customcommands.commands', ', ', channel, mention);
+            $.paginateArrayDiscord(temp, 'discord.customcommands.commands', ', ', channel, mention);
         }
 
         /**
@@ -560,7 +558,7 @@
                     temp.push('!' + keys[i]);
                 }
             }
-            $.paginateArray(temp, 'discord.customcommands.bot.commands', ', ', channel, mention);
+            $.paginateArrayDiscord(temp, 'discord.customcommands.bot.commands', ', ', channel, mention);
         }
     });
 
