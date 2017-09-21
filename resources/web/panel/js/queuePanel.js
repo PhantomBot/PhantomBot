@@ -106,28 +106,10 @@
     	setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
-    /* Import the HTML file for this panel. */
-    $('#queuePanel').load('/panel/queue.html');
-
-    /* Load the DB items for this panel, wait to ensure that we are connected. */
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $('#tabs').tabs('option', 'active');
-            if (active == 0) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    /* Query the DB every 20 seconds for updates. */
-    setInterval(function() {
-        var active = $('#tabs').tabs('option', 'active');
-        if (active == 16 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Queue Data', 'success', 1000);
-            doQuery();
-        }
-    }, 2e4);
+    // Add queue hooks
+    addPanelTab( 'queue', 'Queue', '/panel/queue.html', 800 );
+    addDoQuery( 'queue', doQuery, 2e4 );
+    addOnMessage( 'queue', onMessage );
 
     $.queueOnMessage = onMessage;
     $.queueDoQuery = doQuery;

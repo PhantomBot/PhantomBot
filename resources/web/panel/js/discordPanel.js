@@ -406,28 +406,10 @@
         }
     }
 
-    /* Import the HTML file for this panel. */
-    $('#discordPanel').load('/panel/discord.html');
-
-    /* Load the DB items for this panel, wait to ensure that we are connected. */
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $('#tabs').tabs('option', 'active');
-            if (active == 18) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    /* Query the DB every 30 seconds for updates. */
-    setInterval(function() {
-        var active = $('#tabs').tabs('option', 'active');
-        if (active == 18 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Discord Data', 'success', 1000);
-            doQuery();
-        }
-    }, 3e4);
+    // Add discord hooks
+    addPanelTab( 'discord', 'Discord', '/panel/discord.html', 900 );
+    addDoQuery( 'discord', doQuery, 3e4 );
+    addOnMessage( 'discord', onMessage );
 
     /* Export functions to the API */
     $.updateDiscordTable = updateDiscordTable;
