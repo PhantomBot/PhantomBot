@@ -15,58 +15,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tv.phantombot.event.subscribers;
+package tv.phantombot.event.twitch.subscriber;
 
+import tv.phantombot.event.twitch.TwitchEvent;
 import tv.phantombot.twitchwsirc.Channel;
-import tv.phantombot.twitchwsirc.Session;
 
-public class NewSubscriberEvent extends SubscriberEvent {
+public class SubscriberEvent extends TwitchEvent {
 
 	private final String subscriber;
-    private final Channel channel;
-    private final Session session;
     private final String plan;
 
-	public NewSubscriberEvent(String subscriber) {
+	public SubscriberEvent(String subscriber) {
         this.subscriber = subscriber;
-        this.channel = null;
-        this.session = null;
         this.plan = null;
     }
 
-    public NewSubscriberEvent(Channel channel, String subscriber) {
+    public SubscriberEvent(String subscriber, String plan) {
         this.subscriber = subscriber;
-        this.channel = channel;
-        this.session = null;
+        this.plan = plan;
+    }
+
+    public SubscriberEvent(Channel channel, String subscriber) {
+        super(channel);
+
+        this.subscriber = subscriber;
         this.plan = null;
     }
 
-    public NewSubscriberEvent(Session session, Channel channel, String subscriber) {
-        super(channel, session);
-        this.subscriber = subscriber;
-        this.channel = channel;
-        this.session = session;
-        this.plan = null;
-    }
+    public SubscriberEvent(Channel channel, String subscriber, String plan) {
+        super(channel);
 
-    public NewSubscriberEvent(Session session, Channel channel, String subscriber, String plan) {
-        super(channel, session);
         this.subscriber = subscriber;
-        this.channel = channel;
-        this.session = session;
         this.plan = plan;
     }
 
     public String getSubscriber() {
-        return this.subscriber.toLowerCase();
-    }
-
-    public Channel getChannel() {
-        return this.channel;
-    }
-
-    public Session getSession() {
-        return this.session;
+        return this.subscriber;
     }
 
     public String getPlan() {

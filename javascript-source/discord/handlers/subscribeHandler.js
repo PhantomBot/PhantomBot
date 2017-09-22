@@ -27,9 +27,9 @@
     });
 
 	/**
-	 * @event newSubscriber
+	 * @event subscriber
 	 */
-	$.bind('newSubscriber', function(event) {
+	$.bind('subscriber', function(event) {
 		var subscriber = event.getSubscriber(),
 		    s = subMessage;
 
@@ -45,9 +45,9 @@
     });
 
     /**
-	 * @event newPrimeSubscriber
+	 * @event primeSubscriber
 	 */
-	$.bind('newPrimeSubscriber', function(event) {
+	$.bind('primeSubscriber', function(event) {
 		var subscriber = event.getSubscriber(),
 		    s = primeMessage;
 
@@ -63,9 +63,9 @@
     });
 
     /**
-	 * @event newReSubscriber
+	 * @event reSubscriber
 	 */
-	$.bind('newReSubscriber', function(event) {
+	$.bind('reSubscriber', function(event) {
 		var subscriber = event.getReSubscriber(),
 		    months = event.getMonths(),
 		    s = resubMessage;

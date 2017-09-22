@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tv.phantombot.event.bits;
+package tv.phantombot.event.twitch.bits;
 
+import tv.phantombot.event.twitch.TwitchEvent;
 import tv.phantombot.twitchwsirc.Channel;
-import tv.phantombot.twitchwsirc.Session;
 
-public class BitsEvent extends BitEvent {
+public class BitsEvent extends TwitchEvent {
 
 	private final String username;
     private final String bits;
@@ -30,8 +30,9 @@ public class BitsEvent extends BitEvent {
         this.bits = bits;
     }
 
-    public BitsEvent(Session session, Channel channel, String username, String bits) {
-        super(channel, session);
+    public BitsEvent(Channel channel, String username, String bits) {
+        super(channel);
+        
         this.username = username;
         this.bits = bits;
     }
