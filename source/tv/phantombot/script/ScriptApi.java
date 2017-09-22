@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 public class ScriptApi {
 
     private static final ScriptApi instance = new ScriptApi();
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(8);
 
     public static ScriptApi instance() {
         return instance;
@@ -46,36 +45,8 @@ public class ScriptApi {
         ScriptEventManager.instance().register(eventName, handler);
     }
 
-    @SuppressWarnings("rawtypes")
-    public ScheduledFuture<?> setTimeout(Script script, Runnable task, int milliseconds) {
-        ScheduledFuture future = scheduler.schedule(task, milliseconds, TimeUnit.MILLISECONDS);
-        script.destroyables().add(new ScriptDestroyable<ScheduledFuture>(future) {
-            @Override
-            public void destroy(ScheduledFuture future) {
-                future.cancel(false);
-            }
-        });
-        return future;
-    }
-
-    @SuppressWarnings("rawtypes")
-    public ScheduledFuture<?> setInterval(Script script, Runnable task, int milliseconds) {
-        ScheduledFuture future = scheduler.scheduleAtFixedRate(task, milliseconds, milliseconds, TimeUnit.MILLISECONDS);
-        script.destroyables().add(new ScriptDestroyable<ScheduledFuture>(future) {
-            @Override
-            public void destroy(ScheduledFuture future) {
-                future.cancel(false);
-            }
-        });
-        return future;
-    }
-
-    public boolean clearTimeout(ScheduledFuture<?> future) {
-        return future.cancel(false);
-    }
-
-    public boolean clearInterval(ScheduledFuture<?> future) {
-        return future.cancel(false);
+    public boolean exists(String eventName) {
+        return ScriptEventManager.instance().hasEvent(eventName);
     }
 
     public void loadScript(Script script, String fileName) throws IOException {
@@ -92,9 +63,5 @@ public class ScriptApi {
 
     public Script getScript(Script script, String fileName) throws IOException {
         return ScriptManager.getScript(new File(new File("./scripts/"), fileName));
-    }
-
-    public void kill() {
-        scheduler.shutdownNow();
     }
 }

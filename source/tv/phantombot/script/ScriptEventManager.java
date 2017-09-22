@@ -69,7 +69,7 @@ public class ScriptEventManager implements Listener {
     public void onEvent(Event event) {
         if (!isKilled) {
             try {
-                String eventName = event.getClass().getName();
+                String eventName = event.getClass().getSimpleName();
                 EventHandler e = events.get(eventName);
 
                 e.handler.handle(event);
@@ -80,6 +80,16 @@ public class ScriptEventManager implements Listener {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
+    }
+
+    /*
+     * Method to see if an event was registered in init.js
+     *
+     * @param  {String} eventName
+     * @return {Boolean}
+     */
+    public boolean hasEvent(String eventName) {
+        return events.containsKey((WordUtils.capitalize(eventName) + "Event"));
     }
 
     /*
@@ -102,7 +112,7 @@ public class ScriptEventManager implements Listener {
         }
 
         if (event != null) {
-            events.put(event.getName(), new EventHandler(event, handler));
+            events.put(event.getSimpleName(), new EventHandler(event, handler));
         } else {
             com.gmt2001.Console.err.println("Event class not found for: " + eventName);
         }
