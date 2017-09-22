@@ -15,53 +15,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tv.phantombot.event.subscribers;
+package tv.phantombot.event.twitch.subscriber;
 
+import tv.phantombot.event.twitch.TwitchEvent;
 import tv.phantombot.twitchwsirc.Channel;
-import tv.phantombot.twitchwsirc.Session;
 
-public class NewReSubscriberEvent extends SubscriberEvent {
+public class ReSubscriberEvent extends TwitchEvent {
 
 	private final String resubscriber;
     private final String months;
-    private final Channel channel;
-    private final Session session;
+    private final String plan;
 
-	public NewReSubscriberEvent(String resubscriber, String months) {
+	public ReSubscriberEvent(String resubscriber, String months) {
         this.resubscriber = resubscriber;
         this.months = months;
-        this.channel = null;
-        this.session = null;
+        this.plan = null;
     }
 
-    public NewReSubscriberEvent(Channel channel, String resubscriber, String months) {
+    public ReSubscriberEvent(String resubscriber, String months, String plan) {
         this.resubscriber = resubscriber;
         this.months = months;
-        this.channel = channel;
-        this.session = null;
+        this.plan = plan;
     }
 
-    public NewReSubscriberEvent(Session session, Channel channel, String resubscriber, String months) {
-        super(channel, session);
+    public ReSubscriberEvent(Channel channel, String resubscriber, String months) {
+        super(channel);
+
         this.resubscriber = resubscriber;
         this.months = months;
-        this.channel = channel;
-        this.session = session;
+        this.plan = null;
+    }
+
+    public ReSubscriberEvent(Channel channel, String resubscriber, String months, String plan) {
+        super(channel);
+
+        this.resubscriber = resubscriber;
+        this.months = months;
+        this.plan = plan;
     }
 
     public String getReSubscriber() {
-        return this.resubscriber.toLowerCase();
+        return this.resubscriber;
     }
 
     public String getMonths() {
         return this.months;
     }
 
-    public Channel getChannel() {
-        return this.channel;
-    }
-
-    public Session getSession() {
-        return this.session;
+    public String getPlan() {
+        return this.plan;
     }
 }

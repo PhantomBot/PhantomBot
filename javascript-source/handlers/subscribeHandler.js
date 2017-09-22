@@ -33,9 +33,9 @@
     }
 
     /*
-     * @event newSubscriber
+     * @event subscriber
      */
-    $.bind('newSubscriber', function(event) {
+    $.bind('subscriber', function(event) {
         var subscriber = event.getSubscriber(),
             message = subMessage;
 
@@ -63,9 +63,9 @@
     });
 
     /*
-     * @event newPrimeSubscriber
+     * @event primeSubscriber
      */
-    $.bind('newPrimeSubscriber', function(event) {
+    $.bind('primeSubscriber', function(event) {
         var subscriber = event.getSubscriber(),
             message = primeSubMessage;
 
@@ -88,9 +88,9 @@
     });
 
     /*
-     * @event newReSubscriber
+     * @event reSubscriber
      */
-    $.bind('newReSubscriber', function(event) {
+    $.bind('reSubscriber', function(event) {
         var resubscriber = event.getReSubscriber(),
             months = event.getMonths(),
             message = reSubMessage,
