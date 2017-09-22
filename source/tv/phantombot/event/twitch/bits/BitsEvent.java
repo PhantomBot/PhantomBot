@@ -14,31 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub.moderation;
 
-import tv.phantombot.event.pubsub.PubSubEvent;
+package tv.phantombot.event.twitch.bits;
 
-public class PubSubModerationEvent extends PubSubEvent {
+import tv.phantombot.event.twitch.TwitchEvent;
+import tv.phantombot.twitchwsirc.Channel;
+
+public class BitsEvent extends TwitchEvent {
 
 	private final String username;
-	private final String creator;
-	private final String message;
+    private final String bits;
 
-	protected PubSubModerationEvent(String username, String creator, String message) {
-		this.username = username;
-		this.creator = creator;
-		this.message = message;
-	}
+	public BitsEvent(String username, String bits) {
+        this.username = username;
+        this.bits = bits;
+    }
 
-	public String getUsername() {
-		return this.username;
-	}
+    public BitsEvent(Channel channel, String username, String bits) {
+        super(channel);
+        
+        this.username = username;
+        this.bits = bits;
+    }
 
-	public String getCreator() {
-		return this.creator;
-	}
+    public String getUsername() {
+        return this.username;
+    }
 
-	public String getMessage() {
-		return this.message;
-	}
+    public String getBits() {
+        return this.bits;
+    }
 }

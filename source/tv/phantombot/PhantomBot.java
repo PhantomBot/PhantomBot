@@ -91,10 +91,9 @@ import tv.phantombot.cache.ViewerListCache;
 import tv.phantombot.console.ConsoleInputListener;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
-import tv.phantombot.event.bits.BitsEvent;
+import tv.phantombot.event.twitch.bits.BitsEvent;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.console.ConsoleInputEvent;
-import tv.phantombot.event.devcommand.DeveloperCommandEvent;
 import tv.phantombot.event.gamewisp.GameWispAnniversaryEvent;
 import tv.phantombot.event.gamewisp.GameWispSubscribeEvent;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
@@ -102,9 +101,9 @@ import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
-import tv.phantombot.event.subscribers.NewPrimeSubscriberEvent;
-import tv.phantombot.event.subscribers.NewReSubscriberEvent;
-import tv.phantombot.event.subscribers.NewSubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.PrimeSubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.ReSubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.SubscriberEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
@@ -1211,9 +1210,6 @@ public final class PhantomBot implements Listener {
             StreamElementsCache.killall();
         }
 
-        print("Terminating pending timers...");
-        ScriptApi.instance().kill();
-
         print("Terminating all script modules...");
         HashMap<String, Script> scripts = ScriptManager.getScripts();
         for (Entry<String, Script> script : scripts.entrySet()) {
@@ -1567,7 +1563,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("subscribertest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing subscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new NewSubscriberEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), randomUser));
+            EventBus.instance().postAsync(new SubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser, "1000"));
             return;
         }
 
@@ -1575,7 +1571,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("primesubscribertest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing primesubscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new NewPrimeSubscriberEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), randomUser));
+            EventBus.instance().postAsync(new PrimeSubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser));
             return;
         }
 
@@ -1583,7 +1579,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("resubscribertest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new NewReSubscriberEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), randomUser, "10"));
+            EventBus.instance().postAsync(new ReSubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser, "10", "1000"));
             return;
         }
 
@@ -1631,7 +1627,7 @@ public final class PhantomBot implements Listener {
         /* test the bits event */
         if (message.equalsIgnoreCase("bitstest")) {
             print("[CONSOLE] Executing bitstest");
-            EventBus.instance().postAsync(new BitsEvent(PhantomBot.getSession(this.channelName), PhantomBot.getChannel(this.channelName), this.botName, "100"));
+            EventBus.instance().postAsync(new BitsEvent(PhantomBot.getChannel(this.channelName), this.botName, "100"));
             return;
         }
 
@@ -2029,7 +2025,6 @@ public final class PhantomBot implements Listener {
                 return;
             }
 
-            ScriptEventManager.instance().onEvent(new DeveloperCommandEvent(sender, command, arguments, id));
             Logger.instance().log(Logger.LogType.Debug, "User: " + sender + " Issued Command: " + command + ". Id: " + id);
             Logger.instance().log(Logger.LogType.Debug, "");
         }

@@ -14,31 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub.moderation;
 
-import tv.phantombot.event.pubsub.PubSubEvent;
+package tv.phantombot.event.twitch.subscriber;
 
-public class PubSubModerationEvent extends PubSubEvent {
+import tv.phantombot.event.twitch.TwitchEvent;
+import tv.phantombot.twitchwsirc.Channel;
 
-	private final String username;
-	private final String creator;
-	private final String message;
+public class PrimeSubscriberEvent extends TwitchEvent {
 
-	protected PubSubModerationEvent(String username, String creator, String message) {
-		this.username = username;
-		this.creator = creator;
-		this.message = message;
-	}
+	private final String subscriber;
 
-	public String getUsername() {
-		return this.username;
-	}
+	public PrimeSubscriberEvent(String subscriber) {
+        this.subscriber = subscriber;
+    }
 
-	public String getCreator() {
-		return this.creator;
-	}
+    public PrimeSubscriberEvent(Channel channel, String subscriber) {
+        super(channel);
 
-	public String getMessage() {
-		return this.message;
-	}
+        this.subscriber = subscriber;
+    }
+
+    public String getSubscriber() {
+        return this.subscriber;
+    }
 }
