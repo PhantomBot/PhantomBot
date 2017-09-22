@@ -3,6 +3,7 @@ $.lang.register('pollsystem.vote.already', 'You have already voted!');
 $.lang.register('pollsystem.vote.invalid', '"$1" is not a valid option!');
 $.lang.register('pollsystem.vote.success', 'You have voted "$1" on "$2".');
 $.lang.register('pollsystem.poll.started', '$1 started a poll for $2 seconds (minimum votes: $3): $4! Use "!vote [option]" to vote. Options: $5');
+$.lang.register('pollsystem.poll.started.notime', '$1 started a poll (minimum votes: $2): $3! Use "!vote [option]" to vote. Options: $4');
 $.lang.register('pollsystem.poll.running', 'There is a poll running for "$1". Use "!vote [option]" to vote. The options are "$2".');
 $.lang.register('pollsystem.poll.usage', 'Usage: !poll [open | results | close]');
 $.lang.register('pollsystem.results.lastpoll', '[Last Poll]  - [Question: "$1"] - [Total Votes: $2] - [Result: "$3"] - [Options: "$4"] [Votes: $5]');
