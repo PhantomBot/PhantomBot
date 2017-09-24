@@ -292,7 +292,7 @@ public class DiscordUtil {
      * Method to set a role on a user.
      *
      * @param {String} roleName
-     * @param {String} userName
+     * @param {IUser} user
      */
     public void addRole(String roleName, IUser user) {
         addRole(getRole(roleName), user);
