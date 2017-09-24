@@ -192,16 +192,16 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to return a channel object by its name. This is case sensitive.
+     * Method to return a channel object by its name.
      *
      * @param  {String} channelName
      * @return {IChannel}
      */
     public IChannel getChannel(String channelName) {
-        List<IChannel> channels = DiscordAPI.getGuild().getChannelsByName(channelName);
+        List<IChannel> channels = DiscordAPI.getGuild().getChannels();
 
         for (IChannel channel : channels) {
-            if (channel.getName().equals(channelName)) {
+            if (channel.getName().equalsIgnoreCase(channelName)) {
                 return channel;
             }
         }
@@ -209,7 +209,7 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to return a user object by its name. This is case sensitive.
+     * Method to return a user object by its name.
      *
      * @param  {String} userName
      * @return {IUser}
@@ -226,7 +226,7 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to return a user object by its name and its discriminator. This is case sensitive.
+     * Method to return a user object by its name and its discriminator.
      *
      * @param  {String} userName
      * @param  {String} discriminator
@@ -236,7 +236,7 @@ public class DiscordUtil {
         List<IUser> users = DiscordAPI.getGuild().getUsersByName(userName, true);
 
         for (IUser user : users) {
-            if (user.getDisplayName(DiscordAPI.getGuild()).equals(userName) && user.getDiscriminator().equals(discriminator)) {
+            if (user.getDisplayName(DiscordAPI.getGuild()).equalsIgnoreCase(userName) && user.getDiscriminator().equalsIgnoreCase(discriminator)) {
                 return user;
             }
         }
@@ -244,16 +244,16 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to return a role object by its name. This is case sensitive.
+     * Method to return a role object by its name.
      *
      * @param  {String} roleName
      * @return {IRole}
      */
     public IRole getRole(String roleName) {
-        List<IRole> roles = DiscordAPI.getGuild().getRolesByName(roleName);
+        List<IRole> roles = DiscordAPI.getClient().getRoles();
 
         for (IRole role : roles) {
-            if (role.getName().equals(roleName)) {
+            if (role.getName().equalsIgnoreCase(roleName)) {
                 return role;
             }
         }
@@ -286,6 +286,16 @@ public class DiscordUtil {
      */
     public void addRole(String roleName, String userName) {
         addRole(getRole(roleName), getUser(userName));
+    }
+
+    /*
+     * Method to set a role on a user.
+     *
+     * @param {String} roleName
+     * @param {String} userName
+     */
+    public void addRole(String roleName, IUser user) {
+        addRole(getRole(roleName), user);
     }
 
     /*
