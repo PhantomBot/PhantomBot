@@ -503,7 +503,16 @@
                 <label for="joinMessageInput">Join Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('joinMessageInput', 'systems/greetingsSystem.js', 'discordSettings', 'joinMessage')">Submit</button>
                 <input type="text" class="form-control" id="joinMessageInput" placeholder="Join Message" data-toggle="tooltip" 
-                    title="Set a message for when a new user joins your server. Available tags: (name), and (@name)"/>
+                    title="Set a message for when a new user joins your server. Available tags: (name), (role), and (@name)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="greetingsDefaultGroupInput">Join Role</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('greetingsDefaultGroupInput', 'systems/greetingsSystem.js', 'discordSettings', 'greetingsDefaultGroup')">Submit</button>
+                <input type="text" class="form-control" id="greetingsDefaultGroupInput" placeholder="Join Role" data-toggle="tooltip" 
+                    title="Set a role users will be assigned when joining the server. Note that join alerts has to be on."/>
             </div>
         </form>
 
