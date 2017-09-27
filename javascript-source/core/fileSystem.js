@@ -17,6 +17,11 @@
      */
     function readFile(path) {
         var lines = [];
+
+        if (!fileExists(path)) {
+            return lines;
+        }
+        
         try {
             var fis = new JFileInputStream(path),
                 scan = new java.util.Scanner(fis);
