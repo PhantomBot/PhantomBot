@@ -66,7 +66,7 @@
      * @returns {string}
      */
     function sanitize(username) {
-        return (username == null ? username : username.replace(/\W/g, '').toLowerCase());
+        return (username == null ? username : String(username).replace(/\W/g, '').toLowerCase());
     }
 
     /**
