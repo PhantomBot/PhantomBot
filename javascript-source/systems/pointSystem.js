@@ -395,7 +395,7 @@
                 $.say(getPointsMessage(sender, username));
             } else {
                 // Replace everything that is not \w
-                action = $.user.sanitize(action + '');
+                action = $.user.sanitize(action);
                 if ($.user.isKnown(action)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.username.resolve(action), getPointsString(getUserPoints(action))));
                 }
@@ -417,7 +417,7 @@
                     }
 
                     // Replace everything that is not \w
-                    actionArg1 = $.user.sanitize(actionArg1 + '');
+                    actionArg1 = $.user.sanitize(actionArg1);
 
                     if (!$.user.isKnown(actionArg1)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', actionArg1));
