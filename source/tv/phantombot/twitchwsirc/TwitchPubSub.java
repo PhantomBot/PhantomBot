@@ -49,7 +49,7 @@ import java.util.Map.Entry;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
-import tv.phantombot.event.moderation.*;
+import tv.phantombot.event.pubsub.moderation.*;
 
 import java.net.URI;
 
@@ -263,19 +263,19 @@ public class TwitchPubSub {
                             switch (action) {
                                 case "timeout":
                                     this.log(args1 + " has been timed out by " + creator + " for " + args2 + " seconds. " + (args3.length() == 0 ? "" : "Reason: " + args3)); 
-                                    EventBus.instance().post(new TimeoutEvent(args1, creator, System.currentTimeMillis(), args2, args3, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : "")));
+                                    EventBus.instance().postAsync(new PubSubModerationTimeoutEvent(args1, creator, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : ""), args3, args2));
                                     break;
                                 case "untimeout":
                                     this.log(args1 + " has been un-timed out by " + creator + ".");
-                                    EventBus.instance().post(new UnTimeoutEvent(args1, creator, System.currentTimeMillis()));
+                                    EventBus.instance().postAsync(new PubSubModerationUnTimeoutEvent(args1, creator));
                                     break;
                                 case "ban":
                                     this.log(args1 + " has been banned by " + creator + ". " + (args2.length() == 0 ? "" : "Reason: " + args2));
-                                    EventBus.instance().post(new BannedEvent(args1, creator, System.currentTimeMillis(), args2, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : "")));
+                                    EventBus.instance().postAsync(new PubSubModerationBanEvent(args1, creator, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : ""), args2));
                                     break;
                                 case "unban":
                                     this.log(args1 + " has been un-banned by " + creator + ".");
-                                    EventBus.instance().post(new UnBannedEvent(args1, creator, System.currentTimeMillis()));
+                                    EventBus.instance().postAsync(new PubSubModerationUnBanEvent(args1, creator));
                                     break;
                                 case "mod":
                                     this.log(args1 + " has been modded by " + creator + ".");

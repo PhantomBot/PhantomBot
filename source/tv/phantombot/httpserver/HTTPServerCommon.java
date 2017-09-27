@@ -140,6 +140,8 @@ public class HTTPServerCommon {
         }
         if (headers.containsKey("message")) {
             myHdrMessage = headers.getFirst("message");
+            byte[] myHdrMessageBytes = myHdrMessage.getBytes(StandardCharsets.ISO_8859_1);
+            myHdrMessage = new String(myHdrMessageBytes, StandardCharsets.UTF_8);
         }
 
         // Check the uriQueryList for the webauth

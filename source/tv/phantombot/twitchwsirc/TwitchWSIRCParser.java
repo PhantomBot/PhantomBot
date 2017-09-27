@@ -35,10 +35,10 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.event.irc.message.IrcModerationEvent;
 import tv.phantombot.event.irc.clearchat.IrcClearchatEvent;
-import tv.phantombot.event.subscribers.NewReSubscriberEvent;
-import tv.phantombot.event.subscribers.NewSubscriberEvent;
-import tv.phantombot.event.subscribers.NewPrimeSubscriberEvent;
-import tv.phantombot.event.bits.BitsEvent;
+import tv.phantombot.event.twitch.subscriber.ReSubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.SubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.PrimeSubscriberEvent;
+import tv.phantombot.event.twitch.bits.BitsEvent;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.script.ScriptEventManager;
@@ -285,7 +285,7 @@ public class TwitchWSIRCParser {
 
         /* Check to see if the user is donating/cheering bits. */
         if (tagsMap.containsKey("bits")) {
-            scriptEventManager.onEvent(new BitsEvent(session, channel, username, tagsMap.get("bits")));
+            scriptEventManager.onEvent(new BitsEvent(channel, username, tagsMap.get("bits")));
         }
 
         /* Check to see if the user is a channel subscriber. */
@@ -435,19 +435,17 @@ public class TwitchWSIRCParser {
     private void userNotice(String message, String username, Map<String, String> tagsMap) {
         if (tagsMap.containsKey("msg-id")) {
             if (tagsMap.get("msg-id").equalsIgnoreCase("resub")) {
-                scriptEventManager.onEvent(new NewReSubscriberEvent(session, channel, tagsMap.get("login"), tagsMap.get("msg-param-months")));
+                scriptEventManager.onEvent(new ReSubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-months"), tagsMap.get("msg-param-sub-plan")));
             } else {
                 if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
                     if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
-                        scriptEventManager.onEvent(new NewPrimeSubscriberEvent(session, channel, tagsMap.get("login")));
+                        scriptEventManager.onEvent(new PrimeSubscriberEvent(channel, tagsMap.get("login")));
                     } else {
-                        scriptEventManager.onEvent(new NewSubscriberEvent(session, channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
+                        scriptEventManager.onEvent(new SubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
                     }
                 }
             }
         }
-        
-        com.gmt2001.Console.debug.println("USERNOTICE: " + tagsMap);
     }
 
     /*
@@ -461,14 +459,12 @@ public class TwitchWSIRCParser {
                 if (!moderators.containsKey(session.getNick())) {
                     moderators.put(session.getNick(), true);
                     eventBus.postAsync(new IrcChannelUserModeEvent(session, channel, session.getNick(), "O", true));
-                    com.gmt2001.Console.debug.println("Bot::" + session.getNick() + "::Moderator::true");
                 }
             } else { 
                 if (this.channelName.equalsIgnoreCase(session.getNick())) {
                     if (!moderators.containsKey(session.getNick())) {
                         moderators.put(session.getNick(), true);
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, channel, session.getNick(), "O", true));
-                        com.gmt2001.Console.debug.println("Caster::Bot::" + session.getNick() + "::Moderator::true");
                     }
                 } else if (tagMaps.containsKey("display-name") && !tagMaps.get("display-name").equalsIgnoreCase(session.getNick())) {
                     com.gmt2001.Console.out.println();
@@ -487,11 +483,9 @@ public class TwitchWSIRCParser {
                     if (moderators.containsKey(session.getNick())) {
                         moderators.remove(session.getNick());
                         eventBus.postAsync(new IrcChannelUserModeEvent(session, channel, session.getNick(), "O", false));
-                        com.gmt2001.Console.debug.println("Bot::" + session.getNick() + "::Moderator::false");
                     }
                 }
             }
         }
-        com.gmt2001.Console.debug.println("USERSTATE: " + tagMaps);
     }
 }

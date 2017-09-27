@@ -48,15 +48,16 @@
              * @discordcommandpath account link - Starts the process of linking an account. Completing this will overwrite existing links
              */
             } else if (action.equalsIgnoreCase('link')) {
-                var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+                var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+',
                     text = '',
                     i;
 
-                for (i = 0; i < 8; i++) {
+                for (i = 0; i < 10; i++) {
                     text += code.charAt(Math.floor(Math.random() * code.length));
                 }
 
                 accounts[userId] = {
+                    userObj: user,
                     time: $.systemTime(),
                     code: text
                 };
@@ -91,7 +92,8 @@
         if (command.equalsIgnoreCase('account')) {
             if (action !== undefined && action.equalsIgnoreCase('link')) {
                 var code = args[1];
-                if (code === undefined || code.length() < 8) {
+                if (code === undefined || code.length() < 10) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('discord.accountlink.link.fail'));
                     return;
                 }
 
@@ -102,9 +104,8 @@
                     if (accounts[keys[i]].code == code && (accounts[keys[i]].time + 6e5) > $.systemTime()) {
                         $.inidb.set('discordToTwitch', keys[i], sender.toLowerCase());
 
+                        $.discordAPI.sendPrivateMessage(accounts[keys[i]].userObj, $.lang.get('discord.accountlink.link.success', $.username.resolve(sender)));
                         delete accounts[keys[i]];
-
-                        $.discordAPI.sendPrivateMessage(keys[i], $.lang.get('discord.accountlink.link.success', $.username.resolve(sender)));
                         return;
                     }
                 }

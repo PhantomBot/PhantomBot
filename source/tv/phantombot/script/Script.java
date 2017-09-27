@@ -38,6 +38,7 @@ public class Script {
     private Context context;
     private boolean killed = false;
     private int fileNotFoundCount = 0;
+    private static ScriptableObject scope;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public Script(File file) {
@@ -51,6 +52,12 @@ public class Script {
                 ScriptFileWatcher.instance().addScript(this);
             }
         }
+    }
+
+    public static String callMethod(String method, String arg) {
+        Object[] obj = new Object[] {arg};
+
+        return scope.callMethod(global, method, obj).toString();
     }
 
     @SuppressWarnings("rawtypes")
@@ -162,7 +169,7 @@ public class Script {
             context.setOptimizationLevel(9);
         }
 
-        ScriptableObject scope = context.initStandardObjects(global, false);
+        scope = context.initStandardObjects(global, false);
         scope.defineProperty("$", global, 0);
         scope.defineProperty("$api", ScriptApi.instance(), 0);
         scope.defineProperty("$script", this, 0);

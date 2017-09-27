@@ -111,7 +111,7 @@
             minvotes = $('#pollMinVotesInput').val();
 
         if (timer.length === 0) {
-            timer = "60";
+            timer = "0";
         }
         if (minvotes.length === 0) {
             minvotes = "1";

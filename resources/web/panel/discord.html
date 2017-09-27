@@ -353,6 +353,45 @@
     </div>
     </div>
 
+    <h3>StreamElements Alert Settings</h3>
+    <div>
+    <div id="_discord_streamElementsHandlerDisabled" />
+    <div id="_discord_streamElementsHandler">
+        <table>
+            <tr class="textList">
+                <td>Toggle StreamElements Alerts</td>
+                <td style="width: 25px"><div id="streamelementsToggleInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('streamelementsToggleInput', 'handlers/streamElementsHandler.js', 'discordSettings', 'streamelementsToggle', 'true')">
+                        <i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('streamelementsToggleInput', 'handlers/streamElementsHandler.js', 'discordSettings', 'streamelementsToggle', 'false')">
+                        <i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="streamElementsMessageInput">Donation Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamelementsMessageInput', 'handlers/streamElementsHandler.js', 'discordSettings', 'streamelementsMessage')">Submit</button>
+                <input type="text" class="form-control" id="streamelementsMessageInput" placeholder="Donation Message" data-toggle="tooltip" 
+                    title="Set a donation message for StreamElements. Available tags: (name), (currency), (amount), (message)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="streamElementsChannelInput">Alert Channel</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamelementsChannelInput', 'handlers/streamElementsHandler.js', 'discordSettings', 'streamelementsChannel')">Submit</button>
+                <input type="text" class="form-control" id="streamelementsChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
+            </div>
+        </form>
+    </div>
+    </div>
+
     <h3>StreamTip Alert Settings</h3>
     <div>
     <div id="_discord_streamTipHandlerDisabled" />
@@ -464,7 +503,16 @@
                 <label for="joinMessageInput">Join Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('joinMessageInput', 'systems/greetingsSystem.js', 'discordSettings', 'joinMessage')">Submit</button>
                 <input type="text" class="form-control" id="joinMessageInput" placeholder="Join Message" data-toggle="tooltip" 
-                    title="Set a message for when a new user joins your server. Available tags: (name), and (@name)"/>
+                    title="Set a message for when a new user joins your server. Available tags: (name), (role), and (@name)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="greetingsDefaultGroupInput">Join Role</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('greetingsDefaultGroupInput', 'systems/greetingsSystem.js', 'discordSettings', 'greetingsDefaultGroup')">Submit</button>
+                <input type="text" class="form-control" id="greetingsDefaultGroupInput" placeholder="Join Role" data-toggle="tooltip" 
+                    title="Set a role users will be assigned when joining the server. Note that join alerts has to be on."/>
             </div>
         </form>
 

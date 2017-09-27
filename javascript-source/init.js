@@ -250,7 +250,9 @@
         var scriptName = $script.getPath().replace('\\', '/').replace('./scripts/', ''),
             i = getHookIndex(scriptName, hookName);
 
-        if (i !== -1) {
+        if (hookName !== 'initReady' && $api.exists(hookName) == false) {
+            Packages.com.gmt2001.Console.err.printlnRhino('[addHook()@init.js:254] Failed to register hook "' + hookName + '" since there is no such event.');
+        } else if (i !== -1) {
             hooks[hookName].handlers[i].handler = handler;
         } else {
             if (hooks[hookName] === undefined) {
@@ -316,6 +318,8 @@
     function init() {
         // Generate JavaScript trampolines for Java functions.
         generateJavaTrampolines();
+        // Register events.
+        events();
 
         // Load all core modules.
         loadScript('./core/misc.js');
@@ -361,7 +365,25 @@
         $.addComRegisterCommands();
         $.addComRegisterAliases();
 
+        consoleLn('');
 
+        // Call the initReady event.
+        callHook('initReady', null, false);
+
+        if ($.isNightly) {
+            consoleLn('PhantomBot Nightly Build - No Support is Provided');
+            consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
+            consoleLn('https://community.phantombot.tv/c/support/bug-reports');
+        } else {
+            consoleLn('For support please visit: https://community.phantombot.tv');
+        }
+        consoleLn('');
+    }
+
+    /*
+     * @function events - registers all events with the core.
+     */
+    function events() {
         // Load all API events.
 
         /*
@@ -468,7 +490,7 @@
                 command = event.getCommand(),
                 channel = event.getChannel(),
                 isAdmin = event.isAdmin(),
-                sender = event.getSenderId(),
+                senderId = event.getSenderId(),
                 args = event.getArgs();
 
             if ($.discord.commandExists(command) === false && ($.discord.aliasExists(command) === false || $.discord.aliasExists(command) === true && $.discord.commandExists($.discord.getCommandAlias(command)) === false)) {
@@ -483,11 +505,11 @@
                 return;
             }
 
-            if (isAdmin == false && $.discord.cooldown.get(command, sender) !== 0) {
+            if (isAdmin == false && $.discord.cooldown.get(command, senderId) !== 0) {
                 return;
             }
 
-            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(username) > $.discord.getCommandCost(command)) {
+            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(senderId) < $.discord.getCommandCost(command)) {
                 return;
             }
 
@@ -503,7 +525,7 @@
 
             // Do this last to not slow down the command hook.
             if ($.discord.getCommandCost(command) > 0) {
-                $.discord.decrUserPoints(sender, $.discord.getCommandCost(command));
+                $.discord.decrUserPoints(senderId, $.discord.getCommandCost(command));
             }
         });
 
@@ -554,6 +576,13 @@
          */
         $api.on($script, 'twitchHostsInitialized', function(event) {
             callHook('twitchHostsInitialized', event, false);
+        });
+
+        /*
+         * @event twitchClip
+         */
+        $api.on($script, 'twitchClip', function(event) {
+            callHook('twitchClip', event, false);
         });
 
         /*
@@ -638,6 +667,20 @@
          */
         $api.on($script, 'tipeeeStreamDonation', function(event) {
             callHook('tipeeeStreamDonation', event, false);
+        });
+
+        /*
+         * @event streamElementsDonationInitialized
+         */
+        $api.on($script, 'streamElementsDonationInitialized', function(event) {
+            callHook('streamElementsDonationInitialized', event, false);
+        });
+
+        /*
+         * @event streamElementsDonation
+         */
+        $api.on($script, 'streamElementsDonation', function(event) {
+            callHook('streamElementsDonation', event, false);
         });
 
         /*
@@ -809,31 +852,24 @@
         });
 
         /*
-         * @event twitchClipEvent
+         * @event subscriber
          */
-        $api.on($script, 'twitchClip', function(event) {
-            callHook('twitchClip', event, false);
+        $api.on($script, 'subscriber', function(event) {
+            callHook('subscriber', event, false);
         });
 
         /*
-         * @event newSubscriber
+         * @event primeSubscriber
          */
-        $api.on($script, 'newSubscriber', function(event) {
-            callHook('newSubscriber', event, false);
+        $api.on($script, 'primeSubscriber', function(event) {
+            callHook('primeSubscriber', event, false);
         });
 
         /*
-         * @event newPrimeSubscriber
+         * @event reSubscriber
          */
-        $api.on($script, 'newPrimeSubscriber', function(event) {
-            callHook('newPrimeSubscriber', event, false);
-        });
-
-        /*
-         * @event newReSubscriber
-         */
-        $api.on($script, 'newReSubscriber', function(event) {
-            callHook('newReSubscriber', event, false);
+        $api.on($script, 'reSubscriber', function(event) {
+            callHook('reSubscriber', event, false);
         });
 
         /*
@@ -879,48 +915,32 @@
         });
 
         /*
-         * @event Timeout
+         * @event PubSubModerationTimeout
          */
-        $api.on($script, 'Timeout', function(event) {
-            callHook('Timeout', event, false);
+        $api.on($script, 'PubSubModerationTimeout', function(event) {
+            callHook('PubSubModerationTimeout', event, false);
         });
 
         /*
-         * @event UnTimeout
+         * @event PubSubModerationUnTimeout
          */
-        $api.on($script, 'UnTimeout', function(event) {
-            callHook('UnTimeout', event, false);
+        $api.on($script, 'PubSubModerationUnTimeout', function(event) {
+            callHook('PubSubModerationUnTimeout', event, false);
         });
 
         /*
-         * @event Banned
+         * @event PubSubModerationBan
          */
-        $api.on($script, 'Banned', function(event) {
-            callHook('Banned', event, false);
+        $api.on($script, 'PubSubModerationBan', function(event) {
+            callHook('PubSubModerationBan', event, false);
         });
 
         /*
-         * @event UnBanned
+         * @event PubSubModerationUnBan
          */
-        $api.on($script, 'UnBanned', function(event) {
-            callHook('UnBanned', event, false);
+        $api.on($script, 'PubSubModerationUnBan', function(event) {
+            callHook('PubSubModerationUnBan', event, false);
         });
-
-        $.log.event('init.js api\'s loaded.');
-
-        consoleLn('');
-
-        // Call the initReady event.
-        callHook('initReady', null, false);
-
-        if ($.isNightly) {
-            consoleLn('PhantomBot Nightly Build - No Support is Provided');
-            consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
-            consoleLn('https://community.phantombot.tv/c/support/bug-reports');
-        } else {
-            consoleLn('For support please visit: https://community.phantombot.tv');
-        }
-        consoleLn('');
     }
 
     // Export functions to API
