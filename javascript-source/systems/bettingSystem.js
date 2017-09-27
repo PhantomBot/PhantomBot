@@ -18,8 +18,8 @@
 	 */
 	function reloadBet() {
 		gain = $.getIniDbNumber('bettingSettings', 'gain');
-	    saveBets = $.getIniDbNumber('bettingSettings', 'save');
-	    saveFormat = $.getIniDbNumber('bettingSettings', 'format');
+	    saveBets = $.getIniDbBoolean('bettingSettings', 'save');
+	    saveFormat = $.getIniDbString('bettingSettings', 'format');
 	}
 
 	/**
@@ -109,7 +109,7 @@
 		for (i in bets) {
 			if (bets[i].option.equalsIgnoreCase(option)) {
 				winners.push(i.toLowerCase());
-				give = ((bet.total * parseFloat(gain / 100)) + parseInt(bets[i].amount));
+				give = (((bet.total / bet.options[option].bets) * parseFloat(gain / 100)) + parseInt(bets[i].amount));
 				total += give;
 				$.inidb.incr('points', i.toLowerCase(), Math.floor(give));
 			}

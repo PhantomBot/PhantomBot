@@ -40,6 +40,16 @@
             $.reloadTipeeeStream();
         }
 
+         /*
+         * Reloads the streamelements vars.
+         */
+        if (command.equalsIgnoreCase('streamelementsreload')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadStreamElements();
+        }
+
         /*
          * Sets permissions on a command.
          */
@@ -477,6 +487,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadlogs', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadbet', 30);
             $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
         }, 10000);
     });
 })();

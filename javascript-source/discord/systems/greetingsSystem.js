@@ -3,7 +3,8 @@
 	    partToggle = $.getSetIniDbBoolean('discordSettings', 'partToggle', false),
 	    joinMessage = $.getSetIniDbString('discordSettings', 'joinMessage', '(name) just joined the server!'),
 	    partMessage = $.getSetIniDbString('discordSettings', 'partMessage', '(name) just left the server!'),
-	    channelName = $.getSetIniDbString('discordSettings', 'greetingsChannel', '');
+	    channelName = $.getSetIniDbString('discordSettings', 'greetingsChannel', ''),
+	    joinGroup = $.getSetIniDbString('discordSettings', 'greetingsDefaultGroup', '');
 
 	/**
      * @event webPanelSocketUpdate
@@ -15,6 +16,7 @@
 	    	joinMessage = $.getIniDbString('discordSettings', 'joinMessage', '(name) just joined the server!');
 	    	partMessage = $.getIniDbString('discordSettings', 'partMessage', '(name) just left the server!');
 	    	channelName = $.getIniDbString('discordSettings', 'greetingsChannel', '');
+	    	joinGroup = $.getIniDbString('discordSettings', 'greetingsDefaultGroup', '');
         }
     });
 
@@ -37,6 +39,15 @@
 		if (s.match(/\(name\)/)) {
 			s = $.replace(s, '(name)', username);
 		}
+
+		if (s.match(/\(role\)/)) {
+			s = $.replace(s, '(role)', joinGroup);
+		}
+
+		if (joinGroup !== '') {
+			$.discord.setRole(joinGroup, event.getDiscordUser());
+		}
+
 		$.discord.say(channelName, s);
 	});
 
@@ -139,6 +150,20 @@
 				channelName = subAction.replace('#', '').toLowerCase();
 				$.setIniDbString('discordSettings', 'greetingsChannel', channelName);
 				$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.channel.set', channelName));
+			}
+
+			/**
+			 * @discordcommandpath greetingssystem joinrole [role name] - Sets the default role users will get when joining.
+			 */
+			if (action.equalsIgnoreCase('joinrole')) {
+				if (subAction === undefined) {
+					$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.joinrole.usage'));
+					return;
+				}
+
+				joinGroup = subAction;
+				$.setIniDbString('discordSettings', 'greetingsDefaultGroup', joinGroup);
+				$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.joinrole.set', joinGroup));
 			}
 		}
 	});

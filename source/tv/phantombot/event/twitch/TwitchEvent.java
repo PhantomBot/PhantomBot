@@ -23,11 +23,11 @@ public class TwitchEvent extends Event {
 
     private final Channel channel;
 
-    public TwitchEvent() {
+    protected TwitchEvent() {
         this.channel = null;
     }
 
-    public TwitchEvent(Channel channel) {
+    protected TwitchEvent(Channel channel) {
         this.channel = channel;
     }
 

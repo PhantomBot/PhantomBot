@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub;
+package tv.phantombot.event.pubsub.moderation;
 
 public class PubSubModerationBanEvent extends PubSubModerationEvent {
 

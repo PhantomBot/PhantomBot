@@ -148,12 +148,10 @@
         }
 
         if (s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)/)) {
-            if ($.discord.setRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]) == true) {
-                s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
-                if (s.length === 0) {
-                    return null;
-                }
-            } else {
+            $.discord.addRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]);
+            
+            s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
+            if (s.length === 0) {
                 return null;
             }
         }
@@ -543,7 +541,8 @@
             for (i = 0; i < keys.length; i++) {
                 temp.push('!' + keys[i]);
             }
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.commands', temp.join(', ')));
+
+            $.paginateArrayDiscord(temp, 'discord.customcommands.commands', ', ', channel, mention);
         }
 
         /**
@@ -555,11 +554,11 @@
                 i;
 
             for (i = 0; i < keys.length; i++) {
-                if (!keys[i].includes(' ')) {
+                if (keys[i].indexOf(' ') === -1) {
                     temp.push('!' + keys[i]);
                 }
             }
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.bot.commands', temp.join(', ')));
+            $.paginateArrayDiscord(temp, 'discord.customcommands.bot.commands', ', ', channel, mention);
         }
     });
 

@@ -180,9 +180,9 @@
     }
     
     /*
-     * @event Timeout
+     * @event PubSubModerationTimeout
      */
-    $.bind('Timeout', function(event) {
+    $.bind('PubSubModerationTimeout', function(event) {
         var username = $.username.resolve(event.getUsername()),
             creator = $.username.resolve(event.getCreator()),
             message = event.getMessage(),
@@ -197,9 +197,9 @@
     });
 
     /*
-     * @event Timeout
+     * @event PubSubModerationUnTimeout
      */
-    $.bind('UnTimeout', function(event) {
+    $.bind('PubSubModerationUnTimeout', function(event) {
         var username = $.username.resolve(event.getUsername()),
             creator = $.username.resolve(event.getCreator());
 
@@ -211,9 +211,9 @@
     });
 
     /*
-     * @event Timeout
+     * @event PubSubModerationUnBan
      */
-    $.bind('UnBanned', function(event) {
+    $.bind('PubSubModerationUnBan', function(event) {
         var username = $.username.resolve(event.getUsername()),
             creator = $.username.resolve(event.getCreator());
 
@@ -225,9 +225,9 @@
     });
 
     /*
-     * @event Banned
+     * @event PubSubModerationBan
      */
-    $.bind('Banned', function(event) {
+    $.bind('PubSubModerationBan', function(event) {
         var username = $.username.resolve(event.getUsername()),
             creator = $.username.resolve(event.getCreator()),
             message = event.getMessage(),

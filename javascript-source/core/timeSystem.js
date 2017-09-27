@@ -90,6 +90,19 @@
     }
 
     /**
+     * @function getLocalTime
+     * @export $
+     * @param {String} timeformat
+     * @param {String} timeZone
+     * @return {String}
+     */
+    function getLocalTime() {
+        var dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
+        return dateFormat.format(new java.util.Date());
+    }
+
+    /**
      * @function dateToString
      * @export $
      * @param {Date} date
@@ -305,7 +318,7 @@
                 /**
                  * @commandpath time autolevelnotification - Toggles if a chat announcement is made when a user is promoted to a regular.
                  */
-                if (command.equalsIgnoreCase('autolevelnotification')) {
+                if (action.equalsIgnoreCase('autolevelnotification')) {
                     timeLevelWarning = !timeLevelWarning;
                     $.setIniDbBoolean('timeSettings', 'timeLevelWarning', timeLevelWarning);
                     $.say($.whisperPrefix(sender) + (timeLevelWarning ? $.lang.get('timesystem.autolevel.chat.enabled') : $.lang.get('timesystem.autolevel.chat.disabled')));
@@ -417,4 +430,5 @@
     $.getTimeStringMinutes = getTimeStringMinutes;
     $.updateTimeSettings = updateTimeSettings;
     $.getCurrentLocalTimeString = getCurrentLocalTimeString;
+    $.getLocalTime = getLocalTime;
 })();

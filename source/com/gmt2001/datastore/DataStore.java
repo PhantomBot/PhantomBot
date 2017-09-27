@@ -317,6 +317,26 @@ public class DataStore {
         decr(fName, "", key, amount);
     }
 
+    public void decr(String fName, String key, long amount) {
+        decr(fName, "", key, amount);
+    }
+
+    public void incr(String fName, String section, String key, long amount) {
+        long ival = GetLong(fName, section, key);
+        ival += amount;
+        SetLong(fName, section, key, ival);
+    }
+
+    public void incr(String fName, String key, long amount) {
+        incr(fName, "", key, amount);
+    }
+
+    public void decr(String fName, String section, String key, long amount) {
+        long ival = GetLong(fName, section, key);
+        ival -= amount;
+        SetLong(fName, section, key, ival);
+    }
+
     public String[] searchByValue(String fName, String search) {
         return GetKeysByLikeValues(fName, "", search);
     }

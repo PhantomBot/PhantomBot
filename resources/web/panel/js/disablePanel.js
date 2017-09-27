@@ -94,10 +94,11 @@
             if (panelMatch(module, './handlers/followHandler.js')) {
                 handlePanel('./handlers/followHandler.js', '#_followAlertsPanel', moduleEnabled);
             }
-            if (panelMatch(module, './handlers/donationHandler.js')) {
-                handlePanel('./handlers/donationHandler.js', '#_donationAlertsPanel', moduleEnabled);
-                handlePanel('./handlers/donationHandler.js', '#_donationsPanel', moduleEnabled);
-            }
+           // Removed this since the donation tab is used for more than one module now.
+           //if (panelMatch(module, './handlers/donationHandler.js')) {
+           //    handlePanel('./handlers/donationHandler.js', '#_donationAlertsPanel', moduleEnabled);
+           //    handlePanel('./handlers/donationHandler.js', '#_donationsPanel', moduleEnabled);
+           //}
             if (panelMatch(module, './handlers/streamTipHandler.js')) {
                 handlePanel('./handlers/streamTipHandler.js', '#_streamtipdonationAlertsPanel', moduleEnabled);
                 handlePanel('./handlers/streamTipHandler.js', '#_streamtipdonationsPanel', moduleEnabled);
@@ -180,6 +181,9 @@
             if (panelMatch(module, './handlers/tipeeeStreamHandler.js')) {
                 handlePanel('./handlers/tipeeeStreamHandler.js', '#_tipeeeStreamDonationsPanel', moduleEnabled);
             }
+            if (panelMatch(module, './handlers/streamElementsHandler.js')) {
+                handlePanel('./handlers/streamElementsHandler.js', '#_streamElementsDonationsPanel', moduleEnabled);
+            }
 
             // Discord modules.
             if (panelMatch(module, './discord/handlers/bitsHandler.js')) {
@@ -193,6 +197,9 @@
             }
             if (panelMatch(module, './discord/handlers/tipeeeStreamHandler.js')) {
                 handlePanel('./discord/handlers/tipeeeStreamHandler.js', '#_discord_tipeeeStreamHandler', moduleEnabled);
+            }
+            if (panelMatch(module, './discord/handlers/streamElementsHandler.js')) {
+                handlePanel('./discord/handlers/streamElementsHandler.js', '#_discord_streamElementsHandler', moduleEnabled);
             }
             if (panelMatch(module, './discord/handlers/streamtipHandler.js')) {
                 handlePanel('./discord/handlers/streamtipHandler.js', '#_discord_streamTipHandler', moduleEnabled);
