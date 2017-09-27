@@ -51,7 +51,7 @@ import java.awt.Color;
  * @author ScaniaTV
  */
 public class DiscordUtil {
-	/*
+    /*
      * Method to send a message to a channel.
      *
      * @param {IChannel} channel
@@ -215,10 +215,27 @@ public class DiscordUtil {
      * @return {IUser}
      */
     public IUser getUser(String userName) {
-        List<IUser> users = DiscordAPI.getGuild().getUsersByName(userName, true);
+        List<IUser> users = DiscordAPI.getGuild().getUsers();
 
         for (IUser user : users) {
-            if (user.getDisplayName(DiscordAPI.getGuild()).equals(userName)) {
+            if (user.getDisplayName(DiscordAPI.getGuild()).equalsIgnoreCase(userName)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Method to return a user object by its id.
+     *
+     * @param  {Long} userId
+     * @return {IUser}
+     */
+    public IUser getUserById(long userId) {
+        List<IUser> users = DiscordAPI.getGuild().getUsers();
+
+        for (IUser user : users) {
+            if (user.getLongID() == userId) {
                 return user;
             }
         }
@@ -258,6 +275,71 @@ public class DiscordUtil {
             }
         }
         return null;
+    }
+
+    /*
+     * Method to get an array of role objects by a string of role names.
+     *
+     * @param  {String[]} roles
+     * @return {IRole[]}
+     */
+    public IRole[] getRoleObjects(String[] roles) {
+        IRole[] list = new IRole[roles.length];
+
+        for (int i = 0; i < roles.length; i++) {
+            list[i] = getRole(roles[i]);
+        }
+        return list;
+    }
+
+    /*
+     * Method to get a list of a user's roles.
+     *
+     * @param  {IUser} user
+     * @return {List}
+     */
+    public IRole[] getUserRoles(IUser user) {
+        List<IRole> roles = (user == null ? new ArrayList<IRole>() : DiscordAPI.getGuild().getRolesForUser(user));
+
+        return (roles.size() < 1 ? new IRole[0] : roles.toArray(new IRole[roles.size()]));
+    }
+
+    /*
+     * Method to get a list of a user's roles.
+     *
+     * @param  {String} userId
+     * @return {List}
+     */
+    public IRole[] getUserRoles(String userId) {
+        return getUserRoles(getUserById(Long.parseUnsignedLong(userId)));
+    }
+
+    /*
+     * Method to edit roles on a user
+     *
+     * @param {IUser}   user
+     * @param {IRole[]} roles
+     */
+    public void editUserRoles(IUser user, IRole[] roles) {
+        RequestBuffer.request(() -> {
+            try {
+                if (roles != null && user != null) {
+                    DiscordAPI.getGuild().editUserRoles(user, roles);
+                }
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to edit roles on user: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
+    }
+
+    /*
+     * Method to edit roles on a user
+     *
+     * @param {String}    userId
+     * @param {IRole[]} roles
+     */
+    public void editUserRoles(String userId, IRole[] roles) {
+        editUserRoles(getUserById(Long.parseUnsignedLong(userId)), roles);
     }
 
     /*
@@ -332,13 +414,13 @@ public class DiscordUtil {
      * @param {String} roleName
      */
     public void createRole(String roleName) {
-    	RequestBuffer.request(() -> {
-    		try {
-    			DiscordAPI.getGuild().createRole().changeName(roleName);
-    		} catch (MissingPermissionsException | DiscordException ex) {
-    			com.gmt2001.Console.err.println("Failed to create role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
-    		}
-    	});
+        RequestBuffer.request(() -> {
+            try {
+                DiscordAPI.getGuild().createRole().changeName(roleName);
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to create role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
     }
 
     /*
@@ -347,15 +429,15 @@ public class DiscordUtil {
      * @param {IRole} role
      */
     public void deleteRole(IRole role) {
-    	RequestBuffer.request(() -> {
-    		try {
-    			if (role != null) {
-    				role.delete();
-    			}
-    		} catch (MissingPermissionsException | DiscordException ex) {
-    			com.gmt2001.Console.err.println("Failed to delete role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
-    		}
-    	});
+        RequestBuffer.request(() -> {
+            try {
+                if (role != null) {
+                    role.delete();
+                }
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to delete role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
     }
 
     /*
@@ -364,7 +446,7 @@ public class DiscordUtil {
      * @param {String} roleName
      */
     public void deleteRole(String roleName) {
-    	deleteRole(getRole(roleName));
+        deleteRole(getRole(roleName));
     }
 
     /*
