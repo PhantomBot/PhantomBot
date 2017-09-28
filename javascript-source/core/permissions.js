@@ -790,7 +790,7 @@
         }
 
         /**
-         * @commandpath permission [username] [groupId] - Get your current permission or optionally set the user permission for a user.
+         * @commandpath permission [username] [groupId] - Get your current permission or optionally get/set the user permission for a user.
          */
         if (command.equalsIgnoreCase('permission')) {
             if (args[0] === undefined) {
@@ -798,9 +798,18 @@
                 return;
             }
 
-            var username = args[0],
+            var username = args[0].toLowerCase(),
                 groupId = parseInt(args[1]);
 
+            if (!$.user.isKnown(username)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', username));
+                return;
+            }
+
+            if (args[1] === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.other.current', $.username.resolve(args[0]), $.getUserGroupName(args[0])));
+                return;
+            }
 
             if (isNaN(groupId)) {
                 groupId = parseInt(getGroupIdByName(args[1]));
@@ -808,11 +817,6 @@
 
             if ((args.length < 2 && username === undefined) || args.length > 2 || (isNaN(groupId) && username === undefined) || $.outOfRange(groupId, 0, userGroups.length - 1)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.usage'));
-                return;
-            }
-
-            if (username !== undefined && (isNaN(groupId) || groupId === undefined) && $.user.isKnown(username.toLowerCase())) {
-                $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.other.current', $.username.resolve(args[0]), $.getUserGroupName(args[0])));
                 return;
             }
 
@@ -834,11 +838,11 @@
             }*/
 
             $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.username.resolve(username), getGroupNameById(groupId) + " (" + groupId + ")"));
-            $.inidb.set('group', username.toLowerCase(), groupId);
+            $.inidb.set('group', username, groupId);
             if (groupId <= 2) {
-                addModeratorToCache(username.toLowerCase());
+                addModeratorToCache(username);
             } else {
-                removeModeratorFromCache(username.toLowerCase());
+                removeModeratorFromCache(username);
             }
         }
 
