@@ -5,7 +5,10 @@
      */
     function drsTimer() {
         var keys, 
+            parts,
             apiStatus,
+            commandHelpData = {},
+            commandHelpFileData,
             lastTime = parseInt($.getSetIniDbNumber('datarenderservice', 'last_time', 0)),
             checkTime = lastTime + parseInt(125 * 6e4),
             JSONStringer = Packages.org.json.JSONStringer;
@@ -20,12 +23,31 @@
         $.consoleLn('DataRenderService: Processing Data');
         $.log.event('DataRenderService: Handler Process Start');
 
+        commandHelpFileData = $.readFile('./addons/dataservice/commands_help.txt');
+        for (var idx in commandHelpFileData) {
+            if (commandHelpFileData[idx].startsWith('#')) {
+                continue;
+            }
+            if (!commandHelpFileData[idx].includes(',')) {
+                continue;
+            }
+            parts = commandHelpFileData[idx].split(', ');
+            commandHelpData[parts[0]] = parts[1];
+        }
+
         keys = $.inidb.GetKeyList('command', '');
         jsonStringer = new JSONStringer();
         jsonStringer.object().key('commands').array();
         for (var idx in keys) {
             if (!$.inidb.exists('disabledCommands', keys[idx])) {
-                jsonStringer.object().key('command').value(keys[idx] + '').endObject();
+                jsonStringer.object();
+                jsonStringer.key('command').value(keys[idx] + '');
+                if (commandHelpData[keys[idx]] === undefined) {
+                    jsonStringer.key('help').value('');
+                } else {
+                    jsonStringer.key('help').value(commandHelpData[keys[idx]]);
+                }
+                jsonStringer.endObject();
             }
         }
         jsonStringer.endArray().endObject();
