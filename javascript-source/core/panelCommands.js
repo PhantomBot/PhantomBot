@@ -191,6 +191,18 @@
         } 
 
         /*
+         * Sets the community on stream
+         */
+        if (command.equalsIgnoreCase('setcommunitysilent')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            var argsString = args.join('').split(',');
+            $.updateCommunity($.channelName, argsString, sender, true);
+            return;
+        } 
+
+        /*
          * Reloads the adventure variables.
          */
         if (command.equalsIgnoreCase('reloadadventure')) {
@@ -488,6 +500,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadbet', 30);
             $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
         }, 10000);
     });
 })();

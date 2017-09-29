@@ -69,6 +69,7 @@ public class TwitchCache implements Runnable {
     private String gameTitle = "Some Game";
     private String streamTitle = "Some Title";
     private String previewLink = "";
+    private String[] communities = new String[3];
     private long streamUptimeSeconds = 0L;
     private int viewerCount = 0;
     private int views = 0;
@@ -219,6 +220,7 @@ public class TwitchCache implements Runnable {
         String  gameTitle = "";
         String  streamTitle = "";
         String  previewLink = "";
+        String[] communities = new String[3];
         Date    streamCreatedDate = new Date();
         Date    currentDate = new Date();
         long    streamUptimeSeconds = 0L;
@@ -264,16 +266,13 @@ public class TwitchCache implements Runnable {
                     /* Get the viewer count. */
                     viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
                     this.viewerCount = viewerCount;
-
-
                 } else {
                     streamUptimeSeconds = 0L;
                     this.streamUptimeSeconds = streamUptimeSeconds;
                     this.previewLink = "";
                     this.streamCreatedAt = "";
-                    this.viewerCount = 0;
+                    this.viewerCount = 0; 
                 }
-
             } else {
                 success = false;
                 if (streamObj.has("message")) {
@@ -289,7 +288,7 @@ public class TwitchCache implements Runnable {
 
         // Wait a bit here.
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException ex) {
             com.gmt2001.Console.debug.println(ex);
         }
@@ -355,6 +354,27 @@ public class TwitchCache implements Runnable {
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
             success = false;
+        }
+
+        // Wait a bit here.
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.debug.println(ex);
+        }
+        
+        /* Update communities */
+        try {
+            JSONObject object = TwitchAPIv5.instance().GetCommunities(this.channel);
+            if (object.has("communities") && object.getJSONArray("communities").length() > 0) {
+            	JSONArray array = object.getJSONArray("communities");
+            	for (int i = 0; i < array.length(); i++) {
+            		communities[i] = array.getJSONObject(i).getString("name");
+            	}
+            }
+            this.communities = communities;
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("TwitchCache::updateCache: Failed to get communities: " + ex.getMessage());
         }
 
         if (PhantomBot.twitchCacheReady.equals("false") && success) {
@@ -453,6 +473,13 @@ public class TwitchCache implements Runnable {
      */
     public int getViews() {
         return this.views;
+    }
+
+    /*
+     * Returns an array of communities if set.
+     */
+    public String[] getCommunities() {
+    	return this.communities;
     }
 
     /*

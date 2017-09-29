@@ -214,6 +214,15 @@
                 }
             }
 
+            if (panelCheckQuery(msgObject, 'dashboard_gameCommunity')) {
+                if (msgObject['results']['communities'] !== undefined) {
+                    var arr = msgObject['results']['communities'].split(', ');
+                    for (var i = 0; i < 3; i++) {
+                        $('#stream-community-' + (i + 1)).val((arr[i] === undefined ? '' : arr[i]));
+                    }
+                }
+            }
+
             if (panelCheckQuery(msgObject, 'dashboard_streamlastfollow')) {
                 if (msgObject['results']['lastFollow'] == null) {
                     $("#lastFollow").html("");
@@ -320,6 +329,7 @@
         sendDBQuery("dashboard_streamlastsub", "streamInfo", "lastSub");
         sendDBQuery("dashboard_streamlastdonator", "streamInfo", "lastDonator");
         sendDBQuery("dashboard_gameTitle", "streamInfo", "game");
+        sendDBQuery("dashboard_gameCommunity", "streamInfo", "communities");
         sendDBQuery("dashboard_loggingModeEvent", "settings", "log.event");
         sendDBQuery("dashboard_loggingModeFile", "settings", "log.file");
         sendDBQuery("dashboard_loggingModeErr", "settings", "log.error");
@@ -462,6 +472,27 @@
             $("#gameTitleInput").val(newGame);
             gameTitle = newGame;
         }
+    }
+
+    /**
+     * @function setCommunity
+     */
+    function setCommunity() {
+        var c = [];
+
+        if ($('#stream-community-1').val().length > 0) {
+            c.push($('#stream-community-1').val());
+        }
+
+        if ($('#stream-community-2').val().length > 0) {
+            c.push($('#stream-community-2').val());
+        }
+
+        if ($('#stream-community-3').val().length > 0) {
+            c.push($('#stream-community-3').val());
+        }
+
+        sendCommand('setcommunitysilent ' + c.join(','));
     }
 
     /**
@@ -672,4 +703,5 @@
     $.queueCMD = queueCMD;
     $.queueCMDNext = queueCMDNext;
     $.setLogRotate = setLogRotate;
+    $.setCommunity = setCommunity;
 })();
