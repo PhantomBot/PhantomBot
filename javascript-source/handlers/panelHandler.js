@@ -47,6 +47,15 @@
     }
 
     /*
+     * @function updateCommunities
+     */
+    function updateCommunities() {
+        if ($.twitchCacheReady.equals('true')) {
+            $.inidb.set('streamInfo', 'communities', $.twitchcache.getCommunities().join(', '));
+        }
+    }
+
+    /*
      * @function updateStreamUptime
      */
     function updateStreamUptime() {
@@ -121,6 +130,7 @@
         getGamePanel();
         updateChatterCount();
         updateFollowerCount();
+        updateCommunities();
         if ($.twitchCacheReady.equals('true')) { 
             $.setIniDbNumber('panelstats', 'viewCount', $.twitchcache.getViews()); 
         }
