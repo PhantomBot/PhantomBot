@@ -354,6 +354,7 @@
             loadScript('./discord/core/registerCommand.js');
             loadScript('./discord/core/accountLink.js');
             loadScript('./discord/core/commandCooldown.js');
+            loadScript('./discord/core/roleManager.js');
 
             // Load the other discord modules
             loadScriptRecursive('./discord');
