@@ -29,6 +29,7 @@
         whisperMode = false,
         responseMode = false,
         meMode = false,
+        panelStatsEnabled = false,
         pauseMode = false;
 
     /*
@@ -151,6 +152,7 @@
      * @function doQuery
      */
     function doQuery() {
+        sendDBQuery("global_streamOnline", "panelstats", "streamOnline");
         sendDBQuery("global_newrelease_info", "settings", "newrelease_info");
         sendDBQuery("global_whisperMode", "settings", "whisperMode");
         sendDBQuery("global_muteMode", "settings", "response_@chat");
@@ -162,7 +164,6 @@
             sendDBQuery("global_panelStatsEnabled", "panelstats", "enabled");
         } else {
             sendDBQuery("global_viewerCount", "panelstats", "viewerCount");
-            sendDBQuery("global_streamOnline", "panelstats", "streamOnline");
             sendDBQuery("global_streamUptime", "panelstats", "streamUptime");
             sendDBQuery("global_playTime", "panelstats", "playTime");
         }
