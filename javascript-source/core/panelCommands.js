@@ -197,7 +197,7 @@
             if (!$.isBot(sender)) {
                 return;
             }
-            var argsString = args.join('').split(',');
+            var argsString = args.join(' ').split(', ');
             $.updateCommunity($.channelName, argsString, sender, true);
             return;
         } 
