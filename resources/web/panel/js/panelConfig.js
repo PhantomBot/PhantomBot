@@ -3,8 +3,8 @@
 // Do NOT Modify! Overwritten when PhantomBot is restarted!
 var panelSettings = {
     panelPort   : 25004,
-    channelName : "scaniatv",
-    auth        : "AjKokEsqN0VTEstm16wzN509CFKROe",
+    channelName : "",
+    auth        : "",
     http        : "http://"
 };
 
