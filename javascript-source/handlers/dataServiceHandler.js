@@ -31,7 +31,7 @@
             if (!commandHelpFileData[idx].includes(',')) {
                 continue;
             }
-            parts = commandHelpFileData[idx].split(', ');
+            parts = commandHelpFileData[idx].split(', ', 2);
             commandHelpData[parts[0]] = parts[1];
         }
 
