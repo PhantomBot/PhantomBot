@@ -3,6 +3,14 @@
 		autoSetRanks = $.getSetIniDbBoolean('discordSettings', 'autoSetRanks', false);
 
 	/*
+	 * updateRoleManager
+	 */
+	function updateRoleManager() {
+		autoSetPermissions = $.getIniDbBoolean('discordSettings', 'autoSetPermissions');
+		autoSetRanks = $.getIniDbBoolean('discordSettings', 'autoSetRanks');
+	}
+
+	/*
 	 * @function roleUpdateCheck
 	 */
 	function roleUpdateCheck() {
@@ -42,7 +50,6 @@
 
 		// Build our roles list.
 		for (i in currentRoles) {
-			consoleLn(currentRoles[i].getName());
 			// If the user's current Discord role list contains an old role, and the new list does not have it, don't add it to the list.
 			if ((oldRoles.length > 0 && hasRole(oldRoles, currentRoles[i].getName())) && newRoles.indexOf(currentRoles[i].getName()) === -1) {
 				continue;
@@ -77,7 +84,7 @@
 
 				if (!$.inidb.exists('blacklistedDiscordRoles', group.toLowerCase()) && !$.discordAPI.getRole(group)) {
 					$.discordAPI.createRole(group);
-				} else if (!$.discordAPI.getRole(group) && $.inidb.exists('blacklistedDiscordRoles', group.toLowerCase())) {
+				} else if ($.discordAPI.getRole(group) && $.inidb.exists('blacklistedDiscordRoles', group.toLowerCase())) {
 					$.discordAPI.deleteRole(group);
 				}
 			}
@@ -97,7 +104,7 @@
 				if (!$.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase()) && !$.discordAPI.getRole(rank)) {
 					$.discordAPI.createRole(rank);
 					$.setIniDbString('discordRanks', rank, keys[i]);
-				} else if (!$.discordAPI.getRole(rank) && $.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase())) {
+				} else if ($.discordAPI.getRole(rank) && $.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase())) {
 					$.discordAPI.deleteRole(rank);
 					$.inidb.del('discordRanks', rank);
 				}
@@ -170,7 +177,7 @@
 		}
 
 		if (autoSetRanks === true) {
-			if ($.hasRank(username)) {
+			if ($.hasRank(username) && !$.inidb.exists('blacklistedDiscordRoles', $.getRank(username).toLowerCase())) {
 				roles.push($.getRank(username));
 			}
 		}
@@ -187,10 +194,65 @@
             command = event.getCommand(),
             mention = event.getMention(),
             args = event.getArgs(),
-            action = args[0];
+            action = args[0],
+            subAction = args[1],
+            actionArgs = args[2];
 
         if (command.equalsIgnoreCase('rolemanager')) {
-        	
+        	if (action === undefined) {
+        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.usage'));
+        		return;
+        	}
+
+        	/*
+        	 * @discordcommandpath rolemanager togglesyncpermissions - Makes the bot sync default permissions with those who have their accounts linked.
+        	 */
+        	if (action.equalsIgnoreCase('togglesyncpermissions')) {
+        		autoSetPermissions = !autoSetPermissions;
+        		$.setIniDbBoolean('discordSettings', 'autoSetPermissions', autoSetPermissions);
+        		$.discord.say(channel, $.discord.userPrefix(mention) + (autoSetPermissions ? $.lang.get('discord.rolemanager.permission.sync.on') : $.lang.get('discord.rolemanager.permission.sync.off')));
+        	}
+
+        	/*
+        	 * @discordcommandpath rolemanager togglesyncranks - Makes the bot sync ranks with those who have their accounts linked.
+        	 */
+        	if (action.equalsIgnoreCase('togglesyncranks')) {
+        		autoSetRanks = !autoSetRanks;
+        		$.setIniDbBoolean('discordSettings', 'autoSetRanks', autoSetRanks);
+        		$.discord.say(channel, $.discord.userPrefix(mention) + (autoSetRanks ? $.lang.get('discord.rolemanager.ranks.sync.on') : $.lang.get('discord.rolemanager.ranks.sync.off')));
+        	}
+
+        	/*
+        	 * @discordcommandpath rolemanager blacklist [add / remove] [permission or rank] - Blacklist a rank or permission from being used.
+        	 */
+        	if (action.equalsIgnoreCase('blacklist')) {
+        		if (subAction === undefined) {
+        			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.blacklist.usage'));
+        			return;
+        		}
+        		
+        		if (subAction.equalsIgnoreCase('add')) {
+        			if (actionArgs === undefined) {
+        				$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.blacklist.add.usage'));
+        				return;
+        			}
+
+        			var blacklist = args.slice(2).join(' ').toLowerCase();
+        			$.setIniDbString('blacklistedDiscordRoles', blacklist, 'true');
+        			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.blacklist.add.success', blacklist));
+        		}
+
+        		if (subAction.equalsIgnoreCase('remove')) {
+        			if (actionArgs === undefined) {
+        				$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.blacklist.remove.usage'));
+        				return;
+        			}
+
+        			var blacklist = args.slice(2).join(' ').toLowerCase();
+        			$.inidb.del('blacklistedDiscordRoles', blacklist);
+        			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.blacklist.remove.success', blacklist));
+        		}
+        	}
         }
 	});
 
@@ -198,6 +260,8 @@
 	 * @event initReady
 	 */
 	$.bind('initReady', function() {
+		$.discord.registerCommand('./discord/core/roleManager.js', 'rolemanager', 1);
+
 		setInterval(roleUpdateCheck, 3e4);
 	});
 })();

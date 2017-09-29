@@ -442,7 +442,7 @@
             if (!silent) {
                 $.say($.lang.get('common.communities.change'));
             }
-            $.inidb.set('streamInfo', 'communities', communities.join(','));
+            $.inidb.set('streamInfo', 'communities', communities.join(', '));
         } else {
             $.log.error('Failed to change the status. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));

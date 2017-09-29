@@ -492,7 +492,7 @@
             c.push($('#stream-community-3').val());
         }
 
-        sendCommand('setcommunitysilent ' + c.join(','));
+        sendCommand('setcommunitysilent ' + c.join(', '));
     }
 
     /**
