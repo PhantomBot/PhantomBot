@@ -1,4 +1,6 @@
 (function() {
+    var reCustomAPI = new RegExp(/\(customapi\s.*\)/),
+        reCustomAPIJson = new RegExp(/\(customapijson\s.*\)/); 
 
     /**
      * @function drsTimer
@@ -7,6 +9,7 @@
         var keys, 
             parts,
             apiStatus,
+            commandValue,
             commandHelpData = {},
             commandHelpFileData,
             lastTime = parseInt($.getSetIniDbNumber('datarenderservice', 'last_time', 0)),
@@ -42,11 +45,23 @@
             if (!$.inidb.exists('disabledCommands', keys[idx])) {
                 jsonStringer.object();
                 jsonStringer.key('command').value(keys[idx] + '');
+
                 if (commandHelpData[keys[idx]] === undefined) {
                     jsonStringer.key('help').value('');
                 } else {
                     jsonStringer.key('help').value(commandHelpData[keys[idx]]);
                 }
+
+                commandValue = String($.inidb.get('command', keys[idx]));
+                if (commandValue.match(reCustomAPI)) {
+                    $.consoleLn('>> ' + commandValue + ' > customapi');
+                    commandValue = commandValue.replace(reCustomAPI, '(customapi)');
+                }
+                if (commandValue.match(reCustomAPIJson)){
+                    $.consoleLn('>> ' + commandValue + ' > customapi');
+                    commandValue = commandValue.replace(reCustomAPIJson, '(customapijson)');
+                }
+                jsonStringer.key('value').value(commandValue);
                 jsonStringer.endObject();
             }
         }
