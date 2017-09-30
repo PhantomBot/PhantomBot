@@ -54,11 +54,9 @@
 
                 commandValue = String($.inidb.get('command', keys[idx]));
                 if (commandValue.match(reCustomAPI)) {
-                    $.consoleLn('>> ' + commandValue + ' > customapi');
                     commandValue = commandValue.replace(reCustomAPI, '(customapi)');
                 }
                 if (commandValue.match(reCustomAPIJson)){
-                    $.consoleLn('>> ' + commandValue + ' > customapi');
                     commandValue = commandValue.replace(reCustomAPIJson, '(customapijson)');
                 }
                 jsonStringer.key('value').value(commandValue);
