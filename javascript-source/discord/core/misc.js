@@ -11,7 +11,7 @@
  * 	- Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
-	var embedReg = new RegExp(/\(embed\s([\w\W\s\d]+),\s?([\r\n\w\W]*)\)/),
+	var embedReg = new RegExp(/\(embed\s([\w\s\d]+),\s(.*)\)/);
 		fileRegMsg = new RegExp(/\(file\s([\w\W]+),\s?([\r\n\w\W]*)\)/),
 		fileReg = new RegExp(/\(file\s([\w\W]+)\)/);
 
@@ -73,6 +73,7 @@
 	 */
 	function say(channel, message) {
 		if (embedReg.test(message)) {
+$.consoleLn('embed -> ' + message.match(embedReg)[1] + ' | ' + message.match(embedReg)[2]);
 			$.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
 		} else if (fileRegMsg.test(message)) {
 			$.discordAPI.sendFile(channel, message.match(fileRegMsg)[2], message.match(fileRegMsg)[1]);
