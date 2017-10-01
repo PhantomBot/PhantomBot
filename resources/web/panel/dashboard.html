@@ -51,6 +51,25 @@
             </div>
         </form>
 
+        <br>
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label>Community</label>
+                <button type="button" class="btn btn-primary inline pull-right" style="margin-bottom: -9px;" onclick="$.setCommunity()">Update</button>
+                <div class="row" style="padding-top: 10px;">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="Stream community." id="stream-community-1">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="Stream community." id="stream-community-2">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="Stream community." id="stream-community-3">
+                    </div>
+                </div>
+            </div>
+        </form>
+
         <button type="button" class="btn btn-alert inline pull-left" onclick="$.disconnect()" 
         data-toggle="tooltip" title="NOTE: This will remove the bot from your channel, you will have to manually rejoin it.">Remove</button>
 
