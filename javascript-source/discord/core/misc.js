@@ -73,7 +73,6 @@
 	 */
 	function say(channel, message) {
 		if (embedReg.test(message)) {
-$.consoleLn('embed -> ' + message.match(embedReg)[1] + ' | ' + message.match(embedReg)[2]);
 			$.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
 		} else if (fileRegMsg.test(message)) {
 			$.discordAPI.sendFile(channel, message.match(fileRegMsg)[2], message.match(fileRegMsg)[1]);
