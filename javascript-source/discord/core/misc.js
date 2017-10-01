@@ -11,7 +11,7 @@
  * 	- Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
-	var embedReg = new RegExp(/\(embed\s([\w\s\d]+),\s(.*)\)/);
+	var embedReg = new RegExp(/\(embed\s([\w\s\d]+),\s(.*)\)/),
 		fileRegMsg = new RegExp(/\(file\s([\w\W]+),\s?([\r\n\w\W]*)\)/),
 		fileReg = new RegExp(/\(file\s([\w\W]+)\)/);
 
