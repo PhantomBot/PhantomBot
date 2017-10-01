@@ -196,6 +196,15 @@ public class DataRenderServiceAPIv1 {
     }
 
     /*
+     * Returns if there is an API key set or not.
+     * 
+     * @return  boolean  API key has been provided.
+     */
+    public boolean hasAPIKey() {
+        return !sAPIKey.isEmpty();
+    }
+
+    /*
      * Sends data to the API.
      *
      * @param   String  Input JSON string to send to the API service.

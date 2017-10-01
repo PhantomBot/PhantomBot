@@ -9,8 +9,8 @@
 (function() {
     var defaultCooldownTime = $.getSetIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5),
         modCooldown = $.getSetIniDbBoolean('cooldownSettings', 'modCooldown', false),
-        defaultCooldowns = [],
-        cooldowns = [];
+        defaultCooldowns = {},
+        cooldowns = {};
 
     $.raffleCommand = null;
 
