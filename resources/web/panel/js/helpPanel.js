@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -51,7 +51,7 @@
             $("#botVersion").html("<strong>" + version + "<br>" + panelVersion + "</strong><br><br>" +
                                   "<small>" +
                                   "    <strong>Control Panel Software</strong><br>" +
-                                  "    jQuery " + $().jquery + "<br>" + 
+                                  "    jQuery " + $().jquery + "<br>" +
                                   "    jQuery UI " + $.ui.version + "<br>" +
                                   "    Bootstrap 3.3.6<br>" +
                                   "    Font Awesome 4.5.0<br>" +
@@ -66,13 +66,9 @@
     // Import the HTML file for this panel.
     $("#helpPanel").load("/panel/help.html");
 
-    // Request the version from the bot. This is only done once.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            requestVersion("help_version");
-            clearInterval(interval); 
-        }
-    }, INITIAL_WAIT_TIME);
+    // Add help hooks
+    addDoQuery( 'help', function() { requestVersion("help_version"); } , 0 );
+    addOnMessage( 'help', onMessage );
 
     // Export functions - Needed when calling from HTML
     $.helpOnMessage = onMessage;

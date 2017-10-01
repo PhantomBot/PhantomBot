@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -101,7 +101,7 @@
                     $('#auctionResults').html('<strong>Results from Last Auction</strong><br>' +
                                           'Winner: ' + winner + '<br>' +
                                           'Amount Paid: ' + amount);
-                } 
+                }
             }
 
             if (panelCheckQuery(msgObject, 'gambling_raffleresults')) {
@@ -300,7 +300,7 @@
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
-        
+
         // For some slower drives sometimes this makes it before it has time to write the new data.
         setTimeout(function() {
             sendCommand('reloadraffle');
@@ -340,7 +340,7 @@
 
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'subscriberBonusRaffle', String(sub));
         sendDBUpdate('raffle_sub_luck', 'raffleSettings', 'regularBonusRaffle', String(reg));
-        
+
         // For some slower drives sometimes this makes it before it has time to write the new data.
         setTimeout(function() {
             sendCommand('reloadraffle');
@@ -465,28 +465,10 @@
         setTimeout(function() { sendCommand("reloadtraffle"); }, TIMEOUT_WAIT_TIME);
     }
 
-    // Import the HTML file for this panel.
-    $("#gamblingPanel").load("/panel/gambling.html");
-
-    // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $("#tabs").tabs("option", "active");
-            if (active == 14) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    // Query the DB every 20 seconds for updates.
-    setInterval(function() {
-        var active = $("#tabs").tabs("option", "active");
-        if (active == 14 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Gambling Data', 'success', 1000);
-            doQuery();
-        }
-    }, 2e4);
+    // Add gambling hooks
+    addPanelTab( 'gambling', 'Giveaways', '/panel/gambling.html', 700 );
+    addDoQuery( 'gambling', doQuery, 2e4 );
+    addOnMessage( 'gambling', onMessage );
 
 
     // Export to HTML

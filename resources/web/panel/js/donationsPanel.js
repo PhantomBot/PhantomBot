@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -174,28 +174,11 @@
         sendDBKeys('donations_donations', 'donations');
     }
 
-    // Import the HTML file for this panel.
-    $('#donationsPanel').load('/panel/donations.html');
+    // Add donations hooks
+    addPanelTab( 'donations', 'Donations', '/panel/donations.html', 400 );
+    addDoQuery( 'donations', doQuery, 3e4 );
 
-    // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $('#tabs').tabs('option', 'active');
-            if (active == 8) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    // Query the DB every 30 seconds for updates.
-    setInterval(function() {
-        var active = $('#tabs').tabs('option', 'active');
-        if (active == 8 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Donations Data', 'success', 1000);
-            doQuery();
-        }
-    }, 3e4);
+    addOnMessage( 'donations', onMessage );
 
     // Export for HTML
     $.donationsOnMessage = onMessage;

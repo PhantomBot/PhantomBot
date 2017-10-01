@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -98,7 +98,7 @@
      * @function doQuery
      */
     function doQuery() {
-        sendDBKeys('poll_results', 'pollresults'); 
+        sendDBKeys('poll_results', 'pollresults');
     }
 
     /**
@@ -133,28 +133,10 @@
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
-    // Import the HTML file for this panel.
-    $("#pollPanel").load("/panel/poll.html");
-
-    // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $('#tabs').tabs('option', 'active');
-            if (active == 12) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    // Query the DB every 30 seconds for updates.
-    setInterval(function() {
-        var active = $('#tabs').tabs('option', 'active');
-        if (active == 12 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Poll Data', 'success', 1000);
-            doQuery();
-        }
-    }, 3e4);
+    // Add poll hooks
+    addPanelTab( 'poll', 'Polls', '/panel/poll.html', 600 );
+    addDoQuery( 'poll', doQuery, 3e4 );
+    addOnMessage( 'poll', onMessage );
 
     // Export to HTML
     $.pollOnMessage = onMessage;

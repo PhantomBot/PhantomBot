@@ -411,25 +411,9 @@
     // Import the HTML file for this panel.
     $("#audioPanel").load("/panel/audio.html");
 
-    // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
-        if (TABS_INITIALIZED) {
-            drawYouTubePlayer();
-        }
-        if (isConnected && TABS_INITIALIZED) {
-            doQuery();
-            clearInterval(interval);
-        }
-    }, INITIAL_WAIT_TIME);
-
-    // Query the DB every 30 seconds for updates.
-    setInterval(function() {
-        var active = $('#tabs').tabs('option', 'active');
-        if (active == 19 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Audio Data', 'success', 1000);
-            doQuery();
-        }
-    }, 3e4);
+    // Add audio hooks
+    addDoQuery( 'audio', doQuery, 3e4 );
+    addOnMessage( 'audio', onMessage );
 
     // Queue for when multiple sounds are called at once. This will stop multiple sounds from playing at the same time.
     setInterval(function() {

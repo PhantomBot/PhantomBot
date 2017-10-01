@@ -207,28 +207,10 @@
         }
     }
 
-    // Import the HTML file for this panel.
-    $("#noticesPanel").load("/panel/notices.html");
-
-    // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $('#tabs').tabs('option', 'active');
-            if (active == 9) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    // Query the DB every 30 seconds for updates.
-    setInterval(function() {
-        var active = $('#tabs').tabs('option', 'active');
-        if (active == 9 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Notices Data', 'success', 1000);
-            doQuery();
-        }
-    }, 3e4);
+    // Add notices hooks
+    addPanelTab( 'notices', 'Notices', '/panel/notices.html', 450 );
+    addDoQuery( 'notices', doQuery, 3e4 );
+    addOnMessage( 'notices', onMessage );
 
     // Export to HTML
     $.noticesOnMessage = onMessage;
