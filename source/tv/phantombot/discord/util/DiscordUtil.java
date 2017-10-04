@@ -40,8 +40,6 @@ import java.util.List;
 import java.io.FileNotFoundException;
 import java.io.File;
 
-import java.time.LocalDateTime;
-
 import java.awt.Color;
 
 /*
@@ -485,7 +483,7 @@ public class DiscordUtil {
                 public void run() {
                     RequestBuffer.request(() -> {
                         try {
-                            List<IMessage> messages = channel.getMessageHistoryFrom(LocalDateTime.now(), (amount < 2 ? 2 : amount));
+                            List<IMessage> messages = channel.getMessageHistory(amount < 2 ? 2 : amount);
                             
                             channel.bulkDelete(messages);
                         } catch (DiscordException ex) {
