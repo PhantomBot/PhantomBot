@@ -315,7 +315,7 @@
         var value = $('#editKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).val();
 
         if (value.length > 0) {
-            sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
+            sendDBUpdate('discord_keyword', 'discordKeywords', keyword.toLowerCase(), value);
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -337,7 +337,7 @@
             value = $('#custom-keyword-value').val();
 
         if (keyword.length > 0 && value.length > 0) {
-            sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
+            sendDBUpdate('discord_keyword', 'discordKeywords', keyword.toLowerCase(), value);
         }
         $('#custom-keyword').val('');
         $('#custom-keyword-value').val('');
