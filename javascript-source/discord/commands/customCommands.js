@@ -454,10 +454,18 @@
                 return;
             }
 
-            $.inidb.set('discordChannelcom', action, subAction);
             $.discord.clearChannelCommands(action);
-            $.discord.setCommandChannel(action, subAction, false);
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.success', action, subAction));
+            var key = [];
+            for (var i in args) {
+                if (i != 0) {
+                    args[i] = args[i].replace(',', '').toLowerCase();
+                    $.discord.setCommandChannel(action, args[i], false);
+                    key.push(args[i]);
+                }
+            }
+            key = key.join(', ');
+            $.inidb.set('discordChannelcom', action, key);
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.success', action, key));
         }
 
         /**
