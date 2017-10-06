@@ -135,11 +135,13 @@
         }
 
         if (message.match(/\(1=[^)]+\)/g)) {
+            var t = message.match(/\(1=[^)]+\)/)[0];
             if (event.getArgs()[0]) {
-                var t = message.match(/\(1=[^)]+\)/)[0];
                 message = $.replace(message, t, event.getArgs()[0]);
+            } else { 
+                var tR = t.replace('(1=', '').replace(')', '');
+                message = $.replace(message, t, tR);
             }
-            message = $.replace(message, '(1=', '(');
         }
 
         if (message.match(/\(countdown=[^)]+\)/g)) {
