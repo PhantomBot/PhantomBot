@@ -502,7 +502,7 @@
                 command = event.setCommand($.discord.getCommandAlias(command));
             }
 
-            if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
+            if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
                 return;
             }
 
