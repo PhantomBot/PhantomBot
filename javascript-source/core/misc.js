@@ -155,7 +155,7 @@
      * @param {boolean} run
      */
     function sayWithTimeout(message, run) {
-        if (((timeout + 10000) > systemTime()) || !run) {
+        if (((timeout + 10000) > $.systemTime()) || !run) {
             return;
         }
 
