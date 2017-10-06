@@ -57,7 +57,7 @@
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
             if (subReward > 0) {
-                $.inidb.incr('points', subscriber, subReward);
+                $.inidb.incr('points', subscriber.toLowerCase(), subReward);
             }
         }
     });
@@ -82,7 +82,7 @@
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
             if (subReward > 0) {
-                $.inidb.incr('points', subscriber, subReward);
+                $.inidb.incr('points', subscriber.toLowerCase(), subReward);
             }
         }
     });
@@ -120,7 +120,7 @@
             $.writeToFile(resubscriber + ': ' + months + ' ', './addons/subscribeHandler/latestResub&Months.txt', false);
             $.inidb.set('streamInfo', 'lastReSub', resubscriber);
             if (reSubReward > 0) {
-                $.inidb.incr('points', resubscriber, reSubReward);
+                $.inidb.incr('points', resubscriber.toLowerCase(), reSubReward);
             }
         }
     });
