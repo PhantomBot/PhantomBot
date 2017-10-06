@@ -104,12 +104,12 @@
 	 * @param {string} command
 	 * @param {string} alias
 	 */
-	function setCommandAlias(command, alias) {
-		if (commandExists(command)) {
-			commands[command].alias = alias.toLowerCase();
-			aliases[commands[command].alias] = command.toLowerCase();
-		}
-	}
+    function setCommandAlias(command, alias) {
+        if (commandExists(command)) {
+            commands[command].alias[alias] = alias.toLowerCase();
+            aliases[commands[command].alias[alias]] = command.toLowerCase();
+        }
+    }
 
 	/**
 	 * @function removeAlias
@@ -118,12 +118,14 @@
 	 * @param {string} command
 	 * @param {string} alias
 	 */
-	function removeAlias(command, alias) {
-		if (commandExists(command)) {
-			delete aliases[commands[command].alias];
-			commands[command].alias = '';
-		}
-	}
+    function removeAlias(command) {
+        if (commandExists(command)) {
+            for (var i in commands[command].alias) {
+                delete aliases[commands[command].alias[i]];
+            }
+            commands[command].alias = [];
+        }
+    }
 
 	/**
 	 * @function getCommandCost
@@ -204,35 +206,42 @@
 	 * @param {string} command
 	 * @param {int} permission
 	 */
-	function registerCommand(scriptFile, command, permission) {
-		if (!commandExists(command)) {
+    function registerCommand(scriptFile, command, permission) {
+        if (!commandExists(command)) {
 
-			commands[command] = {
-				permission: $.getSetIniDbNumber('discordPermcom', command, permission),
-				cost: ($.inidb.exists('discordPricecom', command) ? $.inidb.get('discordPricecom', command) : 0),
-				alias: ($.inidb.exists('discordAliascom', command) ? $.inidb.get('discordAliascom', command) : ''),
-				channel: [],
-				scriptFile: scriptFile,
-				subCommand: {}
-			};
+            commands[command] = {
+                permission: $.getSetIniDbNumber('discordPermcom', command, permission),
+                cost: ($.inidb.exists('discordPricecom', command) ? $.inidb.get('discordPricecom', command) : 0),
+                alias: [],
+                channel: [],
+                scriptFile: scriptFile,
+                subCommand: {}
+            };
 
-			if ($.inidb.exists('discordChannelcom', command)) {
-				var keys = $.inidb.get('discordChannelcom', command).split(', '),
-					i;
+            if ($.inidb.exists('discordChannelcom', command)) {
+                var keys = $.inidb.get('discordChannelcom', command).split(', '),
+                    i;
 
-				for (i in keys) {
-					commands[command].channel[keys[i]] = keys[i];
-				}
-			} else {
-				commands[command].channel['_default_global_'] = '';
-			}
-				
+                for (i in keys) {
+                    commands[command].channel[keys[i]] = keys[i];
+                }
+            } else {
+                commands[command].channel['_default_global_'] = '';
+            }
 
-			if (commands[command].alias !== '') {
-				aliases[commands[command].alias] = command;
-			}
-		}
-	}
+            if ($.inidb.exists('discordAliascom', command)) {
+                var keys = $.inidb.get('discordAliascom', command).split(', '),
+                    i;
+
+                for (i in keys) {
+                    commands[command].alias[keys[i]] = keys[i].toLowerCase();
+                    aliases[commands[command].alias[keys[i]]] = command.toLowerCase();
+                }
+            } else {
+                commands[command].alias = [];
+            }	
+        }
+    }
 
 	/**
 	 * @function registerSubCommand
@@ -270,14 +279,14 @@
 	 * @export $.discord
 	 * @param {string} command
 	 */
-	function unregisterCommand(command) {
-		if (commandExists(command)) {
-			if (commands[command].alias !== '') {
-				delete aliases[commands[command].alias];
-			}
-			delete commands[command];
-		}
-	}
+    function unregisterCommand(command) {
+        if (commandExists(command)) {
+            for (var i in commands[command].alias) {
+                delete aliases[commands[command].alias[i]];
+            }
+            delete commands[command];
+        }
+    }
 
 	/* Export the function to the $.discord api. */
 	$.discord.commands = commands;
