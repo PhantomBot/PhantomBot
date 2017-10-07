@@ -40,12 +40,12 @@
              * @commandpath botName setconnectmessage [message] - Sets a message that will be said once the bot joins the channel.
              */
             if (action.equalsIgnoreCase('setconnectmessage')) {
-                if (action === undefined) {
+                if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg.usage', bot));
                     return;
                 }
 
-                var message = args.slice(0).join(' ');
+                var message = args.slice(1).join(' ');
 
                 $.setIniDbString('settings', 'connectedMsg', message);
                 $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg', message));
