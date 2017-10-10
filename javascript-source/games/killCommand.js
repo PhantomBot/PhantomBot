@@ -45,7 +45,7 @@
             $.say(lang);
             if (!$.isMod(sender) && jailTimeout > 0) {
                 setTimeout(function () {
-                    $.say('.timeout ' + sender + ' ' + jailTimeout);
+                    $.session.say('.timeout ' + sender + ' ' + jailTimeout);
                 }, 1500);
             }
         } else {
