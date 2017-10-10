@@ -154,7 +154,9 @@
             }
         }
 
-        totalEntries++;
+        if (!$.inidb.exists('entered', user.toLowerCase())) {
+            totalEntries++;
+        }
         totalTickets += times;
         $.inidb.decr('points', user, (times * cost));
         incr(user.toLowerCase(), times);

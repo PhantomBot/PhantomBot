@@ -313,7 +313,7 @@
             return;
         }
 
-        if (value.indexOf('.') !== -1 || parseInt(value) < 1) {
+        if (value.indexOf('.') !== -1 || (parseInt(value) < 1 && parseInt(value) !== 0)) {
             $("#setPointGainInput_" + action).val('Only natural numbers are allowed.');
             setTimeout(function() { $("#setPointGainInput_" + action).val(''); }, TIMEOUT_WAIT_TIME * 3);
             return;
@@ -363,6 +363,8 @@
     function modifyUserPoints(action) {
         var username = $("#adjustUserPointsNameInput").val(),
             points = $("#adjustUserPointsInput").val();
+        
+        username = username.replace(/\s+/g, '');
 
         if (action == "take") {
             if (username.length > 0 && points.length > 0) {

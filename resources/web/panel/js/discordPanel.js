@@ -110,13 +110,14 @@
             var keys = msgObject['results'],
                 html = '<table style="width: 100%"><tr><th>Command</th><th>Response</th><th>Cooldown</th><th style="float: right;"></td>',
                 dataObj = {},
+                command,
+                response,
                 permission,
                 cost,
                 cooldown,
-                response,
-                command,
+                global,
                 channel,
-                global;
+                alias;
 
             if (keys.length === 0) {
                 $('#commands-list').html('<i>There are no commands defined.</i>');
@@ -163,16 +164,17 @@
                     command = keys[i]['key'];
                     response = keys[i]['value'];
                     permission = dataObj[command].permission;
-                    channel = (dataObj[command] !== undefined && dataObj[command].channel === undefined ? '' : dataObj[command].channel);
-                    cooldown = (dataObj[command] !== undefined && dataObj[command].cooldown === undefined ? 0 : dataObj[command].cooldown);
                     cost = (dataObj[command] !== undefined && dataObj[command].cost === undefined ? 0 : dataObj[command].cost);
-                    global = (dataObj[command] !== undefined && dataObj[command].isGlobal === undefined ? true : dataObj[command].isGlobal);
+                    cooldown = (dataObj[command] !== undefined && dataObj[command].cooldown === undefined ? 0 : dataObj[command].cooldown);
+                    global = (dataObj[command] !== undefined && dataObj[command].isGlobal === undefined ? true : dataObj[command].isGlobal);             
+                    channel = (dataObj[command] !== undefined && dataObj[command].channel === undefined ? '' : dataObj[command].channel);
+                    alias = (dataObj[command] !== undefined && dataObj[command].alias === undefined ? '' : dataObj[command].alias);
 
                     html += '<tr>' +
                         '<td>!' + (command.length > 10 ?  command.substring(0, 10) + '...' : command) + '</td>' +
                         '<td>' + (response.length > 50 ?  response.substring(0, 50) + '...' : response) + '</td>' +
                         '<td>' + cooldown + ' sec '+ '</td>' +
-                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response.replace(/\'/g, '&#39;') + '\', \'' + permission + '\', \'' + cost + '\', \'' + cooldown + '\', \'' + channel + '\', \'' + global +'\')"><i class="fa fa-pencil" /> </button>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response.replace(/\'/g, '&#39;') + '\', \'' + permission + '\', \'' + cost + '\', \'' + cooldown + '\', \'' + global + '\', \'' + channel + '\', \'' + alias +'\')"><i class="fa fa-pencil" /> </button>' +
                         '<button type="button" id="delete_command_' + command.replace(/[^a-z1-9_]/ig, '_') + '" class="btn btn-default btn-xs" onclick="$.updateDiscordCommand(\'' + command + '\', \'true\')"><i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
                 }
@@ -192,7 +194,7 @@
         sendDBKeys('discord_roll', 'discordRollReward');
         sendDBKeys('discord_slotmachine', 'discordSlotMachineReward');
         sendDBKeys('discord_slotmachineemojis', 'discordSlotMachineEmojis');
-        sendDBKeysList('discord_commands', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom']);
+        sendDBKeysList('discord_commands', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom', 'discordAliascom']);
     }
 
     /*
@@ -231,16 +233,19 @@
         $('#command-name-modal').val('');
         $('#command-response-modal').val('');
         $('#command-permission-modal').val('');
+        $('#command-cost-modal').val('');
         $('#command-cooldown-modal').val('');
-        $('#command-channel-modal').val();
+        $('#command-edit-global').prop('checked', true);
+        $('#command-channel-modal').val('');
+        $('#command-alias-modal').val('');
         $('#command-add-name-modal').val('');
         $('#command-add-response-modal').val('');
         $('#command-add-permission-modal').val('0');
-        $('#command-add-cooldown-modal').val('0');
         $('#command-add-cost-modal').val('0');
-        $('#command-add-channel-modal').val('');
+        $('#command-add-cooldown-modal').val('0');
         $('#command-add-global').prop('checked', true);
-        $('#command-edit-global').prop('checked', true);
+        $('#command-add-channel-modal').val('');
+        $('#command-add-alias-modal').val('');
     }
 
     /*
@@ -260,11 +265,11 @@
             var command = ($('#command-name-modal').val().length === 0 ? $('#command-add-name-modal').val() : $('#command-name-modal').val()),
                 response = ($('#command-response-modal').val().length === 0 ?  $('#command-add-response-modal').val() : $('#command-response-modal').val()),
                 permission = ($('#command-permission-modal').val().length === 0 ?  $('#command-add-permission-modal').val() : $('#command-permission-modal').val()),
-                cooldown = ($('#command-cooldown-modal').val().length === 0 ? $('#command-add-cooldown-modal').val() : $('#command-cooldown-modal').val()),
-                channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val()),
                 price = ($('#command-cost-modal').val().length === 0 ? $('#command-add-cost-modal').val() : $('#command-cost-modal').val()),
-                alias = ($('#command-alias-modal').val().length === 0 ? $('#command-add-alias-modal').val() : $('#command-alias-modal').val()),
-                checked = ($('#command-add-global').is(':checked'));
+                cooldown = ($('#command-cooldown-modal').val().length === 0 ? $('#command-add-cooldown-modal').val() : $('#command-cooldown-modal').val()),
+                checked = ($('#command-name-modal').val().length === 0 ? $('#command-add-global').is(':checked') : $('#command-edit-global').is(':checked')),
+                channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val()),
+                alias = ($('#command-alias-modal').val().length === 0 ? $('#command-add-alias-modal').val() : $('#command-alias-modal').val());
 
             if (command.length === 0 || response.length === 0 || command.match(/[\'\"\s]/ig) || (permission != 1 && permission != 0)) {
                 setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);
@@ -279,14 +284,19 @@
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
             sendDBUpdate('discord_command', 'discordCooldown', command, JSON.stringify({command: String(command), seconds: String(cooldown), isGlobal: String(checked)}));
             sendDBUpdate('discord_command', 'discordPricecom', command, price.toString());
-            if (channel.length === 0) {
+            
+            if (channel.length > 0) {
+                sendDBUpdate('discord_command', 'discordChannelcom', command, channel.toString());
+            } else {
                 sendDBDelete('discord_command', 'discordChannelcom', command);
             }
+            
             if (alias.length > 0) {
                 sendDBUpdate('discord_command', 'discordAliascom', command, alias.toString());
             } else {
                 sendDBDelete('discord_command', 'discordAliascom', command);
             }
+            
             setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel, alias, price]); }, TIMEOUT_WAIT_TIME);
         }
 
@@ -296,14 +306,15 @@
     /*
      * @function openCommandModal
      */
-    function openCommandModal(command, response, permission, cost, cooldown, channel, checked) {
+    function openCommandModal(command, response, permission, cost, cooldown, checked, channel, alias) {
         $('#command-name-modal').val(command);
         $('#command-response-modal').val(response.replace(/&#39;/g, '\''));
         $('#command-permission-modal').val(permission);
-        $('#command-cooldown-modal').val(cooldown);
-        $('#command-channel-modal').val(channel);
         $('#command-cost-modal').val(cost);
+        $('#command-cooldown-modal').val(cooldown);
         $('#command-edit-global').prop('checked', checked == 'true');
+        $('#command-channel-modal').val(channel);
+        $('#command-alias-modal').val(alias);
 
         $('#command-modal').modal();
     }

@@ -77,7 +77,7 @@
 				if (twitchName !== null) {
 					gamble(channel, twitchName, mention, sender, parseInt(action));
 				} else {
-					$.discord.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
+					$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
 				}
 			}
         }
