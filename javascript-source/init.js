@@ -354,7 +354,7 @@
             loadScript('./discord/core/registerCommand.js');
             loadScript('./discord/core/accountLink.js');
             loadScript('./discord/core/commandCooldown.js');
-            loadScript('./discord/core/roleManager.js');
+            //loadScript('./discord/core/permissionManager.js');
 
             // Load the other discord modules
             loadScriptRecursive('./discord');
@@ -481,6 +481,13 @@
 
             // Call the command function.
             callHook('command', event, false);
+
+            // Decrease or add points after the command is sent to not slow anything down.
+            if ($.priceCom(sender, command, subCommand, isMod) === 0) {
+                $.inidb.decr('points', sender, $.getCommandPrice(command, subCommand, ''));
+            } else if ($.payCom(command) === 0) {
+                $.inidb.incr('points', sender, $.getCommandPay(command));
+            }
         });
 
         /*

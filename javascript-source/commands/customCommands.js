@@ -18,7 +18,7 @@
     function getCustomAPIValue(url) {
         return $.customAPI.get(url).content;
     }
-
+    
     /*
      * @function runCommand
      *
@@ -555,23 +555,28 @@
      * @param {string} command
      * @param {sub} subcommand
      * @param {bool} isMod
-     * @returns 1 | 0
+     * @returns 1 | 0 - Not a boolean
      */
     function priceCom(username, command, subCommand, isMod) {
-        if ($.inidb.exists('pricecom', (command + ' ' + subCommand).trim())) {
+        if ((subCommand === '' && $.inidb.exists('pricecom', command)) || $.inidb.exists('pricecom', command + ' ' + subCommand)) {
             if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(username)) || !isMod)) && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
-                var cost = getCommandPrice(command, subCommand, '');
-                
-                if ($.getUserPoints(username) < cost) {
+                if ($.getUserPoints(username) < getCommandPrice(command, subCommand, '')) {
                     return 1;
-                } else {
-                    $.inidb.decr('points', username, cost);
                 }
             }
-        } else if ($.inidb.exists('paycom', command)) {
-            $.inidb.incr('points', username, $.inidb.get('paycom', command));
         }
         return 0;
+    }
+
+     /*
+     * @function payCom
+     *
+     * @export $
+     * @param {string} command
+     * @returns 1 | 0 - Not a boolean
+     */
+    function payCom(command) {
+        return ($.inidb.exists('paycom', command) ? 0 : 1);
     }
 
     /*
@@ -593,6 +598,17 @@
                                     $.inidb.get('pricecom', command + ' ' + subCommand) :
                                         $.inidb.exists('pricecom', command) ?
                                             $.inidb.get('pricecom', command) : 0);
+    }
+
+    /*
+     * @function getCommandPay
+     *
+     * @export $
+     * @param {string} command
+     * @returns {Number}
+     */
+    function getCommandPay(command) {
+        return ($.inidb.exists('paycom', command) ? $.inidb.get('paycom', command) : 0);
     }
 
     /*
@@ -1102,6 +1118,8 @@
     $.priceCom = priceCom;
     $.getCommandPrice = getCommandPrice;
     $.tags = tags;
+    $.getCommandPay = getCommandPay;
+    $.payCom = payCom;
     $.command = {
         run: runCommand
     };
