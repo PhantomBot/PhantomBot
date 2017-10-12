@@ -115,7 +115,7 @@ public class HTTPServer {
 
     class BetaPanelHandler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
-            HTTPServerCommon.handlePanel(exchange);
+            HTTPServerCommon.handleBetaPanel(exchange);
         }
     }
 
