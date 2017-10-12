@@ -910,6 +910,42 @@
         </form>
     </div>
     </div>
+
+    <h3>Clips Alert Settings</h3>
+    <div>
+    <div id="_discord_clipHandlerDisabled" />
+    <div id="_discord_clipHandler">
+        <table>
+            <tr class="textList">
+                <td>Toggle Clip Alerts</td>
+                <td style="width: 25px"><div id="clipsToggleInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('clipsToggleInput', 'handlers/clipHandler.js', 'discordSettings', 'clipsToggle', 'true')"><i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('clipsToggleInput', 'handlers/clipHandler.js', 'discordSettings', 'clipsToggle', 'false')"><i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label>Clips Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('clipsMessageInput', 'handlers/clipHandler.js', 'discordSettings', 'clipsMessage')">Submit</button>
+                <input type="text" class="form-control" id="clipsMessageInput" placeholder="Clips Message" data-toggle="tooltip" title="Set a message for a detected clip. Available tags: (name) (url)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label>Alert Channel</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('clipsChannelInput', 'handlers/clipHandler.js', 'discordSettings', 'clipsChannel')">Submit</button>
+                <input type="text" class="form-control" id="clipsChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
+            </div>
+        </form>
+    </div>
+    </div>
 </div>
 
 <!-- Run the Acordion -->
