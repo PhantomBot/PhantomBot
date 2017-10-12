@@ -550,6 +550,69 @@
         };
 
         /**
+         * @function findSongByTitle
+         * @param String
+         * @return (boolean}
+         */
+        this.findSongByTitle = function(songTitle) {
+            if (!requests.isEmpty()) {
+                var videoTitle = null,
+                    requestsArray = requests.toArray(),
+                    match = false;
+
+                for (var i in requestsArray) {
+                    videoTitle = requestsArray[i].getVideoTitle();
+                    if (videoTitle.toLowerCase().indexOf(songTitle.toLowerCase()) >= 0) {
+                        previousVideo = currentVideo;
+                        try {
+                            currentVideo = currentPlaylist.getRequestAtIndex(i);
+                            match = true;
+                        } catch (ex) {
+                            $.log.error("YoutubeVideo::exception: " + ex);
+                            return false;
+                        }
+                        break;
+                    }
+                }
+            } else {
+                if (defaultPlaylistReadOnly.length == 0) {
+                    return false;
+                }
+
+                for (var i in defaultPlaylistReadOnly) {
+                    try {
+                        examineVideo = new YoutubeVideo($.inidb.get(playListDbId, defaultPlaylistReadOnly[i]), playlistDJname);
+                        if (examineVideo.getVideoTitle().toLowerCase().indexOf(songTitle.toLowerCase()) >= 0) {
+                            previousVideo = currentVideo;
+                            currentVideo = new YoutubeVideo($.inidb.get(playListDbId, defaultPlaylistReadOnly[i]), playlistDJname);
+                            match = true;
+                            break;
+                        }
+                    } catch (ex) {
+                        $.log.error("YoutubeVideo::exception: " + ex);
+                        return false;
+                    }
+                }
+            }
+
+            if (!match) {
+                return false;
+            }
+
+            connectedPlayerClient.play(currentVideo);
+            this.updateCurrentSongFile(currentVideo);
+
+            if (announceInChat) {
+                $.say($.lang.get('ytplayer.announce.nextsong', currentVideo.getVideoTitle(), currentVideo.getOwner()));
+            }
+
+            skipCount = 0;
+            voteArray = [];
+            return true;
+        }
+
+
+        /**
          * @function loadPlaylistKeys
          * @returns {number}
          */
@@ -1642,6 +1705,20 @@
         }
 
         /**
+         * @commandpath findsong [search string] - Finds a song based on a search string.
+         */
+        if (command.equalsIgnoreCase('findsong')) {
+            if (args[0] === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.findsong.usage', command.toLowerCase()));
+                return;
+            }
+
+            if (!currentPlaylist.findSongByTitle(args.join(' '))) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.findsong.failed', args.join(' ')));
+            }
+        }
+         
+        /**
          * @commandpath skipsong - Skip the current song and proceed to the next video in line 
          */
         if (command.equalsIgnoreCase('skipsong')) {
@@ -1847,6 +1924,7 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'playlist', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'stealsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'findsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
