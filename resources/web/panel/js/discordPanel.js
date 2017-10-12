@@ -217,6 +217,14 @@
                 }
             }
 
+            if (key == 'cbenniToggle') {
+                if (value == 'true') {
+                    sendDBUpdate('discord_update', 'discordSettings', 'cbenniToggle', 'true');
+                } else {
+                    sendDBUpdate('discord_update', 'discordSettings', 'cbenniToggle', 'false');
+                }
+            }
+          
             console.log(table + ':' + key + ':' + data);
             sendDBUpdate('discord_update', table, key, String(data));
 
