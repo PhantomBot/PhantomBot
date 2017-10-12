@@ -562,7 +562,6 @@
             for (var i = 0; i < keyList.length; i++) {
                 if (!keyList[i].equals("lastkey")) {
                     defaultPlaylist.push(keyList[i]);
-$.consoleLn('>> ' + keyList[i]);
                 }
             }
             defaultPlaylist = (randomizePlaylist ? $.arrayShuffle(defaultPlaylist) : defaultPlaylist);
