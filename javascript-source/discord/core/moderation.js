@@ -146,7 +146,7 @@
         obj['**Time:**'] = time + ' seconds.';
 
         if (cbenniToggle) {
-            obj['**Cbenni:**'] = '[https://cbenni.com/' + $.channelName + '](https://cbenni.com/' + $.channelName + ')';
+            obj['**Cbenni:**'] = '[https://cbenni.com/' + $.channelName + '?user=' + username.toLowerCase() + '](https://cbenni.com/' + $.channelName + '?user=' + username.toLowerCase() + ')';
         }
 
         obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
