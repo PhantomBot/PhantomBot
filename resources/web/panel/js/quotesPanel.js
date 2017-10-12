@@ -83,7 +83,7 @@
                             '                   value="' + quoteData[0] + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'user\')">' +
-                            '                <i class="fa fa-pencil" />' +
+                            '                <i class="fa fa-hdd-o" />' +
                             '            </button>' +
                             '        </form>' +
                             '    </td>' +
@@ -95,7 +95,7 @@
                             '                   value="' + (quoteData.length == 4 ? quoteData[3] : 'Some Game') + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'game\')">' +
-                            '                <i class="fa fa-pencil" />' +
+                            '                <i class="fa fa-hdd-o" />' +
                             '            </button>' +
                             '        </form>' +
                             '    </td>' +
@@ -109,7 +109,7 @@
                             '                   value="' + quoteData[1].replace(/"/g, '\'\'') + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'quote\')">' +
-                            '                <i class="fa fa-pencil" />' +
+                            '                <i class="fa fa-hdd-o" />' +
                             '            </button>' +
                             '        </form>' +
                             '    </td>' +
