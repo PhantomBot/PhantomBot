@@ -44,6 +44,10 @@ public class RepoVersion {
         return nightlyBuild.equals("nightly_build");
     }
 
+    public static boolean getPrereleaseBuild() {
+        return nightlyBuild.equals("prerelease_build");
+    }
+
     public static String getPanelVersion() {
         return panelVersion;
     }
