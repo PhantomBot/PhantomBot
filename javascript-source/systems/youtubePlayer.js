@@ -511,7 +511,10 @@
         this.jumpToSong = function(playlistPosition) {
             playlistPosition--;
 
-            if (currentPlaylist.getRequestAtIndex(playlistPosition) != null) {
+            if (!requests.isEmpty()) {
+                if (currentPlaylist.getRequestAtIndex(playlistPosition) == null) {
+                    return false;
+                }
                 previousVideo = currentVideo;
                 try {
                     currentVideo = currentPlaylist.getRequestAtIndex(playlistPosition);
@@ -520,13 +523,13 @@
                     return false;
                 }
             } else {
-                if (defaultPlaylist.length == 0 || defaultPlaylist.length < playlistPosition) {
+                if (defaultPlaylistReadOnly.length == 0 || defaultPlaylistReadOnly.length < playlistPosition) {
                     return false;
                 }
 
                 previousVideo = currentVideo;
                 try {
-                    var playListIndex = defaultPlaylist[playlistPosition];                    
+                    var playListIndex = defaultPlaylistReadOnly[playlistPosition];
                     currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
                 } catch (ex) {
                     $.log.error("YoutubeVideo::exception: " + ex);
@@ -558,7 +561,8 @@
 
             for (var i = 0; i < keyList.length; i++) {
                 if (!keyList[i].equals("lastkey")) {
-                  defaultPlaylist.push(keyList[i]);
+                    defaultPlaylist.push(keyList[i]);
+$.consoleLn('>> ' + keyList[i]);
                 }
             }
             defaultPlaylist = (randomizePlaylist ? $.arrayShuffle(defaultPlaylist) : defaultPlaylist);
