@@ -186,7 +186,7 @@ function handleSongList(d) {
         var requester = d['songlist'][i]['requester'];
         tableData += "<tr>" +
                      "    <td width=\"15\"><divclass=\"button\" onclick=\"deleteSong('" + id + "')\"><i class=\"fa fa-trash-o\" /></div></td>" +
-                     "    <td width=\"15\"><divclass=\"button\" onclick=\"stealSong('" + id + "')\"><i class=\"fa fa-bookmark\" /></div></td>" +
+                     "    <td width=\"15\"><divclass=\"button\" onclick=\"stealSong('" + id + "', '" + requester + "')\"><i class=\"fa fa-bookmark\" /></div></td>" +
                      "    <td> " + (parseInt(i) + 1) + "</td>" +
                      "    <td>" + title + "</td>" +
                      "    <td>" + requester + "</td>" +
@@ -281,12 +281,13 @@ function deletePLSong(id) {
     debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
-function stealSong(id) {
+function stealSong(id, requester) {
     debugMsg("stealSong()");
     var jsonObject = {};
     jsonObject["command"] = 'stealsong';
     if (id) {
         jsonObject["youTubeID"] = id;
+        jsonObject["requester"] = requester;
     }
     connection.send(JSON.stringify(jsonObject));
     debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");

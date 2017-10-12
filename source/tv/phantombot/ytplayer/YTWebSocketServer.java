@@ -167,7 +167,7 @@ public class YTWebSocketServer extends WebSocketServer {
         String           dataString;
         int              dataInt;
 
-        //com.gmt2001.Console.out.println("YTWebSocketServer::onMessage("+jsonString+")");
+        // com.gmt2001.Console.out.println("YTWebSocketServer::onMessage("+jsonString+")");
 
         try {
             jsonObject = new JSONObject(jsonString);
@@ -268,8 +268,7 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             } else if (jsonObject.getString("command").equals("stealsong")) {
                 if (jsonObject.has("youTubeID")) {
-                    dataString = jsonObject.getString("youTubeID");
-                    EventBus.instance().postAsync(new YTPlayerStealSongEvent(dataString));
+                    EventBus.instance().postAsync(new YTPlayerStealSongEvent(jsonObject.getString("youTubeID"), jsonObject.getString("requester")));
                 } else {
                     EventBus.instance().postAsync(new YTPlayerStealSongEvent());
                 }
