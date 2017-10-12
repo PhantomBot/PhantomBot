@@ -2707,7 +2707,7 @@ public final class PhantomBot implements Listener {
                 Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
                 while (dirIterator.hasNext()) {
                     File backupFile = (File) dirIterator.next();
-                    if (FileUtils.isFileOlder(backupFile, System.currentTimeMillis() - (86400000 * backupSQLiteKeepDays))) {
+                    if (FileUtils.isFileOlder(backupFile, (System.currentTimeMillis() / 1000) - (86400 * backupSQLiteKeepDays))) {
                         FileUtils.deleteQuietly(backupFile);
                     }
                 }
