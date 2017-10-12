@@ -129,7 +129,7 @@
                         blacklist[i] = JSON.parse(modValue);
                         html += '<tr>' +
                         '<td>' + (modSetting.length > 80 ? modSetting.substring(0, 80) + '...' : modSetting) + '</td>' +
-                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openBlackListModal(\'' + i + '\')"><i class="fa fa-pencil" /> </button>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openBlackListModal(\'' + i + '\')"><i class="fa fa-hdd-o" /> </button>' +
                         '<button type="button" id="delete_blackList_' + modSetting.replace(/[^a-zA-Z0-9]/ig, '_') + '" class="btn btn-default btn-xs" onclick="$.deleteBlacklist(\'' + modSetting.replace(/\\/g, '\\\\') + '\')">'+
                         '<i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
