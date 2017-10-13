@@ -266,7 +266,7 @@ public class Session implements Runnable {
      *
      * @param {String} message
      */
-    public void send(String message) {
+    private void send(String message) {
         twitchWSIRC.send("PRIVMSG #" + channelName + " :" + message);
         com.gmt2001.Console.out.println("[CHAT] " + message);
     }
