@@ -58,7 +58,7 @@ import tv.phantombot.PhantomBot;
 public class TwitchWSIRC extends WebSocketClient {
 
     private static final Map<String, TwitchWSIRC> instances = Maps.newHashMap();
-    private final ThreadPoolExecutor threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
+    //private final ThreadPoolExecutor threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
     private final String channelName;
     private final String login;
     private final String oAuth;
@@ -238,15 +238,16 @@ public class TwitchWSIRC extends WebSocketClient {
             sentPing = false;
             return;
         } else {
-            try {
-                if (threads.getActiveCount() < 4) {
-                    threads.execute(new MessageRunnable(message));
-                } else {
-                    twitchWSIRCParser.parseData(message);
-                }
-            } catch (Exception ex) {
-                twitchWSIRCParser.parseData(message);
-            }
+            twitchWSIRCParser.parseData(message);
+            //try {
+            //    if (threads.getActiveCount() < 4) {
+            //        threads.execute(new MessageRunnable(message));
+            //    } else {
+            //        twitchWSIRCParser.parseData(message);
+            //    }
+            //} catch (Exception ex) {
+            //    twitchWSIRCParser.parseData(message);
+            //}
         }
     }
 
