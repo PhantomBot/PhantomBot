@@ -147,7 +147,6 @@ public class TwitchWSIRCParser {
             String[] messageList = rawMessage.split("\n");
 
             for (int idx = 0; idx < messageList.length; idx++) {
-                String message = messageList[idx];
                 parseLine(messageList[idx]);
             }
         } else {
