@@ -228,7 +228,7 @@
                         return;
                     }
 
-                    subject = subject.toLowerCase();
+                    subject = $.user.sanitize(subject);
 
                     if (timeArg < 0) {
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.add.error.negative'));
@@ -252,7 +252,7 @@
                         return;
                     }
 
-                    subject = subject.toLowerCase();
+                    subject = $.user.sanitize(subject);
                     if (!$.user.isKnown(subject)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', subject));
                     }
@@ -278,7 +278,7 @@
                     }
 
 
-                    subject = subject.toLowerCase();
+                    subject = $.user.sanitize(subject);
                     if ($.user.isKnown(subject)) {
                         $.inidb.set('time', subject, timeArg);
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.settime.success', $.username.resolve(subject), $.getUserTimeString(subject)));
