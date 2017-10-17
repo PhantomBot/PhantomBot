@@ -191,8 +191,8 @@
      * @event PubSubModerationTimeout
      */
     $.bind('PubSubModerationTimeout', function(event) {
-        var username = $.username.resolve(event.getUsername()),
-            creator = $.username.resolve(event.getCreator()),
+        var username = event.getUsername(),
+            creator = event.getCreator(),
             message = event.getMessage(),
             reason = event.getReason(),
             time = parseInt(event.getTime());
@@ -208,8 +208,8 @@
      * @event PubSubModerationUnTimeout
      */
     $.bind('PubSubModerationUnTimeout', function(event) {
-        var username = $.username.resolve(event.getUsername()),
-            creator = $.username.resolve(event.getCreator());
+        var username = event.getUsername(),
+            creator = event.getCreator();
 
         if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
             return;
@@ -222,8 +222,8 @@
      * @event PubSubModerationUnBan
      */
     $.bind('PubSubModerationUnBan', function(event) {
-        var username = $.username.resolve(event.getUsername()),
-            creator = $.username.resolve(event.getCreator());
+        var username = event.getUsername(),
+            creator = event.getCreator();
 
         if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
             return;
@@ -236,8 +236,8 @@
      * @event PubSubModerationBan
      */
     $.bind('PubSubModerationBan', function(event) {
-        var username = $.username.resolve(event.getUsername()),
-            creator = $.username.resolve(event.getCreator()),
+        var username = event.getUsername(),
+            creator = event.getCreator(),
             message = event.getMessage(),
             reason = event.getReason();
 
