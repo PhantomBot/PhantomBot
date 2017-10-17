@@ -992,8 +992,10 @@
                 return;
             }
 
-            permitUser(action.toLowerCase());
-            $.say($.username.resolve(action) + $.lang.get('chatmoderator.permited', linkPermitTime));
+            action = $.user.sanitize(action);
+
+            permitUser(action);
+            $.say(action + $.lang.get('chatmoderator.permited', linkPermitTime));
             $.log.event(action + ' was permited by ' + sender);
             return;
         }
