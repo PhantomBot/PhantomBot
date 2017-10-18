@@ -66,7 +66,7 @@ public class ViewerListCache implements Runnable {
 	}
 
 	/*
-	 * Method that updates the cache every 1 minute.
+	 * Method that updates the cache every 5 minutes.
 	 */
 	@Override
 	@SuppressWarnings("SleepWhileInLoop")
@@ -83,7 +83,7 @@ public class ViewerListCache implements Runnable {
             }
 			
 			try {
-                Thread.sleep(60 * 1000);
+                Thread.sleep(300 * 1000);
             } catch (InterruptedException ex) {
             	com.gmt2001.Console.err.println("ViewerListCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
