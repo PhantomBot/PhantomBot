@@ -313,7 +313,7 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to edit roles on a user
+     * Method to edit roles on a user, multiple can be set at once to replace the current ones.
      *
      * @param {IUser}   user
      * @param {IRole[]} roles
@@ -331,9 +331,9 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to edit roles on a user
+     * Method to edit roles on a user, multiple can be set at once to replace the current ones.
      *
-     * @param {String}    userId
+     * @param {String}  userId
      * @param {IRole[]} roles
      */
     public void editUserRoles(String userId, IRole[] roles) {
