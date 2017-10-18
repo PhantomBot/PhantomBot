@@ -313,7 +313,7 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to edit roles on a user
+     * Method to edit roles on a user, multiple can be set at once to replace the current ones.
      *
      * @param {IUser}   user
      * @param {IRole[]} roles
@@ -321,7 +321,7 @@ public class DiscordUtil {
     public void editUserRoles(IUser user, IRole[] roles) {
         RequestBuffer.request(() -> {
             try {
-                if (roles != null && user != null) {
+                if (roles != null || user != null) {
                     DiscordAPI.getGuild().editUserRoles(user, roles);
                 }
             } catch (MissingPermissionsException | DiscordException ex) {
@@ -331,9 +331,9 @@ public class DiscordUtil {
     }
 
     /*
-     * Method to edit roles on a user
+     * Method to edit roles on a user, multiple can be set at once to replace the current ones.
      *
-     * @param {String}    userId
+     * @param {String}  userId
      * @param {IRole[]} roles
      */
     public void editUserRoles(String userId, IRole[] roles) {
@@ -349,7 +349,7 @@ public class DiscordUtil {
     public void addRole(IRole role, IUser user) {
         RequestBuffer.request(() -> {
             try {
-                if (role != null && user != null) {
+                if (role != null || user != null) {
                     user.addRole(role);
                 }
             } catch (MissingPermissionsException | DiscordException ex) {
@@ -387,7 +387,7 @@ public class DiscordUtil {
     public void removeRole(IRole role, IUser user) {
         RequestBuffer.request(() -> {
             try {
-                if (role != null && user != null) {
+                if (role != null || user != null) {
                     user.removeRole(role);
                 }
             } catch (MissingPermissionsException | DiscordException ex) {
