@@ -473,7 +473,7 @@ public class TwitchCache implements Runnable {
     /*
      * Returns the logo link.
      */
-    public String getlogoLink() {
+    public String getLogoLink() {
         return this.logoLink;
     }
 

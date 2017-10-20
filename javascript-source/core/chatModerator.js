@@ -316,20 +316,12 @@
     function timeoutUserFor(username, time, reason) {
         $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
 
-        // Testing with this; might be removed later.
-        if ($.getMessageWrites() < 25) {
-            var firstTimeout = setTimeout(function() {
-                $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
-                clearInterval(firstTimeout);
-            }, 150);
-        }
-
         var lastTimeout = setTimeout(function() {
             if ($.getMessageWrites() < 50) {
                 $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
             }
             clearInterval(lastTimeout);
-        }, 1000, 'scripts::core::chatModerator.js::timeout');
+        }, 500, 'scripts::core::chatModerator.js::timeout');
     }
 
     /**
