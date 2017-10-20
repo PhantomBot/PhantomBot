@@ -84,6 +84,8 @@
         			.appendField($.lang.get('discord.streamhandler.offline.chatters'), $.lang.get('discord.streamhandler.offline.chatters.stat', avgChatters, maxChatters), true)
         			.appendField($.lang.get('discord.streamhandler.offline.followers'), $.lang.get('discord.streamhandler.offline.followers.stat', follows, $.getFollows($.channelName)), true)
         			.withUrl('https://twitch.tv/' + $.channelName).bulid());
+
+                $.inidb.RemoveFile('discordStreamStats');
         	}
         }, 6e4);
     });
