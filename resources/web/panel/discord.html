@@ -564,6 +564,16 @@
                 </td>
             </tr>
             <tr class="textList">
+                <td>Toggle Offline Alerts</td>
+                <td style="width: 25px"><div id="offlineToggleInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('offlineToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'offlineToggle', 'true')"><i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('offlineToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'offlineToggle', 'false')"><i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
+            <tr class="textList">
                 <td>Toggle Game Change Alerts</td>
                 <td style="width: 25px"><div id="gameToggleInput" /></td>
                 <td style="width: 25px">
@@ -591,7 +601,16 @@
                 <label for="onlineMessageInput">Online Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('onlineMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'onlineMessage')">Submit</button>
                 <input type="text" class="form-control" id="onlineMessageInput" placeholder="Online Message" data-toggle="tooltip" 
-                    title="Set a message for when you go live on Twitch. Available tags: (title), (game), (url), (name), and (follows)"/>
+                    title="Set a message for when you go live on Twitch. Available tags: (title)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="offlineMessageInput">Offline Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('offlineMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'offlineMessage')">Submit</button>
+                <input type="text" class="form-control" id="offlineMessageInput" placeholder="Offline Message" data-toggle="tooltip" 
+                    title="Set a message for when you go offline on Twitch. Available tags: (title)"/>
             </div>
         </form>
 
@@ -600,7 +619,7 @@
                 <label>Game Change Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gameMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'gameMessage')">Submit</button>
                 <input type="text" class="form-control" id="gameMessageInput" placeholder="Game Change Message" data-toggle="tooltip" 
-                    title="Set a message for when you switch games on Twitch. Available tags: (title), (game), (url), (name), (uptime), and (follows)"/>
+                    title="Set a message for when you switch games on Twitch. Available tags: (title)"/>
             </div>
         </form>
 

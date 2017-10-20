@@ -112,6 +112,36 @@ public class DiscordUtil {
     /*
      * Method to send embed messages.
      *
+     * @param {IChannel}     channel
+     * @param {EmbedObject} EmbedBuilder
+     */
+    public void sendMessageEmbed(IChannel channel, EmbedObject builder) {
+        RequestBuffer.request(() -> {
+            try {
+                if (channel != null && builder != null) {
+                    com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] ");
+
+                    channel.sendMessage(builder);
+                }
+            } catch (MissingPermissionsException | DiscordException | IllegalArgumentException ex) {
+                com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
+    }
+
+    /*
+     * Method to send embed messages.
+     *
+     * @param {String} channelName
+     * @param {EmbedObject} bulder
+     */
+    public void sendMessageEmbed(String channelName, EmbedObject builder) {
+        sendMessageEmbed(getChannel(channelName), builder);
+    }
+
+    /*
+     * Method to send embed messages.
+     *
      * @param {IChannel} channel
      * @param {String}   message
      * @param {String}   color
