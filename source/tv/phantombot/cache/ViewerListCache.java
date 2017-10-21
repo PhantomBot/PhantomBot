@@ -93,7 +93,6 @@ public class ViewerListCache implements Runnable {
 	/*
 	 * Method that updates the cache.
 	 */
-	@SuppressWarnings("unchecked")
 	private void updateCache() throws Exception {
 		String[] types = new String[] { "moderators", "staff", "admins", "global_mods", "viewers" };
 		List<String> cache = new ArrayList<>();
