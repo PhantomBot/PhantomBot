@@ -18,7 +18,7 @@
     function getCustomAPIValue(url) {
         return $.customAPI.get(url).content;
     }
-
+    
     /*
      * @function runCommand
      *
@@ -145,7 +145,7 @@
         if (message.match(/\(countdown=[^)]+\)/g)) {
             var t = message.match(/\([^)]+\)/)[0], countdown, time;
             countdown = t.replace('(countdown=', '').replace(')', '');
-            time = (Date.parse(countdown) - Date.parse(new Date()));
+            time = (Date.parse(countdown) - Date.parse($.getLocalTime()));
             message = $.replace(message, t, $.getTimeString(time / 1000));
         }
 
@@ -464,61 +464,42 @@
                     jsonCheckList = jsonItems[j].split('.');
                     if (jsonCheckList.length == 1) {
                         try {
-                            customAPIResponse = new JSONObject(origCustomAPIResponse).getString(jsonCheckList[0]);
+                            customAPIResponse = new JSONObject(origCustomAPIResponse).get(jsonCheckList[0]);
                         } catch (ex) {
-                            if (ex.message.indexOf('not a string') != -1) {
-                                try {
-                                    customAPIResponse = new JSONObject(origCustomAPIResponse).getInt(jsonCheckList[0]);
-                                } catch (ex) {
-                                    return $.lang.get('customcommands.customapijson.err', command);
-                                }
-                            } else {
-                                return $.lang.get('customcommands.customapijson.err', command);
-                            }
+                            $.log.error('Failed to get data from API: ' + ex.message);
+                            return $.lang.get('customcommands.customapijson.err', command);
                         }
                         customAPIReturnString += " " + customAPIResponse;
                     } else {
                         for (var i = 0; i < jsonCheckList.length - 1; i++) {
                             if (i == 0) {
                                 try {
-                                    jsonObject = new JSONObject(origCustomAPIResponse).getJSONObject(jsonCheckList[i]);
+                                    jsonObject = new JSONObject(origCustomAPIResponse).get(jsonCheckList[i]);
                                 } catch (ex) {
-                                    try {
-                                        jsonObject = new JSONArray(origCustomAPIResponse).get(jsonCheckList[i]);
-                                    } catch (ex) {
-                                        return $.lang.get('customcommands.customapijson.err', command);
-                                    }
+                                    $.log.error('Failed to get data from API: ' + ex.message);
+                                    return $.lang.get('customcommands.customapijson.err', command);
                                 }
                             } else if (!isNaN(jsonCheckList[i + 1])) {
                                 try {
-                                    jsonObject = jsonObject.getJSONArray(jsonCheckList[i]);
+                                    jsonObject = jsonObject.get(jsonCheckList[i]);
                                 } catch (ex) {
-                                    try {
-                                        jsonObject = jsonObject.getJSONObject(jsonCheckList[i]);
-                                    } catch (ex) {
-                                        return $.lang.get('customcommands.customapijson.err', command);
-                                    }
+                                    $.log.error('Failed to get data from API: ' + ex.message);
+                                    return $.lang.get('customcommands.customapijson.err', command);
                                 }
                             } else {
                                 try {
-                                    jsonObject = jsonObject.getJSONObject(jsonCheckList[i]);
+                                    jsonObject = jsonObject.get(jsonCheckList[i]);
                                 } catch (ex) {
+                                    $.log.error('Failed to get data from API: ' + ex.message);
                                     return $.lang.get('customcommands.customapijson.err', command);
                                 }
                             }
                         }
                         try {
-                            customAPIResponse = jsonObject.getString(jsonCheckList[i]);
+                            customAPIResponse = jsonObject.get(jsonCheckList[i]);
                         } catch (ex) {
-                            if (ex.message.indexOf('not a string') != -1) {
-                                try {
-                                    customAPIResponse = jsonObject.getInt(jsonCheckList[i]);
-                                } catch (ex) {
-                                    return $.lang.get('customcommands.customapijson.err', command);
-                                }
-                            } else {
-                                return $.lang.get('customcommands.customapijson.err', command);
-                            }
+                            $.log.error('Failed to get data from API: ' + ex.message);
+                            return $.lang.get('customcommands.customapijson.err', command);
                         }
                         customAPIReturnString += " " + customAPIResponse;
                     }
@@ -574,23 +555,28 @@
      * @param {string} command
      * @param {sub} subcommand
      * @param {bool} isMod
-     * @returns 1 | 0
+     * @returns 1 | 0 - Not a boolean
      */
     function priceCom(username, command, subCommand, isMod) {
-        if ($.inidb.exists('pricecom', (command + ' ' + subCommand).trim())) {
+        if ((subCommand === '' && $.inidb.exists('pricecom', command)) || $.inidb.exists('pricecom', command + ' ' + subCommand)) {
             if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(username)) || !isMod)) && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
-                var cost = getCommandPrice(command, subCommand, '');
-                
-                if ($.getUserPoints(username) < cost) {
+                if ($.getUserPoints(username) < getCommandPrice(command, subCommand, '')) {
                     return 1;
-                } else {
-                    $.inidb.decr('points', username, cost);
                 }
             }
-        } else if ($.inidb.exists('paycom', command)) {
-            $.inidb.incr('points', username, $.inidb.get('paycom', command));
         }
         return 0;
+    }
+
+     /*
+     * @function payCom
+     *
+     * @export $
+     * @param {string} command
+     * @returns 1 | 0 - Not a boolean
+     */
+    function payCom(command) {
+        return ($.inidb.exists('paycom', command) ? 0 : 1);
     }
 
     /*
@@ -612,6 +598,17 @@
                                     $.inidb.get('pricecom', command + ' ' + subCommand) :
                                         $.inidb.exists('pricecom', command) ?
                                             $.inidb.get('pricecom', command) : 0);
+    }
+
+    /*
+     * @function getCommandPay
+     *
+     * @export $
+     * @param {string} command
+     * @returns {Number}
+     */
+    function getCommandPay(command) {
+        return ($.inidb.exists('paycom', command) ? $.inidb.get('paycom', command) : 0);
     }
 
     /*
@@ -1121,6 +1118,8 @@
     $.priceCom = priceCom;
     $.getCommandPrice = getCommandPrice;
     $.tags = tags;
+    $.getCommandPay = getCommandPay;
+    $.payCom = payCom;
     $.command = {
         run: runCommand
     };

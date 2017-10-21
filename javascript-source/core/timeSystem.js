@@ -90,6 +90,19 @@
     }
 
     /**
+     * @function getLocalTime
+     * @export $
+     * @param {String} timeformat
+     * @param {String} timeZone
+     * @return {String}
+     */
+    function getLocalTime() {
+        var dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
+        return dateFormat.format(new java.util.Date());
+    }
+
+    /**
      * @function dateToString
      * @export $
      * @param {Date} date
@@ -215,7 +228,7 @@
                         return;
                     }
 
-                    subject = subject.toLowerCase();
+                    subject = $.user.sanitize(subject);
 
                     if (timeArg < 0) {
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.add.error.negative'));
@@ -239,7 +252,7 @@
                         return;
                     }
 
-                    subject = subject.toLowerCase();
+                    subject = $.user.sanitize(subject);
                     if (!$.user.isKnown(subject)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', subject));
                     }
@@ -265,7 +278,7 @@
                     }
 
 
-                    subject = subject.toLowerCase();
+                    subject = $.user.sanitize(subject);
                     if ($.user.isKnown(subject)) {
                         $.inidb.set('time', subject, timeArg);
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.settime.success', $.username.resolve(subject), $.getUserTimeString(subject)));
@@ -417,4 +430,5 @@
     $.getTimeStringMinutes = getTimeStringMinutes;
     $.updateTimeSettings = updateTimeSettings;
     $.getCurrentLocalTimeString = getCurrentLocalTimeString;
+    $.getLocalTime = getLocalTime;
 })();

@@ -22,6 +22,8 @@
         modLogs = $.getSetIniDbBoolean('discordSettings', 'modLogs', false),
         modLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
 
+        cbenniToggle = $.getSetIniDbBoolean('discordSettings', 'cbenniToggle', false);
+
     /**
      * @function reload
      */
@@ -37,6 +39,7 @@
         spamLimit = $.getSetIniDbNumber('discordSettings', 'spamLimit', 5);
         modLogs = $.getSetIniDbBoolean('discordSettings', 'modLogs', false);
         modLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
+        cbenniToggle = $.getSetIniDbBoolean('discordSettings', 'cbenniToggle', false);
     }
 
     /**
@@ -141,6 +144,11 @@
         obj['**Creator:**'] = creator;
         obj['**Reason:**'] = reason;
         obj['**Time:**'] = time + ' seconds.';
+
+        if (cbenniToggle) {
+            obj['**Cbenni:**'] = '[https://cbenni.com/' + $.channelName + '?user=' + username.toLowerCase() + '](https://cbenni.com/' + $.channelName + '?user=' + username.toLowerCase() + ')';
+        }
+
         obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
 
         var keys = Object.keys(obj);
@@ -180,11 +188,11 @@
     }
     
     /*
-     * @event Timeout
+     * @event PubSubModerationTimeout
      */
-    $.bind('Timeout', function(event) {
-        var username = $.username.resolve(event.getUsername()),
-            creator = $.username.resolve(event.getCreator()),
+    $.bind('PubSubModerationTimeout', function(event) {
+        var username = event.getUsername(),
+            creator = event.getCreator(),
             message = event.getMessage(),
             reason = event.getReason(),
             time = parseInt(event.getTime());
@@ -197,11 +205,11 @@
     });
 
     /*
-     * @event Timeout
+     * @event PubSubModerationUnTimeout
      */
-    $.bind('UnTimeout', function(event) {
-        var username = $.username.resolve(event.getUsername()),
-            creator = $.username.resolve(event.getCreator());
+    $.bind('PubSubModerationUnTimeout', function(event) {
+        var username = event.getUsername(),
+            creator = event.getCreator();
 
         if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
             return;
@@ -211,11 +219,11 @@
     });
 
     /*
-     * @event Timeout
+     * @event PubSubModerationUnBan
      */
-    $.bind('UnBanned', function(event) {
-        var username = $.username.resolve(event.getUsername()),
-            creator = $.username.resolve(event.getCreator());
+    $.bind('PubSubModerationUnBan', function(event) {
+        var username = event.getUsername(),
+            creator = event.getCreator();
 
         if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
             return;
@@ -225,11 +233,11 @@
     });
 
     /*
-     * @event Banned
+     * @event PubSubModerationBan
      */
-    $.bind('Banned', function(event) {
-        var username = $.username.resolve(event.getUsername()),
-            creator = $.username.resolve(event.getCreator()),
+    $.bind('PubSubModerationBan', function(event) {
+        var username = event.getUsername(),
+            creator = event.getCreator(),
             message = event.getMessage(),
             reason = event.getReason();
 
@@ -577,6 +585,12 @@
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.done', actionArgs));
             }
 
+            if (action.equalsIgnoreCase('togglecbenni')) {
+                cbenniToggle = !cbenniToggle;
+                $.setIniDbBoolean('discordSettings', 'cbenniToggle', cbenniToggle);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cbenni.toggle', (cbenniToggle ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+            }
+
             if (action.equalsIgnoreCase('logs')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.toggle.usage'));
@@ -633,6 +647,8 @@
             $.discord.registerSubCommand('moderation', 'whitelist', 1);
             $.discord.registerSubCommand('moderation', 'cleanup', 1);
             $.discord.registerSubCommand('moderation', 'logs', 1);
+            $.discord.registerSubCommand('moderation', 'togglecbenni', 1);
+ 
 
             setInterval(function() {
                 if (spam.length !== 0 && lastMessage - $.systemTime() <= 0) {

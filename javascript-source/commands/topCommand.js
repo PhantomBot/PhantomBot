@@ -4,7 +4,7 @@
  * Build and announce lists of top viewers (Highest points, highest time spent in the channel)
  */
 (function() {
-    var bots = ['moobot', 'nightbot', 'xanbot', 'hnlbot', 'ohbot', 'wizebot', 'vivbot', 'coebot', 'branebot', 'monstercat', 'curseappbot', 'revlobot', 'muxybot', 'faegwent'], // Add your own name that you want to be in the list here.
+    var bots = $.readFile('./addons/ignorebots.txt'),
         amountPoints = $.getSetIniDbNumber('settings', 'topListAmountPoints', 5),
         amountTime = $.getSetIniDbNumber('settings', 'topListAmountTime', 5);
 
@@ -141,6 +141,14 @@
         }
 
         /*
+         * @commandpath reloadtopbots - Reload the list of bots and users to ignore
+         */
+        if (command.equalsIgnoreCase('reloadtopbots')) {
+            bots = $.readFile('./addons/ignorebots.txt');
+            $.say($.whisperPrefix(sender) + $.lang.get('top5.reloadtopbots'));
+        }
+
+        /*
          * Panel command, no command path needed.
          */
         if (command.equalsIgnoreCase('reloadtop')) {
@@ -157,5 +165,6 @@
         $.registerChatCommand('./commands/topCommand.js', 'topamount', 1);
         $.registerChatCommand('./commands/topCommand.js', 'toptimeamount', 1);
         $.registerChatCommand('./commands/topCommand.js', 'reloadtop', 1);
+        $.registerChatCommand('./commands/topCommand.js', 'reloadtopbots', 1);
     });
 })();

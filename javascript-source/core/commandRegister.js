@@ -10,7 +10,7 @@
 (function() {
     var commands = {},
         commandScriptTable = {},
-        aliases = [];
+        aliases = {};
 
     /**
      * @function getCommandScript

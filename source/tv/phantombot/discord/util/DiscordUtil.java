@@ -40,8 +40,6 @@ import java.util.List;
 import java.io.FileNotFoundException;
 import java.io.File;
 
-import java.time.LocalDateTime;
-
 import java.awt.Color;
 
 /*
@@ -51,7 +49,7 @@ import java.awt.Color;
  * @author ScaniaTV
  */
 public class DiscordUtil {
-	/*
+    /*
      * Method to send a message to a channel.
      *
      * @param {IChannel} channel
@@ -109,6 +107,36 @@ public class DiscordUtil {
      */
     public void sendPrivateMessage(String userName, String message) {
         sendPrivateMessage(getUser(userName), message);
+    }
+
+    /*
+     * Method to send embed messages.
+     *
+     * @param {IChannel}     channel
+     * @param {EmbedObject} EmbedBuilder
+     */
+    public void sendMessageEmbed(IChannel channel, EmbedObject builder) {
+        RequestBuffer.request(() -> {
+            try {
+                if (channel != null && builder != null) {
+                    com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] ");
+
+                    channel.sendMessage(builder);
+                }
+            } catch (MissingPermissionsException | DiscordException | IllegalArgumentException ex) {
+                com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
+    }
+
+    /*
+     * Method to send embed messages.
+     *
+     * @param {String} channelName
+     * @param {EmbedObject} bulder
+     */
+    public void sendMessageEmbed(String channelName, EmbedObject builder) {
+        sendMessageEmbed(getChannel(channelName), builder);
     }
 
     /*
@@ -198,10 +226,10 @@ public class DiscordUtil {
      * @return {IChannel}
      */
     public IChannel getChannel(String channelName) {
-        List<IChannel> channels = DiscordAPI.guild.getChannelsByName(channelName);
+        List<IChannel> channels = DiscordAPI.getGuild().getChannels();
 
         for (IChannel channel : channels) {
-            if (channel.getName().equals(channelName)) {
+            if (channel.getName().equalsIgnoreCase(channelName)) {
                 return channel;
             }
         }
@@ -215,10 +243,27 @@ public class DiscordUtil {
      * @return {IUser}
      */
     public IUser getUser(String userName) {
-        List<IUser> users = DiscordAPI.guild.getUsersByName(userName, true);
+        List<IUser> users = DiscordAPI.getGuild().getUsers();
 
         for (IUser user : users) {
-            if (user.getDisplayName(DiscordAPI.guild).equals(userName)) {
+            if (user.getDisplayName(DiscordAPI.getGuild()).equalsIgnoreCase(userName)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Method to return a user object by its id.
+     *
+     * @param  {Long} userId
+     * @return {IUser}
+     */
+    public IUser getUserById(long userId) {
+        List<IUser> users = DiscordAPI.getGuild().getUsers();
+
+        for (IUser user : users) {
+            if (user.getLongID() == userId) {
                 return user;
             }
         }
@@ -233,10 +278,10 @@ public class DiscordUtil {
      * @return {IUser}
      */
     public IUser getUserWithDiscriminator(String userName, String discriminator) {
-        List<IUser> users = DiscordAPI.guild.getUsersByName(userName, true);
+        List<IUser> users = DiscordAPI.getGuild().getUsersByName(userName, true);
 
         for (IUser user : users) {
-            if (user.getDisplayName(DiscordAPI.guild).equals(userName) && user.getDiscriminator().equals(discriminator)) {
+            if (user.getDisplayName(DiscordAPI.getGuild()).equalsIgnoreCase(userName) && user.getDiscriminator().equalsIgnoreCase(discriminator)) {
                 return user;
             }
         }
@@ -250,14 +295,79 @@ public class DiscordUtil {
      * @return {IRole}
      */
     public IRole getRole(String roleName) {
-        List<IRole> roles = DiscordAPI.guild.getRolesByName(roleName);
+        List<IRole> roles = DiscordAPI.getClient().getRoles();
 
         for (IRole role : roles) {
-            if (role.getName().equals(roleName)) {
+            if (role.getName().equalsIgnoreCase(roleName)) {
                 return role;
             }
         }
         return null;
+    }
+
+    /*
+     * Method to get an array of role objects by a string of role names.
+     *
+     * @param  {String[]} roles
+     * @return {IRole[]}
+     */
+    public IRole[] getRoleObjects(String[] roles) {
+        IRole[] list = new IRole[roles.length];
+
+        for (int i = 0; i < roles.length; i++) {
+            list[i] = getRole(roles[i]);
+        }
+        return list;
+    }
+
+    /*
+     * Method to get a list of a user's roles.
+     *
+     * @param  {IUser} user
+     * @return {List}
+     */
+    public IRole[] getUserRoles(IUser user) {
+        List<IRole> roles = (user == null ? new ArrayList<IRole>() : DiscordAPI.getGuild().getRolesForUser(user));
+
+        return (roles.size() < 1 ? new IRole[0] : roles.toArray(new IRole[roles.size()]));
+    }
+
+    /*
+     * Method to get a list of a user's roles.
+     *
+     * @param  {String} userId
+     * @return {List}
+     */
+    public IRole[] getUserRoles(String userId) {
+        return getUserRoles(getUserById(Long.parseUnsignedLong(userId)));
+    }
+
+    /*
+     * Method to edit roles on a user, multiple can be set at once to replace the current ones.
+     *
+     * @param {IUser}   user
+     * @param {IRole[]} roles
+     */
+    public void editUserRoles(IUser user, IRole[] roles) {
+        RequestBuffer.request(() -> {
+            try {
+                if (roles != null && user != null) {
+                    DiscordAPI.getGuild().editUserRoles(user, roles);
+                }
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to edit roles on user: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
+    }
+
+    /*
+     * Method to edit roles on a user, multiple can be set at once to replace the current ones.
+     *
+     * @param {String}  userId
+     * @param {IRole[]} roles
+     */
+    public void editUserRoles(String userId, IRole[] roles) {
+        editUserRoles(getUserById(Long.parseUnsignedLong(userId)), roles);
     }
 
     /*
@@ -286,6 +396,16 @@ public class DiscordUtil {
      */
     public void addRole(String roleName, String userName) {
         addRole(getRole(roleName), getUser(userName));
+    }
+
+    /*
+     * Method to set a role on a user.
+     *
+     * @param {String} roleName
+     * @param {IUser} user
+     */
+    public void addRole(String roleName, IUser user) {
+        addRole(getRole(roleName), user);
     }
 
     /*
@@ -322,13 +442,13 @@ public class DiscordUtil {
      * @param {String} roleName
      */
     public void createRole(String roleName) {
-    	RequestBuffer.request(() -> {
-    		try {
-    			DiscordAPI.guild.createRole().changeName(roleName);
-    		} catch (MissingPermissionsException | DiscordException ex) {
-    			com.gmt2001.Console.err.println("Failed to create role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
-    		}
-    	});
+        RequestBuffer.request(() -> {
+            try {
+                DiscordAPI.getGuild().createRole().changeName(roleName);
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to create role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
     }
 
     /*
@@ -337,15 +457,15 @@ public class DiscordUtil {
      * @param {IRole} role
      */
     public void deleteRole(IRole role) {
-    	RequestBuffer.request(() -> {
-    		try {
-    			if (role != null) {
-    				role.delete();
-    			}
-    		} catch (MissingPermissionsException | DiscordException ex) {
-    			com.gmt2001.Console.err.println("Failed to delete role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
-    		}
-    	});
+        RequestBuffer.request(() -> {
+            try {
+                if (role != null) {
+                    role.delete();
+                }
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to delete role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
     }
 
     /*
@@ -354,7 +474,7 @@ public class DiscordUtil {
      * @param {String} roleName
      */
     public void deleteRole(String roleName) {
-    	deleteRole(getRole(roleName));
+        deleteRole(getRole(roleName));
     }
 
     /*
@@ -364,7 +484,7 @@ public class DiscordUtil {
      * @return {Boolean}
      */
     public boolean isAdministrator(IUser user) {
-        return (user != null ? user.getPermissionsForGuild(DiscordAPI.guild).contains(Permissions.ADMINISTRATOR) : false);
+        return (user != null ? user.getPermissionsForGuild(DiscordAPI.getGuild()).contains(Permissions.ADMINISTRATOR) : false);
     }
 
     /*
@@ -393,7 +513,7 @@ public class DiscordUtil {
                 public void run() {
                     RequestBuffer.request(() -> {
                         try {
-                            List<IMessage> messages = channel.getMessageHistoryFrom(LocalDateTime.now(), (amount < 2 ? 2 : amount));
+                            List<IMessage> messages = channel.getMessageHistory(amount < 2 ? 2 : amount);
                             
                             channel.bulkDelete(messages);
                         } catch (DiscordException ex) {
@@ -424,9 +544,6 @@ public class DiscordUtil {
      * @param {Array}   list
      */
     public void bulkDeleteMessages(IChannel channel, IMessage[] list) {
-        // Discord4J says that getting messages can block the current thread if they need to be requested from Discord's API.
-        // So start this on a new thread to avoid that. Please note that you need to delete at least 2 messages.
-
         if (channel != null) {
             RequestBuffer.request(() -> {
                 try {
@@ -465,7 +582,7 @@ public class DiscordUtil {
      * @param {String} game
      */
     public void setGame(String game) {
-        DiscordAPI.shard.changePlayingText(game);
+        DiscordAPI.getShard().changePlayingText(game);
     }
 
     /*
@@ -475,7 +592,7 @@ public class DiscordUtil {
      * @param {String} url
      */
     public void setStream(String game, String url) {
-        DiscordAPI.shard.streaming(game, url);
+        DiscordAPI.getShard().streaming(game, url);
     }
 
     /*
@@ -483,14 +600,14 @@ public class DiscordUtil {
      *
      */
     public void removeGame() {
-        DiscordAPI.shard.online();
+        DiscordAPI.getShard().changePlayingText(null);
     }
 
     /*
      * Method that gets all server members
      */
     public List<IUser> getUsers() {
-        return DiscordAPI.client.getUsers();
+        return DiscordAPI.getClient().getUsers();
     }
 
     /*

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
+/* 
  * @author IllusionaryOne
  */
 
@@ -129,11 +129,11 @@
                         blacklist[i] = JSON.parse(modValue);
                         html += '<tr>' +
                         '<td>' + (modSetting.length > 80 ? modSetting.substring(0, 80) + '...' : modSetting) + '</td>' +
-                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openBlackListModal(\'' + i + '\')"><i class="fa fa-pencil" /> </button>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openBlackListModal(\'' + i + '\')"><i class="fa fa-hdd-o" /> </button>' +
                         '<button type="button" id="delete_blackList_' + modSetting.replace(/[^a-zA-Z0-9]/ig, '_') + '" class="btn btn-default btn-xs" onclick="$.deleteBlacklist(\'' + modSetting.replace(/\\/g, '\\\\') + '\')">'+
                         '<i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
-
+                    
                     }
                     html += '</table>';
                 } else {
@@ -148,7 +148,7 @@
                     for (idx in msgObject['results']) {
                         modSetting = msgObject['results'][idx]['key'];
                         modValue = msgObject['results'][idx]['value'];
-
+    
                         html += "<tr class=\"textList\">" +
                                 "    <td style=\"width: 15px\" padding=\"5px\">" +
                                 "        <div id=\"delete_whiteList_" + modSetting.replace(/[^a-z1-9]/ig, '_') + "\" type=\"button\" class=\"btn btn-default btn-xs\"" +
@@ -405,31 +405,37 @@
                             $('#toggleRegularFakePurge').attr('checked', 'checked');
                         }
                     }
-
+                
                     if (panelMatch(modSetting, 'regularsModerateCaps')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularCaps').attr('checked', 'checked');
                         }
                     }
-
+                
                     if (panelMatch(modSetting, 'regularsModerateSymbols')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularSymbols').attr('checked', 'checked');
                         }
                     }
-
+                    
                     if (panelMatch(modSetting, 'regularsModerateSpam')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularSpam').attr('checked', 'checked');
                         }
                     }
-
+                    
                     if (panelMatch(modSetting, 'regularsModerateColors')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularColors').attr('checked', 'checked');
                         }
                     }
 
+                    if (panelMatch(modSetting, 'regularsModerateEmotes')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularEmotes').attr('checked', 'checked');
+                        }
+                    }
+                    
                     if (panelMatch(modSetting, 'regularsModerateLongMsg')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularLongMsg').attr('checked', 'checked');
@@ -453,31 +459,37 @@
                             $('#toggleSubscriberFakePurge').attr('checked', 'checked');
                         }
                     }
-
+                
                     if (panelMatch(modSetting, 'subscribersModerateCaps')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberCaps').attr('checked', 'checked');
                         }
                     }
-
+                
                     if (panelMatch(modSetting, 'subscribersModerateSymbols')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberSymbols').attr('checked', 'checked');
                         }
                     }
-
+                    
                     if (panelMatch(modSetting, 'subscribersModerateSpam')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberSpam').attr('checked', 'checked');
                         }
                     }
-
+                    
                     if (panelMatch(modSetting, 'subscribersModerateColors')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberColors').attr('checked', 'checked');
                         }
                     }
 
+                    if (panelMatch(modSetting, 'subscribersModerateEmotes')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberEmotes').attr('checked', 'checked');
+                        }
+                    }
+                    
                     if (panelMatch(modSetting, 'subscribersModerateLongMsg')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberLongMsg').attr('checked', 'checked');
@@ -523,6 +535,12 @@
                     if (panelMatch(modSetting, 'silentTimeoutColors')) {
                         if (panelMatch(modValue, 'true')) {
                             $('#toggleSilentTimeoutColors').attr('checked', 'checked');
+                        }
+                    }
+
+                    if (panelMatch(modSetting, 'silentTimeoutEmotes')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutEmotes').attr('checked', 'checked');
                         }
                     }
 
@@ -588,7 +606,7 @@
                 hasRegs = $("#blacklist_regs").is(":checked"),
                 hasSubs = $("#blacklist_subs").is(":checked"),
                 isSilent = $("#blacklist_silent").is(":checked");
-
+    
             if (phrase.length > 0 && message.length > 0 && banReason.length > 0 && timeout.length > 0) {
                 var obj = {
                     id: 'panel_' + phrase,
@@ -601,7 +619,7 @@
                     message: String(message),
                     banReason: String(banReason)
                 };
-
+                
                 if (currentBlacklist !== null && currentBlacklist.localeCompare((isRegex && !phrase.startsWith('regex:') ? ('regex:' + String(phrase)) : String(phrase))) !== 0) {
                     sendDBDelete("commands_delblacklist_" + currentBlacklist, "blackList", String(currentBlacklist));
                 }
@@ -775,7 +793,7 @@
     }
 
     /**
-     * @function permitUserCommand()
+     * @function permitUserCommand() 
      */
     function permitUserCommand() {
         sendCommand("permit " + $("#permitUserInput").val());

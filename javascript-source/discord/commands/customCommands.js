@@ -148,12 +148,10 @@
         }
 
         if (s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)/)) {
-            if ($.discord.setRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]) == true) {
-                s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
-                if (s.length === 0) {
-                    return null;
-                }
-            } else {
+            $.discord.addRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]);
+            
+            s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
+            if (s.length === 0) {
                 return null;
             }
         }
@@ -170,6 +168,7 @@
      */
     function api(event, message) {
         var JSONObject = Packages.org.json.JSONObject,
+            JSONArray = Packages.org.json.JSONArray,
             command = event.getCommand(),
             args = event.getArgs(),
             origCustomAPIResponse = '',
@@ -183,12 +182,13 @@
             jsonItems,
             jsonCheckList;
 
+        // Get the URL for a customapi, if applicable, and process $1 - $9.  See below about that.
         if ((regExCheck = message.match(reCustomAPI))) {
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
                     if (regExCheck[1].indexOf('$' + i) != -1) {
                         if (!args[i - 1]) {
-                            return $.lang.get('discord.customcommands.customapi.404', command);
+                            return $.lang.get('customcommands.customapi.404', command);
                         }
                         regExCheck[1] = regExCheck[1].replace('$' + i, args[i - 1]);
                     } else {
@@ -199,12 +199,16 @@
             customAPIReturnString = getCustomAPIValue(regExCheck[1]);
         }
 
+        // Design Note.  As of this comment, this parser only supports parsing out of objects, it does not
+        // support parsing of arrays, especially walking arrays.  If that needs to be done, please write
+        // a custom JavaScript.  We limit $1 - $9 as well; 10 or more arguments being passed by users to an
+        // API seems like overkill.  Even 9 does, to be honest.
         if ((regExCheck = message.match(reCustomAPIJson))) {
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
                     if (regExCheck[1].indexOf('$' + i) != -1) {
                         if (!args[i - 1]) {
-                            return $.lang.get('discord.customcommands.customapi.404', command);
+                            return $.lang.get('customcommands.customapi.404', command);
                         }
                         regExCheck[1] = regExCheck[1].replace('$' + i, args[i - 1]);
                     } else {
@@ -228,39 +232,42 @@
                     jsonCheckList = jsonItems[j].split('.');
                     if (jsonCheckList.length == 1) {
                         try {
-                            customAPIResponse = new JSONObject(origCustomAPIResponse).getString(jsonCheckList[0]);
+                            customAPIResponse = new JSONObject(origCustomAPIResponse).get(jsonCheckList[0]);
                         } catch (ex) {
-                            if (ex.message.indexOf('not a string') != -1) {
-                                try {
-                                    customAPIResponse = new JSONObject(origCustomAPIResponse).getInt(jsonCheckList[0]);
-                                } catch (ex) {
-                                    return $.lang.get('discord.customcommands.customapijson.err', command);
-                                }
-                            } else {
-                                return $.lang.get('discord.customcommands.customapijson.err', command);
-                            }
+                            $.log.error('Failed to get data from API: ' + ex.message);
+                            return $.lang.get('discord.customcommands.customapijson.err', command);
                         }
                         customAPIReturnString += " " + customAPIResponse;
                     } else {
                         for (var i = 0; i < jsonCheckList.length - 1; i++) {
                             if (i == 0) {
-                                jsonObject = new JSONObject(origCustomAPIResponse).getJSONObject(jsonCheckList[i]);
-                            } else {
-                                jsonObject = jsonObject.getJSONObject(jsonCheckList[i]);
-                            }
-                        }
-                        try {
-                            customAPIResponse = jsonObject.getString(jsonCheckList[i]);
-                        } catch (ex) {
-                            if (ex.message.indexOf('not a string') != -1) {
                                 try {
-                                    customAPIResponse = jsonObject.getInt(jsonCheckList[i]);
+                                    jsonObject = new JSONObject(origCustomAPIResponse).get(jsonCheckList[i]);
                                 } catch (ex) {
+                                    $.log.error('Failed to get data from API: ' + ex.message);
+                                    return $.lang.get('discord.customcommands.customapijson.err', command);
+                                }
+                            } else if (!isNaN(jsonCheckList[i + 1])) {
+                                try {
+                                    jsonObject = jsonObject.get(jsonCheckList[i]);
+                                } catch (ex) {
+                                    $.log.error('Failed to get data from API: ' + ex.message);
                                     return $.lang.get('discord.customcommands.customapijson.err', command);
                                 }
                             } else {
-                                return $.lang.get('discord.customcommands.customapijson.err', command);
+                                try {
+                                    jsonObject = jsonObject.get(jsonCheckList[i]);
+                                } catch (ex) {
+                                    $.log.error('Failed to get data from API: ' + ex.message);
+                                    return $.lang.get('discord.customcommands.customapijson.err', command);
+                                }
                             }
+                        }
+                        try {
+                            customAPIResponse = jsonObject.get(jsonCheckList[i]);
+                        } catch (ex) {
+                            $.log.error('Failed to get data from API: ' + ex.message);
+                            return $.lang.get('discord.customcommands.customapijson.err', command);
                         }
                         customAPIReturnString += " " + customAPIResponse;
                     }
@@ -543,7 +550,8 @@
             for (i = 0; i < keys.length; i++) {
                 temp.push('!' + keys[i]);
             }
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.commands', temp.join(', ')));
+
+            $.paginateArrayDiscord(temp, 'discord.customcommands.commands', ', ', channel, mention);
         }
 
         /**
@@ -555,11 +563,11 @@
                 i;
 
             for (i = 0; i < keys.length; i++) {
-                if (!keys[i].includes(' ')) {
+                if (keys[i].indexOf(' ') === -1) {
                     temp.push('!' + keys[i]);
                 }
             }
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.bot.commands', temp.join(', ')));
+            $.paginateArrayDiscord(temp, 'discord.customcommands.bot.commands', ', ', channel, mention);
         }
     });
 

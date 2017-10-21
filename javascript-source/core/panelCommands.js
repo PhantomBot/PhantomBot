@@ -40,6 +40,16 @@
             $.reloadTipeeeStream();
         }
 
+         /*
+         * Reloads the streamelements vars.
+         */
+        if (command.equalsIgnoreCase('streamelementsreload')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadStreamElements();
+        }
+
         /*
          * Sets permissions on a command.
          */
@@ -177,6 +187,18 @@
             }
             var argsString = args.splice(0).join(' ');
             $.updateGame($.channelName, argsString, sender, true);
+            return;
+        } 
+
+        /*
+         * Sets the community on stream
+         */
+        if (command.equalsIgnoreCase('setcommunitysilent')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            var argsString = args.join(' ').split(', ');
+            $.updateCommunity($.channelName, argsString, sender, true);
             return;
         } 
 
@@ -477,6 +499,8 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadlogs', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadbet', 30);
             $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
         }, 10000);
     });
 })();
