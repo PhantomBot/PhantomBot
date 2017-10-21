@@ -83,7 +83,7 @@ public class ViewerListCache implements Runnable {
             }
 			
 			try {
-                Thread.sleep(300 * 1000);
+                Thread.sleep(600 * 1000);
             } catch (InterruptedException ex) {
             	com.gmt2001.Console.err.println("ViewerListCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
