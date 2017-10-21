@@ -47,11 +47,14 @@
                     donationObject;
 
                 for (idx in msgObject['results']) {
-                    if (!isNaN(msgObject['results'][idx]['key'])) {
-                        donationData[idx] = [];
-                        donationData[idx]['key'] = msgObject['results'][idx]['key'];
-                        donationData[idx]['value'] = msgObject['results'][idx]['value'];
+                    try {
+                        JSON.parse(msgObject['results'][idx]['value']);
+                    } catch (e) {
+                        continue;
                     }
+                    donationData[idx] = [];
+                    donationData[idx]['key'] = msgObject['results'][idx]['key'];
+                    donationData[idx]['value'] = msgObject['results'][idx]['value'];
                 }
 
                 if (donationData.length === 0) {
@@ -80,22 +83,36 @@
                 }
 
                 for (idx in donationData) {
-                    if (!isNaN(donationData[idx]['key'])) {
+                    try {
                         donationObj = JSON.parse(donationData[idx]['value']);
-                        if (donationObj['currency'] !== undefined || donationObj['name'] !== undefined) {
+                    } catch (e) {
+                        continue;
+                    }
+                    if (donationObj['currency'] !== undefined && donationObj['name'] !== undefined) {
+                        html += '<tr class="textList">' +
+                                '    <td>' + donationObj['name'] + '</td>' +
+                                '    <td>' + $.format.date(parseInt(donationObj['created_at']) * 1e3, 'MM.dd.yy hh:mm:ss') + '</td>' +
+                                '    <td style="float: right">' + donationObj['currency'] + ' ' + parseInt(donationObj['amount']).toFixed(2) + '</td>' +
+                                '</tr>';
+                    } else if (donationObj['parameters'] !== undefined) {
+                        html += '<tr class="textList">' +
+                                '    <td>' + donationObj['parameters']['username'] + '</td>' +
+                                '    <td>' + $.format.date(new Date(donationObj['created_at']), 'MM.dd.yy hh:mm:ss') + '</td>' +
+                                '    <td style="float: right">' + donationObj['parameters']['currency'] + ' ' + parseInt(donationObj['parameters']['amount']).toFixed(2) + '</td>' +
+                                '</tr>';
+                    } else if (donationObj['createdAt'] !== undefined && donationObj['donation'] !== undefined) {
+                        html += '<tr class="textList">' +
+                            '    <td>' + donationObj['donation']['user']['username'] + '</td>' +
+                            '    <td>' + $.format.date(new Date(donationObj['createdAt']), 'MM.dd.yy hh:mm:ss') + '</td>' +
+                            '    <td style="float: right">' + donationObj['donation']['currency'] + ' ' + parseInt(donationObj['donation']['amount']).toFixed(2) + '</td>' +
+                            '</tr>';
+                    } else {
+                        if (donationObj['user'] !== undefined && donationObj['user']['name'] !== undefined) {
                             html += '<tr class="textList">' +
-                                    '    <td>' + donationObj['name'] + '</td>' +
-                                    '    <td>' + $.format.date(parseInt(donationObj['created_at']) * 1e3, 'MM.dd.yy hh:mm:ss') + '</td>' +
-                                    '    <td style="float: right">' + donationObj['currency'] + ' ' + parseInt(donationObj['amount']).toFixed(2) + '</td>' +
+                                    '    <td>' + donationObj['user']['name'] + '</td>' +
+                                    '    <td>' + $.format.date(new Date(donationObj['date']), 'MM.dd.yy hh:mm:ss') + '</td>' +
+                                    '    <td style="float: right">' + donationObj['currencyCode'] + ' ' + parseInt(donationObj['amount']).toFixed(2) + '</td>' +
                                     '</tr>';
-                        } else {
-                            if (donationObj['parameters']['username'] !== undefined && donationObj['parameters']['currency'] !== undefined) {
-                                html += '<tr class="textList">' +
-                                        '    <td>' + donationObj['parameters']['username'] + '</td>' +
-                                        '    <td>' + $.format.date(new Date(donationObj['created_at']), 'MM.dd.yy hh:mm:ss') + '</td>' +
-                                        '    <td style="float: right">' + donationObj['parameters']['currency'] + ' ' + parseInt(donationObj['parameters']['amount']).toFixed(2) + '</td>' +
-                                        '</tr>';
-                            }
                         }
                     }
                 }

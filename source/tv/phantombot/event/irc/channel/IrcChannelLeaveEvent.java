@@ -30,6 +30,18 @@ public class IrcChannelLeaveEvent extends IrcChannelEvent {
         this.message = message;
     }
 
+    public IrcChannelLeaveEvent(String user, String message) {
+        super(null, null);
+        this.user = user;
+        this.message = message;
+    }
+
+    public IrcChannelLeaveEvent(String user) {
+        super(null, null);
+        this.user = user;
+        this.message = null;
+    }
+
     public String getUser() {
         return user;
     }

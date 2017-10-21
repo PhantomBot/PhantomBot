@@ -26,7 +26,8 @@ public class RepoVersion {
 
     private static final String phantomBotVersion = "@phantombot.version@";
     private static final String repoVersion = "@repository.version@";
-    private static final String nightlyBuild = "@nightly.build@";
+    private static final String buildType = "@buildtype@";
+    private static final String panelVersion = "@webpanel.version@";
 
     private RepoVersion() {
     }
@@ -40,7 +41,15 @@ public class RepoVersion {
     }
 
     public static boolean getNightlyBuild() {
-        return nightlyBuild.equals("nightly_build");
+        return buildType.equals("nightly_build");
+    }
+
+    public static boolean getPrereleaseBuild() {
+        return buildType.equals("prerelease_build");
+    }
+
+    public static String getPanelVersion() {
+        return panelVersion;
     }
 }
     

@@ -72,7 +72,7 @@
                             "        <input type=\"text\" class=\"input-control\" id=\"inlineRankNameEdit_" + hours + "\"" +
                             "               value=\"" + rank + "\" style=\"width: 50%\"/>" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
-                            "                onclick=\"$.updateRank('" + hours + "')\"><i class=\"fa fa-pencil\" />" +
+                            "                onclick=\"$.updateRank('" + hours + "')\"><i class=\"fa fa-hdd-o\" />" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\" id=\"deleteRank_" + hours + "\"" +
                             "                onclick=\"$.deleteRank('" + hours + "')\"><i class=\"fa fa-trash\" />" +
                             "        </button>" +
@@ -106,7 +106,7 @@
                             "        <input type=\"text\" class=\"input-control\" id=\"inlineRankCustomEdit_" + user + "\"" +
                             "               value=\"" + rank + "\" style=\"width: 80%\" />" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
-                            "                onclick=\"$.updateCustomRank('" + user + "')\"><i class=\"fa fa-pencil\" />" +
+                            "                onclick=\"$.updateCustomRank('" + user + "')\"><i class=\"fa fa-hdd-o\" />" +
                             "        </button>" +
                             "    </form></td>" +
                             "</tr>";

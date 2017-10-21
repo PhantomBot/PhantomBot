@@ -53,7 +53,7 @@
          * @commandpath playtime - Tells you how long the caster has been playing the current game for.
          * @commandpath uptime - Give's you the current stream uptime.
          * @commandpath age - Tells you how long you have been on Twitch for.
-         * @commandpath setgame [game name] - Set Twitch game title.
+         * @commandpath setgame [game name] - Set your Twitch game title.
          */
         if (command.equalsIgnoreCase('setgame')) {
             if (action === undefined) {
@@ -65,7 +65,7 @@
         }
 
         /*
-         * @commandpath settitle [stream title] - Set Twitch stream title.
+         * @commandpath settitle [stream title] - Set your Twitch stream title.
          */
         if (command.equalsIgnoreCase('settitle')) {
             if (action === undefined) {
@@ -73,6 +73,18 @@
                 return;
             }
             $.updateStatus($.channelName, args.join(' '), sender);
+            return;
+        }
+
+        /*
+         * @commandpath setcommunities [communities] - Set your Twitch communities.
+         */
+        if (command.equalsIgnoreCase('setcommunities')) {
+            if (action === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.communities.set.usage', $.twitchcache.getCommunities().join(', ').replace(/\s,/g, '')));
+                return;
+            }
+            $.updateCommunity($.channelName, args.join('').replace(/\s/g, '').split(','), sender);
             return;
         }
 
@@ -110,6 +122,7 @@
     $.bind('initReady', function() {
         $.registerChatCommand('./commands/streamCommand.js', 'setgame', 1);
         $.registerChatCommand('./commands/streamCommand.js', 'settitle', 1);
+        $.registerChatCommand('./commands/streamCommand.js', 'setcommunities', 1);
         $.registerChatCommand('./commands/streamCommand.js', 'vod', 7);
     });
 

@@ -90,6 +90,29 @@ public class HTTPServerCommon {
         }
     }
 
+    public static void handleBetaPanel(HttpExchange exchange) throws IOException {
+        URI uriData = exchange.getRequestURI();
+        String uriPath = uriData.getPath();
+
+        // Get the Request Method (GET/PUT)
+        String requestMethod = exchange.getRequestMethod();
+
+        // Get any data from the body, although, we just discard it, this is required
+        InputStream inputStream = exchange.getRequestBody();
+        while (inputStream.read() != -1) {
+            inputStream.skip(0x10000);
+        }
+        inputStream.close();
+
+        if (requestMethod.equals("GET")) {
+            if (uriPath.equals("/beta-panel")) {
+                HTTPServerCommon.handleFile("/web/beta-panel/index.html", exchange, false, false);
+            } else {
+                HTTPServerCommon.handleFile("/web/" + uriPath, exchange, false, false);
+            }
+        }
+    }
+
     public static void handle(HttpExchange exchange, String serverPassword, String serverWebAuth) throws IOException {
         Boolean hasPassword = false;
         Boolean doRefresh = false;
@@ -140,6 +163,8 @@ public class HTTPServerCommon {
         }
         if (headers.containsKey("message")) {
             myHdrMessage = headers.getFirst("message");
+            byte[] myHdrMessageBytes = myHdrMessage.getBytes(StandardCharsets.ISO_8859_1);
+            myHdrMessage = new String(myHdrMessageBytes, StandardCharsets.UTF_8);
         }
 
         // Check the uriQueryList for the webauth

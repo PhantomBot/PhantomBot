@@ -74,7 +74,7 @@
 
         poll.pollRunning = true;
         poll.pollMaster = pollMaster;
-        poll.time = (isNaN(time) || time === 0 ? false : time * 1000);
+        poll.time = (parseInt(time) * 1000);
         poll.callback = callback;
         poll.question = question;
         poll.options = options;
@@ -88,9 +88,12 @@
             optionsStr += (i + 1) + ") " + poll.options[i] + " ";
         }
 
-        $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
-        if (poll.time) {
+        if (poll.time > 0) {
+            $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
+
             timeout = setTimeout(function() { endPoll(); }, poll.time);
+        } else {
+            $.say($.lang.get('pollsystem.poll.started.nottime', $.resolveRank(pollMaster), poll.minVotes, poll.question, optionsStr));
         }
 
         return true;

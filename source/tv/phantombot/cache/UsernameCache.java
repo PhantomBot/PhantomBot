@@ -118,18 +118,14 @@ public class UsernameCache {
     }
 
     public void addUser(String userName, String displayName, int userID) {
-        if (displayName.length() > 0) {
-            if (!hasUser(userName)) {
-                cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
-            }
+        if (!hasUser(userName) && displayName.length() > 0) {
+            cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
         }
     }
 
     public void addUser(String userName, String displayName, String userID) {
-        if (displayName.length() > 0 && userID.length() > 0) {
-            if (!hasUser(userName)) {
-                cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
-            }
+        if (!hasUser(userName) && displayName.length() > 0 && userID.length() > 0) {
+            cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
         }
     }
 
