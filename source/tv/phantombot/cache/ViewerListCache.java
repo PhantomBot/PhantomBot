@@ -93,9 +93,11 @@ public class ViewerListCache implements Runnable {
 	/*
 	 * Method that updates the cache.
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateCache() throws Exception {
 		String[] types = new String[] { "moderators", "staff", "admins", "global_mods", "viewers" };
 		List<String> cache = new ArrayList<>();
+		EventBus bus = EventBus.instance();
 
 		com.gmt2001.Console.debug.println("ViewerListCache::updateCache");
 		try {
@@ -111,25 +113,25 @@ public class ViewerListCache implements Runnable {
 				// Add the new chatters to a new cache.
 				chatters = object.getJSONObject("chatters");
 				for (String type : types) {
-					JSONArray users = chatters.getJSONArray(type);
-					for (Object user : users) {
-						cache.add(user.toString());
+					JSONArray array = chatters.getJSONArray(type);
+					for (int i = 0; i < array.length(); i++) {
+						cache.add(array.getString(i));
 					}
 				}
 
 				// Check for new users that joined.
-				for (String user : cache) {
-					if (!this.cache.contains(user)) {
-						EventBus.instance().postAsync(new IrcChannelJoinEvent(user));
-						com.gmt2001.Console.debug.println("User Joined Channel [" + user + "#" + channelName + "]");
+				for (int i = 0; i < cache.size(); i++) {
+					if (!this.cache.contains(cache.get(i))) {
+						bus.postAsync(new IrcChannelJoinEvent(cache.get(i)));
+						com.gmt2001.Console.debug.println("User Joined Channel [" + cache.get(i) + "#" + channelName + "]");
 					}
 				}
 
 				// Check for old users that left.
-				for (String user : this.cache) {
-					if (!cache.contains(user)) {
-						EventBus.instance().postAsync(new IrcChannelLeaveEvent(user));
-						com.gmt2001.Console.debug.println("User Left Channel [" + user + "#" + channelName + "]");
+				for (int i = 0; i < this.cache.size(); i++) {
+					if (!cache.contains(this.cache.get(i))) {
+						bus.postAsync(new IrcChannelLeaveEvent(this.cache.get(i)));
+						com.gmt2001.Console.debug.println("User Left Channel [" + this.cache.get(i) + "#" + channelName + "]");
 					}
 				}
 
