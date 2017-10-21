@@ -1,5 +1,5 @@
-# Code Style 
-## General 
+# Code Style
+## General
 When implementing new code, or making changes to existing code, create a branch with the following name: `YOURUSERNAME_WHAT_YOU_ARE_DOING`.  This helps to prevent pollution on the master branch and everyone can see what has been performed by whom via the branch names.
 
 Whenever you wish to have your code pushed to the master branch please create a pull request for the development team to review and merge.  Also make sure to leave a comment on what your code is going to be doing or changing to PhantomBot.  Your commit/pull-request should attempt to follow this format:
@@ -19,7 +19,7 @@ Brief description of the intended change
 This helps with performing code reviews and also helps folks that may be looking at changes and wanting to have a high level description of the code changes.
 
 ## Naming Conventions
-The below is written about functions, but basically also aplies to classes.
+The below is written about functions, but basically also applies to classes.
 
 1. Self-explanatory names: a function `getName()` will tell the developer what it returns as well as `setAddress()`, `isMale()`, etc.
 
@@ -29,7 +29,7 @@ The below is written about functions, but basically also aplies to classes.
 
 4. Names should be verbs if the function changes the state of the program, and nouns if they're used to return a certain value
 
-5. Variable names should follow similar rules.  Ensure that the variable name means something, is descriptive, but not too long. 
+5. Variable names should follow similar rules.  Ensure that the variable name means something, is descriptive, but not too long.
 
 ## Chat Limits
 Keep in mind that Twitch does enforce a rule regarding how many lines may be sent to chat within a period of time and that includes whispers.  In fact, many bots have been banned from whispering.  Twitch doesn't only look for how many whispers occur, but has algorithms to look for other factors and bots have been banned because of it.  Keep this in mind when deciding how much output you are adding to a chat and/or whispers.  While PhantomBot does perform a self-enforced rate limit on what can be sent to Twitch chat, that can be overridden. It is also possible to fill up the outbound queue with too many deliverable messages which can cause PhantomBot to slow down or to respond to other commands much more slowly.
@@ -92,7 +92,7 @@ In ./development-resources there's a template (module-template.js) which you can
 - Do not assign variables and functions to the `$` global. Do not use the $ api if you variable is local.
 - If a function or variable needs to be global, assign it at the end of your module like `$.functionName = functionName;`.
 - Camel case for variable, function, and method names. (thisIsCamelCase)
-- Word capitalisation on class names. (ThisIsWordCapitalisation)
+- Word capitalization on class names. (ThisIsWordCapitalization)
 - Use [JSDoc](http://usejsdoc.org/) comments for classes and functions.
 - Use `@commandpath` tags to define each possible command variation. (check below on how exactly)  
 - Use comments for code that is not easily understandable. The same with functions; use `@param {string}, {number} or {boolean} something` so we know what that function needs.
@@ -100,10 +100,10 @@ In ./development-resources there's a template (module-template.js) which you can
 - Use descriptive function/variable/class names.
 - Create functions for repeating code.
 - Always keep performance in mind, use as much native JavaScript as possible and keep your variable use at a minimum.
-- Use `'` and not `"` for string containers. 
+- Use `'` and not `"` for string containers.
 - If it is easier, you may process your JavaScript through [JS-Beautify](https://www.npmjs.com/package/js-beautify). The default options meet our standard.
 
-## Block statements 
+## Block statements
 - Please don't leave spaces inside at the start and end of your if/while/for statements.
 - Hugging braces.
 
@@ -138,7 +138,7 @@ for(i=0;i<10;i++) {
 for (i = 0; i < 10; i++)
 {
 ```
-        
+
 ## @commandpath tags
 The `@commandpath` tag is used for describing all possible paths per command.  
 These are used to allow `parse_commandpath.pl` to be able to parse the source and extract information on all commands.
@@ -146,7 +146,7 @@ These are used to allow `parse_commandpath.pl` to be able to parse the source an
 Example:
 
 ```
-/** 
+/**
  * @commandpath jumptosong [position in playlist] - Jump to a song in the current playlist by position in playlist.
  */
 if (command.equalsIgnoreCase('jumptosong')) {
