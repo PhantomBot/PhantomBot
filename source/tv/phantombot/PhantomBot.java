@@ -108,6 +108,7 @@ import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
+import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
 import tv.phantombot.httpserver.HTTPServer;
 import tv.phantombot.httpserver.HTTPSServer;
@@ -246,6 +247,7 @@ public final class PhantomBot implements Listener {
     public static String timeZone = "GMT";
     public static Boolean useMessageQueue = true;
     public static Boolean twitch_tcp_nodelay = true;
+    public static Boolean betap = false;
     public Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
@@ -514,6 +516,9 @@ public final class PhantomBot implements Listener {
         /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
         PhantomBot.twitch_tcp_nodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
 
+        /* Setting for scania */
+        PhantomBot.betap = this.pbProperties.getProperty("betap", "false").equalsIgnoreCase("true");
+
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
          * for moderators.  For non-moderators, the maximum is 20 messages in 30 seconds. While it is not recommended
@@ -680,6 +685,15 @@ public final class PhantomBot implements Listener {
      */
     public Boolean isNightly() {
         return RepoVersion.getNightlyBuild();
+    }
+
+    /*
+     * Tells you if the build is a pre-release.
+     *
+     * @return {boolean}
+     */
+    public Boolean isPrerelease() {
+        return RepoVersion.getPrereleaseBuild();
     }
 
     /*
@@ -1129,6 +1143,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightly(), 0);
+        Script.global.defineProperty("isPrerelease", isPrerelease(), 0);
         Script.global.defineProperty("version", botVersion(), 0);
         Script.global.defineProperty("changed", newSetup, 0);
         Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
@@ -1594,6 +1609,19 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("offlinetest")) {
             print("[CONSOLE] Executing offlinetest");
             EventBus.instance().postAsync(new TwitchOfflineEvent(PhantomBot.getChannel(this.channelName)));
+            return;
+        }
+
+        /* Test the clips event */
+        if (message.equalsIgnoreCase("cliptest")) {
+            String randomUser = "";
+            if (argument == null) {
+                randomUser = generateRandomString(10);
+            } else {
+                randomUser = argument[0];
+            }
+            print("[CONSOLE] Executing cliptest " + randomUser);
+            EventBus.instance().postAsync(new TwitchClipEvent("https://clips.twitch.tv/ThisIsNotARealClipAtAll", randomUser, PhantomBot.getChannel(this.channelName)));
             return;
         }
 
@@ -2707,7 +2735,7 @@ public final class PhantomBot implements Listener {
                 Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
                 while (dirIterator.hasNext()) {
                     File backupFile = (File) dirIterator.next();
-                    if (FileUtils.isFileOlder(backupFile, System.currentTimeMillis() - (86400000 * backupSQLiteKeepDays))) {
+                    if (FileUtils.isFileOlder(backupFile, (System.currentTimeMillis() / 1000) - (86400 * backupSQLiteKeepDays))) {
                         FileUtils.deleteQuietly(backupFile);
                     }
                 }

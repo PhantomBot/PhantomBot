@@ -798,7 +798,7 @@
                 return;
             }
 
-            var username = args[0].toLowerCase(),
+            var username = $.user.sanitize(args[0]),
                 groupId = parseInt(args[1]);
 
             if (!$.user.isKnown(username)) {

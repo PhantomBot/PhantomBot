@@ -298,7 +298,7 @@
                            '               placeholder="' + value + '" value="' + value + '"' +
                            '               style="width: 8em" />' +
                            '        <button type="button" class="btn btn-default btn-xs"' +
-                           '                onclick="$.updateGWTierData(\'' + key + '\')"><i class="fa fa-pencil" />' +
+                           '                onclick="$.updateGWTierData(\'' + key + '\')"><i class="fa fa-hdd-o" />' +
                            '        </button>' +
                            '    </td>' +
                            '</tr>';

@@ -17,8 +17,10 @@
 package tv.phantombot.event;
 
 import com.google.common.collect.Sets;
+
 import java.util.Set;
 import java.util.concurrent.Executors;
+
 import tv.phantombot.PhantomBot;
 
 public class EventBus {
@@ -29,24 +31,21 @@ public class EventBus {
         return instance;
     }
 
-    private final com.google.common.eventbus.AsyncEventBus aeventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(16), new ExceptionHandler());
-    private final com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
-    private final com.google.common.eventbus.EventBus peventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
+    private final com.google.common.eventbus.AsyncEventBus asyncEventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(16), new ExceptionHandler());
+    private final com.google.common.eventbus.EventBus syncEventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
 
     private final Set<Listener> listeners = Sets.newHashSet();
 
     public void register(Listener listener) {
         listeners.add(listener);
-        eventBus.register(listener);
-        aeventBus.register(listener);
-        peventBus.register(listener);
+        asyncEventBus.register(listener);
+        syncEventBus.register(listener);
     }
 
     public void unregister(Listener listener) {
         listeners.remove(listener);
-        eventBus.unregister(listener);
-        aeventBus.unregister(listener);
-        peventBus.unregister(listener);
+        asyncEventBus.unregister(listener);
+        syncEventBus.unregister(listener);
     }
 
     public void post(Event event) {
@@ -54,7 +53,7 @@ public class EventBus {
             return;
         }
 
-        eventBus.post(event);
+        asyncEventBus.post(event);
     }
 
     public void postAsync(Event event) {
@@ -62,14 +61,6 @@ public class EventBus {
             return;
         }
 
-        aeventBus.post(event);
-    }
-
-    public void postPVMSG(Event event) {
-        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
-            return;
-        }
-
-        peventBus.post(event);
+        syncEventBus.post(event);
     }
 }
