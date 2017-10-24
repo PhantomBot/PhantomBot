@@ -150,7 +150,7 @@
                             '        <form onkeypress="return event.keyCode != 13">' +
                             '            <input style="width: 85%" type="text" class="input-control" id="editCommand_' + commandNameSafe.replace(/[^a-zA-Z0-9_]/g, '_SP_')  + '"' +
                             '                   value="' + commandValue + '" />' +
-                            '              <button type="button" class="btn btn-default btn-xs" onclick="$.editCustomCommand(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
+                            '              <button type="button" class="btn btn-default btn-xs" onclick="$.editCustomCommand(\'' + commandName + '\')"><i class="fa fa-hdd-o" /> </button> ' +
                             '              <button type="button" class="btn btn-default btn-xs" id="deleteCommand_' + commandNameSafe.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '" onclick="$.deleteCommand(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                             '             </form>' +
                             '        </form>' +
@@ -200,7 +200,7 @@
                     '        <form onkeypress="return event.keyCode != 13">' +
                     '            <input style="width: 60%" type="text" class="input-control" id="editCommandPrice_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '"' +
                     '                   value="' + commandValue + '" />' +
-                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateCommandPrice(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
+                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateCommandPrice(\'' + commandName + '\')"><i class="fa fa-hdd-o" /> </button> ' +
                     '              <button type="button" class="btn btn-default btn-xs" id="deleteCommandPrice_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '" onclick="$.deleteCommandPrice(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +
@@ -226,7 +226,7 @@
                     '        <form onkeypress="return event.keyCode != 13">' +
                     '            <input style="width: 60%" type="text" class="input-control" id="editCommandPay_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '"' +
                     '                   value="' + commandValue + '" />' +
-                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateCommandPay(\'' + commandName + '\')"><i class="fa fa-pencil" /> </button> ' +
+                    '              <button type="button" class="btn btn-default btn-xs" onclick="$.updateCommandPay(\'' + commandName + '\')"><i class="fa fa-hdd-o" /> </button> ' +
                     '              <button type="button" class="btn btn-default btn-xs" id="deleteCommandPay_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '" onclick="$.deleteCommandPay(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
                     '             </form>' +
                     '        </form>' +

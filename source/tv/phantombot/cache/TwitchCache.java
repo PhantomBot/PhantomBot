@@ -69,6 +69,7 @@ public class TwitchCache implements Runnable {
     private String gameTitle = "Some Game";
     private String streamTitle = "Some Title";
     private String previewLink = "";
+    private String logoLink = "";
     private String[] communities = new String[3];
     private long streamUptimeSeconds = 0L;
     private int viewerCount = 0;
@@ -220,6 +221,7 @@ public class TwitchCache implements Runnable {
         String  gameTitle = "";
         String  streamTitle = "";
         String  previewLink = "";
+        String  logoLink = "";
         String[] communities = new String[3];
         Date    streamCreatedDate = new Date();
         Date    currentDate = new Date();
@@ -260,7 +262,7 @@ public class TwitchCache implements Runnable {
                     }
 
                     /* Determine the preview link. */
-                    previewLink = streamObj.getJSONObject("stream").getJSONObject("preview").getString("medium");
+                    previewLink = streamObj.getJSONObject("stream").getJSONObject("preview").getString("template").replace("{width}", "1920").replace("{height}", "1080");
                     this.previewLink = previewLink;
 
                     /* Get the viewer count. */
@@ -324,6 +326,13 @@ public class TwitchCache implements Runnable {
                     /* Get the view count. */
                     views = streamObj.getInt("views");
                     this.views = views;
+                }
+
+
+                /* Get the logo */
+                if (streamObj.has("logo") && !streamObj.isNull("logo")) {
+                    logoLink = streamObj.getString("logo");
+                    this.logoLink = logoLink;
                 }
 
                 /* Get the title. */
@@ -459,6 +468,13 @@ public class TwitchCache implements Runnable {
      */
     public String getPreviewLink() {
         return this.previewLink;
+    }
+
+    /*
+     * Returns the logo link.
+     */
+    public String getLogoLink() {
+        return this.logoLink;
     }
 
     /* 

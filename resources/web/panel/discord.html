@@ -301,6 +301,19 @@
                         <i class="fa fa-circle-o" /></div>
                 </td>
             </tr>
+
+            <tr class="textList">
+                <td>Toggle Cbenni Link</td>
+                <td style="width: 25px"><div id="cbenniToggleInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('cbenniToggleInput', 'core/moderation.js', 'discordSettings', 'cbenniToggle', 'true')">
+                        <i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('cbenniToggleInput', 'core/moderation.js', 'discordSettings', 'cbenniToggle', 'false')">
+                        <i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
         </table>
         <br>
 
@@ -551,6 +564,16 @@
                 </td>
             </tr>
             <tr class="textList">
+                <td>Toggle Offline Alerts</td>
+                <td style="width: 25px"><div id="offlineToggleInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('offlineToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'offlineToggle', 'true')"><i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('offlineToggleInput', 'handlers/streamHandler.js', 'discordSettings', 'offlineToggle', 'false')"><i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
+            <tr class="textList">
                 <td>Toggle Game Change Alerts</td>
                 <td style="width: 25px"><div id="gameToggleInput" /></td>
                 <td style="width: 25px">
@@ -578,7 +601,16 @@
                 <label for="onlineMessageInput">Online Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('onlineMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'onlineMessage')">Submit</button>
                 <input type="text" class="form-control" id="onlineMessageInput" placeholder="Online Message" data-toggle="tooltip" 
-                    title="Set a message for when you go live on Twitch. Available tags: (title), (game), (url), (name), and (follows)"/>
+                    title="Set a message for when you go live on Twitch. Available tags: (title)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="offlineMessageInput">Offline Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('offlineMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'offlineMessage')">Submit</button>
+                <input type="text" class="form-control" id="offlineMessageInput" placeholder="Offline Message" data-toggle="tooltip" 
+                    title="Set a message for when you go offline on Twitch. Available tags: (title)"/>
             </div>
         </form>
 
@@ -587,7 +619,7 @@
                 <label>Game Change Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gameMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'gameMessage')">Submit</button>
                 <input type="text" class="form-control" id="gameMessageInput" placeholder="Game Change Message" data-toggle="tooltip" 
-                    title="Set a message for when you switch games on Twitch. Available tags: (title), (game), (url), (name), (uptime), and (follows)"/>
+                    title="Set a message for when you switch games on Twitch. Available tags: (title)"/>
             </div>
         </form>
 
@@ -893,6 +925,42 @@
                 <label>Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('twitterChannelInput', 'handlers/twitterHandler.js', 'discordSettings', 'twitterChannel')">Submit</button>
                 <input type="text" class="form-control" id="twitterChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in. Note that you have to have the Twitter module setup for Twitch for this to work, since it will use those settings."/>
+            </div>
+        </form>
+    </div>
+    </div>
+
+    <h3>Clips Alert Settings</h3>
+    <div>
+    <div id="_discord_clipHandlerDisabled" />
+    <div id="_discord_clipHandler">
+        <table>
+            <tr class="textList">
+                <td>Toggle Clip Alerts</td>
+                <td style="width: 25px"><div id="clipsToggleInput" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('clipsToggleInput', 'handlers/clipHandler.js', 'discordSettings', 'clipsToggle', 'true')"><i class="fa fa-circle" /></div>
+                </td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('clipsToggleInput', 'handlers/clipHandler.js', 'discordSettings', 'clipsToggle', 'false')"><i class="fa fa-circle-o" /></div>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label>Clips Message</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('clipsMessageInput', 'handlers/clipHandler.js', 'discordSettings', 'clipsMessage')">Submit</button>
+                <input type="text" class="form-control" id="clipsMessageInput" placeholder="Clips Message" data-toggle="tooltip" title="Set a message for a detected clip. Available tags: (name) (url)"/>
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label>Alert Channel</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('clipsChannelInput', 'handlers/clipHandler.js', 'discordSettings', 'clipsChannel')">Submit</button>
+                <input type="text" class="form-control" id="clipsChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>

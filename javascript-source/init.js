@@ -375,6 +375,9 @@
             consoleLn('PhantomBot Nightly Build - No Support is Provided');
             consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
             consoleLn('https://community.phantombot.tv/c/support/bug-reports');
+        } else if ($.isPrerelease) {
+            consoleLn('PhantomBot Pre-Release Build - Please Report Bugs and Issues Found');
+            consoleLn('When reporting bugs or issues, please remember to indicate that this is a pre-release build.');
         } else {
             consoleLn('For support please visit: https://community.phantombot.tv');
         }
@@ -481,6 +484,13 @@
 
             // Call the command function.
             callHook('command', event, false);
+
+            // Decrease or add points after the command is sent to not slow anything down.
+            if ($.priceCom(sender, command, subCommand, isMod) === 0) {
+                $.inidb.decr('points', sender, $.getCommandPrice(command, subCommand, ''));
+            } else if ($.payCom(command) === 0) {
+                $.inidb.incr('points', sender, $.getCommandPay(command));
+            }
         });
 
         /*
@@ -502,7 +512,7 @@
                 command = event.setCommand($.discord.getCommandAlias(command));
             }
 
-            if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
+            if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
                 return;
             }
 

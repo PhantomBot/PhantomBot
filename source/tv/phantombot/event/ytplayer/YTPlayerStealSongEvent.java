@@ -21,26 +21,35 @@ import tv.phantombot.twitchwsirc.Channel;
 public class YTPlayerStealSongEvent extends YTPlayerEvent {
 
     private final String youTubeID;
+    private final String requester;
 
     public YTPlayerStealSongEvent() {
         this.youTubeID = "";
+        this.requester = "";
     }
 
     public YTPlayerStealSongEvent(Channel channel) {
         super(channel);
         this.youTubeID = "";
+        this.requester = "";
     }
 
-    public YTPlayerStealSongEvent(String youTubeID) {
+    public YTPlayerStealSongEvent(String youTubeID, String requester) {
         this.youTubeID = youTubeID;
+        this.requester = requester;
     }
 
-    public YTPlayerStealSongEvent(String youTubeID, Channel channel) {
+    public YTPlayerStealSongEvent(String youTubeID, String requester, Channel channel) {
         super(channel);
         this.youTubeID = youTubeID;
+        this.requester = requester;
     }
 
     public String getYouTubeID() {
         return youTubeID;
+    }
+
+    public String getRequester() {
+        return requester;
     }
 }

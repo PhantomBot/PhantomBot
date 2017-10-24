@@ -23,7 +23,7 @@
             return;
         }
 
-        $.consoleLn('DataRenderService: Processing Data');
+        $.consoleLn('DataRenderService: Processing Data (see event logs for details)');
         $.log.event('DataRenderService: Handler Process Start');
 
         commandHelpFileData = $.readFile('./addons/dataservice/commands_help.txt');
@@ -97,19 +97,32 @@
 
         keys = $.inidb.GetKeyList('time', '');
         jsonStringer = new JSONStringer();
+        ranksJsonStringer = new JSONStringer();
         jsonStringer.object().key('times').array();
+        ranksJsonStringer.object().key('ranks').array();
         for (var idx in keys) {
             jsonStringer.object();
             jsonStringer.key('user').value(keys[idx] + '');
             jsonStringer.key('time').value($.inidb.get('time', keys[idx]));
             jsonStringer.endObject();
+
+            ranksJsonStringer.object();
+            ranksJsonStringer.key('user').value(keys[idx] + '');
+            ranksJsonStringer.key('rank').value(getRank(keys[idx]));
+            ranksJsonStringer.endObject();
         }
         jsonStringer.endArray().endObject();
+        ranksJsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'times');
         $.log.event('DataRenderService: Times API status : ' + apiStatus);
 
+        apiStatus = $.dataRenderServiceAPI.postData(ranksJsonStringer.toString(), $.channelName, 'ranks');
+        $.log.event('DataRenderService: Ranks API status : ' + apiStatus);
+
         $.log.event('DataRenderService: Handler Process Complete');
         $.setIniDbNumber('datarenderservice', 'last_time', $.systemTime());
+
+        $.consoleLn('DataRenderService: Data has been Processed');
     }
 
     /**
