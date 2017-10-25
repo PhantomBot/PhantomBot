@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.discord;
+package tv.phantombot.discord.util;
 
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 
@@ -30,6 +30,7 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.RequestBuffer;
 import sx.blah.discord.util.EmbedBuilder;
+import tv.phantombot.discord.DiscordAPI;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;

@@ -35,6 +35,7 @@ import sx.blah.discord.handle.obj.IUser;
 
 import sx.blah.discord.util.DiscordException;
 
+import tv.phantombot.discord.util.DiscordUtil;
 import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
