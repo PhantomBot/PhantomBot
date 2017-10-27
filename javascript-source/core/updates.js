@@ -98,7 +98,7 @@
         versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 
         'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 
         'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 
-        'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7', 'installedv2.3.7b', 'installedv2.3.9', 'installedv2.3.9.1'];
+        'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7', 'installedv2.3.7b', 'installedv2.3.9', 'installedv2.3.9.1', 'installedv2.3.9.1b'];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -717,6 +717,19 @@
 
         $.consoleLn('PhantomBot update 2.3.9.1 completed!');
         $.inidb.set('updates', 'installedv2.3.9.1', 'true');
+    }
+
+    /* version 2.3.9.1b updates */
+    if (!$.inidb.exists('updates', 'installedv2.3.9.1b') || $.inidb.get('updates', 'installedv2.3.9.1b') != 'true') {
+        $.consoleLn('Starting PhantomBot update 2.3.9.1b updates...');
+
+        if ($.inidb.FileExists('discordStreamStats')) {
+            $.consoleLn('Removing old Discord stats...');
+            $.inidb.RemoveFile('discordStreamStats');
+        }
+
+        $.consoleLn('PhantomBot update 2.3.9.1b completed!');
+        $.inidb.set('updates', 'installedv2.3.9.1b', 'true');
     }
 
     /**
