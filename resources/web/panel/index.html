@@ -238,10 +238,18 @@
             </div>
             <!-- <span id="iframeLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading Twitch Chat</span> -->
              <script>
-                $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
-                                         "src=\"https://www.twitch.tv/" + getChannelName().toLowerCase() + "/chat?popout=\">");
-                /*$("#chat").hide(); ** This breaks things in firefox. */
-                $("#chatsidebar").draggable({ iframeFix: true });
+                (function($) {
+                    var toggle = localStorage.getItem('phantombot_chattoggle');
+    
+                    if (toggle === 'false') {
+                        $("#chatsidebar").hide();
+                        return;
+                    }
+    
+                    $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
+                                             "src=\"https://www.twitch.tv/" + getChannelName().toLowerCase() + "/chat?popout=\">");
+                    $("#chatsidebar").draggable({ iframeFix: true });
+                })(jQuery);
             </script>
         </div>
 
