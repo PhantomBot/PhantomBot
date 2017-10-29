@@ -58,7 +58,7 @@ import tv.phantombot.PhantomBot;
 public class TwitchWSIRC extends WebSocketClient {
 
     private static final Map<String, TwitchWSIRC> instances = Maps.newHashMap();
-    //private final ThreadPoolExecutor threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
+    private final ThreadPoolExecutor threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
     private final String channelName;
     private final String login;
     private final String oAuth;
@@ -214,8 +214,6 @@ public class TwitchWSIRC extends WebSocketClient {
         com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC. Reconnecting...");
         com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
 
-        // Log the reason and code for future debugging.
-        Logger.instance().log(Logger.LogType.Error, "[" + Logger.instance().logTimestamp() + "] [SOCKET] Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
         this.session.reconnect();
     }
 
@@ -238,16 +236,11 @@ public class TwitchWSIRC extends WebSocketClient {
             sentPing = false;
             return;
         } else {
-            twitchWSIRCParser.parseData(message);
-            //try {
-            //    if (threads.getActiveCount() < 4) {
-            //        threads.execute(new MessageRunnable(message));
-            //    } else {
-            //        twitchWSIRCParser.parseData(message);
-            //    }
-            //} catch (Exception ex) {
-            //    twitchWSIRCParser.parseData(message);
-            //}
+            try {
+                threads.execute(new MessageRunnable(message));
+            } catch (Exception ex) {
+                twitchWSIRCParser.parseData(message);
+            }
         }
     }
 
