@@ -16,7 +16,7 @@ The Javascript code must follow the same structure and functionality as the core
 
 If you intend on changing or altering any previously loaded web panels, it is recommended that you create an `init` function and call it on the first `onMessage` call as this will fire once everything else has been loaded.
 
-## Resource hooks
+## Resource functions
 In order to create new functionality and panels within the web panel without editing the core panel code, there are 3 functions which are now used.
 ```
 addPanelTab( uniqueId, tabName, htmlFileLocation, position );
@@ -25,7 +25,7 @@ addOnMessage( uniqueId, onMessage );
 ```
 
 ### addPanelTab
-... creates a new panel and tab within the DOM of the panel.
+... creates a new panel and tab within the body of the panel.
 `uniqueId` is used to link the tab and functionality to the specific panel.
 `tabName` is what will be displayed on the tab.
 `htmlFileLocation` is the location of the html file to be loaded into the panel (i.e /panel/custom/aCustomPanel/aCustomPanel.html).
