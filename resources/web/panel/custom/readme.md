@@ -68,7 +68,7 @@ Extending and altering the functionality of core panels is made to be really eas
     }
     ...
 
-});
+})();
  ```
 
 ## Core uniqueIds and positions
