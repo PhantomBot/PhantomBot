@@ -7,6 +7,7 @@ Custom
         aCustomPanel.js
         aCustomPanel.html
         aCustomPanel.png
+        aNotherPanelImage.png
     audioExtensionPanel
     	audioExtensionPanel.js
 ```
@@ -15,7 +16,7 @@ The Javascript code must follow the same structure and functionality as the core
 
 If you intend on changing or altering any previously loaded web panels, it is recommended that you create an `init` function and call it on the first `onMessage` call as this will fire once everything else has been loaded.
 
-## Injection hooks
+## Resource hooks
 In order to create new functionality and panels within the web panel without editing the core panel code, there are 3 functions which are now used.
 ```
 addPanelTab( uniqueId, tabName, htmlFileLocation, position );
@@ -66,6 +67,8 @@ Extending and altering the functionality of core panels is made to be really eas
 		...
     }
     ...
+
+});
  ```
 
 ## Core uniqueIds and positions
