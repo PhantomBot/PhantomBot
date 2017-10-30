@@ -166,7 +166,7 @@
                     permission = dataObj[command].permission;
                     cost = (dataObj[command] !== undefined && dataObj[command].cost === undefined ? 0 : dataObj[command].cost);
                     cooldown = (dataObj[command] !== undefined && dataObj[command].cooldown === undefined ? 0 : dataObj[command].cooldown);
-                    global = (dataObj[command] !== undefined && dataObj[command].isGlobal === undefined ? true : dataObj[command].isGlobal);             
+                    global = (dataObj[command] !== undefined && dataObj[command].isGlobal === undefined ? true : dataObj[command].isGlobal);
                     channel = (dataObj[command] !== undefined && dataObj[command].channel === undefined ? '' : dataObj[command].channel);
                     alias = (dataObj[command] !== undefined && dataObj[command].alias === undefined ? '' : dataObj[command].alias);
 
@@ -224,7 +224,7 @@
                     sendDBUpdate('discord_update', 'discordSettings', 'cbenniToggle', 'false');
                 }
             }
-          
+
             console.log(table + ':' + key + ':' + data);
             sendDBUpdate('discord_update', table, key, String(data));
 
@@ -292,19 +292,19 @@
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
             sendDBUpdate('discord_command', 'discordCooldown', command, JSON.stringify({command: String(command), seconds: String(cooldown), isGlobal: String(checked)}));
             sendDBUpdate('discord_command', 'discordPricecom', command, price.toString());
-            
+
             if (channel.length > 0) {
                 sendDBUpdate('discord_command', 'discordChannelcom', command, channel.toString());
             } else {
                 sendDBDelete('discord_command', 'discordChannelcom', command);
             }
-            
+
             if (alias.length > 0) {
                 sendDBUpdate('discord_command', 'discordAliascom', command, alias.toString());
             } else {
                 sendDBDelete('discord_command', 'discordAliascom', command);
             }
-            
+
             setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel, alias, price]); }, TIMEOUT_WAIT_TIME);
         }
 
@@ -425,28 +425,10 @@
         }
     }
 
-    /* Import the HTML file for this panel. */
-    $('#discordPanel').load('/panel/discord.html');
-
-    /* Load the DB items for this panel, wait to ensure that we are connected. */
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $('#tabs').tabs('option', 'active');
-            if (active == 18) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    /* Query the DB every 30 seconds for updates. */
-    setInterval(function() {
-        var active = $('#tabs').tabs('option', 'active');
-        if (active == 18 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Discord Data', 'success', 1000);
-            doQuery();
-        }
-    }, 3e4);
+    // Add discord hooks
+    addPanelTab( 'discord', 'Discord', '/panel/discord.html', 850 );
+    addDoQuery( 'discord', doQuery, 3e4 );
+    addOnMessage( 'discord', onMessage );
 
     /* Export functions to the API */
     $.updateDiscordTable = updateDiscordTable;

@@ -256,28 +256,10 @@
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     };
 
-    // Import the HTML file for this panel.
-    $("#keywordsPanel").load("/panel/keywords.html");
-
-    // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $('#tabs').tabs('option', 'active');
-            if (active == 11) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    // Query the DB every 30 seconds for updates.
-    setInterval(function() {
-        var active = $('#tabs').tabs('option', 'active');
-        if (active == 11 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Keyword Data', 'success', 1000);
-            doQuery();
-        }
-    }, 3e4);
+    // Add keywords hooks
+    addPanelTab( 'keywords', 'Keywords', '/panel/keywords.html', 550 );
+    addDoQuery( 'keywords', doQuery, 3e4 );
+    addOnMessage( 'keywords', onMessage );
 
     // Export to HTML
     $.keywordsOnMessage = onMessage;

@@ -66,13 +66,9 @@
     // Import the HTML file for this panel.
     $("#helpPanel").load("/panel/help.html");
 
-    // Request the version from the bot. This is only done once.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            requestVersion("help_version");
-            clearInterval(interval); 
-        }
-    }, INITIAL_WAIT_TIME);
+    // Add help hooks
+    addDoQuery( 'help', function() { requestVersion("help_version"); } , 0 );
+    addOnMessage( 'help', onMessage );
 
     // Export functions - Needed when calling from HTML
     $.helpOnMessage = onMessage;

@@ -673,28 +673,10 @@
         setTimeout(function() { $('#commandImput').val('') }, TIMEOUT_WAIT_TIME);
     }
 
-    // Import the HTML file for this panel.
-    $("#commandsPanel").load("/panel/commands.html");
-
-    // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $("#tabs").tabs("option", "active");
-            if (active == 1) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    // Query the DB every 30 seconds for updates.
-    setInterval(function() {
-        var active = $("#tabs").tabs("option", "active");
-        if (active == 1 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Commands Data', 'success', 1000);
-            doQuery();
-        }
-    }, 3e4);
+    // Add commands hooks
+    addPanelTab( 'commands', 'Commands', '/panel/commands.html', 50 );
+    addDoQuery( 'commands', doQuery, 3e4 );
+    addOnMessage( 'commands', onMessage );
 
     // Export functions - Needed when calling from HTML.
     $.commandsOnMessage = onMessage;
