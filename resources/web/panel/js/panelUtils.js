@@ -374,16 +374,16 @@ function isInputFocus() {
 function performCurrentPanelRefresh() {
     var active = $("#tabs").tabs("option", "active"),
         tabs = $("#tabs").tabs("instance").tabs,
-        functionToCall = $( tabs[ active ] ).data('phantombot-tab');
+        functionToCall = $(tabs[active]).data('phantombot-tab');
     clearTimeout(panelRefreshTimeout)
-    if (doQueryArray[ functionToCall ] && typeof doQueryArray[ functionToCall ] == 'object' && !isInputFocus()) {
+    if (doQueryArray[functionToCall] && typeof doQueryArray[functionToCall] == 'object' && !isInputFocus()) {
         var timeoutTime = null;
         newPanelAlert('Refreshing Data', 'success', 1000);
-        for(var idx = 0 in doQueryArray[ functionToCall ]) {
-            if (typeof doQueryArray[ functionToCall ][ idx ].func == 'function') {
-                doQueryArray[ functionToCall ][ idx ].func();
-                if (timeoutTime == null || timeoutTime > doQueryArray[ functionToCall ][ idx ].time) {
-                    timeoutTime = doQueryArray[ functionToCall ][ idx ].time;
+        for (var idx = 0 in doQueryArray[functionToCall]) {
+            if (typeof doQueryArray[functionToCall][idx].func == 'function') {
+                doQueryArray[functionToCall][idx].func();
+                if (timeoutTime == null || timeoutTime > doQueryArray[functionToCall][idx].time) {
+                    timeoutTime = doQueryArray[functionToCall][idx].time;
                 }
             }
         }
@@ -405,11 +405,11 @@ function addDoQuery(uniqueId, func, time) {
         time = 0;
     }
 
-    if (typeof doQueryArray[ uniqueId ] != 'object') {
-        doQueryArray[ uniqueId ] = []
+    if (typeof doQueryArray[uniqueId] != 'object') {
+        doQueryArray[uniqueId] = []
     }
 
-    doQueryArray[ uniqueId ].push({ func : func, time : time });
+    doQueryArray[uniqueId].push({ func : func, time : time });
 
 }
 
@@ -421,11 +421,11 @@ function addDoQuery(uniqueId, func, time) {
 function addOnMessage(uniqueID, func) {
 
     var uniqueID = uniqueID.trim('_');
-    if (typeof onMessageArray[ uniqueID ] != 'object') {
-        onMessageArray[ uniqueID ] = [];
+    if (typeof onMessageArray[uniqueID] != 'object') {
+        onMessageArray[uniqueID] = [];
     }
 
-    onMessageArray[ uniqueID ].push(func);
+    onMessageArray[uniqueID].push(func);
 
 }
 
@@ -452,11 +452,11 @@ function addPanelTab(uniqueID, tabText, panelHTMLPath, position) {
         position = 9999;
     }
 
-    while(modulePanelArray[ position ] != undefined) {
+    while (modulePanelArray[position] != undefined) {
         position++;
     }
 
-    modulePanelArray[ position ] = {
+    modulePanelArray[position] = {
         id : uniqueID,
         tabText : tabText,
         panelHTMLPath : panelHTMLPath
@@ -472,7 +472,7 @@ function buildPanel(callbackFunction) {
     loadCustomModules(function() {
         modulePanelArray = modulePanelArray.filter(Boolean).reverse();
         var i = 0;
-        for(i; i < modulePanelArray.length; i++) {
+        for (i; i < modulePanelArray.length; i++) {
 
             $('<div>').attr('role', 'tabpanel').addClass('tab-pane').prop('id', modulePanelArray[i].id).append(
                 $('<div>').prop('id', modulePanelArray[i].id + 'Panel')
@@ -496,9 +496,9 @@ var interval = setInterval(function() {
     if (isConnected && TABS_INITIALIZED) {
         for(var idx = 0 in doQueryArray) {
 
-            for(var idx2 = 0 in doQueryArray[ idx ]) {
-                if (typeof doQueryArray[ idx ][ idx2 ].func == 'function') {
-                    doQueryArray[ idx ][ idx2 ].func();
+            for(var idx2 = 0 in doQueryArray[idx]) {
+                if (typeof doQueryArray[idx][idx2].func == 'function') {
+                    doQueryArray[idx][idx2].func();
                 }
             }
         }
@@ -527,13 +527,13 @@ function loadCustomModules(callbackFunction) {
 
             var $allAjax = [];
 
-            for(var i = 0 in customModules) {
-                if ( ! customModules[ i ] ) { continue; }
-                if ( customModules[ i ].indexOf( '.md' ) > -1 ) { continue; }
-                if ( customModules[ i ].indexOf( '.txt' ) > -1 ) { continue; }
+            for (var i = 0 in customModules) {
+                if ( ! customModules[i] ) { continue; }
+                if ( customModules[i].indexOf( '.md' ) > -1 ) { continue; }
+                if ( customModules[i].indexOf( '.txt' ) > -1 ) { continue; }
 
                 $allAjax.push($.ajax({
-                    url : "/panel/custom/" + customModules[ i ] + "/" + customModules[ i ] + ".js",
+                    url : "/panel/custom/" + customModules[i] + "/" + customModules[i] + ".js",
                     success : function( d ) {
                         var script = document.createElement("script");
                         script.setAttribute("type", "text/javascript");
