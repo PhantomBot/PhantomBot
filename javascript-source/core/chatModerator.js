@@ -986,6 +986,12 @@
 
             action = $.user.sanitize(action);
 
+            // if the user got a warning/timeout, unban him, and remove him from the warning/timeout list.
+            if (timeouts[action] !== undefined) {
+            	$.session.sayNow('.unban ' + action);
+            	delete timeouts[action];
+            }
+
             permitUser(action);
             $.say(action + $.lang.get('chatmoderator.permited', linkPermitTime));
             $.log.event(action + ' was permited by ' + sender);
