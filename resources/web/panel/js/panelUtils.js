@@ -372,22 +372,24 @@ function isInputFocus() {
  * Refreshes the current panel.
  */
 function performCurrentPanelRefresh() {
-    var active = $("#tabs").tabs("option", "active");
     var active = $("#tabs").tabs("option", "active"),
         tabs = $("#tabs").tabs("instance").tabs,
         functionToCall = $( tabs[ active ] ).data('phantombot-tab');
-
-    clearTimeout( panelRefreshTimeout )
-    if ( doQueryArray[ functionToCall ] && typeof doQueryArray[ functionToCall ] == 'object' && !isInputFocus() ) {
+    clearTimeout(panelRefreshTimeout)
+    if (doQueryArray[ functionToCall ] && typeof doQueryArray[ functionToCall ] == 'object' && !isInputFocus()) {
+        var timeoutTime = null;
         newPanelAlert('Refreshing Data', 'success', 1000);
-        for( var idx = 0 in doQueryArray[ functionToCall ] ) {
-            if ( typeof doQueryArray[ functionToCall ][ idx ].func == 'function' ) {
+        for(var idx = 0 in doQueryArray[ functionToCall ]) {
+            if (typeof doQueryArray[ functionToCall ][ idx ].func == 'function') {
                 doQueryArray[ functionToCall ][ idx ].func();
+                if (timeoutTime == null || timeoutTime > doQueryArray[ functionToCall ][ idx ].time) {
+                    timeoutTime = doQueryArray[ functionToCall ][ idx ].time;
+                }
             }
         }
 
-        if ( doQueryArray[ functionToCall ].time ) {
-            panelRefreshTimeout = setTimeout( performCurrentPanelRefresh, doQueryArray[ functionToCall ].time );
+        if (timeoutTime > 0) {
+            panelRefreshTimeout = setTimeout(performCurrentPanelRefresh, timeoutTime);
         }
 
     }
@@ -397,17 +399,17 @@ function performCurrentPanelRefresh() {
  * @param {string} uniqueId     Unique identifier
  * @param {function} func       doQuery function
  */
-function addDoQuery( uniqueId, func, time ) {
+function addDoQuery(uniqueId, func, time) {
 
-    if ( ! time || typeof time != 'number' ) {
+    if (!time || typeof time != 'number') {
         time = 0;
     }
 
-    if ( typeof doQueryArray[ uniqueId ] != 'object' ) {
+    if (typeof doQueryArray[ uniqueId ] != 'object') {
         doQueryArray[ uniqueId ] = []
     }
 
-    doQueryArray[ uniqueId ].push( { func : func, time : time } );
+    doQueryArray[ uniqueId ].push({ func : func, time : time });
 
 }
 
@@ -416,14 +418,14 @@ function addDoQuery( uniqueId, func, time ) {
  * @param {string} uniqueId     Unique identifier
  * @param {function} func       doQuery function
  */
-function addOnMessage( uniqueID, func ) {
+function addOnMessage(uniqueID, func) {
 
     var uniqueID = uniqueID.trim('_');
-    if ( typeof onMessageArray[ uniqueID ] != 'object' ) {
+    if (typeof onMessageArray[ uniqueID ] != 'object') {
         onMessageArray[ uniqueID ] = [];
     }
 
-    onMessageArray[ uniqueID ].push( func );
+    onMessageArray[ uniqueID ].push(func);
 
 }
 
@@ -435,7 +437,7 @@ function getActiveTab() {
     var active = $("#tabs").tabs("option", "active"),
     tabs = $("#tabs").tabs("instance").tabs;
 
-    return $( tabs[active] );
+    return $(tabs[active]);
 }
 
 /**
@@ -445,17 +447,13 @@ function getActiveTab() {
  * @param {string} panelHTMLPath The path to the html file to load in
  * @param {int} position      The position to appear in the tab list
  */
-function addPanelTab( uniqueID, tabText, panelHTMLPath, position ) {
-    if ( ! position ) {
-
+function addPanelTab(uniqueID, tabText, panelHTMLPath, position) {
+    if (!position) {
         position = 9999;
-
     }
 
-    while( modulePanelArray[ position ] != undefined ) {
-
+    while(modulePanelArray[ position ] != undefined) {
         position++;
-
     }
 
     modulePanelArray[ position ] = {
@@ -469,22 +467,22 @@ function addPanelTab( uniqueID, tabText, panelHTMLPath, position ) {
 /**
  * Function to insert the queued tabs and panels
  */
-function buildPanel( callbackFunction ) {
+function buildPanel(callbackFunction) {
 
-    loadCustomModules( function() {
-        modulePanelArray = modulePanelArray.filter( Boolean ).reverse();
+    loadCustomModules(function() {
+        modulePanelArray = modulePanelArray.filter(Boolean).reverse();
         var i = 0;
-        for( i; i < modulePanelArray.length; i++ ) {
+        for(i; i < modulePanelArray.length; i++) {
 
-            $( '<div>' ).attr( 'role', 'tabpanel' ).addClass( 'tab-pane' ).prop( 'id', modulePanelArray[i].id ).append(
-                $( '<div>' ).prop( 'id', modulePanelArray[i].id + 'Panel' )
-            ).insertAfter( $( '#dashboard' ) );
+            $('<div>').attr('role', 'tabpanel').addClass('tab-pane').prop('id', modulePanelArray[i].id).append(
+                $('<div>').prop('id', modulePanelArray[i].id + 'Panel')
+            ).insertAfter($('#dashboard'));
 
-            $( '<li>' ).data( 'phantombot-tab', modulePanelArray[i].id ).append(
-                $( '<a>' ).attr( 'href', '#' + modulePanelArray[i].id ).text( modulePanelArray[i].tabText )
-            ).insertAfter( $( 'li[data-tab-list]' ) );
+            $('<li>').data('phantombot-tab', modulePanelArray[i].id).append(
+                $('<a>').attr('href', '#' + modulePanelArray[i].id).text(modulePanelArray[i].tabText)
+            ).insertAfter($('li[data-tab-list]'));
 
-            $( '#' + modulePanelArray[i].id + 'Panel' ).load( modulePanelArray[i].panelHTMLPath );
+            $('#' + modulePanelArray[i].id + 'Panel').load(modulePanelArray[i].panelHTMLPath);
 
         }
         callbackFunction();
@@ -495,20 +493,24 @@ function buildPanel( callbackFunction ) {
 }
 
 var interval = setInterval(function() {
-    if ( isConnected && TABS_INITIALIZED ) {
-        for( var idx = 0 in doQueryArray ) {
+    if (isConnected && TABS_INITIALIZED) {
+        for(var idx = 0 in doQueryArray) {
 
-            for( var idx2 = 0 in doQueryArray[ idx ] ) {
-                if ( typeof doQueryArray[ idx ][ idx2 ].func == 'function' ) {
+            for(var idx2 = 0 in doQueryArray[ idx ]) {
+                if (typeof doQueryArray[ idx ][ idx2 ].func == 'function') {
                     doQueryArray[ idx ][ idx2 ].func();
                 }
             }
         }
-        clearInterval( interval );
+        setTimeout(performCurrentPanelRefresh,3e4);
+        clearInterval(interval);
     }
-}, INITIAL_WAIT_TIME );
+}, INITIAL_WAIT_TIME);
 
-function loadCustomModules( callbackFunction ) {
+/**
+ * Load up custom modules from the panel/custom folder via ajax
+ */
+function loadCustomModules(callbackFunction) {
 
     try {
 
@@ -521,11 +523,11 @@ function loadCustomModules( callbackFunction ) {
             error : function() {
                 //die quetly
             }
-        }).then( function() {
+        }).then(function() {
 
             var $allAjax = [];
 
-            for( var i = 0 in customModules ) {
+            for(var i = 0 in customModules) {
                 if ( ! customModules[ i ] ) { continue; }
                 if ( customModules[ i ].indexOf( '.md' ) > -1 ) { continue; }
                 if ( customModules[ i ].indexOf( '.txt' ) > -1 ) { continue; }
@@ -551,23 +553,20 @@ function loadCustomModules( callbackFunction ) {
                 }))
             }
 
-            $.when.apply( $, $allAjax ).done( function() {
+            $.when.apply($, $allAjax).done( function() {
                 callbackFunction();
                 return;
             }).fail( function(e) {
-
                 callbackFunction();
                 return;
             })
 
         })
 
-    } catch( err ) {
-
+    } catch(err) {
         console.log ('Something went wrong');
         callbackFunction();
         return;
-
     }
 
 
