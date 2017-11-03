@@ -3,7 +3,7 @@
  * ------------
  * Interface for the YouTube Player for PhantomBot.
  */
-var DEBUG_MODE = true;
+var DEBUG_MODE = false;
 
 var startPaused = false;
 var playerPaused = false;
