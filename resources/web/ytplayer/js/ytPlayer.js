@@ -3,7 +3,7 @@
  * ------------
  * Interface for the YouTube Player for PhantomBot.
  */
-var DEBUG_MODE = false;
+var DEBUG_MODE = true;
 
 var startPaused = false;
 var playerPaused = false;
@@ -14,6 +14,7 @@ var loadedChat = false;
 var volumeSlider = null;
 var progressSlider = null;
 var lastSkipButtonPress = 0;
+var initTimeout = Date.now();
 
 var url = window.location.host.split(":");
 var addr = (getProtocol() == 'https://' ? 'wss://' : 'ws://') + url[0] + ':' + getPlayerPort();
@@ -320,16 +321,20 @@ function skipSong(d) {
     debugMsg("skipSong()");
 
     // This is to stop people from spamming the button and cause a loop.
-    if (Date.now() - lastSkipButtonPress < 1000) {
+    if (Date.now() - lastSkipButtonPress < 2500) {
+        newSongAlert('Skipping error', 'You\'re skipping songs too fast!', 'danger', 3000);
+        return;
+    } else if (Date.now() - initTimeout < 5000) { // Skipping before the first songs starts causes a loop.
+        newSongAlert('Skipping error', 'You cannot skip songs right now.', 'danger', 3000);
         return;
     }
+
+    lastSkipButtonPress = Date.now();
 
     var jsonObject = {};
     jsonObject["command"] = "skipsong";
     connection.send(JSON.stringify(jsonObject));
-    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
-
-    lastSkipButtonPress = Date.now();
+    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")"); 
 }
 
 function handlePause(d) {
