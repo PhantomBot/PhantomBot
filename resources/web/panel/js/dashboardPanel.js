@@ -617,8 +617,16 @@
     function toggleTwitchChat() {
         if ($("#chatsidebar").is(":visible")) {
             $("#chatsidebar").fadeOut(1000);
+            localStorage.setItem('phantombot_chattoggle', 'false');
         } else {
             $("#chatsidebar").fadeIn(1000);
+            // Load the iframe if it isn't there.
+            if ($("#chatsidebar").html().indexOf(getChannelName().toLowerCase()) === -1) {
+                $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
+                                             "src=\"https://www.twitch.tv/" + getChannelName().toLowerCase() + "/chat?popout=\">");
+                $("#chatsidebar").draggable({ iframeFix: true });
+            }
+            localStorage.setItem('phantombot_chattoggle', 'true');
         }
     }
 

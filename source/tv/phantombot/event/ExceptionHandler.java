@@ -23,7 +23,7 @@ public class ExceptionHandler implements SubscriberExceptionHandler {
 
     @Override
     public void handleException(Throwable thrwbl, SubscriberExceptionContext sec) {
-        com.gmt2001.Console.err.println("Failed to dispatch event " + sec.getEvent().toString() + " to " + sec.getSubscriberMethod().toString());
+        com.gmt2001.Console.err.println("Failed to dispatch event [" + sec.getEvent().toString() + "] to [" + sec.getSubscriberMethod().toString() + "]: " + thrwbl.getMessage());
         com.gmt2001.Console.err.printStackTrace(thrwbl);
     }
 }

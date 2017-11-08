@@ -15,7 +15,7 @@ $.lang.register('adventuresystem.set.success', 'Set $1 to $2.');
 $.lang.register('adventuresystem.set.usage', 'Usage: !adventure set [settingname] [value].');
 $.lang.register('adventuresystem.start.success', '$1 is trying get a team together for some serious adventure business! Use "!adventure [$2]" to join in!');
 $.lang.register('adventuresystem.tamagotchijoined', '$1 is also joining the adventure.');
-$.lang.register('adventuresystem.top5', 'The top 5 adventurerers are: $1.');
+$.lang.register('adventuresystem.top5', 'The top 5 adventurers are: $1.');
 $.lang.register('adventuresystem.top5.empty', 'There haven\'t been any adventure winners recorded yet.');
 
 
@@ -27,7 +27,7 @@ $.lang.register('adventuresystem.stories.1.chapter.3', 'We find ourselves back i
 $.lang.register('adventuresystem.stories.2.title', 'Beartraps');
 $.lang.register('adventuresystem.stories.2.chapter.1', 'Friends! I\'ve got coordinates for a secret stash of bolts, hidden away within the bowels of the elven forest. We should shoe up and give this a go!');
 $.lang.register('adventuresystem.stories.2.chapter.2', 'Look out, bear traps! (caught) got their legs ripped off!');
-$.lang.register('adventuresystem.stories.2.chapter.3', 'Dayum, that was a close call for loosing a leg. But you\'ve deserved this (survivors)!');
+$.lang.register('adventuresystem.stories.2.chapter.3', 'Dayum, that was a close call for losing a leg. But you\'ve deserved this (survivors)!');
 
 $.lang.register('adventuresystem.stories.3.title', 'Vampires?!');
 $.lang.register('adventuresystem.stories.3.chapter.1', 'Ah, my dear friends! I may have found the adventure of a lifetime. Namely the house of count Dracula is believed to be the bolts master! I\'m for going now!');
@@ -35,9 +35,9 @@ $.lang.register('adventuresystem.stories.3.chapter.2', 'It\'s him! (caught) got 
 $.lang.register('adventuresystem.stories.3.chapter.3', 'That was a close call, I don\'t think I\'ve been bitten. you? Ow well, (survivors), here\'s your share! ~Transforms into a bat and flutters off~');
 
 $.lang.register('adventuresystem.stories.4.title', 'Cereal');
-$.lang.register('adventuresystem.stories.4.chapter.1', 'I think we have a much bigger thread on our hands than the cave in... It is half man, half bear, half pig... Don\'t Laugh, I\'M SUPER CEREAL!');
+$.lang.register('adventuresystem.stories.4.chapter.1', 'I think we have a much bigger threat on our hands than the cave in... It is half man, half bear, half pig... Don\'t Laugh, I\'M SUPER CEREAL!');
 $.lang.register('adventuresystem.stories.4.chapter.2', '/me As the adventurers work their way through the tunnels they hear a soft noise from behind them...');
-$.lang.register('adventuresystem.stories.4.chapter.3', 'Look out! It\'s ManBearPig! (caught) get dragged of into the darkness.');
+$.lang.register('adventuresystem.stories.4.chapter.3', 'Look out! It\'s ManBearPig! (caught) get dragged off into the darkness.');
 $.lang.register('adventuresystem.stories.4.chapter.4', '(survivors) run away. Let\'s get out of here guys! We can\'t deal with this alone');
 
 

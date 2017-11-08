@@ -653,6 +653,7 @@
                     if (this.loadPlaylistKeys() == 0) {
                         return null;
                     }
+                    return null;
                 }
 
                 try {

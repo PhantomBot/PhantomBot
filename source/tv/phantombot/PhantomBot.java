@@ -41,7 +41,7 @@ import com.illusionaryone.DataRenderServiceAPIv1;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.StreamElementsAPIv1;
-import com.scaniatv.RevloConverter;
+import com.scaniatv.BotImporter;
 import com.scaniatv.GenerateLogs;
 
 import java.io.File;
@@ -1506,7 +1506,17 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("revloconvert")) {
             print("[CONSOLE] Executing revloconvert");
             if (arguments.length() > 0) {
-                RevloConverter.convert(arguments);
+                BotImporter.ImportRevlo(arguments);
+            } else {
+                print("You must specify the file name you want to convert.");
+            }
+            return;
+        }
+
+        if (message.equalsIgnoreCase("ankhconvert")) {
+            print("[CONSOLE] Executing ankhconvert");
+            if (arguments.length() > 0) {
+                BotImporter.ImportAnkh(arguments);
             } else {
                 print("You must specify the file name you want to convert.");
             }
