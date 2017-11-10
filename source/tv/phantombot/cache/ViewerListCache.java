@@ -26,8 +26,6 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
-import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
-import tv.phantombot.event.irc.channel.IrcChannelLeaveEvent;
 import tv.phantombot.event.EventBus;
 
 public class ViewerListCache implements Runnable {
@@ -96,9 +94,9 @@ public class ViewerListCache implements Runnable {
 	 */
 	private void updateCache() throws Exception {
 		String[] types = new String[] { "moderators", "staff", "admins", "global_mods", "viewers" };
-		List<String> cache = new ArrayList<>();
-		List<String> joins = new ArrayList<>();
-		List<String> parts = new ArrayList<>();
+		List<String> cache = new ArrayList<String>();
+		List<String> joins = new ArrayList<String>();
+		List<String> parts = new ArrayList<String>();
 		EventBus bus = EventBus.instance();
 
 		com.gmt2001.Console.debug.println("ViewerListCache::updateCache");
