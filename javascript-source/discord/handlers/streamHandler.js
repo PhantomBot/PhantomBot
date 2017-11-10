@@ -74,6 +74,7 @@
         		// Get max chatters.
         		var maxChatters = Math.max.apply(null, chatters);
 
+                $.discord.say(channelName, offlineMessage.replace('\(name\)', $.username.resolve($.channelName)));
         		// Send the message as an embed.
         		$.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
         			.withColor(100, 65, 164)
@@ -108,6 +109,7 @@
 				    s = $.replace(s, '(name)', $.username.resolve($.channelName));
 			    }
 
+                $.discord.say(channelName, s);
 			    $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
         		    .withColor(100, 65, 164)
         		    .withThumbnail($.twitchcache.getLogoLink())
@@ -139,6 +141,7 @@
 			s = $.replace(s, '(name)', $.username.resolve($.channelName));
 		}
 
+        $.discord.say(channelName, s);
 		$.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
         	.withColor(100, 65, 164)
         	.withThumbnail($.twitchcache.getLogoLink())
