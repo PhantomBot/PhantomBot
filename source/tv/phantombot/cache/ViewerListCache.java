@@ -25,6 +25,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
 import tv.phantombot.event.irc.channel.IrcChannelLeaveEvent;
 import tv.phantombot.event.EventBus;
@@ -33,7 +34,7 @@ public class ViewerListCache implements Runnable {
 	private static ViewerListCache instance = null;
 	private final String channelName;
 	private final Thread thread;
-	private List<String> cache = new ArrayList<>();
+	private List<String> cache = new ArrayList<String>();
 	private boolean isKilled = false;
 
 	/*
@@ -66,7 +67,7 @@ public class ViewerListCache implements Runnable {
 	}
 
 	/*
-	 * Method that updates the cache every 5 minutes.
+	 * Method that updates the cache every 10 minutes.
 	 */
 	@Override
 	@SuppressWarnings("SleepWhileInLoop")
@@ -96,6 +97,8 @@ public class ViewerListCache implements Runnable {
 	private void updateCache() throws Exception {
 		String[] types = new String[] { "moderators", "staff", "admins", "global_mods", "viewers" };
 		List<String> cache = new ArrayList<>();
+		List<String> joins = new ArrayList<>();
+		List<String> parts = new ArrayList<>();
 		EventBus bus = EventBus.instance();
 
 		com.gmt2001.Console.debug.println("ViewerListCache::updateCache");
@@ -121,21 +124,24 @@ public class ViewerListCache implements Runnable {
 				// Check for new users that joined.
 				for (int i = 0; i < cache.size(); i++) {
 					if (!this.cache.contains(cache.get(i))) {
-						bus.postAsync(new IrcChannelJoinEvent(cache.get(i)));
-						com.gmt2001.Console.debug.println("User Joined Channel [" + cache.get(i) + "#" + channelName + "]");
+						joins.add(cache.get(i));
 					}
 				}
 
 				// Check for old users that left.
 				for (int i = 0; i < this.cache.size(); i++) {
 					if (!cache.contains(this.cache.get(i))) {
-						bus.postAsync(new IrcChannelLeaveEvent(this.cache.get(i)));
-						com.gmt2001.Console.debug.println("User Left Channel [" + this.cache.get(i) + "#" + channelName + "]");
+						parts.add(this.cache.get(i));
 					}
 				}
 
+				bus.post(new IrcChannelUsersUpdateEvent(cache.toArray(new String[cache.size()]), joins.toArray(new String[joins.size()]), parts.toArray(new String[parts.size()])));
 				// Set the new cache.
 				this.cache = cache;
+				// Delete the temp caches.
+				cache = null;
+				parts = null;
+				joins = null;
 			} else {
 				com.gmt2001.Console.debug.println("Failed to update viewers cache: " + object);
 			}
