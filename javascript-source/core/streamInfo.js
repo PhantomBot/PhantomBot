@@ -442,6 +442,7 @@
             if (!silent) {
                 $.say($.lang.get('common.communities.change'));
             }
+            $.twitchcache.setCommunities(communities);
             $.inidb.set('streamInfo', 'communities', communities.join(', '));
         } else {
             $.log.error('Failed to change the status. Make sure you have your api oauth code set. https://phantombot.tv/oauth');

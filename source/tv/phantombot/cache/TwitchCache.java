@@ -492,6 +492,13 @@ public class TwitchCache implements Runnable {
     }
 
     /*
+     * Set the communities
+     */
+    public void setCommunities(String[] communities) {
+        this.communities = communities;
+    }
+
+    /*
      * Returns an array of communities if set.
      */
     public String[] getCommunities() {
