@@ -58,7 +58,6 @@ import tv.phantombot.PhantomBot;
 public class TwitchWSIRC extends WebSocketClient {
 
     private static final Map<String, TwitchWSIRC> instances = Maps.newHashMap();
-    private final ThreadPoolExecutor threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
     private final String channelName;
     private final String login;
     private final String oAuth;
@@ -236,8 +235,12 @@ public class TwitchWSIRC extends WebSocketClient {
             sentPing = false;
             return;
         } else {
+        	// Do not change this.
+        	// After a lot of testing, a thread pool can slow down when Twitch sends burst of messages. 
+        	// The event bus can take a bit of time to queue in async, which causes the small delay.
+        	// This also happens in sync.
             try {
-                threads.execute(new MessageRunnable(message));
+                new Thread(new MessageRunnable(message)).start();
             } catch (Exception ex) {
                 twitchWSIRCParser.parseData(message);
             }
