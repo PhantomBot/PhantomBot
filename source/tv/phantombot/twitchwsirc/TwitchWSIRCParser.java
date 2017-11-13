@@ -287,6 +287,19 @@ public class TwitchWSIRCParser {
             scriptEventManager.onEvent(new BitsEvent(channel, username, tagsMap.get("bits")));
         }
 
+        /**
+         * Moved the command and moderation event above the async events.
+         * The event bus seems to take some time to queue events, which can cause a delay.
+         */
+        /* Check if the message is a command */
+        if (message.startsWith("!")) {
+            commandEvent(message, username, tagsMap);
+        }
+
+        /* Send the moderation event. */
+        scriptEventManager.onEvent(new IrcModerationEvent(session, username, message, channel, tagsMap));
+
+
         /* Check to see if the user is a channel subscriber. */
         if (tagsMap.containsKey("subscriber") && tagsMap.get("subscriber").equals("1")) {
             eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + username + " subscriber", tagsMap));
@@ -313,20 +326,9 @@ public class TwitchWSIRCParser {
                 }
             }
         }
-        
-        /* Check if the message is a command */
-        if (message.startsWith("!")) {
-            commandEvent(message, username, tagsMap);
-        }
-
-        /* Send the moderation event. */
-        scriptEventManager.onEvent(new IrcModerationEvent(session, username, message, channel, tagsMap));
 
         /* Send the message to the scripts. */
         eventBus.postAsync(new IrcChannelMessageEvent(session, username, message, channel, tagsMap));
-
-        /* Send an event to check if a user is a sub. */
-        // eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "user-check " + username, tagsMap));
 
         /* Print the IRCv3 tags if debug mode is on, this is last so it doesn't slow down the code above. */
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
