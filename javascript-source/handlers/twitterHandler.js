@@ -4,7 +4,7 @@
  * Interfaces with Twitter.  Provides the connection to the Core to be provided
  * with Tweets and configuration of the module.  As the Core directly reads the
  * DB for configuration, there is not a need for local variables in this module.
- *
+ * 
  */
 
 
@@ -14,8 +14,9 @@
 (function() {
     var randPrev = 0,
         onlinePostDelay = 480 * 6e4, // 8 hour cooldown
+        gameChangeDelay = 60 * 6e4, // 1 hour cooldown
         interval;
-
+ 
     /* Set default values for all configuration items. */
     $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
     $.getSetIniDbString('twitter', 'message_gamechange', 'Changing game over to (game) (twitchurl)');
@@ -88,7 +89,7 @@
                 $.inidb.incr('points', userName, reward);
                 $.setIniDbNumber('twitter_user_last_retweet', userName, now);
             }
-        }
+        } 
 
         if (rewardNameArray.length > 0 && $.getIniDbBoolean('twitter', 'reward_announce')) {
             $.say($.lang.get('twitter.reward.announcement', rewardNameArray.join(', '), $.getPointsString(reward)));
@@ -137,16 +138,23 @@
         }
 
         if ($.getIniDbBoolean('twitter', 'post_gamechange', false) && $.isOnline($.channelName)) {
-            var randNum,
-                uptimeSec = $.getStreamUptimeSeconds($.channelName),
-                hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
-                min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
+            if (now > $.getIniDbNumber('twitter', 'last_gamechange', 0) + gameChangeDelay) {
+                $.inidb.set('twitter', 'last_gamechange', now + gameChangeDelay);
+                var randNum,
+                	uptimeSec = $.getStreamUptimeSeconds($.channelName),
+                    hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
+                    min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
 
-            do {
-                randNum = $.randRange(1, 9999);
-            } while (randNum == randPrev);
-            randPrev = randNum;
-            $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(uptime)', hrs + ':' + min).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
+                do {
+                    randNum = $.randRange(1, 9999);
+                } while (randNum == randPrev);
+                randPrev = randNum;
+                $.twitter.updateStatus(String(message).
+                                       replace('(title)', $.twitchcache.getStreamStatus()).
+                                       replace('(game)', $.twitchcache.getGameTitle()).
+                                       replace('(uptime)', hrs + ':' + min).
+                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
+            }
         }
     });
 
@@ -491,14 +499,14 @@
             }
 
             /**
-             * @commandpath twitter unregister - Unregister your Twitter username
+             * @commandpath twitter unregister - Unregister your Twitter username 
              */
             if (commandArg.equalsIgnoreCase('unregister')) {
                 $.inidb.del('twitter_mapping', sender);
                 $.say($.whisperPrefix(sender) + $.lang.get('twitter.unregister'));
                 return;
             }
-
+                 
         } /* if (command.equalsIgnoreCase('twitter')) */
     }); /* @event command */
 
@@ -508,7 +516,7 @@
     function checkAutoUpdate() {
         var message = $.getIniDbString('twitter', 'message_update');
 
-        /*
+        /* 
          * If not online, nothing to do. The last_autoupdate is reset to ensure that
          * the moment a stream comes online an additional Tweet is not sent out.
          */
@@ -550,8 +558,8 @@
         }
     }
 
-    interval = setInterval(function() {
-        checkAutoUpdate();
+    interval = setInterval(function() { 
+        checkAutoUpdate(); 
     }, 8e4);
 
     /**
