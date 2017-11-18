@@ -10,7 +10,7 @@
 
 		var gamesObj = ($.inidb.exists('pastgames', 'gamesList') ? JSON.parse($.getIniDbString('pastgames', 'gamesList')) : {}),
 			date = $.logging.getLogDateString().replace(/-/g, '.'),
-			game = (event.getGame() + '').replace(/\s/g, '-').toLowerCase();
+			game = (event.getGameTitle() + '').replace(/\s/g, '-').toLowerCase();
 
 		if (gamesObj[game] !== undefined) {
 			gamesObj[game].push(date);
@@ -27,7 +27,7 @@
 	$.bind('twitchOnline', function(event) {
 		var gamesObj = ($.inidb.exists('pastgames', 'gamesList') ? JSON.parse($.getIniDbString('pastgames', 'gamesList')) : {}),
 			date = $.logging.getLogDateString().replace(/-/g, '.'),
-			game = (event.getGameTitle() + '').replace(/\s/g, '-').toLowerCase();
+			game = ($.getGame($.channelName) + '').replace(/\s/g, '-').toLowerCase();
 
 		if (gamesObj[game] !== undefined) {
 			gamesObj[game].push(date);
