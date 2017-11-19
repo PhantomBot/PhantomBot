@@ -116,7 +116,8 @@
         		    .withTitle(s)
         		    .appendField($.lang.get('discord.streamhandler.common.game'), $.getGame($.channelName), false)
         		    .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
-        		    .withUrl('https://twitch.tv/' + $.channelName).build());
+        		    .withUrl('https://twitch.tv/' + $.channelName)
+        		    .withImage($.twitchcache.getPreviewLink() + '#' + $.randRange(1, 99999)).build());
 
                 $.setIniDbNumber('discordSettings', 'lastOnlineEvent', $.systemTime());
 		    }
@@ -149,7 +150,7 @@
         	.appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
         	.appendField($.lang.get('discord.streamhandler.common.uptime'), $.getStreamUptime($.channelName).toString(), false)
         	.withUrl('https://twitch.tv/' + $.channelName)
-        	.withImage($.twitchcache.getPreviewLink()).build());
+        	.withImage($.twitchcache.getPreviewLink() + '#' + $.randRange(1, 99999)).build());
 	});
 
 	/**
