@@ -116,8 +116,7 @@
         		    .withTitle(s)
         		    .appendField($.lang.get('discord.streamhandler.common.game'), $.getGame($.channelName), false)
         		    .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
-        		    .withUrl('https://twitch.tv/' + $.channelName)
-        		    .withImage($.twitchcache.getPreviewLink()).build());
+        		    .withUrl('https://twitch.tv/' + $.channelName).build());
 
                 $.setIniDbNumber('discordSettings', 'lastOnlineEvent', $.systemTime());
 		    }
