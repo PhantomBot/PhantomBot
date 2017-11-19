@@ -37,8 +37,10 @@ import tv.phantombot.event.irc.message.IrcModerationEvent;
 import tv.phantombot.event.irc.clearchat.IrcClearchatEvent;
 import tv.phantombot.event.twitch.subscriber.ReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.SubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.SubscriptionGiftEvent;
 import tv.phantombot.event.twitch.subscriber.PrimeSubscriberEvent;
 import tv.phantombot.event.twitch.bits.BitsEvent;
+import tv.phantombot.event.twitch.raid.RaidEvent;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.script.ScriptEventManager;
@@ -437,14 +439,18 @@ public class TwitchWSIRCParser {
         if (tagsMap.containsKey("msg-id")) {
             if (tagsMap.get("msg-id").equalsIgnoreCase("resub")) {
                 scriptEventManager.onEvent(new ReSubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-months"), tagsMap.get("msg-param-sub-plan")));
-            } else {
-                if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
-                    if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
-                        scriptEventManager.onEvent(new PrimeSubscriberEvent(channel, tagsMap.get("login")));
-                    } else {
-                        scriptEventManager.onEvent(new SubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
-                    }
+            } else if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
+                if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
+                    scriptEventManager.onEvent(new PrimeSubscriberEvent(channel, tagsMap.get("login")));
+                } else {
+                    scriptEventManager.onEvent(new SubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
                 }
+            } else if (tagsMap.get("msg-id").equalsIgnoreCase("subgift")) {
+            	scriptEventManager.onEvent(new SubscriptionGiftEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-recipient-user-name"), tagsMap.get("msg-param-months"), tagsMap.get("msg-param-sub-plan")));
+            } else {
+            	if (tagsMap.get("msg-id").equalsIgnoreCase("raid")) {
+            		scriptEventManager.onEvent(new RaidEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-viewerCount")));
+            	}
             }
         }
     }
