@@ -74,12 +74,18 @@
         		// Get max chatters.
         		var maxChatters = Math.max.apply(null, chatters);
 
-                $.discord.say(channelName, offlineMessage.replace('\(name\)', $.username.resolve($.channelName)));
+                var s = offlineMessage;
+
+                if (s.match(/\(name\)/)) {
+                    s = $.replace(s, '(name)', $.username.resolve($.channelName));
+                }
+
+                $.discord.say(channelName, s);
         		// Send the message as an embed.
         		$.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
         			.withColor(100, 65, 164)
         			.withThumbnail($.twitchcache.getLogoLink())
-        			.withTitle(offlineMessage.replace('\(name\)', $.username.resolve($.channelName)))
+        			.withTitle(s)
         			.appendField($.lang.get('discord.streamhandler.offline.game'), $.getGame($.channelName), true)
         			.appendField($.lang.get('discord.streamhandler.offline.viewers'), $.lang.get('discord.streamhandler.offline.viewers.stat', avgViewers, maxViewers), true)
         			.appendField($.lang.get('discord.streamhandler.offline.chatters'), $.lang.get('discord.streamhandler.offline.chatters.stat', avgChatters, maxChatters), true)
@@ -103,12 +109,18 @@
         // Wait a minute for Twitch to generate a real thumbnail and make sure again that we are online.
         setTimeout(function() {
 		    if ($.isOnline($.channelName) && ($.systemTime() - $.getIniDbNumber('discordSettings', 'lastOnlineEvent', 0) >= timeout)) {
+			    var s = onlineMessage;
 
-                $.discord.say(channelName, onlineMessage.replace('\(name\)', $.username.resolve($.channelName)));
+			    if (s.match(/\(name\)/)) {
+				    s = $.replace(s, '(name)', $.username.resolve($.channelName));
+			    }
+
+                $.discord.say(channelName, s);
+                // Send the message as an embed.
 			    $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
         		    .withColor(100, 65, 164)
         		    .withThumbnail($.twitchcache.getLogoLink())
-        		    .withTitle(onlineMessage.replace('\(name\)', $.username.resolve($.channelName)))
+        		    .withTitle(s)
         		    .appendField($.lang.get('discord.streamhandler.common.game'), $.getGame($.channelName), false)
         		    .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
         		    .withUrl('https://twitch.tv/' + $.channelName)
@@ -130,11 +142,17 @@
 			return;
 		}
 
+		var s = gameMessage;
+
+		if (s.match(/\(name\)/)) {
+			s = $.replace(s, '(name)', $.username.resolve($.channelName));
+		}
+
         $.discord.say(channelName, s);
 		$.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
         	.withColor(100, 65, 164)
         	.withThumbnail($.twitchcache.getLogoLink())
-        	.withTitle(gameMessage.replace('\(name\)', $.username.resolve($.channelName)))
+        	.withTitle(s)
         	.appendField($.lang.get('discord.streamhandler.common.game'), $.getGame($.channelName), false)
         	.appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
         	.appendField($.lang.get('discord.streamhandler.common.uptime'), $.getStreamUptime($.channelName).toString(), false)
