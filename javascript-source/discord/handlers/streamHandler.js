@@ -74,12 +74,18 @@
         		// Get max chatters.
         		var maxChatters = Math.max.apply(null, chatters);
 
-                $.discord.say(channelName, offlineMessage.replace('\(name\)', $.username.resolve($.channelName)));
+                var s = offlineMessage;
+
+                if (s.match(/\(name\)/)) {
+                    s = $.replace(s, '(name)', $.username.resolve($.channelName));
+                }
+
+                $.discord.say(channelName, s);
         		// Send the message as an embed.
         		$.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
         			.withColor(100, 65, 164)
         			.withThumbnail($.twitchcache.getLogoLink())
-        			.withTitle(offlineMessage.replace('\(name\)', $.username.resolve($.channelName)))
+        			.withTitle(s)
         			.appendField($.lang.get('discord.streamhandler.offline.game'), $.getGame($.channelName), true)
         			.appendField($.lang.get('discord.streamhandler.offline.viewers'), $.lang.get('discord.streamhandler.offline.viewers.stat', avgViewers, maxViewers), true)
         			.appendField($.lang.get('discord.streamhandler.offline.chatters'), $.lang.get('discord.streamhandler.offline.chatters.stat', avgChatters, maxChatters), true)
@@ -110,6 +116,7 @@
 			    }
 
                 $.discord.say(channelName, s);
+                // Send the message as an embed.
 			    $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
         		    .withColor(100, 65, 164)
         		    .withThumbnail($.twitchcache.getLogoLink())
