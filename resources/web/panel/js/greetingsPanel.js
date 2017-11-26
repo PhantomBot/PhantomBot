@@ -212,6 +212,9 @@
                     if (panelMatch(key, 'reSubscribeReward')) {
                         $('#reSubRewardInput').val(value);
                     }
+                    if (panelMatch(key, 'giftSubReward')) {
+                        $('#giftSubRewardInput').val(value);
+                    }
                     if (panelMatch(key, 'reSubscribeMessage')) {
                         $('#resubGreetingInput').val(value);
                     }
