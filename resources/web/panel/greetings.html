@@ -395,6 +395,15 @@
                 <input type="number" min="0" class="form-control" id="reSubRewardInput" placeholder="Points" />
             </div>
         </form>
+     
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="giftSubReward">Gift Subscribing Reward</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('giftSubRewardInput', 'subscribeHandler', 'giftSubReward')">Submit</button>
+                <input type="number" min="0" class="form-control" id="giftSubRewardInput" placeholder="Points" />
+            </div>
+        </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
