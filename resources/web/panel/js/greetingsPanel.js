@@ -233,7 +233,7 @@
                         reSubToggle = value;
                         $('#resubscriptionGreetings').html(settingIcon[value]);
                     }
-                    if (panelMatch(key, 'subscriptionGiftWelcomeToggle')) {
+                    if (panelMatch(key, 'giftSubWelcomeToggle')) {
                         subGiftToggle = value;
                         $('#subscriptiongiftGreetings').html(settingIcon[value]);
                     }
@@ -482,12 +482,12 @@
             }
             setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
-        if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'subscriptionGiftWelcomeToggle')) {
+        if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'giftSubWelcomeToggle')) {
             $('#subscriptionGiftGreetings').html(spinIcon);
             if (subGiftToggle == "true") {
-                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'subscriptionGiftWelcomeToggle', 'false');
+                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'giftSubWelcomeToggle', 'false');
             } else {
-                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'subscriptionGiftWelcomeToggle', 'true');
+                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'giftSubWelcomeToggle', 'true');
             }
             setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
