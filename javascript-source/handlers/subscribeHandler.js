@@ -174,6 +174,9 @@
             if (subReward > 0) {
                 $.inidb.incr('points', recipient, subReward);
             }
+            if (giftSubReward > 0) {
+                $.inidb.incr('points', gifter, giftSubReward);
+            }
         }
     });
 
