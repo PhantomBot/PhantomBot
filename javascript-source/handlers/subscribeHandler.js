@@ -222,7 +222,7 @@
          */
         if (command.equalsIgnoreCase('giftsubwelcometoggle')) {
             giftSubWelcomeToggle = !giftSubWelcomeToggle;
-            $.setIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', giftSubWelcomeToggle);
+            $.setIniDbBoolean('subscribeHandler', 'giftSubWelcomeToggle', giftSubWelcomeToggle);
             $.say($.whisperPrefix(sender) + (giftSubWelcomeToggle ? $.lang.get('subscribehandler.giftsub.toggle.on') : $.lang.get('subscribehandler.giftsub.toggle.off')))
         }
 
@@ -277,7 +277,7 @@
                 return;
             }
 
-            giftSubMessage = argsString ;
+            giftSubMessage = argsString;
             $.setIniDbString('subscribeHandler', 'giftSubMessage', giftSubMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.msg.set'));
         }
@@ -320,7 +320,7 @@
                 return;
             }
             
-            reSubReward = parseInt(action);
+            giftSubReward = parseInt(action);
             $.setIniDbNumber('subscribeHandler', 'giftSubReward', giftSubReward);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.reward.set'));
         }
