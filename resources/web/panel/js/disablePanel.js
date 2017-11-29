@@ -229,7 +229,7 @@
                 handlePanel('./discord/systems/greetingsSystem.js', '#_discord_greetingSystem', moduleEnabled);
             }
             if (panelMatch(module, './discord/commands/customCommands.js')) {
-                handlePanel('./discord/games/customCommands.js', '#_discord_customCommands', moduleEnabled);
+                handlePanel('./discord/commands/customCommands.js', '#_discord_customCommands', moduleEnabled);
             }
             if (panelMatch(module, './discord/games/slotMachine.js')) {
                 handlePanel('./discord/games/slotMachine.js', '#_discord_slotMachine', moduleEnabled);
