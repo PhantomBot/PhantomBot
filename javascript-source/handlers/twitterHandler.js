@@ -140,7 +140,11 @@
         if ($.getIniDbBoolean('twitter', 'post_gamechange', false) && $.isOnline($.channelName)) {
             if (now > $.getIniDbNumber('twitter', 'last_gamechange', 0) + gameChangeDelay) {
                 $.inidb.set('twitter', 'last_gamechange', now + gameChangeDelay);
-                var randNum;
+                var randNum,
+                	uptimeSec = $.getStreamUptimeSeconds($.channelName),
+                    hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
+                    min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
+
                 do {
                     randNum = $.randRange(1, 9999);
                 } while (randNum == randPrev);
@@ -148,6 +152,7 @@
                 $.twitter.updateStatus(String(message).
                                        replace('(title)', $.twitchcache.getStreamStatus()).
                                        replace('(game)', $.twitchcache.getGameTitle()).
+                                       replace('(uptime)', hrs + ':' + min).
                                        replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
             }
         }

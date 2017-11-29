@@ -604,6 +604,13 @@
         });
 
         /*
+         * @event ircChannelUsersUpdate
+         */
+        $api.on($script, 'ircChannelUsersUpdate', function(event) {
+            callHook('ircChannelUsersUpdate', event, false);
+        });
+
+        /*
          * @event ircChannelLeave
          */
         $api.on($script, 'ircChannelLeave', function(event) {
@@ -884,10 +891,24 @@
         });
 
         /*
+         * @event subscriptionGift
+         */
+        $api.on($script, 'subscriptionGift', function(event) {
+            callHook('subscriptionGift', event, false);
+        });
+
+        /*
          * @event bits
          */
         $api.on($script, 'bits', function(event) {
             callHook('bits', event, false);
+        });
+
+        /*
+         * @event raid
+         */
+        $api.on($script, 'raid', function(event) {
+            callHook('raid', event, false);
         });
 
         /*

@@ -37,8 +37,10 @@ import tv.phantombot.event.irc.message.IrcModerationEvent;
 import tv.phantombot.event.irc.clearchat.IrcClearchatEvent;
 import tv.phantombot.event.twitch.subscriber.ReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.SubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.SubscriptionGiftEvent;
 import tv.phantombot.event.twitch.subscriber.PrimeSubscriberEvent;
 import tv.phantombot.event.twitch.bits.BitsEvent;
+import tv.phantombot.event.twitch.raid.RaidEvent;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.script.ScriptEventManager;
@@ -287,6 +289,19 @@ public class TwitchWSIRCParser {
             scriptEventManager.onEvent(new BitsEvent(channel, username, tagsMap.get("bits")));
         }
 
+        /**
+         * Moved the command and moderation event above the async events.
+         * The event bus seems to take some time to queue events, which can cause a delay.
+         */
+        /* Check if the message is a command */
+        if (message.startsWith("!")) {
+            commandEvent(message, username, tagsMap);
+        }
+
+        /* Send the moderation event. */
+        scriptEventManager.onEvent(new IrcModerationEvent(session, username, message, channel, tagsMap));
+
+
         /* Check to see if the user is a channel subscriber. */
         if (tagsMap.containsKey("subscriber") && tagsMap.get("subscriber").equals("1")) {
             eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + username + " subscriber", tagsMap));
@@ -313,20 +328,9 @@ public class TwitchWSIRCParser {
                 }
             }
         }
-        
-        /* Check if the message is a command */
-        if (message.startsWith("!")) {
-            commandEvent(message, username, tagsMap);
-        }
-
-        /* Send the moderation event. */
-        scriptEventManager.onEvent(new IrcModerationEvent(session, username, message, channel, tagsMap));
 
         /* Send the message to the scripts. */
         eventBus.postAsync(new IrcChannelMessageEvent(session, username, message, channel, tagsMap));
-
-        /* Send an event to check if a user is a sub. */
-        // eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "user-check " + username, tagsMap));
 
         /* Print the IRCv3 tags if debug mode is on, this is last so it doesn't slow down the code above. */
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
@@ -435,14 +439,18 @@ public class TwitchWSIRCParser {
         if (tagsMap.containsKey("msg-id")) {
             if (tagsMap.get("msg-id").equalsIgnoreCase("resub")) {
                 scriptEventManager.onEvent(new ReSubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-months"), tagsMap.get("msg-param-sub-plan")));
-            } else {
-                if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
-                    if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
-                        scriptEventManager.onEvent(new PrimeSubscriberEvent(channel, tagsMap.get("login")));
-                    } else {
-                        scriptEventManager.onEvent(new SubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
-                    }
+            } else if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
+                if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
+                    scriptEventManager.onEvent(new PrimeSubscriberEvent(channel, tagsMap.get("login")));
+                } else {
+                    scriptEventManager.onEvent(new SubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
                 }
+            } else if (tagsMap.get("msg-id").equalsIgnoreCase("subgift")) {
+            	scriptEventManager.onEvent(new SubscriptionGiftEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-recipient-user-name"), tagsMap.get("msg-param-months"), tagsMap.get("msg-param-sub-plan")));
+            } else {
+            	if (tagsMap.get("msg-id").equalsIgnoreCase("raid")) {
+            		scriptEventManager.onEvent(new RaidEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-viewerCount")));
+            	}
             }
         }
     }

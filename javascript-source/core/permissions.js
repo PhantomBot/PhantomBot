@@ -608,6 +608,46 @@
     }
 
     /**
+     * @event ircChannelJoinUpdate
+     *
+     * @info Event that is sent when a large amount of people join/leave. This is done on a new thread.
+     */
+    $.bind('ircChannelUsersUpdate', function(event) {
+        setTimeout(function() {
+            var usernames = event.getUsers(),
+                joins = event.getJoins(),
+                parts = event.getParts(),
+                now = $.systemTime(),
+                newUsers = [];
+
+            // Handle parts
+            for (var i in parts) {
+                restoreSubscriberStatus(parts[i], true);
+                $.username.removeUser(parts[i]);
+            }
+
+            // Handle joins.
+            $.inidb.setAutoCommit(false);
+            for (var i in joins) {
+                if (!$.user.isKnown(joins[i])) {
+                    $.setIniDbBoolean('visited', joins[i], true);
+                }
+                $.checkGameWispSub(username);
+            }
+            $.inidb.setAutoCommit(true);
+            $.inidb.SaveAll(true);
+
+            // Set the new users array.
+            for (var i in usernames) {
+                newUsers.push([usernames[i], now]);
+            }
+            // Set the new array.
+            users = newUsers;
+            lastJoinPart = $.systemTime();
+        }, 0);
+    });
+
+    /**
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function(event) {
