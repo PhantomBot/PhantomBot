@@ -25,16 +25,17 @@
  */
 (function() {
 
-   var refreshIcon = '<i class="fa fa-refresh" />',
-       spinIcon = '<i style="color: var(--main-color)" class="fa fa-spinner fa-spin" />',
-       settingIcon = [];
-       settingIcon['false'] = '<i style="color: var(--main-color)" class="fa fa-circle-o" />';
-       settingIcon['true'] = '<i style="color: var(--main-color)" class="fa fa-circle" />';
+    var refreshIcon = '<i class="fa fa-refresh" />',
+        spinIcon = '<i style="color: var(--main-color)" class="fa fa-spinner fa-spin" />',
+        settingIcon = [];
+        settingIcon['false'] = '<i style="color: var(--main-color)" class="fa fa-circle-o" />';
+        settingIcon['true'] = '<i style="color: var(--main-color)" class="fa fa-circle" />';
 
     var greetingToggle = false,
         followerToggle = false,
         subToggle = false,
         reSubToggle = false,
+        subGiftToggle = false,
         donationToggle = false,
         streamtipdonationToggle = false,
         donationGroup = false,
@@ -211,8 +212,14 @@
                     if (panelMatch(key, 'reSubscribeReward')) {
                         $('#reSubRewardInput').val(value);
                     }
+                    if (panelMatch(key, 'giftSubReward')) {
+                        $('#giftSubRewardInput').val(value);
+                    }
                     if (panelMatch(key, 'reSubscribeMessage')) {
                         $('#resubGreetingInput').val(value);
+                    }
+                    if (panelMatch(key, 'giftSubMessage')) {
+                        $('#giftsubGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'subscriberWelcomeToggle')) {
                         subToggle = value;
@@ -225,6 +232,10 @@
                     if (panelMatch(key, 'reSubscriberWelcomeToggle')) {
                         reSubToggle = value;
                         $('#resubscriptionGreetings').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'giftSubWelcomeToggle')) {
+                        subGiftToggle = value;
+                        $('#subscriptiongiftGreetings').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'subscribeReward')) {
                         $('#subRewardInput').val(value);
@@ -468,6 +479,15 @@
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberWelcomeToggle', 'false');
             } else {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'reSubscriberWelcomeToggle', 'true');
+            }
+            setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
+        }
+        if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'giftSubWelcomeToggle')) {
+            $('#subscriptionGiftGreetings').html(spinIcon);
+            if (subGiftToggle == "true") {
+                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'giftSubWelcomeToggle', 'false');
+            } else {
+                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'giftSubWelcomeToggle', 'true');
             }
             setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
