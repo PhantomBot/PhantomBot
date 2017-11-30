@@ -622,24 +622,24 @@
 
             // Handle parts
             for (var i in parts) {
-                restoreSubscriberStatus(parts[i], true);
-                $.username.removeUser(parts[i]);
+                restoreSubscriberStatus(parts[i] + '', true);
+                $.username.removeUser(parts[i] + '');
             }
 
             // Handle joins.
             $.inidb.setAutoCommit(false);
             for (var i in joins) {
-                if (!$.user.isKnown(joins[i])) {
-                    $.setIniDbBoolean('visited', joins[i], true);
+                if (!$.user.isKnown(joins[i] + '')) {
+                    $.setIniDbBoolean('visited', joins[i] + '', true);
                 }
-                $.checkGameWispSub(username);
+                $.checkGameWispSub(joins[i] + '');
             }
             $.inidb.setAutoCommit(true);
             $.inidb.SaveAll(true);
 
             // Set the new users array.
             for (var i in usernames) {
-                newUsers.push([usernames[i], now]);
+                newUsers.push([usernames[i] + '', now]);
             }
             // Set the new array.
             users = newUsers;
