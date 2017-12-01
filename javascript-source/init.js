@@ -477,7 +477,7 @@
             } else 
 
             // Check the command cost.
-            if ($.priceCom(sender, command, subCommand, isMod) !== 0) {
+            if ($.priceCom(sender, command, subCommand, isMod) === 1) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, subCommand, ''))), $.getIniDbBoolean('settings', 'priceComMsgEnabled', false));
                 return;
             }
