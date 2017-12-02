@@ -147,7 +147,11 @@
 
         if (giftSubWelcomeToggle === true && announce === true) {
             if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', resubscriber);
+                message = $.replace(message, '(name)', gifter);
+            }
+
+            if (message.match(/\(recipient\)/g)) {
+                message = $.replace(message, '(recipient)', recipient);
             }
 
             if (message.match(/\(months\)/g)) {
