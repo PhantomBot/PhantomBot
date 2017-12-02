@@ -483,7 +483,7 @@
             setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'giftSubWelcomeToggle')) {
-            $('#subscriptionGiftGreetings').html(spinIcon);
+            $('#subscriptiongiftGreetings').html(spinIcon);
             if (subGiftToggle == "true") {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'giftSubWelcomeToggle', 'false');
             } else {
