@@ -7,7 +7,7 @@
     var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
         primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
         reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
-        giftSubMessage = $.getSetIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription for (plan)!'),
+        giftSubMessage = $.getSetIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
         primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
@@ -147,7 +147,11 @@
 
         if (giftSubWelcomeToggle === true && announce === true) {
             if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', resubscriber);
+                message = $.replace(message, '(name)', gifter);
+            }
+
+            if (message.match(/\(recipient\)/g)) {
+                message = $.replace(message, '(recipient)', recipient);
             }
 
             if (message.match(/\(months\)/g)) {
