@@ -103,6 +103,7 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.event.twitch.subscriber.PrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.ReSubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.SubscriptionGiftEvent;
 import tv.phantombot.event.twitch.subscriber.SubscriberEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
@@ -1605,6 +1606,14 @@ public final class PhantomBot implements Listener {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
             EventBus.instance().postAsync(new ReSubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser, "10", "1000"));
+            return;
+        }
+
+        /* Test a gift sub event */
+        if (message.equalsIgnoreCase("giftsubtest")) {
+            String randomUser = generateRandomString(10);
+            print("[CONSOLE] Executing giftsubtest (User: " + randomUser + ")");
+            EventBus.instance().postAsync(new SubscriptionGiftEvent(this.channelName, randomUser, "10", "1000"));
             return;
         }
 
