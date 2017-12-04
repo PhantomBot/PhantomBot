@@ -243,6 +243,16 @@
                     if (panelMatch(key, 'resubEmote')) {
                         $('#resubEmoteInput').val(value);
                     }
+                    if (panelMatch(key, 'subPlan1000')) {
+                        $('#subPlan1000Input').val(value);
+                    }
+                    if (panelMatch(key, 'subPlan2000')) {
+                        $('#subPlan2000Input').val(value);
+                    }
+                    if (panelMatch(key, 'subPlan3000')) {
+                        $('#subPlan3000Input').val(value);
+                    }
+                    
                 }
             }
 

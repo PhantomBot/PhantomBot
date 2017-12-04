@@ -16,6 +16,9 @@
         reSubReward = $.getSetIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
         giftSubReward = $.getSetIniDbNumber('subscribeHandler', 'giftSubReward', 0),
         customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote', ''),
+        subPlan1000 = $.getSetIniDbString('subscribeHandler', 'subPlan1000', 'Tier 1'),
+        subPlan2000 = $.getSetIniDbString('subscribeHandler', 'subPlan2000', 'Tier 2'),
+        subPlan3000 = $.getSetIniDbString('subscribeHandler', 'subPlan3000', 'Tier 3'),
         announce = false,
         emotes = [],
         i;
@@ -35,7 +38,24 @@
         subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
         reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward');
         giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward');
-        customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote');
+        customEmote = $.getIniDbString('subscribeHandler', 'resubEmote');
+        subPlan1000 = $.getIniDbString('subscribeHandler', 'subPlan1000');
+        subPlan2000 = $.getIniDbString('subscribeHandler', 'subPlan2000');
+        subPlan3000 = $.getIniDbString('subscribeHandler', 'subPlan3000');
+    }
+
+    /*
+     * @function getPlanName
+     */
+    function getPlanName(plan) {
+        if (plan.equals('1000')) {
+            return subPlan1000;
+        } else if (plan.equals('2000')) {
+            return subPlan2000;
+        } else if (plan.equals('3000')) {
+            return subPlan3000;
+        }
+        return 'Unknown Tier';
     }
 
     /*
@@ -55,7 +75,7 @@
             }
 
             if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', event.getPlan());
+                message = $.replace(message, '(plan)', getPlanName(event.getPlan()));
             }
             $.say(message);
             $.addSubUsersList(subscriber);
@@ -116,7 +136,7 @@
             }
 
             if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', event.getPlan());
+                message = $.replace(message, '(plan)', getPlanName(event.getPlan()));
             }
 
             if (message.match(/\(customemote\)/)) {
@@ -163,7 +183,7 @@
             }
 
             if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', event.getPlan());
+                message = $.replace(message, '(plan)', getPlanName(event.getPlan()));
             }
 
             if (message.match(/\(customemote\)/)) {
@@ -192,7 +212,8 @@
             command = event.getCommand(),
             argsString = event.getArguments(),
             args = event.getArgs(),
-            action = args[0];
+            action = args[0],
+            planId;
     
         /*
          * @commandpath subwelcometoggle - Enable or disable subscription alerts.
@@ -342,6 +363,46 @@
             $.setIniDbString('subscribeHandler', 'resubEmote', customEmote);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.set'));
         }
+
+        /*
+         * @commandpath namesubplan [1|2|3] [name of plan] - Name a subscription plan, Twitch provides three tiers.
+         */
+        if (command.equalsIgnoreCase('namesubplan')) {
+            if (action === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.usage'));
+                return;
+            }
+
+            if (!action.equals('1') && !action.equals('2') && !action.equals('3')) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.usage'));
+                return;
+            }
+
+            if (action.equals('1')) {
+                planId = 'subPlan1000';
+            } else if (action.equals('2')) {
+                planId = 'subPlan2000';
+            } else if (action.equals('3')) {
+                planId = 'subPlan3000';
+            }
+
+            if (args[1] === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.show', action, $.getIniDbString('subscribeHandler', planId)));
+                return;
+            }
+
+            argsString = args.splice(1).join(' ');
+            if (planId.equals('subPlan1000')) {
+                subPlan1000 = argsString;
+            } else if (planId.equals('subPlan2000')) {
+                subPlan2000 = argsString;
+            } else if (planId.equals('subPlan3000')) {
+                subPlan3000 = argsString;
+            }
+            $.setIniDbString('subscribeHandler', planId, argsString);
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.set', action, argsString));
+            return;
+        }
     });
 
     /**
@@ -360,6 +421,7 @@
         $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubmessage', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubmessage', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubmessage', 1);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'namesubplan', 1);
         announce = true;
     });
 
