@@ -454,6 +454,36 @@
                        data-toggle="tooltip" title="Emote that the (customemote) that will be replaced with. The emote will be added the amount of months the user subscribed for." />
             </div>
         </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="subPlan1000">Subscriber Plan 1 Name</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('subPlan1000Input', 'subscribeHandler', 'subPlan1000')">Submit</button>
+                <input type="text" class="form-control" id="subPlan1000Input" placeholder="Plan name"
+                       data-toggle="tooltip" title="Name to give to this subscription plan (4.99). " />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="subPlan2000">Subscriber Plan 2 Name</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('subPlan2000Input', 'subscribeHandler', 'subPlan2000')">Submit</button>
+                <input type="text" class="form-control" id="subPlan2000Input" placeholder="Plan name"
+                       data-toggle="tooltip" title="Name to give to this subscription plan (9.99). " />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="subPlan3000">Subscriber Plan 3 Name</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('subPlan3000Input', 'subscribeHandler', 'subPlan3000')">Submit</button>
+                <input type="text" class="form-control" id="subPlan3000Input" placeholder="Plan name"
+                       data-toggle="tooltip" title="Name to give to this subscription plan (24.99). " />
+            </div>
+        </form>
     </div>
     </div>
 
