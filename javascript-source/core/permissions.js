@@ -639,10 +639,16 @@
 
             // Set the new users array.
             for (var i in usernames) {
-                newUsers.push([usernames[i] + '', now]);
+                newUsers.push(usernames[i]);
             }
+
+            // Sometimes TMI has not seen the bot yet, this can happen at startup.
+            if (!hasKey(newUsers, $.botName)) {
+                newUsers.push($.botName);
+            }
+
             // Set the new array.
-            users = newUsers;
+            updateUsersObject(newUsers);
             lastJoinPart = $.systemTime();
         }, 0);
     });
