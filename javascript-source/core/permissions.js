@@ -639,10 +639,10 @@
 
             // Set the new users array.
             for (var i in usernames) {
-                newUsers.push([usernames[i] + '', now]);
+                newUsers.push(usernames[i]);
             }
             // Set the new array.
-            users = newUsers;
+            updateUsersObject(newUsers);
             lastJoinPart = $.systemTime();
         }, 0);
     });
