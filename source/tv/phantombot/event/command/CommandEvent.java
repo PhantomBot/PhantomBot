@@ -16,61 +16,59 @@
  */
 package tv.phantombot.event.command;
 
-import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class CommandEvent extends Event {
-
     private final String sender;
+    private final String command;
     private final String arguments;
     private final Map<String, String> tags;
-    private final Channel channel;
-    private String command;
-    private String[] args;
+    private final String[] args;
 
+    /*
+     * Class constructor for this event without tags. Always send tags if you can.
+     *
+     * @param {String} sender
+     * @param {String} command
+     * @param {String} arguments
+     * @param {Map}    tags
+     */
     public CommandEvent(String sender, String command, String arguments) {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
-        this.tags = new HashMap<>();
-        this.channel = null;
-        parse();
+        this.args = parse();
+        this.tags = new HashMap<String, String>();
     }
 
+    /*
+     * Class constructor for this event.
+     *
+     * @param {String} sender
+     * @param {String} command
+     * @param {String} arguments
+     * @param {Map}    tags
+     */
     public CommandEvent(String sender, String command, String arguments, Map<String, String> tags) {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
-        this.channel = null;
-
-        if (tags == null) {
-            this.tags = new HashMap<>();
-        } else {
-            this.tags = tags;
-        }
-        parse();
+        this.args = parse();
+        this.tags = (tags == null ? new HashMap<String, String>() : tags);
     }
 
-    public CommandEvent(String sender, String command, String arguments, Map<String, String> tags, Channel channel) {
-        this.sender = sender;
-        this.command = command;
-        this.arguments = arguments;
-        this.channel = channel;
-
-        if (tags == null) {
-            this.tags = new HashMap<>();
-        } else {
-            this.tags = tags;
-        }
-        parse();
-    }
-
-    private void parse() {
-        List<String> tmpArgs = new LinkedList<>();
+    /*
+     * Method that parses the command arguments.
+     *
+     * @return {String[]}
+     */
+    private String[] parse() {
+        List<String> tmpArgs = new LinkedList<String>();
         boolean inquote = false;
         String tmpStr = "";
         
@@ -86,46 +84,66 @@ public class CommandEvent extends Event {
                 tmpStr += c;
             }
         }
+
         if (tmpStr.length() > 0) {
             tmpArgs.add(tmpStr);
         }
-        args = new String[tmpArgs.size()];
-        int i = 0;
-        for (String s : tmpArgs) {
-            args[i] = s;
-            ++i;
-        }
+        
+        return tmpArgs.toArray(new String[tmpArgs.size()]);
     }
 
+    /*
+     * Method that will return the sender of this command.
+     *
+     * @return {String} sender
+     */
     public String getSender() {
-        return sender;
+        return this.sender;
     }
 
+    /*
+     * Method that will return the command name.
+     *
+     * @return {String}
+     */
     public String getCommand() {
-        return command.toLowerCase();
+        return this.command;
     }
 
-    public void setCommand(String command) {
-        this.command = command;
-    }
-
-    public String[] getArgs() {
-        return args;
-    }
-
+    /*
+     * Method that will return the string of arguments.
+     *
+     * @return {String} arguments
+     */
     public String getArguments() {
-        return arguments;
+        return this.arguments;
     }
 
+    /*
+     * Method that will return the array of arguments.
+     *
+     * @return {String[]} args
+     */
+    public String[] getArgs() {
+        return this.args;
+    }
+
+    /*
+     * Method that returns the IRCv3 tags in a map.
+     *
+     * @return {Map} tags
+     */
     public Map<String, String> getTags() {
-        return tags;
+        return this.tags;
     }
 
-    public Channel getChannel() {
-        return channel;
-    }
-
-    public String toEventSocket() {
-        return (this.getSender() + "|" + this.getCommand() + "|" + this.getArguments() + "|" + this.getChannel());
+    /*
+     * Method that returns this object as a string.
+     *
+     * @return {String}
+     */
+    @Override
+    public String toString() {
+    	return "CommandEvent -> { command: [" + this.command + "] sender: [" + this.sender + "] arguments: [" + this.arguments + "] tags: [" + this.tags + "] }";
     }
 }

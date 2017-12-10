@@ -26,20 +26,34 @@ import java.util.List;
 public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     private final String arguments;
     private final boolean isAdmin;
+    private final String[] args;
     private String command;
-    private String[] args;
-
+    
+    /*
+     * Class constructor for this event.
+     *
+     * @param {IUser}    user
+     * @param {IChannel} channel
+     * @param {String}   command
+     * @param {String}   arguments
+     * @param {boolean}  isAdmin
+     */
     public DiscordChannelCommandEvent(IUser user, IChannel channel, String command, String arguments, boolean isAdmin) {
         super(user, channel);
 
         this.command = command;
         this.arguments = arguments;
         this.isAdmin = isAdmin;
-        parse();
+        this.args = parse();
     }
 
-    private void parse() {
-        List<String> tempArgs = new LinkedList<>();
+    /*
+     * Method that parses the command arguments.
+     *
+     * @return {String[]}
+     */
+    private String[] parse() {
+        List<String> tempArgs = new LinkedList<String>();
         Boolean hasQuote = false;
         String tempString = "";
 
@@ -60,33 +74,62 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
             tempArgs.add(tempString);
         }
 
-        this.args = new String[tempArgs.size()];
-        int i = 0;
-
-        for (String s : tempArgs) {
-            this.args[i] = s;
-            ++i;
-        }
+        return tempArgs.toArray(new String[tempArgs.size()]);
     }
 
+    /*
+     * Method that sets the command for this class. Mostly used for aliases.
+     *
+     * @return {String} command
+     */
     public String setCommand(String command) {
         this.command = command;
         return this.command;
     }
 
+    /*
+     * Method that returns the command.
+     *
+     * @return {String} command
+     */
     public String getCommand() {
         return this.command.toLowerCase();
     }
 
+    /*
+     * Method that returns the string of arguments.
+     *
+     * @return {String} arguments
+     */
     public String getArguments() {
         return this.arguments;
     }
 
+    /*
+     * Method that returns the array of arguments
+     *
+     * @return {String[]} args
+     */
     public String[] getArgs() {
         return this.args;
     }
 
+    /*
+     * Method that returns if the user a admin in the server.
+     *
+     * @retrun {boolean}
+     */
     public boolean isAdmin() {
         return this.isAdmin;
+    }
+
+    /*
+     * Method that returns this object as a string.
+     *
+     * @return {String}
+     */
+    @Override
+    public String toString() {
+        return "DiscordChannelCommandEvent -> { command: [" + this.command + "] arguments: [" + this.arguments + "] isAdmin: [" + this.isAdmin + "] }";
     }
 }
