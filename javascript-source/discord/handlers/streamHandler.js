@@ -90,7 +90,6 @@
         			.appendField($.lang.get('discord.streamhandler.offline.viewers'), $.lang.get('discord.streamhandler.offline.viewers.stat', avgViewers, maxViewers), true)
         			.appendField($.lang.get('discord.streamhandler.offline.chatters'), $.lang.get('discord.streamhandler.offline.chatters.stat', avgChatters, maxChatters), true)
         			.appendField($.lang.get('discord.streamhandler.offline.followers'), $.lang.get('discord.streamhandler.offline.followers.stat', follows, $.getFollows($.channelName)), true)
-        			.appendField(JSON.parse($.twitch.GetChannelVODs($.channelName, 'archives') + '').videos[0].url, true)
                     .withUrl('https://twitch.tv/' + $.channelName).build());
 
                 $.inidb.RemoveFile('discordStreamStats');
