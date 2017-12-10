@@ -16,37 +16,40 @@
  */
 package tv.phantombot.event.irc.channel;
 
-import tv.phantombot.twitchwsirc.Channel;
 import tv.phantombot.twitchwsirc.Session;
 
 public class IrcChannelLeaveEvent extends IrcChannelEvent {
-
     private final String user;
-    private final String message;
 
-    public IrcChannelLeaveEvent(Session session, Channel channel, String user, String message) {
-        super(session, channel);
+    /*
+     * Class constructor
+     *
+     * @param {Session} session
+     * @param {String} user
+     */
+    public IrcChannelLeaveEvent(Session session, String user) {
+        super(session);
+
         this.user = user;
-        this.message = message;
     }
 
-    public IrcChannelLeaveEvent(String user, String message) {
-        super(null, null);
-        this.user = user;
-        this.message = message;
-    }
-
+    /*
+     * Class constructor
+     *
+     * @param {String} user
+     */
     public IrcChannelLeaveEvent(String user) {
-        super(null, null);
+        super(null);
+        
         this.user = user;
-        this.message = null;
     }
 
+    /*
+     * Method that returns the user who left.
+     *
+     * @return {String} user
+     */
     public String getUser() {
-        return user;
-    }
-
-    public String getMessage() {
-        return message;
+        return this.user;
     }
 }

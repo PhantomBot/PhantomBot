@@ -235,7 +235,7 @@ public class TwitchWSIRCParser {
 
         com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");
 
-        eventBus.postAsync(new IrcJoinCompleteEvent(session, channel));
+        eventBus.postAsync(new IrcJoinCompleteEvent(session));
     }
 
     /*
@@ -253,7 +253,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Send the command event with the ircv3 tags from Twitch. */
-        scriptEventManager.onEvent(new CommandEvent(username, command, arguments, tagsMap));
+        scriptEventManager.onEvent(new CommandEvent(username, command.toLowerCase(), arguments, tagsMap));
     }
 
     /*
@@ -299,7 +299,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Send the moderation event. */
-        scriptEventManager.onEvent(new IrcModerationEvent(session, username, message, channel, tagsMap));
+        scriptEventManager.onEvent(new IrcModerationEvent(session, username, message, tagsMap));
 
 
         /* Check to see if the user is a channel subscriber. */
@@ -311,18 +311,18 @@ public class TwitchWSIRCParser {
         if (tagsMap.containsKey("user-type")) {
             if (tagsMap.get("user-type").length() > 0) {
                 if (!moderators.containsKey(username)) {
-                    eventBus.postAsync(new IrcChannelUserModeEvent(session, channel, username, "O", true));
+                    eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", true));
                     moderators.put(username, true);
                 }
             } else {
                 if (channelName.equalsIgnoreCase(username)) {
                     if (!moderators.containsKey(username)) {
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, channel, username, "O", true));
+                        eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", true));
                         moderators.put(username, true);
                     }
                 } else {
                     if (moderators.containsKey(username)) {
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, channel, username, "O", false));
+                        eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
                         moderators.remove(username);
                     }
                 }
@@ -330,7 +330,7 @@ public class TwitchWSIRCParser {
         }
 
         /* Send the message to the scripts. */
-        eventBus.postAsync(new IrcChannelMessageEvent(session, username, message, channel, tagsMap));
+        eventBus.postAsync(new IrcChannelMessageEvent(session, username, message, tagsMap));
 
         /* Print the IRCv3 tags if debug mode is on, this is last so it doesn't slow down the code above. */
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tagsMap);
@@ -361,7 +361,7 @@ public class TwitchWSIRCParser {
         if (tagsMap.containsKey("ban-reason")) {
             banReason = "Reason: " + tagsMap.get("ban-reason").replaceAll("\\\\s", " ");
         }
-        eventBus.postAsync(new IrcClearchatEvent(session, channel, username, banReason, banDuration));
+        eventBus.postAsync(new IrcClearchatEvent(session, username, banReason, banDuration));
     }
 
     /*
@@ -413,7 +413,7 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void joinUser(String message, String username, Map<String, String> tagMaps) {
-        eventBus.postAsync(new IrcChannelJoinEvent(session, channel, username));
+        eventBus.postAsync(new IrcChannelJoinEvent(session, username));
         com.gmt2001.Console.debug.println("User Joined Channel [" + username + "#" + channelName + "]");
     }
 
@@ -425,7 +425,7 @@ public class TwitchWSIRCParser {
      * @param Map<String, String> tagsMap
      */
     private void partUser(String message, String username, Map<String, String> tagMaps) {
-        eventBus.postAsync(new IrcChannelLeaveEvent(session, channel, username, message));
+        eventBus.postAsync(new IrcChannelLeaveEvent(session, username));
         com.gmt2001.Console.debug.println("User Left Channel [" + username + "#" + channelName + "]");
     }
 
@@ -466,13 +466,13 @@ public class TwitchWSIRCParser {
             if (tagMaps.get("user-type").length() > 0) {
                 if (!moderators.containsKey(session.getNick())) {
                     moderators.put(session.getNick(), true);
-                    eventBus.postAsync(new IrcChannelUserModeEvent(session, channel, session.getNick(), "O", true));
+                    eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getNick(), "O", true));
                 }
             } else { 
                 if (this.channelName.equalsIgnoreCase(session.getNick())) {
                     if (!moderators.containsKey(session.getNick())) {
                         moderators.put(session.getNick(), true);
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, channel, session.getNick(), "O", true));
+                        eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getNick(), "O", true));
                     }
                 } else if (tagMaps.containsKey("display-name") && !tagMaps.get("display-name").equalsIgnoreCase(session.getNick())) {
                     com.gmt2001.Console.out.println();
@@ -490,7 +490,7 @@ public class TwitchWSIRCParser {
                     this.session.setAllowSendMessages(false);
                     if (moderators.containsKey(session.getNick())) {
                         moderators.remove(session.getNick());
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, channel, session.getNick(), "O", false));
+                        eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getNick(), "O", false));
                     }
                 }
             }

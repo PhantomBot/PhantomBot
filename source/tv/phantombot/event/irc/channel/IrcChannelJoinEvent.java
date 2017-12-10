@@ -16,24 +16,40 @@
  */
 package tv.phantombot.event.irc.channel;
 
-import tv.phantombot.twitchwsirc.Channel;
 import tv.phantombot.twitchwsirc.Session;
 
 public class IrcChannelJoinEvent extends IrcChannelEvent {
-
     private final String user;
 
-    public IrcChannelJoinEvent(Session session, Channel channel, String user) {
-        super(session, channel);
+    /*
+     * Class constructor
+     *
+     * @param {Session} session
+     * @param {String}  user
+     */
+    public IrcChannelJoinEvent(Session session, String user) {
+        super(session);
+
         this.user = user;
     }
 
+    /*
+     * Class constructor
+     *
+     * @param {String}  user
+     */
     public IrcChannelJoinEvent(String user) {
-        super(null, null);
+        super(null);
+        
         this.user = user;
     }
 
+    /*
+     * Method that returns the user who joined the channel.
+     *
+     * @return {String} user
+     */
     public String getUser() {
-        return user;
+        return this.user;
     }
 }
