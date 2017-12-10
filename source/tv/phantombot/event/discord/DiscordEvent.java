@@ -33,6 +33,11 @@ public class DiscordEvent extends Event {
 	private final String channelId;
 	private final String discrim;
 
+	/*
+	 * Class constructor for this event.
+	 *
+	 * @param {IUser} user
+	 */
 	protected DiscordEvent(IUser user) {
 		this.user = user;
 		this.channel = null;
@@ -45,6 +50,12 @@ public class DiscordEvent extends Event {
 		this.mention = user.mention();
 	}
 
+	/*
+	 * Class constructor for this event.
+	 *
+	 * @param {IUser}    user
+	 * @param {IChannel} channel
+	 */
 	protected DiscordEvent(IUser user, IChannel channel) {
 		this.user = user;
 		this.channel = channel;
@@ -57,38 +68,83 @@ public class DiscordEvent extends Event {
 		this.mention = user.mention();
 	}
 
+	/*
+	 * Method that returns the sender of the event with their discrim.
+	 *
+	 * @return {String}
+	 */
 	public String getSender() {
 		return this.sender.toLowerCase();
 	}
 
+	/*
+	 * Method that returns just the username of the event.
+	 *
+	 * @return {String}
+	 */
 	public String getUsername() {
 		return this.username;
 	}
 
+	/*
+	 * Method that returns the mention string for this user.
+	 *
+	 * @return {String}
+	 */
 	public String getMention() {
 		return this.mention;
 	}
 
+	/*
+	 * Method that returns the channel name.
+	 *
+	 * @return {String}
+	 */
 	public String getChannel() {
 		return this.channelName;
 	}
 
+	/*
+	 * Method that returns the channel ID.
+	 *
+	 * @return {String}
+	 */
 	public String getChannelId() {
 		return this.channelId;
 	}
 
+	/*
+	 * Method that returns the user's discriminator.
+	 *
+	 * @return {String}
+	 */
 	public String getDiscriminator() {
 		return this.discrim;
 	}
 
+	/*
+	 * Method that returns the user's ID.
+	 *
+	 * @return {String}
+	 */
 	public String getSenderId() {
 		return this.senderId;
 	}
 
+	/*
+	 * Method that returns the user's object for Discord4J.
+	 *
+	 * @return {IUser}
+	 */
 	public IUser getDiscordUser() {
 		return this.user;
 	}
 
+	/*
+	 * Method that returns the channel's object for Discord4J.
+	 *
+	 * @return {IChannel}
+	 */
 	public IChannel getDiscordChannel() {
 		return this.channel;
 	}

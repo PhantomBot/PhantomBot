@@ -1273,7 +1273,7 @@ public final class PhantomBot implements Listener {
 
         joined = true;
 
-        this.chanName = event.getChannel().getName();
+        this.chanName = this.channelName;
         this.session = event.getSession();
 
         com.gmt2001.Console.debug.println("ircJoinComplete::" + this.chanName);
@@ -1284,7 +1284,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* Add the channel/session in the array for later use */
-        PhantomBot.addChannel(this.chanName, event.getChannel());
+        PhantomBot.addChannel(this.chanName, this.channel);
         PhantomBot.addSession(this.chanName, this.session);
 
         /* Load the caches for each channels */
@@ -1353,7 +1353,7 @@ public final class PhantomBot implements Listener {
                 /* Check to see if the bot is a moderator */
                 for (String moderator : moderators) {
                     if (moderator.equalsIgnoreCase(this.botName)) {
-                        EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session, this.channel, this.session.getNick(), "O", true));
+                        EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session, this.session.getNick(), "O", true));
                         /* Allow the bot to sends message to this session */
                         event.getSession().setAllowSendMessages(true);
                     }
@@ -1399,7 +1399,7 @@ public final class PhantomBot implements Listener {
      */
     @Subscribe
     public void consoleInput(ConsoleInputEvent event) {
-        String message = event.getMsg();
+        String message = event.getMessage();
         Boolean changed = false;
         Boolean reset = false;
         String arguments = "";
@@ -1551,7 +1551,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("jointest")) {
             print("[CONSOLE] Executing jointest");
             for (int i = 0 ; i < 30; i++) {
-                EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session, this.channel, generateRandomString(8)));
+                EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session, generateRandomString(8)));
             }
         }
 
@@ -1956,12 +1956,12 @@ public final class PhantomBot implements Listener {
         }
 
         /* handle any other commands */
-        handleCommand(botName, event.getMsg(), PhantomBot.getChannel(this.channelName));
+        handleCommand(botName, event.getMessage());
         // Need to support channel here. command (channel) argument[1]
 
         /* Handle dev commands */
-        if (event.getMsg().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMsg(), "no_id", botName, true);
+        if (event.getMessage().startsWith("!debug !dev")) {
+            devDebugCommands(event.getMessage(), "no_id", botName, true);
         }
     }
 
@@ -1975,7 +1975,7 @@ public final class PhantomBot implements Listener {
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
-        ScriptEventManager.instance().onEvent(new CommandEvent(username, command, arguments, null, channel));
+        ScriptEventManager.instance().onEvent(new CommandEvent(username, command, arguments));
     }
 
     /* Handle commands */

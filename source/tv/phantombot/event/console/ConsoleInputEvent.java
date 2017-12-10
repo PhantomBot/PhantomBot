@@ -17,14 +17,33 @@
 package tv.phantombot.event.console;
 
 public class ConsoleInputEvent extends ConsoleEvent {
+    private final String message;
 
-    String msg;
-
-    public ConsoleInputEvent(String msg) {
-        this.msg = msg;
+    /*
+     * Class constructor for this event.
+     *
+     * @param {String} message
+     */
+    public ConsoleInputEvent(String message) {
+        this.message = message;
     }
 
-    public String getMsg() {
-        return msg;
+    /*
+     * Method that will return the message said in the console.
+	 *
+	 * @return {String} message
+     */
+    public String getMessage() {
+        return this.message;
+    }
+
+    /*
+     * Method that returns this object as a string.
+     *
+     * @return {String}
+     */
+    @Override
+    public String toString() {
+    	return "ConsoleInputEvent -> { message: [" + this.message + "] }";
     }
 }
