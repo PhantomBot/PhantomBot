@@ -18,75 +18,71 @@ package tv.phantombot.event.irc.message;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import tv.phantombot.event.irc.IrcEvent;
-import tv.phantombot.twitchwsirc.Channel;
+
 import tv.phantombot.twitchwsirc.Session;
-import org.apache.commons.lang3.CharUtils;
 
 public abstract class IrcMessageEvent extends IrcEvent {
-
     private final String sender;
     private final String message;
     private final Map<String, String> tags;
-    private final Channel channel;
 
+    /*
+     * Class constructor.
+     *
+     * @param {Session} session
+     * @param {String}  sender
+     * @param {String}  message
+     */
     protected IrcMessageEvent(Session session, String sender, String message) {
         super(session);
+
         this.sender = sender;
         this.message = message;
-        this.tags = new HashMap<>();
-        this.channel = null;
+        this.tags = new HashMap<String, String>();
     }
 
+    /*
+     * Class constructor.
+     *
+     * @param {Session} session
+     * @param {String}  sender
+     * @param {String}  message
+     * @param {Map}     tags
+     */
     protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags) {
         super(session);
+
         this.sender = sender;
         this.message = message;
-        this.channel = null;
-
-        if (tags == null) {
-            this.tags = new HashMap<>();
-        } else {
-            this.tags = tags;
-        }
+        this.tags = (tags == null ? new HashMap<String, String>() : tags);
     }
 
-    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags, Channel channel) {
-        super(session);
-        this.sender = sender;
-        this.message = message;
-        this.channel = channel;
-
-        if (tags == null) {
-            this.tags = new HashMap<>();
-        } else {
-            this.tags = tags;
-        }
-    }
-
+    /*
+     * Method that returns the sender.
+     *
+     * @return {String} sender
+     */
     public String getSender() {
-        return sender;
+        return this.sender;
     }
 
+    /*
+     * Method that returns the message.
+     *
+     * @return {String} sender
+     */
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
+    /*
+     * Method that returns the IRCv3 tags.
+     *
+     * @return {Map} tags
+     */
     public Map<String, String> getTags() {
-        return tags;
-    }
-
-    public int getCapsCount() {
-        int count = 0;
-        for (int i = 0, l = message.length(); i < l; ++i) {
-            if (CharUtils.isAsciiAlphaUpper(message.charAt(i))) {
-                ++count;
-            }
-        }
-        return count;
-    }
-
-    public Channel getChannel() {
-        return channel;
+        return this.tags;
     }
 }

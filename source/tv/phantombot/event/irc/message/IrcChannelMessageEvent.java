@@ -17,16 +17,31 @@
 package tv.phantombot.event.irc.message;
 
 import java.util.Map;
-import tv.phantombot.twitchwsirc.Channel;
+
 import tv.phantombot.twitchwsirc.Session;
 
 public class IrcChannelMessageEvent extends IrcMessageEvent {
 
-    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel) {
-        super(session, sender, message, null, channel);
+	/*
+	 * Class constructor.
+	 *
+	 * @param {Session} session
+	 * @param {String}  sender
+	 * @param {String}  message
+	 */
+    public IrcChannelMessageEvent(Session session, String sender, String message) {
+        super(session, sender, message);
     }
 
-    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel, Map<String, String> tags) {
-        super(session, sender, message, tags, channel);
+    /*
+	 * Class constructor.
+	 *
+	 * @param {Session} session
+	 * @param {String}  sender
+	 * @param {String}  message
+	 * @param {Map}     tags
+	 */
+    public IrcChannelMessageEvent(Session session, String sender, String message, Map<String, String> tags) {
+        super(session, sender, message, tags);
     }
 }

@@ -17,21 +17,9 @@
 package tv.phantombot.event.gamewisp;
 
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class GameWispEvent extends Event {
-
-    private final Channel channel;
-
     protected GameWispEvent() {
-        this.channel = null;
-    }
 
-    protected GameWispEvent(Channel channel) {
-        this.channel = channel;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
     }
 }

@@ -17,17 +17,27 @@
 package tv.phantombot.event.irc;
 
 import tv.phantombot.event.Event;
+
 import tv.phantombot.twitchwsirc.Session;
 
 public abstract class IrcEvent extends Event {
-
     private final Session session;
 
+    /*
+     * Class constructor
+     *
+     * @param {Session} session
+     */
     protected IrcEvent(Session session) {
         this.session = session;
     }
 
+    /*
+     * Method that returns the session.
+     *
+     * @param {Session} session
+     */
     public Session getSession() {
-        return session;
+        return this.session;
     }
 }

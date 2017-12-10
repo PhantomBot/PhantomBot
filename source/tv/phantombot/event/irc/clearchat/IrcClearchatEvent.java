@@ -17,37 +17,54 @@
 package tv.phantombot.event.irc.clearchat;
 
 import tv.phantombot.event.irc.IrcEvent;
-import tv.phantombot.twitchwsirc.Channel;
+
 import tv.phantombot.twitchwsirc.Session;
 
 public class IrcClearchatEvent extends IrcEvent {
-
-    private final String user;
+    private final String username;
     private final String reason;
     private final String duration;
-    private final Channel channel;
 
-    public IrcClearchatEvent(Session session, Channel channel, String user, String reason, String duration) {
+    /*
+     * Class constructor
+     *
+     * @param {Session} session
+     * @param {String}  username
+     * @param {String}  reason
+     * @param {String}  duration
+     */
+    public IrcClearchatEvent(Session session, String username, String reason, String duration) {
         super(session);
-        this.channel = channel;
-        this.user = user;
+
+        this.username = username;
         this.reason = reason;
         this.duration = duration;
     }
 
-    public Channel getChannel() {
-        return channel;
+    /*
+     * Method that returns the user who was timed-out
+     *
+     * @return {String} username
+     */
+    public String getUsername() {
+        return this.username;
     }
 
-    public String getUser() {
-        return user;
-    }
-
+    /*
+     * Method that returns the reason the user was timed-out
+     *
+     * @return {String} reason
+     */
     public String getReason() {
-        return reason;
+        return this.reason;
     }
 
+    /*
+     * Method that returns the length the user was timed-out
+     *
+     * @return {String} duration
+     */
     public String getDuration() {
-        return duration;
+        return this.duration;
     }
 }

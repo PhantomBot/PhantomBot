@@ -20,6 +20,11 @@ import tv.phantombot.twitchwsirc.Session;
 
 public class IrcConnectCompleteEvent extends IrcCompleteEvent {
 
+	/*
+	 * Class constructor
+	 *
+	 * @param {Session} session
+	 */
     public IrcConnectCompleteEvent(Session session) {
         super(session);
     }
