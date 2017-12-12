@@ -18,6 +18,12 @@ package tv.phantombot.event.pubsub.moderation;
 
 public class PubSubModerationUnTimeoutEvent extends PubSubModerationEvent {
 
+	/*
+	 * Class constructor
+	 *
+	 * @param {String} username
+	 * @param {String} creator
+	 */
 	public PubSubModerationUnTimeoutEvent(String username, String creator) {
 		super(username, creator, null);
 	}

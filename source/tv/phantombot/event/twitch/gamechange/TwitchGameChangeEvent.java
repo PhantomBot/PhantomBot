@@ -17,29 +17,25 @@
 package tv.phantombot.event.twitch.gamechange;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class TwitchGameChangeEvent extends TwitchEvent {
-
     private final String gameTitle;
-    private final Channel channel;
 
+    /*
+     * Class constructor.
+     *
+     * @param {String} gameTitle
+     */
     public TwitchGameChangeEvent(String gameTitle) {
         this.gameTitle = gameTitle;
-        this.channel = null;
     }
 
-    public TwitchGameChangeEvent(String gameTitle, Channel channel) {
-        this.gameTitle = gameTitle;
-        this.channel = channel;
-    }
-
+    /*
+     * Method that returns the game name
+     *
+     * @return {String} gameTitle
+     */
     public String getGameTitle() {
         return this.gameTitle;
     }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
 }

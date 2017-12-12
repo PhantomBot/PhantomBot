@@ -14,54 +14,77 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.twitch.subscriber;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class SubscriptionGiftEvent extends TwitchEvent {
-
+public class TwitchSubscriptionGiftEvent extends TwitchEvent {
 	private final String username;
     private final String recipient;
     private final String months;
     private final String plan;
 
-    public SubscriptionGiftEvent(String username, String recipient, String plan) {
+    /*
+     * Class constructor.
+     *
+     * @param {String} username
+     * @param {String} recipient
+     * @param {String} plan
+     */
+    public TwitchSubscriptionGiftEvent(String username, String recipient, String plan) {
         this.username = username;
         this.recipient = recipient;
         this.months = null;
         this.plan = plan;
     }
 
-	public SubscriptionGiftEvent(String username, String recipient, String months, String plan) {
+    /*
+     * Class constructor.
+     *
+     * @param {String} username
+     * @param {String} recipient
+     * @param {String} months
+     * @param {String} plan
+     */
+	public TwitchSubscriptionGiftEvent(String username, String recipient, String months, String plan) {
         this.username = username;
         this.recipient = recipient;
         this.months = months;
         this.plan = plan;
     }
 
-    public SubscriptionGiftEvent(Channel channel, String username, String recipient, String months, String plan) {
-        super(channel);
-
-        this.username = username;
-        this.recipient = recipient;
-        this.months = months;
-        this.plan = plan;
-    }
-
+    /*
+     * Method that returns the gifted the subscription.
+     *
+     * @return {String} username
+     */
     public String getUsername() {
         return this.username;
     }
 
+    /*
+     * Method that returns the recipient.
+     *
+     * @return {String} recipient
+     */
     public String getRecipient() {
         return this.recipient;
     }
 
+    /*
+     * Method that returns the months, can be 0.
+     *
+     * @return {String} months
+     */
     public String getMonths() {
         return this.months;
     }
 
+    /*
+     * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
+     *
+     * @return {String} plan
+     */
     public String getPlan() {
         return this.plan;
     }

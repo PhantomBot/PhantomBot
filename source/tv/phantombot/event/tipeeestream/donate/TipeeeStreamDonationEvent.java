@@ -20,11 +20,12 @@ import tv.phantombot.twitchwsirc.Channel;
 
 public class TipeeeStreamDonationEvent extends TipeeeStreamDonateEvent {
 
+	/*
+	 * Class constructor.
+	 *
+	 * @param {String} jsonString
+	 */
     public TipeeeStreamDonationEvent(String jsonString) {
         super(jsonString);
-    }
-
-    public TipeeeStreamDonationEvent(String jsonString, Channel channel) {
-        super(jsonString, channel);
     }
 }

@@ -17,26 +17,35 @@
 package tv.phantombot.event.streamtip.donate;
 
 import tv.phantombot.event.streamtip.StreamTipEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public abstract class StreamTipDonateEvent extends StreamTipEvent {
-
     private final String jsonString;
 
+    /*
+     * Abstract constructor.
+     *
+     * @param {String} jsonString
+     */
     protected StreamTipDonateEvent(String jsonString) {
         this.jsonString = jsonString;
     }
 
-    protected StreamTipDonateEvent(String jsonString, Channel channel) {
-        super(channel);
-        this.jsonString = jsonString;
-    }
-
+    /*
+     * Method that returns the donation's JSON string.
+     *
+     * @return {String} jsonString
+     */
     public String getJsonString() {
-        return jsonString;
+        return this.jsonString;
     }
 
-    public String toEventSocket() {
-        return this.jsonString;
+    /*
+     * Method that converts the class into a string.
+     *
+     * @return {String}
+     */
+    @Override
+    public String toString() {
+        return "StreamTipDonateEvent -> { jsonString: [" + this.jsonString + "] }";
     }
 }

@@ -17,4 +17,5 @@
 package tv.phantombot.event;
 
 public interface Listener {
+	
 }

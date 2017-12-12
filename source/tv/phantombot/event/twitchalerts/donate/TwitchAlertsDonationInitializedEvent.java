@@ -17,14 +17,13 @@
 package tv.phantombot.event.twitchalerts.donate;
 
 import tv.phantombot.event.twitchalerts.TwitchAlertsEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class TwitchAlertsDonationInitializedEvent extends TwitchAlertsEvent {
 
+	/*
+	 * Class constructor.
+	 */
     public TwitchAlertsDonationInitializedEvent() {
-    }
-
-    public TwitchAlertsDonationInitializedEvent(Channel channel) {
-        super(channel);
+    	
     }
 }

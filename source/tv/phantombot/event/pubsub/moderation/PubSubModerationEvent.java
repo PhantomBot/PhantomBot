@@ -18,26 +18,47 @@ package tv.phantombot.event.pubsub.moderation;
 
 import tv.phantombot.event.pubsub.PubSubEvent;
 
-public class PubSubModerationEvent extends PubSubEvent {
-
+public abstract class PubSubModerationEvent extends PubSubEvent {
 	private final String username;
 	private final String creator;
 	private final String message;
 
+	/*
+	 * Abstract constructor.
+	 *
+	 * @param {String} username
+	 * @param {String} creator
+	 * @param {String} message
+	 */
 	protected PubSubModerationEvent(String username, String creator, String message) {
 		this.username = username;
 		this.creator = creator;
 		this.message = message;
 	}
 
+	/*
+	 * Method that returns the username that the even was triggered for.
+	 *
+	 * @return {String} username
+	 */
 	public String getUsername() {
 		return this.username;
 	}
 
+	/*
+	 * Method that returns the creator for the event.
+	 *
+	 * @return {String} creator
+	 */
 	public String getCreator() {
 		return this.creator;
 	}
 
+	/*
+	 * Method that returns the message of the creator if one is given.
+	 *
+	 * @return {String} message
+	 */
 	public String getMessage() {
 		return this.message;
 	}

@@ -17,41 +17,47 @@
 package tv.phantombot.event.twitter;
 
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class TwitterEvent extends Event {
-
     private final String tweet;
-    private final Channel channel;
     private final String mention;
 
+    /*
+     * Class constructor.
+     *
+     * @param {String} tweet
+     */
     public TwitterEvent(String tweet) {
         this.tweet = tweet;
-        this.channel = null;
         this.mention = null;
     }
 
-    public TwitterEvent(String tweet, Channel channel) {
+    /*
+     * Class constructor.
+     *
+     * @param {String} tweet
+     * @param {String} mention
+     */
+    public TwitterEvent(String tweet, String mention) {
         this.tweet = tweet;
-        this.channel = channel;
-        this.mention = null;
-    }
-
-    public TwitterEvent(String tweet, Channel channel, String mention) {
-        this.tweet = tweet;
-        this.channel = channel;
         this.mention = mention;
     }
 
+    /*
+     * Method that returns the Tweet.
+     *
+     * @return {String} tweet
+     */
     public String getTweet() {
-        return tweet;
+        return this.tweet;
     }
 
+    /*
+     * Method that returns the mention user.
+     *
+     * @return {String} mention
+     */
     public String getMentionUser() {
-        return mention;
-    }
-
-    public Channel getChannel() {
-        return channel;
+        return this.mention;
     }
 }

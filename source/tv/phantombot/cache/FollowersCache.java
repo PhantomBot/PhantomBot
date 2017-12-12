@@ -124,7 +124,7 @@ public class FollowersCache implements Runnable {
                     String follower = jsonArray.getJSONObject(i).getJSONObject("user").getString("name").toLowerCase();
 
                     if (!dataStore.exists("followed", follower)) {
-                        EventBus.instance().post(new TwitchFollowEvent(follower, PhantomBot.getChannel(this.channelName)));
+                        EventBus.instance().post(new TwitchFollowEvent(follower));
                         dataStore.set("followed", follower, "true");
                     }
                 }
@@ -139,7 +139,7 @@ public class FollowersCache implements Runnable {
 
         if (!killed && firstUpdate) {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().post(new TwitchFollowsInitializedEvent());
         }
     }
 

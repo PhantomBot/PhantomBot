@@ -17,21 +17,7 @@
 package tv.phantombot.event.ytplayer;
 
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class YTPlayerEvent extends Event {
+public abstract class YTPlayerEvent extends Event {
 
-    private final Channel channel;
-
-    protected YTPlayerEvent() {
-        this.channel = null;
-    }
-
-    protected YTPlayerEvent(Channel channel) {
-        this.channel = channel;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
-    }
 }

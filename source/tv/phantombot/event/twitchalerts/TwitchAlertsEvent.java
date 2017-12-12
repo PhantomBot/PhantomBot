@@ -17,21 +17,7 @@
 package tv.phantombot.event.twitchalerts;
 
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class TwitchAlertsEvent extends Event {
+public abstract class TwitchAlertsEvent extends Event {
 
-    private final Channel channel;
-
-    public TwitchAlertsEvent() {
-        this.channel = null;
-    }
-
-    public TwitchAlertsEvent(Channel channel) {
-        this.channel = channel;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
-    }
 }
