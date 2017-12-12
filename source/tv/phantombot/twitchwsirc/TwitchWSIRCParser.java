@@ -35,12 +35,9 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.event.irc.message.IrcModerationEvent;
 import tv.phantombot.event.irc.clearchat.IrcClearchatEvent;
-import tv.phantombot.event.twitch.subscriber.ReSubscriberEvent;
-import tv.phantombot.event.twitch.subscriber.SubscriberEvent;
-import tv.phantombot.event.twitch.subscriber.SubscriptionGiftEvent;
-import tv.phantombot.event.twitch.subscriber.PrimeSubscriberEvent;
-import tv.phantombot.event.twitch.bits.BitsEvent;
-import tv.phantombot.event.twitch.raid.RaidEvent;
+import tv.phantombot.event.twitch.subscriber.*;
+import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
+import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.script.ScriptEventManager;
@@ -286,7 +283,7 @@ public class TwitchWSIRCParser {
 
         /* Check to see if the user is donating/cheering bits. */
         if (tagsMap.containsKey("bits")) {
-            scriptEventManager.onEvent(new BitsEvent(channel, username, tagsMap.get("bits")));
+            scriptEventManager.onEvent(new TwitchBitsEvent(username, tagsMap.get("bits")));
         }
 
         /**
@@ -439,18 +436,18 @@ public class TwitchWSIRCParser {
     private void userNotice(String message, String username, Map<String, String> tagsMap) {
         if (tagsMap.containsKey("msg-id")) {
             if (tagsMap.get("msg-id").equalsIgnoreCase("resub")) {
-                scriptEventManager.onEvent(new ReSubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-months"), tagsMap.get("msg-param-sub-plan")));
+                scriptEventManager.onEvent(new TwitchReSubscriberEvent(tagsMap.get("login"), tagsMap.get("msg-param-months"), tagsMap.get("msg-param-sub-plan")));
             } else if (tagsMap.get("msg-id").equalsIgnoreCase("sub")) {
                 if (tagsMap.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
-                    scriptEventManager.onEvent(new PrimeSubscriberEvent(channel, tagsMap.get("login")));
+                    scriptEventManager.onEvent(new TwitchPrimeSubscriberEvent(tagsMap.get("login")));
                 } else {
-                    scriptEventManager.onEvent(new SubscriberEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
+                    scriptEventManager.onEvent(new TwitchSubscriberEvent(tagsMap.get("login"), tagsMap.get("msg-param-sub-plan")));
                 }
             } else if (tagsMap.get("msg-id").equalsIgnoreCase("subgift")) {
-            	scriptEventManager.onEvent(new SubscriptionGiftEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-recipient-user-name"), tagsMap.get("msg-param-months"), tagsMap.get("msg-param-sub-plan")));
+            	scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(tagsMap.get("login"), tagsMap.get("msg-param-recipient-user-name"), tagsMap.get("msg-param-months"), tagsMap.get("msg-param-sub-plan")));
             } else {
             	if (tagsMap.get("msg-id").equalsIgnoreCase("raid")) {
-            		scriptEventManager.onEvent(new RaidEvent(channel, tagsMap.get("login"), tagsMap.get("msg-param-viewerCount")));
+            		scriptEventManager.onEvent(new TwitchRaidEvent(tagsMap.get("login"), tagsMap.get("msg-param-viewerCount")));
             	}
             }
         }

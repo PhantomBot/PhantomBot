@@ -19,19 +19,23 @@ package tv.phantombot.event.ytplayer;
 import tv.phantombot.twitchwsirc.Channel;
 
 public class YTPlayerCurrentIdEvent extends YTPlayerEvent {
-
     private final String id;
 
+    /*
+     * Class constructor.
+     *
+     * @param {String} id
+     */
     public YTPlayerCurrentIdEvent(String id) {
         this.id = id;
     }
 
-    public YTPlayerCurrentIdEvent(String id, Channel channel) {
-        super(channel);
-        this.id = id;
-    }
-
+    /*
+     * Method that returns the play ID event.
+     *
+     * @return {String} id
+     */
     public String getId() {
-        return id;
+        return this.id;
     }
 }

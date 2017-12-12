@@ -18,6 +18,6 @@ package tv.phantombot.event.pubsub;
 
 import tv.phantombot.event.Event;
 
-public class PubSubEvent extends Event {
+public abstract class PubSubEvent extends Event {
 
 }

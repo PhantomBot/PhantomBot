@@ -18,8 +18,6 @@ package tv.phantombot.event.gamewisp;
 
 import tv.phantombot.event.Event;
 
-public class GameWispEvent extends Event {
-    protected GameWispEvent() {
+public abstract class GameWispEvent extends Event {
 
-    }
 }

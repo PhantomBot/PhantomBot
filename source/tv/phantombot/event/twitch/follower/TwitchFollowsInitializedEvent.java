@@ -17,14 +17,13 @@
 package tv.phantombot.event.twitch.follower;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class TwitchFollowsInitializedEvent extends TwitchEvent {
 
+	/*
+	 * Class constructor.
+	 */
     public TwitchFollowsInitializedEvent() {
-    }
 
-    public TwitchFollowsInitializedEvent(Channel channel) {
-        super(channel);
     }
 }

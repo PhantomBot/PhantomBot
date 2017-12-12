@@ -91,7 +91,7 @@ import tv.phantombot.cache.ViewerListCache;
 import tv.phantombot.console.ConsoleInputListener;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
-import tv.phantombot.event.twitch.bits.BitsEvent;
+import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.console.ConsoleInputEvent;
 import tv.phantombot.event.gamewisp.GameWispAnniversaryEvent;
@@ -101,10 +101,7 @@ import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
-import tv.phantombot.event.twitch.subscriber.PrimeSubscriberEvent;
-import tv.phantombot.event.twitch.subscriber.ReSubscriberEvent;
-import tv.phantombot.event.twitch.subscriber.SubscriptionGiftEvent;
-import tv.phantombot.event.twitch.subscriber.SubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.*;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
@@ -1487,7 +1484,7 @@ public final class PhantomBot implements Listener {
                 return;
             }
             com.gmt2001.Console.out.println(">> Sending retweet test event");
-            EventBus.instance().postAsync(new TwitterRetweetEvent(argument, this.channel));
+            EventBus.instance().postAsync(new TwitterRetweetEvent(argument));
             return;
         }
 
@@ -1565,7 +1562,7 @@ public final class PhantomBot implements Listener {
             }
 
             print("[CONSOLE] Executing followertest (User: " + user + ")");
-            EventBus.instance().postAsync(new TwitchFollowEvent(user, PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchFollowEvent(user));
             return;
         }
 
@@ -1580,7 +1577,7 @@ public final class PhantomBot implements Listener {
 
             print("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
             for (int i = 0; i < followCount; i++) {
-                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.getChannel(this.channelName)));
+                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i));
             }
             return;
         }
@@ -1589,7 +1586,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("subscribertest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing subscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new SubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser, "1000"));
+            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000"));
             return;
         }
 
@@ -1597,7 +1594,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("primesubscribertest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing primesubscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new PrimeSubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser));
+            EventBus.instance().postAsync(new TwitchPrimeSubscriberEvent(randomUser));
             return;
         }
 
@@ -1605,7 +1602,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("resubscribertest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new ReSubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser, "10", "1000"));
+            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000"));
             return;
         }
 
@@ -1613,21 +1610,21 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("giftsubtest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing giftsubtest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new SubscriptionGiftEvent(this.channelName, randomUser, "10", "1000"));
+            EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(this.channelName, randomUser, "10", "1000"));
             return;
         }
 
         /* Test the online event */
         if (message.equalsIgnoreCase("onlinetest")) {
             print("[CONSOLE] Executing onlinetest");
-            EventBus.instance().postAsync(new TwitchOnlineEvent(PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchOnlineEvent());
             return;
         }
 
         /* Test the offline event */
         if (message.equalsIgnoreCase("offlinetest")) {
             print("[CONSOLE] Executing offlinetest");
-            EventBus.instance().postAsync(new TwitchOfflineEvent(PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchOfflineEvent());
             return;
         }
 
@@ -1640,7 +1637,7 @@ public final class PhantomBot implements Listener {
                 randomUser = argument[0];
             }
             print("[CONSOLE] Executing cliptest " + randomUser);
-            EventBus.instance().postAsync(new TwitchClipEvent("https://clips.twitch.tv/ThisIsNotARealClipAtAll", randomUser, PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchClipEvent("https://clips.twitch.tv/ThisIsNotARealClipAtAll", randomUser));
             return;
         }
 
@@ -1653,7 +1650,7 @@ public final class PhantomBot implements Listener {
                 randomUser = argument[0];
             }
             print("[CONSOLE] Executing hosttest " + randomUser);
-            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser, PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser));
             return;
         }
 
@@ -1674,7 +1671,7 @@ public final class PhantomBot implements Listener {
         /* test the bits event */
         if (message.equalsIgnoreCase("bitstest")) {
             print("[CONSOLE] Executing bitstest");
-            EventBus.instance().postAsync(new BitsEvent(PhantomBot.getChannel(this.channelName), this.botName, "100"));
+            EventBus.instance().postAsync(new TwitchBitsEvent(this.botName, "100"));
             return;
         }
 

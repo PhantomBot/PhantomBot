@@ -17,21 +17,7 @@
 package tv.phantombot.event.tipeeestream;
 
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class TipeeeStreamEvent extends Event {
+public abstract class TipeeeStreamEvent extends Event {
 
-    private final Channel channel;
-
-    public TipeeeStreamEvent() {
-        this.channel = null;
-    }
-
-    public TipeeeStreamEvent(Channel channel) {
-        this.channel = channel;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
-    }
 }

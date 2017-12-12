@@ -17,57 +17,47 @@
 package tv.phantombot.event.twitch.host;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public abstract class TwitchHostEvent extends TwitchEvent {
-
     private final String hoster;
-    private final Type type;
     private final int users;
 
-    public enum Type {
-
-        HOST,
-        UNHOST;
-    }
-
-    protected TwitchHostEvent(String hoster, Type type) {
+    /*
+     * Abstract constructor.
+     *
+     * @param {String} hoster
+     */
+    protected TwitchHostEvent(String hoster) {
         this.hoster = hoster;
-        this.type = type;
         this.users = 0;
     }
-    protected TwitchHostEvent(String hoster, Type type, int users) {
+
+    /*
+     * Abstract constructor.
+     *
+     * @param {String} hoster
+     * @param {int}    users
+     */
+    protected TwitchHostEvent(String hoster, int users) {
         this.hoster = hoster;
-        this.type = type;
         this.users = users;
     }
 
-    protected TwitchHostEvent(String hoster, Type type, Channel channel) {
-        super(channel);
-        this.hoster = hoster;
-        this.type = type;
-        this.users = 0;
-    }
-    protected TwitchHostEvent(String hoster, Type type, int users, Channel channel) {
-        super(channel);
-        this.hoster = hoster;
-        this.type = type;
-        this.users = users;
-    }
-
+    /*
+     * Method that gets the hosters name.
+     *
+     * @return {String} hoster
+     */
     public String getHoster() {
-        return hoster;
+        return this.hoster;
     }
 
-    public Type getType() {
-        return type;
-    }
-
+    /*
+     * Method that gets the amount of users the user hosted for.
+     *
+     * @return {int} users
+     */
     public int getUsers() {
-        return users;
-    }
-
-    public String toEventSocket() {
-        return this.getHoster() + "|" + this.getType();
+        return this.users;
     }
 }

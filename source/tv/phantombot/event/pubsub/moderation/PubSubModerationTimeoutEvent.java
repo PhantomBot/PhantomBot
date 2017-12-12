@@ -17,10 +17,17 @@
 package tv.phantombot.event.pubsub.moderation;
 
 public class PubSubModerationTimeoutEvent extends PubSubModerationEvent {
-
 	private final String reason;
 	private final String time;
 
+	/*
+	 * Class constructor.
+	 *
+	 * @param {String} username
+	 * @param {String} creator
+	 * @param {String} message
+	 * @param {String} time
+	 */
 	public PubSubModerationTimeoutEvent(String username, String creator, String message, String time) {
 		super(username, creator, message);
 
@@ -28,6 +35,15 @@ public class PubSubModerationTimeoutEvent extends PubSubModerationEvent {
 		this.time = time;
 	}
 
+	/*
+	 * Class constructor.
+	 *
+	 * @param {String} username
+	 * @param {String} creator
+	 * @param {String} message
+	 * @param {String} reason
+	 * @param {String} time
+	 */
 	public PubSubModerationTimeoutEvent(String username, String creator, String message, String reason, String time) {
 		super(username, creator, message);
 
@@ -35,10 +51,20 @@ public class PubSubModerationTimeoutEvent extends PubSubModerationEvent {
 		this.time = time;
 	}
 
+	/*
+	 * Method that returns the reason as to why the user was banned.
+	 *
+	 * @return {String} reason
+	 */
 	public String getReason() {
 		return this.reason;
 	}
 
+	/*
+	 * Method that returns the length of the timeout.
+	 *
+	 * @return {String} time
+	 */
 	public String getTime() {
 		return this.time;
 	}
