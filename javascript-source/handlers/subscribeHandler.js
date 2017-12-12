@@ -54,14 +54,17 @@
             return subPlan2000;
         } else if (plan.equals('3000')) {
             return subPlan3000;
+        } else if (plan.equals('Prime')) {
+            return 'Prime';
         }
+
         return 'Unknown Tier';
     }
 
     /*
-     * @event subscriber
+     * @event twitchSubscriber
      */
-    $.bind('subscriber', function(event) {
+    $.bind('twitchSubscriber', function(event) {
         var subscriber = event.getSubscriber(),
             message = subMessage;
 
@@ -89,9 +92,9 @@
     });
 
     /*
-     * @event primeSubscriber
+     * @event twitchPrimeSubscriber
      */
-    $.bind('primeSubscriber', function(event) {
+    $.bind('twitchPrimeSubscriber', function(event) {
         var subscriber = event.getSubscriber(),
             message = primeSubMessage;
 
@@ -114,9 +117,9 @@
     });
 
     /*
-     * @event reSubscriber
+     * @event twitchReSubscriber
      */
-    $.bind('reSubscriber', function(event) {
+    $.bind('twitchReSubscriber', function(event) {
         var resubscriber = event.getReSubscriber(),
             months = event.getMonths(),
             message = reSubMessage,
@@ -156,9 +159,9 @@
     });
 
     /*
-     * @event subscriber
+     * @event twitchSubscriptionGift
      */
-    $.bind('subscriptionGift', function(event) {
+    $.bind('twitchSubscriptionGift', function(event) {
         var gifter = event.getUsername(),
             recipient = event.getRecipient(),        
             months = event.getMonths(),

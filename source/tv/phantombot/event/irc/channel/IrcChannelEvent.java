@@ -20,7 +20,7 @@ import tv.phantombot.event.irc.IrcEvent;
 
 import tv.phantombot.twitchwsirc.Session;
 
-public class IrcChannelEvent extends IrcEvent {
+public abstract class IrcChannelEvent extends IrcEvent {
 
 	/*
      * Class constructor

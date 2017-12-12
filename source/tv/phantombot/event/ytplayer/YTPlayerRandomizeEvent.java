@@ -16,14 +16,12 @@
  */
 package tv.phantombot.event.ytplayer;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class YTPlayerRandomizeEvent extends YTPlayerEvent {
 
+	/*
+	 * Class constructor.
+	 */
     public YTPlayerRandomizeEvent() {
-    }
 
-    public YTPlayerRandomizeEvent(Channel channel) {
-        super(channel);
     }
 }

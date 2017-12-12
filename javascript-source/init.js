@@ -870,45 +870,45 @@
         });
 
         /*
-         * @event subscriber
+         * @event twitchSubscriber
          */
-        $api.on($script, 'subscriber', function(event) {
-            callHook('subscriber', event, false);
+        $api.on($script, 'twitchSubscriber', function(event) {
+            callHook('twitchSubscriber', event, false);
         });
 
         /*
-         * @event primeSubscriber
+         * @event twitchPrimeSubscriber
          */
-        $api.on($script, 'primeSubscriber', function(event) {
-            callHook('primeSubscriber', event, false);
+        $api.on($script, 'twitchPrimeSubscriber', function(event) {
+            callHook('twitchPrimeSubscriber', event, false);
         });
 
         /*
          * @event reSubscriber
          */
-        $api.on($script, 'reSubscriber', function(event) {
-            callHook('reSubscriber', event, false);
+        $api.on($script, 'twitchReSubscriber', function(event) {
+            callHook('twitchReSubscriber', event, false);
         });
 
         /*
-         * @event subscriptionGift
+         * @event twitchSubscriptionGift
          */
-        $api.on($script, 'subscriptionGift', function(event) {
-            callHook('subscriptionGift', event, false);
+        $api.on($script, 'twitchSubscriptionGift', function(event) {
+            callHook('twitchSubscriptionGift', event, false);
         });
 
         /*
-         * @event bits
+         * @event twitchBits
          */
-        $api.on($script, 'bits', function(event) {
-            callHook('bits', event, false);
+        $api.on($script, 'twitchBits', function(event) {
+            callHook('twitchBits', event, false);
         });
 
         /*
-         * @event raid
+         * @event twitchRaid
          */
-        $api.on($script, 'raid', function(event) {
-            callHook('raid', event, false);
+        $api.on($script, 'twitchRaid', function(event) {
+            callHook('twitchRaid', event, false);
         });
 
         /*

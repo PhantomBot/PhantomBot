@@ -17,14 +17,13 @@
 package tv.phantombot.event.tipeeestream.donate;
 
 import tv.phantombot.event.tipeeestream.TipeeeStreamEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class TipeeeStreamDonationInitializedEvent extends TipeeeStreamEvent {
 
+	/*
+	 * Class constructor.
+	 */
     public TipeeeStreamDonationInitializedEvent() {
-    }
 
-    public TipeeeStreamDonationInitializedEvent(Channel channel) {
-        super(channel);
     }
 }

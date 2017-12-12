@@ -230,7 +230,7 @@ public class TwitterCache implements Runnable {
         /* Poll latest retweet. */
         String tweet = "[RT] " + statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
         updateDBString("last_retweets", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet, getChannel()));
+        EventBus.instance().post(new TwitterEvent(tweet));
 
         /* Update DB with the last Tweet ID processed. */
         updateDBLong("lastid_retweets", twitterID);
@@ -274,7 +274,7 @@ public class TwitterCache implements Runnable {
         }
 
         if (!userNameList.isEmpty()) {
-            EventBus.instance().post(new TwitterRetweetEvent(userNameList.toArray(new String[userNameList.size()]), getChannel()));
+            EventBus.instance().post(new TwitterRetweetEvent(userNameList.toArray(new String[userNameList.size()])));
         }
 
         /* Update DB with the last Tweet ID processed. */
@@ -308,7 +308,7 @@ public class TwitterCache implements Runnable {
 
         updateDBLong("lastid_mentions", twitterID);
         updateDBString("last_mentions", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet, getChannel(), name));
+        EventBus.instance().post(new TwitterEvent(tweet, name));
     }
 
     /*
@@ -336,7 +336,7 @@ public class TwitterCache implements Runnable {
 
         updateDBLong("lastid_hometimeline", twitterID);
         updateDBString("last_hometimeline", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet, getChannel()));
+        EventBus.instance().post(new TwitterEvent(tweet));
     }
 
     /*
@@ -364,7 +364,7 @@ public class TwitterCache implements Runnable {
 
         updateDBLong("lastid_usertimeline", twitterID);
         updateDBString("last_usertimeline", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet, getChannel()));
+        EventBus.instance().post(new TwitterEvent(tweet));
     }
 
     /*
@@ -426,15 +426,6 @@ public class TwitterCache implements Runnable {
      */
     private void updateDBString(String dbKey, String dbValue) {
         PhantomBot.instance().getDataStore().SetString("twitter", "", dbKey, dbValue);
-    }
-
-    /*
-     * Gets the PhantomBot channel object.
-     *
-     * @return  Channel  Channel object.
-     */
-    private Channel getChannel() {
-        return PhantomBot.getChannel(this.channel);
     }
 
     /*

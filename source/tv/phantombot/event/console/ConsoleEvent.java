@@ -18,6 +18,6 @@ package tv.phantombot.event.console;
 
 import tv.phantombot.event.Event;
 
-public class ConsoleEvent extends Event {
+public abstract class ConsoleEvent extends Event {
 	
 }

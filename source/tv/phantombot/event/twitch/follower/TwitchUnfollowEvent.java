@@ -16,15 +16,14 @@
  */
 package tv.phantombot.event.twitch.follower;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class TwitchUnfollowEvent extends TwitchFollowerEvent {
 
+	/*
+	 * Class constructor.
+	 *
+	 * @param {String} follower
+	 */
     public TwitchUnfollowEvent(String follower) {
-        super(follower, Type.UNFOLLOW);
-    }
-
-    public TwitchUnfollowEvent(String follower, Channel channel) {
-        super(follower, Type.UNFOLLOW, channel);
+        super(follower);
     }
 }

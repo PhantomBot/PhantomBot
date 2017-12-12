@@ -16,27 +16,35 @@
  */
 package tv.phantombot.event.ytplayer;
 
-import tv.phantombot.twitchwsirc.Channel;
 import tv.phantombot.ytplayer.YTPlayerState;
 
 public class YTPlayerStateEvent extends YTPlayerEvent {
-
     private final YTPlayerState state;
 
+    /*
+     * Class constructor.
+     *
+     * @param {YTPlayerState} state
+     */
     public YTPlayerStateEvent(YTPlayerState state) {
         this.state = state;
     }
 
-    public YTPlayerStateEvent(YTPlayerState state, Channel channel) {
-        super(channel);
-        this.state = state;
-    }
-
+    /*
+     * Method that returns the player state.
+     *
+     * @return {YTPlayerState} state
+     */
     public YTPlayerState getState() {
-        return state;
+        return this.state;
     }
 
+    /*
+     * Method that returns the player state ID.
+     *
+     * @return {int} state.i
+     */
     public int getStateId() {
-        return state.i;
+        return this.state.i;
     }
 }

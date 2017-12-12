@@ -16,14 +16,12 @@
  */
 package tv.phantombot.event.ytplayer;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class YTPlayerDisconnectEvent extends YTPlayerEvent {
 
+	/*
+	 * Class constructor.
+	 */
     public YTPlayerDisconnectEvent() {
-    }
 
-    public YTPlayerDisconnectEvent(Channel channel) {
-        super(channel);
     }
 }

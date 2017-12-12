@@ -17,36 +17,37 @@
 package tv.phantombot.event.twitch.clip;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class TwitchClipEvent extends TwitchEvent {
-
     private final String clipURL;
     private final String creator;
-    private final Channel channel;
 
+    /*
+     * Class constructor.
+     *
+     * @param {String} clipURL
+     * @param {String} creator
+     */
     public TwitchClipEvent(String clipURL, String creator) {
         this.clipURL = clipURL;
         this.creator = creator;
-        this.channel = null;
     }
 
-    public TwitchClipEvent(String clipURL, String creator, Channel channel) {
-        this.clipURL = clipURL;
-        this.creator = creator;
-        this.channel = channel;
-    }
-
+    /*
+     * Method that returns the clip URL.
+     *
+     * @return {String} clipURL
+     */
     public String getClipURL() {
-        return clipURL;
+        return this.clipURL;
     }
 
+    /*
+     * Method that returns the clip creator.
+     *
+     * @return {String} creator
+     */
     public String getCreator() {
-        return creator;
+        return this.creator;
     }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
 }

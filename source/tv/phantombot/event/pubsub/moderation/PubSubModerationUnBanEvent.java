@@ -18,6 +18,12 @@ package tv.phantombot.event.pubsub.moderation;
 
 public class PubSubModerationUnBanEvent extends PubSubModerationEvent {
 
+	/*
+	 * Class constructor
+	 *
+	 * @param {String} username
+	 * @param {String} creator
+	 */
 	public PubSubModerationUnBanEvent(String username, String creator) {
 		super(username, creator, null);
 	}

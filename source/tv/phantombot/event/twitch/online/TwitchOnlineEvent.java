@@ -17,22 +17,13 @@
 package tv.phantombot.event.twitch.online;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class TwitchOnlineEvent extends TwitchEvent {
 
-    private final Channel channel;
-
+    /*
+     * Class constructor.
+     */
     public TwitchOnlineEvent() {
-        this.channel = null;
+        
     }
-
-    public TwitchOnlineEvent(Channel channel) {
-        this.channel = channel;
-    }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
 }
