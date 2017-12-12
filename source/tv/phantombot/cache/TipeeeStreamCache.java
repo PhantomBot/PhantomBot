@@ -193,13 +193,13 @@ public class TipeeeStreamCache implements Runnable {
 
         if (firstUpdate && !killed) {
             firstUpdate = false;
-            EventBus.instance().post(new TipeeeStreamDonationInitializedEvent(PhantomBot.getChannel(this.channel)));
+            EventBus.instance().post(new TipeeeStreamDonationInitializedEvent());
         }
 
         if (donations != null && !killed) {
             for (int i = 0; i < donations.length(); i++) {
                 if (cache == null || !cache.containsKey(donations.getJSONObject(i).get("id").toString())) {
-                    EventBus.instance().post(new TipeeeStreamDonationEvent(donations.getJSONObject(i).toString(), PhantomBot.getChannel(this.channel)));
+                    EventBus.instance().post(new TipeeeStreamDonationEvent(donations.getJSONObject(i).toString()));
                 }
             }
         }

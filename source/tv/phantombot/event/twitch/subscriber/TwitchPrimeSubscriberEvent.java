@@ -14,34 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package tv.phantombot.event.twitch.raid;
+package tv.phantombot.event.twitch.subscriber;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class RaidEvent extends TwitchEvent {
+public class TwitchPrimeSubscriberEvent extends TwitchEvent {
+	private final String subscriber;
 
-	private final String username;
-    private final String viewers;
-
-	public RaidEvent(String username, String viewers) {
-        this.username = username;
-        this.viewers = viewers;
+    /*
+     * Class constructor.
+     *
+     * @param {String} subscriber
+     */
+	public TwitchPrimeSubscriberEvent(String subscriber) {
+        this.subscriber = subscriber;
     }
 
-    public RaidEvent(Channel channel, String username, String viewers) {
-        super(channel);
-        
-        this.username = username;
-        this.viewers = viewers;
-    }
-
-    public String getUsername() {
-        return this.username;
-    }
-
-    public String getViewers() {
-        return this.viewers;
+    /*
+     * Method that returns the user who subscribed.
+     *
+     * @return {String} subscriber
+     */
+    public String getSubscriber() {
+        return this.subscriber;
     }
 }

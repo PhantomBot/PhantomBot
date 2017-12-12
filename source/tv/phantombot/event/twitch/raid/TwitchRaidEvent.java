@@ -14,28 +14,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.twitter;
+package tv.phantombot.event.twitch.raid;
 
-import tv.phantombot.event.Event;
+import tv.phantombot.event.twitch.TwitchEvent;
 
-public class TwitterRetweetEvent extends Event {
-    private final String[] userNameArray;
+public class TwitchRaidEvent extends TwitchEvent {
+    private final String username;
+    private final String viewers;
 
     /*
      * Class constructor.
      *
-     * @param {String[]} userNameArray
+     * @param {String} username
+     * @param {String} viewers
      */
-    public TwitterRetweetEvent(String[] userNameArray) {
-        this.userNameArray = userNameArray;
+    public TwitchRaidEvent(String username, String viewers) {
+        this.username = username;
+        this.viewers = viewers;
     }
 
     /*
-     * Method that returns the array of users.
+     * Method that returns the username who hosted.
      *
-     * @return {String[]} userNameArray
+     * @return {String} username
      */
-    public String[] getUserNameArray() {
-        return this.userNameArray;
+    public String getUsername() {
+        return this.username;
+    }
+
+    /*
+     * Method that returns the amount of users who raided.
+     *
+     * @return {String} viewers
+     */
+    public String getViewers() {
+        return this.viewers;
     }
 }

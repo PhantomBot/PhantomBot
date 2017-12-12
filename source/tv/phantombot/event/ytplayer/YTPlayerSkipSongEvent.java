@@ -20,10 +20,10 @@ import tv.phantombot.twitchwsirc.Channel;
 
 public class YTPlayerSkipSongEvent extends YTPlayerEvent {
 
+	/*
+	 * Class constructor.
+	 */
     public YTPlayerSkipSongEvent() {
-    }
 
-    public YTPlayerSkipSongEvent(Channel channel) {
-        super(channel);
     }
 }

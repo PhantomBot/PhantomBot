@@ -16,14 +16,12 @@
  */
 package tv.phantombot.event.ytplayer;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class YTPlayerRequestSonglistEvent extends YTPlayerEvent {
 
+	/*
+	 * Class constructor.
+	 */
     public YTPlayerRequestSonglistEvent() {
-    }
 
-    public YTPlayerRequestSonglistEvent(Channel channel) {
-        super(channel);
     }
 }

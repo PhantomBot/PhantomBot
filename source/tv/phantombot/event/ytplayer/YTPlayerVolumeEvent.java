@@ -16,22 +16,24 @@
  */
 package tv.phantombot.event.ytplayer;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class YTPlayerVolumeEvent extends YTPlayerEvent {
-
     private final int volume;
 
+    /*
+     * Class constructor.
+     *
+     * @param {int} volume
+     */
     public YTPlayerVolumeEvent(int volume) {
         this.volume = volume;
     }
 
-    public YTPlayerVolumeEvent(int volume, Channel channel) {
-        super(channel);
-        this.volume = volume;
-    }
-
+    /*
+     * Method that returns the volume level.
+     *
+     * @return {int} volume
+     */
     public int getVolume() {
-        return volume;
+        return this.volume;
     }
 }

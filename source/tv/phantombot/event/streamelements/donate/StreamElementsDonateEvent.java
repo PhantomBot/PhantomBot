@@ -17,26 +17,35 @@
 package tv.phantombot.event.streamelements.donate;
 
 import tv.phantombot.event.streamelements.StreamElementsEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public abstract class StreamElementsDonateEvent extends StreamElementsEvent {
-
     private final String jsonString;
 
+    /*
+     * Abstract constructor.
+     *
+     * @param {String} jsonString
+     */
     protected StreamElementsDonateEvent(String jsonString) {
         this.jsonString = jsonString;
     }
 
-    protected StreamElementsDonateEvent(String jsonString, Channel channel) {
-        super(channel);
-        this.jsonString = jsonString;
-    }
-
+    /*
+     * Method that returns the donation's JSON string.
+     *
+     * @return {String} jsonString
+     */
     public String getJsonString() {
-        return jsonString;
+        return this.jsonString;
     }
 
-    public String toEventSocket() {
-        return this.jsonString;
+    /*
+     * Method that converts the class into a string.
+     *
+     * @return {String}
+     */
+    @Override
+    public String toString() {
+        return "StreamElementsDonateEvent -> { jsonString: [" + this.jsonString + "] }";
     }
 }

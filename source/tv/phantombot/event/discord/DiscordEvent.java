@@ -22,7 +22,7 @@ import sx.blah.discord.handle.obj.IUser;
 
 import tv.phantombot.event.Event;
 
-public class DiscordEvent extends Event {
+public abstract class DiscordEvent extends Event {
 	private final IUser user;
 	private final IChannel channel;
 	private final String username;

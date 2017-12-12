@@ -17,15 +17,27 @@
 package tv.phantombot.event.pubsub.moderation;
 
 public class PubSubModerationBanEvent extends PubSubModerationEvent {
-
 	private final String reason;
 
+	/*
+	 * Class constructor.
+	 *
+	 * @param {String} username
+	 * @param {String} creator
+	 * @param {String} message
+	 * @param {String} reason
+	 */
 	public PubSubModerationBanEvent(String username, String creator, String message, String reason) {
 		super(username, creator, message);
 
 		this.reason = reason;
 	}
 
+	/*
+	 * Method that returns the reason as to why the user was banned.
+	 *
+	 * @return {String} reason
+	 */
 	public String getReason() {
 		return this.reason;
 	}
