@@ -23,6 +23,8 @@
      * This function properly rebuilds the users list from a list of usernames.
      * The $.users object cannot be modified and if the users object is replaced,
      * then it disassociates from the original list causing issues.
+     *
+     *** This can take a very long time to complete and is very hard on your CPU when large array.
      */
     function updateUsersObject(newUsers) {
         for (var i in newUsers) {
@@ -30,6 +32,7 @@
                 users.push([newUsers[i], $.systemTime()]); 
             }
         }
+
 
         for (var i = users.length - 1; i >= 0; i--) {
             if (!hasKey(newUsers, users[i][0])) {
@@ -593,20 +596,6 @@
         $.inidb.set('group', $.botName.toLowerCase(), 0);
     }
 
-    /*
-     * @function doUserCacheCheck
-     */
-    function doUserCacheCheck() {
-        var i;
-
-        for (i in users) {
-            if (!$.usernameCache.hasUser(users[i][0])) {
-                $.username.removeUser(users[i][0]);
-                users.splice(i, 1);
-            }
-        }
-    }
-
     /**
      * @event ircChannelJoinUpdate
      *
@@ -614,42 +603,43 @@
      */
     $.bind('ircChannelUsersUpdate', function(event) {
         setTimeout(function() {
-            var usernames = event.getUsers(),
-                joins = event.getJoins(),
+            var joins = event.getJoins(),
                 parts = event.getParts(),
-                now = $.systemTime(),
-                newUsers = [];
+                now = $.systemTime();
 
             // Handle parts
-            for (var i in parts) {
-                restoreSubscriberStatus(parts[i] + '', true);
-                $.username.removeUser(parts[i] + '');
+            for (var i = 0; i < parts.length; i++) {
+                // Cast the user as a string, because Rhino.
+                parts[i] = (parts[i] + '');
+                // Remove the user from the users array.
+                for (var t = 0; i < $.users.length; t++) {
+                    if ($.users[t][0] == parts[i]) {
+                        $.users.splice(i, 1);
+                        break;
+                    }
+                }
+
+                $.restoreSubscriberStatus(parts[i], true);
+                $.username.removeUser(parts[i]);
             }
+
+            // Disable auto commit to perform faster DB writes.
+            $.inidb.setAutoCommit(false);
 
             // Handle joins.
-            $.inidb.setAutoCommit(false);
-            for (var i in joins) {
-                if (!$.user.isKnown(joins[i] + '')) {
-                    $.setIniDbBoolean('visited', joins[i] + '', true);
+            for (var i = 0; i < joins.length; i++) {
+                // Cast the user as a string, because Rhino.
+                joins[i] = (joins[i] + '');
+
+                if (!$.user.isKnown(joins[i])) {
+                    $.setIniDbBoolean('visited', joins[i], true);
                 }
-                $.checkGameWispSub(joins[i] + '');
+                $.checkGameWispSub(joins[i]);
+                $.users.push([joins[i], now]);
             }
+            // Enable auto commit again and force save.
             $.inidb.setAutoCommit(true);
             $.inidb.SaveAll(true);
-
-            // Set the new users array.
-            for (var i in usernames) {
-                newUsers.push(usernames[i]);
-            }
-
-            // Sometimes TMI has not seen the bot yet, this can happen at startup.
-            if (!hasKey(newUsers, $.botName)) {
-                newUsers.push($.botName);
-            }
-
-            // Set the new array.
-            updateUsersObject(newUsers);
-            lastJoinPart = $.systemTime();
         }, 0);
     });
 
@@ -984,8 +974,6 @@
 
         // Load the moderators cache. This needs to load after the privmsg check.
         setTimeout(loadModeratorsCache, 7e3);
-        // Set an interval to refresh the viewer cache.
-        setInterval(doUserCacheCheck, 6e4);
     });
 
     /** Export functions to API */
