@@ -19,7 +19,6 @@ package tv.phantombot.event.irc.channel;
 import tv.phantombot.twitchwsirc.Session;
 
 public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
-    private final String[] users;
     private final String[] joins;
     private final String[] parts;
 
@@ -27,14 +26,12 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      * Class constructor.
      *
      * @param {Session}  session
-     * @param {String[]} users
      * @param {String[]} joins
      * @param {String[]} parts
      */
-    public IrcChannelUsersUpdateEvent(Session session, String[] users, String[] joins, String[] parts) {
+    public IrcChannelUsersUpdateEvent(Session session, String[] joins, String[] parts) {
         super(session);
 
-        this.users = users;
         this.joins = joins;
         this.parts = parts;
     }
@@ -42,25 +39,14 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
     /*
      * Class constructor.
      *
-     * @param {String[]} users
      * @param {String[]} joins
      * @param {String[]} parts
      */
-    public IrcChannelUsersUpdateEvent(String[] users, String[] joins, String[] parts) {
+    public IrcChannelUsersUpdateEvent(String[] joins, String[] parts) {
         super(null);
 
-        this.users = users;
         this.joins = joins;
         this.parts = parts;
-    }
-
-    /*
-     * Method that returns the current array of users in the channel.
-     *
-     * @return {String[]} users
-     */
-    public String[] getUsers() {
-        return this.users;
     }
 
     /*
