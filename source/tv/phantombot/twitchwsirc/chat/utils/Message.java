@@ -14,34 +14,48 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.irc.message;
+package tv.phantombot.twitchwsirc.chat.utils;
 
-import java.util.Map;
-
-import tv.phantombot.twitchwsirc.chat.Session;
-
-public class IrcModerationEvent extends IrcMessageEvent {
+public class Message {
+	private final String message;
+	private final boolean hasPriority;
 
 	/*
 	 * Class constructor.
 	 *
-	 * @param {Session} session
-	 * @param {String}  sender
-	 * @param {String}  message
+	 * @param {String} message
 	 */
-    public IrcModerationEvent(Session session, String sender, String message) {
-        super(session, sender, message);
-    }
+	public Message(String message) {
+		this.message = message;
+		this.hasPriority = false;
+	}
 
-    /*
+	/*
 	 * Class constructor.
 	 *
-	 * @param {Session} session
-	 * @param {String}  sender
-	 * @param {String}  message
-	 * @param {Map}     tags
+	 * @param {String} message
+	 * @param {boolean} hasPriority
 	 */
-    public IrcModerationEvent(Session session, String sender, String message, Map<String, String> tags) {
-        super(session, sender, message, tags);
-    }
+	public Message(String message, boolean hasPriority) {
+		this.message = message;
+		this.hasPriority = hasPriority;
+	}
+
+	/*
+	 * Method that returns the message.
+	 *
+	 * @return {String} message
+	 */
+	public String getMessage() {
+		return this.message;
+	}
+
+	/*
+	 * Method that returns if the message has priority.
+	 *
+	 * @return {boolean} message
+	 */
+	public boolean hasPriority() {
+		return this.hasPriority;
+	}
 }

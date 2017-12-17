@@ -107,7 +107,7 @@ public class CommandEvent extends Event {
      * @return {String}
      */
     public String getCommand() {
-        return this.command;
+        return this.command.toLowerCase();
     }
 
     /*

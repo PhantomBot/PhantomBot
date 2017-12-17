@@ -17,7 +17,6 @@
 package tv.phantombot.event.emotes;
 
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
 public abstract class EmotesEvent extends Event {
 

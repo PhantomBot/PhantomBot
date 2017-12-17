@@ -18,7 +18,7 @@ package tv.phantombot.event.irc.message;
 
 import java.util.Map;
 
-import tv.phantombot.twitchwsirc.Session;
+import tv.phantombot.twitchwsirc.chat.Session;
 
 public class IrcChannelMessageEvent extends IrcMessageEvent {
 

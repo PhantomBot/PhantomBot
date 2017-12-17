@@ -16,8 +16,6 @@
  */
 package tv.phantombot.event.twitch.host;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class TwitchAutoHostedEvent extends TwitchHostEvent {
 
     /*

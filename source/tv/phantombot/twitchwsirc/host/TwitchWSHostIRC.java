@@ -19,7 +19,7 @@
  * Twitch WS-IRC Host Client
  * @author: illusionaryone
  */
-package tv.phantombot.twitchwsirc;
+package tv.phantombot.twitchwsirc.host;
 
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
