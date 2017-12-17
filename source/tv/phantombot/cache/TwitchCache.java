@@ -41,7 +41,6 @@ import org.json.JSONObject;
 import com.gmt2001.TwitchAPIv5;
 
 import tv.phantombot.PhantomBot;
-import tv.phantombot.twitchwsirc.Channel;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
