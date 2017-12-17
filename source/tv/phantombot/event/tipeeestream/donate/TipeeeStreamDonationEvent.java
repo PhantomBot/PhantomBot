@@ -16,8 +16,6 @@
  */
 package tv.phantombot.event.tipeeestream.donate;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class TipeeeStreamDonationEvent extends TipeeeStreamDonateEvent {
 
 	/*

@@ -20,7 +20,7 @@
  * @author ScaniaTV
  */
 
-package tv.phantombot.twitchwsirc;
+package tv.phantombot.twitchwsirc.pubsub;
 
 import com.google.common.collect.Maps;
 import com.gmt2001.Logger;

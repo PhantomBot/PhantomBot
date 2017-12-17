@@ -20,12 +20,15 @@ package com.illusionaryone;
 
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.UncaughtExceptionHandler;
+import com.google.common.eventbus.Subscribe;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.TwitchCache;
+import tv.phantombot.event.Listener;
 import tv.phantombot.event.command.CommandEvent;
+import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.script.ScriptEventManager;
-import tv.phantombot.twitchwsirc.Session;
+import tv.phantombot.twitchwsirc.chat.Session;
 
 import com.google.common.collect.Maps;
 
@@ -41,7 +44,7 @@ import java.util.Map.Entry;
  *
  * @author illusionaryone
  */
-public class NoticeTimer implements Runnable {
+public class NoticeTimer implements Runnable, Listener {
 
     private static final Map<String, NoticeTimer> instances = Maps.newHashMap();
     private Thread noticeThread;
@@ -55,6 +58,7 @@ public class NoticeTimer implements Runnable {
     private long lastNoticeTime = -1L;
     private int lastMinuteRan = -1;
     private int lastNoticeID = -1;
+    private int totalChatLines = 0;
 
     /*
      * The instance creation for a NoticeTimer object.
@@ -152,6 +156,14 @@ public class NoticeTimer implements Runnable {
     }
 
     /*
+     * Method that adds chat lines.
+     */
+    @Subscribe
+    private void ircChannelMessageEvent(IrcChannelMessageEvent event) {
+        totalChatLines++;
+    }
+
+    /*
      * Determines which timer process to utilize.
      *
      * @param    int    currentMinute - Passed to processScheduledTimers()
@@ -228,12 +240,12 @@ public class NoticeTimer implements Runnable {
         
         /* Get the required messages and compare to how many lines have been posted into chat. */
         int noticeReqMessages = dataStore.GetInteger("noticeSettings", "", "reqmessages");
-        if (noticeReqMessages > this.session.chatLinesGet() && noticeReqMessages != 0) {
+        if (noticeReqMessages > totalChatLines && noticeReqMessages != 0) {
             return;
         }
 
         /* As the appropriate amount of time has passed, reset the chat line counter. */
-        this.session.chatLinesReset();
+        totalChatLines = 0;
 
         /* Find the next notice to process. */
         lastNoticeID++;
@@ -292,7 +304,7 @@ public class NoticeTimer implements Runnable {
 
         /* Reset chat lines every 5 minutes. */
         if (currentMinute % 5 == 0) {
-            this.session.chatLinesReset();
+            totalChatLines = 0;
         }
 
         String[] sections = dataStore.GetCategoryList("notices");
@@ -331,7 +343,7 @@ public class NoticeTimer implements Runnable {
                 continue;
             }
             try {
-                if (Integer.parseInt(chatlines) > this.session.chatLinesGet() && Integer.parseInt(chatlines) != 0) {
+                if (Integer.parseInt(chatlines) > totalChatLines && Integer.parseInt(chatlines) != 0) {
                     continue;
                 }
             } catch (NumberFormatException ex) {
