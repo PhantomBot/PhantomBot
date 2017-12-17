@@ -1279,7 +1279,7 @@ public final class PhantomBot implements Listener {
         /* Check to see if Twitch sent a mode event for the bot name */
         if (event.getUser().equalsIgnoreCase(this.botName) && event.getMode().equalsIgnoreCase("o")) {
             if (!event.getAdd()) {
-                event.getSession().getSocket().send(".mods");
+                event.getSession().getModerationStatus();
             }
             /* Allow the bot to sends message to this session */
             event.getSession().setAllowSendMessages(event.getAdd());

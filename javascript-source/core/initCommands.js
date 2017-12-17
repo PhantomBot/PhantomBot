@@ -33,7 +33,7 @@
              * @commandpath botName moderate - Forces the bot to detect its moderator status.
              */
             if (action.equalsIgnoreCase('moderate')) {
-                $.session.say('.mods');
+                $.session.getModerationStatus();
             }
 
             /*
