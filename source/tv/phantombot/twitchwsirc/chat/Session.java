@@ -89,6 +89,13 @@ public class Session extends MessageQueue {
 	}
 
 	/*
+	 * Method that will do the moderation check of the bot.
+	 */
+	public void getModerationStatus() {
+		getSocket().send("PRIVMSG #" + getChannelName() + " :.mods");
+	}
+
+	/*
 	 * Method that creates a connection with Twitch.
 	 */
 	public Session connect() {
@@ -139,6 +146,6 @@ public class Session extends MessageQueue {
 	 */
 	public void close() {
 		this.kill();
-		twitchWSIRC.close(0, "bye");
+		twitchWSIRC.close(1000, "bye");
 	}
 }

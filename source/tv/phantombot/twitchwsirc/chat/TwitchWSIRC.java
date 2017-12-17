@@ -144,12 +144,14 @@ public class TwitchWSIRC extends WebSocketClient {
 	 */
 	@Override
     public void onClose(int code, String reason, boolean remote) {
-    	com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC. Reconnecting...");
-        com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-
-        // Reconnect if the bot isn't shutting down.
-        if (reason != "bye") {
+    	// Reconnect if the bot isn't shutting down.
+    	if (reason != "bye") {
+    		com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC. Reconnecting...");
+        	com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
+	
         	this.session.reconnect();
+        } else {
+        	com.gmt2001.Console.out.println("Connection to Twitch WS-IRC was closed...");
         }
     }
 
