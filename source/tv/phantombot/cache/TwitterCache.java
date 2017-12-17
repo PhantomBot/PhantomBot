@@ -42,7 +42,6 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitter.TwitterEvent;
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 /*
  * TwitterCache Class

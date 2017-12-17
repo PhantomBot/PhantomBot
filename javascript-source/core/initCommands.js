@@ -33,7 +33,7 @@
              * @commandpath botName moderate - Forces the bot to detect its moderator status.
              */
             if (action.equalsIgnoreCase('moderate')) {
-                $.session.saySilent('.mods');
+                $.session.say('.mods');
             }
 
             /*
@@ -311,7 +311,7 @@
          */
         if (command.equalsIgnoreCase('reconnect')) {
             if ($.isBot(sender)) {
-                $.session.close();
+                $.session.getSocket().close();
             }
         }
 

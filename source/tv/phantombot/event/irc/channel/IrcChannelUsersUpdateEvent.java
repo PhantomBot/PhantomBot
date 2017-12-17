@@ -16,7 +16,7 @@
  */
 package tv.phantombot.event.irc.channel;
 
-import tv.phantombot.twitchwsirc.Session;
+import tv.phantombot.twitchwsirc.chat.Session;
 
 public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
     private final String[] joins;

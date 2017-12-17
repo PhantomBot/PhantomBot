@@ -16,8 +16,6 @@
  */
 package tv.phantombot.event.ytplayer;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class YTPlayerSkipSongEvent extends YTPlayerEvent {
 
 	/*
