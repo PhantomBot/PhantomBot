@@ -274,8 +274,8 @@
 		$.discord.registerSubCommand('module', 'list', 1);
 		$.discord.registerSubCommand('module', 'enable', 1);
 		$.discord.registerSubCommand('module', 'disable', 1);
-                $.registerChatCommand('./discord/core/misc.js', 'discord', 1);
-                $.registerChatSubcommand('discord', 'reconnect', 1);
+		$.registerChatCommand('./discord/core/misc.js', 'discord', 1);
+		$.registerChatSubcommand('discord', 'reconnect', 1);
 	});
 
 	/* Export the function to the $.discord api. */
