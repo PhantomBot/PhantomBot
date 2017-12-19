@@ -25,14 +25,9 @@ import tv.phantombot.PhantomBot;
  *
  * @author Gary Tekulsky
  */
-public class in {
+public final class in {
 
-    private static final in instance = new in();
     private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-    public static in instance() {
-        return instance;
-    }
 
     private in() {
     }

@@ -23,13 +23,7 @@ import tv.phantombot.PhantomBot;
  *
  * @author Gary Tekulsky
  */
-public class out {
-
-    private static final out instance = new out();
-
-    public static out instance() {
-        return instance;
-    }
+public final class out {
 
     private out() {
     }
