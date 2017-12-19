@@ -26,13 +26,7 @@ import tv.phantombot.PhantomBot;
  *
  * @author Gary Tekulsky
  */
-public class err {
-
-    private static final err instance = new err();
-
-    public static err instance() {
-        return instance;
-    }
+public final class err {
 
     private err() {
     }
