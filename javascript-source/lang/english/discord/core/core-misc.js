@@ -8,3 +8,4 @@ $.lang.register('discord.misc.game.set', 'Bot game updated to: $1');
 $.lang.register('discord.misc.game.stream.set.usage', 'Usage: !setstream [twitch url] [game name]');
 $.lang.register('discord.misc.game.stream.set', 'Bot stream changed to: $1 and game to: $2');
 $.lang.register('discord.misc.game.removed', 'Bot game has been removed.');
+$.lang.register('discord.misc.reconnect', 'A Discord reconnect is being attempted.');
