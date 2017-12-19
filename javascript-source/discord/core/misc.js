@@ -237,6 +237,31 @@
 			say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.removed'));
 		}
 	});
+        
+        /**
+        * @event command
+        */
+        $.bind('command', function (event) {
+            var sender = event.getSender(),
+                command = event.getCommand(),
+                args = event.getArgs(),
+                action = args[0];
+
+            if (command.equalsIgnoreCase('discord')) {
+                if (action === undefined) {
+                    return;
+                }
+            
+                /**
+                * @commandpath discord reconnect - Attempts to reconnect the bot to discord
+                */
+                if (action.equalsIgnoreCase('reconnect')) {
+                    $.discordAPI.reconnect();
+
+                    $.say($.whisperPrefix(sender) + $.lang.get('discord.misc.reconnect'));
+                }
+            }
+        });
 
 	/**
 	 * @event initReady
@@ -249,6 +274,8 @@
 		$.discord.registerSubCommand('module', 'list', 1);
 		$.discord.registerSubCommand('module', 'enable', 1);
 		$.discord.registerSubCommand('module', 'disable', 1);
+                $.registerChatCommand('./discord/core/misc.js', 'discord', 1);
+                $.registerChatSubcommand('discord', 'reconnect', 1);
 	});
 
 	/* Export the function to the $.discord api. */
