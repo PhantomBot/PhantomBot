@@ -21,7 +21,7 @@ import tv.phantombot.PhantomBot;
 
 /**
  *
- * @author Gary Tekulsky
+ * @author gmt2001
  */
 public final class out {
 
