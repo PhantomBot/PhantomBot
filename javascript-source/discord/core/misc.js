@@ -238,30 +238,30 @@
 		}
 	});
         
-        /**
-        * @event command
-        */
-        $.bind('command', function (event) {
-            var sender = event.getSender(),
-                command = event.getCommand(),
-                args = event.getArgs(),
-                action = args[0];
+    /**
+     * @event command
+     */
+    $.bind('command', function (event) {
+        var sender = event.getSender(),
+            command = event.getCommand(),
+            args = event.getArgs(),
+            action = args[0];
 
-            if (command.equalsIgnoreCase('discord')) {
-                if (action === undefined) {
-                    return;
-                }
-            
-                /**
-                * @commandpath discord reconnect - Attempts to reconnect the bot to discord
-                */
-                if (action.equalsIgnoreCase('reconnect')) {
-                    $.discordAPI.reconnect();
-
-                    $.say($.whisperPrefix(sender) + $.lang.get('discord.misc.reconnect'));
-                }
+        if (command.equalsIgnoreCase('discord')) {
+            if (action === undefined) {
+                return;
             }
-        });
+        
+            /**
+             * @commandpath discord reconnect - Attempts to reconnect the bot to discord
+             */
+            if (action.equalsIgnoreCase('reconnect')) {
+                $.discordAPI.reconnect();
+
+                $.say($.whisperPrefix(sender) + $.lang.get('discord.misc.reconnect'));
+            }
+        }
+    });
 
 	/**
 	 * @event initReady
