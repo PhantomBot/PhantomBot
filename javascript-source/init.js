@@ -62,7 +62,7 @@
      * @param {String} message
      */
     function consoleDebug(message) {
-        if (Packages.me.mast3rplan.phantombot.PhantomBot.enableDebugging) {
+        if (Packages.tv.phantombot.PhantomBot.enableDebugging) {
             try {
                 throw new Error();
             } catch (ex) {
