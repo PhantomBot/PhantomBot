@@ -17,22 +17,13 @@
 package tv.phantombot.event.twitch.offline;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class TwitchOfflineEvent extends TwitchEvent {
 
-    private final Channel channel;
-
+    /*
+     * Class constructor.
+     */
     public TwitchOfflineEvent() {
-        this.channel = null;
-    }
 
-    public TwitchOfflineEvent(Channel channel) {
-        this.channel = channel;
     }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
 }

@@ -16,17 +16,24 @@
  */
 package tv.phantombot.event.emotes;
 
-import tv.phantombot.twitchwsirc.Channel;
 import org.json.JSONObject;
 
 public class EmotesGetEvent extends EmotesEvent {
-
     private final JSONObject twitchEmotes;
     private final JSONObject bttvEmotes;
     private final JSONObject bttvLocalEmotes;
     private final JSONObject ffzEmotes;
     private final JSONObject ffzLocalEmotes;
 
+    /*
+     * Class constructor
+     *
+     * @param {JSONObject} twitchEmotes
+     * @param {JSONObject} bttvEmotes
+     * @param {JSONObject} bttvLocalEmotes
+     * @param {JSONObject} ffzEmotes
+     * @param {JSONObject} ffzLocalEmotes
+     */
     public EmotesGetEvent(JSONObject twitchEmotes, JSONObject bttvEmotes, JSONObject bttvLocalEmotes, JSONObject ffzEmotes, JSONObject ffzLocalEmotes) {
         this.twitchEmotes = twitchEmotes;
         this.bttvEmotes = bttvEmotes;
@@ -35,29 +42,48 @@ public class EmotesGetEvent extends EmotesEvent {
         this.ffzLocalEmotes = ffzLocalEmotes;
     }
 
-    public EmotesGetEvent(JSONObject twitchEmotes, JSONObject bttvEmotes, JSONObject bttvLocalEmotes, JSONObject ffzEmotes, JSONObject ffzLocalEmotes, Channel channel) {
-        super(channel);
-        this.twitchEmotes = twitchEmotes;
-        this.bttvEmotes = bttvEmotes;
-        this.bttvLocalEmotes = bttvLocalEmotes;
-        this.ffzEmotes = ffzEmotes;
-        this.ffzLocalEmotes = ffzLocalEmotes;
+    /*
+     * Method that returns the JSONObject emotes from Twitch.
+     *
+     * @param {JSONObject} twitchEmotes
+     */
+    public JSONObject getTwitchEmotes() {
+        return this.twitchEmotes;
     }
 
-    public JSONObject getTwitchEmotes() {
-        return twitchEmotes;
-    }
+    /*
+     * Method that returns the JSONObject emotes from bttv.
+     *
+     * @param {JSONObject} bttvEmotes
+     */
     public JSONObject getBttvEmotes() {
-        return bttvEmotes;
+        return this.bttvEmotes;
     }
+
+    /*
+     * Method that returns the JSONObject emotes from bttv local emotes.
+     *
+     * @param {JSONObject} bttvLocalEmotes
+     */
     public JSONObject getBttvLocalEmotes() {
-        return bttvLocalEmotes;
+        return this.bttvLocalEmotes;
     }
+
+    /*
+     * Method that returns the JSONObject emotes from ffz.
+     *
+     * @param {JSONObject} ffzEmotes
+     */
     public JSONObject getFfzEmotes() {
-        return ffzEmotes;
+        return this.ffzEmotes;
     }
+
+    /*
+     * Method that returns the JSONObject emotes from ffz local emotes.
+     *
+     * @param {JSONObject} ffzLocalEmotes
+     */
     public JSONObject getFfzLocalEmotes() {
-        return ffzLocalEmotes;
+        return this.ffzLocalEmotes;
     }
 }
-

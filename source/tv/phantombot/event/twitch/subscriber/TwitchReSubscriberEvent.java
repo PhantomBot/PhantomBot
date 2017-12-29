@@ -14,54 +14,63 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.twitch.subscriber;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class ReSubscriberEvent extends TwitchEvent {
-
+public class TwitchReSubscriberEvent extends TwitchEvent {
 	private final String resubscriber;
     private final String months;
     private final String plan;
 
-	public ReSubscriberEvent(String resubscriber, String months) {
+    /*
+     * Class constructor.
+     *
+     * @param {String} resubscriber
+     * @param {String} months
+     */
+	public TwitchReSubscriberEvent(String resubscriber, String months) {
         this.resubscriber = resubscriber;
         this.months = months;
         this.plan = null;
     }
 
-    public ReSubscriberEvent(String resubscriber, String months, String plan) {
+    /*
+     * Class constructor.
+     *
+     * @param {String} resubscriber
+     * @param {String} months
+     * @param {String} plan
+     */
+    public TwitchReSubscriberEvent(String resubscriber, String months, String plan) {
         this.resubscriber = resubscriber;
         this.months = months;
         this.plan = plan;
     }
 
-    public ReSubscriberEvent(Channel channel, String resubscriber, String months) {
-        super(channel);
-
-        this.resubscriber = resubscriber;
-        this.months = months;
-        this.plan = null;
-    }
-
-    public ReSubscriberEvent(Channel channel, String resubscriber, String months, String plan) {
-        super(channel);
-
-        this.resubscriber = resubscriber;
-        this.months = months;
-        this.plan = plan;
-    }
-
+    /*
+     * Method that returns the resubscriber.
+     *
+     * @return {String} resubscriber
+     */
     public String getReSubscriber() {
         return this.resubscriber;
     }
 
+    /*
+     * Method that returns the resub months.
+     *
+     * @return {String} months
+     */
     public String getMonths() {
         return this.months;
     }
 
+    /*
+     * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
+     *
+     * @return {String} plan
+     */
     public String getPlan() {
         return this.plan;
     }

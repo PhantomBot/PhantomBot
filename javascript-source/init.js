@@ -62,7 +62,7 @@
      * @param {String} message
      */
     function consoleDebug(message) {
-        if (Packages.me.mast3rplan.phantombot.PhantomBot.enableDebugging) {
+        if (Packages.tv.phantombot.PhantomBot.enableDebugging) {
             try {
                 throw new Error();
             } catch (ex) {
@@ -477,7 +477,7 @@
             } else 
 
             // Check the command cost.
-            if ($.priceCom(sender, command, subCommand, isMod) !== 0) {
+            if ($.priceCom(sender, command, subCommand, isMod) === 1) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, subCommand, ''))), $.getIniDbBoolean('settings', 'priceComMsgEnabled', false));
                 return;
             }
@@ -870,31 +870,45 @@
         });
 
         /*
-         * @event subscriber
+         * @event twitchSubscriber
          */
-        $api.on($script, 'subscriber', function(event) {
-            callHook('subscriber', event, false);
+        $api.on($script, 'twitchSubscriber', function(event) {
+            callHook('twitchSubscriber', event, false);
         });
 
         /*
-         * @event primeSubscriber
+         * @event twitchPrimeSubscriber
          */
-        $api.on($script, 'primeSubscriber', function(event) {
-            callHook('primeSubscriber', event, false);
+        $api.on($script, 'twitchPrimeSubscriber', function(event) {
+            callHook('twitchPrimeSubscriber', event, false);
         });
 
         /*
          * @event reSubscriber
          */
-        $api.on($script, 'reSubscriber', function(event) {
-            callHook('reSubscriber', event, false);
+        $api.on($script, 'twitchReSubscriber', function(event) {
+            callHook('twitchReSubscriber', event, false);
         });
 
         /*
-         * @event bits
+         * @event twitchSubscriptionGift
          */
-        $api.on($script, 'bits', function(event) {
-            callHook('bits', event, false);
+        $api.on($script, 'twitchSubscriptionGift', function(event) {
+            callHook('twitchSubscriptionGift', event, false);
+        });
+
+        /*
+         * @event twitchBits
+         */
+        $api.on($script, 'twitchBits', function(event) {
+            callHook('twitchBits', event, false);
+        });
+
+        /*
+         * @event twitchRaid
+         */
+        $api.on($script, 'twitchRaid', function(event) {
+            callHook('twitchRaid', event, false);
         });
 
         /*

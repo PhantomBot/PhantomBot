@@ -181,13 +181,13 @@ public class StreamElementsCache implements Runnable {
 
         if (firstUpdate && !killed) {
         	firstUpdate = false;
-            EventBus.instance().postAsync(new StreamElementsDonationInitializedEvent(PhantomBot.getChannel(this.channel)));
+            EventBus.instance().post(new StreamElementsDonationInitializedEvent());
         }
 
         if (donations != null && !killed) {
         	for (int i = 0; i < donations.length(); i++) {
         		if (cache == null || !cache.containsKey(donations.getJSONObject(i).getString("_id"))) {
-        			EventBus.instance().postAsync(new StreamElementsDonationEvent(donations.getJSONObject(i).toString(), PhantomBot.getChannel(this.channel)));
+        			EventBus.instance().postAsync(new StreamElementsDonationEvent(donations.getJSONObject(i).toString()));
         		}
         	}
         }

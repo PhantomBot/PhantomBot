@@ -97,7 +97,6 @@ public class ViewerListCache implements Runnable {
 		List<String> cache = new ArrayList<String>();
 		List<String> joins = new ArrayList<String>();
 		List<String> parts = new ArrayList<String>();
-		EventBus bus = EventBus.instance();
 
 		com.gmt2001.Console.debug.println("ViewerListCache::updateCache");
 		try {
@@ -133,13 +132,15 @@ public class ViewerListCache implements Runnable {
 					}
 				}
 
-				bus.post(new IrcChannelUsersUpdateEvent(cache.toArray(new String[cache.size()]), joins.toArray(new String[joins.size()]), parts.toArray(new String[parts.size()])));
+				EventBus.instance().post(new IrcChannelUsersUpdateEvent(joins.toArray(new String[joins.size()]), parts.toArray(new String[parts.size()])));
 				// Set the new cache.
 				this.cache = cache;
 				// Delete the temp caches.
 				cache = null;
 				parts = null;
 				joins = null;
+				// Run the GC to clear memory,
+				System.gc();
 			} else {
 				com.gmt2001.Console.debug.println("Failed to update viewers cache: " + object);
 			}

@@ -17,14 +17,10 @@
 package tv.phantombot.event.streamelements.donate;
 
 import tv.phantombot.event.streamelements.StreamElementsEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class StreamElementsDonationInitializedEvent extends StreamElementsEvent {
 
     public StreamElementsDonationInitializedEvent() {
-    }
 
-    public StreamElementsDonationInitializedEvent(Channel channel) {
-        super(channel);
     }
 }

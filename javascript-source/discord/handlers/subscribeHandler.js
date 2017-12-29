@@ -27,9 +27,9 @@
     });
 
 	/**
-	 * @event subscriber
+	 * @event twitchSubscriber
 	 */
-	$.bind('subscriber', function(event) {
+	$.bind('twitchSubscriber', function(event) {
 		var subscriber = event.getSubscriber(),
 		    s = subMessage;
 
@@ -45,9 +45,9 @@
     });
 
     /**
-	 * @event primeSubscriber
+	 * @event twitchPrimeSubscriber
 	 */
-	$.bind('primeSubscriber', function(event) {
+	$.bind('twitchPrimeSubscriber', function(event) {
 		var subscriber = event.getSubscriber(),
 		    s = primeMessage;
 
@@ -63,9 +63,9 @@
     });
 
     /**
-	 * @event reSubscriber
+	 * @event twitchReSubscriber
 	 */
-	$.bind('reSubscriber', function(event) {
+	$.bind('twitchReSubscriber', function(event) {
 		var subscriber = event.getReSubscriber(),
 		    months = event.getMonths(),
 		    s = resubMessage;

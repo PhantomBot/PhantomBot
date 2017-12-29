@@ -16,15 +16,14 @@
  */
 package tv.phantombot.event.streamelements.donate;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class StreamElementsDonationEvent extends StreamElementsDonateEvent {
 
+	/*
+     * Class constructor
+     *
+     * @param {String} jsonString
+     */
     public StreamElementsDonationEvent(String jsonString) {
         super(jsonString);
-    }
-
-    public StreamElementsDonationEvent(String jsonString, Channel channel) {
-        super(jsonString, channel);
     }
 }

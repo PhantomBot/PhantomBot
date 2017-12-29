@@ -17,21 +17,7 @@
 package tv.phantombot.event.streamelements;
 
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class StreamElementsEvent extends Event {
 
-    private final Channel channel;
-
-    public StreamElementsEvent() {
-        this.channel = null;
-    }
-
-    public StreamElementsEvent(Channel channel) {
-        this.channel = channel;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
-    }
 }

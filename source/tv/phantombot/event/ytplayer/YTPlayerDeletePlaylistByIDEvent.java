@@ -16,22 +16,24 @@
  */
 package tv.phantombot.event.ytplayer;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class YTPlayerDeletePlaylistByIDEvent extends YTPlayerEvent {
-
     private final String youTubeID;
 
+    /*
+     * Class constructor.
+     *
+     * @param {String} youTubeID
+     */
     public YTPlayerDeletePlaylistByIDEvent(String youTubeID) {
         this.youTubeID = youTubeID;
     }
 
-    public YTPlayerDeletePlaylistByIDEvent(String youTubeID, Channel channel) {
-        super(channel);
-        this.youTubeID = youTubeID;
-    }
-
+    /*
+     * Method that returns the YouTube song ID.
+     *
+     * @return {String} youTubeID
+     */
     public String getYouTubeID() {
-        return youTubeID;
+        return this.youTubeID;
     }
 }

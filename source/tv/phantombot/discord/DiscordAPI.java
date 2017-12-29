@@ -78,7 +78,19 @@ public class DiscordAPI extends DiscordUtil {
      */
     public void connect(String token) {
         try {
-            DiscordAPI.client = new ClientBuilder().withToken(token).registerListener(new DiscordEventListener()).login();
+            DiscordAPI.client = new ClientBuilder().withToken(token).setMaxReconnectAttempts(50).setDaemon(false).registerListener(new DiscordEventListener()).login();
+        } catch (DiscordException ex) {
+            com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+        }
+    }
+    
+    /*
+     * Method to reconnect to Discord.
+     */
+    public void reconnect() {
+        try {
+            DiscordAPI.client.logout();
+            DiscordAPI.client.login();
         } catch (DiscordException ex) {
             com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }

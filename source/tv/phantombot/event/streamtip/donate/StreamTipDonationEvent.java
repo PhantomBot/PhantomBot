@@ -16,15 +16,14 @@
  */
 package tv.phantombot.event.streamtip.donate;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class StreamTipDonationEvent extends StreamTipDonateEvent {
 
+	/*
+	 * Class constructor.
+	 *
+	 * @param {String} jsonString
+	 */
     public StreamTipDonationEvent(String jsonString) {
         super(jsonString);
-    }
-
-    public StreamTipDonationEvent(String jsonString, Channel channel) {
-        super(jsonString, channel);
     }
 }

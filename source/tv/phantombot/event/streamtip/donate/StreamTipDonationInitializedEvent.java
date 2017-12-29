@@ -17,14 +17,13 @@
 package tv.phantombot.event.streamtip.donate;
 
 import tv.phantombot.event.streamtip.StreamTipEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public class StreamTipDonationInitializedEvent extends StreamTipEvent {
 
+	/*
+	 * Class constructor.
+	 */
     public StreamTipDonationInitializedEvent() {
-    }
 
-    public StreamTipDonationInitializedEvent(Channel channel) {
-        super(channel);
     }
 }

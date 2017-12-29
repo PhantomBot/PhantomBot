@@ -16,20 +16,11 @@
  */
 package tv.phantombot.event.gamewisp;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class GameWispAnniversaryEvent extends GameWispEvent {
-
     private final String username;
     private final int months;
 
     public GameWispAnniversaryEvent(String username, int months) {
-        this.username = username;
-        this.months = months;
-    }
-
-    public GameWispAnniversaryEvent(String username, int months, Channel channel) {
-        super(channel);
         this.username = username;
         this.months = months;
     }
