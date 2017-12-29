@@ -18,29 +18,36 @@
 package tv.phantombot.event.twitch.bits;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class BitsEvent extends TwitchEvent {
-
+public class TwitchBitsEvent extends TwitchEvent {
 	private final String username;
     private final String bits;
 
-	public BitsEvent(String username, String bits) {
+    /*
+     * Class constructor.
+     *
+     * @param {String} username
+     * @param {String} bits
+     */
+	public TwitchBitsEvent(String username, String bits) {
         this.username = username;
         this.bits = bits;
     }
 
-    public BitsEvent(Channel channel, String username, String bits) {
-        super(channel);
-        
-        this.username = username;
-        this.bits = bits;
-    }
-
+    /*
+     * Method that returns the username who cheered.
+     *
+     * @return {String} username
+     */
     public String getUsername() {
         return this.username;
     }
 
+    /*
+     * Method that returns the amount of bit the user cheered.
+     *
+     * @return {String} bits
+     */
     public String getBits() {
         return this.bits;
     }

@@ -202,7 +202,7 @@ public class EmotesCache implements Runnable {
         }
 
         com.gmt2001.Console.debug.println("Pushing Emote JSON Objects to EventBus");
-        EventBus.instance().post(new EmotesGetEvent(twitchJsonResult, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult, PhantomBot.getChannel(this.channel)));
+        EventBus.instance().post(new EmotesGetEvent(twitchJsonResult, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult));
         System.gc();
 
         /* Set these to null to save memory */

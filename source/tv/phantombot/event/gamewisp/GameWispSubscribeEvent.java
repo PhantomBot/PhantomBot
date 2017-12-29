@@ -16,30 +16,36 @@
  */
 package tv.phantombot.event.gamewisp;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class GameWispSubscribeEvent extends GameWispEvent {
-
     private final String username;
     private final int tier;
 
+    /*
+     * Class constructor
+     *
+     * @param {String} username
+     * @param {int}    tier
+     */
     public GameWispSubscribeEvent(String username, int tier) {
         this.username = username;
         this.tier = tier;
     }
 
-    public GameWispSubscribeEvent(String username, int tier, Channel channel) {
-        super(channel);
-        this.username = username;
-        this.tier = tier;
-    }
-
+    /*
+     * Method that returns the subscriber's name.
+     *
+     * @return {String}
+     */
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
+    /*
+     * Method that returns the user's tier.
+     *
+     * @return {int}
+     */
     public int getTier() {
-        return tier;
+        return this.tier;
     }
 }
-

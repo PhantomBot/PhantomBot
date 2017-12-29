@@ -17,39 +17,25 @@
 package tv.phantombot.event.twitch.follower;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
 public abstract class TwitchFollowerEvent extends TwitchEvent {
-
     private final String follower;
-    private final Type type;
 
-    public enum Type {
-
-        FOLLOW,
-        UNFOLLOW;
-    }
-
-    protected TwitchFollowerEvent(String follower, Type type) {
+    /*
+     * Abstract constructor
+     *
+     * @param {String} follower
+     */
+    protected TwitchFollowerEvent(String follower) {
         this.follower = follower;
-        this.type = type;
     }
 
-    protected TwitchFollowerEvent(String follower, Type type, Channel channel) {
-        super(channel);
-        this.follower = follower;
-        this.type = type;
-    }
-
+    /*
+     * Method that returns the follower's username.
+     *
+     * @param {String} follower
+     */
     public String getFollower() {
-        return follower;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public String toEventSocket() {
-        return this.getFollower() + "|" + this.getType();
+        return this.follower;
     }
 }

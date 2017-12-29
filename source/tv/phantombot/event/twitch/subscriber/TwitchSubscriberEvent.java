@@ -14,27 +14,50 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.twitch.subscriber;
 
 import tv.phantombot.event.twitch.TwitchEvent;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class PrimeSubscriberEvent extends TwitchEvent {
-
+public class TwitchSubscriberEvent extends TwitchEvent {
 	private final String subscriber;
+    private final String plan;
 
-	public PrimeSubscriberEvent(String subscriber) {
+    /*
+     * Class constructor.
+     *
+     * @param {String} subscriber
+     */
+	public TwitchSubscriberEvent(String subscriber) {
         this.subscriber = subscriber;
+        this.plan = null;
     }
 
-    public PrimeSubscriberEvent(Channel channel, String subscriber) {
-        super(channel);
-
+    /*
+     * Class constructor.
+     *
+     * @param {String} subscriber
+     * @param {String} plan
+     */
+    public TwitchSubscriberEvent(String subscriber, String plan) {
         this.subscriber = subscriber;
+        this.plan = plan;
     }
 
+    /*
+     * Method that returns the subscriber's name.
+     *
+     * @return {String} subscriber
+     */
     public String getSubscriber() {
         return this.subscriber;
+    }
+
+    /*
+     * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
+     *
+     * @return {String} plan
+     */
+    public String getPlan() {
+        return this.plan;
     }
 }

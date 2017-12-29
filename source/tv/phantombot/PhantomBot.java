@@ -91,7 +91,7 @@ import tv.phantombot.cache.ViewerListCache;
 import tv.phantombot.console.ConsoleInputListener;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
-import tv.phantombot.event.twitch.bits.BitsEvent;
+import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.console.ConsoleInputEvent;
 import tv.phantombot.event.gamewisp.GameWispAnniversaryEvent;
@@ -101,9 +101,7 @@ import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
-import tv.phantombot.event.twitch.subscriber.PrimeSubscriberEvent;
-import tv.phantombot.event.twitch.subscriber.ReSubscriberEvent;
-import tv.phantombot.event.twitch.subscriber.SubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.*;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
@@ -120,10 +118,9 @@ import tv.phantombot.script.ScriptApi;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptManager;
 import tv.phantombot.script.ScriptFileWatcher;
-import tv.phantombot.twitchwsirc.Channel;
-import tv.phantombot.twitchwsirc.Session;
-import tv.phantombot.twitchwsirc.TwitchPubSub;
-import tv.phantombot.twitchwsirc.TwitchWSHostIRC;
+import tv.phantombot.twitchwsirc.chat.Session;
+import tv.phantombot.twitchwsirc.pubsub.TwitchPubSub;
+import tv.phantombot.twitchwsirc.host.TwitchWSHostIRC;
 import tv.phantombot.ytplayer.YTWebSocketServer;
 import tv.phantombot.ytplayer.YTWebSocketSecureServer;
 import tv.phantombot.discord.DiscordAPI;
@@ -253,11 +250,7 @@ public final class PhantomBot implements Listener {
     private Boolean resetLogin = false;
     
     /* Other Information */
-    private static HashMap<String, Channel> channels;
-    private static HashMap<String, Session> sessions;
-    private static HashMap<String, String> apiOAuths;
     private static Boolean newSetup = false;
-    private Channel channel;
     private Session session;
     private String chanName;
     private Boolean timer = false;
@@ -523,15 +516,16 @@ public final class PhantomBot implements Listener {
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
          * for moderators.  For non-moderators, the maximum is 20 messages in 30 seconds. While it is not recommended
          * to go above anything higher than 19 in case the bot is ever de-modded, the option is available but is
-         * capped at 80.0. 
+         * capped at 100.0. 
          */
-        PhantomBot.messageLimit = Double.parseDouble(this.pbProperties.getProperty("msglimit30", "19.0"));
-        if (PhantomBot.messageLimit > 80.0) {
-            PhantomBot.messageLimit = 80.0;
-        } else if (PhantomBot.messageLimit < 19.0) {
-            PhantomBot.messageLimit = 19.0;
+        PhantomBot.messageLimit = Math.floor(Double.parseDouble(this.pbProperties.getProperty("msglimit30", "19.0")));
+        if (PhantomBot.messageLimit > 99.0) {
+            PhantomBot.messageLimit = 99.0;
+        } else if (PhantomBot.messageLimit < 18.0) {
+            PhantomBot.messageLimit = 18.0;
         }
 
+        // *Not currently being used.*
         // If this is false the bot won't limit the bot to 1 message every 1.5 second. It will still limit to 19/30 though.
         PhantomBot.useMessageQueue = this.pbProperties.getProperty("usemessagequeue", "true").equals("true");
 
@@ -548,15 +542,6 @@ public final class PhantomBot implements Listener {
 
         /* Load up a new SecureRandom for the scripts to use */
         random = new SecureRandom();
-
-        /* Create a map for multiple channels. */
-        channels = new HashMap<>();
-
-        /* Create a map for multiple sessions. */
-        sessions = new HashMap<>();
-
-        /* Create a map for multiple oauth tokens. */
-        apiOAuths = new HashMap<>();
 
         /* Load the datastore */
         if (dataStoreType.equalsIgnoreCase("inistore")) {
@@ -651,8 +636,8 @@ public final class PhantomBot implements Listener {
         /* Start things and start loading the scripts. */
         this.init();
 
-        /* Start a channel instance to create a session, and then connect to WS-IRC @ Twitch. */
-        this.channel = Channel.instance(this.channelName, this.botName, this.oauth, EventBus.instance());
+        /* Start a session instance and then connect to WS-IRC @ Twitch. */
+        this.session = Session.instance(this.channelName, this.botName, this.oauth).connect();
 
         /* Start a host checking instance. */
         if (apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
@@ -747,8 +732,8 @@ public final class PhantomBot implements Listener {
      *
      * @return {channel}
      */
-    public Channel getChannel() {
-        return channels.get(this.channelName);
+    public String getChannelName() {
+        return this.channelName;
     }
 
     /*
@@ -761,42 +746,21 @@ public final class PhantomBot implements Listener {
     }
 
     /*
-     * Give's you the channel for that channelName.
-     *
-     * @param {string} channelName
-     * @return {channel}
-     */
-    public static Channel getChannel(String channelName) {
-        return channels.get(channelName);
-    }
-
-    /*
      * Give's you the session for that channel.
      *
      * @return {session}
      */
     public Session getSession() {
-        return sessions.get(this.channelName);
+        return this.session;
     }
 
     /*
-     * Give's you the session for that channel.
+     * Method that returns the message limit
      *
-     * @param {string} channelName
-     * @return {session}
+     * @return {double} messageLimit
      */
-    public static Session getSession(String channelName) {
-        return sessions.get(channelName);
-    }
-
-    /*
-     * Give's you the api oauth for that channel.
-     *
-     * @param {string} channelName
-     * @return {string}
-     */
-    public static String getOAuth(String channelName) {
-        return apiOAuths.get(channelName);
+    public static double getMessageLimit() {
+        return messageLimit;
     }
 
     /*
@@ -815,49 +779,6 @@ public final class PhantomBot implements Listener {
      */
     public static long getWhisperInterval() {
         return (long) ((60.0 / whisperLimit) * 1000);
-    }
-
-    /*
-     * Adds a channel to the channels array for multiple channels.
-     *
-     * @param {string} channelName
-     * @param {channel} channel
-     */
-    public static void addChannel(String channelName, Channel channel) {
-        if (!channels.containsKey(channelName)) {
-            channels.put(channelName, channel);
-        }
-    }
-
-    /*
-     * Adds a session to the sessions array for multiple channels.
-     *
-     * @param {string} channelName
-     * @param {session} session
-     */
-    public static void addSession(String channelName, Session session) {
-        if (!sessions.containsKey(channelName)) {
-            sessions.put(channelName, session);
-        }
-    }
-
-    /*
-     * Adds a oauth to the apioauths array for multiple channels.
-     *
-     * @param {string} channelName
-     * @param {string} oAuth
-     */
-    public static void addOAuth(String channelName, String oAuth) {
-        if (!apiOAuths.containsKey(channelName)) {
-            apiOAuths.put(channelName, oAuth);
-        }
-    }
-
-    /*
-     * Returns if Twitch WS-IRC Host Detection is connected.
-     */
-    public boolean wsHostIRCConnected() {
-        return (this.wsHostIRC != null && this.wsHostIRC.isConnected());
     }
 
     /*
@@ -1195,8 +1116,8 @@ public final class PhantomBot implements Listener {
         ScriptEventManager.instance().kill();
 
         /* Gonna need a way to pass this to all channels */
-        if (PhantomBot.getSession(this.channelName) != null) {
-            PhantomBot.getSession(this.channelName).kill();
+        if (PhantomBot.instance().getSession() != null) {
+            PhantomBot.instance().getSession().close();
         }
 
         /* Shutdown all caches */
@@ -1272,49 +1193,42 @@ public final class PhantomBot implements Listener {
 
         joined = true;
 
-        this.chanName = event.getChannel().getName();
-        this.session = event.getSession();
-
-        com.gmt2001.Console.debug.println("ircJoinComplete::" + this.chanName);
+        com.gmt2001.Console.debug.println("ircJoinComplete::" + this.channelName);
 
         /* Start a pubsub instance here. */
         if (this.oauth.length() > 0 && checkDataStore("chatModerator", "moderationLogs")) {
             this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.oauth);
         }
 
-        /* Add the channel/session in the array for later use */
-        PhantomBot.addChannel(this.chanName, event.getChannel());
-        PhantomBot.addSession(this.chanName, this.session);
-
         /* Load the caches for each channels */
-        this.twitchCache = TwitchCache.instance(this.chanName);
-        this.emotesCache = EmotesCache.instance(this.chanName);
-        this.followersCache = FollowersCache.instance(this.chanName);
-        this.viewerListCache = ViewerListCache.instance(this.chanName);
+        this.twitchCache = TwitchCache.instance(this.channelName);
+        this.emotesCache = EmotesCache.instance(this.channelName);
+        this.followersCache = FollowersCache.instance(this.channelName);
+        this.viewerListCache = ViewerListCache.instance(this.channelName);
         
         /* Start the donations cache if the keys are not null and the module is enabled */
         if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && checkModuleEnabled("./handlers/donationHandler.js")) {
-            this.twitchAlertsCache = DonationsCache.instance(this.chanName);
+            this.twitchAlertsCache = DonationsCache.instance(this.channelName);
         }
 
         /* Start the streamtip cache if the keys are not null and the module is enabled */
         if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty() && checkModuleEnabled("./handlers/streamTipHandler.js")) {
-            this.streamTipCache = StreamTipCache.instance(this.chanName);
+            this.streamTipCache = StreamTipCache.instance(this.channelName);
         }
 
         /* Start the TipeeeStream cache if the keys are not null and the module is enabled. */
         if (this.tipeeeStreamOAuth != null && !this.tipeeeStreamOAuth.isEmpty() && checkModuleEnabled("./handlers/tipeeeStreamHandler.js")) {
-            this.tipeeeStreamCache = TipeeeStreamCache.instance(this.chanName);
+            this.tipeeeStreamCache = TipeeeStreamCache.instance(this.channelName);
         }
 
         /* Start the StreamElements cache if the keys are not null and the module is enabled. */
         if (this.streamElementsJWT != null && !this.streamElementsJWT.isEmpty() && checkModuleEnabled("./handlers/streamElementsHandler.js")) {
-            this.streamElementCache = StreamElementsCache.instance(this.chanName);
+            this.streamElementCache = StreamElementsCache.instance(this.channelName);
         }
 
         /* Start the twitter cache if the keys are not null and the module is enabled */
         if (this.twitterAuthenticated && checkModuleEnabled("./handlers/twitterHandler.js")) {
-            this.twitterCache = TwitterCache.instance(this.chanName);
+            this.twitterCache = TwitterCache.instance(this.channelName);
         }
 
         /* Start the notice timer and notice handler. */
@@ -1327,11 +1241,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("session", this.session, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
-
-        /* Say .mods in the channel to check if the bot is a moderator */
-        this.session.saySilent(".mods");
-        /* Start the message timers for this session */
-        this.session.startTimers();
     }
 
     /*
@@ -1352,7 +1261,7 @@ public final class PhantomBot implements Listener {
                 /* Check to see if the bot is a moderator */
                 for (String moderator : moderators) {
                     if (moderator.equalsIgnoreCase(this.botName)) {
-                        EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session, this.channel, this.session.getNick(), "O", true));
+                        EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session, this.session.getBotName(), "O", true));
                         /* Allow the bot to sends message to this session */
                         event.getSession().setAllowSendMessages(true);
                     }
@@ -1370,7 +1279,7 @@ public final class PhantomBot implements Listener {
         /* Check to see if Twitch sent a mode event for the bot name */
         if (event.getUser().equalsIgnoreCase(this.botName) && event.getMode().equalsIgnoreCase("o")) {
             if (!event.getAdd()) {
-                event.getSession().saySilent(".mods");
+                event.getSession().getModerationStatus();
             }
             /* Allow the bot to sends message to this session */
             event.getSession().setAllowSendMessages(event.getAdd());
@@ -1398,7 +1307,7 @@ public final class PhantomBot implements Listener {
      */
     @Subscribe
     public void consoleInput(ConsoleInputEvent event) {
-        String message = event.getMsg();
+        String message = event.getMessage();
         Boolean changed = false;
         Boolean reset = false;
         String arguments = "";
@@ -1486,15 +1395,7 @@ public final class PhantomBot implements Listener {
                 return;
             }
             com.gmt2001.Console.out.println(">> Sending retweet test event");
-            EventBus.instance().postAsync(new TwitterRetweetEvent(argument, this.channel));
-            return;
-        }
-
-        if (message.equalsIgnoreCase("faketwitchmsg")) {
-            if (argument != null) {
-                com.gmt2001.Console.out.println(">> Faking Twitch IRC [" + arguments + "]");
-                this.session.fakeTwitchMessage(arguments + "_"); // Need a junk character to strip off //
-            }
+            EventBus.instance().postAsync(new TwitterRetweetEvent(argument));
             return;
         }
 
@@ -1550,7 +1451,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("jointest")) {
             print("[CONSOLE] Executing jointest");
             for (int i = 0 ; i < 30; i++) {
-                EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session, this.channel, generateRandomString(8)));
+                EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session, generateRandomString(8)));
             }
         }
 
@@ -1564,7 +1465,7 @@ public final class PhantomBot implements Listener {
             }
 
             print("[CONSOLE] Executing followertest (User: " + user + ")");
-            EventBus.instance().postAsync(new TwitchFollowEvent(user, PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchFollowEvent(user));
             return;
         }
 
@@ -1579,7 +1480,7 @@ public final class PhantomBot implements Listener {
 
             print("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
             for (int i = 0; i < followCount; i++) {
-                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, PhantomBot.getChannel(this.channelName)));
+                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i));
             }
             return;
         }
@@ -1588,7 +1489,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("subscribertest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing subscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new SubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser, "1000"));
+            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000"));
             return;
         }
 
@@ -1596,7 +1497,7 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("primesubscribertest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing primesubscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new PrimeSubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser));
+            EventBus.instance().postAsync(new TwitchPrimeSubscriberEvent(randomUser));
             return;
         }
 
@@ -1604,21 +1505,29 @@ public final class PhantomBot implements Listener {
         if (message.equalsIgnoreCase("resubscribertest")) {
             String randomUser = generateRandomString(10);
             print("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new ReSubscriberEvent(PhantomBot.getChannel(this.channelName), randomUser, "10", "1000"));
+            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000"));
+            return;
+        }
+
+        /* Test a gift sub event */
+        if (message.equalsIgnoreCase("giftsubtest")) {
+            String randomUser = generateRandomString(10);
+            print("[CONSOLE] Executing giftsubtest (User: " + randomUser + ")");
+            EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(this.channelName, randomUser, "10", "1000"));
             return;
         }
 
         /* Test the online event */
         if (message.equalsIgnoreCase("onlinetest")) {
             print("[CONSOLE] Executing onlinetest");
-            EventBus.instance().postAsync(new TwitchOnlineEvent(PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchOnlineEvent());
             return;
         }
 
         /* Test the offline event */
         if (message.equalsIgnoreCase("offlinetest")) {
             print("[CONSOLE] Executing offlinetest");
-            EventBus.instance().postAsync(new TwitchOfflineEvent(PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchOfflineEvent());
             return;
         }
 
@@ -1631,7 +1540,7 @@ public final class PhantomBot implements Listener {
                 randomUser = argument[0];
             }
             print("[CONSOLE] Executing cliptest " + randomUser);
-            EventBus.instance().postAsync(new TwitchClipEvent("https://clips.twitch.tv/ThisIsNotARealClipAtAll", randomUser, PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchClipEvent("https://clips.twitch.tv/ThisIsNotARealClipAtAll", randomUser));
             return;
         }
 
@@ -1644,7 +1553,7 @@ public final class PhantomBot implements Listener {
                 randomUser = argument[0];
             }
             print("[CONSOLE] Executing hosttest " + randomUser);
-            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser, PhantomBot.getChannel(this.channelName)));
+            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser));
             return;
         }
 
@@ -1665,7 +1574,7 @@ public final class PhantomBot implements Listener {
         /* test the bits event */
         if (message.equalsIgnoreCase("bitstest")) {
             print("[CONSOLE] Executing bitstest");
-            EventBus.instance().postAsync(new BitsEvent(PhantomBot.getChannel(this.channelName), this.botName, "100"));
+            EventBus.instance().postAsync(new TwitchBitsEvent(this.botName, "100"));
             return;
         }
 
@@ -1947,26 +1856,13 @@ public final class PhantomBot implements Listener {
         }
 
         /* handle any other commands */
-        handleCommand(botName, event.getMsg(), PhantomBot.getChannel(this.channelName));
+        handleCommand(botName, event.getMessage());
         // Need to support channel here. command (channel) argument[1]
 
         /* Handle dev commands */
-        if (event.getMsg().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMsg(), "no_id", botName, true);
+        if (event.getMessage().startsWith("!debug !dev")) {
+            devDebugCommands(event.getMessage(), "no_id", botName, true);
         }
-    }
-
-    /* Handle commands */
-    public void handleCommand(String username, String command, Channel channel) {
-        String arguments = "";
-
-        /* Does the command have arguments? */
-        if (command.contains(" ")) {
-            String commandString = command;
-            command = commandString.substring(0, commandString.indexOf(" "));
-            arguments = commandString.substring(commandString.indexOf(" ") + 1);
-        }
-        ScriptEventManager.instance().onEvent(new CommandEvent(username, command, arguments, null, channel));
     }
 
     /* Handle commands */

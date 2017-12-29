@@ -17,21 +17,7 @@
 package tv.phantombot.event.streamtip;
 
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class StreamTipEvent extends Event {
+public abstract class StreamTipEvent extends Event {
 
-    private final Channel channel;
-
-    public StreamTipEvent() {
-        this.channel = null;
-    }
-
-    public StreamTipEvent(Channel channel) {
-        this.channel = channel;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
-    }
 }

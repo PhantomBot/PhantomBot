@@ -16,38 +16,54 @@
  */
 package tv.phantombot.event.irc.channel;
 
-import tv.phantombot.twitchwsirc.Channel;
-import tv.phantombot.twitchwsirc.Session;
+import tv.phantombot.twitchwsirc.chat.Session;
 
 public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
-
-    private final String[] users;
     private final String[] joins;
     private final String[] parts;
 
-    public IrcChannelUsersUpdateEvent(Session session, Channel channel, String[] users, String[] joins, String[] parts) {
-        super(session, channel);
-        this.users = users;
+    /*
+     * Class constructor.
+     *
+     * @param {Session}  session
+     * @param {String[]} joins
+     * @param {String[]} parts
+     */
+    public IrcChannelUsersUpdateEvent(Session session, String[] joins, String[] parts) {
+        super(session);
+
         this.joins = joins;
         this.parts = parts;
     }
 
-    public IrcChannelUsersUpdateEvent(String[] users, String[] joins, String[] parts) {
-        super(null, null);
-        this.users = users;
+    /*
+     * Class constructor.
+     *
+     * @param {String[]} joins
+     * @param {String[]} parts
+     */
+    public IrcChannelUsersUpdateEvent(String[] joins, String[] parts) {
+        super(null);
+
         this.joins = joins;
         this.parts = parts;
     }
 
-    public String[] getUsers() {
-        return users;
-    }
-
+    /*
+     * Method that returns the current array of users who joined the channel in the last 10 minutes.
+     *
+     * @return {String[]} joins
+     */
     public String[] getJoins() {
-        return joins;
+        return this.joins;
     }
 
+    /*
+     * Method that returns the current array of users who left the channel in the last 10 minutes.
+     *
+     * @return {String[]} parts
+     */
     public String[] getParts() {
-        return parts;
+        return this.parts;
     }
 }

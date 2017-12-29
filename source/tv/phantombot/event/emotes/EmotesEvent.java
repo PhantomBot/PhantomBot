@@ -17,21 +17,7 @@
 package tv.phantombot.event.emotes;
 
 import tv.phantombot.event.Event;
-import tv.phantombot.twitchwsirc.Channel;
 
-public class EmotesEvent extends Event {
+public abstract class EmotesEvent extends Event {
 
-    private final Channel channel;
-
-    protected EmotesEvent() {
-        this.channel = null;
-    }
-
-    protected EmotesEvent(Channel channel) {
-        this.channel = channel;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
-    }
 }

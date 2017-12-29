@@ -16,21 +16,24 @@
  */
 package tv.phantombot.event.twitch.host;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class TwitchHostedEvent extends TwitchHostEvent {
 
+    /*
+     * Class constructor.
+     *
+     * @param {String} hoster
+     */
     public TwitchHostedEvent(String hoster) {
-        super(hoster, Type.HOST);
-    }
-    public TwitchHostedEvent(String hoster, int users) {
-        super(hoster, Type.HOST, users);
-    }
-    public TwitchHostedEvent(String hoster, Channel channel) {
-        super(hoster, Type.HOST, 0, channel);
+        super(hoster);
     }
 
-    public TwitchHostedEvent(String hoster, int users, Channel channel) {
-        super(hoster, Type.HOST, users, channel);
+    /*
+     * Class constructor.
+     *
+     * @param {String} hoster
+     * @param {int}    users
+     */
+    public TwitchHostedEvent(String hoster, int users) {
+        super(hoster, users);
     }
 }

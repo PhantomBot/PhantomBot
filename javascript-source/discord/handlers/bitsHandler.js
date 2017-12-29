@@ -19,9 +19,9 @@
     });
 
 	/**
-	 * @event bits
+	 * @event twitchBits
 	 */
-	$.bind('bits', function(event) {
+	$.bind('twitchBits', function(event) {
 		var username = event.getUsername(),
 		    bits = event.getBits(),
 		    s = message;

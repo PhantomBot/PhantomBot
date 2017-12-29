@@ -16,15 +16,14 @@
  */
 package tv.phantombot.event.twitchalerts.donate;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class TwitchAlertsDonationEvent extends TwitchAlertsDonateEvent {
 
+	/*
+	 * Class constructor.
+	 *
+	 * @param {String} jsonString
+	 */
     public TwitchAlertsDonationEvent(String jsonString) {
         super(jsonString);
-    }
-
-    public TwitchAlertsDonationEvent(String jsonString, Channel channel) {
-        super(jsonString, channel);
     }
 }

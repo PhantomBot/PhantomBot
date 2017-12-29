@@ -16,40 +16,44 @@
  */
 package tv.phantombot.event.ytplayer;
 
-import tv.phantombot.twitchwsirc.Channel;
-
 public class YTPlayerStealSongEvent extends YTPlayerEvent {
-
     private final String youTubeID;
     private final String requester;
 
+    /*
+     * Class constructor.
+     */
     public YTPlayerStealSongEvent() {
         this.youTubeID = "";
         this.requester = "";
     }
 
-    public YTPlayerStealSongEvent(Channel channel) {
-        super(channel);
-        this.youTubeID = "";
-        this.requester = "";
-    }
-
+    /*
+     * Class constructor.
+     *
+     * @param {String} youTubeID
+     * @param {String} requester
+     */
     public YTPlayerStealSongEvent(String youTubeID, String requester) {
         this.youTubeID = youTubeID;
         this.requester = requester;
     }
 
-    public YTPlayerStealSongEvent(String youTubeID, String requester, Channel channel) {
-        super(channel);
-        this.youTubeID = youTubeID;
-        this.requester = requester;
-    }
-
+    /*
+     * Method that returns the YouTube ID.
+     *
+     * @return {String} youTubeID
+     */
     public String getYouTubeID() {
-        return youTubeID;
+        return this.youTubeID;
     }
 
+    /*
+     * Method that returns requester.
+     *
+     * @return {String} requester
+     */
     public String getRequester() {
-        return requester;
+        return this.requester;
     }
 }
