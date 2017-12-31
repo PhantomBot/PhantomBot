@@ -20,7 +20,7 @@ package com.illusionaryone;
 
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.UncaughtExceptionHandler;
-import com.google.common.eventbus.Subscribe;
+import net.engio.mbassy.listener.Handler;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.TwitchCache;
@@ -158,7 +158,7 @@ public class NoticeTimer implements Runnable, Listener {
     /*
      * Method that adds chat lines.
      */
-    @Subscribe
+    @Handler
     private void ircChannelMessageEvent(IrcChannelMessageEvent event) {
         totalChatLines++;
     }
