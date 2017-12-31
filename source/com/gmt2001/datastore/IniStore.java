@@ -168,7 +168,7 @@ public class IniStore extends DataStore implements ActionListener {
 
     private static class IniFile {
 
-        protected HashMap<String, HashMap<String, String>> data = new HashMap<String, HashMap>();
+        protected HashMap<String, HashMap<String, String>> data = new HashMap<String, HashMap<String, String>>();
     }
 
     @Override
