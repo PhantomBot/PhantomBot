@@ -602,7 +602,9 @@ public class HTTPServerCommon {
 
     private static void sendData(String contentType, byte[] data, HttpExchange exchange) {
         Headers outHeaders = exchange.getResponseHeaders();
-        outHeaders.set("Content-Type", contentType);
+        // Send as UTF-8 if the contentType is a text file.
+        outHeaders.set("Content-Type", contentType + (contentType.indexOf("text") != -1 ? "; charset=UTF-8" : ""));
+
         try {
             exchange.sendResponseHeaders(200, data.length);
             OutputStream outputStream = exchange.getResponseBody();
