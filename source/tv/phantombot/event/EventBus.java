@@ -16,51 +16,68 @@
  */
 package tv.phantombot.event;
 
-import com.google.common.collect.Sets;
+import net.engio.mbassy.bus.config.BusConfiguration;
+import net.engio.mbassy.bus.config.Feature;
+import net.engio.mbassy.bus.SyncMessageBus;
 
-import java.util.Set;
-import java.util.concurrent.Executors;
+import net.engio.mbassy.bus.MBassador;
 
 import tv.phantombot.PhantomBot;
 
 public class EventBus {
+	private static final EventBus instance = new EventBus();
+	private final MBassador<Event> bus = new MBassador<Event>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).addFeature(Feature.AsynchronousHandlerInvocation.Default()).addFeature(Feature.AsynchronousMessageDispatch.Default().setNumberOfMessageDispatchers(10)).addPublicationErrorHandler(new ExceptionHandler()));
 
-    private static final EventBus instance = new EventBus();
+	/*
+	 * Method that returns this instance
+	 *
+	 * @return {EventBus}
+	 */
+	public static EventBus instance() {
+		return instance;
+	}
 
-    public static EventBus instance() {
-        return instance;
-    }
+	/*
+	 * Method that registers a listener with the bus.
+	 *
+	 * @param {Listener} listener
+	 */
+	public void register(Listener listener) {
+		bus.subscribe(listener);
+	}
 
-    private final com.google.common.eventbus.AsyncEventBus asyncEventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(16), new ExceptionHandler());
-    private final com.google.common.eventbus.EventBus syncEventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
+	/*
+	 * Method that removes a listener from the bus.
+	 *
+	 * @param {Listener} listener
+	 */
+	public void unregister(Listener listener) {
+		bus.unsubscribe(listener);
+	}
 
-    private final Set<Listener> listeners = Sets.newHashSet();
+	/*
+	 * Method that posts an event in sync.
+	 *
+	 * @param {Event} event
+	 */
+	public void post(Event event) {
+		if (PhantomBot.instance().isExiting()) {
+			return;
+		}
 
-    public void register(Listener listener) {
-        listeners.add(listener);
-        asyncEventBus.register(listener);
-        syncEventBus.register(listener);
-    }
+		bus.publish(event);
+	}
 
-    public void unregister(Listener listener) {
-        listeners.remove(listener);
-        asyncEventBus.unregister(listener);
-        syncEventBus.unregister(listener);
-    }
+	/*
+	 * Method that posts an event in async.
+	 *
+	 * @param {Event} event
+	 */
+	public void postAsync(Event event) {
+		if (PhantomBot.instance().isExiting()) {
+			return;
+		}
 
-    public void post(Event event) {
-        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
-            return;
-        }
-
-        asyncEventBus.post(event);
-    }
-
-    public void postAsync(Event event) {
-        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting()) {
-            return;
-        }
-
-        syncEventBus.post(event);
-    }
+		bus.publishAsync(event);
+	}
 }
