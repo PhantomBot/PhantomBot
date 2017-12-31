@@ -33,8 +33,8 @@ import tv.phantombot.event.Event;
 
 public class ScriptEventManager implements Listener {
     private static final ScriptEventManager instance = new ScriptEventManager();
-    private final ConcurrentHashMap<String, EventHandler> events = new ConcurrentHashMap<>();
-    private final List<String> classes = new ArrayList<>();
+    private final ConcurrentHashMap<String, EventHandler> events = new ConcurrentHashMap<String, EventHandler>();
+    private final List<String> classes = new ArrayList<String>();
     private boolean isKilled = false;
 
     /*

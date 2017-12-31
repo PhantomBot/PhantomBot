@@ -778,7 +778,7 @@ public class PanelSocketServer extends WebSocketServer {
      */
     private void doWSEvent(WebSocket webSocket, String id, String script, String arguments, JSONArray jsonArray) {
         JSONStringer jsonObject = new JSONStringer();
-        List<String> tempArgs = new LinkedList<>();
+        List<String> tempArgs = new LinkedList<String>();
         String[] args = null;
 
         for (Object str : jsonArray) {

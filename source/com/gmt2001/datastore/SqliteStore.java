@@ -343,7 +343,7 @@ public class SqliteStore extends DataStore {
 
             try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';")) {
 
-                ArrayList<String> s = new ArrayList<>();
+                ArrayList<String> s = new ArrayList<String>();
 
                 while (rs.next()) {
                     s.add(rs.getString("name").substring(11));
@@ -372,7 +372,7 @@ public class SqliteStore extends DataStore {
 
                 try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
 
-                    ArrayList<String> s = new ArrayList<>();
+                    ArrayList<String> s = new ArrayList<String>();
 
                     while (rs.next()) {
                         s.add(rs.getString("section"));
@@ -404,7 +404,7 @@ public class SqliteStore extends DataStore {
     
                     try (ResultSet rs = statement.executeQuery()) {
     
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
     
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -421,7 +421,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -469,7 +469,7 @@ public class SqliteStore extends DataStore {
     
                     try (ResultSet rs = statement.executeQuery()) {
     
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
     
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -491,7 +491,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -540,7 +540,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
     
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
     
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -562,7 +562,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -595,7 +595,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(2, "%" + search + "%");
   
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -611,7 +611,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -645,7 +645,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(2, "%" + search + "%");
                     
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
                         
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -661,7 +661,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(1, "%" + search + "%");
                     
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
                         
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -698,7 +698,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
                         
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -714,7 +714,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(1, "%" + search + "%");
                     
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
                         
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
