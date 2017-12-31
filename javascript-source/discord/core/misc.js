@@ -225,7 +225,7 @@
 				return;
 			}
 
-			setStream(action, args.slice(1).join(' '));
+			setStream(args.slice(1).join(' '), action);
 			say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.stream.set', action, args.slice(1).join(' ')));
 		}
 
