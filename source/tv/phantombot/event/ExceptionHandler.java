@@ -16,14 +16,14 @@
  */
 package tv.phantombot.event;
 
-import com.google.common.eventbus.SubscriberExceptionContext;
-import com.google.common.eventbus.SubscriberExceptionHandler;
+import net.engio.mbassy.bus.error.IPublicationErrorHandler;
+import net.engio.mbassy.bus.error.PublicationError;
 
-public class ExceptionHandler implements SubscriberExceptionHandler {
+public class ExceptionHandler implements IPublicationErrorHandler {
 
     @Override
-    public void handleException(Throwable thrwbl, SubscriberExceptionContext sec) {
-        com.gmt2001.Console.err.println("Failed to dispatch event [" + sec.getEvent().toString() + "] to [" + sec.getSubscriberMethod().toString() + "]: " + thrwbl.getMessage());
-        com.gmt2001.Console.err.printStackTrace(thrwbl);
+    public void handleError(PublicationError err) {
+    	com.gmt2001.Console.err.println("Failed to dispatch event [" + err.getHandler().toString() + "] to [" + err.getListener().toString() + "] " + err.getCause().getMessage());
+        com.gmt2001.Console.err.printStackTrace(err.getCause());
     }
 }
