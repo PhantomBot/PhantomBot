@@ -22,13 +22,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import tv.phantombot.PhantomBot;
 
-public class warn {
-
-    private static final warn instance = new warn();
-
-    public static warn instance() {
-        return instance;
-    }
+public final class warn {
 
     private warn() {
     }

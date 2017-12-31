@@ -22,13 +22,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import tv.phantombot.PhantomBot;
 
-public class debug {
-
-    private static final debug instance = new debug();
-
-    public static debug instance() {
-        return instance;
-    }
+public final class debug {
 
     private debug() {
     }
