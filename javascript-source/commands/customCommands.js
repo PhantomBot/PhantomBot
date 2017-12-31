@@ -284,7 +284,7 @@
         if (message.match(/\(alert [,.\w]+\)/g)) {
             var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
             $.panelsocketserver.alertImage(filename);
-            message = message.replaceFirst('\\(alert [,.\\w]+\\)', '');
+            message = (message + '').replace(/\(alert [,.\w]+\)/, '');
             if (message == '') return null;
         }
 
