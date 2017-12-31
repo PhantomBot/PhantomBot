@@ -1463,6 +1463,7 @@
              * @commandpath ytp blacklist [add / remove] [name contained in the video] - Blacklist a song name from being requested.
              */
             if (action.equalsIgnoreCase('blacklist')) {
+				actionArgs = args.splice(2);
                 if (!args[1]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.usage.song'));
                     return;
@@ -1474,8 +1475,8 @@
                         return;
                     }
 
-                    $.inidb.set('ytpBlacklistedSong', args[2].toLowerCase(), 'true');
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.add.success.song', args[2]));
+                    $.inidb.set('ytpBlacklistedSong', actionArgs.join(' ').trim().toLowerCase(), 'true');
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.add.success.song', actionArgs.join(' ').trim()));
                     return;
                 }
 
@@ -1485,8 +1486,8 @@
                         return;
                     }
 
-                    $.inidb.del('ytpBlacklistedSong', args[2].toLowerCase());
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.remove.success.song', args[2]));
+                    $.inidb.del('ytpBlacklistedSong', actionArgs.join(' ').trim().toLowerCase());
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.remove.success.song', actionArgs.join(' ').trim()));
                     return;
                 }
             }
