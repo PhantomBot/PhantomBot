@@ -219,7 +219,7 @@ public class Logger implements Runnable {
     }
 
     private Logger() {
-        this.queue = new ConcurrentLinkedQueue<>();
+        this.queue = new ConcurrentLinkedQueue<LogItem>();
     }
 
     public void log(LogType t, String s) {

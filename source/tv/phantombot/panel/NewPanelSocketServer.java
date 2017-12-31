@@ -799,7 +799,7 @@ public class NewPanelSocketServer {
      */
     private void doWSEvent(IWebsocketClient webSocket, String id, String script, String arguments, JSONArray jsonArray) {
         JSONStringer jsonObject = new JSONStringer();
-        List<String> tempArgs = new LinkedList<>();
+        List<String> tempArgs = new LinkedList<String>();
         String[] args = null;
 
         for (Object str : jsonArray) {

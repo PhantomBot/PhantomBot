@@ -33,11 +33,16 @@ import java.util.List;
 import tv.phantombot.PhantomBot;
 
 public class BotImporter {
+	/*
+	 * Method that will import time and points from RevloBot.
+	 *
+	 * @param {String} fileName
+	 */
 	public static void ImportRevlo(String fileName) {
 		DataStore db = PhantomBot.instance().getDataStore();
 		BufferedReader bufferedReader = null;
-		List<String> users = new ArrayList<>();
-		List<String> points = new ArrayList<>();
+		List<String> users = new ArrayList<String>();
+		List<String> points = new ArrayList<String>();
 		String brLine = "";
 
 		com.gmt2001.Console.out.println("Importing RevloBot points...");
@@ -73,18 +78,20 @@ public class BotImporter {
 					com.gmt2001.Console.err.printStackTrace(ex);
 				}
 			}
-			// Clear the arrays.
-			users = null;
-			points = null;
 		}
 	}
 
+	/*
+	 * Method that will import time and points from AnkhBot.
+	 *
+	 * @param {String} fileName
+	 */
 	public static void ImportAnkh(String fileName) {
 		DataStore db = PhantomBot.instance().getDataStore();
 		BufferedReader bufferedReader = null;
-		List<String> users = new ArrayList<>();
-		List<String> points = new ArrayList<>();
-		List<String> time = new ArrayList<>();
+		List<String> users = new ArrayList<String>();
+		List<String> points = new ArrayList<String>();
+		List<String> time = new ArrayList<String>();
 		String brLine = "";
 
 		com.gmt2001.Console.out.println("Importing AnkhBot points and time...");
@@ -123,10 +130,6 @@ public class BotImporter {
 					com.gmt2001.Console.err.printStackTrace(ex);
 				}
 			}
-			// Clear the arrays.
-			users = null;
-			points = null;
-			time = null;
 		}
 	}
 }

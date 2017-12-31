@@ -34,7 +34,7 @@ import org.json.JSONArray;
 
 public class FollowersCache implements Runnable {
 
-    private static final Map<String, FollowersCache> instances = new HashMap<>();
+    private static final Map<String, FollowersCache> instances = new HashMap<String, FollowersCache>();
     private final DataStore dataStore = PhantomBot.instance().getDataStore();
     private final Thread updateThread;
     private final String channelName;
@@ -114,7 +114,7 @@ public class FollowersCache implements Runnable {
         com.gmt2001.Console.debug.println("FollowersCache::updateCache");
 
         JSONObject jsonObject = TwitchAPIv5.instance().GetChannelFollows(this.channelName, 100, 0, false);
-        Map<String, String> newCache = new HashMap<>();
+        Map<String, String> newCache = new HashMap<String, String>();
 
         if (jsonObject.getBoolean("_success")) {
             if (jsonObject.getInt("_http") == 200) {
