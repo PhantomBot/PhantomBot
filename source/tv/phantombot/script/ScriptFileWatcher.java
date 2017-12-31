@@ -23,7 +23,7 @@ import java.io.File;
 
 public class ScriptFileWatcher implements Runnable {
     private static final ScriptFileWatcher instance = new ScriptFileWatcher();
-    private final List<Script> scripts = new CopyOnWriteArrayList<String>();
+    private final List<Script> scripts = new CopyOnWriteArrayList<Script>();
     private final Thread thread;
     private boolean isKilled = false;
 
