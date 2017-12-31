@@ -53,7 +53,7 @@ public class CustomAPI {
 	 */
 	public JSONObject getJSON(String url) {
 		try {
-			HttpResponse data = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<>());
+			HttpResponse data = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<String, String>());
 			if (data.success) {
 				return new JSONObject(data.content);
 			} else {
@@ -72,7 +72,7 @@ public class CustomAPI {
 	 * @return {HttpResponse}
 	 */
 	public HttpResponse get(String url) {
-		return HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<>());
+		return HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<String, String>());
 	}
 
 	/*
@@ -83,7 +83,7 @@ public class CustomAPI {
 	 * @return {HttpResponse}
 	 */
 	public HttpResponse post(String url, String content) {
-		return HttpRequest.getData(HttpRequest.RequestType.POST, url, content, new HashMap<>());
+		return HttpRequest.getData(HttpRequest.RequestType.POST, url, content, new HashMap<String, String>());
 	}
 
 	/*
@@ -94,7 +94,7 @@ public class CustomAPI {
 	 * @return {HttpResponse}
 	 */
 	public HttpResponse put(String url, String content) {
-		return HttpRequest.getData(HttpRequest.RequestType.PUT, url, content, new HashMap<>());
+		return HttpRequest.getData(HttpRequest.RequestType.PUT, url, content, new HashMap<String, String>());
 	}
 
 	/*
@@ -105,6 +105,6 @@ public class CustomAPI {
 	 * @return {HttpResponse}
 	 */
 	public HttpResponse del(String url, String content) {
-		return HttpRequest.getData(HttpRequest.RequestType.DELETE, url, content, new HashMap<>());
+		return HttpRequest.getData(HttpRequest.RequestType.DELETE, url, content, new HashMap<String, String>());
 	}
 }

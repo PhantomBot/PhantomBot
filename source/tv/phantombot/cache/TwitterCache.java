@@ -262,7 +262,7 @@ public class TwitterCache implements Runnable {
          * getRetweetsOfMe() call. So, walk that list of Tweets to get at the Retweet information
          * that includes the Screen Name (@screenName) of the person that performed the Retweet.
          */
-        ArrayList<String> userNameList = new ArrayList<>();
+        ArrayList<String> userNameList = new ArrayList<String>();
         for (Status status : statuses) {
             List<Status>retweetStatuses = TwitterAPI.instance().getRetweets(status.getId());
             if (retweetStatuses != null) {
