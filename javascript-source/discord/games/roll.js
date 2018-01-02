@@ -101,11 +101,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/games/roll.js')) {
-            $.discord.registerCommand('./discord/games/roll.js', 'roll', 0);
-            $.discord.registerSubCommand('roll', 'rewards', 1);
-            loadRewards();
-        }
+        $.discord.registerCommand('./discord/games/roll.js', 'roll', 0);
+        $.discord.registerSubCommand('roll', 'rewards', 1);
+        loadRewards();
     });
 
     /**

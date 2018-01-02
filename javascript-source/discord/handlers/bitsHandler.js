@@ -103,14 +103,11 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/bitsHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/bitsHandler.js', 'bitshandler', 1);
-            $.discord.registerSubCommand('bitshandler', 'toggle', 1);
-            $.discord.registerSubCommand('bitshandler', 'message', 1);
-            $.discord.registerSubCommand('bitshandler', 'channel', 1);
+        $.discord.registerCommand('./discord/handlers/bitsHandler.js', 'bitshandler', 1);
+        $.discord.registerSubCommand('bitshandler', 'toggle', 1);
+        $.discord.registerSubCommand('bitshandler', 'message', 1);
+        $.discord.registerSubCommand('bitshandler', 'channel', 1);
 
-            announce = true;
-            // $.unbind('initReady'); Needed or not?
-        }
+        announce = true;
     });
 })();

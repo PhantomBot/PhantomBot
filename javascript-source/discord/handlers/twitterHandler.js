@@ -79,13 +79,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/twitterHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/twitterHandler.js', 'twitterhandler', 1);
-            $.discord.registerSubCommand('twitterhandler', 'toggle', 1);
-            $.discord.registerSubCommand('twitterhandler', 'channel', 1);
+        $.discord.registerCommand('./discord/handlers/twitterHandler.js', 'twitterhandler', 1);
+        $.discord.registerSubCommand('twitterhandler', 'toggle', 1);
+        $.discord.registerSubCommand('twitterhandler', 'channel', 1);
 
-            announce = true;
-            // $.unbind('initReady'); Needed or not?
-        }
+        announce = true;
     });
 })();

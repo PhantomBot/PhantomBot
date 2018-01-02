@@ -115,13 +115,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/keywordHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/keywordHandler.js', 'keyword', 1);
-            $.discord.registerSubCommand('keyword', 'add', 1);
-            $.discord.registerSubCommand('keyword', 'edit', 1);
-            $.discord.registerSubCommand('keyword', 'remove', 1);
-
-            // $.unbind('initReady'); Needed or not?
-        }
+        $.discord.registerCommand('./discord/handlers/keywordHandler.js', 'keyword', 1);
+        $.discord.registerSubCommand('keyword', 'add', 1);
+        $.discord.registerSubCommand('keyword', 'edit', 1);
+        $.discord.registerSubCommand('keyword', 'remove', 1);
     });
 })();

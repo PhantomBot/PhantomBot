@@ -117,10 +117,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/games/slotMachine.js')) {
-            $.discord.registerCommand('./discord/games/slotMachine.js', 'slot', 0);
-            $.discord.registerSubCommand('slot', 'rewards', 1);
-        }
+        $.discord.registerCommand('./discord/games/slotMachine.js', 'slot', 0);
+        $.discord.registerSubCommand('slot', 'rewards', 1);
+        
         loadRewards();
         loadEmojis();
     });

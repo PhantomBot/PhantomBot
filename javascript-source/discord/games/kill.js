@@ -77,14 +77,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/games/kill.js')) {
-            $.discord.registerCommand('./discord/games/kill.js', 'kill', 0);
+        $.discord.registerCommand('./discord/games/kill.js', 'kill', 0);
 
-            if (otherMessageCount === 0 && selfMessageCount === 0) {
-                loadResponses();
-            }
-
-            // $.unbind('initReady'); Needed or not?
+        if (otherMessageCount === 0 && selfMessageCount === 0) {
+            loadResponses();
         }
     });
 })();
