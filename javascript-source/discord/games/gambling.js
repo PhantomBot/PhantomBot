@@ -146,14 +146,12 @@
      * @event initReady
      */
 	$.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/games/gambling.js')) {
-        	$.discord.registerCommand('./games/gambling.js', 'gamble', 0);
-        	$.discord.registerCommand('./games/gambling.js', 'gambling', 1);
-			$.discord.registerSubCommand('gambling', 'setmax', 1);
-			$.discord.registerSubCommand('gambling', 'setmin', 1);
-			$.discord.registerSubCommand('gambling', 'setwinningrange', 1);
-			$.discord.registerSubCommand('gambling', 'setgainpercent', 1);
-        }
+        $.discord.registerCommand('./games/gambling.js', 'gamble', 0);
+        $.discord.registerCommand('./games/gambling.js', 'gambling', 1);
+		$.discord.registerSubCommand('gambling', 'setmax', 1);
+		$.discord.registerSubCommand('gambling', 'setmin', 1);
+		$.discord.registerSubCommand('gambling', 'setwinningrange', 1);
+		$.discord.registerSubCommand('gambling', 'setgainpercent', 1);
     });
 
 	/**

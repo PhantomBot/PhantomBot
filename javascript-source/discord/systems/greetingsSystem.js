@@ -172,15 +172,11 @@
 	 * @event initReady
 	 */
 	$.bind('initReady', function() {
-		if ($.bot.isModuleEnabled('./discord/systems/greetingsSystem.js')) {
-			$.discord.registerCommand('./discord/systems/greetingsSystem.js', 'greetingssystem', 1);
-			$.discord.registerSubCommand('greetingssystem', 'jointoggle', 1);
-			$.discord.registerSubCommand('greetingssystem', 'partoggle', 1);
-			$.discord.registerSubCommand('greetingssystem', 'joinmessage', 1);
-			$.discord.registerSubCommand('greetingssystem', 'partmessage', 1);
-			$.discord.registerSubCommand('greetingssystem', 'channel', 1);
-
-			// $.unbind('initReady'); Needed or not?
-		}
+		$.discord.registerCommand('./discord/systems/greetingsSystem.js', 'greetingssystem', 1);
+		$.discord.registerSubCommand('greetingssystem', 'jointoggle', 1);
+		$.discord.registerSubCommand('greetingssystem', 'partoggle', 1);
+		$.discord.registerSubCommand('greetingssystem', 'joinmessage', 1);
+		$.discord.registerSubCommand('greetingssystem', 'partmessage', 1);
+		$.discord.registerSubCommand('greetingssystem', 'channel', 1);
 	});
 })();

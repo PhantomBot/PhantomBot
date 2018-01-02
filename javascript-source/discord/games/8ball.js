@@ -48,14 +48,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/games/8ball.js')) {
-            $.discord.registerCommand('./discord/games/8ball.js', '8ball', 0);
+        $.discord.registerCommand('./discord/games/8ball.js', '8ball', 0);
 
-            if (responseCount === 0) {
-                loadResponses();
-            }
-
-            // $.unbind('initReady'); Needed or not?
+        if (responseCount === 0) {
+            loadResponses();
         }
     });
 })();

@@ -276,28 +276,26 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/streamHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/streamHandler.js', 'streamhandler', 1);
-            $.discord.registerSubCommand('streamhandler', 'toggleonline', 1);
-            $.discord.registerSubCommand('streamhandler', 'onlinemessage', 1);
-            $.discord.registerSubCommand('streamhandler', 'togglegame', 1);
-            $.discord.registerSubCommand('streamhandler', 'gamemessage', 1);
-            $.discord.registerSubCommand('streamhandler', 'channel', 1);
+        $.discord.registerCommand('./discord/handlers/streamHandler.js', 'streamhandler', 1);
+        $.discord.registerSubCommand('streamhandler', 'toggleonline', 1);
+        $.discord.registerSubCommand('streamhandler', 'onlinemessage', 1);
+        $.discord.registerSubCommand('streamhandler', 'togglegame', 1);
+        $.discord.registerSubCommand('streamhandler', 'gamemessage', 1);
+        $.discord.registerSubCommand('streamhandler', 'channel', 1);
 
-            // Get our viewer and follower count every 30 minutes.
-            // Not the most accurate way, but it will work.
-            var interval = setInterval(function() {
-            	if ($.isOnline($.channelName)) {
-            		var now = $.systemTime();
+        // Get our viewer and follower count every 30 minutes.
+        // Not the most accurate way, but it will work.
+        var interval = setInterval(function() {
+        	if ($.isOnline($.channelName)) {
+        		var now = $.systemTime();
 
-            		// Save this every time to make an average.
-            		$.setIniDbNumber('discordStreamStats', 'chatters_' + now, $.users.length);
-            		// Save this every time to make an average.
-            		$.setIniDbNumber('discordStreamStats', 'viewers_' + now, $.getViewers($.channelName));
-            		// Only set this one to get the difference at the end.
-            		$.getSetIniDbNumber('discordStreamStats', 'followers', $.getFollows($.channelName));
-            	}
-            }, 18e5);
-        }
+        		// Save this every time to make an average.
+        		$.setIniDbNumber('discordStreamStats', 'chatters_' + now, $.users.length);
+        		// Save this every time to make an average.
+        		$.setIniDbNumber('discordStreamStats', 'viewers_' + now, $.getViewers($.channelName));
+        		// Only set this one to get the difference at the end.
+        		$.getSetIniDbNumber('discordStreamStats', 'followers', $.getFollows($.channelName));
+        	}
+        }, 18e5);
     });
 })();

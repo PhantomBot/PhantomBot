@@ -172,14 +172,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/hostHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/hostHandler.js', 'hosthandler', 1);
-            $.discord.registerSubCommand('hosthandler', 'toggle', 1);
-            $.discord.registerSubCommand('hosthandler', 'hostmessage', 1);
-            $.discord.registerSubCommand('hosthandler', 'autohostmessage', 1);
-            $.discord.registerSubCommand('hosthandler', 'channel', 1);
-
-            // $.unbind('initReady'); Needed or not?
-        }
+        $.discord.registerCommand('./discord/handlers/hostHandler.js', 'hosthandler', 1);
+        $.discord.registerSubCommand('hosthandler', 'toggle', 1);
+        $.discord.registerSubCommand('hosthandler', 'hostmessage', 1);
+        $.discord.registerSubCommand('hosthandler', 'autohostmessage', 1);
+        $.discord.registerSubCommand('hosthandler', 'channel', 1);
     });
 })();
