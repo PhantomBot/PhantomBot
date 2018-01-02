@@ -193,18 +193,15 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/subscribeHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/subscribeHandler.js', 'subscribehandler', 1);
-            $.discord.registerSubCommand('subscribehandler', 'subtoggle', 1);
-            $.discord.registerSubCommand('subscribehandler', 'primetoggle', 1);
-            $.discord.registerSubCommand('subscribehandler', 'resubtoggle', 1);
-            $.discord.registerSubCommand('subscribehandler', 'submessage', 1);
-            $.discord.registerSubCommand('subscribehandler', 'primemessage', 1);
-            $.discord.registerSubCommand('subscribehandler', 'resubmessage', 1);
-            $.discord.registerSubCommand('subscribehandler', 'channel', 1);
+        $.discord.registerCommand('./discord/handlers/subscribeHandler.js', 'subscribehandler', 1);
+        $.discord.registerSubCommand('subscribehandler', 'subtoggle', 1);
+        $.discord.registerSubCommand('subscribehandler', 'primetoggle', 1);
+        $.discord.registerSubCommand('subscribehandler', 'resubtoggle', 1);
+        $.discord.registerSubCommand('subscribehandler', 'submessage', 1);
+        $.discord.registerSubCommand('subscribehandler', 'primemessage', 1);
+        $.discord.registerSubCommand('subscribehandler', 'resubmessage', 1);
+        $.discord.registerSubCommand('subscribehandler', 'channel', 1);
 
-            announce = true;
-            // $.unbind('initReady'); Needed or not?
-        }
+        announce = true;
     });
 })();

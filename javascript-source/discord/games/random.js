@@ -39,14 +39,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/games/random.js')) {
-            $.discord.registerCommand('./discord/games/random.js', 'random', 0);
+        $.discord.registerCommand('./discord/games/random.js', 'random', 0);
 
-            if (responseCount === 0) {
-                loadResponses();
-            }
-
-            // $.unbind('initReady'); Needed or not?
+        if (responseCount === 0) {
+            loadResponses();
         }
     });
 })();

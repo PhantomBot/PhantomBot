@@ -17,13 +17,15 @@
 package com.gmt2001.Console;
 
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.TimeZone;
+
 import tv.phantombot.PhantomBot;
 
 public final class logTimestamp {
     
-    private logTimestamp(){
+    private logTimestamp() {
     }
     
     public static String log() {

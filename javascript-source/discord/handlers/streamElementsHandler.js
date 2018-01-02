@@ -135,13 +135,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/streamElementsHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/streamElementsHandler.js', 'streamelementshandler', 1);
-            $.discord.registerSubCommand('streamelementshandler', 'toggle', 1);
-            $.discord.registerSubCommand('streamelementshandler', 'message', 1);
-            $.discord.registerSubCommand('streamelementshandler', 'channel', 1);
-
-            // $.unbind('initReady'); Needed or not?
-        }
+        $.discord.registerCommand('./discord/handlers/streamElementsHandler.js', 'streamelementshandler', 1);
+        $.discord.registerSubCommand('streamelementshandler', 'toggle', 1);
+        $.discord.registerSubCommand('streamelementshandler', 'message', 1);
+        $.discord.registerSubCommand('streamelementshandler', 'channel', 1);
     });
 })();

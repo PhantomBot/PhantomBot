@@ -134,13 +134,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/streamlabsHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/streamlabsHandler.js', 'streamlabshandler', 1);
-            $.discord.registerSubCommand('streamlabshandler', 'toggle', 1);
-            $.discord.registerSubCommand('streamlabshandler', 'message', 1);
-            $.discord.registerSubCommand('streamlabshandler', 'channel', 1);
-
-            // $.unbind('initReady'); Needed or not?
-        }
+        $.discord.registerCommand('./discord/handlers/streamlabsHandler.js', 'streamlabshandler', 1);
+        $.discord.registerSubCommand('streamlabshandler', 'toggle', 1);
+        $.discord.registerSubCommand('streamlabshandler', 'message', 1);
+        $.discord.registerSubCommand('streamlabshandler', 'channel', 1);
     });
 })();

@@ -105,13 +105,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/followHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/followHandler.js', 'followhandler', 1);
-            $.discord.registerSubCommand('followhandler', 'toggle', 1);
-            $.discord.registerSubCommand('followhandler', 'message', 1);
-            $.discord.registerSubCommand('followhandler', 'channel', 1);
-
-            // $.unbind('initReady'); Needed or not?
-        }
+        $.discord.registerCommand('./discord/handlers/followHandler.js', 'followhandler', 1);
+        $.discord.registerSubCommand('followhandler', 'toggle', 1);
+        $.discord.registerSubCommand('followhandler', 'message', 1);
+        $.discord.registerSubCommand('followhandler', 'channel', 1);
     });
 })();

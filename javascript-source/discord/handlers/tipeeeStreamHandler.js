@@ -140,13 +140,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/tipeeeStreamHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/tipeeeStreamHandler.js', 'tipeeestreamhandler', 1);
-            $.discord.registerSubCommand('tipeeestreamhandler', 'toggle', 1);
-            $.discord.registerSubCommand('tipeeestreamhandler', 'message', 1);
-            $.discord.registerSubCommand('tipeeestreamhandler', 'channel', 1);
-
-            // $.unbind('initReady'); Needed or not?
-        }
+        $.discord.registerCommand('./discord/handlers/tipeeeStreamHandler.js', 'tipeeestreamhandler', 1);
+        $.discord.registerSubCommand('tipeeestreamhandler', 'toggle', 1);
+        $.discord.registerSubCommand('tipeeestreamhandler', 'message', 1);
+        $.discord.registerSubCommand('tipeeestreamhandler', 'channel', 1);
     });
 })();
