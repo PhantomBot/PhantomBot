@@ -205,18 +205,15 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/gamewispHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/gamewispHandler.js', 'gamewisphandler', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'subtoggle', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'resubtoggle', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'tieruptoggle', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'resubmessage', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'submessage', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'tierupmessage', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'channel', 1);
+        $.discord.registerCommand('./discord/handlers/gamewispHandler.js', 'gamewisphandler', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'subtoggle', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'resubtoggle', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'tieruptoggle', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'resubmessage', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'submessage', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'tierupmessage', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'channel', 1);
 
-            announce = true;
-            // $.unbind('initReady'); Needed or not?
-        }
+        announce = true;
     });
 })();

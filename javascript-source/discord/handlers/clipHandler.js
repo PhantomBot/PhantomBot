@@ -55,7 +55,7 @@
             action = args[0];
 
         /*
-         * @commandpath clipstoggle - Toggles the clips announcements.
+         * @discordcommandpath clipstoggle - Toggles the clips announcements.
          */
         if (command.equalsIgnoreCase('clipstoggle')) {
             toggle = !toggle;
@@ -64,7 +64,7 @@
         }
 
         /*
-         * @commandpath clipsmessage - Sets a message for when someone creates a clip.
+         * @discordcommandpath clipsmessage [message] - Sets a message for when someone creates a clip.
          */
         if (command.equalsIgnoreCase('clipsmessage')) {
             if (action === undefined) {
@@ -78,7 +78,7 @@
         }
 
         /*
-         * @commandpath clipschannel - Sets the channel to send a message to for when someone creates a clip.
+         * @discordcommandpath clipschannel [channel] - Sets the channel to send a message to for when someone creates a clip.
          */
         if (command.equalsIgnoreCase('clipschannel')) {
             if (action === undefined) {
@@ -92,7 +92,7 @@
         }
 
         /*
-         * @commandpath lastclip - Displays information about the last clip captured.
+         * @discordcommandpath lastclip - Displays information about the last clip captured.
          */
         if (command.equalsIgnoreCase('lastclip')) {
             var url = $.getIniDbString('streamInfo', 'last_clip_url', $.lang.get('cliphandler.noclip'));
@@ -100,7 +100,7 @@
         }
 
         /*
-         * @commandpath topclip - Displays the top clip from the past day.
+         * @discordcommandpath topclip - Displays the top clip from the past day.
          */
         if (command.equalsIgnoreCase('topclip')) {
             var url = $.getIniDbString('streamInfo', 'most_viewed_clip_url', $.lang.get('cliphandler.noclip'));

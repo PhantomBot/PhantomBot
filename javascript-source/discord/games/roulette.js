@@ -54,14 +54,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/games/roulette.js')) {
-            $.discord.registerCommand('./discord/games/roulette.js', 'roulette', 0);
+        $.discord.registerCommand('./discord/games/roulette.js', 'roulette', 0);
 
-            if (responseCountWin === 0 && responseCountLost === 0) {
-                loadResponses();
-            }
-
-            // $.unbind('initReady'); Needed or not?
+        if (responseCountWin === 0 && responseCountLost === 0) {
+            loadResponses();
         }
     });
 })();
