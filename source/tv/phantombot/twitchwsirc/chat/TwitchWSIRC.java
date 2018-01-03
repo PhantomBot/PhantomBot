@@ -174,6 +174,8 @@ public class TwitchWSIRC extends WebSocketClient {
     public void onMessage(String message) {
     	if (message.startsWith("PONG")) {
     		lastPong = System.currentTimeMillis();
+    	} else if (message.startsWith("PING")) {
+    		send("PONG");
     	} else {
     		try {
     			new Thread(new Runnable() {
