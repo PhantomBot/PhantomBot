@@ -16,7 +16,7 @@
  */
 package tv.phantombot.cache;
 
-import com.scaniatv.StreamElementsAPIv1;
+import com.scaniatv.StreamElementsAPIv2;
 
 import com.google.common.collect.Maps;
 
@@ -155,7 +155,7 @@ public class StreamElementsCache implements Runnable {
 
         com.gmt2001.Console.debug.println("StreamElementsCache::updateCache");
 
-        jsonResult = StreamElementsAPIv1.instance().GetDonations();
+        jsonResult = StreamElementsAPIv2.instance().GetDonations();
 
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {
