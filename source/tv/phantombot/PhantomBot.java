@@ -196,6 +196,7 @@ public final class PhantomBot implements Listener {
 
     /* StreamElements Information */
     private String streamElementsJWT = "";
+    private String streamElementsID = "";
     private int streamElementsLimit = 5;
 
     /* GameWisp Information */
@@ -456,6 +457,7 @@ public final class PhantomBot implements Listener {
 
         /* Set the StreamElements variables */
         this.streamElementsJWT = this.pbProperties.getProperty("streamelementsjwt", "");
+        this.streamElementsID = this.pbProperties.getProperty("streamelementsid", "");
         this.streamElementsLimit = Integer.parseInt(this.pbProperties.getProperty("streamelementslimit", "5"));
 
         /* Set the PhantomBot Commands API variables */
@@ -622,8 +624,9 @@ public final class PhantomBot implements Listener {
         }
 
         /* Set the StreamElements JWT token. */
-        if (!streamElementsJWT.isEmpty()) {
+        if (!streamElementsJWT.isEmpty() && !streamElementsID.isEmpty()) {
             StreamElementsAPIv1.instance().SetJWT(streamElementsJWT);
+            StreamElementsAPIv1.instance().SetID(streamElementsID);
             StreamElementsAPIv1.instance().SetLimit(streamElementsLimit);
         }
 
@@ -1347,45 +1350,45 @@ public final class PhantomBot implements Listener {
         }
 
         if (message.equalsIgnoreCase("createcmdlist")) {
-        	print("[CONSOLE] Executing createcmdlist, this can take a bit of time.");
+            print("[CONSOLE] Executing createcmdlist, this can take a bit of time.");
 
-        	String[] headers = new String[] {"Command", "Permission", "Module"};
-        	String[] keys = dataStore.GetKeyList("permcom", "");
-        	List<String[]> values = new ArrayList<String[]>();
+            String[] headers = new String[] {"Command", "Permission", "Module"};
+            String[] keys = dataStore.GetKeyList("permcom", "");
+            List<String[]> values = new ArrayList<String[]>();
 
-        	for (int i = 0; i < keys.length; i++) {
-        		String[] str = new String[3];
-        		str[0] = ("!" + keys[i]);
-        		str[1] = dataStore.get("groups", dataStore.get("permcom", keys[i]));
-        		str[2] = Script.callMethod("getCommandScript", (keys[i].contains(" ") ? keys[i].substring(0, keys[i].indexOf(" ")) : keys[i]));
+            for (int i = 0; i < keys.length; i++) {
+                String[] str = new String[3];
+                str[0] = ("!" + keys[i]);
+                str[1] = dataStore.get("groups", dataStore.get("permcom", keys[i]));
+                str[2] = Script.callMethod("getCommandScript", (keys[i].contains(" ") ? keys[i].substring(0, keys[i].indexOf(" ")) : keys[i]));
 
-        		// If the module is disabled, return.
-        		if (str[2].contains("Undefined")) {
-        			continue;
-        		}
-        		values.add(str);
-        	}
+                // If the module is disabled, return.
+                if (str[2].contains("Undefined")) {
+                    continue;
+                }
+                values.add(str);
+            }
 
-        	toCSV(headers, values, "command_list.csv");
+            toCSV(headers, values, "command_list.csv");
             print("[CONSOLE] Command list has been created under command_list.csv");
         }
 
         if (message.equalsIgnoreCase("createcustomcmdlist")) {
-        	print("[CONSOLE] Executing createcustomcmdlist, this can take a bit of time.");
+            print("[CONSOLE] Executing createcustomcmdlist, this can take a bit of time.");
 
-        	String[] headers = new String[] {"Command", "Permission"};
-        	String[] keys = dataStore.GetKeyList("command", "");
-        	List<String[]> values = new ArrayList<String[]>();
+            String[] headers = new String[] {"Command", "Permission"};
+            String[] keys = dataStore.GetKeyList("command", "");
+            List<String[]> values = new ArrayList<String[]>();
 
-        	for (int i = 0; i < keys.length; i++) {
-        		String[] str = new String[2];
-        		str[0] = ("!" + keys[i]);
-        		str[1] = dataStore.get("groups", dataStore.get("permcom", keys[i]));
+            for (int i = 0; i < keys.length; i++) {
+                String[] str = new String[2];
+                str[0] = ("!" + keys[i]);
+                str[1] = dataStore.get("groups", dataStore.get("permcom", keys[i]));
 
-        		values.add(str);
-        	}
+                values.add(str);
+            }
 
-        	toCSV(headers, values, "custom_command_list.csv");
+            toCSV(headers, values, "custom_command_list.csv");
             print("[CONSOLE] Command list has been created under custom_command_list.csv");
         }
 
