@@ -40,7 +40,7 @@ import com.illusionaryone.DataRenderServiceAPIv1;
 
 import com.scaniatv.CustomAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
-import com.scaniatv.StreamElementsAPIv1;
+import com.scaniatv.StreamElementsAPIv2;
 import com.scaniatv.BotImporter;
 import com.scaniatv.GenerateLogs;
 
@@ -625,9 +625,9 @@ public final class PhantomBot implements Listener {
 
         /* Set the StreamElements JWT token. */
         if (!streamElementsJWT.isEmpty() && !streamElementsID.isEmpty()) {
-            StreamElementsAPIv1.instance().SetJWT(streamElementsJWT);
-            StreamElementsAPIv1.instance().SetID(streamElementsID);
-            StreamElementsAPIv1.instance().SetLimit(streamElementsLimit);
+            StreamElementsAPIv2.instance().SetJWT(streamElementsJWT);
+            StreamElementsAPIv2.instance().SetID(streamElementsID);
+            StreamElementsAPIv2.instance().SetLimit(streamElementsLimit);
         }
 
         /* Set the PhantomBot Commands authentication key. */
