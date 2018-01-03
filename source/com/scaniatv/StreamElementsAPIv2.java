@@ -34,31 +34,29 @@ import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import tv.phantombot.event.streamelements.donate.StreamElementsDonationEvent;
-import tv.phantombot.event.streamelements.donate.StreamElementsDonationInitializedEvent;
-
 /*
  * @author ScaniaTV
  */
-public class StreamElementsAPIv1 {
+public class StreamElementsAPIv2 {
 
-    private static final StreamElementsAPIv1 instance = new StreamElementsAPIv1();
-    private static final String url = "https://api.streamelements.com/kappa/v1";
+    private static final StreamElementsAPIv2 instance = new StreamElementsAPIv2();
+    private static final String url = "https://api.streamelements.com/kappa/v2";
     private static final int iHTTPTimeout = 2 * 1000;
     private static String jwtToken = "";
+    private String id = "";
     private int pullLimit = 5;
 
     /*
      * Returns the current instance.
      */
-    public static StreamElementsAPIv1 instance() {
+    public static StreamElementsAPIv2 instance() {
         return instance;
     }
 
     /*
      * Builds the instance for this class.
      */
-    private StreamElementsAPIv1() {
+    private StreamElementsAPIv2() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
@@ -122,29 +120,29 @@ public class StreamElementsAPIv1 {
             fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
         } catch (JSONException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
-            com.gmt2001.Console.debug.println("StreamElementsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("StreamElementsAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (NullPointerException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
-            com.gmt2001.Console.debug.println("StreamElementsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("StreamElementsAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (MalformedURLException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
-            com.gmt2001.Console.debug.println("StreamElementsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("StreamElementsAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (SocketTimeoutException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
-            com.gmt2001.Console.debug.println("StreamElementsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("StreamElementsAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (IOException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-            com.gmt2001.Console.debug.println("StreamElementsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("StreamElementsAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (Exception ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
-            com.gmt2001.Console.debug.println("StreamElementsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("StreamElementsAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
                     fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.debug.println("StreamElementsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("StreamElementsAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
                 }
             }
         }
@@ -162,6 +160,15 @@ public class StreamElementsAPIv1 {
     }
 
     /*
+     * Sets the streamelements user account id
+     *
+     * @param {String}  id  
+     */
+    public void SetID(String id) {
+        this.id = id;
+    }
+
+    /*
      * Sets the api pull limit.
      *
      * @param {Int}  pullLimit  Amount of donations to pull, default is 5.
@@ -176,6 +183,6 @@ public class StreamElementsAPIv1 {
      * @return {JSONObject}  The last 5 donations from the api.
      */
     public JSONObject GetDonations() {
-        return readJsonFromUrl(url + "/tips?limit=" + this.pullLimit);
+        return readJsonFromUrl(url + "/tips/" + this.id + "?limit=" + this.pullLimit);
     }
 }

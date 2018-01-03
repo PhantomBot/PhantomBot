@@ -16,7 +16,7 @@
  */
 package tv.phantombot.cache;
 
-import com.scaniatv.StreamElementsAPIv1;
+import com.scaniatv.StreamElementsAPIv2;
 
 import com.google.common.collect.Maps;
 
@@ -155,7 +155,7 @@ public class StreamElementsCache implements Runnable {
 
         com.gmt2001.Console.debug.println("StreamElementsCache::updateCache");
 
-        jsonResult = StreamElementsAPIv1.instance().GetDonations();
+        jsonResult = StreamElementsAPIv2.instance().GetDonations();
 
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {
@@ -172,7 +172,7 @@ public class StreamElementsCache implements Runnable {
                     PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/streamElementsHandler.js", "false");
                     killed = true;
                 } else {
-                    throw new Exception("Failed to get donations: " + (jsonResult.has("error") ? jsonResult.getString("error") : jsonResult));
+                    throw new Exception("Failed to get donations: " + jsonResult);
                 }
             }
         } else {
@@ -180,16 +180,16 @@ public class StreamElementsCache implements Runnable {
         }
 
         if (firstUpdate && !killed) {
-        	firstUpdate = false;
+            firstUpdate = false;
             EventBus.instance().post(new StreamElementsDonationInitializedEvent());
         }
 
         if (donations != null && !killed) {
-        	for (int i = 0; i < donations.length(); i++) {
-        		if (cache == null || !cache.containsKey(donations.getJSONObject(i).getString("_id"))) {
-        			EventBus.instance().postAsync(new StreamElementsDonationEvent(donations.getJSONObject(i).toString()));
-        		}
-        	}
+            for (int i = 0; i < donations.length(); i++) {
+                if (cache == null || !cache.containsKey(donations.getJSONObject(i).getString("_id"))) {
+                    EventBus.instance().postAsync(new StreamElementsDonationEvent(donations.getJSONObject(i).toString()));
+                }
+            }
         }
 
         this.cache = newCache;
