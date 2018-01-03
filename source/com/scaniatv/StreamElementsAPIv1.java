@@ -34,18 +34,16 @@ import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import tv.phantombot.event.streamelements.donate.StreamElementsDonationEvent;
-import tv.phantombot.event.streamelements.donate.StreamElementsDonationInitializedEvent;
-
 /*
  * @author ScaniaTV
  */
 public class StreamElementsAPIv1 {
 
     private static final StreamElementsAPIv1 instance = new StreamElementsAPIv1();
-    private static final String url = "https://api.streamelements.com/kappa/v1";
+    private static final String url = "https://api.streamelements.com/kappa/v2";
     private static final int iHTTPTimeout = 2 * 1000;
     private static String jwtToken = "";
+    private String id = "";
     private int pullLimit = 5;
 
     /*
@@ -162,6 +160,15 @@ public class StreamElementsAPIv1 {
     }
 
     /*
+     * Sets the streamelements user account id
+     *
+     * @param {String}  id  
+     */
+    public void SetID(String id) {
+        this.id = id;
+    }
+
+    /*
      * Sets the api pull limit.
      *
      * @param {Int}  pullLimit  Amount of donations to pull, default is 5.
@@ -176,6 +183,6 @@ public class StreamElementsAPIv1 {
      * @return {JSONObject}  The last 5 donations from the api.
      */
     public JSONObject GetDonations() {
-        return readJsonFromUrl(url + "/tips?limit=" + this.pullLimit);
+        return readJsonFromUrl(url + "/tips/" + this.id + "?limit=" + this.pullLimit);
     }
 }
