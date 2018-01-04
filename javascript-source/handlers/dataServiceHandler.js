@@ -129,7 +129,7 @@
      * @event command
      */
     $.bind('command', function(event) {
-        var sender = event.getSender().toLowerCase(),
+        var sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs();
 
@@ -148,14 +148,11 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/dataServiceHandler.js')) {
-            $.registerChatCommand('./handlers/dataServiceHandler.js', 'terminatedataserviceapi', 1);
+        $.registerChatCommand('./handlers/dataServiceHandler.js', 'terminatedataserviceapi', 1);
 
-            if ($.dataRenderServiceAPI.hasAPIKey()) {
-                $.consoleLn('Data Render Service API Key Present, Enabling Data Feed');
-                setInterval(function() { drsTimer(); }, 6e4); 
-            }
+        if ($.dataRenderServiceAPI.hasAPIKey()) {
+            $.consoleLn('Data Render Service API Key Present, Enabling Data Feed');
+            setInterval(drsTimer, 6e4); 
         }
     });
-
 })();
