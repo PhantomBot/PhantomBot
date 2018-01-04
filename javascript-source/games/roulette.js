@@ -37,9 +37,7 @@
      * @param {string} username
      */
     function timeoutUserR(username) {
-        setTimeout(function() {
-            $.session.say('.timeout ' + username + ' ' + timeoutTime);
-        }, 1800);
+        $.session.say('.timeout ' + username + ' ' + timeoutTime);
     };
 
     /**
