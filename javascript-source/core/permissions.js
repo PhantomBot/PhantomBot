@@ -14,7 +14,8 @@
         modListUsers = [],
         users = [],
         moderatorsCache = [],
-        lastJoinPart = $.systemTime();
+        lastJoinPart = $.systemTime(),
+        canPushNewUser = true;
 
     /**
      * @function updateUsersObject
@@ -603,6 +604,9 @@
      */
     $.bind('ircChannelUsersUpdate', function(event) {
         setTimeout(function() {
+            // Don't allow other events to add or remove users.
+            canPushNewUser = false;
+
             var joins = event.getJoins(),
                 parts = event.getParts(),
                 now = $.systemTime();
@@ -640,6 +644,7 @@
             // Enable auto commit again and force save.
             $.inidb.setAutoCommit(true);
             $.inidb.SaveAll(true);
+            canPushNewUser = true;
         }, 0);
     });
 
@@ -649,7 +654,7 @@
     $.bind('ircChannelJoin', function(event) {
         var username = event.getUser().toLowerCase();
 
-        if (!userExists(username)) {
+        if (canPushNewUser && !userExists(username)) {
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
             }
@@ -667,7 +672,7 @@
     $.bind('ircChannelMessage', function(event) {
         var username = event.getSender().toLowerCase();
         
-        if (!userExists(username)) {
+        if (canPushNewUser && !userExists(username)) {
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
             }
@@ -683,6 +688,10 @@
     $.bind('ircChannelLeave', function(event) {
         var username = event.getUser().toLowerCase(),
             i;
+
+        if (!canPushNewUser) {
+            return;
+        }
 
         for (i in users) {
             if (users[i][0].equals(username.toLowerCase())) {
