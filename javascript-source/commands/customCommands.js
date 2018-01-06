@@ -773,9 +773,12 @@
             action = action.replace('!', '').toLowerCase();
             subAction = args.slice(1).join(' ').replace('!', '').toLowerCase();
 
-            if (!$.commandExists(subAction.split(' ')[0])) {
+            if ($.commandExists(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.exists'));
+                return;
+            } else if (!$.commandExists(subAction.split(' ')[0])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.target404'));
-                return
+                return;
             } else if ($.inidb.exists('aliases', action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error', action));
                 return;
