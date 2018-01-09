@@ -163,7 +163,7 @@ public class SqliteStore extends DataStore {
         try {
             SQLiteConfig config = new SQLiteConfig();
             config.setCacheSize(cache_size);
-            config.setSynchronous(safe_write ? SQLiteConfig.SynchronousMode.FULL : SQLiteConfig.SynchronousMode.NORMAL);
+            config.setSynchronous(safe_write ? SQLiteConfig.SynchronousMode.FULL : SQLiteConfig.SynchronousMode.OFF);
             config.setTempStore(SQLiteConfig.TempStore.MEMORY);
             config.setJournalMode(journal ? SQLiteConfig.JournalMode.TRUNCATE : SQLiteConfig.JournalMode.OFF);
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbname.replaceAll("\\\\", "/"), config.toProperties());
@@ -1021,7 +1021,7 @@ public class SqliteStore extends DataStore {
         try (Statement statement = connection.createStatement()) {
             statement.setQueryTimeout(10);
             statement.executeUpdate("backup to ./dbbackup/" + filename);
-            com.gmt2001.Console.out.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
+            com.gmt2001.Console.debug.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
