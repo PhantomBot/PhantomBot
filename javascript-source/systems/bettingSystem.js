@@ -256,7 +256,7 @@
 			 * @commandpath bet close ["winning option"] - Closes the current bet.
 			 */
 			} else if (action.equalsIgnoreCase('close')) {
-				close(sender, (args[0] === undefined ? undefined : args.slice(1).join(' ').toLowerCase().trim()));
+				close(sender, (args[1] === undefined ? undefined : args.slice(1).join(' ').toLowerCase().trim()));
 				return;
 
 			/**
