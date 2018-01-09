@@ -616,9 +616,9 @@
                 // Cast the user as a string, because Rhino.
                 parts[i] = (parts[i] + '');
                 // Remove the user from the users array.
-                for (var t = 0; i < $.users.length; t++) {
+                for (var t = 0; t < $.users.length; t++) {
                     if ($.users[t][0] == parts[i]) {
-                        $.users.splice(i, 1);
+                        $.users.splice(t, 1);
                         break;
                     }
                 }
