@@ -83,7 +83,7 @@ public class ScriptEventManager implements Listener {
     }
 
     /*
-     * Method to see if an event was registered in init.js
+     * Method to see if an event exists, this is used from init.js.
      *
      * @param  {String} eventName
      * @return {Boolean}
@@ -119,7 +119,7 @@ public class ScriptEventManager implements Listener {
     }
 
     /*
-     * Method to unregister an event handler
+     * Method to unregister an event handler.
      *
      * @param {ScriptEventHandler} handler
      */
