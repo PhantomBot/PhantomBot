@@ -148,6 +148,5 @@ public class MessageQueue implements Runnable {
 	 */
 	public void kill() {
 		this.isKilled = true;
-		this.thread.stop();
 	}
 }
