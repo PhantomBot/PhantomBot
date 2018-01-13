@@ -270,6 +270,9 @@
                 if (isNaN(parseInt(subAction))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.default.usage'));
                     return;
+                } else if (parseInt(subAction) < 5) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.err'));
+                    return;
                 }
 
                 defaultCooldownTime = parseInt(subAction);
@@ -298,6 +301,9 @@
         if (event.getScript().equalsIgnoreCase('./core/commandCoolDown.js')) {
             if (event.getArgs()[0] == 'add') {
                 add(event.getArgs()[1], event.getArgs()[2], event.getArgs()[3].equals('true'));
+            } else if (event.getArgs()[0] == 'update') {
+                defaultCooldownTime = $.getIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5);
+                modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false);
             } else {
                 remove(event.getArgs()[1]);
             }
