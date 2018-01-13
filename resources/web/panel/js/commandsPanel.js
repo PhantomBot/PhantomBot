@@ -586,18 +586,20 @@
             sendDBUpdate("commands_cooldown_toggle", "cooldownSettings", "modCooldown", "false");
         } else if (modCooldown == "false") {
             sendDBUpdate("commands_cooldown_toggle", "cooldownSettings", "modCooldown", "true");
+            
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
-        setTimeout(function() { sendCommand("reloadcooldown"); }, TIMEOUT_WAIT_TIME * 2);
+        setTimeout(function() { sendWSEvent('cooldown', './core/commandCoolDown.js', null, ['update']); }, TIMEOUT_WAIT_TIME * 2);
     };
 
     /**
      * @function setGlobalCooldownTime
      */
     function setDefaultCooldown() {
-        var newValue = $("#defaultCooldownInput").val();
-        if (newValue.length > 0) {
+        var newValue = parseInt($("#defaultCooldownInput").val());
+        if (!isNaN(newValue) && newValue >= 5) {
             sendDBUpdate("commands_cooldown_time", "cooldownSettings", "defaultCooldownTime", String(newValue));
+            setTimeout(function() { sendWSEvent('cooldown', './core/commandCoolDown.js', null, ['update']); }, TIMEOUT_WAIT_TIME * 2);
             setTimeout(function() { doQuery();  }, TIMEOUT_WAIT_TIME * 2);
         }
     }
