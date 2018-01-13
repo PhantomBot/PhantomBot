@@ -1,5 +1,5 @@
 $.lang.register('roulette.win.1', 'The trigger is pulled, and the revolver clicks. $1 has lived to survive roulette!');
-$.lang.register('roulette.win.2', 'The trigger is pulled, but the revolver malfunctions! $1 is lucky, and live\'s another day!');
+$.lang.register('roulette.win.2', 'The trigger is pulled, but the revolver malfunctions! $1 is lucky, and lives another day!');
 $.lang.register('roulette.win.3', 'The trigger is pulled, but $1 has been saved by magic!');
 $.lang.register('roulette.win.4', 'The trigger is pulled, but $1 has lived due to not having anything in their skull to begin with.');
 $.lang.register('roulette.win.5', 'The trigger is pulled, but $1\'s skull was so thick the bullet could not penetrate it.');

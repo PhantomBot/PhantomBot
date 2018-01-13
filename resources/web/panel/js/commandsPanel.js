@@ -20,7 +20,7 @@
  */
 
 /*
- * customCommandsPanel.js
+ * commandsPanel.js
  * Drives the Custom Commands Panel
  */
 (function() {
