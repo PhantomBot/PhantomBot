@@ -218,8 +218,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="defaultCooldownInput">Default Cooldown</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.setDefaultCooldown()">Submit</button>
-                <input type="number" min="0" class="form-control" id="defaultCooldownInput" placeholder="Seconds" data-toggle="tooltip" title="Default cooldown applied to all commands
-                that don't have a cooldown set."/>
+                <input type="number" min="5" class="form-control" id="defaultCooldownInput" placeholder="Seconds" data-toggle="tooltip" title="Default cooldown applied to all commands
+                that don't have a cooldown set. Minimum is 5 seconds."/>
             </div>
         </form>
 
