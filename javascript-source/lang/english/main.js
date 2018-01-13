@@ -256,6 +256,7 @@ $.lang.register('console.received.subscriberonly.end', 'Received an end subscrib
 $.lang.register('console.received.subscriberonly.start', 'Received a start subscribers-only mode notification from jtv');
 $.lang.register('cooldown.set.togglemodcooldown', 'Command cooldowns have been $1 for moderators.');
 $.lang.register('cooldown.coolcom.usage', 'Usage: !coolcom [command] [seconds] [type (global / user)] - Using -1 for the seconds removes the cooldown.');
+$.lang.register('cooldown.coolcom.err', 'The minimum cooldown that can be set is 5 seconds.');
 $.lang.register('cooldown.coolcom.set', 'Cooldown for command !$1 has been set to $2 seconds.');
 $.lang.register('cooldown.coolcom.remove', 'Cooldown for command !$1 has been removed.');
 $.lang.register('cooldown.cooldown.usage', 'Usage: !cooldown [togglemoderators / setdefault]');
