@@ -530,20 +530,18 @@
      * @returns 0 = good, 1 = command perm bad, 2 = subcommand perm bad
      */
     function permCom(username, command, subcommand) {
-        if ($.isAdmin(username)) {
-            return 0;
-        }
         if (subcommand === '') {
             if ($.getCommandGroup(command) >= $.getUserGroupId(username)) {
                 return 0;
             } else {
                 return 1;
             }
-        }
-        if ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(username)) {
-            return 0;
         } else {
-            return 2;
+            if ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(username)) {
+                return 0;
+            } else {
+                return 2;
+            }
         }
     }  
 
