@@ -71,6 +71,7 @@
 
             if (panelCheckQuery(msgObject, 'commands_cooldown')) {
                 html = "<table>";
+                msgObject['results'].sort(sortCommandTable);
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     time = JSON.parse(msgObject['results'][idx]['value']).seconds;
@@ -138,6 +139,7 @@
 
                 html = '<table>';
                 commands.splice(0);
+                msgObject['results'].sort(sortCommandTable);
                 for (var idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandNameSafe = commandName.replace(/\?/g, '__QM__');
@@ -167,6 +169,8 @@
                     $('#aliasCommandsList').html('<i>There are no aliased commands defined.</i>');
                     return;
                 }
+
+                msgObject['results'].sort(sortCommandTable);
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
@@ -191,6 +195,7 @@
                     $('#priceCommandsList').html('<i>There are no commands with prices defined.</i>');
                     return;
                 }
+                msgObject['results'].sort(sortCommandTable);
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
@@ -217,6 +222,7 @@
                     $('#payCommandsList').html('<i>There are no commands with payments defined.</i>');
                     return;
                 }
+                msgObject['results'].sort(sortCommandTable);
                 for (idx in msgObject['results']) {
                     commandName = msgObject['results'][idx]['key'];
                     commandValue = msgObject['results'][idx]['value'];
