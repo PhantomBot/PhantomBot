@@ -18,6 +18,9 @@
      * @param {String} groupId
      */
     function registerChatCommand(script, command, groupId) {
+        // If groupId is undefined set it to 7 (viewer).
+        groupId = (groupId === undefined ? 7 : groupId);
+
         if (commandExists(command)) {
             return;
         }
@@ -59,6 +62,9 @@
      * @param {String} groupId
      */
     function registerChatSubcommand(command, subcommand, groupId) {
+        // If groupId is undefined set it to 7 (viewer).
+        groupId = (groupId === undefined ? 7 : groupId);
+
         if (!commandExists(command) || subCommandExists(command, subcommand)) {
             return;
         }
