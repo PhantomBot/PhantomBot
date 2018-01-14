@@ -745,6 +745,38 @@
             $.inidb.set('cooldownSettings', 'defaultCooldownTime', 5);
         }
 
+        $.consoleLn('Updating keywords...');
+        var keys = $.inidb.GetKeyList('keywords', ''),
+            keywords = [],
+            i;
+
+        for (i in keys) {
+            keywords.push({
+                key: keys[i],
+                res: $.inidb.get('keywords', keys[i])
+            });
+        }
+
+        $.inidb.RemoveFile('keywords');
+
+        for (i in keywords) {
+            try {
+                new RegExp('\\b' + keywords[i].key + '\\b');
+
+                $.inidb.set('keywords', 'regex:\\b' + keywords[i].key + '\\b', JSON.stringify({
+                    keyword: 'regex:\\b' + keywords[i].key + '\\b',
+                    response: keywords[i].res,
+                    isRegex: true
+                }));
+            } catch (e) {
+                $.inidb.set('keywords', keywords[i].key, JSON.stringify({
+                    keyword: keywords[i].key,
+                    response: keywords[i].res,
+                    isRegex: false
+                }));
+            }
+        }
+
         $.consoleLn('PhantomBot update 2.4.0 completed!');
         $.inidb.set('updates', 'installedv2.4.0', 'true');
     }

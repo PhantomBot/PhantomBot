@@ -66,6 +66,12 @@ body {
     background: var(--main-background);
 }
 
+textarea {
+    resize: vertical;
+    max-height: 300px;
+    min-height: 50px;
+}
+
 .textList {
     font-family: "Roboto", arial;
 }
