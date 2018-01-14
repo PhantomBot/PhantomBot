@@ -768,6 +768,8 @@
                     response: keywords[i].res,
                     isRegex: true
                 }));
+                $.inidb.set('coolkey', 'regex:\\b' + keywords[i].key + '\\b', $.getIniDbNumber('coolkey', keywords[i].key, 5));
+                $.inidb.del('coolkey', keywords[i].key);
             } catch (e) {
                 $.inidb.set('keywords', keywords[i].key, JSON.stringify({
                     keyword: keywords[i].key,
