@@ -765,7 +765,7 @@
 
                 $.inidb.set('keywords', 'regex:\\b' + keywords[i].key + '\\b', JSON.stringify({
                     keyword: 'regex:\\b' + keywords[i].key + '\\b',
-                    response: keywords[i].res,
+                    response: keywords[i].res + '',
                     isRegex: true
                 }));
                 $.inidb.set('coolkey', 'regex:\\b' + keywords[i].key + '\\b', $.getIniDbNumber('coolkey', keywords[i].key, 5));
@@ -773,7 +773,7 @@
             } catch (e) {
                 $.inidb.set('keywords', keywords[i].key, JSON.stringify({
                     keyword: keywords[i].key,
-                    response: keywords[i].res,
+                    response: keywords[i].res + '',
                     isRegex: false
                 }));
             }
