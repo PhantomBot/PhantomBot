@@ -282,7 +282,8 @@
             var importedList = [],
                 importCount = 0,
                 failCount = 0,
-                playlistFailCount = 0;
+                playlistFailCount = 0,
+                spaceMacther = new RegExp('\\s');
 
             if ($.inidb.exists('yt_playlists_registry', 'ytPlaylist_' + listName)) {
                 if ($.fileExists("./addons/youtubePlayer/" + fileName)) {
@@ -292,7 +293,10 @@
                         if (importedList[i].contains('&list')) {
                             playlistFailCount++;
                             continue;
-                         }
+                        } else if (spaceMacther.test(importedList[i]) || importedList[i].isEmpty()) {// match for spaces or an empty line.
+                            failCount++;
+                            continue;
+                        }
 
                         try {
                             var youtubeVideo = new YoutubeVideo(importedList[i], 'importPlaylistFile');
@@ -1463,7 +1467,7 @@
              * @commandpath ytp blacklist [add / remove] [name contained in the video] - Blacklist a song name from being requested.
              */
             if (action.equalsIgnoreCase('blacklist')) {
-				actionArgs = args.splice(2);
+                actionArgs = args.splice(2);
                 if (!args[1]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.usage.song'));
                     return;
