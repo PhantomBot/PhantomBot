@@ -56,14 +56,20 @@
         		}
 
         		// Get average viewers.
-        		var avgViewers = Math.round(viewers.reduce(function(a, b) {
-        			return (a + b);
-        		}) / (viewers.length < 1 ? 1 : viewers.length));
+                        var avgViewers = 1;
+                        if (viewers.length > 0) {
+        		    avgViewers = Math.round(viewers.reduce(function(a, b) {
+        			    return (a + b);
+        		    }) / (viewers.length < 1 ? 1 : viewers.length));
+                        }
 
         		// Get average chatters.
-        		var avgChatters = Math.round(chatters.reduce(function(a, b) {
-        			return (a + b);
-        		}) / (chatters.length < 1 ? 1 : chatters.length));
+                        var avgChatters = 1;
+                        if (chatters.length > 0) {
+        		    var avgChatters = Math.round(chatters.reduce(function(a, b) {
+        			    return (a + b);
+        		    }) / (chatters.length < 1 ? 1 : chatters.length));
+                        }
 
         		// Get new follows.
         		var follows = ($.getFollows($.channelName) - $.getIniDbNumber('discordStreamStats', 'followers', 0));
