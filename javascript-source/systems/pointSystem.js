@@ -772,6 +772,11 @@
          * @commandpath penalty [user] [time] - Stop a user from gaining points for X amount of minutes.
          */
         if (command.equalsIgnoreCase('penalty')) {
+            if (action === undefined || isNaN(actionArg1)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.err.penalty'));
+                return;
+            }
+
             if (sender.equalsIgnoreCase($.botName)) { // Used for the panel.
                 setPenalty(sender, action.toLowerCase(), parseInt(actionArg1), true);
                 return;
