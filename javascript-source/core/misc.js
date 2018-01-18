@@ -6,7 +6,7 @@
         reg = new RegExp(/^@\w+,\s?$/),
         timeout = 0;
 
-    /* 
+    /*
      * @function reloadMisc
      */
     function reloadMisc() {
@@ -565,7 +565,7 @@
      * @param {String}  Value of sender for $.whisperPrefix
      * @param {Number}  Page to display, 0 for ALL
      * @return {Number} Total number of pages.
-     * 
+     *
      */
     function paginateArray(array, langKey, sep, whisper, sender, display_page) {
         var idx,
@@ -618,14 +618,14 @@
      * @param {String}  Value of sender for $.whisperPrefix
      * @param {Number}  Page to display, 0 for ALL
      * @return {Number} Total number of pages.
-     * 
+     *
      */
     function paginateArrayDiscord(array, langKey, sep, channel, sender, display_page) {
         var idx,
             output = '',
             maxlen,
-            hasNoLang = langKey.startsWith('NULL')
-        pageCount = 0;
+            hasNoLang = langKey.startsWith('NULL'),
+            pageCount = 0;
 
         if (display_page === undefined) {
             display_page = 0;
