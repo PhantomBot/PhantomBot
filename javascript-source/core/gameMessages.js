@@ -5,8 +5,8 @@
  * Use the $.gameMessages API
  */
 (function() {
-    var lastRandom = -1
-    winMessageCount = {
+    var lastRandom = -1,
+    	winMessageCount = {
             roll: 0,
             gamble: 0,
             slot: 0
