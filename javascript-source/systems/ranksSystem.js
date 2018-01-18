@@ -378,7 +378,7 @@
         $.registerChatSubcommand('rankedit', 'del', 1);
         $.registerChatSubcommand('rankedit', 'custom', 1);
         $.registerChatSubcommand('rankedit', 'customdel', 1);
-        
+
         $.registerChatSubcommand('rank', 'set', 7);
         $.registerChatSubcommand('rank', 'del', 7);
     });

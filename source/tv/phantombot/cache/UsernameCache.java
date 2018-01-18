@@ -163,7 +163,7 @@ public class UsernameCache {
 
     /*
      * Internal object for tracking user data.
-     * Note that while Twitch represents the userID as a String, it is an integer value.  We 
+     * Note that while Twitch represents the userID as a String, it is an integer value.  We
      * define this as an int here to conserve memory usage.  The maximum value of an unsigned
      * int within Java is 4,294,967,295 which should serve as a large enough data type.
      */

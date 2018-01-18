@@ -44,7 +44,7 @@
         if (randomsCount == 0) {
             loadResponses();
         }
-        
+
         $.registerChatCommand('./games/random.js', 'random');
     });
 })();

@@ -176,7 +176,7 @@ public class TwitchCache implements Runnable {
         }
 
         JSONObject clipsObj = TwitchAPIv5.instance().getClipsToday(this.channel);
-        
+
         String createdAt = "";
         String clipURL = "";
         String creator = "";
@@ -272,7 +272,7 @@ public class TwitchCache implements Runnable {
                     this.streamUptimeSeconds = streamUptimeSeconds;
                     this.previewLink = "";
                     this.streamCreatedAt = "";
-                    this.viewerCount = 0; 
+                    this.viewerCount = 0;
                 }
             } else {
                 success = false;
@@ -312,7 +312,7 @@ public class TwitchCache implements Runnable {
                             }
                             this.gameTitle = gameTitle;
                         }
-    
+
                         if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitle)) {
                             forcedGameTitleUpdate = false;
                         }
@@ -370,15 +370,15 @@ public class TwitchCache implements Runnable {
         } catch (InterruptedException ex) {
             com.gmt2001.Console.debug.println(ex);
         }
-        
+
         /* Update communities */
         try {
             JSONObject object = TwitchAPIv5.instance().GetCommunities(this.channel);
             if (object.has("communities") && object.getJSONArray("communities").length() > 0) {
-            	JSONArray array = object.getJSONArray("communities");
-            	for (int i = 0; i < array.length(); i++) {
-            		communities[i] = array.getJSONObject(i).getString("name");
-            	}
+                JSONArray array = object.getJSONArray("communities");
+                for (int i = 0; i < array.length(); i++) {
+                    communities[i] = array.getJSONObject(i).getString("name");
+                }
             }
             this.communities = communities;
         } catch (Exception ex) {
@@ -432,11 +432,11 @@ public class TwitchCache implements Runnable {
     /*
      * Sets the game title.  Useful for when !game is used.
      */
-     public void setGameTitle(String gameTitle) {   
-         forcedGameTitleUpdate = true;
-         this.gameTitle = gameTitle;
-         EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle));
-     }
+    public void setGameTitle(String gameTitle) {
+        forcedGameTitleUpdate = true;
+        this.gameTitle = gameTitle;
+        EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle));
+    }
 
     /*
      * Returns the title (status) of the stream.
@@ -467,14 +467,14 @@ public class TwitchCache implements Runnable {
         return this.logoLink;
     }
 
-    /* 
+    /*
      * Returns the viewer count.
      */
     public int getViewerCount() {
         return this.viewerCount;
     }
 
-    /* 
+    /*
      * Returns the views count.
      */
     public int getViews() {
@@ -492,7 +492,7 @@ public class TwitchCache implements Runnable {
      * Returns an array of communities if set.
      */
     public String[] getCommunities() {
-    	return this.communities;
+        return this.communities;
     }
 
     /*
@@ -513,7 +513,7 @@ public class TwitchCache implements Runnable {
 
     /*
      * Gets a string from the database. Simply a wrapper around the PhantomBot instance.
-     * 
+     *
      * @param   String  The database key to search for in the streamInfo table.
      * @return  String  Returns the found value or null.
      */
@@ -523,7 +523,7 @@ public class TwitchCache implements Runnable {
 
     /*
      * Sets a string into the database.  Simply a wrapper around the PhantomBot instance.
-     * 
+     *
      * @param   String  The database key to use for inserting the value into the streamInfo table.
      * @param   String  The value to insert.
      * @return  String  Returns the found value or null.

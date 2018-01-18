@@ -24,6 +24,6 @@ public class TwitchOnlineEvent extends TwitchEvent {
      * Class constructor.
      */
     public TwitchOnlineEvent() {
-        
+
     }
 }

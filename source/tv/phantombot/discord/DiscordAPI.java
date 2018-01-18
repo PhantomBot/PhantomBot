@@ -52,7 +52,7 @@ public class DiscordAPI extends DiscordUtil {
     private static IDiscordClient client;
     private static ShardImpl shard;
     private static IGuild guild;
-    
+
     /*
      * Method to return this class object.
      *
@@ -67,7 +67,7 @@ public class DiscordAPI extends DiscordUtil {
      */
     private DiscordAPI() {
         Configuration.LOAD_EXTERNAL_MODULES = false;
-        
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
@@ -83,7 +83,7 @@ public class DiscordAPI extends DiscordUtil {
             com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }
     }
-    
+
     /*
      * Method to reconnect to Discord.
      */
@@ -171,7 +171,7 @@ public class DiscordAPI extends DiscordUtil {
             String message = iMessage.getContent();
             String channel = iChannel.getName();
             boolean isAdmin = isAdministrator(iUsername);
-            
+
             com.gmt2001.Console.out.println("[DISCORD] [#" + channel + "] " + username + ": " + message);
 
             if (message.startsWith("!")) {

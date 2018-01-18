@@ -20,9 +20,9 @@ import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchFollowsInitializedEvent extends TwitchEvent {
 
-	/*
-	 * Class constructor.
-	 */
+    /*
+     * Class constructor.
+     */
     public TwitchFollowsInitializedEvent() {
 
     }

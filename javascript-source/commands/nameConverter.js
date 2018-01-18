@@ -7,9 +7,9 @@
             subAction = args[1];
 
 
-            /**
-             * @commandpath namechange [oldname] [newname] - Convert someones old Twitch username to his/her new Twitch name. The user will be able to keep their points, time, quotes, and more.
-             */
+        /**
+         * @commandpath namechange [oldname] [newname] - Convert someones old Twitch username to his/her new Twitch name. The user will be able to keep their points, time, quotes, and more.
+         */
         if (command.equalsIgnoreCase('namechange')) {
             if (action === undefined || subAction === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('namechange.default'));

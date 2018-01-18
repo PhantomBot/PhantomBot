@@ -10,14 +10,14 @@
         timeLevelWarning = $.getSetIniDbBoolean('timeSettings', 'timeLevelWarning', true),
         keepTimeWhenOffline = $.getSetIniDbBoolean('timeSettings', 'keepTimeWhenOffline', true),
         hoursForLevelUp = $.getSetIniDbNumber('timeSettings', 'timePromoteHours', 50),
-        regularsGroupId = 6, 
+        regularsGroupId = 6,
         interval,
         inter;
 
     /**
      * @function updateTimeSettings
      */
-    function updateTimeSettings () {
+    function updateTimeSettings() {
         levelWithTime = $.getIniDbBoolean('timeSettings', 'timeLevel');
         keepTimeWhenOffline = $.getIniDbBoolean('timeSettings', 'keepTimeWhenOffline');
         hoursForLevelUp = $.getIniDbNumber('timeSettings', 'timePromoteHours');
@@ -366,7 +366,7 @@
 
     // Set an interval for increasing all current users logged time
     interval = setInterval(function() {
-        var username, 
+        var username,
             i;
 
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
@@ -381,13 +381,13 @@
 
     // Interval for auto level to regular
     inter = setInterval(function() {
-        var username, 
+        var username,
             i;
-            
+
         if (levelWithTime) {
             for (i in $.users) {
                 username = $.users[i][0].toLowerCase();
-                if (!$.isMod(username) && !$.isAdmin(username) && !$.isSub(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp &&  parseInt($.getUserGroupId(username)) > regularsGroupId) {
+                if (!$.isMod(username) && !$.isAdmin(username) && !$.isSub(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp && parseInt($.getUserGroupId(username)) > regularsGroupId) {
                     if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
                         $.setUserGroupById(username, regularsGroupId);
                         if (timeLevelWarning) {
@@ -411,7 +411,7 @@
         $.registerChatCommand('./core/timeSystem.js', 'streamertime');
         $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
         $.registerChatCommand('./core/timeSystem.js', 'time');
-        
+
         $.registerChatSubcommand('time', 'add', 1);
         $.registerChatSubcommand('time', 'take', 1);
         $.registerChatSubcommand('time', 'set', 1);

@@ -15,7 +15,7 @@
     }
 
     /**
-    ** This function sometimes does not work. So only use it for stuff that people dont use much
+     ** This function sometimes does not work. So only use it for stuff that people dont use much
      * @function hasKey
      * @export $.list
      * @param {Array} list
@@ -239,7 +239,7 @@
      */
     function arrayShuffle(array) {
         for (var i = array.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * ( i + 1 ));
+            var j = Math.floor(Math.random() * (i + 1));
             var temp = array[i];
             array[i] = array[j];
             array[j] = temp;
@@ -571,7 +571,7 @@
         var idx,
             output = '',
             maxlen,
-            hasNoLang = langKey.startsWith('NULL')
+            hasNoLang = langKey.startsWith('NULL'),
             pageCount = 0;
 
         if (display_page === undefined) {
@@ -586,7 +586,7 @@
                 pageCount++;
                 if (display_page === 0 || display_page === pageCount) {
                     if (whisper) {
-                        $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
+                        $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
                     } else {
                         $.say((hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
                     }
@@ -601,15 +601,15 @@
         pageCount++;
         if (display_page === 0 || display_page === pageCount) {
             if (whisper) {
-                $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
+                $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
             } else {
-                $.say((hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
+                $.say((hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
             }
         }
         return pageCount;
     }
 
-     /**
+    /**
      * @function paginateArrayDiscord
      * @export $
      * @param {Array}   Input array of data to paginate
@@ -625,7 +625,7 @@
             output = '',
             maxlen,
             hasNoLang = langKey.startsWith('NULL')
-            pageCount = 0;
+        pageCount = 0;
 
         if (display_page === undefined) {
             display_page = 0;
@@ -649,7 +649,7 @@
         }
         pageCount++;
         if (display_page === 0 || display_page === pageCount) {
-            $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output)  : $.lang.get(langKey, output)));
+            $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
         }
         return pageCount;
     }
@@ -663,11 +663,11 @@
         if (find.equals(replace)) {
             return string;
         }
-    
+
         while (string.indexOf(find) >= 0) {
             string = string.replace(find, replace);
         }
-    
+
         return string;
     }
 
@@ -679,7 +679,7 @@
     function userPrefix(username, comma) {
         if (!comma) {
             return '@' + $.username.resolve(username) + ' ';
-        } 
+        }
         return '@' + $.username.resolve(username) + ', ';
     }
 

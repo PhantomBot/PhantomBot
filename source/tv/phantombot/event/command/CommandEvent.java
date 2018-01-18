@@ -71,7 +71,7 @@ public class CommandEvent extends Event {
         List<String> tmpArgs = new LinkedList<String>();
         boolean inquote = false;
         String tmpStr = "";
-        
+
         for (char c : arguments.toCharArray()) {
             if (c == '"') {
                 inquote = !inquote;
@@ -88,7 +88,7 @@ public class CommandEvent extends Event {
         if (tmpStr.length() > 0) {
             tmpArgs.add(tmpStr);
         }
-        
+
         return tmpArgs.toArray(new String[tmpArgs.size()]);
     }
 
@@ -144,6 +144,6 @@ public class CommandEvent extends Event {
      */
     @Override
     public String toString() {
-    	return "CommandEvent -> { command: [" + this.command + "] sender: [" + this.sender + "] arguments: [" + this.arguments + "] tags: [" + this.tags + "] }";
+        return "CommandEvent -> { command: [" + this.command + "] sender: [" + this.sender + "] arguments: [" + this.arguments + "] tags: [" + this.tags + "] }";
     }
 }

@@ -53,7 +53,7 @@
                 if (action.equalsIgnoreCase('reset')) {
                     if (noDeathExists) {
                         $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.reset-nil', game));
-                    } else { 
+                    } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.reset', game, deathCounter));
                         $.inidb.set('deaths', game, 0);
                         $.deathUpdateFile(game);
@@ -81,7 +81,7 @@
                  * @commandpath deathctr incr - Add one to the death counter for the game being played.
                  */
                 if (action.equalsIgnoreCase('add') || action.equalsIgnoreCase('incr') || action.equalsIgnoreCase('+')) {
-                    
+
                     $.say($.lang.get('deathcounter.add-success', $.ownerName, game, ($.inidb.exists('deaths', game) ? (parseInt($.inidb.get('deaths', game)) + 1) : 0)));
                     $.inidb.incr('deaths', game, 1);
                     $.deathUpdateFile(game);

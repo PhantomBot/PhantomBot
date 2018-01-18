@@ -40,7 +40,7 @@ public class IrcChannelLeaveEvent extends IrcChannelEvent {
      */
     public IrcChannelLeaveEvent(String user) {
         super(null);
-        
+
         this.user = user;
     }
 

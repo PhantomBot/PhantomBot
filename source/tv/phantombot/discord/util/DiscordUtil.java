@@ -91,7 +91,7 @@ public class DiscordUtil {
                 if (user != null) {
                     com.gmt2001.Console.out.println("[DISCORD] [@" + user.getName().toLowerCase() + "#" + user.getDiscriminator() + "] [DM] " + message);
 
-                    user.getOrCreatePMChannel().sendMessage(message);  
+                    user.getOrCreatePMChannel().sendMessage(message);
                 }
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to send a private message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
@@ -435,7 +435,7 @@ public class DiscordUtil {
     public void removeRole(String roleName, String userName) {
         removeRole(getRole(roleName), getUser(userName));
     }
-    
+
     /*
      * Method to create a new role.
      *
@@ -514,7 +514,7 @@ public class DiscordUtil {
                     RequestBuffer.request(() -> {
                         try {
                             List<IMessage> messages = channel.getMessageHistory(amount < 2 ? 2 : amount);
-                            
+
                             channel.bulkDelete(messages);
                         } catch (DiscordException ex) {
                             com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
@@ -522,7 +522,7 @@ public class DiscordUtil {
                     });
                 }
             }, "tv.phantombot.discord.util.DiscordUtil::bulkDelete");
-    
+
             thread.start();
         }
     }
@@ -548,7 +548,7 @@ public class DiscordUtil {
             RequestBuffer.request(() -> {
                 try {
                     List<IMessage> messages = Arrays.asList(list);
-                
+
                     channel.bulkDelete(messages);
                 } catch (DiscordException ex) {
                     com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
@@ -623,30 +623,30 @@ public class DiscordUtil {
             return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
         } else {
             switch (color) {
-                case "black": 
-                    return Color.black;
-                case "blue": 
-                    return Color.blue;
-                case "cyan": 
-                    return Color.cyan;
-                case "gray": 
-                    return Color.gray;
-                case "green": 
-                    return Color.green;
-                case "magenta": 
-                    return Color.magenta;
-                case "orange": 
-                    return Color.orange;
-                case "pink": 
-                    return Color.pink;
-                case "red": 
-                    return Color.red;
-                case "white": 
-                    return Color.white;
-                case "yellow": 
-                    return Color.yellow;
-                default: 
-                    return Color.gray;
+            case "black":
+                return Color.black;
+            case "blue":
+                return Color.blue;
+            case "cyan":
+                return Color.cyan;
+            case "gray":
+                return Color.gray;
+            case "green":
+                return Color.green;
+            case "magenta":
+                return Color.magenta;
+            case "orange":
+                return Color.orange;
+            case "pink":
+                return Color.pink;
+            case "red":
+                return Color.red;
+            case "white":
+                return Color.white;
+            case "yellow":
+                return Color.yellow;
+            default:
+                return Color.gray;
             }
         }
     }

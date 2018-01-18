@@ -142,7 +142,7 @@ public class TwitchWSHostIRC {
     }
 
     /*
-     * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data. 
+     * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data.
      */
     public void reconnect() {
         Boolean reconnected = false;

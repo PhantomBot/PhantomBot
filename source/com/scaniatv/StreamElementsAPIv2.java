@@ -66,7 +66,7 @@ public class StreamElementsAPIv2 {
     private static String readAll(Reader rd) throws IOException {
         StringBuilder sb = new StringBuilder();
         int cp;
-        
+
         while ((cp = rd.read()) != -1) {
             sb.append((char) cp);
         }
@@ -162,7 +162,7 @@ public class StreamElementsAPIv2 {
     /*
      * Sets the streamelements user account id
      *
-     * @param {String}  id  
+     * @param {String}  id
      */
     public void SetID(String id) {
         this.id = id;

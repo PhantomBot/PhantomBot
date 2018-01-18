@@ -236,7 +236,7 @@ public class TwitterCache implements Runnable {
     }
 
     /*
-     * Handles retweet rewards with the Twitter API.  Due to the getRetweets() API call only 
+     * Handles retweet rewards with the Twitter API.  Due to the getRetweets() API call only
      * allowing 75 calls in 15 minutes, this call will run only once every five minutes and
      * is not configurable in the bot.  Since we pull all retweets every 5 minutes, and that
      * can return a maximum of 20; this means that we will reach 60 calls maximum in 15
@@ -266,8 +266,8 @@ public class TwitterCache implements Runnable {
         for (Status status : statuses) {
             List<Status>retweetStatuses = TwitterAPI.instance().getRetweets(status.getId());
             if (retweetStatuses != null) {
-                    for (Status retweetStatus : retweetStatuses) {
-                        userNameList.add(retweetStatus.getUser().getScreenName());
+                for (Status retweetStatus : retweetStatuses) {
+                    userNameList.add(retweetStatus.getUser().getScreenName());
                 }
             }
         }
@@ -407,7 +407,7 @@ public class TwitterCache implements Runnable {
         }
     }
 
-    /* 
+    /*
      * Places a long into the database.
      *
      * @param  String  Database key to insert into.

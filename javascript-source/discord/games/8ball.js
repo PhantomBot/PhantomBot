@@ -2,7 +2,7 @@
  * This module is to handles the 8ball game.
  */
 (function() {
-	var responseCount = 0,
+    var responseCount = 0,
         lastRandom = 0;
 
     /**
@@ -29,18 +29,18 @@
          * @discordcommandpath 8ball [question] - Ask the magic 8ball a question.
          */
         if (command.equalsIgnoreCase('8ball')) {
-        	if (action === undefined) {
-        		$.discord.say(channel, $.discord.userPrefix(mention) + 'Usage: !8ball [question]');
-        		return;
-        	}
+            if (action === undefined) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + 'Usage: !8ball [question]');
+                return;
+            }
 
-        	var random;
-        	do {
-        		random = $.randRange(1, responseCount);
-        	} while (random == lastRandom);
+            var random;
+            do {
+                random = $.randRange(1, responseCount);
+            } while (random == lastRandom);
 
-        	$.discord.say(channel, $.lang.get('8ball.discord.response', $.lang.get('8ball.answer.' + random)));
-        	lastRandom = random;
+            $.discord.say(channel, $.lang.get('8ball.discord.response', $.lang.get('8ball.answer.' + random)));
+            lastRandom = random;
         }
     });
 
