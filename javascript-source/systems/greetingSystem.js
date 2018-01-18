@@ -7,7 +7,8 @@
 (function() {
     var autoGreetEnabled = $.getSetIniDbBoolean('greeting', 'autoGreetEnabled', false),
         defaultJoinMessage = $.getSetIniDbString('greeting', 'defaultJoin', '(name) joined!'),
-        greetingCooldown = $.getSetIniDbNumber('greeting', 'cooldown', (6 * 36e5)),  /* 6 Hours */
+        greetingCooldown = $.getSetIniDbNumber('greeting', 'cooldown', (6 * 36e5)),
+        /* 6 Hours */
         greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue,
         lastAutoGreet = $.systemTime();
 
@@ -39,7 +40,7 @@
      */
     function doUserGreetings() {
         setInterval(function() {
-            
+
             /* Send a greeting out into chat. */
             if (!greetingQueue.isEmpty() && autoGreetEnabled) {
                 $.say(greetingQueue.poll());
@@ -51,7 +52,7 @@
             }
 
         }, 15000, 'scripts::systems::greetingSystem.js');
-     }
+    }
 
     /**
      * @function greetingspanelupdate
@@ -72,7 +73,7 @@
             action = args[0],
             cooldown,
             message;
-    
+
         /**
          * @commandpath greeting - Base command for controlling greetings.
          */
@@ -160,7 +161,7 @@
         $.registerChatSubcommand('greeting', 'setdefault', 2);
         $.registerChatSubcommand('greeting', 'enable', 6);
         $.registerChatSubcommand('greeting', 'disable', 6);
-        
+
         doUserGreetings();
     });
 

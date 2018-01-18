@@ -20,9 +20,9 @@ import tv.phantombot.event.streamtip.StreamTipEvent;
 
 public class StreamTipDonationInitializedEvent extends StreamTipEvent {
 
-	/*
-	 * Class constructor.
-	 */
+    /*
+     * Class constructor.
+     */
     public StreamTipDonationInitializedEvent() {
 
     }

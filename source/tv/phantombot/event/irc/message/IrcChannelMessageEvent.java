@@ -22,25 +22,25 @@ import tv.phantombot.twitchwsirc.chat.Session;
 
 public class IrcChannelMessageEvent extends IrcMessageEvent {
 
-	/*
-	 * Class constructor.
-	 *
-	 * @param {Session} session
-	 * @param {String}  sender
-	 * @param {String}  message
-	 */
+    /*
+     * Class constructor.
+     *
+     * @param {Session} session
+     * @param {String}  sender
+     * @param {String}  message
+     */
     public IrcChannelMessageEvent(Session session, String sender, String message) {
         super(session, sender, message);
     }
 
     /*
-	 * Class constructor.
-	 *
-	 * @param {Session} session
-	 * @param {String}  sender
-	 * @param {String}  message
-	 * @param {Map}     tags
-	 */
+     * Class constructor.
+     *
+     * @param {Session} session
+     * @param {String}  sender
+     * @param {String}  message
+     * @param {Map}     tags
+     */
     public IrcChannelMessageEvent(Session session, String sender, String message, Map<String, String> tags) {
         super(session, sender, message, tags);
     }

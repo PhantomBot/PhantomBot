@@ -371,7 +371,7 @@ public class HTTPServerCommon {
                 return;
             }
 
-            // getAllRows and getSortedRows return data in the following format:  
+            // getAllRows and getSortedRows return data in the following format:
             // { "table" : { "table_name": "tableName", "results" : [ "key" : "keyString", "value" : "valueString" ] } }
             if (keyValue[0].equals("getAllRows") || keyValue[0].equals("getSortedRows") || keyValue[0].equals("getSortedRowsByValue")) {
 
@@ -379,7 +379,7 @@ public class HTTPServerCommon {
                 String sortOrder = "DESC";
                 String sortLimit = String.valueOf(Integer.MAX_VALUE);
                 String sortOffset = "0";
-              
+
                 String[] dbKeys = null;
                 jsonObject.object();
                 jsonObject.key("table");
@@ -436,7 +436,7 @@ public class HTTPServerCommon {
             }
 
         }
-       
+
         jsonObject.object().key("error").value("malformed request").endObject();
         sendHTMLError(400, jsonObject.toString(), exchange);
         return;
@@ -506,7 +506,7 @@ public class HTTPServerCommon {
 
                 if (doMarquee) {
                     refreshString = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /><style>" +
-                                    "body { margin: 5px; }" + 
+                                    "body { margin: 5px; }" +
                                     ".marquee { "+
                                     "    height: 25px;" +
                                     "    width: " + marqueeWidth + "px;" +
@@ -537,7 +537,7 @@ public class HTTPServerCommon {
                     refreshString = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head>" +
                                     "<body>" + fileStringData + "</body></html>";
                 }
-                
+
                 sendData("text/html", refreshString, exchange);
             } catch (FileNotFoundException ex) {
                 sendHTMLError(404, "Not Found", exchange);

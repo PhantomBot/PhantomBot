@@ -209,7 +209,7 @@ public class GameWispAPIv1 {
      */
     public String getUserSubInfoString(String username) {
         JSONObject jsonObject = getUserSubInfoJSON(username);
-        return jsonObject.toString(); 
+        return jsonObject.toString();
     }
 
     /*
@@ -218,11 +218,11 @@ public class GameWispAPIv1 {
      */
     public String[] refreshToken() {
         JSONObject jsonObject = readJsonFromPOSTUrl(sAPIURL + "/pub/v1/oauth/token" +
-                                                             "?grant_type=refresh_token" +
-                                                             "&client_id=" + devKey +
-                                                             "&client_secret=" + devSec +
-                                                             "&redirect_uri=" + devURI +
-                                                             "&refresh_token=" + sRefreshToken);
+                                "?grant_type=refresh_token" +
+                                "&client_id=" + devKey +
+                                "&client_secret=" + devSec +
+                                "&redirect_uri=" + devURI +
+                                "&refresh_token=" + sRefreshToken);
         if (jsonObject.has("access_token") && jsonObject.has("refresh_token")) {
             String newAccessToken = jsonObject.getString("access_token");
             String newRefreshToken = jsonObject.getString("refresh_token");

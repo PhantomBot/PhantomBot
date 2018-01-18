@@ -24,8 +24,8 @@
             if (action.equalsIgnoreCase('disconnect')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
 
-                setTimeout(function() { 
-                    java.lang.System.exit(0); 
+                setTimeout(function() {
+                    java.lang.System.exit(0);
                 }, 1000);
             }
 
@@ -58,7 +58,7 @@
                 $.inidb.del('settings', 'connectedMsg');
                 $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg.removed'));
             }
-            
+
             /*
              * @commandpath botName togglepricecommods - Toggles if moderators and higher pay for commands.
              */
@@ -197,7 +197,7 @@
 
                         $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', module.getModuleName()));
                     } catch (ex) {
-                        $.log.error('Unable to call initReady for enabled module (' + module.scriptName +'): ' + ex);
+                        $.log.error('Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex);
                     }
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
@@ -262,13 +262,13 @@
                     $.bot.modules[module.scriptName].isEnabled = true;
 
                     var hookIndex = $.bot.getHookIndex(module.scriptName, 'initReady');
-                    
+
                     try {
                         if (hookIndex !== -1) {
                             $.bot.getHook(module.scriptName, 'initReady').handler();
                         }
                     } catch (ex) {
-                        $.log.error('Unable to call initReady for enabled module (' + module.scriptName +'): ' + ex);
+                        $.log.error('Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex);
                     }
                 }
             }
@@ -302,7 +302,7 @@
                             $.setIniDbBoolean('modules', module.scriptName, false);
                         }
                     }
-                } 
+                }
             }
         }
 

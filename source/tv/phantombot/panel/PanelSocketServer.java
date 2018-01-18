@@ -19,7 +19,7 @@
  *
  * Please take note of the "id" field with the "unique_id" value. There is
  * no guarantee that a call to the websocket will result in an immediate
- * reply to the Panel Interface. As such, a unique ID must be generated for 
+ * reply to the Panel Interface. As such, a unique ID must be generated for
  * each request and is part of every reply.
  *
  * // Authenticate
@@ -72,7 +72,7 @@
  *
  * // Return DB query. Returns "error" key only if error occurred.
  * { "query_id" : "query_id", "results" :  { "table" : "table_name", "key_name" : "value" } }
- * { "query_id" : "query_id", "error" : "error" } 
+ * { "query_id" : "query_id", "error" : "error" }
  *
  * // Return DB keylist. Returns "error" key only if error occurred.
  * { "query_id" : "query_id", "results" : { [ "table" : "table_name", "key" : "key_name", "value" : "value" ] } }
@@ -132,8 +132,8 @@ import tv.phantombot.event.webpanel.WebPanelSocketUpdateEvent;
 import tv.phantombot.PhantomBot;
 
 /**
- * Provides a WebSocketServer to provide service to the Control Panel. 
- * 
+ * Provides a WebSocketServer to provide service to the Control Panel.
+ *
  * @author IllusionaryOne
  */
 public class PanelSocketServer extends WebSocketServer {
@@ -154,7 +154,7 @@ public class PanelSocketServer extends WebSocketServer {
         super(new InetSocketAddress(port));
         this.authString = authString;
         this.authStringRO = authStringRO;
-    
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
@@ -167,8 +167,8 @@ public class PanelSocketServer extends WebSocketServer {
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
         wsSessionMap.put(genSessionKey(webSocket), new wsSession(false, true, webSocket));
-        com.gmt2001.Console.debug.println("PanelSocketServer: Connection from " + 
-                                          webSocket.getRemoteSocketAddress().getHostName() + 
+        com.gmt2001.Console.debug.println("PanelSocketServer: Connection from " +
+                                          webSocket.getRemoteSocketAddress().getHostName() +
                                           ":" + webSocket.getRemoteSocketAddress().getPort());
 
     }
@@ -192,8 +192,8 @@ public class PanelSocketServer extends WebSocketServer {
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
         wsSessionMap.remove(genSessionKey(webSocket));
-        com.gmt2001.Console.debug.println("PanelSocketServer: Disconnection from " + 
-                                          webSocket.getRemoteSocketAddress().getHostName() + 
+        com.gmt2001.Console.debug.println("PanelSocketServer: Disconnection from " +
+                                          webSocket.getRemoteSocketAddress().getHostName() +
                                           ":" + webSocket.getRemoteSocketAddress().getPort());
     }
 
@@ -319,11 +319,11 @@ public class PanelSocketServer extends WebSocketServer {
                 String table = jsonObject.getJSONObject("delkey").getString("table");
                 String key = jsonObject.getJSONObject("delkey").getString("key");
                 doDBDelKey(webSocket, uniqueID, table, key);
-            } else if (jsonObject.has("socket_event") && !sessionData.isReadOnly()) {		
-                uniqueID = jsonObject.getString("socket_event");		
-                String script = jsonObject.getString("script");		
-                String arguments = jsonObject.getJSONObject("args").getString("arguments");		
-                JSONArray args = jsonObject.getJSONObject("args").getJSONArray("args");		
+            } else if (jsonObject.has("socket_event") && !sessionData.isReadOnly()) {
+                uniqueID = jsonObject.getString("socket_event");
+                String script = jsonObject.getString("script");
+                String arguments = jsonObject.getJSONObject("args").getString("arguments");
+                JSONArray args = jsonObject.getJSONObject("args").getJSONArray("args");
                 doWSEvent(webSocket, uniqueID, script, arguments, args);
             } else if (jsonObject.has("dbkeysbyorder")) {
                 uniqueID = jsonObject.getString("dbkeysbyorder");
@@ -346,7 +346,7 @@ public class PanelSocketServer extends WebSocketServer {
             }
         } catch (JSONException ex) {
             com.gmt2001.Console.err.println("PanelSocketServer::JSONException(" + ex.getMessage() + "): " + jsonString);
-        } 
+        }
     }
 
     /**
@@ -483,7 +483,7 @@ public class PanelSocketServer extends WebSocketServer {
         JSONStringer jsonObject = new JSONStringer();
         String value = "";
 
-        try {  
+        try {
             value = PhantomBot.instance().getDataStore().GetString(table, "", key);
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
@@ -853,7 +853,7 @@ public class PanelSocketServer extends WebSocketServer {
         if (value.equals(authUsername)) {
             return true;
         }
-        
+
         return false;
     }
 

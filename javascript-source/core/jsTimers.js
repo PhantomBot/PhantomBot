@@ -26,12 +26,14 @@ var setTimeout,
             timer;
 
         if (name !== undefined) {
-            timer =  new java.util.Timer(name);
+            timer = new java.util.Timer(name);
         } else {
-            timer =  new java.util.Timer();
+            timer = new java.util.Timer();
         }
 
-        registry[id] = new JavaAdapter(java.util.TimerTask, { run: fn });
+        registry[id] = new JavaAdapter(java.util.TimerTask, {
+            run: fn
+        });
         timer.schedule(registry[id], delay);
 
         return id;
@@ -50,12 +52,14 @@ var setTimeout,
             timer;
 
         if (name !== undefined) {
-            timer =  new java.util.Timer(name);
+            timer = new java.util.Timer(name);
         } else {
-            timer =  new java.util.Timer();
+            timer = new java.util.Timer();
         }
 
-        registry[id] = new JavaAdapter(java.util.TimerTask, { run: fn });
+        registry[id] = new JavaAdapter(java.util.TimerTask, {
+            run: fn
+        });
         timer.schedule(registry[id], interval, interval);
 
         return id;

@@ -6,8 +6,16 @@
  */
 (function() {
     var lastRandom = -1
-        winMessageCount = { roll: 0, gamble: 0, slot: 0 },
-        lostMessagesCount = { roll: 0, gamble: 0, slot: 0 };
+    winMessageCount = {
+            roll: 0,
+            gamble: 0,
+            slot: 0
+        },
+        lostMessagesCount = {
+            roll: 0,
+            gamble: 0,
+            slot: 0
+        };
 
     /**
      * @function loadResponses

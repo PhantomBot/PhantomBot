@@ -32,7 +32,7 @@
                 $.inidb.del('audio_hooks', dbAudioHookNames[i]);
             }
         }
-        
+
         $.panelsocketserver.doAudioHooksUpdate();
     };
 
@@ -76,7 +76,7 @@
         if ($.bot.isModuleEnabled('./systems/audioPanelSystem.js')) {
             var commands = $.inidb.GetKeyList('audioCommands', ''),
                 i;
-                
+
             for (i in commands) {
                 if (!$.commandExists(commands[i])) {
                     $.registerChatCommand('./systems/audioPanelSystem.js', commands[i], 7);
@@ -271,7 +271,7 @@
         $.registerChatSubcommand('audiohook', 'list', 1);
         $.registerChatSubcommand('audiohook', 'togglemessages', 1);
         $.registerChatSubcommand('audiohook', 'customcommand', 1);
-        
+
         loadAudioHookCommands();
         updateAudioHookDB();
     });

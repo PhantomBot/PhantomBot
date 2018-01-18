@@ -51,10 +51,11 @@ public class ImgDownload {
                 int n = 0;
                 while ((n = inputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, n);
-                }   outputStream.close();
+                }
+                outputStream.close();
             }
             byte[] imgData = outputStream.toByteArray();
-    
+
             if (!new File ("./addons/downloadHTTP").exists()) {
                 new File ("./addons/downloadHTTP").mkdirs();
             }

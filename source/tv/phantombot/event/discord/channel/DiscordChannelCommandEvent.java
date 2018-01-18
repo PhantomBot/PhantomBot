@@ -28,7 +28,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     private final boolean isAdmin;
     private final String[] args;
     private String command;
-    
+
     /*
      * Class constructor for this event.
      *

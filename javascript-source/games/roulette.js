@@ -11,7 +11,7 @@
         },
         lastRandom = 0;
 
-    function reloadRoulette () {
+    function reloadRoulette() {
         timeoutTime = $.getIniDbNumber('roulette', 'timeoutTime');
     };
 
@@ -104,7 +104,7 @@
         if (responseCounts.win == 0 && responseCounts.lost == 0) {
             loadResponses();
         }
-        
+
         $.registerChatCommand('./games/roulette.js', 'roulette', 7);
         $.registerChatCommand('./games/roulette.js', 'roulettetimeouttime', 1);
     });

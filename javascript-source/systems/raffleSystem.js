@@ -19,7 +19,8 @@
         messageInterval = $.getSetIniDbNumber('raffleSettings', 'raffleMessageInterval', 0),
         subscriberBonus = $.getSetIniDbNumber('raffleSettings', 'subscriberBonusRaffle', 1),
         regularBonus = $.getSetIniDbNumber('raffleSettings', 'regularBonusRaffle', 1),
-        interval, timeout, followMessage = '', timerMessage = '';
+        interval, timeout, followMessage = '',
+        timerMessage = '';
 
     /**
      * @function reloadRaffle
@@ -91,7 +92,7 @@
         if (args[i] !== undefined) {
             keyword = args[i].toLowerCase();
             i++;
-            
+
             if (keyword.startsWith('!')) {
                 keyword = ('!' + keyword.match(/(!+)(.+)/)[2]);
             }
@@ -110,7 +111,9 @@
         /* Check if the caster wants a auto close timer */
         if (!isNaN(parseInt(args[i])) && parseInt(args[i]) !== 0) {
             timerTime = parseInt(args[i]);
-            timeout = setTimeout(function() { close(); }, (timerTime * 6e4));
+            timeout = setTimeout(function() {
+                close();
+            }, (timerTime * 6e4));
             timerMessage = $.lang.get('rafflesystem.common.timer', timerTime);
         }
 
@@ -124,7 +127,9 @@
         }
 
         if (parseInt(messageInterval) !== 0) {
-            interval = setInterval(function() { $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', String(Object.keys(entered).length))); }, messageInterval * 6e4);
+            interval = setInterval(function() {
+                $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', String(Object.keys(entered).length)));
+            }, messageInterval * 6e4);
         }
 
         /* Clear the old raffle data */
@@ -147,7 +152,7 @@
         /* Clear the timer if there is one active. */
         clearInterval(timeout);
         clearInterval(interval);
-        
+
         /* Check if there's a raffle opened */
         if (!status) {
             $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.close.error.closed'));
@@ -179,7 +184,7 @@
             }
 
             var username = $.randElement(entries);
-                isFollowing = $.user.isFollower(username.toLowerCase()),
+            isFollowing = $.user.isFollower(username.toLowerCase()),
                 followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
 
             $.say($.lang.get('rafflesystem.winner', username, followMsg));
@@ -213,7 +218,7 @@
         var username = $.randElement(entries),
             isFollowing = $.user.isFollower(username.toLowerCase()),
             followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
-        
+
         $.say($.lang.get('rafflesystem.repick', username, followMsg));
         $.inidb.set('raffleresults', 'winner', username + ' ' + followMsg);
 
@@ -489,7 +494,7 @@
      */
     $.bind('initReady', function() {
         $.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
-        
+
         $.registerChatSubcommand('raffle', 'open', 2);
         $.registerChatSubcommand('raffle', 'close', 2);
         $.registerChatSubcommand('raffle', 'repick', 2);

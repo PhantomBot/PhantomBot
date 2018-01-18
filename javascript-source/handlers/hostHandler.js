@@ -59,12 +59,16 @@
 
         if (hostList[hoster] !== undefined) {
             if (hostList[hoster].hostTime < $.systemTime()) {
-                hostList[hoster] = { hostTime: ($.systemTime() + hostTimeout) };
+                hostList[hoster] = {
+                    hostTime: ($.systemTime() + hostTimeout)
+                };
             } else {
                 return;
             }
         } else {
-            hostList[hoster] = { hostTime: ($.systemTime() + hostTimeout) };
+            hostList[hoster] = {
+                hostTime: ($.systemTime() + hostTimeout)
+            };
         }
 
         if (s.match(/\(name\)/)) {
@@ -108,7 +112,11 @@
         //
         if ($.getIniDbBoolean('settings', 'hostHistory', false)) {
             var now = $.systemTime();
-            var jsonObject = { 'host' : String(hoster), 'time' : now, 'viewers' : viewers };
+            var jsonObject = {
+                'host': String(hoster),
+                'time': now,
+                'viewers': viewers
+            };
             $.inidb.set('hosthistory', hoster + '_' + now, JSON.stringify(jsonObject));
         }
 
@@ -118,12 +126,16 @@
 
         if (hostList[hoster] !== undefined) {
             if (hostList[hoster].hostTime < $.systemTime()) {
-                hostList[hoster] = { hostTime: ($.systemTime() + hostTimeout) };
+                hostList[hoster] = {
+                    hostTime: ($.systemTime() + hostTimeout)
+                };
             } else {
                 return;
             }
         } else {
-            hostList[hoster] = { hostTime: ($.systemTime() + hostTimeout) };
+            hostList[hoster] = {
+                hostTime: ($.systemTime() + hostTimeout)
+            };
         }
 
         if (s.match(/\(name\)/)) {
