@@ -2,7 +2,7 @@
  * Handles linking of a Discord account to a Twitch account.
  *
  */
-(function () {
+(function() {
     var accounts = {},
         interval;
 
@@ -15,7 +15,7 @@
      * @return {string or null}
      */
     function resolveTwitchName(userId) {
-        return ($.inidb.exists('discordToTwitch', userId) ? $.inidb.get('discordToTwitch', userId) : null); 
+        return ($.inidb.exists('discordToTwitch', userId) ? $.inidb.get('discordToTwitch', userId) : null);
     }
 
     /**
@@ -44,9 +44,9 @@
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
                 }
 
-            /**
-             * @discordcommandpath account link - Starts the process of linking an account. Completing this will overwrite existing links
-             */
+                /**
+                 * @discordcommandpath account link - Starts the process of linking an account. Completing this will overwrite existing links
+                 */
             } else if (action.equalsIgnoreCase('link')) {
                 var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+',
                     text = '',
@@ -67,9 +67,9 @@
                 } else {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link', $.channelName, text));
                 }
-            /**
-             * @discordcommandpath account remove - Removes account links from the sender.
-             */
+                /**
+                 * @discordcommandpath account remove - Removes account links from the sender.
+                 */
             } else if (action.equalsIgnoreCase('remove')) {
                 $.inidb.del('discordToTwitch', userId);
                 $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.remove'));
@@ -80,7 +80,7 @@
     /**
      * @event command
      */
-    $.bind('command', function (event) {
+    $.bind('command', function(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
@@ -130,7 +130,7 @@
         interval = setInterval(function() {
             var keys = Object.keys(accounts),
                 i;
-    
+
             for (i in keys) {
                 if ((accounts[keys[i]].time + 6e5) < $.systemTime()) {
                     delete accounts[keys[i]];

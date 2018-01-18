@@ -2,7 +2,7 @@
  * This module is to handles the random game.
  */
 (function() {
-	var responseCount = 0,
+    var responseCount = 0,
         lastRandom = 0;
 
     /**
@@ -26,12 +26,12 @@
          */
         if (command.equalsIgnoreCase('random')) {
             var random;
-        	do {
-        		random = $.randRange(1, responseCount);
-        	} while (random == lastRandom);
+            do {
+                random = $.randRange(1, responseCount);
+            } while (random == lastRandom);
 
-        	$.discord.say(channel, $.tags(event, $.lang.get('randomcommand.' + random), false));
-        	lastRandom = random;
+            $.discord.say(channel, $.tags(event, $.lang.get('randomcommand.' + random), false));
+            lastRandom = random;
         }
     });
 

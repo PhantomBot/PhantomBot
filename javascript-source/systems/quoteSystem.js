@@ -4,7 +4,7 @@
  * Have the bot remember the most epic/derpy oneliners
  */
 (function() {
-    
+
     var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true),
         isDeleting = false;
 
@@ -53,7 +53,7 @@
         if (isDeleting) {
             return -1;
         }
-        
+
         if ($.inidb.exists('quotes', quoteId)) {
             isDeleting = true;
             $.inidb.del('quotes', quoteId);
@@ -139,7 +139,7 @@
 
             $.log.event(sender + ' edited quote #' + quote);
         }
-        
+
         /**
          * @commandpath quotemodetoggle - toggle between !addquote function modes
          */
@@ -232,9 +232,7 @@
 
             var newCount;
 
-            if ((newCount = deleteQuote(args[0])) >= 0) {
-            } else {
-            }
+            if ((newCount = deleteQuote(args[0])) >= 0) {} else {}
         }
 
         /**

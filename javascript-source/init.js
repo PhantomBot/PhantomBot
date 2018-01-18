@@ -88,7 +88,7 @@
                     for (var i = 0; i < arguments.length; i++) {
                         args.push(arguments[i]);
                     }
-    
+
                     obj[name].save(obj, args);
                 };
             };
@@ -208,7 +208,7 @@
         return modules[scriptName];
     }
 
-     /*
+    /*
      * @function getHook
      *
      * @param  {String} scriptName
@@ -229,7 +229,7 @@
     function getHookIndex(scriptName, hookName) {
         var hook = hooks[hookName],
             i;
-            
+
         if (hook !== undefined) {
             for (i in hook.handlers) {
                 if (hook.handlers[i].scriptName.equalsIgnoreCase(scriptName)) {
@@ -420,7 +420,7 @@
                         if ($.inidb.exists('settings', 'connectedMsg')) {
                             $.say($.inidb.get('settings', 'connectedMsg'));
                         } else {
-                            consoleLn($.botName + ' ready!'); 
+                            consoleLn($.botName + ' ready!');
                         }
                     }
                     isReady = true;
@@ -441,7 +441,7 @@
             // Check if the command exists or if the module is disabled.
             if (!$.commandExists(command) || !isModuleEnabled($.getCommandScript(command))) {
                 return;
-            } else 
+            } else
 
             // Check if the command has an alias.
             if ($.aliasExists(command)) {
@@ -462,19 +462,19 @@
                     }
                 }
                 return;
-            } else 
+            } else
 
             // Check the command permission.
             if ($.permCom(sender, command, subCommand) !== 0) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, subCommand))), $.getIniDbBoolean('settings', 'permComMsgEnabled', false));
                 return;
-            } else 
+            } else
 
             // Check the command cooldown.
             if ($.coolDown.get(command, sender, isMod) !== 0) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
                 return;
-            } else 
+            } else
 
             // Check the command cost.
             if ($.priceCom(sender, command, subCommand, isMod) === 1) {
@@ -990,7 +990,7 @@
         getModule: getModule,
         getHook: getHook,
         modules: modules,
-        hooks: hooks   
+        hooks: hooks
     };
 
     // Load init.js

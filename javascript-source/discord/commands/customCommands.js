@@ -119,7 +119,9 @@
         }
 
         if (s.match(/\(writefile ([\w\W^,]+), ([\w^,]+), ([\w\W^,]+)\)/)) {
-            var file = s.match(/\(writefile (.+), (.+), (.+)\)/)[1], append = (s.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false), string = s.match(/\(writefile (.+), (.+), (.+)\)/)[3];
+            var file = s.match(/\(writefile (.+), (.+), (.+)\)/)[1],
+                append = (s.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false),
+                string = s.match(/\(writefile (.+), (.+), (.+)\)/)[3];
             $.writeToFile(string, './addons/' + file, append);
             return null;
         }
@@ -149,7 +151,7 @@
 
         if (s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)/)) {
             $.discord.addRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]);
-            
+
             s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
             if (s.length === 0) {
                 return null;
@@ -586,7 +588,7 @@
         $.discord.registerCommand('./discord/commands/customCommands.js', 'delalias', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'commands', 0);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'botcommands', 1);
-        
+
         loadCustomCommands();
     });
 
@@ -615,7 +617,7 @@
                         $.discord.clearChannelCommands(event.getArgs()[0]);
                         var keys = event.getArgs()[2].split(', '),
                             i;
- 
+
                         for (i in keys) {
                             $.discord.setCommandChannel(event.getArgs()[0], keys[i], false);
                         }

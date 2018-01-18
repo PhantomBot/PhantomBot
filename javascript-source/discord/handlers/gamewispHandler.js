@@ -140,7 +140,7 @@
             if (action.equalsIgnoreCase('tieruptoggle')) {
                 tierToggle = !tierToggle;
                 $.inidb.set('discordSettings', 'gamewispTierToggle', tierToggle);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.toggle', (tierToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));         
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.toggle', (tierToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
             }
 
             /**

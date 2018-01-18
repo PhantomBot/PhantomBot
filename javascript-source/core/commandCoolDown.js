@@ -129,7 +129,7 @@
             } else {
                 if (cooldown.cooldowns[username] !== undefined && cooldown.cooldowns[username] > $.systemTime()) {
                     return (cooldown.cooldowns[username] - $.systemTime() > 1000 ? Math.floor(((cooldown.cooldowns[username] - $.systemTime()) / 1000)) : 1);
-                } 
+                }
             }
         } else {
             if (defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
@@ -179,11 +179,19 @@
     function add(command, seconds, isGlobal) {
         if (cooldowns[command] === undefined) {
             cooldowns[command] = new Cooldown(command, seconds, isGlobal);
-            $.inidb.set('cooldown', command, JSON.stringify({command: String(command), seconds: String(seconds), isGlobal: String(isGlobal)}));
+            $.inidb.set('cooldown', command, JSON.stringify({
+                command: String(command),
+                seconds: String(seconds),
+                isGlobal: String(isGlobal)
+            }));
         } else {
             cooldowns[command].isGlobal = isGlobal;
             cooldowns[command].seconds = seconds;
-            $.inidb.set('cooldown', command, JSON.stringify({command: String(command), seconds: String(seconds), isGlobal: String(isGlobal)}));
+            $.inidb.set('cooldown', command, JSON.stringify({
+                command: String(command),
+                seconds: String(seconds),
+                isGlobal: String(isGlobal)
+            }));
         }
     }
 
@@ -237,7 +245,7 @@
             subAction = parseInt(subAction);
 
             if (subAction > -1) {
-                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.set', action, subAction)); 
+                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.set', action, subAction));
                 add(action, subAction, actionArgs);
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.remove', action));

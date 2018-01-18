@@ -148,7 +148,7 @@ public class StreamTipCache implements Runnable {
                         com.gmt2001.Console.err.println("StreamTipCache.updateCache: Bad API key or client-ID disabling the StreamTip module.");
                         PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/streamTipHandler.js", "false");
                     } else {
-                       com.gmt2001.Console.err.println("StreamTipCache.updateCache: Failed to update donations: " + ex.getMessage()); 
+                        com.gmt2001.Console.err.println("StreamTipCache.updateCache: Failed to update donations: " + ex.getMessage());
                     }
                     this.kill();
                 }

@@ -18,10 +18,10 @@ package tv.phantombot.event.webpanel;
 
 public class WebPanelSocketConnectedEvent extends WebPanelSocketEvent {
 
-	/*
-	 * Class constructor.
-	 */
-	public WebPanelSocketConnectedEvent() {
-		
-	}
+    /*
+     * Class constructor.
+     */
+    public WebPanelSocketConnectedEvent() {
+
+    }
 }

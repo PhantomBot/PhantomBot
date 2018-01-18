@@ -19,7 +19,7 @@
  *
  * // Authenticate
  * { "authenticate : "authentication_key" }
- * 
+ *
  * // Tell the bot the current state of the player.
  * // Values are: NEW(-2), UNSTARTED(-1), ENDED(0), PLAYING(1), PAUSED(2), BUFFERING(3), CUED(5), KEEPALIVE(200)
  * { "status" : { "state" : integer value } }
@@ -132,7 +132,7 @@ public class YTWebSocketServer extends WebSocketServer {
         super(new InetSocketAddress(port));
         this.authString = authString;
         this.authStringRO = authStringRO;
-    
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
@@ -191,14 +191,14 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerConnectEvent());
             }
             return;
-        } 
+        }
         if (jsonObject.has("readauth")) {
             authenticated = jsonObject.getString("readauth").equals(authStringRO);
             sessionData.setAuthenticated(authenticated);
             sessionData.setPlayer(false);
             authResult(authenticated, webSocket);
             return;
-        } 
+        }
 
         if (!sessionData.isAuthenticated()) {
             authResult(false, webSocket);

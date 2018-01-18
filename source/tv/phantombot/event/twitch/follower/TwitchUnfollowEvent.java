@@ -18,11 +18,11 @@ package tv.phantombot.event.twitch.follower;
 
 public class TwitchUnfollowEvent extends TwitchFollowerEvent {
 
-	/*
-	 * Class constructor.
-	 *
-	 * @param {String} follower
-	 */
+    /*
+     * Class constructor.
+     *
+     * @param {String} follower
+     */
     public TwitchUnfollowEvent(String follower) {
         super(follower);
     }

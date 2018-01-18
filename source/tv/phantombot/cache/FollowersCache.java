@@ -44,7 +44,7 @@ public class FollowersCache implements Runnable {
     private Boolean hasFail = false;
     private Boolean killed = false;
     private int numfail = 0;
-    
+
     /*
      * @function instance
      *
@@ -119,7 +119,7 @@ public class FollowersCache implements Runnable {
         if (jsonObject.getBoolean("_success")) {
             if (jsonObject.getInt("_http") == 200) {
                 JSONArray jsonArray = jsonObject.getJSONArray("follows");
-                
+
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String follower = jsonArray.getJSONObject(i).getJSONObject("user").getString("name").toLowerCase();
 
@@ -130,8 +130,8 @@ public class FollowersCache implements Runnable {
                 }
             } else {
                 throw new Exception("[HTTPErrorException] HTTP " + jsonObject.getInt("_http") + " " + jsonObject.getString("error") + ". req="
-                    + jsonObject.getString("_type") + " " + jsonObject.getString("_url") + " " + jsonObject.getString("_post") + "  "
-                    + (jsonObject.has("message") && !jsonObject.isNull("message") ? "message=" + jsonObject.getString("message") : "content=" + jsonObject.getString("_content")));
+                                    + jsonObject.getString("_type") + " " + jsonObject.getString("_url") + " " + jsonObject.getString("_post") + "  "
+                                    + (jsonObject.has("message") && !jsonObject.isNull("message") ? "message=" + jsonObject.getString("message") : "content=" + jsonObject.getString("_content")));
             }
         } else {
             throw new Exception("[" + jsonObject.getString("_exception") + "] " + jsonObject.getString("_exceptionMessage"));

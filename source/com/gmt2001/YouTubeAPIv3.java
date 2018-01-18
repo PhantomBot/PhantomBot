@@ -262,8 +262,8 @@ public class YouTubeAPIv3 {
         }
 
         com.gmt2001.Console.debug.println("YouTubeAPIv3.GetData Timers " + (preconnect.getTime() - start.getTime()) + " "
-                                            + (postconnect.getTime() - start.getTime()) + " " + (prejson.getTime() - start.getTime()) + " "
-                                            + (postjson.getTime() - start.getTime()) + " " + start.toString() + " " + postjson.toString());
+                                          + (postconnect.getTime() - start.getTime()) + " " + (prejson.getTime() - start.getTime()) + " "
+                                          + (postjson.getTime() - start.getTime()) + " " + start.toString() + " " + postjson.toString());
         com.gmt2001.Console.debug.println("YouTubeAPIv3.GetData Exception " + j.getString("_exception") + " " + j.getString("_exceptionMessage"));
         com.gmt2001.Console.debug.println("YouTubeAPIv3.GetData HTTP/Available " + j.getInt("_http") + "(" + responsecode + ")/" + j.getInt("_available") + "(" + cl + ")");
         com.gmt2001.Console.debug.println("YouTubeAPIv3.GetData RawContent[0,100] " + j.getString("_content").substring(0, Math.min(100, j.getString("_content").length())));
@@ -395,8 +395,8 @@ public class YouTubeAPIv3 {
                     if (cd.getString("duration").equalsIgnoreCase("PT0S")) {
                         com.gmt2001.Console.debug.println("YouTubeAPIv3.GetVideoLength Fail (Live Stream)");
                         return new int[] {
-                               123, 456, 7899
-                           };
+                                   123, 456, 7899
+                               };
                     }
 
                     //String d = cd.getString("duration").substring(2);

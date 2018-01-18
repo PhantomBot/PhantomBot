@@ -33,15 +33,15 @@ import twitter4j.conf.ConfigurationBuilder;
 /*
  * API services provided by:
  * Twitter4J (http://twitter4j.org/)
- * 
+ *
  * Copyright 2007 Yusuke Yamamoto
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * Distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -146,13 +146,12 @@ public class TwitterAPI {
             accessToken = twitter.getOAuthAccessToken();
             com.gmt2001.Console.out.println("Authenticated with Twitter API");
             return true;
-        }
-        catch (TwitterException ex) {
+        } catch (TwitterException ex) {
             com.gmt2001.Console.err.println("Twitter Auth Failed: " + ex.getMessage());
             accessToken = null;
             return false;
         }
-    }     
+    }
 
     /*
      * Posts a Tweet on Twitter.  This will post to the user timeline and is the same as posting any
@@ -256,11 +255,11 @@ public class TwitterAPI {
             com.gmt2001.Console.err.println("Failed: " + ex.getMessage());
             return null;
         }
-   } 
+    }
 
     /*
      * Reads the home timeline on Twitter.  This includes posts made by the user, retweets, and
-     * posts made by friends.  This is essentially the screen that is seen when logging into 
+     * posts made by friends.  This is essentially the screen that is seen when logging into
      * Twitter.
      *
      * @return  List<Status>  List of Status objects on success, null on failure.
@@ -353,7 +352,7 @@ public class TwitterAPI {
     }
 
     /*
-     * Looks for mentions (@username) on Twitter.  
+     * Looks for mentions (@username) on Twitter.
      *
      * @param  long           The last ID was was pulled from Twitter for mentions.
      * @return  List<Status>  List of Status objects on success, null on failure.

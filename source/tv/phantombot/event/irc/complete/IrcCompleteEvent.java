@@ -22,11 +22,11 @@ import tv.phantombot.twitchwsirc.chat.Session;
 
 public abstract class IrcCompleteEvent extends IrcEvent {
 
-	/*
-	 * Class constructor
-	 *
-	 * @param {Session} session
-	 */
+    /*
+     * Class constructor
+     *
+     * @param {Session} session
+     */
     protected IrcCompleteEvent(Session session) {
         super(session);
     }

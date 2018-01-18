@@ -20,12 +20,12 @@ import sx.blah.discord.handle.obj.IUser;
 
 public class DiscordChannelPartEvent extends DiscordChannelEvent {
 
-	/*
-	 * Class constructor.
-	 *
-	 * @param {IUser} user
-	 */
-	public DiscordChannelPartEvent(IUser user) {
-		super(user);
-	}
+    /*
+     * Class constructor.
+     *
+     * @param {IUser} user
+     */
+    public DiscordChannelPartEvent(IUser user) {
+        super(user);
+    }
 }

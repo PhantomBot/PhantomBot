@@ -22,14 +22,14 @@
         modLogs = $.getSetIniDbBoolean('discordSettings', 'modLogs', false),
         modLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
 
-        cbenniToggle = $.getSetIniDbBoolean('discordSettings', 'cbenniToggle', false);
+    cbenniToggle = $.getSetIniDbBoolean('discordSettings', 'cbenniToggle', false);
 
     /**
      * @function reload
      */
     function reload() {
         linkToggle = $.getSetIniDbBoolean('discordSettings', 'linkToggle', false),
-        linkPermit = $.getSetIniDbNumber('discordSettings', 'linkPermit', 60);
+            linkPermit = $.getSetIniDbNumber('discordSettings', 'linkPermit', 60);
         capsToggle = $.getSetIniDbBoolean('discordSettings', 'capToggle', false);
         capsLimitPercent = $.getSetIniDbNumber('discordSettings', 'capsLimitPercent', 50);
         capsTriggerLength = $.getSetIniDbNumber('discordSettings', 'capsTriggerLength', 15);
@@ -186,7 +186,7 @@
         }
         $.discordAPI.sendMessageEmbed(modLogChannel, 'red', toSend);
     }
-    
+
     /*
      * @event PubSubModerationTimeout
      */
@@ -276,16 +276,25 @@
             if (spamToggle) {
                 if (spam[sender] !== undefined) {
                     if (spam[sender].time + 5000 > $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
-                        spam[sender].total++; spam[sender].messages.push(event.getDiscordMessage());
+                        spam[sender].total++;
+                        spam[sender].messages.push(event.getDiscordMessage());
                     } else if (spam[sender].time + 5000 < $.systemTime() && (spam[sender].total + 1) <= spamLimit) {
-                        spam[sender] = { total: 1, time: $.systemTime(), messages: [event.getDiscordMessage()] };
+                        spam[sender] = {
+                            total: 1,
+                            time: $.systemTime(),
+                            messages: [event.getDiscordMessage()]
+                        };
                     } else {
-                        spam[sender].messages.push(event.getDiscordMessage()); 
+                        spam[sender].messages.push(event.getDiscordMessage());
                         bulkDelete(sender, channel);
                         return;
                     }
                 } else {
-                    spam[sender] = { total: 1, time: $.systemTime(), messages: [event.getDiscordMessage()] };
+                    spam[sender] = {
+                        total: 1,
+                        time: $.systemTime(),
+                        messages: [event.getDiscordMessage()]
+                    };
                 }
             }
 
@@ -316,11 +325,11 @@
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.usage'));
                 return;
             }
-            
+
             if (action.equalsIgnoreCase('links')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.links.usage'));
-                    return; 
+                    return;
                 }
 
                 /**
@@ -338,7 +347,7 @@
                 if (subAction.equalsIgnoreCase('permittime')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.links.permit.time.usage'));
-                        return; 
+                        return;
                     }
 
                     linkPermit = parseInt(actionArgs);
@@ -346,7 +355,7 @@
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.links.permit.time.set', linkPermit));
                 }
             }
-           
+
             if (action.equalsIgnoreCase('caps')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.caps.usage'));
@@ -368,7 +377,7 @@
                 if (subAction.equalsIgnoreCase('triggerlength')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.caps.trigger.usage'));
-                        return; 
+                        return;
                     }
 
                     capsTriggerLength = parseInt(actionArgs);
@@ -382,7 +391,7 @@
                 if (subAction.equalsIgnoreCase('limitpercent')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.caps.limit.usage'));
-                        return; 
+                        return;
                     }
 
                     capsLimitPercent = parseInt(actionArgs);
@@ -394,7 +403,7 @@
             if (action.equalsIgnoreCase('longmessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.long.message.usage'));
-                    return; 
+                    return;
                 }
 
                 /**
@@ -412,7 +421,7 @@
                 if (subAction.equalsIgnoreCase('limit')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.long.message.limit.usage'));
-                        return; 
+                        return;
                     }
 
                     longMessageLimit = parseInt(actionArgs);
@@ -424,7 +433,7 @@
             if (action.equalsIgnoreCase('spam')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.spam.usage'));
-                    return; 
+                    return;
                 }
 
                 /**
@@ -442,7 +451,7 @@
                 if (subAction.equalsIgnoreCase('limit')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.spam.limit.usage'));
-                        return; 
+                        return;
                     }
 
                     spamLimit = parseInt(actionArgs);
@@ -451,11 +460,11 @@
                 }
             }
 
-           
+
             if (action.equalsIgnoreCase('blacklist')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.blacklist.usage'));
-                    return; 
+                    return;
                 }
 
                 /**
@@ -464,7 +473,7 @@
                 if (subAction.equalsIgnoreCase('add')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.blacklist.add.usage'));
-                        return;  
+                        return;
                     }
 
                     actionArgs = args.splice(2).join(' ').toLowerCase();
@@ -478,7 +487,7 @@
                 if (subAction.equalsIgnoreCase('remove')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.blacklist.remove.usage'));
-                        return;  
+                        return;
                     } else if (!$.inidb.exists('discordBlacklist', args.splice(2).join(' ').toLowerCase())) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.blacklist.remove.404'));
                         return;
@@ -496,7 +505,7 @@
                     var keys = $.inidb.GetKeyList('discordBlacklist', ''),
                         temp = [],
                         i;
-                        
+
                     for (i = 0; i < keys.length; i++) {
                         temp.push('#' + i + ': ' + keys[i]);
                     }
@@ -513,7 +522,7 @@
             if (action.equalsIgnoreCase('whitelist')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.whitelist.usage'));
-                    return; 
+                    return;
                 }
 
                 /**
@@ -522,7 +531,7 @@
                 if (subAction.equalsIgnoreCase('add')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.whitelist.add.usage'));
-                        return;  
+                        return;
                     }
 
                     actionArgs = args.splice(2).join(' ').toLowerCase();
@@ -536,7 +545,7 @@
                 if (subAction.equalsIgnoreCase('remove')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.whitelist.remove.usage'));
-                        return;  
+                        return;
                     } else if (!$.inidb.exists('discordWhitelist', args.splice(2).join(' ').toLowerCase())) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.whitelist.remove.404'));
                         return;
@@ -623,7 +632,7 @@
             }
         }
     });
-    
+
     /**
      * @event webPanelSocketUpdate
      */
@@ -648,7 +657,7 @@
             $.discord.registerSubCommand('moderation', 'cleanup', 1);
             $.discord.registerSubCommand('moderation', 'logs', 1);
             $.discord.registerSubCommand('moderation', 'togglecbenni', 1);
- 
+
 
             setInterval(function() {
                 if (spam.length !== 0 && lastMessage - $.systemTime() <= 0) {

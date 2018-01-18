@@ -77,7 +77,7 @@ public class HTTPServer {
                 HttpContext betaPanelContext = server.createContext("/beta-panel", new BetaPanelHandler());
                 betaPanelContext.setAuthenticator(auth);
             }
-            
+
             server.start();
         } catch (BindException ex) {
             com.gmt2001.Console.err.println("Failed to bind to port for HTTP Server on port " + myPort);

@@ -21,12 +21,12 @@
             match = twitchUptime.match(/(\d+) hours, (\d+) minutes and (\d+) seconds/);
             return '?t=' + match[1] + 'h' + match[2] + 'm' + match[3] + 's';
 
-        /* Uptime contains minutes, but not hours, run regular expression match as such. */
+            /* Uptime contains minutes, but not hours, run regular expression match as such. */
         } else if (twitchUptime.indexOf('minutes') !== -1) {
             match = twitchUptime.match(/(\d+) minutes and (\d+) seconds/);
             return '?t=' + match[1] + 'm' + match[2] + 's';
 
-        /* Uptime only contains seconds, run regular expression match as such. */
+            /* Uptime only contains seconds, run regular expression match as such. */
         } else {
             match = twitchUptime.match(/(\d+) seconds/);
             return '?t=' + match[1] + 's';
@@ -45,7 +45,7 @@
             twitchVODtime,
             vodJsonStr,
             uptime;
-           
+
         /*
          * @commandpath game - Give's you the current game and the playtime if the channel is online. 
          * @commandpath title - Give's you the current title and the channel uptime if the channel is online.
@@ -112,10 +112,10 @@
                 vodJsonObj = JSON.parse(vodJsonStr);
                 $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.vod.offline', vodJsonObj.videos[0].url, $.getTimeString(vodJsonObj.videos[0].length)));
                 return;
-            } 
+            }
         }
     });
-    
+
     /*
      * @event initReady
      */

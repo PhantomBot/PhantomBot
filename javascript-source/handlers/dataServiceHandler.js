@@ -1,12 +1,12 @@
 (function() {
     var reCustomAPI = new RegExp(/\(customapi\s.*\)/),
-        reCustomAPIJson = new RegExp(/\(customapijson\s.*\)/); 
+        reCustomAPIJson = new RegExp(/\(customapijson\s.*\)/);
 
     /**
      * @function drsTimer
      */
     function drsTimer() {
-        var keys, 
+        var keys,
             parts,
             apiStatus,
             commandValue,
@@ -56,7 +56,7 @@
                 if (commandValue.match(reCustomAPI)) {
                     commandValue = commandValue.replace(reCustomAPI, '(customapi)');
                 }
-                if (commandValue.match(reCustomAPIJson)){
+                if (commandValue.match(reCustomAPIJson)) {
                     commandValue = commandValue.replace(reCustomAPIJson, '(customapijson)');
                 }
                 jsonStringer.key('value').value(commandValue);
@@ -81,7 +81,7 @@
         jsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'quotes');
         $.log.event('DataRenderService: Quotes API status : ' + apiStatus);
-        
+
         keys = $.inidb.GetKeyList('points', '');
         jsonStringer = new JSONStringer();
         jsonStringer.object().key('pointsName').value($.pointNameMultiple).key('points').array();
@@ -152,7 +152,7 @@
 
         if ($.dataRenderServiceAPI.hasAPIKey()) {
             $.consoleLn('Data Render Service API Key Present, Enabling Data Feed');
-            setInterval(drsTimer, 6e4); 
+            setInterval(drsTimer, 6e4);
         }
     });
 })();

@@ -97,7 +97,7 @@ public class StreamElementsCache implements Runnable {
 
     /*
      * Checks the amount of time we failed when calling the api to avoid abusing it.
-     */ 
+     */
     private void checkLastFail() {
         Calendar cal = Calendar.getInstance();
         numfail = (lastFail.after(new Date()) ? numfail + 1 : 1);
