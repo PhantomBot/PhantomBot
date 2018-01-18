@@ -249,7 +249,7 @@ public final class PhantomBot implements Listener {
     public Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
-    
+
     /* Other Information */
     private static Boolean newSetup = false;
     private Session session;
@@ -407,7 +407,7 @@ public final class PhantomBot implements Listener {
         this.ownerName = this.pbProperties.getProperty("owner").toLowerCase();
         this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
         this.oauth = this.pbProperties.getProperty("oauth");
-        
+
         /* Set the web variables */
         this.youtubeOAuth = this.pbProperties.getProperty("ytauth");
         this.youtubeOAuthThro = this.pbProperties.getProperty("ytauthro");
@@ -485,7 +485,7 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.err.println("Terminating PhantomBot");
                 System.exit(1);
             }
- 
+
             if (!new File (httpsFileName).exists()) {
                 com.gmt2001.Console.err.println("HTTPS is enabled but the Java Keystore (httpsFileName) is not present: " + httpsFileName);
                 com.gmt2001.Console.err.println("Terminating PhantomBot");
@@ -518,7 +518,7 @@ public final class PhantomBot implements Listener {
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
          * for moderators.  For non-moderators, the maximum is 20 messages in 30 seconds. While it is not recommended
          * to go above anything higher than 19 in case the bot is ever de-modded, the option is available but is
-         * capped at 100.0. 
+         * capped at 100.0.
          */
         PhantomBot.messageLimit = Math.floor(Double.parseDouble(this.pbProperties.getProperty("msglimit30", "19.0")));
         if (PhantomBot.messageLimit > 99.0) {
@@ -701,7 +701,7 @@ public final class PhantomBot implements Listener {
     public static void setDebuggingLogOnly(Boolean debug) {
         PhantomBot.enableDebugging = debug;
         PhantomBot.enableDebuggingLogOnly = debug;
-    } 
+    }
 
     /*
      * Tells you the bot name.
@@ -819,7 +819,7 @@ public final class PhantomBot implements Listener {
      */
     public String getBotInformation() {
         return "\r\nJava Version: " + System.getProperty("java.runtime.version") + "\r\nOS Version: " + System.getProperty("os.name") + " "
-                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + getBotInfo() + "\r\n\r\n";
+               + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + getBotInfo() + "\r\n\r\n";
     }
 
     /*
@@ -1208,7 +1208,7 @@ public final class PhantomBot implements Listener {
         this.emotesCache = EmotesCache.instance(this.channelName);
         this.followersCache = FollowersCache.instance(this.channelName);
         this.viewerListCache = ViewerListCache.instance(this.channelName);
-        
+
         /* Start the donations cache if the keys are not null and the module is enabled */
         if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && checkModuleEnabled("./handlers/donationHandler.js")) {
             this.twitchAlertsCache = DonationsCache.instance(this.channelName);
@@ -1601,7 +1601,7 @@ public final class PhantomBot implements Listener {
             GenerateLogs.writeLogs();
         }
 
-         /* Prints the latest logs in the console. */
+        /* Prints the latest logs in the console. */
         if (message.equalsIgnoreCase("printlogs")) {
             print("[CONSOLE] Executing printlogs");
             GenerateLogs.printLogs();
@@ -1924,7 +1924,7 @@ public final class PhantomBot implements Listener {
                 SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
                 datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
                 String timestamp = datefmt.format(new Date());
-    
+
                 dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
                 return;
             }
@@ -2326,10 +2326,10 @@ public final class PhantomBot implements Listener {
                     com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
                     com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
                     com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
-                    
+
                     startProperties.setProperty("oauth", System.console().readLine().trim());
                 } while (startProperties.getProperty("oauth", "").length() <= 0);
-                
+
                 // api oauth.
                 do {
                     com.gmt2001.Console.out.print("\r\n");
@@ -2338,7 +2338,7 @@ public final class PhantomBot implements Listener {
                     com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
                     com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
                     com.gmt2001.Console.out.print("Please enter your OAuth token: ");
-                    
+
                     startProperties.setProperty("apioauth", System.console().readLine().trim());
                 } while (startProperties.getProperty("apioauth", "").length() <= 0);
 
@@ -2422,7 +2422,7 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        /* Iterate the properties and delete entries for anything that does not have a 
+        /* Iterate the properties and delete entries for anything that does not have a
          * value.
          */
         for (String propertyKey : startProperties.stringPropertyNames()) {
@@ -2432,7 +2432,7 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        /* 
+        /*
          * Check for required settings.
          */
         for (String requiredProperty : requiredProperties) {
@@ -2440,7 +2440,7 @@ public final class PhantomBot implements Listener {
                 requiredPropertiesErrorMessage += requiredProperty + " ";
             }
         }
-        
+
         if (!requiredPropertiesErrorMessage.isEmpty()) {
             com.gmt2001.Console.err.println();
             com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);
@@ -2481,7 +2481,7 @@ public final class PhantomBot implements Listener {
 
         gameWispOAuth = newTokens[0];
         gameWispRefresh = newTokens[1];
-        
+
         pbProperties.setProperty("gamewispauth", newTokens[0]);
         pbProperties.setProperty("gamewisprefresh", newTokens[1]);
 
@@ -2566,7 +2566,7 @@ public final class PhantomBot implements Listener {
                 } catch (InterruptedException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
-                
+
                 if (webEnabled) {
                     dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
                 }
@@ -2669,7 +2669,7 @@ public final class PhantomBot implements Listener {
         }
 
         com.gmt2001.Console.out.println("Moving the phantombot.db and botlogin.txt files into ./config");
-        
+
         try {
             Files.move(Paths.get("botlogin.txt"), Paths.get("./config/botlogin.txt"));
             Files.move(Paths.get("phantombot.db"), Paths.get("./config/phantombot.db"));
@@ -2719,7 +2719,7 @@ public final class PhantomBot implements Listener {
 
         // Append the headers.
         builder.append(String.join(",", headers) + "\n");
-    
+
         // Append all values.
         for (String[] value : values) {
             builder.append(String.join(",", value) + "\n");

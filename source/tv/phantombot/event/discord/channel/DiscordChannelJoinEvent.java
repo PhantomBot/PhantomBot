@@ -19,13 +19,13 @@ package tv.phantombot.event.discord.channel;
 import sx.blah.discord.handle.obj.IUser;
 
 public class DiscordChannelJoinEvent extends DiscordChannelEvent {
-	
-	/*
-	 * Class constructor.
-	 *
-	 * @param {IUser} user
-	 */
-	public DiscordChannelJoinEvent(IUser user) {
-		super(user);
-	}
+
+    /*
+     * Class constructor.
+     *
+     * @param {IUser} user
+     */
+    public DiscordChannelJoinEvent(IUser user) {
+        super(user);
+    }
 }

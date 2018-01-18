@@ -99,11 +99,12 @@
         $.inidb.set('command', 'age', '(age)');
 
         $.consoleLn('Installing old updates...');
-        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2', 
-        'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s', 
-        'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6', 
-        'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7', 'installedv2.3.7b', 'installedv2.3.9', 'installedv2.3.9.1', 'installedv2.3.9.1b',
-        'installedv2.4.0'];
+        versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2',
+            'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s',
+            'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6',
+            'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7', 'installedv2.3.7b', 'installedv2.3.9', 'installedv2.3.9.1', 'installedv2.3.9.1b',
+            'installedv2.4.0'
+        ];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
@@ -255,8 +256,8 @@
         }
 
         /**
-        * delete uptime command if it exits because I added this as a default command.
-        */
+         * delete uptime command if it exits because I added this as a default command.
+         */
         if ($.inidb.exists('command', 'uptime')) {
             $.inidb.del('command', 'uptime');
         }
@@ -330,7 +331,7 @@
 
         $.consoleLn('PhantomBot v2.1 updates completed!');
         $.inidb.set('updates', 'installedv2.1.0', 'true');
-        $.inidb.set('updates', 'installedNewBot', 'true');//If bot login is deleted after updates were installed we don't want to reset the modules.
+        $.inidb.set('updates', 'installedNewBot', 'true'); //If bot login is deleted after updates were installed we don't want to reset the modules.
     }
 
     /** Version 2.2 updates */
@@ -577,7 +578,7 @@
         $.inidb.set('modules', './discord/systems/pointSystem.js', 'false');
 
         $.inidb.set('permcom', $.botName.toLowerCase(), '2');
-        
+
         $.consoleLn('PhantomBot update 2.3.6 completed!');
         $.inidb.set('updates', 'installedv2.3.6', 'true');
     }
@@ -600,13 +601,21 @@
         $.consoleLn('Updating cooldowns...');
         for (i in keys) {
             seconds = $.inidb.get('cooldown', keys[i]);
-            $.inidb.set('cooldown', keys[i], JSON.stringify({command: String(keys[i]), seconds: String(seconds), isGlobal: 'true'}));
+            $.inidb.set('cooldown', keys[i], JSON.stringify({
+                command: String(keys[i]),
+                seconds: String(seconds),
+                isGlobal: 'true'
+            }));
         }
 
         $.consoleLn('Updating Discord cooldowns...');
         for (i in keys) {
             seconds = $.inidb.get('discordCooldown', keys[i]);
-            $.inidb.set('discordCooldown', keys[i], JSON.stringify({command: String(keys[i]), seconds: String(seconds), isGlobal: 'true'}));
+            $.inidb.set('discordCooldown', keys[i], JSON.stringify({
+                command: String(keys[i]),
+                seconds: String(seconds),
+                isGlobal: 'true'
+            }));
         }
 
         $.consoleLn('PhantomBot update 2.3.6s completed!');
@@ -784,7 +793,7 @@
     }
 
 
-    
+
 
     /**
      * @function getTableContents

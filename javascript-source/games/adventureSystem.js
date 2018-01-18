@@ -31,7 +31,7 @@
         lastStory;
 
 
-    function reloadAdventure () {
+    function reloadAdventure() {
         joinTime = $.getIniDbNumber('adventureSettings', 'joinTime');
         coolDown = $.getIniDbNumber('adventureSettings', 'coolDown');
         gainPercent = $.getIniDbNumber('adventureSettings', 'gainPercent');
@@ -75,7 +75,7 @@
             if (stories[i].game === null) {
                 return;
             }
-        }  
+        }
 
         $.log.warn('You must have at least one adventure that doesn\'t require a game to be set.');
         currentAdventure.gameState = 2;
@@ -309,11 +309,17 @@
             if (stories[i].game != null) {
                 if (game.equalsIgnoreCase(stories[i].game)) {
                     //$.consoleLn('gamespec::' + stories[i].title);
-                    temp.push({title: stories[i].title, lines: stories[i].lines});
+                    temp.push({
+                        title: stories[i].title,
+                        lines: stories[i].lines
+                    });
                 }
             } else {
                 //$.consoleLn('normal::' + stories[i].title);
-                temp.push({title: stories[i].title, lines: stories[i].lines});
+                temp.push({
+                    title: stories[i].title,
+                    lines: stories[i].lines
+                });
             }
         }
 

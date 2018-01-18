@@ -26,20 +26,20 @@
                 count = 0,
                 temp = [],
                 i;
-    
+
             for (i = 0; i < keys.length; i++) {
                 if ($.inidb.get('notices', keys[i]) != null) {
                     temp[i] = $.inidb.get('notices', keys[i])
                 }
             }
-    
+
             $.inidb.RemoveFile('notices');
-    
+
             for (i = 0; i < temp.length; i++) {
                 $.inidb.set('notices', 'message_' + count, temp[i]);
                 count++;
             }
-    
+
             numberOfNotices = $.inidb.GetKeyList('notices', '').length;
             isReloading = false;
         }
@@ -260,7 +260,7 @@
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-req-usage'));
                     return;
-                } 
+                }
 
                 $.inidb.set('noticeSettings', 'reqmessages', args[1]);
                 noticeReqMessages = parseInt(args[1]);

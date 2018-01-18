@@ -61,7 +61,7 @@
 
         if (messageInterval != 0) {
             interval = setInterval(function() {
-                $.say(raffleMessage.replace('(entries)', String(totalEntries)));//can't use regex here. why? who knows.
+                $.say(raffleMessage.replace('(entries)', String(totalEntries))); //can't use regex here. why? who knows.
             }, messageInterval * 6e4);
         }
 
@@ -99,7 +99,7 @@
         var Winner = $.randElement(entries),
             isFollowing = $.user.isFollower(Winner.toLowerCase()),
             followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
-        
+
         if (!force) {
             $.say($.lang.get('ticketrafflesystem.winner', $.username.resolve(Winner), followMsg));
         } else {

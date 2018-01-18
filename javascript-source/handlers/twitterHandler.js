@@ -8,7 +8,7 @@
  */
 
 
- /**
+/**
  * Anything you modify or remove in this script is at your own risk with Twitter.
  */
 (function() {
@@ -16,7 +16,7 @@
         onlinePostDelay = 480 * 6e4, // 8 hour cooldown
         gameChangeDelay = 60 * 6e4, // 1 hour cooldown
         interval;
- 
+
     /* Set default values for all configuration items. */
     $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
     $.getSetIniDbString('twitter', 'message_gamechange', 'Changing game over to (game) (twitchurl)');
@@ -89,7 +89,7 @@
                 $.inidb.incr('points', userName, reward);
                 $.setIniDbNumber('twitter_user_last_retweet', userName, now);
             }
-        } 
+        }
 
         if (rewardNameArray.length > 0 && $.getIniDbBoolean('twitter', 'reward_announce')) {
             $.say($.lang.get('twitter.reward.announcement', rewardNameArray.join(', '), $.getPointsString(reward)));
@@ -115,10 +115,7 @@
                     randNum = $.randRange(1, 9999);
                 } while (randNum == randPrev);
                 randPrev = randNum;
-                $.twitter.updateStatus(String(message).
-                                           replace('(title)', $.twitchcache.getStreamStatus()).
-                                           replace('(game)', $.twitchcache.getGameTitle()).
-                                           replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
+                $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
             }
         }
     });
@@ -141,7 +138,7 @@
             if (now > $.getIniDbNumber('twitter', 'last_gamechange', 0) + gameChangeDelay) {
                 $.inidb.set('twitter', 'last_gamechange', now + gameChangeDelay);
                 var randNum,
-                	uptimeSec = $.getStreamUptimeSeconds($.channelName),
+                    uptimeSec = $.getStreamUptimeSeconds($.channelName),
                     hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
                     min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
 
@@ -149,11 +146,7 @@
                     randNum = $.randRange(1, 9999);
                 } while (randNum == randPrev);
                 randPrev = randNum;
-                $.twitter.updateStatus(String(message).
-                                       replace('(title)', $.twitchcache.getStreamStatus()).
-                                       replace('(game)', $.twitchcache.getGameTitle()).
-                                       replace('(uptime)', hrs + ':' + min).
-                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
+                $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(uptime)', hrs + ':' + min).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
             }
         }
     });
@@ -169,8 +162,8 @@
             subCommandArg = args[1],
             setCommandArg = args[2],
             setCommandVal = args[3],
-            setCommandList = [ 'mentions', 'retweets', 'hometimeline', 'usertimeline' ],
-            setRewardCommandList = [ 'toggle', 'points', 'cooldown', 'announce' ],
+            setCommandList = ['mentions', 'retweets', 'hometimeline', 'usertimeline'],
+            setRewardCommandList = ['toggle', 'points', 'cooldown', 'announce'],
             minVal;
 
         /**
@@ -178,16 +171,16 @@
          */
         if (command.equalsIgnoreCase('twitter')) {
             if (commandArg === undefined) {
-               $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + '') + ' ' + $.lang.get('twitter.usage.id'));
-               return;
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + '') + ' ' + $.lang.get('twitter.usage.id'));
+                return;
             }
 
             /**
              * @commandpath twitter usage - Display the Twitter usage
              */
             if (commandArg.equalsIgnoreCase('usage')) {
-               $.say($.whisperPrefix(sender) + $.lang.get('twitter.usage'));
-               return;
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.usage'));
+                return;
             }
 
             /**
@@ -506,7 +499,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('twitter.unregister'));
                 return;
             }
-                 
+
         } /* if (command.equalsIgnoreCase('twitter')) */
     }); /* @event command */
 
@@ -538,28 +531,18 @@
                 $.inidb.set('twitter', 'last_autoupdate', $.systemTime());
 
                 if (success.equals('true')) {
-                    $.twitter.updateStatus(String(message).
-                                               replace('(title)', $.twitchcache.getStreamStatus()).
-                                               replace('(game)', $.twitchcache.getGameTitle()).
-                                               replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).
-                                               replace(/\(enter\)/g, '\r\n').
-                                               replace('(uptime)', hrs + ':' + min),
-                                           './addons/downloadHTTP/twitch-preview.jpg');
+                    $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace(/\(enter\)/g, '\r\n').replace('(uptime)', hrs + ':' + min),
+                        './addons/downloadHTTP/twitch-preview.jpg');
                 } else {
-                    $.twitter.updateStatus(String(message).
-                                               replace('(title)', $.twitchcache.getStreamStatus()).
-                                               replace('(game)', $.twitchcache.getGameTitle()).
-                                               replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).
-                                               replace('(uptime)', hrs + ':' + min).
-                                               replace(/\(enter\)/g, '\r\n'));
+                    $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace('(uptime)', hrs + ':' + min).replace(/\(enter\)/g, '\r\n'));
                 }
                 $.log.event('Sent Auto Update to Twitter');
             }
         }
     }
 
-    interval = setInterval(function() { 
-        checkAutoUpdate(); 
+    interval = setInterval(function() {
+        checkAutoUpdate();
     }, 8e4);
 
     /**

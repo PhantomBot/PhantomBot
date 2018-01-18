@@ -105,16 +105,16 @@ public class DataRenderServiceAPIv1 {
                 httpsUrlConn.addRequestProperty("Content-Type", "application/json");
                 httpsUrlConn.addRequestProperty("Content-Length", String.valueOf(postRequest.length));
                 httpsUrlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
-                                           "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+                                                "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
                 httpsUrlConn.connect();
                 httpsUrlConn.getOutputStream().write(postRequest);
-    
+
                 if (httpsUrlConn.getResponseCode() == 200) {
                     inputStream = httpsUrlConn.getInputStream();
                 } else {
                     inputStream = httpsUrlConn.getErrorStream();
                 }
-    
+
                 BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
                 jsonText = readAll(rd);
                 jsonResult = new JSONObject(jsonText);
@@ -128,16 +128,16 @@ public class DataRenderServiceAPIv1 {
                 httpUrlConn.addRequestProperty("Content-Type", "application/json");
                 httpUrlConn.addRequestProperty("Content-Length", String.valueOf(postRequest.length));
                 httpUrlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
-                                           "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+                                               "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
                 httpUrlConn.connect();
                 httpUrlConn.getOutputStream().write(postRequest);
-   
+
                 if (httpUrlConn.getResponseCode() == 200) {
                     inputStream = httpUrlConn.getInputStream();
                 } else {
                     inputStream = httpUrlConn.getErrorStream();
                 }
-   
+
                 BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
                 jsonText = readAll(rd);
                 jsonResult = new JSONObject(jsonText);
@@ -197,7 +197,7 @@ public class DataRenderServiceAPIv1 {
 
     /*
      * Returns if there is an API key set or not.
-     * 
+     *
      * @return  boolean  API key has been provided.
      */
     public boolean hasAPIKey() {

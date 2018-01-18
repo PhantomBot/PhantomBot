@@ -105,22 +105,22 @@ public class HTTPSServer {
                         params.setNeedClientAuth(false);
                         params.setCipherSuites(engine.getEnabledCipherSuites());
                         params.setProtocols(engine.getEnabledProtocols());
-  
+
                         // get the default parameters
                         SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
                         params.setSSLParameters(defaultSSLParameters);
-  
+
                     } catch (Exception ex) {
                         System.out.println("Failed to create HTTPS port");
                     }
                 }
             });
-  
+
             server.createContext("/", new HTTPSServerHandler());
-  
+
             HttpContext panelContext = server.createContext("/panel", new PanelHandler());
             HttpContext ytContext = server.createContext("/ytplayer", new YTPHandler());
-  
+
             BasicAuthenticator auth = new BasicAuthenticator("PhantomBot Web Utilities") {
                 @Override
                 public boolean checkCredentials(String user, String pwd) {
@@ -129,7 +129,7 @@ public class HTTPSServer {
             };
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
-  
+
             server.setExecutor(Executors.newCachedThreadPool());
             server.start();
         } catch (KeyManagementException ex) {

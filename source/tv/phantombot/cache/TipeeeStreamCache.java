@@ -92,7 +92,7 @@ public class TipeeeStreamCache implements Runnable {
 
     /*
      * Checks the amount of time we failed when calling the api to avoid abusing it.
-     */ 
+     */
     private void checkLastFail() {
         Calendar cal = Calendar.getInstance();
         numfail = (lastFail.after(new Date()) ? numfail + 1 : 1);
@@ -164,11 +164,11 @@ public class TipeeeStreamCache implements Runnable {
                     }
                 }
             } else {
-                try { 
+                try {
                     throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req=" +
-                        jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   " +
-                        (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
-                        jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
+                                        jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   " +
+                                        (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
+                                         jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
                 } catch (Exception ex) {
                     /* Kill this cache if the tipeeestream token is bad and disable the module. */
                     if (ex.getMessage().contains("authentification")) {

@@ -101,7 +101,7 @@
         }
         diffTime = Math.floor((currentTime - playTimeStart) / 1000);
         hrs = (diffTime / 3600 < 10 ? "0" : "") + Math.floor(diffTime / 3600),
-        min = ((diffTime % 3600) / 60 < 10 ? "0" : "") + Math.floor((diffTime % 3600) / 60);
+            min = ((diffTime % 3600) / 60 < 10 ? "0" : "") + Math.floor((diffTime % 3600) / 60);
         $.inidb.set('panelstats', 'playTime', hrs + ":" + min);
     }
 
@@ -131,8 +131,8 @@
         updateChatterCount();
         updateFollowerCount();
         updateCommunities();
-        if ($.twitchCacheReady.equals('true')) { 
-            $.setIniDbNumber('panelstats', 'viewCount', $.twitchcache.getViews()); 
+        if ($.twitchCacheReady.equals('true')) {
+            $.setIniDbNumber('panelstats', 'viewCount', $.twitchcache.getViews());
         }
     }
 
@@ -162,7 +162,9 @@
     $.bind('initReady', function() {
         $.inidb.set('panelstats', 'enabled', 'true');
         $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
-        interval = setInterval(function() {  updateAll(); }, 3e4, 'scripts::handlers::panelHandler.js');
+        interval = setInterval(function() {
+            updateAll();
+        }, 3e4, 'scripts::handlers::panelHandler.js');
     });
 
     /*

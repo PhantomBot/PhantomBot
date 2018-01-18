@@ -246,7 +246,7 @@
         var group = '';
 
         if (subCommandExists(command, subcommand)) {
-           if (commands[command].subcommands[subcommand].groupId == 0) {
+            if (commands[command].subcommands[subcommand].groupId == 0) {
                 group = 'Caster';
             } else if (commands[command].subcommands[subcommand].groupId == 1) {
                 group = 'Administrator';
@@ -304,7 +304,7 @@
             return '';
         } else {
             var subCommand = args[0].toLowerCase();
-            
+
             if (subCommandExists(command, subCommand)) {
                 return subCommand;
             }

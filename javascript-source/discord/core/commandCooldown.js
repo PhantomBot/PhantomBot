@@ -107,11 +107,19 @@
     function add(command, seconds, isGlobal) {
         if (cooldowns[command] === undefined) {
             cooldowns[command] = new Cooldown(command, seconds, isGlobal);
-            $.inidb.set('discordCooldown', command, JSON.stringify({command: String(command), seconds: String(seconds), isGlobal: String(isGlobal)}));
+            $.inidb.set('discordCooldown', command, JSON.stringify({
+                command: String(command),
+                seconds: String(seconds),
+                isGlobal: String(isGlobal)
+            }));
         } else {
             cooldowns[command].isGlobal = isGlobal;
             cooldowns[command].seconds = seconds;
-            $.inidb.set('discordCooldown', command, JSON.stringify({command: String(command), seconds: String(seconds), isGlobal: String(isGlobal)}));
+            $.inidb.set('discordCooldown', command, JSON.stringify({
+                command: String(command),
+                seconds: String(seconds),
+                isGlobal: String(isGlobal)
+            }));
         }
     }
 
@@ -167,7 +175,7 @@
             subAction = parseInt(subAction);
 
             if (subAction > -1) {
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.set', action, subAction)); 
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.set', action, subAction));
                 add(action, subAction, actionArgs);
             } else {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.remove', action));
