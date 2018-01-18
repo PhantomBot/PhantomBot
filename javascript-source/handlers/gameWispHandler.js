@@ -7,13 +7,13 @@
 
     var subMessage = $.getSetIniDbString('gameWispSubHandler', 'subscribeMessage', '(name) just subscribed via GameWisp at tier level (tier)!'),
         reSubMessage = $.getSetIniDbString('gameWispSubHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row via GameWisp!'),
-        tierUpMessage = $.getSetIniDbString('gameWispSubHandler', 'tierUpMessage', '(name) upgraded to tier (tier) on GameWisp!');
-    subShowMessages = $.getSetIniDbBoolean('gameWispSubHandler', 'subscriberShowMessages', true),
+        tierUpMessage = $.getSetIniDbString('gameWispSubHandler', 'tierUpMessage', '(name) upgraded to tier (tier) on GameWisp!'),
+        subShowMessages = $.getSetIniDbBoolean('gameWispSubHandler', 'subscriberShowMessages', true),
         subReward = $.getSetIniDbNumber('gameWispSubHandler', 'subscribeReward', 0),
         reSubReward = $.getSetIniDbNumber('gameWispSubHandler', 'reSubscribeReward', 0);
 
     /*
-     * The tierData primary key needs to match the subcommand for !gamewisptier.  See notes below 
+     * The tierData primary key needs to match the subcommand for !gamewisptier.  See notes below
      * in the gamewisptier command handling.
      */
     var tierData = [];
@@ -24,8 +24,8 @@
      */
     var gameWispAuthenticated = true;
 
-    tierData['songrequests'] = [],
-        tierData['songrequests'][0] = 0;
+    tierData['songrequests'] = [];
+    tierData['songrequests'][0] = 0;
     tierData['songrequests'][1] = $.getSetIniDbNumber('gameWispTiers', 'songrequest_1', 0);
     tierData['songrequests'][2] = $.getSetIniDbNumber('gameWispTiers', 'songrequest_2', 0);
     tierData['songrequests'][3] = $.getSetIniDbNumber('gameWispTiers', 'songrequest_3', 0);
@@ -291,7 +291,7 @@
                 return;
             }
 
-            /* 
+            /*
              * @commandpath gamewisp tierupmessage [message] - Edit/show the tier upgrade message for GameWisp.
              */
             if (args[0].equalsIgnoreCase('tierupmessage')) {
