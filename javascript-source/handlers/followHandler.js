@@ -18,7 +18,7 @@
         followQueue = new java.util.concurrent.ConcurrentLinkedQueue,
         lastFollow = $.systemTime(),
         announceFollows = false;
-        
+
     /*
      * @function updateFollowConfig
      */
@@ -73,7 +73,7 @@
             if (followReward > 0) {
                 $.inidb.incr('points', follower, followReward);
             }
-            
+
             $.writeToFile(follower + ' ', './addons/followHandler/latestFollower.txt', false);
             $.inidb.set('streamInfo', 'lastFollow', follower);
         }
@@ -177,7 +177,7 @@
 
             if (!$.isOnline(streamer)) {
                 $.say($.lang.get('followhandler.shoutout.offline', streamer, streamerURL, streamerGame));
-            } else{
+            } else {
                 $.say($.lang.get('followhandler.shoutout.online', streamer, streamerURL, streamerGame));
             }
         }

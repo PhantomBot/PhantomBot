@@ -40,7 +40,7 @@ public class IrcChannelJoinEvent extends IrcChannelEvent {
      */
     public IrcChannelJoinEvent(String user) {
         super(null);
-        
+
         this.user = user;
     }
 

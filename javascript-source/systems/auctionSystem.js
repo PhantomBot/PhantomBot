@@ -1,14 +1,14 @@
 (function() {
     var auction = {
-        increments: 0,
-        minimum: 0,
-        topUser: 0,
-        topPoints: 0,
-        timer: 0,
-        status: false,
-    },
-    a,
-    b;
+            increments: 0,
+            minimum: 0,
+            topUser: 0,
+            topPoints: 0,
+            timer: 0,
+            status: false,
+        },
+        a,
+        b;
 
     /**
      * @function openAuction
@@ -81,7 +81,7 @@
         auction.status = false;
         $.inidb.decr('points', auction.topUser, auction.topPoints);
         $.say($.lang.get('auctionsystem.closed', auction.topUser, $.getPointsString(auction.topPoints)));
-        setTimeout(function () {
+        setTimeout(function() {
             resetAuction();
         }, 1000);
     };

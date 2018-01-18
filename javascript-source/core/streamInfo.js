@@ -4,8 +4,8 @@
     var gamesPlayed;
 
     /**
-    * @event twitchOnline
-    */
+     * @event twitchOnline
+     */
     $.bind('twitchOnline', function(event) {
         if (($.systemTime() - $.inidb.get('panelstats', 'playTimeReset')) >= (480 * 6e4)) {
             var uptime = getStreamUptimeSeconds($.channelName);
@@ -14,14 +14,13 @@
             $.inidb.del('streamInfo', 'gamesPlayed');
             $.inidb.set('panelstats', 'playTimeStart', $.systemTime());
             $.inidb.set('panelstats', 'playTimeReset', $.systemTime());
-            $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' 
-                    + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '='));
+            $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '='));
         }
     });
 
     /**
-    * @event twitchOffline
-    */
+     * @event twitchOffline
+     */
     $.bind('twitchOffline', function(event) {
         if (($.systemTime() - $.inidb.get('panelstats', 'playTimeReset')) >= (480 * 6e4)) {
             $.inidb.set('panelstats', 'playTimeStart', 0);
@@ -32,8 +31,8 @@
     });
 
     /**
-    * @event twitchGameChange
-    */
+     * @event twitchGameChange
+     */
     $.bind('twitchGameChange', function(event) {
         var uptime = getStreamUptimeSeconds($.channelName);
 
@@ -43,13 +42,11 @@
                 $.inidb.incr('panelstats', 'gameCount', 1);
                 count = $.inidb.get('panelstats', 'gameCount');
                 gamesPlayed = $.inidb.get('streamInfo', 'gamesPlayed');
-                gamesPlayed += (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' 
-                    + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '=');
+                gamesPlayed += (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '=');
                 $.inidb.set('streamInfo', 'gamesPlayed', gamesPlayed);
             } else {
                 count = $.inidb.get('panelstats', 'gameCount');
-                $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' 
-                    + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '='));
+                $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '='));
             }
         }
     });
@@ -138,7 +135,7 @@
             } else if (channelData.isNull('game') && channelData.getInt('_http') == 200) {
                 return $.lang.get('common.twitch.no.game');
             }
-            
+
             if (!channelData.isNull('message')) {
                 $.log.error('Failed to get the current game: ' + channelData.getString('message'));
             }
@@ -190,7 +187,7 @@
                     now = new Date(),
                     createdAtDate,
                     time;
-    
+
                 if (stream.isNull('stream')) {
                     return '';
                 }
@@ -205,11 +202,11 @@
                 now = new Date(),
                 createdAtDate,
                 time;
-    
+
             if (stream.isNull('stream')) {
                 return '';
             }
-    
+
             createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
             if (createdAtDate) {
                 time = now - createdAtDate;
@@ -257,7 +254,7 @@
             if (stream.isNull('stream')) {
                 return 0;
             }
-    
+
             createdAtDate = new Date(stream.getJSONObject('stream').getString('created_at'));
             return $.dateToString(createdAtDate);
         }

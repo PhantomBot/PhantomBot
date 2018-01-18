@@ -40,7 +40,7 @@
             $.reloadTipeeeStream();
         }
 
-         /*
+        /*
          * Reloads the streamelements vars.
          */
         if (command.equalsIgnoreCase('streamelementsreload')) {
@@ -60,28 +60,30 @@
 
             if (args.length == 2) {
                 var group = args[1];
-    
+
                 if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
                 }
-    
-                var list = $.inidb.GetKeyList('aliases', ''), i;
+
+                var list = $.inidb.GetKeyList('aliases', ''),
+                    i;
                 for (i in list) {
                     if (list[i].equalsIgnoreCase(action)) {
                         $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
                         $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
-                    } 
+                    }
                 }
                 $.inidb.set('permcom', action, group);
                 $.updateCommandGroup(action, group);
                 return;
             }
-    
-            var subcommand = args[1], group = args[2];
+
+            var subcommand = args[1],
+                group = args[2];
             if (isNaN(parseInt(group))) {
                 group = $.getGroupIdByName(group);
             }
-    
+
             $.inidb.set('permcom', action + ' ' + subcommand, group);
             $.updateSubcommandGroup(action, subcommand, group);
             return;
@@ -96,7 +98,9 @@
             }
             $.addComRegisterAliases();
             $.addComRegisterCommands();
-            if (action) { $.unregisterChatCommand(action); }
+            if (action) {
+                $.unregisterChatCommand(action);
+            }
             return;
         }
 
@@ -174,7 +178,7 @@
                 return;
             }
             var argsString = args.splice(0).join(' ');
-            $.updateStatus($.channelName, argsString, sender, true); 
+            $.updateStatus($.channelName, argsString, sender, true);
             return;
         }
 
@@ -188,7 +192,7 @@
             var argsString = args.splice(0).join(' ');
             $.updateGame($.channelName, argsString, sender, true);
             return;
-        } 
+        }
 
         /*
          * Sets the community on stream
@@ -200,7 +204,7 @@
             var argsString = args.join(' ').split(', ');
             $.updateCommunity($.channelName, argsString, sender, true);
             return;
-        } 
+        }
 
         /*
          * Reloads the adventure variables.

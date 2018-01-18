@@ -31,7 +31,7 @@
         emoteList[3] = $.getIniDbString('slotmachineemotes', 'emote_3');
         emoteList[4] = $.getIniDbString('slotmachineemotes', 'emote_4');
     };
-        
+
     /**
      * @function loadPrizes
      */
@@ -85,7 +85,7 @@
             $.inidb.incr('points', sender, prizes[e1]);
             return;
         }
-        
+
         if (e1 == e2 || e2 == e3 || e3 == e1) {
             message += $.lang.get('slotmachine.result.win', (e1 == e2 ? $.getPointsString(Math.floor(prizes[e1] * 0.3)) : $.getPointsString(Math.floor(prizes[e3] * 0.3))) + '.');
             $.say(message + $.gameMessages.getWin(sender, 'slot'));

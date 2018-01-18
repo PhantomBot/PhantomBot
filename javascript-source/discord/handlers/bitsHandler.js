@@ -2,10 +2,10 @@
  * This module is to handle bits notifications.
  */
 (function() {
-	var toggle = $.getSetIniDbBoolean('discordSettings', 'bitsToggle', false),
-	    message = $.getSetIniDbString('discordSettings', 'bitsMessage', '(name) just cheered (amount) bits!'),
-	    channelName = $.getSetIniDbString('discordSettings', 'bitsChannel', ''),
-	    announce = false;
+    var toggle = $.getSetIniDbBoolean('discordSettings', 'bitsToggle', false),
+        message = $.getSetIniDbString('discordSettings', 'bitsMessage', '(name) just cheered (amount) bits!'),
+        channelName = $.getSetIniDbString('discordSettings', 'bitsChannel', ''),
+        announce = false;
 
     /**
      * @event webPanelSocketUpdate
@@ -18,34 +18,34 @@
         }
     });
 
-	/**
-	 * @event twitchBits
-	 */
-	$.bind('twitchBits', function(event) {
-		var username = event.getUsername(),
-		    bits = event.getBits(),
-		    s = message;
+    /**
+     * @event twitchBits
+     */
+    $.bind('twitchBits', function(event) {
+        var username = event.getUsername(),
+            bits = event.getBits(),
+            s = message;
 
-		if (announce === false || toggle === false || channelName == '') {
-			return;
-		}
+        if (announce === false || toggle === false || channelName == '') {
+            return;
+        }
 
-		if (s.match(/\(name\)/g)) {
-			s = $.replace(s, '(name)', username);
-		}
+        if (s.match(/\(name\)/g)) {
+            s = $.replace(s, '(name)', username);
+        }
 
-		if (s.match(/\(amount\)/g)) {
-			s = $.replace(s, '(amount)', bits);
-		}
+        if (s.match(/\(amount\)/g)) {
+            s = $.replace(s, '(amount)', bits);
+        }
 
-		$.discord.say(channelName, s);
-	});
+        $.discord.say(channelName, s);
+    });
 
-	/**
-	 * @event discordChannelCommand
-	 */
-	$.bind('discordChannelCommand', function(event) {
-		var sender = event.getSender(),
+    /**
+     * @event discordChannelCommand
+     */
+    $.bind('discordChannelCommand', function(event) {
+        var sender = event.getSender(),
             channel = event.getChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
@@ -55,51 +55,51 @@
             subAction = args[1];
 
         if (command.equalsIgnoreCase('bitshandler')) {
-        	if (action === undefined) {
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.usage'));
-        		return;
-        	}
+            if (action === undefined) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.usage'));
+                return;
+            }
 
-        	/**
-        	 * @discordcommandpath bitshandler toggle - Toggles bit announcements.
-        	 */
-        	if (action.equalsIgnoreCase('toggle')) {
-        		toggle = !toggle;
-        		$.inidb.set('discordSettings', 'bitsToggle', toggle);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.toggle', (toggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
-        	}
+            /**
+             * @discordcommandpath bitshandler toggle - Toggles bit announcements.
+             */
+            if (action.equalsIgnoreCase('toggle')) {
+                toggle = !toggle;
+                $.inidb.set('discordSettings', 'bitsToggle', toggle);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.toggle', (toggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+            }
 
-        	/**
-        	 * @discordcommandpath bitshandler message [message] - Sets the bit announcement message.
-        	 */
-        	if (action.equalsIgnoreCase('message')) {
-        		if (subAction === undefined) {
-        			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.message.usage'));
-        			return;
-        		}
+            /**
+             * @discordcommandpath bitshandler message [message] - Sets the bit announcement message.
+             */
+            if (action.equalsIgnoreCase('message')) {
+                if (subAction === undefined) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.message.usage'));
+                    return;
+                }
 
-        		message = args.slice(1).join(' ');
-        		$.inidb.set('discordSettings', 'bitsMessage', message);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.message.set', message));
-        	}
+                message = args.slice(1).join(' ');
+                $.inidb.set('discordSettings', 'bitsMessage', message);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.message.set', message));
+            }
 
-        	/**
-        	 * @discordcommandpath bitshandler channel [channel name] - Sets the channel bit announcements will be made in.
-        	 */
-        	if (action.equalsIgnoreCase('channel')) {
-        		if (subAction === undefined) {
-        			$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.channel.usage'));
-        			return;
-        		}
+            /**
+             * @discordcommandpath bitshandler channel [channel name] - Sets the channel bit announcements will be made in.
+             */
+            if (action.equalsIgnoreCase('channel')) {
+                if (subAction === undefined) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.channel.usage'));
+                    return;
+                }
 
-        		channelName = subAction.replace('#', '').toLowerCase();
-        		$.inidb.set('discordSettings', 'bitsChannel', channelName);
-        		$.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.channel.set', channelName));
-        	}
+                channelName = subAction.replace('#', '').toLowerCase();
+                $.inidb.set('discordSettings', 'bitsChannel', channelName);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.channel.set', channelName));
+            }
         }
-	});
+    });
 
-	/**
+    /**
      * @event initReady
      */
     $.bind('initReady', function() {

@@ -20,10 +20,10 @@ import tv.phantombot.event.twitchalerts.TwitchAlertsEvent;
 
 public class TwitchAlertsDonationInitializedEvent extends TwitchAlertsEvent {
 
-	/*
-	 * Class constructor.
-	 */
+    /*
+     * Class constructor.
+     */
     public TwitchAlertsDonationInitializedEvent() {
-    	
+
     }
 }

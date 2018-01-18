@@ -18,11 +18,11 @@ package tv.phantombot.event.streamtip.donate;
 
 public class StreamTipDonationEvent extends StreamTipDonateEvent {
 
-	/*
-	 * Class constructor.
-	 *
-	 * @param {String} jsonString
-	 */
+    /*
+     * Class constructor.
+     *
+     * @param {String} jsonString
+     */
     public StreamTipDonationEvent(String jsonString) {
         super(jsonString);
     }

@@ -9,10 +9,10 @@
 
     // Load an existing emote RegExp cache.  Wait to see if there was a problem that needs us to load
     // from cache before doing so.  This saves CPU cycles and memory.
-    setTimeout(function() { 
-        if (emotesRegExpList.length === 0) { 
-            loadEmoteCache(); 
-        } 
+    setTimeout(function() {
+        if (emotesRegExpList.length === 0) {
+            loadEmoteCache();
+        }
     }, 3e4, 'scripts::handlers::emotesHandler.js');
 
     /**
@@ -81,7 +81,7 @@
 
         emotesRegExpList = new RegExp(newEmotesRegExpList.join('|'), 'g');
         $.inidb.set('emotecache', 'regexp_cache', newEmotesRegExpList.join(','));
-        
+
         loaded = true;
         $.consoleDebug("Built " + newEmotesRegExpList.length + " regular expressions for emote handling.");
         newEmotesRegExpList = [];
@@ -103,7 +103,7 @@
         }
 
         emotesRegExpList = new RegExp(newEmotesRegExpList.join('|'), 'g');
-        
+
         loaded = true;
         $.consoleDebug("Built " + newEmotesRegExpList.length + " regular expressions for emote handling from cache.");
         newEmotesRegExpList = [];

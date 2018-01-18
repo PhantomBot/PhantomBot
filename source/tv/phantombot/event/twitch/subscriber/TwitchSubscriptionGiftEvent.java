@@ -19,7 +19,7 @@ package tv.phantombot.event.twitch.subscriber;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchSubscriptionGiftEvent extends TwitchEvent {
-	private final String username;
+    private final String username;
     private final String recipient;
     private final String months;
     private final String plan;
@@ -46,7 +46,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
      * @param {String} months
      * @param {String} plan
      */
-	public TwitchSubscriptionGiftEvent(String username, String recipient, String months, String plan) {
+    public TwitchSubscriptionGiftEvent(String username, String recipient, String months, String plan) {
         this.username = username;
         this.recipient = recipient;
         this.months = months;

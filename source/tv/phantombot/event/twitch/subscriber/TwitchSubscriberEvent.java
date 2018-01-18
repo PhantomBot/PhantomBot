@@ -19,7 +19,7 @@ package tv.phantombot.event.twitch.subscriber;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchSubscriberEvent extends TwitchEvent {
-	private final String subscriber;
+    private final String subscriber;
     private final String plan;
 
     /*
@@ -27,7 +27,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
      *
      * @param {String} subscriber
      */
-	public TwitchSubscriberEvent(String subscriber) {
+    public TwitchSubscriberEvent(String subscriber) {
         this.subscriber = subscriber;
         this.plan = null;
     }

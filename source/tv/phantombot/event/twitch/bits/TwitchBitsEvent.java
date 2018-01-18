@@ -20,7 +20,7 @@ package tv.phantombot.event.twitch.bits;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchBitsEvent extends TwitchEvent {
-	private final String username;
+    private final String username;
     private final String bits;
 
     /*
@@ -29,7 +29,7 @@ public class TwitchBitsEvent extends TwitchEvent {
      * @param {String} username
      * @param {String} bits
      */
-	public TwitchBitsEvent(String username, String bits) {
+    public TwitchBitsEvent(String username, String bits) {
         this.username = username;
         this.bits = bits;
     }

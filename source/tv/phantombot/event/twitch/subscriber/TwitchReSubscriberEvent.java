@@ -19,7 +19,7 @@ package tv.phantombot.event.twitch.subscriber;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchReSubscriberEvent extends TwitchEvent {
-	private final String resubscriber;
+    private final String resubscriber;
     private final String months;
     private final String plan;
 
@@ -29,7 +29,7 @@ public class TwitchReSubscriberEvent extends TwitchEvent {
      * @param {String} resubscriber
      * @param {String} months
      */
-	public TwitchReSubscriberEvent(String resubscriber, String months) {
+    public TwitchReSubscriberEvent(String resubscriber, String months) {
         this.resubscriber = resubscriber;
         this.months = months;
         this.plan = null;

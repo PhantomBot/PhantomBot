@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /*
- * Provides a timer system for managing notices.  Reads data directly from the 
+ * Provides a timer system for managing notices.  Reads data directly from the
  * DB to determine when to run timers.
  *
  * @author illusionaryone
@@ -119,7 +119,7 @@ public class NoticeTimer implements Runnable, Listener {
         }
 
         /*
-         * Now, sync to the top of the minute.  Allow for a little bit of drift in case the bot is busy or we 
+         * Now, sync to the top of the minute.  Allow for a little bit of drift in case the bot is busy or we
          * are already near the top of the minute.
          */
         boolean sync = false;
@@ -197,19 +197,19 @@ public class NoticeTimer implements Runnable, Listener {
         if (timerScheduled == null) {
             processOrderedTimers();
             return;
-        } 
+        }
         if (timerScheduled.length() == 0 || timerScheduled.toLowerCase().equals("false")) {
             processOrderedTimers();
             return;
         }
 
-        /* Reset lastNoticeTime to -1 in case the user switches between the different modes. Note that 
+        /* Reset lastNoticeTime to -1 in case the user switches between the different modes. Note that
          * lastNoticeTime is only used by processOrderedTimers().
          */
         lastNoticeTime = -1L;
         processScheduledTimers(currentMinute);
     }
-  
+
 
     /*
      * Performs the main procesing of ordered timers.
@@ -237,7 +237,7 @@ public class NoticeTimer implements Runnable, Listener {
         if (noticeTimeDiff < noticeTimeInterval) {
             return;
         }
-        
+
         /* Get the required messages and compare to how many lines have been posted into chat. */
         int noticeReqMessages = dataStore.GetInteger("noticeSettings", "", "reqmessages");
         if (noticeReqMessages > totalChatLines && noticeReqMessages != 0) {
@@ -259,7 +259,7 @@ public class NoticeTimer implements Runnable, Listener {
         if (message0.length() == 0 && lastNoticeID == 0) {
             return;
         }
-      
+
         /*
          * Get the notice.  If it is null or empty, assume we are at the end of the list and reset to 0.
          */
@@ -272,7 +272,7 @@ public class NoticeTimer implements Runnable, Listener {
             lastNoticeID = 0;
             message = message0;
         }
-        
+
         /* See if the message is really a command and handle accordingly. */
         if (message.startsWith("command:")) {
             String arguments = "";
@@ -336,7 +336,7 @@ public class NoticeTimer implements Runnable, Listener {
             if (!foundMinuteMatch) {
                 continue;
             }
-            
+
             /* Pull chatlines.  0 means ignore lines in chat. */
             String chatlines = dataStore.GetString("notices", section, "chatlines");
             if (chatlines == null) {
@@ -359,7 +359,7 @@ public class NoticeTimer implements Runnable, Listener {
                     }
                 }
             }
-    
+
             /* Pull the message (or command). */
             String message = dataStore.GetString("notices", section, "message");
             if (message == null) {

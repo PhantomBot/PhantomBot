@@ -44,11 +44,11 @@
                     // Make sure the keyword isn't on cooldown.
                     if ($.coolDownKeywords.get(json.keyword, sender) > 0) {
                         return;
-                    } 
+                    }
                     // If the keyword is a command, we need to send that command.
                     else if (json.response.startsWith('command:')) {
                         $.command.run(sender, json.response.substring(8), '', event.getTags());
-                    } 
+                    }
                     // Keyword just has a normal response.
                     else {
                         $.say($.tags(event, json.response, false));
@@ -64,11 +64,11 @@
                         // Make sure the keyword isn't on cooldown.
                         if ($.coolDownKeywords.get(json.keyword, sender) > 0) {
                             return;
-                        } 
+                        }
                         // If the keyword is a command, we need to send that command.
                         else if (json.response.startsWith('command:')) {
                             $.command.run(sender, json.response.substring(8), '', event.getTags());
-                        } 
+                        }
                         // Keyword just has a normal response.
                         else {
                             $.say($.tags(event, json.response, false));
@@ -137,7 +137,7 @@
                 }
 
                 subAction = args[1].toLowerCase();
-                
+
                 $.inidb.del('keywords', subAction);
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', subAction));
                 loadKeywords();

@@ -8,7 +8,7 @@
     var subMessage = $.getSetIniDbString('gameWispSubHandler', 'subscribeMessage', '(name) just subscribed via GameWisp at tier level (tier)!'),
         reSubMessage = $.getSetIniDbString('gameWispSubHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row via GameWisp!'),
         tierUpMessage = $.getSetIniDbString('gameWispSubHandler', 'tierUpMessage', '(name) upgraded to tier (tier) on GameWisp!');
-        subShowMessages = $.getSetIniDbBoolean('gameWispSubHandler', 'subscriberShowMessages', true),
+    subShowMessages = $.getSetIniDbBoolean('gameWispSubHandler', 'subscriberShowMessages', true),
         subReward = $.getSetIniDbNumber('gameWispSubHandler', 'subscribeReward', 0),
         reSubReward = $.getSetIniDbNumber('gameWispSubHandler', 'reSubscribeReward', 0);
 
@@ -25,7 +25,7 @@
     var gameWispAuthenticated = true;
 
     tierData['songrequests'] = [],
-    tierData['songrequests'][0] = 0;
+        tierData['songrequests'][0] = 0;
     tierData['songrequests'][1] = $.getSetIniDbNumber('gameWispTiers', 'songrequest_1', 0);
     tierData['songrequests'][2] = $.getSetIniDbNumber('gameWispTiers', 'songrequest_2', 0);
     tierData['songrequests'][3] = $.getSetIniDbNumber('gameWispTiers', 'songrequest_3', 0);

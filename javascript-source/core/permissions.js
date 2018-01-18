@@ -30,7 +30,7 @@
     function updateUsersObject(newUsers) {
         for (var i in newUsers) {
             if (!userExists(newUsers[i])) {
-                users.push([newUsers[i], $.systemTime()]); 
+                users.push([newUsers[i], $.systemTime()]);
             }
         }
 
@@ -67,7 +67,7 @@
         }
         return false;
     }
-    
+
     /**
      * @function userExists
      * @export $
@@ -391,7 +391,7 @@
     function delGWSubUsersList(username) {
         delete gwSubUsers[username];
     }
-   
+
     /**
      * @function addSubUsersList
      * @export $
@@ -487,7 +487,7 @@
                     $.setIniDbBoolean('subscribed', username, false);
                 } else if (!$.getIniDbBoolean('subscribed', username, false) && isTwitchSub(username)) {
                     $.setIniDbBoolean('subscribed', username, true);
-                } 
+                }
             }
 
             if ($.getIniDbBoolean('gamewispsubs', username, false) && !isGWSub(username)) {
@@ -658,25 +658,25 @@
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
             }
-    
+
             lastJoinPart = $.systemTime();
 
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }
     });
-    
+
     /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
         var username = event.getSender().toLowerCase();
-        
+
         if (canPushNewUser && !userExists(username)) {
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
             }
-        
+
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
         }

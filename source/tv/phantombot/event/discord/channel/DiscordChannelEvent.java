@@ -23,23 +23,23 @@ import sx.blah.discord.handle.obj.IUser;
 import tv.phantombot.event.discord.DiscordEvent;
 
 public abstract class DiscordChannelEvent extends DiscordEvent {
-	
-	/*
-	 * Abstract constructor.
-	 *
-	 * @param {IUser} user
-	 */
-	protected DiscordChannelEvent(IUser user) {
-		super(user);
-	}
 
-	/*
-	 * Abstract constructor.
-	 *
-	 * @param {IUser}    user
-	 * @param {IChannel} channel
-	 */
-	protected DiscordChannelEvent(IUser user, IChannel channel) {
-		super(user, channel);
-	}
+    /*
+     * Abstract constructor.
+     *
+     * @param {IUser} user
+     */
+    protected DiscordChannelEvent(IUser user) {
+        super(user);
+    }
+
+    /*
+     * Abstract constructor.
+     *
+     * @param {IUser}    user
+     * @param {IChannel} channel
+     */
+    protected DiscordChannelEvent(IUser user, IChannel channel) {
+        super(user, channel);
+    }
 }

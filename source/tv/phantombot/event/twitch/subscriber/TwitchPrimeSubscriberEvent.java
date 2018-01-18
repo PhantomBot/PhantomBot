@@ -19,14 +19,14 @@ package tv.phantombot.event.twitch.subscriber;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchPrimeSubscriberEvent extends TwitchEvent {
-	private final String subscriber;
+    private final String subscriber;
 
     /*
      * Class constructor.
      *
      * @param {String} subscriber
      */
-	public TwitchPrimeSubscriberEvent(String subscriber) {
+    public TwitchPrimeSubscriberEvent(String subscriber) {
         this.subscriber = subscriber;
     }
 

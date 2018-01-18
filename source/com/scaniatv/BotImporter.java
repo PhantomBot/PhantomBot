@@ -33,103 +33,103 @@ import java.util.List;
 import tv.phantombot.PhantomBot;
 
 public class BotImporter {
-	/*
-	 * Method that will import time and points from RevloBot.
-	 *
-	 * @param {String} fileName
-	 */
-	public static void ImportRevlo(String fileName) {
-		DataStore db = PhantomBot.instance().getDataStore();
-		BufferedReader bufferedReader = null;
-		List<String> users = new ArrayList<String>();
-		List<String> points = new ArrayList<String>();
-		String brLine = "";
+    /*
+     * Method that will import time and points from RevloBot.
+     *
+     * @param {String} fileName
+     */
+    public static void ImportRevlo(String fileName) {
+        DataStore db = PhantomBot.instance().getDataStore();
+        BufferedReader bufferedReader = null;
+        List<String> users = new ArrayList<String>();
+        List<String> points = new ArrayList<String>();
+        String brLine = "";
 
-		com.gmt2001.Console.out.println("Importing RevloBot points...");
+        com.gmt2001.Console.out.println("Importing RevloBot points...");
 
-		try {
-			// Create a new reader.
-			bufferedReader = new BufferedReader(new FileReader(fileName));
+        try {
+            // Create a new reader.
+            bufferedReader = new BufferedReader(new FileReader(fileName));
 
-			// Skip the first line.
-			bufferedReader.readLine();
+            // Skip the first line.
+            bufferedReader.readLine();
 
-			while ((brLine = bufferedReader.readLine()) != null) {
-				String[] spl = brLine.split(",");
-				
-				users.add(spl[0].toLowerCase());
-				points.add(spl[2]);
-				com.gmt2001.Console.out.println("Imported: " + spl[0] + " - Points: " + spl[2]);
-			}
-			com.gmt2001.Console.out.println("Saving data...");
+            while ((brLine = bufferedReader.readLine()) != null) {
+                String[] spl = brLine.split(",");
 
-			db.SetBatchString("points", "", users.toArray(new String[users.size()]), points.toArray(new String[points.size()]));
+                users.add(spl[0].toLowerCase());
+                points.add(spl[2]);
+                com.gmt2001.Console.out.println("Imported: " + spl[0] + " - Points: " + spl[2]);
+            }
+            com.gmt2001.Console.out.println("Saving data...");
 
-			com.gmt2001.Console.out.println("Importing done!");
-		} catch (IOException ex) {
-			com.gmt2001.Console.err.println("Failed to convert points from RevloBot [IOException] " + ex.getMessage());
-		} catch (Exception ex) {
-			com.gmt2001.Console.err.println("Failed to convert points from RevloBot [Exception] " + ex.getMessage());
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException ex) {
-					com.gmt2001.Console.err.printStackTrace(ex);
-				}
-			}
-		}
-	}
+            db.SetBatchString("points", "", users.toArray(new String[users.size()]), points.toArray(new String[points.size()]));
 
-	/*
-	 * Method that will import time and points from AnkhBot.
-	 *
-	 * @param {String} fileName
-	 */
-	public static void ImportAnkh(String fileName) {
-		DataStore db = PhantomBot.instance().getDataStore();
-		BufferedReader bufferedReader = null;
-		List<String> users = new ArrayList<String>();
-		List<String> points = new ArrayList<String>();
-		List<String> time = new ArrayList<String>();
-		String brLine = "";
+            com.gmt2001.Console.out.println("Importing done!");
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.println("Failed to convert points from RevloBot [IOException] " + ex.getMessage());
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to convert points from RevloBot [Exception] " + ex.getMessage());
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+    }
 
-		com.gmt2001.Console.out.println("Importing AnkhBot points and time...");
+    /*
+     * Method that will import time and points from AnkhBot.
+     *
+     * @param {String} fileName
+     */
+    public static void ImportAnkh(String fileName) {
+        DataStore db = PhantomBot.instance().getDataStore();
+        BufferedReader bufferedReader = null;
+        List<String> users = new ArrayList<String>();
+        List<String> points = new ArrayList<String>();
+        List<String> time = new ArrayList<String>();
+        String brLine = "";
 
-		try {
-			// Create a new reader.
-			bufferedReader = new BufferedReader(new FileReader(fileName));
+        com.gmt2001.Console.out.println("Importing AnkhBot points and time...");
 
-			// Skip the first line.
-			bufferedReader.readLine();
+        try {
+            // Create a new reader.
+            bufferedReader = new BufferedReader(new FileReader(fileName));
 
-			long d = System.currentTimeMillis();
-			while ((brLine = bufferedReader.readLine()) != null) {
-				String[] spl = brLine.split(",");
-				
-				users.add(spl[0].toLowerCase());
-				points.add(spl[1]);
-				time.add(String.valueOf((Integer.parseInt(spl[2]) * 60)));
-				com.gmt2001.Console.out.println("Imported: " + spl[0] + " - Points: " + spl[1] + " - Time " + spl[2]);
-			}
-			com.gmt2001.Console.out.println("Saving data...");
+            // Skip the first line.
+            bufferedReader.readLine();
 
-			db.SetBatchString("points", "", users.toArray(new String[users.size()]), points.toArray(new String[points.size()]));
-			db.SetBatchString("time", "", users.toArray(new String[users.size()]), time.toArray(new String[time.size()]));
+            long d = System.currentTimeMillis();
+            while ((brLine = bufferedReader.readLine()) != null) {
+                String[] spl = brLine.split(",");
 
-			com.gmt2001.Console.out.println("Importing done! " + (System.currentTimeMillis() - d) + "ms");
-		} catch (IOException ex) {
-			com.gmt2001.Console.err.println("Failed to convert points and time from AnkhBot [IOException] " + ex.getMessage());
-		} catch (Exception ex) {
-			com.gmt2001.Console.err.println("Failed to convert points and time from AnkhBot [Exception] " + ex.getMessage());
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException ex) {
-					com.gmt2001.Console.err.printStackTrace(ex);
-				}
-			}
-		}
-	}
+                users.add(spl[0].toLowerCase());
+                points.add(spl[1]);
+                time.add(String.valueOf((Integer.parseInt(spl[2]) * 60)));
+                com.gmt2001.Console.out.println("Imported: " + spl[0] + " - Points: " + spl[1] + " - Time " + spl[2]);
+            }
+            com.gmt2001.Console.out.println("Saving data...");
+
+            db.SetBatchString("points", "", users.toArray(new String[users.size()]), points.toArray(new String[points.size()]));
+            db.SetBatchString("time", "", users.toArray(new String[users.size()]), time.toArray(new String[time.size()]));
+
+            com.gmt2001.Console.out.println("Importing done! " + (System.currentTimeMillis() - d) + "ms");
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.println("Failed to convert points and time from AnkhBot [IOException] " + ex.getMessage());
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to convert points and time from AnkhBot [Exception] " + ex.getMessage());
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+    }
 }

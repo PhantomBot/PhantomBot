@@ -205,8 +205,8 @@ public class TwitchPubSub {
             } else {
                 com.gmt2001.Console.debug.println("Reconnecting to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
             }
-    
-            try { 
+
+            try {
                 connect();
                 return true;
             } catch (Exception ex) {
@@ -214,7 +214,7 @@ public class TwitchPubSub {
                 return false;
             }
         }
-    
+
         /**
          * Used to start the ping timer for PubSub. Since PubSub does not send pings, we need to requests them to keep our connection opened.
          * We will send a PING request every 4.9 minutes. Twitch recommends every 5 minutes.
@@ -222,7 +222,7 @@ public class TwitchPubSub {
         private void startTimer() {
             timer.schedule(new PingTask(), 7000, 294000);
         }
-    
+
         /**
          * This purges the ping timer. It is used when the user tries to connect with a bad oauth token.
          */
@@ -230,7 +230,7 @@ public class TwitchPubSub {
             timer.cancel();
             timer.purge();
         }
-    
+
         /*
          * This function parses the message we get from PubSub. Since everything is sent in a jsonObject there is a bit of checks to do.
          *
@@ -240,7 +240,7 @@ public class TwitchPubSub {
             JSONObject dataObj;
             JSONObject messageObj;
             JSONObject data;
-    
+
             if (message.has("data")) {
                 dataObj = message.getJSONObject("data");
                 if (dataObj.has("message")) {
@@ -254,52 +254,52 @@ public class TwitchPubSub {
                             String args1 = args.getString(0);
                             String args2 = (args.length() == 2 || args.length() == 3 ? args.getString(1) : "");
                             String args3 = (args.length() == 3 ? args.getString(2) : "");
-                            
+
                             if (timeoutCache.containsKey(data.getString("target_user_id")) && (timeoutCache.get(data.getString("target_user_id")) - System.currentTimeMillis()) > 0) {
                                 return;
                             }
 
                             timeoutCache.put(data.getString("target_user_id"), System.currentTimeMillis() + 1500);
                             switch (action) {
-                                case "timeout":
-                                    this.log(args1 + " has been timed out by " + creator + " for " + args2 + " seconds. " + (args3.length() == 0 ? "" : "Reason: " + args3)); 
-                                    EventBus.instance().postAsync(new PubSubModerationTimeoutEvent(args1, creator, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : ""), args3, args2));
-                                    break;
-                                case "untimeout":
-                                    this.log(args1 + " has been un-timed out by " + creator + ".");
-                                    EventBus.instance().postAsync(new PubSubModerationUnTimeoutEvent(args1, creator));
-                                    break;
-                                case "ban":
-                                    this.log(args1 + " has been banned by " + creator + ". " + (args2.length() == 0 ? "" : "Reason: " + args2));
-                                    EventBus.instance().postAsync(new PubSubModerationBanEvent(args1, creator, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : ""), args2));
-                                    break;
-                                case "unban":
-                                    this.log(args1 + " has been un-banned by " + creator + ".");
-                                    EventBus.instance().postAsync(new PubSubModerationUnBanEvent(args1, creator));
-                                    break;
-                                case "mod":
-                                    this.log(args1 + " has been modded by " + creator + ".");
-                                    break;
-                                case "unmod":
-                                    this.log(args1 + " has been un-modded by " + creator + ".");
-                                    break;
-                                case "twitchbot_rejected":
-                                    this.log("Message (" + args2 + ") from " + args1 + " has been rejected by AutoMod.");
-                                    break;
-                                case "denied_twitchbot_message":
-                                    this.log(creator + " denied a message from " + args1 + ". Message id: " + data.getString("msg_id") + ".");
-                                    break;
-                                case "approved_twitchbot_message":
-                                    this.log(creator + " allowed a message from " + args1 + ". Message id: " + data.getString("msg_id") + ".");
-                                    break;
+                            case "timeout":
+                                this.log(args1 + " has been timed out by " + creator + " for " + args2 + " seconds. " + (args3.length() == 0 ? "" : "Reason: " + args3));
+                                EventBus.instance().postAsync(new PubSubModerationTimeoutEvent(args1, creator, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : ""), args3, args2));
+                                break;
+                            case "untimeout":
+                                this.log(args1 + " has been un-timed out by " + creator + ".");
+                                EventBus.instance().postAsync(new PubSubModerationUnTimeoutEvent(args1, creator));
+                                break;
+                            case "ban":
+                                this.log(args1 + " has been banned by " + creator + ". " + (args2.length() == 0 ? "" : "Reason: " + args2));
+                                EventBus.instance().postAsync(new PubSubModerationBanEvent(args1, creator, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : ""), args2));
+                                break;
+                            case "unban":
+                                this.log(args1 + " has been un-banned by " + creator + ".");
+                                EventBus.instance().postAsync(new PubSubModerationUnBanEvent(args1, creator));
+                                break;
+                            case "mod":
+                                this.log(args1 + " has been modded by " + creator + ".");
+                                break;
+                            case "unmod":
+                                this.log(args1 + " has been un-modded by " + creator + ".");
+                                break;
+                            case "twitchbot_rejected":
+                                this.log("Message (" + args2 + ") from " + args1 + " has been rejected by AutoMod.");
+                                break;
+                            case "denied_twitchbot_message":
+                                this.log(creator + " denied a message from " + args1 + ". Message id: " + data.getString("msg_id") + ".");
+                                break;
+                            case "approved_twitchbot_message":
+                                this.log(creator + " allowed a message from " + args1 + ". Message id: " + data.getString("msg_id") + ".");
+                                break;
                             }
                         }
                     }
                 }
             }
         }
-    
-        /* 
+
+        /*
          * Logs the messages we get from PubSub.
          *
          * @param {String}  message  Message that we will log.
@@ -309,9 +309,9 @@ public class TwitchPubSub {
                 Logger.instance().log(Logger.LogType.Moderation, "[" + Logger.instance().logTimestamp() + "] " + message);
             }
         }
-    
+
         /*
-         * Handles the event of when the socket opens, it also sends the login information and the topics we can to listen to. 
+         * Handles the event of when the socket opens, it also sends the login information and the topics we can to listen to.
          */
         @Override
         public void onOpen(ServerHandshake handshakedata) {
@@ -322,15 +322,15 @@ public class TwitchPubSub {
             String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId};
             JSONObject jsonObject = new JSONObject();
             JSONObject topics = new JSONObject();
-    
+
             topics.put("topics", type);
             topics.put("auth_token", oAuth.replace("oauth:", ""));
             jsonObject.put("type", "LISTEN");
             jsonObject.put("data", topics);
-    
+
             send(jsonObject.toString());
         }
-    
+
         /*
          * Handles the event of when the socket closes, this will also attempt to reonnect to PubSub when it happens.
          *
@@ -342,11 +342,11 @@ public class TwitchPubSub {
         public void onClose(int code, String reason, boolean remote) {
             com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
             com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying in 10 seconds");
-            
+
             closeTimer();
             twitchPubSub.reconnectWSS();
         }
-    
+
         /*
          * Handles the error event we can get from the socket. It will also print it in the console.
          *
@@ -358,7 +358,7 @@ public class TwitchPubSub {
                 com.gmt2001.Console.debug.println("TwitchPubSubWS Exception: " + ex);
             }
         }
-    
+
         /*
          * Handles the event of when we get messages from the socket.
          *
@@ -367,28 +367,28 @@ public class TwitchPubSub {
         @Override
         public void onMessage(String message) {
             JSONObject messageObj = new JSONObject(message);
-    
+
             com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
-    
+
             if (!messageObj.has("type")) {
                 return;
             }
-    
+
             if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                 com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                 reconAllowed = false;
                 return;
             }
-    
+
             if (messageObj.getString("type").equalsIgnoreCase("pong")) {
                 com.gmt2001.Console.debug.println("TwitchPubSubWS: Got a PONG.");
             }
-    
+
             if (messageObj.getString("type").equalsIgnoreCase("message")) {
                 parse(messageObj);
             }
         }
-    
+
         /**
          * Class for the PING timer. Since PubSub doesn't send PINGS we need to request them.
          */
@@ -396,9 +396,9 @@ public class TwitchPubSub {
             @Override
             public void run() {
                 JSONObject jsonObject = new JSONObject();
-    
+
                 jsonObject.put("type", "PING");
-    
+
                 send(jsonObject.toString());
                 com.gmt2001.Console.debug.println("TwitchPubSubWS: Sent a PING.");
             }

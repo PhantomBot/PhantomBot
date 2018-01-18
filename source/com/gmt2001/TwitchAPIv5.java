@@ -38,7 +38,7 @@ import java.util.ArrayList;
  * Communicates with Twitch Kraken server using the version 5 API
  *
  * @author gmt2001
- * @author illusionaryone 
+ * @author illusionaryone
  */
 public class TwitchAPIv5 {
 
@@ -190,7 +190,7 @@ public class TwitchAPIv5 {
     private String getIDFromChannel(String channel) {
         return UsernameCache.instance().getID(channel);
     }
-    
+
 
     /**
      * Gets a channel object
@@ -324,7 +324,7 @@ public class TwitchAPIv5 {
         return GetData(request_type.PUT, base_url + "/channels/" + getIDFromChannel(channel) + "/communities", j.toString(), oauth, true);
     }
 
-    /* 
+    /*
      * Searches for a game.
      */
     public JSONObject SearchGame(String game) {
@@ -594,12 +594,12 @@ public class TwitchAPIv5 {
         return "ERROR";
     }
 
-   /**
-     * Checks to see if the bot account is verified by Twitch.
-     *
-     * @param  channel
-     * @return boolean  true if verified
-     */
+    /**
+      * Checks to see if the bot account is verified by Twitch.
+      *
+      * @param  channel
+      * @return boolean  true if verified
+      */
     public boolean getBotVerified(String channel) {
         JSONObject jsonInput = GetData(request_type.GET, base_url + "/users/" + getIDFromChannel(channel) + "/chat", false);
         if (jsonInput.has("is_verified_bot")) {

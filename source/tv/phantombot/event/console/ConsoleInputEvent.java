@@ -30,8 +30,8 @@ public class ConsoleInputEvent extends ConsoleEvent {
 
     /*
      * Method that will return the message said in the console.
-	 *
-	 * @return {String} message
+     *
+     * @return {String} message
      */
     public String getMessage() {
         return this.message;
@@ -44,6 +44,6 @@ public class ConsoleInputEvent extends ConsoleEvent {
      */
     @Override
     public String toString() {
-    	return "ConsoleInputEvent -> { message: [" + this.message + "] }";
+        return "ConsoleInputEvent -> { message: [" + this.message + "] }";
     }
 }

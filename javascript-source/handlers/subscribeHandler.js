@@ -163,7 +163,7 @@
      */
     $.bind('twitchSubscriptionGift', function(event) {
         var gifter = event.getUsername(),
-            recipient = event.getRecipient(),        
+            recipient = event.getRecipient(),
             months = event.getMonths(),
             tier = event.getPlan(),
             message = giftSubMessage;
@@ -217,7 +217,7 @@
             args = event.getArgs(),
             action = args[0],
             planId;
-    
+
         /*
          * @commandpath subwelcometoggle - Enable or disable subscription alerts.
          */
@@ -291,7 +291,7 @@
                 return;
             }
 
-            reSubMessage = argsString ;
+            reSubMessage = argsString;
             $.setIniDbString('subscribeHandler', 'reSubscribeMessage', reSubMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.set'));
         }
@@ -324,7 +324,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.set'));
 
         }
-        
+
         /**
          * @commandpath resubscribereward [points] - Set an award for resubscribers.
          */
@@ -333,7 +333,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.usage'));
                 return;
             }
-            
+
             reSubReward = parseInt(action);
             $.setIniDbNumber('subscribeHandler', 'reSubscribeReward', reSubReward);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.set'));
@@ -347,7 +347,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.reward.usage'));
                 return;
             }
-            
+
             giftSubReward = parseInt(action);
             $.setIniDbNumber('subscribeHandler', 'giftSubReward', giftSubReward);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.reward.set'));

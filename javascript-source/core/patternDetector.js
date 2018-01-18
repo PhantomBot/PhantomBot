@@ -6,55 +6,15 @@
  */
 (function() {
     var patterns = {
-            link: new RegExp('((?:(http|https|rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)'
-             + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_'
-             + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?'
-             + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+'
-             + '(?:'
-             + '(?:aero|a[cdefgilmnoqrstuwxz])'
-             + '|(?:biz|b[abdefghijmnorstvwyz])'
-             + '|(?:com|c[acdfghiklmnoruvxyz])'
-             + '|d[ejkmoz]'
-             + '|(?:edu|e[cegrstu])'
-             + '|(?:fyi|f[ijkmor])'
-             + '|(?:gov|g[abdefghilmnpqrstuwy])'
-             + '|(?:how|h[kmnrtu])'
-             + '|(?:info|i[delmnoqrst])'
-             + '|(?:jobs|j[emop])'
-             + '|k[eghimnrwyz]'
-             + '|l[abcikrstuvy]'
-             + '|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])'
-             + '|(?:name|net|n[acefgilopruz])'
-             + '|(?:org|om)'
-             + '|(?:pro|p[aefghklmnrstwy])'
-             + '|qa'
-             + '|(?:r[eouw])'
-             + '|(?:s[abcdeghijklmnortuvyz])'
-             + '|(?:t[cdfghjklmnoprtvwz])'
-             + '|u[agkmsyz]'
-             + '|(?:vote|v[ceginu])'
-             + '|(?:xxx)'
-             + '|(?:watch|w[fs])'
-             + '|y[etu]'
-             + '|z[amw]))'
-             + '|(?:(?:25[0-5]|2[0-4]'
-             + '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]'
-             + '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]'
-             + '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}'
-             + '|[1-9][0-9]|[0-9])))'
-             + '(?:\\:\\d{1,5})?)'
-             + '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~'
-             + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?'
-             + '(?:\\b|$)'
-             + '|(\\.[a-z]+\\/|magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'i'),
-            emotes: new RegExp('([0-9][0-9]-[0-9][0-9])|([0-9]-[0-9])', 'g'),
-            repeatedSeq: /(.)(\1+)/ig,
-            nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
-            nonAlphaCount: /([^a-z0-9 ])/ig,
-            capsCount: /([A-Z])/g,
-            meCheck: /^\/me/,
-            fakePurge: new RegExp(/^<message \w+>|^<\w+ deleted>/i)
-        };
+        link: new RegExp('((?:(http|https|rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)' + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_' + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?' + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+' + '(?:' + '(?:aero|a[cdefgilmnoqrstuwxz])' + '|(?:biz|b[abdefghijmnorstvwyz])' + '|(?:com|c[acdfghiklmnoruvxyz])' + '|d[ejkmoz]' + '|(?:edu|e[cegrstu])' + '|(?:fyi|f[ijkmor])' + '|(?:gov|g[abdefghilmnpqrstuwy])' + '|(?:how|h[kmnrtu])' + '|(?:info|i[delmnoqrst])' + '|(?:jobs|j[emop])' + '|k[eghimnrwyz]' + '|l[abcikrstuvy]' + '|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])' + '|(?:name|net|n[acefgilopruz])' + '|(?:org|om)' + '|(?:pro|p[aefghklmnrstwy])' + '|qa' + '|(?:r[eouw])' + '|(?:s[abcdeghijklmnortuvyz])' + '|(?:t[cdfghjklmnoprtvwz])' + '|u[agkmsyz]' + '|(?:vote|v[ceginu])' + '|(?:xxx)' + '|(?:watch|w[fs])' + '|y[etu]' + '|z[amw]))' + '|(?:(?:25[0-5]|2[0-4]' + '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]' + '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]' + '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}' + '|[1-9][0-9]|[0-9])))' + '(?:\\:\\d{1,5})?)' + '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~' + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?' + '(?:\\b|$)' + '|(\\.[a-z]+\\/|magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'i'),
+        emotes: new RegExp('([0-9][0-9]-[0-9][0-9])|([0-9]-[0-9])', 'g'),
+        repeatedSeq: /(.)(\1+)/ig,
+        nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
+        nonAlphaCount: /([^a-z0-9 ])/ig,
+        capsCount: /([A-Z])/g,
+        meCheck: /^\/me/,
+        fakePurge: new RegExp(/^<message \w+>|^<\w+ deleted>/i)
+    };
 
     /**
      * @function hasLinks
@@ -84,7 +44,9 @@
     function getLongestRepeatedSequence(event) {
         var sequences = event.getMessage().match(patterns.repeatedSeq);
 
-        return (sequences === null ? 0 : sequences.sort(function(a, b) { return b.length - a.length; })[0].length);
+        return (sequences === null ? 0 : sequences.sort(function(a, b) {
+            return b.length - a.length;
+        })[0].length);
     }
 
     /**
@@ -97,7 +59,9 @@
         var message = (event.getMessage() + ''),
             sequences = message.match(patterns.nonAlphaSeq);
 
-        return (sequences === null ? 0 : sequences.sort(function(a, b) { return b.length - a.length; })[0].length);
+        return (sequences === null ? 0 : sequences.sort(function(a, b) {
+            return b.length - a.length;
+        })[0].length);
     }
 
     /**
@@ -157,14 +121,14 @@
     function getWordAt(str, pos) {
         str = String(str);
         pos = pos >>> 0;
-    
+
         var left = str.slice(0, pos + 2).search(/\S+$/),
             right = str.slice(pos).search(/\s/);
-    
+
         if (right < 0) {
             return str.slice(left);
         }
-    
+
         return str.slice(left, right + pos);
     }
 

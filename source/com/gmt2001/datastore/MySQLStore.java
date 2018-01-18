@@ -73,7 +73,7 @@ public class MySQLStore extends DataStore {
         }
     }
 
-     private String sanitizeOffset(String offset) {
+    private String sanitizeOffset(String offset) {
         try {
             int intValue = Integer.parseInt(offset);
             return String.valueOf(intValue);
@@ -366,15 +366,15 @@ public class MySQLStore extends DataStore {
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
-    
+
                     try (ResultSet rs = statement.executeQuery()) {
-    
+
                         ArrayList<String> s = new ArrayList<String>();
-    
+
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
                         }
-    
+
                         return s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
@@ -438,15 +438,15 @@ public class MySQLStore extends DataStore {
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
-    
+
                     try (ResultSet rs = statement.executeQuery()) {
-    
+
                         ArrayList<String> s = new ArrayList<String>();
-    
+
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
                         }
-    
+
                         return s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
@@ -579,7 +579,7 @@ public class MySQLStore extends DataStore {
                };
     }
 
-     @Override
+    @Override
     public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
         CheckConnection();
 
@@ -588,16 +588,16 @@ public class MySQLStore extends DataStore {
         limit = sanitizeLimit(limit);
         offset = sanitizeOffset(offset);
 
-        if (FileExists(fName)) { 
+        if (FileExists(fName)) {
             if (section.length() > 0) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
-                    
+
                     try (ResultSet rs = statement.executeQuery()) {
                         ArrayList<String> s = new ArrayList<String>();
-                        
+
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
@@ -610,10 +610,10 @@ public class MySQLStore extends DataStore {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
-                    
+
                     try (ResultSet rs = statement.executeQuery()) {
                         ArrayList<String> s = new ArrayList<String>();
-                        
+
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
@@ -656,7 +656,7 @@ public class MySQLStore extends DataStore {
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
-       } else {
+        } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, key);

@@ -18,10 +18,10 @@ package tv.phantombot.event.ytplayer;
 
 public class YTPlayerConnectEvent extends YTPlayerEvent {
 
-	/*
-	 * Class constructor.
-	 */
+    /*
+     * Class constructor.
+     */
     public YTPlayerConnectEvent() {
-    	
+
     }
 }

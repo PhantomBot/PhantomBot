@@ -3,11 +3,11 @@
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'hostToggle', false),
-          hostMessage = $.getSetIniDbString('discordSettings', 'hostMessage', '(name) just hosted!'),
-          autoHostMessage = $.getSetIniDbString('discordSettings', 'autohostMessage', '(name) just auto-hosted!'),
-          channelName = $.getSetIniDbString('discordSettings', 'hostChannel', ''),
-          hosters = {},
-          announce = false;
+        hostMessage = $.getSetIniDbString('discordSettings', 'hostMessage', '(name) just hosted!'),
+        autoHostMessage = $.getSetIniDbString('discordSettings', 'autohostMessage', '(name) just auto-hosted!'),
+        channelName = $.getSetIniDbString('discordSettings', 'hostChannel', ''),
+        hosters = {},
+        announce = false;
 
     /**
      * @event webPanelSocketUpdate
@@ -20,11 +20,11 @@
             channelName = $.getIniDbString('discordSettings', 'hostChannel', '');
         }
     });
-    
-     /**
-      * @event twitchHostsInitialized
-      */
-    $.bind('twitchHostsInitialized', function(event) { 
+
+    /**
+     * @event twitchHostsInitialized
+     */
+    $.bind('twitchHostsInitialized', function(event) {
         announce = true;
     });
 
@@ -121,7 +121,7 @@
             if (action.equalsIgnoreCase('toggle')) {
                 toggle = !toggle;
                 $.inidb.set('discordSettings', 'hostToggle', toggle);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.hosthandler.host.toggle', (toggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled')))); 
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.hosthandler.host.toggle', (toggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
             }
 
             /**

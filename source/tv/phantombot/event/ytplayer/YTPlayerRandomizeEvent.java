@@ -18,9 +18,9 @@ package tv.phantombot.event.ytplayer;
 
 public class YTPlayerRandomizeEvent extends YTPlayerEvent {
 
-	/*
-	 * Class constructor.
-	 */
+    /*
+     * Class constructor.
+     */
     public YTPlayerRandomizeEvent() {
 
     }

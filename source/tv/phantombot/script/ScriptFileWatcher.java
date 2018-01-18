@@ -73,7 +73,7 @@ public class ScriptFileWatcher implements Runnable {
                 for (int i = 0; i < scripts.size(); i++) {
                     Script script = scripts.get(i);
                     File file = script.getFile();
-    
+
                     if (script.isKilled()) {
                         scripts.remove(i);
                     } else {

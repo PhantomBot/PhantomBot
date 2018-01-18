@@ -13,7 +13,7 @@
         otherChannels = $.getIniDbString('dualStreamCommand', 'otherChannels');
         timerToggle = $.getIniDbBoolean('dualStreamCommand', 'timerToggle');
         timerInterval = $.getIniDbNumber('dualStreamCommand', 'timerInterval');
-        reqMessages = $.getIniDbNumber('dualStreamCommand', 'reqMessages');   
+        reqMessages = $.getIniDbNumber('dualStreamCommand', 'reqMessages');
     }
 
     /*
@@ -23,7 +23,7 @@
         messageCount++;
     });
 
-     /*
+    /*
      * @event command
      */
     $.bind('command', function(event) {
@@ -40,7 +40,7 @@
         if (command.equalsIgnoreCase('multi')) {
             if (action === undefined) {
                 if (!otherChannels.equals('Channel-1 Channel-2')) {
-                    $.say($.lang.get('dualstreamcommand.link') + $.channelName + '/' +  otherChannels.split(' ').join('/'));
+                    $.say($.lang.get('dualstreamcommand.link') + $.channelName + '/' + otherChannels.split(' ').join('/'));
                 } else {
                     if ($.isModv3(sender, event.getTags())) {
                         $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.usage'));
@@ -59,7 +59,7 @@
                 }
 
                 otherChannels = args.slice(1).join('/').replace(/\/\//g, '/');
-                
+
                 $.say($.lang.get('dualstreamcommand.link.set', $.channelName + '/' + otherChannels));
                 $.inidb.set('dualStreamCommand', 'otherChannels', otherChannels);
                 return;
@@ -71,7 +71,7 @@
             if (action.equalsIgnoreCase('clear')) {
                 otherChannels = 'Channel-1 Channel-2';
                 timerToggle = false;
-                
+
                 $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.clear'));
                 $.inidb.set('dualStreamCommand', 'timerToggle', timerToggle);
                 $.inidb.del('dualStreamCommand', 'otherChannels');
@@ -106,7 +106,7 @@
                 }
 
                 timerInterval = parseInt(subAction);
-               
+
                 $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timerinterval.set', timerInterval));
                 $.inidb.set('dualStreamCommand', 'timerInterval', timerInterval);
                 reloadMulti();
@@ -120,9 +120,9 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.req.usage'));
                     return;
                 }
-                
+
                 reqMessages = parseInt(subAction);
-                
+
                 $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.reqmessages.set', reqMessages));
                 $.inidb.set('dualStreamCommand', 'reqMessages', reqMessages);
             }

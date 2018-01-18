@@ -106,7 +106,7 @@ public class EmotesCache implements Runnable {
             }
 
             try {
-                Thread.sleep(loopSleep * 1000); 
+                Thread.sleep(loopSleep * 1000);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.debug.println("EmotesCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
             }
@@ -119,8 +119,8 @@ public class EmotesCache implements Runnable {
             if (jsonResult.getInt("_http") == 200) {
                 return true;
             } else if (jsonResult.getInt("_http") == 404 && ignore404) {
-                return true; 
-            } else if (jsonResult.getInt("_http") != 404 || (jsonResult.getInt("_http") == 404 && !ignore404)) { 
+                return true;
+            } else if (jsonResult.getInt("_http") != 404 || (jsonResult.getInt("_http") == 404 && !ignore404)) {
                 try {
                     throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req=" +
                                         jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   " +
