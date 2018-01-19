@@ -42,7 +42,7 @@
         }
     }
 
-    /** 
+    /**
      * @function hasKey
      * @param {Array} list
      * @param {*} value
@@ -475,42 +475,38 @@
     function restoreSubscriberStatus(username, haveTwitchStatus) {
         username = (username + '').toLowerCase();
 
-        if ($.bot.isModuleEnabled('./handlers/subscribeHandler.js') ||
-            $.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
+        if (isMod(username) || isAdmin(username)) {
+            return;
+        }
 
-            if (isMod(username) || isAdmin(username)) {
-                return;
+        if (haveTwitchStatus) {
+            if ($.getIniDbBoolean('subscribed', username, false) && !isTwitchSub(username)) {
+                $.setIniDbBoolean('subscribed', username, false);
+            } else if (!$.getIniDbBoolean('subscribed', username, false) && isTwitchSub(username)) {
+                $.setIniDbBoolean('subscribed', username, true);
             }
+        }
 
-            if (haveTwitchStatus) {
-                if ($.getIniDbBoolean('subscribed', username, false) && !isTwitchSub(username)) {
-                    $.setIniDbBoolean('subscribed', username, false);
-                } else if (!$.getIniDbBoolean('subscribed', username, false) && isTwitchSub(username)) {
-                    $.setIniDbBoolean('subscribed', username, true);
-                }
-            }
+        if ($.getIniDbBoolean('gamewispsubs', username, false) && !isGWSub(username)) {
+            $.setIniDbBoolean('gamewispsubs', username, false);
+            $.inidb.set('gamewispsubs', username + '_tier', 1);
+        } else if (!$.getIniDbBoolean('gamewispsubs', username, false) && isGWSub(username)) {
+            $.setIniDbBoolean('gamewispsubs', username, true);
+            $.inidb.set('gamewispsubs', username + '_tier', getGWTier(username));
+        }
 
-            if ($.getIniDbBoolean('gamewispsubs', username, false) && !isGWSub(username)) {
-                $.setIniDbBoolean('gamewispsubs', username, false);
-                $.inidb.set('gamewispsubs', username + '_tier', 1);
-            } else if (!$.getIniDbBoolean('gamewispsubs', username, false) && isGWSub(username)) {
-                $.setIniDbBoolean('gamewispsubs', username, true);
-                $.inidb.set('gamewispsubs', username + '_tier', getGWTier(username));
-            }
+        if ((isTwitchSub(username) || isGWSub(username)) && getUserGroupId(username) != 3) {
+            $.inidb.set('preSubGroup', username, getUserGroupId(username));
+            setUserGroupByName(username, 'Subscriber');
+        }
 
-            if ((isTwitchSub(username) || isGWSub(username)) && getUserGroupId(username) != 3) {
-                $.inidb.set('preSubGroup', username, getUserGroupId(username));
-                setUserGroupByName(username, 'Subscriber');
-            }
-
-            if (haveTwitchStatus) {
-                if ((!isTwitchSub(username) && !isGWSub(username)) && getUserGroupId(username) == 3) {
-                    if ($.inidb.exists('preSubGroup', username)) {
-                        $.inidb.set('group', username, $.inidb.get('preSubGroup', username));
-                        $.inidb.del('preSubGroup', username);
-                    } else {
-                        $.inidb.set('group', username, 7);
-                    }
+        if (haveTwitchStatus) {
+            if ((!isTwitchSub(username) && !isGWSub(username)) && getUserGroupId(username) == 3) {
+                if ($.inidb.exists('preSubGroup', username)) {
+                    $.inidb.set('group', username, $.inidb.get('preSubGroup', username));
+                    $.inidb.del('preSubGroup', username);
+                } else {
+                    $.inidb.set('group', username, 7);
                 }
             }
         }
