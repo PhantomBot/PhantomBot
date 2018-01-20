@@ -19,6 +19,7 @@ package com.gmt2001;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -115,6 +116,13 @@ public class Logger implements Runnable {
                             if (this.psCore == null) {
                                 this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
                                 this.psCore = new PrintStream(this.fosCore);
+                                try {
+                                    if (this.fosCore.getChannel().size() == 0) {
+                                        this.psCore.println(PhantomBot.instance().getBotInformation());
+                                    }
+                                } catch (IOException e) {
+                                    com.gmt2001.Console.err.printStackTrace(e);
+                                }
                             }
                             this.psCore.println(i.s);
                             this.psCore.flush();
@@ -123,6 +131,13 @@ public class Logger implements Runnable {
                             if (this.psCore == null) {
                                 this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
                                 this.psCore = new PrintStream(this.fosCore);
+                                try {
+                                    if (this.fosCore.getChannel().size() == 0) {
+                                        this.psCore.println(PhantomBot.instance().getBotInformation());
+                                    }
+                                } catch (IOException e) {
+                                    com.gmt2001.Console.err.printStackTrace(e);
+                                }
                             }
                             this.psCore.println(i.s);
                             this.psCore.flush();
@@ -131,6 +146,13 @@ public class Logger implements Runnable {
                             if (this.psError == null) {
                                 this.fosError = new FileOutputStream("./logs/core-error/" + timestamp + ".txt", true);
                                 this.psError = new PrintStream(this.fosError);
+                                try {
+                                    if (this.fosError.getChannel().size() == 0) {
+                                        this.psError.println(PhantomBot.instance().getBotInformation());
+                                    }
+                                } catch (IOException e) {
+                                    com.gmt2001.Console.err.printStackTrace(e);
+                                }
                             }
                             this.psError.println(i.s);
                             this.psError.flush();
@@ -139,6 +161,13 @@ public class Logger implements Runnable {
                             if (this.psDebug == null) {
                                 this.fosDebug = new FileOutputStream("./logs/core-debug/" + timestamp + ".txt", true);
                                 this.psDebug = new PrintStream(this.fosDebug);
+                                try {
+                                    if (this.fosDebug.getChannel().size() == 0) {
+                                        this.psDebug.println(PhantomBot.instance().getBotInformation());
+                                    }
+                                } catch (IOException e) {
+                                    com.gmt2001.Console.err.printStackTrace(e);
+                                }
                             }
                             this.psDebug.println(i.s);
                             this.psDebug.flush();
@@ -147,6 +176,13 @@ public class Logger implements Runnable {
                             if (this.psWarning == null) {
                                 this.fosWarning = new FileOutputStream("./logs/core-warnings/" + timestamp + ".txt", true);
                                 this.psWarning = new PrintStream(this.fosWarning);
+                                try {
+                                    if (this.fosWarning.getChannel().size() == 0) {
+                                        this.psWarning.println(PhantomBot.instance().getBotInformation());
+                                    }
+                                } catch (IOException e) {
+                                    com.gmt2001.Console.err.printStackTrace(e);
+                                }
                             }
                             this.psWarning.println(i.s);
                             this.psWarning.flush();
@@ -163,6 +199,13 @@ public class Logger implements Runnable {
                             if (this.psCore == null) {
                                 this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
                                 this.psCore = new PrintStream(this.fosCore);
+                                try {
+                                    if (this.fosCore.getChannel().size() == 0) {
+                                        this.psCore.println(PhantomBot.instance().getBotInformation());
+                                    }
+                                } catch (IOException e) {
+                                    com.gmt2001.Console.err.printStackTrace(e);
+                                }
                             }
                             this.psCore.println(i.s);
                             this.psCore.flush();
