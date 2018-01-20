@@ -1067,6 +1067,22 @@
             $.registerChatCommand(($.inidb.exists('tempDisabledCommandScript', action) ? $.inidb.get('tempDisabledCommandScript', action) : './commands/customCommands.js'), action);
             return;
         }
+
+        /*
+         * @commandpath resetcom [command] - Resets the counter to zero, for a command that uses the (count) tag
+         */
+        if (command.equalsIgnoreCase('resetcom')) {
+            if (action === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.usage'));
+                return;
+            }
+
+            action = action.replace('!', '').toLowerCase();
+
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.success', action));
+            $.inidb.del('commandCount', action);
+            return;
+        }
     });
 
     /*
@@ -1085,6 +1101,7 @@
         $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
         $.registerChatCommand('./commands/customCommands.js', 'enablecom', 1);
         $.registerChatCommand('./commands/customCommands.js', 'botcommands', 2);
+        $.registerChatCommand('./commands/customCommands.js', 'resetcom', 2);
     });
 
     /*
