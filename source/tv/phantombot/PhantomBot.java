@@ -2188,7 +2188,8 @@ public final class PhantomBot implements Listener {
         }
         
         /* Log important info for support tickets */
-        com.gmt2001.Logger.instance().log(Logger.LogType.Output, "PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getRepoVersion() + ")");
+        com.gmt2001.Logger.instance().log(Logger.LogType.Output, "PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getRepoVersion() + ") ("
+                + (RepoVersion.getNightlyBuild() ? "nightly" : (RepoVersion.getPrereleaseBuild() ? "prerelease" : "stable")) + ") (Panel: " + RepoVersion.getPanelVersion() + ")");
         com.gmt2001.Logger.instance().log(Logger.LogType.Output, "Java Version: " + System.getProperty("java.runtime.version") + "\r\nOS Version: " + System.getProperty("os.name") + " "
                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")");
 
