@@ -37,10 +37,12 @@ RUN cd "${BASEDIR}" \
     && rm -rf \
     && mv "${BASEDIR}/addons" "${DATADIR}/" \
     && mv "${BASEDIR}/logs" "${DATADIR}/" \
+    && mv "${BASEDIR}/config" "${DATADIR}/" \
+    && mkdir "${DATADIR}/dbbackup" \
     && ln -s "${DATADIR}/addons" \
-    && ln -s "${DATADIR}/botlogin.txt" \
     && ln -s "${DATADIR}/logs" \
-    && ln -s "${DATADIR}/phantombot.db"
+    && ln -s "${DATADIR}/config" \
+    && ln -s "${DATADIR}/dbbackup"
 
 VOLUME "${DATADIR}"
 
