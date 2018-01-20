@@ -2186,6 +2186,11 @@ public final class PhantomBot implements Listener {
             System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 8. Java 9 will not work.");
             System.exit(1);
         }
+        
+        /* Log important info for support tickets */
+        com.gmt2001.Logger.instance().log(Logger.LogType.Output, "PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getRepoVersion() + ")");
+        com.gmt2001.Logger.instance().log(Logger.LogType.Output, "Java Version: " + System.getProperty("java.runtime.version") + "\r\nOS Version: " + System.getProperty("os.name") + " "
+               + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")");
 
         /* Properties configuration */
         Properties startProperties = new Properties();
