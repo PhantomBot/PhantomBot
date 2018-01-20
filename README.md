@@ -25,7 +25,7 @@ Additional functionality is enabled through the use of third-party modules.
 ## How can I follow along/contribute?
 
 * Our feature roadmap is hosted on [Trello](https://trello.com/b/prjUApDO). Feel free to check out our [Version History](https://phantombot.tv/changelog) as well.
-* If you are a developer, feel free to check out the source and submit pull requests.
+* If you are a developer, feel free to check out the source and submit pull requests. We provide a [guide](https://github.com/PhantomBot/PhantomBot/blob/master/DEVSETUP.md) to setup your development environment.
 * Please don't forget to **watch**, and **star our repo**! Join our growing [community](https://community.phantombot.tv) to keep up to date with the latest PhantomBot development.
 * A huge thanks goes out to the people who have [already contributed to the project](https://github.com/PhantomBot/PhantomBot/graphs/contributors).
 
