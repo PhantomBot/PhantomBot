@@ -14,5 +14,6 @@ We reserve the right to reject a change for any reason at all.  Typically, we wi
 - Design changes that go against the core design philosophy.
 - Items with potential to spam or consume the outgoing message queue.
 - Poorly architected items.
+- Item is supported in chat but no update for the Control Panel.
 
 You are not to harass the development team if a pull request is rejected.  
