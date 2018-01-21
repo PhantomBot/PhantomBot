@@ -49,7 +49,7 @@ public class HTTPServer {
     private String     serverWebAuth;
     private int        serverPort;
 
-    public HTTPServer(int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword) throws Exception {
+    public HTTPServer(String ip, int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword) throws Exception {
         serverPort = myPort;
         serverPassword = myPassword.replace("oauth:", "");
         serverWebAuth = myWebAuth;
@@ -57,7 +57,7 @@ public class HTTPServer {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         try {
-            server = HttpServer.create(new InetSocketAddress(serverPort), 0);
+            server = HttpServer.create((!ip.isEmpty() ? new InetSocketAddress(ip, serverPort) : new InetSocketAddress(serverPort)), 0);
             server.createContext("/", new HTTPServerHandler());
 
             HttpContext panelContext = server.createContext("/panel", new PanelHandler());
