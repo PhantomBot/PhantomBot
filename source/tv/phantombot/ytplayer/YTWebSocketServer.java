@@ -128,8 +128,8 @@ public class YTWebSocketServer extends WebSocketServer {
 
     private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
 
-    public YTWebSocketServer(int port, String authString, String authStringRO) throws Exception {
-        super(new InetSocketAddress(port));
+    public YTWebSocketServer(String ip, int port, String authString, String authStringRO) throws Exception {
+        super((!ip.isEmpty() ? new InetSocketAddress(ip, port) : new InetSocketAddress(port)));
         this.authString = authString;
         this.authStringRO = authStringRO;
 
