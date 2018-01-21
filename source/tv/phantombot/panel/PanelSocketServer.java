@@ -146,12 +146,13 @@ public class PanelSocketServer extends WebSocketServer {
     /**
      * Constructor for class which initializes the WebSocket object.
      *
+     * @param ip           The IP to bind to.
      * @param port         The port to bind to.
      * @param authString   The authorization string to use for read/write connectivity.
      * @param authStringRO The authorizatin string to use for read-only connectivity.
      */
-    public PanelSocketServer(int port, String authString, String authStringRO) throws Exception {
-        super(new InetSocketAddress(port));
+    public PanelSocketServer(String ip, int port, String authString, String authStringRO) throws Exception {
+        super((!ip.isEmpty() ? new InetSocketAddress(ip, port) : new InetSocketAddress(port)));
         this.authString = authString;
         this.authStringRO = authStringRO;
 
