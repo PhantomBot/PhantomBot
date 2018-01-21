@@ -71,7 +71,7 @@ public class HTTPSServer {
     private String     httpsFileName;
     private int        serverPort;
 
-    public HTTPSServer(int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword, final String fileName, final String password) throws Exception {
+    public HTTPSServer(String ip, int myPort, String myPassword, String myWebAuth, final String panelUser, final String panelPassword, final String fileName, final String password) throws Exception {
         serverPort = myPort;
         serverPassword = myPassword.replace("oauth:", "");
         serverWebAuth = myWebAuth;
@@ -82,7 +82,7 @@ public class HTTPSServer {
         this.httpsPassword = password;
 
         try {
-            server = HttpsServer.create(new InetSocketAddress(serverPort), 0);
+            server = HttpsServer.create((!ip.isEmpty() ? new InetSocketAddress(ip, serverPort) : new InetSocketAddress(serverPort)), 0);
             SSLContext sslContext = SSLContext.getInstance("TLS");
 
             KeyStore ks = KeyStore.getInstance("JKS");
