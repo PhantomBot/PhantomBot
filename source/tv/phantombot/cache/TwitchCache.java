@@ -168,10 +168,8 @@ public class TwitchCache implements Runnable {
      */
     private void updateClips() {
         String doCheckClips = PhantomBot.instance().getDataStore().GetString("clipsSettings", "", "toggle");
-        if (doCheckClips == null) {
-            return;
-        }
-        if (doCheckClips.equals("false")) {
+        String discordDoClipsCheck = PhantomBot.instance().getDataStore().GetString("discordSettings", "", "clipsToggle");
+        if ((doCheckClips == null || doCheckClips.equals("false")) && (discordDoClipsCheck == null || discordDoClipsCheck.equals("false"))) {
             return;
         }
 
