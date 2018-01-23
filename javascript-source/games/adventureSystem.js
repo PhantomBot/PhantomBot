@@ -382,7 +382,7 @@
         if (coolDownAnnounce) {
             setTimeout(function() {
                 $.say($.lang.get('adventuresystem.reset', $.pointNameMultiple));
-            }, coolDown);
+            }, coolDown*1000);
         }
     };
 
