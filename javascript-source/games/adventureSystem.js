@@ -22,6 +22,7 @@
         maxBet = $.getSetIniDbNumber('adventureSettings', 'maxBet', 1000),
         enterMessage = $.getSetIniDbBoolean('adventureSettings', 'enterMessage', false),
         warningMessage = $.getSetIniDbBoolean('adventureSettings', 'warningMessage', false),
+        coolDownToggle = $.getSetIniDbBoolean('adventureSettings', 'coolDownToggle', false),
         tgFunIncr = 1,
         tgExpIncr = 0.5,
         tgFoodDecr = 0.25,
@@ -39,6 +40,7 @@
         maxBet = $.getIniDbNumber('adventureSettings', 'maxBet');
         enterMessage = $.getIniDbBoolean('adventureSettings', 'enterMessage');
         warningMessage = $.getIniDbBoolean('adventureSettings', 'warningMessage');
+        coolDownToggle = $.getIniDbBoolean('adventureSettings', 'coolDownToggle');
     };
 
     /**
@@ -377,6 +379,11 @@
         clearCurrentAdventure();
         temp = "";
         $.coolDown.set('adventure', false, coolDown, false);
+        if (coolDownToggle) {
+            setTimeout(function() {
+                $.say($.lang.get('adventuresystem.reset', $.pointNameMultiple));
+            }, coolDown);
+        }
     };
 
     /**
