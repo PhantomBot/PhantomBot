@@ -22,6 +22,7 @@
         maxBet = $.getSetIniDbNumber('adventureSettings', 'maxBet', 1000),
         enterMessage = $.getSetIniDbBoolean('adventureSettings', 'enterMessage', false),
         warningMessage = $.getSetIniDbBoolean('adventureSettings', 'warningMessage', false),
+        coolDownAnnounce = $.getSetIniDbBoolean('adventureSettings', 'coolDownAnnounce', false),
         tgFunIncr = 1,
         tgExpIncr = 0.5,
         tgFoodDecr = 0.25,
@@ -39,6 +40,7 @@
         maxBet = $.getIniDbNumber('adventureSettings', 'maxBet');
         enterMessage = $.getIniDbBoolean('adventureSettings', 'enterMessage');
         warningMessage = $.getIniDbBoolean('adventureSettings', 'warningMessage');
+        coolDownAnnounce = $.getIniDbBoolean('adventureSettings', 'coolDownAnnounce');
     };
 
     /**
@@ -377,6 +379,11 @@
         clearCurrentAdventure();
         temp = "";
         $.coolDown.set('adventure', false, coolDown, false);
+        if (coolDownAnnounce) {
+            setTimeout(function() {
+                $.say($.lang.get('adventuresystem.reset', $.pointNameMultiple));
+            }, coolDown);
+        }
     };
 
     /**
@@ -511,6 +518,15 @@
                     if (args[2].equalsIgnoreCase('true')) enterMessage = true, actionArg2 = $.lang.get('common.enabled');
                     if (args[2].equalsIgnoreCase('false')) enterMessage = false, actionArg2 = $.lang.get('common.disabled');
                     $.inidb.set('adventureSettings', 'enterMessage', enterMessage);
+                }
+                
+                /**
+                 * @commandpath adventure set cooldownannounce [true / false] - Sets the cooldown announcement
+                 */
+                if (actionArg1.equalsIgnoreCase('cooldownannounce')) {
+                    if (args[2].equalsIgnoreCase('true')) coolDownAnnounce = true, actionArg2 = $.lang.get('common.enabled');
+                    if (args[2].equalsIgnoreCase('false')) coolDownAnnounce = false, actionArg2 = $.lang.get('common.disabled');
+                    $.inidb.set('adventureSettings', 'coolDownAnnounce', coolDownAnnounce);
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.success', actionArg1, actionArg2));
