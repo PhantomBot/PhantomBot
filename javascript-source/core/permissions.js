@@ -630,12 +630,14 @@
             for (var i = 0; i < joins.length; i++) {
                 // Cast the user as a string, because Rhino.
                 joins[i] = (joins[i] + '');
-
-                if (!$.user.isKnown(joins[i])) {
-                    $.setIniDbBoolean('visited', joins[i], true);
+                
+                if (!userExists(joins[i])) {
+                    if (!$.user.isKnown(joins[i])) {
+                        $.setIniDbBoolean('visited', joins[i], true);
+                    }
+                    $.checkGameWispSub(joins[i]);
+                    $.users.push([joins[i], now]);
                 }
-                $.checkGameWispSub(joins[i]);
-                $.users.push([joins[i], now]);
             }
             // Enable auto commit again and force save.
             $.inidb.setAutoCommit(true);
