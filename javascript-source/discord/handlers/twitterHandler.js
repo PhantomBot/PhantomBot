@@ -33,7 +33,7 @@
                 .withTimestamp(Date.now())
                 .withFooterText('Twitter')
                 .withFooterIcon($.twitchcache.getLogoLink())
-                .withAuthorName($.lang.get('twitter.tweet'))
+                .withAuthorName($.lang.get('discord.twitterhandler.tweet'))
                 .withDesc('[' + event.getMentionUser() + '](https://twitter.com/' + event.getMentionUser() + '): ' + event.getTweet())
                 .build());
         } else {
@@ -46,7 +46,7 @@
                 .withTimestamp(Date.now())
                 .withFooterText('Twitter')
                 .withFooterIcon($.twitchcache.getLogoLink())
-                .withAuthorName($.lang.get('twitter.tweet'))
+                .withAuthorName($.lang.get('discord.twitterhandler.tweet'))
                 .withDesc(event.getTweet())
                 .build());
         }
