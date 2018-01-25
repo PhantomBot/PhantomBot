@@ -32,7 +32,7 @@
                 .withColor(31, 158, 242)
                 .withTimestamp(Date.now())
                 .withFooterText('Twitter')
-                .withFooterIcon($.twitchcache.getLogoLink())
+                .withFooterIcon('https://abs.twimg.com/icons/apple-touch-icon-192x192.png')
                 .withAuthorName($.lang.get('discord.twitterhandler.tweet'))
                 .withDesc('[' + event.getMentionUser() + '](https://twitter.com/' + event.getMentionUser() + '): ' + event.getTweet())
                 .build());
@@ -45,7 +45,7 @@
                 .withColor(31, 158, 242)
                 .withTimestamp(Date.now())
                 .withFooterText('Twitter')
-                .withFooterIcon($.twitchcache.getLogoLink())
+                .withFooterIcon('https://abs.twimg.com/icons/apple-touch-icon-192x192.png')
                 .withAuthorName($.lang.get('discord.twitterhandler.tweet'))
                 .withDesc(event.getTweet())
                 .build());
