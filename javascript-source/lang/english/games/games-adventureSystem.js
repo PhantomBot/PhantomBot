@@ -17,6 +17,7 @@ $.lang.register('adventuresystem.start.success', '$1 is trying get a team togeth
 $.lang.register('adventuresystem.tamagotchijoined', '$1 is also joining the adventure.');
 $.lang.register('adventuresystem.top5', 'The top 5 adventurers are: $1.');
 $.lang.register('adventuresystem.top5.empty', 'There haven\'t been any adventure winners recorded yet.');
+$.lang.register('adventuresystem.reset', 'The adventure has now cooled off! Use "!adventure [$1]" to start a new adventure!');
 
 
 $.lang.register('adventuresystem.stories.1.title', 'Time Heist');
