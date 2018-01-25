@@ -34,7 +34,7 @@
                 .withFooterText('Twitter')
                 .withFooterIcon($.twitchcache.getLogoLink())
                 .withAuthorName($.lang.get('twitter.tweet'))
-                .withDesc('[' + event.getMentionUser() + '](https://twitter.com/" + event.getMentionUser() + '): ' + event.getTweet())
+                .withDesc('[' + event.getMentionUser() + '](https://twitter.com/' + event.getMentionUser() + '): ' + event.getTweet())
                 .build());
         } else {
             //$.discord.say(channelName, $.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
