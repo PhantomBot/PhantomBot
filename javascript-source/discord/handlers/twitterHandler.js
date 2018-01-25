@@ -28,25 +28,25 @@
             //$.discord.say(channelName, $.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
             $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                 .withTitle($.twitter.getUsername())
-                .withUrl("https://twitter.com/" + $.twitter.getUsername())
+                .withUrl('https://twitter.com/' + $.twitter.getUsername())
                 .withColor(31, 158, 242)
                 .withTimestamp(Date.now())
-                .withFooterText("Twitter")
+                .withFooterText('Twitter')
                 .withFooterIcon($.twitchcache.getLogoLink())
-                .withAuthorName("Twitter Feed From")
-                .withDesc("[" + event.getMentionUser() + "](https://twitter.com/" + event.getMentionUser() + "): " + event.getTweet())
+                .withAuthorName($.lang.get('twitter.tweet'))
+                .withDesc('[' + event.getMentionUser() + '](https://twitter.com/" + event.getMentionUser() + '): ' + event.getTweet())
                 .build());
         } else {
             //$.discord.say(channelName, $.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
             // Send the message as an embed.
             $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                 .withTitle($.twitter.getUsername())
-                .withUrl("https://twitter.com/" + $.twitter.getUsername())
+                .withUrl('https://twitter.com/' + $.twitter.getUsername())
                 .withColor(31, 158, 242)
                 .withTimestamp(Date.now())
-                .withFooterText("Twitter")
+                .withFooterText('Twitter')
                 .withFooterIcon($.twitchcache.getLogoLink())
-                .withAuthorName("Twitter Feed From")
+                .withAuthorName($.lang.get('twitter.tweet'))
                 .withDesc(event.getTweet())
                 .build());
         }
