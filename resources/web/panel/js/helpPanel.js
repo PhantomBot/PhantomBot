@@ -41,15 +41,24 @@
         // Check for dbkeysresult queries
         if (msgObject['versionresult'] !== undefined) {
             var version = "",
+                java_version = "",
+                os_version = "",
                 panelVersion = "Control Panel Version " + PANEL_VERSION;
 
             if (panelMatch(msgObject['versionresult'], 'help_version')) {
                 version = msgObject['version'];
+                java_version = msgObject['java-version'];
+                os_version = msgObject['os-version'];
             } else {
                 version = "PhantomBot 2";
+                java_version = "Unknown";
+                os_version = "Unknown";
             }
-            $("#botVersion").html("<strong>" + version + "<br>" + panelVersion + "</strong><br><br>" +
-                                  "<small>" +
+
+            $("#botVersion").html("<strong>" + version + "<br>" + panelVersion + "<br>" +
+                                  "Java Version: " + java_version + "<br>" +
+                                  "OS Version: " + os_version + "<br></strong>" +
+                                  "<br><small>" +
                                   "    <strong>Control Panel Software</strong><br>" +
                                   "    jQuery " + $().jquery + "<br>" + 
                                   "    jQuery UI " + $.ui.version + "<br>" +
