@@ -468,7 +468,11 @@ public class PanelSocketServer extends WebSocketServer {
             return;
         }
 
-        jsonObject.object().key("versionresult").value(id).key("version").value(version).endObject();
+        jsonObject.object().key("versionresult").value(id);
+	jsonObject.key("version").value(version);
+	jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
+	jsonObject.key("os-version").value(System.getProperty("os.name"));
+	jsonObject.endObject();
         webSocket.send(jsonObject.toString());
     }
 
