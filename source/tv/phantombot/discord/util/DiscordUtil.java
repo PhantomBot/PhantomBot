@@ -237,6 +237,23 @@ public class DiscordUtil {
     }
 
     /*
+     * Method to return a channel object by its ID.
+     *
+     * @param  {String} channelId
+     * @return {IChannel}
+     */
+    public IChannel getChannelByID(String channelId) {
+        List<IChannel> channels = DiscordAPI.getGuild().getChannels();
+
+        for (IChannel channel : channels) {
+            if (channel.getStringID().equals(channelId)) {
+                return channel;
+            }
+        }
+        return null;
+    }
+
+    /*
      * Method to return a user object by its name.
      *
      * @param  {String} userName
