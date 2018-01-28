@@ -586,7 +586,14 @@
                     return;
                 }
 
-                $.discordAPI.bulkDelete(subAction.replace('#', ''), (parseInt(actionArgs) < 10000 ? parseInt(actionArgs + 1) : parseInt(actionArgs)))
+                if (subAction.match(/<#\d+>/)) {
+                    subAction = $.discordAPI.getChannelByID(subAction.match(/<#(\d+)>/)[1]);
+                    if (subAction == null) {
+                        return;
+                    }
+                }
+
+                $.discordAPI.bulkDelete(subAction, parseInt(actionArgs));
 
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.done', actionArgs));
             }

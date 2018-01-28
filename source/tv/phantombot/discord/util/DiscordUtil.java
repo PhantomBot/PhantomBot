@@ -237,6 +237,23 @@ public class DiscordUtil {
     }
 
     /*
+     * Method to return a channel object by its ID.
+     *
+     * @param  {String} channelId
+     * @return {IChannel}
+     */
+    public IChannel getChannelByID(String channelId) {
+        List<IChannel> channels = DiscordAPI.getGuild().getChannels();
+
+        for (IChannel channel : channels) {
+            if (channel.getStringID().equals(channelId)) {
+                return channel;
+            }
+        }
+        return null;
+    }
+
+    /*
      * Method to return a user object by its name.
      *
      * @param  {String} userName
@@ -515,6 +532,7 @@ public class DiscordUtil {
                         try {
                             List<IMessage> messages = channel.getMessageHistory(amount < 2 ? 2 : amount);
 
+                            System.out.println(messages);
                             channel.bulkDelete(messages);
                         } catch (DiscordException ex) {
                             com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
