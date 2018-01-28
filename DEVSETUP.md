@@ -1,5 +1,5 @@
 # Development Setup Guide  
-This guide is for the people that would like to contribute to PhantomBot and do it well. <3
+This guide is for the people that would like to contribute to PhantomBot and do it well. <3 
 
 Please have a read on [CODESTYLE.md](/CODESTYLE.md), any code that does not apply to these rules will not get merged.
 
