@@ -532,7 +532,6 @@ public class DiscordUtil {
                         try {
                             List<IMessage> messages = channel.getMessageHistory(amount < 2 ? 2 : amount);
 
-                            System.out.println(messages);
                             channel.bulkDelete(messages);
                         } catch (DiscordException ex) {
                             com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
