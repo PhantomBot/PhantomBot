@@ -124,7 +124,7 @@ connection.onmessage = function(e) {
 
     if (messageObject['command']) {
         if (messageObject['command']['play']) {
-            handlePlay(messageObject['command']['play'], messageObject['command']['title'], 
+            handlePlay(messageObject['command']['play'], messageObject['command']['title'],
                        messageObject['command']['duration'], messageObject['command']['requester']);
             return;
         }
@@ -207,7 +207,7 @@ function handlePlay(id, title, duration, requester) {
                                "<span class=\"currentSong-small\">" +
                                "    <i class=\"fa fa-clock-o\">&nbsp;</i>" + duration + "<br>" +
                                "    <i class=\"fa fa-youtube\">&nbsp;</i><a id=\"playerLink\" href=\"" + ytLink + "\">" + ytLink + "</a><br>" +
-                               "    <i class=\"fa fa-user\">&nbsp;</i>" + requester + 
+                               "    <i class=\"fa fa-user\">&nbsp;</i>" + requester +
                                "</span>" +
                                "<table class=\"controlTable\">" +
                                "    <tr><td />" +
@@ -237,7 +237,8 @@ function handlePlay(id, title, duration, requester) {
             max: 100,
             value: currentVolume,
             range: "min",
-            slide: function (event, ui) { handleSetVolume(ui.value); handleCurrentVolume(currentVolume); }
+            slide: function (event, ui) { handleSetVolume(ui.value); handleCurrentVolume(currentVolume); },
+            stop: function (event, ui) { handleSetVolume(ui.value); handleCurrentVolume(currentVolume); }
         }).height(10);
 
         progressSlider = $("#songProgressBar").slider({
@@ -253,7 +254,7 @@ function handlePlay(id, title, duration, requester) {
         } else {
             $("#mutedDiv").html("<i class=\"fa fa-volume-off fa-lg\" style=\"color: #ffffff\" />");
         }
-       
+
         if (playerPaused) {
             $("#playPauseDiv").html("<i class=\"fa fa-pause\" />");
         } else {
@@ -334,7 +335,7 @@ function skipSong(d) {
     var jsonObject = {};
     jsonObject["command"] = "skipsong";
     connection.send(JSON.stringify(jsonObject));
-    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")"); 
+    debugMsg("deleteSong::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
 function handlePause(d) {
@@ -409,7 +410,7 @@ function newSongAlert(message, title, type, timeout) {
   debugMsg("newSongAlert(" + message + ", " + title + ", " + type + ", " + timeout + ")");
   $(".alert").fadeIn(1000);
   $("#newSongAlert").show().html('<div class="alert alert-' + type + '"><button type="button" '+
-                      'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 
+                      'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' +
                        message + ' [' + title + ']</span></div>');
   if (timeout != 0) {
       $(".alert-" + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
@@ -426,7 +427,7 @@ function updateSongProgressBar(seekTo) {
 setInterval(updateSongProgressBar, 2000);
 
 function playerSeekSong(seekPos) {
-   playerObject.seekTo(seekPos, true); 
+   playerObject.seekTo(seekPos, true);
 }
 
 function songRequestDiv() {
