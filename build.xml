@@ -5,7 +5,7 @@
     <!-- To specify a Pre-Release Build run as ant -Dbuildtype=prerelease_build -->
 
     <property environment="env" />
-    <property name="version" value="2.3.9.1" />
+    <property name="version" value="2.4.0" />
     <property name="webpanel.version" value="1.1" />
     <property name="src" location="source" />
     <property name="reference" location="libraries" />
@@ -38,7 +38,7 @@
             <length string="${buildtype}" trim="yes" length="0" when="greater" />
         </and>
     </condition>
-    
+
     <available file=".git" type="dir" property="git.present"/>
 
     <target name="init">
@@ -101,13 +101,13 @@
             <classpath refid="reference.class.path" />
         </javac>
     </target>
-    
+
     <target depends="pre.compile" name="clean.build.test">
         <delete dir="${build}" />
         <mkdir dir="${build}" />
         <mkdir dir="${classes}" />
     </target>
-    
+
     <target depends="clean.build.test" name="compile.src.test">
         <javac target="1.8" source="1.8" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:all" />
@@ -115,7 +115,7 @@
             <classpath refid="reference.class.path" />
         </javac>
     </target>
-    
+
     <target name="post.compile">
         <replaceregexp
             file="source/tv/phantombot/RepoVersion.java"
@@ -151,7 +151,7 @@
                 <attribute name="Main-Class" value="tv.phantombot.PhantomBot" />
             </manifest>
         </jar>
-            
+
         <mkdir dir="${lib.dir}" />
         <copy todir="${lib.dir}">
             <fileset dir="./libraries" />
@@ -175,7 +175,7 @@
     </target>
 
     <target depends="compile.src.test,post.compile" name="test"/>
-     
+
     <target name="run" depends="jar">
         <java fork="true" classname="tv.phantombot.PhantomBot" dir="${build.dir}">
             <classpath>
@@ -184,7 +184,7 @@
             </classpath>
         </java>
     </target>
-     
+
     <target depends="jar" name="dist">
         <delete file="${dist}/${version.name}.zip" />
         <zip destfile="${dist}/${version.name}.zip" basedir="${dist}" update="false">
