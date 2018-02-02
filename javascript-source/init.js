@@ -976,6 +976,14 @@
         $api.on($script, 'PubSubModerationUnBan', function(event) {
             callHook('PubSubModerationUnBan', event, false);
         });
+
+        /*
+         * @event twitchUserNameChanged
+         */
+        $api.on($script, 'twitchUserNameChanged', function(event) {
+            callHook('twitchUserNameChanged', event, true);
+        }
+        
     }
 
     // Export functions to API
