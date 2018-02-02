@@ -13,10 +13,10 @@
             commandHelpData = {},
             commandHelpFileData,
             lastTime = parseInt($.getSetIniDbNumber('datarenderservice', 'last_time', 0)),
-            checkTime = lastTime + parseInt(125 * 6e4),
+            checkTime = lastTime + parseInt(90 * 6e4),
             JSONStringer = Packages.org.json.JSONStringer;
 
-        /* Run only once every 125 minutes. Do not change this. The Data Service has a rate limit
+        /* Run only once every 90 minutes. Do not change this. The Data Service has a rate limit
          * and will reject the data.
          */
         if (lastTime > 0 && checkTime > $.systemTime()) {
