@@ -982,7 +982,7 @@
          */
         $api.on($script, 'twitchUserNameChanged', function(event) {
             callHook('twitchUserNameChanged', event, true);
-        }
+        });
         
     }
 
