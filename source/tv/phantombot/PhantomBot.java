@@ -464,7 +464,7 @@ public final class PhantomBot implements Listener {
 
         /* Set the PhantomBot Commands API variables */
         this.dataRenderServiceAPIToken = this.pbProperties.getProperty("datarenderservicetoken", "");
-        this.dataRenderServiceAPIURL = this.pbProperties.getProperty("datarenderserviceurl", "https://phantombot.illusionaryone.tv");
+        this.dataRenderServiceAPIURL = this.pbProperties.getProperty("datarenderserviceurl", "https://drs.phantombot.tv");
 
         /* Set the MySql variables */
         this.mySqlName = this.pbProperties.getProperty("mysqlname", "");
