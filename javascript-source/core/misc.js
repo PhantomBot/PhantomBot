@@ -665,7 +665,7 @@
         }
 
         while (string.indexOf(find) >= 0) {
-            string = string.replace(find, replace);
+            string = string.replace(find, (replace + ''));
         }
 
         return string;
