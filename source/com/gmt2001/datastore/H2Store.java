@@ -106,6 +106,18 @@ public class H2Store extends DataStore {
     }
 
     @Override
+    public void CloseConnection() {
+        try {
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
     protected void finalize() throws Throwable {
         super.finalize();
 
