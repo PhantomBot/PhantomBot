@@ -17,13 +17,23 @@
 package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
-import com.google.common.collect.Maps;
+import com.gmt2001.datastore.DataStore;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import tv.phantombot.PhantomBot;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.twitch.user.TwitchUserNameChangedEvent;
 
 public class UsernameCache {
 
@@ -33,31 +43,56 @@ public class UsernameCache {
         return instance;
     }
 
-    private final Map<String, UserData> cache = Maps.newHashMap();
+    private static final int intervalLookupMS = 1000;
+    private final ConcurrentMap<String, UserData> cache = new ConcurrentHashMap<>();
+    private final ScheduledThreadPoolExecutor tpExec = new ScheduledThreadPoolExecutor(1);
+    private Queue<String> lookupQueue = new ConcurrentLinkedQueue<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
 
     private UsernameCache() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        
+        tpExec.scheduleAtFixedRate(() -> {
+            String usernames = "";
+            int i = 0;
+            String next;
+            
+            do {
+                next = lookupQueue.poll();
+            
+                if (next != null) {
+                    usernames = usernames + (usernames.isEmpty() ? "" : ",") + next;
+                    i++;
+                }
+            } while (i < 100 && next != null);
+            
+            if (!usernames.isEmpty()) {
+                lookupUserData(usernames);
+            }
+        }, intervalLookupMS, intervalLookupMS, TimeUnit.MILLISECONDS);
     }
 
-    private void lookupUserData(String username) {
+    private void lookupUserData(String usernames) {
         try {
-            JSONObject user = TwitchAPIv5.instance().GetUser(username);
+            JSONObject users = TwitchAPIv5.instance().GetUser(usernames);
 
-            if (user.getBoolean("_success")) {
-                if (user.getInt("_http") == 200) {
-                    if (user.getJSONArray("users").length() > 0) {
-                        String displayName = user.getJSONArray("users").getJSONObject(0).getString("display_name").replaceAll("\\\\s", " ");
-                        String userID = user.getJSONArray("users").getJSONObject(0).getString("_id");
-                        cache.put(username, new UserData(displayName, userID));
+            if (users.getBoolean("_success")) {
+                if (users.getInt("_http") == 200) {
+                    JSONArray arr = users.getJSONArray("users");
+                    for (int i = 0; i < arr.length(); i++) {
+                        JSONObject obj = arr.getJSONObject(i);
+                        String userName = obj.getString("name");
+                        String displayName = obj.getString("display_name").replaceAll("\\\\s", " ");
+                        String userID = obj.getString("_id");
+                        addUser(userName, displayName, userID);
                     }
                 } else {
-                    com.gmt2001.Console.debug.println("UsernameCache.updateCache: Failed to get username [" + username + "] http error [" + user.getInt("_http") + "]");
+                    com.gmt2001.Console.debug.println("UsernameCache.updateCache: Failed to get usernames [" + usernames + "] http error [" + users.getInt("_http") + "]");
                 }
             } else {
-                if (user.getString("_exception").equalsIgnoreCase("SocketTimeoutException") || user.getString("_exception").equalsIgnoreCase("IOException")) {
+                if (users.getString("_exception").equalsIgnoreCase("SocketTimeoutException") || users.getString("_exception").equalsIgnoreCase("IOException")) {
                     Calendar c = Calendar.getInstance();
 
                     if (lastFail.after(new Date())) {
@@ -75,13 +110,28 @@ public class UsernameCache {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             com.gmt2001.Console.err.printStackTrace(e);
+        }
+    }
+    
+    private void checkUserNameChanged(String userName, String userID) {
+        DataStore ds = PhantomBot.instance().getDataStore();
+        String existingName = ds.GetString("userids", "", userID);
+        
+        if (existingName != null) {
+            if (!existingName.equalsIgnoreCase(userName)) {
+                EventBus.instance().post(new TwitchUserNameChangedEvent(userID, existingName, userName));
+                
+                ds.SetString("userids", "", userID, userName);
+            }
+        } else {
+            ds.SetString("userids", "", userID, userName);
         }
     }
 
     public String resolve(String username) {
-        return resolve(username, new HashMap<String, String>());
+        return resolve(username, new HashMap<>());
     }
 
     public String resolve(String username, Map<String, String> tags) {
@@ -95,7 +145,7 @@ public class UsernameCache {
             }
 
             if (tags.containsKey("display-name") && tags.get("display-name").equalsIgnoreCase(lusername) && tags.containsKey("user-id")) {
-                cache.put(lusername, new UserData(tags.get("display-name"), tags.get("user-id")));
+                addUser(lusername, tags.get("display-name"), tags.get("user-id"));
                 return tags.get("display-name");
             }
 
@@ -117,15 +167,30 @@ public class UsernameCache {
         }
     }
 
-    public void addUser(String userName, String displayName, int userID) {
-        if (!hasUser(userName) && displayName.length() > 0) {
-            cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
+    public void addUser(String userName) {
+        addUser(userName, "", "");
+    }
+
+    public void addUser(String userName, Map<String, String> tags) {
+        if (tags.containsKey("display-name") && tags.get("display-name").equalsIgnoreCase(userName) && tags.containsKey("user-id")) {
+            addUser(userName, tags.get("display-name"), tags.get("user-id"));
+        } else {
+            addUser(userName);
         }
     }
 
+    public void addUser(String userName, String displayName, int userID) {
+        addUser(userName, displayName, "" + userID);
+    }
+
     public void addUser(String userName, String displayName, String userID) {
-        if (!hasUser(userName) && displayName.length() > 0 && userID.length() > 0) {
-            cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
+        if (!hasUser(userName)) {
+            if (displayName.length() > 0 && userID.length() > 0 && !userID.equals("0")) {
+                cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
+                checkUserNameChanged(userName, userID);
+            } else {
+                lookupQueue.add(userName);
+            }
         }
     }
 
@@ -142,13 +207,7 @@ public class UsernameCache {
         if (hasUser(lusername)) {
             return cache.get(lusername).getUserID();
         } else {
-            if (new Date().before(timeoutExpire)) {
-                return "0";
-            }
-            lookupUserData(lusername);
-            if (hasUser(lusername)) {
-                return cache.get(lusername).getUserID();
-            }
+            addUser(userName);
         }
         return "0";
     }

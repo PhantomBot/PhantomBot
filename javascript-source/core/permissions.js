@@ -637,6 +637,7 @@
                     }
                     $.checkGameWispSub(joins[i]);
                     $.users.push([joins[i], now]);
+                    $.username.addUser(joins[i]);
                 }
             }
             // Enable auto commit again and force save.
@@ -661,6 +662,7 @@
 
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
+            $.username.addUser(username);
         }
     });
 
@@ -677,6 +679,7 @@
 
             users.push([username, $.systemTime()]);
             $.checkGameWispSub(username);
+            $.username.addUser(username, event.getTags());
         }
     });
 
