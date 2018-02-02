@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
@@ -54,30 +55,44 @@ public class UsernameCache {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         
         tpExec.scheduleAtFixedRate(() -> {
-            String next = lookupQueue.poll();
+            String usernames = "";
+            int i = 0;
+            String next;
             
-            if (next != null) {
-                lookupUserData(next);
+            do {
+                next = lookupQueue.poll();
+            
+                if (next != null) {
+                    usernames = usernames + (usernames.isEmpty() ? "" : ",") + next;
+                    i++;
+                }
+            } while (i < 100 && next != null);
+            
+            if (!usernames.isEmpty()) {
+                lookupUserData(usernames);
             }
         }, intervalLookupMS, intervalLookupMS, TimeUnit.MILLISECONDS);
     }
 
-    private void lookupUserData(String username) {
+    private void lookupUserData(String usernames) {
         try {
-            JSONObject user = TwitchAPIv5.instance().GetUser(username);
+            JSONObject users = TwitchAPIv5.instance().GetUser(usernames);
 
-            if (user.getBoolean("_success")) {
-                if (user.getInt("_http") == 200) {
-                    if (user.getJSONArray("users").length() > 0) {
-                        String displayName = user.getJSONArray("users").getJSONObject(0).getString("display_name").replaceAll("\\\\s", " ");
-                        String userID = user.getJSONArray("users").getJSONObject(0).getString("_id");
-                        addUser(username, displayName, userID);
+            if (users.getBoolean("_success")) {
+                if (users.getInt("_http") == 200) {
+                    JSONArray arr = users.getJSONArray("users");
+                    for (int i = 0; i < arr.length(); i++) {
+                        JSONObject obj = arr.getJSONObject(i);
+                        String userName = obj.getString("name");
+                        String displayName = obj.getString("display_name").replaceAll("\\\\s", " ");
+                        String userID = obj.getString("_id");
+                        addUser(userName, displayName, userID);
                     }
                 } else {
-                    com.gmt2001.Console.debug.println("UsernameCache.updateCache: Failed to get username [" + username + "] http error [" + user.getInt("_http") + "]");
+                    com.gmt2001.Console.debug.println("UsernameCache.updateCache: Failed to get usernames [" + usernames + "] http error [" + users.getInt("_http") + "]");
                 }
             } else {
-                if (user.getString("_exception").equalsIgnoreCase("SocketTimeoutException") || user.getString("_exception").equalsIgnoreCase("IOException")) {
+                if (users.getString("_exception").equalsIgnoreCase("SocketTimeoutException") || users.getString("_exception").equalsIgnoreCase("IOException")) {
                     Calendar c = Calendar.getInstance();
 
                     if (lastFail.after(new Date())) {
