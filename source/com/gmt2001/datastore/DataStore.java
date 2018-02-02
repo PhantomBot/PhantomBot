@@ -354,6 +354,9 @@ public class DataStore {
     public Connection CreateConnection(String db, String user, String pass) {
         return null;
     }
+    
+    public void CloseConnection() {
+    }
 
     public void setAutoCommit(boolean mode) {
     }
