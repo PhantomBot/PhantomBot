@@ -1181,10 +1181,11 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
         
-        print("Closing the database...");
-        dataStore.CloseConnection();
 
         com.gmt2001.Console.out.print("\r\n");
+        print("Closing the database...");
+        dataStore.CloseConnection();
+        
         print(this.botName + " is exiting.");
     }
 
