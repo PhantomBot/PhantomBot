@@ -175,6 +175,7 @@ public class SqliteStore extends DataStore {
         return connection;
     }
 
+    @Override
     public void CloseConnection() {
         try {
             if (connection != null) {
