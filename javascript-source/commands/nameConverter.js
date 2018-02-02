@@ -36,6 +36,13 @@
             changed++;
         }
         
+        var key = $.inidb.GetKeyByValue('userids', '', oldName);
+        
+        if (key != null) {
+            $.inidb.SetString('userids', '', key, newName);
+            changed++;
+        }
+        
         $.inidb.setAutoCommit(true);
         
         return changed;
