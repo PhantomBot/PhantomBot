@@ -29,3 +29,5 @@ $.lang.register('discord.customcommands.delalias.usage', 'Usage: !delalias [alia
 $.lang.register('discord.customcommands.delalias.success', 'Alias !$1 has been removed.');
 $.lang.register('discord.customcommands.404', 'That command does not exist.');
 $.lang.register('discord.customcommands.alias.404', 'That alias does not exist.');
+$.lang.register('discord.customcommands.customapi.404', 'The !$1 command requires parameters.');
+$.lang.register('discord.customcommands.customapijson.err', '!$1: An error occurred processing the API.');
