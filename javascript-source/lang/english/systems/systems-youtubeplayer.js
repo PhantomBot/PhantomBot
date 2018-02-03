@@ -47,7 +47,7 @@ $.lang.register('ytplayer.command.currentsong.404', 'There is not a curent song'
 $.lang.register('ytplayer.command.delrequest.success', 'Removed song with ID [$1] and title of [$2] from song requests.');
 $.lang.register('ytplayer.command.delrequest.404', 'Song requests do not have a song with an ID of [$1]');
 $.lang.register('ytplayer.command.delrequest.usage', 'Usage: !ytp delrequest [YouTube ID]');
-$.lang.register('ytplayer.command.ytp.usage', 'Usage: !ytp [togglesongrequest | toggleanounce | delrequest | volume | togglerandom | setrequestmax | setmaxvidlength | votecount]');
+$.lang.register('ytplayer.command.ytp.usage', 'Usage: !ytp [togglesongrequest | toggleanounce | delrequest | pause | volume | togglerandom | setrequestmax | setmaxvidlength | votecount]');
 $.lang.register('ytplayer.command.wrongsong.success', 'Removed last requested song: [$1]');
 $.lang.register('ytplayer.command.wrongsong.404', 'No songs found');
 $.lang.register('ytplayer.command.wrongsong.user.success', 'Removed last requested song from $1: [$2]');
