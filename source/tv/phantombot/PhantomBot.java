@@ -525,8 +525,8 @@ public final class PhantomBot implements Listener {
         PhantomBot.messageLimit = Math.floor(Double.parseDouble(this.pbProperties.getProperty("msglimit30", "19.0")));
         if (PhantomBot.messageLimit > 99.0) {
             PhantomBot.messageLimit = 99.0;
-        } else if (PhantomBot.messageLimit < 18.0) {
-            PhantomBot.messageLimit = 18.0;
+        } else if (PhantomBot.messageLimit < 19.0) {
+            PhantomBot.messageLimit = 19.0;
         }
 
         // *Not currently being used.*
@@ -1180,12 +1180,12 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-        
+
 
         com.gmt2001.Console.out.print("\r\n");
         print("Closing the database...");
         dataStore.CloseConnection();
-        
+
         print(this.botName + " is exiting.");
     }
 
