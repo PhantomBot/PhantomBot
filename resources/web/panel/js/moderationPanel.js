@@ -130,7 +130,7 @@
                         blacklist[i] = msgObject['results'][idx];
                         html += '<tr>' +
                         '<td>' + (modSetting.length > 80 ? modSetting.substring(0, 80) + '...' : modSetting) + '</td>' +
-                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openBlackListModal(\'' + i + '\')"><i class="fa fa-hdd-o" /> </button>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openBlackListModal(\'' + i + '\')"><i class="fa fa-edit" /> </button>' +
                         '<button type="button" id="delete_blackList_' + i + '" class="btn btn-default btn-xs" onclick="$.deleteBlacklist(\'' + i + '\')">'+
                         '<i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
