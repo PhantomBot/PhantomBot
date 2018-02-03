@@ -323,7 +323,8 @@ $(function() {
             	controls: 0,
             	showinfo: 0,
             	showsearch: 0,
-            	autoplay: 1
+            	autoplay: 1,
+                rel: 0
         	}
         });
     };
