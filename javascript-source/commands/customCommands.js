@@ -314,8 +314,8 @@
                 channel = $.channelName,
                 sender = event.getSender();
 
-            if (args.length > 0) sender = args[0];
-            if (args.length > 1) channel = args[1];
+            if (args.length > 0) sender = args[0].replace('@','');
+            if (args.length > 1) channel = args[1].replace('@','');
 
             $.getFollowAge(event.getSender(), sender, channel);
             return null;
