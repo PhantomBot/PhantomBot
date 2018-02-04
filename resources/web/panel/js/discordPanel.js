@@ -77,7 +77,7 @@
         }
 
         if (panelCheckQuery(msgObject, 'discord_keywords')) {
-            var keys = msgObject['results'],
+            var keys = msgObject['results'].sort(sortKeywordsCommandsTable),
                 html = '<table>';
 
             if (keys.length === 0) {
@@ -107,7 +107,7 @@
         }
 
         if (panelCheckQuery(msgObject, 'discord_commands')) {
-            var keys = msgObject['results'],
+            var keys = msgObject['results'].sort(sortKeywordsCommandsTable),
                 html = '<table style="width: 100%"><tr><th>Command</th><th>Response</th><th>Cooldown</th><th style="float: right;"></td>',
                 dataObj = {},
                 command,
@@ -326,6 +326,15 @@
 
         $('#command-modal').modal();
     }
+    
+    /**
+     * @function sortKeywordsCommandsTable
+     * @param {Object} a
+     * @param {Object} b
+     */
+    function sortKeywordsCommandsTable(a, b) {
+        return panelStrcmp(a.key, b.key);
+    };
 
     /*
      * @function editKeyword
