@@ -18,7 +18,7 @@ Additional functionality is enabled through the use of third-party modules.
 
 ## Screenshots
 
-[![](https://i.zelakto.tv/images/cbD6vV7.png)](https://i.zelakto.tv/images/OmvE0rY.png)
+[![](https://i.imgur.com/kG1KERw.png)](https://i.imgur.com/kG1KERw.png)
 [![](https://i.zelakto.tv/images/l3WNPWK.png)](https://i.zelakto.tv/images/6h38mvL.png)
 [![](https://i.zelakto.tv/images/xGoRGJs.png)](https://i.zelakto.tv/images/VuN7GEp.png)
 
