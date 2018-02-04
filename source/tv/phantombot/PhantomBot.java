@@ -247,6 +247,7 @@ public final class PhantomBot implements Listener {
     public static Boolean useMessageQueue = true;
     public static Boolean twitch_tcp_nodelay = true;
     public static Boolean betap = false;
+    public static Boolean isInExitState = false;
     public Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
@@ -1115,6 +1116,7 @@ public final class PhantomBot implements Listener {
     public void onExit() {
         print(this.botName + " is shutting down...");
         isExiting = true;
+        PhantomBot.isInExitState = true;
 
         print("Stopping all events and message dispatching...");
         ScriptFileWatcher.instance().kill();
