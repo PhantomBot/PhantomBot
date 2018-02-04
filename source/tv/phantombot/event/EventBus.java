@@ -26,7 +26,14 @@ import tv.phantombot.PhantomBot;
 
 public class EventBus {
     private static final EventBus instance = new EventBus();
-    private final MBassador<Event> bus = new MBassador<Event>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).addFeature(Feature.AsynchronousHandlerInvocation.Default()).addFeature(Feature.AsynchronousMessageDispatch.Default().setNumberOfMessageDispatchers(10)).addPublicationErrorHandler(new ExceptionHandler()));
+    private static final MBassador<Event> bus = new MBassador<Event>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).addFeature(Feature.AsynchronousHandlerInvocation.Default()).addFeature(Feature.AsynchronousMessageDispatch.Default().setNumberOfMessageDispatchers(10)).addPublicationErrorHandler(new ExceptionHandler()));
+
+    /*
+     * Class constructor.
+     */
+    private EventBus() {
+
+    }
 
     /*
      * Method that returns this instance
@@ -61,7 +68,7 @@ public class EventBus {
      * @param {Event} event
      */
     public void post(Event event) {
-        if (PhantomBot.instance().isExiting()) {
+        if (PhantomBot.isInExitState) {
             return;
         }
 
@@ -74,7 +81,7 @@ public class EventBus {
      * @param {Event} event
      */
     public void postAsync(Event event) {
-        if (PhantomBot.instance().isExiting()) {
+        if (PhantomBot.isInExitState) {
             return;
         }
 
