@@ -145,7 +145,11 @@ public class Session extends MessageQueue {
      * Method that stops everyting for TwitchWSIRC, there's no going back after this.
      */
     public void close() {
+        // Kill the message queue.
         this.kill();
+        // Send quit command to Twitch to exit correctly.
+        getSocket().send("QUIT");
+        // Close connection.
         twitchWSIRC.close(1000, "bye");
     }
 }
