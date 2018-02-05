@@ -336,7 +336,7 @@ public class HTTPServerCommon {
                     jsonObject.object().key("table");
                     jsonObject.object();
                     jsonObject.key("table_name").value(dbTable);
-                    jsonObject.key("key").value(keyValue[0]);
+                    jsonObject.key("key").value(keyValue[1]);
                     jsonObject.key("value").value(dbString);
                     jsonObject.endObject();
                     jsonObject.endObject();
