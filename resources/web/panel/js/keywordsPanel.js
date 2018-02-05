@@ -52,7 +52,7 @@
                 }
 
                 html = '<table style="width: 100%"><tr><th>Keyword</th><th>Response</th><th style="float: right;"></td>';
-                for (idx in msgObject['results']) {
+                for (idx in msgObject['results'].sort(sortKeywordsTable)) {
                     var json = JSON.parse(msgObject['results'][idx]['value']),
                         keyword = json.keyword;
                         response = json.response;
@@ -88,6 +88,15 @@
 
         sendDBKeys('keywords_cooldown', 'coolkey');
     }
+    
+    /**
+     * @function sortKeywordsTable
+     * @param {Object} a
+     * @param {Object} b
+     */
+    function sortKeywordsTable(a, b) {
+        return panelStrcmp(a.key, b.key);
+    };
 
     /**
      * @function addKeywordnew
