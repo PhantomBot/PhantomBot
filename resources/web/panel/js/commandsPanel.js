@@ -399,7 +399,7 @@
             $('#addCommandText').val('');
             setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
-        } else if (botCommands.indexOf(command) !== -1) {
+        } else if (botCommands.indexOf(command.replace('!', '')) !== -1) {
             $('#addCommandCommand').val('[ERROR] Command already exists.');
             $('#addCommandText').val('');
             setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
@@ -586,7 +586,7 @@
             sendDBUpdate("commands_cooldown_toggle", "cooldownSettings", "modCooldown", "false");
         } else if (modCooldown == "false") {
             sendDBUpdate("commands_cooldown_toggle", "cooldownSettings", "modCooldown", "true");
-            
+
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         setTimeout(function() { sendWSEvent('cooldown', './core/commandCoolDown.js', null, ['update']); }, TIMEOUT_WAIT_TIME * 2);
