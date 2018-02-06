@@ -14,8 +14,7 @@
         modListUsers = [],
         users = [],
         moderatorsCache = [],
-        lastJoinPart = $.systemTime(),
-        canPushNewUser = true;
+        lastJoinPart = $.systemTime();
 
     /**
      * @function updateUsersObject
@@ -630,7 +629,7 @@
             for (var i = 0; i < joins.length; i++) {
                 // Cast the user as a string, because Rhino.
                 joins[i] = (joins[i] + '');
-                
+
                 if (!userExists(joins[i])) {
                     if (!$.user.isKnown(joins[i])) {
                         $.setIniDbBoolean('visited', joins[i], true);
@@ -652,7 +651,7 @@
     $.bind('ircChannelJoin', function(event) {
         var username = event.getUser().toLowerCase();
 
-        if (canPushNewUser && !userExists(username)) {
+        if (!userExists(username)) {
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
             }
@@ -670,7 +669,7 @@
     $.bind('ircChannelMessage', function(event) {
         var username = event.getSender().toLowerCase();
 
-        if (canPushNewUser && !userExists(username)) {
+        if (!userExists(username)) {
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
             }
@@ -686,10 +685,6 @@
     $.bind('ircChannelLeave', function(event) {
         var username = event.getUser().toLowerCase(),
             i;
-
-        if (!canPushNewUser) {
-            return;
-        }
 
         for (i in users) {
             if (users[i][0].equals(username.toLowerCase())) {
