@@ -118,6 +118,16 @@ public class TwitchCache implements Runnable {
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
+        // If this cache starts before the database, we need to wait.
+        while (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            com.gmt2001.Console.debug.println("TwitchCache::run::failed:database:null");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
         /* Update the clips every other loop. */
         boolean doUpdateClips = false;
 
