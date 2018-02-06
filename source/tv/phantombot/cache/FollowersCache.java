@@ -35,7 +35,6 @@ import org.json.JSONArray;
 public class FollowersCache implements Runnable {
 
     private static final Map<String, FollowersCache> instances = new HashMap<String, FollowersCache>();
-    private final DataStore dataStore = PhantomBot.instance().getDataStore();
     private final Thread updateThread;
     private final String channelName;
     private Date timeoutExpire = new Date();
@@ -115,6 +114,7 @@ public class FollowersCache implements Runnable {
 
         JSONObject jsonObject = TwitchAPIv5.instance().GetChannelFollows(this.channelName, 100, 0, false);
         Map<String, String> newCache = new HashMap<String, String>();
+        DataStore datastore = PhantomBot.instance().getDataStore();
 
         if (jsonObject.getBoolean("_success")) {
             if (jsonObject.getInt("_http") == 200) {
@@ -123,9 +123,9 @@ public class FollowersCache implements Runnable {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String follower = jsonArray.getJSONObject(i).getJSONObject("user").getString("name").toLowerCase();
 
-                    if (!dataStore.exists("followed", follower)) {
+                    if (!datastore.exists("followed", follower)) {
                         EventBus.instance().post(new TwitchFollowEvent(follower));
-                        dataStore.set("followed", follower, "true");
+                        datastore.set("followed", follower, "true");
                     }
                 }
             } else {
