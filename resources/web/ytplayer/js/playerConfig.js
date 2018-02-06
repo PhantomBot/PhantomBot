@@ -3,7 +3,7 @@
 // Do NOT Modify! Overwritten when PhantomBot is restarted!
 var playerPort = 25003;
 var channelName = "scaniatv";
-var auth="7gSaMHUplklyLEqmFTS3S9ATHgu7fA";
+var auth="9WYfB6Fh9GGDIKHDAnBkgf4KLlbKbZ";
 var http="http://";
 function getPlayerPort() { return playerPort; }
 function getChannelName() { return channelName; }
