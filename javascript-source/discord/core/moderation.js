@@ -100,7 +100,7 @@
      *
      * @param {String} message
      */
-    function hasBlackList(username, message) {
+    function hasBlackList(message) {
         for (var i in blacklist) {
             if (message.includes(blacklist[i])) {
                 return true;
@@ -291,7 +291,7 @@
                 }
             }
 
-            if (hasBlackList(username, message)) {
+            if (hasBlackList(message)) {
                 timeoutUser(event.getDiscordMessage());
                 return;
             }
