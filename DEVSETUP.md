@@ -10,7 +10,7 @@ It's very global, so you might need to take some extra steps to get it to work f
 1. Fork the [PhantomBot repository](https://github.com/PhantomBot/PhantomBot).
 2. Check out your for and open it in your favorite IDE.
 2. Set the project Java SDK to [1.8](http://www.oracle.com/technetwork/java/javase/overview/index.html).
-3. Import `build.xml` into your [ANT](http://ant.apache.org/) task manager.
+3. Import `./build.xml` into your [ANT](http://ant.apache.org/) task manager.
 
 DONE! Happy coding <3
 
@@ -27,7 +27,7 @@ You can get JetBrains IntelliJ [here](https://www.jetbrains.com/idea/).
 5. Install the "File Watchers" plugin if you haven't already.
 6. Import `./development-resources/watchers.xml` into your File Watchers.  
   *The File Watchers are located in "Settings" under "Tools"*
-7. Import `build.xml` into the ANT task manager.  
+7. Import `./build.xml` into the ANT task manager.  
   *IntelliJ might have already asked this of you and you were right in accepting it*
 
 DONE! Happy coding <3
@@ -64,7 +64,7 @@ You can get Eclipse [here](https://www.eclipse.org/downloads/).
 7. Choose a destination folder, default branch and remote name. Click **Next**.
 8. When the clone process is finished select *"Import using the New Project wizard"*. Click **Next**. And press **Finish** to adding project.
 9. Select or type filter text *"Java Project from Existing Ant Buildfile"*. **Next** page!
-10. Click **Browse** to select `build.xml` from destination folder. Also mark *Link to the buildfile in the file system*. Press **Finish**
+10. Click **Browse** to select `./build.xml` from destination folder. Also mark *Link to the buildfile in the file system*. Press **Finish**
   `./libraries` has been automatically imported to *Referenced Libraries*.
 
 DONE! Happy coding <3
