@@ -4,7 +4,7 @@
  * Interfaces with Twitter.  Provides the connection to the Core to be provided
  * with Tweets and configuration of the module.  As the Core directly reads the
  * DB for configuration, there is not a need for local variables in this module.
- * 
+ *
  */
 
 
@@ -72,6 +72,7 @@
             twitterUserName,
             rewardNameArray = [],
             lastRetweet,
+            userName,
             reward = $.getIniDbNumber('twitter', 'reward_points'),
             cooldown = $.getIniDbFloat('twitter', 'reward_cooldown') * 3.6e6,
             now = $.systemTime();
@@ -492,7 +493,7 @@
             }
 
             /**
-             * @commandpath twitter unregister - Unregister your Twitter username 
+             * @commandpath twitter unregister - Unregister your Twitter username
              */
             if (commandArg.equalsIgnoreCase('unregister')) {
                 $.inidb.del('twitter_mapping', sender);
@@ -509,7 +510,7 @@
     function checkAutoUpdate() {
         var message = $.getIniDbString('twitter', 'message_update');
 
-        /* 
+        /*
          * If not online, nothing to do. The last_autoupdate is reset to ensure that
          * the moment a stream comes online an additional Tweet is not sent out.
          */
