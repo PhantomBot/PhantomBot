@@ -916,28 +916,10 @@
         }
     }
 
-    // Import the HTML file for this panel.
-    $("#moderationPanel").load("/panel/moderation.html");
-
-    // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $("#tabs").tabs("option", "active");
-            if (active == 2) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    // Query the DB every 30 seconds for updates.
-    setInterval(function() {
-        var active = $("#tabs").tabs("option", "active");
-        if (active == 2 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Moderation Data', 'success', 1000);
-            doQuery();
-        }
-    }, 3e4);
+    // Add moderation hooks
+    addPanelTab( 'moderation', 'Moderation', '/panel/moderation.html', 100 );
+    addDoQuery( 'moderation', doQuery, 3e4 );
+    addOnMessage( 'moderation', onMessage );
 
     // Export functions - Needed when calling from HTML.
     $.moderationOnMessage = onMessage;

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -37,6 +37,11 @@ var connection = new ReconnectingWebSocket(addr, null, {reconnectInterval: 5000}
 var isConnected = false;
 var panelStatsEnabled = false;
 var inputFieldInFocus = false;
+
+var onMessageArray = [];
+var doQueryArray = [];
+var modulePanelArray = [];
+var panelRefreshTimeout = null;
 
 /**
  * @function debugMsg
@@ -103,30 +108,21 @@ connection.onmessage = function(e) {
     // Look for the tag in the return value of the message to route to the proper onMessage handler.
     // If new panels are added a new tag MUST be created and implemented.
     //
-    if (e.data.indexOf('global_') !== -1) $.globalOnMessage(e);
-    if (e.data.indexOf('dashboard_') !== -1) $.dashboardOnMessage(e);
-    if (e.data.indexOf('modules_') !== -1) $.modulesOnMessage(e);
-    if (e.data.indexOf('commands_') !== -1) $.commandsOnMessage(e);
-    if (e.data.indexOf('moderation_') !== -1) $.moderationOnMessage(e);
-    if (e.data.indexOf('time_') !== -1) $.timeOnMessage(e);
-    if (e.data.indexOf('points_') !== -1) $.pointsOnMessage(e);
-    if (e.data.indexOf('viewers_') !== -1) $.viewersOnMessage(e);
-    if (e.data.indexOf('ranks_') !== -1) $.ranksOnMessage(e);
-    if (e.data.indexOf('greetings_') !== -1) $.greetingsOnMessage(e);
-    if (e.data.indexOf('donations_') !== -1) $.donationsOnMessage(e);
-    if (e.data.indexOf('hostraid_') !== -1) $.hostraidOnMessage(e);
-    if (e.data.indexOf('notices_') !== -1) $.noticesOnMessage(e);
-    if (e.data.indexOf('quotes_') !== -1) $.quotesOnMessage(e);
-    if (e.data.indexOf('keywords_') !== -1) $.keywordsOnMessage(e);
-    if (e.data.indexOf('poll_') !== -1) $.pollOnMessage(e);
-    if (e.data.indexOf('gambling_') !== -1) $.gamblingOnMessage(e);
-    if (e.data.indexOf('games_') !== -1) $.gamesOnMessage(e);
-    if (e.data.indexOf('queue_') !== -1) $.queueOnMessage(e);
-    if (e.data.indexOf('twitter_') !== -1) $.twitterOnMessage(e);
-    if (e.data.indexOf('discord_') !== -1) $.discordOnMessage(e);
+    var messageKey;
+    for ( messageKey in onMessageArray ) {
 
-    if (e.data.indexOf('audio_') !== -1) $.audioOnMessage(e);
-    if (e.data.indexOf('help_') !== -1) $.helpOnMessage(e);
+        eIndex = messageKey + '_';
+        if ( e.data.indexOf( eIndex ) !== -1 ) {
+
+            for( var idx = 0 in onMessageArray[ messageKey ] ) {
+                if ( typeof onMessageArray[ messageKey ][ idx ] == 'function' ) {
+                    onMessageArray[ messageKey ][ idx ]( e );
+                }
+            }
+
+        }
+
+    }
 }
 
 /**
@@ -139,7 +135,7 @@ function newPanelAlert(message, type, timeout) {
     debugMsg("newPanelAlert(" + message + ", " + type + ", " + timeout + ")");
     $(".alert").fadeIn(1000);
     $("#newPanelAlert").show().html('<div class="alert alert-' + type + '"><button type="button" '+
-                        'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 
+                        'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' +
                          message + '</span></div>');
     if (timeout != 0) {
         $(".alert-" + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
@@ -285,7 +281,7 @@ function sendWSEvent(event_id, script, argsString, args) {
  * @param {String} b
  * @return {Number} match == 0; no match != 0
  *
- * Note that the below will not work on interational strings, only 
+ * Note that the below will not work on interational strings, only
  * ASCII compares.  If international strings are in play, then
  * localeCompare should be used instead.
  */
@@ -361,7 +357,7 @@ function handleInputFocus() {
  */
 function setInputFocus(value) {
    inputFieldInFocus = value;
-} 
+}
 
 /**
  * @function isInputFocus
@@ -376,89 +372,202 @@ function isInputFocus() {
  * Refreshes the current panel.
  */
 function performCurrentPanelRefresh() {
-    var active = $("#tabs").tabs("option", "active");
+    var active = $("#tabs").tabs("option", "active"),
+        tabs = $("#tabs").tabs("instance").tabs,
+        functionToCall = $(tabs[active]).data('phantombot-tab');
+    clearTimeout(panelRefreshTimeout)
+    if (doQueryArray[functionToCall] && typeof doQueryArray[functionToCall] == 'object' && !isInputFocus()) {
+        var timeoutTime = null;
+        newPanelAlert('Refreshing Data', 'success', 1000);
+        for (var idx = 0 in doQueryArray[functionToCall]) {
+            if (typeof doQueryArray[functionToCall][idx].func == 'function') {
+                doQueryArray[functionToCall][idx].func();
+                if (timeoutTime == null || timeoutTime > doQueryArray[functionToCall][idx].time) {
+                    timeoutTime = doQueryArray[functionToCall][idx].time;
+                }
+            }
+        }
 
-    switch (active) {
-         case 0 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.dashboardDoQuery();
-             break;
-         case 1 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.commandsDoQuery();
-             break;
-         case 2 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.moderationDoQuery();
-             break;
-         case 3 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.timeDoQuery();
-             break;
-         case 4 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.pointsDoQuery();
-             break;
-         case 5 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.viewersDoQuery();
-             break;
-         case 6 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.ranksDoQuery();
-             break;
-         case 7 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.greetingsDoQuery();
-             break;
-         case 8 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.donationsDoQuery();
-             break;
-         case 9 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.noticesDoQuery();
-             break;
-         case 10 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.quotesDoQuery();
-             break;
-         case 11 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.keywordsDoQuery();
-             break;
-         case 12 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.pollDoQuery();
-             break;
-         case 13 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.hostraidDoQuery();
-             break;
-         case 14 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.gamblingDoQuery();
-             break;
-         case 15 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.gamesDoQuery();
-             break;
-         case 16 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.queueDoQuery();
-             break;
-         case 17 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.twitterDoQuery();
-             break;
-         case 18 : 
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.discordDoQuery();
-             break;
-         case 19 : 
-             newPanelAlert('Refreshing Data', 'success', 1000);
-             $.audioDoQuery();
-             break;
+        if (timeoutTime > 0) {
+            panelRefreshTimeout = setTimeout(performCurrentPanelRefresh, timeoutTime);
+        }
 
     }
+}
+/**
+ * Adds do queries into a hook list. Used by performCurrentPanelRefresh
+ * @param {string} uniqueId     Unique identifier
+ * @param {function} func       doQuery function
+ */
+function addDoQuery(uniqueId, func, time) {
+
+    if (!time || typeof time != 'number') {
+        time = 0;
+    }
+
+    if (typeof doQueryArray[uniqueId] != 'object') {
+        doQueryArray[uniqueId] = []
+    }
+
+    doQueryArray[uniqueId].push({ func : func, time : time });
+
+}
+
+/**
+ * Adds on message queries into a hook list. Used by connection.onmessage
+ * @param {string} uniqueId     Unique identifier
+ * @param {function} func       doQuery function
+ */
+function addOnMessage(uniqueID, func) {
+
+    var uniqueID = uniqueID.trim('_');
+    if (typeof onMessageArray[uniqueID] != 'object') {
+        onMessageArray[uniqueID] = [];
+    }
+
+    onMessageArray[uniqueID].push(func);
+
+}
+
+/**
+ * Return active tab
+ * @return {object} Tab object
+ */
+function getActiveTab() {
+    var active = $("#tabs").tabs("option", "active"),
+    tabs = $("#tabs").tabs("instance").tabs;
+
+    return $(tabs[active]);
+}
+
+/**
+ * Tab hook to load in a new tab to the panel
+ * @param {string} uniqueID
+ * @param {string} tabText       Text to display in the tab bar
+ * @param {string} panelHTMLPath The path to the html file to load in
+ * @param {int} position      The position to appear in the tab list
+ */
+function addPanelTab(uniqueID, tabText, panelHTMLPath, position) {
+    if (!position) {
+        position = 9999;
+    }
+
+    while (modulePanelArray[position] != undefined) {
+        position++;
+    }
+
+    modulePanelArray[position] = {
+        id : uniqueID,
+        tabText : tabText,
+        panelHTMLPath : panelHTMLPath
+    };
+
+}
+
+/**
+ * Function to insert the queued tabs and panels
+ */
+function buildPanel(callbackFunction) {
+
+    loadCustomModules(function() {
+        modulePanelArray = modulePanelArray.filter(Boolean).reverse();
+        var i = 0;
+        for (i; i < modulePanelArray.length; i++) {
+
+            $('<div>').attr('role', 'tabpanel').addClass('tab-pane').prop('id', modulePanelArray[i].id).append(
+                $('<div>').prop('id', modulePanelArray[i].id + 'Panel')
+            ).insertAfter($('#dashboard'));
+
+            $('<li>').data('phantombot-tab', modulePanelArray[i].id).append(
+                $('<a>').attr('href', '#' + modulePanelArray[i].id).text(modulePanelArray[i].tabText)
+            ).insertAfter($('li[data-tab-list]'));
+
+            $('#' + modulePanelArray[i].id + 'Panel').load(modulePanelArray[i].panelHTMLPath);
+
+        }
+        callbackFunction();
+    })
+
+
+
+}
+
+var interval = setInterval(function() {
+    if (isConnected && TABS_INITIALIZED) {
+        for(var idx = 0 in doQueryArray) {
+
+            for(var idx2 = 0 in doQueryArray[idx]) {
+                if (typeof doQueryArray[idx][idx2].func == 'function') {
+                    doQueryArray[idx][idx2].func();
+                }
+            }
+        }
+        setTimeout(performCurrentPanelRefresh,3e4);
+        clearInterval(interval);
+    }
+}, INITIAL_WAIT_TIME);
+
+/**
+ * Load up custom modules from the panel/custom folder via ajax
+ */
+function loadCustomModules(callbackFunction) {
+
+    try {
+
+        var customModules = [];
+        $.ajax({
+            url : "/panel/custom/",
+            success : function( d ) {
+                customModules = d.split( "\n" ) ;
+            },
+            error : function() {
+                //die quetly
+            }
+        }).then(function() {
+
+            var $allAjax = [];
+
+            for (var i = 0 in customModules) {
+                if ( ! customModules[i] ) { continue; }
+                if ( customModules[i].indexOf( '.md' ) > -1 ) { continue; }
+                if ( customModules[i].indexOf( '.txt' ) > -1 ) { continue; }
+
+                $allAjax.push($.ajax({
+                    url : "/panel/custom/" + customModules[i] + "/" + customModules[i] + ".js",
+                    success : function( d ) {
+                        var script = document.createElement("script");
+                        script.setAttribute("type", "text/javascript");
+                        script.appendChild( document.createTextNode( d ) )
+                        document.body.appendChild( script );
+                    },
+                    error : function( d ) {
+                        // Die quietly
+                    },
+                    complete : function( xhr, data ) {
+                        if ( 'error' == data ) {
+                            var urlParts = this.url.split( '/' );
+                            alert( 'Failed to load ' + urlParts.pop() + "\nThis may cause some custom functionality to stop working.\nIt is recommended that you remove the directory or file " + urlParts.pop() )
+                        }
+
+                    }
+                }))
+            }
+
+            $.when.apply($, $allAjax).done( function() {
+                callbackFunction();
+                return;
+            }).fail( function(e) {
+                callbackFunction();
+                return;
+            })
+
+        })
+
+    } catch(err) {
+        console.log ('Something went wrong');
+        callbackFunction();
+        return;
+    }
+
+
 }

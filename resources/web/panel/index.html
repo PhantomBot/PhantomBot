@@ -91,122 +91,14 @@
 
         <div id="tabs" style="display:none">
             <ul>
-                <li> <a href="#dashboard">Dashboard</a> </li>
-                <li> <a href="#commands">Commands</a> </li>
-                <li> <a href="#moderation">Moderation</a> </li>
-                <li> <a href="#time">Time</a> </li>
-                <li> <a href="#points">Points</a> </li>
-                <li> <a href="#viewers">Permissions</a> </li>
-                <li> <a href="#ranks">Ranks</a> </li>
-                <li> <a href="#greetings">Alerts</a> </li>
-                <li> <a href="#donations">Donations</a> </li>
-                <li> <a href="#notices">Notices</a> </li>
-                <li> <a href="#quotes">Quotes</a> </li>
-                <li> <a href="#keywords">Keywords</a> </li>
-                <li> <a href="#poll">Polls</a> </li>
-                <li> <a href="#hostraid">Hosts & Raids</a> </li>
-                <li> <a href="#gambling">Giveaways</a> </li>
-                <li> <a href="#games">Games</a> </li>
-                <li> <a href="#queue">Queue</a> </li>
-                <li> <a href="#twitter">Twitter</a> </li>
-                <li> <a href="#discord">Discord</a> </li>
-                <li> <a href="#audio">Audio</a> </li>
-                <li> <a href="#help">Information</a> </li>
+                <li data-tab-list data-phantombot-tab="dashboard"> <a href="#dashboard">Dashboard</a> </li>
+                <li data-phantombot-tab="audio"> <a href="#audio">Audio</a> </li>
+                <li data-phantombot-tab="help"> <a href="#help">Information</a> </li>
             </ul>
 
             <div role="tabpanel" class="tab-pane active" id="dashboard">
                 <div id="dashboardPanel"></div>
                 <script type="text/javascript" src="panel/js/dashboardPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="commands">
-                <div id="commandsPanel"></div>
-                <script type="text/javascript" src="panel/js/commandsPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="moderation">
-                <div id="moderationPanel"></div>
-                <script type="text/javascript" src="panel/js/moderationPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="time">
-                <div id="timePanel"></div>
-                <script type="text/javascript" src="panel/js/timePanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="points">
-                <div id="pointsPanel"></div>
-                <script type="text/javascript" src="panel/js/pointsPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="viewers">
-                <div id="viewersPanel"></div>
-                <script type="text/javascript" src="panel/js/viewersPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="ranks">
-                <div id="ranksPanel"></div>
-                <script type="text/javascript" src="panel/js/ranksPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="greetings">
-                <div id="greetingsPanel"></div>
-                <script type="text/javascript" src="panel/js/greetingsPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="donations">
-                <div id="donationsPanel"></div>
-                <script type="text/javascript" src="panel/js/donationsPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="notices">
-                <div id="noticesPanel"></div>
-                <script type="text/javascript" src="panel/js/noticesPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="quotes">
-                <div id="quotesPanel"></div>
-                <script type="text/javascript" src="panel/js/quotesPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="keywords">
-                <div id="keywordsPanel"></div>
-                <script type="text/javascript" src="panel/js/keywordsPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="poll">
-                <div id="pollPanel"></div>
-                <script type="text/javascript" src="panel/js/pollPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="hostraid">
-                <div id="hostraidPanel"></div>
-                <script type="text/javascript" src="panel/js/hostraidPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="gambling">
-                <div id="gamblingPanel"></div>
-                <script type="text/javascript" src="panel/js/gamblingPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="games">
-                <div id="gamesPanel"></div>
-                <script type="text/javascript" src="panel/js/gamesPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="queue">
-                <div id="queuePanel"></div>
-                <script type="text/javascript" src="panel/js/queuePanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="twitter">
-                <div id="twitterPanel"></div>
-                <script type="text/javascript" src="panel/js/twitterPanel.js"></script>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="discord">
-                <div id="discordPanel"></div>
-                <script type="text/javascript" src="panel/js/discordPanel.js"></script>
             </div>
 
             <!-- Must be the last two -->
@@ -222,10 +114,36 @@
             </div>
         </div>
 
+        <script type="text/javascript" src="panel/js/commandsPanel.js"></script>
+        <script type="text/javascript" src="panel/js/moderationPanel.js"></script>
+        <script type="text/javascript" src="panel/js/timePanel.js"></script>
+        <script type="text/javascript" src="panel/js/pointsPanel.js"></script>
+        <script type="text/javascript" src="panel/js/viewersPanel.js"></script>
+        <script type="text/javascript" src="panel/js/greetingsPanel.js"></script>
+        <script type="text/javascript" src="panel/js/donationsPanel.js"></script>
+        <script type="text/javascript" src="panel/js/noticesPanel.js"></script>
+        <script type="text/javascript" src="panel/js/quotesPanel.js"></script>
+        <script type="text/javascript" src="panel/js/keywordsPanel.js"></script>
+        <script type="text/javascript" src="panel/js/pollPanel.js"></script>
+        <script type="text/javascript" src="panel/js/hostraidPanel.js"></script>
+        <script type="text/javascript" src="panel/js/gamblingPanel.js"></script>
+        <script type="text/javascript" src="panel/js/gamesPanel.js"></script>
+        <script type="text/javascript" src="panel/js/queuePanel.js"></script>
+        <script type="text/javascript" src="panel/js/twitterPanel.js"></script>
+        <script type="text/javascript" src="panel/js/discordPanel.js"></script>
+        <script type="text/javascript" src="panel/js/ranksPanel.js"></script>
         <script>
-            $('#tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix').fadeIn(1000);
-            TABS_INITIALIZED = true;
-            $("#panelLoader").fadeOut(1000);
+            $( function() {
+
+                buildPanel( function() {
+                    $('#tabs').tabs( { activate : performCurrentPanelRefresh } ).addClass('ui-tabs-vertical ui-helper-clearfix').fadeIn(1000);
+                    TABS_INITIALIZED = true;
+                    $("#panelLoader").fadeOut(1000);
+                })
+
+            });
+
+
         </script>
         <script type="text/javascript" src="panel/js/globalPanel.js"></script>
 

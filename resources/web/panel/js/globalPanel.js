@@ -184,6 +184,9 @@
         }
     }, 2e4);
 
+    // Add global hooks
+    addOnMessage( 'global', onMessage );
+
     // Export functions - Needed when calling from HTML.
     $.globalOnMessage = onMessage;
     $.globalDoQuery = doQuery;

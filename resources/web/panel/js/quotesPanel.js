@@ -203,30 +203,10 @@
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 4);
     }
 
-    // Import the HTML file for this panel.
-    $("#quotesPanel").load("/panel/quotes.html");
-
-    // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
-        if (isConnected && TABS_INITIALIZED) {
-            var active = $('#tabs').tabs('option', 'active');
-            if (active == 10) {
-                doQuery();
-                clearInterval(interval);
-            }
-        }
-    }, INITIAL_WAIT_TIME);
-
-    // Query the DB every 30 seconds for updates.
-    setInterval(function() {
-        var active = $('#tabs').tabs('option', 'active');
-        if (active == 10 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Quotes Data', 'success', 1000);
-            if (!isDeleting) {
-                doQuery();
-            }
-        }
-    }, 3e4);
+    // Add quotes hooks
+    addPanelTab( 'quotes', 'Quotes', '/panel/quotes.html', 500 );
+    addDoQuery( 'quotes', doQuery, 3e4 );
+    addOnMessage( 'quotes', onMessage );
 
     // Export to HTML
     $.quotesOnMessage = onMessage;
