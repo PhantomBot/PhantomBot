@@ -32,7 +32,7 @@ public class Script {
     public static final NativeObject global = new NativeObject();
     @SuppressWarnings("rawtypes")
     private final List<ScriptDestroyable> destroyables = Lists.newArrayList();
-    private final NativeObject vars = new NativeObject();
+    private static final NativeObject vars = new NativeObject();
     private final File file;
     private long lastModified;
     private Context context;
@@ -169,11 +169,10 @@ public class Script {
             context.setOptimizationLevel(9);
         }
 
-        scope = context.initStandardObjects(global, false);
-        scope.defineProperty("$", global, 0);
+        scope = context.initStandardObjects(vars, false);//Normal scripting object.
+        scope.defineProperty("$", global, 0);// Global functions that can only be accessed and replaced with $.
         scope.defineProperty("$api", ScriptApi.instance(), 0);
         scope.defineProperty("$script", this, 0);
-        scope.defineProperty("$var", vars, 0);
 
         /* Configure debugger. */
         if (PhantomBot.enableRhinoDebugger) {
