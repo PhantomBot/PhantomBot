@@ -65,7 +65,7 @@
      * @function loadDefaultPl
      */
     function loadDefaultPl() {
-        if (currentPlaylist === null && connectedPlayerClient !== null) {
+        if (connectedPlayerClient !== null) {
             /** Pre-load last activated playlist */
             currentPlaylist = new BotPlayList(activePlaylistname, true);
             /** if the current playlist is "default" and it's empty, add some default songs. */
