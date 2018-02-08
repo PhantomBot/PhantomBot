@@ -286,6 +286,15 @@ $(function() {
     			user: e.requester
     		};
         });
+		
+		// Pause listener.
+        player.addListener('pause', () => {
+            if (player.API.getPlayerState() === 2) {
+                player.API.playVideo();
+            } else {
+                player.API.pauseVideo();
+            }
+        });
 
         // Load the player.
         player.API = new YT.Player('player-frame', {
