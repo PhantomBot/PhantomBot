@@ -76,56 +76,121 @@ $(function() {
     };
 
     /*
-     * @function Generates the settings modal
+     * @function Generates a load playlist modal
      *
+     * @param  {String}   title
+     * @param  {String}   label
+     * @param  {String}   btn
+     * @param  {String}   placeholder
      * @param  {Function} onClose
      * @return {Object}
      */
-    helpers.getSettingsModal = (onClose) => {
-        return helpers.getModal('settings-modal', 'YouTube Player and Request Settings', 'Save', $('<div/>', {
+    helpers.getPlaylistModal = (title, label, btn, placeholder, onClose) => {
+        return helpers.getModal('playlist-load-modal', title, btn, $('<div/>', {
             'class': 'form-group'
         }).append($('<label/>', {
-            'text': 'Player Size'
-        })).append($('<div/>', {
-            'class': 'dropdown'
-        }).append($('<button/>', {
-            'class': 'btn btn-secondary dropdown-toggle',
-            'type': 'button',
-            'data-toggle': 'dropdown',
-            'text': helpers.getPlayerSize(),
-            'id': 'player-size-btn'
-        })).append($('<div/>', {
-            'class': 'dropdown-menu',
-            'aria-labelledby': 'player-size-btn'
-        }).append($('<a/>', {
-            'class': 'dropdown-item',
-            'href': '#',
-            'text': 'Default',
-            'click': () => {
-                $('#player-size-btn').text('Default');
+            'text': label
+        })).append($('<input/>', {
+            'class': 'form-control',
+            'type': 'text',
+            'placeholder': placeholder,
+            'id': 'playlist-load',
+            'focus': () => {
+                $('#playlist-load').attr('placeholder', '');
+            },
+            'blur': () => {
+                $('#playlist-load').attr('placeholder', placeholder);
             }
-        })).append($('<a/>', {
-            'class': 'dropdown-item',
-            'href': '#',
-            'text': 'Half',
-            'click': () => {
-                $('#player-size-btn').text('Half');
-            }
-        })).append($('<a/>', {
-            'class': 'dropdown-item',
-            'href': '#',
-            'text': 'Small',
-            'click': () => {
-                $('#player-size-btn').text('Small');
-            }
-        })).append($('<a/>', {
-            'class': 'dropdown-item',
-            'href': '#',
-            'text': 'Tiny',
-            'click': () => {
-                $('#player-size-btn').text('Tiny');
-            }
-        })))), onClose);
+        })), onClose);
+    };
+
+
+
+    /*
+     * @function Generates the settings modal
+     *
+     * @param  {Function} onClose
+     */
+    helpers.getSettingsModal = (onClose) => {
+        player.dbQuery('yt_settings', 'ytSettings', (e) => {
+            helpers.getModal('settings-modal', 'YouTube Player and Request Settings', 'Save', $('<form/>').append($('<div/>', {
+                'class': 'form-group'
+            }).append($('<label/>', {
+                'text': 'Player Size'
+            })).append($('<div/>', {
+                'class': 'dropdown'
+            }).append($('<button/>', {
+                'class': 'btn btn-secondary dropdown-toggle',
+                'type': 'button',
+                'data-toggle': 'dropdown',
+                'text': helpers.getPlayerSize(),
+                'id': 'player-size-btn'
+            })).append($('<div/>', {
+                'class': 'dropdown-menu',
+                'aria-labelledby': 'player-size-btn'
+            }).append($('<a/>', {
+                'class': 'dropdown-item',
+                'href': '#',
+                'text': 'Default',
+                'click': () => {
+                    $('#player-size-btn').text('Default');
+                }
+            })).append($('<a/>', {
+                'class': 'dropdown-item',
+                'href': '#',
+                'text': 'Half',
+                'click': () => {
+                    $('#player-size-btn').text('Half');
+                }
+            })).append($('<a/>', {
+                'class': 'dropdown-item',
+                'href': '#',
+                'text': 'Small',
+                'click': () => {
+                    $('#player-size-btn').text('Small');
+                }
+            })).append($('<a/>', {
+                'class': 'dropdown-item',
+                'href': '#',
+                'text': 'Tiny',
+                'click': () => {
+                    $('#player-size-btn').text('Tiny');
+                }
+            }))))).append($('<div/>', {
+                'class': 'form-group'
+            }).append($('<label/>', {
+                'text': 'Player DJ Name'
+            })).append($('<input/>', {
+                'type': 'text',
+                'data-toggle': 'tooltip',
+                'title': 'Name of the default playlist user.',
+                'class': 'form-control',
+                'id': 'dj-name',
+                'value': e.playlistDJname
+            }))).append($('<div/>', {
+                'class': 'form-group',
+            }).append($('<label/>', {
+                'text': 'Maximum Songs'
+            })).append($('<input/>', {
+                'type': 'number',
+                'data-toggle': 'tooltip',
+                'title': 'How many songs one user can have in the queue.',
+                'class': 'form-control',
+                'id': 'max-song-user',
+                'value': e.songRequestsMaxParallel
+            }))).append($('<div/>', {
+                'class': 'form-group'
+            }).append($('<label/>', {
+                'text': 'Maximum Song Duration'
+            })).append($('<input/>', {
+                'type': 'number',
+                'data-toggle': 'tooltip',
+                'id': 'max-song-length',
+                'title': 'How long in seconds a song can be.',
+                'class': 'form-control',
+                'value': e.songRequestsMaxSecondsforVideo
+            }))), onClose).modal('toggle');
+        });
     };
 
     /*
