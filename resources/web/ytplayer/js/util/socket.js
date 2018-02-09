@@ -124,6 +124,19 @@ $(function() {
     };
 
     /*
+     * @function loads a new playlist
+     *
+     * @param {String} playlist
+     */
+    player.loadPlaylist = (playlist) => {
+        // Update the data.
+        sendToSocket({
+            command: 'loadpl',
+            playlist: playlist
+        });
+    };
+
+    /*
      * @function skips the current song.
      */
     player.skipSong = () => {
@@ -194,6 +207,48 @@ $(function() {
     };
 
     /*
+     * @function Gets all keys and values from a table
+     *
+     * @param {String}   callback_id
+     * @param {String}   table
+     * @param {Function} callback
+     */
+    player.dbQuery = (callback_id, table, callback) => {
+        listeners[callback_id] = callback;
+
+        sendToSocket({
+            dbquery: true,
+            query_id: callback_id,
+            table: table
+        });
+    };
+
+    /*
+     * @function Updates a key and value in the database
+     *
+     * @param {String}   callback_id
+     * @param {String}   table
+     * @param {String}   key
+     * @param {String}   value
+     * @param {Function} callback
+     */
+    player.dbUpdate = (callback_id, table, key, value, callback) => {
+        if (callback !== undefined) {
+            listeners[callback_id] = callback;
+        }
+
+        sendToSocket({
+            dbupdate: true,
+            query_id: callback_id,
+            update: {
+                table: table,
+                key: key,
+                value: value
+            }
+        });
+    };
+
+    /*
      * @function adds a listener to the socket.
      *
      * @param {String}   listener_id
@@ -245,8 +300,12 @@ $(function() {
                 return;
             }
 
-            // Check if the message is a command or a socket event.
-            if (message.command !== undefined) {
+            if (message.query_id !== undefined) {
+                if (listeners[message.query_id] !== undefined) {
+                    listeners[message.query_id](message);
+                    delete listeners[message.query_id];
+                }
+            } else if (message.command !== undefined) {
                 if (typeof message.command === 'object') {
                     let keys = Object.keys(message.command);
 
