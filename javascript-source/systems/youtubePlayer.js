@@ -1156,6 +1156,14 @@
     });
 
     /**
+     * @event yTPlayerLoadPlaylist
+     */
+    $.bind('yTPlayerLoadPlaylist', function(event) {
+        currentPlaylist.loadNewPlaylist(event.getPlaylist());
+        loadPanelPlaylist();
+    });
+
+    /**
      * @event yTPlayerState
      */
     $.bind('yTPlayerState', function(event) {

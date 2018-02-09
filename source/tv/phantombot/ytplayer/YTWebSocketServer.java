@@ -117,6 +117,7 @@ import org.json.JSONStringer;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.ytplayer.*;
+import tv.phantombot.event.command.CommandEvent;
 
 public class YTWebSocketServer extends WebSocketServer {
 
@@ -255,6 +256,10 @@ public class YTWebSocketServer extends WebSocketServer {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['query'] request passed ["+jsonString+"]");
                 return;
             }
+        } else if (jsonObject.has("dbquery")) {
+            handleDBQuery(webSocket, jsonObject.getString("query_id"), jsonObject.getString("table"));
+        } else if (jsonObject.has("dbupdate")) {
+            handleDBUpdate(webSocket, jsonObject.getString("query_id"), jsonObject.getJSONObject("update").getString("table"), jsonObject.getJSONObject("update").getString("key"), jsonObject.getJSONObject("update").getString("value"));
         } else if (jsonObject.has("deletesr") && sessionData.isPlayer()) {
             dataString = jsonObject.getString("deletesr");
             EventBus.instance().postAsync(new YTPlayerDeleteSREvent(dataString));
@@ -277,6 +282,8 @@ public class YTWebSocketServer extends WebSocketServer {
                     dataString = jsonObject.getString("search");
                     EventBus.instance().postAsync(new YTPlayerSongRequestEvent(dataString));
                 }
+            } else if (jsonObject.getString("command").equals("loadpl")) {
+                EventBus.instance().postAsync(new YTPlayerLoadPlaylistEvent(jsonObject.getString("playlist")));
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
                 return;
@@ -313,6 +320,41 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
+    }
+
+    //Method that queries the DB.
+    public void handleDBQuery(WebSocket webSocket, String id, String table) {
+        JSONStringer jsonObject = new JSONStringer();
+
+        jsonObject.object().key("query_id").value(id);
+
+        try {
+            String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(table, "");
+            for (String dbKey : dbKeys) {
+                String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
+                jsonObject.key(dbKey).value(value);
+            }
+        } catch (NullPointerException ex) {
+            com.gmt2001.Console.debug.println("NULL returned from DB. DB Object not created yet.");
+            return;
+        }
+        jsonObject.endObject();
+        webSocket.send(jsonObject.toString());
+    }
+
+    //Method that updates the db.
+    public void handleDBUpdate(WebSocket webSocket, String id, String table, String key, String value) {
+        JSONStringer jsonObject = new JSONStringer();
+        try {
+            PhantomBot.instance().getDataStore().set(table, key, value);
+        } catch (NullPointerException ex) {
+            com.gmt2001.Console.debug.println("NULL returned from DB. DB Object not created yet.");
+            return;
+        }
+
+        EventBus.instance().post(new CommandEvent(PhantomBot.instance().getBotName(), "reloadyt", ""));
+        jsonObject.object().key("query_id").value(id).endObject();
+        webSocket.send(jsonObject.toString());
     }
 
     // Methods for the Bot JS player to call.

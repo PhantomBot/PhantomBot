@@ -810,6 +810,13 @@
         });
 
         /*
+         * @event yTPlayerLoadPlaylistEvent
+         */
+        $api.on($script, 'yTPlayerLoadPlaylist', function(event) {
+            callHook('yTPlayerLoadPlaylist', event, false);
+        });
+
+        /*
          * @event gameWispChangeEvent
          */
         $api.on($script, 'gameWispChange', function(event) {
