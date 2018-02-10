@@ -108,7 +108,7 @@
 
             ranksJsonStringer.object();
             ranksJsonStringer.key('user').value(keys[idx] + '');
-            ranksJsonStringer.key('rank').value(getRank(keys[idx]));
+            ranksJsonStringer.key('rank').value($.getRank(keys[idx]));
             ranksJsonStringer.endObject();
         }
         jsonStringer.endArray().endObject();
