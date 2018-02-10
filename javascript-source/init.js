@@ -146,13 +146,12 @@
      * @param {Boolean} force
      */
     function loadScriptRecursive(path, silent, force) {
-        var customScripts = (path === '.' ? $.findFiles('./config/scripts', '') : []),
-            files = $.findFiles('./scripts/' + path, ''),
+        var files = $.findFiles('./scripts/' + path, ''),
             i;
 
         for (i in files) {
             if (path === '.') {
-                if (files[i] == 'core' || files[i] == 'lang' || files[i] == 'discord' || files[i] == 'init.js' || customScripts.indexOf(files[i]) !== -1) {
+                if (files[i] == 'core' || files[i] == 'lang' || files[i] == 'discord' || files[i] == 'init.js') {
                     continue;
                 }
             } else if (path === './discord') {
@@ -713,6 +712,13 @@
          */
         $api.on($script, 'yTPlayerConnect', function(event) {
             callHook('yTPlayerConnect', event, false);
+        });
+
+        /*
+         * @event yTPlayerLoadPlaylistEvent
+         */
+        $api.on($script, 'yTPlayerLoadPlaylist', function(event) {
+            callHook('yTPlayerLoadPlaylist', event, false);
         });
 
         /*
