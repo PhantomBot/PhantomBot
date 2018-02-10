@@ -347,5 +347,10 @@
         $.registerChatSubcommand(bot, 'disconnect', 1);
         $.registerChatSubcommand(bot, 'reconnect', 1);
         $.registerChatSubcommand(bot, 'moderate', 2);
+
+        // Say the connected message.
+        if ($.inidb.exists('settings', 'connectedMsg')) {
+            $.say($.inidb.get('settings', 'connectedMsg'));
+        }
     });
 })();

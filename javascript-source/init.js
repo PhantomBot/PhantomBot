@@ -368,9 +368,6 @@
 
         consoleLn('');
 
-        // Call the initReady event.
-        callHook('initReady', null, false);
-
         if ($.isNightly) {
             consoleLn('PhantomBot Nightly Build - No Support is Provided');
             consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
@@ -417,11 +414,10 @@
             if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('O')) {
                 if (event.getAdd().toString().equals('true')) {
                     if (isReady === false) {
-                        if ($.inidb.exists('settings', 'connectedMsg')) {
-                            $.say($.inidb.get('settings', 'connectedMsg'));
-                        } else {
-                            consoleLn($.botName + ' ready!');
-                        }
+                        // Bot is now ready.
+                        consoleLn($.botName + ' ready!');
+                        // Call the initReady event.
+                        callHook('initReady', null, false);
                     }
                     isReady = true;
                 }
@@ -719,6 +715,13 @@
         });
 
         /*
+         * @event yTPlayerLoadPlaylistEvent
+         */
+        $api.on($script, 'yTPlayerLoadPlaylist', function(event) {
+            callHook('yTPlayerLoadPlaylist', event, false);
+        });
+
+        /*
          * @event yTPlayerDisconnect
          */
         $api.on($script, 'yTPlayerDisconnect', function(event) {
@@ -807,13 +810,6 @@
          */
         $api.on($script, 'yTPlayerRandomize', function(event) {
             callHook('yTPlayerRandomize', event, false);
-        });
-
-        /*
-         * @event yTPlayerLoadPlaylistEvent
-         */
-        $api.on($script, 'yTPlayerLoadPlaylist', function(event) {
-            callHook('yTPlayerLoadPlaylist', event, false);
         });
 
         /*
