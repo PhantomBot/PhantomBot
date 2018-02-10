@@ -146,12 +146,13 @@
      * @param {Boolean} force
      */
     function loadScriptRecursive(path, silent, force) {
-        var files = $.findFiles('./scripts/' + path, ''),
+        var customScripts = (path === '.' ? $.findFiles('./config/scripts', '') : []),
+            files = $.findFiles('./scripts/' + path, ''),
             i;
 
         for (i in files) {
             if (path === '.') {
-                if (files[i] == 'core' || files[i] == 'lang' || files[i] == 'discord' || files[i] == 'init.js') {
+                if (files[i] == 'core' || files[i] == 'lang' || files[i] == 'discord' || files[i] == 'init.js' || customScripts.indexOf(files[i]) !== -1) {
                     continue;
                 }
             } else if (path === './discord') {
@@ -368,9 +369,6 @@
 
         consoleLn('');
 
-        // Call the initReady event.
-        callHook('initReady', null, false);
-
         if ($.isNightly) {
             consoleLn('PhantomBot Nightly Build - No Support is Provided');
             consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
@@ -417,11 +415,10 @@
             if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('O')) {
                 if (event.getAdd().toString().equals('true')) {
                     if (isReady === false) {
-                        if ($.inidb.exists('settings', 'connectedMsg')) {
-                            $.say($.inidb.get('settings', 'connectedMsg'));
-                        } else {
-                            consoleLn($.botName + ' ready!');
-                        }
+                        // Bot is now ready.
+                        consoleLn($.botName + ' ready!');
+                        // Call the initReady event.
+                        callHook('initReady', null, false);
                     }
                     isReady = true;
                 }
@@ -807,13 +804,6 @@
          */
         $api.on($script, 'yTPlayerRandomize', function(event) {
             callHook('yTPlayerRandomize', event, false);
-        });
-
-        /*
-         * @event yTPlayerLoadPlaylistEvent
-         */
-        $api.on($script, 'yTPlayerLoadPlaylist', function(event) {
-            callHook('yTPlayerLoadPlaylist', event, false);
         });
 
         /*
