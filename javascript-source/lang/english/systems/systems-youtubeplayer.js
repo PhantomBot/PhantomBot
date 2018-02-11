@@ -1,4 +1,4 @@
-$.lang.register('ytplayer.client.404', 'The YouTube Player is currently not being used!');
+$.lang.register('ytplayer.client.404', 'The YouTube Player is currently not being used, and song requests are disabled!');
 $.lang.register('ytplayer.playlist.404', 'Cannot find playlist [$1]');
 $.lang.register('ytplayer.announce.nextsong', '[\u266B] Now Playing [$1] Requester: $2');
 
