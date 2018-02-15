@@ -1112,7 +1112,15 @@
             }
         }
     });
-
+    
+    /**
+     * @event yTPlayerLoadPlaylist
+     */
+    $.bind('yTPlayerLoadPlaylist', function(event) {
+        currentPlaylist.loadNewPlaylist(event.getPlaylist());
+        loadPanelPlaylist();
+    });
+     
     /**
      * @event ytPlayerSkipSong
      */
