@@ -46,7 +46,6 @@ import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
-
 import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
 
 /*
@@ -351,17 +350,14 @@ public class TwitchCache implements Runnable {
 
                         if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitle)) {
                             setDBString("title", streamTitle);
-                            this.streamTitle = streamTitle;
-                         
-						
+                            this.streamTitle = streamTitle;					
 						 /* Send an event if we did not just send a TwitchOnlineEvent. */
                             if (!sentTwitchOnlineEvent) {
                                 this.streamTitle = streamTitle;
                                 EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
                             }
                             this.streamTitle = streamTitle;
-			}			
-
+			            }			
                         if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitle)) {
                             forcedStreamTitleUpdate = false;
                         }
