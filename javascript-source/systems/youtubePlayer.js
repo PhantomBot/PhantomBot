@@ -45,6 +45,8 @@
         songRequestsMaxSecondsforVideo = $.getIniDbNumber('ytSettings', 'songRequestsMaxSecondsforVideo');
         playlistDJname = $.getIniDbString('ytSettings', 'playlistDJname');
         announceInChat = $.getIniDbBoolean('ytSettings', 'announceInChat');
+        stealRefund = $.getIniDbBoolean('ytSettings', 'stealRefund', false);
+        voteCount = $.getIniDbNumber('ytSettings', 'voteCount', 0);
     };
 
     /**
@@ -288,7 +290,7 @@
             if ($.inidb.exists('yt_playlists_registry', 'ytPlaylist_' + listName)) {
                 if ($.fileExists("./addons/youtubePlayer/" + fileName)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.importpl.file.start'));
-                    importedList = readFile("./addons/youtubePlayer/" + fileName);
+                    importedList = $.readFile("./addons/youtubePlayer/" + fileName);
                     for (var i = 0; i < importedList.length; i++) {
                         if (importedList[i].contains('&list')) {
                             playlistFailCount++;
@@ -1080,22 +1082,22 @@
      * @event ytPlayerStealSong
      */
     $.bind('yTPlayerStealSong', function(event) {
-        var youTubeID = event.getYouTubeID(),
-            refundUser = event.getRequester(),
+        var youTubeID = (event.getYouTubeID() + ''),
+            refundUser = (event.getRequester() + ''),
             retval;
 
-        if (youTubeID.length() > 1) {
+        if (youTubeID.length > 1) {
             retval = currentPlaylist.addToPlaylist(new YoutubeVideo(youTubeID, $.ownerName));
         } else {
             refundUser = currentPlaylist.getCurrentVideo().getOwner().toLowerCase();
             retval = currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo());
         }
 
-        if (stealRefund && retval != -2 && refundUser.length() > 1) {
+        if (stealRefund && retval != -2 && refundUser.length > 1) {
             if (!$.isBot(refundUser) && !playlistDJname.equalsIgnoreCase(refundUser)) {
                 if ($.inidb.exists('pricecom', 'songrequest') || $.inidb.exists('pricecom', 'addsong')) {
                     var isMod = $.isMod(refundUser);
-                    if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isMod))) {
+                    if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(refundUser)) || !isMod))) {
                         var refund = $.inidb.get('pricecom', 'songrequest');
                         if (refund == 0) {
                             refund = $.inidb.get('pricecom', 'addsong');
@@ -1156,14 +1158,6 @@
     });
 
     /**
-     * @event yTPlayerLoadPlaylist
-     */
-    $.bind('yTPlayerLoadPlaylist', function(event) {
-        currentPlaylist.loadNewPlaylist(event.getPlaylist());
-        loadPanelPlaylist();
-    });
-
-    /**
      * @event yTPlayerState
      */
     $.bind('yTPlayerState', function(event) {
@@ -1183,7 +1177,7 @@
                 }
 
                 if (state != playerStateEnum.NEWPAUSE) {
-                    if (songRequestsEnabled) {
+                    if (songRequestsEnabled && announceInChat) {
                         $.say($.lang.get('ytplayer.songrequests.enabled'));
                     }
                 }
@@ -1233,7 +1227,7 @@
 
         $.ytplayer.setClientConnected(false);
         $.consoleLn($.lang.get('ytplayer.console.client.disconnected'));
-        if (!songRequestsEnabled) {
+        if (!songRequestsEnabled && announceInChat) {
             $.say($.lang.get('ytplayer.songrequests.disabled'));
         }
         $.youtubePlayerConnected = false;
