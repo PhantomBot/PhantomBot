@@ -55,7 +55,7 @@ import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
  * This class keeps track of certain Twitch information such as if the channel is online or not
  * and sends events to the JS side to indicate when the channel has gone off or online.
  */
-public class TwitchCache implements Runnable {
+public class TwitchCache implements Runnable {TwitchTitleChangeEvent
 
     private static final Map<String, TwitchCache> instances = Maps.newHashMap();
     private final String channel;
@@ -469,7 +469,8 @@ public class TwitchCache implements Runnable {
     public void setStreamStatus(String streamTitle) {
         forcedStreamTitleUpdate = true;
         this.streamTitle = streamTitle;
-    }
+		EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));  
+	}
 
     /*
      * Returns the preview link.
