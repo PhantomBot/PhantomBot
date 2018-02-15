@@ -1,553 +1,1014 @@
-/* astyle --style=java --indent=spaces=4 --mode=java */
-
 /*
- * Copyright (C) 2016-2018 phantombot.tv
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * init.js
+ * This scripts handles all events and most things for the scripts.
  */
-
-/*
- * @author illusionaryone
- */
-
-package tv.phantombot.cache;
-
-import com.google.common.collect.Maps;
-
-import java.lang.Math;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.List;
-import java.util.TimeZone;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.gmt2001.TwitchAPIv5;
-
-import tv.phantombot.PhantomBot;
-import tv.phantombot.event.EventBus;
-import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
-import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
-import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
-import tv.phantombot.event.twitch.clip.TwitchClipEvent;
-
-import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
-
-/*
- * TwitchCache Class
- *
- * This class keeps track of certain Twitch information such as if the channel is online or not
- * and sends events to the JS side to indicate when the channel has gone off or online.
- */
-public class TwitchCache implements Runnable {TwitchTitleChangeEvent
-
-    private static final Map<String, TwitchCache> instances = Maps.newHashMap();
-    private final String channel;
-    private final Thread updateThread;
-    private boolean killed = false;
-
-    /* Cached data */
-    private Boolean isOnline = false;
-    private Boolean forcedGameTitleUpdate = false;
-    private Boolean forcedStreamTitleUpdate = false;
-    private String streamCreatedAt = "";
-    private String gameTitle = "Some Game";
-    private String streamTitle = "Some Title";
-    private String previewLink = "";
-    private String logoLink = "";
-    private String[] communities = new String[3];
-    private long streamUptimeSeconds = 0L;
-    private int viewerCount = 0;
-    private int views = 0;
+(function() {
+    var isReady = false,
+        modules = [],
+        hooks = [];
 
     /*
-     * Creates an instance for a channel.
+     * @class Module
      *
-     * @param   channel      Name of the Twitch Channel for which this instance is created.
-     * @return  TwitchCache  The new TwitchCache instance object.
+     * @param {String}  scriptName
+     * @param {Object}  script
+     * @param {Boolean} isEnabled
      */
-    public static TwitchCache instance(String channel) {
-        TwitchCache instance = instances.get(channel);
-        if (instance == null) {
-            instance = new TwitchCache(channel);
-            instances.put(channel, instance);
-            return instance;
+    function Module(scriptName, script, isEnabled) {
+        this.scriptName = scriptName;
+        this.isEnabled = isEnabled;
+        this.script = script;
+
+        this.getModuleName = function() {
+            return this.scriptName.match(/((\w+)\.js)$/)[2];
         }
-        return instance;
     }
 
     /*
-     * Constructor for TwitchCache object.
+     * @class Hook
      *
-     * @param  channel  Name of the Twitch Channel for which this object is created.
+     * @param {String}   scriptName
+     * @param {String}   hookName
+     * @param {Function} handler
      */
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    private TwitchCache(String channel) {
-        if (channel.startsWith("#")) {
-            channel = channel.substring(1);
-        }
-
-        this.channel = channel;
-        this.updateThread = new Thread(this, "tv.phantombot.cache.TwitchCache");
-
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-
-        updateThread.start();
+    function Hook(scriptName, hookName, handler) {
+        this.scriptName = scriptName;
+        this.hookName = hookName;
+        this.handler = handler;
     }
 
     /*
-     * Thread run instance.  This is the main loop for the thread that is created to manage
-     * retrieving data from the Twitch API.  This loop runs every 30 seconds, querying data
-     * from Twitch.
+     * @class HookHandler
+     *
+     * @param {String} hookName
      */
-    @Override
-    @SuppressWarnings("SleepWhileInLoop")
-    public void run() {
-        // If this cache starts before the database, we need to wait.
-        while (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
-            com.gmt2001.Console.debug.println("TwitchCache::run::failed:database:null");
+    function HookHandler(hookName) {
+        this.hookName = hookName;
+        this.handlers = [];
+    }
+
+    /*
+     * @function consoleLn
+     *
+     * @param {String} message
+     */
+    function consoleLn(message) {
+        Packages.com.gmt2001.Console.out.println(java.util.Objects.toString(message));
+    }
+
+    /*
+     * @function consoleDebug
+     *
+     * @param {String} message
+     */
+    function consoleDebug(message) {
+        if (Packages.tv.phantombot.PhantomBot.enableDebugging) {
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+                throw new Error();
+            } catch (ex) {
+                Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + ex.stack.split('\n')[1].trim() + '] ' + message));
             }
         }
+    }
 
-        /* Update the clips every other loop. */
-        boolean doUpdateClips = false;
+    /*
+     * @function generateJavaTrampolines
+     */
+    function generateJavaTrampolines() {
+        var name,
+            isJavaProperty = function(name) {
+                var blacklist = ['getClass', 'equals', 'notify', 'class', 'hashCode', 'toString', 'wait', 'notifyAll'];
 
-        /* Check the DB for a previous Game and Stream Title */
-        String gameTitle = getDBString("game");
-        String streamTitle = getDBString("title");
+                return (blacklist[name] !== undefined);
+            },
+            generateTrampoline = function(obj, name) {
+                return function() {
+                    var args = [$script];
 
-        if (gameTitle != null) {
-            this.gameTitle = gameTitle;
-        }
-        if (streamTitle != null) {
-            this.streamTitle = streamTitle;
-        }
+                    for (var i = 0; i < arguments.length; i++) {
+                        args.push(arguments[i]);
+                    }
 
-        while (!killed) {
-            try {
-                try {
-                    this.updateCache();
-                } catch (Exception ex) {
-                    com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
+                    obj[name].save(obj, args);
+                };
+            };
+
+        for (name in $api) {
+            if (!isJavaProperty(name)) {
+                if (typeof $api[name] === 'function') {
+                    $[name] = generateTrampoline($api, name);
+                } else {
+                    $[name] = $api[name];
                 }
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
-            }
-
-            if (doUpdateClips) {
-                doUpdateClips = false;
-                updateClips();
-            } else {
-                doUpdateClips = true;
-            }
-
-            try {
-                Thread.sleep(30 * 1000);
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
 
     /*
-     * Polls the Clips endppint, trying to find the most recent clip.  Note that because Twitch
-     * reports by the viewcount, and has a limit of 100 clips, it is possible to miss the most
-     * recent clip until it has views.
+     * @function loadScript
      *
-     * We do not throw an exception because this is not a critical function unlike the gathering
-     * of data via the updateCache() method.
+     * @param {String}  scriptName
+     * @param {Boolean} force
+     * @param {Boolean} silent
      */
-    private void updateClips() {
-        String doCheckClips = PhantomBot.instance().getDataStore().GetString("clipsSettings", "", "toggle");
-        String discordDoClipsCheck = PhantomBot.instance().getDataStore().GetString("discordSettings", "", "clipsToggle");
-        if ((doCheckClips == null || doCheckClips.equals("false")) && (discordDoClipsCheck == null || discordDoClipsCheck.equals("false"))) {
+    function loadScript(scriptName, force, silent) {
+        if (!isModuleLoaded(scriptName) || force) {
+            if (scriptName.endsWith('.js')) {
+                try {
+                    var enabled,
+                        script;
+
+                    if ($api.getScript($script, scriptName) != null) {
+                        script = $api.reloadScriptR($script, scriptName);
+                    } else {
+                        script = $api.loadScriptR($script, scriptName);
+                    }
+
+                    enabled = $.getSetIniDbBoolean('modules', scriptName, true);
+
+                    modules[scriptName] = new Module(scriptName, script, enabled);
+
+                    if (!silent) {
+                        consoleLn('Loaded module: ' + scriptName.replace(/\.\//g, '') + ' (' + (enabled ? 'Enabled' : 'Disabled') + ')');
+                    }
+                } catch (ex) {
+                    consoleLn('Failed loading "' + scriptName + '": ' + ex);
+                }
+            }
+        }
+    }
+
+    /*
+     * @function loadScriptRecursive
+     *
+     * @param {String}  path
+     * @param {Boolean} silent
+     * @param {Boolean} force
+     */
+    function loadScriptRecursive(path, silent, force) {
+        var files = $.findFiles('./scripts/' + path, ''),
+            i;
+
+        for (i in files) {
+            if (path === '.') {
+                if (files[i] == 'core' || files[i] == 'lang' || files[i] == 'discord' || files[i] == 'init.js') {
+                    continue;
+                }
+            } else if (path === './discord') {
+                if (files[i] == 'core') {
+                    continue;
+                }
+            }
+
+            if ($.isDirectory('./scripts/' + path + '/' + files[i])) {
+                loadScriptRecursive(path + '/' + files[i], silent, (force ? force : false));
+            } else {
+                loadScript(path + '/' + files[i], (force ? force : false), silent);
+            }
+        }
+    }
+
+    /*
+     * @function getModuleIndex
+     *
+     * @param  {String} scriptName
+     * @return {Number}
+     */
+    function getModuleIndex(scriptName) {
+        return modules.indexOf(scriptName);
+    }
+
+    /*
+     * @function isModuleEnabled
+     *
+     * @param  {String} scriptName
+     * @return {Boolean}
+     */
+    function isModuleEnabled(scriptName) {
+        return (modules[scriptName] !== undefined ? modules[scriptName].isEnabled : false);
+    }
+
+    /*
+     * @function isModuleLoaded
+     *
+     * @param  {String} scriptName
+     * @return {Boolean}
+     */
+    function isModuleLoaded(scriptName) {
+        return (modules[scriptName] !== undefined);
+    }
+
+    /*
+     * @function getModule
+     *
+     * @param  {String} scriptName
+     * @return {Object}
+     */
+    function getModule(scriptName) {
+        return modules[scriptName];
+    }
+
+    /*
+     * @function getHook
+     *
+     * @param  {String} scriptName
+     * @param  {String} hookName
+     * @return {Object}
+     */
+    function getHook(scriptName, hookName) {
+        return (hooks[hookName] !== undefined ? hooks[hookName].handlers[getHookIndex(scriptName, hookName)] : null);
+    }
+
+    /*
+     * @function getHookIndex
+     *
+     * @param  {String} scriptName
+     * @param  {String} hookName
+     * @return {Number}
+     */
+    function getHookIndex(scriptName, hookName) {
+        var hook = hooks[hookName],
+            i;
+
+        if (hook !== undefined) {
+            for (i in hook.handlers) {
+                if (hook.handlers[i].scriptName.equalsIgnoreCase(scriptName)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /*
+     * @function addHook
+     *
+     * @param {String}   hookName
+     * @param {Function} handler
+     */
+    function addHook(hookName, handler) {
+        var scriptName = $script.getPath().replace('\\', '/').replace('./scripts/', ''),
+            i = getHookIndex(scriptName, hookName);
+
+        if (hookName !== 'initReady' && $api.exists(hookName) == false) {
+            Packages.com.gmt2001.Console.err.printlnRhino('[addHook()@init.js:254] Failed to register hook "' + hookName + '" since there is no such event.');
+        } else if (i !== -1) {
+            hooks[hookName].handlers[i].handler = handler;
+        } else {
+            if (hooks[hookName] === undefined) {
+                hooks[hookName] = new HookHandler(hookName);
+            }
+            hooks[hookName].handlers.push(new Hook(scriptName, hookName, handler));
+        }
+    }
+
+    /*
+     * @function hookName
+     *
+     * @param {String} hookName
+     */
+    function removeHook(hookName) {
+        var scriptName = $script.getPath().replace('\\', '/').replace('./scripts/', ''),
+            i = getHookIndex(scriptName, hookName);
+
+        if (hooks[hookName] !== undefined) {
+            hooks[hookName].handlers.splice(i, 1);
+        }
+    }
+
+    /*
+     * @function callHook
+     *
+     * @param {String}  hookName
+     * @param {Object}  event
+     * @param {Boolean} force
+     */
+    function callHook(hookName, event, force) {
+        var hook = hooks[hookName],
+            i;
+
+        if (hook === undefined) {
             return;
         }
 
-        JSONObject clipsObj = TwitchAPIv5.instance().getClipsToday(this.channel);
+        if (hookName === 'command') {
+            i = getHookIndex($.getCommandScript(event.getCommand()), hookName);
 
-        String createdAt = "";
-        String clipURL = "";
-        String creator = "";
-        int largestTrackingId = 0;
-
-        if (clipsObj.has("clips")) {
-            JSONArray clipsData = clipsObj.getJSONArray("clips");
-            if (clipsData.length() > 0) {
-                setDBString("most_viewed_clip_url", "https://clips.twitch.tv/" + clipsData.getJSONObject(0).getString("slug"));
-                String lastTrackingIdStr = getDBString("last_clips_tracking_id");
-                int lastTrackingId = (lastTrackingIdStr == null ? 0 : Integer.parseInt(lastTrackingIdStr));
-                largestTrackingId = lastTrackingId;
-                for (int i = 0; i < clipsData.length(); i++) {
-                    JSONObject clipData = clipsData.getJSONObject(i);
-                    int trackingId = Integer.parseInt(clipData.getString("tracking_id"));
-                    if (trackingId > largestTrackingId) {
-                        largestTrackingId = trackingId;
-                        createdAt = clipData.getString("created_at");
-                        clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
-                        creator = clipData.getJSONObject("curator").getString("display_name");
-                    }
-                }
+            try {
+                hook.handlers[i].handler(event);
+            } catch (ex) {
+                $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
             }
-        }
-
-        if (clipURL.length() > 0) {
-            setDBString("last_clips_tracking_id", String.valueOf(largestTrackingId));
-            setDBString("last_clip_url", clipURL);
-            EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator));
-        }
-    }
-
-    /*
-     * Polls the Twitch API and updates the database cache with information.  This method also
-     * sends events when appropriate.
-     */
-    private void updateCache() throws Exception {
-        Boolean success = true;
-        Boolean isOnline = false;
-        Boolean sentTwitchOnlineEvent = false;
-        String  gameTitle = "";
-        String  streamTitle = "";
-        String  previewLink = "";
-        String  logoLink = "";
-        String[] communities = new String[3];
-        Date    streamCreatedDate = new Date();
-        Date    currentDate = new Date();
-        long    streamUptimeSeconds = 0L;
-
-        com.gmt2001.Console.debug.println("TwitchCache::updateCache");
-
-        /* Retrieve Stream Information */
-        try {
-            JSONObject streamObj = TwitchAPIv5.instance().GetStream(this.channel);
-
-            if (streamObj.getBoolean("_success") && streamObj.getInt("_http") == 200) {
-
-                /* Determine if the stream is online or not */
-                isOnline = !streamObj.isNull("stream");
-
-                if (!this.isOnline && isOnline) {
-                    this.isOnline = true;
-                    EventBus.instance().postAsync(new TwitchOnlineEvent());
-                    sentTwitchOnlineEvent = true;
-                } else if (this.isOnline && !isOnline) {
-                    this.isOnline = false;
-                    EventBus.instance().postAsync(new TwitchOfflineEvent());
-                }
-
-                if (isOnline) {
-                    /* Calculate the stream uptime in seconds. */
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        } else {
+            for (i in hook.handlers) {
+                if (isModuleEnabled(hook.handlers[i].scriptName) || force) {
                     try {
-                        streamCreatedDate = dateFormat.parse(streamObj.getJSONObject("stream").getString("created_at"));
-                        streamUptimeSeconds = (long) (Math.floor(currentDate.getTime() - streamCreatedDate.getTime()) / 1000);
-                        this.streamUptimeSeconds = streamUptimeSeconds;
-                        this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
-                    } catch (Exception ex) {
-                        success = false;
-                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
+                        hook.handlers[i].handler(event);
+                    } catch (ex) {
+                        $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
                     }
-
-                    /* Determine the preview link. */
-                    previewLink = streamObj.getJSONObject("stream").getJSONObject("preview").getString("template").replace("{width}", "1920").replace("{height}", "1080");
-                    this.previewLink = previewLink;
-
-                    /* Get the viewer count. */
-                    viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
-                    this.viewerCount = viewerCount;
-                } else {
-                    streamUptimeSeconds = 0L;
-                    this.streamUptimeSeconds = streamUptimeSeconds;
-                    this.previewLink = "";
-                    this.streamCreatedAt = "";
-                    this.viewerCount = 0;
                 }
+            }
+        }
+    }
+
+    /*
+     * @function init - Loads everything for the scripts.
+     */
+    function init() {
+        // Generate JavaScript trampolines for Java functions.
+        generateJavaTrampolines();
+        // Register events.
+        events();
+
+        // Load all core modules.
+        loadScript('./core/misc.js');
+        loadScript('./core/jsTimers.js');
+        loadScript('./core/updates.js');
+        loadScript('./core/chatModerator.js');
+        loadScript('./core/fileSystem.js');
+        loadScript('./core/lang.js');
+        loadScript('./core/commandPause.js');
+        loadScript('./core/logging.js');
+        loadScript('./core/commandRegister.js');
+        loadScript('./core/whisper.js');
+        loadScript('./core/commandCoolDown.js');
+        loadScript('./core/keywordCoolDown.js');
+        loadScript('./core/gameMessages.js');
+        loadScript('./core/patternDetector.js');
+        loadScript('./core/permissions.js');
+        loadScript('./core/streamInfo.js');
+        loadScript('./core/timeSystem.js');
+        loadScript('./core/initCommands.js');
+        loadScript('./core/panelCommands.js');
+
+        // Load all the other modules.
+        loadScriptRecursive('.');
+
+        // Load Discord modules if need be.
+        if (!$.hasDiscordToken) {
+            loadScript('./discord/core/misc.js');
+            loadScript('./discord/core/accountLink.js');
+            loadScript('./discord/core/patternDetector.js');
+            loadScript('./discord/core/moderation.js');
+            loadScript('./discord/core/registerCommand.js');
+            loadScript('./discord/core/accountLink.js');
+            loadScript('./discord/core/commandCooldown.js');
+            loadScript('./discord/core/roleManager.js');
+
+            // Load the other discord modules
+            loadScriptRecursive('./discord');
+        }
+
+        $.log.event('Bot modules loaded. Initializing main functions...');
+
+        // Register custom commands.
+        $.addComRegisterCommands();
+        $.addComRegisterAliases();
+
+        consoleLn('');
+
+        if ($.isNightly) {
+            consoleLn('PhantomBot Nightly Build - No Support is Provided');
+            consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
+            consoleLn('https://community.phantombot.tv/c/support/bug-reports');
+        } else if ($.isPrerelease) {
+            consoleLn('PhantomBot Pre-Release Build - Please Report Bugs and Issues Found');
+            consoleLn('When reporting bugs or issues, please remember to indicate that this is a pre-release build.');
+        } else {
+            consoleLn('For support please visit: https://community.phantombot.tv');
+        }
+        consoleLn('');
+    }
+
+    /*
+     * @function events - registers all events with the core.
+     */
+    function events() {
+        // Load all API events.
+
+        /*
+         * @event ircModeration
+         */
+        $api.on($script, 'ircModeration', function(event) {
+            $.performModeration(event);
+        });
+
+        /*
+         * @event ircChannelMessage
+         */
+        $api.on($script, 'ircChannelMessage', function(event) {
+            callHook('ircChannelMessage', event, false);
+
+            if (isModuleEnabled('./handlers/panelHandler.js')) {
+                $.panelDB.updateChatLinesDB(event.getSender());
+            }
+        });
+
+        /*
+         * @event ircChannelUserMode
+         */
+        $api.on($script, 'ircChannelUserMode', function(event) {
+            callHook('ircChannelUserMode', event, false);
+
+            if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('O')) {
+                if (event.getAdd().toString().equals('true')) {
+                    if (isReady === false) {
+                        // Bot is now ready.
+                        consoleLn($.botName + ' ready!');
+                        // Call the initReady event.
+                        callHook('initReady', null, false);
+                    }
+                    isReady = true;
+                }
+            }
+        });
+
+        /*
+         * @event command
+         */
+        $api.on($script, 'command', function(event) {
+            var sender = event.getSender(),
+                command = event.getCommand(),
+                args = event.getArgs(),
+                subCommand = $.getSubCommandFromArguments(command, args),
+                isMod = $.isModv3(sender, event.getTags());
+
+            // Check if the command exists or if the module is disabled.
+            if (!$.commandExists(command) || !isModuleEnabled($.getCommandScript(command))) {
+                return;
+            } else
+
+            // Check if the command has an alias.
+            if ($.aliasExists(command)) {
+                var alias = $.getIniDbString('aliases', command),
+                    aliasArguments = '';
+
+                if (alias.indexOf(';') === -1) {
+                    var parts = alias.split(' ', 2);
+
+                    $.command.run(sender, parts[0], ((parts[1] !== undefined ? parts[1] : '') + ' ' + args.join(' ')), event.getTags());
+                } else {
+                    var parts = alias.split(';');
+
+                    for (var i = 0; i < parts.length; i++) {
+                        command = parts[i].split(' ');
+
+                        $.command.run(sender, command[0], ((command[1] !== undefined ? command[1] : '') + ' ' + args.join(' ')), event.getTags());
+                    }
+                }
+                return;
+            } else
+
+            // Check the command permission.
+            if ($.permCom(sender, command, subCommand) !== 0) {
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, subCommand))), $.getIniDbBoolean('settings', 'permComMsgEnabled', false));
+                consoleDebug('Command !' + command + ' was not sent due to the user not having permission for it.');
+                return;
+            } else
+
+            // Check the command cooldown.
+            if ($.coolDown.get(command, sender, isMod) !== 0) {
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
+                consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
+                return;
+            } else
+
+            // Check the command cost.
+            if ($.priceCom(sender, command, subCommand, isMod) === 1) {
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, subCommand, ''))), $.getIniDbBoolean('settings', 'priceComMsgEnabled', false));
+                consoleDebug('Command !' + command + ' was not sent due to the user not having enough points.');
+                return;
+            }
+
+            // Call the command function.
+            callHook('command', event, false);
+
+            // Decrease or add points after the command is sent to not slow anything down.
+            if ($.priceCom(sender, command, subCommand, isMod) === 0) {
+                $.inidb.decr('points', sender, $.getCommandPrice(command, subCommand, ''));
+            } else if ($.payCom(command) === 0) {
+                $.inidb.incr('points', sender, $.getCommandPay(command));
+            }
+        });
+
+        /*
+         * @event discordChannelCommand
+         */
+        $api.on($script, 'discordChannelCommand', function(event) {
+            var username = event.getUsername(),
+                command = event.getCommand(),
+                channel = event.getChannel(),
+                isAdmin = event.isAdmin(),
+                senderId = event.getSenderId(),
+                args = event.getArgs();
+
+            if ($.discord.commandExists(command) === false && ($.discord.aliasExists(command) === false || $.discord.aliasExists(command) === true && $.discord.commandExists($.discord.getCommandAlias(command)) === false)) {
+                return;
+            }
+
+            if ($.discord.aliasExists(command) === true) {
+                command = event.setCommand($.discord.getCommandAlias(command));
+            }
+
+            if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
+                return;
+            }
+
+            if (isAdmin == false && $.discord.cooldown.get(command, senderId) !== 0) {
+                return;
+            }
+
+            if ($.discord.getCommandCost(command) > 0 && $.discord.getUserPoints(senderId) < $.discord.getCommandCost(command)) {
+                return;
+            }
+
+            if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
+                return;
             } else {
-                success = false;
-                if (streamObj.has("message")) {
-                    com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
-                } else {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
+                if (($.discord.getCommandChannel(command, channel) !== undefined && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channel)) && $.discord.getCommandChannel(command, '_default_global_') != '') {
+                    return;
                 }
             }
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
-            success = false;
-        }
 
-        // Wait a bit here.
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println(ex);
-        }
+            callHook('discordChannelCommand', event, false);
 
-        try {
-            JSONObject streamObj = TwitchAPIv5.instance().GetChannel(this.channel);
-
-            if (streamObj.getBoolean("_success") && streamObj.getInt("_http") == 200) {
-
-                /* Get the game being streamed. */
-                if (streamObj.has("game")) {
-                    if (!streamObj.isNull("game")) {
-                        gameTitle = streamObj.getString("game");
-                        if (!forcedGameTitleUpdate && !this.gameTitle.equals(gameTitle)) {
-                            setDBString("game", gameTitle);
-                            /* Send an event if we did not just send a TwitchOnlineEvent. */
-                            if (!sentTwitchOnlineEvent) {
-                                this.gameTitle = gameTitle;
-                                EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle));
-                            }
-                            this.gameTitle = gameTitle;
-                        }
-
-                        if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitle)) {
-                            forcedGameTitleUpdate = false;
-                        }
-                    }
-                } else {
-                    success = false;
-                }
-
-                if (streamObj.has("views")) {
-                    /* Get the view count. */
-                    views = streamObj.getInt("views");
-                    this.views = views;
-                }
-
-
-                /* Get the logo */
-                if (streamObj.has("logo") && !streamObj.isNull("logo")) {
-                    logoLink = streamObj.getString("logo");
-                    this.logoLink = logoLink;
-                }
-
-                /* Get the title. */
-                if (streamObj.has("status")) {
-                    if (!streamObj.isNull("status")) {
-                        streamTitle = streamObj.getString("status");
-
-                        if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitle)) {
-                            setDBString("title", streamTitle);
-                            this.streamTitle = streamTitle;
-                        } 
-						
-						 /* Send an event if we did not just send a TwitchOnlineEvent. */
-                            if (!sentTwitchOnlineEvent) {
-                                this.streamTitle = streamTitle;
-                                EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
-                            }
-                            this.streamTitle = streamTitle;
-						
-
-                        if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitle)) {
-                            forcedStreamTitleUpdate = false;
-                        }
-                    }
-                } else {
-                    success = false;
-                }
-            } else {
-                success = false;
-                if (streamObj.has("message")) {
-                    com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
-                } else {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
-                }
+            // Do this last to not slow down the command hook.
+            if ($.discord.getCommandCost(command) > 0) {
+                $.discord.decrUserPoints(senderId, $.discord.getCommandCost(command));
             }
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
-            success = false;
-        }
+        });
 
-        // Wait a bit here.
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println(ex);
-        }
+        /*
+         * @event consoleInput
+         */
+        $api.on($script, 'consoleInput', function(event) {
+            callHook('consoleInput', event, false);
+        });
 
-        /* Update communities */
-        try {
-            JSONObject object = TwitchAPIv5.instance().GetCommunities(this.channel);
-            if (object.has("communities") && object.getJSONArray("communities").length() > 0) {
-                JSONArray array = object.getJSONArray("communities");
-                for (int i = 0; i < array.length(); i++) {
-                    communities[i] = array.getJSONObject(i).getString("name");
-                }
-            }
-            this.communities = communities;
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchCache::updateCache: Failed to get communities: " + ex.getMessage());
-        }
+        /*
+         * @event twitchFollow
+         */
+        $api.on($script, 'twitchFollow', function(event) {
+            callHook('twitchFollow', event, false);
+        });
 
-        if (PhantomBot.twitchCacheReady.equals("false") && success) {
-            com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
-            PhantomBot.instance().setTwitchCacheReady("true");
-        }
+        /*
+         * @event twitchUnFollow
+         */
+        $api.on($script, 'twitchUnfollow', function(event) {
+            callHook('twitchUnfollow', event, false);
+        });
+
+        /*
+         * @event twitchFollowsInitialized
+         */
+        $api.on($script, 'twitchFollowsInitialized', function(event) {
+            callHook('twitchFollowsInitialized', event, false);
+        });
+
+        /*
+         * @event twitchHosted
+         */
+        $api.on($script, 'twitchHosted', function(event) {
+            callHook('twitchHosted', event, false);
+        });
+
+        /*
+         * @event twitchAutoHosted
+         */
+        $api.on($script, 'twitchAutoHosted', function(event) {
+            callHook('twitchAutoHosted', event, false);
+        });
+
+        /*
+         * @event twitchHostsInitialized
+         */
+        $api.on($script, 'twitchHostsInitialized', function(event) {
+            callHook('twitchHostsInitialized', event, false);
+        });
+
+        /*
+         * @event twitchClip
+         */
+        $api.on($script, 'twitchClip', function(event) {
+            callHook('twitchClip', event, false);
+        });
+
+        /*
+         * @event ircChannelJoin
+         */
+        $api.on($script, 'ircChannelJoin', function(event) {
+            callHook('ircChannelJoin', event, false);
+        });
+
+        /*
+         * @event ircChannelUsersUpdate
+         */
+        $api.on($script, 'ircChannelUsersUpdate', function(event) {
+            callHook('ircChannelUsersUpdate', event, false);
+        });
+
+        /*
+         * @event ircChannelLeave
+         */
+        $api.on($script, 'ircChannelLeave', function(event) {
+            callHook('ircChannelLeave', event, false);
+        });
+
+        /*
+         * @event ircJoinComplete
+         */
+        $api.on($script, 'ircJoinComplete', function(event) {
+            callHook('ircJoinComplete', event, false);
+        });
+
+        /*
+         * @event ircConnectComplete
+         */
+        $api.on($script, 'ircConnectComplete', function(event) {
+            callHook('ircConnectComplete', event, false);
+        });
+
+        /*
+         * @event ircPrivateMessage
+         */
+        $api.on($script, 'ircPrivateMessage', function(event) {
+            callHook('ircPrivateMessage', event, false);
+        });
+
+        /*
+         * @event ircClearchat
+         */
+        $api.on($script, 'ircClearchat', function(event) {
+            callHook('ircClearchat', event, false);
+        });
+
+        /*
+         * @event twitchAlertsDonation
+         */
+        $api.on($script, 'twitchAlertsDonation', function(event) {
+            callHook('twitchAlertsDonation', event, false);
+        });
+
+        /*
+         * @event twitchAlertsDonationInitialized
+         */
+        $api.on($script, 'twitchAlertsDonationInitialized', function(event) {
+            callHook('twitchAlertsDonationInitialized', event, false);
+        });
+
+        /*
+         * @event streamTipDonation
+         */
+        $api.on($script, 'streamTipDonation', function(event) {
+            callHook('streamTipDonation', event, false);
+        });
+
+        /*
+         * @event streamTipDonationInitialized
+         */
+        $api.on($script, 'streamTipDonationInitialized', function(event) {
+            callHook('streamTipDonationInitialized', event, false);
+        });
+
+        /*
+         * @event tipeeeStreamDonationInitialized
+         */
+        $api.on($script, 'tipeeeStreamDonationInitialized', function(event) {
+            callHook('tipeeeStreamDonationInitialized', event, false);
+        });
+
+        /*
+         * @event tipeeeStreamDonation
+         */
+        $api.on($script, 'tipeeeStreamDonation', function(event) {
+            callHook('tipeeeStreamDonation', event, false);
+        });
+
+        /*
+         * @event streamElementsDonationInitialized
+         */
+        $api.on($script, 'streamElementsDonationInitialized', function(event) {
+            callHook('streamElementsDonationInitialized', event, false);
+        });
+
+        /*
+         * @event streamElementsDonation
+         */
+        $api.on($script, 'streamElementsDonation', function(event) {
+            callHook('streamElementsDonation', event, false);
+        });
+
+        /*
+         * @event getEmotes
+         */
+        $api.on($script, 'emotesGet', function(event) {
+            callHook('emotesGet', event, false);
+        });
+
+        /*
+         * @event yTPlayerConnect
+         */
+        $api.on($script, 'yTPlayerConnect', function(event) {
+            callHook('yTPlayerConnect', event, false);
+        });
+
+        /*
+         * @event yTPlayerLoadPlaylistEvent
+         */
+        $api.on($script, 'yTPlayerLoadPlaylist', function(event) {
+            callHook('yTPlayerLoadPlaylist', event, false);
+        });
+
+        /*
+         * @event yTPlayerDisconnect
+         */
+        $api.on($script, 'yTPlayerDisconnect', function(event) {
+            callHook('yTPlayerDisconnect', event, false);
+        });
+
+        /*
+         * @event yTPlayerState
+         */
+        $api.on($script, 'yTPlayerState', function(event) {
+            callHook('yTPlayerState', event, false);
+        });
+
+        /*
+         * @event yTPlayeCurrentId
+         */
+        $api.on($script, 'yTPlayerCurrentId', function(event) {
+            callHook('yTPlayerCurrentId', event, false);
+        });
+
+        /*
+         * @event yTPlayerRequestSonglist
+         */
+        $api.on($script, 'yTPlayerRequestSonglist', function(event) {
+            callHook('yTPlayerRequestSonglist', event, false);
+        });
+
+        /*
+         * @event yTPlayerRequestPlaylist
+         */
+        $api.on($script, 'yTPlayerRequestPlaylist', function(event) {
+            callHook('yTPlayerRequestPlaylist', event, false);
+        });
+
+        /*
+         * @event yTPlayerDeleteSREvent
+         */
+        $api.on($script, 'yTPlayerDeleteSR', function(event) {
+            callHook('yTPlayerDeleteSR', event, false);
+        });
+
+        /*
+         * @event yTPlayerVolumeEvent
+         */
+        $api.on($script, 'yTPlayerVolume', function(event) {
+            callHook('yTPlayerVolume', event, false);
+        });
+
+        /*
+         * @event yTPlayerSkipSongEvent
+         */
+        $api.on($script, 'yTPlayerSkipSong', function(event) {
+            callHook('yTPlayerSkipSong', event, false);
+        });
+
+        /*
+         * @event yTPlayerStealSongEvent
+         */
+        $api.on($script, 'yTPlayerStealSong', function(event) {
+            callHook('yTPlayerStealSong', event, false);
+        });
+
+        /*
+         * @event yTPlayerSongRequestEvent
+         */
+        $api.on($script, 'yTPlayerSongRequest', function(event) {
+            callHook('yTPlayerSongRequest', event, false);
+        });
+
+        /*
+         * @event yTPlayerDeletePlaylistByIDEvent
+         */
+        $api.on($script, 'yTPlayerDeletePlaylistByID', function(event) {
+            callHook('yTPlayerDeletePlaylistByID', event, false);
+        });
+
+        /*
+         * @event yTPlayerRequestCurrentSongEvent
+         */
+        $api.on($script, 'yTPlayerRequestCurrentSong', function(event) {
+            callHook('yTPlayerRequestCurrentSong', event, false);
+        });
+
+        /*
+         * @event yTPlayerRandomizeEvent
+         */
+        $api.on($script, 'yTPlayerRandomize', function(event) {
+            callHook('yTPlayerRandomize', event, false);
+        });
+
+        /*
+         * @event gameWispChangeEvent
+         */
+        $api.on($script, 'gameWispChange', function(event) {
+            callHook('gameWispChange', event, false);
+        });
+
+        /*
+         * @event gameWispBenefitsEvent
+         */
+        $api.on($script, 'gameWispBenefits', function(event) {
+            callHook('gameWispBenefits', event, false);
+        });
+
+        /*
+         * @event gameWispSubscribeEvent
+         */
+        $api.on($script, 'gameWispSubscribe', function(event) {
+            callHook('gameWispSubscribe', event, false);
+        });
+
+        /*
+         * @event gameWispAnniversaryEvent
+         */
+        $api.on($script, 'gameWispAnniversary', function(event) {
+            callHook('gameWispAnniversary', event, false);
+        });
+
+        /*
+         * @event twitterEvent
+         */
+        $api.on($script, 'twitter', function(event) {
+            callHook('twitter', event, false);
+        });
+
+        /*
+         * @event twitterRetweetEvent
+         */
+        $api.on($script, 'twitterRetweet', function(event) {
+            callHook('twitterRetweet', event, false);
+        });
+
+        /*
+         * @event twitchOnlineEvent
+         */
+        $api.on($script, 'twitchOnline', function(event) {
+            callHook('twitchOnline', event, false);
+        });
+
+        /*
+         * @event twitchOfflineEvent
+         */
+        $api.on($script, 'twitchOffline', function(event) {
+            callHook('twitchOffline', event, false);
+        });
+
+        /*
+         * @event twitchGameChangeEvent
+         */
+        $api.on($script, 'twitchGameChange', function(event) {
+            callHook('twitchGameChange', event, false);
+        });
+		
+		/*
+         * @event twitchGameChangeEvent
+         */
+        $api.on($script, 'twitchTitleChange', function(event) {
+            callHook('twitchTitleChange', event, false);
+        });
+		
+		
+		
+		
+        /*
+         * @event twitchSubscriber
+         */
+        $api.on($script, 'twitchSubscriber', function(event) {
+            callHook('twitchSubscriber', event, false);
+        });
+
+        /*
+         * @event twitchPrimeSubscriber
+         */
+        $api.on($script, 'twitchPrimeSubscriber', function(event) {
+            callHook('twitchPrimeSubscriber', event, false);
+        });
+
+        /*
+         * @event reSubscriber
+         */
+        $api.on($script, 'twitchReSubscriber', function(event) {
+            callHook('twitchReSubscriber', event, false);
+        });
+
+        /*
+         * @event twitchSubscriptionGift
+         */
+        $api.on($script, 'twitchSubscriptionGift', function(event) {
+            callHook('twitchSubscriptionGift', event, false);
+        });
+
+        /*
+         * @event twitchBits
+         */
+        $api.on($script, 'twitchBits', function(event) {
+            callHook('twitchBits', event, false);
+        });
+
+        /*
+         * @event twitchRaid
+         */
+        $api.on($script, 'twitchRaid', function(event) {
+            callHook('twitchRaid', event, false);
+        });
+
+        /*
+         * @event discordChannelMessage
+         */
+        $api.on($script, 'discordChannelMessage', function(event) {
+            callHook('discordChannelMessage', event, false);
+        });
+
+        /*
+         * @event discordChannelJoin
+         */
+        $api.on($script, 'discordChannelJoin', function(event) {
+            callHook('discordChannelJoin', event, false);
+        });
+
+        /*
+         * @event discordChannelPart
+         */
+        $api.on($script, 'discordChannelPart', function(event) {
+            callHook('discordChannelPart', event, false);
+        });
+
+        /*
+         * @event webPanelSocketUpdate
+         */
+        $api.on($script, 'webPanelSocketUpdate', function(event) {
+            callHook('webPanelSocketUpdate', event, false);
+        });
+
+        /*
+         * @event webPanelSocketConnected
+         */
+        $api.on($script, 'webPanelSocketConnected', function(event) {
+            callHook('webPanelSocketConnected', event, false);
+        });
+
+        /*
+         * @event PubSubModerationTimeout
+         */
+        $api.on($script, 'PubSubModerationTimeout', function(event) {
+            callHook('PubSubModerationTimeout', event, false);
+        });
+
+        /*
+         * @event PubSubModerationUnTimeout
+         */
+        $api.on($script, 'PubSubModerationUnTimeout', function(event) {
+            callHook('PubSubModerationUnTimeout', event, false);
+        });
+
+        /*
+         * @event PubSubModerationBan
+         */
+        $api.on($script, 'PubSubModerationBan', function(event) {
+            callHook('PubSubModerationBan', event, false);
+        });
+
+        /*
+         * @event PubSubModerationUnBan
+         */
+        $api.on($script, 'PubSubModerationUnBan', function(event) {
+            callHook('PubSubModerationUnBan', event, false);
+        });
     }
 
-    /*
-     * Returns if the channel is online or not.
-     */
-    public Boolean isStreamOnline() {
-        return this.isOnline;
-    }
+    // Export functions to API
+    $.consoleLn = consoleLn;
+    $.consoleDebug = consoleDebug;
+    $.bind = addHook;
+    $.unbind = removeHook;
+    $.bot = {
+        loadScriptRecursive: loadScriptRecursive,
+        isModuleEnabled: isModuleEnabled,
+        isModuleLoaded: isModuleLoaded,
+        getModuleIndex: getModuleIndex,
+        getHookIndex: getHookIndex,
+        loadScript: loadScript,
+        getModule: getModule,
+        getHook: getHook,
+        modules: modules,
+        hooks: hooks
+    };
 
-    /*
-     * Returns a String representation of true/false to indicate if the stream is online or not.
-     */
-    public String isStreamOnlineString() {
-        if (this.isOnline) {
-            return new String("true");
-        }
-        return new String("false");
-    }
-
-    /*
-     * Returns the uptime of the channel in seconds.
-     */
-    public long getStreamUptimeSeconds() {
-        return this.streamUptimeSeconds;
-    }
-
-    /*
-     * Returns the stream created_at date from Twitch.
-     */
-    public String getStreamCreatedAt() {
-        return this.streamCreatedAt;
-    }
-
-    /*
-     * Returns the name of the game being played in the channel.
-     */
-    public String getGameTitle() {
-        return this.gameTitle;
-    }
-
-    /*
-     * Sets the game title.  Useful for when !game is used.
-     */
-    public void setGameTitle(String gameTitle) {
-        forcedGameTitleUpdate = true;
-        this.gameTitle = gameTitle;
-        EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle));
-    }
-
-    /*
-     * Returns the title (status) of the stream.
-     */
-    public String getStreamStatus() {
-        return this.streamTitle;
-    }
-
-    /*
-     * Sets the title (status) of the stream.  Useful for when !title is used.
-     */
-    public void setStreamStatus(String streamTitle) {
-        forcedStreamTitleUpdate = true;
-        this.streamTitle = streamTitle;
-		EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));  
-	}
-
-    /*
-     * Returns the preview link.
-     */
-    public String getPreviewLink() {
-        return this.previewLink;
-    }
-
-    /*
-     * Returns the logo link.
-     */
-    public String getLogoLink() {
-        return this.logoLink;
-    }
-
-    /*
-     * Returns the viewer count.
-     */
-    public int getViewerCount() {
-        return this.viewerCount;
-    }
-
-    /*
-     * Returns the views count.
-     */
-    public int getViews() {
-        return this.views;
-    }
-
-    /*
-     * Set the communities
-     */
-    public void setCommunities(String[] communities) {
-        this.communities = communities;
-    }
-
-    /*
-     * Returns an array of communities if set.
-     */
-    public String[] getCommunities() {
-        return this.communities;
-    }
-
-    /*
-     * Destroys the current instance of the TwitchCache object.
-     */
-    public void kill() {
-        killed = true;
-    }
-
-    /*
-     * Destroys all instances of the TwitchCache object.
-     */
-    public static void killall() {
-        for (Entry<String, TwitchCache> instance : instances.entrySet()) {
-            instance.getValue().kill();
-        }
-    }
-
-    /*
-     * Gets a string from the database. Simply a wrapper around the PhantomBot instance.
-     *
-     * @param   String  The database key to search for in the streamInfo table.
-     * @return  String  Returns the found value or null.
-     */
-    private String getDBString(String dbKey) {
-        return PhantomBot.instance().getDataStore().GetString("streamInfo", "", dbKey);
-    }
-
-    /*
-     * Sets a string into the database.  Simply a wrapper around the PhantomBot instance.
-     *
-     * @param   String  The database key to use for inserting the value into the streamInfo table.
-     * @param   String  The value to insert.
-     * @return  String  Returns the found value or null.
-     */
-    private void setDBString(String dbKey, String dbValue) {
-        PhantomBot.instance().getDataStore().SetString("streamInfo", "", dbKey, dbValue);
-    }
-}
+    // Load init.js
+    init();
+})();
