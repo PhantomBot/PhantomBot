@@ -1,7 +1,7 @@
 /**
  * Provides for a configurable rank system with various different configurable ranks
  * based on time spent in the channel. This is just aesthetic but could, in theory,
- * be used for other purposes if really desired. 
+ * be used for other purposes if really desired.
  */
 
 (function() {
@@ -310,7 +310,7 @@
                     customRank = args.splice(1).join(' ');
 
                     if (userTime >= rankEligableTime &&
-                        ($.bot.isModuleEnabled('./systems/pointSystem.js') && getUserPoints(sender) > rankEligableCost) || !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
+                        ($.bot.isModuleEnabled('./systems/pointSystem.js') && $.getUserPoints(sender) > rankEligableCost) || !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ranks.set.success', customRank));
                         $.inidb.set('viewerRanks', sender.toLowerCase(), customRank);
                         if ($.bot.isModuleEnabled('./systems/pointSystem.js')) {
