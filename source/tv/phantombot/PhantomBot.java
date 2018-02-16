@@ -1886,7 +1886,7 @@ public final class PhantomBot implements Listener {
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
-        ScriptEventManager.instance().onEvent(new CommandEvent(username, command, arguments));
+        EventBus.instance().postAsync(new CommandEvent(username, command, arguments));
     }
 
     /* Handles dev debug commands. */
