@@ -875,16 +875,13 @@
             callHook('twitchGameChange', event, false);
         });
 		
-		/*
+        /*
          * @event twitchGameChangeEvent
          */
         $api.on($script, 'twitchTitleChange', function(event) {
             callHook('twitchTitleChange', event, false);
         });
-		
-		
-		
-		
+								
         /*
          * @event twitchSubscriber
          */
