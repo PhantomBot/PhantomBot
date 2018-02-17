@@ -876,7 +876,7 @@
         });
 		
         /*
-         * @event twitchGameChangeEvent
+         * @event twitchTitleChangeEvent
          */
         $api.on($script, 'twitchTitleChange', function(event) {
             callHook('twitchTitleChange', event, false);
