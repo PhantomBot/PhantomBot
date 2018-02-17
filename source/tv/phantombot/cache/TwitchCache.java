@@ -351,13 +351,13 @@ public class TwitchCache implements Runnable {
                         if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitle)) {
                             setDBString("title", streamTitle);
                             this.streamTitle = streamTitle;					
-						 /* Send an event if we did not just send a TwitchOnlineEvent. */
+                            /* Send an event if we did not just send a TwitchOnlineEvent. */
                             if (!sentTwitchOnlineEvent) {
                                 this.streamTitle = streamTitle;
                                 EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
                             }
                             this.streamTitle = streamTitle;
-			            }			
+                        }			
                         if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitle)) {
                             forcedStreamTitleUpdate = false;
                         }
@@ -465,7 +465,7 @@ public class TwitchCache implements Runnable {
     public void setStreamStatus(String streamTitle) {
         forcedStreamTitleUpdate = true;
         this.streamTitle = streamTitle;
-		EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));  
+        EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));  
 	}
 
     /*
