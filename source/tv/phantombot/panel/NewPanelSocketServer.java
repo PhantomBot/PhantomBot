@@ -58,7 +58,7 @@
  * Websocket pushes the following to the Panel Interface
  *
  * // Return authorization result.
- * { "authresult" : true/false }
+ * { "authresult" : true/false, "authtype": "none|read|read/write" }
  *
  * // Return Version
  * { "versionresult" : "unique_id", "version" : "core version (repo version)" }
@@ -309,6 +309,7 @@ public class NewPanelSocketServer {
             if (authenticated) {
                 sessionData.setAuthenticated(authenticated);
                 sessionData.setReadOnly(false);
+                handleAuth(webSocket, "true", "read/write");
             } else {
                 authenticated = jsonObject.getString("authenticate").equals(authStringRO);
                 sessionData.setAuthenticated(authenticated);
@@ -319,14 +320,13 @@ public class NewPanelSocketServer {
                     sessionData.setAuthenticated(authenticated);
                     sessionData.setReadOnly(false);
                 }
+                handleAuth(webSocket, authenticated.toString(), (sessionData.isReadOnly() ? "read" : "read/write"));
             }
             return;
         }
 
         if (!sessionData.isAuthenticated()) {
-            JSONStringer jsonStringer = new JSONStringer();
-            jsonStringer.object().key("autherror").value("not authenticated").endObject();
-            webSocket.send(jsonStringer.toString());
+            handleAuth(webSocket, "false", "none");
             return;
         }
 
@@ -432,6 +432,20 @@ public class NewPanelSocketServer {
                 com.gmt2001.Console.debug.println("Failed to send a message to the panel socket: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         }
+    }
+
+    /**
+     * Handles sending the auth result and type.
+     *
+     * @param webSocket The WebSocket which provided the command.
+     * @param hasAuth If the auth was the right one.
+     * @param type type of auth none, read or read/write.
+     */
+    private void handleAuth(IWebsocketClient webSocket, String hasAuth, String type) {
+        JSONStringer jsonObject = new JSONStringer();
+
+        jsonObject.object().key("authresult").value(hasAuth).key("authtype").value(type).endObject();
+        webSocket.send(jsonObject.toString());
     }
 
     /**
