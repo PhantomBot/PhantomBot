@@ -61,7 +61,7 @@
  * Websocket pushes the following to the Panel Interface
  *
  * // Return authorization result.
- * { "authresult" : true/false }
+ * { "authresult" : true/false, "authtype": "none|read|read/write" }
  *
  * // Return Version
  * { "versionresult" : "unique_id", "version" : "core version (repo version)" }
@@ -247,6 +247,7 @@ public class PanelSocketServer extends WebSocketServer {
             if (authenticated) {
                 sessionData.setAuthenticated(authenticated);
                 sessionData.setReadOnly(false);
+                handleAuth(webSocket, "true", "read/write");
             } else {
                 authenticated = jsonObject.getString("authenticate").equals(authStringRO);
                 sessionData.setAuthenticated(authenticated);
@@ -257,14 +258,13 @@ public class PanelSocketServer extends WebSocketServer {
                     sessionData.setAuthenticated(authenticated);
                     sessionData.setReadOnly(false);
                 }
+                handleAuth(webSocket, authenticated.toString(), (sessionData.isReadOnly() ? "read" : "read/write"));
             }
             return;
         }
 
         if (!sessionData.isAuthenticated()) {
-            JSONStringer jsonStringer = new JSONStringer();
-            jsonStringer.object().key("autherror").value("not authenticated").endObject();
-            webSocket.send(jsonStringer.toString());
+            handleAuth(webSocket, "false", "none");
             return;
         }
 
@@ -416,6 +416,20 @@ public class PanelSocketServer extends WebSocketServer {
     }
 
     /**
+     * Handles sending the auth result and type.
+     *
+     * @param webSocket The WebSocket which provided the command.
+     * @param hasAuth If the auth was the right one.
+     * @param type type of auth none, read or read/write.
+     */
+    private void handleAuth(WebSocket webSocket, String hasAuth, String type) {
+        JSONStringer jsonObject = new JSONStringer();
+
+        jsonObject.object().key("authresult").value(hasAuth).key("authtype").value(type).endObject();
+        webSocket.send(jsonObject.toString());
+    }
+
+    /**
      * Handles commands in PhantomBot and will optionally return a completion status.
      *
      * @param webSocket The WebSocket which provided the command.
@@ -469,10 +483,10 @@ public class PanelSocketServer extends WebSocketServer {
         }
 
         jsonObject.object().key("versionresult").value(id);
-	jsonObject.key("version").value(version);
-	jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
-	jsonObject.key("os-version").value(System.getProperty("os.name"));
-	jsonObject.endObject();
+	    jsonObject.key("version").value(version);
+	    jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
+	    jsonObject.key("os-version").value(System.getProperty("os.name"));
+	    jsonObject.endObject();
         webSocket.send(jsonObject.toString());
     }
 
