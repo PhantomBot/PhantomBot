@@ -466,7 +466,7 @@ public class TwitchCache implements Runnable {
         forcedStreamTitleUpdate = true;
         this.streamTitle = streamTitle;
         EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));  
-	}
+    }
 
     /*
      * Returns the preview link.
