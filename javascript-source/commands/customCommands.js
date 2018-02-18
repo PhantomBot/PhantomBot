@@ -174,16 +174,6 @@
             message = $.replace(message, '(offlineonly)', '');
         }
 
-        if (message.match(/\(gameonly=[^)]+\)/g)) {
-            var t = message.match(/\([^)]+\)/)[0],
-                game = t.replace('(gameonly=', '').replace(')', '');
-
-            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
-                return null;
-            }
-            message = $.replace(message, t, '');
-        }
-
         if (message.match(/\(sender\)/g)) {
             message = $.replace(message, '(sender)', $.username.resolve(event.getSender()));
         }
@@ -384,6 +374,15 @@
         if (message.match(/\(encodeurl ([\w\W]+)\)/)) {
             var m = message.match(/\(encodeurl ([\w\W]+)\)/);
             message = $.replace(message, m[0], encodeURI(m[1]));
+        }
+        
+        if (message.match(/\(gameonly=.*\)/g)) {
+            var game = message.match(/\(gameonly=(.*)\)/)[1];
+ 
+            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
+                return null;
+            }
+            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
         }
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
