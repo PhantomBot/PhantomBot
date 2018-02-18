@@ -35,7 +35,7 @@ public class TwitchTitleChangeEvent extends TwitchEvent {
      *
      * @return {String} streamTitle
      */
-    public String getSteamTitle() {
+    public String getStreamTitle() {
         return this.streamTitle;
     }
 }
