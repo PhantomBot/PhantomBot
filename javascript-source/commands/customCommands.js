@@ -174,6 +174,16 @@
             message = $.replace(message, '(offlineonly)', '');
         }
 
+        if (message.match(/\(gameonly=[^)]+\)/g)) {
+            var t = message.match(/\([^)]+\)/)[0],
+                game = t.replace('(gameonly=', '').replace(')', '');
+
+            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
+                return null;
+            }
+            message = $.replace(message, t, '');
+        }
+
         if (message.match(/\(sender\)/g)) {
             message = $.replace(message, '(sender)', $.username.resolve(event.getSender()));
         }
@@ -376,15 +386,6 @@
             message = $.replace(message, m[0], encodeURI(m[1]));
         }
 
-        if (message.match(/\(gameonly=.*\)/g)) {
-            var game = message.match(/\(gameonly=(.*)\)/)[1];
-
-            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
-                return null;
-            }
-            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
-        }
-
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
             message = apiTags(event, message);
         }
@@ -558,7 +559,7 @@
      * @returns 1 | 0 - Not a boolean
      */
     function priceCom(username, command, subCommand, isMod) {
-        if ((subCommand === '' && $.inidb.exists('pricecom', command)) || $.inidb.exists('pricecom', command + ' ' + subCommand)) {
+        if ((subCommand !== '' && $.inidb.exists('pricecom', command + ' ' + subCommand)) || $.inidb.exists('pricecom', command)) {
             if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(username)) || !isMod)) && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
                 if ($.getUserPoints(username) < getCommandPrice(command, subCommand, '')) {
                     return 1;
