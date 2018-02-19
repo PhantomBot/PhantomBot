@@ -874,7 +874,14 @@
         $api.on($script, 'twitchGameChange', function(event) {
             callHook('twitchGameChange', event, false);
         });
-
+		
+        /*
+         * @event twitchTitleChangeEvent
+         */
+        $api.on($script, 'twitchTitleChange', function(event) {
+            callHook('twitchTitleChange', event, false);
+        });
+								
         /*
          * @event twitchSubscriber
          */
