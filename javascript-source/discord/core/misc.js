@@ -4,8 +4,8 @@
  * Command permissions for the registerCommand function:
  *  - 1 means only administrators can access the command.
  *	- 0 means everyone can access the command.
- *	
- * Guidelines for merging thing on our repo for this module: 
+ *
+ * Guidelines for merging thing on our repo for this module:
  * 	- Please try not to call the $.discordAPI function out of this script, move all the main functions here and export the function to the $.discord API.
  * 	- To register command to our command list https://phantombot.tv/commands/discord please add a comment starting with @discordcommandpath before the command info.
  * 	- Make sure to comment on every function what their name is and the parameters they require and if they return something.
@@ -239,31 +239,6 @@
     });
 
     /**
-     * @event command
-     */
-    $.bind('command', function(event) {
-        var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0];
-
-        if (command.equalsIgnoreCase('discord')) {
-            if (action === undefined) {
-                return;
-            }
-
-            /**
-             * @commandpath discord reconnect - Attempts to reconnect the bot to discord
-             */
-            if (action.equalsIgnoreCase('reconnect')) {
-                $.discordAPI.reconnect();
-
-                $.say($.whisperPrefix(sender) + $.lang.get('discord.misc.reconnect'));
-            }
-        }
-    });
-
-    /**
      * @event initReady
      */
     $.bind('initReady', function() {
@@ -274,8 +249,6 @@
         $.discord.registerSubCommand('module', 'list', 1);
         $.discord.registerSubCommand('module', 'enable', 1);
         $.discord.registerSubCommand('module', 'disable', 1);
-        $.registerChatCommand('./discord/core/misc.js', 'discord', 1);
-        $.registerChatSubcommand('discord', 'reconnect', 1);
     });
 
     /* Export the function to the $.discord api. */
