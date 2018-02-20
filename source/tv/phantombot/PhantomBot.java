@@ -1589,6 +1589,12 @@ public final class PhantomBot implements Listener {
             return;
         }
 
+        if (message.equalsIgnoreCase("discordreconnect")) {
+        	print("[CONSOLE] Executing discordreconnect");
+        	DiscordAPI.instance().reconnect();
+        	return;
+        }
+
         /* enables debug mode */
         if (message.equalsIgnoreCase("debugon")) {
             print("[CONSOLE] Executing debugon: Enable Debug Mode");
