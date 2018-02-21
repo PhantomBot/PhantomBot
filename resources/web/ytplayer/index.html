@@ -174,14 +174,16 @@
                         <!-- Devider -->
                         <div class="devider"></div>
                         <!-- Playlist section bottom panel -->
-                        <div class="playlist-table">
-                            <table id="playlist-table-content" style="width: 100%;">
-                                <tr>
-                                    <th style="width: 5%;">#</th>
-                                    <th style="width: 70%;">Song</th>
-                                    <th style="width: 15%;">Duration</th>
-                                    <th style="width: 10%;">Actions</th>
-                                </tr>
+                        <div class="playlist-table" id="playlist-table-id">
+                            <table id="playlist-table-content" style="width: 100%; overflow: scroll;">
+                            	<tbody id="playlist-content">
+                               		<tr>
+                               		    <th style="width: 5%;">#</th>
+                               		    <th style="width: 70%;">Song</th>
+                               		    <th style="width: 15%;">Duration</th>
+                               		    <th style="width: 10%;">Actions</th>
+                               		</tr>
+                               	</tbody>
                             </table>
                         </div>
                     </div>
@@ -193,7 +195,7 @@
         <footer class="copyright">
             <a href="https://phantombot.tv">PhantomBot</a> &copy; 2016 -
             <script>
-            document.write(new Date().getFullYear());
+            	document.write(new Date().getFullYear());
             </script>
         </footer>
     </div>
@@ -208,6 +210,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
     <!-- Toast notifications v2.1.3 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <!-- Clusterize -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.18.0/clusterize.min.js"></script>
     <!-- Load the player config file -->
     <script src="/ytplayer/js/playerConfig.js"></script>
     <!-- Helper functions -->
