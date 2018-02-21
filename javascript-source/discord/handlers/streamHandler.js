@@ -66,7 +66,7 @@
                 // Get average chatters.
                 var avgChatters = 1;
                 if (chatters.length > 0) {
-                    var avgChatters = Math.round(chatters.reduce(function(a, b) {
+                    avgChatters = Math.round(chatters.reduce(function(a, b) {
                         return (a + b);
                     }) / (chatters.length < 1 ? 1 : chatters.length));
                 }
