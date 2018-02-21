@@ -27,6 +27,7 @@ public class Session extends MessageQueue {
     private final String channelName;
     private final String oAuth;
     private TwitchWSIRC twitchWSIRC;
+    private long lastReconnect = 0;
 
     /*
      * Method that return this instance.
@@ -120,21 +121,24 @@ public class Session extends MessageQueue {
         boolean reconnected = false;
 
         while (!reconnected) {
-            try {
-                // Close the connection and destroy the class.
-                this.twitchWSIRC.close();
-                // Create a new connection.
-                this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, this);
-                // Check if we are reconnected.
-                reconnected = this.twitchWSIRC.connectWSS(true);
-                // If we are connected, allow us the send messages again.
-                this.setAllowSendMessages(reconnected);
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Error when reconnecting to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            if (lastReconnect + 10000 <= System.currentTimeMillis()) {
+                lastReconnect = System.currentTimeMillis();
+                try {
+                    // Close the connection and destroy the class.
+                    this.twitchWSIRC.close();
+                    // Create a new connection.
+                    this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, this);
+                    // Check if we are reconnected.
+                    reconnected = this.twitchWSIRC.connectWSS(true);
+                    // If we are connected, allow us the send messages again.
+                    this.setAllowSendMessages(reconnected);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.println("Error when reconnecting to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+                }
             }
-            // Sleep for 15 seconds.
+            // Sleep for 5 seconds.
             try {
-                Thread.sleep(15000);
+                Thread.sleep(5000);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.debug.println("Sleep failed during reconnect [InterruptedException]: " + ex.getMessage());
             }
