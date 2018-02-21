@@ -1,19 +1,3 @@
-/**
- * adventureSystem.js
- *
- * It's an improved bankheist, basically.
- *
- * Viewers can start/join an adventure using the commands.
- * A random story will then bee chosen from the available stories.
- * This means this heist can have more than one story, in fact it can have pretty much
- * an infinite amount of different locations, events etc...
- *
- * When a user joins the adventure the module will check if
- * the Tamagotchi module is active and attempt to retrieve the user's tamagotchi.
- * If the user owns a tamagotchi and it's feeling good enough it wil join
- * the adventure with it's own entry of half of its owner's bet.
- * If the tamagotchi survives it wil then give it's price to it's owner.
- */
 (function() {
     var joinTime = $.getSetIniDbNumber('adventureSettings', 'joinTime', 60),
         coolDown = $.getSetIniDbNumber('adventureSettings', 'coolDown', 900),
@@ -23,9 +7,6 @@
         enterMessage = $.getSetIniDbBoolean('adventureSettings', 'enterMessage', false),
         warningMessage = $.getSetIniDbBoolean('adventureSettings', 'warningMessage', false),
         coolDownAnnounce = $.getSetIniDbBoolean('adventureSettings', 'coolDownAnnounce', false),
-        tgFunIncr = 1,
-        tgExpIncr = 0.5,
-        tgFoodDecr = 0.25,
         currentAdventure = {},
         stories = [],
         moduleLoaded = false,
@@ -184,38 +165,6 @@
             }
         }
         return line
-    };
-
-    /**
-     * @function inviteTamagotchi
-     * @param {string} username
-     * @param {Number} bet
-     */
-    function inviteTamagotchi(username, bet) {
-        if ($.bot.isModuleEnabled('./games/tamagotchi.js')) {
-            //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-            var userTG = $.tamagotchi.getByOwner(username);
-            if (userTG) {
-                //noinspection JSUnresolvedFunction
-                if (userTG.isHappy()) {
-                    //noinspection JSUnresolvedFunction
-                    userTG
-                        .incrFunLevel(tgFunIncr)
-                        .incrExpLevel(tgExpIncr)
-                        .decrFoodLevel(tgFoodDecr)
-                        .save();
-                    $.say($.lang.get('adventuresystem.tamagotchijoined', userTG.name));
-                    currentAdventure.users.push({
-                        username: userTG.name,
-                        tgOwner: username,
-                        bet: (bet / 2),
-                    });
-                } else {
-                    //noinspection JSUnresolvedFunction
-                    userTG.sayFunLevel();
-                }
-            }
-        }
     };
 
     /**
@@ -519,7 +468,7 @@
                     if (args[2].equalsIgnoreCase('false')) enterMessage = false, actionArg2 = $.lang.get('common.disabled');
                     $.inidb.set('adventureSettings', 'enterMessage', enterMessage);
                 }
-                
+
                 /**
                  * @commandpath adventure set cooldownannounce [true / false] - Sets the cooldown announcement
                  */
