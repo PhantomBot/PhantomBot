@@ -18,7 +18,8 @@
 
     /** New setup */
     if ($.changed == true && $.changed != null && $.changed != undefined && !$.inidb.exists('updates', 'installedNewBot') && $.inidb.get('updates', 'installedNewBot') != 'true') {
-        $.consoleLn('Initializing PhantomBot Version ' + $.version + ' For The First Time...');
+        $.consoleLn('');
+        $.consoleLn('Initializing PhantomBot version ' + $.version + ' for the first time...');
 
         modules = [
             './commands/topCommand.js',
@@ -90,7 +91,7 @@
             $.inidb.set('modules', modules[i], 'false');
         }
 
-        $.consoleLn('Adding new default custom commands...');
+        $.consoleLn('Adding default custom commands...');
         $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
         $.inidb.set('command', 'followage', '(followage)');
         $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
@@ -101,20 +102,21 @@
         $.consoleLn('Installing old updates...');
         versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2',
             'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s',
-            'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installed2.3.6',
-            'installed2.3.6ss', 'installed2.3.6b', 'installedv2.3.7', 'installedv2.3.7b', 'installedv2.3.9', 'installedv2.3.9.1', 'installedv2.3.9.1b',
+            'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installedv2.3.6',
+            'installedv2.3.6ss', 'installedv2.3.6b', 'installedv2.3.7', 'installedv2.3.7b', 'installedv2.3.9', 'installedv2.3.9.1', 'installedv2.3.9.1b',
             'installedv2.4.0'
         ];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
         }
 
-        $.consoleLn('Initializing complete!');
         sounds = "";
         modules = "";
         versions = "";
         $.changed = false;
         $.inidb.set('updates', 'installedNewBot', 'true');
+        $.consoleLn('Initializing complete!');
+        $.consoleLn('');
     }
 
     /** Version 2.0 updates */
@@ -791,8 +793,6 @@
         $.consoleLn('PhantomBot update 2.4.0 completed!');
         $.inidb.set('updates', 'installedv2.4.0', 'true');
     }
-
-
 
 
     /**
