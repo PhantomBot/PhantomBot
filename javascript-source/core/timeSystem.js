@@ -132,17 +132,56 @@
      */
     function getTimeString(time, hoursOnly) {
         var floor = Math.floor,
-            cHours = time / 3600,
-            cMins = cHours % 1 * 60;
+            months = (time / 2628000);
+            days = ((months % 1) * 30.42),
+            hours = ((days % 1) * 24),
+            minutes = ((hours % 1) * 60),
+            seconds = ((minutes % 1) * 60);
 
         if (hoursOnly) {
-            return floor(cHours) + $.lang.get('common.hours3');
+            return hours + $.lang.get('common.hours3');
         } else {
-            if (floor(cHours) > 0) {
-                return ((floor(cHours) + $.lang.get('common.hours') + floor(~~cMins) + $.lang.get('common.minutes') + floor(cMins % 1 * 60) + $.lang.get('common.seconds')));
-            } else {
-                return (floor(~~cMins) + $.lang.get('common.minutes') + floor(cMins % 1 * 60) + $.lang.get('common.seconds'));
+            var timeStringParts = [],
+                timeString = '';
+
+            // Append months if greater than one.
+            if (months >= 1) {
+                timeStringParts.push(floor(months) + ' ' + (months < 2 ? $.lang.get('common.time.month') : $.lang.get('common.time.months')));
             }
+
+            // Append days if greater than one.
+            if (days >= 1) {
+                timeStringParts.push(floor(days) + ' ' + (days < 2 ? $.lang.get('common.time.day') : $.lang.get('common.time.days')));
+            }
+
+            // Append hours if greater than one.
+            if (hours >= 1) {
+                timeStringParts.push(floor(hours) + ' ' + (hours < 2 ? $.lang.get('common.time.hour') : $.lang.get('common.time.hours')));
+            }
+
+            // Append minutes if greater than one.
+            if (minutes >= 1) {
+                timeStringParts.push(floor(minutes) + ' ' + (minutes < 2 ? $.lang.get('common.time.minute') : $.lang.get('common.time.minutes')));
+            }
+
+            // Append seconds if greater than one.
+            if (seconds >= 1) {
+                timeStringParts.push(floor(seconds) + ' ' + (seconds < 2 ? $.lang.get('common.time.second') : $.lang.get('common.time.seconds')));
+            }
+
+            // If the array is empty, return 0 seconds.
+            if (timeStringParts.length === 0) {
+                return ('0 ' + $.lang.get('common.time.seconds'));
+            }
+
+            // Join the array to make a string.
+            timeString = timeStringParts.join(', ') + '.';
+
+            // Replace last comma with ", and".
+            if (timeString.indexOf(',') !== -1) {
+                timeString = (timeString.substr(0, timeString.lastIndexOf(',')) + $.lang.get('common.time.and') + timeString.substr(timeString.lastIndexOf(',') + 2));
+            }
+            return timeString;
         }
     }
 

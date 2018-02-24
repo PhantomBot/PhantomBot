@@ -380,3 +380,14 @@ $.lang.register('common.get.age.days', '$1 $2 has been on Twitch since $3. (Join
 $.lang.register('common.get.age', '$1 $2 has been on Twitch since $3.');
 $.lang.register('channel.age.user.404', 'That user is not on Twitch.');
 $.lang.register('main.donation.last.tip.message', 'Last tip from: $1 ($2 $3)');
+$.lang.register('common.time.month', 'month');
+$.lang.register('common.time.months', 'months');
+$.lang.register('common.time.day', 'day');
+$.lang.register('common.time.days', 'days');
+$.lang.register('common.time.hour', 'hour');
+$.lang.register('common.time.hours', 'hours');
+$.lang.register('common.time.minute', 'minute');
+$.lang.register('common.time.minutes', 'minutes');
+$.lang.register('common.time.second', 'second');
+$.lang.register('common.time.seconds', 'seconds');
+$.lang.register('common.time.and', ', and ');
