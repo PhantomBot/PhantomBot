@@ -8,9 +8,9 @@
         announce = false;
 
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamlabsHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'streamlabsToggle', false);
             message = $.getIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
@@ -73,9 +73,9 @@
     });
 
     /**
-     * @event discordCommand
+     * @event discordChannelCommand
      */
-    $.bind('discordCommand', function(event) {
+    $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
             channel = event.getChannel(),
             command = event.getCommand(),
@@ -134,13 +134,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/streamlabsHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/streamlabsHandler.js', 'streamlabshandler', 1);
-            $.discord.registerSubCommand('streamlabshandler', 'toggle', 1);
-            $.discord.registerSubCommand('streamlabshandler', 'message', 1);
-            $.discord.registerSubCommand('streamlabshandler', 'channel', 1);
-
-            // $.unbind('initReady'); Needed or not?
-        }
+        $.discord.registerCommand('./discord/handlers/streamlabsHandler.js', 'streamlabshandler', 1);
+        $.discord.registerSubCommand('streamlabshandler', 'toggle', 1);
+        $.discord.registerSubCommand('streamlabshandler', 'message', 1);
+        $.discord.registerSubCommand('streamlabshandler', 'channel', 1);
     });
 })();

@@ -1,19 +1,3 @@
-/**
- * adventureSystem.js
- *
- * It's an improved bankheist, basically.
- *
- * Viewers can start/join an adventure using the commands.
- * A random story will then bee chosen from the available stories.
- * This means this heist can have more than one story, in fact it can have pretty much
- * an infinite amount of different locations, events etc...
- *
- * When a user joins the adventure the module will check if
- * the Tamagotchi module is active and attempt to retrieve the user's tamagotchi.
- * If the user owns a tamagotchi and it's feeling good enough it wil join
- * the adventure with it's own entry of half of its owner's bet.
- * If the tamagotchi survives it wil then give it's price to it's owner.
- */
 (function() {
     var joinTime = $.getSetIniDbNumber('adventureSettings', 'joinTime', 60),
         coolDown = $.getSetIniDbNumber('adventureSettings', 'coolDown', 900),
@@ -22,16 +6,14 @@
         maxBet = $.getSetIniDbNumber('adventureSettings', 'maxBet', 1000),
         enterMessage = $.getSetIniDbBoolean('adventureSettings', 'enterMessage', false),
         warningMessage = $.getSetIniDbBoolean('adventureSettings', 'warningMessage', false),
-        tgFunIncr = 1,
-        tgExpIncr = 0.5,
-        tgFoodDecr = 0.25,
-        currentAdventure = 1,
+        coolDownAnnounce = $.getSetIniDbBoolean('adventureSettings', 'coolDownAnnounce', false),
+        currentAdventure = {},
         stories = [],
         moduleLoaded = false,
         lastStory;
 
 
-    function reloadAdventure () {
+    function reloadAdventure() {
         joinTime = $.getIniDbNumber('adventureSettings', 'joinTime');
         coolDown = $.getIniDbNumber('adventureSettings', 'coolDown');
         gainPercent = $.getIniDbNumber('adventureSettings', 'gainPercent');
@@ -39,6 +21,7 @@
         maxBet = $.getIniDbNumber('adventureSettings', 'maxBet');
         enterMessage = $.getIniDbBoolean('adventureSettings', 'enterMessage');
         warningMessage = $.getIniDbBoolean('adventureSettings', 'warningMessage');
+        coolDownAnnounce = $.getIniDbBoolean('adventureSettings', 'coolDownAnnounce');
     };
 
     /**
@@ -48,6 +31,11 @@
         var storyId = 1,
             chapterId,
             lines;
+
+        currentAdventure.users = [];
+        currentAdventure.survivors = [];
+        currentAdventure.caught = [];
+        currentAdventure.gameState = 0;
 
         stories = [];
 
@@ -65,6 +53,15 @@
         }
 
         $.consoleDebug($.lang.get('adventuresystem.loaded', storyId - 1));
+
+        for (var i in stories) {
+            if (stories[i].game === null) {
+                return;
+            }
+        }
+
+        $.log.warn('You must have at least one adventure that doesn\'t require a game to be set.');
+        currentAdventure.gameState = 2;
     };
 
     /**
@@ -171,38 +168,6 @@
     };
 
     /**
-     * @function inviteTamagotchi
-     * @param {string} username
-     * @param {Number} bet
-     */
-    function inviteTamagotchi(username, bet) {
-        if ($.bot.isModuleEnabled('./games/tamagotchi.js')) {
-            //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-            var userTG = $.tamagotchi.getByOwner(username);
-            if (userTG) {
-                //noinspection JSUnresolvedFunction
-                if (userTG.isHappy()) {
-                    //noinspection JSUnresolvedFunction
-                    userTG
-                        .incrFunLevel(tgFunIncr)
-                        .incrExpLevel(tgExpIncr)
-                        .decrFoodLevel(tgFoodDecr)
-                        .save();
-                    $.say($.lang.get('adventuresystem.tamagotchijoined', userTG.name));
-                    currentAdventure.users.push({
-                        username: userTG.name,
-                        tgOwner: username,
-                        bet: (bet / 2),
-                    });
-                } else {
-                    //noinspection JSUnresolvedFunction
-                    userTG.sayFunLevel();
-                }
-            }
-        }
-    };
-
-    /**
      * @function startHeist
      * @param {string} username
      */
@@ -223,6 +188,11 @@
      * @returns {boolean}
      */
     function joinHeist(username, bet) {
+        if (stories.length < 1) {
+            $.log.error('No adventures found; cannot start an adventure.');
+            return;
+        }
+
         if (currentAdventure.gameState > 1) {
             if (!warningMessage) return;
             $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.notpossible'));
@@ -284,21 +254,29 @@
         currentAdventure.gameState = 2;
         calculateResult();
 
+        var game = $.getGame($.channelName);
+
         for (var i in stories) {
             if (stories[i].game != null) {
-                if (($.twitchcache.getGameTitle() + '').toLowerCase() == stories[i].game.toLowerCase()) {
+                if (game.equalsIgnoreCase(stories[i].game)) {
                     //$.consoleLn('gamespec::' + stories[i].title);
-                    temp.push({title: stories[i].title, lines: stories[i].lines});
+                    temp.push({
+                        title: stories[i].title,
+                        lines: stories[i].lines
+                    });
                 }
             } else {
                 //$.consoleLn('normal::' + stories[i].title);
-                temp.push({title: stories[i].title, lines: stories[i].lines});
+                temp.push({
+                    title: stories[i].title,
+                    lines: stories[i].lines
+                });
             }
         }
 
         do {
             story = $.randElement(temp);
-        } while (story == lastStory);
+        } while (story == lastStory && stories.length != 1);
 
         $.say($.lang.get('adventuresystem.runstory', story.title, currentAdventure.users.length));
 
@@ -313,7 +291,7 @@
                 clearInterval(t);
             }
             progress++;
-        }, 5e3);
+        }, 7e3);
     };
 
     /**
@@ -349,7 +327,12 @@
 
         clearCurrentAdventure();
         temp = "";
-        $.coolDown.set('adventure', true, coolDown);
+        $.coolDown.set('adventure', false, coolDown, false);
+        if (coolDownAnnounce) {
+            setTimeout(function() {
+                $.say($.lang.get('adventuresystem.reset', $.pointNameMultiple));
+            }, coolDown*1000);
+        }
     };
 
     /**
@@ -486,6 +469,15 @@
                     $.inidb.set('adventureSettings', 'enterMessage', enterMessage);
                 }
 
+                /**
+                 * @commandpath adventure set cooldownannounce [true / false] - Sets the cooldown announcement
+                 */
+                if (actionArg1.equalsIgnoreCase('cooldownannounce')) {
+                    if (args[2].equalsIgnoreCase('true')) coolDownAnnounce = true, actionArg2 = $.lang.get('common.enabled');
+                    if (args[2].equalsIgnoreCase('false')) coolDownAnnounce = false, actionArg2 = $.lang.get('common.disabled');
+                    $.inidb.set('adventureSettings', 'coolDownAnnounce', coolDownAnnounce);
+                }
+
                 $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.success', actionArg1, actionArg2));
             }
         }
@@ -495,23 +487,12 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./games/adventureSystem.js')) {
-            clearCurrentAdventure();
-            if (!moduleLoaded) {
-                loadStories();
-                moduleLoaded = true;
-            }
-            $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
-            $.registerChatSubcommand('adventure', 'set', 1);
-        }
-    });
+        $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
+        $.registerChatSubcommand('adventure', 'set', 1);
+        $.registerChatSubcommand('adventure', 'top5', 3);
 
-    /**
-     * Warn the user if the points system is disabled and this is enabled.
-     */
-    if ($.bot.isModuleEnabled('./games/adventureSystem.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
-        $.log.warn("Disabled. ./systems/pointSystem.js is not enabled.");
-    }
+        loadStories();
+    });
 
     $.reloadAdventure = reloadAdventure;
 })();

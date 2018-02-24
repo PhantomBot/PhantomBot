@@ -7,4 +7,3 @@ $.lang.register("deathcounter.counter", "$1 has died $3 times in $2.");
 $.lang.register("deathcounter.none", "$1 has not died in $2....yet.");
 $.lang.register("deathcounter.reset", "Reset the death counter back to 0 from $2 for $1.");
 $.lang.register("deathcounter.reset-nil", "The death counter for $1 is already 0.");
-

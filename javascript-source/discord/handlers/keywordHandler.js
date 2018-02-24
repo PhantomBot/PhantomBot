@@ -4,16 +4,16 @@
 (function() {
 
     /**
-     * @event discordMessage
+     * @event discordChannelMessage
      */
-    $.bind('discordMessage', function(event) {
+    $.bind('discordChannelMessage', function(event) {
         var message = event.getMessage().toLowerCase(),
             channel = event.getChannel(),
             keys = $.inidb.GetKeyList('discordKeywords', ''),
             keyword,
             i;
 
-        for (i in keys) {  
+        for (i in keys) {
             // Some users use special symbols that may break regex so this will fix that.
             try {
                 if (message.match('\\b' + keys[i] + '\\b') && !message.includes('!keyword')) {
@@ -24,9 +24,9 @@
             } catch (ex) {
                 if (ex.message.toLowerCase().includes('invalid quantifier') || ex.message.toLowerCase().includes('syntax')) {
                     if (message.includes(keys[i]) && !message.includes('!keyword')) {
-                       keyword = $.inidb.get('discordKeywords', keys[i]);
+                        keyword = $.inidb.get('discordKeywords', keys[i]);
                         $.discord.say(channel, $.discord.tags(event, keyword));
-                        break; 
+                        break;
                     }
                 } else {
                     $.log.error('Failed to send keyword "' + keys[i] + '": ' + ex.message);
@@ -37,9 +37,9 @@
     });
 
     /**
-     * @event discordCommand
+     * @event discordChannelCommand
      */
-    $.bind('discordCommand', function(event) {
+    $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
             channel = event.getChannel(),
             command = event.getCommand(),
@@ -115,13 +115,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/keywordHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/keywordHandler.js', 'keyword', 1);
-            $.discord.registerSubCommand('keyword', 'add', 1);
-            $.discord.registerSubCommand('keyword', 'edit', 1);
-            $.discord.registerSubCommand('keyword', 'remove', 1);
-
-            // $.unbind('initReady'); Needed or not?
-        }
+        $.discord.registerCommand('./discord/handlers/keywordHandler.js', 'keyword', 1);
+        $.discord.registerSubCommand('keyword', 'add', 1);
+        $.discord.registerSubCommand('keyword', 'edit', 1);
+        $.discord.registerSubCommand('keyword', 'remove', 1);
     });
 })();

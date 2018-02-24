@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -91,11 +91,10 @@ connection.onmessage = function(e) {
     }
     debugMsg('connection.onmessage('+ e.data + ')');
 
-    if (messageObject['authresult'] == false) {
-        if (!messageObject['authresult']) {
+    if (messageObject['authresult'] !== undefined) {
+        if (messageObject['authresult'] === 'false') {
             isConnected = false;
             newPanelAlert('Authorization Failed! Check Configuration File', 'danger', 0);
-            return;
         }
         return;
     }
@@ -139,7 +138,7 @@ function newPanelAlert(message, type, timeout) {
     debugMsg("newPanelAlert(" + message + ", " + type + ", " + timeout + ")");
     $(".alert").fadeIn(1000);
     $("#newPanelAlert").show().html('<div class="alert alert-' + type + '"><button type="button" '+
-                        'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 
+                        'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' +
                          message + '</span></div>');
     if (timeout != 0) {
         $(".alert-" + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
@@ -285,7 +284,7 @@ function sendWSEvent(event_id, script, argsString, args) {
  * @param {String} b
  * @return {Number} match == 0; no match != 0
  *
- * Note that the below will not work on interational strings, only 
+ * Note that the below will not work on interational strings, only
  * ASCII compares.  If international strings are in play, then
  * localeCompare should be used instead.
  */
@@ -361,7 +360,7 @@ function handleInputFocus() {
  */
 function setInputFocus(value) {
    inputFieldInFocus = value;
-} 
+}
 
 /**
  * @function isInputFocus
@@ -451,11 +450,11 @@ function performCurrentPanelRefresh() {
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.twitterDoQuery();
              break;
-         case 18 : 
+         case 18 :
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.discordDoQuery();
              break;
-         case 19 : 
+         case 19 :
              newPanelAlert('Refreshing Data', 'success', 1000);
              $.audioDoQuery();
              break;

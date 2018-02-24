@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -24,7 +24,10 @@
  * Drives the Moderation Panel
  */
 (function() {
-    var spamTrackerLimit = 0;
+    var spamTrackerLimit = 0,
+        blacklist = [],
+        whitelist = [],
+        currentBlacklist = null;
 
     var modSettingIcon = [];
         modSettingIcon['false'] = "<i class=\"fa fa-circle-o\" />";
@@ -108,24 +111,34 @@
 
             if (panelCheckQuery(msgObject, 'moderation_blacklist')) {
                 if (msgObject['results'].length > 0) {
-                    html = "<table>";
+                    html = '<table>';
+                    var i = 0;
+                    blacklist = [];
                     for (idx in msgObject['results']) {
+                        i++;
                         modSetting = msgObject['results'][idx]['key'];
                         modValue = msgObject['results'][idx]['value'];
 
-                        html += "<tr class=\"textList\">" +
-                            "    <td style=\"width: 3%\">" +
-                            "        <div id=\"delete_blackList_" + modSetting.replace(/[^a-z1-9]/ig, '_') + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
-                            "             onclick=\"$.deleteBlacklist('" + modSetting + "')\"><i class=\"fa fa-trash\" />" +
-                            "        </div>" +
-                            "    </td>" +
-                            "    <td>" + modSetting + "</td>" +
-                            "</tr>";
-                    
+                        // html += "<tr class=\"textList\">" +
+                        //     "    <td style=\"width: 3%\">" +
+                        //     "        <div id=\"delete_blackList_" + modSetting.replace(/[^a-z1-9]/ig, '_') + "\" type=\"button\" class=\"btn btn-default btn-xs\" " +
+                        //     "             onclick=\"$.deleteBlacklist('" + modSetting.replace(/\\/g, '\\\\') + "')\"><i class=\"fa fa-trash\" />" +
+                        //     "        </div>" +
+                        //     "    </td>" +
+                        //     "    <td>" + modSetting + "</td>" +
+                        //     "</tr>";
+                        blacklist[i] = msgObject['results'][idx];
+                        html += '<tr>' +
+                        '<td>' + (modSetting.length > 80 ? modSetting.substring(0, 80) + '...' : modSetting) + '</td>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openBlackListModal(\'' + i + '\')"><i class="fa fa-edit" /> </button>' +
+                        '<button type="button" id="delete_blackList_' + i + '" class="btn btn-default btn-xs" onclick="$.deleteBlacklist(\'' + i + '\')">'+
+                        '<i class="fa fa-trash" /> </button></td> ' +
+                        '</tr>';
+
                     }
-                    html += "</table>";
+                    html += '</table>';
                 } else {
-                    html = "<i>No entries in table.</i>";
+                    html = '<i>No entries in table.</i>';
                 }
                 $("#blacklistModSettings").html(html);
             }
@@ -136,11 +149,12 @@
                     for (idx in msgObject['results']) {
                         modSetting = msgObject['results'][idx]['key'];
                         modValue = msgObject['results'][idx]['value'];
-    
+
+                        whitelist[i] = msgObject['results'][idx]['key'];
                         html += "<tr class=\"textList\">" +
                                 "    <td style=\"width: 15px\" padding=\"5px\">" +
-                                "        <div id=\"delete_whiteList_" + modSetting.replace(/[^a-z1-9]/ig, '_') + "\" type=\"button\" class=\"btn btn-default btn-xs\"" +
-                                "             onclick=\"$.deleteWhitelist('" + modSetting + "')\"><i class=\"fa fa-trash\" />" +
+                                "        <div id=\"delete_whiteList_" + i + "\" type=\"button\" class=\"btn btn-default btn-xs\"" +
+                                "             onclick=\"$.deleteWhitelist('" + i + "')\"><i class=\"fa fa-trash\" />" +
                                 "        </div>" +
                                 "    </td>" +
                                 "    <td>" + modSetting + "</td>" +
@@ -393,31 +407,37 @@
                             $('#toggleRegularFakePurge').attr('checked', 'checked');
                         }
                     }
-                
+
                     if (panelMatch(modSetting, 'regularsModerateCaps')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularCaps').attr('checked', 'checked');
                         }
                     }
-                
+
                     if (panelMatch(modSetting, 'regularsModerateSymbols')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularSymbols').attr('checked', 'checked');
                         }
                     }
-                    
+
                     if (panelMatch(modSetting, 'regularsModerateSpam')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularSpam').attr('checked', 'checked');
                         }
                     }
-                    
+
                     if (panelMatch(modSetting, 'regularsModerateColors')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularColors').attr('checked', 'checked');
                         }
                     }
-                    
+
+                    if (panelMatch(modSetting, 'regularsModerateEmotes')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleRegularEmotes').attr('checked', 'checked');
+                        }
+                    }
+
                     if (panelMatch(modSetting, 'regularsModerateLongMsg')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleRegularLongMsg').attr('checked', 'checked');
@@ -441,31 +461,37 @@
                             $('#toggleSubscriberFakePurge').attr('checked', 'checked');
                         }
                     }
-                
+
                     if (panelMatch(modSetting, 'subscribersModerateCaps')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberCaps').attr('checked', 'checked');
                         }
                     }
-                
+
                     if (panelMatch(modSetting, 'subscribersModerateSymbols')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberSymbols').attr('checked', 'checked');
                         }
                     }
-                    
+
                     if (panelMatch(modSetting, 'subscribersModerateSpam')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberSpam').attr('checked', 'checked');
                         }
                     }
-                    
+
                     if (panelMatch(modSetting, 'subscribersModerateColors')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberColors').attr('checked', 'checked');
                         }
                     }
-                    
+
+                    if (panelMatch(modSetting, 'subscribersModerateEmotes')) {
+                        if (panelMatch(modValue, 'false')) {
+                            $('#toggleSubscriberEmotes').attr('checked', 'checked');
+                        }
+                    }
+
                     if (panelMatch(modSetting, 'subscribersModerateLongMsg')) {
                         if (panelMatch(modValue, 'false')) {
                             $('#toggleSubscriberLongMsg').attr('checked', 'checked');
@@ -514,6 +540,12 @@
                         }
                     }
 
+                    if (panelMatch(modSetting, 'silentTimeoutEmotes')) {
+                        if (panelMatch(modValue, 'true')) {
+                            $('#toggleSilentTimeoutEmotes').attr('checked', 'checked');
+                        }
+                    }
+
                     if (panelMatch(modSetting, 'silentTimeoutLongMsg')) {
                         if (panelMatch(modValue, 'true')) {
                             $('#toggleSilentTimeoutLongMsg').attr('checked', 'checked');
@@ -546,17 +578,68 @@
     }
 
     /**
+     * @function openBlackListModal
+     */
+    function openBlackListModal(id) {
+        var obj = JSON.parse(blacklist[id]['value']);
+
+        currentBlacklist = (obj.isRegex && !obj.phrase.startsWith('regex:') ? ('regex:' + String(obj.phrase)) : String(obj.phrase));
+        $("#blacklistWord").val(obj.phrase);
+        $("#useRegex").prop("checked", obj.isRegex);
+        $("#blackList_message").val(obj.message);
+        $("#blacklistReason").val(obj.banReason);
+        $("#blacklistTimeout").val(obj.timeout);
+        $("#blacklist_regs").prop("checked", obj.excludeRegulars);
+        $("#blacklist_subs").prop("checked", obj.excludeSubscribers);
+        $("#blacklist_silent").prop("checked", obj.isSilent);
+        $("#blacklistModal").modal();
+    }
+
+    /**
      * @function addModBlacklist
      */
-    function addModBlacklist() {
-        var value = $("#addModBlacklistInput").val();
-        if (value.length > 0) {
-            sendDBUpdate("moderation_addBlacklist", "blackList", value.toLowerCase(), 'true');
-            $("#addModBlacklistInput").val("Submitted");
-            setTimeout(function() { $("#addModBlacklistInput").val(""); }, TIMEOUT_WAIT_TIME);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-            setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
+    function addModBlacklist(clear) {
+        if (clear === undefined) {
+            var phrase = $("#blacklistWord").val(),
+                isRegex = $("#useRegex").is(":checked"),
+                message = $("#blackList_message").val(),
+                banReason = $("#blacklistReason").val(),
+                timeout = $("#blacklistTimeout").val(),
+                hasRegs = $("#blacklist_regs").is(":checked"),
+                hasSubs = $("#blacklist_subs").is(":checked"),
+                isSilent = $("#blacklist_silent").is(":checked");
+
+            if (phrase.length > 0 && message.length > 0 && banReason.length > 0 && timeout.length > 0) {
+                var obj = {
+                    id: 'panel_' + phrase,
+                    timeout: String(timeout),
+                    isRegex: isRegex,
+                    phrase: (isRegex && !phrase.startsWith('regex:') ? ('regex:' + String(phrase)) : String(phrase)),
+                    isSilent: isSilent,
+                    excludeRegulars: hasRegs,
+                    excludeSubscribers: hasSubs,
+                    message: String(message),
+                    banReason: String(banReason)
+                };
+
+                if (currentBlacklist !== null && currentBlacklist.localeCompare((isRegex && !phrase.startsWith('regex:') ? ('regex:' + String(phrase)) : String(phrase))) !== 0) {
+                    sendDBDelete("commands_delblacklist_" + currentBlacklist, "blackList", String(currentBlacklist));
+                }
+                sendDBUpdate("moderation_addBlacklist", "blackList", (isRegex && !phrase.startsWith('regex:') ? ('regex:' + String(phrase)) : String(phrase)), JSON.stringify(obj));
+                currentBlacklist = null;
+                setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+                setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
+            }
         }
+
+        $("#blacklistWord").val('');
+        $("#useRegex").prop("checked", false);
+        $("#blackList_message").val('You were timed out for using a blacklisted word.');
+        $("#blacklistReason").val('Using a blacklisted word');
+        $("#blacklistTimeout").val('600');
+        $("#blacklist_regs").prop("checked", false);
+        $("#blacklist_subs").prop("checked", false);
+        $("#blacklist_silent").prop("checked", false);
     }
 
     /**
@@ -575,27 +658,27 @@
 
     /**
      * @function deleteBlacklist
-     * @param {String} key
+     * @param {Number} id
      */
-    function deleteBlacklist(key) {
+    function deleteBlacklist(id) {
         /* this was giving errors if it contained a symbol other then _ */
-        var newkey = key.replace(/[^a-z1-9]/ig, '_');
-        console.log(newkey);
-        $("#delete_blackList_" + newkey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        var key = blacklist[id]['key'];
 
-        sendDBDelete("commands_delblacklist_" + newkey, "blackList", key);
+        $("#delete_blackList_" + id).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
+
+        sendDBDelete("commands_delblacklist_" + key, "blackList", key);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
      * @function deleteWhitelist
-     * @param {String} key
+     * @param {Number} id
      */
-    function deleteWhitelist(key) {
-        var newkey = key.replace(/[^a-z1-9]/ig, '_');
-        $("#delete_whiteList_" + newkey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendDBDelete("commands_delwhitelist_" + newkey, "whiteList", key);
+    function deleteWhitelist(id) {
+        var key = whitelist[id];
+        $("#delete_whiteList_" + id).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
+        sendDBDelete("commands_delwhitelist_" + key, "whiteList", key);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
@@ -712,7 +795,7 @@
     }
 
     /**
-     * @function permitUserCommand() 
+     * @function permitUserCommand()
      */
     function permitUserCommand() {
         sendCommand("permit " + $("#permitUserInput").val());
@@ -726,10 +809,10 @@
      * @param {String} newValue
      */
     function updateModSetting(tableKey, newValue) {
-        $("#modSetting_" + tableKey).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#modSetting_" + tableKey).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
         setTimeout(function() {
-            $("#modSetting_" + tableKey).html("<strong><font style=\"color: #6136b1\">" + modSettingIcon[newValue] + "</font></strong>");
+            $("#modSetting_" + tableKey).html("<strong><font style=\"color: var(--main-color)\">" + modSettingIcon[newValue] + "</font></strong>");
         }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
     }
@@ -743,10 +826,8 @@
         var newValue = $(tagId).val();
 
         if (tableKey == 'msgCooldownSecs') {
-            if (newValue >= 45) {
+            if (newValue >= 30) {
                 sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
-                setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-                setTimeout(function() { $(tagId).val(''); }, TIMEOUT_WAIT_TIME * 2);
                 setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
             }
             return;
@@ -754,10 +835,9 @@
 
         if (newValue.length > 0 && ((typeof newValue === 'number' && newValue > 1) || (typeof newValue === 'string'))) {
             sendDBUpdate("moderation_updateSetting_" + tableKey, "chatModerator", tableKey, newValue);
-            $(tagId).val('');
-            $(tagId).attr("placeholder", newValue);
             setTimeout(function() { sendCommand("reloadmod"); }, TIMEOUT_WAIT_TIME);
         }
+        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
@@ -875,4 +955,5 @@
     $.toggleSilentTimeout = toggleSilentTimeout;
     $.toggleModerations = toggleModerations;
     $.banReason = banReason;
+    $.openBlackListModal = openBlackListModal;
 })();

@@ -1,9 +1,8 @@
 (function() {
-    var permitList = {},
-        timeouts = {},
+    var permitList = [],
+        timeouts = [],
         whiteList = [],
         blackList = [],
-        regexBlackList = [],
         spamTracker = {},
 
         linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', false),
@@ -31,7 +30,7 @@
 
         longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', false),
         longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message.'),
-        longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 300),
+        longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 325),
 
         colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
         colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using colored text.'),
@@ -122,10 +121,9 @@
         msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
         warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
         resetTime = (warningResetTime * 6e4),
-        spamTrackerLastMsg = 0,
-        messageTime = 0,
+        messageTime = $.systemTime(),
         warning = '',
-        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'g'),
+        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'i'),
         i;
 
     /**
@@ -157,7 +155,7 @@
         emotesLimit = $.getIniDbNumber('chatModerator', 'emotesLimit');
 
         longMessageToggle = $.getIniDbBoolean('chatModerator', 'longMessageToggle');
-        longMessageMessage = $.getIniDbBoolean('chatModerator', 'longMessageMessage');
+        longMessageMessage = $.getIniDbString('chatModerator', 'longMessageMessage');
         longMessageLimit = $.getIniDbNumber('chatModerator', 'longMessageLimit');
 
         colorsToggle = $.getIniDbBoolean('chatModerator', 'colorsToggle');
@@ -242,42 +240,58 @@
             FakePurge: $.getSetIniDbNumber('chatModerator', 'timeoutTimeFakePurge')
         };
 
-        blacklistTimeoutTime = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime');
         blacklistMessage = $.getIniDbString('chatModerator', 'blacklistMessage');
         warningResetTime = $.getIniDbNumber('chatModerator', 'warningResetTime');
-        msgCooldownSec = $.getIniDbNumber('chatModerator', 'msgCooldownSec');
+        msgCooldownSec = $.getIniDbNumber('chatModerator', 'msgCooldownSecs');
         resetTime = (warningResetTime * 6e4);
 
         loadBlackList();
         loadWhiteList();
     }
 
-    /**
+    /*
      * @interval
-     * Check to see if no one has chatted in 5 minutes. If so clear the array. because this can get big in large channels.
      */
     setInterval(function() {
+        var keys,
+            i;
+
         if (spamTracker.length !== 0) {
-            if (spamTrackerLastMsg - $.systemTime() <= 0) {
-                spamTracker = {};
+            keys = Object.keys(spamTracker);
+
+            for (i in keys) {
+                if (spamTracker[keys[i]].time < $.systemTime()) {
+                    delete spamTracker[keys[i]];
+                }
             }
         }
-    }, 8e4);
+
+        if (timeouts.length !== 0) {
+            keys = Object.keys(timeouts);
+
+            for (i in keys) {
+                if (timeouts[keys[i]] < $.systemTime()) {
+                    delete timeouts[keys[i]];
+                }
+            }
+        }
+    }, 8e4, 'scripts::core::chatModerator.js');
 
     /**
      * @function loadBlackList
      */
     function loadBlackList() {
         var keys = $.inidb.GetKeyList('blackList', '');
-        blackList = [];
-        regexBlackList = [];
+            blackList = [];
 
         for (i = 0; i < keys.length; i++) {
-            if (keys[i].startsWith('regex:')) {
-                regexBlackList.push(new RegExp(keys[i].replace('regex:', '')));
-            } else {
-                blackList.push(keys[i]);
+            var json = JSON.parse($.inidb.get('blackList', keys[i]));
+
+            if (json != null && json.isRegex) {
+                json.phrase = new RegExp(json.phrase.replace('regex:', ''));
             }
+
+            blackList.push(json);
         }
     }
 
@@ -286,8 +300,8 @@
      */
     function loadWhiteList() {
         var keys = $.inidb.GetKeyList('whiteList', '');
-        whiteList = [];
-        
+            whiteList = [];
+
         for (i = 0; i < keys.length; i++) {
             whiteList.push(keys[i]);
         }
@@ -301,12 +315,14 @@
      * @param {string} reason
      */
     function timeoutUserFor(username, time, reason) {
-        $.say('.timeout ' + username + ' ' + time + ' ' + reason);
-        setTimeout(function() {
-            if ($.session.isLimited() == false) {
-                $.say('.timeout ' + username + ' ' + time + ' ' + reason);
+        $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
+
+        var lastTimeout = setTimeout(function() {
+            if ($.getMessageWrites() < 50) {
+                $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
             }
-        }, 1000);
+            clearInterval(lastTimeout);
+        }, 500, 'scripts::core::chatModerator.js::timeout');
     }
 
     /**
@@ -319,7 +335,7 @@
      */
     function timeout(username, warningT, timeoutT, reason) {
         if (timeouts[username] !== undefined) {
-            if ((timeouts[username] - $.systemTime()) >= 0) {
+            if (timeouts[username] > $.systemTime()) {
                 timeoutUserFor(username, timeoutT, reason);
                 warning = $.lang.get('chatmoderator.timeout');
             } else {
@@ -330,7 +346,7 @@
             timeoutUserFor(username, warningT, reason);
             warning = $.lang.get('chatmoderator.warning');
         }
-        timeouts[username] = (resetTime + $.systemTime());
+        timeouts[username] = ($.systemTime() + resetTime);
     }
 
     /**
@@ -341,13 +357,10 @@
      * @param {boolean} filter
      */
     function sendMessage(username, message, filter) {
-        if (!filter && (messageTime - $.systemTime()) <= 0 && $.session.hasQueue() == true && $.session.isLimited() == false) {
-            $.say($.userPrefix(username, true) + message + ' ' + warning);
+        if (filter == false && messageTime < $.systemTime() && $.getMessageWrites() < 7) {
+            $.session.sayNow('@' + username + ', ' + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         }
-
-        // Only log the user once the moderation messages are all done.
-        $.panelDB.updateModLinesDB(username);
     }
 
     /**
@@ -380,7 +393,7 @@
      */
     function checkPermitList(username) {
         if (permitList[username] !== undefined) {
-            if ((permitList[username] - $.systemTime()) >= 0) {
+            if (permitList[username] > $.systemTime()) {
                 delete permitList[username];
                 return true;
             }
@@ -394,21 +407,28 @@
      * @param {string} sender
      * @param {string} message
      */
-    function checkBlackList(sender, message) {
-        for (i in regexBlackList) {
-            if (message.match(regexBlackList[i])) {
-                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                warning = $.lang.get('chatmoderator.timeout');
-                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                return true;
-            }
-        }
+    function checkBlackList(sender, event, message) {
         for (i in blackList) {
-            if (message.includes(blackList[i])) {
-                timeoutUser(sender, blacklistTimeoutTime, silentTimeout.BlacklistMessage);
-                warning = $.lang.get('chatmoderator.timeout');
-                sendMessage(sender, blacklistMessage, silentTimeout.Blacklist);
-                return true;
+            if (blackList[i].isRegex) {
+                if (blackList[i].phrase.test(message)) {
+                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
+                        return false;
+                    }
+                    timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
+                    warning = $.lang.get('chatmoderator.timeout');
+                    sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    return true;
+                }
+            } else {
+                if (message.indexOf(blackList[i].phrase) !== -1) {
+                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
+                        return false;
+                    }
+                    timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
+                    warning = $.lang.get('chatmoderator.timeout');
+                    sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    return true;
+                }
             }
         }
         return false;
@@ -421,7 +441,7 @@
      */
     function checkWhiteList(message) {
         for (i in whiteList) {
-            if (message.includes(whiteList[i])) {
+            if (message.indexOf(whiteList[i]) !== -1) {
                 return true;
             }
         }
@@ -434,7 +454,7 @@
      * @param {string} message
      */
     function checkYoutubePlayer(message) {
-        if ($.youtubePlayerConnected && message.match(youtubeLinks)) {
+        if ($.youtubePlayerConnected && youtubeLinks.test(message)) {
             return true;
         }
         return false;
@@ -449,12 +469,16 @@
             messageLength = message.length();
 
         if (!$.isModv3(sender, event.getTags())) {
+            // Blacklist
+            if (checkBlackList(sender, event, message)) {
+                return;
+            }
+
+            // Links filter
             if (linksToggle && $.patternDetector.hasLinks(event)) {
                 if (checkYoutubePlayer(message) || checkPermitList(sender) || checkWhiteList(message)) {
                     return;
-                }
-
-                if (!regulars.Links && $.isReg(sender) || !subscribers.Links && $.isSubv3(sender, event.getTags())) {
+                } else if (!regulars.Links && $.isReg(sender) || !subscribers.Links && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
 
@@ -464,35 +488,42 @@
                 return;
             }
 
-            if (symbolsToggle && messageLength > symbolsTriggerLength) {
-                if ($.patternDetector.getLongestNonLetterSequence(event) > symbolsGroupLimit || (($.patternDetector.getNumberOfNonLetters(event) / messageLength) * 100) > symbolsLimitPercent) {
+            // Symbol filter
+            if (symbolsToggle && messageLength >= symbolsTriggerLength) {
+                if ($.patternDetector.getLongestNonLetterSequence(event) >= symbolsGroupLimit || (($.patternDetector.getNumberOfNonLetters(event) / messageLength) * 100) >= symbolsLimitPercent) {
                     if (!regulars.Symbols && $.isReg(sender) || !subscribers.Symbols && $.isSubv3(sender, event.getTags())) {
                         return;
                     }
+
                     timeout(sender, warningTime.Symbols, timeoutTime.Symbols, silentTimeout.SymbolMessage);
                     sendMessage(sender, symbolsMessage, silentTimeout.Symbols);
                     return;
                 }
             }
 
-            if (spamToggle && $.patternDetector.getLongestRepeatedSequence(event) > spamLimit) {
+            // Spam filter
+            if (spamToggle && $.patternDetector.getLongestRepeatedSequence(event) >= spamLimit) {
                 if (!regulars.Spam && $.isReg(sender) || !subscribers.Spam && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
+
                 timeout(sender, warningTime.Spam, timeoutTime.Spam, silentTimeout.SpamMessage);
                 sendMessage(sender, spamMessage, silentTimeout.Spam);
                 return;
             }
 
-            if (longMessageToggle && messageLength > longMessageLimit) {
+            // Long msg filter
+            if (longMessageToggle && messageLength >= longMessageLimit) {
                 if (!regulars.LongMsg && $.isReg(sender) || !subscribers.LongMsg && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
+
                 timeout(sender, warningTime.LongMsg, timeoutTime.LongMsg, silentTimeout.LongMessage);
                 sendMessage(sender, longMessageMessage, silentTimeout.LongMsg);
                 return;
             }
 
+            // Fake purge filter
             if (fakePurgeToggle && $.patternDetector.getFakePurge(event)) {
                 if (!regulars.FakePurge && $.isReg(sender) || !subscribers.FakePurge && $.isSubv3(sender, event.getTags())) {
                     return;
@@ -503,43 +534,47 @@
                 return;
             }
 
-            if (emotesToggle && $.patternDetector.getEmotesCount(event) > emotesLimit) {
+            // Emotes folter
+            if (emotesToggle && $.patternDetector.getEmotesCount(event) >= emotesLimit) {
                 if (!regulars.Emotes && $.isReg(sender) || !subscribers.Emotes && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
+
                 timeout(sender, warningTime.Emotes, timeoutTime.Emotes, silentTimeout.EmoteMessage);
                 sendMessage(sender, emotesMessage, silentTimeout.Emotes);
                 return;
             }
 
-            if (capsToggle && messageLength > capsTriggerLength) {
-                if (((($.patternDetector.getNumberOfCaps(event) - $.patternDetector.getEmotesLength(event)) / messageLength) * 100) > capsLimitPercent) {
+            // Caps filter
+            if (capsToggle && messageLength >= capsTriggerLength) {
+                if ((($.patternDetector.getNumberOfCaps(event) / messageLength) * 100) >= capsLimitPercent) {
                     if (!regulars.Caps && $.isReg(sender) || !subscribers.Caps && $.isSubv3(sender, event.getTags())) {
                         return;
                     }
+
                     timeout(sender, warningTime.Caps, timeoutTime.Caps, silentTimeout.CapMessage);
                     sendMessage(sender, capsMessage, silentTimeout.Caps);
                     return;
                 }
             }
 
+            // Color filter
             if (colorsToggle && $.patternDetector.getColoredMessage(event)) {
                 if (!regulars.Colors && $.isReg(sender) || !subscribers.Colors && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
+
                 timeout(sender, warningTime.Colors, timeoutTime.Colors, silentTimeout.ColorMessage);
                 sendMessage(sender, colorsMessage, silentTimeout.Colors);
                 return;
             }
 
-            if (message && checkBlackList(sender, message)) {
-                return;
-            }
-
+            // Spam tracker
             if (spamTrackerToggle) {
                 if (!regulars.SpamTracker && $.isReg(sender) || !subscribers.SpamTracker && $.isSubv3(sender, event.getTags())) {
                     return;
                 }
+
                 if (spamTracker[sender] !== undefined) {
                     if (spamTracker[sender].time - $.systemTime() <= 0) {
                         spamTracker[sender] = {count: 0, time: ($.systemTime() + (spamTrackerTime * 1e3))};
@@ -553,7 +588,6 @@
                     sendMessage(sender, spamTrackerMessage, silentTimeout.SpamTracker);
                     delete spamTracker[sender];
                 }
-                spamTrackerLastMsg = ($.systemTime() + 3e5);
             }
         }
     }
@@ -583,7 +617,7 @@
                 $.inidb.set('chatModerator', 'moderationLogs', moderationLogs);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.moderation.logs', (moderationLogs === true ? $.lang.get('chatmoderator.moderation.enabled') : $.lang.get('common.disabled'))));
             }
-            
+
             /**
              * @commandpath moderation spamtracker [on / off] - Enable/Disable the spam tracker. This limits how many messages a user can sent in 30 seconds by default
              */
@@ -596,7 +630,7 @@
                 if (subAction.equalsIgnoreCase('on') || subAction.equalsIgnoreCase('off')) {
                     spamTrackerToggle = subAction.equalsIgnoreCase('on');
                     $.inidb.set('chatModerator', 'spamTrackerToggle', spamTrackerToggle);
-                    $.say($.whisperPrefix(sender) + (spamTrackerToggle ? $.lang.get('chatmoderator.spamtracker.filter.enabled') : $.lang.get('chatmoderator.spamtracker.filter.disabled'))); 
+                    $.say($.whisperPrefix(sender) + (spamTrackerToggle ? $.lang.get('chatmoderator.spamtracker.filter.enabled') : $.lang.get('chatmoderator.spamtracker.filter.disabled')));
                     $.log.event('spam tracker filter was turned ' + subAction + ' by ' + sender);
                     return;
                 }
@@ -739,7 +773,7 @@
                 if (subAction.equalsIgnoreCase('on') || subAction.equalsIgnoreCase('off')) {
                     fakePurgeToggle = subAction.equalsIgnoreCase('on');
                     $.inidb.set('chatModerator', 'fakePurgeToggle', fakePurgeToggle);
-                    $.say($.whisperPrefix(sender) + (fakePurgeToggle ? $.lang.get('chatmoderator.fakepurge.filter.enabled') : $.lang.get('chatmoderator.fakepurge.filter.disabled'))); 
+                    $.say($.whisperPrefix(sender) + (fakePurgeToggle ? $.lang.get('chatmoderator.fakepurge.filter.enabled') : $.lang.get('chatmoderator.fakepurge.filter.disabled')));
                     $.log.event('fake purge filter was turned ' + subAction + ' by ' + sender);
                     return;
                 }
@@ -850,16 +884,31 @@
             }
 
             /**
-             * @commandpath blacklist add [word] - Adds a word to the blacklist. Use regex: at the start to specify a regex blacklist.
+             * @commandpath blacklist add [timeout time] [word] - Adds a word to the blacklist. Use regex: at the start to specify a regex blacklist.
              */
             if (action.equalsIgnoreCase('add')) {
-                if (!subAction) {
+                if (!subAction || !args[2] || isNaN(parseInt(subAction))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.add.usage'));
                     return;
                 }
-                var word = args.slice(1).join(' ').toLowerCase();
+                var word = argString.split(' ').slice(2).join(' '),
+                    isRegex = word.startsWith('regex:'),
+                    timeout = parseInt(subAction),
+                    obj = {};
 
-                $.inidb.set('blackList', word, 'true');
+                obj = {
+                    id: String(($.inidb.GetKeyList('blackList', '').length + 1)),
+                    timeout: String(timeout),
+                    isRegex: isRegex,
+                    phrase: String(word),
+                    isSilent: false,
+                    excludeRegulars: false,
+                    excludeSubscribers: false,
+                    message: String(blacklistMessage),
+                    banReason: String(silentTimeout.BlacklistMessage)
+                };
+
+                $.inidb.set('blackList', word, JSON.stringify(obj));
                 loadBlackList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.added'));
                 $.log.event('"' + word + '" was added to the blacklist by ' + sender);
@@ -872,11 +921,11 @@
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('blackList', args.slice(1).join(' ').toLowerCase())) {
+                } else if (!$.inidb.exists('blackList', argString.split(' ').slice(1).join(' '))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
-                $.inidb.del('blackList', args.slice(1).join(' ').toLowerCase());
+                $.inidb.del('blackList', argString.split(' ').slice(1).join(' '));
                 loadBlackList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.removed'));
             }
@@ -885,7 +934,7 @@
         /**
          * @commandpath whitelist - Shows usage of command to manipulate the whitelist links
          */
-        if (command.equalsIgnoreCase('whiteList')) {
+        if (command.equalsIgnoreCase('whitelist')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.usage'));
                 return;
@@ -899,7 +948,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.add.usage'));
                     return;
                 }
-                var link = argString.replace(action, '').trim().toLowerCase();
+                var link = argString.split(' ').slice(1).join(' ').toLowerCase();
                 $.inidb.set('whiteList', link, 'true');
                 whiteList.push(link);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));
@@ -913,11 +962,11 @@
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('whiteList', argString.replace(action, '').trim().toLowerCase())) {
+                } else if (!$.inidb.exists('whiteList', argString.split(' ').slice(1).join(' ').toLowerCase())) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
-                $.inidb.del('whiteList', argString.replace(action, '').trim().toLowerCase());
+                $.inidb.del('whiteList', argString.split(' ').slice(1).join(' ').toLowerCase());
                 loadWhiteList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.removed'));
             }
@@ -936,8 +985,16 @@
                 return;
             }
 
-            permitUser(action.toLowerCase());
-            $.say($.username.resolve(action) + $.lang.get('chatmoderator.permited', linkPermitTime));
+            action = $.user.sanitize(action);
+
+            // if the user got a warning/timeout, unban him, and remove him from the warning/timeout list.
+            if (timeouts[action] !== undefined) {
+                $.session.sayNow('.unban ' + action);
+                delete timeouts[action];
+            }
+
+            permitUser(action);
+            $.say(action + $.lang.get('chatmoderator.permited', linkPermitTime));
             $.log.event(action + ' was permited by ' + sender);
             return;
         }
@@ -962,7 +1019,7 @@
             args = event.getArgs(),
             action = args[0],
             subAction = args[1];
-            
+
         /**
          * Handle extra commands
          */
@@ -991,7 +1048,7 @@
                 if (subAction.equalsIgnoreCase('on') || subAction.equalsIgnoreCase('off')) {
                     linksToggle = subAction.equalsIgnoreCase('on');
                     $.inidb.set('chatModerator', 'linksToggle', linksToggle);
-                    $.say($.whisperPrefix(sender) + (linksToggle ? $.lang.get('chatmoderator.link.filter.enabled') : $.lang.get('chatmoderator.link.filter.disabled'))); 
+                    $.say($.whisperPrefix(sender) + (linksToggle ? $.lang.get('chatmoderator.link.filter.enabled') : $.lang.get('chatmoderator.link.filter.disabled')));
                     $.log.event('Link filter was turned ' + subAction + ' by ' + sender);
                     return;
                 }
@@ -1009,7 +1066,7 @@
                 if (subAction.equalsIgnoreCase('on') || subAction.equalsIgnoreCase('off')) {
                     capsToggle = subAction.equalsIgnoreCase('on');
                     $.inidb.set('chatModerator', 'capsToggle', capsToggle);
-                    $.say($.whisperPrefix(sender) + (capsToggle ? $.lang.get('chatmoderator.caps.filter.enabled') : $.lang.get('chatmoderator.caps.filter.disabled'))); 
+                    $.say($.whisperPrefix(sender) + (capsToggle ? $.lang.get('chatmoderator.caps.filter.enabled') : $.lang.get('chatmoderator.caps.filter.disabled')));
                     $.log.event('Caps filter was turned ' + subAction + ' by ' + sender);
                     return;
                 }
@@ -1027,7 +1084,7 @@
                 if (subAction.equalsIgnoreCase('on') || subAction.equalsIgnoreCase('off')) {
                     spamToggle = subAction.equalsIgnoreCase('on');
                     $.inidb.set('chatModerator', 'spamToggle', spamToggle);
-                    $.say($.whisperPrefix(sender) + (spamToggle ? $.lang.get('chatmoderator.spam.filter.enabled') : $.lang.get('chatmoderator.spam.filter.disabled'))); 
+                    $.say($.whisperPrefix(sender) + (spamToggle ? $.lang.get('chatmoderator.spam.filter.enabled') : $.lang.get('chatmoderator.spam.filter.disabled')));
                     $.log.event('Spam filter was turned ' + subAction + ' by ' + sender);
                     return;
                 }
@@ -1045,7 +1102,7 @@
                 if (subAction.equalsIgnoreCase('on') || subAction.equalsIgnoreCase('off')) {
                     symbolsToggle = subAction.equalsIgnoreCase('on');
                     $.inidb.set('chatModerator', 'symbolsToggle', symbolsToggle);
-                    $.say($.whisperPrefix(sender) + (symbolsToggle ? $.lang.get('chatmoderator.symbols.filter.enabled') : $.lang.get('chatmoderator.symbols.filter.disabled'))); 
+                    $.say($.whisperPrefix(sender) + (symbolsToggle ? $.lang.get('chatmoderator.symbols.filter.enabled') : $.lang.get('chatmoderator.symbols.filter.disabled')));
                     $.log.event('Symbols filter was turned ' + subAction + ' by ' + sender);
                     return;
                 }
@@ -1063,7 +1120,7 @@
                 if (subAction.equalsIgnoreCase('on') || subAction.equalsIgnoreCase('off')) {
                     emotesToggle = subAction.equalsIgnoreCase('on');
                     $.inidb.set('chatModerator', 'emotesToggle', emotesToggle);
-                    $.say($.whisperPrefix(sender) + (emotesToggle ? $.lang.get('chatmoderator.emotes.filter.enabled') : $.lang.get('chatmoderator.emotes.filter.disabled'))); 
+                    $.say($.whisperPrefix(sender) + (emotesToggle ? $.lang.get('chatmoderator.emotes.filter.enabled') : $.lang.get('chatmoderator.emotes.filter.disabled')));
                     $.log.event('Emotes filter was turned ' + subAction + ' by ' + sender);
                     return;
                 }
@@ -1312,7 +1369,7 @@
             }
 
             /**
-             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / blacklist / spamtracker / fakepurge / all] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
+             * @commandpath moderation silenttimeout [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker / fakepurge / all] [true / false] - Enable or disable if the warning and timeout message will be said for that filter
              */
             if (action.equalsIgnoreCase('silenttimeout')) {
                 if (!subAction) {
@@ -1417,27 +1474,27 @@
                         return;
                     }
 
+                    var toggle = args[2].equalsIgnoreCase('true');
+
                     if (args[2].equalsIgnoreCase('true') || args[2].equalsIgnoreCase('false')) {
-                        silentTimeout.Links = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Caps = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Symbols = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Spam = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Colors = args[2].equalsIgnoreCase('true');
-                        silentTimeout.LongMsg = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Blacklist = args[2].equalsIgnoreCase('true');
-                        silentTimeout.Emotes = args[2].equalsIgnoreCase('true');
-                        silentTimeout.SpamTracker = args[2].equalsIgnoreCase('true');
+                        silentTimeout.Links = toggle;
+                        silentTimeout.Caps = toggle;
+                        silentTimeout.Symbols = toggle;
+                        silentTimeout.Spam = toggle;
+                        silentTimeout.Colors = toggle;
+                        silentTimeout.LongMsg = toggle;
+                        silentTimeout.Emotes = toggle;
+                        silentTimeout.SpamTracker = toggle;
                         $.inidb.set('chatModerator', 'silentTimeoutLinks', silentTimeout.Links);
                         $.inidb.set('chatModerator', 'silentTimeoutCaps', silentTimeout.Caps);
                         $.inidb.set('chatModerator', 'silentTimeoutSymbols', silentTimeout.Symbols);
                         $.inidb.set('chatModerator', 'silentTimeoutSpam', silentTimeout.Spam);
                         $.inidb.set('chatModerator', 'silentTimeoutEmotes', silentTimeout.Emotes);
-                        $.inidb.set('chatModerator', 'silentTimeoutBlacklist', silentTimeout.Blacklist);
                         $.inidb.set('chatModerator', 'silentTimeoutLongMsg', silentTimeout.LongMsg);
                         $.inidb.set('chatModerator', 'silentTimeoutColors', silentTimeout.Colors);
                         $.inidb.set('chatModerator', 'silentTimeoutSpamTacker', silentTimeout.SpamTracker);
                         $.inidb.set('chatModerator', 'silentTimeoutFakePurge', silentTimeout.FakePurge);
-                        $.say($.whisperPrefix(sender) + (args[0] ? $.lang.get('chatmoderator.silenttimeout.true') : $.lang.get('chatmoderator.silenttimeout.false')));
+                        $.say($.whisperPrefix(sender) + (toggle ? $.lang.get('chatmoderator.silenttimeout.true') : $.lang.get('chatmoderator.silenttimeout.false')));
                     }
                 }
             }
@@ -1450,7 +1507,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.usage'));
                     return;
                 }
-                
+
                 if (subAction.equalsIgnoreCase('links')) {
                     if (!args[2]) {
                         $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningtime.links.usage', warningTime.Links));
@@ -1525,7 +1582,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.usage'));
                     return;
                 }
-                
+
                 if (subAction.equalsIgnoreCase('links')) {
                     if (!args[2]) {
                         $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.timeouttime.links.usage', timeoutTime.Links));
@@ -1591,7 +1648,7 @@
                     $.log.event(sender + ' changed timeout time for longmsg to: ' + timeoutTime.LongMsg);
                 }
             }
-            
+
             /**
              * @commandpath moderation linksmessage [message] - Sets the link warning message
              */
@@ -1698,7 +1755,7 @@
             }
 
             /**
-             * @commandpath moderation blacklistmessage [message] - Sets the blacklist warning message
+             * @commandpath moderation blacklistmessage [message] - Sets the blacklist warning message that will be default for blacklists you add from chat. This can be custom on the panel.
              */
             if (action.equalsIgnoreCase('blacklistmessage')) {
                 if (!subAction) {
@@ -1796,7 +1853,7 @@
                     return;
                 }
                 symbolsGroupLimit = parseInt(subAction);
-                $.inidb.set('chatModerator', 'symbolsLimitPercent', symbolsGroupLimit);
+                $.inidb.set('chatModerator', 'symbolsGroupLimit', symbolsGroupLimit);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.group.limit.set', symbolsGroupLimit));
                 $.log.event(sender + ' changed the symbols group limit to ' + symbolsGroupLimit);
                 return;
@@ -1810,6 +1867,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.trigger.length.usage'));
                     return;
                 }
+
                 symbolsTriggerLength = parseInt(subAction);
                 $.inidb.set('chatModerator', 'symbolsTriggerLength', symbolsTriggerLength);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.symbols.trigger.length.set', symbolsTriggerLength));
@@ -1846,10 +1904,10 @@
             }
 
             /**
-             * @commandpath moderation messagecooldown [seconds] - Sets a cooldown in seconds on the timeout messages (minimum is 10 seconds)
+             * @commandpath moderation messagecooldown [seconds] - Sets a cooldown in seconds on the timeout messages (minimum is 30 seconds)
              */
             if (action.equalsIgnoreCase('messagecooldown')) {
-                if (!subAction) {
+                if (!subAction || parseInt(subAction) < 30) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.msgcooldown.usage'));
                     return;
                 }
@@ -1870,19 +1928,6 @@
                 $.inidb.set('chatModerator', 'warningResetTime', warningResetTime);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.warningresettime.set', warningResetTime));
             }
-
-            /**
-             * @commandpath moderation blacklisttimeouttime [seconds] - Sets the timeout time for the blacklist
-             */
-            if (action.equalsIgnoreCase('blacklisttimeouttime')) {
-                if (!subAction) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklisttimeouttime.usage', blacklistTimeoutTime));
-                    return;
-                }
-                blacklistTimeoutTime = parseInt(subAction);
-                $.inidb.set('chatModerator', 'blacklistTimeoutTime', blacklistTimeoutTime);
-                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklisttimeouttime.set', blacklistTimeoutTime));
-            }
         }
     });
 
@@ -1890,16 +1935,14 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./core/chatmoderator.js')) {
-            loadWhiteList();
-            loadBlackList();
+        loadWhiteList();
+        loadBlackList();
 
-            $.registerChatCommand('./core/chatmoderator.js', 'permit', 2);
-            $.registerChatCommand('./core/chatmoderator.js', 'moderation', 1);
-            $.registerChatCommand('./core/chatmoderator.js', 'mod', 1);
-            $.registerChatCommand('./core/chatmoderator.js', 'blacklist', 1);
-            $.registerChatCommand('./core/chatmoderator.js', 'whitelist', 1);
-        }
+        $.registerChatCommand('./core/chatModerator.js', 'permit', 2);
+        $.registerChatCommand('./core/chatModerator.js', 'moderation', 1);
+        $.registerChatCommand('./core/chatModerator.js', 'mod', 1);
+        $.registerChatCommand('./core/chatModerator.js', 'blacklist', 1);
+        $.registerChatCommand('./core/chatModerator.js', 'whitelist', 1);
     });
 
     /** Export functions to API */

@@ -4,8 +4,7 @@
  */
 
 (function() {
-    var alreadyStarted = false,
-        interval,
+    var interval,
         follower = false;
 
     /*
@@ -45,6 +44,15 @@
      */
     function updateFollowerCount() {
         $.inidb.set('panelstats', 'followerCount', $.getFollows($.channelName));
+    }
+
+    /*
+     * @function updateCommunities
+     */
+    function updateCommunities() {
+        if ($.twitchCacheReady.equals('true')) {
+            $.inidb.set('streamInfo', 'communities', $.twitchcache.getCommunities().join(', '));
+        }
     }
 
     /*
@@ -93,7 +101,7 @@
         }
         diffTime = Math.floor((currentTime - playTimeStart) / 1000);
         hrs = (diffTime / 3600 < 10 ? "0" : "") + Math.floor(diffTime / 3600),
-        min = ((diffTime % 3600) / 60 < 10 ? "0" : "") + Math.floor((diffTime % 3600) / 60);
+            min = ((diffTime % 3600) / 60 < 10 ? "0" : "") + Math.floor((diffTime % 3600) / 60);
         $.inidb.set('panelstats', 'playTime', hrs + ":" + min);
     }
 
@@ -122,8 +130,9 @@
         getGamePanel();
         updateChatterCount();
         updateFollowerCount();
-        if ($.twitchCacheReady.equals('true')) { 
-            $.setIniDbNumber('panelstats', 'viewCount', $.twitchcache.getViews()); 
+        updateCommunities();
+        if ($.twitchCacheReady.equals('true')) {
+            $.setIniDbNumber('panelstats', 'viewCount', $.twitchcache.getViews());
         }
     }
 
@@ -151,18 +160,11 @@
      * set the table as such.
      */
     $.bind('initReady', function() {
-        if (!alreadyStarted) {
-            if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-                alreadyStarted = true;
-                $.inidb.set('panelstats', 'enabled', 'true');
-                $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
-                $.setIniDbBoolean('panelstats', 'streamOnline', $.isOnline($.channelName));
-                interval = setInterval(function() {  updateAll(); }, 3e4);
-            } else {
-                $.inidb.set('panelstats', 'enabled', 'false');
-            }
-        }
-        setTimeout(function() { updateAll(); }, 1000);
+        $.inidb.set('panelstats', 'enabled', 'true');
+        $.getSetIniDbNumber('panelstats', 'timeoutCount', 1);
+        interval = setInterval(function() {
+            updateAll();
+        }, 3e4, 'scripts::handlers::panelHandler.js');
     });
 
     /*

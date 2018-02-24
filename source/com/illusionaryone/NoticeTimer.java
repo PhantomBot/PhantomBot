@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,17 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.DataStore;
+import com.gmt2001.datastore.DataStore;
 import com.gmt2001.UncaughtExceptionHandler;
+import net.engio.mbassy.listener.Handler;
 
-import me.mast3rplan.phantombot.PhantomBot;
-import me.mast3rplan.phantombot.cache.TwitchCache;
-import me.mast3rplan.phantombot.event.command.CommandEvent;
-import me.mast3rplan.phantombot.script.ScriptEventManager;
-import me.mast3rplan.phantombot.twitchwsirc.Session;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.cache.TwitchCache;
+import tv.phantombot.event.Listener;
+import tv.phantombot.event.command.CommandEvent;
+import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
+import tv.phantombot.script.ScriptEventManager;
+import tv.phantombot.twitchwsirc.chat.Session;
 
 import com.google.common.collect.Maps;
 
@@ -36,12 +39,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /*
- * Provides a timer system for managing notices.  Reads data directly from the 
+ * Provides a timer system for managing notices.  Reads data directly from the
  * DB to determine when to run timers.
  *
  * @author illusionaryone
  */
-public class NoticeTimer implements Runnable {
+public class NoticeTimer implements Runnable, Listener {
 
     private static final Map<String, NoticeTimer> instances = Maps.newHashMap();
     private Thread noticeThread;
@@ -55,6 +58,7 @@ public class NoticeTimer implements Runnable {
     private long lastNoticeTime = -1L;
     private int lastMinuteRan = -1;
     private int lastNoticeID = -1;
+    private int totalChatLines = 0;
 
     /*
      * The instance creation for a NoticeTimer object.
@@ -115,7 +119,7 @@ public class NoticeTimer implements Runnable {
         }
 
         /*
-         * Now, sync to the top of the minute.  Allow for a little bit of drift in case the bot is busy or we 
+         * Now, sync to the top of the minute.  Allow for a little bit of drift in case the bot is busy or we
          * are already near the top of the minute.
          */
         boolean sync = false;
@@ -152,6 +156,14 @@ public class NoticeTimer implements Runnable {
     }
 
     /*
+     * Method that adds chat lines.
+     */
+    @Handler
+    private void ircChannelMessageEvent(IrcChannelMessageEvent event) {
+        totalChatLines++;
+    }
+
+    /*
      * Determines which timer process to utilize.
      *
      * @param    int    currentMinute - Passed to processScheduledTimers()
@@ -160,12 +172,24 @@ public class NoticeTimer implements Runnable {
         TwitchCache twitchCache = TwitchCache.instance(this.channel);
         DataStore dataStore = PhantomBot.instance().getDataStore();
 
+        /* Notices are disabled. */
+        String noticeToggle = dataStore.GetString("noticeSettings", "", "noticetoggle");
+        if (noticeToggle != null) {
+            if (noticeToggle.equals("false")) {
+                return;
+            }
+        } else {
+            return;
+        }
+
         /* If offline and the offline toggle is true, do not process the timers. */
         String offlineToggle = dataStore.GetString("noticeSettings", "", "noticeOfflineToggle");
         if (offlineToggle != null) {
             if (offlineToggle.equals("true") && !twitchCache.isStreamOnline()) {
                 return;
             }
+        } else {
+            return;
         }
 
         /* Determine which type of notice timer is being used and call the proper function to handle. */
@@ -173,19 +197,19 @@ public class NoticeTimer implements Runnable {
         if (timerScheduled == null) {
             processOrderedTimers();
             return;
-        } 
+        }
         if (timerScheduled.length() == 0 || timerScheduled.toLowerCase().equals("false")) {
             processOrderedTimers();
             return;
         }
 
-        /* Reset lastNoticeTime to -1 in case the user switches between the different modes. Note that 
+        /* Reset lastNoticeTime to -1 in case the user switches between the different modes. Note that
          * lastNoticeTime is only used by processOrderedTimers().
          */
         lastNoticeTime = -1L;
         processScheduledTimers(currentMinute);
     }
-  
+
 
     /*
      * Performs the main procesing of ordered timers.
@@ -213,28 +237,29 @@ public class NoticeTimer implements Runnable {
         if (noticeTimeDiff < noticeTimeInterval) {
             return;
         }
-        
+
         /* Get the required messages and compare to how many lines have been posted into chat. */
         int noticeReqMessages = dataStore.GetInteger("noticeSettings", "", "reqmessages");
-        if (noticeReqMessages > this.session.chatLinesGet() && noticeReqMessages != 0) {
+        if (noticeReqMessages > totalChatLines && noticeReqMessages != 0) {
             return;
         }
 
         /* As the appropriate amount of time has passed, reset the chat line counter. */
-        this.session.chatLinesReset();
+        totalChatLines = 0;
 
         /* Find the next notice to process. */
         lastNoticeID++;
 
         /* Check to see if any notices even exist. */
         String message0 = dataStore.GetString("notices", "notice_0", "message");
-        if (message0 == null && lastNoticeID == 0) {
+        if (message0 == null) {
+            lastNoticeID = -1;
             return;
         }
         if (message0.length() == 0 && lastNoticeID == 0) {
             return;
         }
-      
+
         /*
          * Get the notice.  If it is null or empty, assume we are at the end of the list and reset to 0.
          */
@@ -247,7 +272,7 @@ public class NoticeTimer implements Runnable {
             lastNoticeID = 0;
             message = message0;
         }
-        
+
         /* See if the message is really a command and handle accordingly. */
         if (message.startsWith("command:")) {
             String arguments = "";
@@ -258,7 +283,7 @@ public class NoticeTimer implements Runnable {
                 command = commandString.substring(0, commandString.indexOf(" "));
                 arguments = commandString.substring(commandString.indexOf(" ") + 1);
             }
-            this.scriptEventManager.runDirect(new CommandEvent(botname, command, arguments));
+            this.scriptEventManager.onEvent(new CommandEvent(botname, command, arguments));
         } else {
             this.session.say(message);
         }
@@ -279,7 +304,7 @@ public class NoticeTimer implements Runnable {
 
         /* Reset chat lines every 5 minutes. */
         if (currentMinute % 5 == 0) {
-            this.session.chatLinesReset();
+            totalChatLines = 0;
         }
 
         String[] sections = dataStore.GetCategoryList("notices");
@@ -311,14 +336,14 @@ public class NoticeTimer implements Runnable {
             if (!foundMinuteMatch) {
                 continue;
             }
-            
+
             /* Pull chatlines.  0 means ignore lines in chat. */
             String chatlines = dataStore.GetString("notices", section, "chatlines");
             if (chatlines == null) {
                 continue;
             }
             try {
-                if (Integer.parseInt(chatlines) > this.session.chatLinesGet() && Integer.parseInt(chatlines) != 0) {
+                if (Integer.parseInt(chatlines) > totalChatLines && Integer.parseInt(chatlines) != 0) {
                     continue;
                 }
             } catch (NumberFormatException ex) {
@@ -334,7 +359,7 @@ public class NoticeTimer implements Runnable {
                     }
                 }
             }
-    
+
             /* Pull the message (or command). */
             String message = dataStore.GetString("notices", section, "message");
             if (message == null) {
@@ -354,7 +379,7 @@ public class NoticeTimer implements Runnable {
                     command = commandString.substring(0, commandString.indexOf(" "));
                     arguments = commandString.substring(commandString.indexOf(" ") + 1);
                 }
-                this.scriptEventManager.runDirect(new CommandEvent(botname, command, arguments));
+                this.scriptEventManager.onEvent(new CommandEvent(botname, command, arguments));
             } else {
                 this.session.say(message);
             }

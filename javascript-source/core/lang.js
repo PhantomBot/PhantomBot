@@ -72,21 +72,21 @@
         return string;
     }
 
-     /**
-      * @function paramCount
-      * @export $.lang
-      * @param {string} key
-      * @returns {Number}
-      */
-     function paramCount(key) {
+    /**
+     * @function paramCount
+     * @export $.lang
+     * @param {string} key
+     * @returns {Number}
+     */
+    function paramCount(key) {
         var string = data[key.toLowerCase()],
             i,
             ctr = 0;
- 
+
         if (!string) {
             return 0;
         }
- 
+
         for (i = 1; i < 99; i++) {
             if (string.indexOf("$" + i) >= 0) {
                 ctr++;
@@ -121,11 +121,6 @@
          * @commandpath lang [language name] - Get or optionally set the current language (use folder name from "./lang" directory);
          */
         if (command.equalsIgnoreCase('lang')) {
-            if (!$.isAdmin(sender)) {
-                $.say($.whisperPrefix(sender) + $.adminMsg);
-                return;
-            }
-
             if (!action) {
                 $.say($.whisperPrefix(sender) + get('lang.curlang', curLang));
             } else {
@@ -168,11 +163,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./core/lang.js')) {
-            $.registerChatCommand('./core/lang.js', 'lang', 1);
-            $.registerChatCommand('./core/lang.js', 'mute', 1);
-            $.registerChatCommand('./core/lang.js', 'toggleme', 1);
-        }
+        $.registerChatCommand('./core/lang.js', 'lang', 1);
+        $.registerChatCommand('./core/lang.js', 'mute', 1);
+        $.registerChatCommand('./core/lang.js', 'toggleme', 1);
     });
 
     /** Export functions to API */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -28,8 +28,8 @@
     var sortType = 'alpha_asc',
         priceComMods = false,
         modeIcon = [];
-        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
 
     /*
      * onMessage
@@ -54,10 +54,10 @@
                 for (idx in msgObject['results']) {
                     var key = "",
                         value = "";
-    
+
                     key = msgObject['results'][idx]['key'];
                     value = msgObject['results'][idx]['value'];
-    
+
                     if (panelMatch(key, 'onlineGain')) {
                         $("#setPointGainInput_setgain").val(value);
                     } else if (panelMatch(key, 'offlineGain')) {
@@ -88,7 +88,7 @@
                 $("#userPtsTableTitle").html("User Points Table (Refreshing <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>)");
 
                 pointsTableData.sort(sortPointsTable_alpha_asc);
-                
+
                 html = "<table class='table' data-paging='true' data-paging-size='8'" +
                        "       data-filtering='true' data-filter-delay='200'" +
                        "       data-sorting='true'" +
@@ -145,10 +145,10 @@
                             "        </div>" +
                             "    <td style=\"width: 8em\">" + groupName + "</td>" +
                             "    <td><form onkeypress=\"return event.keyCode != 13\">" +
-                            "        <input type=\"number\" min=\"-1\" id=\"inlineGroupPointsEdit_" + groupName + "\"" +
+                            "        <input type=\"number\" min=\"-1\" class=\"input-control\" id=\"inlineGroupPointsEdit_" + groupName + "\"" +
                             "               value=\"" + groupPoints + "\" style=\"width: 5em\"/>" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
-                            "               onclick=\"$.updateGroupPoints('" + groupName + "', true, false)\"><i class=\"fa fa-pencil\" />" +
+                            "               onclick=\"$.updateGroupPoints('" + groupName + "', true, false)\"><i class=\"fa fa-hdd-o\" />" +
                             "        </button>" +
                             "    </form></td>";
 
@@ -185,10 +185,10 @@
                             "        </div>" +
                             "    <td style=\"width: 8em\">" + groupName + "</td>" +
                             "    <td><form onkeypress=\"return event.keyCode != 13\">" +
-                            "        <input type=\"number\" min=\"-1\" id=\"inlineGroupPointsOfflineEdit_" + groupName + "\"" +
+                            "        <input type=\"number\" min=\"-1\" class=\"input-control\" id=\"inlineGroupPointsOfflineEdit_" + groupName + "\"" +
                             "               value=\"" + groupPoints + "\" style=\"width: 5em\"/>" +
                             "        <button type=\"button\" class=\"btn btn-default btn-xs\"" +
-                            "               onclick=\"$.updateGroupPoints('" + groupName + "', false, false)\"><i class=\"fa fa-pencil\" />" +
+                            "               onclick=\"$.updateGroupPoints('" + groupName + "', false, false)\"><i class=\"fa fa-hdd-o\" />" +
                             "        </button>" +
                             "    </form></td>";
 
@@ -313,6 +313,12 @@
             return;
         }
 
+        if (value.indexOf('.') !== -1 || (parseInt(value) < 1 && parseInt(value) !== 0)) {
+            $("#setPointGainInput_" + action).val('Only natural numbers are allowed.');
+            setTimeout(function() { $("#setPointGainInput_" + action).val(''); }, TIMEOUT_WAIT_TIME * 3);
+            return;
+        }
+
         if (action == "setgain") {
             sendDBUpdate("points_settings", "pointSettings", "onlineGain", value);
         }
@@ -357,6 +363,8 @@
     function modifyUserPoints(action) {
         var username = $("#adjustUserPointsNameInput").val(),
             points = $("#adjustUserPointsInput").val();
+        
+        username = username.replace(/\s+/g, '');
 
         if (action == "take") {
             if (username.length > 0 && points.length > 0) {
@@ -442,13 +450,12 @@
      * @function toggleModPriceCom
      */
     function toggleModPriceCom() {
-        $("#priceComMods").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#priceComMods").html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         if (priceComMods == "true") {
             sendDBUpdate("points_modprice", "settings", "pricecomMods", "false");
         } else {
             sendDBUpdate("points_modprice", "settings", "pricecomMods", "true");
         }
-        sendCommand('reloadinit');
         setTimeout(function() { doLiteQuery(); }, TIMEOUT_WAIT_TIME);
     }
 

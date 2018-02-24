@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="PhantomBot" basedir="." default="dist">
 
-    <!-- To specify a Nightly Build run as ant -Dnightly=nightly_build -->
+    <!-- To specify a Nightly Build run as ant -Dbuildtype=nightly_build -->
+    <!-- To specify a Pre-Release Build run as ant -Dbuildtype=prerelease_build -->
 
     <property environment="env" />
-    <property name="version" value="2.3.5.3" />
+    <property name="version" value="2.4.0.2" />
     <property name="webpanel.version" value="1.1" />
     <property name="src" location="source" />
     <property name="reference" location="libraries" />
@@ -31,13 +32,13 @@
         </fileset>
     </path>
 
-    <condition property="nightly_build" value="${nightly}" else="not_nightly">
+    <condition property="build_type" value="${buildtype}" else="stable">
         <and>
-            <isset property="nightly" />
-            <length string="${nightly}" trim="yes" length="0" when="greater" />
+            <isset property="buildtype" />
+            <length string="${buildtype}" trim="yes" length="0" when="greater" />
         </and>
     </condition>
-    
+
     <available file=".git" type="dir" property="git.present"/>
 
     <target name="init">
@@ -72,20 +73,24 @@
     </target>
 
     <target depends="init,git.revision" name="pre.compile">
-        <echo>${ant.project.name} Version ${version} (${repository.version}) (${nightly_build})</echo>
+        <echo>${ant.project.name} Version ${version} (${repository.version}) (${build_type})</echo>
         <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
         <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            file="source/tv/phantombot/RepoVersion.java"
             match="repoVersion = &quot;(.*)&quot;;"
             replace="repoVersion = &quot;${repository.version}&quot;;" />
         <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            match="nightlyBuild = &quot;(.*)&quot;;"
-            replace="nightlyBuild = &quot;${nightly_build}&quot;;" />
+            file="source/tv/phantombot/RepoVersion.java"
+            match="buildType = &quot;(.*)&quot;;"
+            replace="buildType = &quot;${build_type}&quot;;" />
         <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            file="source/tv/phantombot/RepoVersion.java"
             match="phantomBotVersion = &quot;(.*)&quot;;"
             replace="phantomBotVersion = &quot;${version}&quot;;" />
+            <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="panelVersion = &quot;(.*)&quot;;"
+            replace="panelVersion = &quot;${webpanel.version}&quot;;" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -96,13 +101,13 @@
             <classpath refid="reference.class.path" />
         </javac>
     </target>
-    
+
     <target depends="pre.compile" name="clean.build.test">
         <delete dir="${build}" />
         <mkdir dir="${build}" />
         <mkdir dir="${classes}" />
     </target>
-    
+
     <target depends="clean.build.test" name="compile.src.test">
         <javac target="1.8" source="1.8" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:all" />
@@ -110,20 +115,24 @@
             <classpath refid="reference.class.path" />
         </javac>
     </target>
-    
+
     <target name="post.compile">
         <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            file="source/tv/phantombot/RepoVersion.java"
             match="repoVersion = &quot;(.*)&quot;;"
             replace="repoVersion = &quot;@repository.version@&quot;;" />
         <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
-            match="nightlyBuild = &quot;(.*)&quot;;"
-            replace="nightlyBuild = &quot;@nightly.build@&quot;;" />
+            file="source/tv/phantombot/RepoVersion.java"
+            match="buildType = &quot;(.*)&quot;;"
+            replace="buildType = &quot;@buildtype@&quot;;" />
         <replaceregexp
-            file="source/me/mast3rplan/phantombot/RepoVersion.java"
+            file="source/tv/phantombot/RepoVersion.java"
             match="phantomBotVersion = &quot;(.*)&quot;;"
             replace="phantomBotVersion = &quot;@phantombot.version@&quot;;" />
+            <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="panelVersion = &quot;(.*)&quot;;"
+            replace="panelVersion = &quot;@webpanel.version@&quot;;" />
     </target>
 
     <target depends="compile.src,post.compile,git.revision" name="jar">
@@ -139,10 +148,10 @@
                 <attribute name="Implementation-Revision" value="${git.revision}" />
                 <attribute name="Implementation-URL" value="https://phantombot.tv" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
-                <attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot" />
+                <attribute name="Main-Class" value="tv.phantombot.PhantomBot" />
             </manifest>
         </jar>
-            
+
         <mkdir dir="${lib.dir}" />
         <copy todir="${lib.dir}">
             <fileset dir="./libraries" />
@@ -166,16 +175,16 @@
     </target>
 
     <target depends="compile.src.test,post.compile" name="test"/>
-     
+
     <target name="run" depends="jar">
-        <java fork="true" classname="me.mast3rplan.phantombot.PhantomBot" dir="${build.dir}">
+        <java fork="true" classname="tv.phantombot.PhantomBot" dir="${build.dir}">
             <classpath>
                 <path refid="classpath" />
                 <path location="${build.dir}/${ant.project.name}.jar" />
             </classpath>
         </java>
     </target>
-     
+
     <target depends="jar" name="dist">
         <delete file="${dist}/${version.name}.zip" />
         <zip destfile="${dist}/${version.name}.zip" basedir="${dist}" update="false">
@@ -189,6 +198,7 @@
 
     <target name="distclean" depends="clean">
         <delete dir="${dist}" />
+        <delete dir="resources/scripts" />
     </target>
 
 </project>

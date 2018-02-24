@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,31 +20,19 @@ import com.gmt2001.Logger;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
-import me.mast3rplan.phantombot.PhantomBot;
+import tv.phantombot.PhantomBot;
 
 /**
  *
- * @author Gary Tekulsky
+ * @author gmt2001
  */
-public class err {
-
-    private static final err instance = new err();
-
-    public static err instance() {
-        return instance;
-    }
+public final class err {
 
     private err() {
     }
 
     public static void print(Object o) {
-        String stackInfo = "";
-        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
-        String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+        String stackInfo;
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
@@ -64,9 +52,7 @@ public class err {
     }
 
     public static void println(Object o) {
-        String stackInfo = "";
-        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
-        String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+        String stackInfo;
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
@@ -78,9 +64,7 @@ public class err {
     }
 
     public static void println(Object o, Boolean logOnly) {
-        String stackInfo = "";
-        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
-        String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+        String stackInfo;
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();

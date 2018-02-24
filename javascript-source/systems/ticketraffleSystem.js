@@ -61,7 +61,7 @@
 
         if (messageInterval != 0) {
             interval = setInterval(function() {
-                $.say(raffleMessage.replace('(entries)', String(totalEntries)));//can't use regex here. why? who knows.
+                $.say(raffleMessage.replace('(entries)', String(totalEntries))); //can't use regex here. why? who knows.
             }, messageInterval * 6e4);
         }
 
@@ -99,7 +99,7 @@
         var Winner = $.randElement(entries),
             isFollowing = $.user.isFollower(Winner.toLowerCase()),
             followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
-        
+
         if (!force) {
             $.say($.lang.get('ticketrafflesystem.winner', $.username.resolve(Winner), followMsg));
         } else {
@@ -129,7 +129,7 @@
                 t++;
                 if ((t + times) > maxEntries) {
                     if (msgToggle) {
-                        $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.litmi.hit', maxEntries));
+                        $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries));
                     }
                     return;
                 }
@@ -154,7 +154,9 @@
             }
         }
 
-        totalEntries++;
+        if (!$.inidb.exists('entered', user.toLowerCase())) {
+            totalEntries++;
+        }
         totalTickets += times;
         $.inidb.decr('points', user, (times * cost));
         incr(user.toLowerCase(), times);
@@ -283,11 +285,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/ticketRaffleSystem.js')) {
-            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'traffle', 2);
-            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'tickets', 7);
-            $.registerChatCommand('./systems/ticketRaffleSystem.js', 'ticket', 7);
-        }
+        $.registerChatCommand('./systems/ticketraffleSystem.js', 'traffle', 2);
+        $.registerChatCommand('./systems/ticketraffleSystem.js', 'tickets', 7);
+        $.registerChatCommand('./systems/ticketraffleSystem.js', 'ticket', 7);
     });
 
     $.reloadTRaffle = reloadTRaffle;

@@ -91,7 +91,7 @@
         if (donationGroup) {
             $.inidb.incr('donations', donationUsername.toLowerCase(), parseInt(donationAmount.toFixed(2)));
             if ($.inidb.exists('donations', donationUsername.toLowerCase()) && $.inidb.get('donations', donationUsername.toLowerCase()) >= donationGroupMin) {
-                if ($.getUserGroupId(donationUsername.toLowerCase()) > 3) { 
+                if ($.getUserGroupId(donationUsername.toLowerCase()) > 3) {
                     $.setUserGroupById(donationUsername.toLowerCase(), '4');
                 }
             }
@@ -220,9 +220,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/donationHandler.js')) {
-            $.registerChatCommand('./handlers/donationHandler.js', 'streamlabs', 1);
-        }
+        $.registerChatCommand('./handlers/donationHandler.js', 'streamlabs', 1);
     });
 
     $.donationpanelupdate = donationpanelupdate;

@@ -34,16 +34,18 @@
     };
 
     function kill(sender, user) {
+        var tries = 0;
         do {
+            tries++;
             rand = $.randRange(1, otherMessageCount);
-        } while (rand == lastRandom);
+        } while (rand == lastRandom && tries < 5);
         lang = $.lang.get('killcommand.other.' + rand, $.resolveRank(sender), $.resolveRank(user), jailTimeout, $.botName);
         if (lang.startsWith('(jail)')) {
             lang = $.replace(lang, '(jail)', '');
             $.say(lang);
             if (!$.isMod(sender) && jailTimeout > 0) {
-                setTimeout(function () {
-                    $.say('.timeout ' + sender + ' ' + jailTimeout);
+                setTimeout(function() {
+                    $.session.say('.timeout ' + sender + ' ' + jailTimeout);
                 }, 1500);
             }
         } else {
@@ -90,12 +92,11 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./games/killCommand.js')) {
-            if (selfMessageCount == 0 && otherMessageCount == 0) {
-               loadResponses();
-            }
-            $.registerChatCommand('./games/killCommand.js', 'kill', 7);
-            $.registerChatCommand('./games/killCommand.js', 'jailtimeouttime', 1);
+        if (selfMessageCount == 0 && otherMessageCount == 0) {
+            loadResponses();
         }
+
+        $.registerChatCommand('./games/killCommand.js', 'kill', 7);
+        $.registerChatCommand('./games/killCommand.js', 'jailtimeouttime', 1);
     });
 })();

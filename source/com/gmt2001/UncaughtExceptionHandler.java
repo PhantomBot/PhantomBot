@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  */
 package com.gmt2001;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,6 +27,8 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import tv.phantombot.PhantomBot;
 
 /**
  *
@@ -48,15 +51,23 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
         com.gmt2001.Console.err.printStackTrace(e);
 
         try {
-            try (FileOutputStream fos = new FileOutputStream("stacktrace.txt", true)) {
+            if (!new File ("./logs/stacktraces").exists()) {
+                new File ("./logs/stacktraces/").mkdirs();
+            }
+
+            SimpleDateFormat datefmt = new SimpleDateFormat("dd-MM-yyyy");
+            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.timeZone));
+            String timestamp = datefmt.format(new Date());
+
+            try (FileOutputStream fos = new FileOutputStream("./logs/stacktraces/" + timestamp + ".txt", true)) {
                 PrintStream ps = new PrintStream(fos);
 
-                SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-                datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+                datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
+                datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.timeZone));
 
-                String timestamp = datefmt.format(new Date());
+                timestamp = datefmt.format(new Date());
 
-                ps.println(timestamp + "Z (" + t.toString() + ") " + trace.toString());
+                ps.println("[" + timestamp + "] " + trace.toString());
                 ps.println();
             }
         } catch (FileNotFoundException ex) {

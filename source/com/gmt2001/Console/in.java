@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,23 +19,15 @@ package com.gmt2001.Console;
 import com.gmt2001.Logger;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-import me.mast3rplan.phantombot.PhantomBot;
+import tv.phantombot.PhantomBot;
 
 /**
  *
- * @author Gary Tekulsky
+ * @author gmt2001
  */
-public class in {
+public final class in {
 
-    private static final in instance = new in();
     private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-    public static in instance() {
-        return instance;
-    }
 
     private in() {
     }

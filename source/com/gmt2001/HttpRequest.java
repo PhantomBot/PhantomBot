@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.util.Map.Entry;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -57,9 +56,9 @@ public class HttpRequest {
 
             HttpURLConnection h = (HttpURLConnection) u.openConnection();
 
-            for (Entry<String, String> e : headers.entrySet()) {
+            headers.entrySet().stream().forEach((e) -> {
                 h.addRequestProperty(e.getKey(), e.getValue());
-            }
+            });
 
             h.setRequestMethod(type.name());
             h.setUseCaches(false);
@@ -73,10 +72,10 @@ public class HttpRequest {
             h.connect();
 
             if (!post.isEmpty()) {
-                BufferedOutputStream stream = new BufferedOutputStream(h.getOutputStream());
-                stream.write(post.getBytes());
-                stream.flush();
-                stream.close();
+                try (BufferedOutputStream stream = new BufferedOutputStream(h.getOutputStream())) {
+                    stream.write(post.getBytes());
+                    stream.flush();
+                }
             }
 
             if (h.getResponseCode() < 400) {

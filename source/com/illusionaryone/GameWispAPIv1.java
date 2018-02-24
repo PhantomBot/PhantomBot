@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import javax.net.ssl.HttpsURLConnection;
 
-import me.mast3rplan.phantombot.PhantomBot;
+import tv.phantombot.PhantomBot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -209,7 +209,7 @@ public class GameWispAPIv1 {
      */
     public String getUserSubInfoString(String username) {
         JSONObject jsonObject = getUserSubInfoJSON(username);
-        return jsonObject.toString(); 
+        return jsonObject.toString();
     }
 
     /*
@@ -218,11 +218,11 @@ public class GameWispAPIv1 {
      */
     public String[] refreshToken() {
         JSONObject jsonObject = readJsonFromPOSTUrl(sAPIURL + "/pub/v1/oauth/token" +
-                                                             "?grant_type=refresh_token" +
-                                                             "&client_id=" + devKey +
-                                                             "&client_secret=" + devSec +
-                                                             "&redirect_uri=" + devURI +
-                                                             "&refresh_token=" + sRefreshToken);
+                                "?grant_type=refresh_token" +
+                                "&client_id=" + devKey +
+                                "&client_secret=" + devSec +
+                                "&redirect_uri=" + devURI +
+                                "&refresh_token=" + sRefreshToken);
         if (jsonObject.has("access_token") && jsonObject.has("refresh_token")) {
             String newAccessToken = jsonObject.getString("access_token");
             String newRefreshToken = jsonObject.getString("refresh_token");

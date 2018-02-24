@@ -17,6 +17,11 @@
      */
     function readFile(path) {
         var lines = [];
+
+        if (!fileExists(path)) {
+            return lines;
+        }
+
         try {
             var fis = new JFileInputStream(path),
                 scan = new java.util.Scanner(fis);
@@ -89,7 +94,7 @@
             date = dateFormat.format(new java.util.Date());
 
         for (var key in fileHandles) {
-            if (!fileHandles[key].startDate.equals(date)) { 
+            if (!fileHandles[key].startDate.equals(date)) {
                 fileHandles[key].fos.close();
                 delete fileHandles[key];
             }
@@ -117,13 +122,13 @@
         } else {
             fos = new JFileOutputStream(path, append);
             ps = new java.io.PrintStream(fos);
-            fileHandles[path] = { 
+            fileHandles[path] = {
                 fos: fos,
                 ps: ps,
                 startDate: date
             };
         }
-    
+
         try {
             ps.println(line);
             fos.flush();

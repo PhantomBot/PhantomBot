@@ -1,12 +1,12 @@
 $.lang.register('bettingsystem.open.usage', 'Usage: !bet open ["title"] ["option1, option2, etc."] [minimum bet] [maximum bet] [close timer mins] - The quotes are needed for the title and options.');
-$.lang.register('bettingsystem.open.error', 'You must chose a winning option on the previous bet before you can open a new one. !bet close [option]');
+$.lang.register('bettingsystem.open.error', 'You must chose a winning option on the previous bet before you can open a new one. Use !bet close [option]');
 $.lang.register('bettingsystem.open.error.opened', 'A bet is already opened.');
 $.lang.register('bettingsystem.open.success', 'A bet is now opened! "$1". Bet options: "$2". Bet with: !bet [amount] [option]');
-$.lang.register('bettingsystem.close.error.usage', 'The bet is now closed! Waiting on winning result. !bet close [winning option]');
+$.lang.register('bettingsystem.close.error.usage', 'The bet is now closed! Waiting on winning result. Use !bet close [winning option]');
 $.lang.register('bettingsystem.close.usage', 'Usage: !bet close [winning option]');
-$.lang.register('bettingsystem.close.success', 'Bet is now closed! Calculating results and giving points to the winners!');
+$.lang.register('bettingsystem.close.success', 'Bet is now closed! Winning option is $1! Calculating results and giving points to the winners!');
 $.lang.register('bettingsystem.close.semi.success', 'The bet is now closed! Waiting on a winning option.');
-$.lang.register('bettingsystem.close.success.winners', 'A total of $1 players won this bet! And a total of $2 was won!');
+$.lang.register('bettingsystem.close.success.winners', 'A total of $1 players won this bet! There was a total of $2 was won for the people who placed a bet on $3!');
 $.lang.register('bettingsystem.save.format', 'Title: "$1", Options: "$2", Total Points: $3, Total Entries: $4, Points Won: $5.');
 $.lang.register('bettingsystem.results', 'Current bet: Title: "$1", Options: "$2", Total Points: $3, Total Entries: $4');
 $.lang.register('bettingsystem.global.usage', 'Usage: !bet [open / close / save / saveformat / lookup / results / togglemessages / gain]');

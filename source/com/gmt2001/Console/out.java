@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,22 +17,13 @@
 package com.gmt2001.Console;
 
 import com.gmt2001.Logger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-import me.mast3rplan.phantombot.PhantomBot;
+import tv.phantombot.PhantomBot;
 
 /**
  *
- * @author Gary Tekulsky
+ * @author gmt2001
  */
-public class out {
-
-    private static final out instance = new out();
-
-    public static out instance() {
-        return instance;
-    }
+public final class out {
 
     private out() {
     }
@@ -50,11 +41,6 @@ public class out {
     }
 
     public static void println(Object o) {
-        if (PhantomBot.enableDebugging) {
-            Logger.instance().log(Logger.LogType.Output, "[" + logTimestamp.log() + "] " + o.toString());
-            Logger.instance().log(Logger.LogType.Output, "");
-        }
-
         System.out.println("[" + logTimestamp.log() + "] " + o);
     }
 }

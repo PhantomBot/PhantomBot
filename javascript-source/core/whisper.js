@@ -1,7 +1,7 @@
 (function() {
     var whisperMode = $.getSetIniDbBoolean('settings', 'whisperMode', false),
-        ScriptEventManager = Packages.me.mast3rplan.phantombot.script.ScriptEventManager,
-        CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+        ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
+        CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
 
     /** 
      * @function hasKey
@@ -71,7 +71,7 @@
                 command = message;
             }
 
-            ScriptEventManager.instance().runDirect(new CommandEvent(sender, command, arguments));            
+            ScriptEventManager.instance().onEvent(new CommandEvent(sender, command, arguments));
             $.log.file('whispers', '' + sender + ': ' + message);
         }
     });

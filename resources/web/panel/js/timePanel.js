@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -31,8 +31,8 @@
         modTimePermToggle = "",
         commandName = "",
         modeIcon = [];
-        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
 
     /*
      * onMessage
@@ -53,7 +53,7 @@
             if (panelCheckQuery(msgObject, 'time_toplist')) {
                 $("#topListAmountTime").attr("placeholder", msgObject['results']['topListAmountTime']).blur();
             }
- 
+
             if (panelCheckQuery(msgObject, 'time_timezone')) {
                 if (msgObject['results']['timezone'] != undefined) {
                     timezone = msgObject['results']['timezone'];
@@ -97,7 +97,7 @@
 
                     key = msgObject['results'][idx]['key'];
                     value = msgObject['results'][idx]['value'];
-    
+
                     if (panelMatch(key, 'timePromoteHours')) {
                         $("#setTimePromotionInput").attr("placeholder", value).blur();
                     }
@@ -114,7 +114,7 @@
 
                 $("#userTimeTableTitle").html("User Time Table (Refreshing <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>)");
                 timeTableData.sort(sortTimeTable_alpha_asc);
-                
+
                 html  = "<table class='tableTime' data-paging='true' data-paging-size='8'" +
                         "       data-filtering='true' data-filter-delay='200'" +
                         "       data-sorting='true'" +
@@ -129,7 +129,7 @@
                     username = timeTableData[idx]['key'];
                     timeValue = timeTableData[idx]['value'];
                     hrsValue = (Math.floor(timeValue / 3600));
-                
+
                     html += "<tr onclick='$.copyUserTime(\""+username+"\", \""+timeValue+"\")' class=\"textList\">" +
                             "    <td style='width: 50%'>" + username + "</td>" +
                             "    <td style='width: 25%'>" + timeValue + "</td>" +
@@ -137,13 +137,11 @@
                             "</tr>";
                 }
                 html += "</tbody></table>";
-                
-                setTimeout(function() { 
-                    $('#userTimeTable').html(html);
-                    $('.tableTime').footable({
-                        'on': { 'postdraw.ft.table': function(e, ft) { $("#userTimeTableTitle").html("User Time Table"); } }
-                    });
-                }, TIMEOUT_WAIT_TIME);
+
+                $('#userTimeTable').html(html);
+                $('.tableTime').footable({
+                    'on': { 'postdraw.ft.table': function(e, ft) { $("#userTimeTableTitle").html("User Time Table"); } }
+                });
                 handleInputFocus();
             }
         }
@@ -195,7 +193,7 @@
      * @param {String} setting
      */
     function toggleTimeMode(divId, setting) {
-        $("#" + divId).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#" + divId).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         if (setting == "modTimePermToggle") {
             if (modTimePermToggle == "false") {
                 sendDBUpdate("time_toggles", "timeSettings", setting, "true");

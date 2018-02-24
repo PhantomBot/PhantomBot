@@ -4,7 +4,7 @@
  * Have the bot remember the most epic/derpy oneliners
  */
 (function() {
-    
+
     var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true),
         isDeleting = false;
 
@@ -15,7 +15,10 @@
      */
     function updateQuote(quoteid, quote) {
         // Specify String() for objects as they were being treated as an object rather than a String on stringify().
-        quote = String(quote).replace(/"/g, '\'\'');
+        quote[0] = String(quote[0]).replace(/"/g, '\'\'');
+        quote[1] = String(quote[1]).replace(/"/g, '\'\'');
+        quote[3] = String(quote[3]).replace(/"/g, '\'\'');
+
         $.inidb.set('quotes', quoteid, JSON.stringify([String(quote[0]), String(quote[1]), String(quote[2]), String(quote[3])]));
     }
 
@@ -50,7 +53,7 @@
         if (isDeleting) {
             return -1;
         }
-        
+
         if ($.inidb.exists('quotes', quoteId)) {
             isDeleting = true;
             $.inidb.del('quotes', quoteId);
@@ -105,7 +108,7 @@
             quoteStr;
 
         /**
-         * @commandpath editquote [id] [user|game|quote] [text]
+         * @commandpath editquote [id] [user|game|quote] [text] - Edit quotes.
          */
         if (command.equalsIgnoreCase("editquote")) {
             if (args.length < 3) {
@@ -136,7 +139,7 @@
 
             $.log.event(sender + ' edited quote #' + quote);
         }
-        
+
         /**
          * @commandpath quotemodetoggle - toggle between !addquote function modes
          */
@@ -229,9 +232,7 @@
 
             var newCount;
 
-            if ((newCount = deleteQuote(args[0])) >= 0) {
-            } else {
-            }
+            if ((newCount = deleteQuote(args[0])) >= 0) {} else {}
         }
 
         /**
@@ -295,16 +296,14 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/quoteSystem.js')) {
-            $.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'searchquote', 7);
-            $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', 1);
-            $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'delquotesilent', 1);
-            $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
-            $.registerChatCommand('./systems/quoteSystem.js', 'quote');
-            $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);
-        }
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'searchquote', 7);
+        $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', 1);
+        $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'delquotesilent', 1);
+        $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quote');
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);
     });
 })();

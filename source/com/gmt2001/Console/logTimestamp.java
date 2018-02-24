@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,18 @@
  */
 package com.gmt2001.Console;
 
-import com.gmt2001.Logger;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.TimeZone;
-import me.mast3rplan.phantombot.PhantomBot;
 
-public class logTimestamp {
+import tv.phantombot.PhantomBot;
+
+public final class logTimestamp {
+
+    private logTimestamp() {
+    }
+
     public static String log() {
         SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
         datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.timeZone));

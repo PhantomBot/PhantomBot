@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -77,7 +77,7 @@
             for (var idx in msgObject['results']) {
                 playlists.push(msgObject['results'][idx]['value']);
             }
-            $.playlists = playlists; 
+            $.playlists = playlists;
         }
 
         if (msgObject['audio_panel_hook'] !== undefined) {
@@ -118,11 +118,11 @@
                     $(document).ready(function() {
                         ion.sound({
                             sounds: sounds,
-                            path: "/panel/js/ion-sound/sounds/",
+                            path: "/config/audio-hooks/",
                             preload: true,
                             volume: 1.0,
                             ready_callback: ionSoundLoaded,
-                            ended_callback: clearIonSoundPlaying 
+                            ended_callback: clearIonSoundPlaying
                         });
                     });
                 }, 2000);
@@ -141,11 +141,11 @@
             } else {
                 ion.sound({
                     sounds: sounds,
-                    path: "/panel/js/ion-sound/sounds/",
+                    path: "/config/audio-hooks/",
                     preload: true,
                     volume: 1.0,
                     ready_callback: ionSoundLoaded,
-                    ended_callback: clearIonSoundPlaying 
+                    ended_callback: clearIonSoundPlaying
                 });
             }
             loadAudioPanel();
@@ -198,7 +198,7 @@
 
     /**
      * @function reloadAudioHooks
-     * Note that there is not a query performed here because the command sends back a 
+     * Note that there is not a query performed here because the command sends back a
      * doDBKeysQuery() call with the ID of audio_hook_reload.
      */
     function reloadAudioHooks() {
@@ -206,17 +206,17 @@
         sendCommand('reloadaudiopanelhooks');
     }
 
-    /** 
+    /**
      * @function deleteBSong
      * @param {String} song
      */
     function deleteBSong(song) {
-        $("#deleteBSong_" + song).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteBSong_" + song).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("audio_bsong_" + song, "ytpBlacklistedSong", song);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     };
 
-    /** 
+    /**
      * @function blacklistSong
      */
     function blacklistSong() {
@@ -228,17 +228,17 @@
         setTimeout(function() { $("#songBlacklist").val(''); }, TIMEOUT_WAIT_TIME);
     };
 
-    /** 
+    /**
      * @function deleteUser
      * @param {String} user
      */
     function deleteUser(user) {
-        $("#deleteBUser_" + user).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#deleteBUser_" + user).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendDBDelete("audio_user_" + user, "ytpBlacklist", user);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     };
 
-    /** 
+    /**
      * @function blacklistUser
      */
     function blacklistUser() {
@@ -386,14 +386,14 @@
      */
     function fillYouTubePlayerIframe() {
         $('#youTubePlayerIframe').html('<iframe id="youTubePlayer" frameborder="0" scrolling="auto" height="400" width="680"'+
-                                       '        src="' + getProtocol() + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer?start_paused">');
+                                       '        src="' + getProtocol() + url[0] + ':' + window.location.port + '/ytplayer?start_paused">');
     }
 
     /**
      * @function launchYouTubePlayer
      */
     function launchYouTubePlayer() {
-        window.open(getProtocol() + url[0] + ':' + (getPanelPort() + 1) + '/ytplayer', 'PhantomBot YouTube Player',
+        window.open(getProtocol() + url[0] + ':' + window.location.port + '/ytplayer', 'PhantomBot YouTube Player',
                     'menubar=no,resizeable=yes,scrollbars=yes,status=no,toolbar=no,height=700,width=900,location=no' );
     }
 
