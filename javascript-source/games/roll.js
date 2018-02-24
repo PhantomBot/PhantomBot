@@ -109,18 +109,10 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./games/roll.js')) {
-            $.registerChatCommand('./games/roll.js', 'roll');
-            $.registerChatSubcommand('roll', 'rewards', 1);
-        }
+        $.registerChatCommand('./games/roll.js', 'roll');
+        $.registerChatSubcommand('roll', 'rewards', 1);
     });
 
-    /**
-     * Warn the user if the points system is disabled and this is enabled.
-     */
-    if ($.bot.isModuleEnabled('./games/roll.js') && !$.bot.isModuleEnabled('./systems/pointSystem.js')) {
-        $.log.error("Disabled. ./systems/pointSystem.js is not enabled.");
-    }
 
     $.loadPrizes = loadPrizes;
 })();

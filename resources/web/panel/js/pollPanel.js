@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,7 @@
             minvotes = $('#pollMinVotesInput').val();
 
         if (timer.length === 0) {
-            timer = "60";
+            timer = "0";
         }
         if (minvotes.length === 0) {
             minvotes = "1";

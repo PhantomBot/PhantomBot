@@ -215,9 +215,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/tipeeeStreamHandler.js')) {
-            $.registerChatCommand('./handlers/tipeeeStreamHandler.js', 'tipeeestream', 1);
-        }
+        $.registerChatCommand('./handlers/tipeeeStreamHandler.js', 'tipeeestream', 1);
     });
 
     $.reloadTipeeeStream = reloadTipeeeStream;

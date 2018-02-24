@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -25,7 +25,10 @@
 
 (function() {
 
-    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />';
+    var spinIcon = '<i style="color: var(--main-color)" class="fa fa-spinner fa-spin" />',
+        keywords = [],
+        cooldowns = [],
+        currentKey = '';
 
     /**
      * @function onMessage
@@ -48,21 +51,19 @@
                     return;
                 }
 
-                html = '<table>';
-                for (idx in msgObject['results']) {
-                    keyword = msgObject['results'][idx]['key'];
-                    html += '<tr style="textList">' +
-                    '    <td style="width: 15%">' + (keyword.length > 15 ? keyword.substring(0, 15) + '..' : keyword) + '</td>' +
-                    '    <td style="vertical-align: middle">' +
-                    '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 88%;" type="text" id="inlineKeywordEdit_' + keyword.replace(/[^a-z1-9]/ig, '_') + '"' +
-                    '                   value="' + msgObject['results'][idx]['value'] + '" />' +
-                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" id="deleteKeyword_' + keyword.replace(/[^a-z1-9]/ig, '_') + '" onclick="$.deleteKeyword(\'' + keyword.replace(/\'/g, 'S__S__S').replace(/"/g, 'S___S___S').replace(/\s/g, 'S____S____S') + '\')"><i class="fa fa-trash" /> </button>' +
-                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" onclick="$.updateKeyword(\'' + keyword.replace(/\'/g, 'S__S__S').replace(/"/g, 'S___S___S').replace(/\s/g, 'S____S____S') + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '             </form>' +
-                    '        </form>' +
-                    '    </td>' +
-                    '</tr>';
+                html = '<table style="width: 100%"><tr><th>Keyword</th><th>Response</th><th style="float: right;"></td>';
+                for (idx in msgObject['results'].sort(sortKeywordsTable)) {
+                    var json = JSON.parse(msgObject['results'][idx]['value']),
+                        keyword = json.keyword;
+                        response = json.response;
+
+                    keywords[idx] = keyword;
+                    html += '<tr>' +
+                        '<td>' + (keyword.length > 15 ?  keyword.substring(0, 15) + '...' : keyword) + '</td>' +
+                        '<td>' + (response.length > 45 ?  response.substring(0, 45) + '...' : response) + '</td>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.editKeywordnew(\'' + keyword.replace(/\'/g, '__apos__').replace(/\\/g, '\\\\') + '\', \'' + response.replace(/\'/g, '__apos__').replace(/\\/g, '\\\\') + '\')"><i class="fa fa-edit" /> </button>' +
+                        '<button type="button" id="deleteKeyword_' + idx + '" class="btn btn-default btn-xs" onclick="$.deleteKeyword(\'' + idx + '\')"><i class="fa fa-trash" /> </button></td> ' +
+                        '</tr>';
                 }
                 html += '</table>';
                 $('#keywordsList').html(html);
@@ -70,57 +71,10 @@
             }
 
             if (panelCheckQuery(msgObject, 'keywords_cooldown')) {
-                if (msgObject['results'].length === 0) {
-                    $('#keywordsCooldownList').html('<i>No Keywords cooldown Defined</i>');
-                    return;
-                }
-
-                html = '<table>';
                 for (idx in msgObject['results']) {
-                    key = msgObject['results'][idx]['key'];
-                    time = msgObject['results'][idx]['value'];
-                    html += '<tr style="textList">' +
-                    '    <td style="width: 15%">' + (key.length > 15 ? key.substring(0, 15) + '..' : key) + '</td>' +
-                    '    <td style="vertical-align: middle">' +
-                    '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 88%" type="text" id="editCooldown_' + key.replace(/[^a-z1-9]/ig, '_') + '"' +
-                    '                   value="' + time + '" />' +
-                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" id="deleteCooldown_' + key.replace(/[^a-z1-9]/ig, '_') + '" onclick="$.deleteKeyCooldown(\'' + key.replace(/\'/g, 'S__S__S').replace(/"/g, 'S___S___S').replace(/\s/g, 'S____S____S') + '\')"><i class="fa fa-trash" /> </button>' +
-                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" onclick="$.editKeyCooldown(\'' + key.replace(/\'/g, 'S__S__S').replace(/"/g, 'S___S___S').replace(/\s/g, 'S____S____S') + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '             </form>' +
-                    '        </form>' +
-                    '    </td>' +
-                    '</tr>';
+                    cooldowns[msgObject['results'][idx]['key']] = msgObject['results'][idx]['value'];
                 }
-                html += '</table>';
-                $('#keywordsCooldownList').html(html);
-            }
-
-            if (panelCheckQuery(msgObject, 'keywords_price')) {
-                if (msgObject['results'].length === 0) {
-                    $('#keywordsPriceList').html('<i>No Keywords prices Defined</i>');
-                    return;
-                }
-
-                html = '<table>';
-                for (idx in msgObject['results']) {
-                    key = msgObject['results'][idx]['key'];
-                    time = msgObject['results'][idx]['value'];
-                    html += '<tr style="textList">' +
-                    '    <td style="width: 15%">' + (key.length > 15 ? key.substring(0, 15) + '..' : key) + '</td>' +
-                    '    <td style="vertical-align: middle">' +
-                    '        <form onkeypress="return event.keyCode != 13">' +
-                    '            <input style="width: 88%" type="text" id="editKeyPrice_' + key.replace(/[^a-z1-9]/ig, '_') + '"' +
-                    '                   value="' + time + '" />' +
-                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" id="deleteKeyPrice_' + key.replace(/[^a-z1-9]/ig, '_') + '" onclick="$.deleteKeyPrice(\'' + key.replace(/\'/g, 'S__S__S').replace(/"/g, 'S___S___S').replace(/\s/g, 'S____S____S') + '\')"><i class="fa fa-trash" /> </button>' +
-                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" onclick="$.updateKeyPrice(\'' + key.replace(/\'/g, 'S__S__S').replace(/"/g, 'S___S___S').replace(/\s/g, 'S____S____S') + '\')"><i class="fa fa-pencil" /> </button> ' +
-                    '             </form>' +
-                    '        </form>' +
-                    '    </td>' +
-                    '</tr>';
-                }
-                html += '</table>';
-                $('#keywordsPriceList').html(html);
+                sendDBKeys('keywords_keywords', 'keywords');
             }
         }
     }
@@ -129,132 +83,95 @@
      * @function doQuery
      */
     function doQuery() {
-        sendDBKeys('keywords_keywords', 'keywords');
+        keywords = [];
+        cooldowns = [];
+
         sendDBKeys('keywords_cooldown', 'coolkey');
-        sendDBKeys('keywords_price', 'pricekey');
     }
-
-    /** 
-     * @function addKeyword
+    
+    /**
+     * @function sortKeywordsTable
+     * @param {Object} a
+     * @param {Object} b
      */
-    function addKeyword() {
-        var keyword = $('#addKeywordInput').val(),
-            response = $('#addKeywordResponseInput').val();
+    function sortKeywordsTable(a, b) {
+        return panelStrcmp(a.key, b.key);
+    };
 
-        if (keyword.length > 0 && response.length > 0) {
-            $('#addKeywordInput').val('Submitting...');
-            $('#addKeywordResponseInput').val('');
-            sendDBUpdate('keywords_addkeyword', 'keywords', keyword, response);
-            setTimeout(function() {
-                $('#addKeywordInput').val('');
-                $('#addKeywordResponseInput').val('');
-                doQuery();
-            }, TIMEOUT_WAIT_TIME);
-        }
+    /**
+     * @function addKeywordnew
+     */
+    function addKeywordnew() {
+        $('#keyword-modal-title').html('Add Keyword');
+
+        currentKey = '';
+
+        $('#keyword-name').val('');
+        $('#keyword-response').val('');
+        $('#keyword-cooldown').val('5');
+        $('#keyword-regex').prop('checked', false);
+        $('#keyword-modal').modal('toggle');
     }
 
     /**
      * @function deleteKeyword
-     * @param {String} keywordIdx
+     * @param {String} idx
      */
-    function deleteKeyword(keyword) {
-        keyword = keyword.replace(/S__S__S/g, '\'').replace(/S___S___S/g, '"').replace(/S____S____S/g, ' ');
-        $('#deleteKeyword_' + keyword.replace(/[^a-z1-9]/ig, '_')).html(spinIcon);
+    function deleteKeyword(idk) {
+        $('#deleteKeyword_' + idk).html(spinIcon);
 
-        sendDBDelete('keywords_delkeyword', 'keywords', keyword);
-        sendDBDelete('keywords_delkeyword', 'coolkey', keyword);
-        sendDBDelete('keywords_delkeyword', 'pricekey', keyword);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+        sendDBDelete('keywords_delkeyword', 'keywords', keywords[idk]);
+        sendDBDelete('keywords_delkeywordcd', 'coolkey', keywords[idk]);
+        setTimeout(function() { doQuery(); sendWSEvent('keywords', './handlers/keywordHandler.js', null, []); }, TIMEOUT_WAIT_TIME);
     }
 
     /**
      * @function updateKeyword
-     * @param {String} keyword
      */
-    function updateKeyword(keyword) {
-        keyword = keyword.replace(/S__S__S/g, '\'').replace(/S___S___S/g, '"').replace(/S____S____S/g, ' ');
-        var value = $('#inlineKeywordEdit_' + keyword.replace(/[^a-z1-9]/ig, '_')).val();
-        if (value.length > 0) {
-            sendDBUpdate('keywords_editkeyword', 'keywords', keyword, value);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function updateKeyword() {
+        var keyword = $('#keyword-name').val(),
+            response = $('#keyword-response').val(),
+            isRegex = $('#keyword-regex').is(':checked'),
+            cooldown = parseInt($('#keyword-cooldown').val());
+
+        if (cooldown < 5) {
+            cooldown = String(5);
+        } else {
+            cooldown = String(cooldown);
         }
+
+        if (response.length < 1 || keyword.length < 1) {
+            return;
+        }
+
+        sendDBDelete('keyword_rm', 'keywords', currentKey);
+        setTimeout(function() {
+            sendDBUpdate('keyword_update', 'keywords', (isRegex ? 'regex:' : '') + keyword, JSON.stringify({
+                keyword: (isRegex ? 'regex:' : '') + keyword,
+                response: response,
+                isRegex: isRegex
+            }));
+            sendDBUpdate('keyword_cooldown_up', 'coolkey', (isRegex ? 'regex:' : '') + keyword, cooldown);
+        }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); sendWSEvent('keywords', './handlers/keywordHandler.js', null, []); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
-     * @function editKeyCooldown
-     * @param {String} command
+     * @function editKeywordnew
      */
-    function editKeyCooldown(command) {
-        command = command.replace(/S__S__S/g, '\'').replace(/S___S___S/g, '"').replace(/S____S____S/g, ' ');
-        var value = $('#editCooldown_' + command.replace(/[^a-z1-9]/ig, '_')).val();
-        if (value > 0) {
-            sendDBUpdate("keyword_cooldown_edit", "coolkey", command.toLowerCase(), value);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
-        }
-    };
-    /**
-     * @function deleteKeyCooldown
-     * @param {String} command
-     */
-    function deleteKeyCooldown(command) {
-        command = command.replace(/S__S__S/g, '\'').replace(/S___S___S/g, '"').replace(/S____S____S/g, ' ');
-        $("#deleteCooldown_" + command.replace(/[^a-z1-9]/ig, '_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendDBDelete("keyword_cooldown_delete", "coolkey", command);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
+    function editKeywordnew(keyword, response) {
+        $('#keyword-modal-title').html('Edit Keyword');
+        keyword = keyword.replace(/__apos__/g, '\'');
+        response = response.replace(/__apos__/g, '\'');
+
+        currentKey = keyword;
+
+        $('#keyword-name').val(keyword.replace('regex:', ''));
+        $('#keyword-response').val(response);
+        $('#keyword-cooldown').val(isNaN(parseInt(cooldowns[keyword])) ? 5 : cooldowns[keyword]);
+        $('#keyword-regex').prop('checked', keyword.startsWith('regex:'));
+        $('#keyword-modal').modal('toggle');
     }
-    /**
-     * @function addKeyCooldown
-     */
-    function addKeyCooldown() {
-        var input = $("#cooldownKeyInput").val();
-        var command = $("#cooldownKeyInputCommand").val();
-        
-        if (input.length > 0 && command.length != 0) {
-            sendDBUpdate("keyword_cooldown_add", "coolkey", String(command.toLowerCase()), String(input));
-            $("#cooldownKeyInput").val("Submitted");
-            $("#cooldownKeyInputCommand").val("Submitted");
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-            setTimeout(function() { $("#cooldownKeyInputCommand").val(""); $("#cooldownKeyInput").val(""); }, TIMEOUT_WAIT_TIME);
-        }
-    }
-
-    /**
-     * @function setKeyPrice
-     */
-    function setKeyPrice() {
-        var price = $("#priceKeyInput").val();
-        var com = $("#priceKeyInputKey").val();
-
-        if (price != 0 && com.length != 0) {
-            sendDBUpdate("keywordprice", "pricekey", com.toLowerCase(), price);
-            $("#priceKeyInput").val("");
-            $("#priceKeyInputKey").val("");
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-        }
-    };
-    /**
-     * @function updateKeyPrice
-     */
-    function updateKeyPrice(command) {
-        command = command.replace(/S__S__S/g, '\'').replace(/S___S___S/g, '"').replace(/S____S____S/g, ' ');
-        var val = $('#editKeyPrice_' + command.replace(/[^a-z1-9]/ig, '_')).val();
-        $('#editKeyPrice_' + command.replace(/[^a-z1-9]/ig, '_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        if (val > 0) {
-            sendDBUpdate("keyword_editprice_" + command, "pricekey", command.toLowerCase(), val);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-        }
-    };
-
-    /** 
-     * @function deleteKeyPrice
-     * @param {String} command
-     */
-    function deleteKeyPrice(command) {
-        command = command.replace(/S__S__S/g, '\'').replace(/S___S___S/g, '"').replace(/S____S____S/g, ' ');
-        $("#deleteKeyPrice_" + command.replace(/[^a-z1-9]/ig, '_')).html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
-        sendDBDelete("keyword_delcomprice_" + command, "pricekey", command);
-        setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-    };
 
     // Import the HTML file for this panel.
     $("#keywordsPanel").load("/panel/keywords.html");
@@ -282,13 +199,8 @@
     // Export to HTML
     $.keywordsOnMessage = onMessage;
     $.keywordsDoQuery = doQuery;
-    $.addKeyword = addKeyword;
+    $.addKeywordnew = addKeywordnew;
+    $.editKeywordnew = editKeywordnew;
     $.deleteKeyword = deleteKeyword;
     $.updateKeyword = updateKeyword;
-    $.addKeyCooldown = addKeyCooldown;
-    $.deleteKeyCooldown = deleteKeyCooldown;
-    $.editKeyCooldown = editKeyCooldown;
-    $.setKeyPrice = setKeyPrice;
-    $.updateKeyPrice = updateKeyPrice;
-    $.deleteKeyPrice = deleteKeyPrice;
 })();

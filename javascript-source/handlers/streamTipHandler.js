@@ -199,9 +199,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/streamTipHandler.js')) {
-            $.registerChatCommand('./handlers/streamTipHandler.js', 'streamtip', 1);
-        }
+        $.registerChatCommand('./handlers/streamTipHandler.js', 'streamtip', 1);
     });
 
     $.donationpanelupdatestreamtip = donationpanelupdate;

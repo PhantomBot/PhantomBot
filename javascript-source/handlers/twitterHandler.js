@@ -4,11 +4,11 @@
  * Interfaces with Twitter.  Provides the connection to the Core to be provided
  * with Tweets and configuration of the module.  As the Core directly reads the
  * DB for configuration, there is not a need for local variables in this module.
- * 
+ *
  */
 
 
- /**
+/**
  * Anything you modify or remove in this script is at your own risk with Twitter.
  */
 (function() {
@@ -16,7 +16,7 @@
         onlinePostDelay = 480 * 6e4, // 8 hour cooldown
         gameChangeDelay = 60 * 6e4, // 1 hour cooldown
         interval;
- 
+
     /* Set default values for all configuration items. */
     $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
     $.getSetIniDbString('twitter', 'message_gamechange', 'Changing game over to (game) (twitchurl)');
@@ -27,6 +27,8 @@
     $.getSetIniDbNumber('twitter', 'polldelay_hometimeline', 60);
     $.getSetIniDbNumber('twitter', 'polldelay_usertimeline', 15);
     $.getSetIniDbNumber('twitter', 'postdelay_update', 180);
+    $.getSetIniDbNumber('twitter', 'reward_points', 100);
+    $.getSetIniDbNumber('twitter', 'reward_cooldown', 4);
 
     $.getSetIniDbBoolean('twitter', 'poll_mentions', false);
     $.getSetIniDbBoolean('twitter', 'poll_retweets', false);
@@ -35,6 +37,8 @@
     $.getSetIniDbBoolean('twitter', 'post_online', false);
     $.getSetIniDbBoolean('twitter', 'post_gamechange', false);
     $.getSetIniDbBoolean('twitter', 'post_update', false);
+    $.getSetIniDbBoolean('twitter', 'reward_toggle', false);
+    $.getSetIniDbBoolean('twitter', 'reward_announce', false);
 
     /**
      * @event twitter
@@ -47,6 +51,49 @@
             $.say($.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
         } else {
             $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+        }
+    });
+
+    /**
+     * @event twitterRetweet
+     */
+    $.bind('twitterRetweet', function(event) {
+        if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
+            return;
+        }
+
+        /* The core only generates this event if reward_toggle is enabled, therefore, we do not check the toggle here. */
+        if ($.getIniDbNumber('twitter', 'reward_points') == 0) {
+            return;
+        }
+
+        var userNameArray = event.getUserNameArray(),
+            i,
+            twitterUserName,
+            rewardNameArray = [],
+            lastRetweet,
+            userName,
+            reward = $.getIniDbNumber('twitter', 'reward_points'),
+            cooldown = $.getIniDbFloat('twitter', 'reward_cooldown') * 3.6e6,
+            now = $.systemTime();
+
+        for (i in userNameArray) {
+            twitterUserName = userNameArray[i].toLowerCase();
+            userName = $.inidb.GetKeyByValue('twitter_mapping', '', twitterUserName);
+            if (userName === null) {
+                continue;
+            }
+
+            lastRetweet = $.getIniDbNumber('twitter_user_last_retweet', userName, 0);
+            if (now - lastRetweet > cooldown) {
+                rewardNameArray.push(userName);
+                $.inidb.incr('points', userName, reward);
+                $.setIniDbNumber('twitter_user_last_retweet', userName, now);
+            }
+        }
+
+        if (rewardNameArray.length > 0 && $.getIniDbBoolean('twitter', 'reward_announce')) {
+            $.say($.lang.get('twitter.reward.announcement', rewardNameArray.join(', '), $.getPointsString(reward)));
         }
     });
 
@@ -69,10 +116,7 @@
                     randNum = $.randRange(1, 9999);
                 } while (randNum == randPrev);
                 randPrev = randNum;
-                $.twitter.updateStatus(String(message).
-                                           replace('(title)', $.twitchcache.getStreamStatus()).
-                                           replace('(game)', $.twitchcache.getGameTitle()).
-                                           replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
+                $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
             }
         }
     });
@@ -94,15 +138,16 @@
         if ($.getIniDbBoolean('twitter', 'post_gamechange', false) && $.isOnline($.channelName)) {
             if (now > $.getIniDbNumber('twitter', 'last_gamechange', 0) + gameChangeDelay) {
                 $.inidb.set('twitter', 'last_gamechange', now + gameChangeDelay);
-                var randNum;
+                var randNum,
+                    uptimeSec = $.getStreamUptimeSeconds($.channelName),
+                    hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
+                    min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
+
                 do {
                     randNum = $.randRange(1, 9999);
                 } while (randNum == randPrev);
                 randPrev = randNum;
-                $.twitter.updateStatus(String(message).
-                                       replace('(title)', $.twitchcache.getStreamStatus()).
-                                       replace('(game)', $.twitchcache.getGameTitle()).
-                                       replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
+                $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(uptime)', hrs + ':' + min).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
             }
         }
     });
@@ -118,7 +163,8 @@
             subCommandArg = args[1],
             setCommandArg = args[2],
             setCommandVal = args[3],
-            setCommandList = [ 'mentions', 'retweets', 'hometimeline', 'usertimeline' ],
+            setCommandList = ['mentions', 'retweets', 'hometimeline', 'usertimeline'],
+            setRewardCommandList = ['toggle', 'points', 'cooldown', 'announce'],
             minVal;
 
         /**
@@ -126,16 +172,16 @@
          */
         if (command.equalsIgnoreCase('twitter')) {
             if (commandArg === undefined) {
-               $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + '') + ' ' + $.lang.get('twitter.usage.id'));
-               return;
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + '') + ' ' + $.lang.get('twitter.usage.id'));
+                return;
             }
 
             /**
              * @commandpath twitter usage - Display the Twitter usage
              */
             if (commandArg.equalsIgnoreCase('usage')) {
-               $.say($.whisperPrefix(sender) + $.lang.get('twitter.usage'));
-               return;
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.usage'));
+                return;
             }
 
             /**
@@ -145,6 +191,57 @@
                 if (subCommandArg === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.usage'));
                     return;
+                }
+
+                /**
+                 * @commandpath twitter set reward - Base command for retweet rewards
+                 */
+                if (subCommandArg.equalsIgnoreCase('reward')) {
+                    if (setCommandArg === undefined) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.reward.usage'));
+                        return;
+                    }
+
+                    /**
+                     * @commandpath twitter set reward toggle [on/off] - Reward users that retweet.
+                     * @commandpath twitter set reward points [points] - Amount of points to reward a retweet.
+                     * @commandpath twitter set reward cooldown [hours] - Number of hours to wait between another retweet reward.
+                     * @commandpath twitter set reward announce [on/off] - Announce retweet rewards in chat.
+                     */
+                    if (setRewardCommandList.indexOf(setCommandArg + '') === -1) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.reward.usage'));
+                        return;
+                    }
+                    if (setCommandVal === undefined) {
+                        if (setCommandArg.equalsIgnoreCase('toggle') || setCommandArg.equalsIgnoreCase('announce')) {
+                            setCommandVal = $.getIniDbBoolean('twitter', 'reward_' + setCommandArg, false);
+                            setCommandVal = setCommandVal ? 'on' : 'off';
+                        } else {
+                            setCommandVal = $.getIniDbFloat('twitter', 'reward_' + setCommandArg);
+                        }
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.reward.' + setCommandArg + '.usage', setCommandVal));
+                        return;
+                    }
+                    if (setCommandArg.equalsIgnoreCase('toggle') || setCommandArg.equalsIgnoreCase('announce')) {
+                        if (!setCommandVal.equalsIgnoreCase('on') && !setCommandVal.equalsIgnoreCase('off')) {
+                            setCommandVal = $.getIniDbBoolean('twitter', 'reward_' + setCommandArg, false);
+                            setCommandVal = setCommandVal ? 'on' : 'off';
+                            $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.reward.' + setCommandArg + '.usage', setCommandVal));
+                            return;
+                        }
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.reward.' + setCommandArg + '.success', setCommandVal.toLowerCase()));
+                        setCommandVal = setCommandVal.equalsIgnoreCase('on') ? 'true' : 'false';
+                        $.inidb.set('twitter', 'reward_' + setCommandArg, setCommandVal);
+                    } else {
+                        if (isNaN(setCommandVal)) {
+                            setCommandVal = $.getIniDbNumber('twitter', 'reward_' + setCommandArg);
+                            $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.reward.' + setCommandArg + '.usage', setCommandVal));
+                            return;
+                        }
+                        $.inidb.set('twitter', 'reward_' + setCommandArg, setCommandVal);
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.reward.' + setCommandArg + '.success', setCommandVal));
+                        return;
+                    }
                 }
 
                 /**
@@ -182,7 +279,7 @@
                         return;
                     }
                     $.inidb.set('twitter', 'polldelay_' + setCommandArg, setCommandVal);
-                    $.say($whisperPrefix(sender) + $.lang.get('twitter.set.polldelay.' + setCommandArg + '.success', setCommandVal));
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.polldelay.' + setCommandArg + '.success', setCommandVal));
                     return;
                 }
 
@@ -275,7 +372,7 @@
                         return;
                     }
                     if (parseInt(setCommandVal) <= 180) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.toosmall') + setCommandVal);
+                        $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.toosmall', setCommandVal));
                         return;
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.success', setCommandVal));
@@ -377,6 +474,33 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + ''));
                 return;
             }
+
+            /**
+             * @commandpath twitter register [twitter_id] - Register your Twitter username
+             */
+            if (commandArg.equalsIgnoreCase('register')) {
+                if (subCommandArg === undefined) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.register.usage', $.getIniDbString('twitter_mapping', sender, $.lang.get('twitter.register.notregistered'))));
+                    return;
+                }
+                if ($.inidb.GetKeyByValue('twitter_mapping', '', subCommandArg.toLowerCase()) !== null) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.register.inuse', subCommandArg.toLowerCase()));
+                    return;
+                }
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.register.success', $.getSetIniDbString('twitter_mapping', sender, subCommandArg.toLowerCase())));
+                $.setIniDbString('twitter_mapping', sender, subCommandArg.toLowerCase());
+                return;
+            }
+
+            /**
+             * @commandpath twitter unregister - Unregister your Twitter username
+             */
+            if (commandArg.equalsIgnoreCase('unregister')) {
+                $.inidb.del('twitter_mapping', sender);
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.unregister'));
+                return;
+            }
+
         } /* if (command.equalsIgnoreCase('twitter')) */
     }); /* @event command */
 
@@ -386,7 +510,7 @@
     function checkAutoUpdate() {
         var message = $.getIniDbString('twitter', 'message_update');
 
-        /* 
+        /*
          * If not online, nothing to do. The last_autoupdate is reset to ensure that
          * the moment a stream comes online an additional Tweet is not sent out.
          */
@@ -408,42 +532,32 @@
                 $.inidb.set('twitter', 'last_autoupdate', $.systemTime());
 
                 if (success.equals('true')) {
-                    $.twitter.updateStatus(String(message).
-                                               replace('(title)', $.twitchcache.getStreamStatus()).
-                                               replace('(game)', $.twitchcache.getGameTitle()).
-                                               replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).
-                                               replace(/\(enter\)/g, '\r\n').
-                                               replace('(uptime)', hrs + ':' + min),
-                                           './addons/downloadHTTP/twitch-preview.jpg');
+                    $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace(/\(enter\)/g, '\r\n').replace('(uptime)', hrs + ':' + min),
+                        './addons/downloadHTTP/twitch-preview.jpg');
                 } else {
-                    $.twitter.updateStatus(String(message).
-                                               replace('(title)', $.twitchcache.getStreamStatus()).
-                                               replace('(game)', $.twitchcache.getGameTitle()).
-                                               replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).
-                                               replace('(uptime)', hrs + ':' + min).
-                                               replace(/\(enter\)/g, '\r\n'));
+                    $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace('(uptime)', hrs + ':' + min).replace(/\(enter\)/g, '\r\n'));
                 }
                 $.log.event('Sent Auto Update to Twitter');
             }
         }
     }
 
-    interval = setInterval(function() { 
-        checkAutoUpdate(); 
+    interval = setInterval(function() {
+        checkAutoUpdate();
     }, 8e4);
 
     /**
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
-            $.registerChatCommand('./handlers/twitterHandler.js', 'twitter', 7);
-            $.registerChatSubcommand('twitter', 'set', 1);
-            $.registerChatSubcommand('twitter', 'post', 1);
-            $.registerChatSubcommand('twitter', 'lasttweet', 7);
-            $.registerChatSubcommand('twitter', 'lastmention', 7);
-            $.registerChatSubcommand('twitter', 'lastretweet', 7);
-            $.registerChatSubcommand('twitter', 'id', 7);
-        }
+        $.registerChatCommand('./handlers/twitterHandler.js', 'twitter', 7);
+        $.registerChatSubcommand('twitter', 'set', 1);
+        $.registerChatSubcommand('twitter', 'post', 1);
+        $.registerChatSubcommand('twitter', 'lasttweet', 7);
+        $.registerChatSubcommand('twitter', 'lastmention', 7);
+        $.registerChatSubcommand('twitter', 'lastretweet', 7);
+        $.registerChatSubcommand('twitter', 'id', 7);
+        $.registerChatSubcommand('twitter', 'register', 7);
+        $.registerChatSubcommand('twitter', 'unregister', 7);
     });
 })();

@@ -1,6 +1,6 @@
 <!--
 
- Copyright (C) 2017 phantombot.tv
+ Copyright (C) 2016-2018 phantombot.tv
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -26,12 +26,12 @@
         <title>PhantomBot Control Panel</title>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <link rel="stylesheet" href="panel/js/jquery-ui/jquery-ui.min.css">
+        <link rel="stylesheet" href="common/js/jquery-ui/jquery-ui.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="panel/js/footable/footable.standalone.min.css">
 
-        <script src="panel/js/jquery-ui/external/jquery/jquery.min.js"></script>
-        <script src="panel/js/jquery-ui/jquery-ui.min.js"></script>
+        <script src="common/js/jquery-ui/external/jquery/jquery.min.js"></script>
+        <script src="common/js/jquery-ui/jquery-ui.min.js"></script>
         <script src="panel/js/flot/jquery.flot.min.js"></script>
         <script src="panel/js/ion-sound/js/ion.sound.min.js"></script>
         <script src="panel/js/footable/footable.min.js"></script>
@@ -54,8 +54,13 @@
 
     <body>
         <div class="header">
-            <img id="logo" src="panel/images/logo.png"/>
+            <img id="logo" src="common/images/logo.png"/>
             <span id="header-right">
+                <script>
+                    if (window.location.port == getPanelPort() + 1) {
+                        document.write('<i data-toggle="tooltip" data-placement="left" title="Next release port ' + (window.location.port) + ' will be decommissioned, please use ' + (window.location.port - 5) + '." class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;');
+                    }
+                </script>
                 <i data-toggle="tooltip" data-placement="left" title="Refresh Current Panel Data" class="fa fa-refresh fa-lg" aria-hidden="true" onclick="performCurrentPanelRefresh()"></i>
             </span>
             <div id="newPanelAlert" class="alert" style="display:none"></div>
@@ -233,10 +238,18 @@
             </div>
             <!-- <span id="iframeLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading Twitch Chat</span> -->
              <script>
-                $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
-                                         "src=\"https://www.twitch.tv/" + getChannelName().toLowerCase() + "/chat?popout=\">");
-                /*$("#chat").hide(); ** This breaks things in firefox. */
-                $("#chatsidebar").draggable({ iframeFix: true });
+                (function($) {
+                    var toggle = localStorage.getItem('phantombot_chattoggle');
+    
+                    if (toggle === 'false') {
+                        $("#chatsidebar").hide();
+                        return;
+                    }
+    
+                    $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
+                                             "src=\"https://www.twitch.tv/" + getChannelName().toLowerCase() + "/chat?popout=\">");
+                    $("#chatsidebar").draggable({ iframeFix: true });
+                })(jQuery);
             </script>
         </div>
 

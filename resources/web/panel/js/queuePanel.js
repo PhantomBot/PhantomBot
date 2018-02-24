@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author ScaniaTV
  */
 
@@ -84,7 +84,7 @@
     	} else if (command == 'close') {
     		sendWSEvent('queue', './systems/queueSystem.js', null, ['close']);
     	} else if (command == 'remove') {
-    		$('#delete_user_' + args).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+    		$('#delete_user_' + args).html('<i style="color: var(--main-color)" class="fa fa-spinner fa-spin"/>');
     		sendWSEvent('queue', './systems/queueSystem.js', null, ['remove', args]);
     	} else if (command == 'open') {
     		var title = $('#queue-title').val(),

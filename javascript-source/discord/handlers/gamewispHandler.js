@@ -12,9 +12,9 @@
         announce = false;
 
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/gamewispHandler.js')) {
             subMessage = $.getIniDbString('discordSettings', 'gamewispSubMessage', '(name) just subscribed via GameWisp at tier level (tier)!');
             resubMessage = $.getIniDbString('discordSettings', 'gamewispReSubMessage', '(name) just subscribed for (months) months in a row via GameWisp!');
@@ -96,9 +96,9 @@
     });
 
     /**
-     * @event discordCommand
+     * @event discordChannelCommand
      */
-    $.bind('discordCommand', function(event) {
+    $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
             channel = event.getChannel(),
             command = event.getCommand(),
@@ -140,7 +140,7 @@
             if (action.equalsIgnoreCase('tieruptoggle')) {
                 tierToggle = !tierToggle;
                 $.inidb.set('discordSettings', 'gamewispTierToggle', tierToggle);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.toggle', (tierToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));         
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gamewisphandler.tier.toggle', (tierToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
             }
 
             /**
@@ -205,18 +205,15 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/gamewispHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/gamewispHandler.js', 'gamewisphandler', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'subtoggle', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'resubtoggle', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'tieruptoggle', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'resubmessage', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'submessage', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'tierupmessage', 1);
-            $.discord.registerSubCommand('gamewisphandler', 'channel', 1);
+        $.discord.registerCommand('./discord/handlers/gamewispHandler.js', 'gamewisphandler', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'subtoggle', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'resubtoggle', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'tieruptoggle', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'resubmessage', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'submessage', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'tierupmessage', 1);
+        $.discord.registerSubCommand('gamewisphandler', 'channel', 1);
 
-            announce = true;
-            // $.unbind('initReady'); Needed or not?
-        }
+        announce = true;
     });
 })();

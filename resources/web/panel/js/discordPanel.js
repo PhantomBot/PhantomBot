@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author ScaniaTV
  */
 (function() {
     var iconToggle = [],
         i;
 
-    iconToggle['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-    iconToggle['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+    iconToggle['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+    iconToggle['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
 
     /*
      * @function onMessage
@@ -66,8 +66,10 @@
             var keys = msgObject['results'];
 
             for (i in keys) {
-                if (keys[i]['value'] !== 'true' && keys[i]['value'] !== 'false') {
+                if (keys[i]['value'] !== 'true' && keys[i]['value'] !== 'false' && keys[i]['key'] !== 'hostChannel') {
                     $('#' + keys[i]['key'] + 'Input').val(keys[i]['value']);
+                } else if (keys[i]['key'] === 'hostChannel') {
+                    $('#hostdChannelInput').val(keys[i]['value']);
                 } else {
                     $('#' + keys[i]['key'] + 'Input').html(iconToggle[keys[i]['value']]);
                 }
@@ -75,7 +77,7 @@
         }
 
         if (panelCheckQuery(msgObject, 'discord_keywords')) {
-            var keys = msgObject['results'],
+            var keys = msgObject['results'].sort(sortKeywordsCommandsTable),
                 html = '<table>';
 
             if (keys.length === 0) {
@@ -94,7 +96,7 @@
                     '            <input style="width: 90%" type="text" id="editKeyword_' + name.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '"' +
                     '                   value="' + val + '" />' +
                     '              <button style="float: right;" type="button" class="btn btn-default btn-xs" id="removeKeyword_' + name.replace(/[^a-zA-Z0-9_]/g, '_SPC_') + '" onclick="$.removeKeyword(\'' + name + '\')"><i class="fa fa-trash" /> </button>' +
-                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" onclick="$.editKeyword(\'' + name + '\')"><i class="fa fa-pencil" /> </button> ' +
+                    '              <button style="float: right;" type="button" class="btn btn-default btn-xs" onclick="$.editKeyword(\'' + name + '\')"><i class="fa fa-hdd-o" /> </button> ' +
                     '             </form>' +
                     '        </form>' +
                     '    </td>' +
@@ -105,16 +107,18 @@
         }
 
         if (panelCheckQuery(msgObject, 'discord_commands')) {
-            var keys = msgObject['results'],
+            var keys = msgObject['results'].sort(sortKeywordsCommandsTable),
                 html = '<table style="width: 100%"><tr><th>Command</th><th>Response</th><th>Cooldown</th><th style="float: right;"></td>',
                 dataObj = {},
+                command,
+                response,
                 permission,
                 cost,
                 cooldown,
-                response,
-                command,
-                channel;
-            
+                global,
+                channel,
+                alias;
+
             if (keys.length === 0) {
                 $('#commands-list').html('<i>There are no commands defined.</i>');
                 return;
@@ -129,9 +133,10 @@
                     }
                 } else if (keys[i]['table'] == 'discordCooldown') {
                     if (dataObj[keys[i]['key']] === undefined) {
-                        dataObj[keys[i]['key']] = { cooldown: keys[i]['value'] };
+                        dataObj[keys[i]['key']] = { cooldown: JSON.parse(keys[i]['value']).seconds, isGlobal: (JSON.parse(keys[i]['value']).isGlobal == 'true') };
                     } else {
-                        dataObj[keys[i]['key']].cooldown = keys[i]['value'];
+                        dataObj[keys[i]['key']].cooldown = JSON.parse(keys[i]['value']).seconds;
+                        dataObj[keys[i]['key']].isGlobal = (JSON.parse(keys[i]['value']).isGlobal == 'true');
                     }
                 } else if (keys[i]['table'] == 'discordChannelcom') {
                     if (dataObj[keys[i]['key']] === undefined) {
@@ -159,15 +164,17 @@
                     command = keys[i]['key'];
                     response = keys[i]['value'];
                     permission = dataObj[command].permission;
-                    channel = (dataObj[command] !== undefined && dataObj[command].channel === undefined ? '' : dataObj[command].channel);
-                    cooldown = (dataObj[command] !== undefined && dataObj[command].cooldown === undefined ? 0 : dataObj[command].cooldown);
                     cost = (dataObj[command] !== undefined && dataObj[command].cost === undefined ? 0 : dataObj[command].cost);
+                    cooldown = (dataObj[command] !== undefined && dataObj[command].cooldown === undefined ? 0 : dataObj[command].cooldown);
+                    global = (dataObj[command] !== undefined && dataObj[command].isGlobal === undefined ? true : dataObj[command].isGlobal);             
+                    channel = (dataObj[command] !== undefined && dataObj[command].channel === undefined ? '' : dataObj[command].channel);
+                    alias = (dataObj[command] !== undefined && dataObj[command].alias === undefined ? '' : dataObj[command].alias);
 
                     html += '<tr>' +
                         '<td>!' + (command.length > 10 ?  command.substring(0, 10) + '...' : command) + '</td>' +
                         '<td>' + (response.length > 50 ?  response.substring(0, 50) + '...' : response) + '</td>' +
                         '<td>' + cooldown + ' sec '+ '</td>' +
-                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response + '\', \'' + permission + '\', \'' + cost + '\', \'' + cooldown + '\', \'' + channel + '\')"><i class="fa fa-pencil" /> </button>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.openCommandModal(\'' + command + '\', \'' + response.replace(/\'/g, '&#39;') + '\', \'' + permission + '\', \'' + cost + '\', \'' + cooldown + '\', \'' + global + '\', \'' + channel + '\', \'' + alias +'\')"><i class="fa fa-hdd-o" /> </button>' +
                         '<button type="button" id="delete_command_' + command.replace(/[^a-z1-9_]/ig, '_') + '" class="btn btn-default btn-xs" onclick="$.updateDiscordCommand(\'' + command + '\', \'true\')"><i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
                 }
@@ -187,7 +194,7 @@
         sendDBKeys('discord_roll', 'discordRollReward');
         sendDBKeys('discord_slotmachine', 'discordSlotMachineReward');
         sendDBKeys('discord_slotmachineemojis', 'discordSlotMachineEmojis');
-        sendDBKeysList('discord_commands', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom']);
+        sendDBKeysList('discord_commands', ['discordCommands', 'discordCooldown', 'discordPermcom', 'discordChannelcom', 'discordAliascom']);
     }
 
     /*
@@ -196,8 +203,9 @@
     function updateDiscordTable(htmlId, script, table, key, value) {
         var data = (value !== undefined ? value : $('#' + htmlId).val());
 
+        console.log(htmlId + ';' + script + ';' + table + ';' + key + '');
         if (value !== undefined) {
-            $('#' + htmlId).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+            $('#' + htmlId).html('<i style="color: var(--main-color)" class="fa fa-spinner fa-spin"/>');
         }
 
         if ((typeof data === 'string' && data.length > 0) || typeof data === 'number') {
@@ -208,8 +216,17 @@
                     sendDBUpdate('discord_update', 'chatModerator', 'moderationLogs', 'false');
                 }
             }
-            
-            sendDBUpdate('discord_update', table, key, data.toString());
+
+            if (key == 'cbenniToggle') {
+                if (value == 'true') {
+                    sendDBUpdate('discord_update', 'discordSettings', 'cbenniToggle', 'true');
+                } else {
+                    sendDBUpdate('discord_update', 'discordSettings', 'cbenniToggle', 'false');
+                }
+            }
+          
+            console.log(table + ':' + key + ':' + data);
+            sendDBUpdate('discord_update', table, key, String(data));
 
             setTimeout(function() { sendWSEvent('discord', './discord/' + script); doQuery(); }, TIMEOUT_WAIT_TIME);
         } else {
@@ -224,22 +241,27 @@
         $('#command-name-modal').val('');
         $('#command-response-modal').val('');
         $('#command-permission-modal').val('');
+        $('#command-cost-modal').val('');
         $('#command-cooldown-modal').val('');
-        $('#command-channel-modal').val();
+        $('#command-edit-global').prop('checked', true);
+        $('#command-channel-modal').val('');
+        $('#command-alias-modal').val('');
         $('#command-add-name-modal').val('');
         $('#command-add-response-modal').val('');
         $('#command-add-permission-modal').val('0');
-        $('#command-add-cooldown-modal').val('0');
         $('#command-add-cost-modal').val('0');
+        $('#command-add-cooldown-modal').val('0');
+        $('#command-add-global').prop('checked', true);
         $('#command-add-channel-modal').val('');
+        $('#command-add-alias-modal').val('');
     }
 
     /*
      * @function updateDiscordCommand
      */
     function updateDiscordCommand(cmd, isToRemove) {
-        if (isToRemove == 'true') {
-            $('#delete_command_' + cmd.replace(/[^a-z1-9_]/ig, '_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+        if ((typeof isToRemove === 'string' ? isToRemove == 'true' : isToRemove == true)) {
+            $('#delete_command_' + cmd.replace(/[^a-z1-9_]/ig, '_')).html('<i style="color: var(--main-color)" class="fa fa-spinner fa-spin"/>');
             sendDBDelete('discord_command', 'discordCommands', cmd);
             sendDBDelete('discord_command', 'discordPermcom', cmd);
             sendDBDelete('discord_command', 'discordCooldown', cmd);
@@ -251,9 +273,10 @@
             var command = ($('#command-name-modal').val().length === 0 ? $('#command-add-name-modal').val() : $('#command-name-modal').val()),
                 response = ($('#command-response-modal').val().length === 0 ?  $('#command-add-response-modal').val() : $('#command-response-modal').val()),
                 permission = ($('#command-permission-modal').val().length === 0 ?  $('#command-add-permission-modal').val() : $('#command-permission-modal').val()),
-                cooldown = ($('#command-cooldown-modal').val().length === 0 ? $('#command-add-cooldown-modal').val() : $('#command-cooldown-modal').val()),
-                channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val()),
                 price = ($('#command-cost-modal').val().length === 0 ? $('#command-add-cost-modal').val() : $('#command-cost-modal').val()),
+                cooldown = ($('#command-cooldown-modal').val().length === 0 ? $('#command-add-cooldown-modal').val() : $('#command-cooldown-modal').val()),
+                checked = ($('#command-name-modal').val().length === 0 ? $('#command-add-global').is(':checked') : $('#command-edit-global').is(':checked')),
+                channel = ($('#command-channel-modal').val().length === 0 ? $('#command-add-channel-modal').val() : $('#command-channel-modal').val()),
                 alias = ($('#command-alias-modal').val().length === 0 ? $('#command-add-alias-modal').val() : $('#command-alias-modal').val());
 
             if (command.length === 0 || response.length === 0 || command.match(/[\'\"\s]/ig) || (permission != 1 && permission != 0)) {
@@ -267,18 +290,21 @@
 
             sendDBUpdate('discord_command', 'discordCommands', command, response.toString());
             sendDBUpdate('discord_command', 'discordPermcom', command, permission.toString());
-            sendDBUpdate('discord_command', 'discordCooldown', command, cooldown.toString());
+            sendDBUpdate('discord_command', 'discordCooldown', command, JSON.stringify({command: String(command), seconds: String(cooldown), isGlobal: String(checked)}));
             sendDBUpdate('discord_command', 'discordPricecom', command, price.toString());
+            
             if (channel.length > 0) {
-                sendDBUpdate('discord_command', 'discordChannelcom', command, channel.replace('#', '').toString());
+                sendDBUpdate('discord_command', 'discordChannelcom', command, channel.toString());
             } else {
                 sendDBDelete('discord_command', 'discordChannelcom', command);
             }
+            
             if (alias.length > 0) {
                 sendDBUpdate('discord_command', 'discordAliascom', command, alias.toString());
             } else {
                 sendDBDelete('discord_command', 'discordAliascom', command);
             }
+            
             setTimeout(function() { sendWSEvent('discord', './discord/commands/customCommands.js', null, [command, permission, channel, alias, price]); }, TIMEOUT_WAIT_TIME);
         }
 
@@ -288,16 +314,27 @@
     /*
      * @function openCommandModal
      */
-    function openCommandModal(command, response, permission, cost, cooldown, channel) {
+    function openCommandModal(command, response, permission, cost, cooldown, checked, channel, alias) {
         $('#command-name-modal').val(command);
-        $('#command-response-modal').val(response);
+        $('#command-response-modal').val(response.replace(/&#39;/g, '\''));
         $('#command-permission-modal').val(permission);
-        $('#command-cooldown-modal').val(cooldown);
-        $('#command-channel-modal').val(channel);
         $('#command-cost-modal').val(cost);
+        $('#command-cooldown-modal').val(cooldown);
+        $('#command-edit-global').prop('checked', checked == 'true');
+        $('#command-channel-modal').val(channel);
+        $('#command-alias-modal').val(alias);
 
         $('#command-modal').modal();
     }
+    
+    /**
+     * @function sortKeywordsCommandsTable
+     * @param {Object} a
+     * @param {Object} b
+     */
+    function sortKeywordsCommandsTable(a, b) {
+        return panelStrcmp(a.key, b.key);
+    };
 
     /*
      * @function editKeyword
@@ -306,7 +343,7 @@
         var value = $('#editKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).val();
 
         if (value.length > 0) {
-            sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
+            sendDBUpdate('discord_keyword', 'discordKeywords', keyword.toLowerCase(), value);
         }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -315,7 +352,7 @@
      * @function removeKeyword
      */
     function removeKeyword(keyword) {
-        $('#removeKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).html('<i style="color: #6136b1" class="fa fa-spinner fa-spin"/>');
+        $('#removeKeyword_' + keyword.replace(/[^a-zA-Z0-9_]/g, '_SPC_')).html('<i style="color: var(--main-color)" class="fa fa-spinner fa-spin"/>');
         sendDBDelete('discord_keyword', 'discordKeywords', keyword);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
@@ -328,7 +365,7 @@
             value = $('#custom-keyword-value').val();
 
         if (keyword.length > 0 && value.length > 0) {
-            sendDBUpdate('discord_keyword', 'discordKeywords', keyword, value);
+            sendDBUpdate('discord_keyword', 'discordKeywords', keyword.toLowerCase(), value);
         }
         $('#custom-keyword').val('');
         $('#custom-keyword-value').val('');
@@ -364,7 +401,7 @@
             val2 = $('#slotEmoji2Input').val(),
             val3 = $('#slotEmoji3Input').val(),
             val4 = $('#slotEmoji4Input').val();
-         
+
         if (val0.length > 0 && val1.length > 0 && val2.length > 0 && val3.length > 0 && val4.length > 0) {
             sendDBUpdate('slotEmojis0', 'discordSlotMachineEmojis', 'emoji_0', val0);
             sendDBUpdate('slotEmojis1', 'discordSlotMachineEmojis', 'emoji_1', val1);
@@ -376,7 +413,7 @@
     }
 
     /**
-     * @function setDiscordRollRewards 
+     * @function setDiscordRollRewards
      */
     function setDiscordRollRewards() {
         var val0 = $('#discordRollRewards0Input').val(),

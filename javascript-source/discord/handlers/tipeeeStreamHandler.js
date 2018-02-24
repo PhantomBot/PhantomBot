@@ -8,9 +8,9 @@
         announce = false;
 
     /**
-     * @event panelWebSocket
+     * @event webPanelSocketUpdate
      */
-    $.bind('panelWebSocket', function(event) {
+    $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/tipeeeStreamHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'tipeeestreamToggle', false);
             message = $.getIniDbString('discordSettings', 'tipeeestreamMessage', 'Thank you very much (name) for the tip of (formattedamount) (currency)!');
@@ -79,9 +79,9 @@
     });
 
     /**
-     * @event discordCommand
+     * @event discordChannelCommand
      */
-    $.bind('discordCommand', function(event) {
+    $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
             channel = event.getChannel(),
             command = event.getCommand(),
@@ -140,13 +140,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./discord/handlers/tipeeeStreamHandler.js')) {
-            $.discord.registerCommand('./discord/handlers/tipeeeStreamHandler.js', 'tipeeestreamhandler', 1);
-            $.discord.registerSubCommand('tipeeestreamhandler', 'toggle', 1);
-            $.discord.registerSubCommand('tipeeestreamhandler', 'message', 1);
-            $.discord.registerSubCommand('tipeeestreamhandler', 'channel', 1);
-
-            // $.unbind('initReady'); Needed or not?
-        }
+        $.discord.registerCommand('./discord/handlers/tipeeeStreamHandler.js', 'tipeeestreamhandler', 1);
+        $.discord.registerSubCommand('tipeeestreamhandler', 'toggle', 1);
+        $.discord.registerSubCommand('tipeeestreamhandler', 'message', 1);
+        $.discord.registerSubCommand('tipeeestreamhandler', 'channel', 1);
     });
 })();

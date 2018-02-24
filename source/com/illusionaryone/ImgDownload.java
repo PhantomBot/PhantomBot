@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,10 +51,11 @@ public class ImgDownload {
                 int n = 0;
                 while ((n = inputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, n);
-                }   outputStream.close();
+                }
+                outputStream.close();
             }
             byte[] imgData = outputStream.toByteArray();
-    
+
             if (!new File ("./addons/downloadHTTP").exists()) {
                 new File ("./addons/downloadHTTP").mkdirs();
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -25,7 +25,7 @@
 
 (function() {
 
-    var spinIcon = '<i style="color: #6136b1" class="fa fa-spinner fa-spin" />',
+    var spinIcon = '<i style="color: var(--main-color)" class="fa fa-spinner fa-spin" />',
         isDeleting = false;
 
     /**
@@ -61,7 +61,7 @@
                     id = msgObject['results'][idx]['key'];
                     quoteData = JSON.parse(msgObject['results'][idx]['value']);
                     quoteDataClean = JSON.parse(msgObject['results'][idx]['value']);
-                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C').replace(/'/g, '%27').replace(/"/g, '%28');
+                    quoteDataClean[1] = quoteDataClean[1].replace(/,/g, '%2C').replace(/"/g, '\'\'').replace(/'/g, '%27');
                     html += '<tr style="textList">' +
                             '    <td rowspan="2" style="width: 25px">' +
                             '        <div id="deleteQuote_' + id + '" type=\"button\" class=\"btn btn-default btn-xs\"' +
@@ -71,7 +71,7 @@
 
                             // ID and Date
                             '    <td>ID: ' + id + '</td>' +
-                            '    <td style="vertical-align: middle">' + 
+                            '    <td style="vertical-align: middle">' +
                             '        Date: ' + $.format.date(parseInt(quoteData[2]), 'MM.dd.yy') +
                             '    </td>' +
 
@@ -79,11 +79,11 @@
                             // User
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input type="text" id="inlineQuoteEdit_user_' + id + '"' +
+                            '            <input type="text" class="input-control" id="inlineQuoteEdit_user_' + id + '"' +
                             '                   value="' + quoteData[0] + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'user\')">' +
-                            '                <i class="fa fa-pencil" />' +
+                            '                <i class="fa fa-hdd-o" />' +
                             '            </button>' +
                             '        </form>' +
                             '    </td>' +
@@ -91,11 +91,11 @@
                             // Game
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input type="text" id="inlineQuoteEdit_game_' + id + '"' +
+                            '            <input type="text" class="input-control" id="inlineQuoteEdit_game_' + id + '"' +
                             '                   value="' + (quoteData.length == 4 ? quoteData[3] : 'Some Game') + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'game\')">' +
-                            '                <i class="fa fa-pencil" />' +
+                            '                <i class="fa fa-hdd-o" />' +
                             '            </button>' +
                             '        </form>' +
                             '    </td>' +
@@ -105,11 +105,11 @@
                             '<tr style="textList">' +
                             '    <td colspan="4" style="vertical-align">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
-                            '            <input style="width: 89%" type="text" id="inlineQuoteEdit_quote_' + id + '"' +
-                            '                   value="' + quoteData[1] + '" />' +
+                            '            <input style="width: 89%" type="text" class="input-control" id="inlineQuoteEdit_quote_' + id + '"' +
+                            '                   value="' + quoteData[1].replace(/"/g, '\'\'') + '" />' +
                             '            <button type="button" class="btn btn-default btn-xs"' +
                             '                    onclick="$.updateQuote(\'' + id + '\', \'' + quoteDataClean + '\', \'quote\')">' +
-                            '                <i class="fa fa-pencil" />' +
+                            '                <i class="fa fa-hdd-o" />' +
                             '            </button>' +
                             '        </form>' +
                             '    </td>' +
@@ -121,7 +121,7 @@
             }
         }
     }
- 
+
     /**
      * @function doQuery
      */
@@ -167,14 +167,14 @@
             quoteArray = quoteData.split(',');
         if (value.length > 0) {
             if (panelMatch(field, 'quote')) {
-                quoteArray[1] = String(value).replace(/"/g, '\'\'');
+                quoteArray[1] = value.replace(/"/g, '\'\'');
             }
             if (panelMatch(field, 'game')) {
-                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'').replace(/%28/g, '\'\''); 
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'');
                 quoteArray[3] = value;
             }
             if (panelMatch(field, 'user')) {
-                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'').replace(/%28/g, '\'\'');
+                quoteArray[1] = quoteArray[1].replace(/%2C/g, ',').replace(/%27/g, '\'');
                 quoteArray[0] = value;
             }
             sendDBUpdate('quotes_update', 'quotes', id, JSON.stringify(quoteArray));
@@ -202,7 +202,7 @@
         $('#quoteMessageInput').val('');
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 4);
     }
-    
+
     // Import the HTML file for this panel.
     $("#quotesPanel").load("/panel/quotes.html");
 

@@ -111,8 +111,6 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/cleanupSystem.js')) {
-            $.registerChatCommand('./systems/cleanupSystem.js', 'cleanup', 1);
-        }
+        $.registerChatCommand('./systems/cleanupSystem.js', 'cleanup', 1);
     });
 })();

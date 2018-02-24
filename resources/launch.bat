@@ -9,15 +9,6 @@ IF %ERRORLEVEL% NEQ 0 (
     pause
     exit
 )
-FOR /f tokens^=2-5^ delims^=.-_^" %%j in ('java -version 2^>^&1') do (
-    if !first!==1 set "jver=%%j%%k%%l%%m"
-    set first=0
-)
-IF %jver% LSS 18000 (
-    echo You must have Java 8 or later installed, please update it from: https://java.com/download
-    pause
-    exit
-)
-java -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar
+java -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar %1
 endlocal
 pause

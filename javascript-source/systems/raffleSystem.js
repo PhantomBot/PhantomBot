@@ -19,7 +19,8 @@
         messageInterval = $.getSetIniDbNumber('raffleSettings', 'raffleMessageInterval', 0),
         subscriberBonus = $.getSetIniDbNumber('raffleSettings', 'subscriberBonusRaffle', 1),
         regularBonus = $.getSetIniDbNumber('raffleSettings', 'regularBonusRaffle', 1),
-        interval, timeout, followMessage = '', timerMessage = '';
+        interval, timeout, followMessage = '',
+        timerMessage = '';
 
     /**
      * @function reloadRaffle
@@ -91,7 +92,7 @@
         if (args[i] !== undefined) {
             keyword = args[i].toLowerCase();
             i++;
-            
+
             if (keyword.startsWith('!')) {
                 keyword = ('!' + keyword.match(/(!+)(.+)/)[2]);
             }
@@ -110,7 +111,9 @@
         /* Check if the caster wants a auto close timer */
         if (!isNaN(parseInt(args[i])) && parseInt(args[i]) !== 0) {
             timerTime = parseInt(args[i]);
-            timeout = setTimeout(function() { close(); }, (timerTime * 6e4));
+            timeout = setTimeout(function() {
+                close();
+            }, (timerTime * 6e4));
             timerMessage = $.lang.get('rafflesystem.common.timer', timerTime);
         }
 
@@ -124,12 +127,14 @@
         }
 
         if (parseInt(messageInterval) !== 0) {
-            interval = setInterval(function() { $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', String(Object.keys(entered).length))); }, messageInterval * 6e4);
+            interval = setInterval(function() {
+                $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', String(Object.keys(entered).length)));
+            }, messageInterval * 6e4);
         }
 
         /* Clear the old raffle data */
         entries = [];
-        register(true, keyword.includes('!'));
+        $.raffleCommand = keyword;
         $.inidb.RemoveFile('raffleList');
         $.inidb.set('raffleresults', 'raffleEntries', 0);
 
@@ -147,7 +152,7 @@
         /* Clear the timer if there is one active. */
         clearInterval(timeout);
         clearInterval(interval);
-        
+
         /* Check if there's a raffle opened */
         if (!status) {
             $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.close.error.closed'));
@@ -178,9 +183,9 @@
                 return;
             }
 
-            var username = $.randElement(entries),
-                isFollowing = $.user.isFollower(username.toLowerCase()),
-                followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnofollowing'));
+            var username = $.randElement(entries);
+            isFollowing = $.user.isFollower(username.toLowerCase()),
+                followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
 
             $.say($.lang.get('rafflesystem.winner', username, followMsg));
             $.inidb.set('raffleresults', 'winner', username + ' ' + followMsg);
@@ -213,7 +218,7 @@
         var username = $.randElement(entries),
             isFollowing = $.user.isFollower(username.toLowerCase()),
             followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
-        
+
         $.say($.lang.get('rafflesystem.repick', username, followMsg));
         $.inidb.set('raffleresults', 'winner', username + ' ' + followMsg);
 
@@ -317,7 +322,6 @@
      * @info resets the raffle information
      */
     function clear() {
-        register(false, keyword.includes('!'));
         keyword = '';
         followMessage = '';
         timerMessage = '';
@@ -328,31 +332,14 @@
         entryFee = 0;
         timerTime = 0;
         entered = [];
-    }
-
-    /**
-     * @function register
-     * @info binds a new ircChannelMessage event
-     *
-     * @param {boolean} register
-     */
-    function register(register, useCommand) {
-        if (useCommand) {
-            if (register) {
-                $.registerChatCommand('./systems/raffleSystem.js', keyword.substring(1), 7);
-                $.inidb.set('raffle', 'command', keyword.substring(1));
-            } else {
-                $.unregisterChatCommand(keyword.substring(1));
-                $.inidb.set('raffle', 'command', '');
-            }
-        }
+        $.raffleCommand = null;
     }
 
     /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
-        if (status === true && !keyword.includes('!') && event.getMessage().equalsIgnoreCase(keyword)) {
+        if (status === true && event.getMessage().equalsIgnoreCase(keyword)) {
             enter(event.getSender(), event.getTags());
         }
     });
@@ -499,13 +486,6 @@
                 return;
             }
         }
-        
-        /**
-         * @info command for entering the raffle.
-         */
-        if (command.equalsIgnoreCase(keyword.substring(1))) {
-            enter(sender, event.getTags());
-        }
     });
 
     /**
@@ -513,20 +493,18 @@
      * @info event sent to register commands
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./systems/raffleSystem.js')) {
-            $.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
+        $.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
 
-            $.registerChatSubcommand('raffle', 'open', 2);
-            $.registerChatSubcommand('raffle', 'close', 2);
-            $.registerChatSubcommand('raffle', 'repick', 2);
-            $.registerChatSubcommand('raffle', 'results', 7);
-            $.registerChatSubcommand('raffle', 'subscriberbonus', 1);
-            $.registerChatSubcommand('raffle', 'regularbonus', 1);
-            $.registerChatSubcommand('raffle', 'togglemessages', 1);
-            $.registerChatSubcommand('raffle', 'togglerepicks', 1);
-            $.registerChatSubcommand('raffle', 'message', 1);
-            $.registerChatSubcommand('raffle', 'messagetimer', 1);
-        }
+        $.registerChatSubcommand('raffle', 'open', 2);
+        $.registerChatSubcommand('raffle', 'close', 2);
+        $.registerChatSubcommand('raffle', 'repick', 2);
+        $.registerChatSubcommand('raffle', 'results', 7);
+        $.registerChatSubcommand('raffle', 'subscriberbonus', 1);
+        $.registerChatSubcommand('raffle', 'regularbonus', 1);
+        $.registerChatSubcommand('raffle', 'togglemessages', 1);
+        $.registerChatSubcommand('raffle', 'togglerepicks', 1);
+        $.registerChatSubcommand('raffle', 'message', 1);
+        $.registerChatSubcommand('raffle', 'messagetimer', 1);
     });
 
     $.reloadRaffle = reloadRaffle;

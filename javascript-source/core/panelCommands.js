@@ -9,13 +9,6 @@
             args = event.getArgs(),
             action = args[0];
 
-        /* Reloads the init vars */
-        if (command.equalsIgnoreCase('reloadinit')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadInit();
-        }
 
         /* reloads the betting vars */
         if (command.equalsIgnoreCase('reloadbet')) {
@@ -48,6 +41,16 @@
         }
 
         /*
+         * Reloads the streamelements vars.
+         */
+        if (command.equalsIgnoreCase('streamelementsreload')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadStreamElements();
+        }
+
+        /*
          * Sets permissions on a command.
          */
         if (command.equalsIgnoreCase('permcomsilent')) {
@@ -57,28 +60,30 @@
 
             if (args.length == 2) {
                 var group = args[1];
-    
+
                 if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
                 }
-    
-                var list = $.inidb.GetKeyList('aliases', ''), i;
+
+                var list = $.inidb.GetKeyList('aliases', ''),
+                    i;
                 for (i in list) {
                     if (list[i].equalsIgnoreCase(action)) {
                         $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
                         $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
-                    } 
+                    }
                 }
                 $.inidb.set('permcom', action, group);
                 $.updateCommandGroup(action, group);
                 return;
             }
-    
-            var subcommand = args[1], group = args[2];
+
+            var subcommand = args[1],
+                group = args[2];
             if (isNaN(parseInt(group))) {
                 group = $.getGroupIdByName(group);
             }
-    
+
             $.inidb.set('permcom', action + ' ' + subcommand, group);
             $.updateSubcommandGroup(action, subcommand, group);
             return;
@@ -93,7 +98,9 @@
             }
             $.addComRegisterAliases();
             $.addComRegisterCommands();
-            if (action) { $.unregisterChatCommand(action); }
+            if (action) {
+                $.unregisterChatCommand(action);
+            }
             return;
         }
 
@@ -171,7 +178,7 @@
                 return;
             }
             var argsString = args.splice(0).join(' ');
-            $.updateStatus($.channelName, argsString, sender, true); 
+            $.updateStatus($.channelName, argsString, sender, true);
             return;
         }
 
@@ -185,7 +192,19 @@
             var argsString = args.splice(0).join(' ');
             $.updateGame($.channelName, argsString, sender, true);
             return;
-        } 
+        }
+
+        /*
+         * Sets the community on stream
+         */
+        if (command.equalsIgnoreCase('setcommunitysilent')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            var argsString = args.join(' ').split(', ');
+            $.updateCommunity($.channelName, argsString, sender, true);
+            return;
+        }
 
         /*
          * Reloads the adventure variables.
@@ -482,9 +501,10 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadtraffle', 30);
             $.registerChatCommand('./core/panelCommands.js', 'updatetimesettings', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadlogs', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadinit', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadbet', 30);
             $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
         }, 10000);
     });
 })();

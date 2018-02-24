@@ -92,9 +92,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./handlers/wordCounter.js')) {
-            $.registerChatCommand('./handlers/wordCounter.js', 'wordcounter', 1);
-            $.registerChatCommand('./handlers/wordCounter.js', 'count', 7);
-        }
+        $.registerChatCommand('./handlers/wordCounter.js', 'wordcounter', 1);
+        $.registerChatCommand('./handlers/wordCounter.js', 'count', 7);
     });
 })();

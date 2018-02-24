@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 phantombot.tv
+ * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * @author IllusionaryOne
  */
 
@@ -27,8 +27,8 @@
 
     var loggingMode = false,
         modeIcon = [];
-        modeIcon['false'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle-o\" />";
-        modeIcon['true'] = "<i style=\"color: #6136b1\" class=\"fa fa-circle\" />";
+        modeIcon['false'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle-o\" />";
+        modeIcon['true'] = "<i style=\"color: var(--main-color)\" class=\"fa fa-circle\" />";
 
     /*
      * onMessage
@@ -65,7 +65,7 @@
      * @param {String} mode
      */
     function changeLoggingStatus(mode) {
-        $("#loggingMode").html("<i style=\"color: #6136b1\" class=\"fa fa-spinner fa-spin\" />");
+        $("#loggingMode").html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
         sendCommand("log " + mode);
         setTimeout(function() { doQuery(); }, 500);
     }
@@ -78,7 +78,7 @@
         var active = $("#tabs").tabs("option", "active");
         if (active == 5 && isConnected) {
             doQuery();
-            clearInterval(interval); 
+            clearInterval(interval);
         }
     }, 200);
 
