@@ -303,6 +303,9 @@
      * @param channelName
      */
     function getFollowAge(sender, username, channelName) {
+        username = $.user.sanitize(username);
+        channelName = $.user.sanitize(channelName);
+
         var user = $.twitch.GetUserFollowsChannel(username, channelName);
 
         if (user.getInt('_http') === 404) {
@@ -313,7 +316,7 @@
         var date = new Date(user.getString('created_at')),
             dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
             dateFinal = dateFormat.format(date),
-            days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
+            days = Math.floor(((date.getTime() - $.systemTime()) / 1000) / 86400);
 
         if (days > 0) {
             $.say($.lang.get('followhandler.follow.age.time.days', $.userPrefix(sender, true), username, channelName, dateFinal, days));
@@ -328,7 +331,7 @@
      * @param event
      */
     function getChannelAge(event) {
-        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]));
+        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])));
 
         if (channelData.getInt('_http') === 404) {
             $.say($.userPrefix(event.getSender(), true) + $.lang.get('channel.age.user.404'));
@@ -341,9 +344,9 @@
             days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
 
         if (days > 0) {
-            $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]), dateFinal, days));
+            $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal, days));
         } else {
-            $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]), dateFinal));
+            $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal));
         }
     }
 
