@@ -37,7 +37,7 @@
                 return;
             }
 
-            target = target.toLowerCase();
+            target = $.user.sanitize(target);
 
             if ($.inidb.exists('lastseen', target)) {
                 date = new Date(parseInt($.inidb.get('lastseen', target.toLowerCase())));
