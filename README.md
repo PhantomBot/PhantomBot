@@ -11,16 +11,17 @@ Additional functionality is enabled through the use of third-party modules.
 
 * [Get PhantomBot](https://phantombot.tv/ "PhantomBot")
 * [Full Feature List](https://phantombot.tv/features "PhantomBot Features")
-* [Community Forums](https://community.phantombot.tv)
-* [Documentation & Installation Instructions](https://docs.phantombot.tv)
-* [PhantomBot Blog](https://blog.phantombot.tv)
+* [Community Forums](https://community.phantombot.tv "PhantomBot Community Forums")
+* [Documentation & Installation Instructions](https://docs.phantombot.tv "Documenation and Installation Instructions")
+* [PhantomBot Blog](https://blog.phantombot.tv "PhantomBot Blog")
 * [Follow us on Twitter](https://www.twitter.com/PhantomBotApp "PhantomBot Twitter")
 
 ## Screenshots
-
-[![](https://i.zelakto.tv/images/cbD6vV7.png)](https://i.zelakto.tv/images/cbD6vV7.png)
-[![](https://i.zelakto.tv/images/l3WNPWK.png)](https://i.zelakto.tv/images/6h38mvL.png)
-[![](https://i.zelakto.tv/images/xGoRGJs.png)](https://i.zelakto.tv/images/VuN7GEp.png)
+[![](https://i.zelakto.tv/images/YaDd.png)](https://i.zelakto.tv/images/Yu7W.png "PhantomBot Console")
+[![](https://i.zelakto.tv/images/YfFl.png)](https://i.zelakto.tv/images/YXyc.png "PhantomBot Control Panel")
+[![](https://i.zelakto.tv/images/Y5W4.png)](https://i.zelakto.tv/images/Y2qR.png "PhantomBot YouTube Player")
+[![](https://i.zelakto.tv/images/Y4mh.png)](https://i.zelakto.tv/images/YDNm.png "PhantomBot Public Playlist Queue")  
+Click on the images to enlarge them.
 
 ## How can I follow along/contribute?
 
@@ -45,7 +46,7 @@ Please refer to platform-specific installation documentation.
 
 ## Upgrading PhantomBot
 
-Detailed upgrade instructions are listed on our [documentation](https://docs.phantombot.tv/kb/update).
+Detailed upgrade instructions are listed on our [documentation](https://community.phantombot.tv/t/how-to-update-phantombot/).
 
 ## License
 
