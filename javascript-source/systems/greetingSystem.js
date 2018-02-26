@@ -16,7 +16,7 @@
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function(event) {
-        if (!$.isOnline($.channelName) && autoGreetEnabled) {
+        if ($.isOnline($.channelName) && autoGreetEnabled) {
             var sender = event.getUser().toLowerCase(),
                 username = $.resolveRank(sender),
                 message = $.getIniDbString('greeting', sender, ''),
