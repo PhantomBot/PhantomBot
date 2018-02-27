@@ -630,6 +630,15 @@ public class DiscordUtil {
     public void setStream(String game, String url) {
         DiscordAPI.getShard().streaming(game, url);
     }
+    
+    /*
+     * Method to set the bots username.
+     *
+     * @param {String} name
+     */
+    public void setName(String name) {
+        DiscordAPI.getClient().changeUsername(name);
+    }
 
     /*
      * Method to remove the current game or reset the streaming status.
