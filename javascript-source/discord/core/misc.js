@@ -112,6 +112,16 @@
     function removeGame() {
         $.discordAPI.removeGame();
     }
+    
+    /**
+     * @function setName
+     *
+     * @param {string} username
+     * @export $.discord
+     */
+    function setName(username) {
+        $.discordAPI.setName(username);
+    }
 
     /**
      * @function setRole
@@ -236,6 +246,24 @@
             removeGame();
             say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.removed'));
         }
+        
+        /**
+         * @discordcommandpath setname - Changes the bot's name.
+         */
+        if (command.equalsIgnoreCase('setname')) {
+            if (action === undefined) {
+                say(channel, userPrefix(mention) + $.lang.get('discord.misc.name.set.usage'));
+                return;
+            }
+            try {
+                setName(action);
+            } catch (ex) {
+                $.log.error('[DISCORD] Unable to change bot name: ' + ex.message);
+                say(channel, userPrefix(mention) + $.lang.get('discord.misc.name.404', 'Please check Error logs!'));
+                return;
+            }
+            say(channel, userPrefix(mention) + $.lang.get('discord.misc.name.set', action));            
+        }
     });
 
     /**
@@ -245,6 +273,7 @@
         $.discord.registerCommand('./discord/core/misc.js', 'module', 1);
         $.discord.registerCommand('./discord/core/misc.js', 'setgame', 1);
         $.discord.registerCommand('./discord/core/misc.js', 'setstream', 1);
+        $.discord.registerCommand('./discord/core/misc.js', 'setname', 1);
         $.discord.registerCommand('./discord/core/misc.js', 'removegame', 1);
         $.discord.registerSubCommand('module', 'list', 1);
         $.discord.registerSubCommand('module', 'enable', 1);
@@ -260,6 +289,7 @@
         userPrefix: userPrefix,
         setStream: setStream,
         setGame: setGame,
+        setName: setName,
         setRole: setRole,
         say: say,
         resolve: {
