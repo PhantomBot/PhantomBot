@@ -139,7 +139,7 @@
             seconds = ((minutes % 1) * 60);
 
         if (hoursOnly) {
-            return floor(hours) + $.lang.get('common.hours3');
+            return floor(time / 3600) + $.lang.get('common.hours3');
         } else {
             var timeStringParts = [],
                 timeString = '';
