@@ -7,6 +7,7 @@ $.lang.register('discord.misc.game.set.usage', 'Usage: !setgame [game name]');
 $.lang.register('discord.misc.game.set', 'Bot game updated to: $1');
 $.lang.register('discord.misc.name.set.usage', 'Usage: !setname [name]');
 $.lang.register('discord.misc.name.set', 'Bot name updated to: $1');
+$.lang.register('discord.misc.name.404', 'Bot name was not updated due to an error: $1');
 $.lang.register('discord.misc.game.stream.set.usage', 'Usage: !setstream [twitch url] [game name]');
 $.lang.register('discord.misc.game.stream.set', 'Bot stream changed to: $1 and game to: $2');
 $.lang.register('discord.misc.game.removed', 'Bot game has been removed.');
