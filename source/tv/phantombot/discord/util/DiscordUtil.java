@@ -637,7 +637,12 @@ public class DiscordUtil {
      * @param {String} name
      */
     public void setName(String name) {
-        DiscordAPI.getClient().changeUsername(name);
+        try {
+            DiscordAPI.getClient().changeUsername(name);
+            return;
+        } catch (DiscordException ex) {
+            com.gmt2001.Console.err.println("[DISCORD] Unable to change bot name: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+        }
     }
 
     /*
