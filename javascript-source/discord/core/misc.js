@@ -259,7 +259,7 @@
                 setName(action);
             } catch (ex) {
                 $.log.error('[DISCORD] Unable to change bot name: ' + ex.message);
-                say(channel, userPrefix(mention) + $.lang.get('discord.misc.name.404', 'Please check Error logs!'));
+                say(channel, userPrefix(mention) + $.lang.get('discord.misc.name.404'));
                 return;
             }
             say(channel, userPrefix(mention) + $.lang.get('discord.misc.name.set', action));            
