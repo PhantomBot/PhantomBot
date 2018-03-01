@@ -637,12 +637,14 @@ public class DiscordUtil {
      * @param {String} name
      */
     public void setName(String name) {
-        try {
-            DiscordAPI.getClient().changeUsername(name);
-            return;
-        } catch (DiscordException ex) {
-            com.gmt2001.Console.err.println("[DISCORD] Unable to change bot name: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
-        }
+        RequestBuffer.request(() -> {
+            try {
+                DiscordAPI.getClient().changeUsername(name);
+                return;
+            } catch (MissingPermissionsException | DiscordException | IllegalArgumentException ex ) {
+                com.gmt2001.Console.err.println("[DISCORD] Unable to change bot name: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
     }
 
     /*
