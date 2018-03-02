@@ -27,6 +27,7 @@ import sx.blah.discord.handle.obj.IRole;
 
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.RateLimitException;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.RequestBuffer;
 import sx.blah.discord.util.EmbedBuilder;
@@ -641,7 +642,7 @@ public class DiscordUtil {
             try {
                 DiscordAPI.getClient().changeUsername(name);
                 return;
-            } catch (MissingPermissionsException | DiscordException | IllegalArgumentException ex ) {
+            } catch (MissingPermissionsException | DiscordException | RateLimitException | IllegalArgumentException ex ) {
                 com.gmt2001.Console.err.println("[DISCORD] Unable to change bot name: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         });
