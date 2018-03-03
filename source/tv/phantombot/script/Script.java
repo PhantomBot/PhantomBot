@@ -141,6 +141,11 @@ public class Script {
             return;
         }
 
+        /* macOS user reported errors loading ._ files. Could be from text editor. */
+        if (file.getName().startsWith("._")) {
+            return;
+        }
+
         /* Enable Error() in JS to provide an object with fileName and lineNumber. */
         final ContextFactory ctxFactory = new ContextFactory() {
             @Override
