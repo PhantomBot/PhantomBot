@@ -1,7 +1,7 @@
 $.lang.register('chatmoderator.moderation.logs', 'Moderation logs have been $1');
 $.lang.register('chatmoderator.moderation.enabled', 'Enabled - this will require a bot reboot.');
 $.lang.register('chatmoderator.usage.toggles', 'Usage: !moderation [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker / fakepurge / regulars / subscribers / silenttimeout]');
-$.lang.register('chatmoderator.usage.messages', 'Usage: !moderation [linksmessage / capsmessage / symbolsmessage / spammessage / emotesmessage / colorsmessage / blacklistmessage / longmsgmessage / spamtrackermessage / fakepurgemessage]');
+$.lang.register('chatmoderator.usage.messages', 'Usage: !moderation [linksmessage / capsmessage / symbolsmessage / spammessage / emotesmessage / colorsmessage / blacklistmessage / blacklistmessageban / longmsgmessage / spamtrackermessage / fakepurgemessage]');
 $.lang.register('chatmoderator.options', 'Usage: !moderation [capstriggerlength / capslimit / symbolstriggerlength / symbolslimit / symbolsgrouplimit / spamlimit / emoteslimit / spamtrackerlimit / spamtrackertime / permittime / warningtime / timeouttime / messagecooldown / messagecharacterlimit / warningresettime]');
 $.lang.register('chatmoderator.link.usage', 'Usage: !moderation links [on / off] (link filter is currently $1)');
 $.lang.register('chatmoderator.fakepurge.usage', 'Usage: !moderation fakepurge [on / off] (fake purge is currently $1)');
@@ -143,6 +143,8 @@ $.lang.register('chatmoderator.fakepurge.message.usage', 'Usage: !moderation fak
 $.lang.register('chatmoderator.fakepurge.message.set', 'fake purge warning message set to: $1');
 $.lang.register('chatmoderator.blacklist.message.usage', 'Usage: !moderation blacklistmessage [message]');
 $.lang.register('chatmoderator.blacklist.message.set', 'blacklist warning message set to: $1');
+$.lang.register('chatmoderator.blacklistban.message.usage', 'Usage: !moderation blacklistmessageban [message]');
+$.lang.register('chatmoderator.blacklistban.message.set', 'blacklist ban message set to: $1');
 $.lang.register('chatmoderator.permit.time.usage', 'Usage: !moderation permittime [time]');
 $.lang.register('chatmoderator.permit.time.set', 'link permit time set to: $1 seconds.');
 $.lang.register('chatmoderator.caps.limit.usage', 'Usage: !moderation capslimit [amount in percent]');
@@ -179,6 +181,7 @@ $.lang.register('chatmoderator.whitelist.remove.usage', 'Usage: !whiteList remov
 $.lang.register('chatmoderator.whitelist.removed', 'Link removed from the whitelist!');
 $.lang.register('chatmoderator.warning', '(warning)');
 $.lang.register('chatmoderator.timeout', '(timeout)');
+$.lang.register('chatmoderator.ban', '(ban)');
 $.lang.register('chatmoderator.blacklisttimeouttime.set', 'blacklist timeout time set to $1 seconds.');
 $.lang.register('chatmoderator.blacklisttimeouttime.usage', '!moderation blacklisttimeouttime [time in seconds] (blacklist timeout time is currently $1 seconds)');
 $.lang.register('chatmoderator.warningtime.usage', '!moderation warningtime [links / caps / symbols / spam / emotes / colors / longmessages / spamtracker / fakepurge] [time in seconds]');
