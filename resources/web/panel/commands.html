@@ -14,7 +14,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  @author IllusionaryOne
 -->
 
@@ -27,68 +27,8 @@
         <div id="_editCustomCommandsPanelDisabled" />
     <div id="_editCustomCommandsPanel">
 
-        <div id="tagHelpDialog" title="Custom Command Tags" style="font-size: 90%">
-            <table>
-                <tr>
-                    <td>(sender) </td><td> User who triggered the command.<td>
-                    </tr><tr>
-                    <td>(@sender) </td><td> User who triggered the command and adds a @ symbol to his name.<td>
-                    </tr><tr>
-                    <td>(baresender) </td><td> User who triggered the command in lower case.<td>
-                    </tr><tr>
-                    <td>(touser) </td><td> Replaces with the argument you say after the command. If nothing is said after its the user who triggered the command.<td>
-                    </tr><tr>
-                    <td>(#) </td><td> Random number<td>
-                    </tr><tr>
-                    <td>(1), (2), (3) etc </td><td> Command arguments.<td>
-                    </tr><tr>
-                    <td>(age) </td><td> Tells you how long you have been on twitch for.<td>
-                    </tr><tr>
-                    <td>(random) </td><td> Random person in chat.<td>
-                    </tr><tr>
-                    <td>(pointname) </td><td> Current point name.<td>
-                    </tr><tr>
-                    <td>(uptime) </td><td> Current stream uptime.<td>
-                    </tr><tr>
-                    <td>(game) </td><td> Current game set on twitch.<td>
-                    </tr><tr>
-                    <td>(status) </td><td> Current title set on twitch.<td>
-                    </tr><tr>
-                    <td>(price) </td><td> Current command price.<td>
-                    </tr><tr>
-                    <td>(pay) </td><td> Payment of the command.<td>
-                    </tr><tr>
-                    <td>(onlineonly) </td><td> Will make the command work when the stream is online.<td>
-                    </tr><tr>
-                    <td>(offlineonly) </td><td> Will make the command work when the stream is offline.<td>
-                    </tr><tr>
-                    <td>(viewers) </td><td> Current viewer count.<td>
-                    </tr><tr>
-                    <td>(count) </td><td> Amount of time the command has been used.<td>
-                    </tr><tr>
-                    <td>(echo) </td><td> Will say any message as the bot.<td>
-                    </tr><tr>
-                    <td>(1=) </td><td> Argument 1. Add a the tag name of your choice after the = for if the argument is empty.<td>
-                    </tr><tr>
-                    <td>(countdown=) </td><td> Add the date you want to count down too. Ex (countdown=July 2 2016 7:00).<td>
-                    </tr><tr>
-                    <td>(downtime) </td><td> Time since the last stream.<td>
-                    </tr><tr>
-                    <td>(readfile filename.txt) </td><td> Reads what is in the file. The file must be in the bots addons folder.<td>
-                    </tr><tr>
-                    <td>(customapijson URL key | {literal string} ...) </td>
-                    <td> Call a remote URL that returns JSON. key or object.key or object.object.key to access JSON data.
-                    </tr><tr>
-                    <td>(command [command_name]) </td><td> Call a command. Must be first item in custom command. Do not include ! before command_name</td>
-                    </tr><tr>
-                    <td>(customapi [requesturl]) </td><td> Call a remote URL<td>
-                </tr>
-            </table>
-        </div>
-
         <div>
-            <button type="button" class="btn btn-primary btn-xs inline pull-right"
-                     onclick="$('#tagHelpDialog').dialog('open')"><small>Command variables</small></button>
+            <button type="button" class="btn btn-primary btn-xs inline pull-right" onclick="window.open('https://community.phantombot.tv/t/command-variables')"><small>Command variables</small></button>
             <br><br>
         </div>
     </div>
@@ -230,7 +170,7 @@
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldown()">Submit</button>
                 <input type="text" class="form-control" id="cooldownCmdInputCommand" placeholder="Command name" />
                 <input type="number" min="0" class="form-control" id="cooldownCmdInput" placeholder="Seconds" />
-            
+
             <div class="checkbox pull-right">
                 <label>
                     <input type="checkbox" id="globalCooldownCheck" value="global" checked data-toggle="tooltip" title="When this is checked the cooldown will be applied to everyone
