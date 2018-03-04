@@ -42,6 +42,7 @@
 
         blacklistTimeoutTime = $.getSetIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
         blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase.'),
+        blacklistMessageBan = $.getSetIniDbString('chatModerator', 'blacklistMessageBan', 'you were banned for using a blacklisted phrase.'),
 
         fakePurgeToggle = $.getSetIniDbBoolean('chatModerator', 'fakePurgeToggle', false),
         fakePurgeMessage = $.getSetIniDbString('chatModerator', 'fakePurgeMessage',  'you were timed out for a fake purge.'),
@@ -241,6 +242,7 @@
         };
 
         blacklistMessage = $.getIniDbString('chatModerator', 'blacklistMessage');
+        blacklistMessageBan = $.getIniDbString('chatModerator', 'blacklistMessageBan');
         warningResetTime = $.getIniDbNumber('chatModerator', 'warningResetTime');
         msgCooldownSec = $.getIniDbNumber('chatModerator', 'msgCooldownSecs');
         resetTime = (warningResetTime * 6e4);
@@ -289,7 +291,10 @@
 
             if (json != null && json.isRegex) {
                 json.phrase = new RegExp(json.phrase.replace('regex:', ''));
+            } else {
+                json.phrase = json.phrase.toLowerCase();
             }
+            json.isBan = parseInt(json.timeout) === -1;
 
             blackList.push(json);
         }
@@ -310,7 +315,7 @@
     /**
      * @function timeoutUserFor
      *
-     * @param {string} user
+     * @param {string} username
      * @param {number} time
      * @param {string} reason
      */
@@ -323,6 +328,27 @@
             }
             clearInterval(lastTimeout);
         }, 500, 'scripts::core::chatModerator.js::timeout');
+    }
+
+    /*
+     * @function banUser
+     *
+     * @param {string} username
+     * @param {string} reason
+     */
+    function banUser(username, reason) {
+        var messageWrites = $.getMessageWrites();
+
+        if (messageWrites < 50) {
+            $.session.sayNow('.timeout ' + username + ' 600 ' + reason);
+
+            var banTimeout = setTimeout(function() {
+                $.session.sayNow('.ban ' + username + ' ' + reason);
+                clearInterval(banTimeout);
+            }, 500, 'scripts::core::chatModerator.js::ban');
+        } else {
+            $.session.sayNow('.ban ' + username + ' ' + reason);
+        }
     }
 
     /**
@@ -414,9 +440,16 @@
                     if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
                         return false;
                     }
-                    timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
-                    warning = $.lang.get('chatmoderator.timeout');
-                    sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+
+                    if (blackList[i].isBan) {
+                        banUser(sender, blackList[i].banReason);
+                        warning = $.lang.get('chatmoderator.ban');
+                        sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    } else {
+                        timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
+                        warning = $.lang.get('chatmoderator.timeout');
+                        sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    }
                     return true;
                 }
             } else {
@@ -424,9 +457,16 @@
                     if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
                         return false;
                     }
-                    timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
-                    warning = $.lang.get('chatmoderator.timeout');
-                    sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+
+                    if (blackList[i].isBan) {
+                        banUser(sender, blackList[i].banReason);
+                        warning = $.lang.get('chatmoderator.ban');
+                        sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    } else {
+                        timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
+                        warning = $.lang.get('chatmoderator.timeout');
+                        sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    }
                     return true;
                 }
             }
@@ -884,7 +924,7 @@
             }
 
             /**
-             * @commandpath blacklist add [timeout time] [word] - Adds a word to the blacklist. Use regex: at the start to specify a regex blacklist.
+             * @commandpath blacklist add [timeout time (-1 = ban)] [word] - Adds a word to the blacklist. Use regex: at the start to specify a regex blacklist.
              */
             if (action.equalsIgnoreCase('add')) {
                 if (!subAction || !args[2] || isNaN(parseInt(subAction))) {
@@ -904,7 +944,7 @@
                     isSilent: false,
                     excludeRegulars: false,
                     excludeSubscribers: false,
-                    message: String(blacklistMessage),
+                    message: timeout !== -1 ? String(blacklistMessage) : String(blacklistMessageBan),
                     banReason: String(silentTimeout.BlacklistMessage)
                 };
 
@@ -1765,7 +1805,22 @@
                 blacklistMessage = argString.replace(action, '').trim();
                 $.inidb.set('chatModerator', 'blacklistMessage', blacklistMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.message.set', blacklistMessage));
-                $.log.event(sender + ' changed the spam warning message to "' + blacklistMessage + '"');
+                $.log.event(sender + ' changed the blacklist warning message to "' + blacklistMessage + '"');
+                return;
+            }
+
+            /**
+             * @commandpath moderation blacklistmessageban [message] - Sets the blacklist ban message that will be default for blacklists you add from chat. This can be custom on the panel.
+             */
+            if (action.equalsIgnoreCase('blacklistmessageban')) {
+                if (!subAction) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklistban.message.usage'));
+                    return;
+                }
+                blacklistMessageBan = argString.replace(action, '').trim();
+                $.inidb.set('chatModerator', 'blacklistMessageBan', blacklistMessageBan);
+                $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklistban.message.set', blacklistMessageBan));
+                $.log.event(sender + ' changed the blacklist ban message to "' + blacklistMessageBan + '"');
                 return;
             }
 
