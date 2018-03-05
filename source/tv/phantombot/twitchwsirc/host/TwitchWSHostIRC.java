@@ -315,18 +315,33 @@ public class TwitchWSHostIRC {
                 return;
             }
 
-            if (message.contains("002 " + channelName + " :")) {
-                connected = true;
-                com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
-                lastPing = System.currentTimeMillis();
-                checkPingTime();
+            if (message.contains("002")) {
+                // This is to make sure the caster created the oauth with his channel account and not the bot's.
+                if (message.contains("002 " + channelName + " :")) {
+                    connected = true;
+                    com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
+                    lastPing = System.currentTimeMillis();
+                    checkPingTime();
 
-                try {
-                    Thread.sleep(30 * 1000);
-                } catch (InterruptedException ex) {
-                    com.gmt2001.Console.debug.println("TwitchWSIRC: Failed to sleep: [InterruptedException] " + ex.getMessage());
+                    // All caches wait 20 seconds, so wait 20 seconds here too.
+                    try {
+                        Thread.sleep(20 * 1000);
+                    } catch (InterruptedException ex) {
+                        com.gmt2001.Console.debug.println("TwitchWSIRC: Failed to sleep: [InterruptedException] " + ex.getMessage());
+                    }
+                    eventBus.postAsync(new TwitchHostsInitializedEvent());
+                } else {
+                    connected = false;
+                    badOauth = true;
+                    com.gmt2001.Console.out.println("");
+                    com.gmt2001.Console.out.println("Wrong API OAuth detected.");
+                    com.gmt2001.Console.out.println("The API OAuth belongs to another account.");
+                    com.gmt2001.Console.out.println("Please obtain new API OAuth at with your channel account: https://phantombot.tv/oauth");
+                    com.gmt2001.Console.out.println("Now disabling host module.");
+                    com.gmt2001.Console.out.println("");
+                    PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
+                    close();
                 }
-                eventBus.post(new TwitchHostsInitializedEvent());
                 return;
             }
 
@@ -338,6 +353,7 @@ public class TwitchWSHostIRC {
                 com.gmt2001.Console.out.println("");
                 PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
                 badOauth = true;
+                close();
                 return;
             }
 
