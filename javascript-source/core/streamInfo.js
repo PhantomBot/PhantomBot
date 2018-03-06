@@ -316,7 +316,7 @@
         var date = new Date(user.getString('created_at')),
             dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
             dateFinal = dateFormat.format(date),
-            days = Math.floor(((date.getTime() - $.systemTime()) / 1000) / 86400);
+            days = Math.floor((($.systemTime() - date.getTime()) / 1000) / 86400);
 
         if (days > 0) {
             $.say($.lang.get('followhandler.follow.age.time.days', $.userPrefix(sender, true), username, channelName, dateFinal, days));
