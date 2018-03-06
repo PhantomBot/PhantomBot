@@ -456,3 +456,7 @@ table th {
 .close:hover {
     color: var(--text-color);
 }
+
+.off {
+    display: none;
+}
