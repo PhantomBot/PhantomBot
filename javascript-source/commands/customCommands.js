@@ -203,6 +203,20 @@
             message = $.replace(message, '(count)', $.inidb.get('commandCount', event.getCommand()));
         }
 
+        if (message.match(/\(keywordcount\s(.+)\)/g)) {
+            var input_keyword = message.match(/\(keywordcount\s(.+)\)/)[1],
+                keyword_info = JSON.parse($.inidb.get('keywords', input_keyword));
+        
+            if ('count' in keyword_info) {
+                ++keyword_info["count"];
+            } else {
+                keyword_info["count"] = 1;
+            }
+            $.inidb.set('keywords', input_keyword, JSON.stringify(keyword_info));
+            
+            message = $.replace(message, message.match(/\(keywordcount\s(.+)\)/)[0], keyword_info["count"]);
+        }
+
         if (message.match(/\(random\)/g)) {
             message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)[0]));
         }
