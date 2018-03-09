@@ -52,7 +52,7 @@
                 }
 
                 html = '<table style="width: 100%"><tr><th>Keyword</th><th>Response</th><th style="float: right;"></td>';
-                for (idx in msgObject['results'].sort(sortKeywordsTable)) {
+                for (idx in msgObject['results']) {
                     var json = JSON.parse(msgObject['results'][idx]['value']),
                         keyword = json.keyword;
                         response = json.response;
@@ -88,15 +88,6 @@
 
         sendDBKeys('keywords_cooldown', 'coolkey');
     }
-    
-    /**
-     * @function sortKeywordsTable
-     * @param {Object} a
-     * @param {Object} b
-     */
-    function sortKeywordsTable(a, b) {
-        return panelStrcmp(a.key, b.key);
-    };
 
     /**
      * @function addKeywordnew
@@ -151,7 +142,7 @@
                 response: response,
                 isRegex: isRegex
             }));
-            sendDBUpdate('keyword_cooldown_up', 'coolkey', (isRegex ? 'regex:' : '') + keyword, cooldown);
+            sendDBUpdate('keyword_cooldown_up', 'coolkey', (isRegex ? 'regex:' : '') + keyword.toLowerCase(), cooldown);
         }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { doQuery(); sendWSEvent('keywords', './handlers/keywordHandler.js', null, []); }, TIMEOUT_WAIT_TIME * 2);
     }
