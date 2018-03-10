@@ -529,6 +529,10 @@ td {
     float: none;
 }
 
+#left-side-menu.ui-tabs-nav li.ui-tabs-active .ui-tabs-anchor {
+    cursor: default;
+}
+
 .ui-draggable .ui-dialog-titlebar {
     background: transparent;
     border: 0px;
@@ -561,6 +565,11 @@ td {
     border: 1px solid var(--ui-widget-content-border);
     background: var(--ui-widget-content-background);
 }
+
+.ui-accordion .ui-accordion-header.ui-accordion-header-active {
+    cursor: default;
+}
+
 .ui-widget-header .ui-state-error {
     background: #ffc73d;
 }
