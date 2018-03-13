@@ -142,6 +142,22 @@
             return '';
         }
     }
+    
+    /**
+     * @function getLogo
+     * @export $
+     * @param channelName
+     * @returns {Url}
+     */
+    function getLogo(channelName) {
+        var channel = $.twitch.GetChannel(channelName);
+
+        if (!channel.isNull('logo') && channel.getInt('_http') == 200) {
+            return channel.getString('logo');
+        } else {
+            return 0;
+        }
+    }
 
     /**
      * @function getStreamUptimeSeconds
@@ -454,6 +470,7 @@
     $.getPlayTime = getPlayTime;
     $.getFollows = getFollows;
     $.getGame = getGame;
+    $.getLogo = getLogo;
     $.getStatus = getStatus;
     $.getStreamStartedAt = getStreamStartedAt;
     $.getStreamUptime = getStreamUptime;
