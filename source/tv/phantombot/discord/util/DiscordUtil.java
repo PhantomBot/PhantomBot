@@ -52,34 +52,37 @@ public class DiscordUtil {
     /*
      * Method to send a message to a channel.
      *
-     * @param {IChannel} channel
-     * @param {String}   message
+     * @param  {IChannel} channel
+     * @param  {String}   message
+     * @return {IMessage}
      */
-    public void sendMessage(IChannel channel, String message) {
-        RequestBuffer.request(() -> {
+    public IMessage sendMessage(IChannel channel, String message) {
+        return RequestBuffer.request(() -> {
             try {
                 if (channel != null) {
                     com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [CHAT] " + message);
 
-                    channel.sendMessage(message);
-                    return;
+
+                    return channel.sendMessage(message);
                 }
                 // Throw this if the channel object is null.
                 throw new DiscordException("Failed to send message due to the channel object being null.");
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to send a message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                return null;
             }
-        });
+        }).get();
     }
 
     /*
      * Method to send a message to a channel.
      *
-     * @param {String} channelName
-     * @param {String} message
+     * @param  {String} channelName
+     * @param  {String} message
+     * @return {IMessage}
      */
-    public void sendMessage(String channelName, String message) {
-        sendMessage(getChannel(channelName), message);
+    public IMessage sendMessage(String channelName, String message) {
+        return sendMessage(getChannel(channelName), message);
     }
 
     /*
@@ -118,60 +121,63 @@ public class DiscordUtil {
     /*
      * Method to send embed messages.
      *
-     * @param {IChannel}     channel
-     * @param {EmbedObject} EmbedBuilder
+     * @param  {IChannel}     channel
+     * @param  {EmbedObject} EmbedBuilder
+     * @return {IMessage}
      */
-    public void sendMessageEmbed(IChannel channel, EmbedObject builder) {
-        RequestBuffer.request(() -> {
+    public IMessage sendMessageEmbed(IChannel channel, EmbedObject builder) {
+        return RequestBuffer.request(() -> {
             try {
                 if (channel != null && builder != null) {
                     com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] ");
 
-                    channel.sendMessage(builder);
-                    return;
+                    return channel.sendMessage(builder);
                 }
                 // Throw this if the channel and builder object is null.
                 throw new DiscordException("Failed to send embed message due to either the channel or builder being null.");
             } catch (MissingPermissionsException | DiscordException | IllegalArgumentException ex) {
                 com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                return null;
             }
-        });
+        }).get();
     }
 
     /*
      * Method to send embed messages.
      *
-     * @param {String} channelName
-     * @param {EmbedObject} bulder
+     * @param  {String} channelName
+     * @param  {EmbedObject} bulder
+     * @return {IMessage}
      */
-    public void sendMessageEmbed(String channelName, EmbedObject builder) {
-        sendMessageEmbed(getChannel(channelName), builder);
+    public IMessage sendMessageEmbed(String channelName, EmbedObject builder) {
+        return sendMessageEmbed(getChannel(channelName), builder);
     }
 
     /*
      * Method to send embed messages.
      *
-     * @param {IChannel} channel
-     * @param {String}   message
-     * @param {String}   color
+     * @param  {IChannel} channel
+     * @param  {String}   message
+     * @param  {String}   color
+     * @return {IMessage}
      */
-    public void sendMessageEmbed(IChannel channel, String color, String message) {
-        RequestBuffer.request(() -> {
+    public IMessage sendMessageEmbed(IChannel channel, String color, String message) {
+        return RequestBuffer.request(() -> {
             try {
                 EmbedObject builder = new EmbedBuilder().withDescription(message).withColor(getColor(color)).build();
 
                 if (channel != null) {
                     com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + message);
 
-                    channel.sendMessage(builder);
-                    return;
+                    return channel.sendMessage(builder);
                 }
                 // Throw this if the channel object is null.
                 throw new DiscordException("Failed to send embed message due to the channel being null.");
             } catch (MissingPermissionsException | DiscordException | IllegalArgumentException ex) {
                 com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                return null;
             }
-        });
+        }).get();
     }
 
     /*
@@ -180,58 +186,62 @@ public class DiscordUtil {
      * @param {String} channelName
      * @param {String} message
      * @param {String} color
+     * @return {IMessage}
      */
-    public void sendMessageEmbed(String channelName, String color, String message) {
-        sendMessageEmbed(getChannel(channelName), color, message);
+    public IMessage sendMessageEmbed(String channelName, String color, String message) {
+        return sendMessageEmbed(getChannel(channelName), color, message);
     }
 
     /*
      * Method to send a file to a channel.
      *
-     * @param {IChannel} channel
-     * @param {String}   message
-     * @param {String}   fileLocation
+     * @param  {IChannel} channel
+     * @param  {String}   message
+     * @param  {String}   fileLocation
+     * @return {IMessage}
      */
-    public void sendFile(IChannel channel, String message, String fileLocation) {
-        RequestBuffer.request(() -> {
+    public IMessage sendFile(IChannel channel, String message, String fileLocation) {
+        return RequestBuffer.request(() -> {
             try {
                 if (channel != null) {
                     com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message);
 
                     if (message.isEmpty()) {
-                        channel.sendFile(new File(fileLocation));
+                        return channel.sendFile(new File(fileLocation));
                     } else {
-                        channel.sendFile(message, new File(fileLocation));
+                        return channel.sendFile(message, new File(fileLocation));
                     }
-                    return;
                 }
                 // Throw this if the channel object is null.
                 throw new DiscordException("Failed to send file message due to the channel being null.");
             } catch (MissingPermissionsException | DiscordException | FileNotFoundException ex) {
                 com.gmt2001.Console.err.println("Failed to upload a file: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                return null;
             }
-        });
+        }).get();
     }
 
     /*
      * Method to send a file to a channel.
      *
-     * @param {String} channelName
-     * @param {String} message
-     * @param {String} fileLocation
+     * @param  {String} channelName
+     * @param  {String} message
+     * @param  {String} fileLocation
+     * @return {IMessage}
      */
-    public void sendFile(String channelName, String message, String fileLocation) {
-        sendFile(getChannel(channelName), message, fileLocation);
+    public IMessage sendFile(String channelName, String message, String fileLocation) {
+        return sendFile(getChannel(channelName), message, fileLocation);
     }
 
     /*
      * Method to send a file to a channel.
      *
-     * @param {String} channelName
-     * @param {String} fileLocation
+     * @param  {String} channelName
+     * @param  {String} fileLocation
+     * @return {IMessage}
      */
-    public void sendFile(String channelName, String fileLocation) {
-        sendFile(getChannel(channelName), "", fileLocation);
+    public IMessage sendFile(String channelName, String fileLocation) {
+        return sendFile(getChannel(channelName), "", fileLocation);
     }
 
     /*
@@ -609,7 +619,15 @@ public class DiscordUtil {
      * @param {IMessage} message
      */
     public void deleteMessage(IMessage message) {
-        message.delete();
+        RequestBuffer.request(() -> {
+            try {
+                if (message != null) {
+                    message.delete();
+                }
+            } catch (DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to delete a message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
     }
 
     /*
