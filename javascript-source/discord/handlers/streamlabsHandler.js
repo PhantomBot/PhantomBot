@@ -19,16 +19,16 @@
     });
 
     /**
-     * @event twitchAlertsDonationsInitialized
+     * @event streamLabsDonationInitialized
      */
-    $.bind('twitchAlertsDonationInitialized', function(event) {
+    $.bind('streamLabsDonationInitialized', function(event) {
         announce = true;
     });
 
     /**
-     * @event twitchAlertsDonations
+     * @event streamLabsDonation
      */
-    $.bind('twitchAlertsDonation', function(event) {
+    $.bind('streamLabsDonation', function(event) {
         if (toggle === false || announce === false || channelName == '') {
             return;
         }
