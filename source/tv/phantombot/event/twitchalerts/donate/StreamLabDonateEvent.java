@@ -18,7 +18,7 @@ package tv.phantombot.event.twitchalerts.donate;
 
 import tv.phantombot.event.twitchalerts.TwitchAlertsEvent;
 
-public abstract class TwitchAlertsDonateEvent extends TwitchAlertsEvent {
+public abstract class StreamLabDonateEvent extends TwitchAlertsEvent {
     private final String jsonString;
 
     /*
@@ -26,7 +26,7 @@ public abstract class TwitchAlertsDonateEvent extends TwitchAlertsEvent {
      *
      * @param {String} jsonString
      */
-    protected TwitchAlertsDonateEvent(String jsonString) {
+    protected StreamLabDonateEvent(String jsonString) {
         this.jsonString = jsonString;
     }
 
@@ -46,6 +46,6 @@ public abstract class TwitchAlertsDonateEvent extends TwitchAlertsEvent {
      */
     @Override
     public String toString() {
-        return "TwitchAlertsDonateEvent -> { jsonString: [" + this.jsonString + "] }";
+        return "StreamLabsDonateEvent -> { jsonString: [" + this.jsonString + "] }";
     }
 }
