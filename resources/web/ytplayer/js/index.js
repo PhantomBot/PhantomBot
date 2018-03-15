@@ -57,7 +57,7 @@ $(function() {
                 'style': 'width: 15%;',
                 'html': 'Duration'
             })).append($('<th/>', {
-                'style': 'width: 10%;',
+                'style': 'width: 10%; text-align: right; padding-right: 16px;',
                 'html': 'Actions'
             }))).html());
 
@@ -66,17 +66,20 @@ $(function() {
 
                 // Add position.
                 row.append($('<td/>', {
-                    'text': i
+                    'text': i,
+                    'style': 'width: 5%;'
                 }));
 
                 // Add song name.
                 row.append($('<td/>', {
-                    'text': playlist[i].title
+                    'text': playlist[i].title,
+                    'style': 'width: 70%;'
                 }));
 
                 // Add duration.
                 row.append($('<td/>', {
-                    'text': playlist[i].duration
+                    'text': playlist[i].duration,
+                    'style': 'width: 15%;'
                 }));
 
                 // Add buttons.
@@ -103,7 +106,8 @@ $(function() {
                 		'html': $('<i/>', {
                 			'class': 'fas fa-trash'
                 		})
-                	}))
+                	})),
+                    'style': 'width: 10%;'
                 }));
 
                 // Append the row.

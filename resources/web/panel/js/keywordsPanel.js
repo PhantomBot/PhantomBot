@@ -88,15 +88,6 @@
 
         sendDBKeys('keywords_cooldown', 'coolkey');
     }
-    
-    /**
-     * @function sortKeywordsTable
-     * @param {Object} a
-     * @param {Object} b
-     */
-    function sortKeywordsTable(a, b) {
-        return panelStrcmp(a.key, b.key);
-    };
 
     /**
      * @function addKeywordnew
@@ -151,7 +142,7 @@
                 response: response,
                 isRegex: isRegex
             }));
-            sendDBUpdate('keyword_cooldown_up', 'coolkey', (isRegex ? 'regex:' : '') + keyword, cooldown);
+            sendDBUpdate('keyword_cooldown_up', 'coolkey', (isRegex ? 'regex:' : '') + keyword.toLowerCase(), cooldown);
         }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { doQuery(); sendWSEvent('keywords', './handlers/keywordHandler.js', null, []); }, TIMEOUT_WAIT_TIME * 2);
     }
@@ -171,6 +162,15 @@
         $('#keyword-cooldown').val(isNaN(parseInt(cooldowns[keyword])) ? 5 : cooldowns[keyword]);
         $('#keyword-regex').prop('checked', keyword.startsWith('regex:'));
         $('#keyword-modal').modal('toggle');
+    }
+
+    /**
+     * @function sortKeywordsTable
+     * @param {Object} a
+     * @param {Object} b
+     */
+    function sortKeywordsTable(a, b) {
+        return panelStrcmp(a.key, b.key);
     }
 
     // Import the HTML file for this panel.

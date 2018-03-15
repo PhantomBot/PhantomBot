@@ -142,6 +142,22 @@
             return '';
         }
     }
+    
+    /**
+     * @function getLogo
+     * @export $
+     * @param channelName
+     * @returns {Url}
+     */
+    function getLogo(channelName) {
+        var channel = $.twitch.GetChannel(channelName);
+
+        if (!channel.isNull('logo') && channel.getInt('_http') == 200) {
+            return channel.getString('logo');
+        } else {
+            return 0;
+        }
+    }
 
     /**
      * @function getStreamUptimeSeconds
@@ -316,7 +332,7 @@
         var date = new Date(user.getString('created_at')),
             dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
             dateFinal = dateFormat.format(date),
-            days = Math.floor(((date.getTime() - $.systemTime()) / 1000) / 86400);
+            days = Math.floor((($.systemTime() - date.getTime()) / 1000) / 86400);
 
         if (days > 0) {
             $.say($.lang.get('followhandler.follow.age.time.days', $.userPrefix(sender, true), username, channelName, dateFinal, days));
@@ -454,6 +470,7 @@
     $.getPlayTime = getPlayTime;
     $.getFollows = getFollows;
     $.getGame = getGame;
+    $.getLogo = getLogo;
     $.getStatus = getStatus;
     $.getStreamStartedAt = getStreamStartedAt;
     $.getStreamUptime = getStreamUptime;

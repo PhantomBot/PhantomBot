@@ -10,8 +10,10 @@
         gameMessage = $.getSetIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch!'),
         botGameToggle = $.getSetIniDbBoolean('discordSettings', 'botGameToggle', true),
         channelName = $.getSetIniDbString('discordSettings', 'onlineChannel', ''),
-        timeout = (300 * 6e4),
-        lastEvent = 0;
+        timeout = (6e4 * 5), // 5 minutes.
+        lastEvent = 0,
+        liveMessages = [],
+        offlineMessages = [];
 
     /**
      * @event webPanelSocketUpdate
@@ -39,7 +41,16 @@
 
         // Make sure the channel is really offline before deleting and posting the data. Wait a minute and do another check.
         setTimeout(function() {
-            if (!$.isOnline($.channelName) && offlineToggle === true) {
+            // Delete live messages if any.
+            if (liveMessages.length > 0) {
+                for (var i = 0; i < liveMessages.length; i++) {
+                    if (liveMessages[i] != null) {
+                        $.discordAPI.deleteMessage(liveMessages[i]);
+                    }
+                }
+            }
+
+            if ($.isOnline($.channelName) && offlineToggle === true) {
                 var keys = $.inidb.GetKeyList('discordStreamStats', ''),
                     chatters = [],
                     viewers = [],
@@ -86,12 +97,12 @@
                     s = $.replace(s, '(name)', $.username.resolve($.channelName));
                 }
 
-                $.discord.say(channelName, s);
+                offlineMessages.push($.discord.say(channelName, s));
                 // Send the message as an embed.
-                $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                offlineMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(100, 65, 164)
                     .withThumbnail($.twitchcache.getLogoLink())
-                    .withTitle(s)
+                    .withTitle(s.replace(/(\@everyone|\@here)/ig, ''))
                     .appendField($.lang.get('discord.streamhandler.offline.game'), $.getGame($.channelName), true)
                     .appendField($.lang.get('discord.streamhandler.offline.viewers'), $.lang.get('discord.streamhandler.offline.viewers.stat', avgViewers, maxViewers), true)
                     .appendField($.lang.get('discord.streamhandler.offline.chatters'), $.lang.get('discord.streamhandler.offline.chatters.stat', avgChatters, maxChatters), true)
@@ -99,7 +110,7 @@
                     .withTimestamp(Date.now())
                     .withFooterText('Twitch')
                     .withFooterIcon($.twitchcache.getLogoLink())
-                    .withUrl('https://twitch.tv/' + $.channelName).build());
+                    .withUrl('https://twitch.tv/' + $.channelName).build()));
 
                 $.inidb.RemoveFile('discordStreamStats');
             }
@@ -110,34 +121,41 @@
      * @event twitchOnline
      */
     $.bind('twitchOnline', function(event) {
-        if (onlineToggle === false || channelName == '') {
-            return;
-        }
-
         // Wait a minute for Twitch to generate a real thumbnail and make sure again that we are online.
         setTimeout(function() {
             if ($.isOnline($.channelName) && ($.systemTime() - $.getIniDbNumber('discordSettings', 'lastOnlineEvent', 0) >= timeout)) {
-                var s = onlineMessage;
-
-                if (s.match(/\(name\)/)) {
-                    s = $.replace(s, '(name)', $.username.resolve($.channelName));
+                // Delete offline messages if any.
+                if (offlineMessages.length > 0) {
+                    for (var i = 0; i < offlineMessages.length; i++) {
+                        if (offlineMessages[i] != null) {
+                            $.discordAPI.deleteMessage(offlineMessages[i]);
+                        }
+                    }
                 }
 
-                $.discord.say(channelName, s);
-                // Send the message as an embed.
-                $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
-                    .withColor(100, 65, 164)
-                    .withThumbnail($.twitchcache.getLogoLink())
-                    .withTitle(s)
-                    .appendField($.lang.get('discord.streamhandler.common.game'), $.getGame($.channelName), false)
-                    .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
-                    .withUrl('https://twitch.tv/' + $.channelName)
-                    .withTimestamp(Date.now())
-                    .withFooterText('Twitch')
-                    .withFooterIcon($.twitchcache.getLogoLink())
-                    .withImage($.twitchcache.getPreviewLink() + '#' + $.randRange(1, 99999)).build());
+                if (onlineToggle === true && channelName !== '') {
+                    var s = onlineMessage;
 
-                $.setIniDbNumber('discordSettings', 'lastOnlineEvent', $.systemTime());
+                    if (s.match(/\(name\)/)) {
+                        s = $.replace(s, '(name)', $.username.resolve($.channelName));
+                    }
+
+                    liveMessages.push($.discord.say(channelName, s));
+                    // Send the message as an embed.
+                    liveMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                        .withColor(100, 65, 164)
+                        .withThumbnail($.twitchcache.getLogoLink())
+                        .withTitle(s.replace(/(\@everyone|\@here)/ig, ''))
+                        .appendField($.lang.get('discord.streamhandler.common.game'), $.getGame($.channelName), false)
+                        .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
+                        .withUrl('https://twitch.tv/' + $.channelName)
+                        .withTimestamp(Date.now())
+                        .withFooterText('Twitch')
+                        .withFooterIcon($.twitchcache.getLogoLink())
+                        .withImage($.twitchcache.getPreviewLink() + '?=' + $.randRange(1, 99999)).build()));
+
+                    $.setIniDbNumber('discordSettings', 'lastOnlineEvent', $.systemTime());
+                }
             }
         }, 6e4);
         if (botGameToggle === true) {
@@ -159,11 +177,11 @@
             s = $.replace(s, '(name)', $.username.resolve($.channelName));
         }
 
-        $.discord.say(channelName, s);
-        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        liveMessages.push($.discord.say(channelName, s));
+        liveMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
             .withColor(100, 65, 164)
             .withThumbnail($.twitchcache.getLogoLink())
-            .withTitle(s)
+            .withTitle(s.replace(/(\@everyone|\@here)/ig, ''))
             .appendField($.lang.get('discord.streamhandler.common.game'), $.getGame($.channelName), false)
             .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
             .appendField($.lang.get('discord.streamhandler.common.uptime'), $.getStreamUptime($.channelName).toString(), false)
@@ -171,7 +189,7 @@
             .withTimestamp(Date.now())
             .withFooterText('Twitch')
             .withFooterIcon($.twitchcache.getLogoLink())
-            .withImage($.twitchcache.getPreviewLink() + '#' + $.randRange(1, 99999)).build());
+            .withImage($.twitchcache.getPreviewLink() + '?=' + $.randRange(1, 99999)).build()));
     });
 
     /**
