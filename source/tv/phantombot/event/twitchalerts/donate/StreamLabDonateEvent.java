@@ -18,12 +18,34 @@ package tv.phantombot.event.twitchalerts.donate;
 
 import tv.phantombot.event.twitchalerts.TwitchAlertsEvent;
 
-public class TwitchAlertsDonationInitializedEvent extends TwitchAlertsEvent {
+public abstract class StreamLabDonateEvent extends TwitchAlertsEvent {
+    private final String jsonString;
 
     /*
-     * Class constructor.
+     * Abstract constructor.
+     *
+     * @param {String} jsonString
      */
-    public TwitchAlertsDonationInitializedEvent() {
+    protected StreamLabDonateEvent(String jsonString) {
+        this.jsonString = jsonString;
+    }
 
+    /*
+     * Method that returns the donation's JSON string.
+     *
+     * @return {String} jsonString
+     */
+    public String getJsonString() {
+        return this.jsonString;
+    }
+
+    /*
+     * Method that converts the class into a string.
+     *
+     * @return {String}
+     */
+    @Override
+    public String toString() {
+        return "StreamLabsDonateEvent -> { jsonString: [" + this.jsonString + "] }";
     }
 }
