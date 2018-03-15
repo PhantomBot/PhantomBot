@@ -18,12 +18,12 @@ package tv.phantombot.event.twitchalerts.donate;
 
 import tv.phantombot.event.twitchalerts.TwitchAlertsEvent;
 
-public class TwitchAlertsDonationInitializedEvent extends TwitchAlertsEvent {
+public class StreamLabsDonationInitializedEvent extends TwitchAlertsEvent {
 
     /*
      * Class constructor.
      */
-    public TwitchAlertsDonationInitializedEvent() {
+    public StreamLabsDonationInitializedEvent() {
 
     }
 }
