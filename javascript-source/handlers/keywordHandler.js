@@ -56,6 +56,7 @@
                     }
                     // Keyword just has a normal response.
                     else {
+                        json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + json.keyword + ')');
                         $.say($.tags(event, json.response, false));
                     }
                     break;
@@ -76,6 +77,7 @@
                         }
                         // Keyword just has a normal response.
                         else {
+                            json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + json.keyword + ')');
                             $.say($.tags(event, json.response, false));
                         }
                         break;
