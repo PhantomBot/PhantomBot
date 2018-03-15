@@ -156,6 +156,13 @@ $(function() {
                 'click': () => {
                     $('#player-size-btn').text('Tiny');
                 }
+            })).append($('<a/>', {
+                'class': 'dropdown-item',
+                'href': '#',
+                'text': 'Hidden',
+                'click': () => {
+                    $('#player-size-btn').text('Hidden');
+                }
             }))))).append($('<div/>', {
                 'class': 'form-group'
             }).append($('<label/>', {
@@ -210,19 +217,23 @@ $(function() {
     helpers.setPlayerSize = () => {
         switch (localStorage.getItem('phantombot_ytplayer_size')) {
             case 'half':
-                $('#left-section').attr('class', 'col-md-6');
+                $('#left-section').attr('class', 'col-md-6').removeClass('off');
                 $('#right-section').attr('class', 'col-md-6');
                 break;
             case 'small':
-                $('#left-section').attr('class', 'col-md-5');
+                $('#left-section').attr('class', 'col-md-5').removeClass('off');
                 $('#right-section').attr('class', 'col-md-7');
                 break;
             case 'tiny':
-                $('#left-section').attr('class', 'col-md-4');
+                $('#left-section').attr('class', 'col-md-4').removeClass('off');
                 $('#right-section').attr('class', 'col-md-8');
                 break;
+            case 'hidden':
+                $('#left-section').addClass('off');
+                $('#right-section').attr('class', 'col-md-12');
+                break;
             default:
-                $('#left-section').attr('class', 'col-md-7');
+                $('#left-section').attr('class', 'col-md-7').removeClass('off');
                 $('#right-section').attr('class', 'col-md-5');
         }
     };
