@@ -1,7 +1,7 @@
 /**
  * donationHandler.js
  *
- * Detect and report donations from TwitchAlerts.
+ * Detect and report donations from StreamLabs.
  */
 (function() {
     var announceDonations = $.getSetIniDbBoolean('donations', 'announce', false),
@@ -24,9 +24,9 @@
     }
 
     /*
-     * @event twitchAlertsDonationsInitialized
+     * @event streamLabsDonationsInitialized
      */
-    $.bind('twitchAlertsDonationInitialized', function(event) {
+    $.bind('streamLabsDonationInitialized', function(event) {
         if (!$.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             return;
         }
@@ -42,9 +42,9 @@
     });
 
     /*
-     * @event twitchAlertsDonations
+     * @event streamLabsDonations
      */
-    $.bind('twitchAlertsDonation', function(event) {
+    $.bind('streamLabsDonation', function(event) {
         if (!$.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             return;
         }
