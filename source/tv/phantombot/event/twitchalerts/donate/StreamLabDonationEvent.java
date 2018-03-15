@@ -16,14 +16,14 @@
  */
 package tv.phantombot.event.twitchalerts.donate;
 
-public class TwitchAlertsDonationEvent extends TwitchAlertsDonateEvent {
+public class StreamLabsDonationEvent extends StreamLabsDonateEvent {
 
     /*
      * Class constructor.
      *
      * @param {String} jsonString
      */
-    public TwitchAlertsDonationEvent(String jsonString) {
+    public StreamLabsDonationEvent(String jsonString) {
         super(jsonString);
     }
 }
