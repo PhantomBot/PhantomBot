@@ -412,10 +412,6 @@
             message = apiTags(event, message);
         }
 
-        if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
-            message = apiTags(event, message);
-        }
-
         return message;
     }
 
