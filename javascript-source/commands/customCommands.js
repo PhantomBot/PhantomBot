@@ -402,7 +402,7 @@
         if (message.match(/\(useronly=.*\)/g)) {
             var user = message.match(/\(useronly=(.*)\)/)[1];
 
-            if (!$.username.resolve(event.getSender()).equalsIgnoreCase(user)) {
+            if (!event.getSender().equalsIgnoreCase(user)) {
                 return null;
             }
             message = $.replace(message, message.match(/(\(useronly=.*\))/)[1], '');
