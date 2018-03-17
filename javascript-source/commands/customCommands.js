@@ -4,7 +4,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
+        tagCheck = new RegExp(/\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
         customCommands = [],
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
@@ -397,6 +397,19 @@
                 return null;
             }
             message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
+        }
+        
+        if (message.match(/\(useronly=.*\)/g)) {
+            var user = message.match(/\(useronly=(.*)\)/)[1];
+
+            if (!$.username.resolve(event.getSender()).equalsIgnoreCase(user)) {
+                return null;
+            }
+            message = $.replace(message, message.match(/(\(useronly=.*\))/)[1], '');
+        }
+
+        if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
+            message = apiTags(event, message);
         }
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
