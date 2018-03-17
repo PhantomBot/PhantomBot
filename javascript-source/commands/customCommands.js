@@ -375,10 +375,10 @@
             var m = message.match(/\(encodeurl ([\w\W]+)\)/);
             message = $.replace(message, m[0], encodeURI(m[1]));
         }
-        
+
         if (message.match(/\(gameonly=.*\)/g)) {
             var game = message.match(/\(gameonly=(.*)\)/)[1];
- 
+
             if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
                 return null;
             }
@@ -471,7 +471,7 @@
                             $.log.error('Failed to get data from API: ' + ex.message);
                             return $.lang.get('customcommands.customapijson.err', command);
                         }
-                        customAPIReturnString += " " + customAPIResponse;
+                        customAPIReturnString += customAPIResponse;
                     } else {
                         for (var i = 0; i < jsonCheckList.length - 1; i++) {
                             if (i == 0) {
@@ -503,7 +503,7 @@
                             $.log.error('Failed to get data from API: ' + ex.message);
                             return $.lang.get('customcommands.customapijson.err', command);
                         }
-                        customAPIReturnString += " " + customAPIResponse;
+                        customAPIReturnString += customAPIResponse;
                     }
                 }
             }
