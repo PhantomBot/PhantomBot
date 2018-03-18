@@ -400,7 +400,7 @@
             if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
                 return null;
             }
-            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
+            message = $.replace(message, game, '');
         }
         
         if (message.match(/\(useronly=.*\)/g)) {
@@ -409,7 +409,7 @@
             if (!event.getSender().equalsIgnoreCase(user)) {
                 return null;
             }
-            message = $.replace(message, message.match(/(\(useronly=.*\))/)[1], '');
+            message = $.replace(message, user, '');
         }
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
