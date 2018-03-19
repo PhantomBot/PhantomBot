@@ -360,6 +360,9 @@
             loadScriptRecursive('./discord');
         }
 
+        // Load new panel handler.
+        loadScript('./core/panelHandler.js', false, true);
+
         $.log.event('Bot modules loaded. Initializing main functions...');
 
         // Register custom commands.
@@ -874,14 +877,14 @@
         $api.on($script, 'twitchGameChange', function(event) {
             callHook('twitchGameChange', event, false);
         });
-		
+
         /*
          * @event twitchTitleChangeEvent
          */
         $api.on($script, 'twitchTitleChange', function(event) {
             callHook('twitchTitleChange', event, false);
         });
-								
+
         /*
          * @event twitchSubscriber
          */
