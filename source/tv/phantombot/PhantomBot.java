@@ -576,6 +576,10 @@ public final class PhantomBot implements Listener {
                 print("Could not create a connection with H2 Database. PhantomBot now shutting down...");
                 System.exit(0);
             }
+            
+            if (SqliteStore.instance().GetFileList().length > 0) {
+                sqlite2H2();
+            }
         } else {
             dataStoreType = "sqlite3store";
             dataStore = SqliteStore.instance();
@@ -1979,6 +1983,49 @@ public final class PhantomBot implements Listener {
             Logger.instance().log(Logger.LogType.Debug, "User: " + sender + " Issued Command: " + command + ". Id: " + id);
             Logger.instance().log(Logger.LogType.Debug, "");
         }
+    }
+    
+    private void sqlite2H2() {
+        print("Performing SQLite to H2 Conversion...");
+        H2Store h2 = H2Store.instance();
+        SqliteStore sqlite = SqliteStore.instance();
+
+        File backupFile = new File("./dbbackup/phantombot.db.backup");
+        if (backupFile.exists()) {
+            print("A ./dbbackup/phantombot.db.backup file already exists. Please rename or remove this file first.");
+            print("Exiting PhantomBot");
+            System.exit(0);
+        }
+
+        print("Wiping Existing H2 Tables...");
+        String[] deltables = h2.GetFileList();
+        for (String table : deltables) {
+            h2.RemoveFile(table);
+        }
+
+        print("Converting SQLite to H2...");
+        String[] tables = sqlite.GetFileList();
+        for (String table : tables) {
+            print("Converting Table: " + table);
+            String[] sections = sqlite.GetCategoryList(table);
+            for (String section : sections) {
+                String[] keys = sqlite.GetKeyList(table, section);
+                for (String key : keys) {
+                    String value = sqlite.GetString(table, section, key);
+                    h2.SetString(table, section, key, value);
+                }
+            }
+        }
+        sqlite.CloseConnection();
+        print("Finished Converting Tables.");
+        print("Moving ./config/phantombot.db to ./dbbackup/phantombot.db.backup");
+
+        try {
+            FileUtils.moveFile(new java.io.File("./config/phantombot.db"), new java.io.File("./dbbackup/phantombot.db.backup"));
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.println("Failed to move ./config/phantombot.db to ./dbbackup/phantombot.db.backup: " + ex.getMessage());
+        }
+        print("SQLite to H2 Conversion is Complete");
     }
 
     /* convert SqliteStore to MySql */
