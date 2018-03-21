@@ -27,6 +27,7 @@ import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.datastore.H2Store;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
+import com.gmt2001.datastore.DataStoreConverter;
 
 import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.GitHubAPIv3;
@@ -564,10 +565,10 @@ public final class PhantomBot implements Listener {
                 System.exit(0);
             }
             /* Convert to MySql */
-            if (IniStore.instance().GetFileList().length > 0) {
-                ini2MySql(true);
-            } else if (SqliteStore.instance().GetFileList().length > 0) {
-                sqlite2MySql();
+            if (IniStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
+                DataStoreConverter.convertDataStore(MySQLStore.instance(), IniStore.instance());
+            } else if (SqliteStore.instance().GetFileList().length > 0  && MySQLStore.instance().GetFileList().length == 0) {
+                DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
         } else if (dataStoreType.equalsIgnoreCase("h2store")) {
             dataStore = H2Store.instance();
@@ -576,13 +577,17 @@ public final class PhantomBot implements Listener {
                 print("Could not create a connection with H2 Database. PhantomBot now shutting down...");
                 System.exit(0);
             }
+
+            if (SqliteStore.instance().GetFileList().length > 0 && H2Store.instance().GetFileList().length == 0) {
+                DataStoreConverter.convertDataStore(H2Store.instance(), SqliteStore.instance());
+            }
         } else {
             dataStoreType = "sqlite3store";
             dataStore = SqliteStore.instance();
 
             /* Convert the inistore to sqlite if the inistore exists and the db is empty */
             if (IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0) {
-                ini2Sqlite(true);
+                DataStoreConverter.convertDataStore(SqliteStore.instance(), IniStore.instance());
             }
 
             /* Handle index operations. */
@@ -1981,212 +1986,6 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /* convert SqliteStore to MySql */
-    private void sqlite2MySql() {
-        print("Performing SQLite to MySQL Conversion...");
-        MySQLStore mysql = MySQLStore.instance();
-        SqliteStore sqlite = SqliteStore.instance();
-
-        File backupFile = new File("phantombot.db.backup");
-        if (backupFile.exists()) {
-            print("A phantombot.db.backup file already exists. Please rename or remove this file first.");
-            print("Exiting PhantomBot");
-            System.exit(0);
-        }
-
-        print("Wiping Existing MySQL Tables...");
-        String[] deltables = mysql.GetFileList();
-        for (String table : deltables) {
-            mysql.RemoveFile(table);
-        }
-
-        print("Converting SQLite to MySQL...");
-        String[] tables = sqlite.GetFileList();
-        for (String table : tables) {
-            print("Converting Table: " + table);
-            String[] sections = sqlite.GetCategoryList(table);
-            for (String section : sections) {
-                String[] keys = sqlite.GetKeyList(table, section);
-                for (String key : keys) {
-                    String value = sqlite.GetString(table, section, key);
-                    mysql.SetString(table, section, key, value);
-                }
-            }
-        }
-        sqlite.CloseConnection();
-        print("Finished Converting Tables.");
-        print("Moving ./config/phantombot.db to phantombot.db.backup");
-
-        try {
-            FileUtils.moveFile(new java.io.File("./config/phantombot.db"), new java.io.File("phantombot.db.backup"));
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to move ./config/phantombot.db to phantombot.db.backup: " + ex.getMessage());
-        }
-        print("SQLite to MySQL Conversion is Complete");
-    }
-
-    /* Convert iniStore to MySql */
-    private void ini2MySql(Boolean delete) {
-        print("Performing INI to MySQL Conversion...");
-        IniStore ini = IniStore.instance();
-        MySQLStore mysql = MySQLStore.instance();
-
-        print("Wiping Existing MySQL Tables...");
-        String[] deltables = mysql.GetFileList();
-        for (String table : deltables) {
-            mysql.RemoveFile(table);
-        }
-
-        print("Converting IniStore to MySQL...");
-        String[] files = ini.GetFileList();
-        int i = 0;
-        String str;
-        int maxlen = 0;
-        int num;
-        for (String file : files) {
-            str = " " + i + " / " + files.length;
-            num = maxlen - str.length();
-            for (int n = 0; n < num; n++) {
-                str += " ";
-            }
-            maxlen = Math.max(maxlen, str.length());
-            print("\rConverting File: " + file);
-            mysql.AddFile(file);
-
-            String[] sections = ini.GetCategoryList(file);
-            int b = 0;
-            for (String section : sections) {
-                str = " " + i + " / " + files.length
-                      + " [" + b + " / " + sections.length + "]";
-                num = maxlen - str.length();
-                for (int n = 0; n < num; n++) {
-                    str += " ";
-                }
-                maxlen = Math.max(maxlen, str.length());
-
-                String[] keys = ini.GetKeyList(file, section);
-                int k = 0;
-                for (String key : keys) {
-                    str = " " + i + " / " + files.length
-                          + " [" + b + " / " + sections.length + "] <" + k + " / " + keys.length + ">";
-                    num = maxlen - str.length();
-                    for (int n = 0; n < num; n++) {
-                        str += " ";
-                    }
-                    maxlen = Math.max(maxlen, str.length());
-
-                    String value = ini.GetString(file, section, key);
-                    mysql.SetString(file, section, key, value);
-                    k++;
-                }
-                b++;
-            }
-            i++;
-        }
-
-        str = "";
-        for (i = 0; i < maxlen - 4; i++) {
-            str += " ";
-        }
-        com.gmt2001.Console.out.print("\rConversion from IniStore to MySQL is Complete" + str);
-
-        if (delete) {
-            print("Deleting IniStore folder...");
-            for (String file : files) {
-                ini.RemoveFile(file);
-            }
-
-            File f = new File("./inistore");
-            if (f.delete()) {
-                print("Process is Done");
-            }
-        }
-    }
-
-    /* Convert iniStore to SqliteStore */
-    private void ini2Sqlite(boolean delete) {
-        print("Performing INI 2 SQLite Upgrade");
-        IniStore ini = IniStore.instance();
-        SqliteStore sqlite = SqliteStore.instance();
-        print("done");
-
-        print("Wiping Existing SQLiteStore...");
-        String[] deltables = sqlite.GetFileList();
-        for (String table : deltables) {
-            sqlite.RemoveFile(table);
-        }
-        print("done");
-
-        print("Copying IniStore to SQLiteStore...");
-        String[] files = ini.GetFileList();
-        int i = 0;
-        String str;
-        int maxlen = 0;
-        int num;
-        for (String file : files) {
-            str = " " + i + " / " + files.length;
-            num = maxlen - str.length();
-            for (int n = 0; n < num; n++) {
-                str += " ";
-            }
-            maxlen = Math.max(maxlen, str.length());
-            com.gmt2001.Console.out.print("\r Copying IniStore to SQLiteStore..." + str);
-            sqlite.AddFile(file);
-
-            String[] sections = ini.GetCategoryList(file);
-            int b = 0;
-            for (String section : sections) {
-                str = " " + i + " / " + files.length
-                      + " [" + b + " / " + sections.length + "]";
-                num = maxlen - str.length();
-                for (int n = 0; n < num; n++) {
-                    str += " ";
-                }
-                maxlen = Math.max(maxlen, str.length());
-                com.gmt2001.Console.out.print("\rCopying IniStore to SQLiteStore..." + str);
-
-                String[] keys = ini.GetKeyList(file, section);
-                int k = 0;
-                for (String key : keys) {
-                    str = " " + i + " / " + files.length
-                          + " [" + b + " / " + sections.length + "] <" + k + " / " + keys.length + ">";
-                    num = maxlen - str.length();
-                    for (int n = 0; n < num; n++) {
-                        str += " ";
-                    }
-                    maxlen = Math.max(maxlen, str.length());
-                    com.gmt2001.Console.out.print("\rCopying IniStore to SQLiteStore..." + str);
-
-                    String value = ini.GetString(file, section, key);
-                    sqlite.SetString(file, section, key, value);
-
-                    k++;
-                }
-                b++;
-            }
-            i++;
-        }
-
-        str = "";
-        for (i = 0; i < maxlen - 4; i++) {
-            str += " ";
-        }
-        com.gmt2001.Console.out.print("\rCopying IniStore to SQLiteStore is Completed" + str);
-
-        if (delete) {
-            print("Deleting IniStore folder...");
-            for (String file : files) {
-                ini.RemoveFile(file);
-            }
-
-            /* Delete the old inistore folder */
-            File f = new File("./inistore");
-            if (f.delete()) {
-                print("Process is Done");
-            }
-        }
-    }
-
     /* Load up main */
     public static void main(String[] args) throws IOException {
         // Move user files.
@@ -2594,45 +2393,6 @@ public final class PhantomBot implements Listener {
     public void setTwitchCacheReady(String twitchCacheReady) {
         PhantomBot.twitchCacheReady = twitchCacheReady;
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
-    }
-
-    /* Load the game list */
-    public void loadGameList(DataStore dataStore) {
-        try {
-            if (new File("./conf/game_list.txt").exists()) {
-                long lastModified = new File("./conf/game_list.txt").lastModified();
-                long dbLastModified = dataStore.GetLong("settings", "", "gameListModified");
-                if (lastModified > dbLastModified) {
-                    print("Processing New Game List File");
-
-                    print("Loading into database...");
-                    String data = FileUtils.readFileToString(new File("./conf/game_list.txt"));
-                    String[] lines = data.replaceAll("\\r", "").split("\\n");
-                    dataStore.setbatch("gamelist", lines, lines);
-
-                    print("Creating cache file for Control Panel...");
-
-                    if (!new File ("./web/panel/js").exists()) new File ("./web/panel/js").mkdirs();
-
-                    String string = "// PhantomBot Control Panel Game List\r\n// Generated by PhantomBot Core\r\n\r\n$.gamesList = [";
-                    Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-
-                    for (String line : lines) {
-                        string = "'" + line.replace("'", "") + "', \r\n";
-                        Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
-                        string = "";
-                    }
-
-                    string += "];";
-                    Files.write(Paths.get("./web/panel/js/games.js"), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
-                    print("Completed Processing.");
-
-                    dataStore.SetLong("settings", "", "gameListModified", lastModified);
-                }
-            }
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
     }
 
     /**

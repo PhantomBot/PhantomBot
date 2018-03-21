@@ -269,7 +269,7 @@ public class H2Store extends DataStore {
             try (ResultSet rs = md.getTables(null, null, "PHANTOMBOT_%", null)) {
                 ArrayList<String> s = new ArrayList<String>();
                 while (rs.next()) {
-                    s.add(rs.getString(3));
+                    s.add(rs.getString(3).substring(11));
                 }
                 return s.toArray(new String[s.size()]);
             }
