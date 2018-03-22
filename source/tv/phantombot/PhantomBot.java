@@ -1007,8 +1007,15 @@ public final class PhantomBot implements Listener {
             if (!new File ("./web/panel/").exists()) new File ("./web/panel/").mkdirs();
             if (!new File ("./web/panel/js").exists()) new File ("./web/panel/js").mkdirs();
 
+            byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
+
             /* Write the data to that file */
-            Files.write(Paths.get("./web/panel/js/panelConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(Paths.get("./web/panel/js/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+
+            // If betap write the file in that folder too.
+            if (PhantomBot.betap) {
+            	Files.write(Paths.get("./web/beta-panel/js/utils/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
