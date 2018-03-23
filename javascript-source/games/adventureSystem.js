@@ -237,7 +237,6 @@
         });
 
         $.inidb.decr('points', username, bet);
-        inviteTamagotchi(username, bet);
         return true;
     };
 
