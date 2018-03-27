@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.PhantomBot;
-import tv.phantombot.event.twitchalerts.donate.TwitchAlertsDonationEvent;
-import tv.phantombot.event.twitchalerts.donate.TwitchAlertsDonationInitializedEvent;
+import tv.phantombot.event.streamlabs.donate.StreamLabsDonationEvent;
+import tv.phantombot.event.streamlabs.donate.StreamLabsDonationInitializedEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -166,13 +166,13 @@ public class DonationsCache implements Runnable {
 
         if (firstUpdate && !killed) {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchAlertsDonationInitializedEvent());
+            EventBus.instance().post(new StreamLabsDonationInitializedEvent());
         }
 
         if (donations != null && !killed) {
             for (int i = 0; i < donations.length(); i++) {
                 if (cache == null || !cache.containsKey(donations.getJSONObject(i).get("donation_id").toString())) {
-                    EventBus.instance().post(new TwitchAlertsDonationEvent(donations.getJSONObject(i).toString()));
+                    EventBus.instance().post(new StreamLabsDonationEvent(donations.getJSONObject(i).toString()));
                 }
             }
         }

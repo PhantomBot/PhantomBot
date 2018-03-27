@@ -648,17 +648,17 @@
         });
 
         /*
-         * @event twitchAlertsDonation
+         * @event streamLabsDonation
          */
-        $api.on($script, 'twitchAlertsDonation', function(event) {
-            callHook('twitchAlertsDonation', event, false);
+        $api.on($script, 'streamLabsDonation', function(event) {
+            callHook('streamLabsDonation', event, false);
         });
 
         /*
-         * @event twitchAlertsDonationInitialized
+         * @event streamLabsDonationInitialized
          */
-        $api.on($script, 'twitchAlertsDonationInitialized', function(event) {
-            callHook('twitchAlertsDonationInitialized', event, false);
+        $api.on($script, 'streamLabsDonationInitialized', function(event) {
+            callHook('streamLabsDonationInitialized', event, false);
         });
 
         /*
