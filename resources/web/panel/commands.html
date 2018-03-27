@@ -14,7 +14,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+ 
  @author IllusionaryOne
 -->
 
@@ -32,7 +32,6 @@
             <br><br>
         </div>
     </div>
-
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="runCustomCommand">Run a command</label>
@@ -88,6 +87,17 @@
 
         <strong>Current Command Prices</strong><br><br>
         <div id="priceCommandsList" style="height: 200px; overflow: auto;" />
+    </div>
+    </div>
+
+    <h3>Count</h3>
+    <div>
+    <div id="_commandCountersPanelDisabled" />
+    <div id="_commandCountersPanel">
+        <strong>Current Command Count</strong>
+        <br>
+        <br>
+        <div id="countCommandsList" style="height: 200px; overflow: auto;" />
     </div>
     </div>
 
@@ -170,7 +180,7 @@
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldown()">Submit</button>
                 <input type="text" class="form-control" id="cooldownCmdInputCommand" placeholder="Command name" />
                 <input type="number" min="0" class="form-control" id="cooldownCmdInput" placeholder="Seconds" />
-
+            
             <div class="checkbox pull-right">
                 <label>
                     <input type="checkbox" id="globalCooldownCheck" value="global" checked data-toggle="tooltip" title="When this is checked the cooldown will be applied to everyone
