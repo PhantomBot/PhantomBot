@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Communicates with Twitch Kraken server using the version 5 API
@@ -132,7 +133,25 @@ public class TwitchAPIv5 {
             if (c.getResponseCode() == 204 || i == null) {
                 content = "{}";
             } else {
-                content = IOUtils.toString(i, c.getContentEncoding());
+                // default to UTF-8, it'll probably be the best bet if there's
+                // no charset specified.
+                String charset = "utf-8";
+                String ct = c.getContentType();
+                if (ct != null) {
+                    String[] cts = ct.split(" *; *");
+                    for (int idx = 1; idx < cts.length; ++idx) {
+                        String[] val = cts[idx].split("=", 2);
+                        if (val[0] == "charset" && val.length > 1) {
+                            charset = val[1];
+                        }
+                    }
+                }
+
+                if ("gzip".equals(c.getContentEncoding())) {
+                    i = new GZIPInputStream(i);
+                }
+
+                content = IOUtils.toString(i, charset);
             }
 
             j = new JSONObject(content);

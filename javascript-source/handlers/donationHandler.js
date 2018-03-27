@@ -24,9 +24,9 @@
     }
 
     /*
-     * @event twitchAlertsDonationsInitialized
+     * @event streamLabsDonationInitialized
      */
-    $.bind('twitchAlertsDonationInitialized', function(event) {
+    $.bind('streamLabsDonationInitialized', function(event) {
         if (!$.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             return;
         }
@@ -42,9 +42,9 @@
     });
 
     /*
-     * @event twitchAlertsDonations
+     * @event streamLabsDonation
      */
-    $.bind('twitchAlertsDonation', function(event) {
+    $.bind('streamLabsDonation', function(event) {
         if (!$.bot.isModuleEnabled('./handlers/donationHandler.js')) {
             return;
         }
