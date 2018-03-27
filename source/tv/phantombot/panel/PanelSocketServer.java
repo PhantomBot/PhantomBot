@@ -366,7 +366,9 @@ public class PanelSocketServer extends WebSocketServer {
      */
     @Override
     public void onError(WebSocket webSocket, Exception e) {
-        com.gmt2001.Console.err.printStackTrace(e);
+        if (e.toString().indexOf("WebsocketNotConnectedException") == -1) {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }
     }
 
     /**
@@ -491,10 +493,10 @@ public class PanelSocketServer extends WebSocketServer {
         }
 
         jsonObject.object().key("versionresult").value(id);
-	    jsonObject.key("version").value(version);
-	    jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
-	    jsonObject.key("os-version").value(System.getProperty("os.name"));
-	    jsonObject.endObject();
+        jsonObject.key("version").value(version);
+        jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
+        jsonObject.key("os-version").value(System.getProperty("os.name"));
+        jsonObject.endObject();
         webSocket.send(jsonObject.toString());
     }
 
