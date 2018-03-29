@@ -31,8 +31,11 @@
  * // Send connected event
  * { "connected" : "unique_id" }
  *
- * // Send command - if username is not provided, defaults to the botname.
+ * // Send command in async - if username is not provided, defaults to the botname.
  * { "command" : "command line", "username" : "user name", "query_id" : "query_id" }
+ *
+ * // Send command in sync mode - if username is not provided, defaults to the botname.
+ * { "command_sync" : "command line", "username" : "user name", "query_id" : "query_id" }
  *
  * // Query DB
  * { "dbquery" : "query_id", "query" : { "table" : "table_name", "key" : "key_name" } }
@@ -275,7 +278,13 @@ public class PanelSocketServer extends WebSocketServer {
                 String command = jsonObject.getString("command");
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
-                doHandleCommand(webSocket, command, username, uniqueID);
+                doHandleCommand(webSocket, command, username, uniqueID, true);
+                return;
+            } else if (jsonObject.has("command_sync")) {
+                String command = jsonObject.getString("command_sync");
+                String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
+                uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
+                doHandleCommand(webSocket, command, username, uniqueID, false);
                 return;
             } else if (jsonObject.has("connected")) {
                 handleConnection(webSocket, jsonObject.has("query_id") ? jsonObject.getString("query_id") : "");
@@ -446,9 +455,15 @@ public class PanelSocketServer extends WebSocketServer {
      * @param command   The command to execute in PhantomBot.
      * @param username  The user to execute the command as.
      * @param id        Optional unique ID which is sent back to the WebSocket.
+     * @param async     If the command should be sent in async.
      */
-    private void doHandleCommand(WebSocket webSocket, String command, String username, String id) {
-        PhantomBot.instance().handleCommand(username, command);
+    private void doHandleCommand(WebSocket webSocket, String command, String username, String id, boolean async) {
+        if (async) {
+            PhantomBot.instance().handleCommand(username, command);
+        } else {
+            PhantomBot.instance().handleCommandSync(username, command);
+        }
+
         if (!id.isEmpty()) {
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("query_id").value(id).endObject();

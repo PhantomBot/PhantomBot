@@ -1907,6 +1907,19 @@ public final class PhantomBot implements Listener {
         EventBus.instance().postAsync(new CommandEvent(username, command, arguments));
     }
 
+    /* Handle commands */
+    public void handleCommandSync(String username, String command) {
+        String arguments = "";
+
+        /* Does the command have arguments? */
+        if (command.contains(" ")) {
+            String commandString = command;
+            command = commandString.substring(0, commandString.indexOf(" "));
+            arguments = commandString.substring(commandString.indexOf(" ") + 1);
+        }
+        EventBus.instance().post(new CommandEvent(username, command, arguments));
+    }
+
     /* Handles dev debug commands. */
     public void devDebugCommands(String command, String id, String sender, boolean isConsole) {
         if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName) || sender.equalsIgnoreCase(botName))) {
