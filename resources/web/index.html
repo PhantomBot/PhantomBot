@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>PhantomBot</title>
+        <meta name="theme-color" content="#570075">
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
@@ -11,23 +12,36 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="common/css/fontawesome-all.min.css" rel="stylesheet">
     </head>
 
     <body>
 
         <div class="header">
             <img id="logo" src="common/images/logo.png"/>
-            <h1>PhantomBot</h1>
-
             <span>
-                <a target="_blank" href="https://twitter.com/PhantomBotApp" id="header-right">
-                    <i style="color: white" id="fontawesome" class="fa fa-twitter fa-lg" aria-hidden="true"></i>
+                <a target="_blank" href="https://community.phantombot.tv" id="header-right">
+                    <i data-toggle="tooltip" data-placement="bottom" title="Patreon" style="color: white" class="fab fa-patreon fa-lg" aria-hidden="true"></i>
                 </a>
             </span>
             <span>
                 <a target="_blank" href="https://community.phantombot.tv" id="header-right">
-                    <i data-toggle="tooltip" data-placement="left" title="Forums" style="color: white" id="fontawesome" class="fa fa-users fa-lg" aria-hidden="true"></i>
+                    <i data-toggle="tooltip" data-placement="bottom" title="Discord" style="color: white" class="fab fa-discord fa-lg" aria-hidden="true"></i>
+                </a>
+            </span>
+            <span>
+                <a target="_blank" href="https://twitter.com/PhantomBotApp" id="header-right">
+                    <i data-toggle="tooltip" data-placement="bottom" title="Twitter" style="color: white" class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+                </a>
+            </span>
+            <span>
+                <a target="_blank" href="https://community.phantombot.tv" id="header-right">
+                    <i data-toggle="tooltip" data-placement="bottom" title="Blog" style="color: white" class="fas fa-rss fa-lg" aria-hidden="true"></i>
+                </a>
+            </span>
+            <span>
+                <a target="_blank" href="https://community.phantombot.tv" id="header-right">
+                    <i data-toggle="tooltip" data-placement="bottom" title="Community Forum" style="color: white" class="fab fa-discourse fa-lg" aria-hidden="true"></i>
                 </a>
             </span>
         </div>
@@ -43,11 +57,11 @@
                 </script>
                 <span id="middle">
                     <span id="spacer" />
-                    <i id="fontawesome" class="fa fa-youtube" aria-hidden="true"></i>
+                    <i id="fontawesome" class="fab fa-youtube" aria-hidden="true"></i>
                     <span id="spacer">Launch PhantomBot YouTube Player</span>
                 </span>
                 </a>
-                <span class="launcher-lock"><i class="fa fa-lock"></i></span>
+                <span class="launcher-lock"><i class="fas fa-lock"></i></span>
             </div>
 
             <div class="launcher" data-toggle="tooltip" data-placement="right" title="The username and password are found in botlogin.txt, see the paneluser and panelpassword settings.">
@@ -60,11 +74,11 @@
                 </script>
                 <span id="middle">
                     <span id="spacer" />
-                    <i id="fontawesome" class="fa fa-desktop" aria-hidden="true"></i>
+                    <i id="fontawesome" class="fas fa-desktop" aria-hidden="true"></i>
                     <span id="spacer">Launch PhantomBot Control Panel</span>
                 </span>
                 </a>
-                <span class="launcher-lock"><i class="fa fa-lock"></i></span>
+                <span class="launcher-lock"><i class="fas fa-lock"></i></span>
             </div>
 
             <div class="launcher">
@@ -77,7 +91,7 @@
                 </script>
                 <span id="middle">
                     <span id="spacer" />
-                    <i id="fontawesome" class="fa fa-music" aria-hidden="true"></i>
+                    <i id="fontawesome" class="fas fa-music" aria-hidden="true"></i>
                     <span id="spacer">Launch PhantomBot YouTube Playlist Viewer</span>
                 </span>
                 </a>
