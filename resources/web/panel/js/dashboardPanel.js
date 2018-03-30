@@ -623,7 +623,7 @@
             // Load the iframe if it isn't there.
             if ($("#chatsidebar").html().indexOf(getChannelName().toLowerCase()) === -1) {
                 $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
-                                             "src=\"https://www.twitch.tv/" + getChannelName().toLowerCase() + "/chat?popout=\">");
+                                             "src=\"https://www.twitch.tv/embed/" + getChannelName().toLowerCase() + "/chat\">");
                 $("#chatsidebar").draggable({ iframeFix: true });
             }
             localStorage.setItem('phantombot_chattoggle', 'true');

@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.twitchalerts.donate;
+package tv.phantombot.event.streamlabs.donate;
 
-import tv.phantombot.event.twitchalerts.TwitchAlertsEvent;
+import tv.phantombot.event.streamlabs.StreamLabsEvent;
 
-public abstract class TwitchAlertsDonateEvent extends TwitchAlertsEvent {
+public abstract class StreamLabsDonateEvent extends StreamLabsEvent {
     private final String jsonString;
 
     /*
@@ -26,7 +26,7 @@ public abstract class TwitchAlertsDonateEvent extends TwitchAlertsEvent {
      *
      * @param {String} jsonString
      */
-    protected TwitchAlertsDonateEvent(String jsonString) {
+    protected StreamLabsDonateEvent(String jsonString) {
         this.jsonString = jsonString;
     }
 

@@ -28,8 +28,11 @@
  * // Get Version
  * { "version" : "unique_id" }
  *
- * // Send command - if username is not provided, defaults to the botname.
+ * // Send command in async - if username is not provided, defaults to the botname.
  * { "command" : "command line", "username" : "user name", "query_id" : "query_id" }
+ *
+ * // Send command in sync mode - if username is not provided, defaults to the botname.
+ * { "command_sync" : "command line", "username" : "user name", "query_id" : "query_id" }
  *
  * // Query DB
  * { "dbquery" : "query_id", "query" : { "table" : "table_name", "key" : "key_name" } }
@@ -337,9 +340,15 @@ public class NewPanelSocketServer {
                 String command = jsonObject.getString("command");
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
-                doHandleCommand(webSocket, command, username, uniqueID);
+                doHandleCommand(webSocket, command, username, uniqueID, true);
                 return;
-            } else if (jsonObject.has("connected")) {
+            } else if (jsonObject.has("command_sync")) {
+                String command = jsonObject.getString("command_sync");
+                String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
+                uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
+                doHandleCommand(webSocket, command, username, uniqueID, false);
+                return;
+            }  else if (jsonObject.has("connected")) {
                 handleConnection(webSocket, jsonObject.has("query_id") ? jsonObject.getString("query_id") : "");
                 return;
             } else if (jsonObject.has("version")) {
@@ -395,6 +404,14 @@ public class NewPanelSocketServer {
                 String offset = jsonObject.getJSONObject("query").getString("offset");
                 String order = jsonObject.getJSONObject("query").getString("order");
                 doDBKeysByOrder(webSocket, uniqueID, table, limit, offset, order);
+            } else if (jsonObject.has("dbvaluesbyorder")) {
+                uniqueID = jsonObject.getString("dbvaluesbyorder");
+                String table = jsonObject.getJSONObject("query").getString("table");
+                String limit = jsonObject.getJSONObject("query").getString("limit");
+                String offset = jsonObject.getJSONObject("query").getString("offset");
+                String order = jsonObject.getJSONObject("query").getString("order");
+                String isNumber = jsonObject.getJSONObject("query").getString("number");
+                doDBValuesByOrder(webSocket, uniqueID, table, limit, offset, order, isNumber);
             } else if (jsonObject.has("dbkeyssearch")) {
                 uniqueID = jsonObject.getString("dbkeyssearch");
                 String table = jsonObject.getJSONObject("query").getString("table");
@@ -455,9 +472,15 @@ public class NewPanelSocketServer {
      * @param command   The command to execute in PhantomBot.
      * @param username  The user to execute the command as.
      * @param id        Optional unique ID which is sent back to the IWebsocketClient.
+     * @param async     If the command should be sent in async.
      */
-    private void doHandleCommand(IWebsocketClient webSocket, String command, String username, String id) {
-        PhantomBot.instance().handleCommand(username, command);
+    private void doHandleCommand(IWebsocketClient webSocket, String command, String username, String id, boolean async) {
+        if (async) {
+            PhantomBot.instance().handleCommand(username, command);
+        } else {
+            PhantomBot.instance().handleCommandSync(username, command);
+        }
+
         if (!id.isEmpty()) {
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("query_id").value(id).endObject();
@@ -628,6 +651,48 @@ public class NewPanelSocketServer {
 
         try {
             String[] dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrder(table, "", order, limit, offset);
+            for (String dbKey : dbKeys) {
+                String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
+                jsonObject.object().key("table").value(table).key("key").value(dbKey).key("value").value(value).endObject();
+            }
+        } catch (NullPointerException ex) {
+            if (!dbCallNull) {
+                debugMsg("NULL returned from DB. DB Object not created yet.");
+            }
+            return;
+        }
+
+        jsonObject.endArray().endObject();
+        if (webSocket == null) {
+            sendToAll(jsonObject.toString());
+        } else {
+            webSocket.send(jsonObject.toString());
+        }
+    }
+
+    /**
+     * Performs a query of the DataStore to return a list of values from multiple keys.
+     *
+     * @param webSocket The IWebsocketClient which requested the data.
+     * @param id        The unique ID which is sent back to the IWebsocketClient.
+     * @param table     Table name to query.
+     * @param limit     Limit you want to get sent.
+     * @param offset    the offset
+     * @param order     ASC or DESC
+     * @param isNumber  true or false
+     */
+    private void doDBValuesByOrder(IWebsocketClient webSocket, String id, String table, String limit, String offset, String order, String isNumber) {
+        JSONStringer jsonObject = new JSONStringer();
+
+        jsonObject.object().key("query_id").value(id).key("results").array();
+
+        try {
+            String[] dbKeys = null;
+            if (isNumber.equals("true")) {
+                dbKeys = PhantomBot.instance().getDataStore().GetKeysByNumberOrderValue(table, "", order, limit, offset);
+            } else {
+                dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrderValue(table, "", order, limit, offset);
+            }
             for (String dbKey : dbKeys) {
                 String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
                 jsonObject.object().key("table").value(table).key("key").value(dbKey).key("value").value(value).endObject();

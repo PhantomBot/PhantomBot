@@ -360,6 +360,9 @@
             loadScriptRecursive('./discord');
         }
 
+        // Load new panel handler.
+        loadScript('./core/panelHandler.js', false, true);
+
         $.log.event('Bot modules loaded. Initializing main functions...');
 
         // Register custom commands.
@@ -645,17 +648,17 @@
         });
 
         /*
-         * @event twitchAlertsDonation
+         * @event streamLabsDonation
          */
-        $api.on($script, 'twitchAlertsDonation', function(event) {
-            callHook('twitchAlertsDonation', event, false);
+        $api.on($script, 'streamLabsDonation', function(event) {
+            callHook('streamLabsDonation', event, false);
         });
 
         /*
-         * @event twitchAlertsDonationInitialized
+         * @event streamLabsDonationInitialized
          */
-        $api.on($script, 'twitchAlertsDonationInitialized', function(event) {
-            callHook('twitchAlertsDonationInitialized', event, false);
+        $api.on($script, 'streamLabsDonationInitialized', function(event) {
+            callHook('streamLabsDonationInitialized', event, false);
         });
 
         /*
@@ -874,14 +877,14 @@
         $api.on($script, 'twitchGameChange', function(event) {
             callHook('twitchGameChange', event, false);
         });
-		
+
         /*
          * @event twitchTitleChangeEvent
          */
         $api.on($script, 'twitchTitleChange', function(event) {
             callHook('twitchTitleChange', event, false);
         });
-								
+
         /*
          * @event twitchSubscriber
          */

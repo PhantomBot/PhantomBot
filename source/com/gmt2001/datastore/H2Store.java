@@ -93,7 +93,7 @@ public class H2Store extends DataStore {
     @Override
     public Connection CreateConnection(String db, String user, String pass) {
         try {
-            connection = DriverManager.getConnection("jdbc:h2:./phantombot.h2;DB_CLOSE_ON_EXIT=true;MAX_LENGTH_INPLACE_LOB=2048", "", "");
+            connection = DriverManager.getConnection("jdbc:h2:./config/phantombot.h2;DB_CLOSE_ON_EXIT=true;MAX_LENGTH_INPLACE_LOB=2048", "", "");
             connection.setAutoCommit(true);
             if (firstConnection) {
                 com.gmt2001.Console.out.println("Connected to H2 Database");
@@ -269,7 +269,7 @@ public class H2Store extends DataStore {
             try (ResultSet rs = md.getTables(null, null, "PHANTOMBOT_%", null)) {
                 ArrayList<String> s = new ArrayList<String>();
                 while (rs.next()) {
-                    s.add(rs.getString(3));
+                    s.add(rs.getString(3).substring(11));
                 }
                 return s.toArray(new String[s.size()]);
             }

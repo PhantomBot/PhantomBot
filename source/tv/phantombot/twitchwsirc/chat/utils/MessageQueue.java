@@ -99,7 +99,7 @@ public class MessageQueue implements Runnable {
      * @param {String} message
      */
     public void sayNow(String message) {
-        queue.addFirst(new Message(message, true));
+        queue.addFirst(new Message(message, message.startsWith(".")));
     }
 
     /*
