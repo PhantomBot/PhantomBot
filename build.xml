@@ -5,7 +5,7 @@
     <!-- To specify a Pre-Release Build run as ant -Dbuildtype=prerelease_build -->
 
     <property environment="env" />
-    <property name="version" value="2.4.0.2" />
+    <property name="version" value="2.4.0.3" />
     <property name="webpanel.version" value="1.1" />
     <property name="src" location="source" />
     <property name="reference" location="libraries" />
