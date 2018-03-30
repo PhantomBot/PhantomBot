@@ -17,6 +17,14 @@
             }
             $.reloadBet();
         }
+        
+         /* reloads the clip vars */
+        if (command.equalsIgnoreCase('reloadclip')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadClips();
+        }
 
         /** Adds or removes a user from the moderator cache */
         if (command.equalsIgnoreCase('permissionsetuser')) {
@@ -505,6 +513,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadclip', 30);
         }, 10000);
     });
 })();
