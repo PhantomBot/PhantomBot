@@ -1,6 +1,6 @@
 
 
-# <img alt="PhantomBot" src="https://phantombot.tv/img/new-logo-dark-v2.png" width="600px"/>
+# <img alt="PhantomBot" src="https://i.zelakto.tv/images/bN4H.png" width="600px"/>
 
  [![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot) 
  [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/Xdh5SRY)
