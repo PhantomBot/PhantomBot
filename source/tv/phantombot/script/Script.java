@@ -239,6 +239,9 @@ public class Script {
     }
 
     public void kill() {
+        if (context == null) {
+            return;
+        }
         ObservingDebugger od = new ObservingDebugger();
         context.setDebugger(od, 0);
         context.setGeneratingDebug(true);
