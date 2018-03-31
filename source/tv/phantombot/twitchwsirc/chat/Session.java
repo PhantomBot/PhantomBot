@@ -89,7 +89,7 @@ public class Session extends MessageQueue {
         try {
             this.twitchWSIRC.send(message);
         } catch (Exception ex) {
-            com.gmt2001.Console.out.println("Failed to send message to Twitch: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("Failed to send message to Twitch: " + ex.getMessage());
         }
     }
 
