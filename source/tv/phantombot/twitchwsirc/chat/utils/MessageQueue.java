@@ -134,7 +134,7 @@ public class MessageQueue implements Runnable {
                     }
 
                     // Send the message.
-                    session.getSocket().send("PRIVMSG #" + this.channelName + " :" + message.getMessage());
+                    session.sendRaw("PRIVMSG #" + this.channelName + " :" + message.getMessage());
                     com.gmt2001.Console.out.println("[CHAT] " + message.getMessage());
                 }
             } catch (Exception ex) {
