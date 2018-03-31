@@ -242,6 +242,19 @@ public class TwitchWSHostIRC {
         }
 
         /*
+         * Sends a message to the websocket.
+         *
+         * @param {String} message
+         */
+        public void send(String message) {
+            try {
+                super.send(message);
+            } catch (Exception  ex) {
+                com.gmt2001.Console.out.println("Failed to send message: " + ex.getMessage());
+            }
+        }
+
+        /*
          * Exposes the connected status of the object.
          *
          * @return  boolean  Is connected
