@@ -83,7 +83,7 @@ public class Session extends MessageQueue {
     /*
      * Method that sends a raw message to the socket.
      *
-     * @return {TwitchWSIRC} twitchWSIRC
+     * @param {String} message
      */
     public void sendRaw(String message) {
         try {
@@ -94,9 +94,9 @@ public class Session extends MessageQueue {
     }
 
     /*
-     * Method that sends a raw message to the socket.
+     * Method that sends channel message.
      *
-     * @return {TwitchWSIRC} twitchWSIRC
+     * @param {String} message
      */
     public void send(String message) {
         sendRaw("PRIVMSG #" + getChannelName() + " :" + message);
