@@ -72,7 +72,6 @@ public class HTTPServer {
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
 
-            // For scania.
             if (PhantomBot.betap) {
                 HttpContext betaPanelContext = server.createContext("/beta-panel", new BetaPanelHandler());
                 betaPanelContext.setAuthenticator(auth);
