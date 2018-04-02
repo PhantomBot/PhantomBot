@@ -80,8 +80,8 @@
             }
 
             if (panelCheckQuery(msgObject, 'keywords_cooldown')) {
-                for (idx in msgObject['results']) {
-                    cooldowns[msgObject['results'][idx]['key']] = msgObject['results'][idx]['value'];
+                for (idx in msgObject['results'].sort(sortKeywordsTable)) {
+                    cooldowns[idx] = msgObject['results'][idx]['value'];
                 }
                 sendDBKeys('keywords_keywords', 'keywords');
             }
