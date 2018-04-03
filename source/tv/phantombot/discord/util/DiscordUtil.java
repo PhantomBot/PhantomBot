@@ -204,12 +204,17 @@ public class DiscordUtil {
         return RequestBuffer.request(() -> {
             try {
                 if (channel != null) {
-                    com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message);
-
-                    if (message.isEmpty()) {
-                        return channel.sendFile(new File(fileLocation));
+                    if (fileLocation.contains("..")) {
+                        com.gmt2001.Console.err.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation that contains '..'");
+                        return null;
                     } else {
-                        return channel.sendFile(message, new File(fileLocation));
+                        com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message);
+
+                        if (message.isEmpty()) {
+                            return channel.sendFile(new File("addons/" + fileLocation));
+                        } else {
+                            return channel.sendFile(message, new File("addons/" + fileLocation));
+                        }
                     }
                 }
                 // Throw this if the channel object is null.
