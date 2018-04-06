@@ -50,7 +50,7 @@
                 }
             }
 
-            if ($.isOnline($.channelName) && offlineToggle === true) {
+            if (!$.isOnline($.channelName) && offlineToggle === true) {
                 var keys = $.inidb.GetKeyList('discordStreamStats', ''),
                     chatters = [],
                     viewers = [],
