@@ -438,7 +438,7 @@
      */
     function getIniDbString(fileName, key, defaultValue) {
         if ($.inidb.exists(fileName, key) == true) {
-            return ($.inidb.get(fileName, key));
+            return ($.inidb.get(fileName, key) + '');
         } else {
             return (defaultValue);
         }
@@ -453,7 +453,7 @@
      */
     function getSetIniDbString(fileName, key, defaultValue) {
         if ($.inidb.exists(fileName, key) == true) {
-            return ($.inidb.get(fileName, key));
+            return ($.inidb.get(fileName, key) + '');
         } else {
             $.inidb.set(fileName, key, defaultValue);
             return (defaultValue);
