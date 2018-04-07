@@ -12,6 +12,13 @@
         rand;
 
     /**
+     * @function reloadKill
+     */
+    function reloadKill() {
+    	jailTimeout = $.getIniDbNumber('settings', 'killTimeoutTime', 60);
+    }
+
+    /**
      * @function loadResponses
      */
     function loadResponses() {
@@ -99,4 +106,6 @@
         $.registerChatCommand('./games/killCommand.js', 'kill', 7);
         $.registerChatCommand('./games/killCommand.js', 'jailtimeouttime', 1);
     });
+
+    $.reloadKill = reloadKill;
 })();

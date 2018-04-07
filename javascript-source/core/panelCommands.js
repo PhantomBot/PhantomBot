@@ -1,4 +1,4 @@
-/* 
+/*
  * This script is used to reload variables from scripts when you edit stuff on the panel. Only the bot can use these, and you can't disable them
  */
 
@@ -17,7 +17,14 @@
             }
             $.reloadBet();
         }
-        
+
+        if (command.equalsIgnoreCase('reloadkill')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadKill();
+        }
+
          /* reloads the clip vars */
         if (command.equalsIgnoreCase('reloadclip')) {
             if (!$.isBot(sender)) {
@@ -390,7 +397,7 @@
         }
 
         /*
-         * Gives points to everyone in the channel 
+         * Gives points to everyone in the channel
          */
         if (command.equalsIgnoreCase('pointsallpanel')) {
             if (!$.isBot(sender)) {
@@ -514,6 +521,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadclip', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadkill', 30);
         }, 10000);
     });
 })();
