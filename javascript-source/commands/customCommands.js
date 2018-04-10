@@ -1095,7 +1095,7 @@
         }
 
         /*
-         * @commandpath resetcom [command] - Resets the counter to zero, for a command that uses the (count) tag
+         * @commandpath resetcom [command] [count] - Resets the counter to zero, for a command that uses the (count) tag or optionally set to a specific value.
          */
         if (command.equalsIgnoreCase('resetcom')) {
             if (action === undefined) {
@@ -1105,8 +1105,17 @@
 
             action = action.replace('!', '').toLowerCase();
 
-            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.success', action));
-            $.inidb.del('commandCount', action);
+            if (args.length === 1) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.success', action));
+                $.inidb.del('commandCount', action);
+            } else {
+                if (isNaN(subAction)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.change.fail', subAction));
+                } else {
+                    $.inidb.set('commandCount', action, subAction);
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.change.success', action, subAction));
+                }
+            }
             return;
         }
     });
