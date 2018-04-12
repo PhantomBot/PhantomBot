@@ -291,6 +291,10 @@
         }
 
         if (message.match(/\(alert [,.\w]+\)/g)) {
+            if (message.match(/\(gameonly=.*\)/g) || message.match(/\(useronly=.*\)/g)) {
+                return null;
+            }
+            
             var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
             $.panelsocketserver.alertImage(filename);
             message = (message + '').replace(/\(alert [,.\w]+\)/, '');
@@ -352,6 +356,9 @@
         if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
             if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
                 $.log.error('Could not play audio hook: Audio hook does not exist.');
+                return null;
+            }
+            if (message.match(/\(gameonly=.*\)/g) || message.match(/\(useronly=.*\)/g)) {
                 return null;
             }
             $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
