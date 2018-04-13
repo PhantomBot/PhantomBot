@@ -65,6 +65,24 @@
                 return event.getArgs()[0] + ' -> ' + message;
             }
         }
+        
+        if (message.match(/\(gameonly=.*\)/g)) {
+            var game = message.match(/\(gameonly=(.*)\)/)[1];
+
+            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
+                return null;
+            }
+            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
+        }
+
+        if (message.match(/\(useronly=.*\)/g)) {
+            var user = message.match(/\(useronly=(.*)\)/)[1];
+
+            if (!event.getSender().equalsIgnoreCase(user)) {
+                return null;
+            }
+            message = $.replace(message, message.match(/(\(useronly=.*\))/)[1], '');
+        }
 
         if (message.match(/\(readfile/)) {
             if (message.search(/\((readfile ([^)]+)\))/g) >= 0) {
@@ -291,10 +309,6 @@
         }
 
         if (message.match(/\(alert [,.\w]+\)/g)) {
-            if (message.match(/\(gameonly=.*\)/g) || message.match(/\(useronly=.*\)/g)) {
-                return null;
-            }
-            
             var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
             $.panelsocketserver.alertImage(filename);
             message = (message + '').replace(/\(alert [,.\w]+\)/, '');
@@ -358,9 +372,6 @@
                 $.log.error('Could not play audio hook: Audio hook does not exist.');
                 return null;
             }
-            if (message.match(/\(gameonly=.*\)/g) || message.match(/\(useronly=.*\)/g)) {
-                return null;
-            }
             $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
             message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             if (message == '') {
@@ -399,24 +410,6 @@
         if (message.match(/\(encodeurl ([\w\W]+)\)/)) {
             var m = message.match(/\(encodeurl ([\w\W]+)\)/);
             message = $.replace(message, m[0], encodeURI(m[1]));
-        }
-
-        if (message.match(/\(gameonly=.*\)/g)) {
-            var game = message.match(/\(gameonly=(.*)\)/)[1];
-
-            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
-                return null;
-            }
-            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
-        }
-
-        if (message.match(/\(useronly=.*\)/g)) {
-            var user = message.match(/\(useronly=(.*)\)/)[1];
-
-            if (!event.getSender().equalsIgnoreCase(user)) {
-                return null;
-            }
-            message = $.replace(message, message.match(/(\(useronly=.*\))/)[1], '');
         }
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
