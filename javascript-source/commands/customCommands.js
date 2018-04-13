@@ -65,6 +65,24 @@
                 return event.getArgs()[0] + ' -> ' + message;
             }
         }
+        
+        if (message.match(/\(gameonly=.*\)/g)) {
+            var game = message.match(/\(gameonly=(.*)\)/)[1];
+
+            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
+                return null;
+            }
+            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
+        }
+
+        if (message.match(/\(useronly=.*\)/g)) {
+            var user = message.match(/\(useronly=(.*)\)/)[1];
+
+            if (!event.getSender().equalsIgnoreCase(user)) {
+                return null;
+            }
+            message = $.replace(message, message.match(/(\(useronly=.*\))/)[1], '');
+        }
 
         if (message.match(/\(readfile/)) {
             if (message.search(/\((readfile ([^)]+)\))/g) >= 0) {
@@ -392,24 +410,6 @@
         if (message.match(/\(encodeurl ([\w\W]+)\)/)) {
             var m = message.match(/\(encodeurl ([\w\W]+)\)/);
             message = $.replace(message, m[0], encodeURI(m[1]));
-        }
-
-        if (message.match(/\(gameonly=.*\)/g)) {
-            var game = message.match(/\(gameonly=(.*)\)/)[1];
-
-            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
-                return null;
-            }
-            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
-        }
-
-        if (message.match(/\(useronly=.*\)/g)) {
-            var user = message.match(/\(useronly=(.*)\)/)[1];
-
-            if (!event.getSender().equalsIgnoreCase(user)) {
-                return null;
-            }
-            message = $.replace(message, message.match(/(\(useronly=.*\))/)[1], '');
         }
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
