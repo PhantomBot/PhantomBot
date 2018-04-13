@@ -11,7 +11,7 @@
         hostMinCount = $.getSetIniDbNumber('settings', 'hostMinCount', 0),
         hostMessage = $.getSetIniDbString('settings', 'hostMessage', $.lang.get('hosthandler.host.message')),
         autoHostMessage = $.getSetIniDbString('settings', 'autoHostMessage', $.lang.get('hosthandler.autohost.message')),
-        hostHistory = $.getSetIniDbBoolean('settings', 'hostHistory', false),
+        hostHistory = $.getSetIniDbBoolean('settings', 'hostHistory', true),
         hostToggle = $.getSetIniDbBoolean('settings', 'hostToggle', false),
         autoHostToggle = $.getSetIniDbBoolean('settings', 'autoHostToggle', false),
         hostTimeout = 216e5, // 6 hours = 6 * 60 * 60 * 1000
