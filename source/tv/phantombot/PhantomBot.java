@@ -108,6 +108,7 @@ import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
+import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.httpserver.HTTPServer;
 import tv.phantombot.httpserver.HTTPSServer;
 import tv.phantombot.panel.PanelSocketSecureServer;
