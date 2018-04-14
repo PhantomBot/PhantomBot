@@ -189,6 +189,7 @@ public class TwitchCache implements Runnable {
         String createdAt = "";
         String clipURL = "";
         String creator = "";
+        JSONObject thumbnailObj = "";
         int largestTrackingId = 0;
 
         if (clipsObj.has("clips")) {
@@ -206,6 +207,7 @@ public class TwitchCache implements Runnable {
                         createdAt = clipData.getString("created_at");
                         clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
                         creator = clipData.getJSONObject("curator").getString("display_name");
+                        thumbnailObj = clipData.getJSONObject("thumbnails");
                     }
                 }
             }
@@ -214,7 +216,7 @@ public class TwitchCache implements Runnable {
         if (clipURL.length() > 0) {
             setDBString("last_clips_tracking_id", String.valueOf(largestTrackingId));
             setDBString("last_clip_url", clipURL);
-            EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator));
+            EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator, thumbnailObj));
         }
     }
 
@@ -350,14 +352,14 @@ public class TwitchCache implements Runnable {
 
                         if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitle)) {
                             setDBString("title", streamTitle);
-                            this.streamTitle = streamTitle;					
+                            this.streamTitle = streamTitle;
                             /* Send an event if we did not just send a TwitchOnlineEvent. */
                             if (!sentTwitchOnlineEvent) {
                                 this.streamTitle = streamTitle;
                                 EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
                             }
                             this.streamTitle = streamTitle;
-                        }			
+                        }
                         if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitle)) {
                             forcedStreamTitleUpdate = false;
                         }
@@ -465,7 +467,7 @@ public class TwitchCache implements Runnable {
     public void setStreamStatus(String streamTitle) {
         forcedStreamTitleUpdate = true;
         this.streamTitle = streamTitle;
-        EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));  
+        EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
     }
 
     /*
