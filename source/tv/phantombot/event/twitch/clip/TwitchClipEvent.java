@@ -18,19 +18,27 @@ package tv.phantombot.event.twitch.clip;
 
 import tv.phantombot.event.twitch.TwitchEvent;
 
+import org.json.JSONObject;
+
 public class TwitchClipEvent extends TwitchEvent {
     private final String clipURL;
     private final String creator;
+    private final String clipTitle;
+    private final JSONObject thumbnailObj;
 
     /*
      * Class constructor.
      *
-     * @param {String} clipURL
-     * @param {String} creator
+     * @param {String}     clipURL
+     * @param {String}     creator
+     * @param {String}     clipTitle
+     * @param {JSONObject} thumbnailObj
      */
-    public TwitchClipEvent(String clipURL, String creator) {
+    public TwitchClipEvent(String clipURL, String creator, String clipTitle, JSONObject thumbnailObj) {
         this.clipURL = clipURL;
         this.creator = creator;
+        this.clipTitle = clipTitle;
+        this.thumbnailObj = thumbnailObj;
     }
 
     /*
@@ -49,5 +57,23 @@ public class TwitchClipEvent extends TwitchEvent {
      */
     public String getCreator() {
         return this.creator;
+    }
+
+    /*
+     * Method that returns the clip title.
+     *
+     * @return {String} clipTitle
+     */
+    public String getClipTitle() {
+        return this.clipTitle;
+    }
+
+    /*
+     * Method that returns the object of thumnails.
+     *
+     * @return {JSONObject} thumbnailObj
+     */
+    public JSONObject getThumbnailObject() {
+        return this.thumbnailObj;
     }
 }
