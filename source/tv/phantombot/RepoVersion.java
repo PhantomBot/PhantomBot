@@ -52,4 +52,3 @@ public class RepoVersion {
         return panelVersion;
     }
 }
-
