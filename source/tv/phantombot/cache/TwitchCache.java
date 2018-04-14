@@ -189,6 +189,7 @@ public class TwitchCache implements Runnable {
         String createdAt = "";
         String clipURL = "";
         String creator = "";
+        String title = "";
         JSONObject thumbnailObj = new JSONObject();
         int largestTrackingId = 0;
 
@@ -208,6 +209,7 @@ public class TwitchCache implements Runnable {
                         clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
                         creator = clipData.getJSONObject("curator").getString("display_name");
                         thumbnailObj = clipData.getJSONObject("thumbnails");
+                        title = clipData.getString("title");
                     }
                 }
             }
@@ -216,7 +218,7 @@ public class TwitchCache implements Runnable {
         if (clipURL.length() > 0) {
             setDBString("last_clips_tracking_id", String.valueOf(largestTrackingId));
             setDBString("last_clip_url", clipURL);
-            EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator, thumbnailObj));
+            EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator, title, thumbnailObj));
         }
     }
 
