@@ -189,7 +189,7 @@ public class TwitchCache implements Runnable {
         String createdAt = "";
         String clipURL = "";
         String creator = "";
-        JSONObject thumbnailObj = "";
+        JSONObject thumbnailObj = new JSONObject();
         int largestTrackingId = 0;
 
         if (clipsObj.has("clips")) {
