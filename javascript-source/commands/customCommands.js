@@ -65,7 +65,7 @@
                 return event.getArgs()[0] + ' -> ' + message;
             }
         }
-        
+
         if (message.match(/\(gameonly=.*\)/g)) {
             var game = message.match(/\(gameonly=(.*)\)/)[1];
 
@@ -308,10 +308,10 @@
             message = $.replace(message, '(code=' + length + ')', String(text));
         }
 
-        if (message.match(/\(alert [,.\w]+\)/g)) {
-            var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
+        if (message.match(/\(alert [,.\w\W]+\)/g)) {
+            var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
             $.panelsocketserver.alertImage(filename);
-            message = (message + '').replace(/\(alert [,.\w]+\)/, '');
+            message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             if (message == '') return null;
         }
 
