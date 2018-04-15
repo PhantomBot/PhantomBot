@@ -154,6 +154,8 @@
 
         clearTimeout(timeout);
 
+        $.inidb.set('pollPanel', 'isActive', 'false');
+
         if (poll.minVotes > 0 && poll.votes.length < poll.minVotes) {
             poll.result = '';
             poll.pollMaster = '';
@@ -179,7 +181,6 @@
         $.inidb.set('pollresults', 'options', poll.options.join(','));
         $.inidb.set('pollresults', 'counts', poll.counts.join(','));
         $.inidb.set('pollresults', 'istie', poll.hasTie);
-        $.inidb.set('pollPanel', 'isActive', 'false');
         poll.callback(poll.result);
     };
 
