@@ -85,7 +85,7 @@ public class FrankerZAPIv1 {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
-        HttpURLConnection urlConn;
+        HttpsURLConnection urlConn;
         String jsonText = "";
 
         try {
