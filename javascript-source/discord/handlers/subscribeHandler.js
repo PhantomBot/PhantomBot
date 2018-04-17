@@ -33,7 +33,7 @@
         var subscriber = event.getSubscriber(),
             s = subMessage;
 
-        if (annouce === false || subToggle === false || channelName == '') {
+        if (announce === false || subToggle === false || channelName == '') {
             return;
         }
 
