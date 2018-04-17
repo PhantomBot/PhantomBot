@@ -33,7 +33,7 @@
         var subscriber = event.getSubscriber(),
             s = subMessage;
 
-        if (subToggle === false || channelName == '') {
+        if (annouce === false || subToggle === false || channelName == '') {
             return;
         }
 
@@ -58,7 +58,7 @@
         var subscriber = event.getSubscriber(),
             s = primeMessage;
 
-        if (primeToggle === false || channelName == '') {
+        if (announce === false || primeToggle === false || channelName == '') {
             return;
         }
 
@@ -84,7 +84,7 @@
             months = event.getMonths(),
             s = resubMessage;
 
-        if (resubToggle === false || channelName == '') {
+        if (announce === false || resubToggle === false || channelName == '') {
             return;
         }
 

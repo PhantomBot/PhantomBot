@@ -78,7 +78,7 @@
             bits = event.getBits(),
             s = message;
 
-        if (announce == false || toggle === false || channelName == '') {
+        if (announce === false || toggle === false || channelName == '') {
             return;
         }
 

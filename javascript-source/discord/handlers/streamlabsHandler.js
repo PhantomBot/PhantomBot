@@ -29,7 +29,7 @@
      * @event streamLabsDonation
      */
     $.bind('streamLabsDonation', function(event) {
-        if (toggle === false || channelName == '') {
+        if (announce === false || toggle === false || channelName == '') {
             return;
         }
 
