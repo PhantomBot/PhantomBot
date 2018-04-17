@@ -73,7 +73,7 @@
 
         $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(60, 141, 188)
-                    .withThumbnail('https://i.zelakto.tv/images/X0Zh.png')
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/streamtip-embed-icon.png')
                     .withTitle($.lang.get('discord.streamtiphandler.embed.title'))
                     .appendDescription(s)
                     .withTimestamp(Date.now())

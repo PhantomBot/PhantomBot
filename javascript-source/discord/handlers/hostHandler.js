@@ -95,7 +95,7 @@
 
         $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(255, 0, 0)
-                    .withThumbnail('https://i.zelakto.tv/images/puzB.png')
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/host-embed-icon.png')
                     .withTitle($.lang.get('discord.hosthandler.host.embedtitle'))
                     .appendDescription(s)
                     .withTimestamp(Date.now())

@@ -48,7 +48,7 @@
 
         $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(248, 168, 83)
-                    .withThumbnail('https://i.zelakto.tv/images/Xglc.png')
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/gamewisp-embed-icon.png')
                     .withTitle($.lang.get('discord.gamewisphandler.sub.embedtitle', username))
                     .appendDescription(s)
                     .withTimestamp(Date.now())
@@ -78,7 +78,7 @@
 
         $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(248, 168, 83)
-                    .withThumbnail('https://i.zelakto.tv/images/Xglc.png')
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/gamewisp-embed-icon.png')
                     .withTitle($.lang.get('discord.gamewisphandler.tier.embedtitle', username))
                     .appendDescription(s)
                     .withTimestamp(Date.now())
@@ -108,7 +108,7 @@
 
         $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(248, 168, 83)
-                    .withThumbnail('https://i.zelakto.tv/images/Xglc.png')
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/gamewisp-embed-icon.png')
                     .withTitle($.lang.get('discord.gamewisphandler.resub.embedtitle', username))
                     .appendDescription(s)
                     .withTimestamp(Date.now())

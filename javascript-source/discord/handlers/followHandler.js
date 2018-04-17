@@ -42,7 +42,7 @@
 
         $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(20, 184, 102)
-                    .withThumbnail('https://i.zelakto.tv/images/pX9S.png')
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/follow-embed-icon.png')
                     .withTitle($.lang.get('discord.followhandler.follow.embedtitle'))
                     .appendDescription(s)
                     .withTimestamp(Date.now())
