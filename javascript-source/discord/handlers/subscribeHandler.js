@@ -33,7 +33,7 @@
         var subscriber = event.getSubscriber(),
             s = subMessage;
 
-        if (announce === false || subToggle === false || channelName == '') {
+        if (subToggle === false || channelName == '') {
             return;
         }
 
@@ -41,7 +41,14 @@
             s = $.replace(s, '(name)', subscriber);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(100, 65, 164)
+                    .withThumbnail('https://i.zelakto.tv/images/XLp4.png')
+                    .withTitle($.lang.get('discord.subscribehandler.subscriber.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**
@@ -51,7 +58,7 @@
         var subscriber = event.getSubscriber(),
             s = primeMessage;
 
-        if (announce === false || primeToggle === false || channelName == '') {
+        if (primeToggle === false || channelName == '') {
             return;
         }
 
@@ -59,7 +66,14 @@
             s = $.replace(s, '(name)', subscriber);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(100, 65, 164)
+                    .withThumbnail('https://i.zelakto.tv/images/XLp4.png')
+                    .withTitle($.lang.get('discord.subscribehandler.primesubscriber.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**
@@ -70,7 +84,7 @@
             months = event.getMonths(),
             s = resubMessage;
 
-        if (announce === false || resubToggle === false || channelName == '') {
+        if (resubToggle === false || channelName == '') {
             return;
         }
 
@@ -82,7 +96,14 @@
             s = $.replace(s, '(months)', months);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(100, 65, 164)
+                    .withThumbnail('https://i.zelakto.tv/images/XLp4.png')
+                    .withTitle($.lang.get('discord.subscribehandler.resubscriber.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**

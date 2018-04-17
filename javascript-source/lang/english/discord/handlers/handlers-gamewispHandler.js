@@ -10,3 +10,6 @@ $.lang.register('discord.gamewisphandler.tier.message.usage', 'Usage: !gamewisph
 $.lang.register('discord.gamewisphandler.tier.message.set', 'GameWisp tier-up annoucement message set to: $1');
 $.lang.register('discord.gamewisphandler.channel.usage', 'Usage: !gamewisphandler channel [channel name]');
 $.lang.register('discord.gamewisphandler.channel.set', 'GameWisp announcements will now be made in channel #$1');
+$.lang.register('discord.gamewisphandler.resub.embedtitle', '$1 has resubscribed via GameWisp!');
+$.lang.register('discord.gamewisphandler.sub.embedtitle', '$1 has subscribed via GameWisp!');
+$.lang.register('discord.gamewisphandler.tier.embedtitle', '$1 upgraded their tier on GameWisp!');

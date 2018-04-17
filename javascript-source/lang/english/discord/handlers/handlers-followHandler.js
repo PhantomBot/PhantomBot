@@ -4,3 +4,4 @@ $.lang.register('discord.followhandler.follow.message.usage', 'Usage: !followhan
 $.lang.register('discord.followhandler.follow.message.set', 'Follow announcements message set to: $1');
 $.lang.register('discord.followhandler.follow.channel.usage', 'Usage: !followhandler channel [channel name]');
 $.lang.register('discord.followhandler.follow.channel.set', 'Follow announcements will now be made in channel #$1');
+$.lang.register('discord.followhandler.follow.embedtitle', 'New Follower!');

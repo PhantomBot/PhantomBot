@@ -3,7 +3,7 @@
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'hostToggle', false),
-        hostMessage = $.getSetIniDbString('discordSettings', 'hostMessage', '(name) just hosted!'),
+        hostMessage = $.getSetIniDbString('discordSettings', 'hostMessage', '(name) just hosted for (viewers) viewers!'),
         autoHostMessage = $.getSetIniDbString('discordSettings', 'autohostMessage', '(name) just auto-hosted!'),
         channelName = $.getSetIniDbString('discordSettings', 'hostChannel', ''),
         hosters = {},
@@ -15,7 +15,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/hostHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'hostToggle', false);
-            hostMessage = $.getIniDbString('discordSettings', 'hostMessage', '(name) just hosted!');
+            hostMessage = $.getIniDbString('discordSettings', 'hostMessage', '(name) just hosted for (viewers) viewers!');
             autoHostMessage = $.getIniDbString('discordSettings', 'autohostMessage', '(name) just auto-hosted!');
             channelName = $.getIniDbString('discordSettings', 'hostChannel', '');
         }
@@ -71,7 +71,7 @@
             now = $.systemTime(),
             s = hostMessage;
 
-        if (toggle === false || announce === false || channelName == '') {
+        if (announce === false || toggle === false || channelName == '') {
             return;
         }
 
@@ -93,7 +93,14 @@
             s = $.replace(s, '(viewers)', String(viewers));
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(255, 0, 0)
+                    .withThumbnail('https://i.zelakto.tv/images/puzB.png')
+                    .withTitle($.lang.get('discord.hosthandler.host.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**
