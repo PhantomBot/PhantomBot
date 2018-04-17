@@ -29,7 +29,7 @@
      * @event streamLabsDonation
      */
     $.bind('streamLabsDonation', function(event) {
-        if (toggle === false || announce === false || channelName == '') {
+        if (toggle === false || channelName == '') {
             return;
         }
 
@@ -69,8 +69,15 @@
             s = $.replace(s, '(message)', donationMsg);
         }
 
-        $.discord.say(channelName, s);
-    });
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(49, 196, 162)
+                    .withThumbnail('https://i.zelakto.tv/images/Xtxl.png')
+                    .withTitle($.lang.get('discord.streamlabshandler.embed.title'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
+        });
 
     /**
      * @event discordChannelCommand

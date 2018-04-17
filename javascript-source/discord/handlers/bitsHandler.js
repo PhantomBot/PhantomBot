@@ -18,6 +18,58 @@
         }
     });
 
+/*
+     * @function getCheerAmount
+     *
+     * @param {String} bits
+     */
+    function getCheerAmount(bits) {
+        bits = parseInt(bits);
+    
+        switch (true) {
+            case bits < 100:
+                return '1';
+            case bits >= 100 && bits < 1000:
+                return '100';
+            case bits >= 1000 && bits < 5000:
+                return '1000';
+            case bits >= 5000 && bits < 10000:
+                return '5000';
+            case bits >= 10000 && bits < 100000:
+                return '10000';
+            case bits >= 100000:
+                return '100000';
+            default:
+                return '1';
+        }
+    }
+
+/*
+     * @function getBitsColor
+     *
+     * @param {String} bits
+     */
+    function getBitsColor(bits) {
+        bits = parseInt(bits);
+
+        switch (true) {
+            case bits < 100:
+                return 0xa1a1a1;
+            case bits >= 100 && bits < 1000:
+                return 0x8618fc;
+            case bits >= 1000 && bits < 5000:
+                return 0x00f7db;
+            case bits >= 5000 && bits < 10000:
+                return 0x2845bc;
+            case bits >= 10000 && bits < 100000:
+                return 0xd41818;
+            case bits >= 100000:
+                return 0xfffa34;
+            default:
+                return 0xa1a1a1;
+        }
+    }
+
     /**
      * @event twitchBits
      */
@@ -26,7 +78,7 @@
             bits = event.getBits(),
             s = message;
 
-        if (announce === false || toggle === false || channelName == '') {
+        if (announce == false || toggle === false || channelName == '') {
             return;
         }
 
@@ -38,7 +90,14 @@
             s = $.replace(s, '(amount)', bits);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(getBitsColor(bits))
+                    .withThumbnail('https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/dark/animated/' + getCheerAmount(bits) + '/1.gif')
+                    .withTitle($.lang.get('discord.bitshandler.bits.embed.title'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**

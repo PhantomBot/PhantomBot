@@ -123,7 +123,7 @@
     $.bind('twitchOnline', function(event) {
         // Wait a minute for Twitch to generate a real thumbnail and make sure again that we are online.
         setTimeout(function() {
-            if ($.isOnline($.channelName) && ($.systemTime() - $.getIniDbNumber('discordSettings', 'lastOnlineEvent', 0) >= timeout)) {
+            if (!$.isOnline($.channelName) && ($.systemTime() - $.getIniDbNumber('discordSettings', 'lastOnlineEvent', 0) >= timeout)) {
                 // Delete offline messages if any.
                 if (offlineMessages.length > 0) {
                     for (var i = 0; i < offlineMessages.length; i++) {
