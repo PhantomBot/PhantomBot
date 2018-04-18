@@ -23,6 +23,7 @@
     $.bind('twitchBits', function(event) {
         var username = event.getUsername(),
             bits = event.getBits(),
+            ircMessage = event.getMessage(),
             s = message;
 
         if (announceBits === false || toggle === false) {
@@ -35,6 +36,10 @@
 
         if (s.match(/\(amount\)/g)) {
             s = $.replace(s, '(amount)', bits);
+        }
+ 
+        if (s.match(/\(message\)/g)) {
+            s = $.replace(s, '(message)', ircMessage);
         }
 
         if (bits >= minimum) {
