@@ -2,7 +2,7 @@ $.lang.register('hosthandler.host.message', '(name) just hosted with (viewers) v
 $.lang.register('hosthandler.autohost.message', '(name) just auto-hosted with (viewers) viewers!');
 $.lang.register('hosthandler.deprecated', 'Due to Twitch issues with the API, this command is deprecated.');
 $.lang.register('hosthandler.newhost', 'Thanks for the host $1!');
-$.lang.register('hosthandler.newhost.reward', 'Thanks for the host $1! You\'re rewarded $2 for being awesome!!');
+$.lang.register('hosthandler.newhost.reward', 'Thanks for the host $1! You\'re rewarded $2 for being awesome!');
 $.lang.register('hosthandler.set.hostmessage.success', 'New hoster message set!');
 $.lang.register('hosthandler.set.hostmessage.usage', 'Usage: !hostmessage (message) - Tags: (name) (reward)');
 $.lang.register('hosthandler.set.hostreward.success', 'New hoster reward set to: $1.');
