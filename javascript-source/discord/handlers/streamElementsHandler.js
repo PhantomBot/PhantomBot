@@ -3,7 +3,7 @@
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'streamelementsToggle', false),
-        message = $.getSetIniDbString('discordSettings', 'streamelementsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!'),
+        message = $.getSetIniDbString('discordSettings', 'streamelementsMessage', 'Thank you very much (name) for the tip of (amount) (currency)!'),
         channelName = $.getSetIniDbString('discordSettings', 'streamelementsChannel', ''),
         announce = false;
 
@@ -13,7 +13,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamElementsHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'streamelementsToggle', false);
-            message = $.getIniDbString('discordSettings', 'streamelementsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
+            message = $.getIniDbString('discordSettings', 'streamelementsMessage', 'Thank you very much (name) for the tip of (amount) (currency)!');
             channelName = $.getIniDbString('discordSettings', 'streamelementsChannel', '');
         }
     });
