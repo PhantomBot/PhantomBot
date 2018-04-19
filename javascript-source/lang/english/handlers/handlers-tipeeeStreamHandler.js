@@ -1,9 +1,9 @@
-$.lang.register('tipeeestream.donation.new', 'Thank you very much (name) for the tip of (amount)(currency)!');
-$.lang.register('tipeeestream.donation.newreward', 'Thank you very much (name) for the tip of $(amount) (currency)! Here are (points) (pointname)!');
+$.lang.register('tipeeestream.donation.new', 'Thank you very much (name) for the tip of (amount) (currency)!');
+$.lang.register('tipeeestream.donation.newreward', 'Thank you very much (name) for the tip of (amount) (currency)! Here are (points) (pointname)!');
 $.lang.register('tipeeestream.donations.usage', 'Usage: !tipeeestream (announce | rewardmultiplier n.n | message | lastmessage)');
 $.lang.register('tipeeestream.donations.announce.disable', 'Tips will no longer be announced.');
 $.lang.register('tipeeestream.donations.announce.enable', 'Tips will now be announced.');
-$.lang.register('tipeeestream.donations.reward.usage', 'Usage: !tipeeestream rewardmultiplier n.n  Set to 0 to disable');
+$.lang.register('tipeeestream.donations.reward.usage', 'Usage: !tipeeestream rewardmultiplier [n.n]. Set to 0 to disable');
 $.lang.register('tipeeestream.donations.reward.success', 'The reward for tips has been set to $1 $2 per whole amount of currency donated.');
 $.lang.register('tipeeestream.donations.message.usage', 'Usage: !tipeeestream message [message...] Tags: (name) (amount) (currency) (currencysymbol) (message)');
 $.lang.register('tipeeestream.donations.rewardmessage.usage', 'Usage: !tipeeestream rewardmessage [message...] Tags: (name) (amount) (currency) (reward) (message)');
