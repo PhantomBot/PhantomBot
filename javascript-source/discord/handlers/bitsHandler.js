@@ -18,14 +18,14 @@
         }
     });
 
-/*
+    /*
      * @function getCheerAmount
      *
      * @param {String} bits
      */
     function getCheerAmount(bits) {
         bits = parseInt(bits);
-    
+
         switch (true) {
             case bits < 100:
                 return '1';
@@ -44,7 +44,7 @@
         }
     }
 
-/*
+    /*
      * @function getBitsColor
      *
      * @param {String} bits
@@ -76,6 +76,7 @@
     $.bind('twitchBits', function(event) {
         var username = event.getUsername(),
             bits = event.getBits(),
+            ircMessage = event.getMessage(),
             s = message;
 
         if (announce === false || toggle === false || channelName == '') {
@@ -88,6 +89,10 @@
 
         if (s.match(/\(amount\)/g)) {
             s = $.replace(s, '(amount)', bits);
+        }
+
+        if (s.match(/\(message\)/g)) {
+            s = $.replace(s, '(message)', ircMessage);
         }
 
         $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
