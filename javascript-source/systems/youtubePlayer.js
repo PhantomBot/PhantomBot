@@ -88,7 +88,7 @@
 
                 /** Tobu - Higher (Outertone Release) */
                 try {
-                    currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName))
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('l7C29RM1UmU', $.botName));
                 } catch (ex) {
                     $.log.error("YoutubeVideo::exception: " + ex);
                 }
