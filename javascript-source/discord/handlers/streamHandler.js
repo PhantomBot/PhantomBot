@@ -31,6 +31,17 @@
         }
     });
 
+    /*
+     * @function getTrimmedGameName
+     *
+     * @return {String}
+     */
+    function getTrimmedGameName() {
+        var game = $.getGame($.channelName) + '';
+
+        return (game.length > 20 ? game.substr(0, 20) : game);
+    }
+
     /**
      * @event twitchOffline
      */
@@ -72,6 +83,8 @@
                     avgViewers = Math.round(viewers.reduce(function(a, b) {
                         return (a + b);
                     }) / (viewers.length < 1 ? 1 : viewers.length));
+                } else {
+                    viewers = [0];
                 }
 
                 // Get average chatters.
@@ -80,10 +93,13 @@
                     avgChatters = Math.round(chatters.reduce(function(a, b) {
                         return (a + b);
                     }) / (chatters.length < 1 ? 1 : chatters.length));
+                } else {
+                    chatters = [0];
                 }
 
                 // Get new follows.
-                var follows = ($.getFollows($.channelName) - $.getIniDbNumber('discordStreamStats', 'followers', 0));
+                var followersNow = $.getFollows($.channelName),
+                    follows = (followersNow - $.getIniDbNumber('discordStreamStats', 'followers', followersNow));
 
                 // Get max viewers.
                 var maxViewers = Math.max.apply(null, viewers);
@@ -97,16 +113,20 @@
                     s = $.replace(s, '(name)', $.username.resolve($.channelName));
                 }
 
-                offlineMessages.push($.discord.say(channelName, s));
+                // Only say this when there is a mention.
+                if (s.indexOf('@') !== -1) {
+                    offlineMessages.push($.discord.say(channelName, s));
+                }
+
                 // Send the message as an embed.
                 offlineMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(100, 65, 164)
                     .withThumbnail($.twitchcache.getLogoLink())
                     .withTitle(s.replace(/(\@everyone|\@here)/ig, ''))
-                    .appendField($.lang.get('discord.streamhandler.offline.game'), $.getGame($.channelName), true)
+                    .appendField($.lang.get('discord.streamhandler.offline.game'), getTrimmedGameName(), true)
                     .appendField($.lang.get('discord.streamhandler.offline.viewers'), $.lang.get('discord.streamhandler.offline.viewers.stat', avgViewers, maxViewers), true)
                     .appendField($.lang.get('discord.streamhandler.offline.chatters'), $.lang.get('discord.streamhandler.offline.chatters.stat', avgChatters, maxChatters), true)
-                    .appendField($.lang.get('discord.streamhandler.offline.followers'), $.lang.get('discord.streamhandler.offline.followers.stat', follows, $.getFollows($.channelName)), true)
+                    .appendField($.lang.get('discord.streamhandler.offline.followers'), $.lang.get('discord.streamhandler.offline.followers.stat', follows, followersNow), true)
                     .withTimestamp(Date.now())
                     .withFooterText('Twitch')
                     .withFooterIcon($.twitchcache.getLogoLink())
@@ -140,13 +160,17 @@
                         s = $.replace(s, '(name)', $.username.resolve($.channelName));
                     }
 
-                    liveMessages.push($.discord.say(channelName, s));
+                    // Only say this when there is a mention.
+                    if (s.indexOf('@') !== -1) {
+                        liveMessages.push($.discord.say(channelName, s));
+                    }
+
                     // Send the message as an embed.
                     liveMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                         .withColor(100, 65, 164)
                         .withThumbnail($.twitchcache.getLogoLink())
                         .withTitle(s.replace(/(\@everyone|\@here)/ig, ''))
-                        .appendField($.lang.get('discord.streamhandler.common.game'), $.getGame($.channelName), false)
+                        .appendField($.lang.get('discord.streamhandler.common.game'), getTrimmedGameName(), false)
                         .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
                         .withUrl('https://twitch.tv/' + $.channelName)
                         .withTimestamp(Date.now())
@@ -177,12 +201,15 @@
             s = $.replace(s, '(name)', $.username.resolve($.channelName));
         }
 
-        liveMessages.push($.discord.say(channelName, s));
+        // Only say this when there is a mention.
+        if (s.indexOf('@') !== -1) {
+            liveMessages.push($.discord.say(channelName, s));
+        }
         liveMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
             .withColor(100, 65, 164)
             .withThumbnail($.twitchcache.getLogoLink())
             .withTitle(s.replace(/(\@everyone|\@here)/ig, ''))
-            .appendField($.lang.get('discord.streamhandler.common.game'), $.getGame($.channelName), false)
+            .appendField($.lang.get('discord.streamhandler.common.game'), getTrimmedGameName(), false)
             .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
             .appendField($.lang.get('discord.streamhandler.common.uptime'), $.getStreamUptime($.channelName).toString(), false)
             .withUrl('https://twitch.tv/' + $.channelName)
