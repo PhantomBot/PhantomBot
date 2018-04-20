@@ -49,6 +49,7 @@ public class TwitchAPIv5 {
     private static final int timeout = 2 * 1000;
     private String clientid = "";
     private String oauth = "";
+    private String cheerEmotes = "";
 
     private enum request_type {
 
@@ -512,6 +513,39 @@ public class TwitchAPIv5 {
      */
     public JSONObject GetEmotes() {
         return GetData(request_type.GET, base_url + "/chat/emoticons", false);
+    }
+
+    /**
+     * Gets the list of cheer emotes from Twitch
+     *
+     * @return
+     */
+    public JSONObject GetCheerEmotes() {
+        return GetData(request_type.GET, base_url + "/bits/actions", false);
+    }
+
+    /**
+     * Builds a RegExp String to match cheer emotes from Twitch
+     *
+     * @return
+     */
+    public String GetCheerEmotesRegex() {
+        String[] emoteList;
+        JSONObject jsonInput;
+        JSONArray jsonArray;
+
+        if (cheerEmotes == "") {
+            jsonInput = GetCheerEmotes();
+            if (jsonInput.has("actions")) {
+                jsonArray = jsonInput.getJSONArray("actions");
+                emoteList = new String[jsonArray.length()];
+                for (int idx = 0; idx < jsonArray.length(); idx++) {
+                    emoteList[idx] = "\\b" + jsonArray.getJSONObject(idx).getString("prefix") + "\\d+\\b";
+                }
+                cheerEmotes = String.join("|", emoteList);
+            }
+        }
+        return cheerEmotes;
     }
 
     /**
