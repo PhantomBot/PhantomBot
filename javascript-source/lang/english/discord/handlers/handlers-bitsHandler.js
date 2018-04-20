@@ -5,3 +5,4 @@ $.lang.register('discord.bitshandler.bits.message.set', 'Bits announcements mess
 $.lang.register('discord.bitshandler.bits.channel.usage', 'Usage: !bitshandler channel [channel name]');
 $.lang.register('discord.bitshandler.bits.channel.set', 'Bit announcements will now be made in channel #$1');
 $.lang.register('discord.bitshandler.bits.embed.title', 'New Cheer!');
+$.lang.register('discord.bitshandler.bits.embed.messagetitle', 'Message:');
