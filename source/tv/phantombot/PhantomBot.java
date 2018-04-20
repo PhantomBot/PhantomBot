@@ -329,7 +329,7 @@ public final class PhantomBot implements Listener {
      * @return {string} bot developers
      */
     public String botDevelopers() {
-        return "Developers: PhantomIndex, Kojitsari, ScaniaTV, Zelakto & IllusionaryOne";
+        return "Developers: PhantomIndex, Kojitsari, ScaniaTV, Zackery (Zelakto) & IllusionaryOne";
     }
 
     /*
