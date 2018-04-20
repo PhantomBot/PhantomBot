@@ -77,6 +77,7 @@
         var username = event.getUsername(),
             bits = event.getBits(),
             ircMessage = event.getMessage(),
+            emoteRegexStr = $.twitch.GetCheerEmotesRegex(),
             s = message;
 
         if (announce === false || toggle === false || channelName == '') {
@@ -92,6 +93,12 @@
         }
         
         if ((ircMessage + '').length > 0) {
+            if (emoteRegexStr.length() > 0) {
+                emoteRegex = new RegExp(emoteRegexStr, 'gi');
+                ircMessage = String(ircMessage).valueOf();
+                ircMessage = ircMessage.replace(emoteRegex, '');
+            }
+
         	$.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(getBitsColor(bits))
                     .withThumbnail('https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/dark/animated/' + getCheerAmount(bits) + '/1.gif')
