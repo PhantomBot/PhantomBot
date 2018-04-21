@@ -585,10 +585,12 @@
             if (output.length >= maxlen) {
                 pageCount++;
                 if (display_page === 0 || display_page === pageCount) {
-                    if (whisper) {
-                        $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
-                    } else {
-                        $.say((hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+                    if (output.length > 0) {
+                        if (whisper) {
+                            $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+                        } else {
+                            $.say((hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+                        }
                     }
                 }
                 output = '';
@@ -599,11 +601,13 @@
             }
         }
         pageCount++;
-        if (display_page === 0 || display_page === pageCount) {
-            if (whisper) {
-                $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
-            } else {
-                $.say((hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+        if (output.length > 0) {
+            if (display_page === 0 || display_page === pageCount) {
+                if (whisper) {
+                    $.say($.whisperPrefix(sender) + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+                } else {
+                    $.say((hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+                }
             }
         }
         return pageCount;
@@ -637,8 +641,10 @@
             output += array[idx];
             if (output.length >= maxlen) {
                 pageCount++;
-                if (display_page === 0 || display_page === pageCount) {
-                    $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+                if (output.length > 0) {
+                    if (display_page === 0 || display_page === pageCount) {
+                        $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+                    }
                 }
                 output = '';
             } else {
@@ -648,8 +654,10 @@
             }
         }
         pageCount++;
-        if (display_page === 0 || display_page === pageCount) {
-            $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+        if (output.length > 0) {
+            if (display_page === 0 || display_page === pageCount) {
+                $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+            }
         }
         return pageCount;
     }
