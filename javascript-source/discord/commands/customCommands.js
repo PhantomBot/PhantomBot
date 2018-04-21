@@ -448,8 +448,8 @@
                 $.inidb.del('discordChannelcom', action);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.global', action));
                 return;
-            } else if (subAction.equalsIgnoreCase('--list')) {
-                var keys = $.inidb.get('discordChannelcom', action).split(', '),
+            } else if (subAction.equalsIgnoreCase('--list') || subAction.equalsIgnoreCase('-l')) {
+                var keys = ($.inidb.exists('discordChannelcom', action) ? $.inidb.get('discordChannelcom', action).split(', ') : []),
                     key = [],
                     i;
 
