@@ -59,7 +59,14 @@
             s = $.replace(s, '(viewers)', String(viewers));
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(255, 0, 0)
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/host-embed-icon.png')
+                    .withTitle($.lang.get('discord.hosthandler.auto.host.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**
