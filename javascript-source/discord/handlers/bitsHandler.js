@@ -91,7 +91,7 @@
         if (s.match(/\(amount\)/g)) {
             s = $.replace(s, '(amount)', bits);
         }
-        
+
         if ((ircMessage + '').length > 0) {
             if (emoteRegexStr.length() > 0) {
                 emoteRegex = new RegExp(emoteRegexStr, 'gi');
