@@ -408,7 +408,7 @@
         if (toggle) {
             return (filter ? $.lang.get('common.enabled') : $.lang.get('common.disabled'));
         } else {
-            return (filter ? 'not allowed' : 'allowed');
+            return (filter ? $.lang.get('common.not.allowed') : $.lang.get('common.allowed'));
         }
     }
 
