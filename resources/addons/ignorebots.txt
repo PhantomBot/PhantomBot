@@ -12,3 +12,6 @@ curseappbot
 revlobot
 muxybot
 faegwent
+electricalskateboard
+electricallongboard
+streamelements
