@@ -142,10 +142,7 @@ public class YTWebSocketServer extends WebSocketServer {
         wsSessionMap.put(genSessionKey(webSocket), new wsSession(false, false, webSocket));
     }
 
-    @Override
-    public void onStart() {
-        com.gmt2001.Console.debug.println("Server Started");
-    }
+
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
