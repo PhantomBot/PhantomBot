@@ -26,9 +26,12 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
+import java.nio.charset.StandardCharsets;
+
 import org.java_websocket.handshake.ServerHandshake;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.framing.Framedata;
 
 import tv.phantombot.twitchwsirc.chat.TwitchWSIRCParser;
 import tv.phantombot.twitchwsirc.chat.Session;
@@ -47,6 +50,7 @@ public class TwitchWSIRC extends WebSocketClient {
     private TwitchWSIRCParser twitchWSIRCParser;
     private long lastPong = System.currentTimeMillis();
     private long lastPing = 0l;
+    private Framedata tempFrame;
 
     /*
      * Class constructor.
@@ -87,7 +91,7 @@ public class TwitchWSIRC extends WebSocketClient {
             // Set the socket.
             this.setSocket(sslSocketFactory.createSocket());
             // Set if we use TCP NoDelay or not.
-            this.setTcpNoDelay(PhantomBot.twitch_tcp_nodelay);
+            //this.setTcpNoDelay(PhantomBot.twitch_tcp_nodelay);
             // Create a new parser instance.
             this.twitchWSIRCParser = new TwitchWSIRCParser(this.getConnection(), channelName, session);
             // Connect.
@@ -189,4 +193,34 @@ public class TwitchWSIRC extends WebSocketClient {
             }
         }
     }
+
+    @Override
+   	public void onFragment(Framedata frame) {
+   		// First frame, save it and wait for the second one.
+   		if (!frame.isFin()) {
+   			tempFrame = frame;
+   		} else {
+   			String message = null;
+
+   			if (tempFrame != null) {
+   				try {
+   					// Add the new frame to the previous one.
+   					tempFrame.append(frame);
+
+   					// Convert the message into a string.
+   					message = StandardCharsets.UTF_8.decode(tempFrame.getPayloadData()).toString();
+            	} catch (Exception ex) {
+            		com.gmt2001.Console.err.println("Failed to parse message fragment: " + ex.getMessage());
+            	}
+            } else {
+            	// Convert the message into a string.
+   				message = StandardCharsets.UTF_8.decode(frame.getPayloadData()).toString();
+            }
+
+            // Try parsing the message.
+            if (message != null) {
+            	twitchWSIRCParser.parseData(message);
+            }
+   		}
+   	}
 }
