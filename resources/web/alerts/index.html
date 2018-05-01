@@ -25,13 +25,26 @@
         <!-- Title -->
         <title>PhantomBot Alerts</title>
 
+        <!-- Main styles. -->
+        <style>
+            body {
+                background-color: transparent;
+            }
+
+            .main-alert {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
+
         <!-- Load our favicon -->
         <link rel="icon" href="/favicon.ico" />
     </head>
-    
+
     <!-- Main body -->
-    <body style="background-color: transparent;">
-        <div style="display: flex; align-items: center; justify-content: center" class="main-alert">
+    <body>
+        <div class="main-alert">
             <!-- Where the gif gets played. -->
             <div id="alert"></div>
         </div>
