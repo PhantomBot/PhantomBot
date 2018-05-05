@@ -126,6 +126,7 @@ public class YTWebSocketServer extends WebSocketServer {
     private int currentVolume = 0;
     private int currentState = -10;
     private boolean clientConnected = false;
+    private int bufferCounter = 0;
 
     private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
 
@@ -213,14 +214,19 @@ public class YTWebSocketServer extends WebSocketServer {
                 dataInt = jsonStatus.getInt("state");
 
                 /* If the current status is buffering and then we receive an unstarted event, then the player
-                 * is stuck. This normally happens with videos that are not allowed to play in the regioin
-                 * and are not returned as such by the API lookup. Skip the song.
+                 * is stuck. This normally happens with videos that are not allowed to play in the region
+                 * and are not returned as such by the API lookup. Skip the song.  But, only skip the song if
+                 * we get back the buffering state a few times.
                  */
                 if (currentState == 3 && dataInt == -1) {
                     currentState = dataInt;
                     playerState = YTPlayerState.getStateFromId(dataInt);
-                    EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                    if (bufferCounter++ == 3) {
+                        EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                        bufferCounter = 0;
+                    }
                 } else {
+                    bufferCounter = 0;
                     currentState = (dataInt == 200 ? currentState : dataInt);
                     playerState = YTPlayerState.getStateFromId(dataInt);
                     EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
