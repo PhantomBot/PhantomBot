@@ -878,7 +878,7 @@ public class PanelSocketServer extends WebSocketServer {
             }
         }
 
-        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(id, script, arguments, args));
+        EventBus.instance().post(new WebPanelSocketUpdateEvent(id, script, arguments, args));
         debugMsg("doWSEvent(" + id + "::" + script + ")");
 
         jsonObject.object().key("query_id").value(id).endObject();
