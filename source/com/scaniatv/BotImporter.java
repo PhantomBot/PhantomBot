@@ -109,7 +109,7 @@ public class BotImporter {
 
                 users.add(spl[0].toLowerCase());
                 points.add(spl[1]);
-                time.add(String.valueOf((Integer.parseInt(spl[2]) * 60)));
+                time.add(String.valueOf((Integer.parseInt(spl[2]) * 3600)));
                 com.gmt2001.Console.out.println("Imported: " + spl[0] + " - Points: " + spl[1] + " - Time " + spl[2]);
             }
             com.gmt2001.Console.out.println("Saving data...");
