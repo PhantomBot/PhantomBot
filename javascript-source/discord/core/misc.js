@@ -73,13 +73,13 @@
      */
     function say(channel, message) {
         if (embedReg.test(message)) {
-            $.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
+            return $.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
         } else if (fileRegMsg.test(message)) {
-            $.discordAPI.sendFile(channel, message.match(fileRegMsg)[2], message.match(fileRegMsg)[1]);
+            return $.discordAPI.sendFile(channel, message.match(fileRegMsg)[2], message.match(fileRegMsg)[1]);
         } else if (fileReg.test(message)) {
-            $.discordAPI.sendFile(channel, message.match(fileReg)[1]);
+            return $.discordAPI.sendFile(channel, message.match(fileReg)[1]);
         } else {
-            $.discordAPI.sendMessage(channel, message);
+            return $.discordAPI.sendMessage(channel, message);
         }
     }
 
