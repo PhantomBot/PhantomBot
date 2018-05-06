@@ -144,6 +144,9 @@
         // Wait a minute for Twitch to generate a real thumbnail and make sure again that we are online.
         setTimeout(function() {
             if ($.isOnline($.channelName) && ($.systemTime() - $.getIniDbNumber('discordSettings', 'lastOnlineEvent', 0) >= timeout)) {
+            	// Remove old stats, if any.
+            	$.inidb.RemoveFile('discordStreamStats');
+
                 // Delete offline messages if any.
                 if (offlineMessages.length > 0) {
                     for (var i = 0; i < offlineMessages.length; i++) {
