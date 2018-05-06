@@ -238,6 +238,8 @@ $.lang.register('commandpause.initiated', 'All commands are disabled for $1.');
 $.lang.register('commandpause.isactive', 'All commands are currently disabled.');
 $.lang.register('common.disabled', 'disabled');
 $.lang.register('common.enabled', 'enabled');
+$.lang.register('common.not.allowed', 'not allowed');
+$.lang.register('common.allowed', 'allowed');
 $.lang.register('common.user-error', 'You must specify a user to target with this command');
 $.lang.register('common.user.404', 'The user "$1" has not visited this channel yet.');
 $.lang.register('common.game.change', 'Changed the current game to: $1!');
