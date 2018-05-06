@@ -33,6 +33,7 @@
         gain = $.getIniDbNumber('bettingSettings', 'gain');
         saveBets = $.getIniDbBoolean('bettingSettings', 'save');
         saveFormat = $.getIniDbString('bettingSettings', 'format');
+        warningMessages = $.getIniDbBoolean('bettingSettings', 'warningMessages')
     }
 
     /**
@@ -62,6 +63,10 @@
             return;
         }
 
+        // Remove the old files.
+        $.inidb.RemoveFile('bettingPanel');
+        $.inidb.RemoveFile('bettingVotes');
+
         bet.title = title;
         bet.minimum = parseInt(minimum);
         bet.maximum = parseInt(maximum);
@@ -87,9 +92,13 @@
                 total: 0
             };
             bet.opt.push(split[i]);
+            $.inidb.set('bettingVotes', (split[i] + '').replace(/\s/, '%space_option%'), 0);
         }
 
         $.say($.lang.get('bettingsystem.open.success', title, split.join(', ')));
+        $.inidb.set('bettingPanel', 'title', title);
+        $.inidb.set('bettingPanel', 'options', split.join('%space_option%'));
+        $.inidb.set('bettingPanel', 'isActive', 'true');
     }
 
     /**
@@ -114,6 +123,8 @@
         }
 
         clearInterval(timeout);
+
+        $.inidb.set('bettingPanel', 'isActive', 'false');
 
         bet.status = false;
         bet.opened = false;
@@ -261,6 +272,7 @@
             amount: amount
         };
         $.inidb.decr('points', sender, amount);
+        $.inidb.incr('bettingVotes', option.replace(/\s/, '%space_option%'), 1);
     }
 
     /**
