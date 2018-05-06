@@ -1,9 +1,9 @@
-$.lang.register('streamelements.donation.new', 'Thank you very much (name) for the tip of $(amount)!');
-$.lang.register('streamelements.donation.newreward', 'Thank you very much (name) for the tip of $(amount) (currency)! Here are (points) (pointname)!');
+$.lang.register('streamelements.donation.new', 'Thank you very much (name) for the tip of (amount) (currency)!');
+$.lang.register('streamelements.donation.newreward', 'Thank you very much (name) for the tip of (amount) (currency)! Here are (points) (pointname)!');
 $.lang.register('streamelements.donations.usage', 'Usage: !streamelements (announce | rewardmultiplier n.n | message | lastmessage)');
 $.lang.register('streamelements.donations.announce.disable', 'Tips will no longer be announced.');
 $.lang.register('streamelements.donations.announce.enable', 'Tips will now be announced.');
-$.lang.register('streamelements.donations.reward.usage', 'Usage: !streamelements rewardmultiplier n.n  Set to 0 to disable');
+$.lang.register('streamelements.donations.reward.usage', 'Usage: !streamelements rewardmultiplier [n.n]. Set to 0 to disable');
 $.lang.register('streamelements.donations.reward.success', 'The reward for tips has been set to $1 $2 per whole amount of currency donated.');
 $.lang.register('streamelements.donations.message.usage', 'Usage: !streamelements message [message...] Tags: (name) (amount) (currency) (currencysymbol) (message) (formattedamount)');
 $.lang.register('streamelements.donations.rewardmessage.usage', 'Usage: !streamelements rewardmessage [message...] Tags: (name) (amount) (currency) (reward) (message)');

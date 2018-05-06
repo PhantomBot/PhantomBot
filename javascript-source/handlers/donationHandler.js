@@ -36,7 +36,7 @@
             $.mkDir(donationAddonDir);
         }
 
-        $.consoleLn('>> Enabling StreamLabs donation announcements');
+        $.consoleLn('>> Enabling Streamlabs donation announcements');
         $.log.event('Donation announcements enabled');
         announceDonationsAllowed = true;
     });

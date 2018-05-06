@@ -27,7 +27,7 @@ if type -p java 1>/dev/null 2>/dev/null; then
 elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
 else
-    echo "You don't have Java installed! Download it from https://www.java.com/en/download/"
+    echo "You don't have Java installed! Download it from https://java.com/en/download/"
 fi
 
 java -Dfile.encoding=UTF-8 -jar PhantomBot.jar

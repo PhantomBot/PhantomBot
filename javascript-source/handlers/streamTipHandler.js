@@ -33,11 +33,11 @@
         }
 
         if (!$.isDirectory(donationAddonDir)) {
-            $.consoleDebug(">> Creating StreamTip handler Directory: " + donationAddonDir);
+            $.consoleDebug(">> Creating Streamtip handler Directory: " + donationAddonDir);
             $.mkDir(donationAddonDir);
         }
 
-        $.consoleLn(">> Enabling StreamTip donation announcements");
+        $.consoleLn(">> Enabling Streamtip donation announcements");
         $.log.event('Donation announcements enabled');
         announceDonations = true;
     });

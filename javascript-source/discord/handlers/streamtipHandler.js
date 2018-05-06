@@ -1,9 +1,9 @@
 /**
- * This module is to handle StreamTip notifications.
+ * This module is to handle Streamtip notifications.
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'streamtipToggle', false),
-        message = $.getSetIniDbString('discordSettings', 'streamtipMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!'),
+        message = $.getSetIniDbString('discordSettings', 'streamtipMessage', 'Thank you very much (name) for the tip of (amount) (currency)!'),
         channelName = $.getSetIniDbString('discordSettings', 'streamtipChannel', ''),
         announce = false;
 
@@ -13,7 +13,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamtipHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'streamtipToggle', false);
-            message = $.getIniDbString('discordSettings', 'streamtipMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
+            message = $.getIniDbString('discordSettings', 'streamtipMessage', 'Thank you very much (name) for the tip of (amount) (currency)!');
             channelName = $.getIniDbString('discordSettings', 'streamtipChannel', '');
         }
     });
@@ -101,7 +101,7 @@
             }
 
             /**
-             * @discordcommandpath streamtiphandler toggle - Toggles the StreamTip donation announcements.
+             * @discordcommandpath streamtiphandler toggle - Toggles the Streamtip donation announcements.
              */
             if (action.equalsIgnoreCase('toggle')) {
                 toggle = !toggle;
@@ -110,7 +110,7 @@
             }
 
             /**
-             * @discordcommandpath streamtiphandler message [message] - Sets the StreamTip donation announcement message.
+             * @discordcommandpath streamtiphandler message [message] - Sets the Streamtip donation announcement message.
              */
             if (action.equalsIgnoreCase('message')) {
                 if (subAction === undefined) {

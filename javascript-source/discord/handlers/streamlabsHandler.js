@@ -1,9 +1,9 @@
 /**
- * This module is to handle StreamLabs notifications.
+ * This module is to handle Streamlabs notifications.
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'streamlabsToggle', false),
-        message = $.getSetIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!'),
+        message = $.getSetIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of (amount) (currency)!'),
         channelName = $.getSetIniDbString('discordSettings', 'streamlabsChannel', ''),
         announce = false;
 
@@ -13,7 +13,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamlabsHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'streamlabsToggle', false);
-            message = $.getIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
+            message = $.getIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of (amount) (currency)!');
             channelName = $.getIniDbString('discordSettings', 'streamlabsChannel', '');
         }
     });
@@ -99,7 +99,7 @@
             }
 
             /**
-             * @discordcommandpath streamlabshandler toggle - Toggles the StreamLabs donation announcements.
+             * @discordcommandpath streamlabshandler toggle - Toggles the Streamlabs donation announcements.
              */
             if (action.equalsIgnoreCase('toggle')) {
                 toggle = !toggle;
@@ -108,7 +108,7 @@
             }
 
             /**
-             * @discordcommandpath streamlabshandler message [message] - Sets the StreamLabs donation announcement message.
+             * @discordcommandpath streamlabshandler message [message] - Sets the Streamlabs donation announcement message.
              */
             if (action.equalsIgnoreCase('message')) {
                 if (subAction === undefined) {

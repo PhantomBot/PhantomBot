@@ -1,12 +1,12 @@
-$.lang.register('streamtip.donation.new', 'Thank you very much (name) for the tip of (currencysymbol)(amount) (currency)!');
-$.lang.register('streamtip.donation.newreward', 'Thank you very much (name) for the tip of $(amount) (currency)! Here are (points) (pointname)!');
+$.lang.register('streamtip.donation.new', 'Thank you very much (name) for the tip of (amount) (currency)!');
+$.lang.register('streamtip.donation.newreward', 'Thank you very much (name) for the tip of (amount) (currency)! Here are (points) (pointname)!');
 $.lang.register('streamtip.lastdonation.no-donations', 'There are presently no tips.');
 $.lang.register('streamtip.lastdonation.404', 'Cannot find last tip!');
-$.lang.register('streamtip.lastdonation.success', 'The last tip was from (name) in the amount of (currencysymbol)(amount) (currency).');
+$.lang.register('streamtip.lastdonation.success', 'The last tip was from (name) in the amount of (amount) (currency).');
 $.lang.register('streamtip.donations.usage', 'Usage: !streamtip (announce | rewardmultiplier n.n | message | lastmessage)');
 $.lang.register('streamtip.donations.announce.disable', 'Tips will no longer be announced.');
 $.lang.register('streamtip.donations.announce.enable', 'Tips will now be announced.');
-$.lang.register('streamtip.donations.reward.usage', 'Usage: !streamtip rewardmultiplier n.n  Set to 0 to disable');
+$.lang.register('streamtip.donations.reward.usage', 'Usage: !streamtip rewardmultiplier [n.n]. Set to 0 to disable');
 $.lang.register('streamtip.donations.reward.success', 'The reward for tips has been set to $1 $2 per whole amount of currency donated.');
 $.lang.register('streamtip.donations.message.usage', 'Usage: !streamtip message [message...] Tags: (name) (amount) (currency) (currencysymbol) (message)');
 $.lang.register('streamtip.donations.rewardmessage.usage', 'Usage: !streamtip rewardmessage [message...] Tags: (name) (amount) (currency) (currencysymbol) (points) (pointname) (message)');

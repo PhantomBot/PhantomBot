@@ -1,7 +1,7 @@
 /**
  * 8ball.js
  *
- * A game that answers questions with random (Non-relating) answers
+ * A game that answers questions with random (non-relating) answers
  */
 (function() {
     var responseCount = 0,

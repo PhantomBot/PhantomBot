@@ -29,14 +29,14 @@
         emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 5),
 
         longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', false),
-        longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message.'),
+        longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage', 'you were timed out for posting a long message.'),
         longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 325),
 
         colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
         colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using colored text.'),
 
         spamTrackerToggle = $.getSetIniDbBoolean('chatModerator', 'spamTrackerToggle', false),
-        spamTrackerMessage = $.getSetIniDbString('chatModerator', 'spamTrackerMessage',  'you were timed out for spamming chat.'),
+        spamTrackerMessage = $.getSetIniDbString('chatModerator', 'spamTrackerMessage', 'you were timed out for spamming chat.'),
         spamTrackerTime = $.getSetIniDbNumber('chatModerator', 'spamTrackerTime', 30),
         spamTrackerLimit = $.getSetIniDbNumber('chatModerator', 'spamTrackerLimit', 30),
 
@@ -45,7 +45,7 @@
         blacklistMessageBan = $.getSetIniDbString('chatModerator', 'blacklistMessageBan', 'you were banned for using a blacklisted phrase.'),
 
         fakePurgeToggle = $.getSetIniDbBoolean('chatModerator', 'fakePurgeToggle', false),
-        fakePurgeMessage = $.getSetIniDbString('chatModerator', 'fakePurgeMessage',  'you were timed out for a fake purge.'),
+        fakePurgeMessage = $.getSetIniDbString('chatModerator', 'fakePurgeMessage', 'you were timed out for a fake purge.'),
 
         subscribers = {
             Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', true),
@@ -408,7 +408,7 @@
         if (toggle) {
             return (filter ? $.lang.get('common.enabled') : $.lang.get('common.disabled'));
         } else {
-            return (filter ? 'not allowed' : 'allowed');
+            return (filter ? $.lang.get('common.not.allowed') : $.lang.get('common.allowed'));
         }
     }
 
