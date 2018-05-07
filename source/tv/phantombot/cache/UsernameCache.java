@@ -117,6 +117,17 @@ public class UsernameCache {
         }
     }
 
+    public boolean exists(String userName) {
+        // Check the cache first, if the user doesn't exist call the API and check the cache again.
+        if (cache.containsKey(userName)) {
+            return true;
+        } else {
+            lookupUserData(userName);
+
+            return cache.containsKey(userName);
+        }
+    }
+
     public void addUser(String userName, String displayName, int userID) {
         if (!hasUser(userName) && displayName.length() > 0) {
             cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
